@@ -33,5 +33,3 @@ build/
 ###Log file
 *.log
 **/*.log
-
-resources/**

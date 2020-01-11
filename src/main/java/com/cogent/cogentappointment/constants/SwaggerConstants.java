@@ -54,8 +54,8 @@ public class SwaggerConstants {
         String SEARCH_OPERATION = "Search Specialization according to given request parameters";
         String DETAILS_OPERATION = "Fetch Specialization details by its id";
         String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal Specialization details (id and name) for dropdown";
+        String FETCH_BY_DOCTOR_ID = "Fetch active specializations by doctor id";
     }
-
 
 
     //T
@@ -66,8 +66,6 @@ public class SwaggerConstants {
     //V
 
     //W
-
-
 
 
     //X

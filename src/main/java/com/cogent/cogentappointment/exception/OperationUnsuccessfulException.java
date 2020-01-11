@@ -12,11 +12,6 @@ import static org.springframework.http.HttpStatus.EXPECTATION_FAILED;
 public class OperationUnsuccessfulException extends RuntimeException {
     private ExceptionResponse exception;
 
-    public OperationUnsuccessfulException(String errorMessage) {
-        super(errorMessage);
-        setErrorResponse(errorMessage, errorMessage);
-    }
-
     public OperationUnsuccessfulException(String errorMessage, String debugMessage) {
         super(errorMessage);
         setErrorResponse(errorMessage, debugMessage);

@@ -78,7 +78,7 @@ public class SpecializationResource {
     }
 
     @GetMapping(DOCTOR_ID_PATH_VARIABLE_BASE)
-    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
+    @ApiOperation(FETCH_BY_DOCTOR_ID)
     public ResponseEntity<?> fetchSpecializationByDoctorId(@PathVariable("doctorId") Long doctorId) {
         return ok(specializationService.fetchSpecializationByDoctorId(doctorId));
     }

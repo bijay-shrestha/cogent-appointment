@@ -30,12 +30,11 @@ public class ErrorMessageConstants {
     //F
 
 
-
     //G
+    public static final String INVALID_GENDER_CODE_MESSAGE = "Invalid Gender code.";
+    public static final String INVALID_GENDER_CODE_DEBUG_MESSAGE = "Gender enum doesn't have the requested code.";
 
     //H
-
-
 
 
     //I
@@ -49,10 +48,7 @@ public class ErrorMessageConstants {
     //M
 
     //N
-    public final static String NAME_AND_CODE_DUPLICATION_DEBUG_MESSAGE = " entity is not null with name and code";
-    public final static String NAME_AND_CODE_DUPLICATION_MESSAGE = " name and code already exists";
-
-    public final static String NAME_DUPLICATION_MESSAGE = "%s already exists with name '%s': ";
+    public static final String NAME_DUPLICATION_MESSAGE = "%s already exists with name '%s': ";
 
 
     //O
@@ -60,15 +56,12 @@ public class ErrorMessageConstants {
     //P
 
 
-
     //Q
 
     //R
 
 
-
     //S
-
 
 
     //T

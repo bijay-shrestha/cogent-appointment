@@ -14,6 +14,9 @@ public class WebResourceKeyConstants {
     //B
 
     //C
+    public interface CountryConstants {
+        String BASE_COUNTRY = "/country";
+    }
 
 
     //D

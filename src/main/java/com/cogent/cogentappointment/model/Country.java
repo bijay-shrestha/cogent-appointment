@@ -9,16 +9,15 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 /**
- * @author smriti ON 2019-09-25
+ * @author smriti on 2019-11-08
  */
-@Table(name = "specialization")
 @Entity
+@Table(name = "country")
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class Specialization implements Serializable {
-
+@NoArgsConstructor
+public class Country implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,12 +25,21 @@ public class Specialization implements Serializable {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "code")
-    private String code;
+    @Column(name = "nice_name")
+    private String niceName;
+
+    @Column(name = "iso")
+    private String iso;
+
+    @Column(name = "iso_3")
+    private String iso3;
+
+    @Column(name = "num_code")
+    private int numCode;
+
+    @Column(name = "phone_code")
+    private int phoneCode;
 
     @Column(name = "status")
     private Character status;
-
-    @Column(name = "remarks")
-    private String remarks;
 }

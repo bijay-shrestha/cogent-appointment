@@ -45,6 +45,20 @@ public class SwaggerConstants {
     //P
 
     //Q
+    public interface QualificationConstant {
+        String BASE_API_VALUE = "This is Qualification Controller";
+        String SAVE_OPERATION = "Save new Qualification";
+        String UPDATE_OPERATION = "Update existing Qualification";
+        String DELETE_OPERATION = "Set Qualification status as 'D' when deleted";
+        String SEARCH_OPERATION = "Search Qualification according to given request parameters";
+        String DETAILS_OPERATION = "Fetch Qualification details by its id";
+        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal Qualification details for dropdown";
+    }
+
+    public interface QualificationAliasConstant {
+        String BASE_API_VALUE = "This is Qualification Alias Controller";
+        String FETCH_ACTIVE_QUALIFICATION_ALIAS = "Fetch active Qualification Alias like M.D.,M.B.B.S, etc";
+    }
 
     //R
 

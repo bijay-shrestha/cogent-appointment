@@ -56,6 +56,13 @@ public class WebResourceKeyConstants {
 
 
     //Q
+    public interface QualificationConstants {
+        String BASE_QUALIFICATION = "/qualification";
+    }
+
+    public interface QualificationAliasConstants {
+        String BASE_QUALIFICATION_ALIAS = "/qualificationAlias";
+    }
 
     //R
 

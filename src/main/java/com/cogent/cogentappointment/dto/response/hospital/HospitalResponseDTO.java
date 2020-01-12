@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -18,19 +18,15 @@ public class HospitalResponseDTO implements Serializable {
 
     private String name;
 
-    private String code;
-
     private Character status;
 
-    private Date createdDate;
+    private String address;
 
-    private Date lastModifiedDate;
+    private String panNumber;
 
-    private Long createdById;
-
-    private Long modifiedById;
+    private String fileUri;
 
     private String remarks;
 
-    private int totalItems;
+    private List<HospitalContactNumberResponseDTO> contactNumberResponseDTOS;
 }

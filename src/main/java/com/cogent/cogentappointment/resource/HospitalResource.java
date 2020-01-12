@@ -15,14 +15,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-
 import java.io.IOException;
 
 import static com.cogent.cogentappointment.constants.SwaggerConstants.HospitalConstant.*;
 import static com.cogent.cogentappointment.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.constants.WebResourceKeyConstants.HospitalConstants.BASE_HOSPITAL;
 import static java.net.URI.create;
-import static org.springframework.http.ResponseEntity.*;
+import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -51,8 +50,11 @@ public class HospitalResource {
 
     @PutMapping
     @ApiOperation(UPDATE_OPERATION)
-    public ResponseEntity<?> update(@Valid @RequestBody HospitalUpdateRequestDTO updateRequestDTO) {
-        hospitalService.updateHospital(updateRequestDTO);
+    public ResponseEntity<?> update(@RequestParam(value = "file", required = false) MultipartFile file,
+                                    @RequestParam("request") String request) throws IOException {
+
+        HospitalUpdateRequestDTO updateRequestDTO = ObjectMapperUtils.map(request, HospitalUpdateRequestDTO.class);
+        hospitalService.update(updateRequestDTO, file);
         return ok().build();
     }
 
@@ -69,7 +71,7 @@ public class HospitalResource {
                                     @RequestParam("page") int page,
                                     @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return ok().body(hospitalService.searchHospital(searchRequestDTO, pageable));
+        return ok().body(hospitalService.search(searchRequestDTO, pageable));
     }
 
     @GetMapping(ID_PATH_VARIABLE_BASE)
@@ -84,4 +86,9 @@ public class HospitalResource {
         return ok(hospitalService.fetchHospitalForDropDown());
     }
 
+    @GetMapping(DETAILS + ID_PATH_VARIABLE_BASE)
+    @ApiOperation(DETAILS_OPERATION)
+    public ResponseEntity<?> fetchDetailsById(@PathVariable("id") Long id) {
+        return ok(hospitalService.fetchDetailsById(id));
+    }
 }

@@ -1,29 +1,29 @@
 package com.cogent.cogentappointment.dto.response.hospital;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 
 /**
  * @author Rupak
  */
-
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class HospitalMinimalResponseDTO implements Serializable {
 
-    private Long id;
+    private BigInteger id;
 
     private String name;
 
-    private String code;
+    private String address;
 
     private Character status;
 
-    private String remarks;
+    private String fileUri;
+
+    private int totalItems;
 }

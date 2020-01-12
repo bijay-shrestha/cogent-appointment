@@ -2,10 +2,12 @@ package com.cogent.cogentappointment.service.impl;
 
 import com.cogent.cogentappointment.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.dto.commons.DropDownResponseDTO;
+import com.cogent.cogentappointment.dto.request.hospital.HospitalContactNumberUpdateRequestDTO;
 import com.cogent.cogentappointment.dto.request.hospital.HospitalRequestDTO;
 import com.cogent.cogentappointment.dto.request.hospital.HospitalSearchRequestDTO;
 import com.cogent.cogentappointment.dto.request.hospital.HospitalUpdateRequestDTO;
 import com.cogent.cogentappointment.dto.response.files.FileUploadResponseDTO;
+import com.cogent.cogentappointment.dto.response.hospital.HospitalMinimalResponseDTO;
 import com.cogent.cogentappointment.dto.response.hospital.HospitalResponseDTO;
 import com.cogent.cogentappointment.exception.DataDuplicationException;
 import com.cogent.cogentappointment.exception.NoContentFoundException;
@@ -29,6 +31,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.constants.ErrorMessageConstants.NAME_DUPLICATION_MESSAGE;
+import static com.cogent.cogentappointment.constants.StatusConstants.INACTIVE;
 import static com.cogent.cogentappointment.constants.StringConstant.FORWARD_SLASH;
 import static com.cogent.cogentappointment.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.log.constants.HospitalLog.HOSPITAL;
@@ -82,7 +85,7 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     @Override
-    public void updateHospital(HospitalUpdateRequestDTO updateRequestDTO) {
+    public void update(HospitalUpdateRequestDTO updateRequestDTO, MultipartFile multipartFile) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -90,24 +93,25 @@ public class HospitalServiceImpl implements HospitalService {
 
         Hospital hospital = findById(updateRequestDTO.getId());
 
-        System.out.println(hospital.getId());
-
         validateName(hospitalRepository.findHospitalByIdAndName(updateRequestDTO.getId(), updateRequestDTO.getName()),
                 updateRequestDTO.getName());
 
-        save(convertToUpdatedHospital(updateRequestDTO, hospital));
+        parseToUpdatedHospital(updateRequestDTO, hospital);
+
+        updateHospitalContactNumber(hospital.getId(), updateRequestDTO.getContactNumberUpdateRequestDTOS());
+
+        updateHospitalLogo(hospital, multipartFile);
 
         log.info(UPDATING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
-
     }
 
     @Override
-    public List<HospitalResponseDTO> searchHospital(HospitalSearchRequestDTO hospitalSearchRequestDTO, Pageable pageable) {
+    public List<HospitalMinimalResponseDTO> search(HospitalSearchRequestDTO hospitalSearchRequestDTO, Pageable pageable) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, HOSPITAL);
 
-        List<HospitalResponseDTO> responseDTOS = hospitalRepository.search(hospitalSearchRequestDTO, pageable);
+        List<HospitalMinimalResponseDTO> responseDTOS = hospitalRepository.search(hospitalSearchRequestDTO, pageable);
 
         log.info(SEARCHING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
 
@@ -134,8 +138,8 @@ public class HospitalServiceImpl implements HospitalService {
 
         log.info(FETCHING_PROCESS_STARTED, HOSPITAL);
 
-        Hospital hospital = hospitalRepository.findActiveHospitalById(id).orElseThrow(() ->
-                new NoContentFoundException(Hospital.class));
+        Hospital hospital = hospitalRepository.findActiveHospitalById(id)
+                .orElseThrow(() -> new NoContentFoundException(Hospital.class));
 
         log.info(FETCHING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
 
@@ -154,6 +158,20 @@ public class HospitalServiceImpl implements HospitalService {
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
+    }
+
+    @Override
+    public HospitalResponseDTO fetchDetailsById(Long hospitalId) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_DETAIL_PROCESS_STARTED, HOSPITAL);
+
+        HospitalResponseDTO responseDTO = hospitalRepository.fetchDetailsById(hospitalId);
+
+        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTO;
     }
 
     private void validateName(Long hospital, String name) {
@@ -197,7 +215,34 @@ public class HospitalServiceImpl implements HospitalService {
         return hospitalRepository.findHospitalById(id).orElseThrow(() -> HOSPITAL_NAME_WITH_GIVEN_ID_NOT_FOUND.apply(id));
     }
 
+    private void updateHospitalContactNumber(Long hospitalId,
+                                             List<HospitalContactNumberUpdateRequestDTO> updateRequestDTOS) {
+
+        List<HospitalContactNumber> hospitalContactNumbers = updateRequestDTOS.stream()
+                .map(requestDTO -> parseToUpdatedHospitalContactNumber(hospitalId, requestDTO))
+                .collect(Collectors.toList());
+
+        saveHospitalContactNumber(hospitalContactNumbers);
+    }
+
+    public void updateHospitalLogo(Hospital hospital, MultipartFile files) {
+        HospitalLogo hospitalLogo = hospitalLogoRepository.findHospitalLogoByHospitalId(hospital.getId());
+
+        if (Objects.isNull(hospitalLogo)) saveHospitalLogo(hospital, files);
+        else updateHospitalLogo(hospital, hospitalLogo, files);
+    }
+
+    private void updateHospitalLogo(Hospital hospital, HospitalLogo hospitalLogo, MultipartFile files) {
+
+        if (!Objects.isNull(files)) {
+            List<FileUploadResponseDTO> responseList = uploadFiles(hospital, new MultipartFile[]{files});
+            setFileProperties(responseList.get(0), hospitalLogo);
+        } else
+            hospitalLogo.setStatus(INACTIVE);
+    }
+
     private Function<Long, NoContentFoundException> HOSPITAL_NAME_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         throw new NoContentFoundException(Hospital.class, "id", id.toString());
     };
+
 }

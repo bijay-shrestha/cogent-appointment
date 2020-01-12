@@ -34,11 +34,6 @@ public class HospitalUpdateRequestDTO implements Serializable {
     @SpecialCharacters
     private String panNumber;
 
-    @NotNull
-    @NotEmpty
-    @SpecialCharacters
-    private String logo;
-
     @Status
     private Character status;
 
@@ -46,5 +41,6 @@ public class HospitalUpdateRequestDTO implements Serializable {
     @NotEmpty
     private String remarks;
 
+    @NotEmpty
     private List<HospitalContactNumberUpdateRequestDTO> contactNumberUpdateRequestDTOS;
 }

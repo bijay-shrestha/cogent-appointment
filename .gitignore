@@ -36,3 +36,5 @@ build/
 
 ###yml file
 *.yml
+
+cogent-uploads/**

@@ -34,6 +34,7 @@ public class SwaggerConstants {
         String UPDATE_OPERATION = "Update existing hospital";
         String DELETE_OPERATION = "Set hospital status as 'D' when deleted with remarks";
         String SEARCH_OPERATION = "Search hospital according to given request parameters";
+        String DETAILS_OPERATION = "Fetch hospital details by id";
         String FETCH_BY_ID = "Fetch hospital entity by its id";
         String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal hospital details (id and name) for dropdown";
     }

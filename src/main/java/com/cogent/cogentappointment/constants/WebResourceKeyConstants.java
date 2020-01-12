@@ -28,6 +28,7 @@ public class WebResourceKeyConstants {
     //E
 
     //F
+    public static final String FILE = "/files/{subDirectoryLocation}/{filename:.+}";
 
 
     //G

@@ -5,6 +5,7 @@ import com.cogent.cogentappointment.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.dto.request.hospital.HospitalRequestDTO;
 import com.cogent.cogentappointment.dto.request.hospital.HospitalSearchRequestDTO;
 import com.cogent.cogentappointment.dto.request.hospital.HospitalUpdateRequestDTO;
+import com.cogent.cogentappointment.dto.response.hospital.HospitalMinimalResponseDTO;
 import com.cogent.cogentappointment.dto.response.hospital.HospitalResponseDTO;
 import com.cogent.cogentappointment.model.Hospital;
 import org.springframework.data.domain.Pageable;
@@ -19,14 +20,16 @@ public interface HospitalService {
 
     void save(HospitalRequestDTO requestDTO, MultipartFile multipartFile);
 
-    void updateHospital(HospitalUpdateRequestDTO updateRequestDTO);
+    void update(HospitalUpdateRequestDTO updateRequestDTO, MultipartFile multipartFile);
 
     void delete(DeleteRequestDTO deleteRequestDTO);
 
-    List<HospitalResponseDTO> searchHospital(HospitalSearchRequestDTO hospitalSearchRequestDTO,
-                                             Pageable pageable);
+    List<HospitalMinimalResponseDTO> search(HospitalSearchRequestDTO hospitalSearchRequestDTO,
+                                            Pageable pageable);
 
     Hospital fetchHospital(Long id);
 
     List<DropDownResponseDTO> fetchHospitalForDropDown();
+
+    HospitalResponseDTO fetchDetailsById(Long hospitalId);
 }

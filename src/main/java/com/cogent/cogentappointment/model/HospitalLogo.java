@@ -27,8 +27,8 @@ public class HospitalLogo implements Serializable {
     @Column(name = "file_size")
     private Long fileSize;
 
-    @Column(name = "is_default_image")
-    private Character isDefaultImage;
+    @Column(name = "status")
+    private Character status;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hospital_id")

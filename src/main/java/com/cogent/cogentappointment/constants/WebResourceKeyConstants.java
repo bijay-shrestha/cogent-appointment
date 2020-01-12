@@ -10,7 +10,6 @@ public class WebResourceKeyConstants {
     public static final String ACTIVE = "/active";
 
 
-
     //B
 
     //C
@@ -34,6 +33,9 @@ public class WebResourceKeyConstants {
     //G
 
     //H
+    public interface HospitalConstants {
+        String BASE_HOSPITAL = "/hospital";
+    }
 
     //I
     public static final String ID_PATH_VARIABLE_BASE = "/{id}";
@@ -76,7 +78,6 @@ public class WebResourceKeyConstants {
         String BASE_SPECIALIZATION = "/specialization";
         String DOCTOR_ID_PATH_VARIABLE_BASE = "/{doctorId}";
     }
-
 
 
     //T

@@ -26,7 +26,7 @@ import static com.cogent.cogentappointment.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.log.constants.QualificationLog.QUALIFICATION;
 import static com.cogent.cogentappointment.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
-import static com.cogent.cogentappointment.utils.commons.QualificationUtils.*;
+import static com.cogent.cogentappointment.utils.QualificationUtils.*;
 
 /**
  * @author smriti on 11/11/2019

@@ -28,6 +28,12 @@ public class ErrorMessageConstants {
     //E
 
     //F
+    public interface FileServiceMessages {
+        String FILES_EMPTY_MESSAGE = "Failed to store empty file";
+        String INVALID_FILE_TYPE_MESSAGE = "Could not read file :";
+        String INVALID_FILE_SEQUENCE = "Sorry! Filename contains invalid path sequence";
+        String FILE_EXCEPTION = "Unable to store file. Please try again later";
+    }
 
 
     //G

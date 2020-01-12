@@ -16,7 +16,7 @@ public class SpecializationUtils {
 
         Specialization specialization = new Specialization();
         specialization.setName(toUpperCase(requestDTO.getName()));
-        specialization.setCode(String.valueOf(generateRandomNumber(3)));
+        specialization.setCode(generateRandomNumber(3));
         specialization.setStatus(requestDTO.getStatus());
         return specialization;
     }

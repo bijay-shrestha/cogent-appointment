@@ -28,7 +28,15 @@ public class SwaggerConstants {
     //G
 
     //H
-
+    public interface HospitalConstant {
+        String BASE_API_VALUE = "This is Hospital setup Controller";
+        String SAVE_OPERATION = "Save new hospital";
+        String UPDATE_OPERATION = "Update existing hospital";
+        String DELETE_OPERATION = "Set hospital status as 'D' when deleted with remarks";
+        String SEARCH_OPERATION = "Search hospital according to given request parameters";
+        String FETCH_BY_ID = "Fetch hospital entity by its id";
+        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal hospital details (id and name) for dropdown";
+    }
 
     //I
 

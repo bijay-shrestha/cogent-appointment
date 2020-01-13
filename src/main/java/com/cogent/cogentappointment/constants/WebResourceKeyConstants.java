@@ -19,10 +19,14 @@ public class WebResourceKeyConstants {
 
 
     //D
-
     public static final String DROPDOWN = "/dropdown";
-
     public static final String DETAILS = "/details";
+
+    public interface DoctorConstants {
+        String BASE_DOCTOR = "/doctor";
+        String UPDATE_DETAILS = "/updateDetails";
+        String DOCTOR_ID_PATH_VARIABLE_BASE = "/{doctorId}";
+    }
 
 
     //E
@@ -77,7 +81,7 @@ public class WebResourceKeyConstants {
 
     public interface SpecializationConstants {
         String BASE_SPECIALIZATION = "/specialization";
-        String DOCTOR_ID_PATH_VARIABLE_BASE = "/{doctorId}";
+        String SPECIALIZATION_ID_PATH_VARIABLE_BASE = "/{specializationId}";
     }
 
 

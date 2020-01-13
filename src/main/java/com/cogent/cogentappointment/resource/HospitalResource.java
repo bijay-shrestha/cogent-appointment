@@ -77,7 +77,7 @@ public class HospitalResource {
     @GetMapping(ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_BY_ID)
     public ResponseEntity<?> fetchHospital(@PathVariable("id") Long id) {
-        return ok(hospitalService.fetchHospital(id));
+        return ok(hospitalService.fetchActiveHospital(id));
     }
 
     @GetMapping(DROPDOWN + ACTIVE)

@@ -17,6 +17,16 @@ public class SwaggerConstants {
 
 
     //D
+    public interface DoctorConstant {
+        String BASE_API_VALUE = "This is Doctor Controller";
+        String SAVE_OPERATION = "Save new Doctor like Dr.Sanjeeev Upreti, Dr. Daniel Shrestha, etc";
+        String UPDATE_OPERATION = "Update existing Doctor";
+        String DELETE_OPERATION = "Set Doctor status as 'D' when deleted";
+        String SEARCH_OPERATION = "Search Doctor according to given request parameters";
+        String DETAILS_OPERATION = "Fetch Doctor details by its id";
+        String DETAILS_FOR_UPDATE_MODAL_OPERATION = "Fetch Doctor details for update modal by its id";
+        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch Doctor details (id and name) for dropdown";
+    }
 
 
     //E

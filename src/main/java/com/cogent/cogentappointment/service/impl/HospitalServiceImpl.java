@@ -25,6 +25,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
+import javax.validation.Validator;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -33,6 +35,7 @@ import java.util.stream.Collectors;
 import static com.cogent.cogentappointment.constants.ErrorMessageConstants.NAME_DUPLICATION_MESSAGE;
 import static com.cogent.cogentappointment.constants.StatusConstants.INACTIVE;
 import static com.cogent.cogentappointment.constants.StringConstant.FORWARD_SLASH;
+import static com.cogent.cogentappointment.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.log.constants.HospitalLog.HOSPITAL;
 import static com.cogent.cogentappointment.utils.HospitalUtils.*;
@@ -55,22 +58,28 @@ public class HospitalServiceImpl implements HospitalService {
 
     private final FileService fileService;
 
+    private final Validator validator;
+
     public HospitalServiceImpl(HospitalRepository hospitalRepository,
                                HospitalContactNumberRepository hospitalContactNumberRepository,
                                HospitalLogoRepository hospitalLogoRepository,
-                               FileService fileService) {
+                               FileService fileService,
+                               Validator validator) {
         this.hospitalRepository = hospitalRepository;
         this.hospitalContactNumberRepository = hospitalContactNumberRepository;
         this.hospitalLogoRepository = hospitalLogoRepository;
         this.fileService = fileService;
+        this.validator = validator;
     }
 
     @Override
-    public void save(HospitalRequestDTO requestDTO, MultipartFile multipartFile) {
+    public void save(@Valid HospitalRequestDTO requestDTO, MultipartFile multipartFile) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, HOSPITAL);
+
+        validateConstraintViolation(validator.validate(requestDTO));
 
         validateName(hospitalRepository.fetchHospitalByName(requestDTO.getName()),
                 requestDTO.getName());
@@ -133,7 +142,7 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     @Override
-    public Hospital fetchHospital(Long id) {
+    public Hospital fetchActiveHospital(Long id) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, HOSPITAL);

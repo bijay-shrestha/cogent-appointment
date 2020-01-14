@@ -11,7 +11,7 @@ import com.cogent.cogentappointment.model.Hospital;
 import com.cogent.cogentappointment.model.HospitalContactNumber;
 import com.cogent.cogentappointment.model.HospitalLogo;
 import com.cogent.cogentappointment.utils.commons.MapperUtility;
-import com.cogent.cogentappointment.utils.commons.RandomNumberGenerator;
+import com.cogent.cogentappointment.utils.commons.NumberFormatterUtils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,7 +31,7 @@ public class HospitalUtils {
     public static Hospital convertDTOToHospital(HospitalRequestDTO hospitalRequestDTO) {
         Hospital hospital = MapperUtility.map(hospitalRequestDTO, Hospital.class);
         hospital.setName(toUpperCase(hospital.getName()));
-        hospital.setCode(RandomNumberGenerator.generateRandomNumber(3));
+        hospital.setCode(NumberFormatterUtils.generateRandomNumber(3));
         return hospital;
     }
 

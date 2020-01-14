@@ -161,7 +161,7 @@ public class SpecializationServiceImpl implements SpecializationService {
     private void validateName(Long specializationCount, String name) {
         if (specializationCount.intValue() > 0)
             throw new DataDuplicationException(
-                    String.format(NAME_DUPLICATION_MESSAGE, Specialization.class, name));
+                    String.format(NAME_DUPLICATION_MESSAGE, Specialization.class.getSimpleName(), name));
     }
 
     private Specialization save(Specialization specialization) {

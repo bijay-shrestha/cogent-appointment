@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.exception;
 import lombok.Getter;
 
 import static com.cogent.cogentappointment.exception.utils.ExceptionUtils.getLocalDateTime;
+import static com.cogent.cogentappointment.exception.utils.ExceptionUtils.toMap;
 import static org.springframework.http.HttpStatus.CONFLICT;
 
 /**
@@ -15,6 +16,11 @@ public class DataDuplicationException extends RuntimeException {
 
     public DataDuplicationException(String errorMessage) {
         setErrorResponse(errorMessage, errorMessage);
+    }
+
+    public DataDuplicationException(String errorMessage, String... searchParamsMap) {
+        String debugMessage = "Duplicate entries with " + toMap(String.class, String.class, searchParamsMap);
+        setErrorResponse(errorMessage, debugMessage);
     }
 
     private void setErrorResponse(String errorMessage, String debugMessage) {

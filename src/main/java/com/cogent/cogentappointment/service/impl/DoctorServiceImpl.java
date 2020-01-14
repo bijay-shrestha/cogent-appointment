@@ -7,11 +7,10 @@ import com.cogent.cogentappointment.dto.response.doctor.DoctorDetailResponseDTO;
 import com.cogent.cogentappointment.dto.response.doctor.DoctorMinimalResponseDTO;
 import com.cogent.cogentappointment.dto.response.doctor.DoctorUpdateResponseDTO;
 import com.cogent.cogentappointment.enums.Gender;
+import com.cogent.cogentappointment.exception.DataDuplicationException;
 import com.cogent.cogentappointment.exception.NoContentFoundException;
-import com.cogent.cogentappointment.model.Doctor;
-import com.cogent.cogentappointment.model.DoctorQualification;
-import com.cogent.cogentappointment.model.DoctorSpecialization;
-import com.cogent.cogentappointment.model.Hospital;
+import com.cogent.cogentappointment.model.*;
+import com.cogent.cogentappointment.repository.DoctorAppointmentChargeRepository;
 import com.cogent.cogentappointment.repository.DoctorQualificationRepository;
 import com.cogent.cogentappointment.repository.DoctorRepository;
 import com.cogent.cogentappointment.repository.DoctorSpecializationRepository;
@@ -28,6 +27,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.constants.ErrorMessageConstants.NAME_AND_MOBILE_NUMBER_DUPLICATION_MESSAGE;
 import static com.cogent.cogentappointment.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.log.constants.DoctorLog.*;
 import static com.cogent.cogentappointment.utils.DoctorUtils.*;
@@ -55,19 +55,22 @@ public class DoctorServiceImpl implements DoctorService {
 
     private final HospitalService hospitalService;
 
+    private final DoctorAppointmentChargeRepository doctorAppointmentChargeRepository;
+
     public DoctorServiceImpl(DoctorRepository doctorRepository,
                              DoctorSpecializationRepository doctorSpecializationRepository,
                              SpecializationService specializationService,
                              QualificationService qualificationService,
                              DoctorQualificationRepository doctorQualificationRepository,
-                             HospitalService hospitalService) {
+                             HospitalService hospitalService,
+                             DoctorAppointmentChargeRepository doctorAppointmentChargeRepository) {
         this.doctorRepository = doctorRepository;
         this.doctorSpecializationRepository = doctorSpecializationRepository;
         this.specializationService = specializationService;
         this.qualificationService = qualificationService;
         this.doctorQualificationRepository = doctorQualificationRepository;
-
         this.hospitalService = hospitalService;
+        this.doctorAppointmentChargeRepository = doctorAppointmentChargeRepository;
     }
 
     @Override
@@ -77,11 +80,17 @@ public class DoctorServiceImpl implements DoctorService {
 
         log.info(SAVING_PROCESS_STARTED, DOCTOR);
 
+        Long doctorCount = doctorRepository.validateDoctorDuplicity(requestDTO.getName(), requestDTO.getMobileNumber());
+
+        validateDoctor(doctorCount, requestDTO.getName(), requestDTO.getMobileNumber());
+
         Doctor doctor = parseDTOToDoctor(requestDTO,
                 fetchGender(requestDTO.getGenderCode()),
                 fetchHospitalById(requestDTO.getHospitalId()));
 
         saveDoctor(doctor);
+
+        saveDoctorAppointmentCharge(doctor, requestDTO.getAppointmentCharge());
 
         saveDoctorSpecialization(doctor.getId(), requestDTO.getSpecializationIds());
 
@@ -93,7 +102,7 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public void update( DoctorUpdateRequestDTO requestDTO) {
+    public void update(DoctorUpdateRequestDTO requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -101,11 +110,22 @@ public class DoctorServiceImpl implements DoctorService {
 
         Doctor doctor = findById(requestDTO.getUpdateDTO().getId());
 
+        Long doctorCount = doctorRepository.validateDoctorDuplicityForUpdate(
+                requestDTO.getUpdateDTO().getId(),
+                requestDTO.getUpdateDTO().getName(),
+                requestDTO.getUpdateDTO().getMobileNumber());
+
+        validateDoctor(doctorCount,
+                requestDTO.getUpdateDTO().getName(),
+                requestDTO.getUpdateDTO().getMobileNumber());
+
         convertToUpdatedDoctor(
                 requestDTO.getUpdateDTO(),
                 doctor,
                 fetchGender(requestDTO.getUpdateDTO().getGenderCode()),
                 fetchHospitalById(requestDTO.getUpdateDTO().getHospitalId()));
+
+        updateDoctorAppointmentCharge(doctor.getId(), requestDTO.getUpdateDTO().getAppointmentCharge());
 
         updateDoctorSpecialization(doctor.getId(), requestDTO.getSpecializationUpdateRequestDTOS());
 
@@ -261,6 +281,19 @@ public class DoctorServiceImpl implements DoctorService {
         log.info(SAVING_PROCESS_COMPLETED, DOCTOR_QUALIFICATION, getDifferenceBetweenTwoTime(startTime));
     }
 
+    private void saveDoctorAppointmentCharge(Doctor doctor, Double appointmentCharge) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SAVING_PROCESS_STARTED, DOCTOR_APPOINTMENT_CHARGE);
+
+        DoctorAppointmentCharge doctorAppointmentCharge = parseToDoctorAppointmentCharge(doctor, appointmentCharge);
+
+        doctorAppointmentChargeRepository.save(doctorAppointmentCharge);
+
+        log.info(SAVING_PROCESS_COMPLETED, DOCTOR_APPOINTMENT_CHARGE, getDifferenceBetweenTwoTime(startTime));
+    }
+
     private void updateDoctorSpecialization(Long doctorId,
                                             List<DoctorSpecializationUpdateDTO> specializationUpdateRequestDTO) {
 
@@ -300,6 +333,30 @@ public class DoctorServiceImpl implements DoctorService {
         log.info(UPDATING_PROCESS_COMPLETED, DOCTOR_QUALIFICATION, getDifferenceBetweenTwoTime(startTime));
     }
 
+    private void updateDoctorAppointmentCharge(Long doctorId,
+                                               Double appointmentCharge) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(UPDATING_PROCESS_STARTED, DOCTOR_APPOINTMENT_CHARGE);
+
+        DoctorAppointmentCharge doctorAppointmentCharge =
+                doctorAppointmentChargeRepository.findByDoctorId(doctorId)
+                        .orElseThrow(() -> new NoContentFoundException(DoctorAppointmentCharge.class));
+
+        updateAppointmentCharge(doctorAppointmentCharge, appointmentCharge);
+
+        log.info(UPDATING_PROCESS_COMPLETED, DOCTOR_APPOINTMENT_CHARGE, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    private void validateDoctor(Long doctorCount, String name, String mobileNumber) {
+
+        if (doctorCount.intValue() > 0)
+            throw new DataDuplicationException(
+                    String.format(NAME_AND_MOBILE_NUMBER_DUPLICATION_MESSAGE, Doctor.class.getSimpleName(), name, mobileNumber),
+                    "name", name, "mobileNumber", mobileNumber
+            );
+    }
+
     private void saveDoctor(Doctor doctor) {
         doctorRepository.save(doctor);
     }
@@ -307,7 +364,6 @@ public class DoctorServiceImpl implements DoctorService {
     private void saveDoctorSpecialization(List<DoctorSpecialization> doctorSpecialization) {
         doctorSpecializationRepository.saveAll(doctorSpecialization);
     }
-
 
     private void saveDoctorQualification(List<DoctorQualification> doctorQualifications) {
         doctorQualificationRepository.saveAll(doctorQualifications);

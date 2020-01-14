@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.constants.QueryConstants.ID;
+import static com.cogent.cogentappointment.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.query.DoctorQuery.*;
 import static com.cogent.cogentappointment.utils.DoctorUtils.parseToDoctorUpdateResponseDTO;
 import static com.cogent.cogentappointment.utils.commons.PageableUtils.addPagination;
@@ -35,6 +35,25 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    @Override
+    public Long validateDoctorDuplicity(String name, String mobileNumber) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DOCTOR_DUPLICITY)
+                .setParameter(NAME, name)
+                .setParameter(MOBILE_NUMBER, mobileNumber);
+
+        return (Long) query.getSingleResult();
+    }
+
+    @Override
+    public Long validateDoctorDuplicityForUpdate(Long id, String name, String mobileNumber) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DOCTOR_DUPLICITY_FOR_UPDATE)
+                .setParameter(ID, id)
+                .setParameter(NAME, name)
+                .setParameter(MOBILE_NUMBER, mobileNumber);
+
+        return (Long) query.getSingleResult();
+    }
 
     @Override
     public List<DoctorMinimalResponseDTO> search(DoctorSearchRequestDTO searchRequestDTO,

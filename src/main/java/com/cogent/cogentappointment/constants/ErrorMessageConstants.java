@@ -7,7 +7,6 @@ public class ErrorMessageConstants {
 
     //A
 
-
     public interface AppointmentServiceMessage {
         String APPOINTMENT_EXISTS_MESSAGE = "Cannot update doctor duty roster because appointment" +
                 " exists within the selected date range";
@@ -20,10 +19,6 @@ public class ErrorMessageConstants {
     public final static String CODE_DUPLICATION_MESSAGE = " code already exists with  : ";
 
     //D
-    public interface DoctorDutyRosterServiceMessages {
-        String DUPLICATION_MESSAGE = "Doctor Duty Roster already exists for selected doctor.";
-        String BAD_REQUEST_MESSAGE = "Doctor Duty Roster Override doesn't lie within the duty roster date range.";
-    }
 
     //E
 
@@ -54,7 +49,9 @@ public class ErrorMessageConstants {
     //M
 
     //N
-    public static final String NAME_DUPLICATION_MESSAGE = "%s already exists with name '%s': ";
+    public static final String NAME_DUPLICATION_MESSAGE = "%s already exists with name '%s'";
+    public static final String NAME_AND_MOBILE_NUMBER_DUPLICATION_MESSAGE = "%s already exists with name '%s'" +
+            "and mobile number '%s': ";
 
 
     //O

@@ -23,12 +23,10 @@ public class DoctorAppointmentCharge implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "status")
-    private Character status;
-
     @Column(name = "appointment_charge")
     private Double appointmentCharge;
 
-    @Column(name = "remarks")
-    private String remarks;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "doctorId")
+    private Doctor doctorId;
 }

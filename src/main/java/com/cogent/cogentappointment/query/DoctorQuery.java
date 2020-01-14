@@ -11,6 +11,19 @@ import java.util.function.Function;
  */
 public class DoctorQuery {
 
+    public static final String QUERY_TO_VALIDATE_DOCTOR_DUPLICITY =
+            "SELECT COUNT(d.id) FROM Doctor d" +
+                    " WHERE d.name =:name" +
+                    " AND d.mobileNumber=:mobileNumber" +
+                    " AND d.status != 'D'";
+
+    public static final String QUERY_TO_VALIDATE_DOCTOR_DUPLICITY_FOR_UPDATE =
+            "SELECT COUNT(d.id) FROM Doctor d" +
+                    " WHERE d.name =:name" +
+                    " AND d.mobileNumber=:mobileNumber" +
+                    " AND d.id!=:id" +
+                    " AND d.status != 'D'";
+
     /*SEARCH*/
     public static String QUERY_TO_SEARCH_DOCTOR(DoctorSearchRequestDTO searchRequestDTO) {
         return " SELECT" +
@@ -29,7 +42,7 @@ public class DoctorQuery {
                     " d.name as doctorName," +                                  //[1]
                     " d.mobile_number as mobileNumber," +                      //[2]
                     " d.status as status," +                                   //[3]
-                    " d.code as code";                                         //[6]
+                    " d.code as code";                                         //[4]
 
     private static Function<DoctorSearchRequestDTO, String> QUERY_TO_SEARCH_DOCTOR_SPECIALIZATION =
             (searchRequestDTO) -> {
@@ -94,20 +107,22 @@ public class DoctorQuery {
                     " GROUP BY dq.doctor_id";
 
     private static final String SELECT_CLAUSE_TO_FETCH_DOCTOR_DETAILS =
-            " d.email as email," +
-                    " d.nmc_number as nmcNumber," +
-                    " d.remarks as remarks," +
-                    " d.gender as gender," +
-                    " h.name as hospitalName";
+            " d.email as email," +                                                  //[5]
+                    " d.nmc_number as nmcNumber," +                                 //[6]
+                    " d.remarks as remarks," +                                      //[7]
+                    " d.gender as gender," +                                        //[8]
+                    " h.name as hospitalName," +                                    //[9]
+                    " dac.appointment_charge as appointmentCharge";                 //[10]
 
     public static final String QUERY_TO_FETCH_DOCTOR_DETAILS =
             " SELECT" +
                     SELECT_CLAUSE_TO_FETCH_MINIMAL_DOCTOR + "," +
                     SELECT_CLAUSE_TO_FETCH_DOCTOR_DETAILS + "," +
-                    " tbl1.specialization_name as specializationName," +
-                    " tbl2.qualification_name as qualificationName" +
+                    " tbl1.specialization_name as specializationName," +                //[11]
+                    " tbl2.qualification_name as qualificationName" +                   //[12]
                     " FROM doctor d" +
                     " LEFT JOIN hospital h ON h.id = d.hospital_id" +
+                    " LEFT JOIN doctor_appointment_charge dac ON dac.doctor_id= d.id" +
                     " RIGHT JOIN" +
                     " (" +
                     QUERY_TO_SEARCH_DOCTOR_SPECIALIZATION.apply(null) +
@@ -152,15 +167,16 @@ public class DoctorQuery {
             " SELECT" +
                     SELECT_CLAUSE_TO_FETCH_MINIMAL_DOCTOR + "," +
                     SELECT_CLAUSE_TO_FETCH_DOCTOR_DETAILS + "," +
-                    " h.id as hospitalId," +
-                    " tbl1.doctor_specialization_id as doctorSpecializationId," +
-                    " tbl1.specialization_id as specializationId," +
-                    " tbl1.specialization_name as specializationName," +
-                    " tbl2.doctor_qualification_id as doctorQualificationId," +
-                    " tbl2.qualification_id as qualificationId," +
-                    " tbl2.qualification_name as qualificationName" +
+                    " h.id as hospitalId," +                                                //[11]
+                    " tbl1.doctor_specialization_id as doctorSpecializationId," +           //[12]
+                    " tbl1.specialization_id as specializationId," +                        //[13]
+                    " tbl1.specialization_name as specializationName," +                    //[14]
+                    " tbl2.doctor_qualification_id as doctorQualificationId," +             //[15]
+                    " tbl2.qualification_id as qualificationId," +                          //[16]
+                    " tbl2.qualification_name as qualificationName" +                       //[17]
                     " FROM doctor d" +
                     " LEFT JOIN hospital h ON h.id = d.hospital_id" +
+                    " LEFT JOIN doctor_appointment_charge dac ON dac.doctor_id= d.id" +
                     " RIGHT JOIN" +
                     " (" +
                     QUERY_TO_FETCH_DOCTOR_SPECIALIZATION_FOR_UPDATE +

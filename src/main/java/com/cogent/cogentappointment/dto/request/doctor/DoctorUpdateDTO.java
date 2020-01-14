@@ -55,4 +55,6 @@ public class DoctorUpdateDTO implements Serializable {
     @NotEmpty
     private String remarks;
 
+    @NotNull
+    private Double appointmentCharge;
 }

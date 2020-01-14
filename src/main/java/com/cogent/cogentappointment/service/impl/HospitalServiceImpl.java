@@ -185,7 +185,7 @@ public class HospitalServiceImpl implements HospitalService {
 
     private void validateName(Long hospital, String name) {
         if (hospital.intValue() > 0)
-            throw new DataDuplicationException(String.format(NAME_DUPLICATION_MESSAGE, Hospital.class, name));
+            throw new DataDuplicationException(String.format(NAME_DUPLICATION_MESSAGE, Hospital.class.getSimpleName(), name));
     }
 
     private Hospital save(Hospital hospital) {

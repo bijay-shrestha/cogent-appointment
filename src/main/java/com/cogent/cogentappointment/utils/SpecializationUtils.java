@@ -5,7 +5,7 @@ import com.cogent.cogentappointment.dto.request.specialization.SpecializationReq
 import com.cogent.cogentappointment.dto.request.specialization.SpecializationUpdateRequestDTO;
 import com.cogent.cogentappointment.model.Specialization;
 
-import static com.cogent.cogentappointment.utils.commons.RandomNumberGenerator.generateRandomNumber;
+import static com.cogent.cogentappointment.utils.commons.NumberFormatterUtils.generateRandomNumber;
 import static com.cogent.cogentappointment.utils.commons.StringUtil.toUpperCase;
 
 /**

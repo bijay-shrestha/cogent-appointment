@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.repository.custom;
 
-import com.cogent.cogentappointment.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.dto.request.doctor.DoctorSearchRequestDTO;
 import com.cogent.cogentappointment.dto.response.doctor.DoctorDetailResponseDTO;
 import com.cogent.cogentappointment.dto.response.doctor.DoctorDropdownDTO;

@@ -39,6 +39,8 @@ public class DoctorUpdateResponseDTO implements Serializable {
 
     private Double appointmentCharge;
 
+    private String fileUri;
+
     private List<DoctorSpecializationResponseDTO> doctorSpecializationResponseDTOS;
 
     private List<DoctorQualificationResponseDTO> doctorQualificationResponseDTOS;

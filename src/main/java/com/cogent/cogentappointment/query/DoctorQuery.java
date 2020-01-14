@@ -90,12 +90,12 @@ public class DoctorQuery {
             " SELECT" +
                     " d.id as value," +                                     //[0]
                     " d.name as label," +                                   //[1]
-                    " da.fileUri as fileUri" +                              //[2]
+                    " da.fileUri as fileUri," +                             //[2]
+                    " da.status as status" +                                //[3]
                     " FROM" +
                     " Doctor d" +
                     " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId" +
-                    " WHERE d.status ='Y'" +
-                    " AND da.status = 'Y'";
+                    " WHERE d.status ='Y'";
 
     private static final String QUERY_TO_FETCH_DOCTOR_QUALIFICATION_FOR_DETAIL =
             " SELECT" +
@@ -117,12 +117,20 @@ public class DoctorQuery {
                     " h.name as hospitalName," +                                    //[9]
                     " dac.appointment_charge as appointmentCharge";                 //[10]
 
+    private static String QUERY_TO_FETCH_DOCTOR_AVATAR =
+            " SELECT" +
+                    " da.doctor_id as doctorId," +
+                    " da.file_uri" +
+                    " FROM doctor_avatar da" +
+                    " WHERE da.status = 'Y'";
+
     public static final String QUERY_TO_FETCH_DOCTOR_DETAILS =
             " SELECT" +
                     SELECT_CLAUSE_TO_FETCH_MINIMAL_DOCTOR + "," +
                     SELECT_CLAUSE_TO_FETCH_DOCTOR_DETAILS + "," +
                     " tbl1.specialization_name as specializationName," +                //[11]
-                    " tbl2.qualification_name as qualificationName" +                   //[12]
+                    " tbl2.qualification_name as qualificationName," +                   //[12]
+                    " tbl3.file_uri as fileUri" +                                       //[13]
                     " FROM doctor d" +
                     " LEFT JOIN hospital h ON h.id = d.hospital_id" +
                     " LEFT JOIN doctor_appointment_charge dac ON dac.doctor_id= d.id" +
@@ -134,6 +142,10 @@ public class DoctorQuery {
                     " (" +
                     QUERY_TO_FETCH_DOCTOR_QUALIFICATION_FOR_DETAIL +
                     " )tbl2 ON tbl2.doctor_id = d.id" +
+                    " LEFT JOIN" +
+                    " (" +
+                    QUERY_TO_FETCH_DOCTOR_AVATAR +
+                    " )tbl3 ON tbl3.doctorId= d.id" +
                     " WHERE d.status != 'D'" +
                     " AND d.id = :id";
 
@@ -176,7 +188,8 @@ public class DoctorQuery {
                     " tbl1.specialization_name as specializationName," +                    //[14]
                     " tbl2.doctor_qualification_id as doctorQualificationId," +             //[15]
                     " tbl2.qualification_id as qualificationId," +                          //[16]
-                    " tbl2.qualification_name as qualificationName" +                       //[17]
+                    " tbl2.qualification_name as qualificationName," +                      //[17]
+                    " tbl3.file_uri as fileUri" +                                            //[18]
                     " FROM doctor d" +
                     " LEFT JOIN hospital h ON h.id = d.hospital_id" +
                     " LEFT JOIN doctor_appointment_charge dac ON dac.doctor_id= d.id" +
@@ -188,6 +201,10 @@ public class DoctorQuery {
                     " (" +
                     QUERY_TO_FETCH_DOCTOR_QUALIFICATION_FOR_UPDATE +
                     " )tbl2 ON tbl2.doctor_id = d.id" +
+                    " LEFT JOIN" +
+                    " (" +
+                    QUERY_TO_FETCH_DOCTOR_AVATAR +
+                    " )tbl3 ON tbl3.doctorId= d.id" +
                     " WHERE d.status != 'D'" +
                     " AND d.id = :id";
 
@@ -195,13 +212,13 @@ public class DoctorQuery {
             "SELECT" +
                     " d.id as value," +                                      //[0]
                     " d.name as label," +                                    //[1]
-                    " da.fileUri as fileUri" +                               //[2]
+                    " da.fileUri as fileUri," +                               //[2]
+                    " da.status as status" +                                //[3]
                     " FROM DoctorSpecialization cs" +
                     " LEFT JOIN Doctor d ON d.id = cs.doctorId" +
                     " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId" +
                     " WHERE cs.specializationId = :id" +
                     " AND cs.status = 'Y'" +
-                    " AND da.status ='Y'"+
                     " AND d.status = 'Y'";
 
 }

@@ -1,8 +1,8 @@
 package com.cogent.cogentappointment.repository.custom.impl;
 
-import com.cogent.cogentappointment.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.dto.request.doctor.DoctorSearchRequestDTO;
 import com.cogent.cogentappointment.dto.response.doctor.DoctorDetailResponseDTO;
+import com.cogent.cogentappointment.dto.response.doctor.DoctorDropdownDTO;
 import com.cogent.cogentappointment.dto.response.doctor.DoctorMinimalResponseDTO;
 import com.cogent.cogentappointment.dto.response.doctor.DoctorUpdateResponseDTO;
 import com.cogent.cogentappointment.exception.NoContentFoundException;
@@ -76,10 +76,10 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchDoctorForDropdown() {
+    public List<DoctorDropdownDTO> fetchDoctorForDropdown() {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_FOR_DROPDOWN);
 
-        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
+        List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
         if (results.isEmpty()) throw DOCTOR_NOT_FOUND.get();
         else return results;
@@ -97,11 +97,11 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchDoctorBySpecializationId(Long specializationId) {
+    public List<DoctorDropdownDTO> fetchDoctorBySpecializationId(Long specializationId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_BY_SPECIALIZATION_ID)
                 .setParameter(ID, specializationId);
 
-        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
+        List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
         if (results.isEmpty()) throw DOCTOR_NOT_FOUND.get();
         else return results;

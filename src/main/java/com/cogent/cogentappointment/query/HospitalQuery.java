@@ -6,7 +6,7 @@ import org.springframework.util.ObjectUtils;
 import java.util.function.Function;
 
 /**
- * @author Rupak
+ * @author smriti ON 12/01/2020
  */
 public class HospitalQuery {
 

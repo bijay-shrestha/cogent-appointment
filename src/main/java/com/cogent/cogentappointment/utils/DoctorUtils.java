@@ -8,6 +8,7 @@ import com.cogent.cogentappointment.dto.request.doctor.DoctorUpdateDTO;
 import com.cogent.cogentappointment.dto.response.doctor.DoctorQualificationResponseDTO;
 import com.cogent.cogentappointment.dto.response.doctor.DoctorSpecializationResponseDTO;
 import com.cogent.cogentappointment.dto.response.doctor.DoctorUpdateResponseDTO;
+import com.cogent.cogentappointment.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.enums.Gender;
 import com.cogent.cogentappointment.model.*;
 import com.cogent.cogentappointment.utils.commons.NumberFormatterUtils;
@@ -82,6 +83,23 @@ public class DoctorUtils {
         return doctorAppointmentCharge;
     }
 
+    public static DoctorAvatar convertFileToDoctorAvatar(FileUploadResponseDTO uploadResponseDTO,
+                                                         Doctor doctor) {
+
+        DoctorAvatar doctorAvatar = new DoctorAvatar();
+        setAvatarFileProperties(uploadResponseDTO, doctorAvatar);
+        doctorAvatar.setDoctorId(doctor);
+        return doctorAvatar;
+    }
+
+    public static void setAvatarFileProperties(FileUploadResponseDTO uploadResponseDTO,
+                                               DoctorAvatar doctorAvatar) {
+        doctorAvatar.setFileSize(uploadResponseDTO.getFileSize());
+        doctorAvatar.setFileUri(uploadResponseDTO.getFileUri());
+        doctorAvatar.setFileType(uploadResponseDTO.getFileType());
+        doctorAvatar.setStatus(ACTIVE);
+    }
+
     public static void updateAppointmentCharge(DoctorAppointmentCharge doctorAppointmentCharge,
                                                Double appointmentCharge) {
         doctorAppointmentCharge.setAppointmentCharge(formatDoubleTo2DecimalPlaces(appointmentCharge));
@@ -142,7 +160,7 @@ public class DoctorUtils {
         final int REMARKS_INDEX = 7;
         final int GENDER_INDEX = 8;
         final int HOSPITAL_NAME_INDEX = 9;
-        final int APPOINTMENT_CHARGE_INDEX =10;
+        final int APPOINTMENT_CHARGE_INDEX = 10;
         final int HOSPITAL_ID_INDEX = 11;
 
         return DoctorUpdateResponseDTO.builder()

@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.repository.custom;
 import com.cogent.cogentappointment.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.dto.request.doctor.DoctorSearchRequestDTO;
 import com.cogent.cogentappointment.dto.response.doctor.DoctorDetailResponseDTO;
+import com.cogent.cogentappointment.dto.response.doctor.DoctorDropdownDTO;
 import com.cogent.cogentappointment.dto.response.doctor.DoctorMinimalResponseDTO;
 import com.cogent.cogentappointment.dto.response.doctor.DoctorUpdateResponseDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -24,11 +25,11 @@ public interface DoctorRepositoryCustom {
     
     List<DoctorMinimalResponseDTO> search(DoctorSearchRequestDTO searchRequestDTO, Pageable pageable);
 
-    List<DropDownResponseDTO> fetchDoctorForDropdown();
+    List<DoctorDropdownDTO> fetchDoctorForDropdown();
 
     DoctorDetailResponseDTO fetchDetailsById(Long id);
 
-    List<DropDownResponseDTO> fetchDoctorBySpecializationId(Long specializationId);
+    List<DoctorDropdownDTO> fetchDoctorBySpecializationId(Long specializationId);
 
     DoctorUpdateResponseDTO fetchDetailsForUpdate(Long id);
 }

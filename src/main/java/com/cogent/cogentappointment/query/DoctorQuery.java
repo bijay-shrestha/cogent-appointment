@@ -88,11 +88,14 @@ public class DoctorQuery {
     /*DROPDOWN*/
     public static final String QUERY_TO_FETCH_DOCTOR_FOR_DROPDOWN =
             " SELECT" +
-                    " d.id as value," +                                      //[0]
-                    " d.name as label" +                                     //[1]
+                    " d.id as value," +                                     //[0]
+                    " d.name as label," +                                   //[1]
+                    " da.fileUri as fileUri" +                              //[2]
                     " FROM" +
                     " Doctor d" +
-                    " WHERE d.status ='Y'";
+                    " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId" +
+                    " WHERE d.status ='Y'" +
+                    " AND da.status = 'Y'";
 
     private static final String QUERY_TO_FETCH_DOCTOR_QUALIFICATION_FOR_DETAIL =
             " SELECT" +
@@ -191,11 +194,14 @@ public class DoctorQuery {
     public static String QUERY_TO_FETCH_DOCTOR_BY_SPECIALIZATION_ID =
             "SELECT" +
                     " d.id as value," +                                      //[0]
-                    " d.name as label" +                                     //[1]
+                    " d.name as label," +                                    //[1]
+                    " da.fileUri as fileUri" +                               //[2]
                     " FROM DoctorSpecialization cs" +
                     " LEFT JOIN Doctor d ON d.id = cs.doctorId" +
+                    " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId" +
                     " WHERE cs.specializationId = :id" +
                     " AND cs.status = 'Y'" +
+                    " AND da.status ='Y'"+
                     " AND d.status = 'Y'";
 
 }

@@ -11,15 +11,19 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 
 import static com.cogent.cogentappointment.constants.SwaggerConstants.DoctorConstant.*;
 import static com.cogent.cogentappointment.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.constants.WebResourceKeyConstants.DoctorConstants.BASE_DOCTOR;
 import static com.cogent.cogentappointment.constants.WebResourceKeyConstants.DoctorConstants.UPDATE_DETAILS;
 import static com.cogent.cogentappointment.constants.WebResourceKeyConstants.SpecializationConstants.SPECIALIZATION_ID_PATH_VARIABLE_BASE;
+import static com.cogent.cogentappointment.utils.commons.ObjectMapperUtils.map;
 import static java.net.URI.create;
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -36,17 +40,21 @@ public class DoctorResource {
         this.doctorService = doctorService;
     }
 
-    @PostMapping
+    @PostMapping(consumes = MULTIPART_FORM_DATA_VALUE)
     @ApiOperation(SAVE_OPERATION)
-    public ResponseEntity<?> save(@Valid @RequestBody DoctorRequestDTO requestDTO) {
-        doctorService.save(requestDTO);
+    public ResponseEntity<?> save(@RequestPart(value = "avatar", required = false) MultipartFile avatar,
+                                  @RequestParam("request") String request) throws IOException {
+        DoctorRequestDTO requestDTO = map(request, DoctorRequestDTO.class);
+        doctorService.save(requestDTO, avatar);
         return created(create(API_V1 + BASE_DOCTOR)).build();
     }
 
-    @PutMapping
+    @PutMapping(consumes = MULTIPART_FORM_DATA_VALUE)
     @ApiOperation(UPDATE_OPERATION)
-    public ResponseEntity<?> update(@Valid @RequestBody DoctorUpdateRequestDTO updateRequestDTO) {
-        doctorService.update(updateRequestDTO);
+    public ResponseEntity<?> update(@RequestPart(value = "file", required = false) MultipartFile avatar,
+                                    @RequestParam("request") String request) throws IOException {
+        DoctorUpdateRequestDTO updateRequestDTO = map(request, DoctorUpdateRequestDTO.class);
+        doctorService.update(updateRequestDTO, avatar);
         return ok().build();
     }
 

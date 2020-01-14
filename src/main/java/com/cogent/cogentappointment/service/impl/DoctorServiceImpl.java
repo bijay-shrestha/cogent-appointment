@@ -1,33 +1,33 @@
 package com.cogent.cogentappointment.service.impl;
 
+import com.cogent.cogentappointment.constants.StatusConstants;
 import com.cogent.cogentappointment.dto.commons.DeleteRequestDTO;
-import com.cogent.cogentappointment.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.dto.request.doctor.*;
 import com.cogent.cogentappointment.dto.response.doctor.DoctorDetailResponseDTO;
+import com.cogent.cogentappointment.dto.response.doctor.DoctorDropdownDTO;
 import com.cogent.cogentappointment.dto.response.doctor.DoctorMinimalResponseDTO;
 import com.cogent.cogentappointment.dto.response.doctor.DoctorUpdateResponseDTO;
+import com.cogent.cogentappointment.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.enums.Gender;
 import com.cogent.cogentappointment.exception.DataDuplicationException;
 import com.cogent.cogentappointment.exception.NoContentFoundException;
 import com.cogent.cogentappointment.model.*;
-import com.cogent.cogentappointment.repository.DoctorAppointmentChargeRepository;
-import com.cogent.cogentappointment.repository.DoctorQualificationRepository;
-import com.cogent.cogentappointment.repository.DoctorRepository;
-import com.cogent.cogentappointment.repository.DoctorSpecializationRepository;
-import com.cogent.cogentappointment.service.DoctorService;
-import com.cogent.cogentappointment.service.HospitalService;
-import com.cogent.cogentappointment.service.QualificationService;
-import com.cogent.cogentappointment.service.SpecializationService;
+import com.cogent.cogentappointment.repository.*;
+import com.cogent.cogentappointment.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.constants.ErrorMessageConstants.NAME_AND_MOBILE_NUMBER_DUPLICATION_MESSAGE;
+import static com.cogent.cogentappointment.constants.StringConstant.FORWARD_SLASH;
+import static com.cogent.cogentappointment.constants.StringConstant.SPACE;
 import static com.cogent.cogentappointment.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.log.constants.DoctorLog.*;
 import static com.cogent.cogentappointment.utils.DoctorUtils.*;
@@ -57,13 +57,19 @@ public class DoctorServiceImpl implements DoctorService {
 
     private final DoctorAppointmentChargeRepository doctorAppointmentChargeRepository;
 
+    private final FileService fileService;
+
+    private final DoctorAvatarRepository doctorAvatarRepository;
+
     public DoctorServiceImpl(DoctorRepository doctorRepository,
                              DoctorSpecializationRepository doctorSpecializationRepository,
                              SpecializationService specializationService,
                              QualificationService qualificationService,
                              DoctorQualificationRepository doctorQualificationRepository,
                              HospitalService hospitalService,
-                             DoctorAppointmentChargeRepository doctorAppointmentChargeRepository) {
+                             DoctorAppointmentChargeRepository doctorAppointmentChargeRepository,
+                             FileService fileService,
+                             DoctorAvatarRepository doctorAvatarRepository) {
         this.doctorRepository = doctorRepository;
         this.doctorSpecializationRepository = doctorSpecializationRepository;
         this.specializationService = specializationService;
@@ -71,10 +77,12 @@ public class DoctorServiceImpl implements DoctorService {
         this.doctorQualificationRepository = doctorQualificationRepository;
         this.hospitalService = hospitalService;
         this.doctorAppointmentChargeRepository = doctorAppointmentChargeRepository;
+        this.fileService = fileService;
+        this.doctorAvatarRepository = doctorAvatarRepository;
     }
 
     @Override
-    public String save(DoctorRequestDTO requestDTO) {
+    public String save(DoctorRequestDTO requestDTO, MultipartFile avatar) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -96,13 +104,15 @@ public class DoctorServiceImpl implements DoctorService {
 
         saveDoctorQualifications(doctor.getId(), requestDTO.getQualificationIds());
 
+        saveDoctorAvatar(doctor, avatar);
+
         log.info(SAVING_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 
         return doctor.getCode();
     }
 
     @Override
-    public void update(DoctorUpdateRequestDTO requestDTO) {
+    public void update(DoctorUpdateRequestDTO requestDTO, MultipartFile avatar) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -130,6 +140,8 @@ public class DoctorServiceImpl implements DoctorService {
         updateDoctorSpecialization(doctor.getId(), requestDTO.getSpecializationUpdateRequestDTOS());
 
         updateDoctorQualification(doctor.getId(), requestDTO.getDoctorQualificationUpdateDTOS());
+
+        updateDoctorAvatar(doctor, avatar);
 
         log.info(UPDATING_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
     }
@@ -163,12 +175,12 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchDoctorForDropdown() {
+    public List<DoctorDropdownDTO> fetchDoctorForDropdown() {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DOCTOR);
 
-        List<DropDownResponseDTO> responseDTOS = doctorRepository.fetchDoctorForDropdown();
+        List<DoctorDropdownDTO> responseDTOS = doctorRepository.fetchDoctorForDropdown();
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 
@@ -217,12 +229,12 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchDoctorBySpecializationId(Long specializationId) {
+    public List<DoctorDropdownDTO> fetchDoctorBySpecializationId(Long specializationId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DOCTOR);
 
-        List<DropDownResponseDTO> responseDTOS =
+        List<DoctorDropdownDTO> responseDTOS =
                 doctorRepository.fetchDoctorBySpecializationId(specializationId);
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
@@ -279,6 +291,26 @@ public class DoctorServiceImpl implements DoctorService {
         saveDoctorQualification(doctorQualifications);
 
         log.info(SAVING_PROCESS_COMPLETED, DOCTOR_QUALIFICATION, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    private void saveDoctorAvatar(Doctor doctor, MultipartFile file) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SAVING_PROCESS_STARTED, DOCTOR_AVATAR);
+
+        if (!Objects.isNull(file)) {
+            List<FileUploadResponseDTO> responseList = uploadFiles(doctor, new MultipartFile[]{file});
+            saveDoctorAvatar(convertFileToDoctorAvatar(responseList.get(0), doctor));
+        }
+
+        log.info(SAVING_PROCESS_COMPLETED, DOCTOR_AVATAR, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    private List<FileUploadResponseDTO> uploadFiles(Doctor Doctor, MultipartFile[] file) {
+        String subDirectoryLocation = Doctor.getClass().getSimpleName()
+                + FORWARD_SLASH + Doctor.getName() + SPACE + Doctor.getMobileNumber();
+
+        return fileService.uploadFiles(file, subDirectoryLocation);
     }
 
     private void saveDoctorAppointmentCharge(Doctor doctor, Double appointmentCharge) {
@@ -348,6 +380,30 @@ public class DoctorServiceImpl implements DoctorService {
         log.info(UPDATING_PROCESS_COMPLETED, DOCTOR_APPOINTMENT_CHARGE, getDifferenceBetweenTwoTime(startTime));
     }
 
+    private void updateDoctorAvatar(Doctor doctor, MultipartFile file) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(UPDATING_PROCESS_STARTED, DOCTOR_AVATAR);
+
+        DoctorAvatar doctorAvatar = doctorAvatarRepository.findByDoctorId(doctor.getId());
+
+        if (Objects.isNull(doctorAvatar)) saveDoctorAvatar(doctor, file);
+        else updateDoctorAvatar(doctor, doctorAvatar, file);
+
+        log.info(UPDATING_PROCESS_COMPLETED, DOCTOR_AVATAR, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    private void updateDoctorAvatar(Doctor doctor,
+                                    DoctorAvatar doctorAvatar,
+                                    MultipartFile files) {
+        if (!Objects.isNull(files)) {
+            List<FileUploadResponseDTO> responseList = uploadFiles(doctor, new MultipartFile[]{files});
+            setAvatarFileProperties(responseList.get(0), doctorAvatar);
+        } else doctorAvatar.setStatus(StatusConstants.INACTIVE);
+
+        saveDoctorAvatar(doctorAvatar);
+    }
+
     private void validateDoctor(Long doctorCount, String name, String mobileNumber) {
 
         if (doctorCount.intValue() > 0)
@@ -367,6 +423,10 @@ public class DoctorServiceImpl implements DoctorService {
 
     private void saveDoctorQualification(List<DoctorQualification> doctorQualifications) {
         doctorQualificationRepository.saveAll(doctorQualifications);
+    }
+
+    private void saveDoctorAvatar(DoctorAvatar doctorAvatar) {
+        doctorAvatarRepository.save(doctorAvatar);
     }
 
     public Doctor findById(Long doctorId) {

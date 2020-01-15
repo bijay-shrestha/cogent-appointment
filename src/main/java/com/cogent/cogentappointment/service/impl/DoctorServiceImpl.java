@@ -33,7 +33,7 @@ import static com.cogent.cogentappointment.log.constants.DoctorLog.*;
 import static com.cogent.cogentappointment.utils.DoctorUtils.*;
 import static com.cogent.cogentappointment.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
-import static com.cogent.cogentappointment.utils.commons.GenderUtils.fetchGenderByCode;
+import static com.cogent.cogentappointment.utils.GenderUtils.fetchGenderByCode;
 
 /**
  * @author smriti on 2019-09-29

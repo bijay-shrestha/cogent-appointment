@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.utils.commons;
+package com.cogent.cogentappointment.utils;
 
 import com.cogent.cogentappointment.enums.Gender;
 import com.cogent.cogentappointment.exception.BadRequestException;

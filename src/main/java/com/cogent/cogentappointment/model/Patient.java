@@ -16,7 +16,6 @@ import java.time.LocalDate;
  */
 @Getter
 @Setter
-@NoArgsConstructor
 @Entity
 @Table(name = "patient")
 public class Patient implements Serializable {

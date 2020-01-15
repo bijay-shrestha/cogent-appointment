@@ -68,6 +68,9 @@ public class ErrorMessageConstants {
 
 
     //T
+    //G
+    public static final String INVALID_TITLE_CODE_MESSAGE = "Invalid Title code.";
+    public static final String INVALID_TITLE_CODE_DEBUG_MESSAGE = "Title enum doesn't have the requested code.";
 
 
     //U

@@ -3,13 +3,12 @@ package com.cogent.cogentappointment.model;
 import com.cogent.cogentappointment.enums.Gender;
 import com.cogent.cogentappointment.enums.Title;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.util.Date;
 
 /**
  * @author smriti ON 14/01/2020
@@ -24,8 +23,8 @@ public class Patient implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "full_name")
-    private String fullName;
+    @Column(name = "name")
+    private String name;
 
     @Column(name = "mobile_number")
     @Size(max = 10)
@@ -36,7 +35,8 @@ public class Patient implements Serializable {
     private Gender gender;
 
     @Column(name = "date_of_birth")
-    private LocalDate dateOfBirth;
+    @Temporal(TemporalType.DATE)
+    private Date dateOfBirth;
 
     @Column(name = "email", length = 50)
     private String email;
@@ -49,6 +49,9 @@ public class Patient implements Serializable {
 
     @Column(name = "esewa_id")
     private String esewaId;
+
+    @Column(name = "address")
+    private String address;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "nationality_id")

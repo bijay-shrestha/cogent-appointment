@@ -57,6 +57,10 @@ public class ErrorMessageConstants {
     //O
 
     //P
+    public interface PatientServiceMessages {
+        String DUPLICATE_PATIENT_MESSAGE = "Patient already exists with name '%s', mobile number '%s' and date of birth" +
+                "'%s'";
+    }
 
 
     //Q
@@ -68,7 +72,7 @@ public class ErrorMessageConstants {
 
 
     //T
-    //G
+
     public static final String INVALID_TITLE_CODE_MESSAGE = "Invalid Title code.";
     public static final String INVALID_TITLE_CODE_DEBUG_MESSAGE = "Title enum doesn't have the requested code.";
 

@@ -18,6 +18,7 @@ public class QueryConstants {
 
     public static final String DOCTOR_ID = "doctorId";
     public static final String DATE = "date";
+    public static final String DATE_OF_BIRTH = "dateOfBirth";
 
 
     //E

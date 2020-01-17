@@ -4,7 +4,6 @@ import com.cogent.cogentappointment.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.dto.request.patient.PatientSearchRequestDTO;
 import com.cogent.cogentappointment.dto.response.patient.PatientMinimalResponseDTO;
 import com.cogent.cogentappointment.dto.response.patient.PatientResponseDTO;
-import com.cogent.cogentappointment.model.Patient;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -35,6 +34,4 @@ public interface PatientRepositoryCustom {
     List<Object[]> getPatient();
 
     String fetchLatestPatientHisNumber();
-
-    Patient fetchPatient(Long id);
 }

@@ -1,0 +1,23 @@
+package com.cogent.cogentappointment.log.constants;
+
+/**
+ * @author smriti on 2019-10-24
+ */
+public class AppointmentLog {
+    public final static String APPOINTMENT = "APPOINTMENT";
+
+    public final static String APPOINTMENT_STATUS = "APPOINTMENT STATUS";
+
+    public static String CHECK_AVAILABILITY_PROCESS_STARTED = ":::: CHECKING APPOINTMENT AVAILABILITY PROCESS STARTED ::::";
+    public static String CHECK_AVAILABILITY_PROCESS_COMPLETED = ":::: CHECKING APPOINTMENT AVAILABILITY PROCESS COMPLETED IN :::: {} ms";
+
+    public static String CANCELLING_PROCESS_STARTED = ":::: CANCELLING APPOINTMENT PROCESS STARTED ::::";
+    public static String CANCELLING_PROCESS_COMPLETED = ":::: CANCELLING APPOINTMENT PROCESS COMPLETED IN :::: {} ms";
+
+    public static String FETCHING_PROCESS_STARTED = ":::: FETCHING BOOKED APPOINTMENT DATES PROCESS STARTED ::::";
+    public static String FETCHING_PROCESS_COMPLETED = ":::: FETCHING BOOKED APPOINTMENT DATES PROCESS COMPLETED IN :::: {} ms";
+
+    public static String RESCHEDULE_PROCESS_STARTED = ":::: RESCHEDULE APPOINTMENT PROCESS STARTED ::::";
+    public static String RESCHEDULE_PROCESS_COMPLETED = ":::: RESCHEDULE APPOINTMENT PROCESS COMPLETED IN :::: {} ms";
+
+}

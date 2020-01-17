@@ -24,6 +24,7 @@ import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Function;
 
 import static com.cogent.cogentappointment.constants.ErrorMessageConstants.PatientServiceMessages.DUPLICATE_PATIENT_MESSAGE;
 import static com.cogent.cogentappointment.log.CommonLogConstant.*;
@@ -54,7 +55,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public void save(PatientRequestDTO requestDTO) {
+    public Patient save(PatientRequestDTO requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -66,8 +67,26 @@ public class PatientServiceImpl implements PatientService {
         validatePatientDuplicity(patientCount, requestDTO.getName(),
                 requestDTO.getMobileNumber(), requestDTO.getDateOfBirth());
 
-        savePatient(requestDTO);
+        Patient patient = savePatient(requestDTO);
+
         log.info(SAVING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
+
+        return patient;
+    }
+
+    @Override
+    public Patient fetchPatient(Long id) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, PATIENT);
+
+        Patient patient = patientRepository.fetchActivePatientById(id)
+                .orElseThrow(() -> PATIENT_WITH_GIVEN_ID_NOT_FOUND.apply(id));
+
+        log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
+
+        return patient;
     }
 
     @Override
@@ -96,19 +115,6 @@ public class PatientServiceImpl implements PatientService {
 //        log.info(UPDATING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
     }
 
-    @Override
-    public Patient fetchPatient(Long id) {
-
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(FETCHING_PROCESS_STARTED, PATIENT);
-
-        Patient patient = patientRepository.fetchPatient(id);
-
-        log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
-
-        return patient;
-    }
 
     @Override
     public List<PatientMinimalResponseDTO> searchPatient(PatientSearchRequestDTO searchDTO, Pageable pageable) {
@@ -180,17 +186,6 @@ public class PatientServiceImpl implements PatientService {
                     String.format(DUPLICATE_PATIENT_MESSAGE, name, mobileNumber, dateOfBirth));
     }
 
-    public void savePatient(PatientRequestDTO requestDTO) {
-
-        Gender gender = fetchGender(requestDTO.getGender());
-        Title title = fetchTitle(requestDTO.getTitle());
-        Hospital hospital = fetchHospital(requestDTO.getHospitalId());
-
-        Patient patient = parseToPatient(requestDTO, null, gender, hospital, title);
-
-        patientRepository.save(patient);
-    }
-
     private Gender fetchGender(Character genderCode) {
         return fetchGenderByCode(genderCode);
     }
@@ -202,6 +197,23 @@ public class PatientServiceImpl implements PatientService {
     private Hospital fetchHospital(Long hospitalId) {
         return hospitalService.fetchActiveHospital(hospitalId);
     }
+
+    public Patient savePatient(PatientRequestDTO requestDTO) {
+
+        Gender gender = fetchGender(requestDTO.getGender());
+        Title title = fetchTitle(requestDTO.getTitle());
+        Hospital hospital = fetchHospital(requestDTO.getHospitalId());
+
+        return save(parseToPatient(requestDTO, gender, hospital, title));
+    }
+
+    private Patient save(Patient patient) {
+        return patientRepository.save(patient);
+    }
+
+    private Function<Long, NoContentFoundException> PATIENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        throw new NoContentFoundException(Patient.class, "id", id.toString());
+    };
 
     public Patient fetchPatientById(Long id) {
         return patientRepository.fetchPatientById(id).orElseThrow(() ->

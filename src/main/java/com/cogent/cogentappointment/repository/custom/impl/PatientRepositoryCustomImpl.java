@@ -116,18 +116,4 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
         }
         return "";
     }
-
-    /*SMRITI*/
-    @Override
-    public Patient fetchPatient(Long id) {
-
-        Query query = createQuery.apply(entityManager, FETCH_PATIENT_BY_ID)
-                .setParameter(QueryConstants.ID, id);
-        try {
-            Object object = query.getSingleResult();
-            return (Patient) get(object, 0);
-        } catch (NoResultException e) {
-            throw new NoContentFoundException(Patient.class, "id", id.toString());
-        }
-    }
 }

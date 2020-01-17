@@ -221,7 +221,7 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     private Hospital findById(Long id) {
-        return hospitalRepository.findHospitalById(id).orElseThrow(() -> HOSPITAL_NAME_WITH_GIVEN_ID_NOT_FOUND.apply(id));
+        return hospitalRepository.findHospitalById(id).orElseThrow(() -> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND.apply(id));
     }
 
     private void updateHospitalContactNumber(Long hospitalId,
@@ -250,7 +250,7 @@ public class HospitalServiceImpl implements HospitalService {
             hospitalLogo.setStatus(INACTIVE);
     }
 
-    private Function<Long, NoContentFoundException> HOSPITAL_NAME_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+    private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         throw new NoContentFoundException(Hospital.class, "id", id.toString());
     };
 

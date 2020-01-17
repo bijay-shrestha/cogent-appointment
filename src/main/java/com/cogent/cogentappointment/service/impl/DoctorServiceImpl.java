@@ -31,9 +31,9 @@ import static com.cogent.cogentappointment.constants.StringConstant.SPACE;
 import static com.cogent.cogentappointment.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.log.constants.DoctorLog.*;
 import static com.cogent.cogentappointment.utils.DoctorUtils.*;
+import static com.cogent.cogentappointment.utils.GenderUtils.fetchGenderByCode;
 import static com.cogent.cogentappointment.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
-import static com.cogent.cogentappointment.utils.GenderUtils.fetchGenderByCode;
 
 /**
  * @author smriti on 2019-09-29
@@ -221,7 +221,7 @@ public class DoctorServiceImpl implements DoctorService {
         log.info(FETCHING_PROCESS_STARTED, DOCTOR);
 
         Doctor doctor = doctorRepository.findActiveDoctorById(id)
-                .orElseThrow(() -> new NoContentFoundException(Doctor.class, "id", id.toString()));
+                .orElseThrow(() -> DOCTOR_WITH_GIVEN_ID_NOT_FOUND.apply(id));
 
         log.info(FETCHING_PROCESS_COMPLETED, doctor, getDifferenceBetweenTwoTime(startTime));
 

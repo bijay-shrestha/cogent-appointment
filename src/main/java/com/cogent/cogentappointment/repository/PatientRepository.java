@@ -15,12 +15,9 @@ import java.util.Optional;
 @Repository
 public interface PatientRepository extends JpaRepository<Patient, Long>, PatientRepositoryCustom {
 
-    @Query("SELECT COUNT(p.id) FROM Patient p WHERE p.code=:code AND p.status !='D'")
-    Long fetchPatientCountByCode(@Param("code") String code);
-
     @Query("SELECT p FROM Patient p WHERE p.id=:id AND p.status !='D'")
     Optional<Patient> fetchPatientById(@Param("id") Long id);
 
-    @Query(value = "SELECT COUNT(p.id) FROM Patient p WHERE p.id != :id AND p.code= :code And p.status !='D'")
-    Long checkPatientCodeIfExist(@Param("id") Long id, @Param("code") String code);
+    @Query("SELECT p FROM Patient p WHERE p.id=:id AND p.status ='Y'")
+    Optional<Patient> fetchActivePatientById(@Param("id") Long id);
 }

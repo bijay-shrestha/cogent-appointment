@@ -16,7 +16,7 @@ import java.util.List;
  * @author smriti ON 16/01/2020
  */
 public interface PatientService {
-    void save(PatientRequestDTO requestDTO);
+    Patient save(PatientRequestDTO requestDTO);
 
     void deletePatient(DeleteRequestDTO deleteRequestDTO);
 

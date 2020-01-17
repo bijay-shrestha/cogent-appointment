@@ -9,6 +9,9 @@ import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 
+import static com.cogent.cogentappointment.constants.StringConstant.HYPHEN;
+import static com.cogent.cogentappointment.constants.UtilityConfigConstants.*;
+
 /**
  * @author smriti on 2019-07-30
  */
@@ -58,5 +61,27 @@ public class DateUtils {
 
     public static Date convertStringToDate(String date) throws ParseException {
         return new SimpleDateFormat("yyyy-MM-dd").parse(date);
+    }
+
+    public static int getYearFromNepaliDate(String nepaliDate) {
+        return Integer.parseInt(nepaliDate.split(HYPHEN)[0]);
+    }
+
+    public static int getMonthFromNepaliDate(String nepaliDate) {
+        return Integer.parseInt(nepaliDate.split(HYPHEN)[1]);
+    }
+
+    public static String getDayFromNepaliDate(String nepaliDate) {
+        return nepaliDate.split(HYPHEN)[2];
+    }
+
+    public static String fetchStartingFiscalYear(int year, int month) {
+        return (month < APPLICATION_STARTING_FISCAL_MONTH)
+                ? (year + 1 + APPLICATION_STARTING_FISCAL_DAY) : (year + APPLICATION_STARTING_FISCAL_DAY);
+    }
+
+    public static String fetchEndingFiscalYear(int year, int month) {
+        return (month < APPLICATION_STARTING_FISCAL_MONTH)
+                ? (year + APPLICATION_ENDING_FISCAL_DAY) : (year + 1 + APPLICATION_ENDING_FISCAL_DAY);
     }
 }

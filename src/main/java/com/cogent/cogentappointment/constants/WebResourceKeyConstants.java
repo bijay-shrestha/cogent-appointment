@@ -9,6 +9,12 @@ public class WebResourceKeyConstants {
     public static final String API_V1 = "/api/v1";
     public static final String ACTIVE = "/active";
 
+    public interface AppointmentConstants {
+        String BASE_APPOINTMENT = "/appointment";
+        String CHECK_AVAILABILITY = "/checkAvailability";
+        String APPOINTMENT_DATES = "/dates";
+        String RESCHEDULE = "/reschedule";
+    }
 
     //B
 

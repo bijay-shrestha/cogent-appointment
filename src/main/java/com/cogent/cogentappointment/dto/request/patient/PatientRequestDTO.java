@@ -19,6 +19,8 @@ import java.util.Date;
 @Builder
 public class PatientRequestDTO implements Serializable {
 
+    private Long patientId;
+
     @NotNull
     @NotEmpty
     private String name;
@@ -47,9 +49,6 @@ public class PatientRequestDTO implements Serializable {
 
     @NotNull
     private String address;
-
-    @NotNull
-    private Long nationalityId;
 
     @NotNull
     private Long hospitalId;

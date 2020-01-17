@@ -5,7 +5,6 @@ import com.cogent.cogentappointment.dto.request.patient.PatientRequestDTO;
 import com.cogent.cogentappointment.enums.Gender;
 import com.cogent.cogentappointment.enums.Title;
 import com.cogent.cogentappointment.model.Hospital;
-import com.cogent.cogentappointment.model.Nationality;
 import com.cogent.cogentappointment.model.Patient;
 
 import java.util.function.BiFunction;
@@ -18,7 +17,6 @@ import static com.cogent.cogentappointment.utils.commons.StringUtil.toUpperCase;
 public class PatientUtils {
 
     public static Patient parseToPatient(PatientRequestDTO requestDTO,
-                                         Nationality nationality,
                                          Gender gender,
                                          Hospital hospital,
                                          Title title) {
@@ -32,7 +30,6 @@ public class PatientUtils {
         patient.setEsewaId(requestDTO.getEsewaId());
         patient.setAddress(requestDTO.getAddress());
         patient.setGender(gender);
-        patient.setNationality(nationality);
         patient.setHospitalId(hospital);
         patient.setTitle(title);
         patient.setStatus(requestDTO.getStatus());

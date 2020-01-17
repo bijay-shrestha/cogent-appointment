@@ -54,10 +54,6 @@ public class Patient implements Serializable {
     private String address;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "nationality_id")
-    private Nationality nationality;
-
-    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hospital_id")
     private Hospital hospitalId;
 

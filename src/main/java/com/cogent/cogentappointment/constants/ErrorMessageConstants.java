@@ -58,7 +58,7 @@ public class ErrorMessageConstants {
 
     //P
     public interface PatientServiceMessages {
-        String DUPLICATE_PATIENT_MESSAGE = "Patient already exists with name '%s', mobile number '%s' and date of birth" +
+        String DUPLICATE_PATIENT_MESSAGE = "Patient already exists with name '%s', mobile number '%s' and date of birth " +
                 "'%s'";
     }
 

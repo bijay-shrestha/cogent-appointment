@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.dto.request.appointment;
 
-import com.cogent.appointmentservice.constraintvalidator.Status;
+import com.cogent.cogentappointment.constraintvalidator.Status;
 import lombok.*;
 
 import javax.validation.constraints.NotEmpty;

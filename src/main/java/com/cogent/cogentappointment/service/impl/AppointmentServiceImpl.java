@@ -85,6 +85,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         log.info(SAVING_PROCESS_STARTED, APPOINTMENT);
 
         Patient patient = fetchPatient(appointmentRequestDTO.getIsNewRegistration(),
+                appointmentRequestDTO.getPatientId(),
                 appointmentRequestDTO.getPatientRequestDTO());
 
         Doctor doctor = fetchDoctor(appointmentRequestDTO.getDoctorId());
@@ -221,10 +222,11 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     private Patient fetchPatient(Boolean isNewRegistration,
+                                 Long patientId,
                                  PatientRequestDTO patientRequestDTO) {
 
         return isNewRegistration ? patientService.save(patientRequestDTO)
-                : patientService.fetchPatient(patientRequestDTO.getPatientId());
+                : patientService.fetchPatient(patientId);
     }
 
     private Appointment findById(Long appointmentId) {

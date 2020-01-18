@@ -49,6 +49,11 @@ public class QueryConstants {
     //O
 
     //P
+    public interface PatientQueryConstants {
+        String ESEWA_ID = "esewaId";
+        String IS_SELF = "isSelf";
+        String HOSPITAL_ID = "hospitalId";
+    }
 
     //Q
 
@@ -64,7 +69,6 @@ public class QueryConstants {
     public static final String TO_DATE = "toDate";
 
     //U
-
 
 
     //V

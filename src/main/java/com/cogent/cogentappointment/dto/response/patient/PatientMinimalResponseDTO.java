@@ -9,14 +9,13 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 /**
- * @author Sauravi Thapa 9/22/19
+ * @author smriti ON 18/01/2020
  */
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class  PatientMinimalResponseDTO implements Serializable {
+public class PatientMinimalResponseDTO implements Serializable {
 
     private String name;
 

@@ -66,6 +66,10 @@ public class WebResourceKeyConstants {
     //O
 
     //P
+    public  interface PatientConstant{
+        String BASE_PATIENT = "/patients";
+    }
+
 
 
     //Q

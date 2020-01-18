@@ -1,12 +1,8 @@
 package com.cogent.cogentappointment.service.impl;
 
-import com.cogent.cogentappointment.dto.commons.DeleteRequestDTO;
-import com.cogent.cogentappointment.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.dto.request.patient.PatientRequestDTO;
 import com.cogent.cogentappointment.dto.request.patient.PatientSearchRequestDTO;
-import com.cogent.cogentappointment.dto.request.patient.PatientUpdateRequestDTO;
-import com.cogent.cogentappointment.dto.response.patient.PatientMinimalResponseDTO;
-import com.cogent.cogentappointment.dto.response.patient.PatientResponseDTO;
+import com.cogent.cogentappointment.dto.response.patient.PatientDetailResponseDTO;
 import com.cogent.cogentappointment.enums.Gender;
 import com.cogent.cogentappointment.enums.Title;
 import com.cogent.cogentappointment.exception.DataDuplicationException;
@@ -17,13 +13,11 @@ import com.cogent.cogentappointment.repository.PatientRepository;
 import com.cogent.cogentappointment.service.HospitalService;
 import com.cogent.cogentappointment.service.PatientService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.Date;
-import java.util.List;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.constants.ErrorMessageConstants.PatientServiceMessages.DUPLICATE_PATIENT_MESSAGE;
@@ -31,11 +25,9 @@ import static com.cogent.cogentappointment.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.log.constants.PatientLog.PATIENT;
 import static com.cogent.cogentappointment.utils.AgeConverterUtils.ageConverter;
 import static com.cogent.cogentappointment.utils.GenderUtils.fetchGenderByCode;
-import static com.cogent.cogentappointment.utils.PatientUtils.deletePatient;
 import static com.cogent.cogentappointment.utils.PatientUtils.parseToPatient;
 import static com.cogent.cogentappointment.utils.TitleUtils.fetchTitleByCode;
-import static com.cogent.cogentappointment.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
-import static com.cogent.cogentappointment.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.utils.commons.DateUtils.*;
 
 /**
  * @author smriti ON 16/01/2020
@@ -90,100 +82,118 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public void deletePatient(DeleteRequestDTO deleteRequestDTO) {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(DELETING_PROCESS_STARTED, PATIENT);
-
-        deletePatient.apply(fetchPatientById(deleteRequestDTO.getId()), deleteRequestDTO);
-
-        log.info(DELETING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
-    }
-
-    @Override
-    public void updatePatient(PatientUpdateRequestDTO updateRequestDTO) {
-//        Long startTime = getTimeInMillisecondsFromLocalDate();
-//
-//        log.info(UPDATING_PROCESS_STARTED, PATIENT);
-//
-//        Patient patientToUpdate = fetchPatientById(updateRequestDTO.getId());
-//
-//        validatePatientByCode(updateRequestDTO.getId(), updateRequestDTO.getCode());
-//
-//        parseToUpdate(patientToUpdate, updateRequestDTO);
-//
-//        log.info(UPDATING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
-    }
-
-
-    @Override
-    public List<PatientMinimalResponseDTO> searchPatient(PatientSearchRequestDTO searchDTO, Pageable pageable) {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(SEARCHING_PROCESS_STARTED, PATIENT);
-
-        List<PatientMinimalResponseDTO> minimalResponseDTOS = patientRepository
-                .searchPatient(searchDTO, pageable);
-
-        minimalResponseDTOS.forEach(patientMinimalResponseDTO -> {
-            getAge(patientMinimalResponseDTO);
-        });
-
-        log.info(SEARCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
-
-        return minimalResponseDTOS;
-    }
-
-    @Override
-    public PatientResponseDTO fetchPatientDetails(Long id) {
+    public PatientDetailResponseDTO search(PatientSearchRequestDTO searchRequestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_DETAIL_PROCESS_STARTED, PATIENT);
 
-        PatientResponseDTO responseDTO = patientRepository.fetchPatientDetailsById(id);
-
-        responseDTO.setAge(convertDateToAge(responseDTO.getDateOfBirth()));
+        PatientDetailResponseDTO responseDTO = patientRepository.search(searchRequestDTO);
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
     }
 
-    @Override
-    public List<DropDownResponseDTO> dropDownList() {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, PATIENT);
-
-        List<DropDownResponseDTO> dropDownResponseDTOS = patientRepository.fetchDropDownList()
-                .orElseThrow(() -> new NoContentFoundException(Patient.class));
-
-        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
-
-        return dropDownResponseDTOS;
-    }
-
-    @Override
-    public List<DropDownResponseDTO> activeDropDownList() {
-
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, PATIENT);
-
-        List<DropDownResponseDTO> dropDownResponseDTOS = patientRepository.fetchActiveDropDownList()
-                .orElseThrow(() -> new NoContentFoundException(Patient.class));
-
-        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
-
-        return dropDownResponseDTOS;
-    }
+//    @Override
+//    public void deletePatient(DeleteRequestDTO deleteRequestDTO) {
+////        Long startTime = getTimeInMillisecondsFromLocalDate();
+////
+////        log.info(DELETING_PROCESS_STARTED, PATIENT);
+////
+////        deletePatient.apply(fetchPatientById(deleteRequestDTO.getId()), deleteRequestDTO);
+////
+////        log.info(DELETING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
+//    }
+//
+//    @Override
+//    public void updatePatient(PatientUpdateRequestDTO updateRequestDTO) {
+////        Long startTime = getTimeInMillisecondsFromLocalDate();
+////
+////        log.info(UPDATING_PROCESS_STARTED, PATIENT);
+////
+////        Patient patientToUpdate = fetchPatientById(updateRequestDTO.getId());
+////
+////        validatePatientByCode(updateRequestDTO.getId(), updateRequestDTO.getCode());
+////
+////        parseToUpdate(patientToUpdate, updateRequestDTO);
+////
+////        log.info(UPDATING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
+//    }
+//
+//
+//    @Override
+//    public List<PatientMinimalResponseDTO> searchPatient(PatientSearchRequestDTO searchDTO, Pageable pageable) {
+////        Long startTime = getTimeInMillisecondsFromLocalDate();
+////
+////        log.info(SEARCHING_PROCESS_STARTED, PATIENT);
+////
+////        List<PatientMinimalResponseDTO> minimalResponseDTOS = patientRepository
+////                .searchPatient(searchDTO, pageable);
+////
+////        minimalResponseDTOS.forEach(patientMinimalResponseDTO -> {
+////            getAge(patientMinimalResponseDTO);
+////        });
+////
+////        log.info(SEARCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
+////
+////        return minimalResponseDTOS;
+//        return null;
+//    }
+//
+//    @Override
+//    public PatientDetailResponseDTO fetchPatientDetails(Long id) {
+////        Long startTime = getTimeInMillisecondsFromLocalDate();
+////
+////        log.info(FETCHING_DETAIL_PROCESS_STARTED, PATIENT);
+////
+////        PatientResponseDTO responseDTO = patientRepository.fetchPatientDetailsById(id);
+////
+////        responseDTO.setAge(convertDateToAge(responseDTO.getDateOfBirth()));
+////
+////        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
+////    return null;
+////        return responseDTO;
+//        return null;
+//    }
+//
+//    @Override
+//    public List<DropDownResponseDTO> dropDownList() {
+////        Long startTime = getTimeInMillisecondsFromLocalDate();
+////
+////        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, PATIENT);
+////
+////        List<DropDownResponseDTO> dropDownResponseDTOS = patientRepository.fetchDropDownList()
+////                .orElseThrow(() -> new NoContentFoundException(Patient.class));
+////
+////        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
+////
+////        return dropDownResponseDTOS;
+//        return null;
+//    }
+//
+//    @Override
+//    public List<DropDownResponseDTO> activeDropDownList() {
+//
+////        Long startTime = getTimeInMillisecondsFromLocalDate();
+////
+////        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, PATIENT);
+////
+////        List<DropDownResponseDTO> dropDownResponseDTOS = patientRepository.fetchActiveDropDownList()
+////                .orElseThrow(() -> new NoContentFoundException(Patient.class));
+////
+////        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
+////
+////        return dropDownResponseDTOS;
+//        return null;
+//    }
 
     private void validatePatientDuplicity(Long patientCount, String name, String mobileNumber,
                                           Date dateOfBirth) {
 
         if (patientCount.intValue() > 0)
             throw new DataDuplicationException(
-                    String.format(DUPLICATE_PATIENT_MESSAGE, name, mobileNumber, dateOfBirth));
+                    String.format(DUPLICATE_PATIENT_MESSAGE, name, mobileNumber, utilDateToSqlDate(dateOfBirth)));
     }
 
     private Gender fetchGender(Character genderCode) {
@@ -220,11 +230,11 @@ public class PatientServiceImpl implements PatientService {
                 new NoContentFoundException(Patient.class));
     }
 
-    public PatientMinimalResponseDTO getAge(PatientMinimalResponseDTO minimalResponseDTO) {
-        String age = convertDateToAge(minimalResponseDTO.getDateOfBirth());
-        minimalResponseDTO.setAge(age);
-        return minimalResponseDTO;
-    }
+//    public PatientMinimalResponseDTO getAge(PatientMinimalResponseDTO minimalResponseDTO) {
+//        String age = convertDateToAge(minimalResponseDTO.getDateOfBirth());
+//        minimalResponseDTO.setAge(age);
+//        return minimalResponseDTO;
+//    }
 
     public String convertDateToAge(LocalDate birthdayDate) {
         return ageConverter(birthdayDate);

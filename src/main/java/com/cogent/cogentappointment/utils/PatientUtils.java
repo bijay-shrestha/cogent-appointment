@@ -9,6 +9,7 @@ import com.cogent.cogentappointment.model.Patient;
 
 import java.util.function.BiFunction;
 
+import static com.cogent.cogentappointment.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.utils.commons.StringUtil.toUpperCase;
 
 /**
@@ -26,7 +27,7 @@ public class PatientUtils {
         patient.setDateOfBirth(requestDTO.getDateOfBirth());
         patient.setEmail(requestDTO.getEmail());
         patient.setIsSelf(requestDTO.getIsSelf());
-        patient.setIsRegistered(requestDTO.getIsRegistered());
+        patient.setIsRegistered(NO);
         patient.setEsewaId(requestDTO.getEsewaId());
         patient.setAddress(requestDTO.getAddress());
         patient.setGender(gender);

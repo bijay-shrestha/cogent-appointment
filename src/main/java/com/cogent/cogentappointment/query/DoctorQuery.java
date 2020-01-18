@@ -90,8 +90,12 @@ public class DoctorQuery {
             " SELECT" +
                     " d.id as value," +                                     //[0]
                     " d.name as label," +                                   //[1]
-                    " da.fileUri as fileUri," +                             //[2]
-                    " da.status as status" +                                //[3]
+                    " CASE WHEN" +
+                    " (da.status is null OR da.status = 'N')" +
+                    " THEN null" +
+                    " ELSE" +
+                    " da.fileUri" +
+                    " END as fileUri" +
                     " FROM" +
                     " Doctor d" +
                     " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId" +
@@ -219,6 +223,7 @@ public class DoctorQuery {
                     " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId" +
                     " WHERE cs.specializationId = :id" +
                     " AND cs.status = 'Y'" +
-                    " AND d.status = 'Y'";
+                    " AND d.status = 'Y'" +
+                    " AND (da.status IS NULL OR da.status = 'Y')";
 
 }

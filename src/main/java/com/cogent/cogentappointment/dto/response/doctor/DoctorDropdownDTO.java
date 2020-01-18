@@ -1,9 +1,6 @@
 package com.cogent.cogentappointment.dto.response.doctor;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serializable;
 
@@ -13,7 +10,8 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 public class DoctorDropdownDTO implements Serializable {
 
     private Long value;
@@ -21,6 +19,4 @@ public class DoctorDropdownDTO implements Serializable {
     private String label;
 
     private String fileUri;
-
-    private Character status;
 }

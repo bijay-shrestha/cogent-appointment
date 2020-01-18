@@ -40,8 +40,7 @@ public class AppointmentResource {
     @PostMapping
     @ApiOperation(SAVE_OPERATION)
     public ResponseEntity<?> save(@Valid @RequestBody AppointmentRequestDTO requestDTO) {
-        appointmentService.save(requestDTO);
-        return created(create(API_V1 + BASE_APPOINTMENT)).build();
+        return created(create(API_V1 + BASE_APPOINTMENT)).body(appointmentService.save(requestDTO));
     }
 
 //    @PutMapping

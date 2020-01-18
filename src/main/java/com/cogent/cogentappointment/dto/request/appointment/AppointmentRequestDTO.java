@@ -23,14 +23,14 @@ public class AppointmentRequestDTO implements Serializable {
 
     private Boolean IsNewRegistration;
 
+    private Long patientId;
+
     @NotNull
     private Long specializationId;
 
     @NotNull
     private Long doctorId;
 
-    @NotNull
-    private Long patientId;
 
     @NotNull
     private Date appointmentDate;

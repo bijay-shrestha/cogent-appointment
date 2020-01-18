@@ -1,13 +1,15 @@
 package com.cogent.cogentappointment.utils;
 
-import com.cogent.cogentappointment.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.dto.request.patient.PatientRequestDTO;
+import com.cogent.cogentappointment.dto.response.patient.PatientMinimalResponseDTO;
 import com.cogent.cogentappointment.enums.Gender;
 import com.cogent.cogentappointment.enums.Title;
 import com.cogent.cogentappointment.model.Hospital;
 import com.cogent.cogentappointment.model.Patient;
 
-import java.util.function.BiFunction;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.utils.commons.StringUtil.toUpperCase;
@@ -37,40 +39,27 @@ public class PatientUtils {
         return patient;
     }
 
+    public static List<PatientMinimalResponseDTO> parseToPatientMinimalResponseDTO(List<Object[]> results) {
+        return results.stream()
+                .map(parseToPatientMinimalResponseDTO)
+                .collect(Collectors.toList());
+    }
 
-    public static BiFunction<Patient, DeleteRequestDTO, Patient> deletePatient = (patientToUpdate
-            , deleteRequestDTO) -> {
-        patientToUpdate.setStatus(deleteRequestDTO.getStatus());
-        patientToUpdate.setRemarks(deleteRequestDTO.getRemarks());
+    public static Function<Object[], PatientMinimalResponseDTO> parseToPatientMinimalResponseDTO = object -> {
 
-        return patientToUpdate;
+        final int PATIENT_ID_INDEX = 0;
+        final int TITLE_INDEX = 1;
+        final int NAME_INDEX = 2;
+        final int MOBILE_NUMBER_INDEX = 3;
+        final int GENDER_INDEX = 4;
+
+        //TODO: calculate age
+        return PatientMinimalResponseDTO.builder()
+                .patientId(Long.parseLong(object[PATIENT_ID_INDEX].toString()))
+                .title((Title) object[TITLE_INDEX])
+                .name(object[NAME_INDEX].toString())
+                .mobileNumber(object[MOBILE_NUMBER_INDEX].toString())
+                .gender((Gender) (object[GENDER_INDEX]))
+                .build();
     };
-
-
-
-//    public static BiFunction<Patient, PatientUpdateRequestDTO, Patient> updatePatient = (patientToUpdate, updateRequestDTO) -> {
-//        patientToUpdate.setFirstName(toUpperCase(updateRequestDTO.getFirstName()));
-//        patientToUpdate.setMiddleName(toUpperCase(updateRequestDTO.getMiddleName()));
-//        patientToUpdate.setCode(toUpperCase(updateRequestDTO.getCode()));
-//        patientToUpdate.setStatus(updateRequestDTO.getStatus());
-//        patientToUpdate.setGender(updateRequestDTO.getGender());
-//        patientToUpdate.setMobileNumber(updateRequestDTO.getMobileNumber());
-//        patientToUpdate.setEmergencyContact(updateRequestDTO.getEmergencyContact());
-//        patientToUpdate.setPassportNumber(updateRequestDTO.getPassportNumber());
-//        patientToUpdate.setCitizenshipNumber(updateRequestDTO.getCitizenshipNumber());
-//        patientToUpdate.setPan(updateRequestDTO.getPan());
-//        patientToUpdate.setBloodGroup(updateRequestDTO.getBloodGroup());
-//        patientToUpdate.setEducation(updateRequestDTO.getEducation());
-//        patientToUpdate.setRemarks(updateRequestDTO.getRemarks());
-//        patientToUpdate.setDateOfBirth(updateRequestDTO.getDateOfBirth());
-//        patientToUpdate.setAddress(updateRequestDTO.getAddress());
-//        patientToUpdate.setCountry(updateRequestDTO.getCountry());
-//        patientToUpdate.setCity(updateRequestDTO.getCity());
-//        patientToUpdate.setEmail(updateRequestDTO.getEmail());
-//        patientToUpdate.setReferredBy(updateRequestDTO.getReferredBy());
-//
-//        return patientToUpdate;
-//    };
-
-
 }

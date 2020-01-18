@@ -2,10 +2,12 @@ package com.cogent.cogentappointment.repository.custom.impl;
 
 import com.cogent.cogentappointment.dto.request.patient.PatientSearchRequestDTO;
 import com.cogent.cogentappointment.dto.response.patient.PatientDetailResponseDTO;
+import com.cogent.cogentappointment.dto.response.patient.PatientMinimalResponseDTO;
 import com.cogent.cogentappointment.exception.NoContentFoundException;
 import com.cogent.cogentappointment.model.Patient;
 import com.cogent.cogentappointment.repository.custom.PatientRepositoryCustom;
 import com.cogent.cogentappointment.utils.commons.DateUtils;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,11 +16,13 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.Date;
+import java.util.List;
 
 import static com.cogent.cogentappointment.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.constants.QueryConstants.PatientQueryConstants.*;
-import static com.cogent.cogentappointment.query.PatientQuery.QUERY_TO_FETCH_PATIENT_DETAILS;
-import static com.cogent.cogentappointment.query.PatientQuery.QUERY_TO_VALIDATE_PATIENT_DUPLICITY;
+import static com.cogent.cogentappointment.query.PatientQuery.*;
+import static com.cogent.cogentappointment.utils.PatientUtils.parseToPatientMinimalResponseDTO;
+import static com.cogent.cogentappointment.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.utils.commons.QueryUtils.transformQueryToSingleResult;
 
@@ -49,10 +53,46 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
                 .setParameter(IS_SELF, searchRequestDTO.getIsSelf())
                 .setParameter(HOSPITAL_ID, searchRequestDTO.getHospitalId());
 
+        //TODO: calculate age
         try {
             return transformQueryToSingleResult(query, PatientDetailResponseDTO.class);
         } catch (NoResultException e) {
             throw new NoContentFoundException(Patient.class, "esewaId", searchRequestDTO.getEsewaId());
+        }
+    }
+
+    @Override
+    public List<PatientMinimalResponseDTO> fetchMinimalPatientInfo(PatientSearchRequestDTO searchRequestDTO,
+                                                                   Pageable pageable) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_MINIMAL_PATIENT)
+                .setParameter(ESEWA_ID, searchRequestDTO.getEsewaId())
+                .setParameter(IS_SELF, searchRequestDTO.getIsSelf())
+                .setParameter(HOSPITAL_ID, searchRequestDTO.getHospitalId());
+
+        List<Object[]> results = query.getResultList();
+
+        Integer totalItems = query.getResultList().size();
+
+        addPagination.accept(pageable, query);
+
+        if (results.isEmpty()) throw new NoContentFoundException(Patient.class);
+
+        else {
+            List<PatientMinimalResponseDTO> responseDTOS = parseToPatientMinimalResponseDTO(results);
+            responseDTOS.get(0).setTotalItems(totalItems);
+            return responseDTOS;
+        }
+    }
+
+    @Override
+    public PatientDetailResponseDTO fetchDetailsById(Long id) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_DETAILS_BY_ID)
+                .setParameter(ID, id);
+
+        try {
+            return transformQueryToSingleResult(query, PatientDetailResponseDTO.class);
+        } catch (NoResultException e) {
+            throw new NoContentFoundException(Patient.class, "id", id.toString());
         }
     }
 

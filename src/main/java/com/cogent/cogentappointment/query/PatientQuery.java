@@ -15,7 +15,7 @@ public class PatientQuery {
                     " AND p.dateOfBirth =:dateOfBirth)" +
                     " AND p.status != 'D'";
 
-    public static final String QUERY_TO_FETCH_PATIENT_DETAILS =
+    public static final String SELECT_CLAUSE_TO_FETCH_PATIENT_DETAILS =
             " SELECT p.id as patientId," +                              //[0]
                     " p.title as title," +                              //[1]
                     " p.name as name," +                                //[2]
@@ -25,11 +25,33 @@ public class PatientQuery {
                     " p.gender as gender," +                            //[6]
                     " p.dateOfBirth as dateOfBirth," +                  //[7]
                     " p.nepaliDateOfBirth as nepaliDateOfBirth" +       //[8]
-                    " FROM Patient p" +
-                    " WHERE p.esewaId=:esewaId" +
+                    " FROM Patient p";
+
+    public static final String GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS =
+            " WHERE p.esewaId=:esewaId" +
                     " AND p.isSelf=:isSelf" +
                     " AND p.hospitalId.id=:hospitalId" +
                     " AND p.status='Y'";
+
+    public static final String QUERY_TO_FETCH_PATIENT_DETAILS =
+            SELECT_CLAUSE_TO_FETCH_PATIENT_DETAILS + GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS;
+
+    public static final String QUERY_TO_FETCH_MINIMAL_PATIENT =
+            " SELECT p.id as patientId," +                              //[0]
+                    " p.title as title," +                              //[1]
+                    " p.name as name," +                                //[2]
+                    " p.mobileNumber as mobileNumber," +                //[3]
+                    " p.gender as gender" +                             //[4]
+                    " FROM Patient p" +
+                    GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS;
+
+    public static final String GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS_BY_ID =
+            " WHERE p.id=:id" +
+                    " AND p.status='Y'";
+
+    public static final String QUERY_TO_FETCH_PATIENT_DETAILS_BY_ID =
+            SELECT_CLAUSE_TO_FETCH_PATIENT_DETAILS + GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS_BY_ID;
+
 
 //    public static final Function<PatientSearchRequestDTO, String> QUERY_TO_SEARCH_PATIENT = (
 //            patientSearchRequestDTO -> {

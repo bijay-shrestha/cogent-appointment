@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.service.impl;
 import com.cogent.cogentappointment.dto.request.patient.PatientRequestDTO;
 import com.cogent.cogentappointment.dto.request.patient.PatientSearchRequestDTO;
 import com.cogent.cogentappointment.dto.response.patient.PatientDetailResponseDTO;
+import com.cogent.cogentappointment.dto.response.patient.PatientMinimalResponseDTO;
 import com.cogent.cogentappointment.enums.Gender;
 import com.cogent.cogentappointment.enums.Title;
 import com.cogent.cogentappointment.exception.DataDuplicationException;
@@ -13,11 +14,13 @@ import com.cogent.cogentappointment.repository.PatientRepository;
 import com.cogent.cogentappointment.service.HospitalService;
 import com.cogent.cogentappointment.service.PatientService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.constants.ErrorMessageConstants.PatientServiceMessages.DUPLICATE_PATIENT_MESSAGE;
@@ -85,13 +88,43 @@ public class PatientServiceImpl implements PatientService {
     public PatientDetailResponseDTO search(PatientSearchRequestDTO searchRequestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_DETAIL_PROCESS_STARTED, PATIENT);
+        log.info(SEARCHING_PROCESS_STARTED, PATIENT);
 
         PatientDetailResponseDTO responseDTO = patientRepository.search(searchRequestDTO);
 
-        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
+        log.info(SEARCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
+    }
+
+    @Override
+    public List<PatientMinimalResponseDTO> fetchMinimalPatientInfo(PatientSearchRequestDTO searchRequestDTO,
+                                                                   Pageable pageable) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, PATIENT);
+
+        List<PatientMinimalResponseDTO> responseDTOS = patientRepository.fetchMinimalPatientInfo
+                (searchRequestDTO, pageable);
+
+        log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public PatientDetailResponseDTO fetchDetailsById(Long id) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, PATIENT);
+
+        PatientDetailResponseDTO responseDTO = patientRepository.fetchDetailsById(id);
+
+        log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTO;
+
     }
 
 

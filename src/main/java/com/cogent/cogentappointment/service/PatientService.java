@@ -3,7 +3,11 @@ package com.cogent.cogentappointment.service;
 import com.cogent.cogentappointment.dto.request.patient.PatientRequestDTO;
 import com.cogent.cogentappointment.dto.request.patient.PatientSearchRequestDTO;
 import com.cogent.cogentappointment.dto.response.patient.PatientDetailResponseDTO;
+import com.cogent.cogentappointment.dto.response.patient.PatientMinimalResponseDTO;
 import com.cogent.cogentappointment.model.Patient;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 /**
  * @author smriti ON 16/01/2020
@@ -14,6 +18,11 @@ public interface PatientService {
     Patient fetchPatient(Long id);
 
     PatientDetailResponseDTO search(PatientSearchRequestDTO searchRequestDTO);
+
+    List<PatientMinimalResponseDTO> fetchMinimalPatientInfo(PatientSearchRequestDTO searchRequestDTO,
+                                                            Pageable pageable);
+
+    PatientDetailResponseDTO fetchDetailsById(Long id);
 
 //    List<PatientDetailResponseDTO> fetchPatientDetails(PatientSearchRequestDTO searchRequestDTO);
 //

@@ -26,7 +26,7 @@ public class WebResourceKeyConstants {
 
     //D
     public static final String DROPDOWN = "/dropdown";
-    public static final String DETAILS = "/details";
+    public static final String DETAILS = "/detail";
 
     public interface DoctorConstants {
         String BASE_DOCTOR = "/doctor";
@@ -59,6 +59,7 @@ public class WebResourceKeyConstants {
     //L
 
     //M
+    public static final String MIN = "/min";
 
     //N
 
@@ -67,7 +68,7 @@ public class WebResourceKeyConstants {
 
     //P
     public interface PatientConstant {
-        String BASE_PATIENT = "/patients";
+        String BASE_PATIENT = "/patient";
         String SELF = "/self";
         String OTHERS = "/others";
     }

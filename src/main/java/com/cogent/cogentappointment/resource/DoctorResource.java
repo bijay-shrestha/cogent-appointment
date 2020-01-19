@@ -74,7 +74,7 @@ public class DoctorResource {
         return ok().body(doctorService.search(searchRequestDTO, pageable));
     }
 
-    @GetMapping(DROPDOWN + ACTIVE)
+    @GetMapping(ACTIVE + MIN)
     @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
     public ResponseEntity<?> fetchDoctorForDropDown() {
         return ok(doctorService.fetchDoctorForDropdown());

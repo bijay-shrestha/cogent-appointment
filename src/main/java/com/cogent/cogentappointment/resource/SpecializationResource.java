@@ -65,7 +65,7 @@ public class SpecializationResource {
         return ok().body(specializationService.search(searchRequestDTO, pageable));
     }
 
-    @GetMapping(DROPDOWN + ACTIVE)
+    @GetMapping(ACTIVE + MIN)
     @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
     public ResponseEntity<?> fetchActiveSpecializationForDropDown() {
         return ok(specializationService.fetchActiveSpecializationForDropDown());

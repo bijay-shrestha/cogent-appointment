@@ -95,10 +95,12 @@ public class DoctorQuery {
                     " THEN null" +
                     " ELSE" +
                     " da.fileUri" +
-                    " END as fileUri" +                                    //[2]
+                    " END as fileUri," +                                    //[2]
+                    " dac.appointmentCharge as appointmentCharge" +          //[3]
                     " FROM" +
                     " Doctor d" +
                     " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId" +
+                    " LEFT JOIN DoctorAppointmentCharge dac ON d.id = dac.doctorId.id" +
                     " WHERE d.status ='Y'";
 
     private static final String QUERY_TO_FETCH_DOCTOR_QUALIFICATION_FOR_DETAIL =
@@ -227,6 +229,6 @@ public class DoctorQuery {
                     " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId" +
                     " WHERE cs.specializationId = :id" +
                     " AND cs.status = 'Y'" +
-                    " AND d.status = 'Y'" ;
+                    " AND d.status = 'Y'";
 
 }

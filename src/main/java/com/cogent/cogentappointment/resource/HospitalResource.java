@@ -74,12 +74,6 @@ public class HospitalResource {
         return ok().body(hospitalService.search(searchRequestDTO, pageable));
     }
 
-    @GetMapping(ID_PATH_VARIABLE_BASE)
-    @ApiOperation(FETCH_BY_ID)
-    public ResponseEntity<?> fetchHospital(@PathVariable("id") Long id) {
-        return ok(hospitalService.fetchActiveHospital(id));
-    }
-
     @GetMapping(ACTIVE + MIN)
     @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
     public ResponseEntity<?> fetchHospitalForDropDown() {

@@ -223,10 +223,12 @@ public class DoctorQuery {
                     " THEN null" +
                     " ELSE" +
                     " da.fileUri" +
-                    " END as fileUri" +                                     //[2]
+                    " END as fileUri," +                                     //[2]
+                    " dac.appointmentCharge as appointmentCharge" +          //[3]
                     " FROM DoctorSpecialization cs" +
                     " LEFT JOIN Doctor d ON d.id = cs.doctorId" +
                     " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId" +
+                    " LEFT JOIN DoctorAppointmentCharge dac ON d.id = dac.doctorId.id" +
                     " WHERE cs.specializationId = :id" +
                     " AND cs.status = 'Y'" +
                     " AND d.status = 'Y'";

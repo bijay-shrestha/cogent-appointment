@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment;
+package com.cogent.cogentappointment.repository;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

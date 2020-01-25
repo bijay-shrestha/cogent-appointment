@@ -1,12 +1,12 @@
 package com.cogent.cogentappointment.repository.custom;
 
-import com.cogent.admin.dto.request.doctorDutyRoster.DoctorDutyRosterSearchRequestDTO;
-import com.cogent.admin.dto.request.doctorDutyRoster.DoctorDutyRosterStatusRequestDTO;
-import com.cogent.admin.dto.request.doctorDutyRoster.DoctorDutyRosterTimeRequestDTO;
-import com.cogent.admin.dto.response.doctorDutyRoster.DoctorDutyRosterDetailResponseDTO;
-import com.cogent.admin.dto.response.doctorDutyRoster.DoctorDutyRosterMinimalResponseDTO;
-import com.cogent.admin.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
-import com.cogent.admin.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
+import com.cogent.cogentappointment.dto.request.doctorDutyRoster.DoctorDutyRosterSearchRequestDTO;
+import com.cogent.cogentappointment.dto.request.doctorDutyRoster.DoctorDutyRosterStatusRequestDTO;
+import com.cogent.cogentappointment.dto.request.doctorDutyRoster.DoctorDutyRosterTimeRequestDTO;
+import com.cogent.cogentappointment.dto.response.doctorDutyRoster.DoctorDutyRosterDetailResponseDTO;
+import com.cogent.cogentappointment.dto.response.doctorDutyRoster.DoctorDutyRosterMinimalResponseDTO;
+import com.cogent.cogentappointment.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
+import com.cogent.cogentappointment.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;

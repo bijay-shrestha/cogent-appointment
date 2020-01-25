@@ -55,7 +55,8 @@ public class SwaggerConstants {
     public interface DoctorDutyRosterConstant {
         String BASE_API_VALUE = "This is Doctor Duty Roster Controller";
         String SAVE_OPERATION = "Save Doctor Duty Roster";
-        String UPDATE_OPERATION = "Update Doctor Duty Roster";
+        String UPDATE_OPERATION = "Update Doctor Duty Roster. Note that week days time can be updated " +
+                "only if there are no appointments within the selected date range";
         String DELETE_OPERATION = "Set Doctor Duty Roster status as 'D' when deleted";
         String SEARCH_OPERATION = "Search Doctor Duty Roster according to given request parameters";
         String DETAILS_OPERATION = "Fetch Doctor Duty Roster details by its id";

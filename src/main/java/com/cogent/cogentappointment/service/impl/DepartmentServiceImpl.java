@@ -98,7 +98,6 @@ public class DepartmentServiceImpl implements DepartmentService {
         log.info(DELETING_PROCESS_COMPLETED, DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
     }
 
-
     @Override
     public List<DepartmentMinimalResponseDTO> search(DepartmentSearchRequestDTO searchRequestDTO,
                                                      Pageable pageable) {
@@ -155,7 +154,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         List<DropDownResponseDTO> departmentDropDownDTOS = departmentRepository.fetchActiveDropDownList()
                 .orElseThrow(() -> DEPARTMENT_NOT_FOUND.get());
 
-        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
 
         return departmentDropDownDTOS;
     }

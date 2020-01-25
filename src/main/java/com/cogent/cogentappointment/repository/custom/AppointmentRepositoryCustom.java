@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.repository.custom;
 
 import com.cogent.cogentappointment.dto.request.appointment.AppointmentSearchRequestDTO;
+import com.cogent.cogentappointment.dto.response.appointment.AppointmentBookedDateResponseDTO;
 import com.cogent.cogentappointment.dto.response.appointment.AppointmentMinimalResponseDTO;
 import com.cogent.cogentappointment.dto.response.appointment.AppointmentResponseDTO;
 import com.cogent.cogentappointment.dto.response.appointment.AppointmentTimeResponseDTO;
@@ -23,11 +24,18 @@ public interface AppointmentRepositoryCustom {
 
     String generateAppointmentNumber(String nepaliCreatedDate);
 
+    List<AppointmentBookedDateResponseDTO> fetchBookedAppointmentDates(Date fromDate,
+                                                                       Date toDate,
+                                                                       Long doctorId,
+                                                                       Long specializationId);
+
+    Long fetchBookedAppointmentCount(Date fromDate, Date toDate, Long doctorId, Long specializationId);
+
     List<AppointmentMinimalResponseDTO> search(AppointmentSearchRequestDTO searchRequestDTO, Pageable pageable);
 
     AppointmentResponseDTO fetchDetailsById(Long id);
 
 //    List<AppointmentStatusResponseDTO> fetchAppointmentForAppointmentStatus(AppointmentStatusRequestDTO requestDTO);
 
-//    List<AppointmentDateResponseDTO> fetchBookedAppointmentDates(AppointmentDateRequestDTO requestDTO);
+
 }

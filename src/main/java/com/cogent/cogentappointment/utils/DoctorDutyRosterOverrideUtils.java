@@ -1,10 +1,11 @@
 package com.cogent.cogentappointment.utils;
 
-import com.cogent.admin.dto.request.doctorDutyRoster.DoctorDutyRosterOverrideRequestDTO;
-import com.cogent.admin.dto.request.doctorDutyRoster.DoctorDutyRosterOverrideUpdateRequestDTO;
-import com.cogent.admin.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
-import com.cogent.persistence.model.DoctorDutyRoster;
-import com.cogent.persistence.model.DoctorDutyRosterOverride;
+import com.cogent.cogentappointment.dto.request.doctorDutyRoster.DoctorDutyRosterOverrideRequestDTO;
+import com.cogent.cogentappointment.dto.request.doctorDutyRoster.DoctorDutyRosterOverrideUpdateRequestDTO;
+import com.cogent.cogentappointment.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
+import com.cogent.cogentappointment.model.DoctorDutyRoster;
+import com.cogent.cogentappointment.model.DoctorDutyRosterOverride;
+import com.cogent.cogentappointment.utils.commons.DateUtils;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -13,8 +14,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static com.cogent.admin.constants.StatusConstants.NO;
-import static com.cogent.admin.utils.DateUtils.convertDateToLocalDate;
+import static com.cogent.cogentappointment.constants.StatusConstants.NO;
+import static com.cogent.cogentappointment.utils.commons.DateUtils.convertDateToLocalDate;
 
 /**
  * @author smriti ON 16/12/2019
@@ -24,9 +25,9 @@ public class DoctorDutyRosterOverrideUtils {
 
     public static DoctorDutyRosterOverride parseToDoctorDutyRosterOverride(
             DoctorDutyRosterOverrideRequestDTO requestDTO,
-            DoctorDutyRoster doctorDutyRoster,
-            DoctorDutyRosterOverride doctorDutyRosterOverride) {
+            DoctorDutyRoster doctorDutyRoster) {
 
+        DoctorDutyRosterOverride doctorDutyRosterOverride = new DoctorDutyRosterOverride();
         doctorDutyRosterOverride.setFromDate(requestDTO.getFromDate());
         doctorDutyRosterOverride.setToDate(requestDTO.getToDate());
         doctorDutyRosterOverride.setStartTime(requestDTO.getStartTime());
@@ -40,7 +41,6 @@ public class DoctorDutyRosterOverrideUtils {
 
     public static DoctorDutyRosterOverride parseToUpdatedDoctorDutyRosterOverride(
             DoctorDutyRosterOverrideUpdateRequestDTO updateRequestDTO,
-            DoctorDutyRoster doctorDutyRoster,
             DoctorDutyRosterOverride doctorDutyRosterOverride) {
 
         doctorDutyRosterOverride.setFromDate(updateRequestDTO.getOverrideFromDate());
@@ -50,7 +50,6 @@ public class DoctorDutyRosterOverrideUtils {
         doctorDutyRosterOverride.setDayOffStatus(updateRequestDTO.getDayOffStatus());
         doctorDutyRosterOverride.setStatus(updateRequestDTO.getStatus());
         doctorDutyRosterOverride.setRemarks(updateRequestDTO.getRemarks());
-        doctorDutyRosterOverride.setDoctorDutyRosterId(doctorDutyRoster);
         return doctorDutyRosterOverride;
     }
 

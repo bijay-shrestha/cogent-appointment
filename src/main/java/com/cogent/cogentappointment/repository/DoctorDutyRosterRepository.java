@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.repository;
 
-import com.cogent.admin.repository.custom.DoctorDutyRosterRepositoryCustom;
-import com.cogent.persistence.model.DoctorDutyRoster;
+import com.cogent.cogentappointment.model.DoctorDutyRoster;
+import com.cogent.cogentappointment.repository.custom.DoctorDutyRosterRepositoryCustom;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

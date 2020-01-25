@@ -1,11 +1,11 @@
 package com.cogent.cogentappointment.repository.custom.impl;
 
-import com.cogent.admin.dto.request.doctorDutyRoster.DoctorDutyRosterStatusRequestDTO;
-import com.cogent.admin.dto.request.doctorDutyRoster.DoctorDutyRosterTimeRequestDTO;
-import com.cogent.admin.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
-import com.cogent.admin.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
-import com.cogent.admin.repository.custom.DoctorDutyRosterOverrideRepositoryCustom;
-import com.cogent.admin.utils.DoctorDutyRosterOverrideUtils;
+import com.cogent.cogentappointment.dto.request.doctorDutyRoster.DoctorDutyRosterStatusRequestDTO;
+import com.cogent.cogentappointment.dto.request.doctorDutyRoster.DoctorDutyRosterTimeRequestDTO;
+import com.cogent.cogentappointment.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
+import com.cogent.cogentappointment.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
+import com.cogent.cogentappointment.repository.custom.DoctorDutyRosterOverrideRepositoryCustom;
+import com.cogent.cogentappointment.utils.DoctorDutyRosterOverrideUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,11 +16,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import static com.cogent.admin.constants.QueryConstants.*;
-import static com.cogent.admin.query.DoctorDutyRosterOverrideQuery.*;
-import static com.cogent.admin.utils.DateUtils.utilDateToSqlDate;
-import static com.cogent.admin.utils.QueryUtils.createQuery;
-import static com.cogent.admin.utils.QueryUtils.transformQueryToResultList;
+import static com.cogent.cogentappointment.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.query.DoctorDutyRosterOverrideQuery.*;
+import static com.cogent.cogentappointment.utils.commons.DateUtils.utilDateToSqlDate;
+import static com.cogent.cogentappointment.utils.commons.QueryUtils.createQuery;
+import static com.cogent.cogentappointment.utils.commons.QueryUtils.transformQueryToResultList;
 
 @Repository
 @Transactional(readOnly = true)

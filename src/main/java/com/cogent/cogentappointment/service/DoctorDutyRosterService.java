@@ -1,11 +1,11 @@
 package com.cogent.cogentappointment.service;
 
-import com.cogent.admin.dto.commons.DeleteRequestDTO;
-import com.cogent.admin.dto.request.doctorDutyRoster.*;
-import com.cogent.admin.dto.response.doctorDutyRoster.DoctorDutyRosterDetailResponseDTO;
-import com.cogent.admin.dto.response.doctorDutyRoster.DoctorDutyRosterMinimalResponseDTO;
-import com.cogent.admin.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
-import com.cogent.admin.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
+import com.cogent.cogentappointment.dto.commons.DeleteRequestDTO;
+import com.cogent.cogentappointment.dto.request.doctorDutyRoster.*;
+import com.cogent.cogentappointment.dto.response.doctorDutyRoster.DoctorDutyRosterDetailResponseDTO;
+import com.cogent.cogentappointment.dto.response.doctorDutyRoster.DoctorDutyRosterMinimalResponseDTO;
+import com.cogent.cogentappointment.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
+import com.cogent.cogentappointment.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;

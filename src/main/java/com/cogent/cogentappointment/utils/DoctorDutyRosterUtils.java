@@ -1,13 +1,15 @@
 package com.cogent.cogentappointment.utils;
 
-import com.cogent.admin.dto.commons.DeleteRequestDTO;
-import com.cogent.admin.dto.request.doctorDutyRoster.DoctorDutyRosterRequestDTO;
-import com.cogent.admin.dto.request.doctorDutyRoster.DoctorDutyRosterUpdateRequestDTO;
-import com.cogent.admin.dto.request.doctorDutyRoster.DoctorWeekDaysDutyRosterRequestDTO;
-import com.cogent.admin.dto.request.doctorDutyRoster.DoctorWeekDaysDutyRosterUpdateRequestDTO;
-import com.cogent.admin.dto.response.doctorDutyRoster.*;
-import com.cogent.admin.feign.dto.request.appointment.AppointmentCountRequestDTO;
-import com.cogent.persistence.model.*;
+import com.cogent.cogentappointment.dto.commons.DeleteRequestDTO;
+import com.cogent.cogentappointment.dto.request.doctorDutyRoster.DoctorDutyRosterRequestDTO;
+import com.cogent.cogentappointment.dto.request.doctorDutyRoster.DoctorDutyRosterUpdateRequestDTO;
+import com.cogent.cogentappointment.dto.request.doctorDutyRoster.DoctorWeekDaysDutyRosterRequestDTO;
+import com.cogent.cogentappointment.dto.request.doctorDutyRoster.DoctorWeekDaysDutyRosterUpdateRequestDTO;
+import com.cogent.cogentappointment.dto.response.appointment.AppointmentBookedDateResponseDTO;
+import com.cogent.cogentappointment.dto.response.doctorDutyRoster.*;
+import com.cogent.cogentappointment.exception.BadRequestException;
+import com.cogent.cogentappointment.model.*;
+import com.cogent.cogentappointment.utils.commons.DateUtils;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -15,9 +17,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.cogent.admin.constants.StringConstant.COMMA_SEPARATED;
-import static com.cogent.admin.constants.StringConstant.HYPHEN;
-import static com.cogent.admin.utils.DateUtils.convertDateToLocalDate;
+import static com.cogent.cogentappointment.constants.ErrorMessageConstants.AppointmentServiceMessage.APPOINTMENT_EXISTS_MESSAGE;
+import static com.cogent.cogentappointment.constants.StringConstant.COMMA_SEPARATED;
+import static com.cogent.cogentappointment.constants.StringConstant.HYPHEN;
+import static com.cogent.cogentappointment.utils.commons.DateUtils.convertDateToLocalDate;
 
 /**
  * @author smriti on 27/11/2019
@@ -26,8 +29,7 @@ public class DoctorDutyRosterUtils {
 
     public static DoctorDutyRoster parseToDoctorDutyRoster(DoctorDutyRosterRequestDTO requestDTO,
                                                            Doctor doctor,
-                                                           Specialization specialization,
-                                                           DoctorType doctorType) {
+                                                           Specialization specialization) {
 
         DoctorDutyRoster doctorDutyRoster = new DoctorDutyRoster();
         doctorDutyRoster.setFromDate(requestDTO.getFromDate());
@@ -35,31 +37,44 @@ public class DoctorDutyRosterUtils {
         doctorDutyRoster.setRosterGapDuration(requestDTO.getRosterGapDuration());
         doctorDutyRoster.setStatus(requestDTO.getStatus());
         doctorDutyRoster.setHasOverrideDutyRoster(requestDTO.getHasOverrideDutyRoster());
-        parseToDoctorDutyRoster(doctorDutyRoster, doctor, specialization, doctorType);
+        parseToDoctorDutyRoster(doctorDutyRoster, doctor, specialization);
         return doctorDutyRoster;
     }
 
     private static void parseToDoctorDutyRoster(DoctorDutyRoster doctorDutyRoster,
                                                 Doctor doctor,
-                                                Specialization specialization,
-                                                DoctorType doctorType) {
+                                                Specialization specialization) {
         doctorDutyRoster.setDoctorId(doctor);
-        doctorDutyRoster.setDoctorTypeId(doctorType);
         doctorDutyRoster.setSpecializationId(specialization);
     }
 
-
     public static DoctorWeekDaysDutyRoster parseToDoctorWeekDaysDutyRoster(DoctorWeekDaysDutyRosterRequestDTO requestDTO,
                                                                            DoctorDutyRoster doctorDutyRoster,
-                                                                           WeekDays weekDays,
-                                                                           DoctorWeekDaysDutyRoster weekDaysDutyRoster) {
+                                                                           WeekDays weekDays) {
 
+        DoctorWeekDaysDutyRoster weekDaysDutyRoster = new DoctorWeekDaysDutyRoster();
         weekDaysDutyRoster.setStartTime(requestDTO.getStartTime());
         weekDaysDutyRoster.setEndTime(requestDTO.getEndTime());
         weekDaysDutyRoster.setDayOffStatus(requestDTO.getDayOffStatus());
         weekDaysDutyRoster.setDoctorDutyRosterId(doctorDutyRoster);
         weekDaysDutyRoster.setWeekDaysId(weekDays);
         return weekDaysDutyRoster;
+    }
+
+    public static void filterUpdatedWeekDaysRosterAndAppointment(
+            List<DoctorWeekDaysDutyRosterUpdateRequestDTO> unmatchedWeekDaysRosterList,
+            List<AppointmentBookedDateResponseDTO> appointmentBookedDateResponseDTO) {
+
+        unmatchedWeekDaysRosterList.forEach(unmatchedList ->
+                appointmentBookedDateResponseDTO
+                        .stream()
+                        .map(appointmentDates ->
+                                convertDateToLocalDate(appointmentDates.getAppointmentDate()).getDayOfWeek().toString())
+                        .filter(weekName ->
+                                unmatchedList.getWeekName().equals(weekName))
+                        .forEachOrdered(weekName -> {
+                            throw new BadRequestException(String.format(APPOINTMENT_EXISTS_MESSAGE, weekName));
+                        }));
     }
 
     public static void parseToUpdatedDoctorDutyRoster(DoctorDutyRoster doctorDutyRoster,
@@ -193,16 +208,16 @@ public class DoctorDutyRosterUtils {
         return doctorDutyRosterOverrideStatus;
     }
 
-    public static AppointmentCountRequestDTO parseToAppointmentCountRequestTO(
-            Date fromDate, Date toDate, Long doctorId, Long specializationId) {
-
-        AppointmentCountRequestDTO appointmentCountRequestDTO = new AppointmentCountRequestDTO();
-        appointmentCountRequestDTO.setFromDate(fromDate);
-        appointmentCountRequestDTO.setToDate(toDate);
-        appointmentCountRequestDTO.setDoctorId(doctorId);
-        appointmentCountRequestDTO.setSpecializationId(specializationId);
-        return appointmentCountRequestDTO;
-    }
+//    public static AppointmentCountRequestDTO parseToAppointmentCountRequestTO(
+//            Date fromDate, Date toDate, Long doctorId, Long specializationId) {
+//
+//        AppointmentCountRequestDTO appointmentCountRequestDTO = new AppointmentCountRequestDTO();
+//        appointmentCountRequestDTO.setFromDate(fromDate);
+//        appointmentCountRequestDTO.setToDate(toDate);
+//        appointmentCountRequestDTO.setDoctorId(doctorId);
+//        appointmentCountRequestDTO.setSpecializationId(specializationId);
+//        return appointmentCountRequestDTO;
+//    }
 
     public static List<DoctorWeekDaysDutyRosterUpdateRequestDTO> filterOriginalAndUpdatedWeekDaysRoster(
             List<DoctorWeekDaysDutyRosterUpdateRequestDTO> updateRequestDTO,

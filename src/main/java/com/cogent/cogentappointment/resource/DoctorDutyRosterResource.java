@@ -1,10 +1,10 @@
 package com.cogent.cogentappointment.resource;
 
-import com.cogent.admin.dto.commons.DeleteRequestDTO;
-import com.cogent.admin.dto.request.doctorDutyRoster.*;
-import com.cogent.admin.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
-import com.cogent.admin.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
-import com.cogent.admin.service.DoctorDutyRosterService;
+import com.cogent.cogentappointment.dto.commons.DeleteRequestDTO;
+import com.cogent.cogentappointment.dto.request.doctorDutyRoster.DoctorDutyRosterRequestDTO;
+import com.cogent.cogentappointment.dto.request.doctorDutyRoster.DoctorDutyRosterSearchRequestDTO;
+import com.cogent.cogentappointment.dto.request.doctorDutyRoster.DoctorDutyRosterUpdateRequestDTO;
+import com.cogent.cogentappointment.service.DoctorDutyRosterService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.PageRequest;
@@ -13,16 +13,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
-import static com.cogent.admin.constants.SwaggerConstants.DoctorDutyRosterConstant.*;
-import static com.cogent.admin.constants.WebResourceKeyConstants.*;
-import static com.cogent.admin.constants.WebResourceKeyConstants.DoctorDutyRosterConstants.*;
+import static com.cogent.cogentappointment.constants.SwaggerConstants.DoctorDutyRosterConstant.*;
+import static com.cogent.cogentappointment.constants.WebResourceKeyConstants.*;
+import static com.cogent.cogentappointment.constants.WebResourceKeyConstants.DoctorDutyRosterConstants.BASE_DOCTOR_DUTY_ROSTER;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
-;
 
 /**
  * @author smriti on 26/11/2019
@@ -68,32 +66,24 @@ public class DoctorDutyRosterResource {
         return ok().body(doctorDutyRosterService.search(searchRequestDTO, pageable));
     }
 
-    @GetMapping(DETAILS + ID_PATH_VARIABLE_BASE)
+    @GetMapping(DETAIL + ID_PATH_VARIABLE_BASE)
     @ApiOperation(DETAILS_OPERATION)
     public ResponseEntity<?> fetchDetailsById(@PathVariable("id") Long id) {
         return ok(doctorDutyRosterService.fetchDetailsById(id));
     }
 
-    @PutMapping(CHECK_AVAILABILITY)
-    @ApiOperation(CHECK_AVAILABILITY_OPERATION)
-    public DoctorDutyRosterTimeResponseDTO fetchDetails(@Valid @RequestBody DoctorDutyRosterTimeRequestDTO requestDTO) {
-        return doctorDutyRosterService.fetchDoctorDutyRosterTime(requestDTO);
-    }
-
-    @PutMapping(DOCTOR_DUTY_ROSTER_STATUS)
-    @ApiOperation(FETCH_DOCTOR_DUTY_ROSTER_STATUS_OPERATION)
-    public List<DoctorDutyRosterStatusResponseDTO> fetchDoctorDutyRosterStatus(
-            @RequestBody DoctorDutyRosterStatusRequestDTO searchRequestDTO) {
-        return doctorDutyRosterService.fetchDoctorDutyRosterStatus(searchRequestDTO);
-    }
-
-    @PutMapping(DOCTOR_DUTY_ROSTER_OVERRIDE)
-    @ApiOperation(UPDATE_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION)
-    public ResponseEntity<?> updateDoctorDutyRosterOverride(
-            @Valid @RequestBody DoctorDutyRosterOverrideUpdateRequestDTO updateRequestDTO) {
-        doctorDutyRosterService.updateDoctorDutyRosterOverride(updateRequestDTO);
-        return ok().build();
-    }
+//    @PutMapping(CHECK_AVAILABILITY)
+//    @ApiOperation(CHECK_AVAILABILITY_OPERATION)
+//    public DoctorDutyRosterTimeResponseDTO fetchDoctorDutyRosterTime(@Valid @RequestBody DoctorDutyRosterTimeRequestDTO requestDTO) {
+//        return doctorDutyRosterService.fetchDoctorDutyRosterTime(requestDTO);
+//    }
+//
+//    @PutMapping(DOCTOR_DUTY_ROSTER_STATUS)
+//    @ApiOperation(FETCH_DOCTOR_DUTY_ROSTER_STATUS_OPERATION)
+//    public List<DoctorDutyRosterStatusResponseDTO> fetchDoctorDutyRosterStatus(
+//            @RequestBody DoctorDutyRosterStatusRequestDTO searchRequestDTO) {
+//        return doctorDutyRosterService.fetchDoctorDutyRosterStatus(searchRequestDTO);
+//    }
 }
 
 

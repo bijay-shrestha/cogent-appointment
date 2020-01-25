@@ -1,13 +1,13 @@
 package com.cogent.cogentappointment.repository.custom.impl;
 
-import com.cogent.admin.dto.request.doctorDutyRoster.DoctorDutyRosterSearchRequestDTO;
-import com.cogent.admin.dto.request.doctorDutyRoster.DoctorDutyRosterStatusRequestDTO;
-import com.cogent.admin.dto.request.doctorDutyRoster.DoctorDutyRosterTimeRequestDTO;
-import com.cogent.admin.dto.response.doctorDutyRoster.*;
-import com.cogent.admin.exception.NoContentFoundException;
-import com.cogent.admin.repository.custom.DoctorDutyRosterRepositoryCustom;
-import com.cogent.admin.utils.DoctorDutyRosterUtils;
-import com.cogent.persistence.model.DoctorDutyRoster;
+import com.cogent.cogentappointment.dto.request.doctorDutyRoster.DoctorDutyRosterSearchRequestDTO;
+import com.cogent.cogentappointment.dto.request.doctorDutyRoster.DoctorDutyRosterStatusRequestDTO;
+import com.cogent.cogentappointment.dto.request.doctorDutyRoster.DoctorDutyRosterTimeRequestDTO;
+import com.cogent.cogentappointment.dto.response.doctorDutyRoster.*;
+import com.cogent.cogentappointment.exception.NoContentFoundException;
+import com.cogent.cogentappointment.model.DoctorDutyRoster;
+import com.cogent.cogentappointment.repository.custom.DoctorDutyRosterRepositoryCustom;
+import com.cogent.cogentappointment.utils.DoctorDutyRosterUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,15 +23,15 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.cogent.admin.constants.QueryConstants.*;
-import static com.cogent.admin.constants.StatusConstants.YES;
-import static com.cogent.admin.query.DoctorDutyRosterOverrideQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_DETAILS;
-import static com.cogent.admin.query.DoctorDutyRosterQuery.*;
-import static com.cogent.admin.utils.DateUtils.getDayCodeFromDate;
-import static com.cogent.admin.utils.DateUtils.utilDateToSqlDate;
-import static com.cogent.admin.utils.DoctorDutyRosterUtils.parseToDoctorDutyRosterDetailResponseDTO;
-import static com.cogent.admin.utils.PageableUtils.addPagination;
-import static com.cogent.admin.utils.QueryUtils.*;
+import static com.cogent.cogentappointment.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.constants.StatusConstants.YES;
+import static com.cogent.cogentappointment.query.DoctorDutyRosterOverrideQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_DETAILS;
+import static com.cogent.cogentappointment.query.DoctorDutyRosterQuery.*;
+import static com.cogent.cogentappointment.utils.DoctorDutyRosterUtils.parseToDoctorDutyRosterDetailResponseDTO;
+import static com.cogent.cogentappointment.utils.commons.DateUtils.getDayCodeFromDate;
+import static com.cogent.cogentappointment.utils.commons.DateUtils.utilDateToSqlDate;
+import static com.cogent.cogentappointment.utils.commons.PageableUtils.addPagination;
+import static com.cogent.cogentappointment.utils.commons.QueryUtils.*;
 
 /**
  * @author smriti on 26/11/2019
@@ -102,7 +102,6 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
             DoctorDutyRosterTimeRequestDTO requestDTO) {
 
         Date date = utilDateToSqlDate(requestDTO.getDate());
-        String code = getDayCodeFromDate(date);
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_TIME)
                 .setParameter(DATE, date)

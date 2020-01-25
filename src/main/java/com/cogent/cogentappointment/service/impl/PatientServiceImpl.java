@@ -25,10 +25,9 @@ import java.util.function.Function;
 import static com.cogent.cogentappointment.constants.ErrorMessageConstants.PatientServiceMessages.DUPLICATE_PATIENT_MESSAGE;
 import static com.cogent.cogentappointment.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.log.constants.PatientLog.PATIENT;
-import static com.cogent.cogentappointment.utils.commons.AgeConverterUtils.ageConverter;
 import static com.cogent.cogentappointment.utils.GenderUtils.fetchGenderByCode;
 import static com.cogent.cogentappointment.utils.PatientUtils.parseToPatient;
-import static com.cogent.cogentappointment.utils.TitleUtils.fetchTitleByCode;
+import static com.cogent.cogentappointment.utils.commons.AgeConverterUtils.ageConverter;
 import static com.cogent.cogentappointment.utils.commons.DateUtils.*;
 
 /**

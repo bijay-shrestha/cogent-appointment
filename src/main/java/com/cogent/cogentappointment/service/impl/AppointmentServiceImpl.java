@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.service.impl;
 import com.cogent.cogentappointment.dto.request.appointment.*;
 import com.cogent.cogentappointment.dto.request.patient.PatientRequestDTO;
 import com.cogent.cogentappointment.dto.response.appointment.AppointmentAvailabilityResponseDTO;
+import com.cogent.cogentappointment.dto.response.appointment.AppointmentBookedDateResponseDTO;
 import com.cogent.cogentappointment.dto.response.appointment.AppointmentMinimalResponseDTO;
 import com.cogent.cogentappointment.dto.response.appointment.AppointmentResponseDTO;
 import com.cogent.cogentappointment.exception.NoContentFoundException;
@@ -25,6 +26,8 @@ import java.util.List;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.log.CommonLogConstant.*;
+import static com.cogent.cogentappointment.log.constants.AppointmentLog.FETCHING_PROCESS_COMPLETED;
+import static com.cogent.cogentappointment.log.constants.AppointmentLog.FETCHING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.log.constants.AppointmentLog.*;
 import static com.cogent.cogentappointment.utils.AppointmentUtils.*;
 import static com.cogent.cogentappointment.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
@@ -103,6 +106,39 @@ public class AppointmentServiceImpl implements AppointmentService {
         log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
 
         return appointmentNumber;
+    }
+
+    @Override
+    public List<AppointmentBookedDateResponseDTO> fetchBookedAppointmentDates(Date fromDate,
+                                                                              Date toDate,
+                                                                              Long doctorId,
+                                                                              Long specializationId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED);
+
+        List<AppointmentBookedDateResponseDTO> bookedAppointmentDates =
+                appointmentRepository.fetchBookedAppointmentDates(fromDate, toDate, doctorId, specializationId);
+
+        log.info(FETCHING_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
+
+        return bookedAppointmentDates;
+    }
+
+    @Override
+    public Long fetchBookedAppointmentCount(Date fromDate, Date toDate,
+                                            Long doctorId, Long specializationId) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED);
+
+        Long appointmentCount = appointmentRepository.fetchBookedAppointmentCount
+                (fromDate, toDate, doctorId, specializationId);
+
+        log.info(FETCHING_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
+
+        return appointmentCount;
     }
 
     @Override
@@ -199,19 +235,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 //        return responseDTOS;
 //    }
 
-//    @Override
-//    public List<AppointmentDateResponseDTO> fetchBookedAppointmentDates(AppointmentDateRequestDTO requestDTO) {
-//        Long startTime = getTimeInMillisecondsFromLocalDate();
-//
-//        log.info(FETCHING_PROCESS_STARTED);
-//
-//        List<AppointmentDateResponseDTO> appointmentDateResponseDTOS =
-//                appointmentRepository.fetchBookedAppointmentDates(requestDTO);
-//
-//        log.info(FETCHING_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
-//
-//        return appointmentDateResponseDTOS;
-//    }
 
     private Doctor fetchDoctor(Long doctorId) {
         return doctorService.fetchDoctorById(doctorId);

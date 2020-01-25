@@ -2,10 +2,12 @@ package com.cogent.cogentappointment.service;
 
 import com.cogent.cogentappointment.dto.request.appointment.*;
 import com.cogent.cogentappointment.dto.response.appointment.AppointmentAvailabilityResponseDTO;
+import com.cogent.cogentappointment.dto.response.appointment.AppointmentBookedDateResponseDTO;
 import com.cogent.cogentappointment.dto.response.appointment.AppointmentMinimalResponseDTO;
 import com.cogent.cogentappointment.dto.response.appointment.AppointmentResponseDTO;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -17,6 +19,14 @@ public interface AppointmentService {
 
     String save(AppointmentRequestDTO appointmentRequestDTO);
 
+    List<AppointmentBookedDateResponseDTO> fetchBookedAppointmentDates(Date fromDate,
+                                                                       Date toDate,
+                                                                       Long doctorId,
+                                                                       Long specializationId);
+
+    Long fetchBookedAppointmentCount(Date fromDate, Date toDate,
+                                     Long doctorId, Long specializationId);
+
     void update(AppointmentUpdateRequestDTO updateRequestDTO);
 
     void cancel(AppointmentCancelRequestDTO cancelRequestDTO);
@@ -26,9 +36,10 @@ public interface AppointmentService {
 
     AppointmentResponseDTO fetchDetailsById(Long id);
 
+
     void rescheduleAppointment(AppointmentRescheduleRequestDTO rescheduleRequestDTO);
 
 //    List<AppointmentStatusResponseDTO> fetchAppointmentForAppointmentStatus(AppointmentStatusRequestDTO requestDTO);
 //
-//    List<AppointmentDateResponseDTO> fetchBookedAppointmentDates(AppointmentDateRequestDTO requestDTO);
+
 }

@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.query;
 
-import com.cogent.admin.dto.request.doctorDutyRoster.DoctorDutyRosterStatusRequestDTO;
+import com.cogent.cogentappointment.dto.request.doctorDutyRoster.DoctorDutyRosterStatusRequestDTO;
 
 import java.util.Objects;
 

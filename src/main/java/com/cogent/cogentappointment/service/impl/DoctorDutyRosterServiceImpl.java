@@ -1,43 +1,42 @@
 package com.cogent.cogentappointment.service.impl;
 
-import com.cogent.admin.dto.commons.DeleteRequestDTO;
-import com.cogent.admin.dto.request.doctorDutyRoster.*;
-import com.cogent.admin.dto.response.doctorDutyRoster.DoctorDutyRosterDetailResponseDTO;
-import com.cogent.admin.dto.response.doctorDutyRoster.DoctorDutyRosterMinimalResponseDTO;
-import com.cogent.admin.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
-import com.cogent.admin.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
-import com.cogent.admin.exception.BadRequestException;
-import com.cogent.admin.exception.DataDuplicationException;
-import com.cogent.admin.exception.NoContentFoundException;
-import com.cogent.admin.feign.dto.request.appointment.AppointmentCountRequestDTO;
-import com.cogent.admin.feign.dto.response.appointment.AppointmentDateResponseDTO;
-import com.cogent.admin.feign.service.AppointmentService;
-import com.cogent.admin.feign.service.EmailService;
-import com.cogent.admin.repository.DoctorDutyRosterOverrideRepository;
-import com.cogent.admin.repository.DoctorDutyRosterRepository;
-import com.cogent.admin.repository.DoctorWeekDaysDutyRosterRepository;
-import com.cogent.admin.service.*;
-import com.cogent.persistence.model.*;
+import com.cogent.cogentappointment.dto.commons.DeleteRequestDTO;
+import com.cogent.cogentappointment.dto.request.doctorDutyRoster.*;
+import com.cogent.cogentappointment.dto.response.appointment.AppointmentBookedDateResponseDTO;
+import com.cogent.cogentappointment.dto.response.doctorDutyRoster.DoctorDutyRosterDetailResponseDTO;
+import com.cogent.cogentappointment.dto.response.doctorDutyRoster.DoctorDutyRosterMinimalResponseDTO;
+import com.cogent.cogentappointment.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
+import com.cogent.cogentappointment.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
+import com.cogent.cogentappointment.exception.BadRequestException;
+import com.cogent.cogentappointment.exception.DataDuplicationException;
+import com.cogent.cogentappointment.exception.NoContentFoundException;
+import com.cogent.cogentappointment.model.*;
+import com.cogent.cogentappointment.repository.DoctorDutyRosterOverrideRepository;
+import com.cogent.cogentappointment.repository.DoctorDutyRosterRepository;
+import com.cogent.cogentappointment.repository.DoctorWeekDaysDutyRosterRepository;
+import com.cogent.cogentappointment.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.cogent.admin.constants.ErrorMessageConstants.AppointmentServiceMessage.APPOINTMENT_EXISTS_MESSAGE;
-import static com.cogent.admin.constants.ErrorMessageConstants.DoctorDutyRosterServiceMessages.BAD_REQUEST_MESSAGE;
-import static com.cogent.admin.constants.ErrorMessageConstants.DoctorDutyRosterServiceMessages.DUPLICATION_MESSAGE;
-import static com.cogent.admin.constants.StatusConstants.NO;
-import static com.cogent.admin.constants.StatusConstants.YES;
-import static com.cogent.admin.log.CommonLogConstant.*;
-import static com.cogent.admin.log.constants.DoctorDutyRosterLog.*;
-import static com.cogent.admin.utils.DateUtils.*;
-import static com.cogent.admin.utils.DoctorDutyRosterOverrideUtils.*;
-import static com.cogent.admin.utils.DoctorDutyRosterUtils.*;
+import static com.cogent.cogentappointment.constants.ErrorMessageConstants.AppointmentServiceMessage.APPOINTMENT_EXISTS_MESSAGE;
+import static com.cogent.cogentappointment.constants.ErrorMessageConstants.DoctorDutyRosterServiceMessages.BAD_REQUEST_MESSAGE;
+import static com.cogent.cogentappointment.constants.ErrorMessageConstants.DoctorDutyRosterServiceMessages.DUPLICATION_MESSAGE;
+import static com.cogent.cogentappointment.constants.StatusConstants.NO;
+import static com.cogent.cogentappointment.constants.StatusConstants.YES;
+import static com.cogent.cogentappointment.log.CommonLogConstant.*;
+import static com.cogent.cogentappointment.log.constants.DoctorDutyRosterLog.*;
+import static com.cogent.cogentappointment.utils.DoctorDutyRosterOverrideUtils.*;
+import static com.cogent.cogentappointment.utils.DoctorDutyRosterUtils.*;
+import static com.cogent.cogentappointment.utils.commons.DateUtils.*;
 
 /**
  * @author smriti on 26/11/2019
@@ -53,35 +52,27 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
     private final SpecializationService specializationService;
 
-    private final DoctorTypeService doctorTypeService;
-
     private final WeekDaysService weekDaysService;
 
     private final DoctorWeekDaysDutyRosterRepository doctorWeekDaysDutyRosterRepository;
 
     private final DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository;
 
-    private final EmailService emailService;
-
     private final AppointmentService appointmentService;
 
     public DoctorDutyRosterServiceImpl(DoctorDutyRosterRepository doctorDutyRosterRepository,
                                        DoctorService doctorService,
                                        SpecializationService specializationService,
-                                       DoctorTypeService doctorTypeService,
                                        WeekDaysService weekDaysService,
                                        DoctorWeekDaysDutyRosterRepository doctorWeekDaysDutyRosterRepository,
                                        DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository,
-                                       EmailService emailService,
                                        AppointmentService appointmentService) {
         this.doctorDutyRosterRepository = doctorDutyRosterRepository;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
-        this.doctorTypeService = doctorTypeService;
         this.weekDaysService = weekDaysService;
         this.doctorWeekDaysDutyRosterRepository = doctorWeekDaysDutyRosterRepository;
         this.doctorDutyRosterOverrideRepository = doctorDutyRosterOverrideRepository;
-        this.emailService = emailService;
         this.appointmentService = appointmentService;
     }
 
@@ -95,10 +86,10 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
         validateDoctorDutyRosterCount(requestDTO.getDoctorId(), requestDTO.getSpecializationId(),
                 requestDTO.getFromDate(), requestDTO.getToDate());
 
-        DoctorDutyRoster doctorDutyRoster = parseToDoctorDutyRoster(requestDTO,
+        DoctorDutyRoster doctorDutyRoster = parseToDoctorDutyRoster(
+                requestDTO,
                 findDoctorById(requestDTO.getDoctorId()),
-                findSpecializationById(requestDTO.getSpecializationId()),
-                findDoctorTypeById(requestDTO.getDoctorTypeId()));
+                findSpecializationById(requestDTO.getSpecializationId()));
 
         save(doctorDutyRoster);
 
@@ -118,6 +109,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
         DoctorDutyRoster doctorDutyRoster = findDoctorDutyRosterById(updateRequestDTO.getDoctorDutyRosterId());
 
+        //todo; refactor this
         List<DoctorWeekDaysDutyRoster> weekDaysDutyRosters =
                 doctorWeekDaysDutyRosterRepository.fetchByDoctorDutyRosterId(doctorDutyRoster.getId());
 
@@ -125,9 +117,10 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
                 filterOriginalAndUpdatedWeekDaysRoster(
                         updateRequestDTO.getWeekDaysDutyRosterUpdateRequestDTOS(), weekDaysDutyRosters);
 
-        List<AppointmentDateResponseDTO> appointmentDateResponseDTO = fetchAppointmentDateResponseDTOS(doctorDutyRoster);
+        List<AppointmentBookedDateResponseDTO> bookedAppointments = fetchBookedAppointments(doctorDutyRoster);
 
-        filterUpdatedWeekDaysRosterAndAppointment(unmatchedWeekDaysRosterList, appointmentDateResponseDTO);
+        if (!ObjectUtils.isEmpty(bookedAppointments))
+            filterUpdatedWeekDaysRosterAndAppointment(unmatchedWeekDaysRosterList, bookedAppointments);
 
         parseToUpdatedDoctorDutyRoster(doctorDutyRoster, updateRequestDTO);
 
@@ -158,8 +151,8 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
         validateDoctorDutyRosterOverrideCount(doctorId, specializationId,
                 updateRequestDTO.getOverrideFromDate(), updateRequestDTO.getOverrideToDate());
 
-        validateAppointmentCount(parseToAppointmentCountRequestTO(
-                overrideFromDate, overrideToDate, doctorId, specializationId));
+        /*UPDATE IS ALLOWED ONLY IF THERE ARE NO APPOINTMENTS WITHIN THAT RANGE*/
+        validateAppointmentCount(overrideFromDate, overrideToDate, doctorId, specializationId);
 
         saveOrUpdateDoctorDutyRosterOverride(updateRequestDTO, doctorDutyRoster);
 
@@ -171,12 +164,13 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
         if (Objects.isNull(updateRequestDTO.getDoctorDutyRosterOverrideId())) {
             DoctorDutyRosterOverride doctorDutyRosterOverride = parseToUpdatedDoctorDutyRosterOverride(
-                    updateRequestDTO, doctorDutyRoster, new DoctorDutyRosterOverride());
+                    updateRequestDTO, new DoctorDutyRosterOverride());
+            doctorDutyRosterOverride.setDoctorDutyRosterId(doctorDutyRoster);
             saveDoctorDutyRosterOverride(doctorDutyRosterOverride);
         } else {
             DoctorDutyRosterOverride doctorDutyRosterOverride =
                     doctorDutyRosterOverrideRepository.fetchById(updateRequestDTO.getDoctorDutyRosterOverrideId());
-            parseToUpdatedDoctorDutyRosterOverride(updateRequestDTO, doctorDutyRoster, doctorDutyRosterOverride);
+            parseToUpdatedDoctorDutyRosterOverride(updateRequestDTO, doctorDutyRosterOverride);
         }
     }
 
@@ -188,6 +182,9 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
         log.info(DELETING_PROCESS_STARTED, DOCTOR_DUTY_ROSTER);
 
         DoctorDutyRoster doctorDutyRoster = findDoctorDutyRosterById(deleteRequestDTO.getId());
+
+        validateAppointmentCount(doctorDutyRoster.getFromDate(), doctorDutyRoster.getToDate(),
+                doctorDutyRoster.getDoctorId().getId(), doctorDutyRoster.getSpecializationId().getId());
 
         convertToDeletedDoctorDutyRoster(doctorDutyRoster, deleteRequestDTO);
 
@@ -261,11 +258,13 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
         return mergedList;
     }
 
-    private void validateAppointmentCount(AppointmentCountRequestDTO appointmentCountRequestDTO) {
-        List<AppointmentDateResponseDTO> appointmentCount =
-                appointmentService.fetchAppointmentDates(appointmentCountRequestDTO);
+    private void validateAppointmentCount(Date overrideFromDate, Date overrideToDate,
+                                          Long doctorId, Long specializationId) {
 
-        if (appointmentCount.size() > 0)
+        Long appointments = appointmentService.fetchBookedAppointmentCount(
+                overrideFromDate, overrideToDate, doctorId, specializationId);
+
+        if (appointments.intValue() > 0)
             throw new BadRequestException(APPOINTMENT_EXISTS_MESSAGE);
     }
 
@@ -310,10 +309,6 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
         return specializationService.fetchActiveSpecializationById(specializationId);
     }
 
-    private DoctorType findDoctorTypeById(Long doctorTypeId) {
-        return doctorTypeService.fetchDoctorTypeById(doctorTypeId);
-    }
-
     private WeekDays findWeekDaysById(Long weekDaysId) {
         return weekDaysService.fetchWeekDaysById(weekDaysId);
     }
@@ -323,18 +318,17 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
     }
 
     private void saveDoctorWeekDaysDutyRoster(DoctorDutyRoster doctorDutyRoster,
-                                              List<DoctorWeekDaysDutyRosterRequestDTO> doctorWeekDaysDutyRosterRequestDTOS) {
+                                              List<DoctorWeekDaysDutyRosterRequestDTO> weekDaysDutyRosterRequestDTOS) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, DOCTOR_WEEK_DAYS_DUTY_ROSTER);
 
-        List<DoctorWeekDaysDutyRoster> doctorWeekDaysDutyRosters = doctorWeekDaysDutyRosterRequestDTOS.stream()
+        List<DoctorWeekDaysDutyRoster> doctorWeekDaysDutyRosters = weekDaysDutyRosterRequestDTOS.stream()
                 .map(requestDTO -> {
                     WeekDays weekDays = findWeekDaysById(requestDTO.getWeekDaysId());
                     return parseToDoctorWeekDaysDutyRoster(
-                            requestDTO, doctorDutyRoster, weekDays, new DoctorWeekDaysDutyRoster()
-                    );
+                            requestDTO, doctorDutyRoster, weekDays);
                 }).collect(Collectors.toList());
 
         saveDoctorWeekDaysDutyRoster(doctorWeekDaysDutyRosters);
@@ -365,8 +359,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
                                 requestDTO.getFromDate(),
                                 requestDTO.getToDate());
 
-                        return parseToDoctorDutyRosterOverride(
-                                requestDTO, doctorDutyRoster, new DoctorDutyRosterOverride());
+                        return parseToDoctorDutyRosterOverride(requestDTO, doctorDutyRoster);
                     }).collect(Collectors.toList());
 
             saveDoctorDutyRosterOverride(doctorDutyRosterOverrides);
@@ -389,8 +382,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
     public DoctorDutyRoster findDoctorDutyRosterById(Long doctorDutyRosterId) {
         return doctorDutyRosterRepository.findDoctorDutyRosterById(doctorDutyRosterId)
-                .orElseThrow(() -> new NoContentFoundException(
-                        DoctorDutyRoster.class, "id", doctorDutyRosterId.toString()));
+                .orElseThrow(() -> DOCTOR_DUTY_ROSTER_WITH_GIVEN_ID_NOT_FOUND.apply(doctorDutyRosterId));
     }
 
     private void updateDoctorWeekDaysDutyRoster(DoctorDutyRoster doctorDutyRoster,
@@ -418,27 +410,15 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
                     doctorDutyRosterOverrideRepository.fetchByDoctorRosterId(doctorDutyRoster.getId()));
     }
 
-    private List<AppointmentDateResponseDTO> fetchAppointmentDateResponseDTOS(DoctorDutyRoster doctorDutyRoster) {
-        return appointmentService.fetchAppointmentDates
-                (parseToAppointmentCountRequestTO(
-                        doctorDutyRoster.getFromDate(), doctorDutyRoster.getToDate(),
-                        doctorDutyRoster.getDoctorId().getId(), doctorDutyRoster.getSpecializationId().getId())
-                );
+    private List<AppointmentBookedDateResponseDTO> fetchBookedAppointments(DoctorDutyRoster doctorDutyRoster) {
+        return appointmentService.fetchBookedAppointmentDates(
+                doctorDutyRoster.getFromDate(),
+                doctorDutyRoster.getToDate(),
+                doctorDutyRoster.getDoctorId().getId(),
+                doctorDutyRoster.getSpecializationId().getId());
     }
 
-    private void filterUpdatedWeekDaysRosterAndAppointment(
-            List<DoctorWeekDaysDutyRosterUpdateRequestDTO> unmatchedWeekDaysRosterList,
-            List<AppointmentDateResponseDTO> appointmentDateResponseDTO) {
-
-        unmatchedWeekDaysRosterList.forEach(unmatchedList ->
-                appointmentDateResponseDTO
-                        .stream()
-                        .map(appointmentDates ->
-                                convertDateToLocalDate(appointmentDates.getAppointmentDate()).getDayOfWeek().toString())
-                        .filter(weekName ->
-                                unmatchedList.getWeekName().equals(weekName))
-                        .forEachOrdered(weekName -> {
-                            throw new BadRequestException(APPOINTMENT_EXISTS_MESSAGE);
-                        }));
-    }
+    private Function<Long, NoContentFoundException> DOCTOR_DUTY_ROSTER_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        throw new NoContentFoundException(DoctorDutyRoster.class, "id", id.toString());
+    };
 }

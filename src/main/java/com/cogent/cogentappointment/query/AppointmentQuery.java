@@ -159,7 +159,17 @@ public class AppointmentQuery {
                     " a.appointmentDate as appointmentDate" +
                     " FROM Appointment a" +
                     " WHERE" +
-                    " a.status!='C'" +
+                    " a.status='PA'" +
+                    " AND a.appointmentDate BETWEEN :fromDate AND :toDate" +
+                    " AND a.doctorId.id = :doctorId" +
+                    " AND a.specializationId.id = :specializationId";
+
+    public static final String QUERY_TO_FETCH_BOOKED_APPOINTMENT_COUNT =
+            "SELECT" +
+                    " COUNT(a.appointmentDate) as appointmentDate" +
+                    " FROM Appointment a" +
+                    " WHERE" +
+                    " a.status='PA'" +
                     " AND a.appointmentDate BETWEEN :fromDate AND :toDate" +
                     " AND a.doctorId.id = :doctorId" +
                     " AND a.specializationId.id = :specializationId";

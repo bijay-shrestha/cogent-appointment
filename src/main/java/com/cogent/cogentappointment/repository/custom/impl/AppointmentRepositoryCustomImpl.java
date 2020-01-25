@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.repository.custom.impl;
 
 import com.cogent.cogentappointment.dto.request.appointment.AppointmentSearchRequestDTO;
+import com.cogent.cogentappointment.dto.response.appointment.AppointmentBookedDateResponseDTO;
 import com.cogent.cogentappointment.dto.response.appointment.AppointmentMinimalResponseDTO;
 import com.cogent.cogentappointment.dto.response.appointment.AppointmentResponseDTO;
 import com.cogent.cogentappointment.dto.response.appointment.AppointmentTimeResponseDTO;
@@ -63,6 +64,33 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
+    public List<AppointmentBookedDateResponseDTO> fetchBookedAppointmentDates(Date fromDate,
+                                                                              Date toDate,
+                                                                              Long doctorId,
+                                                                              Long specializationId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_BOOKED_APPOINTMENT_DATES)
+                .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))
+                .setParameter(TO_DATE, utilDateToSqlDate(toDate))
+                .setParameter(DOCTOR_ID, doctorId)
+                .setParameter(SPECIALIZATION_ID, specializationId);
+
+        return transformQueryToResultList(query, AppointmentBookedDateResponseDTO.class);
+    }
+
+    @Override
+    public Long fetchBookedAppointmentCount(Date fromDate, Date toDate, Long doctorId, Long specializationId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_BOOKED_APPOINTMENT_COUNT)
+                .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))
+                .setParameter(TO_DATE, utilDateToSqlDate(toDate))
+                .setParameter(DOCTOR_ID, doctorId)
+                .setParameter(SPECIALIZATION_ID, specializationId);
+
+        return (Long) query.getSingleResult();
+    }
+
+    @Override
     public List<AppointmentMinimalResponseDTO> search(AppointmentSearchRequestDTO searchRequestDTO,
                                                       Pageable pageable) {
 
@@ -112,17 +140,6 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 //        return parseQueryResultToAppointmentStatusResponseDTOS(results);
 //    }
 
-//    @Override
-//    public List<AppointmentDateResponseDTO> fetchBookedAppointmentDates(AppointmentDateRequestDTO requestDTO) {
-//
-//        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_BOOKED_APPOINTMENT_DATES)
-//                .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
-//                .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()))
-//                .setParameter(DOCTOR_ID, requestDTO.getDoctorId())
-//                .setParameter(SPECIALIZATION_ID, requestDTO.getSpecializationId());
-//
-//        return transformQueryToResultList(query, AppointmentDateResponseDTO.class);
-//    }
 
     private Supplier<NoContentFoundException> APPOINTMENT_NOT_FOUND = ()
             -> new NoContentFoundException(Appointment.class);

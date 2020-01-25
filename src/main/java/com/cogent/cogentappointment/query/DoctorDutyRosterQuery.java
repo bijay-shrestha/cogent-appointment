@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.query;
 
-import com.cogent.admin.dto.request.doctorDutyRoster.DoctorDutyRosterSearchRequestDTO;
-import com.cogent.admin.dto.request.doctorDutyRoster.DoctorDutyRosterStatusRequestDTO;
+import com.cogent.cogentappointment.dto.request.doctorDutyRoster.DoctorDutyRosterSearchRequestDTO;
+import com.cogent.cogentappointment.dto.request.doctorDutyRoster.DoctorDutyRosterStatusRequestDTO;
 
 import java.util.Objects;
 
@@ -25,15 +25,13 @@ public class DoctorDutyRosterQuery {
                 " ddr.id as id," +                                                      //[0]
                 " d.name as doctorName," +                                              //[1]
                 " s.name as specializationName," +                                      //[2]
-                " dt.name as doctorTypeName," +                                         //[3]
-                " ddr.rosterGapDuration as rosterGapDuration," +                        //[4]
-                " ddr.fromDate as fromDate," +                                          //[5]
-                " ddr.toDate as toDate," +                                              //[6]
-                " ddr.status as status" +                                               //[7]
+                " ddr.rosterGapDuration as rosterGapDuration," +                        //[3]
+                " ddr.fromDate as fromDate," +                                          //[4]
+                " ddr.toDate as toDate," +                                              //[5]
+                " ddr.status as status" +                                               //[6]
                 " FROM DoctorDutyRoster ddr" +
                 " LEFT JOIN Doctor d ON ddr.doctorId.id = d.id" +
                 " LEFT JOIN Specialization s ON ddr.specializationId.id = s.id" +
-                " LEFT JOIN DoctorType dt ON ddr.doctorTypeId.id = dt.id" +
                 " WHERE" +
                 " ddr.status !='D'" +
                 " AND ddr.toDate >=:fromDate AND ddr.fromDate <=:toDate";
@@ -54,18 +52,15 @@ public class DoctorDutyRosterQuery {
                     " d.name as doctorName," +                                          //[2]
                     " s.id as specializationId," +                                      //[3]
                     " s.name as specializationName," +                                  //[4]
-                    " dt.id as doctorTypeId," +                                          //[5]
-                    " dt.name as doctorTypeName," +                                     //[6]
-                    " ddr.rosterGapDuration as rosterGapDuration," +                    //[7]
-                    " ddr.fromDate as fromDate," +                                      //[8]
-                    " ddr.toDate as toDate," +                                          //[9]
-                    " ddr.status as status," +                                          //[10]
-                    " ddr.remarks as remarks," +                                        //[11]
-                    " ddr.hasOverrideDutyRoster as hasOverrideDutyRoster" +             //[12]
+                    " ddr.rosterGapDuration as rosterGapDuration," +                    //[5]
+                    " ddr.fromDate as fromDate," +                                      //[6]
+                    " ddr.toDate as toDate," +                                          //[7]
+                    " ddr.status as status," +                                          //[8]
+                    " ddr.remarks as remarks," +                                        //[9]
+                    " ddr.hasOverrideDutyRoster as hasOverrideDutyRoster" +             //[10]
                     " FROM DoctorDutyRoster ddr" +
                     " LEFT JOIN Doctor d ON ddr.doctorId.id = d.id" +
                     " LEFT JOIN Specialization s ON ddr.specializationId.id = s.id" +
-                    " LEFT JOIN DoctorType dt ON ddr.doctorTypeId.id = dt.id" +
                     " WHERE ddr.status !='D'" +
                     " AND ddr.id = :id";
 

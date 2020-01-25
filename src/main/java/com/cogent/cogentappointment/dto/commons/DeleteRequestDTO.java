@@ -9,9 +9,6 @@ import java.io.Serializable;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 public class DeleteRequestDTO implements Serializable {
     @NotNull
     private Long id;

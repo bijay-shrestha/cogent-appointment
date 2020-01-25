@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.repository.custom.impl;
 
-import com.cogent.cogentappointment.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.dto.request.hospital.HospitalSearchRequestDTO;
+import com.cogent.cogentappointment.dto.response.hospital.HospitalDropdownResponseDTO;
 import com.cogent.cogentappointment.dto.response.hospital.HospitalMinimalResponseDTO;
 import com.cogent.cogentappointment.dto.response.hospital.HospitalResponseDTO;
 import com.cogent.cogentappointment.exception.NoContentFoundException;
@@ -83,10 +83,10 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchActiveHospitalForDropDown() {
+    public List<HospitalDropdownResponseDTO> fetchActiveHospitalForDropDown() {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_FOR_DROPDOWN);
 
-        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
+        List<HospitalDropdownResponseDTO> results = transformQueryToResultList(query, HospitalDropdownResponseDTO.class);
 
         if (results.isEmpty()) throw HOSPITAL_NOT_FOUND.get();
         else return results;

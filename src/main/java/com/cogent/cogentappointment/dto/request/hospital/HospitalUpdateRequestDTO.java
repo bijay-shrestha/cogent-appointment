@@ -24,6 +24,8 @@ public class HospitalUpdateRequestDTO implements Serializable {
     @SpecialCharacters
     private String name;
 
+    private String hospitalCode;
+
     @NotNull
     @NotEmpty
     @SpecialCharacters

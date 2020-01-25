@@ -5,6 +5,7 @@ import com.cogent.cogentappointment.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.dto.request.hospital.HospitalRequestDTO;
 import com.cogent.cogentappointment.dto.request.hospital.HospitalSearchRequestDTO;
 import com.cogent.cogentappointment.dto.request.hospital.HospitalUpdateRequestDTO;
+import com.cogent.cogentappointment.dto.response.hospital.HospitalDropdownResponseDTO;
 import com.cogent.cogentappointment.dto.response.hospital.HospitalMinimalResponseDTO;
 import com.cogent.cogentappointment.dto.response.hospital.HospitalResponseDTO;
 import com.cogent.cogentappointment.model.Hospital;
@@ -29,7 +30,9 @@ public interface HospitalService {
 
     Hospital fetchActiveHospital(Long id);
 
-    List<DropDownResponseDTO> fetchHospitalForDropDown();
+    Hospital fetchActiveHospitalByCode(String code);
+
+    List<HospitalDropdownResponseDTO> fetchHospitalForDropDown();
 
     HospitalResponseDTO fetchDetailsById(Long hospitalId);
 }

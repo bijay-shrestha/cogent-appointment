@@ -73,7 +73,7 @@ public class QualificationResource {
         return ok(qualificationService.fetchActiveQualificationForDropDown());
     }
 
-    @GetMapping(DETAILS + ID_PATH_VARIABLE_BASE)
+    @GetMapping(DETAIL + ID_PATH_VARIABLE_BASE)
     @ApiOperation(DETAILS_OPERATION)
     public ResponseEntity<?> fetchDetailsById(@PathVariable("id") Long id) {
         return ok(qualificationService.fetchDetailsById(id));

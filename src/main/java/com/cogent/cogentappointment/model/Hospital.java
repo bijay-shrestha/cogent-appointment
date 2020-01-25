@@ -23,7 +23,7 @@ public class Hospital implements Serializable {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "code", updatable = false)
+    @Column(name = "code")
     @Size(max = 4)
     private String code;
 

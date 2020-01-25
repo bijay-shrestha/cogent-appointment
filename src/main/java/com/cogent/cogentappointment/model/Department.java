@@ -6,9 +6,6 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.io.Serializable;
 
-/**
- * @author Sauravi
- */
 @Entity
 @Table(name = "department")
 @Getter
@@ -22,8 +19,12 @@ public class Department implements Serializable {
     @Column(name = "name", nullable = false, length = 50)
     private String name;
 
-    @Column(name = "code", nullable = false, length = 50)
+    @Column(name = "code", nullable = false, updatable = false, length = 50)
     private String code;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hospital_id")
+    private Hospital hospitalId;
 
     @Column(name = "status")
     private Character status;

@@ -43,7 +43,7 @@ public class PatientResource {
         return ok(patientService.fetchMinimalPatientInfo(searchRequestDTO, getPageable(page, size)));
     }
 
-    @GetMapping(DETAILS + ID_PATH_VARIABLE_BASE)
+    @GetMapping(DETAIL + ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_DETAILS_BY_ID)
     public ResponseEntity<?> fetchDetailsById(@PathVariable("id") Long id) {
         return ok(patientService.fetchDetailsById(id));

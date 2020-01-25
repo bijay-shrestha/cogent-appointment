@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.repository.custom;
 
-import com.cogent.cogentappointment.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.dto.request.hospital.HospitalSearchRequestDTO;
+import com.cogent.cogentappointment.dto.response.hospital.HospitalDropdownResponseDTO;
 import com.cogent.cogentappointment.dto.response.hospital.HospitalMinimalResponseDTO;
 import com.cogent.cogentappointment.dto.response.hospital.HospitalResponseDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -23,7 +23,7 @@ public interface HospitalRepositoryCustom {
 
     List<HospitalMinimalResponseDTO> search(HospitalSearchRequestDTO searchRequestDTO, Pageable pageable);
 
-    List<DropDownResponseDTO> fetchActiveHospitalForDropDown();
+    List<HospitalDropdownResponseDTO> fetchActiveHospitalForDropDown();
 
     HospitalResponseDTO fetchDetailsById(Long id);
 }

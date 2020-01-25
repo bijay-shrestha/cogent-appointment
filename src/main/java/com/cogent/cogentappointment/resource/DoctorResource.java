@@ -80,7 +80,7 @@ public class DoctorResource {
         return ok(doctorService.fetchDoctorForDropdown());
     }
 
-    @GetMapping(DETAILS + ID_PATH_VARIABLE_BASE)
+    @GetMapping(DETAIL + ID_PATH_VARIABLE_BASE)
     @ApiOperation(DETAILS_OPERATION)
     public ResponseEntity<?> fetchDetailsById(@PathVariable("id") Long id) {
         return ok(doctorService.fetchDetailsById(id));

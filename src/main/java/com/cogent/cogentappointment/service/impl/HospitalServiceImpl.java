@@ -1,12 +1,12 @@
 package com.cogent.cogentappointment.service.impl;
 
 import com.cogent.cogentappointment.dto.commons.DeleteRequestDTO;
-import com.cogent.cogentappointment.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.dto.request.hospital.HospitalContactNumberUpdateRequestDTO;
 import com.cogent.cogentappointment.dto.request.hospital.HospitalRequestDTO;
 import com.cogent.cogentappointment.dto.request.hospital.HospitalSearchRequestDTO;
 import com.cogent.cogentappointment.dto.request.hospital.HospitalUpdateRequestDTO;
 import com.cogent.cogentappointment.dto.response.files.FileUploadResponseDTO;
+import com.cogent.cogentappointment.dto.response.hospital.HospitalDropdownResponseDTO;
 import com.cogent.cogentappointment.dto.response.hospital.HospitalMinimalResponseDTO;
 import com.cogent.cogentappointment.dto.response.hospital.HospitalResponseDTO;
 import com.cogent.cogentappointment.exception.NoContentFoundException;
@@ -39,6 +39,7 @@ import static com.cogent.cogentappointment.log.constants.HospitalLog.HOSPITAL;
 import static com.cogent.cogentappointment.utils.HospitalUtils.*;
 import static com.cogent.cogentappointment.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.utils.commons.NameAndCodeValidationUtils.validateDuplicity;
 
 /**
  * @author smriti ON 12/01/2020
@@ -82,7 +83,8 @@ public class HospitalServiceImpl implements HospitalService {
         List<Object[]> hospitals = hospitalRepository.validateHospitalDuplicity(
                 requestDTO.getName(), requestDTO.getHospitalCode());
 
-        validateHospital(hospitals, requestDTO.getName(), requestDTO.getHospitalCode());
+        validateDuplicity(hospitals, requestDTO.getName(), requestDTO.getHospitalCode(),
+                Hospital.class.getSimpleName());
 
         Hospital hospital = save(convertDTOToHospital(requestDTO));
 
@@ -103,9 +105,10 @@ public class HospitalServiceImpl implements HospitalService {
         Hospital hospital = findById(updateRequestDTO.getId());
 
         List<Object[]> hospitals = hospitalRepository.validateHospitalDuplicityForUpdate(
-                updateRequestDTO.getId(), updateRequestDTO.getName(), hospital.getCode());
+                updateRequestDTO.getId(), updateRequestDTO.getName(), updateRequestDTO.getHospitalCode());
 
-        validateHospital(hospitals, updateRequestDTO.getName(), hospital.getCode());
+        validateDuplicity(hospitals, updateRequestDTO.getName(),
+                hospital.getCode(), Hospital.class.getSimpleName());
 
         parseToUpdatedHospital(updateRequestDTO, hospital);
 
@@ -150,6 +153,20 @@ public class HospitalServiceImpl implements HospitalService {
         log.info(FETCHING_PROCESS_STARTED, HOSPITAL);
 
         Hospital hospital = hospitalRepository.findActiveHospitalById(id)
+                .orElseThrow(() -> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND.apply(id));
+
+        log.info(FETCHING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
+
+        return hospital;
+    }
+
+    @Override
+    public Hospital fetchActiveHospitalByCode(String hospitalCode) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, HOSPITAL);
+
+        Hospital hospital = hospitalRepository.findActiveHospitalByCode(hospitalCode)
                 .orElseThrow(() -> new NoContentFoundException(Hospital.class));
 
         log.info(FETCHING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
@@ -158,13 +175,13 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchHospitalForDropDown() {
+    public List<HospitalDropdownResponseDTO> fetchHospitalForDropDown() {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, HOSPITAL);
 
-        List<DropDownResponseDTO> responseDTOS = hospitalRepository.fetchActiveHospitalForDropDown();
+        List<HospitalDropdownResponseDTO> responseDTOS = hospitalRepository.fetchActiveHospitalForDropDown();
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
 

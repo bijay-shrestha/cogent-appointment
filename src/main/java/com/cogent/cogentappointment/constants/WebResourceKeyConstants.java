@@ -26,7 +26,11 @@ public class WebResourceKeyConstants {
 
     //D
     public static final String DROPDOWN = "/dropdown";
-    public static final String DETAILS = "/detail";
+    public static final String DETAIL = "/detail";
+
+    public interface DepartmentConstants {
+        String BASE_DEPARTMENT = "/department";
+    }
 
     public interface DoctorConstants {
         String BASE_DOCTOR = "/doctor";

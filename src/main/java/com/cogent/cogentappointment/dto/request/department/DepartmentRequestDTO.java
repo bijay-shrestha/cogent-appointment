@@ -1,38 +1,28 @@
 package com.cogent.cogentappointment.dto.request.department;
 
 import com.cogent.cogentappointment.constraintvalidator.Status;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
-
 /**
- * @author Sauravi
+ * @author smriti ON 24/01/2020
  */
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Getter
+@Setter
 public class DepartmentRequestDTO implements Serializable {
 
     @NotNull
-    @NotBlank
-    @NotEmpty
-
     private String name;
 
     @NotNull
-    @NotBlank
-    @NotEmpty
-    private String code;
+    private String departmentCode;
 
     @NotNull
+    private String hospitalCode;
+
     @Status
     private Character status;
 }

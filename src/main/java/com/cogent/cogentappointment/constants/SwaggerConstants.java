@@ -40,6 +40,18 @@ public class SwaggerConstants {
         String FETCH_DETAILS_FOR_DROPDOWN = "Fetch Doctor details (id and name) for dropdown";
     }
 
+    public interface DepartmentConstant {
+        String BASE_DEPARTMENT_API_VALUE = "This is Department Controller";
+        String SAVE_DEPARTMENT_OPERATION = "Save new department";
+        String UPDATE_DEPARTMENT_OPERATION = "Update existing department";
+        String DELETE_DEPARTMENT_OPERATION = "Set department status as 'D' when deleted";
+        String SEARCH_DEPARTMENT_OPERATION = "Search department according to given request parameters";
+        String DEPARTMENT_DETAILS_OPERATION = "Fetch department details";
+        String FETCH_DEPARTMENT_FOR_DROP_DOWN_OPERATION = "Fetch minimal department details (id and name) for dropdown";
+        String FETCH_ACTIVE_DEPARTMENT_FOR_DROP_DOWN_OPERATION = "Fetch minimal active department details (id and name)" +
+                " for dropdown";
+    }
+
 
     //E
 

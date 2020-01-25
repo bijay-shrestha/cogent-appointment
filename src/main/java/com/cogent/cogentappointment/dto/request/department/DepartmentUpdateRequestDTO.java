@@ -1,25 +1,17 @@
 package com.cogent.cogentappointment.dto.request.department;
 
 import com.cogent.cogentappointment.constraintvalidator.Status;
-import io.swagger.annotations.ApiModel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
- * @author Sauravi
+ * @author smriti ON 24/01/2020
  */
-
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@ApiModel
+@Getter
+@Setter
 public class DepartmentUpdateRequestDTO implements Serializable {
 
     @NotNull
@@ -29,7 +21,10 @@ public class DepartmentUpdateRequestDTO implements Serializable {
     private String name;
 
     @NotNull
-    private String code;
+    private String departmentCode;
+
+    @NotNull
+    private String hospitalCode;
 
     @NotNull
     @Status

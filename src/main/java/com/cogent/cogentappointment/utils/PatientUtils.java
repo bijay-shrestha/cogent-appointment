@@ -3,7 +3,6 @@ package com.cogent.cogentappointment.utils;
 import com.cogent.cogentappointment.dto.request.patient.PatientRequestDTO;
 import com.cogent.cogentappointment.dto.response.patient.PatientMinimalResponseDTO;
 import com.cogent.cogentappointment.enums.Gender;
-import com.cogent.cogentappointment.enums.Title;
 import com.cogent.cogentappointment.model.Hospital;
 import com.cogent.cogentappointment.model.Patient;
 
@@ -21,8 +20,7 @@ public class PatientUtils {
 
     public static Patient parseToPatient(PatientRequestDTO requestDTO,
                                          Gender gender,
-                                         Hospital hospital,
-                                         Title title) {
+                                         Hospital hospital) {
         Patient patient = new Patient();
         patient.setName(toUpperCase(requestDTO.getName()));
         patient.setMobileNumber(requestDTO.getMobileNumber());
@@ -30,11 +28,10 @@ public class PatientUtils {
         patient.setEmail(requestDTO.getEmail());
         patient.setIsSelf(requestDTO.getIsSelf());
         patient.setIsRegistered(NO);
-        patient.setEsewaId(requestDTO.getEsewaId());
+        patient.setESewaId(requestDTO.getESewaId());
         patient.setAddress(requestDTO.getAddress());
         patient.setGender(gender);
         patient.setHospitalId(hospital);
-        patient.setTitle(title);
         patient.setStatus(requestDTO.getStatus());
         return patient;
     }
@@ -48,15 +45,13 @@ public class PatientUtils {
     public static Function<Object[], PatientMinimalResponseDTO> parseToPatientMinimalResponseDTO = object -> {
 
         final int PATIENT_ID_INDEX = 0;
-        final int TITLE_INDEX = 1;
-        final int NAME_INDEX = 2;
-        final int MOBILE_NUMBER_INDEX = 3;
-        final int GENDER_INDEX = 4;
+        final int NAME_INDEX = 1;
+        final int MOBILE_NUMBER_INDEX = 2;
+        final int GENDER_INDEX = 3;
 
         //TODO: calculate age
         return PatientMinimalResponseDTO.builder()
                 .patientId(Long.parseLong(object[PATIENT_ID_INDEX].toString()))
-                .title((Title) object[TITLE_INDEX])
                 .name(object[NAME_INDEX].toString())
                 .mobileNumber(object[MOBILE_NUMBER_INDEX].toString())
                 .gender((Gender) (object[GENDER_INDEX]))

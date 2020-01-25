@@ -25,7 +25,6 @@ public class PatientRepositoryTest {
     public void test() {
         String q = " SELECT" +
                 " p.id as patientId," +                              //[0]
-                " p.title as title," +                              //[1]
                 " p.name as name," +                                //[2]
                 " p.mobileNumber as mobileNumber," +                //[3]
                 " p.address as address," +                          //[4]

@@ -17,18 +17,17 @@ public class PatientQuery {
 
     public static final String SELECT_CLAUSE_TO_FETCH_PATIENT_DETAILS =
             " SELECT p.id as patientId," +                              //[0]
-                    " p.title as title," +                              //[1]
-                    " p.name as name," +                                //[2]
-                    " p.mobileNumber as mobileNumber," +                //[3]
-                    " p.address as address," +                          //[4]
-                    " p.email as email," +                              //[5]
-                    " p.gender as gender," +                            //[6]
-                    " p.dateOfBirth as dateOfBirth," +                  //[7]
-                    " p.nepaliDateOfBirth as nepaliDateOfBirth" +       //[8]
+                    " p.name as name," +                                //[1]
+                    " p.mobileNumber as mobileNumber," +                //[2]
+                    " p.address as address," +                          //[3]
+                    " p.email as email," +                              //[4]
+                    " p.gender as gender," +                            //[5]
+                    " p.dateOfBirth as dateOfBirth," +                  //[6]
+                    " p.nepaliDateOfBirth as nepaliDateOfBirth" +       //[7]
                     " FROM Patient p";
 
     public static final String GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS =
-            " WHERE p.esewaId=:esewaId" +
+            " WHERE p.eSewaId=:eSewaId" +
                     " AND p.isSelf=:isSelf" +
                     " AND p.hospitalId.id=:hospitalId" +
                     " AND p.status='Y'";
@@ -38,10 +37,9 @@ public class PatientQuery {
 
     public static final String QUERY_TO_FETCH_MINIMAL_PATIENT =
             " SELECT p.id as patientId," +                              //[0]
-                    " p.title as title," +                              //[1]
-                    " p.name as name," +                                //[2]
-                    " p.mobileNumber as mobileNumber," +                //[3]
-                    " p.gender as gender" +                             //[4]
+                    " p.name as name," +                                //[1]
+                    " p.mobileNumber as mobileNumber," +                //[2]
+                    " p.gender as gender" +                             //[3]
                     " FROM Patient p" +
                     GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS;
 

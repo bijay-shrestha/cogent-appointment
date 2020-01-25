@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.model;
 
 import com.cogent.cogentappointment.enums.Gender;
-import com.cogent.cogentappointment.enums.Title;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -50,8 +49,8 @@ public class Patient implements Serializable {
     @Column(name = "is_registered")
     private Character isRegistered;
 
-    @Column(name = "esewa_id")
-    private String esewaId;
+    @Column(name = "eSewa_id")
+    private String eSewaId;
 
     @Column(name = "address")
     private String address;
@@ -59,10 +58,6 @@ public class Patient implements Serializable {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hospital_id")
     private Hospital hospitalId;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "tile")
-    private Title title;
 
     @Column(name = "registration_number")
     private String registrationNumber;

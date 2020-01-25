@@ -30,7 +30,6 @@ public class AppointmentUtils {
         appointment.setEndTime(requestDTO.getEndTime());
         appointment.setAppointmentNumber(appointmentNumber);
         appointment.setUniqueId(generateRandomNumber(4));
-        appointment.setReason(requestDTO.getReason());
         appointment.setCreatedDateNepali(requestDTO.getCreatedDateNepali());
         appointment.setStatus(requestDTO.getStatus());
 
@@ -55,8 +54,7 @@ public class AppointmentUtils {
         appointment.setStartTime(updateRequestDTO.getStartTime());
         appointment.setEndTime(updateRequestDTO.getEndTime());
         appointment.setStatus(updateRequestDTO.getStatus());
-        appointment.setReason(updateRequestDTO.getReason());
-        ;
+
         appointment.setRemarks(updateRequestDTO.getRemarks());
 //        parseToAppointment(appointment, patient);
     }

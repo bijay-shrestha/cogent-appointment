@@ -5,7 +5,6 @@ import com.cogent.cogentappointment.dto.request.patient.PatientSearchRequestDTO;
 import com.cogent.cogentappointment.dto.response.patient.PatientDetailResponseDTO;
 import com.cogent.cogentappointment.dto.response.patient.PatientMinimalResponseDTO;
 import com.cogent.cogentappointment.enums.Gender;
-import com.cogent.cogentappointment.enums.Title;
 import com.cogent.cogentappointment.exception.DataDuplicationException;
 import com.cogent.cogentappointment.exception.NoContentFoundException;
 import com.cogent.cogentappointment.model.Hospital;
@@ -233,10 +232,6 @@ public class PatientServiceImpl implements PatientService {
         return fetchGenderByCode(genderCode);
     }
 
-    private Title fetchTitle(String titleCode) {
-        return fetchTitleByCode(titleCode);
-    }
-
     private Hospital fetchHospital(Long hospitalId) {
         return hospitalService.fetchActiveHospital(hospitalId);
     }
@@ -244,10 +239,9 @@ public class PatientServiceImpl implements PatientService {
     public Patient savePatient(PatientRequestDTO requestDTO) {
 
         Gender gender = fetchGender(requestDTO.getGender());
-        Title title = fetchTitle(requestDTO.getTitle());
         Hospital hospital = fetchHospital(requestDTO.getHospitalId());
 
-        return save(parseToPatient(requestDTO, gender, hospital, title));
+        return save(parseToPatient(requestDTO, gender, hospital));
     }
 
     private Patient save(Patient patient) {

@@ -163,34 +163,4 @@ public class AppointmentQuery {
                     " AND a.appointmentDate BETWEEN :fromDate AND :toDate" +
                     " AND a.doctorId.id = :doctorId" +
                     " AND a.specializationId.id = :specializationId";
-
-    public static String QUERY_TO_FETCH_ACTIVE__BY_ID =
-            "SELECT a," +
-                    " a.patientTypeId," +
-                    " a.appointmentTypeId," +
-                    " a.appointmentModeId," +
-                    " a.doctorId," +
-                    " dt.gender," +
-                    " dt.country," +
-                    " a.billType," +
-                    " a.patientId," +
-                    " p.surname," +
-                    " p.religion," +
-                    " p.maritalStatus," +
-                    " p.nationality," +
-                    " p.municipality," +
-                    " m.district," +
-                    " d.provinces," +
-                    " p.category," +
-                    " p.title, " +
-                    " s.ethnicity" +
-                    " FROM Appointment a" +
-                    " LEFT JOIN Patient p ON p.id=a.patientId.id" +
-                    " LEFT JOIN Surname s ON s.id=p.surname.id" +
-                    " LEFT JOIN Municipality m ON m.id=p.municipality.id" +
-                    " LEFT JOIN District d ON d.id=m.district.id" +
-                    " LEFT JOIN Doctor dt ON dt.id=a.doctorId.id" +
-                    " WHERE" +
-                    " a.id=:id" +
-                    " AND a.status='Y'";
 }

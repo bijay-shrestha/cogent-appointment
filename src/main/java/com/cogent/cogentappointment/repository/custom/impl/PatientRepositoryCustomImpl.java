@@ -57,13 +57,14 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
         try {
             return transformQueryToSingleResult(query, PatientDetailResponseDTO.class);
         } catch (NoResultException e) {
-            throw new NoContentFoundException(Patient.class, "esewaId", searchRequestDTO.getEsewaId());
+            throw new NoContentFoundException(Patient.class, "eSewaId", searchRequestDTO.getEsewaId());
         }
     }
 
     @Override
     public List<PatientMinimalResponseDTO> fetchMinimalPatientInfo(PatientSearchRequestDTO searchRequestDTO,
                                                                    Pageable pageable) {
+
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_MINIMAL_PATIENT)
                 .setParameter(ESEWA_ID, searchRequestDTO.getEsewaId())
                 .setParameter(IS_SELF, searchRequestDTO.getIsSelf())

@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.dto.response.patient;
 
 import com.cogent.cogentappointment.enums.Gender;
-import com.cogent.cogentappointment.enums.Title;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,8 +19,6 @@ import java.util.Date;
 public class PatientDetailResponseDTO implements Serializable {
 
     private Long patientId;
-
-    private Title title;
 
     private String name;
 

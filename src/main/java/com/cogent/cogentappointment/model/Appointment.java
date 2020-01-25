@@ -56,11 +56,6 @@ public class Appointment implements Serializable {
 
     @Column(name = "unique_id")
     private String uniqueId;
-
-    /*SIGNS, SYMPTOMS, ALLERGY*/
-    @Column(name = "reason")
-    private String reason;
-
     @Column(name = "created_date_nepali")
     private String createdDateNepali;
 

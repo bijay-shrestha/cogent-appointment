@@ -40,16 +40,13 @@ public class PatientRequestDTO implements Serializable {
     private Character isSelf;
 
     @NotNull
-    private String esewaId;
+    private String eSewaId;
 
     @NotNull
     private String address;
 
     @NotNull
     private Long hospitalId;
-
-    @NotNull
-    private String title;
 
     @NotNull
     @Status

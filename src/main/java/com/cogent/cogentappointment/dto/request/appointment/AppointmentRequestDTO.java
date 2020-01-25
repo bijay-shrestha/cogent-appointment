@@ -31,7 +31,6 @@ public class AppointmentRequestDTO implements Serializable {
     @NotNull
     private Long doctorId;
 
-
     @NotNull
     private Date appointmentDate;
 
@@ -48,6 +47,4 @@ public class AppointmentRequestDTO implements Serializable {
     @NotNull
     @NotEmpty
     private String createdDateNepali;
-
-    private String reason;
 }

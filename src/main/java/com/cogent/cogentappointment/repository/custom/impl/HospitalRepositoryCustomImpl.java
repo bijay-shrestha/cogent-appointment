@@ -12,15 +12,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.constants.QueryConstants.ID;
-import static com.cogent.cogentappointment.constants.QueryConstants.NAME;
+import static com.cogent.cogentappointment.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.query.HospitalQuery.*;
 import static com.cogent.cogentappointment.utils.HospitalUtils.parseToHospitalResponseDTO;
 import static com.cogent.cogentappointment.utils.commons.PageableUtils.addPagination;
@@ -37,20 +35,22 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
     private EntityManager entityManager;
 
     @Override
-    public Long fetchHospitalByName(String name) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FIND_HOSPITAL_COUNT_BY_NAME)
-                .setParameter(NAME, name);
+    public List<Object[]> validateHospitalDuplicity(String name, String code) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY)
+                .setParameter(NAME, name)
+                .setParameter(CODE, code);
 
-        return (Long) query.getSingleResult();
+        return query.getResultList();
     }
 
     @Override
-    public Long findHospitalByIdAndName(Long id, String name) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FIND_HOSPITAL_COUNT_BY_ID_AND_NAME)
+    public List<Object[]> validateHospitalDuplicityForUpdate(Long id, String name, String code) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE)
                 .setParameter(ID, id)
-                .setParameter(NAME, name);
+                .setParameter(NAME, name)
+                .setParameter(CODE, code);
 
-        return (Long) query.getSingleResult();
+        return query.getResultList();
     }
 
     @Override

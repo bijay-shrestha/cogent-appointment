@@ -4,34 +4,26 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 /**
- * @author smriti ON 12/01/2020
+ * @author Sauravi
  */
 @Entity
-@Table(name = "hospital")
+@Table(name = "department")
 @Getter
 @Setter
-public class Hospital implements Serializable {
+public class Department implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false, length = 50)
     private String name;
 
-    @Column(name = "code", updatable = false)
-    @Size(max = 4)
+    @Column(name = "code", nullable = false, length = 50)
     private String code;
-
-    @Column(name = "address")
-    private String address;
-
-    @Column(name = "pan_number")
-    private String panNumber;
 
     @Column(name = "status")
     private Character status;

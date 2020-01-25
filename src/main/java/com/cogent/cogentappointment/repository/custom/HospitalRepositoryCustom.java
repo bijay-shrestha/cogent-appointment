@@ -17,9 +17,9 @@ import java.util.List;
 @Qualifier("hospitalRepositoryCustom")
 public interface HospitalRepositoryCustom {
 
-    Long fetchHospitalByName(String name);
+    List<Object[]> validateHospitalDuplicity(String name, String code);
 
-    Long findHospitalByIdAndName(Long id, String name);
+    List<Object[]> validateHospitalDuplicityForUpdate(Long id, String name, String code);
 
     List<HospitalMinimalResponseDTO> search(HospitalSearchRequestDTO searchRequestDTO, Pageable pageable);
 

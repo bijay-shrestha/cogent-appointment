@@ -15,8 +15,7 @@ public class ErrorMessageConstants {
     //B
 
     //C
-    public final static String CODE_DUPLICATION_DEBUG_MESSAGE = " entity is not null with given Code : ";
-    public final static String CODE_DUPLICATION_MESSAGE = " code already exists with  : ";
+    public static final String CODE_DUPLICATION_MESSAGE = "%s already exists with code '%s'";
 
     //D
 
@@ -52,6 +51,10 @@ public class ErrorMessageConstants {
     public static final String NAME_DUPLICATION_MESSAGE = "%s already exists with name '%s'";
     public static final String NAME_AND_MOBILE_NUMBER_DUPLICATION_MESSAGE = "%s already exists with name '%s'" +
             "and mobile number '%s': ";
+
+    public static final String NAME_AND_CODE_DUPLICATION_MESSAGE = "%s already exists with name '%s'" +
+            "and code '%s': ";
+
 
 
     //O

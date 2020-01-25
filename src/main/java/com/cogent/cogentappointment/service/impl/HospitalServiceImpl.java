@@ -9,7 +9,6 @@ import com.cogent.cogentappointment.dto.request.hospital.HospitalUpdateRequestDT
 import com.cogent.cogentappointment.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.dto.response.hospital.HospitalMinimalResponseDTO;
 import com.cogent.cogentappointment.dto.response.hospital.HospitalResponseDTO;
-import com.cogent.cogentappointment.exception.DataDuplicationException;
 import com.cogent.cogentappointment.exception.NoContentFoundException;
 import com.cogent.cogentappointment.model.Hospital;
 import com.cogent.cogentappointment.model.HospitalContactNumber;
@@ -32,7 +31,6 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.cogent.cogentappointment.constants.ErrorMessageConstants.NAME_DUPLICATION_MESSAGE;
 import static com.cogent.cogentappointment.constants.StatusConstants.INACTIVE;
 import static com.cogent.cogentappointment.constants.StringConstant.FORWARD_SLASH;
 import static com.cogent.cogentappointment.exception.utils.ValidationUtils.validateConstraintViolation;
@@ -81,8 +79,10 @@ public class HospitalServiceImpl implements HospitalService {
 
         validateConstraintViolation(validator.validate(requestDTO));
 
-        validateName(hospitalRepository.fetchHospitalByName(requestDTO.getName()),
-                requestDTO.getName());
+        List<Object[]> hospitals = hospitalRepository.validateHospitalDuplicity(
+                requestDTO.getName(), requestDTO.getHospitalCode());
+
+        validateHospital(hospitals, requestDTO.getName(), requestDTO.getHospitalCode());
 
         Hospital hospital = save(convertDTOToHospital(requestDTO));
 
@@ -102,8 +102,10 @@ public class HospitalServiceImpl implements HospitalService {
 
         Hospital hospital = findById(updateRequestDTO.getId());
 
-        validateName(hospitalRepository.findHospitalByIdAndName(updateRequestDTO.getId(), updateRequestDTO.getName()),
-                updateRequestDTO.getName());
+        List<Object[]> hospitals = hospitalRepository.validateHospitalDuplicityForUpdate(
+                updateRequestDTO.getId(), updateRequestDTO.getName(), hospital.getCode());
+
+        validateHospital(hospitals, updateRequestDTO.getName(), hospital.getCode());
 
         parseToUpdatedHospital(updateRequestDTO, hospital);
 
@@ -181,11 +183,6 @@ public class HospitalServiceImpl implements HospitalService {
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
-    }
-
-    private void validateName(Long hospital, String name) {
-        if (hospital.intValue() > 0)
-            throw new DataDuplicationException(String.format(NAME_DUPLICATION_MESSAGE, Hospital.class.getSimpleName(), name));
     }
 
     private Hospital save(Hospital hospital) {

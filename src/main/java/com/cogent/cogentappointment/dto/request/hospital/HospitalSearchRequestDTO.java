@@ -9,12 +9,11 @@ import java.io.Serializable;
  */
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class HospitalSearchRequestDTO implements Serializable {
 
     private String name;
+
+    private String code;
 
     private Character status;
 }

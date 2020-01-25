@@ -7,31 +7,70 @@ import com.cogent.cogentappointment.dto.request.hospital.HospitalUpdateRequestDT
 import com.cogent.cogentappointment.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.dto.response.hospital.HospitalContactNumberResponseDTO;
 import com.cogent.cogentappointment.dto.response.hospital.HospitalResponseDTO;
+import com.cogent.cogentappointment.exception.DataDuplicationException;
 import com.cogent.cogentappointment.model.Hospital;
 import com.cogent.cogentappointment.model.HospitalContactNumber;
 import com.cogent.cogentappointment.model.HospitalLogo;
 import com.cogent.cogentappointment.utils.commons.MapperUtility;
 import com.cogent.cogentappointment.utils.commons.NumberFormatterUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.constants.ErrorMessageConstants.*;
 import static com.cogent.cogentappointment.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.utils.commons.StringUtil.toUpperCase;
+import static java.lang.reflect.Array.get;
 
 /**
  * @author smriti ON 12/01/2020
  */
 public class HospitalUtils {
 
+    public static void validateHospital(List<Object[]> objects,
+                                        String requestedName,
+                                        String requestedCode) {
+        final int NAME = 0;
+        final int CODE = 1;
+
+        objects.forEach(object -> {
+            boolean isNameExists = requestedName.equalsIgnoreCase((String) get(object, NAME));
+            boolean isCodeExists = requestedCode.equalsIgnoreCase((String) get(object, CODE));
+
+            if (isNameExists && isCodeExists)
+                throw new DataDuplicationException(
+                        String.format(NAME_AND_CODE_DUPLICATION_MESSAGE, Hospital.class.getSimpleName(),
+                                requestedName, requestedCode),
+                        "name", requestedName, "code", requestedCode
+                );
+
+            validateName(isNameExists, requestedName);
+            validateCode(isCodeExists, requestedCode);
+        });
+    }
+
+    private static void validateName(boolean isNameExists, String requestedName) {
+        if (isNameExists)
+            throw new DataDuplicationException(
+                    String.format(NAME_DUPLICATION_MESSAGE, Hospital.class.getSimpleName(), requestedName),
+                    "name", requestedName);
+    }
+
+    private static void validateCode(boolean isCodeExists, String requestedCode) {
+        if (isCodeExists)
+            throw new DataDuplicationException(
+                    String.format(CODE_DUPLICATION_MESSAGE, Hospital.class.getSimpleName(), requestedCode),
+                    "code", requestedCode);
+    }
+
     public static Hospital convertDTOToHospital(HospitalRequestDTO hospitalRequestDTO) {
         Hospital hospital = MapperUtility.map(hospitalRequestDTO, Hospital.class);
         hospital.setName(toUpperCase(hospital.getName()));
-        hospital.setCode(NumberFormatterUtils.generateRandomNumber(3));
         return hospital;
     }
 
@@ -100,6 +139,8 @@ public class HospitalUtils {
         final int PAN_NUMBER_INDEX = 4;
         final int REMARKS_INDEX = 5;
         final int FILE_URI_INDEX = 6;
+        final int HOSPITAL_CODE_INDEX = 7;
+        final int CONTACT_DETAILS_INDEX = 8;
 
         return HospitalResponseDTO.builder()
                 .id(Long.parseLong(results[HOSPITAL_ID_INDEX].toString()))
@@ -107,14 +148,17 @@ public class HospitalUtils {
                 .status(results[STATUS_INDEX].toString().charAt(0))
                 .address(results[ADDRESS_INDEX].toString())
                 .panNumber(results[PAN_NUMBER_INDEX].toString())
-                .remarks(results[REMARKS_INDEX].toString())
+                .remarks(Objects.isNull(results[REMARKS_INDEX]) ? null : results[REMARKS_INDEX].toString())
                 .fileUri(Objects.isNull(results[FILE_URI_INDEX]) ? null : results[FILE_URI_INDEX].toString())
-                .contactNumberResponseDTOS(parseToHospitalContactNumberResponseDTOS(results))
+                .contactNumberResponseDTOS(Objects.isNull(results[CONTACT_DETAILS_INDEX]) ?
+                        new ArrayList<>() : parseToHospitalContactNumberResponseDTOS(results))
+                .hospitalCode(results[HOSPITAL_CODE_INDEX].toString())
                 .build();
     }
 
     private static List<HospitalContactNumberResponseDTO> parseToHospitalContactNumberResponseDTOS(Object[] results) {
-        final int CONTACT_DETAILS_INDEX = 7;
+
+        final int CONTACT_DETAILS_INDEX = 8;
 
         String[] contactWithIdAndNumber = results[CONTACT_DETAILS_INDEX].toString().split(COMMA_SEPARATED);
 

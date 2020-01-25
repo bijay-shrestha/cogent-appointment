@@ -10,11 +10,25 @@ import java.util.function.Function;
  */
 public class HospitalQuery {
 
-    public static final String QUERY_TO_FIND_HOSPITAL_COUNT_BY_NAME =
-            "SELECT COUNT(h.id) FROM Hospital h WHERE h.name =:name AND h.status != 'D'";
+    public static final String QUERY_TO_VALIDATE_DUPLICITY =
+            "SELECT " +
+                    " h.name," +                        //[0]
+                    " h.code" +                         //[1]
+                    " FROM Hospital h" +
+                    " WHERE " +
+                    " (h.name =:name OR h.code =:code)" +
+                    " AND h.status != 'D'";
 
-    public static final String QUERY_TO_FIND_HOSPITAL_COUNT_BY_ID_AND_NAME =
-            "SELECT COUNT(h.id) FROM Hospital h WHERE h.id!= :id AND h.name =:name AND h.status != 'D'";
+    public static final String QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE =
+            "SELECT " +
+                    " h.name," +                        //[0]
+                    " h.code" +                         //[1]
+                    " FROM Hospital h" +
+                    " WHERE " +
+                    " h.id!=:id" +
+                    " AND" +
+                    " (h.name =:name OR h.code =:code)" +
+                    " AND h.status != 'D'";
 
     public static final String QUERY_TO_FETCH_HOSPITAL_FOR_DROPDOWN =
             " SELECT" +
@@ -30,7 +44,8 @@ public class HospitalQuery {
                 " h.name as name," +                            //[1]
                 " h.status as status," +                        //[2]
                 " h.address as address," +                      //[3]
-                " tbl.file_uri as fileUri" +                    //[4]
+                " tbl.file_uri as fileUri," +                  //[4]
+                " h.code as hospitalCode"+                     //[5]
                 " FROM" +
                 " hospital h" +
                 " LEFT JOIN" +
@@ -53,6 +68,9 @@ public class HospitalQuery {
                 if (!ObjectUtils.isEmpty(searchRequestDTO.getName()))
                     whereClause += " AND h.name LIKE '%" + searchRequestDTO.getName() + "%'";
 
+                if (!ObjectUtils.isEmpty(searchRequestDTO.getCode()))
+                    whereClause += " AND h.code LIKE '%" + searchRequestDTO.getCode() + "%'";
+
                 whereClause += " ORDER BY h.id DESC";
 
                 return whereClause;
@@ -67,14 +85,16 @@ public class HospitalQuery {
                     " h.pan_number as panNumber," +                  //[4]
                     " h.remarks as remarks," +                      //[5]
                     " tbl1.file_uri as fileUri," +                  //[6]
-                    " tbl2.contact_details as contact_details" +    //[7]
+                    " h.code as hospitalCode,"+                      //[7]
+                    " tbl2.contact_details as contact_details" +    //[8]
                     " FROM" +
                     " hospital h" +
                     " LEFT JOIN" +
                     " (" +
                     " SELECT" +
                     " hl.hospital_id as hospitalId," +
-                    " hl.file_uri FROM hospital_logo hl" +
+                    " hl.file_uri" +
+                    " FROM hospital_logo hl" +
                     " WHERE hl.status = 'Y'" +
                     " )tbl1 ON tbl1.hospitalId= h.id" +
                     " LEFT JOIN " +

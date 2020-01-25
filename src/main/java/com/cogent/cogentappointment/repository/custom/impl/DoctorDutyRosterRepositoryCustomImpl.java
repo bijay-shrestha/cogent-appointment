@@ -2,7 +2,6 @@ package com.cogent.cogentappointment.repository.custom.impl;
 
 import com.cogent.cogentappointment.dto.request.doctorDutyRoster.DoctorDutyRosterSearchRequestDTO;
 import com.cogent.cogentappointment.dto.request.doctorDutyRoster.DoctorDutyRosterStatusRequestDTO;
-import com.cogent.cogentappointment.dto.request.doctorDutyRoster.DoctorDutyRosterTimeRequestDTO;
 import com.cogent.cogentappointment.dto.response.doctorDutyRoster.*;
 import com.cogent.cogentappointment.exception.NoContentFoundException;
 import com.cogent.cogentappointment.model.DoctorDutyRoster;
@@ -98,16 +97,15 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
     }
 
     @Override
-    public DoctorDutyRosterTimeResponseDTO fetchDoctorDutyRosterTime(
-            DoctorDutyRosterTimeRequestDTO requestDTO) {
+    public DoctorDutyRosterTimeResponseDTO fetchDoctorDutyRosterTime(Date date, Long doctorId, Long specializationId) {
 
-        Date date = utilDateToSqlDate(requestDTO.getDate());
+        Date sqlDate = utilDateToSqlDate(date);
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_TIME)
-                .setParameter(DATE, date)
-                .setParameter(DOCTOR_ID, requestDTO.getDoctorId())
-                .setParameter(SPECIALIZATION_ID, requestDTO.getSpecializationId())
-                .setParameter(CODE, getDayCodeFromDate(date));
+                .setParameter(DATE, sqlDate)
+                .setParameter(DOCTOR_ID, doctorId)
+                .setParameter(SPECIALIZATION_ID, specializationId)
+                .setParameter(CODE, getDayCodeFromDate(sqlDate));
 
         try {
             return transformQueryToSingleResult(query, DoctorDutyRosterTimeResponseDTO.class);

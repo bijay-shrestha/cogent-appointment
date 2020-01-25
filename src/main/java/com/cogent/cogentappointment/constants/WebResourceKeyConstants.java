@@ -12,7 +12,6 @@ public class WebResourceKeyConstants {
     public interface AppointmentConstants {
         String BASE_APPOINTMENT = "/appointment";
         String CHECK_AVAILABILITY = "/checkAvailability";
-        String APPOINTMENT_DATES = "/dates";
         String RESCHEDULE = "/reschedule";
     }
 
@@ -40,7 +39,6 @@ public class WebResourceKeyConstants {
 
     public interface DoctorDutyRosterConstants {
         String BASE_DOCTOR_DUTY_ROSTER = "/doctorDutyRoster";
-        String CHECK_AVAILABILITY = "/checkAvailability";
         String DOCTOR_DUTY_ROSTER_OVERRIDE = "/doctorDutyRosterOverride";
         String DOCTOR_DUTY_ROSTER_STATUS = "/doctorDutyRosterStatus";
     }

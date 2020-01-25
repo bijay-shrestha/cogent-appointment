@@ -2,7 +2,6 @@ package com.cogent.cogentappointment.repository.custom;
 
 import com.cogent.cogentappointment.dto.request.doctorDutyRoster.DoctorDutyRosterSearchRequestDTO;
 import com.cogent.cogentappointment.dto.request.doctorDutyRoster.DoctorDutyRosterStatusRequestDTO;
-import com.cogent.cogentappointment.dto.request.doctorDutyRoster.DoctorDutyRosterTimeRequestDTO;
 import com.cogent.cogentappointment.dto.response.doctorDutyRoster.DoctorDutyRosterDetailResponseDTO;
 import com.cogent.cogentappointment.dto.response.doctorDutyRoster.DoctorDutyRosterMinimalResponseDTO;
 import com.cogent.cogentappointment.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
@@ -31,7 +30,9 @@ public interface DoctorDutyRosterRepositoryCustom {
 
     DoctorDutyRosterDetailResponseDTO fetchDetailsById(Long id);
 
-    DoctorDutyRosterTimeResponseDTO fetchDoctorDutyRosterTime(DoctorDutyRosterTimeRequestDTO requestDTO);
+    DoctorDutyRosterTimeResponseDTO fetchDoctorDutyRosterTime(Date date,
+                                                              Long doctorId,
+                                                              Long specializationId);
 
     List<DoctorDutyRosterStatusResponseDTO> fetchDoctorDutyRosterStatus(DoctorDutyRosterStatusRequestDTO requestDTO);
 }

@@ -1,10 +1,11 @@
 package com.cogent.cogentappointment.repository.custom;
 
+import com.cogent.cogentappointment.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
 import com.cogent.cogentappointment.dto.request.appointment.AppointmentSearchRequestDTO;
 import com.cogent.cogentappointment.dto.response.appointment.AppointmentBookedDateResponseDTO;
 import com.cogent.cogentappointment.dto.response.appointment.AppointmentMinimalResponseDTO;
 import com.cogent.cogentappointment.dto.response.appointment.AppointmentResponseDTO;
-import com.cogent.cogentappointment.dto.response.appointment.AppointmentTimeResponseDTO;
+import com.cogent.cogentappointment.dto.response.appointment.AppointmentBookedTimeResponseDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -19,8 +20,7 @@ import java.util.List;
 @Qualifier("appointmentRepositoryCustom")
 public interface AppointmentRepositoryCustom {
 
-    List<AppointmentTimeResponseDTO> checkAvailability(Date date, Long doctorId,
-                                                       Long specializationId);
+    List<AppointmentBookedTimeResponseDTO> checkAvailability(AppointmentCheckAvailabilityRequestDTO requestDTO);
 
     String generateAppointmentNumber(String nepaliCreatedDate);
 

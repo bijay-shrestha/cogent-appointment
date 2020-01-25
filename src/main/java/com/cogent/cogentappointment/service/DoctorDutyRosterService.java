@@ -8,6 +8,7 @@ import com.cogent.cogentappointment.dto.response.doctorDutyRoster.DoctorDutyRost
 import com.cogent.cogentappointment.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,8 +27,6 @@ public interface DoctorDutyRosterService {
                                                     Pageable pageable);
 
     DoctorDutyRosterDetailResponseDTO fetchDetailsById(Long id);
-
-    DoctorDutyRosterTimeResponseDTO fetchDoctorDutyRosterTime(DoctorDutyRosterTimeRequestDTO requestDTO);
 
     List<DoctorDutyRosterStatusResponseDTO> fetchDoctorDutyRosterStatus(DoctorDutyRosterStatusRequestDTO requestDTO);
 

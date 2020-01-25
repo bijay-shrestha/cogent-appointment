@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.repository.custom.impl;
 
 import com.cogent.cogentappointment.dto.request.doctorDutyRoster.DoctorDutyRosterStatusRequestDTO;
-import com.cogent.cogentappointment.dto.request.doctorDutyRoster.DoctorDutyRosterTimeRequestDTO;
 import com.cogent.cogentappointment.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
 import com.cogent.cogentappointment.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import com.cogent.cogentappointment.repository.custom.DoctorDutyRosterOverrideRepositoryCustom;
@@ -45,12 +44,14 @@ public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyR
     }
 
     @Override
-    public DoctorDutyRosterTimeResponseDTO fetchDoctorDutyRosterOverrideTime(DoctorDutyRosterTimeRequestDTO requestDTO) {
+    public DoctorDutyRosterTimeResponseDTO fetchDoctorDutyRosterOverrideTime(Date date,
+                                                                             Long doctorId,
+                                                                             Long specializationId) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_TIME)
-                .setParameter(DATE, utilDateToSqlDate(requestDTO.getDate()))
-                .setParameter(DOCTOR_ID, requestDTO.getDoctorId())
-                .setParameter(SPECIALIZATION_ID, requestDTO.getSpecializationId());
+                .setParameter(DATE, utilDateToSqlDate(date))
+                .setParameter(DOCTOR_ID, doctorId)
+                .setParameter(SPECIALIZATION_ID, specializationId);
 
         List<DoctorDutyRosterTimeResponseDTO> responseDTOList =
                 transformQueryToResultList(query, DoctorDutyRosterTimeResponseDTO.class);

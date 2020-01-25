@@ -4,19 +4,29 @@ import com.cogent.cogentappointment.dto.request.appointment.AppointmentCancelReq
 import com.cogent.cogentappointment.dto.request.appointment.AppointmentRequestDTO;
 import com.cogent.cogentappointment.dto.request.appointment.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.dto.request.appointment.AppointmentUpdateRequestDTO;
+import com.cogent.cogentappointment.dto.response.appointment.AppointmentAvailabilityResponseDTO;
+import com.cogent.cogentappointment.dto.response.appointment.AppointmentBookedTimeResponseDTO;
+import com.cogent.cogentappointment.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import com.cogent.cogentappointment.model.Appointment;
 import com.cogent.cogentappointment.model.Doctor;
 import com.cogent.cogentappointment.model.Patient;
 import com.cogent.cogentappointment.model.Specialization;
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.util.List;
 
+import static com.cogent.cogentappointment.utils.commons.DateUtils.getTimeIn12HourFormat;
 import static com.cogent.cogentappointment.utils.commons.NumberFormatterUtils.generateRandomNumber;
 
 /**
  * @author smriti on 2019-10-24
  */
 public class AppointmentUtils {
+
+    private static final DateTimeFormatter FORMAT = DateTimeFormat.forPattern("HH:mm");
 
     public static Appointment parseToAppointment(AppointmentRequestDTO requestDTO,
                                                  String appointmentNumber,
@@ -121,4 +131,73 @@ public class AppointmentUtils {
 //
 //        return appointmentStatusResponseDTOS;
 //    }
+
+    public static AppointmentAvailabilityResponseDTO parseToAppointmentAvailabilityResponseDTO
+            (DoctorDutyRosterTimeResponseDTO doctorDutyRosterInfo,
+             List<AppointmentBookedTimeResponseDTO> bookedAppointments) {
+
+        return AppointmentAvailabilityResponseDTO.builder()
+//                .doctorDutyRosterTimeInfo(doctorDutyRosterInfo)
+//                .bookedAppointments(bookedAppointments)
+                .build();
+    }
+
+//    private static AppointmentAvailabilityResponseDTO parseAvailabilityResponseDTO(
+//            DoctorDutyRosterTimeResponseDTO doctorDutyRosterInfo,
+//            List<AppointmentBookedTimeResponseDTO> bookedAppointments) {
+//
+//        final Duration duration = Minutes.minutes(doctorDutyRosterInfo.getRosterGapDuration()).toStandardDuration();
+//
+//        List<AppointmentAvailabilityResponseDTO> timeSlotResponseDTOS = new ArrayList<>();
+//
+//        DateTime dateTime = new DateTime(FORMAT.parseDateTime(startTime));
+//
+//        do {
+//            AppointmentTimeSlotResponseDTO appointmentTimeSlotResponseDTO = new AppointmentTimeSlotResponseDTO();
+//
+//            if (!Objects.isNull(appointmentTimeDetails)) {
+//
+//                /*APPOINTMENT TIME - APPOINTMENT STATUS*/
+//                String[] appointmentTime = appointmentTimeDetails.split(COMMA_SEPARATED);
+//
+//                DateTime finalDateTime = dateTime;
+//                String timeMatched = Arrays.stream(appointmentTime)
+//                        .filter(str -> {
+//                            String date = FORMAT.print(finalDateTime);
+//                            return str.contains(FORMAT.print(finalDateTime));
+//                        })
+//                        .findAny()
+//                        .orElse(null);
+//
+//                if (!Objects.isNull(timeMatched)) {
+//                    String[] timeMatchedSplit = timeMatched.split(HYPHEN);
+//
+//                    setTimeSlotMap(appointmentTimeSlotResponseDTO, dateTime, duration, timeMatchedSplit[1].charAt(0));
+//                } else {
+//                    setTimeSlotMap(appointmentTimeSlotResponseDTO, dateTime, duration, ACTIVE);
+//                }
+//            } else {
+//                setTimeSlotMap(appointmentTimeSlotResponseDTO, dateTime, duration, ACTIVE);
+//            }
+//
+//            dateTime = dateTime.plus(duration);
+//
+//            timeSlotResponseDTOS.add(appointmentTimeSlotResponseDTO);
+//
+//        } while (dateTime.compareTo(FORMAT.parseDateTime(endTime)) <= 0);
+//
+//        return timeSlotResponseDTOS;
+//    }
+
+    private static void setTimeSlotMap(AppointmentAvailabilityResponseDTO responseDTO,
+                                       DateTime dateTime,
+                                       Duration durationInMinutes,
+                                       Character status) {
+
+//        responseDTO.setStartTime(FORMAT.print(dateTime));
+//        responseDTO.setEndTime(FORMAT.print(dateTime.plus(durationInMinutes)));
+        responseDTO.setStart(getTimeIn12HourFormat(dateTime.toDate()));
+        responseDTO.setEnd(getTimeIn12HourFormat(dateTime.plus(durationInMinutes).toDate()));
+    }
+
 }

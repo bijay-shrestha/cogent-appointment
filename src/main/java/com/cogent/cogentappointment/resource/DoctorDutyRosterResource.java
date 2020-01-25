@@ -72,11 +72,6 @@ public class DoctorDutyRosterResource {
         return ok(doctorDutyRosterService.fetchDetailsById(id));
     }
 
-//    @PutMapping(CHECK_AVAILABILITY)
-//    @ApiOperation(CHECK_AVAILABILITY_OPERATION)
-//    public DoctorDutyRosterTimeResponseDTO fetchDoctorDutyRosterTime(@Valid @RequestBody DoctorDutyRosterTimeRequestDTO requestDTO) {
-//        return doctorDutyRosterService.fetchDoctorDutyRosterTime(requestDTO);
-//    }
 //
 //    @PutMapping(DOCTOR_DUTY_ROSTER_STATUS)
 //    @ApiOperation(FETCH_DOCTOR_DUTY_ROSTER_STATUS_OPERATION)

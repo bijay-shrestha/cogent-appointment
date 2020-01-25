@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface AppointmentService {
 
-    AppointmentAvailabilityResponseDTO checkAvailability(AppointmentRequestDTO appointmentRequestDTO);
+    AppointmentAvailabilityResponseDTO checkAvailability(AppointmentCheckAvailabilityRequestDTO requestDTO);
 
     String save(AppointmentRequestDTO appointmentRequestDTO);
 

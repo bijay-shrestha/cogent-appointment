@@ -8,15 +8,14 @@ public class SwaggerConstants {
     //A
     public interface AppointmentConstant {
         String BASE_API_VALUE = "This is Appointment Controller";
-        String CHECK_APPOINTMENT_AVAILABILITY = "Check available time schedules of doctor";
+        String CHECK_APPOINTMENT_AVAILABILITY = "Check available time schedules in requested date" +
+                " for specific doctor and specialization";
         String SAVE_OPERATION = "Save new appointment";
         String UPDATE_OPERATION = "Update existing appointment";
         String DELETE_OPERATION = "Set appointment status as 'D' when deleted";
         String SEARCH_OPERATION = "Search appointment according to given request parameters";
         String DETAILS_OPERATION = "Fetch appointment details by its id";
         String RESCHEDULE_OPERATION = "Reschedule appointment date and time.";
-        String FETCH_APPOINTMENT_DATES = "Fetch booked appointment dates within requested date range" +
-                " for specific doctor and specialization";
     }
 
     //B
@@ -60,8 +59,7 @@ public class SwaggerConstants {
         String DELETE_OPERATION = "Set Doctor Duty Roster status as 'D' when deleted";
         String SEARCH_OPERATION = "Search Doctor Duty Roster according to given request parameters";
         String DETAILS_OPERATION = "Fetch Doctor Duty Roster details by its id";
-        String CHECK_AVAILABILITY_OPERATION = "Fetch available doctor time schedules";
-        String FETCH_DOCTOR_DUTY_ROSTER_STATUS_OPERATION = "Fetch doctor duty roster status";
+        String FETCH_DOCTOR_DUTY_ROSTER_STATUS_OPERATION = "Fetch doctor duty roster status (used in Appointment status)";
         String UPDATE_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION = "Update Doctor Duty Roster Override schedules";
     }
 

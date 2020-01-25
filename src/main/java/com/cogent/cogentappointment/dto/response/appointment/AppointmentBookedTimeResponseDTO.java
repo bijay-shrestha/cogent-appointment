@@ -13,7 +13,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppointmentTimeResponseDTO implements Serializable {
+public class AppointmentBookedTimeResponseDTO implements Serializable {
 
     private Date startTime;
 

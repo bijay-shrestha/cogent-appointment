@@ -8,7 +8,6 @@ import java.util.Date;
 /**
  * @author smriti ON 10/12/2019
  */
-
 @Getter
 @Setter
 @Builder
@@ -21,4 +20,6 @@ public class DoctorDutyRosterTimeResponseDTO implements Serializable {
     private Date endTime;
 
     private Character dayOffStatus;
+
+    private Integer rosterGapDuration;
 }

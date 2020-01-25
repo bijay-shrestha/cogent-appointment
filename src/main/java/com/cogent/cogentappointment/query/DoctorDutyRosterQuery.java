@@ -81,7 +81,8 @@ public class DoctorDutyRosterQuery {
             " SELECT" +
                     " dw.startTime as startTime," +                                     //[0]
                     " dw.endTime as endTime," +                                         //[1]
-                    " dw.dayOffStatus as dayOffStatus" +                                //[2]
+                    " dw.dayOffStatus as dayOffStatus," +                               //[2]
+                    " d.rosterGapDuration as rosterGapDuration" +                       //[3]
                     " FROM DoctorDutyRoster d" +
                     " LEFT JOIN DoctorWeekDaysDutyRoster dw ON dw.doctorDutyRosterId.id = d.id" +
                     " LEFT JOIN WeekDays w ON w.id = dw.weekDaysId.id" +

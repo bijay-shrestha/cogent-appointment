@@ -2,16 +2,16 @@ package com.cogent.cogentappointment.service.impl;
 
 import com.cogent.cogentappointment.dto.request.appointment.*;
 import com.cogent.cogentappointment.dto.request.patient.PatientRequestDTO;
-import com.cogent.cogentappointment.dto.response.appointment.AppointmentAvailabilityResponseDTO;
-import com.cogent.cogentappointment.dto.response.appointment.AppointmentBookedDateResponseDTO;
-import com.cogent.cogentappointment.dto.response.appointment.AppointmentMinimalResponseDTO;
-import com.cogent.cogentappointment.dto.response.appointment.AppointmentResponseDTO;
+import com.cogent.cogentappointment.dto.response.appointment.*;
+import com.cogent.cogentappointment.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import com.cogent.cogentappointment.exception.NoContentFoundException;
 import com.cogent.cogentappointment.model.Appointment;
 import com.cogent.cogentappointment.model.Doctor;
 import com.cogent.cogentappointment.model.Patient;
 import com.cogent.cogentappointment.model.Specialization;
 import com.cogent.cogentappointment.repository.AppointmentRepository;
+import com.cogent.cogentappointment.repository.DoctorDutyRosterOverrideRepository;
+import com.cogent.cogentappointment.repository.DoctorDutyRosterRepository;
 import com.cogent.cogentappointment.service.AppointmentService;
 import com.cogent.cogentappointment.service.DoctorService;
 import com.cogent.cogentappointment.service.PatientService;
@@ -21,10 +21,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.log.constants.AppointmentLog.FETCHING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.log.constants.AppointmentLog.FETCHING_PROCESS_STARTED;
@@ -49,35 +52,47 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
 
+    private final DoctorDutyRosterRepository doctorDutyRosterRepository;
+
+    private final DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository;
+
     public AppointmentServiceImpl(PatientService patientService,
                                   DoctorService doctorService,
                                   SpecializationService specializationService,
-                                  AppointmentRepository appointmentRepository) {
+                                  AppointmentRepository appointmentRepository,
+                                  DoctorDutyRosterRepository doctorDutyRosterRepository,
+                                  DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
         this.appointmentRepository = appointmentRepository;
+        this.doctorDutyRosterRepository = doctorDutyRosterRepository;
+        this.doctorDutyRosterOverrideRepository = doctorDutyRosterOverrideRepository;
     }
 
     @Override
-    public AppointmentAvailabilityResponseDTO checkAvailability(AppointmentRequestDTO appointmentRequestDTO) {
+    public AppointmentAvailabilityResponseDTO checkAvailability(AppointmentCheckAvailabilityRequestDTO requestDTO) {
 
-//        Long startTime = getTimeInMillisecondsFromLocalDate();
-//
-//        log.info(CHECK_AVAILABILITY_PROCESS_STARTED);
-//
-//        List<AppointmentTimeResponseDTO> responseDTO = appointmentRepository.checkAvailability(
-//                appointmentRequestDTO.getAppointmentDate(),
-//                appointmentRequestDTO.getDoctorId(),
-//                appointmentRequestDTO.getSpecializationId());
-//
-//        DoctorDutyRosterTimeResponseDTO doctorDutyRosterTimeResponseDTO =
-//                adminService.fetchDoctorDutyRoster(parseToDoctorDutyRosterRequestDTO(appointmentRequestDTO));
-//
-//        log.info(CHECK_AVAILABILITY_PROCESS_STARTED, getDifferenceBetweenTwoTime(startTime));
-//
-//        return parseToAppointmentAvailabilityResponseDTO(responseDTO, doctorDutyRosterTimeResponseDTO);
-        return null;
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(CHECK_AVAILABILITY_PROCESS_STARTED);
+
+        DoctorDutyRosterTimeResponseDTO doctorDutyRosterInfo = fetchDoctorDutyRosterInfo(
+                requestDTO.getAppointmentDate(), requestDTO.getDoctorId(), requestDTO.getSpecializationId());
+
+        AppointmentAvailabilityResponseDTO responseDTO;
+
+        if (doctorDutyRosterInfo.getDayOffStatus().equals(YES)) {
+            responseDTO = parseToAppointmentAvailabilityResponseDTO(doctorDutyRosterInfo, new ArrayList<>());
+        } else {
+            List<AppointmentBookedTimeResponseDTO> bookedAppointments =
+                    appointmentRepository.checkAvailability(requestDTO);
+            responseDTO = parseToAppointmentAvailabilityResponseDTO(doctorDutyRosterInfo, bookedAppointments);
+        }
+
+        log.info(CHECK_AVAILABILITY_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTO;
     }
 
     @Override
@@ -294,5 +309,20 @@ public class AppointmentServiceImpl implements AppointmentService {
 //        }
 //    }
 
+    private DoctorDutyRosterTimeResponseDTO fetchDoctorDutyRosterInfo(Date date,
+                                                                      Long doctorId,
+                                                                      Long specializationId) {
+
+        DoctorDutyRosterTimeResponseDTO responseDTO;
+
+        responseDTO = doctorDutyRosterOverrideRepository.fetchDoctorDutyRosterOverrideTime(
+                date, doctorId, specializationId);
+
+        if (Objects.isNull(responseDTO))
+            responseDTO = doctorDutyRosterRepository.fetchDoctorDutyRosterTime(
+                    date, doctorId, specializationId);
+
+        return responseDTO;
+    }
 }
 

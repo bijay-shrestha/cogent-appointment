@@ -25,7 +25,7 @@ public class DoctorDutyRosterOverrideQuery {
                     " d.startTime as startTime," +                      //[3]
                     " d.endTime as endTime," +                          //[4]
                     " d.dayOffStatus as dayOffStatus," +                 //[5]
-                    " d.remarks as remarks"+                            //[6]
+                    " d.remarks as remarks" +                            //[6]
                     " FROM DoctorDutyRosterOverride d" +
                     " WHERE" +
                     " d.doctorDutyRosterId.status!= 'D'" +
@@ -33,9 +33,10 @@ public class DoctorDutyRosterOverrideQuery {
                     " AND d.doctorDutyRosterId.id = :id";
 
     public static final String QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_TIME =
-            "SELECT d.startTime as startTime," +
-                    " d.endTime as endTime," +
-                    " d.dayOffStatus as dayOffStatus" +
+            "SELECT DATE_FORMAT(d.startTime, '%H:%i') as startTime," +      //[0]
+                    " DATE_FORMAT(d.endTime, '%H:%i') as endTime," +        //[1]
+                    " d.dayOffStatus as dayOffStatus," +                    //[2]
+                    " dd.rosterGapDuration as rosterGapDuration" +          //[3]
                     " FROM DoctorDutyRosterOverride d" +
                     " LEFT JOIN DoctorDutyRoster dd ON dd.id = d.doctorDutyRosterId.id" +
                     " WHERE" +

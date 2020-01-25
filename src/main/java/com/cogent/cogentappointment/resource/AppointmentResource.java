@@ -1,6 +1,8 @@
 package com.cogent.cogentappointment.resource;
 
+import com.cogent.cogentappointment.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
 import com.cogent.cogentappointment.dto.request.appointment.AppointmentRequestDTO;
+import com.cogent.cogentappointment.model.Appointment;
 import com.cogent.cogentappointment.service.AppointmentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -33,7 +35,7 @@ public class AppointmentResource {
 
     @PutMapping(CHECK_AVAILABILITY)
     @ApiOperation(CHECK_APPOINTMENT_AVAILABILITY)
-    public ResponseEntity<?> checkAvailability(@Valid @RequestBody AppointmentRequestDTO requestDTO) {
+    public ResponseEntity<?> checkAvailability(@Valid @RequestBody AppointmentCheckAvailabilityRequestDTO requestDTO) {
         return ok(appointmentService.checkAvailability(requestDTO));
     }
 
@@ -77,11 +79,5 @@ public class AppointmentResource {
 //    public ResponseEntity<?> rescheduleAppointment(@Valid @RequestBody AppointmentRescheduleRequestDTO requestDTO) {
 //        appointmentService.rescheduleAppointment(requestDTO);
 //        return ok().build();
-//    }
-
-//    @PutMapping(APPOINTMENT_DATES)
-//    @ApiOperation(FETCH_APPOINTMENT_DATES)
-//    public List<AppointmentDateResponseDTO> fetchBookedAppointmentDates(@RequestBody AppointmentDateRequestDTO requestDTO) {
-//        return appointmentService.fetchBookedAppointmentDates(requestDTO);
 //    }
 }

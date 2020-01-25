@@ -11,10 +11,14 @@ import com.cogent.cogentappointment.exception.BadRequestException;
 import com.cogent.cogentappointment.exception.DataDuplicationException;
 import com.cogent.cogentappointment.exception.NoContentFoundException;
 import com.cogent.cogentappointment.model.*;
+import com.cogent.cogentappointment.repository.AppointmentRepository;
 import com.cogent.cogentappointment.repository.DoctorDutyRosterOverrideRepository;
 import com.cogent.cogentappointment.repository.DoctorDutyRosterRepository;
 import com.cogent.cogentappointment.repository.DoctorWeekDaysDutyRosterRepository;
-import com.cogent.cogentappointment.service.*;
+import com.cogent.cogentappointment.service.DoctorDutyRosterService;
+import com.cogent.cogentappointment.service.DoctorService;
+import com.cogent.cogentappointment.service.SpecializationService;
+import com.cogent.cogentappointment.service.WeekDaysService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -58,7 +62,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
     private final DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository;
 
-    private final AppointmentService appointmentService;
+    private final AppointmentRepository appointmentRepository;
 
     public DoctorDutyRosterServiceImpl(DoctorDutyRosterRepository doctorDutyRosterRepository,
                                        DoctorService doctorService,
@@ -66,14 +70,14 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
                                        WeekDaysService weekDaysService,
                                        DoctorWeekDaysDutyRosterRepository doctorWeekDaysDutyRosterRepository,
                                        DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository,
-                                       AppointmentService appointmentService) {
+                                       AppointmentRepository appointmentRepository) {
         this.doctorDutyRosterRepository = doctorDutyRosterRepository;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
         this.weekDaysService = weekDaysService;
         this.doctorWeekDaysDutyRosterRepository = doctorWeekDaysDutyRosterRepository;
         this.doctorDutyRosterOverrideRepository = doctorDutyRosterOverrideRepository;
-        this.appointmentService = appointmentService;
+        this.appointmentRepository = appointmentRepository;
     }
 
     @Override
@@ -221,23 +225,6 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
     }
 
     @Override
-    public DoctorDutyRosterTimeResponseDTO fetchDoctorDutyRosterTime(DoctorDutyRosterTimeRequestDTO requestDTO) {
-
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(FETCHING_DETAIL_PROCESS_STARTED, DOCTOR_DUTY_ROSTER);
-        DoctorDutyRosterTimeResponseDTO responseDTO;
-
-        responseDTO = doctorDutyRosterOverrideRepository.fetchDoctorDutyRosterOverrideTime(requestDTO);
-
-        if (Objects.isNull(responseDTO))
-            responseDTO = doctorDutyRosterRepository.fetchDoctorDutyRosterTime(requestDTO);
-
-        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, DOCTOR_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
-        return responseDTO;
-    }
-
-    @Override
     public List<DoctorDutyRosterStatusResponseDTO> fetchDoctorDutyRosterStatus
             (DoctorDutyRosterStatusRequestDTO requestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
@@ -261,7 +248,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
     private void validateAppointmentCount(Date overrideFromDate, Date overrideToDate,
                                           Long doctorId, Long specializationId) {
 
-        Long appointments = appointmentService.fetchBookedAppointmentCount(
+        Long appointments = appointmentRepository.fetchBookedAppointmentCount(
                 overrideFromDate, overrideToDate, doctorId, specializationId);
 
         if (appointments.intValue() > 0)
@@ -411,7 +398,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
     }
 
     private List<AppointmentBookedDateResponseDTO> fetchBookedAppointments(DoctorDutyRoster doctorDutyRoster) {
-        return appointmentService.fetchBookedAppointmentDates(
+        return appointmentRepository.fetchBookedAppointmentDates(
                 doctorDutyRoster.getFromDate(),
                 doctorDutyRoster.getToDate(),
                 doctorDutyRoster.getDoctorId().getId(),

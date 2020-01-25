@@ -4,24 +4,18 @@ import com.cogent.cogentappointment.dto.response.doctorDutyRoster.DoctorDutyRost
 import lombok.*;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 /**
- * @author smriti ON 09/12/2019
+ * @author smriti ON 25/01/2020
  */
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppointmentAvailabilityResponseDTO implements Serializable {
+public class AppointmentCheckAvailabilityResponseDTO implements Serializable {
+    private List<AppointmentAvailabilityResponseDTO> availableAppointments;
 
-    private Date startTime;
-
-    private Date endTime;
-
-    private String start;
-
-    private String end;
+    private DoctorDutyRosterTimeResponseDTO doctorDutyRosterTimeInfo;
 }

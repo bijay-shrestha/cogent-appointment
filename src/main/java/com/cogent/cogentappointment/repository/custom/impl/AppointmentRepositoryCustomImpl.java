@@ -1,10 +1,11 @@
 package com.cogent.cogentappointment.repository.custom.impl;
 
+import com.cogent.cogentappointment.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
 import com.cogent.cogentappointment.dto.request.appointment.AppointmentSearchRequestDTO;
 import com.cogent.cogentappointment.dto.response.appointment.AppointmentBookedDateResponseDTO;
+import com.cogent.cogentappointment.dto.response.appointment.AppointmentBookedTimeResponseDTO;
 import com.cogent.cogentappointment.dto.response.appointment.AppointmentMinimalResponseDTO;
 import com.cogent.cogentappointment.dto.response.appointment.AppointmentResponseDTO;
-import com.cogent.cogentappointment.dto.response.appointment.AppointmentTimeResponseDTO;
 import com.cogent.cogentappointment.exception.NoContentFoundException;
 import com.cogent.cogentappointment.model.Appointment;
 import com.cogent.cogentappointment.repository.custom.AppointmentRepositoryCustom;
@@ -39,15 +40,14 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     private EntityManager entityManager;
 
     @Override
-    public List<AppointmentTimeResponseDTO> checkAvailability(Date date, Long doctorId,
-                                                              Long specializationId) {
+    public List<AppointmentBookedTimeResponseDTO> checkAvailability(AppointmentCheckAvailabilityRequestDTO requestDTO) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_BOOKED_APPOINTMENT)
-                .setParameter(DATE, utilDateToSqlDate(date))
-                .setParameter(DOCTOR_ID, doctorId)
-                .setParameter(SPECIALIZATION_ID, specializationId);
+                .setParameter(DATE, utilDateToSqlDate(requestDTO.getAppointmentDate()))
+                .setParameter(DOCTOR_ID, requestDTO.getDoctorId())
+                .setParameter(SPECIALIZATION_ID, requestDTO.getSpecializationId());
 
-        return transformQueryToResultList(query, AppointmentTimeResponseDTO.class);
+        return transformQueryToResultList(query, AppointmentBookedTimeResponseDTO.class);
     }
 
     @Override

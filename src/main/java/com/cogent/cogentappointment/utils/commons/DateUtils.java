@@ -84,4 +84,9 @@ public class DateUtils {
         return (month < APPLICATION_STARTING_FISCAL_MONTH)
                 ? (year + APPLICATION_ENDING_FISCAL_DAY) : (year + 1 + APPLICATION_ENDING_FISCAL_DAY);
     }
+
+    public static String getTimeIn12HourFormat(Date date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm a");
+        return dateFormat.format(date);
+    }
 }

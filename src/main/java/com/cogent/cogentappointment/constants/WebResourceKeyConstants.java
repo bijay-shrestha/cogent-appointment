@@ -38,6 +38,12 @@ public class WebResourceKeyConstants {
         String DOCTOR_ID_PATH_VARIABLE_BASE = "/{doctorId}";
     }
 
+    public interface DoctorDutyRosterConstants {
+        String BASE_DOCTOR_DUTY_ROSTER = "/doctorDutyRoster";
+        String CHECK_AVAILABILITY = "/checkAvailability";
+        String DOCTOR_DUTY_ROSTER_OVERRIDE = "/doctorDutyRosterOverride";
+        String DOCTOR_DUTY_ROSTER_STATUS = "/doctorDutyRosterStatus";
+    }
 
     //E
 
@@ -108,6 +114,9 @@ public class WebResourceKeyConstants {
     //V
 
     //W
+    public interface WeekDaysConstants {
+        String BASE_WEEK_DAYS = "/weekDays";
+    }
 
 
     //X

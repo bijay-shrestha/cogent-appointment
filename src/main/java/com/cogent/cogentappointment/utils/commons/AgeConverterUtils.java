@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.utils;
+package com.cogent.cogentappointment.utils.commons;
 
 import java.time.LocalDate;
 import java.time.Period;

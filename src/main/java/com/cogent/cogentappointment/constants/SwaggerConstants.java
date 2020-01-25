@@ -29,6 +29,18 @@ public class SwaggerConstants {
 
 
     //D
+    public interface DepartmentConstant {
+        String BASE_DEPARTMENT_API_VALUE = "This is Department Controller";
+        String SAVE_DEPARTMENT_OPERATION = "Save new department";
+        String UPDATE_DEPARTMENT_OPERATION = "Update existing department";
+        String DELETE_DEPARTMENT_OPERATION = "Set department status as 'D' when deleted";
+        String SEARCH_DEPARTMENT_OPERATION = "Search department according to given request parameters";
+        String DEPARTMENT_DETAILS_OPERATION = "Fetch department details";
+        String FETCH_DEPARTMENT_FOR_DROP_DOWN_OPERATION = "Fetch minimal department details (id and name) for dropdown";
+        String FETCH_ACTIVE_DEPARTMENT_FOR_DROP_DOWN_OPERATION = "Fetch minimal active department details (id and name)" +
+                " for dropdown";
+    }
+
     public interface DoctorConstant {
         String BASE_API_VALUE = "This is Doctor Controller";
         String SAVE_OPERATION = "Save new Doctor like Dr.Sanjeeev Upreti, Dr. Daniel Shrestha, etc";
@@ -40,16 +52,16 @@ public class SwaggerConstants {
         String FETCH_DETAILS_FOR_DROPDOWN = "Fetch Doctor details (id and name) for dropdown";
     }
 
-    public interface DepartmentConstant {
-        String BASE_DEPARTMENT_API_VALUE = "This is Department Controller";
-        String SAVE_DEPARTMENT_OPERATION = "Save new department";
-        String UPDATE_DEPARTMENT_OPERATION = "Update existing department";
-        String DELETE_DEPARTMENT_OPERATION = "Set department status as 'D' when deleted";
-        String SEARCH_DEPARTMENT_OPERATION = "Search department according to given request parameters";
-        String DEPARTMENT_DETAILS_OPERATION = "Fetch department details";
-        String FETCH_DEPARTMENT_FOR_DROP_DOWN_OPERATION = "Fetch minimal department details (id and name) for dropdown";
-        String FETCH_ACTIVE_DEPARTMENT_FOR_DROP_DOWN_OPERATION = "Fetch minimal active department details (id and name)" +
-                " for dropdown";
+    public interface DoctorDutyRosterConstant {
+        String BASE_API_VALUE = "This is Doctor Duty Roster Controller";
+        String SAVE_OPERATION = "Save Doctor Duty Roster";
+        String UPDATE_OPERATION = "Update Doctor Duty Roster";
+        String DELETE_OPERATION = "Set Doctor Duty Roster status as 'D' when deleted";
+        String SEARCH_OPERATION = "Search Doctor Duty Roster according to given request parameters";
+        String DETAILS_OPERATION = "Fetch Doctor Duty Roster details by its id";
+        String CHECK_AVAILABILITY_OPERATION = "Fetch available doctor time schedules";
+        String FETCH_DOCTOR_DUTY_ROSTER_STATUS_OPERATION = "Fetch doctor duty roster status";
+        String UPDATE_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION = "Update Doctor Duty Roster Override schedules";
     }
 
 
@@ -134,6 +146,10 @@ public class SwaggerConstants {
     //V
 
     //W
+    public interface WeekDaysConstant {
+        String BASE_API_VALUE = "This is Week Days Controller.";
+        String FETCH_ACTIVE_WEEK_DAYS = "Fetch active week days.";
+    }
 
 
     //X

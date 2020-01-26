@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.model;
 
+import com.cogent.cogentappointment.enums.Gender;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -39,9 +40,9 @@ public class Admin implements Serializable {
     @Column(name = "has_mac_binding")
     private Character hasMacBinding;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hospital_id")
-    private Hospital hospital;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "gender")
+    private Gender gender;
 
     @Column(name ="remarks")
     private String remarks;

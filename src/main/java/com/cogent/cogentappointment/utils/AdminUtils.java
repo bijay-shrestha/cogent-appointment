@@ -41,7 +41,6 @@ public class AdminUtils {
         admin.setMobileNumber(adminRequestDTO.getMobileNumber());
         admin.setStatus(adminRequestDTO.getStatus());
         admin.setHasMacBinding(adminRequestDTO.getHasMacBinding());
-        admin.setHospital(hospital);
         admin.setIsFirstLogin(YES);
         return admin;
     }
@@ -55,7 +54,6 @@ public class AdminUtils {
         admin.setMobileNumber(adminRequestDTO.getMobileNumber());
         admin.setStatus(adminRequestDTO.getStatus());
         admin.setHasMacBinding(adminRequestDTO.getHasMacBinding());
-        admin.setHospital(hospital);
         admin.setRemarks(adminRequestDTO.getRemarks());
         /*MODIFIED DATE AND MODIFIED BY*/
     }

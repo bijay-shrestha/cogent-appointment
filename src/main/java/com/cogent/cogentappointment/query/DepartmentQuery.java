@@ -25,7 +25,7 @@ public class DepartmentQuery {
             " SELECT d.name," +
                     " d.code" +
                     " FROM  Department d" +
-                    " LEFT JOIN Hospital  h ON h.id = d.hospital.id" +
+                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE" +
                     " d.status !='D'" +
                     " AND h.status !='D'" +
@@ -40,8 +40,9 @@ public class DepartmentQuery {
                             " d.name as name," +                        //[1]
                             " d.code as departmentCode," +               //[2]
                             " d.status as status," +                     //[3]
-                            " d.hospitalId.name as hospitalName" +        //[4]
+                            " h.name as hospitalName" +                  //[4]
                             " FROM Department d" +
+                            " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                             GET_WHERE_CLAUSE_FOR_SEARCH(searchRequestDTO));
 
     private static String GET_WHERE_CLAUSE_FOR_SEARCH(DepartmentSearchRequestDTO searchRequestDTO) {
@@ -59,6 +60,9 @@ public class DepartmentQuery {
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
             whereClause += " AND d.status='" + searchRequestDTO.getStatus() + "'";
+
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getHospitalId()))
+            whereClause += " AND h.id=" + searchRequestDTO.getHospitalId();
 
         whereClause += " ORDER BY d.id DESC";
 

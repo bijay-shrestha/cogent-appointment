@@ -63,8 +63,10 @@ public class ProfileServiceImpl implements ProfileService {
 
         log.info(SAVING_PROCESS_STARTED, PROFILE);
 
-        validateName(profileRepository.findProfileCountByName(profileRequestDTO.getProfileDTO().getName()),
-                profileRequestDTO.getProfileDTO().getName());
+        Long profileCount = profileRepository.validateDuplicity(profileRequestDTO.getProfileDTO().getName(),
+                profileRequestDTO.getProfileDTO().getHospitalId());
+
+        validateName(profileCount, profileRequestDTO.getProfileDTO().getName());
 
         Department department = findDepartmentById(profileRequestDTO.getProfileDTO().getDepartmentId());
 
@@ -91,8 +93,12 @@ public class ProfileServiceImpl implements ProfileService {
 
         Profile profile = findById(requestDTO.getProfileDTO().getId());
 
-        validateName(profileRepository.findProfileCountByIdAndName(requestDTO.getProfileDTO().getId(),
-                requestDTO.getProfileDTO().getName()), requestDTO.getProfileDTO().getName());
+        Long profileCount = profileRepository.validateDuplicityForUpdate(
+                requestDTO.getProfileDTO().getId(),
+                requestDTO.getProfileDTO().getName(),
+                requestDTO.getProfileDTO().getHospitalId());
+
+        validateName(profileCount, requestDTO.getProfileDTO().getName());
 
         Department department = findDepartmentById(requestDTO.getProfileDTO().getDepartmentId());
 
@@ -210,6 +216,5 @@ public class ProfileServiceImpl implements ProfileService {
         return departmentRepository.findActiveDepartmentById(id)
                 .orElseThrow(() -> new NoContentFoundException(Department.class, "id", id.toString()));
     }
-
 }
 

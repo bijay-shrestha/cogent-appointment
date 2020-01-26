@@ -10,15 +10,32 @@ import java.util.function.Function;
  */
 public class ProfileQuery {
 
-    public static final String QUERY_TO_FIND_PROFILE_COUNT_BY_NAME =
-            "SELECT COUNT(p.id) FROM Profile p WHERE p.name =:name AND p.status != 'D'";
+    public static final String QUERY_TO_VALIDATE_DUPLICITY =
+            "SELECT " +
+                    " COUNT(p.id)" +                        //[0]
+                    " FROM Profile p" +
+                    " LEFT JOIN Department d ON d.id = p.department.id" +
+                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
+                    " WHERE " +
+                    " p.name =:name AND h.id =:hospitalId" +
+                    " AND h.status != 'D'" +
+                    " AND p.status != 'D'";
 
-    public static final String QUERY_TO_FIND_PROFILE_COUNT_BY_ID_AND_NAME =
-            "SELECT COUNT(p.id) FROM Profile p WHERE p.id!= :id AND p.name =:name AND p.status != 'D'";
+    public static final String QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE =
+            "SELECT " +
+                    " COUNT(p.id)" +                        //[0]
+                    " FROM Profile p" +
+                    " LEFT JOIN Department d ON d.id = p.department.id" +
+                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
+                    " WHERE " +
+                    " p.id!= :id" +
+                    " AND p.name =:name AND h.id =:hospitalId" +
+                    " AND h.status != 'D'" +
+                    " AND p.status != 'D'";
 
     private static Function<ProfileSearchRequestDTO, String> GET_WHERE_CLAUSE_FOR_SEARCH_PROFILE =
             (searchRequestDTO) -> {
-                String whereClause = " WHERE p.status!='D'";
+                String whereClause = " WHERE p.status!='D' AND h.status!='D'";
 
                 if (!ObjectUtils.isEmpty(searchRequestDTO.getName()))
                     whereClause += " AND p.name LIKE '%" + searchRequestDTO.getName() + "%'";
@@ -28,6 +45,9 @@ public class ProfileQuery {
 
                 if (!ObjectUtils.isEmpty(searchRequestDTO.getDepartmentId()))
                     whereClause += " AND d.id=" + searchRequestDTO.getDepartmentId();
+
+                if (!ObjectUtils.isEmpty(searchRequestDTO.getHospitalId()))
+                    whereClause += " AND h.id=" + searchRequestDTO.getHospitalId();
 
                 whereClause += " ORDER BY p.id DESC";
 
@@ -39,10 +59,12 @@ public class ProfileQuery {
                 " p.id as id," +                                             //[0]
                 " p.name as name," +                                        //[1]
                 " p.status as status," +                                    //[2]
-                " d.name as departmentName" +                                //[3]
+                " d.name as departmentName," +                               //[3]
+                " h.name as hospitalName" +
                 " FROM" +
                 " Profile p" +
                 " LEFT JOIN Department d ON d.id = p.department.id" +
+                " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                 GET_WHERE_CLAUSE_FOR_SEARCH_PROFILE.apply(searchRequestDTO);
     };
 
@@ -51,15 +73,19 @@ public class ProfileQuery {
                     " p.name as name," +                                    //[0]
                     " p.status as status," +                               //[1]
                     " p.description as description," +                     //[2]
-                    " p.remarks as remarks," +                             //[6]
-                    " d.id as departmentId," +                             //[7]
-                    " d.name as departmentName" +                          //[8]
+                    " p.remarks as remarks," +                             //[3]
+                    " d.id as departmentId," +                             //[4]
+                    " d.name as departmentName," +                         //[5]
+                    " h.id as hospitalId," +                               //[6]
+                    " h.name as hospitalName" +                            //[7]
                     " FROM" +
                     " Profile p" +
                     " LEFT JOIN Department d ON d.id = p.department.id" +
+                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE" +
                     " p.id=:id" +
-                    " AND p.status!='D'";
+                    " AND p.status!='D'" +
+                    " AND h.status!='D'";
 
     public static final String QUERY_TO_FETCH_PROFILE_MENU_DETAILS =
             " SELECT" +
@@ -75,7 +101,6 @@ public class ProfileQuery {
                     " pm.profile.id=:id" +
                     " AND pm.status='Y'";
 
-
     public static final String QUERY_TO_FETCH_ACTIVE_PROFILES_FOR_DROPDOWN =
             " SELECT id as value, name as label FROM Profile WHERE status ='Y'";
 
@@ -83,8 +108,10 @@ public class ProfileQuery {
             " SELECT p.id as value," +
                     " p.name as label" +
                     " FROM Profile p" +
+                    " LEFT JOIN Department d ON d.id = p.department.id" +
                     " WHERE p.status ='Y'" +
-                    " AND p.department.id =:id";
+                    " AND d.status ='Y'" +
+                    " AND d.id =:id";
 
     public static final String QUERY_TO_FETCH_ASSIGNED_PROFILE_RESPONSE =
             "SELECT" +

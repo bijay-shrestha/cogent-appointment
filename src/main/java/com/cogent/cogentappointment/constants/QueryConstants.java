@@ -57,7 +57,6 @@ public class QueryConstants {
     public interface PatientQueryConstants {
         String ESEWA_ID = "eSewaId";
         String IS_SELF = "isSelf";
-        String HOSPITAL_ID = "hospitalId";
     }
 
     //Q

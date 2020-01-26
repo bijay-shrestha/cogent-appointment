@@ -24,7 +24,7 @@ public class Department implements Serializable {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hospital_id")
-    private Hospital hospitalId;
+    private Hospital hospital;
 
     @Column(name = "status")
     private Character status;

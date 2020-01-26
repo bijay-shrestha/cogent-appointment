@@ -19,9 +19,9 @@ import java.util.List;
 @Qualifier("profileRepositoryCustom")
 public interface ProfileRepositoryCustom {
 
-    Long findProfileCountByName(String name);
+    Long validateDuplicity(String name, Long hospitalId);
 
-    Long findProfileCountByIdAndName(Long id, String name);
+    Long validateDuplicityForUpdate(Long profileId, String name, Long hospitalId);
 
     List<ProfileMinimalResponseDTO> search(ProfileSearchRequestDTO searchRequestDTO, Pageable pageable);
 

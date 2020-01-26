@@ -26,6 +26,9 @@ public class ProfileUpdateDTO implements Serializable {
     private String name;
 
     @NotNull
+    private Long hospitalId;
+
+    @NotNull
     @NotEmpty
     private String description;
 

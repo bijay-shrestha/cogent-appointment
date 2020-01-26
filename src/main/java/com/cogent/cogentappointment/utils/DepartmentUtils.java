@@ -18,12 +18,12 @@ public class DepartmentUtils {
         department.setName(toUpperCase(requestDTO.getName()));
         department.setCode(toUpperCase(requestDTO.getDepartmentCode()));
         department.setStatus(requestDTO.getStatus());
-        department.setHospitalId(hospital);
+        department.setHospital(hospital);
         return department;
     }
 
     public static void parseToUpdatedDepartment(DepartmentUpdateRequestDTO updateRequestDTO,
-                                                      Department department) {
+                                                Department department) {
 
         department.setName(toUpperCase(updateRequestDTO.getName()));
         department.setCode(toUpperCase(updateRequestDTO.getDepartmentCode()));

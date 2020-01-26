@@ -14,7 +14,7 @@ public class DepartmentQuery {
             " SELECT d.name," +
                     " d.code" +
                     " FROM  Department d" +
-                    " LEFT JOIN Hospital  h ON h.id = d.hospitalId.id" +
+                    " LEFT JOIN Hospital  h ON h.id = d.hospital.id" +
                     " WHERE" +
                     " d.status !='D'" +
                     " AND h.status !='D'" +
@@ -25,7 +25,7 @@ public class DepartmentQuery {
             " SELECT d.name," +
                     " d.code" +
                     " FROM  Department d" +
-                    " LEFT JOIN Hospital  h ON h.id = d.hospitalId.id" +
+                    " LEFT JOIN Hospital  h ON h.id = d.hospital.id" +
                     " WHERE" +
                     " d.status !='D'" +
                     " AND h.status !='D'" +
@@ -74,7 +74,7 @@ public class DepartmentQuery {
                     " h.id as hospitalId," +                        //[4]
                     " h.name as hospitalName" +                     //[5]
                     " FROM Department d" +
-                    " LEFT JOIN Hospital h ON h.id =d.hospitalId.id" +
+                    " LEFT JOIN Hospital h ON h.id =d.hospital.id" +
                     " WHERE d.id =:id" +
                     " AND d.status != 'D'" +
                     " AND h.status!='D'";
@@ -100,9 +100,9 @@ public class DepartmentQuery {
                     " d.id as value," +
                     " d.name as label" +
                     " FROM Department d" +
-                    " LEFT JOIN Hospital h ON h.id =d.hospitalId.id" +
+                    " LEFT JOIN Hospital h ON h.id =d.hospital.id" +
                     " WHERE d.status = 'Y'" +
-                    " AND h.status = 'Y'"+
+                    " AND h.status = 'Y'" +
                     " AND h.id=:hospitalId" +
                     " ORDER BY d.id DESC";
 }

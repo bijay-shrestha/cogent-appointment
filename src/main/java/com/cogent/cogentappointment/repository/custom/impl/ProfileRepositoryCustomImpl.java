@@ -38,18 +38,20 @@ public class ProfileRepositoryCustomImpl implements ProfileRepositoryCustom {
     private EntityManager entityManager;
 
     @Override
-    public Long findProfileCountByName(String name) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FIND_PROFILE_COUNT_BY_NAME)
-                .setParameter(NAME, name);
+    public Long validateDuplicity(String name, Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY)
+                .setParameter(NAME, name)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Long) query.getSingleResult();
     }
 
     @Override
-    public Long findProfileCountByIdAndName(Long id, String name) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FIND_PROFILE_COUNT_BY_ID_AND_NAME)
-                .setParameter(ID, id)
-                .setParameter(NAME, name);
+    public Long validateDuplicityForUpdate(Long profileId, String name, Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE)
+                .setParameter(ID, profileId)
+                .setParameter(NAME, name)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Long) query.getSingleResult();
     }

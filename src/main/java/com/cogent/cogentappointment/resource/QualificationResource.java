@@ -67,7 +67,7 @@ public class QualificationResource {
         return ok().body(qualificationService.search(searchRequestDTO, pageable));
     }
 
-    @GetMapping(DROPDOWN + ACTIVE)
+    @GetMapping(ACTIVE + MIN)
     @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
     public ResponseEntity<List<QualificationDropdownDTO>> fetchQualificationForDropDown() {
         return ok(qualificationService.fetchActiveQualificationForDropDown());

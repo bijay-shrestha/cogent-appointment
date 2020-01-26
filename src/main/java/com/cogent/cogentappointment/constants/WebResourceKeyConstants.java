@@ -24,11 +24,11 @@ public class WebResourceKeyConstants {
 
 
     //D
-    public static final String DROPDOWN = "/dropdown";
     public static final String DETAIL = "/detail";
 
     public interface DepartmentConstants {
         String BASE_DEPARTMENT = "/department";
+        String DEPARTMENT_ID_PATH_VARIABLE_BASE = "/{departmentId}";
     }
 
     public interface DoctorConstants {
@@ -81,6 +81,9 @@ public class WebResourceKeyConstants {
         String OTHERS = "/others";
     }
 
+    public interface ProfileSetupConstants {
+        String BASE_PROFILE = "/profile";
+    }
 
     //Q
     public interface QualificationConstants {

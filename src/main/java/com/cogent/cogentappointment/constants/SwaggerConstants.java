@@ -105,6 +105,18 @@ public class SwaggerConstants {
         String FETCH_DETAILS_BY_ID = " Fetch patient(with type: OTHERS) details by id";
     }
 
+    public interface ProfileConstant {
+        String BASE_API_VALUE = "This is Profile Controller";
+        String SAVE_OPERATION = "Save new profile";
+        String UPDATE_OPERATION = "Update existing profile";
+        String DELETE_OPERATION = "Set profile status as 'D' when deleted";
+        String SEARCH_OPERATION = "Search profile according to given request parameters";
+        String DETAILS_OPERATION = "Fetch profile details by its id";
+        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal profile details (id and name) for dropdown";
+        String FETCH_PROFILE_BY_DEPARTMENT_ID = "Fetch active profiles by department id";
+    }
+
+
     //Q
     public interface QualificationConstant {
         String BASE_API_VALUE = "This is Qualification Controller";

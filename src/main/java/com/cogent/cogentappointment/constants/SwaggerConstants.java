@@ -144,7 +144,7 @@ public class SwaggerConstants {
         String UPDATE_OPERATION = "Update existing profile";
         String DELETE_OPERATION = "Set profile status as 'D' when deleted";
         String SEARCH_OPERATION = "Search profile according to given request parameters";
-        String DETAILS_OPERATION = "Fetch profile details by its id";
+        String DETAILS_OPERATION = "Fetch profile details by its id. Group profile-menu response by parent-id";
         String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal profile details (id and name) for dropdown";
         String FETCH_PROFILE_BY_DEPARTMENT_ID = "Fetch active profiles by department id";
     }

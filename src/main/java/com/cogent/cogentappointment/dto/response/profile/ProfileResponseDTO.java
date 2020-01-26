@@ -24,5 +24,9 @@ public class ProfileResponseDTO implements Serializable{
 
     private String departmentName;
 
+    private Long hospitalId;
+
+    private String hospitalName;
+
     private String remarks;
 }

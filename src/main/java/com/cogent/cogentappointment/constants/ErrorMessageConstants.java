@@ -86,10 +86,10 @@ public class ErrorMessageConstants {
     //N
     public static final String NAME_DUPLICATION_MESSAGE = "%s already exists with name '%s'";
     public static final String NAME_AND_MOBILE_NUMBER_DUPLICATION_MESSAGE = "%s already exists with name '%s' " +
-            "and mobile number '%s': ";
+            "and mobile number '%s'";
 
     public static final String NAME_AND_CODE_DUPLICATION_MESSAGE = "%s already exists with name '%s' " +
-            "and code '%s': ";
+            "and code '%s' ";
 
 
     //O

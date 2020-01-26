@@ -33,7 +33,7 @@ public class QueryConstants {
     //G
 
     //H
-    public static final String HOSPITAL_CODE = "hospitalCode";
+    public static final String HOSPITAL_ID = "hospitalId";
 
 
     //I

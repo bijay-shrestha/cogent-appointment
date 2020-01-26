@@ -20,6 +20,8 @@ public class DepartmentMinimalResponseDTO implements Serializable {
 
     private String departmentCode;
 
+    private String hospitalName;
+
     private Character status;
 
     private Integer totalItems;

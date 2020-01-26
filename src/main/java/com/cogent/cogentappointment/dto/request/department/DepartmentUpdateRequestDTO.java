@@ -24,7 +24,7 @@ public class DepartmentUpdateRequestDTO implements Serializable {
     private String departmentCode;
 
     @NotNull
-    private String hospitalCode;
+    private String hospitalId;
 
     @NotNull
     @Status

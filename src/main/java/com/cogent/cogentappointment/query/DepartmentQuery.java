@@ -17,8 +17,9 @@ public class DepartmentQuery {
                     " LEFT JOIN Hospital  h ON h.id = d.hospitalId.id" +
                     " WHERE" +
                     " d.status !='D'" +
+                    " AND h.status !='D'" +
                     " AND (d.name=:name OR d.code=:code)" +
-                    " AND h.code =:hospitalCode";
+                    " AND h.id =:hospitalId";
 
     public static final String QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE =
             " SELECT d.name," +
@@ -27,9 +28,10 @@ public class DepartmentQuery {
                     " LEFT JOIN Hospital  h ON h.id = d.hospitalId.id" +
                     " WHERE" +
                     " d.status !='D'" +
+                    " AND h.status !='D'" +
                     " AND d.id!=:id" +
                     " AND (d.name=:name OR d.code=:code)" +
-                    " AND h.code =:hospitalCode";
+                    " AND h.id =:hospitalId";
 
     public static final Function<DepartmentSearchRequestDTO, String> QUERY_TO_SEARCH_DEPARTMENT =
             (searchRequestDTO ->
@@ -37,7 +39,8 @@ public class DepartmentQuery {
                             " d.id as id," +                            //[0]
                             " d.name as name," +                        //[1]
                             " d.code as departmentCode," +               //[2]
-                            " d.status as status" +                     //[3]
+                            " d.status as status," +                     //[3]
+                            " d.hospitalId.name as hospitalName" +        //[4]
                             " FROM Department d" +
                             GET_WHERE_CLAUSE_FOR_SEARCH(searchRequestDTO));
 
@@ -64,13 +67,17 @@ public class DepartmentQuery {
 
     public final static String QUERY_TO_FETCH_DETAILS =
             "SELECT" +
-                    " d.name as name," +
-                    " d.code as departmentCode," +
-                    " d.status as status," +
-                    " d.remarks as remarks" +
+                    " d.name as name," +                            //[0]
+                    " d.code as departmentCode," +                  //[1]
+                    " d.status as status," +                        //[2]
+                    " d.remarks as remarks," +                      //[3]
+                    " h.id as hospitalId," +                        //[4]
+                    " h.name as hospitalName" +                     //[5]
                     " FROM Department d" +
+                    " LEFT JOIN Hospital h ON h.id =d.hospitalId.id" +
                     " WHERE d.id =:id" +
-                    " AND d.status != 'D'";
+                    " AND d.status != 'D'" +
+                    " AND h.status!='D'";
 
     public static final String QUERY_TO_FETCH_DEPARTMENT_FOR_DROPDOWN =
             "SELECT" +
@@ -87,27 +94,4 @@ public class DepartmentQuery {
                     " FROM Department d" +
                     " WHERE d.status = 'Y'" +
                     " ORDER BY d.id DESC";
-
-
-    public final static String FETCH_DEPARTMENT_BY_NAME_AND_CODE =
-            "SELECT " +
-                    " d.name," +                        //[0]
-                    " d.code" +                         //[1]
-                    " FROM Department d" +
-                    " WHERE (d.name =:name" +
-                    " OR d.code =:code)" +
-                    " AND d.status != 'D'";
-
-    public final static String CHECK_IF_DEPARTMENT_EXISTS =
-            "SELECT" +
-                    " d.name, " +
-                    " d.code " +
-                    " FROM" +
-                    " Department d" +
-                    " Where" +
-                    " d.id!=:id" +
-                    " AND" +
-                    " (d.name =:name" +
-                    " OR d.code =:code)" +
-                    " AND d.status != 'D'";
 }

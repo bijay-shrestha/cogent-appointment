@@ -41,7 +41,7 @@ public class DepartmentRepositoryCustomImpl implements DepartmentRepositoryCusto
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY)
                 .setParameter(NAME, requestDTO.getName())
                 .setParameter(CODE, requestDTO.getDepartmentCode())
-                .setParameter(HOSPITAL_CODE, requestDTO.getHospitalCode());
+                .setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
 
         return query.getResultList();
     }
@@ -52,7 +52,7 @@ public class DepartmentRepositoryCustomImpl implements DepartmentRepositoryCusto
                 .setParameter(ID, requestDTO.getId())
                 .setParameter(NAME, requestDTO.getName())
                 .setParameter(CODE, requestDTO.getDepartmentCode())
-                .setParameter(HOSPITAL_CODE, requestDTO.getHospitalCode());
+                .setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
 
         return query.getResultList();
     }

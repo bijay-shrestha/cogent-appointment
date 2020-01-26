@@ -161,20 +161,6 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     @Override
-    public Hospital fetchActiveHospitalByCode(String hospitalCode) {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(FETCHING_PROCESS_STARTED, HOSPITAL);
-
-        Hospital hospital = hospitalRepository.findActiveHospitalByCode(hospitalCode)
-                .orElseThrow(() -> new NoContentFoundException(Hospital.class));
-
-        log.info(FETCHING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
-
-        return hospital;
-    }
-
-    @Override
     public List<HospitalDropdownResponseDTO> fetchHospitalForDropDown() {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();

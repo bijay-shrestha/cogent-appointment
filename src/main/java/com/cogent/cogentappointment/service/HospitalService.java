@@ -30,8 +30,6 @@ public interface HospitalService {
 
     Hospital fetchActiveHospital(Long id);
 
-    Hospital fetchActiveHospitalByCode(String code);
-
     List<HospitalDropdownResponseDTO> fetchHospitalForDropDown();
 
     HospitalResponseDTO fetchDetailsById(Long hospitalId);

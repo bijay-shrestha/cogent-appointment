@@ -13,7 +13,7 @@ public class HospitalSearchRequestDTO implements Serializable {
 
     private String name;
 
-    private String code;
+    private String hospitalCode;
 
     private Character status;
 }

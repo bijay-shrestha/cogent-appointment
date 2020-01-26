@@ -58,7 +58,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         validateDuplicity(departments, requestDTO.getName(), requestDTO.getDepartmentCode(),
                 Department.class.getSimpleName());
 
-        Hospital hospital = fetchHospital(requestDTO.getHospitalCode());
+        Hospital hospital = fetchHospital(requestDTO.getHospitalId());
 
         save(parseToDepartment(requestDTO, hospital));
 
@@ -159,8 +159,8 @@ public class DepartmentServiceImpl implements DepartmentService {
         return departmentDropDownDTOS;
     }
 
-    private Hospital fetchHospital(String code) {
-        return hospitalService.fetchActiveHospitalByCode(code);
+    private Hospital fetchHospital(Long hospitalId) {
+        return hospitalService.fetchActiveHospital(hospitalId);
     }
 
     public Department fetchDepartmentById(Long id) {

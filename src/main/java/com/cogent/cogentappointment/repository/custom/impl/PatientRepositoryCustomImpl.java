@@ -19,7 +19,8 @@ import java.util.Date;
 import java.util.List;
 
 import static com.cogent.cogentappointment.constants.QueryConstants.*;
-import static com.cogent.cogentappointment.constants.QueryConstants.PatientQueryConstants.*;
+import static com.cogent.cogentappointment.constants.QueryConstants.PatientQueryConstants.ESEWA_ID;
+import static com.cogent.cogentappointment.constants.QueryConstants.PatientQueryConstants.IS_SELF;
 import static com.cogent.cogentappointment.query.PatientQuery.*;
 import static com.cogent.cogentappointment.utils.PatientUtils.parseToPatientMinimalResponseDTO;
 import static com.cogent.cogentappointment.utils.commons.PageableUtils.addPagination;

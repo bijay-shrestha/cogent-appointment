@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.utils.commons;
 
 import com.cogent.cogentappointment.exception.DataDuplicationException;
-import com.cogent.cogentappointment.model.Hospital;
 
 import java.util.List;
 
@@ -39,14 +38,14 @@ public class NameAndCodeValidationUtils {
     private static void validateName(boolean isNameExists, String name, String className) {
         if (isNameExists)
             throw new DataDuplicationException(
-                    String.format(NAME_DUPLICATION_MESSAGE, Hospital.class.getSimpleName(), name),
+                    String.format(NAME_DUPLICATION_MESSAGE, className, name),
                     "name", name);
     }
 
     private static void validateCode(boolean isCodeExists, String code, String className) {
         if (isCodeExists)
             throw new DataDuplicationException(
-                    String.format(CODE_DUPLICATION_MESSAGE, Hospital.class.getSimpleName(), code),
+                    String.format(CODE_DUPLICATION_MESSAGE, className, code),
                     "code", code);
     }
 }

@@ -69,8 +69,8 @@ public class HospitalQuery {
                 if (!ObjectUtils.isEmpty(searchRequestDTO.getName()))
                     whereClause += " AND h.name LIKE '%" + searchRequestDTO.getName() + "%'";
 
-                if (!ObjectUtils.isEmpty(searchRequestDTO.getCode()))
-                    whereClause += " AND h.code LIKE '%" + searchRequestDTO.getCode() + "%'";
+                if (!ObjectUtils.isEmpty(searchRequestDTO.getHospitalCode()))
+                    whereClause += " AND h.code LIKE '%" + searchRequestDTO.getHospitalCode() + "%'";
 
                 whereClause += " ORDER BY h.id DESC";
 

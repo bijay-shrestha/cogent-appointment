@@ -39,4 +39,11 @@ public class NoContentFoundException extends RuntimeException {
                 StringUtils.capitalize("Object returned empty or null for ")
                         + toMap(String.class, String.class, searchParamsMap));
     }
+
+    public NoContentFoundException(String errorMessage, String... searchParamsMap) {
+        super(generateMessage(errorMessage, toMap(String.class, String.class, searchParamsMap)));
+        setErrorResponse(errorMessage,
+                StringUtils.capitalize("Object returned empty or null for ")
+                        + toMap(String.class, String.class, searchParamsMap));
+    }
 }

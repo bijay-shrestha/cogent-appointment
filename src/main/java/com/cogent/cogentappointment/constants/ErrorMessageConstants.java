@@ -12,6 +12,33 @@ public class ErrorMessageConstants {
                 " exists within the selected date range '%s'";
     }
 
+    public interface AdminServiceMessages {
+
+        String ADMIN_DUPLICATION_MESSAGE = "Admin with given username, email and mobile number" +
+                " already exists.";
+
+        String USERNAME_DUPLICATION_MESSAGE = "%s already exists with username '%s'";
+
+        String EMAIL_DUPLICATION_MESSAGE = "%s already exists with email '%s'";
+
+        String MOBILE_NUMBER_DUPLICATION_MESSAGE = "%s already exists with mobile number '%s'";
+
+        String ADMIN_NOT_FOUND = "Admin '%s' doesn't exist";
+
+        String ADMIN_NOT_ACTIVE = "Admin '%s' is not active";
+
+        String ADMIN_REGISTERED = "Admin is already registered";
+
+        String DUPLICATE_PASSWORD_MESSAGE = "New Password must be different than current password.";
+
+        String INVALID_CONFIRMATION_TOKEN = "Invalid Confirmation Link. Please try again.";
+
+        String PASSWORD_MISMATCH_MESSAGE = "Old password doesn't match.";
+
+        String ADMIN_INFO_NOT_FOUND = "Admin info is not found.";
+    }
+
+
     //B
 
     //C
@@ -31,6 +58,11 @@ public class ErrorMessageConstants {
         String INVALID_FILE_TYPE_MESSAGE = "Could not read file :";
         String INVALID_FILE_SEQUENCE = "Sorry! Filename contains invalid path sequence";
         String FILE_EXCEPTION = "Unable to store file. Please try again later";
+    }
+
+    public interface ForgotPasswordMessages {
+        String INVALID_RESET_CODE = "Invalid Password Reset Code. Please try again.";
+        String RESET_CODE_EXPIRED = "Reset code has expired. Request a new password reset code.";
     }
 
 
@@ -58,7 +90,6 @@ public class ErrorMessageConstants {
 
     public static final String NAME_AND_CODE_DUPLICATION_MESSAGE = "%s already exists with name '%s' " +
             "and code '%s': ";
-
 
 
     //O

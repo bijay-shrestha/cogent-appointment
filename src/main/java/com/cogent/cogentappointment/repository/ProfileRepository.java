@@ -18,7 +18,7 @@ public interface ProfileRepository extends JpaRepository<Profile, Long>, Profile
     @Query("SELECT p FROM Profile p WHERE p.status!='D' AND p.id = :id")
     Optional<Profile> findProfileById(@Param("id") Long id);
 
-    @Query("SELECT p FROM Profile p WHERE p.status!='D' AND p.departmentId.id = :id")
+    @Query("SELECT p FROM Profile p WHERE p.status!='D' AND p.department.id = :id")
     Profile findProfileByDepartmentId(@Param("id") Long id);
 
     @Query("SELECT p FROM Profile p WHERE p.status='Y' AND p.id = :id")

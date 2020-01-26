@@ -9,6 +9,17 @@ public class WebResourceKeyConstants {
     public static final String API_V1 = "/api/v1";
     public static final String ACTIVE = "/active";
 
+    public interface AdminConstants {
+        String BASE_ADMIN = "/admin";
+        String AVATAR = "/avatar";
+        String ADMIN_META_INFO = "/metaInfo";
+        String ASSIGNED_SUB_DEPARTMENTS = "/assignedSubDepartments";
+        String CHANGE_PASSWORD = "/changePassword";
+        String RESET_PASSWORD = "/resetPassword";
+        String INFO = "/info";
+        String VERIFY = "/verify";
+    }
+
     public interface AppointmentConstants {
         String BASE_APPOINTMENT = "/appointment";
         String CHECK_AVAILABILITY = "/checkAvailability";
@@ -16,6 +27,7 @@ public class WebResourceKeyConstants {
     }
 
     //B
+    public static final  String BASE_PASSWORD = "/password";
 
     //C
     public interface CountryConstants {
@@ -47,6 +59,10 @@ public class WebResourceKeyConstants {
 
     //F
     public static final String FILE = "/files/{subDirectoryLocation}/{filename:.+}";
+    public interface ForgotPasswordConstants {
+        String VERIFY = "/verify";
+        String FORGOT = "/forgot";
+    }
 
 
     //G
@@ -111,6 +127,8 @@ public class WebResourceKeyConstants {
     //T
 
     //U
+    public static final String USERNAME_VARIABLE_BASE = "/{username}";
+
 
     //V
 

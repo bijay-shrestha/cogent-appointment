@@ -50,6 +50,7 @@ public class StringConstant {
     //Q
 
     //R
+    public static final String BRACKET_REGEX = "[\\[\\](){}]";
 
     //S
     public static final String SPACE = " ";

@@ -129,7 +129,7 @@ public class FileServiceImpl implements FileService {
 
             return filename;
         } catch (IOException exception) {
-            throw new OperationUnsuccessfulException(FILE_EXCEPTION, FILE_EXCEPTION + exception);
+            throw new OperationUnsuccessfulException(FILE_EXCEPTION);
         }
     }
 

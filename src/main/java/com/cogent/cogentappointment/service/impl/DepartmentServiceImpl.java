@@ -159,6 +159,21 @@ public class DepartmentServiceImpl implements DepartmentService {
         return departmentDropDownDTOS;
     }
 
+    @Override
+    public List<DropDownResponseDTO> fetchDepartmentByHospitalId(Long hospitalId) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DEPARTMENT);
+
+        List<DropDownResponseDTO> responseDTOS = departmentRepository.fetchDepartmentByHospitalId(hospitalId)
+                .orElseThrow(() -> DEPARTMENT_NOT_FOUND.get());
+
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
     private Hospital fetchHospital(Long hospitalId) {
         return hospitalService.fetchActiveHospital(hospitalId);
     }
@@ -174,6 +189,4 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     private Supplier<NoContentFoundException> DEPARTMENT_NOT_FOUND = () ->
             new NoContentFoundException(Department.class);
-
-
 }

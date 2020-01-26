@@ -94,4 +94,15 @@ public class DepartmentQuery {
                     " FROM Department d" +
                     " WHERE d.status = 'Y'" +
                     " ORDER BY d.id DESC";
+
+    public static final String QUERY_TO_FETCH_DEPARTMENT_BY_HOSPITAL_ID =
+            "SELECT" +
+                    " d.id as value," +
+                    " d.name as label" +
+                    " FROM Department d" +
+                    " LEFT JOIN Hospital h ON h.id =d.hospitalId.id" +
+                    " WHERE d.status = 'Y'" +
+                    " AND h.status = 'Y'"+
+                    " AND h.id=:hospitalId" +
+                    " ORDER BY d.id DESC";
 }

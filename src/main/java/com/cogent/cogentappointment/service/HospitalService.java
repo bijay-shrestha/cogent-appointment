@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.service;
 
 import com.cogent.cogentappointment.dto.commons.DeleteRequestDTO;
-import com.cogent.cogentappointment.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.dto.request.hospital.HospitalRequestDTO;
 import com.cogent.cogentappointment.dto.request.hospital.HospitalSearchRequestDTO;
 import com.cogent.cogentappointment.dto.request.hospital.HospitalUpdateRequestDTO;

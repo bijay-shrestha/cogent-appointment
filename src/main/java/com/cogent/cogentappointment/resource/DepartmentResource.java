@@ -18,6 +18,7 @@ import java.net.URI;
 import static com.cogent.cogentappointment.constants.SwaggerConstants.DepartmentConstant.*;
 import static com.cogent.cogentappointment.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.constants.WebResourceKeyConstants.DepartmentConstants.BASE_DEPARTMENT;
+import static com.cogent.cogentappointment.constants.WebResourceKeyConstants.HospitalConstants.HOSPITAL_ID_PATH_VARIABLE_BASE;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -68,7 +69,7 @@ public class DepartmentResource {
 
     @GetMapping(DETAIL + ID_PATH_VARIABLE_BASE)
     @ApiOperation(DEPARTMENT_DETAILS_OPERATION)
-    public ResponseEntity<?> fetchDepartmentDetails(@PathVariable Long id) {
+    public ResponseEntity<?> fetchDepartmentDetails(@PathVariable("id") Long id) {
         return ok(departmentService.fetchDetails(id));
     }
 
@@ -82,5 +83,11 @@ public class DepartmentResource {
     @ApiOperation(FETCH_ACTIVE_DEPARTMENT_FOR_DROP_DOWN_OPERATION)
     public ResponseEntity<?> fetchActiveDropDownList() {
         return ok(departmentService.fetchActiveDropDownList());
+    }
+
+    @GetMapping(HOSPITAL_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_DEPARTMENT_BY_HOSPITAL_OPERATION)
+    public ResponseEntity<?> fetchDepartmentByHospitalId(@PathVariable("hospitalId") Long hospitalId) {
+        return ok(departmentService.fetchDepartmentByHospitalId(hospitalId));
     }
 }

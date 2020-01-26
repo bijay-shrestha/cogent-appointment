@@ -70,6 +70,7 @@ public class WebResourceKeyConstants {
     //H
     public interface HospitalConstants {
         String BASE_HOSPITAL = "/hospital";
+        String HOSPITAL_ID_PATH_VARIABLE_BASE = "/{hospitalId}";
     }
 
     //I

@@ -29,4 +29,6 @@ public interface DepartmentService {
     List<DropDownResponseDTO> fetchDepartmentForDropdown();
 
     List<DropDownResponseDTO> fetchActiveDropDownList();
+
+    List<DropDownResponseDTO> fetchDepartmentByHospitalId(Long hospitalId);
 }

@@ -17,6 +17,4 @@ public class HospitalDropdownResponseDTO implements Serializable {
     private Long value;
 
     private String label;
-
-    private String hospitalCode;
 }

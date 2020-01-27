@@ -89,4 +89,9 @@ public class DateUtils {
         SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm a");
         return dateFormat.format(date);
     }
+
+    public static String getTimeFromDate(Date date){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+        return dateFormat.format(date);
+    }
 }

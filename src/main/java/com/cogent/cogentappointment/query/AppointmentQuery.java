@@ -118,8 +118,8 @@ public class AppointmentQuery {
                     " ORDER BY id DESC LIMIT 1";
 
     public static String QUERY_TO_FETCH_BOOKED_APPOINTMENT =
-            "SELECT startTime as startTime," +                          //[0]
-                    " endTime as endTime" +                             //[1]
+            "SELECT DATE_FORMAT(a.startTime, '%H:%i') as startTime," +                          //[0]
+                    " DATE_FORMAT(a.endTime, '%H:%i') as endTime" +                             //[1]
                     " FROM Appointment a" +
                     " WHERE" +
                     " a.appointmentDate = :date" +

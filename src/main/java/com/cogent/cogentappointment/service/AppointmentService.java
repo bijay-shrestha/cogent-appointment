@@ -1,10 +1,7 @@
 package com.cogent.cogentappointment.service;
 
 import com.cogent.cogentappointment.dto.request.appointment.*;
-import com.cogent.cogentappointment.dto.response.appointment.AppointmentAvailabilityResponseDTO;
-import com.cogent.cogentappointment.dto.response.appointment.AppointmentBookedDateResponseDTO;
-import com.cogent.cogentappointment.dto.response.appointment.AppointmentMinimalResponseDTO;
-import com.cogent.cogentappointment.dto.response.appointment.AppointmentResponseDTO;
+import com.cogent.cogentappointment.dto.response.appointment.*;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Date;
@@ -15,7 +12,7 @@ import java.util.List;
  */
 public interface AppointmentService {
 
-    AppointmentAvailabilityResponseDTO checkAvailability(AppointmentCheckAvailabilityRequestDTO requestDTO);
+    AppointmentCheckAvailabilityResponseDTO checkAvailability(AppointmentCheckAvailabilityRequestDTO requestDTO);
 
     String save(AppointmentRequestDTO appointmentRequestDTO);
 

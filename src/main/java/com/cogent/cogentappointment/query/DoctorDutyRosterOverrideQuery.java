@@ -33,8 +33,8 @@ public class DoctorDutyRosterOverrideQuery {
                     " AND d.doctorDutyRosterId.id = :id";
 
     public static final String QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_TIME =
-            "SELECT DATE_FORMAT(d.startTime, '%H:%i') as startTime," +      //[0]
-//                    " DATE_FORMAT(d.endTime, '%H:%i') as endTime," +        //[1]
+            "SELECT d.startTime as startTime," +                             //[0]
+                    " d.endTime as endTime," +                              //[1]
                     " d.dayOffStatus as dayOffStatus," +                    //[2]
                     " dd.rosterGapDuration as rosterGapDuration" +          //[3]
                     " FROM DoctorDutyRosterOverride d" +

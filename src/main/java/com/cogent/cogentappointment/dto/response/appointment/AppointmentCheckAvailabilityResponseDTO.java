@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.dto.response.appointment;
 
-import com.cogent.cogentappointment.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import lombok.*;
 
 import java.io.Serializable;
@@ -15,7 +14,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AppointmentCheckAvailabilityResponseDTO implements Serializable {
-    private List<AppointmentAvailabilityResponseDTO> availableAppointments;
 
-    private DoctorDutyRosterTimeResponseDTO doctorDutyRosterTimeInfo;
+    private String doctorStartTime;
+
+    private String doctorEndTime;
+
+    private Character dayOffStatus;
+
+    private List<AppointmentAvailabilityResponseDTO> availableAppointments;
 }

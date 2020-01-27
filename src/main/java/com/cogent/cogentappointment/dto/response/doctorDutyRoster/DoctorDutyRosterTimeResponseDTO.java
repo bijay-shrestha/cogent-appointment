@@ -15,7 +15,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class DoctorDutyRosterTimeResponseDTO implements Serializable {
 
-    private String startTime;
+    private Date startTime;
 
     private Date endTime;
 

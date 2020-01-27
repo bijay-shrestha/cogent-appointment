@@ -5,7 +5,6 @@ import com.cogent.cogentappointment.dto.request.admin.*;
 import com.cogent.cogentappointment.dto.request.email.EmailRequestDTO;
 import com.cogent.cogentappointment.dto.response.admin.AdminDetailResponseDTO;
 import com.cogent.cogentappointment.dto.response.admin.AdminInfoByUsernameResponseDTO;
-import com.cogent.cogentappointment.dto.response.admin.AdminProfileResponseDTO;
 import com.cogent.cogentappointment.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.enums.Gender;
 import com.cogent.cogentappointment.model.Admin;
@@ -230,62 +229,6 @@ public class AdminUtils {
         Admin admin = confirmationToken.getAdmin();
         admin.setPassword(BCrypt.hashpw(requestDTO.getPassword(), BCrypt.gensalt()));
         return admin;
-    }
-
-    public static Function<Object[], AdminDetailResponseDTO> parseToAdminDetailResponseDTO = (objects) -> {
-
-        final int ADMIN_ID_INDEX = 0;
-        final int FULL_NAME_INDEX = 1;
-        final int USERNAME_INDEX = 2;
-        final int EMAIL_INDEX = 3;
-        final int MOBILE_NUMBER_INDEX = 4;
-        final int STATUS_INDEX = 5;
-        final int HAS_MAC_BINDING_INDEX = 6;
-        final int REMARKS_INDEX = 7;
-        final int HOSPITAL_NAME_INDEX = 8;
-        final int HOSPITAL_ID_INDEX = 9;
-        final int ADMIN_AVATAR_FILE_URI_INDEX = 10;
-
-        return AdminDetailResponseDTO.builder()
-                .id(Long.parseLong(objects[ADMIN_ID_INDEX].toString()))
-                .fullName(objects[FULL_NAME_INDEX].toString())
-                .username(objects[USERNAME_INDEX].toString())
-                .email(objects[EMAIL_INDEX].toString())
-                .mobileNumber(objects[MOBILE_NUMBER_INDEX].toString())
-                .status(objects[STATUS_INDEX].toString().charAt(0))
-                .hasMacBinding(objects[HAS_MAC_BINDING_INDEX].toString().charAt(0))
-                .hospitalName(objects[HOSPITAL_NAME_INDEX].toString())
-                .hospitalId(Long.parseLong(objects[HOSPITAL_ID_INDEX].toString()))
-                .remarks(Objects.isNull(objects[REMARKS_INDEX]) ? null : objects[REMARKS_INDEX].toString())
-                .fileUri(Objects.isNull(objects[ADMIN_AVATAR_FILE_URI_INDEX]) ? null :
-                        objects[ADMIN_AVATAR_FILE_URI_INDEX].toString())
-                .adminProfileResponseDTOS(getAdminProfileResponseDTOS(objects))
-                .build();
-    };
-
-    private static List<AdminProfileResponseDTO> getAdminProfileResponseDTOS(Object[] object) {
-
-        final int ADMIN_PROFILE_ID_INDEX = 11;
-        final int PROFILE_ID_INDEX = 12;
-        final int PROFILE_NAME_INDEX = 13;
-        final int APPLICATION_MODULE_ID_INDEX = 14;
-        final int APPLICATION_MODULE_NAME_INDEX = 15;
-
-        String[] adminProfileIds = object[ADMIN_PROFILE_ID_INDEX].toString().split(COMMA_SEPARATED);
-        String[] profileIds = object[PROFILE_ID_INDEX].toString().split(COMMA_SEPARATED);
-        String[] profileNames = object[PROFILE_NAME_INDEX].toString().split(COMMA_SEPARATED);
-        String[] applicationModuleIds = object[APPLICATION_MODULE_ID_INDEX].toString().split(COMMA_SEPARATED);
-        String[] applicationModuleNames = object[APPLICATION_MODULE_NAME_INDEX].toString().split(COMMA_SEPARATED);
-
-        return IntStream.range(0, adminProfileIds.length)
-                .mapToObj(i -> AdminProfileResponseDTO.builder()
-                        .adminProfileId(Long.parseLong(adminProfileIds[i]))
-                        .profileId(Long.parseLong(profileIds[i]))
-                        .profileName(profileNames[i])
-                        .applicationModuleId(Long.parseLong(applicationModuleIds[i]))
-                        .applicationModuleName(applicationModuleNames[i])
-                        .build())
-                .collect(Collectors.toList());
     }
 
     public static AdminInfoByUsernameResponseDTO parseToAdminInfoByUsernameResponseDTO(Object[] queryResult) {

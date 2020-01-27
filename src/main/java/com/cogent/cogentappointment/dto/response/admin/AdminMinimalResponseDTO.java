@@ -4,7 +4,6 @@ import com.cogent.cogentappointment.enums.Gender;
 import lombok.*;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 
 /**
  * @author smriti on 2019-08-26
@@ -33,6 +32,8 @@ public class AdminMinimalResponseDTO implements Serializable {
     private Gender gender;
 
     private String profileName;
+
+    private String hospitalName;
 
     private String fileUri;
 

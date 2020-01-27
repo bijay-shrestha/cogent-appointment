@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MacAddressInfoResponseDTO implements Serializable {
+public class AdminMacAddressInfoResponseDTO implements Serializable {
 
     private Long id;
 

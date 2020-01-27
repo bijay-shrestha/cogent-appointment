@@ -25,7 +25,6 @@ import static com.cogent.cogentappointment.constants.ErrorMessageConstants.Admin
 import static com.cogent.cogentappointment.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.query.AdminQuery.*;
-import static com.cogent.cogentappointment.utils.AdminUtils.parseToAdminDetailResponseDTO;
 import static com.cogent.cogentappointment.utils.AdminUtils.parseToAdminInfoByUsernameResponseDTO;
 import static com.cogent.cogentappointment.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.utils.commons.QueryUtils.*;
@@ -97,7 +96,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         AdminDetailResponseDTO detailResponseDTO = fetchAdminDetailResponseDTO(id);
 
         if (detailResponseDTO.getHasMacBinding().equals(YES))
-            detailResponseDTO.setMacAddressInfoResponseDTOS(getMacAddressInfo(id));
+            detailResponseDTO.setAdminMacAddressInfo(getMacAddressInfo(id));
 
         return detailResponseDTO;
     }
@@ -150,7 +149,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     }
 
     public AdminDetailResponseDTO fetchAdminDetailResponseDTO(Long id) {
-        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_ADMIN_DETAIL)
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ADMIN_DETAIL)
                 .setParameter(ID, id);
 
         List<Object[]> results = query.getResultList();
@@ -158,14 +157,14 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         if (results.isEmpty())
             throw ADMIN_WITH_GIVEN_ID_NOT_FOUND.apply(id);
 
-        return parseToAdminDetailResponseDTO.apply(results.get(0));
+        return transformQueryToResultList(query, AdminDetailResponseDTO.class).get(0);
     }
 
-    public List<MacAddressInfoResponseDTO> getMacAddressInfo(Long id) {
+    public List<AdminMacAddressInfoResponseDTO> getMacAddressInfo(Long id) {
         Query query = createQuery.apply(entityManager, QUERY_FO_FETCH_MAC_ADDRESS_INFO)
                 .setParameter(ID, id);
 
-        return transformQueryToResultList(query, MacAddressInfoResponseDTO.class);
+        return transformQueryToResultList(query, AdminMacAddressInfoResponseDTO.class);
     }
 
     private Supplier<NoContentFoundException> NO_ADMIN_FOUND = () -> new NoContentFoundException(Admin.class);

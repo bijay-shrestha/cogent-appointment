@@ -1,9 +1,9 @@
 package com.cogent.cogentappointment.query;
 
 import com.cogent.cogentappointment.dto.request.admin.AdminSearchRequestDTO;
+import com.cogent.cogentappointment.enums.Gender;
+import com.cogent.cogentappointment.utils.GenderUtils;
 import org.springframework.util.ObjectUtils;
-
-import java.util.Objects;
 
 /**
  * @author smriti on 2019-08-05
@@ -53,29 +53,32 @@ public class AdminQuery {
                     " WHERE status ='Y'";
 
     public static String QUERY_TO_SEARCH_ADMIN(AdminSearchRequestDTO searchRequestDTO) {
-        return SELECT_CLAUSE_TO_FETCH_ADMIN + "," +
-                " tbl1.profileName as profileName," +
-                " tbl2.fileUri as fileUri" +
+
+        return " SELECT" +
+                " a.id as id," +                                            //[0]
+                " a.fullName as fullName," +                                //[1]
+                " a.username as username," +                                //[2]
+                " a.email as email," +                                      //[3]
+                " a.mobileNumber as mobileNumber," +                        //[4]
+                " a.status as status," +                                    //[5]
+                " a.hasMacBinding as hasMacBinding," +                      //[6]
+                " a.gender as gender," +                                    //[7]
+                " p.name as profileName," +
+                " CASE WHEN" +
+                " (av.status IS NULL OR av.status = 'N')" +
+                " THEN null" +
+                " ELSE" +
+                " av.fileUri" +
+                " END as fileUri" +                                         //[8]
                 " FROM" +
-                " admin a" +
-                " LEFT JOIN admin_meta_info ami ON a.id = ami.admin_id" +
-                " LEFT JOIN admin_category ac On ac.id = a.admin_category_id" +
-                " RIGHT JOIN" +
-                " (" +
-                QUERY_TO_SEARCH_ADMIN_PROFILE(searchRequestDTO) +
-                " ) tbl1 ON tbl1.adminId = a.id" +
-                " LEFT JOIN" +
-                " (" +
-                QUERY_TO_FETCH_ADMIN_AVATAR +
-                " )tbl2 ON tbl2.adminId = a.id" +
+                " Admin a" +
+                " LEFT JOIN AdminMetaInfo ami ON a.id = ami.admin.id" +
+                " LEFT JOIN Profile p ON p.id = a.profileId.id" +
+                " LEFT JOIN AdminAvatar av ON a.id = av.admin.id" +
+                " LEFT JOIN Department d ON d.id = p.department.id" +
+                " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                 GET_WHERE_CLAUSE_FOR_SEARCH_ADMIN(searchRequestDTO);
     }
-
-    private static final String QUERY_TO_FETCH_ADMIN_AVATAR =
-            " SELECT av.admin_id as adminId," +
-                    " av.file_uri as fileUri" +
-                    " FROM admin_avatar av" +
-                    " WHERE av.status = 'Y'";
 
     private static final String SELECT_CLAUSE_TO_FETCH_ADMIN =
             " SELECT" +
@@ -85,30 +88,30 @@ public class AdminQuery {
                     " a.email as email," +                                      //[3]
                     " a.mobile_number as mobileNumber," +                       //[4]
                     " a.status as status," +                                    //[5]
-                    " a.has_mac_binding as hasMacBinding," +                    //[6]
-                    " ac.name as adminCategoryName";                           //[7]
-
-    private static String QUERY_TO_SEARCH_ADMIN_PROFILE(AdminSearchRequestDTO requestDTO) {
-        String query = "SELECT ap.admin_id as adminId," +
-                " GROUP_CONCAT(p.name) as profileName" +
-                " FROM admin_profile ap" +
-                " LEFT JOIN profile p ON p.id = ap.profile_id" +
-                " WHERE ap.status = 'Y'";
-
-        if (!Objects.isNull(requestDTO.getProfileId()))
-            query += " AND p.id=" + requestDTO.getProfileId();
-
-        return query + " GROUP BY ap.admin_id";
-    }
+                    " a.has_mac_binding as hasMacBinding";                      //[6]
 
     private static String GET_WHERE_CLAUSE_FOR_SEARCH_ADMIN(AdminSearchRequestDTO searchRequestDTO) {
         String whereClause = " WHERE a.status != 'D'";
 
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getAdminMetaInfoId()))
+            whereClause += " AND ami.id=" + searchRequestDTO.getAdminMetaInfoId();
+
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
             whereClause += " AND a.status='" + searchRequestDTO.getStatus() + "'";
 
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getAdminMetaInfoId()))
-            whereClause += " AND ami.id=" + searchRequestDTO.getAdminMetaInfoId();
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getDepartmentId()))
+            whereClause += " AND d.id=" + searchRequestDTO.getDepartmentId();
+
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getProfileId()))
+            whereClause += " AND p.id=" + searchRequestDTO.getProfileId();
+
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getHospitalId()))
+            whereClause += " AND h.id=" + searchRequestDTO.getHospitalId();
+
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getHospitalId())) {
+            Gender gender = GenderUtils.fetchGenderByCode(searchRequestDTO.getGenderCode());
+            whereClause += " AND a.gender LIKE '%" + gender + "%'";
+        }
 
         whereClause += " ORDER BY a.id DESC";
 
@@ -144,7 +147,7 @@ public class AdminQuery {
                     " LEFT JOIN hospital h ON h.id = a.hospital_id" +
                     " LEFT JOIN" +
                     " (" +
-                    QUERY_TO_FETCH_ADMIN_AVATAR +
+//                    QUERY_TO_FETCH_ADMIN_AVATAR +
                     " )tbl1 ON tbl1.adminId = a.id" +
                     " RIGHT JOIN" +
                     " (" +

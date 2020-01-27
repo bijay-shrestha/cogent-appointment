@@ -77,14 +77,13 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
 
     @Override
     public List<AdminMinimalResponseDTO> search(AdminSearchRequestDTO searchRequestDTO, Pageable pageable) {
-        Query query = createNativeQuery.apply(entityManager, QUERY_TO_SEARCH_ADMIN(searchRequestDTO));
+        Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_ADMIN(searchRequestDTO));
 
         int totalItems = query.getResultList().size();
 
         addPagination.accept(pageable, query);
 
-        List<AdminMinimalResponseDTO> result =
-                transformNativeQueryToResultList(query, AdminMinimalResponseDTO.class);
+        List<AdminMinimalResponseDTO> result = transformQueryToResultList(query, AdminMinimalResponseDTO.class);
 
         if (ObjectUtils.isEmpty(result)) throw NO_ADMIN_FOUND.get();
         else {

@@ -41,12 +41,25 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     private EntityManager entityManager;
 
     @Override
-    public List<Object[]> fetchAdminForValidation(String username, String email, String mobileNumber) {
+    public List<Object[]> validateDuplicity(String username, String email, String mobileNumber,
+                                            Long hospitalId) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FIND_ADMIN_FOR_VALIDATION)
                 .setParameter(USERNAME, username)
                 .setParameter(EMAIL, email)
-                .setParameter(MOBILE_NUMBER, mobileNumber);
+                .setParameter(MOBILE_NUMBER, mobileNumber)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Object[]> validateDuplicity(AdminUpdateRequestDTO updateRequestDTO) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FIND_ADMIN_EXCEPT_CURRENT_ADMIN)
+                .setParameter(ID, updateRequestDTO.getId())
+                .setParameter(EMAIL, updateRequestDTO.getEmail())
+                .setParameter(MOBILE_NUMBER, updateRequestDTO.getMobileNumber())
+                .setParameter(HOSPITAL_ID, updateRequestDTO.getHospitalId());
 
         return query.getResultList();
     }
@@ -90,15 +103,6 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         return detailResponseDTO;
     }
 
-    @Override
-    public List<Object[]> fetchAdmin(AdminUpdateRequestDTO updateRequestDTO) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FIND_ADMIN_EXCEPT_CURRENT_ADMIN)
-                .setParameter(ID, updateRequestDTO.getId())
-                .setParameter(EMAIL, updateRequestDTO.getEmail())
-                .setParameter(MOBILE_NUMBER, updateRequestDTO.getMobileNumber());
-
-        return query.getResultList();
-    }
 
     @Override
     public Admin fetchAdminByUsernameOrEmail(String username) {

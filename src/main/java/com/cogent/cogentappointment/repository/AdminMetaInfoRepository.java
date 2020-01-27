@@ -16,6 +16,6 @@ import java.util.Optional;
 public interface AdminMetaInfoRepository extends JpaRepository<AdminMetaInfo, Long>,
         AdminMetaInfoRepositoryCustom {
 
-    @Query("SELECT a FROM AdminMetaInfo a WHERE a.admin.id = :id")
+    @Query("SELECT a FROM AdminMetaInfo a WHERE a.admin.id = :id AND a.admin.status!='D'")
     Optional<AdminMetaInfo> findAdminMetaInfoByAdminId(@Param("id") Long id);
 }

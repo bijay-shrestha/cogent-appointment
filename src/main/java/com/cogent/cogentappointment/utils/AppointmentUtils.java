@@ -156,6 +156,8 @@ public class AppointmentUtils {
 
         List<AppointmentAvailabilityResponseDTO> availableTimeSlots = new ArrayList<>();
 
+
+
         DateTime dateTime = new DateTime(FORMAT.parseDateTime(doctorDutyRosterInfo.getStartTime().toString()));
 
         do {

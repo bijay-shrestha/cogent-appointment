@@ -17,10 +17,15 @@ public class AdminQuery {
                     " a.mobileNumber" +                        //[2]
                     " FROM" +
                     " Admin a" +
+                    " LEFT JOIN Profile p ON p.id = a.profileId" +
+                    " LEFT JOIN Department d ON d.id = p.department.id" +
+                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE" +
                     " a.status != 'D'" +
+                    " AND h.status!='D'" +
                     " AND" +
-                    " (a.username =:username OR a.email =:email OR a.mobileNumber = :mobileNumber)";
+                    " (a.username =:username OR a.email =:email OR a.mobileNumber = :mobileNumber)" +
+                    " AND h.id=:hospitalId";
 
     public static final String QUERY_TO_FIND_ADMIN_EXCEPT_CURRENT_ADMIN =
             "SELECT " +
@@ -28,11 +33,16 @@ public class AdminQuery {
                     " a.mobileNumber" +                        //[1]
                     " FROM" +
                     " Admin a" +
+                    " LEFT JOIN Profile p ON p.id = a.profileId" +
+                    " LEFT JOIN Department d ON d.id = p.department.id" +
+                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE" +
                     " a.status != 'D'" +
+                    " AND h.status!='D'" +
                     " AND a.id !=:id" +
                     " AND" +
-                    " (a.email =:email OR a.mobileNumber = :mobileNumber)";
+                    " (a.email =:email OR a.mobileNumber = :mobileNumber)" +
+                    " AND h.id=:hospitalId";
 
     public static final String QUERY_TO_FETCH_ACTIVE_ADMIN_FOR_DROPDOWN =
             " SELECT" +
@@ -97,9 +107,6 @@ public class AdminQuery {
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
             whereClause += " AND a.status='" + searchRequestDTO.getStatus() + "'";
 
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getAdminCategoryId()))
-            whereClause += " AND a.adminCategory.id=" + searchRequestDTO.getAdminCategoryId();
-
         if (!ObjectUtils.isEmpty(searchRequestDTO.getAdminMetaInfoId()))
             whereClause += " AND ami.id=" + searchRequestDTO.getAdminMetaInfoId();
 
@@ -113,11 +120,11 @@ public class AdminQuery {
                     " GROUP_CONCAT(ap.id) as adminProfileId," +
                     " GROUP_CONCAT(p.id) as profileId," +
                     " GROUP_CONCAT(p.name) as profileName," +
-                    " GROUP_CONCAT(ap.application_module_id) as applicationModuleId,"+
-                    " GROUP_CONCAT(am.name) as applicationModuleName"+
+                    " GROUP_CONCAT(ap.application_module_id) as applicationModuleId," +
+                    " GROUP_CONCAT(am.name) as applicationModuleName" +
                     " FROM admin_profile ap" +
                     " LEFT JOIN profile p ON p.id = ap.profile_id" +
-                    " LEFT JOIN application_module am ON am.id = ap.application_module_id"+
+                    " LEFT JOIN application_module am ON am.id = ap.application_module_id" +
                     " WHERE ap.status = 'Y'" +
                     " GROUP BY ap.admin_id";
 
@@ -127,14 +134,13 @@ public class AdminQuery {
                     " a.remarks as remarks," +                                                      //[9]
                     " h.name as hospitalName," +                                                    //[10]
                     " h.id as hospitalId," +                                                        //[11]
-                    " tbl1.fileUri as fileUri,"+                                                    //[12]
+                    " tbl1.fileUri as fileUri," +                                                    //[12]
                     " tbl2.adminProfileId as adminProfileId," +                                     //[13]
                     " tbl2.profileId as profileId," +                                               //[14]
                     " tbl2.profileName as profileName," +                                           //[15]
                     " tbl2.applicationModuleId as applicationModuleId," +                           //[16]
                     " tbl2.applicationModuleName as applicationModuleName" +                       //[17]
                     " FROM admin a" +
-                    " LEFT JOIN admin_category ac On ac.id = a.admin_category_id" +
                     " LEFT JOIN hospital h ON h.id = a.hospital_id" +
                     " LEFT JOIN" +
                     " (" +

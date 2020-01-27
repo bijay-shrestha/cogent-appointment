@@ -27,10 +27,6 @@ public class AdminDetailResponseDTO implements Serializable {
 
     private Character status;
 
-    private Long adminCategoryId;
-
-    private String adminCategoryName;
-
     private Character hasMacBinding;
 
     private String fileUri;

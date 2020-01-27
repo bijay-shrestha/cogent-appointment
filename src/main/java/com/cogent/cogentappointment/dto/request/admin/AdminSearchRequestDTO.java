@@ -18,7 +18,5 @@ public class AdminSearchRequestDTO implements Serializable {
 
     private Character status;
 
-    private Long adminCategoryId;
-
     private Long profileId;
 }

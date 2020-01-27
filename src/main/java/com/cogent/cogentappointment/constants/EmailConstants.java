@@ -43,7 +43,7 @@ public class EmailConstants {
 
     //L
     public static final String LOGO_FILE_NAME = "logo.png";
-    public static final String LOGO_LOCATION = "./src/main/resources/static/images/logo.png";
+    public static final String LOGO_LOCATION = "./src/main/resources/images/logo.png";
 
 
     //M

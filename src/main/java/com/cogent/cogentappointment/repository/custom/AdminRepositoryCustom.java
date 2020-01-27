@@ -18,7 +18,8 @@ import java.util.List;
 @Qualifier("adminRepositoryCustom")
 public interface AdminRepositoryCustom {
 
-    List<Object[]> fetchAdminForValidation(String username, String email, String mobileNumber);
+    List<Object[]> validateDuplicity(String username, String email, String mobileNumber,
+                                     Long hospitalId);
 
     List<AdminDropdownDTO> fetchActiveAdminsForDropDown();
 
@@ -26,7 +27,7 @@ public interface AdminRepositoryCustom {
 
     AdminDetailResponseDTO fetchDetailsById(Long id);
 
-    List<Object[]> fetchAdmin(AdminUpdateRequestDTO updateRequestDTO);
+    List<Object[]> validateDuplicity(AdminUpdateRequestDTO updateRequestDTO);
 
     Admin fetchAdminByUsernameOrEmail(String username);
 

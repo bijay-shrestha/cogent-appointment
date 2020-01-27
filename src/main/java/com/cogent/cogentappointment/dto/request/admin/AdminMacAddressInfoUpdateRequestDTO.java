@@ -5,20 +5,18 @@ import lombok.*;
 import java.io.Serializable;
 
 /**
- * @author smriti on 17/11/2019
+ * @author smriti on 2019-09-01
  */
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AdminProfileUpdateRequestDTO implements Serializable {
+public class AdminMacAddressInfoUpdateRequestDTO implements Serializable {
 
-    private Long adminProfileId;
+    private Long id;
 
-    private Long profileId;
-
-    private Long applicationModuleId;
+    private String macAddress;
 
     private Character status;
 }

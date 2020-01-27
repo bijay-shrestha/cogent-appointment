@@ -43,10 +43,13 @@ public class AdminUpdateRequestDTO implements Serializable {
     private Character hasMacBinding;
 
     @NotNull
-    private Long adminCategoryId;
+    private Character genderCode;
 
     @NotNull
     private Long hospitalId;
+
+    @NotNull
+    private Long profileId;
 
     @NotNull
     @NotEmpty
@@ -54,8 +57,5 @@ public class AdminUpdateRequestDTO implements Serializable {
 
     private Character isAvatarUpdate;
 
-    private List<MacAddressInfoUpdateRequestDTO> macAddressInfoUpdateRequestDTOS;
-
-    @NotEmpty
-    private List<AdminProfileUpdateRequestDTO> adminProfileUpdateRequestDTOS;
+    private List<AdminMacAddressInfoUpdateRequestDTO> macAddressUpdateInfo;
 }

@@ -7,6 +7,7 @@ import com.cogent.cogentappointment.dto.response.admin.AdminDetailResponseDTO;
 import com.cogent.cogentappointment.dto.response.admin.AdminInfoByUsernameResponseDTO;
 import com.cogent.cogentappointment.dto.response.admin.AdminProfileResponseDTO;
 import com.cogent.cogentappointment.dto.response.files.FileUploadResponseDTO;
+import com.cogent.cogentappointment.enums.Gender;
 import com.cogent.cogentappointment.model.Admin;
 import com.cogent.cogentappointment.model.*;
 import org.apache.commons.lang3.StringUtils;
@@ -32,8 +33,9 @@ import static com.cogent.cogentappointment.utils.commons.StringUtil.toUpperCase;
  */
 public class AdminUtils {
 
-    public static Admin convertAdminRequestDTOToAdmin(AdminRequestDTO adminRequestDTO,
-                                                      Hospital hospital) {
+    public static Admin parseAdminDetails(AdminRequestDTO adminRequestDTO,
+                                          Gender gender,
+                                          Profile profile) {
         Admin admin = new Admin();
         admin.setUsername(adminRequestDTO.getUsername());
         admin.setFullName(toUpperCase(adminRequestDTO.getFullName()));
@@ -42,12 +44,20 @@ public class AdminUtils {
         admin.setStatus(adminRequestDTO.getStatus());
         admin.setHasMacBinding(adminRequestDTO.getHasMacBinding());
         admin.setIsFirstLogin(YES);
+
+        parseAdminDetails(gender, profile, admin);
         return admin;
+    }
+
+    private static void parseAdminDetails(Gender gender, Profile profile, Admin admin) {
+        admin.setGender(gender);
+        admin.setProfileId(profile);
     }
 
     public static void convertAdminUpdateRequestDTOToAdmin(Admin admin,
                                                            AdminUpdateRequestDTO adminRequestDTO,
-                                                           Hospital hospital) {
+                                                           Gender gender,
+                                                           Profile profile) {
 
         admin.setEmail(adminRequestDTO.getEmail());
         admin.setFullName(toUpperCase(adminRequestDTO.getFullName()));
@@ -55,32 +65,11 @@ public class AdminUtils {
         admin.setStatus(adminRequestDTO.getStatus());
         admin.setHasMacBinding(adminRequestDTO.getHasMacBinding());
         admin.setRemarks(adminRequestDTO.getRemarks());
+
+        parseAdminDetails(gender, profile, admin);
         /*MODIFIED DATE AND MODIFIED BY*/
     }
 
-    public static AdminProfile parseToAdminProfile(Long adminId, AdminProfileRequestDTO requestDTO) {
-        AdminProfile adminProfile = new AdminProfile();
-        parseToAdminProfile(adminProfile, adminId, requestDTO.getProfileId(), ACTIVE);
-        return adminProfile;
-    }
-
-    public static AdminProfile parseToUpdatedAdminProfile(Long adminId,
-                                                          AdminProfileUpdateRequestDTO updateDTO) {
-
-        AdminProfile adminProfile = new AdminProfile();
-        adminProfile.setId(updateDTO.getAdminProfileId());
-        parseToAdminProfile(adminProfile, adminId, updateDTO.getProfileId(), updateDTO.getStatus());
-        return adminProfile;
-    }
-
-    private static void parseToAdminProfile(AdminProfile adminProfile,
-                                            Long adminId,
-                                            Long profileId,
-                                            Character status) {
-        adminProfile.setAdminId(adminId);
-        adminProfile.setProfileId(profileId);
-        adminProfile.setStatus(status);
-    }
 
     public static AdminMacAddressInfo convertToMACAddressInfo(String macAddress, Admin admin) {
 
@@ -153,7 +142,7 @@ public class AdminUtils {
         admin.setRemarks(remarks);
     }
 
-    private static BiFunction<MacAddressInfoUpdateRequestDTO, Admin, AdminMacAddressInfo> convertToUpdatedMACAddressInfo =
+    private static BiFunction<AdminMacAddressInfoUpdateRequestDTO, Admin, AdminMacAddressInfo> convertToUpdatedMACAddressInfo =
             (requestDTO, admin) -> {
 
                 AdminMacAddressInfo macAddressInfo = new AdminMacAddressInfo();
@@ -166,7 +155,7 @@ public class AdminUtils {
             };
 
     public static List<AdminMacAddressInfo> convertToUpdatedMACAddressInfo(
-            List<MacAddressInfoUpdateRequestDTO> macAddressInfoRequestDTOS, Admin admin) {
+            List<AdminMacAddressInfoUpdateRequestDTO> macAddressInfoRequestDTOS, Admin admin) {
 
         return macAddressInfoRequestDTOS.stream()
                 .map(macAddressInfo -> convertToUpdatedMACAddressInfo.apply(macAddressInfo, admin))
@@ -213,10 +202,10 @@ public class AdminUtils {
 
     public static String parseUpdatedMacAddress(AdminUpdateRequestDTO updateRequestDTO) {
 
-        List<String> macAddress = updateRequestDTO.getMacAddressInfoUpdateRequestDTOS()
+        List<String> macAddress = updateRequestDTO.getMacAddressUpdateInfo()
                 .stream()
                 .filter(requestDTO -> requestDTO.getStatus().equals(ACTIVE))
-                .map(MacAddressInfoUpdateRequestDTO::getMacAddress)
+                .map(AdminMacAddressInfoUpdateRequestDTO::getMacAddress)
                 .collect(Collectors.toList());
 
         return (updateRequestDTO.getHasMacBinding().equals(ACTIVE))
@@ -252,12 +241,10 @@ public class AdminUtils {
         final int MOBILE_NUMBER_INDEX = 4;
         final int STATUS_INDEX = 5;
         final int HAS_MAC_BINDING_INDEX = 6;
-        final int ADMIN_CATEGORY_NAME_INDEX = 7;
-        final int ADMIN_CATEGORY_ID_INDEX = 8;
-        final int REMARKS_INDEX = 9;
-        final int HOSPITAL_NAME_INDEX = 10;
-        final int HOSPITAL_ID_INDEX = 11;
-        final int ADMIN_AVATAR_FILE_URI_INDEX = 12;
+        final int REMARKS_INDEX = 7;
+        final int HOSPITAL_NAME_INDEX = 8;
+        final int HOSPITAL_ID_INDEX = 9;
+        final int ADMIN_AVATAR_FILE_URI_INDEX = 10;
 
         return AdminDetailResponseDTO.builder()
                 .id(Long.parseLong(objects[ADMIN_ID_INDEX].toString()))
@@ -267,8 +254,6 @@ public class AdminUtils {
                 .mobileNumber(objects[MOBILE_NUMBER_INDEX].toString())
                 .status(objects[STATUS_INDEX].toString().charAt(0))
                 .hasMacBinding(objects[HAS_MAC_BINDING_INDEX].toString().charAt(0))
-                .adminCategoryName(objects[ADMIN_CATEGORY_NAME_INDEX].toString())
-                .adminCategoryId(Long.parseLong(objects[ADMIN_CATEGORY_ID_INDEX].toString()))
                 .hospitalName(objects[HOSPITAL_NAME_INDEX].toString())
                 .hospitalId(Long.parseLong(objects[HOSPITAL_ID_INDEX].toString()))
                 .remarks(Objects.isNull(objects[REMARKS_INDEX]) ? null : objects[REMARKS_INDEX].toString())
@@ -280,11 +265,11 @@ public class AdminUtils {
 
     private static List<AdminProfileResponseDTO> getAdminProfileResponseDTOS(Object[] object) {
 
-        final int ADMIN_PROFILE_ID_INDEX = 13;
-        final int PROFILE_ID_INDEX = 14;
-        final int PROFILE_NAME_INDEX = 15;
-        final int APPLICATION_MODULE_ID_INDEX = 16;
-        final int APPLICATION_MODULE_NAME_INDEX = 17;
+        final int ADMIN_PROFILE_ID_INDEX = 11;
+        final int PROFILE_ID_INDEX = 12;
+        final int PROFILE_NAME_INDEX = 13;
+        final int APPLICATION_MODULE_ID_INDEX = 14;
+        final int APPLICATION_MODULE_NAME_INDEX = 15;
 
         String[] adminProfileIds = object[ADMIN_PROFILE_ID_INDEX].toString().split(COMMA_SEPARATED);
         String[] profileIds = object[PROFILE_ID_INDEX].toString().split(COMMA_SEPARATED);

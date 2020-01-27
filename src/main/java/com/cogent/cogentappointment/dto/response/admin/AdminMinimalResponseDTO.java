@@ -29,8 +29,6 @@ public class AdminMinimalResponseDTO implements Serializable {
 
     private String profileName;
 
-    private String adminCategoryName;
-
     private Character hasMacBinding;
 
     private String fileUri;

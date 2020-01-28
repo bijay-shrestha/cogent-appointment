@@ -237,4 +237,24 @@ public class DoctorQuery {
                     " AND cs.status = 'Y'" +
                     " AND d.status = 'Y'";
 
+    public static final String QUERY_TO_FETCH_DOCTOR_BY_HOSPITAL_ID =
+            " SELECT" +
+                    " d.id as value," +                                     //[0]
+                    " d.name as label," +                                   //[1]
+                    " CASE WHEN" +
+                    " (da.status is null OR da.status = 'N')" +
+                    " THEN null" +
+                    " ELSE" +
+                    " da.fileUri" +
+                    " END as fileUri," +                                    //[2]
+                    " dac.appointmentCharge as appointmentCharge" +          //[3]
+                    " FROM" +
+                    " Doctor d" +
+                    " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId" +
+                    " LEFT JOIN DoctorAppointmentCharge dac ON d.id = dac.doctorId.id" +
+                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
+                    " WHERE d.status ='Y'" +
+                    " AND h.id=:hospitalId ";
+
+
 }

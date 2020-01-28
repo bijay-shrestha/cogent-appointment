@@ -1,10 +1,10 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
+import com.cogent.cogentappointment.admin.query.AdminConfirmationTokenQuery;
 import com.cogent.cogentappointment.admin.repository.custom.AdminConfirmationTokenRepositoryCustom;
 import com.cogent.cogentappointment.admin.constants.ErrorMessageConstants;
 import com.cogent.cogentappointment.admin.constants.QueryConstants;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.query.AdminConfirmationTokenQuery;
 import com.cogent.cogentappointment.admin.utils.commons.QueryUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

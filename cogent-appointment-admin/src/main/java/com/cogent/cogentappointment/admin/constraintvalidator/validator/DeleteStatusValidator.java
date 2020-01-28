@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.admin.constraintvalidator.validator;
 
-import com.cogent.cogentappointment.admin.constants.StatusConstants;
 import com.cogent.cogentappointment.admin.constraintvalidator.DeleteStatus;
+import com.cogent.cogentappointment.admin.constants.StatusConstants;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

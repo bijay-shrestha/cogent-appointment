@@ -1,10 +1,10 @@
 package com.cogent.cogentappointment.admin.utils;
 
-import com.cogent.cogentappointment.admin.model.Hospital;
-import com.cogent.cogentappointment.admin.utils.commons.StringUtil;
 import com.cogent.cogentappointment.admin.dto.request.department.DepartmentRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.department.DepartmentUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.model.Department;
+import com.cogent.cogentappointment.admin.model.Hospital;
+import com.cogent.cogentappointment.admin.utils.commons.StringUtil;
 
 /**
  * @author smriti ON 25/01/2020

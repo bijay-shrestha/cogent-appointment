@@ -1,9 +1,10 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
-import com.cogent.cogentappointment.admin.constants.QueryConstants;
-import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDutyRosterStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
+import com.cogent.cogentappointment.admin.query.DoctorDutyRosterOverrideQuery;
+import com.cogent.cogentappointment.admin.constants.QueryConstants;
+import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDutyRosterStatusRequestDTO;
 import com.cogent.cogentappointment.admin.utils.DoctorDutyRosterOverrideUtils;
 import com.cogent.cogentappointment.admin.utils.commons.DateUtils;
 import com.cogent.cogentappointment.admin.repository.custom.DoctorDutyRosterOverrideRepositoryCustom;
@@ -18,8 +19,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import static com.cogent.cogentappointment.admin.query.DoctorDutyRosterOverrideQuery.*;
-
 @Repository
 @Transactional(readOnly = true)
 public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyRosterOverrideRepositoryCustom {
@@ -33,7 +32,7 @@ public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyR
                                                       Date fromDate,
                                                       Date toDate) {
 
-        Query query = QueryUtils.createQuery.apply(entityManager, VALIDATE_DOCTOR_DUTY_ROSTER_OVERRIDE_COUNT)
+        Query query = QueryUtils.createQuery.apply(entityManager, DoctorDutyRosterOverrideQuery.VALIDATE_DOCTOR_DUTY_ROSTER_OVERRIDE_COUNT)
                 .setParameter(QueryConstants.DOCTOR_ID, doctorId)
                 .setParameter(QueryConstants.SPECIALIZATION_ID, specializationId)
                 .setParameter(QueryConstants.FROM_DATE, DateUtils.utilDateToSqlDate(fromDate))
@@ -47,7 +46,7 @@ public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyR
                                                                              Long doctorId,
                                                                              Long specializationId) {
 
-        Query query = QueryUtils.createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_TIME)
+        Query query = QueryUtils.createQuery.apply(entityManager, DoctorDutyRosterOverrideQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_TIME)
                 .setParameter(QueryConstants.DATE, DateUtils.utilDateToSqlDate(date))
                 .setParameter(QueryConstants.DOCTOR_ID, doctorId)
                 .setParameter(QueryConstants.SPECIALIZATION_ID, specializationId);
@@ -62,7 +61,7 @@ public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyR
     public List<DoctorDutyRosterStatusResponseDTO> fetchDoctorDutyRosterOverrideStatus(
             DoctorDutyRosterStatusRequestDTO requestDTO) {
 
-        Query query = QueryUtils.createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_STATUS(requestDTO))
+        Query query = QueryUtils.createQuery.apply(entityManager, DoctorDutyRosterOverrideQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_STATUS(requestDTO))
                 .setParameter(QueryConstants.FROM_DATE, DateUtils.utilDateToSqlDate(requestDTO.getFromDate()))
                 .setParameter(QueryConstants.TO_DATE, DateUtils.utilDateToSqlDate(requestDTO.getToDate()));
 

@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.admin.service;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.*;
+import com.cogent.cogentappointment.client.admin.dto.request.doctorDutyRoster.*;
 import com.cogent.cogentappointment.dto.request.doctorDutyRoster.*;
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorDutyRosterDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorDutyRosterMinimalResponseDTO;

@@ -1,12 +1,12 @@
 package com.cogent.cogentappointment.admin.resource;
 
-import com.cogent.cogentappointment.admin.dto.request.qualification.QualificationRequestDTO;
 import com.cogent.cogentappointment.admin.constants.SwaggerConstants;
 import com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants;
+import com.cogent.cogentappointment.admin.dto.response.qualification.QualificationDropdownDTO;
+import com.cogent.cogentappointment.admin.dto.request.qualification.QualificationRequestDTO;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.qualification.QualificationSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.qualification.QualificationUpdateRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.qualification.QualificationDropdownDTO;
 import com.cogent.cogentappointment.admin.service.QualificationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

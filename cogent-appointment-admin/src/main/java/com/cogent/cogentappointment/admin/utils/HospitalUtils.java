@@ -2,24 +2,23 @@ package com.cogent.cogentappointment.admin.utils;
 
 import com.cogent.cogentappointment.admin.constants.StatusConstants;
 import com.cogent.cogentappointment.admin.constants.StringConstant;
-import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalContactNumberResponseDTO;
-import com.cogent.cogentappointment.admin.model.Hospital;
-import com.cogent.cogentappointment.admin.model.HospitalContactNumber;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalContactNumberUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalResponseDTO;
+import com.cogent.cogentappointment.admin.model.Hospital;
+import com.cogent.cogentappointment.admin.model.HospitalContactNumber;
 import com.cogent.cogentappointment.admin.model.HospitalLogo;
+import com.cogent.cogentappointment.admin.utils.commons.StringUtil;
+import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalContactNumberResponseDTO;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.toUpperCase;
 
 /**
  * @author smriti ON 12/01/2020
@@ -28,8 +27,8 @@ public class HospitalUtils {
 
     public static Hospital convertDTOToHospital(HospitalRequestDTO hospitalRequestDTO) {
         Hospital hospital = new Hospital();
-        hospital.setName(toUpperCase(hospitalRequestDTO.getName()));
-        hospital.setCode(toUpperCase(hospitalRequestDTO.getHospitalCode()));
+        hospital.setName(StringUtil.toUpperCase(hospitalRequestDTO.getName()));
+        hospital.setCode(StringUtil.toUpperCase(hospitalRequestDTO.getHospitalCode()));
         hospital.setAddress(hospitalRequestDTO.getAddress());
         hospital.setPanNumber(hospitalRequestDTO.getPanNumber());
         hospital.setStatus(hospitalRequestDTO.getStatus());
@@ -61,7 +60,7 @@ public class HospitalUtils {
     public static void parseToUpdatedHospital(HospitalUpdateRequestDTO updateRequestDTO,
                                               Hospital hospital) {
 
-        hospital.setName(toUpperCase(updateRequestDTO.getName()));
+        hospital.setName(StringUtil.toUpperCase(updateRequestDTO.getName()));
         hospital.setAddress(updateRequestDTO.getAddress());
         hospital.setPanNumber(updateRequestDTO.getPanNumber());
         hospital.setStatus(updateRequestDTO.getStatus());

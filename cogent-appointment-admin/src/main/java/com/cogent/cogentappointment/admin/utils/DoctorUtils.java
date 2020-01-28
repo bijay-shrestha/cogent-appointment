@@ -2,9 +2,8 @@ package com.cogent.cogentappointment.admin.utils;
 
 import com.cogent.cogentappointment.admin.constants.StatusConstants;
 import com.cogent.cogentappointment.admin.constants.StringConstant;
-import com.cogent.cogentappointment.admin.dto.request.doctor.DoctorQualificationUpdateDTO;
-import com.cogent.cogentappointment.admin.model.*;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.doctor.DoctorQualificationUpdateDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctor.DoctorRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctor.DoctorSpecializationUpdateDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctor.DoctorUpdateDTO;
@@ -13,14 +12,14 @@ import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorSpecializati
 import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorUpdateResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.admin.enums.Gender;
+import com.cogent.cogentappointment.admin.model.*;
 import com.cogent.cogentappointment.admin.utils.commons.NumberFormatterUtils;
+import com.cogent.cogentappointment.admin.utils.commons.StringUtil;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.toUpperCase;
 
 /**
  * @author smriti on 2019-09-29
@@ -31,7 +30,7 @@ public class DoctorUtils {
                                           Gender gender,
                                           Hospital hospital) {
         Doctor doctor = new Doctor();
-        doctor.setName(toUpperCase(requestDTO.getName()));
+        doctor.setName(StringUtil.toUpperCase(requestDTO.getName()));
         doctor.setCode(NumberFormatterUtils.generateRandomNumber(3));
         doctor.setMobileNumber(requestDTO.getMobileNumber());
         doctor.setEmail(requestDTO.getEmail());
@@ -109,7 +108,7 @@ public class DoctorUtils {
                                               Gender gender,
                                               Hospital hospital) {
 
-        doctor.setName(toUpperCase(requestDTO.getName()));
+        doctor.setName(StringUtil.toUpperCase(requestDTO.getName()));
         doctor.setMobileNumber(requestDTO.getMobileNumber());
         doctor.setEmail(requestDTO.getEmail());
         doctor.setNmcNumber(requestDTO.getNmcNumber());

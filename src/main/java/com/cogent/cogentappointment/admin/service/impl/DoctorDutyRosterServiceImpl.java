@@ -15,6 +15,7 @@ import com.cogent.cogentappointment.admin.service.DoctorService;
 import com.cogent.cogentappointment.admin.service.SpecializationService;
 import com.cogent.cogentappointment.admin.utils.DoctorDutyRosterUtils;
 import com.cogent.cogentappointment.admin.utils.commons.DateUtils;
+import com.cogent.cogentappointment.client.admin.dto.request.doctorDutyRoster.*;
 import com.cogent.cogentappointment.dto.request.doctorDutyRoster.*;
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentBookedDateResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorDutyRosterDetailResponseDTO;

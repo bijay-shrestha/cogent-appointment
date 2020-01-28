@@ -1,15 +1,16 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
+import com.cogent.cogentappointment.admin.configuration.FileConfiguration;
 import com.cogent.cogentappointment.admin.constants.ErrorMessageConstants;
 import com.cogent.cogentappointment.admin.constants.StringConstant;
 import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.exception.OperationUnsuccessfulException;
+import com.cogent.cogentappointment.admin.log.constants.FileLog;
 import com.cogent.cogentappointment.admin.service.FileService;
 import com.cogent.cogentappointment.admin.utils.commons.DateUtils;
 import com.cogent.cogentappointment.admin.utils.commons.StringUtil;
-import com.cogent.cogentappointment.admin.configuration.FileConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -28,8 +29,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import static com.cogent.cogentappointment.admin.log.constants.FileLog.*;
 
 /**
  * @author smriti on 2019-08-27
@@ -50,7 +49,7 @@ public class FileServiceImpl implements FileService {
     @Override
     public Resource loadAsResource(String subDirectoryLocation, String fileName) {
         Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
-        log.info(LOADING_FILE_PROCESS_STARTED);
+        log.info(FileLog.LOADING_FILE_PROCESS_STARTED);
 
         try {
             String path = StringUtil.urlConverter(subDirectoryLocation, StringConstant.HYPHEN, StringConstant.FORWARD_SLASH) + StringConstant.FORWARD_SLASH;
@@ -58,7 +57,7 @@ public class FileServiceImpl implements FileService {
             Resource resource = new UrlResource(file.toUri());
 
             if (resource.exists() || resource.isReadable()) {
-                log.info(LOADING_FILE_PROCESS_COMPLETED, DateUtils.getDifferenceBetweenTwoTime(startTime));
+                log.info(FileLog.LOADING_FILE_PROCESS_COMPLETED, DateUtils.getDifferenceBetweenTwoTime(startTime));
                 return resource;
             } else {
                 throw new NoContentFoundException(ErrorMessageConstants.FileServiceMessages.INVALID_FILE_TYPE_MESSAGE + fileName);
@@ -71,7 +70,7 @@ public class FileServiceImpl implements FileService {
     private FileUploadResponseDTO uploadFile(MultipartFile file, String subDirectoryLocation) {
         Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
 
-        log.info(UPLOADING_FILE_PROCESS_STARTED);
+        log.info(FileLog.UPLOADING_FILE_PROCESS_STARTED);
 
         String fileName = store(file, subDirectoryLocation);
 
@@ -87,7 +86,7 @@ public class FileServiceImpl implements FileService {
                 .fileType(file.getContentType())
                 .fileSize(file.getSize()).build();
 
-        log.info(UPLOADING_FILE_PROCESS_COMPLETED, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(FileLog.UPLOADING_FILE_PROCESS_COMPLETED, DateUtils.getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
     }
@@ -97,13 +96,13 @@ public class FileServiceImpl implements FileService {
                                                    String subDirectoryLocation) {
         Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
 
-        log.info(UPLOADING_FILE_PROCESS_STARTED);
+        log.info(FileLog.UPLOADING_FILE_PROCESS_STARTED);
 
         List<FileUploadResponseDTO> fileUploadResponseDTOS = Arrays.stream(files)
                 .map(file -> uploadFile(file, subDirectoryLocation))
                 .collect(Collectors.toList());
 
-        log.info(UPLOADING_FILE_PROCESS_COMPLETED, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(FileLog.UPLOADING_FILE_PROCESS_COMPLETED, DateUtils.getDifferenceBetweenTwoTime(startTime));
 
         return fileUploadResponseDTOS;
     }

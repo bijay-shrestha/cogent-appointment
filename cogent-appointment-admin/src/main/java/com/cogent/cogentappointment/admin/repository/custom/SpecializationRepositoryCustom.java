@@ -1,9 +1,9 @@
 package com.cogent.cogentappointment.admin.repository.custom;
 
-import com.cogent.cogentappointment.admin.dto.request.specialization.SpecializationSearchRequestDTO;
-import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.specialization.SpecializationMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.specialization.SpecializationResponseDTO;
+import com.cogent.cogentappointment.admin.dto.request.specialization.SpecializationSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;

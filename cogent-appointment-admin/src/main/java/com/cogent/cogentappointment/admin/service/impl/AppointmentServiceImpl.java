@@ -6,6 +6,8 @@ import com.cogent.cogentappointment.admin.dto.request.patient.PatientRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.*;
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
+import com.cogent.cogentappointment.admin.log.CommonLogConstant;
+import com.cogent.cogentappointment.admin.log.constants.AppointmentLog;
 import com.cogent.cogentappointment.admin.model.Appointment;
 import com.cogent.cogentappointment.admin.model.Doctor;
 import com.cogent.cogentappointment.admin.model.Patient;
@@ -28,10 +30,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
-import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.FETCHING_PROCESS_COMPLETED;
-import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.FETCHING_PROCESS_STARTED;
-import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.*;
 import static com.cogent.cogentappointment.admin.utils.AppointmentUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
@@ -75,7 +73,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CHECK_AVAILABILITY_PROCESS_STARTED);
+        log.info(AppointmentLog.CHECK_AVAILABILITY_PROCESS_STARTED);
 
         DoctorDutyRosterTimeResponseDTO doctorDutyRosterInfo = fetchDoctorDutyRosterInfo(
                 requestDTO.getAppointmentDate(), requestDTO.getDoctorId(), requestDTO.getSpecializationId());
@@ -94,7 +92,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             responseDTO = parseToAppointmentCheckAvailabilityResponseDTO(doctorDutyRosterInfo, availableSlots);
         }
 
-        log.info(CHECK_AVAILABILITY_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
+        log.info(AppointmentLog.CHECK_AVAILABILITY_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
     }
@@ -104,7 +102,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(SAVING_PROCESS_STARTED, APPOINTMENT);
+        log.info(CommonLogConstant.SAVING_PROCESS_STARTED, AppointmentLog.APPOINTMENT);
 
         Patient patient = fetchPatient(appointmentRequestDTO.getIsNewRegistration(),
                 appointmentRequestDTO.getPatientId(),
@@ -122,7 +120,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         save(appointment);
 
-        log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
+        log.info(CommonLogConstant.SAVING_PROCESS_COMPLETED, AppointmentLog.APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
 
         return appointmentNumber;
     }
@@ -134,12 +132,12 @@ public class AppointmentServiceImpl implements AppointmentService {
                                                                               Long specializationId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_PROCESS_STARTED);
+        log.info(AppointmentLog.FETCHING_PROCESS_STARTED);
 
         List<AppointmentBookedDateResponseDTO> bookedAppointmentDates =
                 appointmentRepository.fetchBookedAppointmentDates(fromDate, toDate, doctorId, specializationId);
 
-        log.info(FETCHING_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
+        log.info(AppointmentLog.FETCHING_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
 
         return bookedAppointmentDates;
     }
@@ -150,12 +148,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_PROCESS_STARTED);
+        log.info(AppointmentLog.FETCHING_PROCESS_STARTED);
 
         Long appointmentCount = appointmentRepository.fetchBookedAppointmentCount
                 (fromDate, toDate, doctorId, specializationId);
 
-        log.info(FETCHING_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
+        log.info(AppointmentLog.FETCHING_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
 
         return appointmentCount;
     }
@@ -164,7 +162,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     public void update(AppointmentUpdateRequestDTO updateRequestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(UPDATING_PROCESS_STARTED, APPOINTMENT);
+        log.info(CommonLogConstant.UPDATING_PROCESS_STARTED, AppointmentLog.APPOINTMENT);
 
         Appointment appointment = findById(updateRequestDTO.getAppointmentId());
 
@@ -176,7 +174,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         //todo; appointment status in follow up tracker to be updated as per appointment
 
-        log.info(UPDATING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
+        log.info(CommonLogConstant.UPDATING_PROCESS_COMPLETED, AppointmentLog.APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
@@ -184,13 +182,13 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CANCELLING_PROCESS_STARTED);
+        log.info(AppointmentLog.CANCELLING_PROCESS_STARTED);
 
         Appointment appointment = findById(cancelRequestDTO.getId());
 
         convertToCancelledAppointment(appointment, cancelRequestDTO);
 
-        log.info(CANCELLING_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
+        log.info(AppointmentLog.CANCELLING_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
@@ -199,12 +197,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT);
+        log.info(CommonLogConstant.SEARCHING_PROCESS_STARTED, AppointmentLog.APPOINTMENT);
 
         List<AppointmentMinimalResponseDTO> responseDTOS =
                 appointmentRepository.search(searchRequestDTO, pageable);
 
-        log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
+        log.info(CommonLogConstant.SEARCHING_PROCESS_COMPLETED, AppointmentLog.APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
     }
@@ -213,11 +211,11 @@ public class AppointmentServiceImpl implements AppointmentService {
     public AppointmentResponseDTO fetchDetailsById(Long id) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_DETAIL_PROCESS_STARTED, APPOINTMENT);
+        log.info(CommonLogConstant.FETCHING_DETAIL_PROCESS_STARTED, AppointmentLog.APPOINTMENT);
 
         AppointmentResponseDTO responseDTO = appointmentRepository.fetchDetailsById(id);
 
-        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
+        log.info(CommonLogConstant.FETCHING_DETAIL_PROCESS_COMPLETED, AppointmentLog.APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
     }
@@ -227,7 +225,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(RESCHEDULE_PROCESS_STARTED);
+        log.info(AppointmentLog.RESCHEDULE_PROCESS_STARTED);
 
         Appointment appointment = findIncompleteAppointmentById(rescheduleRequestDTO.getAppointmentId());
 
@@ -236,7 +234,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         parseToRescheduleAppointment(appointment, rescheduleRequestDTO);
 
-        log.info(RESCHEDULE_PROCESS_STARTED, getDifferenceBetweenTwoTime(startTime));
+        log.info(AppointmentLog.RESCHEDULE_PROCESS_STARTED, getDifferenceBetweenTwoTime(startTime));
     }
 
 //    @Override

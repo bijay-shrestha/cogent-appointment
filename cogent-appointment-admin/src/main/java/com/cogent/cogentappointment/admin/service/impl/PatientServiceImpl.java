@@ -1,18 +1,19 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
-import com.cogent.cogentappointment.admin.dto.request.patient.PatientSearchRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.patient.PatientDetailResponseDTO;
-import com.cogent.cogentappointment.admin.model.Hospital;
-import com.cogent.cogentappointment.admin.utils.GenderUtils;
 import com.cogent.cogentappointment.admin.constants.ErrorMessageConstants;
 import com.cogent.cogentappointment.admin.dto.request.patient.PatientRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.patient.PatientSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.patient.PatientDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.patient.PatientMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.enums.Gender;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.log.CommonLogConstant;
+import com.cogent.cogentappointment.admin.log.constants.PatientLog;
+import com.cogent.cogentappointment.admin.model.Hospital;
 import com.cogent.cogentappointment.admin.model.Patient;
 import com.cogent.cogentappointment.admin.repository.PatientRepository;
+import com.cogent.cogentappointment.admin.utils.GenderUtils;
 import com.cogent.cogentappointment.admin.service.HospitalService;
 import com.cogent.cogentappointment.admin.service.PatientService;
 import com.cogent.cogentappointment.admin.utils.PatientUtils;
@@ -27,8 +28,6 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
-
-import static com.cogent.cogentappointment.admin.log.constants.PatientLog.PATIENT;
 
 /**
  * @author smriti ON 16/01/2020
@@ -52,7 +51,7 @@ public class PatientServiceImpl implements PatientService {
 
         Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.SAVING_PROCESS_STARTED, PATIENT);
+        log.info(CommonLogConstant.SAVING_PROCESS_STARTED, PatientLog.PATIENT);
 
         Long patientCount = patientRepository.fetchPatientForValidation(requestDTO.getName(),
                 requestDTO.getMobileNumber(), requestDTO.getDateOfBirth());
@@ -62,7 +61,7 @@ public class PatientServiceImpl implements PatientService {
 
         Patient patient = savePatient(requestDTO);
 
-        log.info(CommonLogConstant.SAVING_PROCESS_COMPLETED, PATIENT, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(CommonLogConstant.SAVING_PROCESS_COMPLETED, PatientLog.PATIENT, DateUtils.getDifferenceBetweenTwoTime(startTime));
 
         return patient;
     }
@@ -72,12 +71,12 @@ public class PatientServiceImpl implements PatientService {
 
         Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_STARTED, PATIENT);
+        log.info(CommonLogConstant.FETCHING_PROCESS_STARTED, PatientLog.PATIENT);
 
         Patient patient = patientRepository.fetchActivePatientById(id)
                 .orElseThrow(() -> PATIENT_WITH_GIVEN_ID_NOT_FOUND.apply(id));
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_COMPLETED, PATIENT, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(CommonLogConstant.FETCHING_PROCESS_COMPLETED, PatientLog.PATIENT, DateUtils.getDifferenceBetweenTwoTime(startTime));
 
         return patient;
     }
@@ -86,11 +85,11 @@ public class PatientServiceImpl implements PatientService {
     public PatientDetailResponseDTO search(PatientSearchRequestDTO searchRequestDTO) {
         Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.SEARCHING_PROCESS_STARTED, PATIENT);
+        log.info(CommonLogConstant.SEARCHING_PROCESS_STARTED, PatientLog.PATIENT);
 
         PatientDetailResponseDTO responseDTO = patientRepository.search(searchRequestDTO);
 
-        log.info(CommonLogConstant.SEARCHING_PROCESS_COMPLETED, PATIENT, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(CommonLogConstant.SEARCHING_PROCESS_COMPLETED, PatientLog.PATIENT, DateUtils.getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
     }
@@ -101,12 +100,12 @@ public class PatientServiceImpl implements PatientService {
 
         Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_STARTED, PATIENT);
+        log.info(CommonLogConstant.FETCHING_PROCESS_STARTED, PatientLog.PATIENT);
 
         List<PatientMinimalResponseDTO> responseDTOS = patientRepository.fetchMinimalPatientInfo
                 (searchRequestDTO, pageable);
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_COMPLETED, PATIENT, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(CommonLogConstant.FETCHING_PROCESS_COMPLETED, PatientLog.PATIENT, DateUtils.getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
     }
@@ -115,11 +114,11 @@ public class PatientServiceImpl implements PatientService {
     public PatientDetailResponseDTO fetchDetailsById(Long id) {
         Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_STARTED, PATIENT);
+        log.info(CommonLogConstant.FETCHING_PROCESS_STARTED, PatientLog.PATIENT);
 
         PatientDetailResponseDTO responseDTO = patientRepository.fetchDetailsById(id);
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_COMPLETED, PATIENT, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(CommonLogConstant.FETCHING_PROCESS_COMPLETED, PatientLog.PATIENT, DateUtils.getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
 

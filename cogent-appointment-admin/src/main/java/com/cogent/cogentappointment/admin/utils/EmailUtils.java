@@ -1,8 +1,8 @@
 package com.cogent.cogentappointment.admin.utils;
 
 import com.cogent.cogentappointment.admin.constants.StatusConstants;
-import com.cogent.cogentappointment.admin.model.EmailToSend;
 import com.cogent.cogentappointment.admin.dto.request.email.EmailRequestDTO;
+import com.cogent.cogentappointment.admin.model.EmailToSend;
 
 import java.util.Date;
 

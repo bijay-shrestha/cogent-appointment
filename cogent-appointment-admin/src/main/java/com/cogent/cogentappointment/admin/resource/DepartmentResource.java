@@ -2,11 +2,11 @@ package com.cogent.cogentappointment.admin.resource;
 
 import com.cogent.cogentappointment.admin.constants.SwaggerConstants;
 import com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants;
-import com.cogent.cogentappointment.admin.service.DepartmentService;
-import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.department.DepartmentRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.department.DepartmentSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.department.DepartmentUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.service.DepartmentService;
+import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.PageRequest;

@@ -1,12 +1,12 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
-import com.cogent.cogentappointment.admin.constants.QueryConstants;
 import com.cogent.cogentappointment.admin.dto.request.patient.PatientSearchRequestDTO;
+import com.cogent.cogentappointment.admin.model.Patient;
+import com.cogent.cogentappointment.admin.query.PatientQuery;
+import com.cogent.cogentappointment.admin.constants.QueryConstants;
 import com.cogent.cogentappointment.admin.dto.response.patient.PatientDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.patient.PatientMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.model.Patient;
-import com.cogent.cogentappointment.admin.query.PatientQuery;
 import com.cogent.cogentappointment.admin.repository.custom.PatientRepositoryCustom;
 import com.cogent.cogentappointment.admin.utils.PatientUtils;
 import com.cogent.cogentappointment.admin.utils.commons.DateUtils;

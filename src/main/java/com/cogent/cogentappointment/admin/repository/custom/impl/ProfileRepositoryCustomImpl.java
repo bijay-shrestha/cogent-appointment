@@ -1,5 +1,7 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
+import com.cogent.cogentappointment.admin.dto.request.profile.ProfileMenuSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.profile.ProfileSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.profile.*;
 import com.cogent.cogentappointment.admin.query.ProfileQuery;
 import com.cogent.cogentappointment.admin.constants.QueryConstants;
@@ -7,8 +9,6 @@ import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.utils.commons.PageableUtils;
 import com.cogent.cogentappointment.admin.utils.commons.QueryUtils;
-import com.cogent.cogentappointment.admin.dto.request.profile.ProfileMenuSearchRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.profile.ProfileSearchRequestDTO;
 import com.cogent.cogentappointment.dto.response.profile.*;
 import com.cogent.cogentappointment.admin.model.Profile;
 import com.cogent.cogentappointment.admin.model.ProfileMenu;

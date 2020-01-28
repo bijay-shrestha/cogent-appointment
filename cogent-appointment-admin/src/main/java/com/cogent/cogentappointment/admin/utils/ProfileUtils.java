@@ -1,10 +1,10 @@
 package com.cogent.cogentappointment.admin.utils;
 
-import com.cogent.cogentappointment.admin.dto.response.profile.*;
 import com.cogent.cogentappointment.admin.constants.StringConstant;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.profile.ProfileDTO;
 import com.cogent.cogentappointment.admin.dto.request.profile.ProfileUpdateDTO;
+import com.cogent.cogentappointment.admin.dto.response.profile.*;
 import com.cogent.cogentappointment.admin.model.Department;
 import com.cogent.cogentappointment.admin.model.Profile;
 import com.cogent.cogentappointment.admin.utils.commons.StringUtil;

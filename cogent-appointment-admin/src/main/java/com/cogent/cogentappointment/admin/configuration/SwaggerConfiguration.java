@@ -29,7 +29,7 @@ public class SwaggerConfiguration {
 
     private ApiInfo metaData() {
         return new ApiInfo(
-                "Cogent Appointment System with eSewa Integration",
+                "Cogent Appointment System with eSewa Integration (Admin)",
                 "This is the RESTful API collections of all resources.",
                 "V1",
                 "http://www.cogenthealth.com.np/",

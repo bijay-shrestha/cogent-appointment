@@ -1,17 +1,17 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
+import com.cogent.cogentappointment.admin.dto.request.doctor.DoctorSearchRequestDTO;
+import com.cogent.cogentappointment.admin.model.Doctor;
+import com.cogent.cogentappointment.admin.query.DoctorQuery;
 import com.cogent.cogentappointment.admin.constants.QueryConstants;
 import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorUpdateResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.model.Doctor;
-import com.cogent.cogentappointment.admin.query.DoctorQuery;
 import com.cogent.cogentappointment.admin.repository.custom.DoctorRepositoryCustom;
 import com.cogent.cogentappointment.admin.utils.DoctorUtils;
 import com.cogent.cogentappointment.admin.utils.commons.PageableUtils;
 import com.cogent.cogentappointment.admin.utils.commons.QueryUtils;
-import com.cogent.cogentappointment.admin.dto.request.doctor.DoctorSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorDropdownDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;

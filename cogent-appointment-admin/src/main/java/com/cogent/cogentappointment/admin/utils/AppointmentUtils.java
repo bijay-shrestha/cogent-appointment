@@ -5,6 +5,7 @@ import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentReq
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentAvailabilityResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentBookedTimeResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentCheckAvailabilityResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import com.cogent.cogentappointment.admin.model.Appointment;
@@ -13,7 +14,6 @@ import com.cogent.cogentappointment.admin.model.Patient;
 import com.cogent.cogentappointment.admin.model.Specialization;
 import com.cogent.cogentappointment.admin.utils.commons.DateUtils;
 import com.cogent.cogentappointment.admin.utils.commons.NumberFormatterUtils;
-import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentBookedTimeResponseDTO;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Minutes;

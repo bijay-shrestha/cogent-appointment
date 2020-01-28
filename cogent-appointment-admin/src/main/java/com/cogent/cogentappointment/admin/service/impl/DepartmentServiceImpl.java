@@ -1,5 +1,14 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
+import com.cogent.cogentappointment.admin.dto.request.department.DepartmentRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.department.DepartmentSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.department.DepartmentUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.department.DepartmentMinimalResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.department.DepartmentResponseDTO;
+import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
+import com.cogent.cogentappointment.admin.log.CommonLogConstant;
+import com.cogent.cogentappointment.admin.log.constants.DepartmentLog;
+import com.cogent.cogentappointment.admin.model.Department;
 import com.cogent.cogentappointment.admin.model.Hospital;
 import com.cogent.cogentappointment.admin.repository.DepartmentRepository;
 import com.cogent.cogentappointment.admin.service.DepartmentService;
@@ -8,14 +17,6 @@ import com.cogent.cogentappointment.admin.utils.commons.DateUtils;
 import com.cogent.cogentappointment.admin.utils.commons.NameAndCodeValidationUtils;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
-import com.cogent.cogentappointment.admin.dto.request.department.DepartmentRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.department.DepartmentSearchRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.department.DepartmentUpdateRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.department.DepartmentMinimalResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.department.DepartmentResponseDTO;
-import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.log.CommonLogConstant;
-import com.cogent.cogentappointment.admin.model.Department;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.admin.log.constants.DepartmentLog.DEPARTMENT;
 import static com.cogent.cogentappointment.admin.utils.DepartmentUtils.*;
 
 /**
@@ -50,7 +50,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.SAVING_PROCESS_STARTED, DEPARTMENT);
+        log.info(CommonLogConstant.SAVING_PROCESS_STARTED, DepartmentLog.DEPARTMENT);
 
         List<Object[]> departments = departmentRepository.validateDuplicity(requestDTO);
 
@@ -61,7 +61,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         save(parseToDepartment(requestDTO, hospital));
 
-        log.info(CommonLogConstant.SAVING_PROCESS_COMPLETED, DEPARTMENT, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(CommonLogConstant.SAVING_PROCESS_COMPLETED, DepartmentLog.DEPARTMENT, DateUtils.getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
@@ -69,7 +69,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.UPDATING_PROCESS_STARTED, DEPARTMENT);
+        log.info(CommonLogConstant.UPDATING_PROCESS_STARTED, DepartmentLog.DEPARTMENT);
 
         Department department = fetchDepartmentById(updateRequestDTO.getId());
 
@@ -80,7 +80,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         parseToUpdatedDepartment(updateRequestDTO, department);
 
-        log.info(CommonLogConstant.UPDATING_PROCESS_COMPLETED, DEPARTMENT, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(CommonLogConstant.UPDATING_PROCESS_COMPLETED, DepartmentLog.DEPARTMENT, DateUtils.getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
@@ -88,13 +88,13 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.DELETING_PROCESS_STARTED, DEPARTMENT);
+        log.info(CommonLogConstant.DELETING_PROCESS_STARTED, DepartmentLog.DEPARTMENT);
 
         Department department = fetchDepartmentById(deleteRequestDTO.getId());
 
         parseDepartmentStatus(deleteRequestDTO.getStatus(), deleteRequestDTO.getRemarks(), department);
 
-        log.info(CommonLogConstant.DELETING_PROCESS_COMPLETED, DEPARTMENT, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(CommonLogConstant.DELETING_PROCESS_COMPLETED, DepartmentLog.DEPARTMENT, DateUtils.getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
@@ -103,12 +103,12 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.SEARCHING_PROCESS_STARTED, DEPARTMENT);
+        log.info(CommonLogConstant.SEARCHING_PROCESS_STARTED, DepartmentLog.DEPARTMENT);
 
         List<DepartmentMinimalResponseDTO> responseDTO = departmentRepository.search
                 (searchRequestDTO, pageable);
 
-        log.info(CommonLogConstant.SEARCHING_PROCESS_COMPLETED, DEPARTMENT, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(CommonLogConstant.SEARCHING_PROCESS_COMPLETED, DepartmentLog.DEPARTMENT, DateUtils.getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
     }
@@ -118,12 +118,12 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.FETCHING_DETAIL_PROCESS_STARTED, DEPARTMENT);
+        log.info(CommonLogConstant.FETCHING_DETAIL_PROCESS_STARTED, DepartmentLog.DEPARTMENT);
 
         DepartmentResponseDTO departmentResponseDTO = departmentRepository
                 .fetchDetails(id);
 
-        log.info(CommonLogConstant.FETCHING_DETAIL_PROCESS_COMPLETED, DEPARTMENT, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(CommonLogConstant.FETCHING_DETAIL_PROCESS_COMPLETED, DepartmentLog.DEPARTMENT, DateUtils.getDifferenceBetweenTwoTime(startTime));
 
         return departmentResponseDTO;
     }
@@ -133,12 +133,12 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DEPARTMENT);
+        log.info(CommonLogConstant.FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DepartmentLog.DEPARTMENT);
 
         List<DropDownResponseDTO> departmentDropDownDTOS = departmentRepository.fetchDepartmentForDropdown()
                 .orElseThrow(() -> DEPARTMENT_NOT_FOUND.get());
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DEPARTMENT, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(CommonLogConstant.FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DepartmentLog.DEPARTMENT, DateUtils.getDifferenceBetweenTwoTime(startTime));
 
         return departmentDropDownDTOS;
     }
@@ -148,12 +148,12 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DEPARTMENT);
+        log.info(CommonLogConstant.FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DepartmentLog.DEPARTMENT);
 
         List<DropDownResponseDTO> departmentDropDownDTOS = departmentRepository.fetchActiveDropDownList()
                 .orElseThrow(() -> DEPARTMENT_NOT_FOUND.get());
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DEPARTMENT, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(CommonLogConstant.FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DepartmentLog.DEPARTMENT, DateUtils.getDifferenceBetweenTwoTime(startTime));
 
         return departmentDropDownDTOS;
     }
@@ -163,12 +163,12 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DEPARTMENT);
+        log.info(CommonLogConstant.FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DepartmentLog.DEPARTMENT);
 
         List<DropDownResponseDTO> responseDTOS = departmentRepository.fetchDepartmentByHospitalId(hospitalId)
                 .orElseThrow(() -> DEPARTMENT_NOT_FOUND.get());
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DEPARTMENT, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(CommonLogConstant.FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DepartmentLog.DEPARTMENT, DateUtils.getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
     }

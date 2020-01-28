@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.admin.repository;
 
-import com.cogent.cogentappointment.admin.repository.custom.SpecializationRepositoryCustom;
 import com.cogent.cogentappointment.admin.model.Specialization;
+import com.cogent.cogentappointment.admin.repository.custom.SpecializationRepositoryCustom;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

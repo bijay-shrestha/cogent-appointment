@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.admin.exceptionhandler;
 
-
 import com.cogent.cogentappointment.admin.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;

@@ -2,10 +2,10 @@ package com.cogent.cogentappointment.admin.resource;
 
 import com.cogent.cogentappointment.admin.constants.SwaggerConstants;
 import com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants;
-import com.cogent.cogentappointment.admin.dto.request.profile.ProfileSearchRequestDTO;
-import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.profile.ProfileRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.profile.ProfileSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.profile.ProfileUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.service.ProfileService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

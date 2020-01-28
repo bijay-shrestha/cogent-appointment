@@ -1,12 +1,12 @@
 package com.cogent.cogentappointment.admin.utils;
 
-import com.cogent.cogentappointment.admin.dto.request.qualification.QualificationRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.qualification.QualificationUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.model.Country;
 import com.cogent.cogentappointment.admin.model.Qualification;
 import com.cogent.cogentappointment.admin.model.QualificationAlias;
+import com.cogent.cogentappointment.admin.dto.request.qualification.QualificationRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.qualification.QualificationUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.utils.commons.StringUtil;
-import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 
 
 /**

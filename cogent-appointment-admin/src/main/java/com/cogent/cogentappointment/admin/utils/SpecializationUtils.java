@@ -1,8 +1,8 @@
 package com.cogent.cogentappointment.admin.utils;
 
-import com.cogent.cogentappointment.admin.dto.request.specialization.SpecializationUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.specialization.SpecializationRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.specialization.SpecializationUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.model.Specialization;
 import com.cogent.cogentappointment.admin.utils.commons.NumberFormatterUtils;
 

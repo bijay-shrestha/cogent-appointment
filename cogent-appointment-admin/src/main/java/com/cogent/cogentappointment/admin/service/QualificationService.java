@@ -1,11 +1,11 @@
 package com.cogent.cogentappointment.admin.service;
 
-import com.cogent.cogentappointment.admin.dto.request.qualification.QualificationRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.qualification.QualificationUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.qualification.QualificationDropdownDTO;
 import com.cogent.cogentappointment.admin.dto.response.qualification.QualificationMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.qualification.QualificationResponseDTO;
 import com.cogent.cogentappointment.admin.model.Qualification;
+import com.cogent.cogentappointment.admin.dto.request.qualification.QualificationRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.qualification.QualificationUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.qualification.QualificationSearchRequestDTO;
 import org.springframework.data.domain.Pageable;

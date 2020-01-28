@@ -1,17 +1,14 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
-import com.cogent.cogentappointment.client.constants.QueryConstants;
 import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.request.profile.ProfileMenuSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.profile.ProfileSearchRequestDTO;
+import com.cogent.cogentappointment.client.dto.response.profile.*;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.model.Profile;
 import com.cogent.cogentappointment.client.model.ProfileMenu;
-import com.cogent.cogentappointment.client.query.ProfileQuery;
 import com.cogent.cogentappointment.client.repository.custom.ProfileRepositoryCustom;
 import com.cogent.cogentappointment.client.utils.commons.PageableUtils;
-import com.cogent.cogentappointment.client.utils.commons.QueryUtils;
-import com.cogent.cogentappointment.client.dto.response.profile.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,8 +21,11 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.client.query.ProfileQuery.*;
 import static com.cogent.cogentappointment.client.utils.ProfileUtils.parseToAssignedProfileMenuResponseDTO;
 import static com.cogent.cogentappointment.client.utils.ProfileUtils.parseToProfileDetailResponseDTO;
+import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
 
 /**
  * @author smriti on 7/10/19
@@ -39,19 +39,19 @@ public class ProfileRepositoryCustomImpl implements ProfileRepositoryCustom {
 
     @Override
     public Long validateDuplicity(String name, Long hospitalId) {
-        Query query = QueryUtils.createQuery.apply(entityManager, ProfileQuery.QUERY_TO_VALIDATE_DUPLICITY)
-                .setParameter(QueryConstants.NAME, name)
-                .setParameter(QueryConstants.HOSPITAL_ID, hospitalId);
+        Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY)
+                .setParameter(NAME, name)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Long) query.getSingleResult();
     }
 
     @Override
     public Long validateDuplicityForUpdate(Long profileId, String name, Long hospitalId) {
-        Query query = QueryUtils.createQuery.apply(entityManager, ProfileQuery.QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE)
-                .setParameter(QueryConstants.ID, profileId)
-                .setParameter(QueryConstants.NAME, name)
-                .setParameter(QueryConstants.HOSPITAL_ID, hospitalId);
+        Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE)
+                .setParameter(ID, profileId)
+                .setParameter(NAME, name)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Long) query.getSingleResult();
     }
@@ -60,13 +60,13 @@ public class ProfileRepositoryCustomImpl implements ProfileRepositoryCustom {
     public List<ProfileMinimalResponseDTO> search(ProfileSearchRequestDTO searchRequestDTO,
                                                   Pageable pageable) {
 
-        Query query = QueryUtils.createQuery.apply(entityManager, ProfileQuery.QUERY_TO_SEARCH_PROFILE.apply(searchRequestDTO));
+        Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_PROFILE.apply(searchRequestDTO));
 
         int totalItems = query.getResultList().size();
 
         PageableUtils.addPagination.accept(pageable, query);
 
-        List<ProfileMinimalResponseDTO> results = QueryUtils.transformQueryToResultList(query, ProfileMinimalResponseDTO.class);
+        List<ProfileMinimalResponseDTO> results = transformQueryToResultList(query, ProfileMinimalResponseDTO.class);
 
         if (results.isEmpty()) throw PROFILES_NOT_FOUND.get();
         else {
@@ -81,28 +81,28 @@ public class ProfileRepositoryCustomImpl implements ProfileRepositoryCustom {
     }
 
     private ProfileResponseDTO getProfileResponseDTO(Long id) {
-        Query query = QueryUtils.createQuery.apply(entityManager, ProfileQuery.QUERY_TO_FETCH_PROFILE_DETAILS)
-                .setParameter(QueryConstants.ID, id);
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PROFILE_DETAILS)
+                .setParameter(ID, id);
 
         try {
-            return QueryUtils.transformQueryToSingleResult(query, ProfileResponseDTO.class);
+            return transformQueryToSingleResult(query, ProfileResponseDTO.class);
         } catch (NoResultException e) {
             throw PROFILE_WITH_GIVEN_ID_NOT_FOUND.apply(id);
         }
     }
 
     private List<ProfileMenuResponseDTO> getProfileMenuResponseDTO(Long id) {
-        Query query = QueryUtils.createQuery.apply(entityManager, ProfileQuery.QUERY_TO_FETCH_PROFILE_MENU_DETAILS)
-                .setParameter(QueryConstants.ID, id);
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PROFILE_MENU_DETAILS)
+                .setParameter(ID, id);
 
-        return QueryUtils.transformQueryToResultList(query, ProfileMenuResponseDTO.class);
+        return transformQueryToResultList(query, ProfileMenuResponseDTO.class);
     }
 
     @Override
     public List<DropDownResponseDTO> fetchActiveProfilesForDropDown() {
-        Query query = QueryUtils.createQuery.apply(entityManager, ProfileQuery.QUERY_TO_FETCH_ACTIVE_PROFILES_FOR_DROPDOWN);
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_PROFILES_FOR_DROPDOWN);
 
-        List<DropDownResponseDTO> results = QueryUtils.transformQueryToResultList(query, DropDownResponseDTO.class);
+        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
         if (results.isEmpty()) throw PROFILES_NOT_FOUND.get();
         else return results;
@@ -110,10 +110,10 @@ public class ProfileRepositoryCustomImpl implements ProfileRepositoryCustom {
 
     @Override
     public List<DropDownResponseDTO> fetchProfileByDepartmentId(Long departmentId) {
-        Query query = QueryUtils.createQuery.apply(entityManager, ProfileQuery.QUERY_TO_FETCH_PROFILE_BY_DEPARTMENT_ID)
-                .setParameter(QueryConstants.ID, departmentId);
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PROFILE_BY_DEPARTMENT_ID)
+                .setParameter(ID, departmentId);
 
-        List<DropDownResponseDTO> results = QueryUtils.transformQueryToResultList(query, DropDownResponseDTO.class);
+        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
         if (results.isEmpty()) throw PROFILES_NOT_FOUND.get();
         else return results;
@@ -122,10 +122,10 @@ public class ProfileRepositoryCustomImpl implements ProfileRepositoryCustom {
     @Override
     public AssignedProfileResponseDTO fetchAssignedProfileResponseDto(ProfileMenuSearchRequestDTO searchRequestDTO) {
 
-        Query query = entityManager.createNativeQuery(ProfileQuery.QUERY_TO_FETCH_ASSIGNED_PROFILE_RESPONSE)
-                .setParameter(QueryConstants.USERNAME, searchRequestDTO.getUsername())
-                .setParameter(QueryConstants.EMAIL, searchRequestDTO.getUsername())
-                .setParameter(QueryConstants.CODE, searchRequestDTO.getDepartmentCode());
+        Query query = entityManager.createNativeQuery(QUERY_TO_FETCH_ASSIGNED_PROFILE_RESPONSE)
+                .setParameter(USERNAME, searchRequestDTO.getUsername())
+                .setParameter(EMAIL, searchRequestDTO.getUsername())
+                .setParameter(CODE, searchRequestDTO.getDepartmentCode());
 
         List<Object[]> results = query.getResultList();
 

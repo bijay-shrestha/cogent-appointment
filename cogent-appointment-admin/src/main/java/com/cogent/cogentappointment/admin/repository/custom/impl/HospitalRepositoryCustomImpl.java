@@ -1,17 +1,14 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
+import com.cogent.cogentappointment.admin.constants.QueryConstants;
 import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalDropdownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalResponseDTO;
-import com.cogent.cogentappointment.admin.model.Hospital;
-import com.cogent.cogentappointment.admin.query.HospitalQuery;
-import com.cogent.cogentappointment.admin.constants.QueryConstants;
-import com.cogent.cogentappointment.admin.repository.custom.HospitalRepositoryCustom;
-import com.cogent.cogentappointment.admin.utils.HospitalUtils;
-import com.cogent.cogentappointment.admin.utils.commons.PageableUtils;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.utils.commons.QueryUtils;
+import com.cogent.cogentappointment.admin.model.Hospital;
+import com.cogent.cogentappointment.admin.repository.custom.HospitalRepositoryCustom;
+import com.cogent.cogentappointment.admin.utils.commons.PageableUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +19,10 @@ import javax.persistence.Query;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import static com.cogent.cogentappointment.admin.query.HospitalQuery.*;
+import static com.cogent.cogentappointment.admin.utils.HospitalUtils.parseToHospitalResponseDTO;
+import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
 
 /**
  * @author smriti ON 12/01/2020
@@ -35,7 +36,7 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
     @Override
     public List<Object[]> validateHospitalDuplicity(String name, String code) {
-        Query query = QueryUtils.createQuery.apply(entityManager, HospitalQuery.QUERY_TO_VALIDATE_DUPLICITY)
+        Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY)
                 .setParameter(QueryConstants.NAME, name)
                 .setParameter(QueryConstants.CODE, code);
 
@@ -44,7 +45,7 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
     @Override
     public List<Object[]> validateHospitalDuplicityForUpdate(Long id, String name, String code) {
-        Query query = QueryUtils.createQuery.apply(entityManager, HospitalQuery.QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE)
+        Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE)
                 .setParameter(QueryConstants.ID, id)
                 .setParameter(QueryConstants.NAME, name)
                 .setParameter(QueryConstants.CODE, code);
@@ -54,13 +55,13 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
     @Override
     public List<HospitalMinimalResponseDTO> search(HospitalSearchRequestDTO searchRequestDTO, Pageable pageable) {
-        Query query = QueryUtils.createNativeQuery.apply(entityManager, HospitalQuery.QUERY_TO_SEARCH_HOSPITAL(searchRequestDTO));
+        Query query = createNativeQuery.apply(entityManager, QUERY_TO_SEARCH_HOSPITAL(searchRequestDTO));
 
         int totalItems = query.getResultList().size();
 
         PageableUtils.addPagination.accept(pageable, query);
 
-        List<HospitalMinimalResponseDTO> results = QueryUtils.transformNativeQueryToResultList(query, HospitalMinimalResponseDTO.class);
+        List<HospitalMinimalResponseDTO> results = transformNativeQueryToResultList(query, HospitalMinimalResponseDTO.class);
 
         if (results.isEmpty()) throw HOSPITAL_NOT_FOUND.get();
         else {
@@ -71,21 +72,21 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
     @Override
     public HospitalResponseDTO fetchDetailsById(Long id) {
-        Query query = QueryUtils.createNativeQuery.apply(entityManager, HospitalQuery.QUERY_TO_FETCH_HOSPITAL_DETAILS)
+        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_DETAILS)
                 .setParameter(QueryConstants.ID, id);
 
         List<Object[]> results = query.getResultList();
 
         if (results.isEmpty()) throw HOSPITAL_WITH_GIVEN_ID_NOT_FOUND.apply(id);
 
-        return HospitalUtils.parseToHospitalResponseDTO(results.get(0));
+        return parseToHospitalResponseDTO(results.get(0));
     }
 
     @Override
     public List<HospitalDropdownResponseDTO> fetchActiveHospitalForDropDown() {
-        Query query = QueryUtils.createQuery.apply(entityManager, HospitalQuery.QUERY_TO_FETCH_HOSPITAL_FOR_DROPDOWN);
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_FOR_DROPDOWN);
 
-        List<HospitalDropdownResponseDTO> results = QueryUtils.transformQueryToResultList(query, HospitalDropdownResponseDTO.class);
+        List<HospitalDropdownResponseDTO> results = transformQueryToResultList(query, HospitalDropdownResponseDTO.class);
 
         if (results.isEmpty()) throw HOSPITAL_NOT_FOUND.get();
         else return results;

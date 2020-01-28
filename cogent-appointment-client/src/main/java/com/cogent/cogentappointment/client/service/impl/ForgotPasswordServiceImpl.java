@@ -6,7 +6,6 @@ import com.cogent.cogentappointment.client.dto.request.email.EmailRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.forgotPassword.ForgotPasswordRequestDTO;
 import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.log.constants.AdminLog;
 import com.cogent.cogentappointment.client.model.Admin;
 import com.cogent.cogentappointment.client.model.ForgotPasswordVerification;
 import com.cogent.cogentappointment.client.property.ExpirationTimeProperties;
@@ -15,7 +14,6 @@ import com.cogent.cogentappointment.client.repository.ForgotPasswordRepository;
 import com.cogent.cogentappointment.client.service.EmailService;
 import com.cogent.cogentappointment.client.service.ForgotPasswordService;
 import com.cogent.cogentappointment.client.utils.ForgotPasswordUtils;
-import com.cogent.cogentappointment.client.utils.commons.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
@@ -24,6 +22,9 @@ import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.client.log.constants.AdminLog.*;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static java.util.Objects.isNull;
 
 /**
@@ -54,9 +55,9 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
     @Override
     public void forgotPassword(String username) {
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(AdminLog.FORGOT_PASSWORD_PROCESS_STARTED);
+        log.info(FORGOT_PASSWORD_PROCESS_STARTED);
 
         Admin admin = adminRepository.fetchAdminByUsernameOrEmail(username);
 
@@ -75,32 +76,32 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
         emailService.sendEmail(emailRequestDTO);
 
-        log.info(AdminLog.FORGOT_PASSWORD_PROCESS_COMPLETED, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(FORGOT_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
     public void verify(String resetCode) {
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(AdminLog.VERIFY_CODE_PROCESS_STARTED);
+        log.info(VERIFY_CODE_PROCESS_STARTED);
 
         Object expirationTime = verificationRepository.findByResetCode(resetCode);
         validateExpirationTime(expirationTime);
 
-        log.info(AdminLog.VERIFY_CODE_PROCESS_COMPLETED, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(VERIFY_CODE_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
     public void updatePassword(ForgotPasswordRequestDTO requestDTO) {
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(AdminLog.UPDATING_PASSWORD_PROCESS_STARTED);
+        log.info(UPDATING_PASSWORD_PROCESS_STARTED);
 
         Admin admin = adminRepository.fetchAdminByUsernameOrEmail(requestDTO.getUsername());
         updateAdminPassword(requestDTO, admin);
         updateForgotPasswordVerification(admin.getId());
 
-        log.info(AdminLog.UPDATING_PASSWORD_PROCESS_COMPLETED, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(UPDATING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
     }
 
     public void updateAdminPassword(ForgotPasswordRequestDTO requestDTO, Admin admin) {

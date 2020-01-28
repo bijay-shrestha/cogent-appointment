@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.client.constants.EmailConstants.*;
 import static com.cogent.cogentappointment.client.constants.EmailTemplates.*;
+import static com.cogent.cogentappointment.client.utils.commons.StringUtil.*;
 
 /**
  * @author smriti on 2019-08-11
@@ -33,7 +34,7 @@ public class AdminUtils {
                                           Profile profile) {
         Admin admin = new Admin();
         admin.setUsername(adminRequestDTO.getUsername());
-        admin.setFullName(StringUtil.toUpperCase(adminRequestDTO.getFullName()));
+        admin.setFullName(toUpperCase(adminRequestDTO.getFullName()));
         admin.setEmail(adminRequestDTO.getEmail());
         admin.setMobileNumber(adminRequestDTO.getMobileNumber());
         admin.setStatus(adminRequestDTO.getStatus());
@@ -55,7 +56,7 @@ public class AdminUtils {
                                                            Profile profile) {
 
         admin.setEmail(adminRequestDTO.getEmail());
-        admin.setFullName(StringUtil.toUpperCase(adminRequestDTO.getFullName()));
+        admin.setFullName(toUpperCase(adminRequestDTO.getFullName()));
         admin.setMobileNumber(adminRequestDTO.getMobileNumber());
         admin.setStatus(adminRequestDTO.getStatus());
         admin.setHasMacBinding(adminRequestDTO.getHasMacBinding());

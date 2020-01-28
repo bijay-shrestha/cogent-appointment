@@ -1,16 +1,12 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
-import com.cogent.cogentappointment.admin.constants.EmailConstants;
 import com.cogent.cogentappointment.admin.constants.EmailTemplates;
 import com.cogent.cogentappointment.admin.constants.StatusConstants;
 import com.cogent.cogentappointment.admin.constants.StringConstant;
 import com.cogent.cogentappointment.admin.dto.request.email.EmailRequestDTO;
-import com.cogent.cogentappointment.admin.log.CommonLogConstant;
-import com.cogent.cogentappointment.admin.log.constants.EmailLog;
 import com.cogent.cogentappointment.admin.model.EmailToSend;
 import com.cogent.cogentappointment.admin.repository.EmailToSendRepository;
 import com.cogent.cogentappointment.admin.service.EmailService;
-import com.cogent.cogentappointment.admin.utils.commons.DateUtils;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -32,8 +28,15 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.cogent.cogentappointment.admin.constants.EmailConstants.*;
+import static com.cogent.cogentappointment.admin.constants.EmailConstants.ForgotPassword.RESET_CODE;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.SAVING_PROCESS_COMPLETED;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.SAVING_PROCESS_STARTED;
+import static com.cogent.cogentappointment.admin.log.constants.EmailLog.*;
 import static com.cogent.cogentappointment.admin.utils.EmailUtils.convertDTOToEmailToSend;
 import static com.cogent.cogentappointment.admin.utils.EmailUtils.convertToUpdateEmailToSend;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
 /**
  * @author smriti on 7/23/19
@@ -65,21 +68,21 @@ public class EmailServiceImpl implements EmailService {
     }
 
     public EmailToSend saveEmailToSend(EmailRequestDTO emailRequestDTO) {
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.SAVING_PROCESS_STARTED, EmailLog.EMAIL_TO_SEND);
+        log.info(SAVING_PROCESS_STARTED, EMAIL_TO_SEND);
 
         EmailToSend emailToSend = emailToSendRepository.save(convertDTOToEmailToSend(emailRequestDTO));
 
-        log.info(CommonLogConstant.SAVING_PROCESS_COMPLETED, EmailLog.EMAIL_TO_SEND, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(SAVING_PROCESS_COMPLETED, EMAIL_TO_SEND, getDifferenceBetweenTwoTime(startTime));
 
         return emailToSend;
     }
 
     public void send(EmailToSend emailToSend) {
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(EmailLog.SENDING_EMAIL_PROCESS_STARTED);
+        log.info(SENDING_EMAIL_PROCESS_STARTED);
 
         try {
             MimeMessage message = getMimeMessage(emailToSend);
@@ -118,11 +121,11 @@ public class EmailServiceImpl implements EmailService {
             }
 
             helper.setText(html, true);
-            helper.addInline(EmailConstants.LOGO_FILE_NAME, new FileSystemResource(new File(EmailConstants.LOGO_LOCATION)));
+            helper.addInline(LOGO_FILE_NAME, new FileSystemResource(new File(LOGO_LOCATION)));
 
             javaMailSender.send(message);
 
-            log.info(EmailLog.SENDING_EMAIL_PROCESS_COMPLETED, DateUtils.getDifferenceBetweenTwoTime(startTime));
+            log.info(SENDING_EMAIL_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
         } catch (MessagingException e) {
             e.printStackTrace();
         }
@@ -156,8 +159,8 @@ public class EmailServiceImpl implements EmailService {
 
         String[] paramValues = emailToSend.getParamValue().split(StringConstant.COMMA_SEPARATED);
 
-        model.put(EmailConstants.USERNAME, paramValues[USERNAME_INDEX]);
-        model.put(EmailConstants.Admin.ADMIN_CONFIRMATION_URL, paramValues[ADMIN_CONFIRMATION_URL_INDEX]);
+        model.put(USERNAME, paramValues[USERNAME_INDEX]);
+        model.put(Admin.ADMIN_CONFIRMATION_URL, paramValues[ADMIN_CONFIRMATION_URL_INDEX]);
     }
 
     private void parseToResetPasswordTemplate(EmailToSend emailToSend,
@@ -168,9 +171,9 @@ public class EmailServiceImpl implements EmailService {
 
         String[] paramValues = emailToSend.getParamValue().split(StringConstant.COMMA_SEPARATED);
 
-        model.put(EmailConstants.USERNAME, paramValues[USERNAME_INDEX]);
-        model.put(EmailConstants.Admin.PASSWORD, paramValues[PASSWORD_INDEX]);
-        model.put(EmailConstants.Admin.REMARKS, paramValues[REMARKS_INDEX]);
+        model.put(USERNAME, paramValues[USERNAME_INDEX]);
+        model.put(Admin.PASSWORD, paramValues[PASSWORD_INDEX]);
+        model.put(Admin.REMARKS, paramValues[REMARKS_INDEX]);
     }
 
     private void parseToUpdateAdminTemplate(EmailToSend emailToSend,
@@ -188,10 +191,10 @@ public class EmailServiceImpl implements EmailService {
                 paramValues[MAC_ADDRESS_INDEX].split(StringConstant.COMMA_SEPARATED)
                 : new String[]{paramValues[MAC_ADDRESS_INDEX]};
 
-        model.put(EmailConstants.USERNAME, paramValues[USERNAME_INDEX]);
-        model.put(EmailConstants.Admin.UPDATED_DATA, Arrays.asList(updatedValues));
-        model.put(EmailConstants.Admin.HAS_MAC_BINDING, paramValues[HAS_MAC_BINDING_INDEX]);
-        model.put(EmailConstants.Admin.UPDATED_MAC_ADDRESS, Arrays.asList(updatedMacAddress));
+        model.put(USERNAME, paramValues[USERNAME_INDEX]);
+        model.put(Admin.UPDATED_DATA, Arrays.asList(updatedValues));
+        model.put(Admin.HAS_MAC_BINDING, paramValues[HAS_MAC_BINDING_INDEX]);
+        model.put(Admin.UPDATED_MAC_ADDRESS, Arrays.asList(updatedMacAddress));
     }
 
     private void parseToForgotPasswordTemplate(EmailToSend emailToSend, Map<String, Object> model) {
@@ -199,7 +202,7 @@ public class EmailServiceImpl implements EmailService {
         final int RESET_CODE_INDEX = 1;
 
         String[] paramValues = emailToSend.getParamValue().split(StringConstant.COMMA_SEPARATED);
-        model.put(EmailConstants.USERNAME, paramValues[USERNAME_INDEX]);
-        model.put(EmailConstants.ForgotPassword.RESET_CODE, paramValues[RESET_CODE_INDEX]);
+        model.put(USERNAME, paramValues[USERNAME_INDEX]);
+        model.put(RESET_CODE, paramValues[RESET_CODE_INDEX]);
     }
 }

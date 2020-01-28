@@ -1,7 +1,5 @@
 package com.cogent.cogentappointment.admin.resource;
 
-import com.cogent.cogentappointment.admin.constants.SwaggerConstants;
-import com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants;
 import com.cogent.cogentappointment.admin.dto.request.patient.PatientSearchRequestDTO;
 import com.cogent.cogentappointment.admin.service.PatientService;
 import com.cogent.cogentappointment.admin.utils.commons.PageableUtils;
@@ -12,14 +10,17 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.PatientConstant.*;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.PatientConstant.*;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
  * @author smriti on 2019-10-22
  */
 @RestController
-@RequestMapping(WebResourceKeyConstants.API_V1 + WebResourceKeyConstants.PatientConstant.BASE_PATIENT)
-@Api(value = SwaggerConstants.PatientConstant.BASE_PATIENT_API_VALUE)
+@RequestMapping(API_V1 + BASE_PATIENT)
+@Api(value = BASE_PATIENT_API_VALUE)
 public class PatientResource {
 
     private final PatientService patientService;
@@ -28,22 +29,22 @@ public class PatientResource {
         this.patientService = patientService;
     }
 
-    @PutMapping(WebResourceKeyConstants.SEARCH + WebResourceKeyConstants.PatientConstant.SELF)
-    @ApiOperation(SwaggerConstants.PatientConstant.SEARCH_PATIENT_WITH_SELF_TYPE_OPERATION)
+    @PutMapping(SEARCH + SELF)
+    @ApiOperation(SEARCH_PATIENT_WITH_SELF_TYPE_OPERATION)
     public ResponseEntity<?> search(@Valid @RequestBody PatientSearchRequestDTO searchRequestDTO) {
         return ok(patientService.search(searchRequestDTO));
     }
 
-    @PutMapping(WebResourceKeyConstants.SEARCH + WebResourceKeyConstants.PatientConstant.OTHERS)
-    @ApiOperation(SwaggerConstants.PatientConstant.SEARCH_PATIENT_WITH_OTHERS_TYPE_OPERATION)
+    @PutMapping(SEARCH + OTHERS)
+    @ApiOperation(SEARCH_PATIENT_WITH_OTHERS_TYPE_OPERATION)
     public ResponseEntity<?> search(@Valid @RequestBody PatientSearchRequestDTO searchRequestDTO,
                                     @RequestParam("page") int page,
                                     @RequestParam("size") int size) {
         return ok(patientService.fetchMinimalPatientInfo(searchRequestDTO, PageableUtils.getPageable(page, size)));
     }
 
-    @GetMapping(WebResourceKeyConstants.DETAIL + WebResourceKeyConstants.ID_PATH_VARIABLE_BASE)
-    @ApiOperation(SwaggerConstants.PatientConstant.FETCH_DETAILS_BY_ID)
+    @GetMapping(DETAIL + ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_DETAILS_BY_ID)
     public ResponseEntity<?> fetchDetailsById(@PathVariable("id") Long id) {
         return ok(patientService.fetchDetailsById(id));
     }

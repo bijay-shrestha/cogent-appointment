@@ -1,7 +1,5 @@
 package com.cogent.cogentappointment.admin.resource;
 
-import com.cogent.cogentappointment.admin.constants.SwaggerConstants;
-import com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants;
 import com.cogent.cogentappointment.admin.dto.request.forgotPassword.ForgotPasswordRequestDTO;
 import com.cogent.cogentappointment.admin.service.ForgotPasswordService;
 import io.swagger.annotations.Api;
@@ -11,14 +9,19 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.ForgotPasswordConstant.*;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.BASE_PASSWORD;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.ForgotPasswordConstants.FORGOT;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.ForgotPasswordConstants.VERIFY;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
  * @author smriti on 2019-09-20
  */
 @RestController
-@RequestMapping(WebResourceKeyConstants.API_V1 + WebResourceKeyConstants.BASE_PASSWORD)
-@Api(SwaggerConstants.ForgotPasswordConstant.BASE_API_VALUE)
+@RequestMapping(API_V1 + BASE_PASSWORD)
+@Api(BASE_API_VALUE)
 public class ForgotPasswordResource {
 
     private final ForgotPasswordService forgotPasswordService;
@@ -27,22 +30,22 @@ public class ForgotPasswordResource {
         this.forgotPasswordService = forgotPasswordService;
     }
 
-    @PostMapping(WebResourceKeyConstants.ForgotPasswordConstants.FORGOT)
-    @ApiOperation(SwaggerConstants.ForgotPasswordConstant.FORGOT_PASSWORD_OPERATION)
+    @PostMapping(FORGOT)
+    @ApiOperation(FORGOT_PASSWORD_OPERATION)
     public ResponseEntity<?> forgotPassword(@RequestParam(name = "username") String username) {
         forgotPasswordService.forgotPassword(username);
         return ok().build();
     }
 
-    @GetMapping(WebResourceKeyConstants.ForgotPasswordConstants.VERIFY)
-    @ApiOperation(SwaggerConstants.ForgotPasswordConstant.VERIFY_RESET_CODE)
+    @GetMapping(VERIFY)
+    @ApiOperation(VERIFY_RESET_CODE)
     public ResponseEntity<?> verify(@RequestParam(name = "resetCode") String resetCode) {
         forgotPasswordService.verify(resetCode);
         return ok().build();
     }
 
     @PutMapping
-    @ApiOperation(SwaggerConstants.ForgotPasswordConstant.UPDATE_PASSWORD)
+    @ApiOperation(UPDATE_PASSWORD)
     public ResponseEntity<?> updatePassword(@Valid @RequestBody ForgotPasswordRequestDTO requestDTO) {
         forgotPasswordService.updatePassword(requestDTO);
         return ok().build();

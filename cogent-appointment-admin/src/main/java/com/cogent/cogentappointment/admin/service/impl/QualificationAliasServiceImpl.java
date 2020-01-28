@@ -1,18 +1,20 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
+import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.log.CommonLogConstant;
-import com.cogent.cogentappointment.admin.log.constants.QualificationAliasLog;
 import com.cogent.cogentappointment.admin.model.QualificationAlias;
 import com.cogent.cogentappointment.admin.repository.QualificationAliasRepository;
-import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.service.QualificationAliasService;
-import com.cogent.cogentappointment.admin.utils.commons.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
+import static com.cogent.cogentappointment.admin.log.constants.QualificationAliasLog.QUALIFICATION_ALIAS;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
 /**
  * @author smriti on 11/11/2019
@@ -29,27 +31,27 @@ public class QualificationAliasServiceImpl implements QualificationAliasService 
 
     @Override
     public List<DropDownResponseDTO> fetchActiveQualificationAlias() {
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_STARTED_FOR_DROPDOWN, QualificationAliasLog.QUALIFICATION_ALIAS);
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, QUALIFICATION_ALIAS);
 
         List<DropDownResponseDTO> responseDTOS = qualificationAliasRepository.fetchActiveQualificationAlias();
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, QualificationAliasLog.QUALIFICATION_ALIAS, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, QUALIFICATION_ALIAS, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
     }
 
     @Override
     public QualificationAlias fetchQualificationAliasById(Long id) {
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_STARTED, QualificationAliasLog.QUALIFICATION_ALIAS);
+        log.info(FETCHING_PROCESS_STARTED, QUALIFICATION_ALIAS);
 
         QualificationAlias qualificationAlias = qualificationAliasRepository.fetchActiveQualificationAliasById(id)
                 .orElseThrow(() -> new NoContentFoundException(QualificationAlias.class, "id", id.toString()));
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_COMPLETED, QualificationAliasLog.QUALIFICATION_ALIAS, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_COMPLETED, QUALIFICATION_ALIAS, getDifferenceBetweenTwoTime(startTime));
 
         return qualificationAlias;
     }

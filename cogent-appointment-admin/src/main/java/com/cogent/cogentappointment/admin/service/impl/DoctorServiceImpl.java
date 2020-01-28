@@ -13,12 +13,9 @@ import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseD
 import com.cogent.cogentappointment.admin.enums.Gender;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.log.CommonLogConstant;
-import com.cogent.cogentappointment.admin.log.constants.DoctorLog;
 import com.cogent.cogentappointment.admin.model.*;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.*;
-import com.cogent.cogentappointment.admin.utils.DoctorUtils;
 import com.cogent.cogentappointment.admin.utils.GenderUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +28,9 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
+import static com.cogent.cogentappointment.admin.log.constants.DoctorLog.*;
+import static com.cogent.cogentappointment.admin.utils.DoctorUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
@@ -85,13 +85,13 @@ public class DoctorServiceImpl implements DoctorService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.SAVING_PROCESS_STARTED, DoctorLog.DOCTOR);
+        log.info(SAVING_PROCESS_STARTED, DOCTOR);
 
         Long doctorCount = doctorRepository.validateDoctorDuplicity(requestDTO.getName(), requestDTO.getMobileNumber());
 
         validateDoctor(doctorCount, requestDTO.getName(), requestDTO.getMobileNumber());
 
-        Doctor doctor = DoctorUtils.parseDTOToDoctor(requestDTO,
+        Doctor doctor = parseDTOToDoctor(requestDTO,
                 fetchGender(requestDTO.getGenderCode()),
                 fetchHospitalById(requestDTO.getHospitalId()));
 
@@ -105,7 +105,7 @@ public class DoctorServiceImpl implements DoctorService {
 
         saveDoctorAvatar(doctor, avatar);
 
-        log.info(CommonLogConstant.SAVING_PROCESS_COMPLETED, DoctorLog.DOCTOR, getDifferenceBetweenTwoTime(startTime));
+        log.info(SAVING_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 
         return doctor.getCode();
     }
@@ -115,7 +115,7 @@ public class DoctorServiceImpl implements DoctorService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.UPDATING_PROCESS_STARTED, DoctorLog.DOCTOR);
+        log.info(UPDATING_PROCESS_STARTED, DOCTOR);
 
         Doctor doctor = findById(requestDTO.getUpdateDTO().getId());
 
@@ -128,7 +128,7 @@ public class DoctorServiceImpl implements DoctorService {
                 requestDTO.getUpdateDTO().getName(),
                 requestDTO.getUpdateDTO().getMobileNumber());
 
-        DoctorUtils.convertToUpdatedDoctor(
+        convertToUpdatedDoctor(
                 requestDTO.getUpdateDTO(),
                 doctor,
                 fetchGender(requestDTO.getUpdateDTO().getGenderCode()),
@@ -142,7 +142,7 @@ public class DoctorServiceImpl implements DoctorService {
 
         updateDoctorAvatar(doctor, avatar);
 
-        log.info(CommonLogConstant.UPDATING_PROCESS_COMPLETED, DoctorLog.DOCTOR, getDifferenceBetweenTwoTime(startTime));
+        log.info(UPDATING_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
@@ -150,13 +150,13 @@ public class DoctorServiceImpl implements DoctorService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.DELETING_PROCESS_STARTED, DoctorLog.DOCTOR);
+        log.info(DELETING_PROCESS_STARTED, DOCTOR);
 
         Doctor doctor = findById(deleteRequestDTO.getId());
 
-        DoctorUtils.convertToDeletedDoctor(doctor, deleteRequestDTO);
+        convertToDeletedDoctor(doctor, deleteRequestDTO);
 
-        log.info(CommonLogConstant.DELETING_PROCESS_COMPLETED, DoctorLog.DOCTOR, getDifferenceBetweenTwoTime(startTime));
+        log.info(DELETING_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
@@ -164,11 +164,11 @@ public class DoctorServiceImpl implements DoctorService {
                                                  Pageable pageable) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.SEARCHING_PROCESS_STARTED, DoctorLog.DOCTOR);
+        log.info(SEARCHING_PROCESS_STARTED, DOCTOR);
 
         List<DoctorMinimalResponseDTO> responseDTOS = doctorRepository.search(searchRequestDTO, pageable);
 
-        log.info(CommonLogConstant.SEARCHING_PROCESS_COMPLETED, DoctorLog.DOCTOR, getDifferenceBetweenTwoTime(startTime));
+        log.info(SEARCHING_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
     }
@@ -177,11 +177,11 @@ public class DoctorServiceImpl implements DoctorService {
     public List<DoctorDropdownDTO> fetchDoctorForDropdown() {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DoctorLog.DOCTOR);
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DOCTOR);
 
         List<DoctorDropdownDTO> responseDTOS = doctorRepository.fetchDoctorForDropdown();
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DoctorLog.DOCTOR, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
     }
@@ -190,11 +190,11 @@ public class DoctorServiceImpl implements DoctorService {
     public DoctorDetailResponseDTO fetchDetailsById(Long id) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.FETCHING_DETAIL_PROCESS_STARTED, DoctorLog.DOCTOR);
+        log.info(FETCHING_DETAIL_PROCESS_STARTED, DOCTOR);
 
         DoctorDetailResponseDTO responseDTO = doctorRepository.fetchDetailsById(id);
 
-        log.info(CommonLogConstant.FETCHING_DETAIL_PROCESS_COMPLETED, DoctorLog.DOCTOR, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
     }
@@ -203,11 +203,11 @@ public class DoctorServiceImpl implements DoctorService {
     public DoctorUpdateResponseDTO fetchDetailsForUpdate(Long id) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.FETCHING_DETAIL_PROCESS_STARTED, DoctorLog.DOCTOR);
+        log.info(FETCHING_DETAIL_PROCESS_STARTED, DOCTOR);
 
         DoctorUpdateResponseDTO responseDTO = doctorRepository.fetchDetailsForUpdate(id);
 
-        log.info(CommonLogConstant.FETCHING_DETAIL_PROCESS_COMPLETED, DoctorLog.DOCTOR, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
     }
@@ -217,12 +217,12 @@ public class DoctorServiceImpl implements DoctorService {
     public Doctor fetchDoctorById(Long id) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_STARTED, DoctorLog.DOCTOR);
+        log.info(FETCHING_PROCESS_STARTED, DOCTOR);
 
         Doctor doctor = doctorRepository.findActiveDoctorById(id)
                 .orElseThrow(() -> DOCTOR_WITH_GIVEN_ID_NOT_FOUND.apply(id));
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_COMPLETED, doctor, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_COMPLETED, doctor, getDifferenceBetweenTwoTime(startTime));
 
         return doctor;
     }
@@ -231,12 +231,12 @@ public class DoctorServiceImpl implements DoctorService {
     public List<DoctorDropdownDTO> fetchDoctorBySpecializationId(Long specializationId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DoctorLog.DOCTOR);
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DOCTOR);
 
         List<DoctorDropdownDTO> responseDTOS =
                 doctorRepository.fetchDoctorBySpecializationId(specializationId);
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DoctorLog.DOCTOR, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
     }
@@ -260,49 +260,49 @@ public class DoctorServiceImpl implements DoctorService {
     private void saveDoctorSpecialization(Long doctorId, List<Long> specializationIds) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.SAVING_PROCESS_STARTED, DoctorLog.DOCTOR_SPECIALIZATION);
+        log.info(SAVING_PROCESS_STARTED, DOCTOR_SPECIALIZATION);
 
         List<DoctorSpecialization> doctorSpecializations = specializationIds.stream()
                 .map(specializationId -> {
                     /*VALIDATE IF THE SPECIALIZATION IS ACTIVE*/
                     findSpecializationById(specializationId);
-                    return DoctorUtils.parseToDoctorSpecialization(doctorId, specializationId);
+                    return parseToDoctorSpecialization(doctorId, specializationId);
                 }).collect(Collectors.toList());
 
         saveDoctorSpecialization(doctorSpecializations);
 
-        log.info(CommonLogConstant.SAVING_PROCESS_COMPLETED, DoctorLog.DOCTOR_SPECIALIZATION, getDifferenceBetweenTwoTime(startTime));
+        log.info(SAVING_PROCESS_COMPLETED, DOCTOR_SPECIALIZATION, getDifferenceBetweenTwoTime(startTime));
     }
 
     private void saveDoctorQualifications(Long doctorId, List<Long> qualificationIds) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.SAVING_PROCESS_STARTED, DoctorLog.DOCTOR_QUALIFICATION);
+        log.info(SAVING_PROCESS_STARTED, DOCTOR_QUALIFICATION);
 
         List<DoctorQualification> doctorQualifications = qualificationIds.stream()
                 .map(qualificationId -> {
                     /*VALIDATE IF QUALIFICATION IS ACTIVE*/
                     fetchQualificationById(qualificationId);
-                    return DoctorUtils.parseToDoctorQualification(doctorId, qualificationId);
+                    return parseToDoctorQualification(doctorId, qualificationId);
                 }).collect(Collectors.toList());
 
         saveDoctorQualification(doctorQualifications);
 
-        log.info(CommonLogConstant.SAVING_PROCESS_COMPLETED, DoctorLog.DOCTOR_QUALIFICATION, getDifferenceBetweenTwoTime(startTime));
+        log.info(SAVING_PROCESS_COMPLETED, DOCTOR_QUALIFICATION, getDifferenceBetweenTwoTime(startTime));
     }
 
     private void saveDoctorAvatar(Doctor doctor, MultipartFile file) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.SAVING_PROCESS_STARTED, DoctorLog.DOCTOR_AVATAR);
+        log.info(SAVING_PROCESS_STARTED, DOCTOR_AVATAR);
 
         if (!Objects.isNull(file)) {
             List<FileUploadResponseDTO> responseList = uploadFiles(doctor, new MultipartFile[]{file});
-            saveDoctorAvatar(DoctorUtils.convertFileToDoctorAvatar(responseList.get(0), doctor));
+            saveDoctorAvatar(convertFileToDoctorAvatar(responseList.get(0), doctor));
         }
 
-        log.info(CommonLogConstant.SAVING_PROCESS_COMPLETED, DoctorLog.DOCTOR_AVATAR, getDifferenceBetweenTwoTime(startTime));
+        log.info(SAVING_PROCESS_COMPLETED, DOCTOR_AVATAR, getDifferenceBetweenTwoTime(startTime));
     }
 
     private List<FileUploadResponseDTO> uploadFiles(Doctor Doctor, MultipartFile[] file) {
@@ -316,13 +316,13 @@ public class DoctorServiceImpl implements DoctorService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.SAVING_PROCESS_STARTED, DoctorLog.DOCTOR_APPOINTMENT_CHARGE);
+        log.info(SAVING_PROCESS_STARTED, DOCTOR_APPOINTMENT_CHARGE);
 
-        DoctorAppointmentCharge doctorAppointmentCharge = DoctorUtils.parseToDoctorAppointmentCharge(doctor, appointmentCharge);
+        DoctorAppointmentCharge doctorAppointmentCharge = parseToDoctorAppointmentCharge(doctor, appointmentCharge);
 
         doctorAppointmentChargeRepository.save(doctorAppointmentCharge);
 
-        log.info(CommonLogConstant.SAVING_PROCESS_COMPLETED, DoctorLog.DOCTOR_APPOINTMENT_CHARGE, getDifferenceBetweenTwoTime(startTime));
+        log.info(SAVING_PROCESS_COMPLETED, DOCTOR_APPOINTMENT_CHARGE, getDifferenceBetweenTwoTime(startTime));
     }
 
     private void updateDoctorSpecialization(Long doctorId,
@@ -330,19 +330,19 @@ public class DoctorServiceImpl implements DoctorService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.UPDATING_PROCESS_STARTED, DoctorLog.DOCTOR_SPECIALIZATION);
+        log.info(UPDATING_PROCESS_STARTED, DOCTOR_SPECIALIZATION);
 
         List<DoctorSpecialization> doctorSpecializations = specializationUpdateRequestDTO.stream()
                 .map(requestDTO -> {
                     /*VALIDATE IF THE SPECIALIZATION IS ACTIVE*/
                     findSpecializationById(requestDTO.getSpecializationId());
 
-                    return DoctorUtils.parseToUpdatedDoctorSpecialization(doctorId, requestDTO);
+                    return parseToUpdatedDoctorSpecialization(doctorId, requestDTO);
                 }).collect(Collectors.toList());
 
         saveDoctorSpecialization(doctorSpecializations);
 
-        log.info(CommonLogConstant.UPDATING_PROCESS_COMPLETED, DoctorLog.DOCTOR_SPECIALIZATION, getDifferenceBetweenTwoTime(startTime));
+        log.info(UPDATING_PROCESS_COMPLETED, DOCTOR_SPECIALIZATION, getDifferenceBetweenTwoTime(startTime));
     }
 
     private void updateDoctorQualification(Long doctorId,
@@ -350,46 +350,46 @@ public class DoctorServiceImpl implements DoctorService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.UPDATING_PROCESS_STARTED, DoctorLog.DOCTOR_QUALIFICATION);
+        log.info(UPDATING_PROCESS_STARTED, DOCTOR_QUALIFICATION);
 
         List<DoctorQualification> doctorQualifications = doctorQualificationUpdateDTOS.stream()
                 .map(requestDTO -> {
                     /*VALIDATE IF QUALIFICATION IS ACTIVE*/
                     fetchQualificationById(requestDTO.getQualificationId());
-                    return DoctorUtils.parseToUpdatedDoctorQualification(doctorId, requestDTO);
+                    return parseToUpdatedDoctorQualification(doctorId, requestDTO);
                 }).collect(Collectors.toList());
 
         saveDoctorQualification(doctorQualifications);
 
-        log.info(CommonLogConstant.UPDATING_PROCESS_COMPLETED, DoctorLog.DOCTOR_QUALIFICATION, getDifferenceBetweenTwoTime(startTime));
+        log.info(UPDATING_PROCESS_COMPLETED, DOCTOR_QUALIFICATION, getDifferenceBetweenTwoTime(startTime));
     }
 
     private void updateDoctorAppointmentCharge(Long doctorId,
                                                Double appointmentCharge) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.UPDATING_PROCESS_STARTED, DoctorLog.DOCTOR_APPOINTMENT_CHARGE);
+        log.info(UPDATING_PROCESS_STARTED, DOCTOR_APPOINTMENT_CHARGE);
 
         DoctorAppointmentCharge doctorAppointmentCharge =
                 doctorAppointmentChargeRepository.findByDoctorId(doctorId)
                         .orElseThrow(() -> new NoContentFoundException(DoctorAppointmentCharge.class));
 
-        DoctorUtils.updateAppointmentCharge(doctorAppointmentCharge, appointmentCharge);
+        updateAppointmentCharge(doctorAppointmentCharge, appointmentCharge);
 
-        log.info(CommonLogConstant.UPDATING_PROCESS_COMPLETED, DoctorLog.DOCTOR_APPOINTMENT_CHARGE, getDifferenceBetweenTwoTime(startTime));
+        log.info(UPDATING_PROCESS_COMPLETED, DOCTOR_APPOINTMENT_CHARGE, getDifferenceBetweenTwoTime(startTime));
     }
 
     private void updateDoctorAvatar(Doctor doctor, MultipartFile file) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.UPDATING_PROCESS_STARTED, DoctorLog.DOCTOR_AVATAR);
+        log.info(UPDATING_PROCESS_STARTED, DOCTOR_AVATAR);
 
         DoctorAvatar doctorAvatar = doctorAvatarRepository.findByDoctorId(doctor.getId());
 
         if (Objects.isNull(doctorAvatar)) saveDoctorAvatar(doctor, file);
         else updateDoctorAvatar(doctor, doctorAvatar, file);
 
-        log.info(CommonLogConstant.UPDATING_PROCESS_COMPLETED, DoctorLog.DOCTOR_AVATAR, getDifferenceBetweenTwoTime(startTime));
+        log.info(UPDATING_PROCESS_COMPLETED, DOCTOR_AVATAR, getDifferenceBetweenTwoTime(startTime));
     }
 
     private void updateDoctorAvatar(Doctor doctor,
@@ -397,7 +397,7 @@ public class DoctorServiceImpl implements DoctorService {
                                     MultipartFile files) {
         if (!Objects.isNull(files)) {
             List<FileUploadResponseDTO> responseList = uploadFiles(doctor, new MultipartFile[]{files});
-            DoctorUtils.setAvatarFileProperties(responseList.get(0), doctorAvatar);
+            setAvatarFileProperties(responseList.get(0), doctorAvatar);
         } else doctorAvatar.setStatus(StatusConstants.INACTIVE);
 
         saveDoctorAvatar(doctorAvatar);

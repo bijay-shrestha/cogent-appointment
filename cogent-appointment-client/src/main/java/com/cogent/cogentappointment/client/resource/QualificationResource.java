@@ -1,7 +1,5 @@
 package com.cogent.cogentappointment.client.resource;
 
-import com.cogent.cogentappointment.client.constants.SwaggerConstants;
-import com.cogent.cogentappointment.client.constants.WebResourceKeyConstants;
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.qualification.QualificationRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.qualification.QualificationSearchRequestDTO;
@@ -18,6 +16,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+import static com.cogent.cogentappointment.client.constants.SwaggerConstants.QualificationConstant.*;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.QualificationConstants.BASE_QUALIFICATION;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
@@ -26,8 +27,8 @@ import static org.springframework.http.ResponseEntity.ok;
  * @author smriti on 11/11/2019
  */
 @RestController
-@RequestMapping(WebResourceKeyConstants.API_V1 + WebResourceKeyConstants.QualificationConstants.BASE_QUALIFICATION)
-@Api(SwaggerConstants.QualificationConstant.BASE_API_VALUE)
+@RequestMapping(API_V1 + BASE_QUALIFICATION)
+@Api(BASE_API_VALUE)
 public class QualificationResource {
 
     private final QualificationService qualificationService;
@@ -37,28 +38,28 @@ public class QualificationResource {
     }
 
     @PostMapping
-    @ApiOperation(SwaggerConstants.QualificationConstant.SAVE_OPERATION)
+    @ApiOperation(SAVE_OPERATION)
     public ResponseEntity<?> save(@Valid @RequestBody QualificationRequestDTO requestDTO) {
         qualificationService.save(requestDTO);
-        return created(create(WebResourceKeyConstants.API_V1 + WebResourceKeyConstants.QualificationConstants.BASE_QUALIFICATION)).build();
+        return created(create(API_V1 + BASE_QUALIFICATION)).build();
     }
 
     @PutMapping
-    @ApiOperation(SwaggerConstants.QualificationConstant.UPDATE_OPERATION)
+    @ApiOperation(UPDATE_OPERATION)
     public ResponseEntity<?> update(@Valid @RequestBody QualificationUpdateRequestDTO updateRequestDTO) {
         qualificationService.update(updateRequestDTO);
         return ok().build();
     }
 
     @DeleteMapping
-    @ApiOperation(SwaggerConstants.QualificationConstant.DELETE_OPERATION)
+    @ApiOperation(DELETE_OPERATION)
     public ResponseEntity<?> delete(@Valid @RequestBody DeleteRequestDTO deleteRequestDTO) {
         qualificationService.delete(deleteRequestDTO);
         return ok().build();
     }
 
-    @PutMapping(WebResourceKeyConstants.SEARCH)
-    @ApiOperation(SwaggerConstants.QualificationConstant.SEARCH_OPERATION)
+    @PutMapping(SEARCH)
+    @ApiOperation(SEARCH_OPERATION)
     public ResponseEntity<?> search(@RequestBody QualificationSearchRequestDTO searchRequestDTO,
                                     @RequestParam("page") int page,
                                     @RequestParam("size") int size) {
@@ -66,14 +67,14 @@ public class QualificationResource {
         return ok().body(qualificationService.search(searchRequestDTO, pageable));
     }
 
-    @GetMapping(WebResourceKeyConstants.ACTIVE + WebResourceKeyConstants.MIN)
-    @ApiOperation(SwaggerConstants.QualificationConstant.FETCH_DETAILS_FOR_DROPDOWN)
+    @GetMapping(ACTIVE + MIN)
+    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
     public ResponseEntity<List<QualificationDropdownDTO>> fetchQualificationForDropDown() {
         return ok(qualificationService.fetchActiveQualificationForDropDown());
     }
 
-    @GetMapping(WebResourceKeyConstants.DETAIL + WebResourceKeyConstants.ID_PATH_VARIABLE_BASE)
-    @ApiOperation(SwaggerConstants.QualificationConstant.DETAILS_OPERATION)
+    @GetMapping(DETAIL + ID_PATH_VARIABLE_BASE)
+    @ApiOperation(DETAILS_OPERATION)
     public ResponseEntity<?> fetchDetailsById(@PathVariable("id") Long id) {
         return ok(qualificationService.fetchDetailsById(id));
     }

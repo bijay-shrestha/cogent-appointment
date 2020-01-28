@@ -1,10 +1,7 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
-import com.cogent.cogentappointment.client.constants.ErrorMessageConstants;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.query.ForgotPasswordVerificationQuery;
 import com.cogent.cogentappointment.client.repository.custom.ForgotPasswordRepositoryCustom;
-import com.cogent.cogentappointment.client.utils.commons.QueryUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +12,9 @@ import javax.persistence.Query;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.client.constants.EmailConstants.ForgotPassword.RESET_CODE;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.ForgotPasswordMessages.INVALID_RESET_CODE;
+import static com.cogent.cogentappointment.client.query.ForgotPasswordVerificationQuery.QUERY_TO_FETCH_EXPIRATION_TIME;
+import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
 
 /**
  * @author smriti on 2019-09-20
@@ -29,7 +29,7 @@ public class ForgotPasswordRepositoryCustomImpl implements ForgotPasswordReposit
     @Override
     public Object findByResetCode(String resetCode) {
 
-        Query query = QueryUtils.createQuery.apply(entityManager, ForgotPasswordVerificationQuery.QUERY_TO_FETCH_EXPIRATION_TIME)
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_EXPIRATION_TIME)
                 .setParameter(RESET_CODE, resetCode);
         try {
             return query.getSingleResult();
@@ -39,7 +39,7 @@ public class ForgotPasswordRepositoryCustomImpl implements ForgotPasswordReposit
     }
 
     private Function<String, NoContentFoundException> RESET_CODE_NOT_FOUND = (resetCode) -> {
-        throw new NoContentFoundException(ErrorMessageConstants.ForgotPasswordMessages.INVALID_RESET_CODE, "resetCode", resetCode);
+        throw new NoContentFoundException(INVALID_RESET_CODE, "resetCode", resetCode);
     };
 
 }

@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
-import com.cogent.cogentappointment.admin.constants.QueryConstants;
 import com.cogent.cogentappointment.admin.constants.StatusConstants;
 import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDutyRosterSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDutyRosterStatusRequestDTO;
@@ -8,12 +7,9 @@ import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.*;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.model.DoctorDutyRoster;
 import com.cogent.cogentappointment.admin.query.DoctorDutyRosterOverrideQuery;
-import com.cogent.cogentappointment.admin.query.DoctorDutyRosterQuery;
 import com.cogent.cogentappointment.admin.repository.custom.DoctorDutyRosterRepositoryCustom;
 import com.cogent.cogentappointment.admin.utils.DoctorDutyRosterUtils;
-import com.cogent.cogentappointment.admin.utils.commons.DateUtils;
 import com.cogent.cogentappointment.admin.utils.commons.PageableUtils;
-import com.cogent.cogentappointment.admin.utils.commons.QueryUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +24,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.admin.query.DoctorDutyRosterQuery.*;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDayCodeFromDate;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
+import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
 
 /**
  * @author smriti on 26/11/2019
@@ -45,11 +47,11 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
                                               Date fromDate,
                                               Date toDate) {
 
-        Query query = QueryUtils.createQuery.apply(entityManager, DoctorDutyRosterQuery.VALIDATE_DOCTOR_DUTY_ROSTER_COUNT)
-                .setParameter(QueryConstants.DOCTOR_ID, doctorId)
-                .setParameter(QueryConstants.SPECIALIZATION_ID, specializationId)
-                .setParameter(QueryConstants.FROM_DATE, DateUtils.utilDateToSqlDate(fromDate))
-                .setParameter(QueryConstants.TO_DATE, DateUtils.utilDateToSqlDate(toDate));
+        Query query = createQuery.apply(entityManager, VALIDATE_DOCTOR_DUTY_ROSTER_COUNT)
+                .setParameter(DOCTOR_ID, doctorId)
+                .setParameter(SPECIALIZATION_ID, specializationId)
+                .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))
+                .setParameter(TO_DATE, utilDateToSqlDate(toDate));
 
         return (Long) query.getSingleResult();
     }
@@ -58,15 +60,15 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
     public List<DoctorDutyRosterMinimalResponseDTO> search(DoctorDutyRosterSearchRequestDTO searchRequestDTO,
                                                            Pageable pageable) {
 
-        Query query = QueryUtils.createQuery.apply(entityManager, DoctorDutyRosterQuery.QUERY_TO_SEARCH_DOCTOR_DUTY_ROSTER(searchRequestDTO))
-                .setParameter(QueryConstants.FROM_DATE, searchRequestDTO.getFromDate())
-                .setParameter(QueryConstants.TO_DATE, searchRequestDTO.getToDate());
+        Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_DOCTOR_DUTY_ROSTER(searchRequestDTO))
+                .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
+                .setParameter(TO_DATE, searchRequestDTO.getToDate());
 
         int totalItems = query.getResultList().size();
 
         PageableUtils.addPagination.accept(pageable, query);
 
-        List<DoctorDutyRosterMinimalResponseDTO> results = QueryUtils.transformQueryToResultList(
+        List<DoctorDutyRosterMinimalResponseDTO> results = transformQueryToResultList(
                 query, DoctorDutyRosterMinimalResponseDTO.class);
 
         if (results.isEmpty()) throw DOCTOR_DUTY_ROSTER_NOT_FOUND.get();
@@ -96,16 +98,16 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
     @Override
     public DoctorDutyRosterTimeResponseDTO fetchDoctorDutyRosterTime(Date date, Long doctorId, Long specializationId) {
 
-        Date sqlDate = DateUtils.utilDateToSqlDate(date);
+        Date sqlDate = utilDateToSqlDate(date);
 
-        Query query = QueryUtils.createQuery.apply(entityManager, DoctorDutyRosterQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_TIME)
-                .setParameter(QueryConstants.DATE, sqlDate)
-                .setParameter(QueryConstants.DOCTOR_ID, doctorId)
-                .setParameter(QueryConstants.SPECIALIZATION_ID, specializationId)
-                .setParameter(QueryConstants.CODE, DateUtils.getDayCodeFromDate(sqlDate));
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_TIME)
+                .setParameter(DATE, sqlDate)
+                .setParameter(DOCTOR_ID, doctorId)
+                .setParameter(SPECIALIZATION_ID, specializationId)
+                .setParameter(CODE, getDayCodeFromDate(sqlDate));
 
         try {
-            return QueryUtils.transformQueryToSingleResult(query, DoctorDutyRosterTimeResponseDTO.class);
+            return transformQueryToSingleResult(query, DoctorDutyRosterTimeResponseDTO.class);
         } catch (NoResultException e) {
             throw DOCTOR_DUTY_ROSTER_NOT_FOUND.get();
         }
@@ -115,15 +117,15 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
     public List<DoctorDutyRosterStatusResponseDTO> fetchDoctorDutyRosterStatus(
             DoctorDutyRosterStatusRequestDTO requestDTO) {
 
-        Query query = QueryUtils.createNativeQuery.apply(entityManager, DoctorDutyRosterQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_STATUS(requestDTO))
-                .setParameter(QueryConstants.FROM_DATE, DateUtils.utilDateToSqlDate(requestDTO.getFromDate()))
-                .setParameter(QueryConstants.TO_DATE, DateUtils.utilDateToSqlDate(requestDTO.getToDate()));
+        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_STATUS(requestDTO))
+                .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()));
 
         if (!Objects.isNull(requestDTO.getDoctorId()))
-            query.setParameter(QueryConstants.DOCTOR_ID, requestDTO.getDoctorId());
+            query.setParameter(DOCTOR_ID, requestDTO.getDoctorId());
 
         if (!Objects.isNull(requestDTO.getSpecializationId()))
-            query.setParameter(QueryConstants.SPECIALIZATION_ID, requestDTO.getSpecializationId());
+            query.setParameter(SPECIALIZATION_ID, requestDTO.getSpecializationId());
 
         List<Object[]> results = query.getResultList();
 
@@ -133,10 +135,10 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
 
     private DoctorDutyRosterResponseDTO fetchDoctorDutyRosterDetails(Long doctorDutyRosterId) {
 
-        Query query = QueryUtils.createQuery.apply(entityManager, DoctorDutyRosterQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_DETAILS)
-                .setParameter(QueryConstants.ID, doctorDutyRosterId);
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_DETAILS)
+                .setParameter(ID, doctorDutyRosterId);
         try {
-            return QueryUtils.transformQueryToSingleResult(query, DoctorDutyRosterResponseDTO.class);
+            return transformQueryToSingleResult(query, DoctorDutyRosterResponseDTO.class);
         } catch (NoResultException e) {
             throw DOCTOR_DUTY_ROSTER_WITH_GIVEN_ID_NOT_FOUND.apply(doctorDutyRosterId);
         }
@@ -145,19 +147,19 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
     private List<DoctorWeekDaysDutyRosterResponseDTO> fetchDoctorWeekDaysDutyRosterResponseDTO(
             Long doctorDutyRosterId) {
 
-        Query query = QueryUtils.createQuery.apply(entityManager, DoctorDutyRosterQuery.QUERY_TO_FETCH_DOCTOR_WEEK_DAYS_DUTY_ROSTER)
-                .setParameter(QueryConstants.ID, doctorDutyRosterId);
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_WEEK_DAYS_DUTY_ROSTER)
+                .setParameter(ID, doctorDutyRosterId);
 
-        return QueryUtils.transformQueryToResultList(query, DoctorWeekDaysDutyRosterResponseDTO.class);
+        return transformQueryToResultList(query, DoctorWeekDaysDutyRosterResponseDTO.class);
     }
 
     private List<DoctorDutyRosterOverrideResponseDTO> fetchDoctorDutyRosterOverrideResponseDTO(
             Long doctorDutyRosterId) {
 
-        Query query = QueryUtils.createQuery.apply(entityManager, DoctorDutyRosterOverrideQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_DETAILS)
-                .setParameter(QueryConstants.ID, doctorDutyRosterId);
+        Query query = createQuery.apply(entityManager, DoctorDutyRosterOverrideQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_DETAILS)
+                .setParameter(ID, doctorDutyRosterId);
 
-        return QueryUtils.transformQueryToResultList(query, DoctorDutyRosterOverrideResponseDTO.class);
+        return transformQueryToResultList(query, DoctorDutyRosterOverrideResponseDTO.class);
     }
 
     private Supplier<NoContentFoundException> DOCTOR_DUTY_ROSTER_NOT_FOUND = () ->

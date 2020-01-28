@@ -1,11 +1,8 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
-import com.cogent.cogentappointment.admin.query.AdminConfirmationTokenQuery;
-import com.cogent.cogentappointment.admin.repository.custom.AdminConfirmationTokenRepositoryCustom;
 import com.cogent.cogentappointment.admin.constants.ErrorMessageConstants;
-import com.cogent.cogentappointment.admin.constants.QueryConstants;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.utils.commons.QueryUtils;
+import com.cogent.cogentappointment.admin.repository.custom.AdminConfirmationTokenRepositoryCustom;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +11,10 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.function.Function;
+
+import static com.cogent.cogentappointment.admin.constants.QueryConstants.CONFIRMATION_TOKEN;
+import static com.cogent.cogentappointment.admin.query.AdminConfirmationTokenQuery.QUERY_TO_FETCH_CONFIRMATION_TOKEN_STATUS;
+import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
 
 /**
  * @author smriti on 2019-09-23
@@ -27,8 +28,8 @@ public class AdminConfirmationTokenRepositoryCustomImpl implements AdminConfirma
 
     @Override
     public Object findByConfirmationToken(String confirmationToken) {
-        Query query = QueryUtils.createQuery.apply(entityManager, AdminConfirmationTokenQuery.QUERY_TO_FETCH_CONFIRMATION_TOKEN_STATUS)
-                .setParameter(QueryConstants.CONFIRMATION_TOKEN, confirmationToken);
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_CONFIRMATION_TOKEN_STATUS)
+                .setParameter(CONFIRMATION_TOKEN, confirmationToken);
         try {
             return query.getSingleResult();
         } catch (NoResultException ex) {

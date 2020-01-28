@@ -1,30 +1,32 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
+import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.qualification.QualificationRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.qualification.QualificationSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.qualification.QualificationUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.qualification.QualificationDropdownDTO;
 import com.cogent.cogentappointment.admin.dto.response.qualification.QualificationMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.qualification.QualificationResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.log.CommonLogConstant;
-import com.cogent.cogentappointment.admin.log.constants.QualificationLog;
 import com.cogent.cogentappointment.admin.model.Country;
 import com.cogent.cogentappointment.admin.model.Qualification;
 import com.cogent.cogentappointment.admin.model.QualificationAlias;
 import com.cogent.cogentappointment.admin.repository.QualificationRepository;
-import com.cogent.cogentappointment.admin.dto.request.qualification.QualificationRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.qualification.QualificationSearchRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.qualification.QualificationUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.service.CountryService;
 import com.cogent.cogentappointment.admin.service.QualificationAliasService;
 import com.cogent.cogentappointment.admin.service.QualificationService;
-import com.cogent.cogentappointment.admin.utils.QualificationUtils;
-import com.cogent.cogentappointment.admin.utils.commons.DateUtils;
-import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
+import static com.cogent.cogentappointment.admin.log.constants.QualificationLog.QUALIFICATION;
+import static com.cogent.cogentappointment.admin.utils.QualificationUtils.*;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
 /**
  * @author smriti on 11/11/2019
@@ -50,24 +52,24 @@ public class QualificationServiceImpl implements QualificationService {
 
     @Override
     public void save(QualificationRequestDTO requestDTO) {
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.SAVING_PROCESS_STARTED, QualificationLog.QUALIFICATION);
+        log.info(SAVING_PROCESS_STARTED, QUALIFICATION);
 
         Country country = fetchCountry(requestDTO.getCountryId());
 
         QualificationAlias qualificationAlias = fetchQualificationAlias(requestDTO.getQualificationAliasId());
 
-        save(QualificationUtils.parseToQualification(requestDTO, country, qualificationAlias));
+        save(parseToQualification(requestDTO, country, qualificationAlias));
 
-        log.info(CommonLogConstant.SAVING_PROCESS_COMPLETED, QualificationLog.QUALIFICATION, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(SAVING_PROCESS_COMPLETED, QUALIFICATION, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
     public void update(QualificationUpdateRequestDTO requestDTO) {
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.UPDATING_PROCESS_STARTED, QualificationLog.QUALIFICATION);
+        log.info(UPDATING_PROCESS_STARTED, QUALIFICATION);
 
         Qualification qualification = findQualificationById(requestDTO.getId());
 
@@ -75,75 +77,75 @@ public class QualificationServiceImpl implements QualificationService {
 
         QualificationAlias qualificationAlias = fetchQualificationAlias(requestDTO.getQualificationAliasId());
 
-        QualificationUtils.parseToUpdatedQualification(requestDTO, country, qualificationAlias, qualification);
+        parseToUpdatedQualification(requestDTO, country, qualificationAlias, qualification);
 
-        log.info(CommonLogConstant.UPDATING_PROCESS_COMPLETED, QualificationLog.QUALIFICATION, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(UPDATING_PROCESS_COMPLETED, QUALIFICATION, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
     public void delete(DeleteRequestDTO deleteRequestDTO) {
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.DELETING_PROCESS_STARTED, QualificationLog.QUALIFICATION);
+        log.info(DELETING_PROCESS_STARTED, QUALIFICATION);
 
         Qualification qualification = findQualificationById(deleteRequestDTO.getId());
 
-        QualificationUtils.parseToDeletedQualification(qualification, deleteRequestDTO);
+        parseToDeletedQualification(qualification, deleteRequestDTO);
 
-        log.info(CommonLogConstant.DELETING_PROCESS_COMPLETED, QualificationLog.QUALIFICATION, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(DELETING_PROCESS_COMPLETED, QUALIFICATION, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
     public List<QualificationMinimalResponseDTO> search(QualificationSearchRequestDTO searchRequestDTO,
                                                         Pageable pageable) {
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.SEARCHING_PROCESS_STARTED, QualificationLog.QUALIFICATION);
+        log.info(SEARCHING_PROCESS_STARTED, QUALIFICATION);
 
         List<QualificationMinimalResponseDTO> responseDTOS =
                 qualificationRepository.search(searchRequestDTO, pageable);
 
-        log.info(CommonLogConstant.SEARCHING_PROCESS_COMPLETED, QualificationLog.QUALIFICATION, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(SEARCHING_PROCESS_COMPLETED, QUALIFICATION, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
     }
 
     @Override
     public QualificationResponseDTO fetchDetailsById(Long id) {
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.FETCHING_DETAIL_PROCESS_STARTED, QualificationLog.QUALIFICATION);
+        log.info(FETCHING_DETAIL_PROCESS_STARTED, QUALIFICATION);
 
         QualificationResponseDTO responseDTO = qualificationRepository.fetchDetailsById(id);
 
-        log.info(CommonLogConstant.FETCHING_DETAIL_PROCESS_COMPLETED, QualificationLog.QUALIFICATION, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, QUALIFICATION, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
     }
 
     @Override
     public List<QualificationDropdownDTO> fetchActiveQualificationForDropDown() {
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_STARTED_FOR_DROPDOWN, QualificationLog.QUALIFICATION);
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, QUALIFICATION);
 
         List<QualificationDropdownDTO> responseDTOS = qualificationRepository.fetchActiveQualificationForDropDown();
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, QualificationLog.QUALIFICATION, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, QUALIFICATION, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
     }
 
     @Override
     public Qualification fetchQualificationById(Long id) {
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_STARTED, QualificationLog.QUALIFICATION);
+        log.info(FETCHING_PROCESS_STARTED, QUALIFICATION);
 
         Qualification qualification = qualificationRepository.fetchActiveQualificationById(id)
                 .orElseThrow(() -> new NoContentFoundException(Qualification.class, "id", id.toString()));
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_COMPLETED, QualificationLog.QUALIFICATION, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_COMPLETED, QUALIFICATION, getDifferenceBetweenTwoTime(startTime));
 
         return qualification;
     }

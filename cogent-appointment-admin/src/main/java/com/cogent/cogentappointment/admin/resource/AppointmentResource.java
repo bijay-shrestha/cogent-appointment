@@ -1,7 +1,5 @@
 package com.cogent.cogentappointment.admin.resource;
 
-import com.cogent.cogentappointment.admin.constants.SwaggerConstants;
-import com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants;
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentRequestDTO;
 import com.cogent.cogentappointment.admin.service.AppointmentService;
@@ -12,6 +10,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentConstant.*;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.BASE_APPOINTMENT;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.CHECK_AVAILABILITY;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
@@ -19,9 +21,9 @@ import static org.springframework.http.ResponseEntity.ok;
 /**
  * @author smriti on 2019-10-22
  */
-@RequestMapping(WebResourceKeyConstants.API_V1 + WebResourceKeyConstants.AppointmentConstants.BASE_APPOINTMENT)
+@RequestMapping(API_V1 + BASE_APPOINTMENT)
 @RestController
-@Api(SwaggerConstants.AppointmentConstant.BASE_API_VALUE)
+@Api(BASE_API_VALUE)
 public class AppointmentResource {
 
     private final AppointmentService appointmentService;
@@ -30,16 +32,16 @@ public class AppointmentResource {
         this.appointmentService = appointmentService;
     }
 
-    @PutMapping(WebResourceKeyConstants.AppointmentConstants.CHECK_AVAILABILITY)
-    @ApiOperation(SwaggerConstants.AppointmentConstant.CHECK_APPOINTMENT_AVAILABILITY)
+    @PutMapping(CHECK_AVAILABILITY)
+    @ApiOperation(CHECK_APPOINTMENT_AVAILABILITY)
     public ResponseEntity<?> checkAvailability(@Valid @RequestBody AppointmentCheckAvailabilityRequestDTO requestDTO) {
         return ok(appointmentService.checkAvailability(requestDTO));
     }
 
     @PostMapping
-    @ApiOperation(SwaggerConstants.AppointmentConstant.SAVE_OPERATION)
+    @ApiOperation(SAVE_OPERATION)
     public ResponseEntity<?> save(@Valid @RequestBody AppointmentRequestDTO requestDTO) {
-        return created(create(WebResourceKeyConstants.API_V1 + WebResourceKeyConstants.AppointmentConstants.BASE_APPOINTMENT)).body(appointmentService.save(requestDTO));
+        return created(create(API_V1 + BASE_APPOINTMENT)).body(appointmentService.save(requestDTO));
     }
 
 //    @PutMapping

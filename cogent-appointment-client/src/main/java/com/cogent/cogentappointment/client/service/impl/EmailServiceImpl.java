@@ -5,11 +5,9 @@ import com.cogent.cogentappointment.client.constants.EmailTemplates;
 import com.cogent.cogentappointment.client.constants.StatusConstants;
 import com.cogent.cogentappointment.client.constants.StringConstant;
 import com.cogent.cogentappointment.client.dto.request.email.EmailRequestDTO;
-import com.cogent.cogentappointment.client.log.CommonLogConstant;
 import com.cogent.cogentappointment.client.model.EmailToSend;
 import com.cogent.cogentappointment.client.repository.EmailToSendRepository;
 import com.cogent.cogentappointment.client.service.EmailService;
-import com.cogent.cogentappointment.client.utils.commons.DateUtils;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -31,9 +29,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.SAVING_PROCESS_COMPLETED;
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.SAVING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.client.log.constants.EmailLog.*;
 import static com.cogent.cogentappointment.client.utils.EmailUtils.convertDTOToEmailToSend;
 import static com.cogent.cogentappointment.client.utils.EmailUtils.convertToUpdateEmailToSend;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
 /**
  * @author smriti on 7/23/19
@@ -65,19 +67,19 @@ public class EmailServiceImpl implements EmailService {
     }
 
     public EmailToSend saveEmailToSend(EmailRequestDTO emailRequestDTO) {
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.SAVING_PROCESS_STARTED, EMAIL_TO_SEND);
+        log.info(SAVING_PROCESS_STARTED, EMAIL_TO_SEND);
 
         EmailToSend emailToSend = emailToSendRepository.save(convertDTOToEmailToSend(emailRequestDTO));
 
-        log.info(CommonLogConstant.SAVING_PROCESS_COMPLETED, EMAIL_TO_SEND, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(SAVING_PROCESS_COMPLETED, EMAIL_TO_SEND, getDifferenceBetweenTwoTime(startTime));
 
         return emailToSend;
     }
 
     public void send(EmailToSend emailToSend) {
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SENDING_EMAIL_PROCESS_STARTED);
 
@@ -122,7 +124,7 @@ public class EmailServiceImpl implements EmailService {
 
             javaMailSender.send(message);
 
-            log.info(SENDING_EMAIL_PROCESS_COMPLETED, DateUtils.getDifferenceBetweenTwoTime(startTime));
+            log.info(SENDING_EMAIL_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
         } catch (MessagingException e) {
             e.printStackTrace();
         }

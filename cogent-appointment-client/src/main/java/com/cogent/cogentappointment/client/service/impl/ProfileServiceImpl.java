@@ -12,7 +12,6 @@ import com.cogent.cogentappointment.client.dto.response.profile.ProfileDetailRes
 import com.cogent.cogentappointment.client.dto.response.profile.ProfileMinimalResponseDTO;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.log.CommonLogConstant;
 import com.cogent.cogentappointment.client.model.Department;
 import com.cogent.cogentappointment.client.model.Profile;
 import com.cogent.cogentappointment.client.model.ProfileMenu;
@@ -20,9 +19,6 @@ import com.cogent.cogentappointment.client.repository.DepartmentRepository;
 import com.cogent.cogentappointment.client.repository.ProfileMenuRepository;
 import com.cogent.cogentappointment.client.repository.ProfileRepository;
 import com.cogent.cogentappointment.client.service.ProfileService;
-import com.cogent.cogentappointment.client.utils.ProfileMenuUtils;
-import com.cogent.cogentappointment.client.utils.ProfileUtils;
-import com.cogent.cogentappointment.client.utils.commons.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,7 +27,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.ProfileLog.PROFILE;
+import static com.cogent.cogentappointment.client.utils.ProfileMenuUtils.convertToProfileMenu;
+import static com.cogent.cogentappointment.client.utils.ProfileMenuUtils.convertToUpdatedProfileMenu;
+import static com.cogent.cogentappointment.client.utils.ProfileUtils.*;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
 /**
  * @author smriti on 7/2/19
@@ -57,9 +59,9 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public void save(ProfileRequestDTO profileRequestDTO) {
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.SAVING_PROCESS_STARTED, PROFILE);
+        log.info(SAVING_PROCESS_STARTED, PROFILE);
 
         Long profileCount = profileRepository.validateDuplicity(profileRequestDTO.getProfileDTO().getName(),
                 profileRequestDTO.getProfileDTO().getHospitalId());
@@ -68,11 +70,11 @@ public class ProfileServiceImpl implements ProfileService {
 
         Department department = findDepartmentById(profileRequestDTO.getProfileDTO().getDepartmentId());
 
-        Profile savedProfile = save(ProfileUtils.convertDTOToProfile(profileRequestDTO.getProfileDTO(), department));
+        Profile savedProfile = save(convertDTOToProfile(profileRequestDTO.getProfileDTO(), department));
 
-        saveProfileMenu(ProfileMenuUtils.convertToProfileMenu(savedProfile, profileRequestDTO.getProfileMenuRequestDTO()));
+        saveProfileMenu(convertToProfileMenu(savedProfile, profileRequestDTO.getProfileMenuRequestDTO()));
 
-        log.info(CommonLogConstant.SAVING_PROCESS_COMPLETED, PROFILE, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(SAVING_PROCESS_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
     }
 
     public Profile save(Profile profile) {
@@ -85,9 +87,9 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public void update(ProfileUpdateRequestDTO requestDTO) {
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.UPDATING_PROCESS_STARTED, PROFILE);
+        log.info(UPDATING_PROCESS_STARTED, PROFILE);
 
         Profile profile = findById(requestDTO.getProfileDTO().getId());
 
@@ -100,11 +102,11 @@ public class ProfileServiceImpl implements ProfileService {
 
         Department department = findDepartmentById(requestDTO.getProfileDTO().getDepartmentId());
 
-        save(ProfileUtils.convertToUpdatedProfile(requestDTO.getProfileDTO(), department, profile));
+        save(convertToUpdatedProfile(requestDTO.getProfileDTO(), department, profile));
 
-        saveProfileMenu(ProfileMenuUtils.convertToUpdatedProfileMenu(profile, requestDTO.getProfileMenuRequestDTO()));
+        saveProfileMenu(convertToUpdatedProfileMenu(profile, requestDTO.getProfileMenuRequestDTO()));
 
-        log.info(CommonLogConstant.UPDATING_PROCESS_COMPLETED, PROFILE, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(UPDATING_PROCESS_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
     }
 
     public Profile findById(Long profileId) {
@@ -120,40 +122,40 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public void delete(DeleteRequestDTO deleteRequestDTO) {
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.DELETING_PROCESS_STARTED, PROFILE);
+        log.info(DELETING_PROCESS_STARTED, PROFILE);
 
         Profile profile = findById(deleteRequestDTO.getId());
 
-        save(ProfileUtils.convertProfileToDeleted.apply(profile, deleteRequestDTO));
+        save(convertProfileToDeleted.apply(profile, deleteRequestDTO));
 
-        log.info(CommonLogConstant.DELETING_PROCESS_COMPLETED, PROFILE, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(DELETING_PROCESS_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
     public List<ProfileMinimalResponseDTO> search(ProfileSearchRequestDTO searchRequestDTO, Pageable pageable) {
 
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.SEARCHING_PROCESS_STARTED, PROFILE);
+        log.info(SEARCHING_PROCESS_STARTED, PROFILE);
 
         List<ProfileMinimalResponseDTO> responseDTOS = profileRepository.search(searchRequestDTO, pageable);
 
-        log.info(CommonLogConstant.SEARCHING_PROCESS_COMPLETED, PROFILE, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(SEARCHING_PROCESS_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
     }
 
     @Override
     public ProfileDetailResponseDTO fetchDetailsById(Long id) {
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.FETCHING_DETAIL_PROCESS_STARTED, PROFILE);
+        log.info(FETCHING_DETAIL_PROCESS_STARTED, PROFILE);
 
         ProfileDetailResponseDTO detailResponseDTO = profileRepository.fetchDetailsById(id);
 
-        log.info(CommonLogConstant.FETCHING_DETAIL_PROCESS_COMPLETED, PROFILE, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
 
         return detailResponseDTO;
     }
@@ -161,13 +163,13 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public List<DropDownResponseDTO> fetchActiveProfilesForDropdown() {
 
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_STARTED_FOR_DROPDOWN, PROFILE);
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, PROFILE);
 
         List<DropDownResponseDTO> responseDTOS = profileRepository.fetchActiveProfilesForDropDown();
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, PROFILE, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
     }
@@ -180,13 +182,13 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public List<DropDownResponseDTO> fetchProfileByDepartmentId(Long departmentId) {
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_STARTED_FOR_DROPDOWN, PROFILE);
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, PROFILE);
 
         List<DropDownResponseDTO> responseDTOS = profileRepository.fetchProfileByDepartmentId(departmentId);
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, PROFILE, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
     }
@@ -194,14 +196,14 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public AssignedProfileResponseDTO fetchAssignedProfileResponseDto(ProfileMenuSearchRequestDTO searchRequestDTO) {
 
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_STARTED, PROFILE);
+        log.info(FETCHING_PROCESS_STARTED, PROFILE);
 
         AssignedProfileResponseDTO responseDTO =
                 profileRepository.fetchAssignedProfileResponseDto(searchRequestDTO);
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_COMPLETED, PROFILE, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
     }

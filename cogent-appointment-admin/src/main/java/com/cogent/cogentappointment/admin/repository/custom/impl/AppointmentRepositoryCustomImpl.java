@@ -1,19 +1,15 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
+import com.cogent.cogentappointment.admin.constants.QueryConstants;
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentBookedDateResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentBookedTimeResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentResponseDTO;
-import com.cogent.cogentappointment.admin.model.Appointment;
-import com.cogent.cogentappointment.admin.query.AppointmentQuery;
-import com.cogent.cogentappointment.admin.constants.QueryConstants;
-import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentSearchRequestDTO;
-import com.cogent.cogentappointment.admin.repository.custom.AppointmentRepositoryCustom;
-import com.cogent.cogentappointment.admin.utils.commons.DateUtils;
-import com.cogent.cogentappointment.admin.utils.commons.PageableUtils;
-import com.cogent.cogentappointment.admin.utils.commons.QueryUtils;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
+import com.cogent.cogentappointment.admin.model.Appointment;
+import com.cogent.cogentappointment.admin.repository.custom.AppointmentRepositoryCustom;
 import com.cogent.cogentappointment.admin.utils.AppointmentUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -28,6 +24,14 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.admin.query.AppointmentQuery.*;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
+import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
+import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
+
+;
+;
+
 /**
  * @author smriti on 2019-10-22
  */
@@ -41,23 +45,23 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     @Override
     public List<AppointmentBookedTimeResponseDTO> checkAvailability(AppointmentCheckAvailabilityRequestDTO requestDTO) {
 
-        Query query = QueryUtils.createQuery.apply(entityManager, AppointmentQuery.QUERY_TO_FETCH_BOOKED_APPOINTMENT)
-                .setParameter(QueryConstants.DATE, DateUtils.utilDateToSqlDate(requestDTO.getAppointmentDate()))
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_BOOKED_APPOINTMENT)
+                .setParameter(QueryConstants.DATE, utilDateToSqlDate(requestDTO.getAppointmentDate()))
                 .setParameter(QueryConstants.DOCTOR_ID, requestDTO.getDoctorId())
                 .setParameter(QueryConstants.SPECIALIZATION_ID, requestDTO.getSpecializationId());
 
-        return QueryUtils.transformQueryToResultList(query, AppointmentBookedTimeResponseDTO.class);
+        return transformQueryToResultList(query, AppointmentBookedTimeResponseDTO.class);
     }
 
     @Override
     public String generateAppointmentNumber(String nepaliCreatedDate) {
 
-        int year = DateUtils.getYearFromNepaliDate(nepaliCreatedDate);
-        int month = DateUtils.getMonthFromNepaliDate(nepaliCreatedDate);
+        int year = getYearFromNepaliDate(nepaliCreatedDate);
+        int month = getMonthFromNepaliDate(nepaliCreatedDate);
 
-        Query query = QueryUtils.createNativeQuery.apply(entityManager, AppointmentQuery.QUERY_TO_FETCH_LATEST_APPOINTMENT_NUMBER)
-                .setParameter(QueryConstants.FROM_DATE, DateUtils.fetchStartingFiscalYear(year, month))
-                .setParameter(QueryConstants.TO_DATE, DateUtils.fetchEndingFiscalYear(year, month));
+        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_LATEST_APPOINTMENT_NUMBER)
+                .setParameter(QueryConstants.FROM_DATE, fetchStartingFiscalYear(year, month))
+                .setParameter(QueryConstants.TO_DATE, fetchEndingFiscalYear(year, month));
 
         return AppointmentUtils.generateAppointmentNumber(query.getResultList());
     }
@@ -68,21 +72,21 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                                                                               Long doctorId,
                                                                               Long specializationId) {
 
-        Query query = QueryUtils.createQuery.apply(entityManager, AppointmentQuery.QUERY_TO_FETCH_BOOKED_APPOINTMENT_DATES)
-                .setParameter(QueryConstants.FROM_DATE, DateUtils.utilDateToSqlDate(fromDate))
-                .setParameter(QueryConstants.TO_DATE, DateUtils.utilDateToSqlDate(toDate))
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_BOOKED_APPOINTMENT_DATES)
+                .setParameter(QueryConstants.FROM_DATE, utilDateToSqlDate(fromDate))
+                .setParameter(QueryConstants.TO_DATE, utilDateToSqlDate(toDate))
                 .setParameter(QueryConstants.DOCTOR_ID, doctorId)
                 .setParameter(QueryConstants.SPECIALIZATION_ID, specializationId);
 
-        return QueryUtils.transformQueryToResultList(query, AppointmentBookedDateResponseDTO.class);
+        return transformQueryToResultList(query, AppointmentBookedDateResponseDTO.class);
     }
 
     @Override
     public Long fetchBookedAppointmentCount(Date fromDate, Date toDate, Long doctorId, Long specializationId) {
 
-        Query query = QueryUtils.createQuery.apply(entityManager, AppointmentQuery.QUERY_TO_FETCH_BOOKED_APPOINTMENT_COUNT)
-                .setParameter(QueryConstants.FROM_DATE, DateUtils.utilDateToSqlDate(fromDate))
-                .setParameter(QueryConstants.TO_DATE, DateUtils.utilDateToSqlDate(toDate))
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_BOOKED_APPOINTMENT_COUNT)
+                .setParameter(QueryConstants.FROM_DATE, utilDateToSqlDate(fromDate))
+                .setParameter(QueryConstants.TO_DATE, utilDateToSqlDate(toDate))
                 .setParameter(QueryConstants.DOCTOR_ID, doctorId)
                 .setParameter(QueryConstants.SPECIALIZATION_ID, specializationId);
 
@@ -93,13 +97,13 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     public List<AppointmentMinimalResponseDTO> search(AppointmentSearchRequestDTO searchRequestDTO,
                                                       Pageable pageable) {
 
-        Query query = QueryUtils.createQuery.apply(entityManager, AppointmentQuery.QUERY_TO_SEARCH_APPOINTMENT.apply(searchRequestDTO));
+        Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_APPOINTMENT.apply(searchRequestDTO));
 
         int totalItems = query.getResultList().size();
 
-        PageableUtils.addPagination.accept(pageable, query);
+        addPagination.accept(pageable, query);
 
-        List<AppointmentMinimalResponseDTO> results = QueryUtils.transformQueryToResultList(
+        List<AppointmentMinimalResponseDTO> results = transformQueryToResultList(
                 query, AppointmentMinimalResponseDTO.class);
 
         if (results.isEmpty()) throw APPOINTMENT_NOT_FOUND.get();
@@ -111,10 +115,10 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
     @Override
     public AppointmentResponseDTO fetchDetailsById(Long id) {
-        Query query = QueryUtils.createQuery.apply(entityManager, AppointmentQuery.QUERY_TO_FETCH_APPOINTMENT_DETAILS)
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_DETAILS)
                 .setParameter(QueryConstants.ID, id);
         try {
-            return QueryUtils.transformQueryToSingleResult(query, AppointmentResponseDTO.class);
+            return transformQueryToSingleResult(query, AppointmentResponseDTO.class);
         } catch (NoResultException e) {
             throw APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(id);
         }

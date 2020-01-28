@@ -6,7 +6,6 @@ import com.cogent.cogentappointment.admin.dto.request.email.EmailRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.forgotPassword.ForgotPasswordRequestDTO;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.log.constants.AdminLog;
 import com.cogent.cogentappointment.admin.model.Admin;
 import com.cogent.cogentappointment.admin.model.ForgotPasswordVerification;
 import com.cogent.cogentappointment.admin.property.ExpirationTimeProperties;
@@ -24,6 +23,7 @@ import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.admin.log.constants.AdminLog.*;
 import static java.util.Objects.isNull;
 
 /**
@@ -56,7 +56,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     public void forgotPassword(String username) {
         Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
 
-        log.info(AdminLog.FORGOT_PASSWORD_PROCESS_STARTED);
+        log.info(FORGOT_PASSWORD_PROCESS_STARTED);
 
         Admin admin = adminRepository.fetchAdminByUsernameOrEmail(username);
 
@@ -75,32 +75,32 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
         emailService.sendEmail(emailRequestDTO);
 
-        log.info(AdminLog.FORGOT_PASSWORD_PROCESS_COMPLETED, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(FORGOT_PASSWORD_PROCESS_COMPLETED, DateUtils.getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
     public void verify(String resetCode) {
         Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
 
-        log.info(AdminLog.VERIFY_CODE_PROCESS_STARTED);
+        log.info(VERIFY_CODE_PROCESS_STARTED);
 
         Object expirationTime = verificationRepository.findByResetCode(resetCode);
         validateExpirationTime(expirationTime);
 
-        log.info(AdminLog.VERIFY_CODE_PROCESS_COMPLETED, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(VERIFY_CODE_PROCESS_COMPLETED, DateUtils.getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
     public void updatePassword(ForgotPasswordRequestDTO requestDTO) {
         Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
 
-        log.info(AdminLog.UPDATING_PASSWORD_PROCESS_STARTED);
+        log.info(UPDATING_PASSWORD_PROCESS_STARTED);
 
         Admin admin = adminRepository.fetchAdminByUsernameOrEmail(requestDTO.getUsername());
         updateAdminPassword(requestDTO, admin);
         updateForgotPasswordVerification(admin.getId());
 
-        log.info(AdminLog.UPDATING_PASSWORD_PROCESS_COMPLETED, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(UPDATING_PASSWORD_PROCESS_COMPLETED, DateUtils.getDifferenceBetweenTwoTime(startTime));
     }
 
     public void updateAdminPassword(ForgotPasswordRequestDTO requestDTO, Admin admin) {

@@ -1,8 +1,5 @@
 package com.cogent.cogentappointment.client.resource;
 
-import com.cogent.cogentappointment.client.constants.SwaggerConstants;
-import com.cogent.cogentappointment.client.constants.WebResourceKeyConstants;
-import com.cogent.cogentappointment.client.service.CountryService;
 import com.cogent.cogentappointment.client.service.CountryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -11,14 +8,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.cogent.cogentappointment.client.constants.SwaggerConstants.CountryConstant.BASE_API_VALUE;
+import static com.cogent.cogentappointment.client.constants.SwaggerConstants.CountryConstant.FETCH_ACTIVE_COUNTRY;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.CountryConstants.BASE_COUNTRY;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
  * @author smriti on 08/11/2019
  */
 @RestController
-@RequestMapping(WebResourceKeyConstants.API_V1 + WebResourceKeyConstants.CountryConstants.BASE_COUNTRY)
-@Api(SwaggerConstants.CountryConstant.BASE_API_VALUE)
+@RequestMapping(value = API_V1 + BASE_COUNTRY)
+@Api(BASE_API_VALUE)
 public class CountryResource {
 
     private final CountryService countryService;
@@ -28,7 +29,7 @@ public class CountryResource {
     }
 
     @GetMapping
-    @ApiOperation(SwaggerConstants.CountryConstant.FETCH_ACTIVE_COUNTRY)
+    @ApiOperation(FETCH_ACTIVE_COUNTRY)
     public ResponseEntity<?> fetchActiveCountry() {
         return ok(countryService.fetchActiveCountry());
     }

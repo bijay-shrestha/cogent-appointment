@@ -1,7 +1,5 @@
 package com.cogent.cogentappointment.client.resource;
 
-import com.cogent.cogentappointment.client.constants.SwaggerConstants;
-import com.cogent.cogentappointment.client.constants.WebResourceKeyConstants;
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospital.HospitalRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospital.HospitalSearchRequestDTO;
@@ -19,6 +17,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.io.IOException;
 
+import static com.cogent.cogentappointment.client.constants.SwaggerConstants.HospitalConstant.*;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.HospitalConstants.BASE_HOSPITAL;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
@@ -27,8 +28,8 @@ import static org.springframework.http.ResponseEntity.ok;
  * @author smriti ON 12/01/2020
  */
 @RestController
-@RequestMapping(WebResourceKeyConstants.API_V1 + WebResourceKeyConstants.HospitalConstants.BASE_HOSPITAL)
-@Api(SwaggerConstants.HospitalConstant.BASE_API_VALUE)
+@RequestMapping(API_V1 + BASE_HOSPITAL)
+@Api(BASE_API_VALUE)
 public class HospitalResource {
 
     private final HospitalService hospitalService;
@@ -38,17 +39,17 @@ public class HospitalResource {
     }
 
     @PostMapping
-    @ApiOperation(SwaggerConstants.HospitalConstant.SAVE_OPERATION)
+    @ApiOperation(SAVE_OPERATION)
     public ResponseEntity<?> save(@RequestParam(value = "file", required = false) MultipartFile file,
                                   @RequestParam("request") String request) throws IOException {
 
         HospitalRequestDTO requestDTO = ObjectMapperUtils.map(request, HospitalRequestDTO.class);
         hospitalService.save(requestDTO, file);
-        return created(create(WebResourceKeyConstants.API_V1 + WebResourceKeyConstants.HospitalConstants.BASE_HOSPITAL)).build();
+        return created(create(API_V1 + BASE_HOSPITAL)).build();
     }
 
     @PutMapping
-    @ApiOperation(SwaggerConstants.HospitalConstant.UPDATE_OPERATION)
+    @ApiOperation(UPDATE_OPERATION)
     public ResponseEntity<?> update(@RequestParam(value = "file", required = false) MultipartFile file,
                                     @RequestParam("request") String request) throws IOException {
 
@@ -58,14 +59,14 @@ public class HospitalResource {
     }
 
     @DeleteMapping
-    @ApiOperation(SwaggerConstants.HospitalConstant.DELETE_OPERATION)
+    @ApiOperation(DELETE_OPERATION)
     public ResponseEntity<?> delete(@Valid @RequestBody DeleteRequestDTO deleteRequestDTO) {
         hospitalService.delete(deleteRequestDTO);
         return ok().build();
     }
 
-    @PutMapping(WebResourceKeyConstants.SEARCH)
-    @ApiOperation(SwaggerConstants.HospitalConstant.SEARCH_OPERATION)
+    @PutMapping(SEARCH)
+    @ApiOperation(SEARCH_OPERATION)
     public ResponseEntity<?> search(@RequestBody HospitalSearchRequestDTO searchRequestDTO,
                                     @RequestParam("page") int page,
                                     @RequestParam("size") int size) {
@@ -73,14 +74,14 @@ public class HospitalResource {
         return ok().body(hospitalService.search(searchRequestDTO, pageable));
     }
 
-    @GetMapping(WebResourceKeyConstants.ACTIVE + WebResourceKeyConstants.MIN)
-    @ApiOperation(SwaggerConstants.HospitalConstant.FETCH_DETAILS_FOR_DROPDOWN)
+    @GetMapping(ACTIVE + MIN)
+    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
     public ResponseEntity<?> fetchHospitalForDropDown() {
         return ok(hospitalService.fetchHospitalForDropDown());
     }
 
-    @GetMapping(WebResourceKeyConstants.DETAIL + WebResourceKeyConstants.ID_PATH_VARIABLE_BASE)
-    @ApiOperation(SwaggerConstants.HospitalConstant.DETAILS_OPERATION)
+    @GetMapping(DETAIL + ID_PATH_VARIABLE_BASE)
+    @ApiOperation(DETAILS_OPERATION)
     public ResponseEntity<?> fetchDetailsById(@PathVariable("id") Long id) {
         return ok(hospitalService.fetchDetailsById(id));
     }

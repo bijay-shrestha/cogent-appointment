@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
-import com.cogent.cogentappointment.client.constants.QueryConstants;
 import com.cogent.cogentappointment.client.dto.request.doctor.DoctorSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.doctor.DoctorDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.doctor.DoctorDropdownDTO;
@@ -8,11 +7,9 @@ import com.cogent.cogentappointment.client.dto.response.doctor.DoctorMinimalResp
 import com.cogent.cogentappointment.client.dto.response.doctor.DoctorUpdateResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.model.Doctor;
-import com.cogent.cogentappointment.client.query.DoctorQuery;
 import com.cogent.cogentappointment.client.repository.custom.DoctorRepositoryCustom;
 import com.cogent.cogentappointment.client.utils.DoctorUtils;
 import com.cogent.cogentappointment.client.utils.commons.PageableUtils;
-import com.cogent.cogentappointment.client.utils.commons.QueryUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +22,10 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.client.query.DoctorQuery.*;
+import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
+
 /**
  * @author smriti on 2019-09-29
  */
@@ -36,20 +37,22 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
     private EntityManager entityManager;
 
     @Override
-    public Long validateDoctorDuplicity(String name, String mobileNumber) {
-        Query query = QueryUtils.createQuery.apply(entityManager, DoctorQuery.QUERY_TO_VALIDATE_DOCTOR_DUPLICITY)
-                .setParameter(QueryConstants.NAME, name)
-                .setParameter(QueryConstants.MOBILE_NUMBER, mobileNumber);
+    public Long validateDoctorDuplicity(String name, String mobileNumber, Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DOCTOR_DUPLICITY)
+                .setParameter(NAME, name)
+                .setParameter(MOBILE_NUMBER, mobileNumber)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Long) query.getSingleResult();
     }
 
     @Override
-    public Long validateDoctorDuplicityForUpdate(Long id, String name, String mobileNumber) {
-        Query query = QueryUtils.createQuery.apply(entityManager, DoctorQuery.QUERY_TO_VALIDATE_DOCTOR_DUPLICITY_FOR_UPDATE)
-                .setParameter(QueryConstants.ID, id)
-                .setParameter(QueryConstants.NAME, name)
-                .setParameter(QueryConstants.MOBILE_NUMBER, mobileNumber);
+    public Long validateDoctorDuplicityForUpdate(Long id, String name, String mobileNumber, Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DOCTOR_DUPLICITY_FOR_UPDATE)
+                .setParameter(ID, id)
+                .setParameter(NAME, name)
+                .setParameter(MOBILE_NUMBER, mobileNumber)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Long) query.getSingleResult();
     }
@@ -58,13 +61,13 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
     public List<DoctorMinimalResponseDTO> search(DoctorSearchRequestDTO searchRequestDTO,
                                                  Pageable pageable) {
 
-        Query query = QueryUtils.createNativeQuery.apply(entityManager, DoctorQuery.QUERY_TO_SEARCH_DOCTOR(searchRequestDTO));
+        Query query = createNativeQuery.apply(entityManager, QUERY_TO_SEARCH_DOCTOR(searchRequestDTO));
 
         int totalItems = query.getResultList().size();
 
         PageableUtils.addPagination.accept(pageable, query);
 
-        List<DoctorMinimalResponseDTO> results = QueryUtils.transformNativeQueryToResultList(
+        List<DoctorMinimalResponseDTO> results = transformNativeQueryToResultList(
                 query, DoctorMinimalResponseDTO.class);
 
         if (results.isEmpty()) throw DOCTOR_NOT_FOUND.get();
@@ -76,9 +79,9 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
 
     @Override
     public List<DoctorDropdownDTO> fetchDoctorForDropdown() {
-        Query query = QueryUtils.createQuery.apply(entityManager, DoctorQuery.QUERY_TO_FETCH_DOCTOR_FOR_DROPDOWN);
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_FOR_DROPDOWN);
 
-        List<DoctorDropdownDTO> results = QueryUtils.transformQueryToResultList(query, DoctorDropdownDTO.class);
+        List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
         if (results.isEmpty()) throw DOCTOR_NOT_FOUND.get();
         else return results;
@@ -86,10 +89,10 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
 
     @Override
     public DoctorDetailResponseDTO fetchDetailsById(Long doctorId) {
-        Query query = QueryUtils.createNativeQuery.apply(entityManager, DoctorQuery.QUERY_TO_FETCH_DOCTOR_DETAILS)
-                .setParameter(QueryConstants.ID, doctorId);
+        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_DETAILS)
+                .setParameter(ID, doctorId);
         try {
-            return QueryUtils.transformNativeQueryToSingleResult(query, DoctorDetailResponseDTO.class);
+            return transformNativeQueryToSingleResult(query, DoctorDetailResponseDTO.class);
         } catch (NoResultException e) {
             throw DOCTOR_WITH_GIVEN_ID_NOT_FOUND.apply(doctorId);
         }
@@ -97,10 +100,10 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
 
     @Override
     public List<DoctorDropdownDTO> fetchDoctorBySpecializationId(Long specializationId) {
-        Query query = QueryUtils.createQuery.apply(entityManager, DoctorQuery.QUERY_TO_FETCH_DOCTOR_BY_SPECIALIZATION_ID)
-                .setParameter(QueryConstants.ID, specializationId);
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_BY_SPECIALIZATION_ID)
+                .setParameter(ID, specializationId);
 
-        List<DoctorDropdownDTO> results = QueryUtils.transformQueryToResultList(query, DoctorDropdownDTO.class);
+        List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
         if (results.isEmpty()) throw DOCTOR_NOT_FOUND.get();
         else return results;
@@ -108,8 +111,8 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
 
     @Override
     public DoctorUpdateResponseDTO fetchDetailsForUpdate(Long doctorId) {
-        Query query = QueryUtils.createNativeQuery.apply(entityManager, DoctorQuery.QUERY_TO_FETCH_DOCTOR_DETAILS_FOR_UPDATE)
-                .setParameter(QueryConstants.ID, doctorId);
+        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_DETAILS_FOR_UPDATE)
+                .setParameter(ID, doctorId);
 
         List<Object[]> results = query.getResultList();
 

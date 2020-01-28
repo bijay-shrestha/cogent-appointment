@@ -1,7 +1,5 @@
 package com.cogent.cogentappointment.client.resource;
 
-import com.cogent.cogentappointment.client.constants.SwaggerConstants;
-import com.cogent.cogentappointment.client.constants.WebResourceKeyConstants;
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.DoctorDutyRosterRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.DoctorDutyRosterSearchRequestDTO;
@@ -16,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import static com.cogent.cogentappointment.client.constants.SwaggerConstants.DoctorDutyRosterConstant.*;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.DoctorDutyRosterConstants.BASE_DOCTOR_DUTY_ROSTER;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
@@ -25,8 +26,8 @@ import static org.springframework.http.ResponseEntity.ok;
  * @author smriti on 26/11/2019
  */
 @RestController
-@RequestMapping(value = WebResourceKeyConstants.API_V1 + WebResourceKeyConstants.DoctorDutyRosterConstants.BASE_DOCTOR_DUTY_ROSTER)
-@Api(SwaggerConstants.DoctorDutyRosterConstant.BASE_API_VALUE)
+@RequestMapping(value = API_V1 + BASE_DOCTOR_DUTY_ROSTER)
+@Api(BASE_API_VALUE)
 public class DoctorDutyRosterResource {
 
     private final DoctorDutyRosterService doctorDutyRosterService;
@@ -36,28 +37,28 @@ public class DoctorDutyRosterResource {
     }
 
     @PostMapping
-    @ApiOperation(SwaggerConstants.DoctorDutyRosterConstant.SAVE_OPERATION)
+    @ApiOperation(SAVE_OPERATION)
     public ResponseEntity<?> save(@Valid @RequestBody DoctorDutyRosterRequestDTO requestDTO) {
         doctorDutyRosterService.save(requestDTO);
-        return created(create(WebResourceKeyConstants.API_V1 + WebResourceKeyConstants.DoctorDutyRosterConstants.BASE_DOCTOR_DUTY_ROSTER)).build();
+        return created(create(API_V1 + BASE_DOCTOR_DUTY_ROSTER)).build();
     }
 
     @PutMapping
-    @ApiOperation(SwaggerConstants.DoctorDutyRosterConstant.UPDATE_OPERATION)
+    @ApiOperation(UPDATE_OPERATION)
     public ResponseEntity<?> update(@Valid @RequestBody DoctorDutyRosterUpdateRequestDTO updateRequestDTO) {
         doctorDutyRosterService.update(updateRequestDTO);
         return ok().build();
     }
 
     @DeleteMapping
-    @ApiOperation(SwaggerConstants.DoctorDutyRosterConstant.DELETE_OPERATION)
+    @ApiOperation(DELETE_OPERATION)
     public ResponseEntity<?> delete(@Valid @RequestBody DeleteRequestDTO deleteRequestDTO) {
         doctorDutyRosterService.delete(deleteRequestDTO);
         return ok().build();
     }
 
-    @PutMapping(WebResourceKeyConstants.SEARCH)
-    @ApiOperation(SwaggerConstants.DoctorDutyRosterConstant.SEARCH_OPERATION)
+    @PutMapping(SEARCH)
+    @ApiOperation(SEARCH_OPERATION)
     public ResponseEntity<?> search(@RequestBody DoctorDutyRosterSearchRequestDTO searchRequestDTO,
                                     @RequestParam("page") int page,
                                     @RequestParam("size") int size) {
@@ -65,8 +66,8 @@ public class DoctorDutyRosterResource {
         return ok().body(doctorDutyRosterService.search(searchRequestDTO, pageable));
     }
 
-    @GetMapping(WebResourceKeyConstants.DETAIL + WebResourceKeyConstants.ID_PATH_VARIABLE_BASE)
-    @ApiOperation(SwaggerConstants.DoctorDutyRosterConstant.DETAILS_OPERATION)
+    @GetMapping(DETAIL + ID_PATH_VARIABLE_BASE)
+    @ApiOperation(DETAILS_OPERATION)
     public ResponseEntity<?> fetchDetailsById(@PathVariable("id") Long id) {
         return ok(doctorDutyRosterService.fetchDetailsById(id));
     }

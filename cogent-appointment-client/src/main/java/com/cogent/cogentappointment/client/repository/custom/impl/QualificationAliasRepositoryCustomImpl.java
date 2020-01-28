@@ -4,7 +4,6 @@ import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.model.QualificationAlias;
 import com.cogent.cogentappointment.client.repository.custom.QualificationAliasRepositoryCustom;
-import com.cogent.cogentappointment.client.utils.commons.QueryUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +13,8 @@ import javax.persistence.Query;
 import java.util.List;
 
 import static com.cogent.cogentappointment.client.query.QualificationAliasQuery.QUERY_TO_FETCH_ACTIVE_QUALIFICATION_ALIAS;
+import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
+import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.transformQueryToResultList;
 
 /**
  * @author smriti on 11/11/2019
@@ -27,9 +28,9 @@ public class QualificationAliasRepositoryCustomImpl implements QualificationAlia
 
     @Override
     public List<DropDownResponseDTO> fetchActiveQualificationAlias() {
-        Query query = QueryUtils.createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_QUALIFICATION_ALIAS);
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_QUALIFICATION_ALIAS);
 
-        List<DropDownResponseDTO> results = QueryUtils.transformQueryToResultList(query, DropDownResponseDTO.class);
+        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
         if (results.isEmpty()) throw new NoContentFoundException(QualificationAlias.class);
         else return results;

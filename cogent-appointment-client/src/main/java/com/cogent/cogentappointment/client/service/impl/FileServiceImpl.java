@@ -8,7 +8,6 @@ import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.exception.OperationUnsuccessfulException;
 import com.cogent.cogentappointment.client.service.FileService;
-import com.cogent.cogentappointment.client.utils.commons.DateUtils;
 import com.cogent.cogentappointment.client.utils.commons.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
@@ -30,6 +29,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.client.log.constants.FileLog.*;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
 /**
  * @author smriti on 2019-08-27
@@ -49,7 +50,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public Resource loadAsResource(String subDirectoryLocation, String fileName) {
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
         log.info(LOADING_FILE_PROCESS_STARTED);
 
         try {
@@ -58,7 +59,7 @@ public class FileServiceImpl implements FileService {
             Resource resource = new UrlResource(file.toUri());
 
             if (resource.exists() || resource.isReadable()) {
-                log.info(LOADING_FILE_PROCESS_COMPLETED, DateUtils.getDifferenceBetweenTwoTime(startTime));
+                log.info(LOADING_FILE_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
                 return resource;
             } else {
                 throw new NoContentFoundException(ErrorMessageConstants.FileServiceMessages.INVALID_FILE_TYPE_MESSAGE + fileName);
@@ -69,7 +70,7 @@ public class FileServiceImpl implements FileService {
     }
 
     private FileUploadResponseDTO uploadFile(MultipartFile file, String subDirectoryLocation) {
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(UPLOADING_FILE_PROCESS_STARTED);
 
@@ -87,7 +88,7 @@ public class FileServiceImpl implements FileService {
                 .fileType(file.getContentType())
                 .fileSize(file.getSize()).build();
 
-        log.info(UPLOADING_FILE_PROCESS_COMPLETED, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(UPLOADING_FILE_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
     }
@@ -95,7 +96,7 @@ public class FileServiceImpl implements FileService {
     @Override
     public List<FileUploadResponseDTO> uploadFiles(MultipartFile[] files,
                                                    String subDirectoryLocation) {
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(UPLOADING_FILE_PROCESS_STARTED);
 
@@ -103,7 +104,7 @@ public class FileServiceImpl implements FileService {
                 .map(file -> uploadFile(file, subDirectoryLocation))
                 .collect(Collectors.toList());
 
-        log.info(UPLOADING_FILE_PROCESS_COMPLETED, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(UPLOADING_FILE_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
 
         return fileUploadResponseDTOS;
     }

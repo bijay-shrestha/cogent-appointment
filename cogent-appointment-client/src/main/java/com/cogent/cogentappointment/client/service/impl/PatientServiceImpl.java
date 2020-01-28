@@ -8,16 +8,11 @@ import com.cogent.cogentappointment.client.dto.response.patient.PatientMinimalRe
 import com.cogent.cogentappointment.client.enums.Gender;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.log.CommonLogConstant;
 import com.cogent.cogentappointment.client.model.Hospital;
 import com.cogent.cogentappointment.client.model.Patient;
 import com.cogent.cogentappointment.client.repository.PatientRepository;
 import com.cogent.cogentappointment.client.service.HospitalService;
 import com.cogent.cogentappointment.client.service.PatientService;
-import com.cogent.cogentappointment.client.utils.GenderUtils;
-import com.cogent.cogentappointment.client.utils.PatientUtils;
-import com.cogent.cogentappointment.client.utils.commons.AgeConverterUtils;
-import com.cogent.cogentappointment.client.utils.commons.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,7 +23,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.PatientLog.PATIENT;
+import static com.cogent.cogentappointment.client.utils.GenderUtils.fetchGenderByCode;
+import static com.cogent.cogentappointment.client.utils.PatientUtils.parseToPatient;
+import static com.cogent.cogentappointment.client.utils.commons.AgeConverterUtils.ageConverter;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 
 /**
  * @author smriti ON 16/01/2020
@@ -50,9 +50,9 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public Patient save(PatientRequestDTO requestDTO) {
 
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.SAVING_PROCESS_STARTED, PATIENT);
+        log.info(SAVING_PROCESS_STARTED, PATIENT);
 
         Long patientCount = patientRepository.fetchPatientForValidation(requestDTO.getName(),
                 requestDTO.getMobileNumber(), requestDTO.getDateOfBirth());
@@ -62,7 +62,7 @@ public class PatientServiceImpl implements PatientService {
 
         Patient patient = savePatient(requestDTO);
 
-        log.info(CommonLogConstant.SAVING_PROCESS_COMPLETED, PATIENT, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(SAVING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
         return patient;
     }
@@ -70,27 +70,27 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public Patient fetchPatient(Long id) {
 
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_STARTED, PATIENT);
+        log.info(FETCHING_PROCESS_STARTED, PATIENT);
 
         Patient patient = patientRepository.fetchActivePatientById(id)
                 .orElseThrow(() -> PATIENT_WITH_GIVEN_ID_NOT_FOUND.apply(id));
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_COMPLETED, PATIENT, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
         return patient;
     }
 
     @Override
     public PatientDetailResponseDTO search(PatientSearchRequestDTO searchRequestDTO) {
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.SEARCHING_PROCESS_STARTED, PATIENT);
+        log.info(SEARCHING_PROCESS_STARTED, PATIENT);
 
         PatientDetailResponseDTO responseDTO = patientRepository.search(searchRequestDTO);
 
-        log.info(CommonLogConstant.SEARCHING_PROCESS_COMPLETED, PATIENT, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(SEARCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
     }
@@ -99,27 +99,27 @@ public class PatientServiceImpl implements PatientService {
     public List<PatientMinimalResponseDTO> fetchMinimalPatientInfo(PatientSearchRequestDTO searchRequestDTO,
                                                                    Pageable pageable) {
 
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_STARTED, PATIENT);
+        log.info(FETCHING_PROCESS_STARTED, PATIENT);
 
         List<PatientMinimalResponseDTO> responseDTOS = patientRepository.fetchMinimalPatientInfo
                 (searchRequestDTO, pageable);
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_COMPLETED, PATIENT, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
     }
 
     @Override
     public PatientDetailResponseDTO fetchDetailsById(Long id) {
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_STARTED, PATIENT);
+        log.info(FETCHING_PROCESS_STARTED, PATIENT);
 
         PatientDetailResponseDTO responseDTO = patientRepository.fetchDetailsById(id);
 
-        log.info(CommonLogConstant.FETCHING_PROCESS_COMPLETED, PATIENT, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
 
@@ -224,11 +224,11 @@ public class PatientServiceImpl implements PatientService {
 
         if (patientCount.intValue() > 0)
             throw new DataDuplicationException(
-                    String.format(ErrorMessageConstants.PatientServiceMessages.DUPLICATE_PATIENT_MESSAGE, name, mobileNumber, DateUtils.utilDateToSqlDate(dateOfBirth)));
+                    String.format(ErrorMessageConstants.PatientServiceMessages.DUPLICATE_PATIENT_MESSAGE, name, mobileNumber, utilDateToSqlDate(dateOfBirth)));
     }
 
     private Gender fetchGender(Character genderCode) {
-        return GenderUtils.fetchGenderByCode(genderCode);
+        return fetchGenderByCode(genderCode);
     }
 
     private Hospital fetchHospital(Long hospitalId) {
@@ -240,7 +240,7 @@ public class PatientServiceImpl implements PatientService {
         Gender gender = fetchGender(requestDTO.getGender());
         Hospital hospital = fetchHospital(requestDTO.getHospitalId());
 
-        return save(PatientUtils.parseToPatient(requestDTO, gender, hospital));
+        return save(parseToPatient(requestDTO, gender, hospital));
     }
 
     private Patient save(Patient patient) {
@@ -263,7 +263,7 @@ public class PatientServiceImpl implements PatientService {
 //    }
 
     public String convertDateToAge(LocalDate birthdayDate) {
-        return AgeConverterUtils.ageConverter(birthdayDate);
+        return ageConverter(birthdayDate);
     }
 }
 

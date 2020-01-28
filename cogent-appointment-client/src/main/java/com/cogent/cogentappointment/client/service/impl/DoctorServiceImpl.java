@@ -14,7 +14,6 @@ import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.model.*;
 import com.cogent.cogentappointment.client.repository.*;
 import com.cogent.cogentappointment.client.service.*;
-import com.cogent.cogentappointment.client.utils.DoctorUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,6 +30,7 @@ import static com.cogent.cogentappointment.client.constants.StringConstant.FORWA
 import static com.cogent.cogentappointment.client.constants.StringConstant.SPACE;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.DoctorLog.*;
+import static com.cogent.cogentappointment.client.utils.DoctorUtils.*;
 import static com.cogent.cogentappointment.client.utils.GenderUtils.fetchGenderByCode;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
@@ -88,11 +88,12 @@ public class DoctorServiceImpl implements DoctorService {
 
         log.info(SAVING_PROCESS_STARTED, DOCTOR);
 
-        Long doctorCount = doctorRepository.validateDoctorDuplicity(requestDTO.getName(), requestDTO.getMobileNumber());
+        Long doctorCount = doctorRepository.validateDoctorDuplicity(
+                requestDTO.getName(), requestDTO.getMobileNumber(), requestDTO.getHospitalId());
 
         validateDoctor(doctorCount, requestDTO.getName(), requestDTO.getMobileNumber());
 
-        Doctor doctor = DoctorUtils.parseDTOToDoctor(requestDTO,
+        Doctor doctor = parseDTOToDoctor(requestDTO,
                 fetchGender(requestDTO.getGenderCode()),
                 fetchHospitalById(requestDTO.getHospitalId()));
 
@@ -123,13 +124,14 @@ public class DoctorServiceImpl implements DoctorService {
         Long doctorCount = doctorRepository.validateDoctorDuplicityForUpdate(
                 requestDTO.getUpdateDTO().getId(),
                 requestDTO.getUpdateDTO().getName(),
-                requestDTO.getUpdateDTO().getMobileNumber());
+                requestDTO.getUpdateDTO().getMobileNumber(),
+                requestDTO.getUpdateDTO().getHospitalId());
 
         validateDoctor(doctorCount,
                 requestDTO.getUpdateDTO().getName(),
                 requestDTO.getUpdateDTO().getMobileNumber());
 
-        DoctorUtils.convertToUpdatedDoctor(
+        convertToUpdatedDoctor(
                 requestDTO.getUpdateDTO(),
                 doctor,
                 fetchGender(requestDTO.getUpdateDTO().getGenderCode()),
@@ -155,7 +157,7 @@ public class DoctorServiceImpl implements DoctorService {
 
         Doctor doctor = findById(deleteRequestDTO.getId());
 
-        DoctorUtils.convertToDeletedDoctor(doctor, deleteRequestDTO);
+        convertToDeletedDoctor(doctor, deleteRequestDTO);
 
         log.info(DELETING_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
     }
@@ -267,7 +269,7 @@ public class DoctorServiceImpl implements DoctorService {
                 .map(specializationId -> {
                     /*VALIDATE IF THE SPECIALIZATION IS ACTIVE*/
                     findSpecializationById(specializationId);
-                    return DoctorUtils.parseToDoctorSpecialization(doctorId, specializationId);
+                    return parseToDoctorSpecialization(doctorId, specializationId);
                 }).collect(Collectors.toList());
 
         saveDoctorSpecialization(doctorSpecializations);
@@ -285,7 +287,7 @@ public class DoctorServiceImpl implements DoctorService {
                 .map(qualificationId -> {
                     /*VALIDATE IF QUALIFICATION IS ACTIVE*/
                     fetchQualificationById(qualificationId);
-                    return DoctorUtils.parseToDoctorQualification(doctorId, qualificationId);
+                    return parseToDoctorQualification(doctorId, qualificationId);
                 }).collect(Collectors.toList());
 
         saveDoctorQualification(doctorQualifications);
@@ -300,7 +302,7 @@ public class DoctorServiceImpl implements DoctorService {
 
         if (!Objects.isNull(file)) {
             List<FileUploadResponseDTO> responseList = uploadFiles(doctor, new MultipartFile[]{file});
-            saveDoctorAvatar(DoctorUtils.convertFileToDoctorAvatar(responseList.get(0), doctor));
+            saveDoctorAvatar(convertFileToDoctorAvatar(responseList.get(0), doctor));
         }
 
         log.info(SAVING_PROCESS_COMPLETED, DOCTOR_AVATAR, getDifferenceBetweenTwoTime(startTime));
@@ -319,7 +321,7 @@ public class DoctorServiceImpl implements DoctorService {
 
         log.info(SAVING_PROCESS_STARTED, DOCTOR_APPOINTMENT_CHARGE);
 
-        DoctorAppointmentCharge doctorAppointmentCharge = DoctorUtils.parseToDoctorAppointmentCharge(doctor, appointmentCharge);
+        DoctorAppointmentCharge doctorAppointmentCharge = parseToDoctorAppointmentCharge(doctor, appointmentCharge);
 
         doctorAppointmentChargeRepository.save(doctorAppointmentCharge);
 
@@ -338,7 +340,7 @@ public class DoctorServiceImpl implements DoctorService {
                     /*VALIDATE IF THE SPECIALIZATION IS ACTIVE*/
                     findSpecializationById(requestDTO.getSpecializationId());
 
-                    return DoctorUtils.parseToUpdatedDoctorSpecialization(doctorId, requestDTO);
+                    return parseToUpdatedDoctorSpecialization(doctorId, requestDTO);
                 }).collect(Collectors.toList());
 
         saveDoctorSpecialization(doctorSpecializations);
@@ -357,7 +359,7 @@ public class DoctorServiceImpl implements DoctorService {
                 .map(requestDTO -> {
                     /*VALIDATE IF QUALIFICATION IS ACTIVE*/
                     fetchQualificationById(requestDTO.getQualificationId());
-                    return DoctorUtils.parseToUpdatedDoctorQualification(doctorId, requestDTO);
+                    return parseToUpdatedDoctorQualification(doctorId, requestDTO);
                 }).collect(Collectors.toList());
 
         saveDoctorQualification(doctorQualifications);
@@ -375,7 +377,7 @@ public class DoctorServiceImpl implements DoctorService {
                 doctorAppointmentChargeRepository.findByDoctorId(doctorId)
                         .orElseThrow(() -> new NoContentFoundException(DoctorAppointmentCharge.class));
 
-        DoctorUtils.updateAppointmentCharge(doctorAppointmentCharge, appointmentCharge);
+        updateAppointmentCharge(doctorAppointmentCharge, appointmentCharge);
 
         log.info(UPDATING_PROCESS_COMPLETED, DOCTOR_APPOINTMENT_CHARGE, getDifferenceBetweenTwoTime(startTime));
     }
@@ -398,7 +400,7 @@ public class DoctorServiceImpl implements DoctorService {
                                     MultipartFile files) {
         if (!Objects.isNull(files)) {
             List<FileUploadResponseDTO> responseList = uploadFiles(doctor, new MultipartFile[]{files});
-            DoctorUtils.setAvatarFileProperties(responseList.get(0), doctorAvatar);
+            setAvatarFileProperties(responseList.get(0), doctorAvatar);
         } else doctorAvatar.setStatus(StatusConstants.INACTIVE);
 
         saveDoctorAvatar(doctorAvatar);

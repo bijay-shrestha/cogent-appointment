@@ -1,11 +1,9 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
-import com.cogent.cogentappointment.admin.model.Country;
-import com.cogent.cogentappointment.admin.query.CountryQuery;
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
+import com.cogent.cogentappointment.admin.model.Country;
 import com.cogent.cogentappointment.admin.repository.custom.CountryRepositoryCustom;
-import com.cogent.cogentappointment.admin.utils.commons.QueryUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +11,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
+
+import static com.cogent.cogentappointment.admin.query.CountryQuery.QUERY_TO_FETCH_ACTIVE_COUNTRY;
+import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
+import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
 
 /**
  * @author smriti on 08/11/2019
@@ -26,9 +28,9 @@ public class CountryRepositoryCustomImpl implements CountryRepositoryCustom {
 
     @Override
     public List<DropDownResponseDTO> fetchActiveCountry() {
-        Query query = QueryUtils.createQuery.apply(entityManager, CountryQuery.QUERY_TO_FETCH_ACTIVE_COUNTRY);
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_COUNTRY);
 
-        List<DropDownResponseDTO> results = QueryUtils.transformQueryToResultList(query, DropDownResponseDTO.class);
+        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
         if (results.isEmpty()) throw new NoContentFoundException(Country.class);
         else return results;

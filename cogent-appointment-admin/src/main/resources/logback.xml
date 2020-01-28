@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-
+    <property name="PROD_HOME" value="${application.home:-cogent-appointment-admin}/logs"/>
     <property name="PROD_HOME" value="${application.home:-logs}"/>
     <!--console output-->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
@@ -105,7 +105,7 @@
     </appender>
 
     <!--send info logs to file-->
-    <logger name="com.cogent.cogentappointment.service.impl" level="INFO">
+    <logger name="com.cogent.cogentappointment.admin.service.impl" level="INFO">
         <appender-ref ref="FILE_INFO"/>
 <!--        <appender-ref ref="CONSOLE"/>-->
         <appender-ref ref="FILE"/>

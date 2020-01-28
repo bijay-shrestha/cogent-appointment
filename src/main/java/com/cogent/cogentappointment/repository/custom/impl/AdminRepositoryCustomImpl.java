@@ -25,7 +25,6 @@ import static com.cogent.cogentappointment.constants.ErrorMessageConstants.Admin
 import static com.cogent.cogentappointment.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.query.AdminQuery.*;
-import static com.cogent.cogentappointment.utils.AdminUtils.parseToAdminDetailResponseDTO;
 import static com.cogent.cogentappointment.utils.AdminUtils.parseToAdminInfoByUsernameResponseDTO;
 import static com.cogent.cogentappointment.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.utils.commons.QueryUtils.*;
@@ -41,12 +40,25 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     private EntityManager entityManager;
 
     @Override
-    public List<Object[]> fetchAdminForValidation(String username, String email, String mobileNumber) {
+    public List<Object[]> validateDuplicity(String username, String email, String mobileNumber,
+                                            Long hospitalId) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FIND_ADMIN_FOR_VALIDATION)
                 .setParameter(USERNAME, username)
                 .setParameter(EMAIL, email)
-                .setParameter(MOBILE_NUMBER, mobileNumber);
+                .setParameter(MOBILE_NUMBER, mobileNumber)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Object[]> validateDuplicity(AdminUpdateRequestDTO updateRequestDTO) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FIND_ADMIN_EXCEPT_CURRENT_ADMIN)
+                .setParameter(ID, updateRequestDTO.getId())
+                .setParameter(EMAIL, updateRequestDTO.getEmail())
+                .setParameter(MOBILE_NUMBER, updateRequestDTO.getMobileNumber())
+                .setParameter(HOSPITAL_ID, updateRequestDTO.getHospitalId());
 
         return query.getResultList();
     }
@@ -64,14 +76,13 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
 
     @Override
     public List<AdminMinimalResponseDTO> search(AdminSearchRequestDTO searchRequestDTO, Pageable pageable) {
-        Query query = createNativeQuery.apply(entityManager, QUERY_TO_SEARCH_ADMIN(searchRequestDTO));
+        Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_ADMIN(searchRequestDTO));
 
         int totalItems = query.getResultList().size();
 
         addPagination.accept(pageable, query);
 
-        List<AdminMinimalResponseDTO> result =
-                transformNativeQueryToResultList(query, AdminMinimalResponseDTO.class);
+        List<AdminMinimalResponseDTO> result = transformQueryToResultList(query, AdminMinimalResponseDTO.class);
 
         if (ObjectUtils.isEmpty(result)) throw NO_ADMIN_FOUND.get();
         else {
@@ -85,20 +96,11 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         AdminDetailResponseDTO detailResponseDTO = fetchAdminDetailResponseDTO(id);
 
         if (detailResponseDTO.getHasMacBinding().equals(YES))
-            detailResponseDTO.setMacAddressInfoResponseDTOS(getMacAddressInfo(id));
+            detailResponseDTO.setAdminMacAddressInfo(getMacAddressInfo(id));
 
         return detailResponseDTO;
     }
 
-    @Override
-    public List<Object[]> fetchAdmin(AdminUpdateRequestDTO updateRequestDTO) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FIND_ADMIN_EXCEPT_CURRENT_ADMIN)
-                .setParameter(ID, updateRequestDTO.getId())
-                .setParameter(EMAIL, updateRequestDTO.getEmail())
-                .setParameter(MOBILE_NUMBER, updateRequestDTO.getMobileNumber());
-
-        return query.getResultList();
-    }
 
     @Override
     public Admin fetchAdminByUsernameOrEmail(String username) {
@@ -147,7 +149,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     }
 
     public AdminDetailResponseDTO fetchAdminDetailResponseDTO(Long id) {
-        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_ADMIN_DETAIL)
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ADMIN_DETAIL)
                 .setParameter(ID, id);
 
         List<Object[]> results = query.getResultList();
@@ -155,14 +157,14 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         if (results.isEmpty())
             throw ADMIN_WITH_GIVEN_ID_NOT_FOUND.apply(id);
 
-        return parseToAdminDetailResponseDTO.apply(results.get(0));
+        return transformQueryToResultList(query, AdminDetailResponseDTO.class).get(0);
     }
 
-    public List<MacAddressInfoResponseDTO> getMacAddressInfo(Long id) {
+    public List<AdminMacAddressInfoResponseDTO> getMacAddressInfo(Long id) {
         Query query = createQuery.apply(entityManager, QUERY_FO_FETCH_MAC_ADDRESS_INFO)
                 .setParameter(ID, id);
 
-        return transformQueryToResultList(query, MacAddressInfoResponseDTO.class);
+        return transformQueryToResultList(query, AdminMacAddressInfoResponseDTO.class);
     }
 
     private Supplier<NoContentFoundException> NO_ADMIN_FOUND = () -> new NoContentFoundException(Admin.class);

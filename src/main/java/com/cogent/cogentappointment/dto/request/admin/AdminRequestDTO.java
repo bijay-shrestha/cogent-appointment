@@ -44,13 +44,13 @@ public class AdminRequestDTO implements Serializable {
     private Character hasMacBinding;
 
     @NotNull
-    private Long adminCategoryId;
-
-    @NotNull
     private Long hospitalId;
 
-    @NotEmpty
-    private List<AdminProfileRequestDTO> adminProfileRequestDTO;
+    @NotNull
+    private Character genderCode;
 
-    private List<String> macAddressInfoRequestDTOS;
+    @NotNull
+    private Long profileId;
+
+    private List<String> macAddressInfo;
 }

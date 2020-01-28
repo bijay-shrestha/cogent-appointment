@@ -33,8 +33,8 @@ import static com.cogent.cogentappointment.log.constants.AppointmentLog.FETCHING
 import static com.cogent.cogentappointment.log.constants.AppointmentLog.FETCHING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.log.constants.AppointmentLog.*;
 import static com.cogent.cogentappointment.utils.AppointmentUtils.*;
-import static com.cogent.cogentappointment.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
-import static com.cogent.cogentappointment.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.utils.commons.DateUtils.*;
+import static com.cogent.cogentappointment.utils.commons.DateUtils.getTimeIn12HourFormat;
 
 /**
  * @author smriti on 2019-10-22
@@ -71,7 +71,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentAvailabilityResponseDTO checkAvailability(AppointmentCheckAvailabilityRequestDTO requestDTO) {
+    public AppointmentCheckAvailabilityResponseDTO checkAvailability(AppointmentCheckAvailabilityRequestDTO requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -80,14 +80,18 @@ public class AppointmentServiceImpl implements AppointmentService {
         DoctorDutyRosterTimeResponseDTO doctorDutyRosterInfo = fetchDoctorDutyRosterInfo(
                 requestDTO.getAppointmentDate(), requestDTO.getDoctorId(), requestDTO.getSpecializationId());
 
-        AppointmentAvailabilityResponseDTO responseDTO;
+        AppointmentCheckAvailabilityResponseDTO responseDTO;
 
         if (doctorDutyRosterInfo.getDayOffStatus().equals(YES)) {
-            responseDTO = parseToAppointmentAvailabilityResponseDTO(doctorDutyRosterInfo, new ArrayList<>());
+            responseDTO = parseToAppointmentCheckAvailabilityResponseDTO(doctorDutyRosterInfo, new ArrayList<>());
         } else {
             List<AppointmentBookedTimeResponseDTO> bookedAppointments =
                     appointmentRepository.checkAvailability(requestDTO);
-            responseDTO = parseToAppointmentAvailabilityResponseDTO(doctorDutyRosterInfo, bookedAppointments);
+
+            List<AppointmentAvailabilityResponseDTO> availableSlots =
+                    parseToAppointmentAvailabilityResponseDTO(doctorDutyRosterInfo, bookedAppointments);
+
+            responseDTO = parseToAppointmentCheckAvailabilityResponseDTO(doctorDutyRosterInfo, availableSlots);
         }
 
         log.info(CHECK_AVAILABILITY_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
@@ -313,16 +317,13 @@ public class AppointmentServiceImpl implements AppointmentService {
                                                                       Long doctorId,
                                                                       Long specializationId) {
 
-        DoctorDutyRosterTimeResponseDTO responseDTO;
+        DoctorDutyRosterTimeResponseDTO overrideRosters =
+                doctorDutyRosterOverrideRepository.fetchDoctorDutyRosterOverrideTime(date, doctorId, specializationId);
 
-        responseDTO = doctorDutyRosterOverrideRepository.fetchDoctorDutyRosterOverrideTime(
-                date, doctorId, specializationId);
+        if (Objects.isNull(overrideRosters))
+            return doctorDutyRosterRepository.fetchDoctorDutyRosterTime(date, doctorId, specializationId);
 
-        if (Objects.isNull(responseDTO))
-            responseDTO = doctorDutyRosterRepository.fetchDoctorDutyRosterTime(
-                    date, doctorId, specializationId);
-
-        return responseDTO;
+        return overrideRosters;
     }
 }
 

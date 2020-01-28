@@ -1,9 +1,9 @@
 package com.cogent.cogentappointment.query;
 
 import com.cogent.cogentappointment.dto.request.admin.AdminSearchRequestDTO;
+import com.cogent.cogentappointment.enums.Gender;
+import com.cogent.cogentappointment.utils.GenderUtils;
 import org.springframework.util.ObjectUtils;
-
-import java.util.Objects;
 
 /**
  * @author smriti on 2019-08-05
@@ -17,10 +17,15 @@ public class AdminQuery {
                     " a.mobileNumber" +                        //[2]
                     " FROM" +
                     " Admin a" +
+                    " LEFT JOIN Profile p ON p.id = a.profileId" +
+                    " LEFT JOIN Department d ON d.id = p.department.id" +
+                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE" +
                     " a.status != 'D'" +
+                    " AND h.status!='D'" +
                     " AND" +
-                    " (a.username =:username OR a.email =:email OR a.mobileNumber = :mobileNumber)";
+                    " (a.username =:username OR a.email =:email OR a.mobileNumber = :mobileNumber)" +
+                    " AND h.id=:hospitalId";
 
     public static final String QUERY_TO_FIND_ADMIN_EXCEPT_CURRENT_ADMIN =
             "SELECT " +
@@ -28,11 +33,16 @@ public class AdminQuery {
                     " a.mobileNumber" +                        //[1]
                     " FROM" +
                     " Admin a" +
+                    " LEFT JOIN Profile p ON p.id = a.profileId" +
+                    " LEFT JOIN Department d ON d.id = p.department.id" +
+                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE" +
                     " a.status != 'D'" +
+                    " AND h.status!='D'" +
                     " AND a.id !=:id" +
                     " AND" +
-                    " (a.email =:email OR a.mobileNumber = :mobileNumber)";
+                    " (a.email =:email OR a.mobileNumber = :mobileNumber)" +
+                    " AND h.id=:hospitalId";
 
     public static final String QUERY_TO_FETCH_ACTIVE_ADMIN_FOR_DROPDOWN =
             " SELECT" +
@@ -43,117 +53,89 @@ public class AdminQuery {
                     " WHERE status ='Y'";
 
     public static String QUERY_TO_SEARCH_ADMIN(AdminSearchRequestDTO searchRequestDTO) {
-        return SELECT_CLAUSE_TO_FETCH_ADMIN + "," +
-                " tbl1.profileName as profileName," +
-                " tbl2.fileUri as fileUri" +
+
+        return SELECT_CLAUSE_TO_FETCH_ADMIN +
                 " FROM" +
-                " admin a" +
-                " LEFT JOIN admin_meta_info ami ON a.id = ami.admin_id" +
-                " LEFT JOIN admin_category ac On ac.id = a.admin_category_id" +
-                " RIGHT JOIN" +
-                " (" +
-                QUERY_TO_SEARCH_ADMIN_PROFILE(searchRequestDTO) +
-                " ) tbl1 ON tbl1.adminId = a.id" +
-                " LEFT JOIN" +
-                " (" +
-                QUERY_TO_FETCH_ADMIN_AVATAR +
-                " )tbl2 ON tbl2.adminId = a.id" +
+                " Admin a" +
+                " LEFT JOIN AdminMetaInfo ami ON a.id = ami.admin.id" +
+                " LEFT JOIN Profile p ON p.id = a.profileId.id" +
+                " LEFT JOIN AdminAvatar av ON a.id = av.admin.id" +
+                " LEFT JOIN Department d ON d.id = p.department.id" +
+                " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                 GET_WHERE_CLAUSE_FOR_SEARCH_ADMIN(searchRequestDTO);
     }
-
-    private static final String QUERY_TO_FETCH_ADMIN_AVATAR =
-            " SELECT av.admin_id as adminId," +
-                    " av.file_uri as fileUri" +
-                    " FROM admin_avatar av" +
-                    " WHERE av.status = 'Y'";
 
     private static final String SELECT_CLAUSE_TO_FETCH_ADMIN =
             " SELECT" +
                     " a.id as id," +                                            //[0]
-                    " a.full_name as fullName," +                               //[1]
+                    " a.fullName as fullName," +                                //[1]
                     " a.username as username," +                                //[2]
                     " a.email as email," +                                      //[3]
-                    " a.mobile_number as mobileNumber," +                       //[4]
+                    " a.mobileNumber as mobileNumber," +                        //[4]
                     " a.status as status," +                                    //[5]
-                    " a.has_mac_binding as hasMacBinding," +                    //[6]
-                    " ac.name as adminCategoryName";                           //[7]
+                    " a.hasMacBinding as hasMacBinding," +                      //[6]
+                    " a.gender as gender," +                                    //[7]
+                    " p.name as profileName," +
+                    " h.name as hospitalName," +                                //[8]
+                    " CASE WHEN" +
+                    " (av.status IS NULL OR av.status = 'N')" +
+                    " THEN null" +
+                    " ELSE" +
+                    " av.fileUri" +
+                    " END as fileUri";                                           //[9]
 
-    private static String QUERY_TO_SEARCH_ADMIN_PROFILE(AdminSearchRequestDTO requestDTO) {
-        String query = "SELECT ap.admin_id as adminId," +
-                " GROUP_CONCAT(p.name) as profileName" +
-                " FROM admin_profile ap" +
-                " LEFT JOIN profile p ON p.id = ap.profile_id" +
-                " WHERE ap.status = 'Y'";
-
-        if (!Objects.isNull(requestDTO.getProfileId()))
-            query += " AND p.id=" + requestDTO.getProfileId();
-
-        return query + " GROUP BY ap.admin_id";
-    }
+    private static final String GET_WHERE_CLAUSE_TO_FETCH_ADMIN =
+            " WHERE a.status != 'D' AND h.status !='D' AND p.status !='D' AND d.status != 'D'";
 
     private static String GET_WHERE_CLAUSE_FOR_SEARCH_ADMIN(AdminSearchRequestDTO searchRequestDTO) {
-        String whereClause = " WHERE a.status != 'D'";
+        String whereClause = GET_WHERE_CLAUSE_TO_FETCH_ADMIN;
+
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getAdminMetaInfoId()))
+            whereClause += " AND ami.id=" + searchRequestDTO.getAdminMetaInfoId();
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
             whereClause += " AND a.status='" + searchRequestDTO.getStatus() + "'";
 
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getAdminCategoryId()))
-            whereClause += " AND a.adminCategory.id=" + searchRequestDTO.getAdminCategoryId();
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getDepartmentId()))
+            whereClause += " AND d.id=" + searchRequestDTO.getDepartmentId();
 
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getAdminMetaInfoId()))
-            whereClause += " AND ami.id=" + searchRequestDTO.getAdminMetaInfoId();
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getProfileId()))
+            whereClause += " AND p.id=" + searchRequestDTO.getProfileId();
+
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getHospitalId()))
+            whereClause += " AND h.id=" + searchRequestDTO.getHospitalId();
+
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getHospitalId())) {
+            Gender gender = GenderUtils.fetchGenderByCode(searchRequestDTO.getGenderCode());
+            whereClause += " AND a.gender LIKE '%" + gender + "%'";
+        }
 
         whereClause += " ORDER BY a.id DESC";
 
         return whereClause;
     }
 
-    private static final String QUERY_TO_FETCH_ADMIN_PROFILE =
-            "SELECT ap.admin_id as adminId," +
-                    " GROUP_CONCAT(ap.id) as adminProfileId," +
-                    " GROUP_CONCAT(p.id) as profileId," +
-                    " GROUP_CONCAT(p.name) as profileName," +
-                    " GROUP_CONCAT(ap.application_module_id) as applicationModuleId,"+
-                    " GROUP_CONCAT(am.name) as applicationModuleName"+
-                    " FROM admin_profile ap" +
-                    " LEFT JOIN profile p ON p.id = ap.profile_id" +
-                    " LEFT JOIN application_module am ON am.id = ap.application_module_id"+
-                    " WHERE ap.status = 'Y'" +
-                    " GROUP BY ap.admin_id";
-
     public static final String QUERY_TO_FETCH_ADMIN_DETAIL =
             SELECT_CLAUSE_TO_FETCH_ADMIN + "," +
-                    " ac.id as adminCategoryId," +                                                  //[8]
-                    " a.remarks as remarks," +                                                      //[9]
-                    " h.name as hospitalName," +                                                    //[10]
-                    " h.id as hospitalId," +                                                        //[11]
-                    " tbl1.fileUri as fileUri,"+                                                    //[12]
-                    " tbl2.adminProfileId as adminProfileId," +                                     //[13]
-                    " tbl2.profileId as profileId," +                                               //[14]
-                    " tbl2.profileName as profileName," +                                           //[15]
-                    " tbl2.applicationModuleId as applicationModuleId," +                           //[16]
-                    " tbl2.applicationModuleName as applicationModuleName" +                       //[17]
-                    " FROM admin a" +
-                    " LEFT JOIN admin_category ac On ac.id = a.admin_category_id" +
-                    " LEFT JOIN hospital h ON h.id = a.hospital_id" +
-                    " LEFT JOIN" +
-                    " (" +
-                    QUERY_TO_FETCH_ADMIN_AVATAR +
-                    " )tbl1 ON tbl1.adminId = a.id" +
-                    " RIGHT JOIN" +
-                    " (" +
-                    QUERY_TO_FETCH_ADMIN_PROFILE +
-                    " )tbl2 ON tbl2.adminId = a.id" +
-                    " WHERE a.id = :id" +
-                    " AND a.status !='D'";
+                    " a.remarks as remarks," +                                      //[10]
+                    " h.id as hospitalId," +                                        //[11]
+                    " p.id as profileId " +                                         //[12]
+                    " FROM" +
+                    " Admin a" +
+                    " LEFT JOIN Profile p ON p.id = a.profileId.id" +
+                    " LEFT JOIN AdminAvatar av ON a.id = av.admin.id" +
+                    " LEFT JOIN Department d ON d.id = p.department.id" +
+                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
+                    GET_WHERE_CLAUSE_TO_FETCH_ADMIN +
+                    " AND a.id = :id";
 
     public static final String QUERY_FO_FETCH_MAC_ADDRESS_INFO =
-            "SELECT m.id as id," +                                  //[0]
-                    " m.macAddress as macAddress" +               //[1]
-                    " FROM MacAddressInfo m" +
+            "SELECT am.id as id," +                                  //[0]
+                    " am.macAddress as macAddress" +               //[1]
+                    " FROM AdminMacAddressInfo am" +
                     " WHERE" +
-                    " m.status = 'Y'" +
-                    " AND m.admin.id = :id";
+                    " am.status = 'Y'" +
+                    " AND am.admin.id = :id";
 
     public static final String QUERY_TO_FETCH_ADMIN_BY_USERNAME_OR_EMAIL =
             " SELECT a FROM Admin a" +

@@ -5,6 +5,7 @@ import com.cogent.cogentappointment.dto.request.admin.*;
 import com.cogent.cogentappointment.dto.request.email.EmailRequestDTO;
 import com.cogent.cogentappointment.dto.response.admin.*;
 import com.cogent.cogentappointment.dto.response.files.FileUploadResponseDTO;
+import com.cogent.cogentappointment.enums.Gender;
 import com.cogent.cogentappointment.exception.BadRequestException;
 import com.cogent.cogentappointment.exception.DataDuplicationException;
 import com.cogent.cogentappointment.exception.NoContentFoundException;
@@ -14,7 +15,7 @@ import com.cogent.cogentappointment.repository.*;
 import com.cogent.cogentappointment.service.AdminService;
 import com.cogent.cogentappointment.service.EmailService;
 import com.cogent.cogentappointment.service.FileService;
-import com.cogent.cogentappointment.service.HospitalService;
+import com.cogent.cogentappointment.service.ProfileService;
 import com.cogent.cogentappointment.utils.AdminUtils;
 import com.cogent.cogentappointment.validator.LoginValidator;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +43,7 @@ import static com.cogent.cogentappointment.exception.utils.ValidationUtils.valid
 import static com.cogent.cogentappointment.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.log.constants.AdminLog.*;
 import static com.cogent.cogentappointment.utils.AdminUtils.*;
+import static com.cogent.cogentappointment.utils.GenderUtils.fetchGenderByCode;
 import static com.cogent.cogentappointment.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static java.lang.reflect.Array.get;
@@ -58,8 +60,6 @@ public class AdminServiceImpl implements AdminService {
 
     private final AdminRepository adminRepository;
 
-    private final AdminProfileRepository adminProfileRepository;
-
     private final AdminMacAddressInfoRepository adminMacAddressInfoRepository;
 
     private final AdminMetaInfoRepository adminMetaInfoRepository;
@@ -72,28 +72,26 @@ public class AdminServiceImpl implements AdminService {
 
     private final EmailService emailService;
 
-    private final HospitalService hospitalService;
+    private final ProfileService profileService;
 
     public AdminServiceImpl(Validator validator,
                             AdminRepository adminRepository,
-                            AdminProfileRepository adminProfileRepository,
                             AdminMacAddressInfoRepository adminMacAddressInfoRepository,
                             AdminMetaInfoRepository adminMetaInfoRepository,
                             AdminAvatarRepository adminAvatarRepository,
                             AdminConfirmationTokenRepository confirmationTokenRepository,
                             FileService fileService,
                             EmailService emailService,
-                            HospitalService hospitalService) {
+                            ProfileService profileService) {
         this.validator = validator;
         this.adminRepository = adminRepository;
-        this.adminProfileRepository = adminProfileRepository;
         this.adminMacAddressInfoRepository = adminMacAddressInfoRepository;
         this.adminMetaInfoRepository = adminMetaInfoRepository;
         this.adminAvatarRepository = adminAvatarRepository;
         this.confirmationTokenRepository = confirmationTokenRepository;
         this.fileService = fileService;
         this.emailService = emailService;
-        this.hospitalService = hospitalService;
+        this.profileService = profileService;
     }
 
     @Override
@@ -106,19 +104,17 @@ public class AdminServiceImpl implements AdminService {
 
         validateConstraintViolation(validator.validate(adminRequestDTO));
 
-        List<Object[]> admins = adminRepository.fetchAdminForValidation(adminRequestDTO.getUsername(),
-                adminRequestDTO.getEmail(), adminRequestDTO.getMobileNumber());
+        List<Object[]> admins = adminRepository.validateDuplicity(adminRequestDTO.getUsername(),
+                adminRequestDTO.getEmail(), adminRequestDTO.getMobileNumber(), adminRequestDTO.getHospitalId());
 
         validateAdminDuplicity(admins, adminRequestDTO.getUsername(), adminRequestDTO.getEmail(),
                 adminRequestDTO.getMobileNumber());
 
         Admin admin = save(adminRequestDTO);
 
-        saveAdminProfile(admin, adminRequestDTO.getAdminProfileRequestDTO());
-
         saveAdminAvatar(admin, files);
 
-        saveMacAddressInfo(admin, adminRequestDTO.getMacAddressInfoRequestDTOS());
+        saveMacAddressInfo(admin, adminRequestDTO.getMacAddressInfo());
 
         saveAdminMetaInfo(admin);
 
@@ -239,7 +235,7 @@ public class AdminServiceImpl implements AdminService {
 
         Admin admin = findById(updateRequestDTO.getId());
 
-        List<Object[]> admins = adminRepository.fetchAdmin(updateRequestDTO);
+        List<Object[]> admins = adminRepository.validateDuplicity(updateRequestDTO);
 
         validateAdminDuplicity(admins, updateRequestDTO.getEmail(),
                 updateRequestDTO.getMobileNumber());
@@ -248,12 +244,10 @@ public class AdminServiceImpl implements AdminService {
 
         update(updateRequestDTO, admin);
 
-        updateAdminProfile(admin.getId(), updateRequestDTO.getAdminProfileUpdateRequestDTOS());
-
         if (updateRequestDTO.getIsAvatarUpdate().equals(YES))
             updateAvatar(admin, files);
 
-        updateMacAddressInfo(updateRequestDTO.getMacAddressInfoUpdateRequestDTOS(), admin);
+        updateMacAddressInfo(updateRequestDTO.getMacAddressUpdateInfo(), admin);
 
         updateAdminMetaInfo(admin);
 
@@ -390,22 +384,13 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private Admin save(AdminRequestDTO adminRequestDTO) {
+        Gender gender = fetchGender(adminRequestDTO.getGenderCode());
 
-        Hospital hospital = fetchHospital(adminRequestDTO.getHospitalId());
+        Profile profile = fetchProfile(adminRequestDTO.getProfileId());
 
-        return save(convertAdminRequestDTOToAdmin(adminRequestDTO, hospital));
-    }
+        Admin admin = parseAdminDetails(adminRequestDTO, gender, profile);
 
-    private Hospital fetchHospital(Long hospitalId) {
-        return hospitalService.fetchActiveHospital(hospitalId);
-    }
-
-    private void saveAdminProfile(Admin admin, List<AdminProfileRequestDTO> adminProfileRequestDTOS) {
-        List<AdminProfile> adminProfiles = adminProfileRequestDTOS.stream()
-                .map(requestDTO -> parseToAdminProfile(admin.getId(), requestDTO))
-                .collect(Collectors.toList());
-
-        saveAdminProfile(adminProfiles);
+        return save(admin);
     }
 
     private void saveAdminAvatar(Admin admin, MultipartFile files) {
@@ -427,10 +412,6 @@ public class AdminServiceImpl implements AdminService {
         } else adminAvatar.setStatus(INACTIVE);
 
         saveAdminAvatar(adminAvatar);
-    }
-
-    private void saveAdminProfile(List<AdminProfile> adminProfile) {
-        adminProfileRepository.saveAll(adminProfile);
     }
 
     private void saveAdminAvatar(AdminAvatar adminAvatar) {
@@ -504,16 +485,6 @@ public class AdminServiceImpl implements AdminService {
         });
     }
 
-    private void updateAdminProfile(Long adminId,
-                                    List<AdminProfileUpdateRequestDTO> adminProfileUpdateRequestDTOS) {
-
-        List<AdminProfile> adminProfiles = adminProfileUpdateRequestDTOS.stream()
-                .map(requestDTO -> parseToUpdatedAdminProfile(adminId, requestDTO))
-                .collect(Collectors.toList());
-
-        saveAdminProfile(adminProfiles);
-    }
-
     public void updateAvatar(Admin admin, MultipartFile files) {
         AdminAvatar adminAvatar = adminAvatarRepository.findAdminAvatarByAdminId(admin.getId());
 
@@ -522,16 +493,17 @@ public class AdminServiceImpl implements AdminService {
     }
 
     public void update(AdminUpdateRequestDTO adminRequestDTO, Admin admin) {
+        Gender gender = fetchGender(adminRequestDTO.getGenderCode());
 
-        Hospital hospital = fetchHospital(adminRequestDTO.getHospitalId());
+        Profile profile = fetchProfile(adminRequestDTO.getProfileId());
 
-        convertAdminUpdateRequestDTOToAdmin(admin, adminRequestDTO, hospital);
+        convertAdminUpdateRequestDTOToAdmin(admin, adminRequestDTO, gender, profile);
     }
 
-    public void updateMacAddressInfo(List<MacAddressInfoUpdateRequestDTO> macAddressInfoUpdateRequestDTOS, Admin admin) {
+    public void updateMacAddressInfo(List<AdminMacAddressInfoUpdateRequestDTO> adminMacAddressInfoUpdateRequestDTOS, Admin admin) {
 
         List<AdminMacAddressInfo> adminMacAddressInfos = convertToUpdatedMACAddressInfo(
-                macAddressInfoUpdateRequestDTOS, admin);
+                adminMacAddressInfoUpdateRequestDTOS, admin);
 
         saveMacAddressInfo(adminMacAddressInfos);
     }
@@ -567,4 +539,12 @@ public class AdminServiceImpl implements AdminService {
     private Function<String, NoContentFoundException> CONFIRMATION_TOKEN_NOT_FOUND = (confirmationToken) -> {
         throw new NoContentFoundException(INVALID_CONFIRMATION_TOKEN, "confirmationToken", confirmationToken);
     };
+
+    private Gender fetchGender(Character genderCode) {
+        return fetchGenderByCode(genderCode);
+    }
+
+    private Profile fetchProfile(Long profileId) {
+        return profileService.fetchActiveProfileById(profileId);
+    }
 }

@@ -44,8 +44,12 @@ public class Admin implements Serializable {
     @Column(name = "gender")
     private Gender gender;
 
-    @Column(name ="remarks")
+    @Column(name = "remarks")
     private String remarks;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "profile_id")
+    private Profile profileId;
 }
 
 

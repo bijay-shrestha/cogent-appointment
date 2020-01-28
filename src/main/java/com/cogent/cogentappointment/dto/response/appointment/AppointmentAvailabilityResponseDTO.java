@@ -17,11 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 public class AppointmentAvailabilityResponseDTO implements Serializable {
 
-    private Date startTime;
+    private String startTime;
 
-    private Date endTime;
-
-    private String start;
-
-    private String end;
+    private String endTime;
 }

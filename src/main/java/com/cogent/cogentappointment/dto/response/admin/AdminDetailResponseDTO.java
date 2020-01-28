@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.dto.response.admin;
 
+import com.cogent.cogentappointment.enums.Gender;
 import lombok.*;
 
 import java.io.Serializable;
@@ -21,27 +22,27 @@ public class AdminDetailResponseDTO implements Serializable {
 
     private String username;
 
-    private String mobileNumber;
-
     private String email;
+
+    private String mobileNumber;
 
     private Character status;
 
-    private Long adminCategoryId;
-
-    private String adminCategoryName;
-
     private Character hasMacBinding;
 
-    private String fileUri;
-
-    private String remarks;
+    private Gender gender;
 
     private Long hospitalId;
 
     private String hospitalName;
 
-    private List<AdminProfileResponseDTO> adminProfileResponseDTOS;
+    private Long profileId;
 
-    private List<MacAddressInfoResponseDTO> macAddressInfoResponseDTOS;
+    private String profileName;
+
+    private String fileUri;
+
+    private String remarks;
+
+    private List<AdminMacAddressInfoResponseDTO> adminMacAddressInfo;
 }

@@ -16,9 +16,13 @@ public class AdminSearchRequestDTO implements Serializable {
 
     private Long adminMetaInfoId;
 
-    private Character status;
+    private Long hospitalId;
 
-    private Long adminCategoryId;
+    private Long departmentId;
 
     private Long profileId;
+
+    private Character status;
+
+    private Character genderCode;
 }

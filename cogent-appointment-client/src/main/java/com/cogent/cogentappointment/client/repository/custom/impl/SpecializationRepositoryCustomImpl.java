@@ -20,8 +20,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.client.constants.QueryConstants.ID;
-import static com.cogent.cogentappointment.client.constants.QueryConstants.NAME;
+import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.query.SpecializationQuery.*;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
 
@@ -36,18 +35,20 @@ public class SpecializationRepositoryCustomImpl implements SpecializationReposit
     private EntityManager entityManager;
 
     @Override
-    public Long fetchSpecializationByName(String name) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FIND_SPECIALIZATION_COUNT_BY_NAME)
-                .setParameter(NAME, name);
+    public Long validateDuplicity(String name, Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_SPECIALIZATION)
+                .setParameter(NAME, name)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Long) query.getSingleResult();
     }
 
     @Override
-    public Long fetchSpecializationByIdAndName(Long id, String name) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FIND_SPECIALIZATION_COUNT_BY_ID_AND_NAME)
+    public Long validateDuplicity(Long id, String name, Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_SPECIALIZATION_FOR_UPDATE)
                 .setParameter(ID, id)
-                .setParameter(NAME, name);
+                .setParameter(NAME, name)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Long) query.getSingleResult();
     }
@@ -94,9 +95,20 @@ public class SpecializationRepositoryCustomImpl implements SpecializationReposit
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchSpecializationByDoctorId(Long DoctorId) {
+    public List<DropDownResponseDTO> fetchSpecializationByDoctorId(Long doctorId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_SPECIALIZATION_BY_DOCTOR_ID)
-                .setParameter(ID, DoctorId);
+                .setParameter(ID, doctorId);
+
+        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
+
+        if (results.isEmpty()) throw SPECIALIZATION_NOT_FOUND.get();
+        else return results;
+    }
+
+    @Override
+    public List<DropDownResponseDTO> fetchSpecializationByHospitalId(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_SPECIALIZATION_BY_HOSPITAL_ID)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 

@@ -10,11 +10,23 @@ import java.util.function.Function;
  */
 public class SpecializationQuery {
 
-    public static final String QUERY_TO_FIND_SPECIALIZATION_COUNT_BY_NAME =
-            "SELECT COUNT(s.id) FROM Specialization s WHERE s.name =:name AND s.status != 'D'";
+    public static final String QUERY_TO_VALIDATE_SPECIALIZATION =
+            "SELECT COUNT(s.id)" +
+                    " FROM Specialization s" +
+                    " LEFT JOIN Hospital h ON h.id = s.hospital.id" +
+                    " WHERE s.name =:name" +
+                    " AND s.status != 'D'" +
+                    " AND h.id=:hospitalId";
 
-    public static final String QUERY_TO_FIND_SPECIALIZATION_COUNT_BY_ID_AND_NAME =
-            "SELECT COUNT(s.id) FROM Specialization s WHERE s.id!= :id AND s.name =:name AND s.status != 'D'";
+    public static final String QUERY_TO_VALIDATE_SPECIALIZATION_FOR_UPDATE =
+            "SELECT" +
+                    " COUNT(s.id)" +
+                    " FROM Specialization s" +
+                    " LEFT JOIN Hospital h ON h.id = s.hospital.id" +
+                    " WHERE s.id!= :id" +
+                    " AND s.name =:name" +
+                    " AND s.status != 'D'" +
+                    " AND h.id=:hospitalId";
 
     public static final String QUERY_TO_FETCH_ACTIVE_SPECIALIZATION_FOR_DROPDOWN =
             " SELECT" +
@@ -26,7 +38,7 @@ public class SpecializationQuery {
 
     public static final String QUERY_TO_FETCH_SPECIALIZATION_DETAILS =
             " SELECT s.name as name," +                                     //[0]
-                    " s.code as code,"+                                     //[1]
+                    " s.code as code," +                                     //[1]
                     " s.status as status," +                                //[2]
                     " s.remarks as remarks" +                               //[3]
                     " FROM" +
@@ -42,13 +54,14 @@ public class SpecializationQuery {
                 " s.code as code" +                                   //[3]
                 " FROM" +
                 " Specialization s" +
+                " LEFT JOIN Hospital h ON h.id = s.hospital.id" +
                 GET_WHERE_CLAUSE_FOR_SEARCHING_SPECIALIZATION.apply(searchRequestDTO);
     }
 
     private static Function<SpecializationSearchRequestDTO, String>
             GET_WHERE_CLAUSE_FOR_SEARCHING_SPECIALIZATION = (searchRequestDTO) -> {
 
-        String whereClause = " WHERE s.status!='D'";
+        String whereClause = " WHERE s.status!='D' AND h.id =" + searchRequestDTO.getHospitalId();
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
             whereClause += " AND s.status='" + searchRequestDTO.getStatus() + "'";
@@ -74,4 +87,15 @@ public class SpecializationQuery {
                     " cs.doctorId =:id" +
                     " AND cs.status = 'Y'" +
                     " AND s.status = 'Y'";
+
+    public static final String QUERY_TO_FETCH_SPECIALIZATION_BY_HOSPITAL_ID =
+            " SELECT" +
+                    " s.id as value," +                                      //[0]
+                    " s.name as label" +                                     //[1]
+                    " FROM" +
+                    " Specialization s" +
+                    " LEFT JOIN Hospital h ON h.id = s.hospital.id" +
+                    " WHERE s.status ='Y'" +
+                    " AND h.status = 'Y'" +
+                    " AND h.id =:hospitalId";
 }

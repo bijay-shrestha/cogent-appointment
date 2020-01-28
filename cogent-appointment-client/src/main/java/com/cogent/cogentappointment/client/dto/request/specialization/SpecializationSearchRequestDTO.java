@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -19,6 +20,9 @@ public class SpecializationSearchRequestDTO implements Serializable {
     private String name;
 
     private String code;
+
+    @NotNull
+    private Long hospitalId;
 
     private Character status;
 }

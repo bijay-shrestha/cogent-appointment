@@ -93,14 +93,14 @@ public class DoctorResource {
         return ok(doctorService.fetchDetailsForUpdate(id));
     }
 
-    @GetMapping(SPECIALIZATION_ID_PATH_VARIABLE_BASE)
-    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
-    public ResponseEntity<?> fetchDoctorBySpecializationId(@PathVariable("specializationId") Long specializationId) {
-        return ok(doctorService.fetchDoctorBySpecializationId(specializationId));
-    }
+//    @GetMapping(SPECIALIZATION_ID_PATH_VARIABLE_BASE)
+//    @ApiOperation(FETCH_BY_SPECIALIZATION_ID)
+//    public ResponseEntity<?> fetchDoctorBySpecializationId(@PathVariable("specializationId") Long specializationId) {
+//        return ok(doctorService.fetchDoctorBySpecializationId(specializationId));
+//    }
 
     @GetMapping(HOSPITAL_ID_PATH_VARIABLE_BASE)
-    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
+    @ApiOperation(FETCH_BY_HOSPITAL_ID)
     public ResponseEntity<?> fetchDoctorByHospitalId(@PathVariable("hospitalId") Long hospitalId) {
         return ok(doctorService.fetchDoctorByHospitalId(hospitalId));
     }

@@ -1,6 +1,8 @@
 package com.cogent.cogentappointment.client.service.impl;
 
+import com.cogent.cogentappointment.client.dto.request.appointment.*;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.*;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.model.Appointment;
@@ -14,9 +16,9 @@ import com.cogent.cogentappointment.client.service.AppointmentService;
 import com.cogent.cogentappointment.client.service.DoctorService;
 import com.cogent.cogentappointment.client.service.PatientService;
 import com.cogent.cogentappointment.client.service.SpecializationService;
-import com.cogent.cogentappointment.client.dto.request.appointment.*;
-import com.cogent.cogentappointment.client.dto.response.appointment.*;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.Duration;
+import org.joda.time.Minutes;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,9 +31,9 @@ import java.util.function.Function;
 
 import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
-import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.*;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.FETCHING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.FETCHING_PROCESS_STARTED;
+import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.*;
 import static com.cogent.cogentappointment.client.utils.AppointmentUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 
@@ -69,8 +71,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.doctorDutyRosterOverrideRepository = doctorDutyRosterOverrideRepository;
     }
 
+    /*WITH END TIME AND 12 HOUR FORMAT*/
     @Override
-    public AppointmentCheckAvailabilityResponseDTO checkAvailability(AppointmentCheckAvailabilityRequestDTO requestDTO) {
+    public AppointmentCheckAvailabilityResponseDTO checkAvailabilityWithEndTime(
+            AppointmentCheckAvailabilityRequestDTO requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -82,20 +86,66 @@ public class AppointmentServiceImpl implements AppointmentService {
         AppointmentCheckAvailabilityResponseDTO responseDTO;
 
         if (doctorDutyRosterInfo.getDayOffStatus().equals(YES)) {
-            responseDTO = parseToAppointmentCheckAvailabilityResponseDTO(doctorDutyRosterInfo, new ArrayList<>());
+            responseDTO = parseToAppointmentResponseWithEndTime(doctorDutyRosterInfo, new ArrayList<>());
         } else {
             List<AppointmentBookedTimeResponseDTO> bookedAppointments =
                     appointmentRepository.checkAvailability(requestDTO);
 
             List<AppointmentAvailabilityResponseDTO> availableSlots =
-                    parseToAppointmentAvailabilityResponseDTO(doctorDutyRosterInfo, bookedAppointments);
+                    parseToResponseDTOWithEndTime(doctorDutyRosterInfo, bookedAppointments);
 
-            responseDTO = parseToAppointmentCheckAvailabilityResponseDTO(doctorDutyRosterInfo, availableSlots);
+            responseDTO = parseToAppointmentResponseWithEndTime(doctorDutyRosterInfo, availableSlots);
         }
 
         log.info(CHECK_AVAILABILITY_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
+    }
+
+    @Override
+    public AppointmentCheckAvailabilityMinResponseDTO checkAvailability(
+            AppointmentCheckAvailabilityRequestDTO requestDTO) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(CHECK_AVAILABILITY_PROCESS_STARTED);
+
+        DoctorDutyRosterTimeResponseDTO doctorDutyRosterInfo = fetchDoctorDutyRosterInfo(
+                requestDTO.getAppointmentDate(), requestDTO.getDoctorId(), requestDTO.getSpecializationId());
+
+        String doctorStartTime = getTimeFromDate(doctorDutyRosterInfo.getStartTime());
+        Date queryDate = utilDateToSqlDate(requestDTO.getAppointmentDate());
+
+        AppointmentCheckAvailabilityMinResponseDTO responseDTO;
+
+        if (doctorDutyRosterInfo.getDayOffStatus().equals(YES)) {
+            responseDTO = parseToAvailabilityResponse(doctorStartTime, queryDate, new ArrayList<>());
+        } else {
+            List<String> availableTimeSlots = filterDoctorTimeWithAppointments(
+                    doctorDutyRosterInfo, doctorStartTime, requestDTO);
+
+            responseDTO = parseToAvailabilityResponse(doctorStartTime, queryDate, availableTimeSlots);
+        }
+
+        log.info(CHECK_AVAILABILITY_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTO;
+    }
+
+    private List<String> filterDoctorTimeWithAppointments(
+            DoctorDutyRosterTimeResponseDTO doctorDutyRosterInfo,
+            String doctorStartTime,
+            AppointmentCheckAvailabilityRequestDTO requestDTO) {
+
+        List<AppointmentBookedTimeResponseDTO> bookedAppointments = appointmentRepository.checkAvailability(requestDTO);
+
+        String doctorEndTime = getTimeFromDate(doctorDutyRosterInfo.getEndTime());
+
+        final Duration rosterGapDuration = Minutes.minutes(doctorDutyRosterInfo.getRosterGapDuration())
+                .toStandardDuration();
+
+        return calculateAvailableTimeSlots(
+                doctorStartTime, doctorEndTime, rosterGapDuration, bookedAppointments);
     }
 
     @Override

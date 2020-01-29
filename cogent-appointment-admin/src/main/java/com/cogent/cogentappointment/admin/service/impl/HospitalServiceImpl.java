@@ -107,7 +107,7 @@ public class HospitalServiceImpl implements HospitalService {
                 updateRequestDTO.getId(), updateRequestDTO.getName(), updateRequestDTO.getHospitalCode());
 
         validateDuplicity(hospitals, updateRequestDTO.getName(),
-                hospital.getCode(), Hospital.class.getSimpleName());
+                updateRequestDTO.getHospitalCode(), Hospital.class.getSimpleName());
 
         parseToUpdatedHospital(updateRequestDTO, hospital);
 

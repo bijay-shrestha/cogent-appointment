@@ -32,6 +32,12 @@ public class AppointmentResource {
         this.appointmentService = appointmentService;
     }
 
+//    @PutMapping(CHECK_AVAILABILITY)
+//    @ApiOperation(CHECK_APPOINTMENT_AVAILABILITY)
+//    public ResponseEntity<?> checkAvailability(@Valid @RequestBody AppointmentCheckAvailabilityRequestDTO requestDTO) {
+//        return ok(appointmentService.checkAvailability(requestDTO));
+//    }
+
     @PutMapping(CHECK_AVAILABILITY)
     @ApiOperation(CHECK_APPOINTMENT_AVAILABILITY)
     public ResponseEntity<?> checkAvailability(@Valid @RequestBody AppointmentCheckAvailabilityRequestDTO requestDTO) {

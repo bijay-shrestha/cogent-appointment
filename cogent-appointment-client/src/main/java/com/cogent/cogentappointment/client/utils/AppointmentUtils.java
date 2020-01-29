@@ -6,6 +6,7 @@ import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRe
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentUpdateRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentAvailabilityResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedTimeResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentCheckAvailabilityMinResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentCheckAvailabilityResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import com.cogent.cogentappointment.client.model.Appointment;
@@ -20,6 +21,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeFromDate;
@@ -136,7 +138,7 @@ public class AppointmentUtils {
 //        return appointmentStatusResponseDTOS;
 //    }
 
-    public static AppointmentCheckAvailabilityResponseDTO parseToAppointmentCheckAvailabilityResponseDTO
+    public static AppointmentCheckAvailabilityResponseDTO parseToAppointmentResponseWithEndTime
             (DoctorDutyRosterTimeResponseDTO doctorDutyRosterInfo,
              List<AppointmentAvailabilityResponseDTO> availableSlots) {
 
@@ -148,7 +150,7 @@ public class AppointmentUtils {
                 .build();
     }
 
-    public static List<AppointmentAvailabilityResponseDTO> parseToAppointmentAvailabilityResponseDTO(
+    public static List<AppointmentAvailabilityResponseDTO> parseToResponseDTOWithEndTime(
             DoctorDutyRosterTimeResponseDTO doctorDutyRosterInfo,
             List<AppointmentBookedTimeResponseDTO> bookedAppointments) {
 
@@ -175,6 +177,39 @@ public class AppointmentUtils {
         } while (startDateTime.compareTo(FORMAT.parseDateTime(endTime)) <= 0);
 
         return availableTimeSlots;
+    }
+
+    public static List<String> calculateAvailableTimeSlots(String startTime,
+                                                           String endTime,
+                                                           Duration rosterGapDuration,
+                                                           List<AppointmentBookedTimeResponseDTO> bookedAppointments) {
+
+        List<String> availableTimeSlots = new ArrayList<>();
+
+        DateTime startDateTime = new DateTime(FORMAT.parseDateTime(startTime));
+
+        do {
+            String date = FORMAT.print(startDateTime);
+
+            if (!isAppointmentDateMatched(bookedAppointments, date))
+                availableTimeSlots.add(date);
+
+            startDateTime = startDateTime.plus(rosterGapDuration);
+        } while (startDateTime.compareTo(FORMAT.parseDateTime(endTime)) <= 0);
+
+        return availableTimeSlots;
+    }
+
+    public static AppointmentCheckAvailabilityMinResponseDTO parseToAvailabilityResponse(
+            String startTime,
+            Date queryDate,
+            List<String> availableTimeSlots) {
+
+        return AppointmentCheckAvailabilityMinResponseDTO.builder()
+                .queryDate(queryDate)
+                .doctorAvailableTime(startTime)
+                .availableTimeSlots(availableTimeSlots)
+                .build();
     }
 
     private static boolean isAppointmentDateMatched(List<AppointmentBookedTimeResponseDTO> bookedAppointments,

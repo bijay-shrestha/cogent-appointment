@@ -105,7 +105,7 @@ public class AdminQuery {
         if (!ObjectUtils.isEmpty(searchRequestDTO.getHospitalId()))
             whereClause += " AND h.id=" + searchRequestDTO.getHospitalId();
 
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getHospitalId())) {
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getGenderCode())) {
             Gender gender = GenderUtils.fetchGenderByCode(searchRequestDTO.getGenderCode());
             whereClause += " AND a.gender LIKE '%" + gender + "%'";
         }

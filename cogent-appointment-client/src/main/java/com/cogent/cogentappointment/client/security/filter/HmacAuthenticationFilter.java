@@ -46,7 +46,7 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
         final AuthHeader eSewaAuthHeader = getAuthHeaderForeSewa(request);
 
-        if (authHeader != null && authHeader.getUsername() != null) {
+        if (authHeader != null) {
 
             String apiKey = authHeader.getApiKey();
 
@@ -70,7 +70,7 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
-        if (eSewaAuthHeader != null && eSewaAuthHeader.getUsername() == null) {
+        if (authHeader == null && eSewaAuthHeader !=null) {
             String apiKey = eSewaAuthHeader.getApiKey();
 
             final HMACBuilder signatureBuilder = new HMACBuilder()

@@ -38,6 +38,7 @@ import java.util.stream.Collectors;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.HOSPITAL;
 import static com.cogent.cogentappointment.admin.utils.HospitalUtils.*;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.NameAndCodeValidationUtils.validateDuplicity;
 
 /**
@@ -73,7 +74,7 @@ public class HospitalServiceImpl implements HospitalService {
     @Override
     public void save(@Valid HospitalRequestDTO requestDTO, MultipartFile multipartFile) {
 
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, HOSPITAL);
 
@@ -91,13 +92,13 @@ public class HospitalServiceImpl implements HospitalService {
 
         saveHospitalLogo(hospital, multipartFile);
 
-        log.info(SAVING_PROCESS_COMPLETED, HOSPITAL, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(SAVING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
     public void update(HospitalUpdateRequestDTO updateRequestDTO, MultipartFile multipartFile) {
 
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(UPDATING_PROCESS_STARTED, HOSPITAL);
 
@@ -115,18 +116,18 @@ public class HospitalServiceImpl implements HospitalService {
 
         updateHospitalLogo(hospital, multipartFile);
 
-        log.info(UPDATING_PROCESS_COMPLETED, HOSPITAL, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(UPDATING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
     public List<HospitalMinimalResponseDTO> search(HospitalSearchRequestDTO hospitalSearchRequestDTO, Pageable pageable) {
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, HOSPITAL);
 
         List<HospitalMinimalResponseDTO> responseDTOS = hospitalRepository.search(hospitalSearchRequestDTO, pageable);
 
-        log.info(SEARCHING_PROCESS_COMPLETED, HOSPITAL, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(SEARCHING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
     }
@@ -134,7 +135,7 @@ public class HospitalServiceImpl implements HospitalService {
     @Override
     public void delete(DeleteRequestDTO deleteRequestDTO) {
 
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(DELETING_PROCESS_STARTED, HOSPITAL);
 
@@ -142,19 +143,19 @@ public class HospitalServiceImpl implements HospitalService {
 
         parseToDeletedHospital(hospital, deleteRequestDTO);
 
-        log.info(DELETING_PROCESS_COMPLETED, HOSPITAL, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(DELETING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
     public Hospital fetchActiveHospital(Long id) {
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, HOSPITAL);
 
         Hospital hospital = hospitalRepository.findActiveHospitalById(id)
                 .orElseThrow(() -> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND.apply(id));
 
-        log.info(FETCHING_PROCESS_COMPLETED, HOSPITAL, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
 
         return hospital;
     }
@@ -162,13 +163,13 @@ public class HospitalServiceImpl implements HospitalService {
     @Override
     public List<HospitalDropdownResponseDTO> fetchHospitalForDropDown() {
 
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, HOSPITAL);
 
         List<HospitalDropdownResponseDTO> responseDTOS = hospitalRepository.fetchActiveHospitalForDropDown();
 
-        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, HOSPITAL, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
     }
@@ -176,13 +177,13 @@ public class HospitalServiceImpl implements HospitalService {
     @Override
     public HospitalResponseDTO fetchDetailsById(Long hospitalId) {
 
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_DETAIL_PROCESS_STARTED, HOSPITAL);
 
         HospitalResponseDTO responseDTO = hospitalRepository.fetchDetailsById(hospitalId);
 
-        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, HOSPITAL, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
     }

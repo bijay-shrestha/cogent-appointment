@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.repository.custom;
 
+import com.cogent.cogentappointment.client.dto.request.hospital.HospitalMinSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospital.HospitalSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.hospital.HospitalDropdownResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospital.HospitalMinimalResponseDTO;
@@ -26,4 +27,6 @@ public interface HospitalRepositoryCustom {
     List<HospitalDropdownResponseDTO> fetchActiveHospitalForDropDown();
 
     HospitalResponseDTO fetchDetailsById(Long id);
+
+    List<HospitalDropdownResponseDTO> search(HospitalMinSearchRequestDTO searchRequestDTO, Pageable pageable);
 }

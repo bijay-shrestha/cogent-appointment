@@ -1,12 +1,8 @@
 package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.constants.StatusConstants;
-import com.cogent.cogentappointment.client.constants.StringConstant;
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.hospital.HospitalContactNumberUpdateRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.hospital.HospitalRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.hospital.HospitalSearchRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.hospital.HospitalUpdateRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.hospital.*;
 import com.cogent.cogentappointment.client.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospital.HospitalDropdownResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospital.HospitalMinimalResponseDTO;
@@ -34,9 +30,10 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.cogent.cogentappointment.client.constants.StringConstant.*;
+import static com.cogent.cogentappointment.client.constants.StringConstant.FORWARD_SLASH;
 import static com.cogent.cogentappointment.client.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
+import static com.cogent.cogentappointment.client.log.constants.HospitalLog.*;
 import static com.cogent.cogentappointment.client.utils.HospitalUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
@@ -77,7 +74,7 @@ public class HospitalServiceImpl implements HospitalService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(SAVING_PROCESS_STARTED, HospitalLog.HOSPITAL);
+        log.info(SAVING_PROCESS_STARTED, HOSPITAL);
 
         validateConstraintViolation(validator.validate(requestDTO));
 
@@ -93,7 +90,7 @@ public class HospitalServiceImpl implements HospitalService {
 
         saveHospitalLogo(hospital, multipartFile);
 
-        log.info(SAVING_PROCESS_COMPLETED, HospitalLog.HOSPITAL, getDifferenceBetweenTwoTime(startTime));
+        log.info(SAVING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
@@ -101,7 +98,7 @@ public class HospitalServiceImpl implements HospitalService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(UPDATING_PROCESS_STARTED, HospitalLog.HOSPITAL);
+        log.info(UPDATING_PROCESS_STARTED, HOSPITAL);
 
         Hospital hospital = findById(updateRequestDTO.getId());
 
@@ -117,18 +114,18 @@ public class HospitalServiceImpl implements HospitalService {
 
         updateHospitalLogo(hospital, multipartFile);
 
-        log.info(UPDATING_PROCESS_COMPLETED, HospitalLog.HOSPITAL, getDifferenceBetweenTwoTime(startTime));
+        log.info(UPDATING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
     public List<HospitalMinimalResponseDTO> search(HospitalSearchRequestDTO hospitalSearchRequestDTO, Pageable pageable) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(SEARCHING_PROCESS_STARTED, HospitalLog.HOSPITAL);
+        log.info(SEARCHING_PROCESS_STARTED, HOSPITAL);
 
         List<HospitalMinimalResponseDTO> responseDTOS = hospitalRepository.search(hospitalSearchRequestDTO, pageable);
 
-        log.info(SEARCHING_PROCESS_COMPLETED, HospitalLog.HOSPITAL, getDifferenceBetweenTwoTime(startTime));
+        log.info(SEARCHING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
     }
@@ -138,25 +135,25 @@ public class HospitalServiceImpl implements HospitalService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(DELETING_PROCESS_STARTED, HospitalLog.HOSPITAL);
+        log.info(DELETING_PROCESS_STARTED, HOSPITAL);
 
         Hospital hospital = findById(deleteRequestDTO.getId());
 
         parseToDeletedHospital(hospital, deleteRequestDTO);
 
-        log.info(DELETING_PROCESS_COMPLETED, HospitalLog.HOSPITAL, getDifferenceBetweenTwoTime(startTime));
+        log.info(DELETING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
     public Hospital fetchActiveHospital(Long id) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_PROCESS_STARTED, HospitalLog.HOSPITAL);
+        log.info(FETCHING_PROCESS_STARTED, HOSPITAL);
 
         Hospital hospital = hospitalRepository.findActiveHospitalById(id)
                 .orElseThrow(() -> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND.apply(id));
 
-        log.info(FETCHING_PROCESS_COMPLETED, HospitalLog.HOSPITAL, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
 
         return hospital;
     }
@@ -166,13 +163,29 @@ public class HospitalServiceImpl implements HospitalService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, HospitalLog.HOSPITAL);
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, HOSPITAL);
 
         List<HospitalDropdownResponseDTO> responseDTOS = hospitalRepository.fetchActiveHospitalForDropDown();
 
-        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, HospitalLog.HOSPITAL, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
+    }
+
+
+    @Override
+    public List<HospitalDropdownResponseDTO> search(HospitalMinSearchRequestDTO searchRequestDTO,
+                                                    Pageable pageable) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_DETAIL_PROCESS_STARTED, HOSPITAL);
+
+        List<HospitalDropdownResponseDTO> responseDTO = hospitalRepository.search(searchRequestDTO, pageable);
+
+        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTO;
     }
 
     @Override
@@ -180,11 +193,11 @@ public class HospitalServiceImpl implements HospitalService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_DETAIL_PROCESS_STARTED, HospitalLog.HOSPITAL);
+        log.info(FETCHING_DETAIL_PROCESS_STARTED, HOSPITAL);
 
         HospitalResponseDTO responseDTO = hospitalRepository.fetchDetailsById(hospitalId);
 
-        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, HospitalLog.HOSPITAL, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
     }

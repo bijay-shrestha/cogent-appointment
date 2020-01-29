@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.resource;
 
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.hospital.HospitalMinSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospital.HospitalRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospital.HospitalSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospital.HospitalUpdateRequestDTO;
@@ -79,6 +80,16 @@ public class HospitalResource {
     public ResponseEntity<?> fetchHospitalForDropDown() {
         return ok(hospitalService.fetchHospitalForDropDown());
     }
+
+    @PutMapping(SEARCH + MIN)
+    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
+    public ResponseEntity<?> searchMinAdmin(@RequestBody HospitalMinSearchRequestDTO searchRequestDTO,
+                                            @RequestParam("page") int page,
+                                            @RequestParam("size") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ok(hospitalService.search(searchRequestDTO, pageable));
+    }
+
 
     @GetMapping(DETAIL + ID_PATH_VARIABLE_BASE)
     @ApiOperation(DETAILS_OPERATION)

@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
+import com.cogent.cogentappointment.client.dto.request.hospital.HospitalMinSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospital.HospitalSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.hospital.HospitalDropdownResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospital.HospitalMinimalResponseDTO;
@@ -8,7 +9,6 @@ import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.model.Hospital;
 import com.cogent.cogentappointment.client.repository.custom.HospitalRepositoryCustom;
 import com.cogent.cogentappointment.client.utils.HospitalUtils;
-import com.cogent.cogentappointment.client.utils.commons.PageableUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.query.HospitalQuery.*;
+import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
 
 /**
@@ -55,13 +56,13 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
     @Override
     public List<HospitalMinimalResponseDTO> search(HospitalSearchRequestDTO searchRequestDTO, Pageable pageable) {
-        Query query = createNativeQuery.apply(entityManager, QUERY_TO_SEARCH_HOSPITAL(searchRequestDTO));
+        Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_HOSPITAL(searchRequestDTO));
 
         int totalItems = query.getResultList().size();
 
-        PageableUtils.addPagination.accept(pageable, query);
+        addPagination.accept(pageable, query);
 
-        List<HospitalMinimalResponseDTO> results = transformNativeQueryToResultList(query, HospitalMinimalResponseDTO.class);
+        List<HospitalMinimalResponseDTO> results = transformQueryToResultList(query, HospitalMinimalResponseDTO.class);
 
         if (results.isEmpty()) throw HOSPITAL_NOT_FOUND.get();
         else {
@@ -85,6 +86,20 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
     @Override
     public List<HospitalDropdownResponseDTO> fetchActiveHospitalForDropDown() {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_FOR_DROPDOWN);
+
+        List<HospitalDropdownResponseDTO> results = transformQueryToResultList(query, HospitalDropdownResponseDTO.class);
+
+        if (results.isEmpty()) throw HOSPITAL_NOT_FOUND.get();
+        else return results;
+    }
+
+    @Override
+    public List<HospitalDropdownResponseDTO> search(HospitalMinSearchRequestDTO searchRequestDTO,
+                                                    Pageable pageable) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_MIN_HOSPITAL(searchRequestDTO));
+
+        addPagination.accept(pageable, query);
 
         List<HospitalDropdownResponseDTO> results = transformQueryToResultList(query, HospitalDropdownResponseDTO.class);
 

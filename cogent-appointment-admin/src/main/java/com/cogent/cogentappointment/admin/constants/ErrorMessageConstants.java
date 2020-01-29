@@ -42,6 +42,7 @@ public class ErrorMessageConstants {
     //B
 
     //C
+    public final static String CANNOT_CREATE_SIGNATURE = "Cannot create signature: ";
     public static final String CODE_DUPLICATION_MESSAGE = "%s already exists with code '%s'";
 
     //D
@@ -71,7 +72,7 @@ public class ErrorMessageConstants {
     public static final String INVALID_GENDER_CODE_DEBUG_MESSAGE = "Gender enum doesn't have the requested code.";
 
     //H
-
+    public final static String HMAC_BAD_SIGNATURE = "HmacAccessFilter.badSignature";
 
     //I
 
@@ -113,6 +114,7 @@ public class ErrorMessageConstants {
 
 
     //U
+    public static final String UNAUTHORISED= "Unauthorised";
 
     //V
 

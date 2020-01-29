@@ -27,7 +27,7 @@ public class WebResourceKeyConstants {
     }
 
     //B
-    public static final  String BASE_PASSWORD = "/password";
+    public static final String BASE_PASSWORD = "/password";
 
     //C
     public interface CountryConstants {
@@ -59,6 +59,7 @@ public class WebResourceKeyConstants {
 
     //F
     public static final String FILE = "/files/{subDirectoryLocation}/{filename:.+}";
+
     public interface ForgotPasswordConstants {
         String VERIFY = "/verify";
         String FORGOT = "/forgot";
@@ -82,6 +83,7 @@ public class WebResourceKeyConstants {
     //K
 
     //L
+    public static final String LOGIN = "/login";
 
     //M
     public static final String MIN = "/min";

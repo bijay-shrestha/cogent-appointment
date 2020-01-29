@@ -1,7 +1,9 @@
 package com.cogent.cogentappointment.admin.model;
 
+import com.cogent.cogentappointment.admin.audit.Auditable;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -14,7 +16,8 @@ import java.io.Serializable;
 @Table(name = "hospital")
 @Getter
 @Setter
-public class Hospital implements Serializable {
+@EntityListeners(AuditingEntityListener.class)
+public class Hospital extends Auditable<String> implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

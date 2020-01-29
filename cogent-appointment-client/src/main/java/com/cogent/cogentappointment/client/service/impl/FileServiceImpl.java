@@ -1,14 +1,11 @@
 package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.configuration.FileConfiguration;
-import com.cogent.cogentappointment.client.constants.ErrorMessageConstants;
-import com.cogent.cogentappointment.client.constants.StringConstant;
 import com.cogent.cogentappointment.client.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.exception.OperationUnsuccessfulException;
 import com.cogent.cogentappointment.client.service.FileService;
-import com.cogent.cogentappointment.client.utils.commons.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -28,9 +25,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.FileServiceMessages.*;
+import static com.cogent.cogentappointment.client.constants.StringConstant.FORWARD_SLASH;
+import static com.cogent.cogentappointment.client.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.client.log.constants.FileLog.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.client.utils.commons.StringUtil.urlConverter;
 
 /**
  * @author smriti on 2019-08-27
@@ -54,7 +55,7 @@ public class FileServiceImpl implements FileService {
         log.info(LOADING_FILE_PROCESS_STARTED);
 
         try {
-            String path = StringUtil.urlConverter(subDirectoryLocation, StringConstant.HYPHEN, StringConstant.FORWARD_SLASH) + StringConstant.FORWARD_SLASH;
+            String path = urlConverter(subDirectoryLocation, HYPHEN, FORWARD_SLASH) + FORWARD_SLASH;
             Path file = load(path + fileName);
             Resource resource = new UrlResource(file.toUri());
 
@@ -62,10 +63,10 @@ public class FileServiceImpl implements FileService {
                 log.info(LOADING_FILE_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
                 return resource;
             } else {
-                throw new NoContentFoundException(ErrorMessageConstants.FileServiceMessages.INVALID_FILE_TYPE_MESSAGE + fileName);
+                throw new NoContentFoundException(INVALID_FILE_TYPE_MESSAGE + fileName);
             }
         } catch (MalformedURLException e) {
-            throw new NoContentFoundException(ErrorMessageConstants.FileServiceMessages.INVALID_FILE_TYPE_MESSAGE + fileName);
+            throw new NoContentFoundException(INVALID_FILE_TYPE_MESSAGE + fileName);
         }
     }
 
@@ -78,8 +79,8 @@ public class FileServiceImpl implements FileService {
 
         String fileUri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(storageProperties.fileBasePath)
-                .path(StringUtil.urlConverter(subDirectoryLocation, StringConstant.FORWARD_SLASH, StringConstant.HYPHEN))
-                .path(StringConstant.FORWARD_SLASH)
+                .path(urlConverter(subDirectoryLocation, FORWARD_SLASH, HYPHEN))
+                .path(FORWARD_SLASH)
                 .path(fileName)
                 .toUriString();
 
@@ -115,10 +116,10 @@ public class FileServiceImpl implements FileService {
         String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         try {
             if (file.isEmpty())
-                throw new NoContentFoundException(ErrorMessageConstants.FileServiceMessages.FILES_EMPTY_MESSAGE + filename);
+                throw new NoContentFoundException(FILES_EMPTY_MESSAGE + filename);
 
             if (filename.contains(".."))
-                throw new BadRequestException(ErrorMessageConstants.FileServiceMessages.INVALID_FILE_SEQUENCE);
+                throw new BadRequestException(INVALID_FILE_SEQUENCE);
 
             resolvePath(subDirectory);
 
@@ -128,13 +129,13 @@ public class FileServiceImpl implements FileService {
 
             return filename;
         } catch (IOException exception) {
-            throw new OperationUnsuccessfulException(ErrorMessageConstants.FileServiceMessages.FILE_EXCEPTION);
+            throw new OperationUnsuccessfulException(FILE_EXCEPTION);
         }
     }
 
     private void resolvePath(String subDirectoryLocation) throws IOException {
         Path path = Paths.get(storageProperties.getLocation() +
-                StringConstant.FORWARD_SLASH + subDirectoryLocation + StringConstant.FORWARD_SLASH);
+                FORWARD_SLASH + subDirectoryLocation + FORWARD_SLASH);
 
         /*test
         Path path = Paths.get(subDirectoryLocation);

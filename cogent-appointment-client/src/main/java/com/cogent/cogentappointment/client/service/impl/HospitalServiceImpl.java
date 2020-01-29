@@ -34,6 +34,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.client.constants.StringConstant.*;
 import static com.cogent.cogentappointment.client.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.utils.HospitalUtils.*;
@@ -212,7 +213,7 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     private List<FileUploadResponseDTO> uploadFiles(Hospital hospital, MultipartFile[] files) {
-        String subDirectory = hospital.getClass().getSimpleName() + StringConstant.FORWARD_SLASH + hospital.getName();
+        String subDirectory = hospital.getClass().getSimpleName() + FORWARD_SLASH + hospital.getName();
         return fileService.uploadFiles(files, subDirectory);
     }
 

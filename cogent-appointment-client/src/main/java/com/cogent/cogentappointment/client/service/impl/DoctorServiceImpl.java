@@ -119,7 +119,7 @@ public class DoctorServiceImpl implements DoctorService {
 
         log.info(UPDATING_PROCESS_STARTED, DOCTOR);
 
-        Doctor doctor = findById(requestDTO.getUpdateDTO().getId());
+        Doctor doctor = findById(requestDTO.getUpdateDTO().getId(), requestDTO.getUpdateDTO().getHospitalId());
 
         Long doctorCount = doctorRepository.validateDoctorDuplicityForUpdate(
                 requestDTO.getUpdateDTO().getId(),
@@ -155,7 +155,7 @@ public class DoctorServiceImpl implements DoctorService {
 
         log.info(DELETING_PROCESS_STARTED, DOCTOR);
 
-        Doctor doctor = findById(deleteRequestDTO.getId());
+        Doctor doctor = findById(deleteRequestDTO.getId(), deleteRequestDTO.getHospitalId());
 
         convertToDeletedDoctor(doctor, deleteRequestDTO);
 
@@ -238,6 +238,20 @@ public class DoctorServiceImpl implements DoctorService {
 
         List<DoctorDropdownDTO> responseDTOS =
                 doctorRepository.fetchDoctorBySpecializationId(specializationId);
+
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public List<DoctorDropdownDTO> fetchDoctorByHospitalId(Long hospitalId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DOCTOR);
+
+        List<DoctorDropdownDTO> responseDTOS =
+                doctorRepository.fetchDoctorByHospitalId(hospitalId);
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 
@@ -431,8 +445,8 @@ public class DoctorServiceImpl implements DoctorService {
         doctorAvatarRepository.save(doctorAvatar);
     }
 
-    public Doctor findById(Long doctorId) {
-        return doctorRepository.findDoctorById(doctorId)
+    public Doctor findById(Long doctorId, Long hospitalId) {
+        return doctorRepository.findDoctorById(doctorId, hospitalId)
                 .orElseThrow(() -> DOCTOR_WITH_GIVEN_ID_NOT_FOUND.apply(doctorId));
     }
 

@@ -47,8 +47,10 @@ public class SpecializationServiceImpl implements SpecializationService {
 
         log.info(SAVING_PROCESS_STARTED, SPECIALIZATION);
 
-        validateName(specializationRepository.fetchSpecializationByName(requestDTO.getName()),
-                requestDTO.getName());
+        Long specializationCount = specializationRepository.validateDuplicity(
+                requestDTO.getName(), requestDTO.getHospitalId());
+
+        validateName(specializationCount, requestDTO.getName());
 
         Specialization specialization = save(parseToSpecialization(requestDTO));
 
@@ -64,10 +66,12 @@ public class SpecializationServiceImpl implements SpecializationService {
 
         log.info(UPDATING_PROCESS_STARTED, SPECIALIZATION);
 
-        Specialization specialization = findById(requestDTO.getId());
+        Specialization specialization = findById(requestDTO.getId(), requestDTO.getHospitalId());
 
-        validateName(specializationRepository.fetchSpecializationByIdAndName
-                (requestDTO.getId(), requestDTO.getName()), requestDTO.getName());
+        Long specializationCount = specializationRepository.validateDuplicity(
+                requestDTO.getId(), requestDTO.getName(), requestDTO.getHospitalId());
+
+        validateName(specializationCount, requestDTO.getName());
 
         save(parseToUpdatedSpecialization(requestDTO, specialization));
 
@@ -81,7 +85,7 @@ public class SpecializationServiceImpl implements SpecializationService {
 
         log.info(DELETING_PROCESS_STARTED, SPECIALIZATION);
 
-        Specialization specialization = findById(deleteRequestDTO.getId());
+        Specialization specialization = findById(deleteRequestDTO.getId(), deleteRequestDTO.getHospitalId());
 
         save(parseToDeletedSpecialization(specialization, deleteRequestDTO));
 
@@ -130,13 +134,28 @@ public class SpecializationServiceImpl implements SpecializationService {
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchSpecializationByDoctorId(Long DoctorId) {
+    public List<DropDownResponseDTO> fetchSpecializationByDoctorId(Long doctorId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, SPECIALIZATION);
 
         List<DropDownResponseDTO> responseDTOS =
-                specializationRepository.fetchSpecializationByDoctorId(DoctorId);
+                specializationRepository.fetchSpecializationByDoctorId(doctorId);
+
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, SPECIALIZATION,
+                getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public List<DropDownResponseDTO> fetchSpecializationByHospitalId(Long hospitalId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, SPECIALIZATION);
+
+        List<DropDownResponseDTO> responseDTOS =
+                specializationRepository.fetchSpecializationByHospitalId(hospitalId);
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, SPECIALIZATION,
                 getDifferenceBetweenTwoTime(startTime));
@@ -168,8 +187,8 @@ public class SpecializationServiceImpl implements SpecializationService {
         return specializationRepository.save(specialization);
     }
 
-    public Specialization findById(Long specializationId) {
-        return specializationRepository.findSpecializationById(specializationId)
+    public Specialization findById(Long specializationId, Long hospitalId) {
+        return specializationRepository.findSpecializationById(specializationId, hospitalId)
                 .orElseThrow(() -> SPECIALIZATION_WITH_GIVEN_ID_NOT_FOUND.apply(specializationId));
     }
 

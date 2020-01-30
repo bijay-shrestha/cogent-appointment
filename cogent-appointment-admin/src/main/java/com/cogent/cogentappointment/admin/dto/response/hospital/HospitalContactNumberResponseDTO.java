@@ -17,5 +17,5 @@ public class HospitalContactNumberResponseDTO implements Serializable {
 
     private String contactNumber;
 
-    private Character contactNumberStatus;
+    private Character status;
 }

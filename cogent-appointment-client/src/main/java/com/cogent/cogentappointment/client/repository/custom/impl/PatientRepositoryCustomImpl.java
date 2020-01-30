@@ -26,6 +26,7 @@ import static com.cogent.cogentappointment.client.query.PatientQuery.*;
 import static com.cogent.cogentappointment.client.utils.PatientUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.AgeConverterUtils.calculateAge;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
+import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.transformQueryToSingleResult;
 
@@ -81,7 +82,7 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
 
         Integer totalItems = query.getResultList().size();
 
-        PageableUtils.addPagination.accept(pageable, query);
+        addPagination.accept(pageable, query);
 
         if (results.isEmpty()) throw new NoContentFoundException(Patient.class);
 

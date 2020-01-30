@@ -39,10 +39,13 @@ public class PatientQuery {
             SELECT_CLAUSE_TO_FETCH_PATIENT_DETAILS + GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS;
 
     public static final String QUERY_TO_FETCH_MINIMAL_PATIENT =
-            " SELECT p.id as patientId," +                              //[0]
-                    " p.name as name," +                                //[1]
-                    " p.mobileNumber as mobileNumber," +                //[2]
-                    " p.gender as gender" +                             //[3]
+            " SELECT p.id as patientId," +                                  //[0]
+                    " p.name as name," +                                    //[1]
+                    " p.mobileNumber as mobileNumber," +                    //[2]
+                    " p.gender as gender," +                                //[3]
+                    " p.address as address," +                              //[4]
+                    " p.dateOfBirth as dateOfBirth," +                      //[5]
+                    " p.registrationNumber as registrationNumber" +         //[6]
                     " FROM Patient p" +
                     GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS;
 

@@ -63,10 +63,10 @@ public class HMACBuilder {
             digest.init(secretKey);
             digest.update(algorithm.getBytes(StandardCharsets.UTF_8));
             digest.update(DELIMITER);
-            digest.update(scheme.getBytes(StandardCharsets.UTF_8));
-            digest.update(DELIMITER);
-            digest.update(host.getBytes(StandardCharsets.UTF_8));
-            digest.update(DELIMITER);
+//            digest.update(scheme.getBytes(StandardCharsets.UTF_8));
+//            digest.update(DELIMITER);
+//            digest.update(host.getBytes(StandardCharsets.UTF_8));
+//            digest.update(DELIMITER);
             digest.update(nonce.getBytes(StandardCharsets.UTF_8));
             digest.update(DELIMITER);
             digest.update((username != null) ? username.getBytes(StandardCharsets.UTF_8) : null);

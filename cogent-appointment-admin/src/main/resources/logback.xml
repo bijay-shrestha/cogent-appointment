@@ -145,6 +145,30 @@
         <appender-ref ref="COMMON"/>
     </logger>
 
+    <logger name="org.springframework"  additivity="false">
+        <Level value="INFO" />
+        <appender-ref ref="FILE_INFO"/>
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="COMMON"/>
+    </logger>
+
+    <logger name="org.springframework.web" Level="ERROR" additivity="false">
+        <Level value="ERROR" />
+        <appender-ref ref="FILE_ERROR"/>
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="COMMON"/>
+    </logger>
+
+    <logger name="org.springframework.transaction" Level="ERROR" additivity="false" >
+        <Level value="ERROR" />
+        <appender-ref ref="FILE_ERROR"/>
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="COMMON"/>
+    </logger>
+
     <root>
         <Level value="WARN"/>
         <appender-ref ref="FILE_ROOT"/>

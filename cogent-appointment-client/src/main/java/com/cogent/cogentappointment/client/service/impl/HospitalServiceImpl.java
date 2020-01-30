@@ -5,10 +5,10 @@ import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospital.*;
 import com.cogent.cogentappointment.client.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospital.HospitalDropdownResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.hospital.HospitalMinResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospital.HospitalMinimalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospital.HospitalResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.log.constants.HospitalLog;
 import com.cogent.cogentappointment.client.model.Hospital;
 import com.cogent.cogentappointment.client.model.HospitalContactNumber;
 import com.cogent.cogentappointment.client.model.HospitalLogo;
@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 import static com.cogent.cogentappointment.client.constants.StringConstant.FORWARD_SLASH;
 import static com.cogent.cogentappointment.client.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
-import static com.cogent.cogentappointment.client.log.constants.HospitalLog.*;
+import static com.cogent.cogentappointment.client.log.constants.HospitalLog.HOSPITAL;
 import static com.cogent.cogentappointment.client.utils.HospitalUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
@@ -196,6 +196,19 @@ public class HospitalServiceImpl implements HospitalService {
         log.info(FETCHING_DETAIL_PROCESS_STARTED, HOSPITAL);
 
         HospitalResponseDTO responseDTO = hospitalRepository.fetchDetailsById(hospitalId);
+
+        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTO;
+    }
+
+    @Override
+    public HospitalMinResponseDTO fetchMinDetailsById(Long hospitalId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_DETAIL_PROCESS_STARTED, HOSPITAL);
+
+        HospitalMinResponseDTO responseDTO = hospitalRepository.fetchMinDetailsById(hospitalId);
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
 

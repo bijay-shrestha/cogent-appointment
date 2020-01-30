@@ -130,4 +130,28 @@ public class HospitalQuery {
 
         return query;
     }
+
+    public static final String QUERY_TO_FETCH_MIN_HOSPITAL_DETAILS =
+            "SELECT" +
+                    " h.name as name," +                                      //[0]
+                    " h.address as address," +                                //[1]
+                    " CASE WHEN" +
+                    " (hl.status IS NULL OR hl.status = 'N')" +
+                    " THEN null" +
+                    " ELSE" +
+                    " hl.fileUri" +
+                    " END as fileUri" +                                      //[2]
+                    " FROM" +
+                    " Hospital h" +
+                    " LEFT JOIN HospitalLogo hl ON h.id =hl.hospital.id" +
+                    " WHERE h.id =:id" +
+                    " AND h.status ='Y'";
+
+    public static final String QUERY_TO_FETCH_HOSPITAL_CONTACT_NUMBER =
+            " SELECT hc.id, hc.contactNumber" +
+                    " FROM Hospital h  " +
+                    " LEFT JOIN HospitalContactNumber hc ON h.id =hc.hospitalId" +
+                    " WHERE hc.status = 'Y'" +
+                    " AND h.id=:id";
+
 }

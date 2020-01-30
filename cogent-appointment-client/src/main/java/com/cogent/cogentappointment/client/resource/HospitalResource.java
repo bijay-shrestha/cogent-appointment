@@ -90,10 +90,15 @@ public class HospitalResource {
         return ok(hospitalService.search(searchRequestDTO, pageable));
     }
 
-
     @GetMapping(DETAIL + ID_PATH_VARIABLE_BASE)
     @ApiOperation(DETAILS_OPERATION)
     public ResponseEntity<?> fetchDetailsById(@PathVariable("id") Long id) {
         return ok(hospitalService.fetchDetailsById(id));
+    }
+
+    @GetMapping(DETAIL + MIN + ID_PATH_VARIABLE_BASE)
+    @ApiOperation(MIN_DETAILS_OPERATION)
+    public ResponseEntity<?> fetchMinDetailsById(@PathVariable("id") Long id) {
+        return ok(hospitalService.fetchMinDetailsById(id));
     }
 }

@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.cogent.cogentappointment.client.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeFromDate;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeIn12HourFormat;
 
@@ -202,12 +203,13 @@ public class AppointmentUtils {
 
     public static AppointmentCheckAvailabilityMinResponseDTO parseToAvailabilityResponse(
             String startTime,
+            String endTime,
             Date queryDate,
             List<String> availableTimeSlots) {
 
         return AppointmentCheckAvailabilityMinResponseDTO.builder()
                 .queryDate(queryDate)
-                .doctorAvailableTime(startTime)
+                .doctorAvailableTime(startTime + HYPHEN + endTime)
                 .availableTimeSlots(availableTimeSlots)
                 .build();
     }

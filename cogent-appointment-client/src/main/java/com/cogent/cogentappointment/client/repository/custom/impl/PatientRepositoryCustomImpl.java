@@ -7,7 +7,6 @@ import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.model.Patient;
 import com.cogent.cogentappointment.client.repository.custom.PatientRepositoryCustom;
 import com.cogent.cogentappointment.client.utils.PatientUtils;
-import com.cogent.cogentappointment.client.utils.commons.DateUtils;
 import com.cogent.cogentappointment.client.utils.commons.PageableUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -24,6 +23,10 @@ import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.PatientQueryConstants.ESEWA_ID;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.PatientQueryConstants.IS_SELF;
 import static com.cogent.cogentappointment.client.query.PatientQuery.*;
+import static com.cogent.cogentappointment.client.utils.PatientUtils.*;
+import static com.cogent.cogentappointment.client.utils.commons.AgeConverterUtils.calculateAge;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
+import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.transformQueryToSingleResult;
 
@@ -38,11 +41,13 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
     private EntityManager entityManager;
 
     @Override
-    public Long fetchPatientForValidation(String name, String mobileNumber, Date dateOfBirth) {
+    public Long fetchPatientForValidation(String name, String mobileNumber,
+                                          Date dateOfBirth, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_PATIENT_DUPLICITY)
                 .setParameter(NAME, name)
                 .setParameter(MOBILE_NUMBER, mobileNumber)
-                .setParameter(DATE_OF_BIRTH, DateUtils.utilDateToSqlDate(dateOfBirth));
+                .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(dateOfBirth))
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Long) query.getSingleResult();
     }
@@ -54,9 +59,11 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
                 .setParameter(IS_SELF, searchRequestDTO.getIsSelf())
                 .setParameter(HOSPITAL_ID, searchRequestDTO.getHospitalId());
 
-        //TODO: calculate age
         try {
-            return transformQueryToSingleResult(query, PatientDetailResponseDTO.class);
+            PatientDetailResponseDTO detailResponseDTO =
+                    transformQueryToSingleResult(query, PatientDetailResponseDTO.class);
+            detailResponseDTO.setAge(calculateAge(detailResponseDTO.getDateOfBirth()));
+            return detailResponseDTO;
         } catch (NoResultException e) {
             throw new NoContentFoundException(Patient.class, "eSewaId", searchRequestDTO.getEsewaId());
         }
@@ -75,12 +82,12 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
 
         Integer totalItems = query.getResultList().size();
 
-        PageableUtils.addPagination.accept(pageable, query);
+        addPagination.accept(pageable, query);
 
         if (results.isEmpty()) throw new NoContentFoundException(Patient.class);
 
         else {
-            List<PatientMinimalResponseDTO> responseDTOS = PatientUtils.parseToPatientMinimalResponseDTO(results);
+            List<PatientMinimalResponseDTO> responseDTOS = parseToPatientMinimalResponseDTO(results);
             responseDTOS.get(0).setTotalItems(totalItems);
             return responseDTOS;
         }
@@ -92,7 +99,10 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
                 .setParameter(ID, id);
 
         try {
-            return transformQueryToSingleResult(query, PatientDetailResponseDTO.class);
+            PatientDetailResponseDTO detailResponseDTO =
+                    transformQueryToSingleResult(query, PatientDetailResponseDTO.class);
+            detailResponseDTO.setAge(calculateAge(detailResponseDTO.getDateOfBirth()));
+            return detailResponseDTO;
         } catch (NoResultException e) {
             throw new NoContentFoundException(Patient.class, "id", id.toString());
         }

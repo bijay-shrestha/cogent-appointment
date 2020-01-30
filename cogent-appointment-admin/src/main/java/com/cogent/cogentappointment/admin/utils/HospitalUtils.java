@@ -128,7 +128,7 @@ public class HospitalUtils {
                 .map(contactDetails -> HospitalContactNumberResponseDTO.builder()
                         .hospitalContactNumberId(Long.parseLong(contactDetails[0]))
                         .contactNumber(contactDetails[1])
-                        .contactNumberStatus(contactDetails[2].charAt(0))
+                        .status(contactDetails[2].charAt(0))
                         .build())
                 .collect(Collectors.toList());
     }

@@ -21,7 +21,6 @@ import com.cogent.cogentappointment.admin.repository.HospitalLogoRepository;
 import com.cogent.cogentappointment.admin.repository.HospitalRepository;
 import com.cogent.cogentappointment.admin.service.FileService;
 import com.cogent.cogentappointment.admin.service.HospitalService;
-import com.cogent.cogentappointment.admin.utils.commons.DateUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -38,7 +37,8 @@ import java.util.stream.Collectors;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.HOSPITAL;
 import static com.cogent.cogentappointment.admin.utils.HospitalUtils.*;
-import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static com.cogent.cogentappointment.admin.utils.commons.NameAndCodeValidationUtils.validateDuplicity;
 
 /**

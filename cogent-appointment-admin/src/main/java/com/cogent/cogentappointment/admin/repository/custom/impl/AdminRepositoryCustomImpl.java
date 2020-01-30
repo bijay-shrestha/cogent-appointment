@@ -100,7 +100,6 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         return detailResponseDTO;
     }
 
-
     @Override
     public Admin fetchAdminByUsernameOrEmail(String username) {
         try {

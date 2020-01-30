@@ -40,6 +40,10 @@ public class AdminDetailResponseDTO implements Serializable {
 
     private String profileName;
 
+    private Long departmentId;
+
+    private String departmentName;
+
     private String fileUri;
 
     private String remarks;

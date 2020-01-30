@@ -119,7 +119,9 @@ public class AdminQuery {
             SELECT_CLAUSE_TO_FETCH_ADMIN + "," +
                     " a.remarks as remarks," +                                      //[10]
                     " h.id as hospitalId," +                                        //[11]
-                    " p.id as profileId " +                                         //[12]
+                    " p.id as profileId," +                                         //[12]
+                    " d.id as departmentId," +
+                    " d.name as departmentName" +
                     " FROM" +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id = a.profileId.id" +

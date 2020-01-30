@@ -8,6 +8,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
+
 /**
  * @author smriti on 2019-10-22
  */
@@ -19,6 +20,9 @@ import java.util.Date;
 public class AppointmentRequestDTO implements Serializable {
 
     private PatientRequestDTO patientRequestDTO;
+
+    @NotNull
+    private Long hospitalId;
 
     private Boolean IsNewRegistration;
 

@@ -54,8 +54,9 @@ public class PatientServiceImpl implements PatientService {
 
         log.info(SAVING_PROCESS_STARTED, PATIENT);
 
-        Long patientCount = patientRepository.fetchPatientForValidation(requestDTO.getName(),
-                requestDTO.getMobileNumber(), requestDTO.getDateOfBirth());
+        Long patientCount = patientRepository.fetchPatientForValidation(
+                requestDTO.getName(), requestDTO.getMobileNumber(),
+                requestDTO.getDateOfBirth(), requestDTO.getHospitalId());
 
         validatePatientDuplicity(patientCount, requestDTO.getName(),
                 requestDTO.getMobileNumber(), requestDTO.getDateOfBirth());
@@ -74,7 +75,7 @@ public class PatientServiceImpl implements PatientService {
 
         log.info(FETCHING_PROCESS_STARTED, PATIENT);
 
-        Patient patient = patientRepository.fetchActivePatientById(id)
+        Patient patient = patientRepository.fetchRegisteredPatientById(id)
                 .orElseThrow(() -> PATIENT_WITH_GIVEN_ID_NOT_FOUND.apply(id));
 
         log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));

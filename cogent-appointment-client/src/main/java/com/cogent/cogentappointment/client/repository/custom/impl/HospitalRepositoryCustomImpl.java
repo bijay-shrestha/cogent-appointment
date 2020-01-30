@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
-import com.cogent.cogentappointment.client.constants.ErrorMessageConstants;
 import com.cogent.cogentappointment.client.dto.request.hospital.HospitalMinSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospital.HospitalSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.hospital.HospitalDropdownResponseDTO;
@@ -97,7 +96,7 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
             responseDTO.setContactNumbers(fetchHospitalContactDetails(hospitalId));
             return responseDTO;
         } catch (NoResultException e) {
-            throw new NoContentFoundException(ErrorMessageConstants.AdminServiceMessages.ADMIN_INFO_NOT_FOUND);
+            throw HOSPITAL_WITH_GIVEN_ID_NOT_FOUND.apply(hospitalId);
         }
     }
 
@@ -107,7 +106,7 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
         List<Object[]> results = query.getResultList();
 
-       return results.stream().map(result -> result[1].toString()).collect(Collectors.toList());
+        return results.stream().map(result -> result[1].toString()).collect(Collectors.toList());
     }
 
     @Override

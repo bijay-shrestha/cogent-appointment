@@ -48,8 +48,8 @@ public class QualificationQuery {
         if (!ObjectUtils.isEmpty(searchRequestDTO.getName()))
             whereClause += " AND q.name LIKE '%" + searchRequestDTO.getName() + "%'";
 
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getUniversity()))
-            whereClause += " AND q.university LIKE '%" + searchRequestDTO.getUniversity() + "%'";
+//        if (!ObjectUtils.isEmpty(searchRequestDTO.getUniversityId()))
+//            whereClause += " AND q.university LIKE '%" + searchRequestDTO.getUniversity() + "%'";
 
         return whereClause;
     }

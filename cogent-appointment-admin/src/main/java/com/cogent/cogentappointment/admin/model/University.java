@@ -9,7 +9,7 @@ import java.io.Serializable;
 /**
  * @author smriti ON 30/01/2020
  */
-@Table(name = "specialization")
+@Table(name = "university")
 @Entity
 @Getter
 @Setter

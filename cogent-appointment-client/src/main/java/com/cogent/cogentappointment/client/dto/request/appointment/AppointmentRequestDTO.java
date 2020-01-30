@@ -35,10 +35,8 @@ public class AppointmentRequestDTO implements Serializable {
     private Date appointmentDate;
 
     @NotNull
-    private Date startTime;
-
-    @NotNull
-    private Date endTime;
+    @NotEmpty
+    private String appointmentTime;
 
     @NotNull
     @Status

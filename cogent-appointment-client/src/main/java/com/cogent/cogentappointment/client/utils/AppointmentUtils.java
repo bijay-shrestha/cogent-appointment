@@ -23,10 +23,10 @@ import org.joda.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import static com.cogent.cogentappointment.client.constants.StringConstant.HYPHEN;
-import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeFromDate;
-import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeIn12HourFormat;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 
 /**
  * @author smriti on 2019-10-24
@@ -43,8 +43,8 @@ public class AppointmentUtils {
 
         Appointment appointment = new Appointment();
         appointment.setAppointmentDate(requestDTO.getAppointmentDate());
-        appointment.setStartTime(requestDTO.getStartTime());
-        appointment.setEndTime(requestDTO.getEndTime());
+        appointment.setAppointmentTime(parseAppointmentTime(requestDTO.getAppointmentDate(),
+                requestDTO.getAppointmentTime()));
         appointment.setAppointmentNumber(appointmentNumber);
         appointment.setUniqueId(NumberFormatterUtils.generateRandomNumber(4));
         appointment.setCreatedDateNepali(requestDTO.getCreatedDateNepali());
@@ -52,6 +52,10 @@ public class AppointmentUtils {
 
         parseToAppointment(patient, specialization, doctor, appointment);
         return appointment;
+    }
+
+    private static Date parseAppointmentTime(Date appointmentDate, String appointmentTime) {
+        return datePlusTime(utilDateToSqlDate(appointmentDate), Objects.requireNonNull(parseTime(appointmentTime)));
     }
 
     private static void parseToAppointment(Patient patient,
@@ -68,8 +72,8 @@ public class AppointmentUtils {
                                                  Patient patient) {
 
         appointment.setAppointmentDate(updateRequestDTO.getAppointmentDate());
-        appointment.setStartTime(updateRequestDTO.getStartTime());
-        appointment.setEndTime(updateRequestDTO.getEndTime());
+//        appointment.setStartTime(updateRequestDTO.getStartTime());
+//        appointment.setEndTime(updateRequestDTO.getEndTime());
         appointment.setStatus(updateRequestDTO.getStatus());
 
         appointment.setRemarks(updateRequestDTO.getRemarks());
@@ -91,8 +95,8 @@ public class AppointmentUtils {
     public static void parseToRescheduleAppointment(Appointment appointment,
                                                     AppointmentRescheduleRequestDTO rescheduleRequestDTO) {
         appointment.setAppointmentDate(rescheduleRequestDTO.getAppointmentDate());
-        appointment.setStartTime(rescheduleRequestDTO.getStartTime());
-        appointment.setEndTime(rescheduleRequestDTO.getEndTime());
+//        appointment.setStartTime(rescheduleRequestDTO.getStartTime());
+//        appointment.setEndTime(rescheduleRequestDTO.getEndTime());
         appointment.setRemarks(rescheduleRequestDTO.getRemarks());
     }
 
@@ -217,7 +221,7 @@ public class AppointmentUtils {
     private static boolean isAppointmentDateMatched(List<AppointmentBookedTimeResponseDTO> bookedAppointments,
                                                     String date) {
         return bookedAppointments.stream()
-                .anyMatch(bookedAppointment -> bookedAppointment.getStartTime().contains(date));
+                .anyMatch(bookedAppointment -> bookedAppointment.getAppointmentTime().contains(date));
     }
 
     private static void setTimeSlotMap(AppointmentAvailabilityResponseDTO responseDTO,

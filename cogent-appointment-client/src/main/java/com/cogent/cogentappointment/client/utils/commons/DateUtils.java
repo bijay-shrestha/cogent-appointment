@@ -104,4 +104,26 @@ public class DateUtils {
 
         return dateFormatter.format(date);
     }
+
+    public static Date parseTime(String requestedTime) {
+        try {
+            SimpleDateFormat time = new SimpleDateFormat("HH:mm");
+            return time.parse(requestedTime);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static Date datePlusTime(Date date, Date time) {
+
+        Calendar cl = Calendar.getInstance();
+        cl.setTime(date);
+        cl.add(Calendar.HOUR, time.getHours());
+        cl.add(Calendar.MINUTE, time.getMinutes());
+
+        return cl.getTime();
+
+    }
+
 }

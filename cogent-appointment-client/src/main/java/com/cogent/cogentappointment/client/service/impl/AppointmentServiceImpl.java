@@ -113,8 +113,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         DoctorDutyRosterTimeResponseDTO doctorDutyRosterInfo = fetchDoctorDutyRosterInfo(
                 requestDTO.getAppointmentDate(), requestDTO.getDoctorId(), requestDTO.getSpecializationId());
 
-        String doctorStartTime = getTimeFromDate(doctorDutyRosterInfo.getStartTime());
         Date queryDate = utilDateToSqlDate(requestDTO.getAppointmentDate());
+        String doctorStartTime = getTimeFromDate(doctorDutyRosterInfo.getStartTime());
         String doctorEndTime = getTimeFromDate(doctorDutyRosterInfo.getEndTime());
 
         AppointmentCheckAvailabilityMinResponseDTO responseDTO;
@@ -122,8 +122,11 @@ public class AppointmentServiceImpl implements AppointmentService {
         if (doctorDutyRosterInfo.getDayOffStatus().equals(YES)) {
             responseDTO = parseToAvailabilityResponse(doctorStartTime, doctorEndTime, queryDate, new ArrayList<>());
         } else {
+            final Duration rosterGapDuration = Minutes.minutes(doctorDutyRosterInfo.getRosterGapDuration())
+                    .toStandardDuration();
+
             List<String> availableTimeSlots = filterDoctorTimeWithAppointments(
-                    doctorDutyRosterInfo, doctorStartTime, requestDTO);
+                    rosterGapDuration, doctorStartTime, doctorEndTime, requestDTO);
 
             responseDTO = parseToAvailabilityResponse(doctorStartTime, doctorEndTime, queryDate, availableTimeSlots);
         }
@@ -133,15 +136,12 @@ public class AppointmentServiceImpl implements AppointmentService {
         return responseDTO;
     }
 
-    private List<String> filterDoctorTimeWithAppointments(
-            DoctorDutyRosterTimeResponseDTO doctorDutyRosterInfo,
-            String doctorStartTime,
-            AppointmentCheckAvailabilityRequestDTO requestDTO) {
+    private List<String> filterDoctorTimeWithAppointments(Duration rosterGapDuration,
+                                                          String doctorStartTime,
+                                                          String doctorEndTime,
+                                                          AppointmentCheckAvailabilityRequestDTO requestDTO) {
 
         List<AppointmentBookedTimeResponseDTO> bookedAppointments = appointmentRepository.checkAvailability(requestDTO);
-
-        final Duration rosterGapDuration = Minutes.minutes(doctorDutyRosterInfo.getRosterGapDuration())
-                .toStandardDuration();
 
         return calculateAvailableTimeSlots(
                 doctorStartTime, doctorEndTime, rosterGapDuration, bookedAppointments);
@@ -279,8 +279,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Appointment appointment = findIncompleteAppointmentById(rescheduleRequestDTO.getAppointmentId());
 
-        Date originalAppointmentDate = appointment.getAppointmentDate();
-        Date originalAppointmentTime = appointment.getStartTime();
+//        Date originalAppointmentDate = appointment.getAppointmentDate();
+//        Date originalAppointmentTime = appointment.getStartTime();
 
         parseToRescheduleAppointment(appointment, rescheduleRequestDTO);
 

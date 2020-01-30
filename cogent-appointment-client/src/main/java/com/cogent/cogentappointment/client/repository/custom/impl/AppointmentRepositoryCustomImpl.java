@@ -40,7 +40,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     private EntityManager entityManager;
 
     @Override
-    public List<AppointmentBookedTimeResponseDTO> checkAvailability(AppointmentCheckAvailabilityRequestDTO requestDTO) {
+    public List<AppointmentBookedTimeResponseDTO> fetchBookedAppointments(AppointmentCheckAvailabilityRequestDTO requestDTO) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_BOOKED_APPOINTMENT)
                 .setParameter(DATE, utilDateToSqlDate(requestDTO.getAppointmentDate()))

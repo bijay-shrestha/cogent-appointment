@@ -15,9 +15,9 @@ import java.io.Serializable;
 public class QualificationDropdownDTO implements Serializable {
     private Long id;
 
-    private String name;
+    private String qualificationName;
 
-    private String university;
+    private String universityName;
 
     private String countryName;
 

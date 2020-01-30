@@ -89,7 +89,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             responseDTO = parseToAppointmentResponseWithEndTime(doctorDutyRosterInfo, new ArrayList<>());
         } else {
             List<AppointmentBookedTimeResponseDTO> bookedAppointments =
-                    appointmentRepository.checkAvailability(requestDTO);
+                    appointmentRepository.fetchBookedAppointments(requestDTO);
 
             List<AppointmentAvailabilityResponseDTO> availableSlots =
                     parseToResponseDTOWithEndTime(doctorDutyRosterInfo, bookedAppointments);
@@ -141,7 +141,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                                                           String doctorEndTime,
                                                           AppointmentCheckAvailabilityRequestDTO requestDTO) {
 
-        List<AppointmentBookedTimeResponseDTO> bookedAppointments = appointmentRepository.checkAvailability(requestDTO);
+        List<AppointmentBookedTimeResponseDTO> bookedAppointments = appointmentRepository.fetchBookedAppointments(requestDTO);
 
         return calculateAvailableTimeSlots(
                 doctorStartTime, doctorEndTime, rosterGapDuration, bookedAppointments);

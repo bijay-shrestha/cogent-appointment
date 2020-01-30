@@ -26,13 +26,16 @@ public class QualificationQuery {
                     " AND q.name=:name";
 
     private static final String SELECT_CLAUSE_TO_FETCH_MINIMAL_QUALIFICATION =
-            "SELECT q.id as id," +                                               //[0]
-                    " q.name as name," +                                        //[1]
-                    " q.university as university," +                             //[2]
-                    " q.country.name as countryName," +                          //[3]
-                    " q.qualificationAlias.name as qualificationAliasName," +   //[4]
-                    " q.status as status" +                                     //[5]
-                    " FROM Qualification q ";
+            "SELECT q.id as id," +                                                //[0]
+                    " q.name as name," +                                          //[1]
+                    " u.name as universityName," +                                //[2]
+                    " c.name as countryName," +                                   //[3]
+                    " qa.name as qualificationAliasName," +                       //[4]
+                    " q.status as status" +                                       //[5]
+                    " FROM Qualification q " +
+                    " LEFT JOIN Country c ON c.id = q.country.id" +
+                    " LEFT JOIN University u ON u.id = q.university.id" +
+                    " LEFT JOIN QualificationAlias qa ON qa.id = q.qualificationAlias.id";
 
     public static Function<QualificationSearchRequestDTO, String> QUERY_TO_SEARCH_QUALIFICATION =
             (qualificationSearchRequestDTO -> (
@@ -48,8 +51,11 @@ public class QualificationQuery {
         if (!ObjectUtils.isEmpty(searchRequestDTO.getName()))
             whereClause += " AND q.name LIKE '%" + searchRequestDTO.getName() + "%'";
 
-//        if (!ObjectUtils.isEmpty(searchRequestDTO.getUniversity()))
-//            whereClause += " AND q.university LIKE '%" + searchRequestDTO.getUniversity() + "%'";
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getCountryId()))
+            whereClause += " AND c.id=" + searchRequestDTO.getCountryId();
+
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getUniversityId()))
+            whereClause += " AND u.id=" + searchRequestDTO.getUniversityId();
 
         return whereClause;
     }
@@ -57,23 +63,30 @@ public class QualificationQuery {
     public static final String QUERY_TO_FETCH_QUALIFICATION_DETAILS =
             "SELECT" +
                     " q.name as name," +                                        //[0]
-                    " q.university as university," +                            //[1]
-                    " q.country.id as countryId," +                             //[2]
-                    " q.country.name as countryName," +                         //[3]
-                    " q.qualificationAlias.id as qualificationAliasId," +       //[4]
-                    " q.qualificationAlias.name as qualificationAliasName," +    //[5]
-                    " q.status as status," +                                    //[6]
-                    " q.remarks as remarks" +                                   //[7]
+                    " u.id as universityId," +                                  //[1]
+                    " u.name as universityName," +                              //[2]
+                    " c.id as countryId," +                                     //[3]
+                    " c.name as countryName," +                                 //[4]
+                    " qa.id as qualificationAliasId," +                         //[5]
+                    " qa.name as qualificationAliasName," +                     //[6]
+                    " q.status as status," +                                    //[7]
+                    " q.remarks as remarks" +                                   //[8]
                     " FROM Qualification q " +
+                    " LEFT JOIN Country c ON c.id = q.country.id" +
+                    " LEFT JOIN University u ON u.id = q.university.id" +
+                    " LEFT JOIN QualificationAlias qa ON qa.id = q.qualificationAlias.id" +
                     " WHERE q.status != 'D'" +
                     " AND q.id =:id";
 
     public static final String QUERY_TO_FETCH_ACTIVE_QUALIFICATION_FOR_DROPDOWN =
-            "SELECT q.id as id," +                                               //[0]
-                    " q.name as name," +                                        //[1]
-                    " q.university as university," +                             //[2]
-                    " q.country.name as countryName," +                          //[3]
-                    " q.qualificationAlias.name as qualificationAliasName" +   //[4]
+            "SELECT q.id as id," +                                              //[0]
+                    " q.name as qualificationName," +                           //[1]
+                    " u.name as universityName," +                               //[2]
+                    " c.name as countryName," +                                 //[3]
+                    " qa.name as qualificationAliasName" +                      //[4]
                     " FROM Qualification q " +
+                    " LEFT JOIN University u ON u.id = q.university.id" +
+                    " LEFT JOIN Country c ON c.id = q.country.id" +
+                    " LEFT JOIN QualificationAlias qa ON qa.id = q.qualificationAlias.id" +
                     " WHERE q.status = 'Y'";
 }

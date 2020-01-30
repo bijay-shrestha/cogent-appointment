@@ -23,6 +23,8 @@ import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.PatientQueryConstants.ESEWA_ID;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.PatientQueryConstants.IS_SELF;
 import static com.cogent.cogentappointment.client.query.PatientQuery.*;
+import static com.cogent.cogentappointment.client.utils.PatientUtils.*;
+import static com.cogent.cogentappointment.client.utils.commons.AgeConverterUtils.calculateAge;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.transformQueryToSingleResult;
@@ -56,9 +58,11 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
                 .setParameter(IS_SELF, searchRequestDTO.getIsSelf())
                 .setParameter(HOSPITAL_ID, searchRequestDTO.getHospitalId());
 
-        //TODO: calculate age
         try {
-            return transformQueryToSingleResult(query, PatientDetailResponseDTO.class);
+            PatientDetailResponseDTO detailResponseDTO =
+                    transformQueryToSingleResult(query, PatientDetailResponseDTO.class);
+            detailResponseDTO.setAge(calculateAge(detailResponseDTO.getDateOfBirth()));
+            return detailResponseDTO;
         } catch (NoResultException e) {
             throw new NoContentFoundException(Patient.class, "eSewaId", searchRequestDTO.getEsewaId());
         }
@@ -82,7 +86,7 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
         if (results.isEmpty()) throw new NoContentFoundException(Patient.class);
 
         else {
-            List<PatientMinimalResponseDTO> responseDTOS = PatientUtils.parseToPatientMinimalResponseDTO(results);
+            List<PatientMinimalResponseDTO> responseDTOS = parseToPatientMinimalResponseDTO(results);
             responseDTOS.get(0).setTotalItems(totalItems);
             return responseDTOS;
         }
@@ -94,7 +98,10 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
                 .setParameter(ID, id);
 
         try {
-            return transformQueryToSingleResult(query, PatientDetailResponseDTO.class);
+            PatientDetailResponseDTO detailResponseDTO =
+                    transformQueryToSingleResult(query, PatientDetailResponseDTO.class);
+            detailResponseDTO.setAge(calculateAge(detailResponseDTO.getDateOfBirth()));
+            return detailResponseDTO;
         } catch (NoResultException e) {
             throw new NoContentFoundException(Patient.class, "id", id.toString());
         }

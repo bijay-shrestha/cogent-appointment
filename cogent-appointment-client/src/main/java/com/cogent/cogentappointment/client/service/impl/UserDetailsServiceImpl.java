@@ -1,8 +1,8 @@
 package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
-import com.cogent.cogentappointment.client.model.User;
-import com.cogent.cogentappointment.client.repository.UserRepository;
+import com.cogent.cogentappointment.client.model.Admin;
+import com.cogent.cogentappointment.client.repository.AdminRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,23 +18,23 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final AdminRepository adminRepository;
 
-    public UserDetailsServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserDetailsServiceImpl(AdminRepository adminRepository) {
+        this.adminRepository = adminRepository;
     }
 
 
-    public User getUser(String userName) {
-        return userRepository.getLoggedInUser(userName);
+    public Admin getAdmin(String userName) {
+        return adminRepository.getLoggedInAdmin(userName);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = getUser(username);
+        Admin admin =getAdmin(username);
 
-        if (user == null) throw new DataDuplicationException("USER NOT FOUND");
+        if (admin == null) throw new DataDuplicationException("USER NOT FOUND");
 
-        return UserDetailsImpl.build(user);
+        return UserDetailsImpl.build(admin);
     }
 }

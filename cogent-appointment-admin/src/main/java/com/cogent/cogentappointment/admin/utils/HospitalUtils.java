@@ -14,24 +14,30 @@ import com.cogent.cogentappointment.admin.model.HospitalLogo;
 import com.cogent.cogentappointment.admin.utils.commons.StringUtil;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalContactNumberResponseDTO;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.admin.utils.HMACKeyGenerator.generateApiKey;
+import static com.cogent.cogentappointment.admin.utils.HMACKeyGenerator.generateApiSecret;
+
 /**
  * @author smriti ON 12/01/2020
  */
 public class HospitalUtils {
 
-    public static Hospital convertDTOToHospital(HospitalRequestDTO hospitalRequestDTO) {
+    public static Hospital convertDTOToHospital(HospitalRequestDTO hospitalRequestDTO) throws NoSuchAlgorithmException {
         Hospital hospital = new Hospital();
         hospital.setName(StringUtil.toUpperCase(hospitalRequestDTO.getName()));
         hospital.setCode(StringUtil.toUpperCase(hospitalRequestDTO.getHospitalCode()));
         hospital.setAddress(hospitalRequestDTO.getAddress());
         hospital.setPanNumber(hospitalRequestDTO.getPanNumber());
         hospital.setStatus(hospitalRequestDTO.getStatus());
+        hospital.setApiKey(generateApiKey());
+        hospital.setApiSecret(generateApiSecret());
         return hospital;
     }
 

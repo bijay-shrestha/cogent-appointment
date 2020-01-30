@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.client.service.impl;
 
-import com.cogent.cogentappointment.client.model.User;
+import com.cogent.cogentappointment.client.model.Admin;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,12 +30,12 @@ public class UserDetailsImpl implements UserDetails {
         this.password = password;
     }
 
-    public static UserDetailsImpl build(User user) {
+    public static UserDetailsImpl build(Admin admin) {
         return new UserDetailsImpl(
-                user.getId(),
-                user.getUsername(),
-                user.getEmail(),
-                user.getPassword());
+                admin.getId(),
+                admin.getUsername(),
+                admin.getEmail(),
+                admin.getPassword());
     }
 
     @Override

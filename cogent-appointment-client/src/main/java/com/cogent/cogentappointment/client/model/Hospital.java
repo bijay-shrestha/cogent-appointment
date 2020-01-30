@@ -38,4 +38,10 @@ public class Hospital implements Serializable {
 
     @Column(name = "remarks")
     private String remarks;
+
+    @Column(name = "api_key")
+    private String apiKey;
+
+    @Column(name = "api_secret")
+    private String apiSecret;
 }

@@ -30,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.Validator;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -71,7 +72,7 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     @Override
-    public void save(@Valid HospitalRequestDTO requestDTO, MultipartFile multipartFile) {
+    public void save(@Valid HospitalRequestDTO requestDTO, MultipartFile multipartFile) throws NoSuchAlgorithmException {
 
         Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
 

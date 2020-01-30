@@ -53,11 +53,9 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
             UserDetails userDetails = userDetailsService.loadUserByUsername(authHeader.getUsername());
             final HMACBuilder signatureBuilder = new HMACBuilder()
                     .algorithm(authHeader.getAlgorithm())
-                    .host(request.getServerName() + ":" + request.getServerPort())
                     .nonce(authHeader.getNonce())
                     .username(userDetails.getUsername())
-                    .apiKey(apiKey)
-                    .scheme(request.getScheme());
+                    .apiKey(apiKey);
 
             if (!signatureBuilder.isHashEquals(authHeader.getDigest())) {
                 throw new BadCredentialsException(HMAC_BAD_SIGNATURE);
@@ -75,10 +73,8 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
             final HMACBuilder signatureBuilder = new HMACBuilder()
                     .algorithm(eSewaAuthHeader.getAlgorithm())
-                    .host(request.getServerName() + ":" + request.getServerPort())
                     .nonce(eSewaAuthHeader.getNonce())
-                    .apiKey(apiKey)
-                    .scheme(request.getScheme());
+                    .apiKey(apiKey);
 
             if (!signatureBuilder.isHashEquals(eSewaAuthHeader.getDigest())) {
                 throw new BadCredentialsException(HMAC_BAD_SIGNATURE);

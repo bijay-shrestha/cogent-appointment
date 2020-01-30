@@ -186,6 +186,11 @@ public class SwaggerConstants {
 
 
     //U
+    public interface UniversityConstant {
+        String BASE_API_VALUE = "This is University Controller.";
+        String FETCH_ACTIVE_UNIVERSITY = "Fetch active university for dropdown.";
+    }
+
 
     //V
 

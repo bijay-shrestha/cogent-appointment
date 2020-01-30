@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.SpecializationLog.SPECIALIZATION;
 import static com.cogent.cogentappointment.admin.utils.SpecializationUtils.*;
@@ -160,7 +161,7 @@ public class SpecializationServiceImpl implements SpecializationService {
     private void validateName(Long specializationCount, String name) {
         if (specializationCount.intValue() > 0)
             throw new DataDuplicationException(
-                    String.format(ErrorMessageConstants.NAME_DUPLICATION_MESSAGE, Specialization.class.getSimpleName(), name));
+                    String.format(NAME_DUPLICATION_MESSAGE, Specialization.class.getSimpleName(), name));
     }
 
     private Specialization save(Specialization specialization) {

@@ -7,13 +7,13 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 /**
- * @author smriti on 11/11/2019
+ * @author smriti ON 30/01/2020
  */
+@Table(name = "specialization")
 @Entity
-@Table(name = "qualification")
 @Getter
 @Setter
-public class Qualification implements Serializable {
+public class University implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,17 +22,9 @@ public class Qualification implements Serializable {
     @Column(name = "name")
     private String name;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "country")
     private Country country;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "qualification_alias")
-    private QualificationAlias qualificationAlias;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "university")
-    private University university;
 
     @Column(name = "status")
     private Character status;

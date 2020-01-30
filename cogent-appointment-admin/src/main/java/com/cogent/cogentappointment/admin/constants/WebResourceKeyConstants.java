@@ -130,6 +130,10 @@ public class WebResourceKeyConstants {
     //U
     public static final String USERNAME_VARIABLE_BASE = "/{username}";
 
+    public interface UniversityConstants {
+        String BASE_UNIVERSITY = "/university";
+    }
+
 
     //V
 

@@ -117,18 +117,19 @@ public class ProfileQuery {
             "SELECT" +
                     " pm.parent_id as parentId," +                                      //[0]
                     " pm.user_menu_id as userMenuId," +                                 //[1]
-                    " GROUP_CONCAT(pm.role_id) as roleId," +                            //[2]
-                    " d.code as departmentCode," +                                       //[3]
-                    " d.name as departmentName" +                                       //[4]
+                    " GROUP_CONCAT(pm.role_id) as roleId" +                             //[2]
                     " FROM profile_menu pm" +
                     " LEFT JOIN profile p ON p.id =pm.profile_id" +
-                    " LEFT JOIN admin_profile ap ON ap.profile_id = p.id" +
-                    " LEFT JOIN admin a ON a.id = ap.admin_id" +
+                    " LEFT JOIN admin a ON a.profile_id = p.id" +
                     " LEFT JOIN department d ON d.id = p.department_id" +
+                    " LEFT JOIN hospital h ON h.id = d.hospital_id" +
                     " WHERE" +
                     " pm.status = 'Y'" +
-                    " AND ap.status = 'Y'" +
+                    " AND d.status ='Y'" +
+                    " AND h.status ='Y'" +
+                    " AND p.status = 'Y'" +
+                    " AND a.status ='Y'" +
                     " AND (a.username = :username OR a.email=:email)" +
-                    " AND d.code=:code" +
+                    " AND h.code =:hospitalCode" +
                     " GROUP BY pm.parent_id, pm.user_menu_id, pm.profile_id";
 }

@@ -185,6 +185,11 @@ public class SwaggerConstants {
         String FETCH_BY_HOSPITAL_ID = "Fetch active specializations by hospital id";
     }
 
+    public interface SideBarConstant {
+        String BASE_API_VALUE = "This is SideBar Controller";
+        String FETCH_ASSIGNED_PROFILE_RESPONSE = "Fetch assigned profile response";
+    }
+
 
     //T
 

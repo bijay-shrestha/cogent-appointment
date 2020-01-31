@@ -121,6 +121,10 @@ public class WebResourceKeyConstants {
     public static final String SAVE = "/save";
     public static final String SEARCH = "/search";
 
+    public interface SidebarConstants {
+        String BASE_SIDE_BAR = "/sidebar";
+    }
+
 
     public interface SpecializationConstants {
         String BASE_SPECIALIZATION = "/specialization";

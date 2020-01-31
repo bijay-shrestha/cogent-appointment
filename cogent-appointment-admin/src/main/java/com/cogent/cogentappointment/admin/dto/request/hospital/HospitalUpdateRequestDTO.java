@@ -43,6 +43,10 @@ public class HospitalUpdateRequestDTO implements Serializable {
     @NotEmpty
     private String remarks;
 
+    @NotNull
+    @Status
+    private Character isHospital;
+
     @NotEmpty
     private List<HospitalContactNumberUpdateRequestDTO> contactNumberUpdateRequestDTOS;
 }

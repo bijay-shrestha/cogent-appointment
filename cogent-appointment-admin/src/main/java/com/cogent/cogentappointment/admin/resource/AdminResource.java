@@ -139,4 +139,10 @@ public class AdminResource {
     public ResponseEntity<?> fetchAdminMetaInfoDropdown() {
         return ok(adminService.fetchAdminMetaInfoResponseDto());
     }
+
+    @PutMapping(INFO)
+    @ApiOperation(FETCH_LOGGED_IN_ADMIN_INFO)
+    public ResponseEntity<?> fetchLoggedInAdminInfo(@Valid @RequestBody AdminInfoRequestDTO requestDTO) {
+        return ok(adminService.fetchLoggedInAdminInfo(requestDTO));
+    }
 }

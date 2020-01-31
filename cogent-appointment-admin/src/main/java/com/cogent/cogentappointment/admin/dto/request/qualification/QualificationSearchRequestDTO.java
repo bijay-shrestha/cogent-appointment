@@ -16,7 +16,11 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class QualificationSearchRequestDTO implements Serializable {
 
-    private String name;
+    private Long qualificationId;
 
     private Long universityId;
+
+    private Long qualificationAliasId;
+
+    private Character status;
 }

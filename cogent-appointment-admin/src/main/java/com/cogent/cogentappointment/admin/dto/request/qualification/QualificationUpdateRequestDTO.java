@@ -31,9 +31,6 @@ public class QualificationUpdateRequestDTO implements Serializable {
     private Long universityId;
 
     @NotNull
-    private Long countryId;
-
-    @NotNull
     private Long qualificationAliasId;
 
     @NotNull

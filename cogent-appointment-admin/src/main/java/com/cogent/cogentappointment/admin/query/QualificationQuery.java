@@ -46,11 +46,17 @@ public class QualificationQuery {
 
         String whereClause = " WHERE q.status!='D'";
 
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getName()))
-            whereClause += " AND q.name LIKE '%" + searchRequestDTO.getName() + "%'";
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getQualificationId()))
+            whereClause += " AND q.id = " + searchRequestDTO.getQualificationId();
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getUniversityId()))
             whereClause += " AND u.id=" + searchRequestDTO.getUniversityId();
+
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getQualificationAliasId()))
+            whereClause += " AND qa.id=" + searchRequestDTO.getQualificationAliasId();
+
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
+            whereClause += " AND q.status='" + searchRequestDTO.getStatus() + "'";
 
         return whereClause;
     }

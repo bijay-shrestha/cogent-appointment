@@ -36,7 +36,7 @@ public class HospitalUtils {
         hospital.setAddress(hospitalRequestDTO.getAddress());
         hospital.setPanNumber(hospitalRequestDTO.getPanNumber());
         hospital.setStatus(hospitalRequestDTO.getStatus());
-        hospital.setIsHospital(hospitalRequestDTO.getIsHospital());
+        hospital.setIsCogentAdmin(hospitalRequestDTO.getIsHospital());
         hospital.setApiKey(generateApiKey());
         hospital.setApiSecret(generateApiSecret());
         return hospital;
@@ -72,7 +72,7 @@ public class HospitalUtils {
         hospital.setPanNumber(updateRequestDTO.getPanNumber());
         hospital.setStatus(updateRequestDTO.getStatus());
         hospital.setRemarks(updateRequestDTO.getRemarks());
-        hospital.setIsHospital(updateRequestDTO.getIsHospital());
+        hospital.setIsCogentAdmin(updateRequestDTO.getIsHospital());
     }
 
     public static HospitalContactNumber parseToUpdatedHospitalContactNumber(

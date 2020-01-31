@@ -11,16 +11,9 @@ import java.io.Serializable;
  */
 @Getter
 @Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class ProfileMenuSearchRequestDTO implements Serializable {
 
     @NotNull
     @NotEmpty
     private String username;
-
-    @NotNull
-    @NotEmpty
-    private String hospitalCode;
 }

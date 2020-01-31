@@ -56,9 +56,10 @@ public class Appointment implements Serializable {
     @Column(name = "created_date_nepali")
     private String createdDateNepali;
 
-    /* /*I = Incomplete
-     * C = Cancel
-     * S= Success
+    /* PA = PENDING APPROVAL
+    A= APPROVED
+    R= REJECTED
+    C = CANCELLED
      */
     @Column(name = "status")
     private Character status;

@@ -36,8 +36,10 @@ public class Hospital extends Auditable<String> implements Serializable {
     @Column(name = "pan_number")
     private String panNumber;
 
-    @Column(name = "is_hospital")
-    private Character isHospital;
+    /*Y= IF COGENT ADMIN
+     * N= IF HOSPITALS ADMIN*/
+    @Column(name = "is_cogent_admin")
+    private Character isCogentAdmin;
 
     @Column(name = "status")
     private Character status;

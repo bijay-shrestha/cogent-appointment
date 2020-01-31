@@ -7,7 +7,6 @@ import com.cogent.cogentappointment.admin.constants.StringConstant;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.*;
 import com.cogent.cogentappointment.admin.dto.request.email.EmailRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.admin.AdminInfoByUsernameResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.admin.enums.Gender;
 import com.cogent.cogentappointment.admin.model.*;
@@ -17,7 +16,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
@@ -223,20 +224,6 @@ public class AdminUtils {
         Admin admin = confirmationToken.getAdmin();
         admin.setPassword(BCrypt.hashpw(requestDTO.getPassword(), BCrypt.gensalt()));
         return admin;
-    }
-
-    public static AdminInfoByUsernameResponseDTO parseToAdminInfoByUsernameResponseDTO(Object[] queryResult) {
-
-        final int ASSIGNED_SUB_DEPARTMENT_CODES_INDEX = 0;
-        final int PASSWORD_INDEX = 1;
-
-        List<String> subDepartmentCodes = new ArrayList<>(Arrays.asList(
-                queryResult[ASSIGNED_SUB_DEPARTMENT_CODES_INDEX].toString().split(StringConstant.COMMA_SEPARATED)));
-
-        return AdminInfoByUsernameResponseDTO.builder()
-                .assignedApplicationModuleCodes(subDepartmentCodes)
-                .password(queryResult[PASSWORD_INDEX].toString())
-                .build();
     }
 
     public static EmailRequestDTO parseToResetPasswordEmailRequestDTO(AdminResetPasswordRequestDTO requestDTO,

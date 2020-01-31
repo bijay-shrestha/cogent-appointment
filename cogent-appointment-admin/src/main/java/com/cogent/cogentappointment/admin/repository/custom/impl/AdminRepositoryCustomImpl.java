@@ -10,7 +10,6 @@ import com.cogent.cogentappointment.admin.dto.response.admin.*;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.model.Admin;
 import com.cogent.cogentappointment.admin.repository.custom.AdminRepositoryCustom;
-import com.cogent.cogentappointment.admin.utils.AdminUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -124,25 +123,6 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         } catch (NoResultException e) {
             throw new NoContentFoundException(ErrorMessageConstants.AdminServiceMessages.ADMIN_INFO_NOT_FOUND);
         }
-    }
-
-    @Override
-    public AdminInfoByUsernameResponseDTO fetchAdminInfoByUsername(String username) {
-        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_ADMIN_INFO_BY_USERNAME)
-                .setParameter(QueryConstants.USERNAME, username)
-                .setParameter(QueryConstants.EMAIL, username);
-
-        List<Object[]> results = query.getResultList();
-
-        return results.isEmpty() ? null : AdminUtils.parseToAdminInfoByUsernameResponseDTO(results.get(0));
-    }
-
-    @Override
-    public List<AdminSubDepartmentResponseDTO> fetchLoggedInAdminSubDepartmentList(String username) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_LOGGED_IN_ADMIN_SUB_DEPARTMENT_LIST)
-                .setParameter(QueryConstants.USERNAME, username);
-
-        return transformQueryToResultList(query, AdminSubDepartmentResponseDTO.class);
     }
 
     public AdminDetailResponseDTO fetchAdminDetailResponseDTO(Long id) {

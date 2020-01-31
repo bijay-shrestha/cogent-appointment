@@ -5,24 +5,24 @@ import com.cogent.cogentappointment.client.constants.StringConstant;
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.admin.*;
 import com.cogent.cogentappointment.client.dto.request.email.EmailRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.admin.AdminInfoByUsernameResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.client.enums.Gender;
 import com.cogent.cogentappointment.client.model.Admin;
 import com.cogent.cogentappointment.client.model.*;
 import com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils;
-import com.cogent.cogentappointment.client.utils.commons.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.client.constants.EmailConstants.*;
 import static com.cogent.cogentappointment.client.constants.EmailTemplates.*;
-import static com.cogent.cogentappointment.client.utils.commons.StringUtil.*;
+import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toUpperCase;
 
 /**
  * @author smriti on 2019-08-11
@@ -226,20 +226,6 @@ public class AdminUtils {
         Admin admin = confirmationToken.getAdmin();
         admin.setPassword(BCrypt.hashpw(requestDTO.getPassword(), BCrypt.gensalt()));
         return admin;
-    }
-
-    public static AdminInfoByUsernameResponseDTO parseToAdminInfoByUsernameResponseDTO(Object[] queryResult) {
-
-        final int ASSIGNED_SUB_DEPARTMENT_CODES_INDEX = 0;
-        final int PASSWORD_INDEX = 1;
-
-        List<String> subDepartmentCodes = new ArrayList<>(Arrays.asList(
-                queryResult[ASSIGNED_SUB_DEPARTMENT_CODES_INDEX].toString().split(StringConstant.COMMA_SEPARATED)));
-
-        return AdminInfoByUsernameResponseDTO.builder()
-                .assignedApplicationModuleCodes(subDepartmentCodes)
-                .password(queryResult[PASSWORD_INDEX].toString())
-                .build();
     }
 
     public static EmailRequestDTO parseToResetPasswordEmailRequestDTO(AdminResetPasswordRequestDTO requestDTO,

@@ -1,18 +1,14 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
-import com.cogent.cogentappointment.client.constants.ErrorMessageConstants;
 import com.cogent.cogentappointment.client.constants.QueryConstants;
 import com.cogent.cogentappointment.client.constants.StatusConstants;
 import com.cogent.cogentappointment.client.dto.request.admin.AdminInfoRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.admin.AdminSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.admin.AdminUpdateRequestDTO;
+import com.cogent.cogentappointment.client.dto.response.admin.*;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.model.Admin;
-import com.cogent.cogentappointment.client.query.AdminQuery;
 import com.cogent.cogentappointment.client.repository.custom.AdminRepositoryCustom;
-import com.cogent.cogentappointment.client.utils.commons.PageableUtils;
-import com.cogent.cogentappointment.client.utils.commons.QueryUtils;
-import com.cogent.cogentappointment.client.dto.response.admin.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,9 +22,10 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AdminServiceMessages;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AdminServiceMessages.ADMIN_INFO_NOT_FOUND;
 import static com.cogent.cogentappointment.client.query.AdminQuery.*;
-import static com.cogent.cogentappointment.client.utils.AdminUtils.parseToAdminInfoByUsernameResponseDTO;
-import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.*;
+import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
 
 /**
@@ -121,33 +118,13 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ADMIN_INFO)
                 .setParameter(QueryConstants.USERNAME, requestDTO.getUsername())
-                .setParameter(QueryConstants.EMAIL, requestDTO.getUsername())
-                .setParameter(QueryConstants.CODE, requestDTO.getSubDepartmentCode());
+                .setParameter(QueryConstants.EMAIL, requestDTO.getUsername());
 
         try {
             return transformQueryToSingleResult(query, AdminLoggedInInfoResponseDTO.class);
         } catch (NoResultException e) {
-            throw new NoContentFoundException(ErrorMessageConstants.AdminServiceMessages.ADMIN_INFO_NOT_FOUND);
+            throw new NoContentFoundException(ADMIN_INFO_NOT_FOUND);
         }
-    }
-
-    @Override
-    public AdminInfoByUsernameResponseDTO fetchAdminInfoByUsername(String username) {
-        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_ADMIN_INFO_BY_USERNAME)
-                .setParameter(QueryConstants.USERNAME, username)
-                .setParameter(QueryConstants.EMAIL, username);
-
-        List<Object[]> results = query.getResultList();
-
-        return results.isEmpty() ? null : parseToAdminInfoByUsernameResponseDTO(results.get(0));
-    }
-
-    @Override
-    public List<AdminSubDepartmentResponseDTO> fetchLoggedInAdminSubDepartmentList(String username) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_LOGGED_IN_ADMIN_SUB_DEPARTMENT_LIST)
-                .setParameter(QueryConstants.USERNAME, username);
-
-        return transformQueryToResultList(query, AdminSubDepartmentResponseDTO.class);
     }
 
     public AdminDetailResponseDTO fetchAdminDetailResponseDTO(Long id) {
@@ -176,7 +153,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     };
 
     private Function<String, NoContentFoundException> ADMIN_NOT_FOUND = (username) -> {
-        throw new NoContentFoundException(String.format(ErrorMessageConstants.AdminServiceMessages.ADMIN_NOT_FOUND, username),
+        throw new NoContentFoundException(String.format(AdminServiceMessages.ADMIN_NOT_FOUND, username),
                 "username/email", username);
     };
 }

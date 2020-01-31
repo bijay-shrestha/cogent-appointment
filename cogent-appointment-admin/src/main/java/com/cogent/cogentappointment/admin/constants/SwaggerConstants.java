@@ -36,10 +36,6 @@ public class SwaggerConstants {
         String SAVE_PASSWORD_OPERATION = "Save admin password";
         String FETCH_LOGGED_IN_ADMIN_INFO = "Fetch logged in admin information." +
                 " Used to show in top-bar and to validate if the admin updates its own profile";
-        String FETCH_INFO_BY_USERNAME = "Fetch admin info by username. Used in UserDetailsServiceImpl to " +
-                " fetch admin password and its respective assigned modules (sub-department code)";
-        String FETCH_ASSIGNED_SUB_DEPARTMENTS = "Fetch all sub-departments assigned to an admin." +
-                "Used in top-bar and display all assigned sub-departments to facilitate single-sign on feature";
         String FETCH_ADMIN_META_INFO = "Fetch active admin meta info for dropdown";
     }
 

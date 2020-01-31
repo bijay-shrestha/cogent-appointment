@@ -146,22 +146,27 @@ public class AdminQuery {
                     " AND a.status != 'D'";
 
     public static final String QUERY_TO_FETCH_ADMIN_INFO =
-            " SELECT a.id as adminId," +                                                //[0]
-                    " a.username as username," +                                        //[1]
-                    " a.fullName as fullName," +                                        //[2]
-                    " sd.id as subDepartmentId," +                                      //[3]
-                    " sd.name as subDepartmentName," +                                  //[4]
-                    " sd.department.id as departmentId," +                               //[5]
-                    " p.name as profileName," +                                         //[6]
-                    " p.id as profileId" +                                              //[7]
-                    " FROM Admin a " +
-                    " LEFT JOIN AdminProfile ap ON ap.adminId = a.id" +
-                    " LEFT JOIN Profile p ON p.id = ap.profileId" +
-                    " LEFT JOIN SubDepartment sd ON sd.id = p.subDepartment.id" +
-                    " WHERE" +
-                    " a.status = 'Y'" +
-                    " AND (a.username=:username OR a.email =:email)" +
-                    " AND sd.code=:code";
+            " SELECT" +
+                    " a.id as adminId," +
+                    " a.username as username," +
+                    " a.fullName as fullName," +
+                    " CASE " +
+                    "    WHEN (av.status = 'N' OR  av.status IS NULL) THEN null" +
+                    "    ELSE av.fileUri END as fileUri," +
+                    " p.id as profileId," +
+                    " p.name as profileName," +
+                    " d.id as departmentId," +
+                    " d.name as departmentName," +
+                    " h.id as hospitalId," +
+                    " h.name as hospitalName" +
+                    " FROM Admin a" +
+                    " LEFT JOIN AdminAvatar av ON av.admin.id=a.id" +
+                    " LEFT JOIN Profile p ON p.id=a.profileId.id" +
+                    " LEFT JOIN Department d ON d.id=p.department.id" +
+                    " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
+                    " WHERE " +
+                    " (a.username=:username OR a.email =:email)" +
+                    " AND a.status='Y'";
 
     public static final String QUERY_TO_FETCH_ADMIN_INFO_BY_USERNAME =
             " SELECT GROUP_CONCAT(sd.code)," +                                                              //[0]

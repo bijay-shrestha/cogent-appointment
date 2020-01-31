@@ -50,6 +50,7 @@ public class Admin implements Serializable {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_id")
     private Profile profileId;
+
 }
 
 

@@ -82,6 +82,7 @@ public class WebResourceKeyConstants {
     //K
 
     //L
+    public static final String LOGIN = "/login";
 
     //M
     public static final String MIN = "/min";

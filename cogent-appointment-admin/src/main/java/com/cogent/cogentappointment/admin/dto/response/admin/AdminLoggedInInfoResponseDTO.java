@@ -18,13 +18,17 @@ public class AdminLoggedInInfoResponseDTO implements Serializable {
 
     private String fullName;
 
+    private String fileUri;
+
     private Long departmentId;
 
-    private Long subDepartmentId;
-
-    private String subDepartmentName;
+    private String departmentName;
 
     private Long profileId;
 
     private String profileName;
+
+    private Long hospitalId;
+
+    private String hospitalName;
 }

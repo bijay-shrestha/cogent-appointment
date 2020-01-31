@@ -6,6 +6,7 @@ import com.cogent.cogentappointment.admin.constants.StringConstant;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.*;
 import com.cogent.cogentappointment.admin.dto.request.email.EmailRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.login.LoginRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.admin.*;
 import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.admin.enums.Gender;
@@ -284,7 +285,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public AdminLoggedInInfoResponseDTO fetchLoggedInAdminInfo(AdminInfoRequestDTO requestDTO) {
+    public AdminLoggedInInfoResponseDTO fetchLoggedInAdminInfo(LoginRequestDTO requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 

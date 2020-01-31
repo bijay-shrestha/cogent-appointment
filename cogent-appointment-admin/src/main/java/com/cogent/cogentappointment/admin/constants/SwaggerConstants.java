@@ -6,6 +6,18 @@ public class SwaggerConstants {
     public static String PATH_REGEX = "/api.*";
 
     //A
+    public static final String[] AUTH_WHITELIST = {
+            // -- swagger ui
+            "/v2/api-docs",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui.html",
+            "/webjars/**"
+            // other public endpoints of your API may be appended to this array
+    };
+
     public interface AdminConstant {
         String BASE_API_VALUE = "This is Admin Controller";
         String SAVE_OPERATION = "Save new admin";
@@ -41,6 +53,11 @@ public class SwaggerConstants {
         String SEARCH_OPERATION = "Search appointment according to given request parameters";
         String DETAILS_OPERATION = "Fetch appointment details by its id";
         String RESCHEDULE_OPERATION = "Reschedule appointment date and time.";
+    }
+
+    public interface AuthenticateConstant {
+        String BASE_API_VALUE = "This is Login and SignUp Controller.";
+        String LOGIN_OPERATION = "Login User";
     }
 
     //B
@@ -100,7 +117,6 @@ public class SwaggerConstants {
         String VERIFY_RESET_CODE = "Verify if the reset code is valid and has not expired";
         String UPDATE_PASSWORD = "Update password of respective admin (Reset password)";
     }
-
 
 
     //G

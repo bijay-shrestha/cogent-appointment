@@ -1,3 +1,4 @@
+
 package com.cogent.cogentappointment.admin.model;
 
 import lombok.Getter;

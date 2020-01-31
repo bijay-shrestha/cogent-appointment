@@ -11,4 +11,8 @@ public class PatternConstants {
     public static final String MAC_ADDRESS_PATTERN = "^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$";
 
     public static final String SPECIAL_CHARACTER_PATTERN = "^[~@&!~#%*(){}+=.,]$";
+
+    public static final String AUTHORIZATION_HEADER_PATTERN = "^(\\w+) (\\S+):(\\S+):(\\S+):([\\S]+)$";
+
+    public static final String AUTHORIZATION_HEADER_PATTERN_FOR_ESEWA = "^(\\w+) (\\S+):(\\S+):([\\S]+)$";
 }

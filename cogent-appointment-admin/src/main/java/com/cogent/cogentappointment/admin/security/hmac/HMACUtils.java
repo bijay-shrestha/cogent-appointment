@@ -44,28 +44,4 @@ public class HMACUtils {
         return authToken;
     }
 
-    public String getAuthTokenForEsewa(HttpServletRequest request) {
-        final String nonce = generateNonce();
-
-        final HMACBuilder signatureBuilder = new HMACBuilder()
-                .algorithm(HMAC_ALGORITHM)
-                .scheme(request.getScheme())
-                .host(request.getServerName() + ":" + request.getServerPort())
-                .nonce(nonce)
-                .apiKey(HMAC_API_KEY);
-
-        final String signature = signatureBuilder
-                .buildAsBase64String();
-
-        String authToken = HMAC_ALGORITHM +
-                SPACE +
-                HMAC_API_KEY +
-                COLON +
-                nonce +
-                COLON +
-                signature;
-
-        return authToken;
-    }
-
 }

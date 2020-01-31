@@ -20,5 +20,5 @@ public class AdminInfoRequestDTO implements Serializable {
 
     @NotNull
     @NotEmpty
-    private String subDepartmentCode;
+    private String email;
 }

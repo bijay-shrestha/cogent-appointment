@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.admin.resource;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.*;
+import com.cogent.cogentappointment.admin.dto.request.login.LoginRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.admin.AdminInfoByUsernameResponseDTO;
 import com.cogent.cogentappointment.admin.service.AdminService;
 import com.cogent.cogentappointment.admin.utils.commons.ObjectMapperUtils;
@@ -122,7 +123,7 @@ public class AdminResource {
 
     @PutMapping(AdminConstants.INFO)
     @ApiOperation(FETCH_LOGGED_IN_ADMIN_INFO)
-    public ResponseEntity<?> fetchLoggedInAdminInfo(@Valid @RequestBody AdminInfoRequestDTO requestDTO) {
+    public ResponseEntity<?> fetchLoggedInAdminInfo(@Valid @RequestBody LoginRequestDTO requestDTO) {
         return ok(adminService.fetchLoggedInAdminInfo(requestDTO));
     }
 

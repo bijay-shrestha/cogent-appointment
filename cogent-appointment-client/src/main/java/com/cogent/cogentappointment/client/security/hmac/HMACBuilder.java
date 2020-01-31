@@ -84,6 +84,7 @@ public class HMACBuilder {
     }
 
     public String buildAsBase64String() {
+
         return DatatypeConverter.printBase64Binary(build());
     }
 

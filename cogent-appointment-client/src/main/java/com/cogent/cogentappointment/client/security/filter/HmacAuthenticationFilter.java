@@ -102,12 +102,12 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
         if (!authHeaderMatcher.matches()) {
             return null;
         }
-        final String algorithm = authHeaderMatcher.group(1);
-        final String username = authHeaderMatcher.group(2);
-        final String apiKey = authHeaderMatcher.group(3);
-        final String nonce = authHeaderMatcher.group(4);
-        final String receivedDigest = authHeaderMatcher.group(5);
-        return new AuthHeader(algorithm, apiKey, username, nonce, DatatypeConverter.parseBase64Binary(receivedDigest));
+
+        return new AuthHeader(authHeaderMatcher.group(1),
+                authHeaderMatcher.group(3),
+                authHeaderMatcher.group(2),
+                authHeaderMatcher.group(4),
+                DatatypeConverter.parseBase64Binary(authHeaderMatcher.group(5)));
     }
 
     public static AuthHeader getAuthHeaderForeSewa(HttpServletRequest request) {
@@ -119,12 +119,12 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
         if (!authHeaderMatcher.matches()) {
             return null;
         }
-        final String algorithm = authHeaderMatcher.group(1);
-        final String apiKey = authHeaderMatcher.group(2);
-        final String nonce = authHeaderMatcher.group(3);
-        final String receivedDigest = authHeaderMatcher.group(4);
-        return new AuthHeader(algorithm, apiKey, null, nonce, DatatypeConverter
-                .parseBase64Binary(receivedDigest));
+      
+        return new AuthHeader(authHeaderMatcher.group(1),
+                authHeaderMatcher.group(2),
+                null,
+                authHeaderMatcher.group(3),
+                DatatypeConverter.parseBase64Binary( authHeaderMatcher.group(4)));
     }
 
 }

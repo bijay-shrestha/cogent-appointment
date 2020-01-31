@@ -33,6 +33,6 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     public String loginUser(HttpServletRequest request, LoginRequestDTO requestDTO) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(requestDTO.getUsername(), requestDTO.getPassword()));
-        return hmacUtils.getAuthToken(request,authentication);
+        return hmacUtils.getAuthToken(request, authentication);
     }
 }

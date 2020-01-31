@@ -44,20 +44,14 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
         final AuthHeader authHeader = getAuthHeader(request);
 
-        final AuthHeader eSewaAuthHeader = getAuthHeaderForeSewa(request);
-
         if (authHeader != null) {
-
             String apiKey = authHeader.getApiKey();
-
             UserDetails userDetails = userDetailsService.loadUserByUsername(authHeader.getUsername());
             final HMACBuilder signatureBuilder = new HMACBuilder()
                     .algorithm(authHeader.getAlgorithm())
-                    .host(request.getServerName() + ":" + request.getServerPort())
                     .nonce(authHeader.getNonce())
                     .username(userDetails.getUsername())
-                    .apiKey(apiKey)
-                    .scheme(request.getScheme());
+                    .apiKey(apiKey);
 
             if (!signatureBuilder.isHashEquals(authHeader.getDigest())) {
                 throw new BadCredentialsException(HMAC_BAD_SIGNATURE);
@@ -70,26 +64,6 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
-        if (authHeader == null  && eSewaAuthHeader !=null) {
-            String apiKey = eSewaAuthHeader.getApiKey();
-
-            final HMACBuilder signatureBuilder = new HMACBuilder()
-                    .algorithm(eSewaAuthHeader.getAlgorithm())
-                    .host(request.getServerName() + ":" + request.getServerPort())
-                    .nonce(eSewaAuthHeader.getNonce())
-                    .apiKey(apiKey)
-                    .scheme(request.getScheme());
-
-            if (!signatureBuilder.isHashEquals(eSewaAuthHeader.getDigest())) {
-                throw new BadCredentialsException(HMAC_BAD_SIGNATURE);
-            }
-            final PreAuthenticatedAuthenticationToken authentication = new PreAuthenticatedAuthenticationToken(
-                    apiKey,
-                    null,
-                    null);
-            authentication.setDetails(apiKey);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-        }
         try {
             filterChain.doFilter(request, response);
         } finally {
@@ -106,28 +80,11 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
         if (!authHeaderMatcher.matches()) {
             return null;
         }
-        final String algorithm = authHeaderMatcher.group(1);
-        final String username = authHeaderMatcher.group(2);
-        final String apiKey = authHeaderMatcher.group(3);
-        final String nonce = authHeaderMatcher.group(4);
-        final String receivedDigest = authHeaderMatcher.group(5);
-        return new AuthHeader(algorithm, apiKey, username, nonce, DatatypeConverter.parseBase64Binary(receivedDigest));
-    }
-
-    public static AuthHeader getAuthHeaderForeSewa(HttpServletRequest request) {
-        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (authHeader == null) {
-            return null;
-        }
-        final Matcher authHeaderMatcher = Pattern.compile(AUTHORIZATION_HEADER_PATTERN_FOR_ESEWA).matcher(authHeader);
-        if (!authHeaderMatcher.matches()) {
-            return null;
-        }
-        final String algorithm = authHeaderMatcher.group(1);
-        final String apiKey = authHeaderMatcher.group(2);
-        final String nonce = authHeaderMatcher.group(3);
-        final String receivedDigest = authHeaderMatcher.group(4);
-        return new AuthHeader(algorithm, apiKey, null, nonce, DatatypeConverter.parseBase64Binary(receivedDigest));
+        return new AuthHeader(authHeaderMatcher.group(1),
+                authHeaderMatcher.group(3),
+                authHeaderMatcher.group(2),
+                authHeaderMatcher.group(4),
+                DatatypeConverter.parseBase64Binary(authHeaderMatcher.group(5)));
     }
 
 }

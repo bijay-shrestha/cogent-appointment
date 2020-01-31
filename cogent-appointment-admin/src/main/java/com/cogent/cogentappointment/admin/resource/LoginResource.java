@@ -1,6 +1,8 @@
 package com.cogent.cogentappointment.admin.resource;
 
 import com.cogent.cogentappointment.admin.dto.request.login.LoginRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.admin.AdminLoggedInInfoResponseDTO;
+import com.cogent.cogentappointment.admin.service.impl.AdminServiceImpl;
 import com.cogent.cogentappointment.admin.service.impl.AuthenticateServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -28,16 +30,19 @@ public class LoginResource {
 
     private final AuthenticateServiceImpl authenticateService;
 
-    public LoginResource(AuthenticateServiceImpl authenticateService) {
+    private final AdminServiceImpl adminService;
+
+    public LoginResource(AuthenticateServiceImpl authenticateService, AdminServiceImpl adminService) {
         this.authenticateService = authenticateService;
+        this.adminService = adminService;
     }
 
     @PostMapping(LOGIN)
     @ApiOperation(LOGIN_OPERATION)
-    public ResponseEntity<?> login(HttpServletRequest request, @RequestBody LoginRequestDTO requestDTO) {
+    public ResponseEntity<AdminLoggedInInfoResponseDTO> login(HttpServletRequest request, @RequestBody LoginRequestDTO requestDTO) {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.AUTHORIZATION, authenticateService.loginUser(request, requestDTO));
-        return new ResponseEntity<>(headers, HttpStatus.OK);
+        return new ResponseEntity<>( adminService.fetchLoggedInAdminInfo(requestDTO),headers, HttpStatus.OK);
     }
 
 

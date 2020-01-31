@@ -3,9 +3,9 @@ package com.cogent.cogentappointment.admin.repository.custom.impl;
 import com.cogent.cogentappointment.admin.constants.ErrorMessageConstants;
 import com.cogent.cogentappointment.admin.constants.QueryConstants;
 import com.cogent.cogentappointment.admin.constants.StatusConstants;
-import com.cogent.cogentappointment.admin.dto.request.admin.AdminInfoRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.AdminSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.AdminUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.login.LoginRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.admin.*;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.model.Admin;
@@ -114,12 +114,11 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     }
 
     @Override
-    public AdminLoggedInInfoResponseDTO fetchLoggedInAdminInfo(AdminInfoRequestDTO requestDTO) {
+    public AdminLoggedInInfoResponseDTO fetchLoggedInAdminInfo(LoginRequestDTO requestDTO) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ADMIN_INFO)
                 .setParameter(QueryConstants.USERNAME, requestDTO.getUsername())
-                .setParameter(QueryConstants.EMAIL, requestDTO.getUsername())
-                .setParameter(QueryConstants.CODE, requestDTO.getSubDepartmentCode());
+                .setParameter(QueryConstants.EMAIL, requestDTO.getUsername());
 
         try {
             return transformQueryToSingleResult(query, AdminLoggedInInfoResponseDTO.class);

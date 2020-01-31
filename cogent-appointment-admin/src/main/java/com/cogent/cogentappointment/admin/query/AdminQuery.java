@@ -164,7 +164,9 @@ public class AdminQuery {
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                     " LEFT JOIN Department d ON d.id=p.department.id" +
                     " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
-                    " WHERE (a.username=:username OR a.email =:email)";
+                    " WHERE " +
+                    " (a.username=:username OR a.email =:email)" +
+                    " AND a.status='Y'";
 
     public static final String QUERY_TO_FETCH_ADMIN_INFO_BY_USERNAME =
             " SELECT GROUP_CONCAT(sd.code)," +                                                              //[0]

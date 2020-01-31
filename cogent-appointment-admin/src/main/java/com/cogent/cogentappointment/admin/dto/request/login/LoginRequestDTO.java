@@ -2,8 +2,6 @@ package com.cogent.cogentappointment.admin.dto.request.login;
 
 import lombok.*;
 
-import java.io.Serializable;
-
 /**
  * @author Sauravi Thapa २०/१/१३
  */
@@ -13,7 +11,8 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginRequestDTO implements Serializable {
+public class LoginRequestDTO {
+
     private String username;
 
     private String email;

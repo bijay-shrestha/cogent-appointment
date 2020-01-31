@@ -17,6 +17,10 @@ import java.util.List;
 @Qualifier("qualificationRepositoryCustom")
 public interface QualificationRepositoryCustom {
 
+    Long validateDuplicity(String name);
+
+    Long validateDuplicity(Long id, String name);
+
     List<QualificationMinimalResponseDTO> search(QualificationSearchRequestDTO searchRequestDTO,
                                                  Pageable pageable);
 

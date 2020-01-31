@@ -105,7 +105,7 @@ public class AdminQuery {
         if (!ObjectUtils.isEmpty(searchRequestDTO.getHospitalId()))
             whereClause += " AND h.id=" + searchRequestDTO.getHospitalId();
 
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getHospitalId())) {
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getGenderCode())) {
             Gender gender = GenderUtils.fetchGenderByCode(searchRequestDTO.getGenderCode());
             whereClause += " AND a.gender LIKE '%" + gender + "%'";
         }
@@ -119,7 +119,9 @@ public class AdminQuery {
             SELECT_CLAUSE_TO_FETCH_ADMIN + "," +
                     " a.remarks as remarks," +                                      //[10]
                     " h.id as hospitalId," +                                        //[11]
-                    " p.id as profileId " +                                         //[12]
+                    " p.id as profileId," +                                         //[12]
+                    " d.id as departmentId," +
+                    " d.name as departmentName" +
                     " FROM" +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id = a.profileId.id" +

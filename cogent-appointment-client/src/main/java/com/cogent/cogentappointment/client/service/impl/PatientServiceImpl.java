@@ -18,7 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
@@ -27,7 +26,6 @@ import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.PatientLog.PATIENT;
 import static com.cogent.cogentappointment.client.utils.GenderUtils.fetchGenderByCode;
 import static com.cogent.cogentappointment.client.utils.PatientUtils.parseToPatient;
-import static com.cogent.cogentappointment.client.utils.commons.AgeConverterUtils.ageConverter;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 
 /**
@@ -54,8 +52,9 @@ public class PatientServiceImpl implements PatientService {
 
         log.info(SAVING_PROCESS_STARTED, PATIENT);
 
-        Long patientCount = patientRepository.fetchPatientForValidation(requestDTO.getName(),
-                requestDTO.getMobileNumber(), requestDTO.getDateOfBirth());
+        Long patientCount = patientRepository.fetchPatientForValidation(
+                requestDTO.getName(), requestDTO.getMobileNumber(),
+                requestDTO.getDateOfBirth(), requestDTO.getHospitalId());
 
         validatePatientDuplicity(patientCount, requestDTO.getName(),
                 requestDTO.getMobileNumber(), requestDTO.getDateOfBirth());
@@ -74,7 +73,7 @@ public class PatientServiceImpl implements PatientService {
 
         log.info(FETCHING_PROCESS_STARTED, PATIENT);
 
-        Patient patient = patientRepository.fetchActivePatientById(id)
+        Patient patient = patientRepository.fetchRegisteredPatientById(id)
                 .orElseThrow(() -> PATIENT_WITH_GIVEN_ID_NOT_FOUND.apply(id));
 
         log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
@@ -261,9 +260,5 @@ public class PatientServiceImpl implements PatientService {
 //        minimalResponseDTO.setAge(age);
 //        return minimalResponseDTO;
 //    }
-
-    public String convertDateToAge(LocalDate birthdayDate) {
-        return ageConverter(birthdayDate);
-    }
 }
 

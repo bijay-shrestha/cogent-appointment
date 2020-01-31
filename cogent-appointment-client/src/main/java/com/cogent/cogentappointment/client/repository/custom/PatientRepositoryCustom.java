@@ -17,7 +17,8 @@ import java.util.List;
 @Qualifier("patientRepositoryCustom")
 public interface PatientRepositoryCustom {
 
-    Long fetchPatientForValidation(String name, String mobileNumber, Date dateOfBirth);
+    Long fetchPatientForValidation(String name, String mobileNumber,
+                                   Date dateOfBirth, Long hospitalId);
 
     PatientDetailResponseDTO search(PatientSearchRequestDTO searchRequestDTO);
 

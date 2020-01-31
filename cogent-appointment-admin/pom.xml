@@ -34,7 +34,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
-            <scope>runtime</scope>
+            <scope>compile</scope>
             <optional>true</optional>
         </dependency>
 
@@ -78,7 +78,8 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <optional>true</optional>
+            <version>1.18.10</version>
+            <scope>provided</scope>
         </dependency>
 
         <!--TRANSACTIONAL-->

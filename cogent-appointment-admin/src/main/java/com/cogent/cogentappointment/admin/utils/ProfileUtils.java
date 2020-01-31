@@ -71,7 +71,9 @@ public class ProfileUtils {
         List<AssignedRolesResponseDTO> assignedRolesResponseDTOS =
                 parseToAssignedRolesResponseDTOS(childMenusResponseDTOS);
 
-        return parseToAssignedProfileMenuResponseDTO(assignedRolesResponseDTOS, results);
+        return AssignedProfileResponseDTO.builder()
+                .assignedRolesResponseDTOS(assignedRolesResponseDTOS)
+                .build();
     }
 
     private static List<ChildMenusResponseDTO> parseToChildMenusResponseDTOS(List<Object[]> results) {
@@ -112,22 +114,11 @@ public class ProfileUtils {
                 .collect(Collectors.toList());
     }
 
-    private static AssignedProfileResponseDTO parseToAssignedProfileMenuResponseDTO
-            (List<AssignedRolesResponseDTO> assignedRolesResponseDTOS,
-             List<Object[]> queryResults) {
-
-        /*BECAUSE DEPARTMENT DETAILS REMAIN THE SAME*/
-        final int DEPARTMENT_CODE_INDEX = 3;
-        final int DEPARTMENT_NAME_INDEX = 4;
-
-        Object[] firstObject = queryResults.get(0);
-        String departmentName = firstObject[DEPARTMENT_NAME_INDEX].toString();
-        String departmentCode = firstObject[DEPARTMENT_CODE_INDEX].toString();
-
-        return AssignedProfileResponseDTO.builder()
-                .departmentName(departmentName)
-                .departmentCode(departmentCode)
-                .assignedRolesResponseDTOS(assignedRolesResponseDTOS)
-                .build();
-    }
+//    private static AssignedProfileResponseDTO parseToAssignedProfileMenuResponseDTO
+//            (List<AssignedRolesResponseDTO> assignedRolesResponseDTOS) {
+//
+//        return AssignedProfileResponseDTO.builder()
+//                .assignedRolesResponseDTOS(assignedRolesResponseDTOS)
+//                .build();
+//    }
 }

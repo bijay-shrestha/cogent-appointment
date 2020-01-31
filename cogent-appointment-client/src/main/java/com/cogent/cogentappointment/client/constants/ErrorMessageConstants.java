@@ -10,6 +10,7 @@ public class ErrorMessageConstants {
     public interface AppointmentServiceMessage {
         String APPOINTMENT_EXISTS_MESSAGE = "Cannot update doctor duty roster because appointment" +
                 " exists within the selected date range '%s'";
+        String APPOINTMENT_EXISTS = "Appointment already exists for the selected time: '%s'";
     }
 
     public interface AdminServiceMessages {

@@ -20,6 +20,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -99,7 +100,6 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
 
         return detailResponseDTO;
     }
-
 
     @Override
     public Admin fetchAdminByUsernameOrEmail(String username) {

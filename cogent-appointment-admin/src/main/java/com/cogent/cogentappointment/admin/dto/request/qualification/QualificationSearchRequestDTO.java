@@ -18,5 +18,7 @@ public class QualificationSearchRequestDTO implements Serializable {
 
     private String name;
 
-    private String university;
+    private Long universityId;
+
+    private Long countryId;
 }

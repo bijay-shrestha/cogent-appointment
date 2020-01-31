@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.query;
 
+import com.cogent.cogentappointment.client.dto.request.hospital.HospitalMinSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospital.HospitalSearchRequestDTO;
 import org.springframework.util.ObjectUtils;
 
@@ -39,22 +40,22 @@ public class HospitalQuery {
                     " WHERE h.status ='Y'";
 
     public static String QUERY_TO_SEARCH_HOSPITAL(HospitalSearchRequestDTO searchRequestDTO) {
-        return "SELECT" +
-                " h.id as id," +                                //[0]
-                " h.name as name," +                            //[1]
-                " h.status as status," +                        //[2]
-                " h.address as address," +                      //[3]
-                " tbl.file_uri as fileUri," +                  //[4]
-                " h.code as hospitalCode"+                     //[5]
+
+        return " SELECT" +
+                " h.id as id," +                                       //[0]
+                " h.name as name," +                                    //[1]
+                " CASE WHEN" +
+                " (hl.status IS NULL OR hl.status = 'N')" +
+                " THEN null" +
+                " ELSE" +
+                " hl.fileUri" +
+                " END as fileUri," +                                    //[2]
+                " h.status as status," +                                //[3]
+                " h.address as address," +                               //[4]
+                " h.code as hospitalCode" +                              //[5]
                 " FROM" +
-                " hospital h" +
-                " LEFT JOIN" +
-                " (" +
-                " SELECT" +
-                " hl.hospital_id as hospitalId," +
-                " hl.file_uri FROM hospital_logo hl" +
-                " WHERE hl.status = 'Y'" +
-                " )tbl ON tbl.hospitalId= h.id" +
+                " Hospital h" +
+                " LEFT JOIN HospitalLogo hl ON h.id =hl.hospital.id" +
                 GET_WHERE_CLAUSE_FOR_SEARCHING_HOSPITAL.apply(searchRequestDTO);
     }
 
@@ -85,7 +86,7 @@ public class HospitalQuery {
                     " h.pan_number as panNumber," +                  //[4]
                     " h.remarks as remarks," +                      //[5]
                     " tbl1.file_uri as fileUri," +                  //[6]
-                    " h.code as hospitalCode,"+                      //[7]
+                    " h.code as hospitalCode," +                      //[7]
                     " tbl2.contact_details as contact_details" +    //[8]
                     " FROM" +
                     " hospital h" +
@@ -107,4 +108,50 @@ public class HospitalQuery {
                     " )tbl2 ON tbl2.hospitalId = h.id" +
                     " WHERE h.id =:id" +
                     " AND h.status !='D'";
+
+    public static String QUERY_TO_FETCH_MIN_HOSPITAL(HospitalMinSearchRequestDTO requestDTO) {
+
+        String query = " SELECT" +
+                " h.id as value," +                                     //[0]
+                " h.name as label," +                                    //[1]
+                " CASE WHEN" +
+                " (hl.status IS NULL OR hl.status = 'N')" +
+                " THEN null" +
+                " ELSE" +
+                " hl.fileUri" +
+                " END as fileUri" +                                     //[2]
+                " FROM" +
+                " Hospital h" +
+                " LEFT JOIN HospitalLogo hl ON h.id =hl.hospital.id" +
+                " WHERE h.status ='Y'";
+
+        if (!ObjectUtils.isEmpty(requestDTO.getName()))
+            query += " AND h.name LIKE '%" + requestDTO.getName() + "%'";
+
+        return query;
+    }
+
+    public static final String QUERY_TO_FETCH_MIN_HOSPITAL_DETAILS =
+            "SELECT" +
+                    " h.name as name," +                                      //[0]
+                    " h.address as address," +                                //[1]
+                    " CASE WHEN" +
+                    " (hl.status IS NULL OR hl.status = 'N')" +
+                    " THEN null" +
+                    " ELSE" +
+                    " hl.fileUri" +
+                    " END as fileUri" +                                      //[2]
+                    " FROM" +
+                    " Hospital h" +
+                    " LEFT JOIN HospitalLogo hl ON h.id =hl.hospital.id" +
+                    " WHERE h.id =:id" +
+                    " AND h.status ='Y'";
+
+    public static final String QUERY_TO_FETCH_HOSPITAL_CONTACT_NUMBER =
+            " SELECT hc.id, hc.contactNumber" +
+                    " FROM Hospital h  " +
+                    " LEFT JOIN HospitalContactNumber hc ON h.id =hc.hospitalId" +
+                    " WHERE hc.status = 'Y'" +
+                    " AND h.id=:id";
+
 }

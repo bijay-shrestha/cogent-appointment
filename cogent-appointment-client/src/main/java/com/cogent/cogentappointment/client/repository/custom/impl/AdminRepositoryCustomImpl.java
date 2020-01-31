@@ -28,6 +28,7 @@ import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.client.query.AdminQuery.*;
 import static com.cogent.cogentappointment.client.utils.AdminUtils.parseToAdminInfoByUsernameResponseDTO;
+import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
 
 /**
@@ -81,7 +82,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
 
         int totalItems = query.getResultList().size();
 
-        PageableUtils.addPagination.accept(pageable, query);
+        addPagination.accept(pageable, query);
 
         List<AdminMinimalResponseDTO> result = transformQueryToResultList(query, AdminMinimalResponseDTO.class);
 

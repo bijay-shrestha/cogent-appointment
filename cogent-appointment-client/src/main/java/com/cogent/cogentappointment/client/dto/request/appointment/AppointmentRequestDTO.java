@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.client.dto.request.appointment;
 
-import com.cogent.cogentappointment.client.constraintvalidator.Status;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestDTO;
 import lombok.*;
 
@@ -8,6 +7,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
+
 /**
  * @author smriti on 2019-10-22
  */
@@ -34,14 +34,8 @@ public class AppointmentRequestDTO implements Serializable {
     private Date appointmentDate;
 
     @NotNull
-    private Date startTime;
-
-    @NotNull
-    private Date endTime;
-
-    @NotNull
-    @Status
-    private Character status;
+    @NotEmpty
+    private String appointmentTime;
 
     @NotNull
     @NotEmpty

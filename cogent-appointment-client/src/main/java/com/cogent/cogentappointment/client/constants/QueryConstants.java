@@ -6,6 +6,8 @@ package com.cogent.cogentappointment.client.constants;
 public class QueryConstants {
 
     //A
+    public static final String APPOINTMENT_DATE = "appointmentDate";
+    public static final String APPOINTMENT_TIME = "appointmentTime";
 
     //B
 

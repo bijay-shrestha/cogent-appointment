@@ -21,7 +21,7 @@ public class ForgotPasswordUtils {
             int expirationTime,
             ForgotPasswordVerification verification) {
 
-        verification.setResetCode(NumberFormatterUtils.generateRandomNumber(7));
+        verification.setResetCode(NumberFormatterUtils.generateRandomNumber(6));
         verification.setExpirationDate(calculateExpirationDate(expirationTime));
         verification.setAdmin(admin);
         verification.setStatus(StatusConstants.ACTIVE);

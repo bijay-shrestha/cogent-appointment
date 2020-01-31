@@ -20,13 +20,14 @@ import java.io.IOException;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AdminConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AdminConstants.*;
 import static java.net.URI.create;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
-@RequestMapping(value = API_V1 + AdminConstants.BASE_ADMIN)
+@RequestMapping(value = API_V1 + BASE_ADMIN)
 @Api(BASE_API_VALUE)
 public class AdminResource {
 
@@ -44,7 +45,7 @@ public class AdminResource {
 
         AdminRequestDTO adminRequestDTO = ObjectMapperUtils.map(request, AdminRequestDTO.class);
         adminService.save(adminRequestDTO, file, httpServletRequest);
-        return created(create(API_V1 + AdminConstants.BASE_ADMIN)).build();
+        return created(create(API_V1 + BASE_ADMIN)).build();
     }
 
     @GetMapping(ACTIVE + MIN)
@@ -75,21 +76,21 @@ public class AdminResource {
         return ok().build();
     }
 
-    @PutMapping(AdminConstants.CHANGE_PASSWORD)
+    @PutMapping(CHANGE_PASSWORD)
     @ApiOperation(CHANGE_PASSWORD_OPERATION)
     public ResponseEntity<?> changePassword(@Valid @RequestBody AdminChangePasswordRequestDTO requestDTO) {
         adminService.changePassword(requestDTO);
         return ok().build();
     }
 
-    @PutMapping(AdminConstants.RESET_PASSWORD)
+    @PutMapping(RESET_PASSWORD)
     @ApiOperation(RESET_PASSWORD_OPERATION)
     public ResponseEntity<?> resetPassword(@Valid @RequestBody AdminResetPasswordRequestDTO requestDTO) {
         adminService.resetPassword(requestDTO);
         return ok().build();
     }
 
-    @PutMapping(value = AdminConstants.AVATAR, consumes = MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = AVATAR, consumes = MULTIPART_FORM_DATA_VALUE)
     @ApiOperation(UPDATE_AVATAR_OPERATION)
     public ResponseEntity<?> updateAvatar(@RequestParam(value = "files", required = false) MultipartFile file,
                                           @RequestParam("adminId") Long adminId) {
@@ -107,7 +108,7 @@ public class AdminResource {
         return ok().build();
     }
 
-    @GetMapping(AdminConstants.VERIFY)
+    @GetMapping(VERIFY)
     @ApiOperation(VERIFY_ADMIN)
     public ResponseEntity<?> verify(@RequestParam(name = "token") String token) {
         adminService.verifyConfirmationToken(token);
@@ -121,7 +122,7 @@ public class AdminResource {
         return ok().build();
     }
 
-    @PutMapping(AdminConstants.INFO)
+    @PutMapping(INFO)
     @ApiOperation(FETCH_LOGGED_IN_ADMIN_INFO)
     public ResponseEntity<?> fetchLoggedInAdminInfo(@Valid @RequestBody LoginRequestDTO requestDTO) {
         return ok(adminService.fetchLoggedInAdminInfo(requestDTO));
@@ -133,13 +134,13 @@ public class AdminResource {
         return adminService.fetchAdminInfoByUsername(username);
     }
 
-    @GetMapping(AdminConstants.ASSIGNED_SUB_DEPARTMENTS + USERNAME_VARIABLE_BASE)
+    @GetMapping(ASSIGNED_SUB_DEPARTMENTS + USERNAME_VARIABLE_BASE)
     @ApiOperation(FETCH_ASSIGNED_SUB_DEPARTMENTS)
     public ResponseEntity<?> fetchLoggedInAdminSubDepartmentInfo(@PathVariable("username") String username) {
         return ok(adminService.fetchLoggedInAdminSubDepartmentList(username));
     }
 
-    @GetMapping(AdminConstants.ADMIN_META_INFO)
+    @GetMapping(ADMIN_META_INFO)
     @ApiOperation(FETCH_ADMIN_META_INFO)
     public ResponseEntity<?> fetchAdminMetaInfoDropdown() {
         return ok(adminService.fetchAdminMetaInfoResponseDto());

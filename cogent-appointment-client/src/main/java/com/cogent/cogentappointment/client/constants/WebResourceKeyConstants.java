@@ -45,6 +45,7 @@ public class WebResourceKeyConstants {
 
     public interface DoctorConstants {
         String BASE_DOCTOR = "/doctor";
+        String DOCTOR_WISE = "/doctor-wise";
         String UPDATE_DETAILS = "/updateDetails";
         String DOCTOR_ID_PATH_VARIABLE_BASE = "/{doctorId}";
     }
@@ -71,6 +72,7 @@ public class WebResourceKeyConstants {
     //H
     public interface HospitalConstants {
         String BASE_HOSPITAL = "/hospital";
+        String HOSPITAL_WISE = "/hospital-wise";
         String HOSPITAL_ID_PATH_VARIABLE_BASE = "/{hospitalId}";
     }
 
@@ -123,6 +125,7 @@ public class WebResourceKeyConstants {
 
     public interface SpecializationConstants {
         String BASE_SPECIALIZATION = "/specialization";
+        String SPECIALIZATION_WISE = "/specialization-wise";
         String SPECIALIZATION_ID_PATH_VARIABLE_BASE = "/{specializationId}";
     }
 

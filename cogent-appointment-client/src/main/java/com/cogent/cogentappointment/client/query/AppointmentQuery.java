@@ -11,6 +11,15 @@ import java.util.function.Function;
  */
 public class AppointmentQuery {
 
+    public static String QUERY_TO_VALIDATE_APPOINTMENT_EXISTS =
+            "SELECT COUNT(a.id)" +
+                    " FROM  Appointment a" +
+                    " WHERE  a.appointmentDate =:appointmentDate" +
+                    " AND a.doctorId.id =:doctorId" +
+                    " AND a.specializationId.id =:specializationId" +
+                    " AND DATE_FORMAT(a.appointmentTime,'%H:%i') =:appointmentTime" +
+                    " AND a.status='PA'";
+
     public static Function<AppointmentSearchRequestDTO, String> QUERY_TO_SEARCH_APPOINTMENT =
             (searchRequestDTO) -> " SELECT" +
                     " a.id as appointmentId," +                                 //[0]
@@ -118,14 +127,13 @@ public class AppointmentQuery {
                     " ORDER BY id DESC LIMIT 1";
 
     public static String QUERY_TO_FETCH_BOOKED_APPOINTMENT =
-            "SELECT DATE_FORMAT(a.startTime, '%H:%i') as startTime," +                          //[0]
-                    " DATE_FORMAT(a.endTime, '%H:%i') as endTime" +                             //[1]
+            "SELECT DATE_FORMAT(a.appointmentTime, '%H:%i') as appointmentTime" +               //[0]
                     " FROM Appointment a" +
                     " WHERE" +
                     " a.appointmentDate = :date" +
                     " AND a.doctorId.id = :doctorId" +
                     " AND a.specializationId.id = :specializationId" +
-                    " AND a.status != 'C'";
+                    " AND a.status = 'PA'";
 
 //    public static String QUERY_TO_FETCH_APPOINTMENT_FOR_APPOINTMENT_STATUS(AppointmentStatusRequestDTO requestDTO) {
 //

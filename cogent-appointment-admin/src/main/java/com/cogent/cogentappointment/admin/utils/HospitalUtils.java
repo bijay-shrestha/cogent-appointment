@@ -7,12 +7,12 @@ import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalContactNu
 import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalContactNumberResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalResponseDTO;
 import com.cogent.cogentappointment.admin.model.Hospital;
 import com.cogent.cogentappointment.admin.model.HospitalContactNumber;
 import com.cogent.cogentappointment.admin.model.HospitalLogo;
 import com.cogent.cogentappointment.admin.utils.commons.StringUtil;
-import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalContactNumberResponseDTO;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -134,6 +134,7 @@ public class HospitalUtils {
                 .map(contactDetails -> HospitalContactNumberResponseDTO.builder()
                         .hospitalContactNumberId(Long.parseLong(contactDetails[0]))
                         .contactNumber(contactDetails[1])
+                        .status(contactDetails[2].charAt(0))
                         .build())
                 .collect(Collectors.toList());
     }

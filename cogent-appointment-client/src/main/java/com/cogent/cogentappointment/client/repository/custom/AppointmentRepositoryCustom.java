@@ -20,7 +20,10 @@ import java.util.List;
 @Qualifier("appointmentRepositoryCustom")
 public interface AppointmentRepositoryCustom {
 
-    List<AppointmentBookedTimeResponseDTO> checkAvailability(AppointmentCheckAvailabilityRequestDTO requestDTO);
+    Long validateIfAppointmentExists(Date appointmentDate, String appointmentTime,
+                                     Long doctorId, Long specializationId);
+
+    List<AppointmentBookedTimeResponseDTO> fetchBookedAppointments(AppointmentCheckAvailabilityRequestDTO requestDTO);
 
     String generateAppointmentNumber(String nepaliCreatedDate);
 

@@ -1,7 +1,10 @@
 package com.cogent.cogentappointment.client.service.impl;
 
+import com.cogent.cogentappointment.client.dto.request.appointment.*;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.*;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
+import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.model.Appointment;
 import com.cogent.cogentappointment.client.model.Doctor;
@@ -14,9 +17,9 @@ import com.cogent.cogentappointment.client.service.AppointmentService;
 import com.cogent.cogentappointment.client.service.DoctorService;
 import com.cogent.cogentappointment.client.service.PatientService;
 import com.cogent.cogentappointment.client.service.SpecializationService;
-import com.cogent.cogentappointment.client.dto.request.appointment.*;
-import com.cogent.cogentappointment.client.dto.response.appointment.*;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.Duration;
+import org.joda.time.Minutes;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,11 +30,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AppointmentServiceMessage.APPOINTMENT_EXISTS;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
-import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.*;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.FETCHING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.FETCHING_PROCESS_STARTED;
+import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.*;
 import static com.cogent.cogentappointment.client.utils.AppointmentUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 
@@ -69,8 +73,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.doctorDutyRosterOverrideRepository = doctorDutyRosterOverrideRepository;
     }
 
+    /*WITH END TIME AND 12 HOUR FORMAT*/
     @Override
-    public AppointmentCheckAvailabilityResponseDTO checkAvailability(AppointmentCheckAvailabilityRequestDTO requestDTO) {
+    public AppointmentCheckAvailabilityResponseDTO checkAvailabilityWithEndTime(
+            AppointmentCheckAvailabilityRequestDTO requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -82,15 +88,15 @@ public class AppointmentServiceImpl implements AppointmentService {
         AppointmentCheckAvailabilityResponseDTO responseDTO;
 
         if (doctorDutyRosterInfo.getDayOffStatus().equals(YES)) {
-            responseDTO = parseToAppointmentCheckAvailabilityResponseDTO(doctorDutyRosterInfo, new ArrayList<>());
+            responseDTO = parseToAppointmentResponseWithEndTime(doctorDutyRosterInfo, new ArrayList<>());
         } else {
             List<AppointmentBookedTimeResponseDTO> bookedAppointments =
-                    appointmentRepository.checkAvailability(requestDTO);
+                    appointmentRepository.fetchBookedAppointments(requestDTO);
 
             List<AppointmentAvailabilityResponseDTO> availableSlots =
-                    parseToAppointmentAvailabilityResponseDTO(doctorDutyRosterInfo, bookedAppointments);
+                    parseToResponseDTOWithEndTime(doctorDutyRosterInfo, bookedAppointments);
 
-            responseDTO = parseToAppointmentCheckAvailabilityResponseDTO(doctorDutyRosterInfo, availableSlots);
+            responseDTO = parseToAppointmentResponseWithEndTime(doctorDutyRosterInfo, availableSlots);
         }
 
         log.info(CHECK_AVAILABILITY_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
@@ -99,11 +105,64 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public String save(AppointmentRequestDTO appointmentRequestDTO) {
+    public AppointmentCheckAvailabilityMinResponseDTO checkAvailability(
+            AppointmentCheckAvailabilityRequestDTO requestDTO) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(CHECK_AVAILABILITY_PROCESS_STARTED);
+
+        DoctorDutyRosterTimeResponseDTO doctorDutyRosterInfo = fetchDoctorDutyRosterInfo(
+                requestDTO.getAppointmentDate(), requestDTO.getDoctorId(), requestDTO.getSpecializationId());
+
+        Date queryDate = utilDateToSqlDate(requestDTO.getAppointmentDate());
+        String doctorStartTime = getTimeFromDate(doctorDutyRosterInfo.getStartTime());
+        String doctorEndTime = getTimeFromDate(doctorDutyRosterInfo.getEndTime());
+
+        AppointmentCheckAvailabilityMinResponseDTO responseDTO;
+
+        if (doctorDutyRosterInfo.getDayOffStatus().equals(YES)) {
+            responseDTO = parseToAvailabilityResponse(doctorStartTime, doctorEndTime, queryDate, new ArrayList<>());
+        } else {
+            final Duration rosterGapDuration = Minutes.minutes(doctorDutyRosterInfo.getRosterGapDuration())
+                    .toStandardDuration();
+
+            List<String> availableTimeSlots = filterDoctorTimeWithAppointments(
+                    rosterGapDuration, doctorStartTime, doctorEndTime, requestDTO);
+
+            responseDTO = parseToAvailabilityResponse(doctorStartTime, doctorEndTime, queryDate, availableTimeSlots);
+        }
+
+        log.info(CHECK_AVAILABILITY_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTO;
+    }
+
+    private List<String> filterDoctorTimeWithAppointments(Duration rosterGapDuration,
+                                                          String doctorStartTime,
+                                                          String doctorEndTime,
+                                                          AppointmentCheckAvailabilityRequestDTO requestDTO) {
+
+        List<AppointmentBookedTimeResponseDTO> bookedAppointments = appointmentRepository.fetchBookedAppointments(requestDTO);
+
+        return calculateAvailableTimeSlots(
+                doctorStartTime, doctorEndTime, rosterGapDuration, bookedAppointments);
+    }
+
+    @Override
+    public String save(AppointmentRequestDTO appointmentRequestDTO){
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, APPOINTMENT);
+
+        Long appointmentCount = appointmentRepository.validateIfAppointmentExists(
+                appointmentRequestDTO.getAppointmentDate(),
+                appointmentRequestDTO.getAppointmentTime(),
+                appointmentRequestDTO.getDoctorId(),
+                appointmentRequestDTO.getSpecializationId());
+
+        validateAppointmentExists(appointmentCount, appointmentRequestDTO.getAppointmentTime());
 
         Patient patient = fetchPatient(appointmentRequestDTO.getIsNewRegistration(),
                 appointmentRequestDTO.getPatientId(),
@@ -230,8 +289,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Appointment appointment = findIncompleteAppointmentById(rescheduleRequestDTO.getAppointmentId());
 
-        Date originalAppointmentDate = appointment.getAppointmentDate();
-        Date originalAppointmentTime = appointment.getStartTime();
+//        Date originalAppointmentDate = appointment.getAppointmentDate();
+//        Date originalAppointmentTime = appointment.getStartTime();
 
         parseToRescheduleAppointment(appointment, rescheduleRequestDTO);
 
@@ -253,6 +312,11 @@ public class AppointmentServiceImpl implements AppointmentService {
 //        return responseDTOS;
 //    }
 
+    private void validateAppointmentExists(Long appointmentCount, String appointmentTime) {
+        if (appointmentCount.intValue() > 0)
+            throw new DataDuplicationException(String.format(APPOINTMENT_EXISTS,
+                    convert24HourTo12HourFormat(appointmentTime)));
+    }
 
     private Doctor fetchDoctor(Long doctorId) {
         return doctorService.fetchDoctorById(doctorId);

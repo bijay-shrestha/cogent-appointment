@@ -16,7 +16,9 @@ public class QualificationResponseDTO implements Serializable {
 
     private String name;
 
-    private String university;
+    private Long universityId;
+
+    private String universityName;
 
     private Long countryId;
 

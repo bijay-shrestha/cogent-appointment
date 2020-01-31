@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
+import static com.cogent.cogentappointment.admin.log.constants.CountryLog.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
@@ -34,11 +35,11 @@ public class CountryServiceImpl implements CountryService {
     public List<DropDownResponseDTO> fetchActiveCountry() {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, CountryLog.COUNTRY);
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, COUNTRY);
 
         List<DropDownResponseDTO> responseDTOS = countryRepository.fetchActiveCountry();
 
-        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, CountryLog.COUNTRY, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, COUNTRY, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
     }
@@ -47,12 +48,12 @@ public class CountryServiceImpl implements CountryService {
     public Country fetchCountryById(Long id) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_PROCESS_STARTED, CountryLog.COUNTRY);
+        log.info(FETCHING_PROCESS_STARTED, COUNTRY);
 
         Country country = countryRepository.fetchActiveCountryById(id)
                 .orElseThrow(() -> new NoContentFoundException(Country.class, "id", id.toString()));
 
-        log.info(FETCHING_PROCESS_COMPLETED, CountryLog.COUNTRY, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_COMPLETED, COUNTRY, getDifferenceBetweenTwoTime(startTime));
 
         return country;
     }

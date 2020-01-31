@@ -45,6 +45,4 @@ public class LoginResource {
         headers.add(HttpHeaders.AUTHORIZATION, authenticateService.loginUser(request, requestDTO));
         return new ResponseEntity<>(headers, HttpStatus.OK);
     }
-
-
 }

@@ -23,10 +23,6 @@ public class Qualification implements Serializable {
     private String name;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "country")
-    private Country country;
-
-    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "qualification_alias")
     private QualificationAlias qualificationAlias;
 

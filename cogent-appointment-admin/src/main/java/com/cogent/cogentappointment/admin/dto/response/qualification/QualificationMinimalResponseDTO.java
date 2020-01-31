@@ -19,8 +19,6 @@ public class QualificationMinimalResponseDTO implements Serializable {
 
     private String universityName;
 
-    private String countryName;
-
     private String qualificationAliasName;
 
     private Character status;

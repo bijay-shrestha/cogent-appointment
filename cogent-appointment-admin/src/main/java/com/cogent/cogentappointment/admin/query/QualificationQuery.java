@@ -29,11 +29,9 @@ public class QualificationQuery {
             "SELECT q.id as id," +                                                //[0]
                     " q.name as name," +                                          //[1]
                     " u.name as universityName," +                                //[2]
-                    " c.name as countryName," +                                   //[3]
-                    " qa.name as qualificationAliasName," +                       //[4]
-                    " q.status as status" +                                       //[5]
+                    " qa.name as qualificationAliasName," +                       //[3]
+                    " q.status as status" +                                       //[4]
                     " FROM Qualification q " +
-                    " LEFT JOIN Country c ON c.id = q.country.id" +
                     " LEFT JOIN University u ON u.id = q.university.id" +
                     " LEFT JOIN QualificationAlias qa ON qa.id = q.qualificationAlias.id";
 
@@ -51,9 +49,6 @@ public class QualificationQuery {
         if (!ObjectUtils.isEmpty(searchRequestDTO.getName()))
             whereClause += " AND q.name LIKE '%" + searchRequestDTO.getName() + "%'";
 
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getCountryId()))
-            whereClause += " AND c.id=" + searchRequestDTO.getCountryId();
-
         if (!ObjectUtils.isEmpty(searchRequestDTO.getUniversityId()))
             whereClause += " AND u.id=" + searchRequestDTO.getUniversityId();
 
@@ -65,28 +60,23 @@ public class QualificationQuery {
                     " q.name as name," +                                        //[0]
                     " u.id as universityId," +                                  //[1]
                     " u.name as universityName," +                              //[2]
-                    " c.id as countryId," +                                     //[3]
-                    " c.name as countryName," +                                 //[4]
-                    " qa.id as qualificationAliasId," +                         //[5]
-                    " qa.name as qualificationAliasName," +                     //[6]
-                    " q.status as status," +                                    //[7]
-                    " q.remarks as remarks" +                                   //[8]
+                    " qa.id as qualificationAliasId," +                         //[3]
+                    " qa.name as qualificationAliasName," +                     //[4]
+                    " q.status as status," +                                    //[5]
+                    " q.remarks as remarks" +                                   //[6]
                     " FROM Qualification q " +
-                    " LEFT JOIN Country c ON c.id = q.country.id" +
                     " LEFT JOIN University u ON u.id = q.university.id" +
                     " LEFT JOIN QualificationAlias qa ON qa.id = q.qualificationAlias.id" +
                     " WHERE q.status != 'D'" +
                     " AND q.id =:id";
 
     public static final String QUERY_TO_FETCH_ACTIVE_QUALIFICATION_FOR_DROPDOWN =
-            "SELECT q.id as id," +                                              //[0]
-                    " q.name as qualificationName," +                           //[1]
+            "SELECT q.id as id," +                                               //[0]
+                    " q.name as qualificationName," +                            //[1]
                     " u.name as universityName," +                               //[2]
-                    " c.name as countryName," +                                 //[3]
-                    " qa.name as qualificationAliasName" +                      //[4]
+                    " qa.name as qualificationAliasName" +                       //[3]
                     " FROM Qualification q " +
                     " LEFT JOIN University u ON u.id = q.university.id" +
-                    " LEFT JOIN Country c ON c.id = q.country.id" +
                     " LEFT JOIN QualificationAlias qa ON qa.id = q.qualificationAlias.id" +
                     " WHERE q.status = 'Y'";
 }

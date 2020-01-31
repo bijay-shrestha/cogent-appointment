@@ -122,12 +122,6 @@ public class AdminResource {
         return ok().build();
     }
 
-    @PutMapping(INFO)
-    @ApiOperation(FETCH_LOGGED_IN_ADMIN_INFO)
-    public ResponseEntity<?> fetchLoggedInAdminInfo(@Valid @RequestBody LoginRequestDTO requestDTO) {
-        return ok(adminService.fetchLoggedInAdminInfo(requestDTO));
-    }
-
     @GetMapping(USERNAME_VARIABLE_BASE)
     @ApiOperation(FETCH_INFO_BY_USERNAME)
     public AdminInfoByUsernameResponseDTO fetchAdminInfoByUsername(@PathVariable("username") String username) {

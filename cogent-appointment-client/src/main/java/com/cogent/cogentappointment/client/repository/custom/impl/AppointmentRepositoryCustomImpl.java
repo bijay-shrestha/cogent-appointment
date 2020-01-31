@@ -40,6 +40,19 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     private EntityManager entityManager;
 
     @Override
+    public Long validateIfAppointmentExists(Date appointmentDate, String appointmentTime,
+                                            Long doctorId, Long specializationId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_APPOINTMENT_EXISTS)
+                .setParameter(APPOINTMENT_DATE, utilDateToSqlDate(appointmentDate))
+                .setParameter(DOCTOR_ID, doctorId)
+                .setParameter(SPECIALIZATION_ID, specializationId)
+                .setParameter(APPOINTMENT_TIME, appointmentTime);
+
+        return (Long) query.getSingleResult();
+    }
+
+    @Override
     public List<AppointmentBookedTimeResponseDTO> fetchBookedAppointments(AppointmentCheckAvailabilityRequestDTO requestDTO) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_BOOKED_APPOINTMENT)

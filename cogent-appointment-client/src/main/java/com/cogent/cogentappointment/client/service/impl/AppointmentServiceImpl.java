@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.client.dto.request.appointment.*;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.*;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
+import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.model.Appointment;
 import com.cogent.cogentappointment.client.model.Doctor;
@@ -29,6 +30,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AppointmentServiceMessage.APPOINTMENT_EXISTS;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.FETCHING_PROCESS_COMPLETED;
@@ -148,11 +150,19 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public String save(AppointmentRequestDTO appointmentRequestDTO) {
+    public String save(AppointmentRequestDTO appointmentRequestDTO){
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, APPOINTMENT);
+
+        Long appointmentCount = appointmentRepository.validateIfAppointmentExists(
+                appointmentRequestDTO.getAppointmentDate(),
+                appointmentRequestDTO.getAppointmentTime(),
+                appointmentRequestDTO.getDoctorId(),
+                appointmentRequestDTO.getSpecializationId());
+
+        validateAppointmentExists(appointmentCount, appointmentRequestDTO.getAppointmentTime());
 
         Patient patient = fetchPatient(appointmentRequestDTO.getIsNewRegistration(),
                 appointmentRequestDTO.getPatientId(),
@@ -302,6 +312,11 @@ public class AppointmentServiceImpl implements AppointmentService {
 //        return responseDTOS;
 //    }
 
+    private void validateAppointmentExists(Long appointmentCount, String appointmentTime) {
+        if (appointmentCount.intValue() > 0)
+            throw new DataDuplicationException(String.format(APPOINTMENT_EXISTS,
+                    convert24HourTo12HourFormat(appointmentTime)));
+    }
 
     private Doctor fetchDoctor(Long doctorId) {
         return doctorService.fetchDoctorById(doctorId);

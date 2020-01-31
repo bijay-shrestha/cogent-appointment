@@ -46,9 +46,9 @@ public class AppointmentUtils {
         appointment.setAppointmentTime(parseAppointmentTime(requestDTO.getAppointmentDate(),
                 requestDTO.getAppointmentTime()));
         appointment.setAppointmentNumber(appointmentNumber);
-        appointment.setUniqueId(NumberFormatterUtils.generateRandomNumber(4));
+        appointment.setUniqueId(NumberFormatterUtils.generateRandomNumber(6));
         appointment.setCreatedDateNepali(requestDTO.getCreatedDateNepali());
-        appointment.setStatus(requestDTO.getStatus());
+        appointment.setStatus("PA");
 
         parseToAppointment(patient, specialization, doctor, appointment);
         return appointment;
@@ -74,7 +74,7 @@ public class AppointmentUtils {
         appointment.setAppointmentDate(updateRequestDTO.getAppointmentDate());
 //        appointment.setStartTime(updateRequestDTO.getStartTime());
 //        appointment.setEndTime(updateRequestDTO.getEndTime());
-        appointment.setStatus(updateRequestDTO.getStatus());
+//        appointment.setStatus(updateRequestDTO.getStatus());
 
         appointment.setRemarks(updateRequestDTO.getRemarks());
 //        parseToAppointment(appointment, patient);
@@ -84,7 +84,7 @@ public class AppointmentUtils {
     public static void convertToCancelledAppointment(Appointment appointment,
                                                      AppointmentCancelRequestDTO cancelRequestDTO) {
         appointment.setRemarks(cancelRequestDTO.getRemarks());
-        appointment.setStatus(cancelRequestDTO.getStatus());
+//        appointment.setStatus(cancelRequestDTO.getStatus());
     }
 
     public static String generateAppointmentNumber(List results) {

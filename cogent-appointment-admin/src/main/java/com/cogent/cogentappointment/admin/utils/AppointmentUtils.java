@@ -41,7 +41,7 @@ public class AppointmentUtils {
         appointment.setStartTime(requestDTO.getStartTime());
         appointment.setEndTime(requestDTO.getEndTime());
         appointment.setAppointmentNumber(appointmentNumber);
-        appointment.setUniqueId(NumberFormatterUtils.generateRandomNumber(4));
+        appointment.setUniqueId(NumberFormatterUtils.generateRandomNumber(6));
         appointment.setCreatedDateNepali(requestDTO.getCreatedDateNepali());
         appointment.setStatus(requestDTO.getStatus());
 

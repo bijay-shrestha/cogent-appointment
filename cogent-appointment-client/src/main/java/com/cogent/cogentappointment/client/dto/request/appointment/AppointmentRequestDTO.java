@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.client.dto.request.appointment;
 
-import com.cogent.cogentappointment.client.constraintvalidator.Status;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestDTO;
 import lombok.*;
 
@@ -37,10 +36,6 @@ public class AppointmentRequestDTO implements Serializable {
     @NotNull
     @NotEmpty
     private String appointmentTime;
-
-    @NotNull
-    @Status
-    private Character status;
 
     @NotNull
     @NotEmpty

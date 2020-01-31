@@ -60,7 +60,7 @@ public class Appointment implements Serializable {
      * S= Success
      */
     @Column(name = "status")
-    private Character status;
+    private String status;
 
     /*If cancel the appointment, cancellation remarks is must*/
     @Column(name = "remarks")

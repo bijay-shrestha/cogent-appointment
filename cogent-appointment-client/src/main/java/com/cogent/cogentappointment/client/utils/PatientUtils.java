@@ -32,7 +32,6 @@ public class PatientUtils {
         patient.setAddress(requestDTO.getAddress());
         patient.setGender(gender);
         patient.setHospitalId(hospital);
-        patient.setStatus(requestDTO.getStatus());
         return patient;
     }
 

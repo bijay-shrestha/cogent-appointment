@@ -13,9 +13,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AssignedProfileResponseDTO implements Serializable {
-    private String departmentName;
-
-    private String departmentCode;
 
     private List<AssignedRolesResponseDTO> assignedRolesResponseDTOS;
 }

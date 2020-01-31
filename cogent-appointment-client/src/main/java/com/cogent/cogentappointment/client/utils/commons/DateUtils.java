@@ -96,13 +96,16 @@ public class DateUtils {
         return dateFormat.format(date);
     }
 
-    public static String convert12HourTo24HourFormat(String time12) throws ParseException {
-        SimpleDateFormat dateParser = new SimpleDateFormat("h:mm a");
-        Date date = dateParser.parse(time12);
-
-        SimpleDateFormat dateFormatter = new SimpleDateFormat("HH:mm");
-
-        return dateFormatter.format(date);
+    public static String convert24HourTo12HourFormat(String timeIn24HrFormat) {
+        try {
+            SimpleDateFormat dateParser = new SimpleDateFormat("HH:mm");
+            Date date = dateParser.parse(timeIn24HrFormat);
+            SimpleDateFormat dateFormatter = new SimpleDateFormat("h:mm a");
+            return dateFormatter.format(date);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static Date parseTime(String requestedTime) {
@@ -123,7 +126,6 @@ public class DateUtils {
         cl.add(Calendar.MINUTE, time.getMinutes());
 
         return cl.getTime();
-
     }
 
 }

@@ -34,6 +34,8 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INVALID_DATE_DEBUG_MESSAGE;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INVALID_DATE_MESSAGE;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.utils.DoctorDutyRosterUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
@@ -82,6 +84,8 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER);
+
+        validateIsFirstDateGreater(requestDTO.getFromDate(), requestDTO.getToDate());
 
         validateDoctorDutyRosterCount(requestDTO.getDoctorId(), requestDTO.getSpecializationId(),
                 requestDTO.getFromDate(), requestDTO.getToDate());
@@ -404,4 +408,11 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
     private Function<Long, NoContentFoundException> DOCTOR_DUTY_ROSTER_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         throw new NoContentFoundException(DoctorDutyRoster.class, "id", id.toString());
     };
+
+    private void validateIsFirstDateGreater(Date fromDate, Date toDate) {
+        boolean fromDateGreaterThanToDate = isFirstDateGreater(fromDate, toDate);
+
+        if (fromDateGreaterThanToDate)
+            throw new BadRequestException(INVALID_DATE_MESSAGE, INVALID_DATE_DEBUG_MESSAGE);
+    }
 }

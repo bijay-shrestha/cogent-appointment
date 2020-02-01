@@ -12,6 +12,8 @@ import java.util.Calendar;
 import java.util.Date;
 
 import static com.cogent.cogentappointment.client.constants.StringConstant.HYPHEN;
+import static java.util.Calendar.MONTH;
+import static java.util.Calendar.YEAR;
 
 /**
  * @author smriti on 2019-07-30
@@ -126,6 +128,29 @@ public class DateUtils {
         cl.add(Calendar.MINUTE, time.getMinutes());
 
         return cl.getTime();
+    }
+
+    public static boolean isFirstDateGreater(Date dateA, Date dateB) {
+
+        Calendar calA = Calendar.getInstance();
+        calA.setTime(dateA);
+
+        Calendar calB = Calendar.getInstance();
+        calB.setTime(dateB);
+
+        if (calA.get(YEAR) > calB.get(YEAR)) {
+            return true;
+        } else if (calA.get(YEAR) == calB.get(YEAR)) {
+            if (calA.get(MONTH) > calB.get(MONTH)) {
+                return true;
+            } else if (calA.get(MONTH) == calB.get(MONTH)) {
+                return calA.get(Calendar.DAY_OF_MONTH) > calB.get(Calendar.DAY_OF_MONTH);
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 
 }

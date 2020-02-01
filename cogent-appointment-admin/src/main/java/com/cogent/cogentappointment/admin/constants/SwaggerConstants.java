@@ -206,7 +206,13 @@ public class SwaggerConstants {
     //U
     public interface UniversityConstant {
         String BASE_API_VALUE = "This is University Controller.";
-        String FETCH_ACTIVE_UNIVERSITY = "Fetch active university for dropdown.";
+        String SAVE_OPERATION = "Save new University";
+        String UPDATE_OPERATION = "Update existing University";
+        String DELETE_OPERATION = "Set University status as 'D' when deleted";
+        String SEARCH_OPERATION = "Search University according to given request parameters";
+        String DETAILS_OPERATION = "Fetch University details by its id";
+        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal University details for dropdown";
+        String FETCH_ACTIVE_UNIVERSITY = "Fetch active University for dropdown.";
     }
 
 

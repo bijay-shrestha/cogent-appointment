@@ -102,6 +102,7 @@ public class SwaggerConstants {
         String DETAILS_OPERATION = "Fetch Doctor Duty Roster details by its id";
         String FETCH_DOCTOR_DUTY_ROSTER_STATUS_OPERATION = "Fetch doctor duty roster status (used in Appointment status)";
         String UPDATE_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION = "Update Doctor Duty Roster Override schedules";
+        String FETCH_EXISTING_ROSTERS = " Fetch existing doctor duty rosters within the selected date range";
     }
 
 

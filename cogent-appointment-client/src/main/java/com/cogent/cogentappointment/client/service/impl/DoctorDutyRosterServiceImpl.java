@@ -5,9 +5,7 @@ import com.cogent.cogentappointment.client.constants.StatusConstants;
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.*;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedDateResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterDetailResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterMinimalResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.*;
 import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
@@ -223,6 +221,36 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
         return responseDTO;
     }
+
+
+    @Override
+    public List<DoctorExistingDutyRosterResponseDTO> fetchExistingDutyRosters(DoctorExistingDutyRosterRequestDTO requestDTO) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, EXISTING_DOCTOR_DUTY_ROSTER);
+
+        List<DoctorExistingDutyRosterResponseDTO> existingRosters =
+                doctorDutyRosterRepository.fetchExistingDoctorDutyRosters(requestDTO);
+
+        log.info(FETCHING_PROCESS_COMPLETED, EXISTING_DOCTOR_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
+
+        return existingRosters;
+    }
+
+    @Override
+    public DoctorExistingDutyRosterDetailResponseDTO fetchExistingRosterDetails(Long doctorDutyRosterId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_DETAIL_PROCESS_STARTED, EXISTING_DOCTOR_DUTY_ROSTER);
+
+        DoctorExistingDutyRosterDetailResponseDTO existingRosterDetails =
+                doctorDutyRosterRepository.fetchExistingRosterDetails(doctorDutyRosterId);
+
+        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, EXISTING_DOCTOR_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
+
+        return existingRosterDetails;
+    }
+
 
     @Override
     public List<DoctorDutyRosterStatusResponseDTO> fetchDoctorDutyRosterStatus

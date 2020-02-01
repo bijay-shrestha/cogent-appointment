@@ -26,7 +26,7 @@ public class WebResourceKeyConstants {
     }
 
     //B
-    public static final  String BASE_PASSWORD = "/password";
+    public static final String BASE_PASSWORD = "/password";
 
     //C
     public interface CountryConstants {
@@ -51,6 +51,7 @@ public class WebResourceKeyConstants {
     public interface DoctorDutyRosterConstants {
         String BASE_DOCTOR_DUTY_ROSTER = "/doctorDutyRoster";
         String DOCTOR_DUTY_ROSTER_OVERRIDE = "/doctorDutyRosterOverride";
+        String EXISTING = "/existing";
         String DOCTOR_DUTY_ROSTER_STATUS = "/doctorDutyRosterStatus";
     }
 
@@ -58,6 +59,7 @@ public class WebResourceKeyConstants {
 
     //F
     public static final String FILE = "/files/{subDirectoryLocation}/{filename:.+}";
+
     public interface ForgotPasswordConstants {
         String VERIFY = "/verify";
         String FORGOT = "/forgot";
@@ -121,7 +123,6 @@ public class WebResourceKeyConstants {
     public interface SidebarConstants {
         String BASE_SIDE_BAR = "/sidebar";
     }
-
 
 
     public interface SpecializationConstants {

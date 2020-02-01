@@ -8,10 +8,10 @@ import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.DoctorDu
 import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.DoctorWeekDaysDutyRosterRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.DoctorWeekDaysDutyRosterUpdateRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedDateResponseDTO;
-import com.cogent.cogentappointment.client.exception.BadRequestException;
-import com.cogent.cogentappointment.client.utils.commons.DateUtils;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.*;
+import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.model.*;
+import com.cogent.cogentappointment.client.utils.commons.DateUtils;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -235,5 +235,15 @@ public class DoctorDutyRosterUtils {
                                         .equals(originalRoster.getWeekDaysId().getId())))))
                         .count()) < 1)
                 .collect(Collectors.toList());
+    }
+
+    public static DoctorExistingDutyRosterDetailResponseDTO parseToExistingRosterDetails(
+            List<DoctorWeekDaysDutyRosterResponseDTO> weekDaysRosters,
+            List<DoctorDutyRosterOverrideResponseDTO> overrideRosters) {
+
+        return DoctorExistingDutyRosterDetailResponseDTO.builder()
+                .weekDaysRosters(weekDaysRosters)
+                .overrideRosters(overrideRosters)
+                .build();
     }
 }

@@ -2,9 +2,7 @@ package com.cogent.cogentappointment.admin.service;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.*;
-import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorDutyRosterDetailResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorDutyRosterMinimalResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.*;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -25,6 +23,10 @@ public interface DoctorDutyRosterService {
                                                     Pageable pageable);
 
     DoctorDutyRosterDetailResponseDTO fetchDetailsById(Long id);
+
+    List<DoctorExistingDutyRosterResponseDTO> fetchExistingDutyRosters(DoctorExistingDutyRosterRequestDTO requestDTO);
+
+    DoctorExistingDutyRosterDetailResponseDTO fetchExistingRosterDetails(Long doctorDutyRosterId);
 
     List<DoctorDutyRosterStatusResponseDTO> fetchDoctorDutyRosterStatus(DoctorDutyRosterStatusRequestDTO requestDTO);
 

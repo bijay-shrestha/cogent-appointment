@@ -53,6 +53,7 @@ public class WebResourceKeyConstants {
         String BASE_DOCTOR_DUTY_ROSTER = "/doctorDutyRoster";
         String DOCTOR_DUTY_ROSTER_OVERRIDE = "/doctorDutyRosterOverride";
         String DOCTOR_DUTY_ROSTER_STATUS = "/doctorDutyRosterStatus";
+        String EXISTING = "/existing";
     }
 
     //E

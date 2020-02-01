@@ -1,13 +1,12 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
-import com.cogent.cogentappointment.client.constants.StatusConstants;
 import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.DoctorDutyRosterSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.DoctorDutyRosterStatusRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.DoctorExistingDutyRosterRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.*;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.model.DoctorDutyRoster;
 import com.cogent.cogentappointment.client.repository.custom.DoctorDutyRosterRepositoryCustom;
-import com.cogent.cogentappointment.client.utils.DoctorDutyRosterUtils;
 import com.cogent.cogentappointment.client.utils.commons.PageableUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -25,10 +24,13 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.query.DoctorDutyRosterOverrideQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_DETAILS;
 import static com.cogent.cogentappointment.client.query.DoctorDutyRosterQuery.*;
+import static com.cogent.cogentappointment.client.utils.DoctorDutyRosterUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDayCodeFromDate;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
+import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
 
 /**
@@ -66,7 +68,7 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
 
         int totalItems = query.getResultList().size();
 
-        PageableUtils.addPagination.accept(pageable, query);
+        addPagination.accept(pageable, query);
 
         List<DoctorDutyRosterMinimalResponseDTO> results = transformQueryToResultList(
                 query, DoctorDutyRosterMinimalResponseDTO.class);
@@ -88,10 +90,10 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
                 fetchDoctorWeekDaysDutyRosterResponseDTO(doctorDutyRosterId);
 
         List<DoctorDutyRosterOverrideResponseDTO> overrideResponseDTOS =
-                doctorDutyRosterResponseDTO.getHasOverrideDutyRoster().equals(StatusConstants.YES)
+                doctorDutyRosterResponseDTO.getHasOverrideDutyRoster().equals(YES)
                         ? fetchDoctorDutyRosterOverrideResponseDTO(doctorDutyRosterId) : new ArrayList<>();
 
-        return DoctorDutyRosterUtils.parseToDoctorDutyRosterDetailResponseDTO(
+        return parseToDoctorDutyRosterDetailResponseDTO(
                 doctorDutyRosterResponseDTO, weekDaysDutyRosterResponseDTO, overrideResponseDTOS);
     }
 
@@ -129,9 +131,38 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
 
         List<Object[]> results = query.getResultList();
 
-        return DoctorDutyRosterUtils.parseQueryResultToDoctorDutyRosterStatusResponseDTOS(
+        return parseQueryResultToDoctorDutyRosterStatusResponseDTOS(
                 results, requestDTO.getFromDate(), requestDTO.getToDate());
     }
+
+    @Override
+    public List<DoctorExistingDutyRosterResponseDTO> fetchExistingDoctorDutyRosters(
+            DoctorExistingDutyRosterRequestDTO requestDTO) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_EXISTING_DOCTOR_DUTY_ROSTERS)
+                .setParameter(DOCTOR_ID, requestDTO.getDoctorId())
+                .setParameter(SPECIALIZATION_ID, requestDTO.getSpecializationId())
+                .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()));
+
+        return transformQueryToResultList(query, DoctorExistingDutyRosterResponseDTO.class);
+    }
+
+    @Override
+    public DoctorExistingDutyRosterDetailResponseDTO fetchExistingRosterDetails(Long doctorDutyRosterId) {
+        Character hasOverrideRosters = checkIfDoctorDutyRosterOverrideExists(doctorDutyRosterId);
+
+        List<DoctorWeekDaysDutyRosterResponseDTO> weekDaysDutyRosterResponseDTO =
+                fetchDoctorWeekDaysDutyRosterResponseDTO(doctorDutyRosterId);
+
+        List<DoctorDutyRosterOverrideResponseDTO> overrideResponseDTOS =
+                hasOverrideRosters.equals(YES)
+                        ? fetchDoctorDutyRosterOverrideResponseDTO(doctorDutyRosterId)
+                        : new ArrayList<>();
+
+        return parseToExistingRosterDetails(weekDaysDutyRosterResponseDTO, overrideResponseDTOS);
+    }
+
 
     private DoctorDutyRosterResponseDTO fetchDoctorDutyRosterDetails(Long doctorDutyRosterId) {
 
@@ -170,4 +201,11 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
                 throw new NoContentFoundException
                         (DoctorDutyRoster.class, "doctorDutyRosterId", doctorDutyRosterId.toString());
             };
+
+    private Character checkIfDoctorDutyRosterOverrideExists(Long doctorDutyRosterId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_CHECK_IF_OVERRIDE_EXISTS)
+                .setParameter(ID, doctorDutyRosterId);
+
+        return (Character) query.getSingleResult();
+    }
 }

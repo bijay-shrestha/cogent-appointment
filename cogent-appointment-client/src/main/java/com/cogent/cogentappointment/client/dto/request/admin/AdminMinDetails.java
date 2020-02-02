@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.Column;
 import java.io.Serializable;
 
 /**
@@ -24,4 +25,9 @@ public class AdminMinDetails implements Serializable {
     private String hospitalCode;
 
     private String password;
+
+    private String apiKey;
+
+    private String apiSecret;
+
 }

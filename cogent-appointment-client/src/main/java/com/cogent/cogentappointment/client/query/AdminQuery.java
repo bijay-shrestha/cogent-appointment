@@ -198,26 +198,30 @@ public class AdminQuery {
                     " FROM AdminMetaInfo a" +
                     " WHERE a.admin.status !='D'";
 
-    public static final String QUERY_TO_FETCH_ADMIN_BY_USERNAME_AND_HOSPITAL_CODE=
+    public static final String QUERY_TO_FETCH_ADMIN_BY_USERNAME_AND_HOSPITAL_CODE =
             " SELECT" +
                     " a.username as username," +
                     " a.fullName as fullName," +
                     " a.email as email," +
-                    " h.code as hospitalCode" +
+                    " h.code as hospitalCode," +
+                    " h.apiKey as apiKey," +
+                    " h.apiSecret as apiSecret" +
                     " FROM Admin a" +
                     " LEFT JOIN Profile p on p.id=a.profileId.id" +
                     " LEFT JOIN Department d ON d.id=p.department.id" +
                     " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
-                    " WHERE a.username=:username AND  h.code=:hospitalCode";
+                    " WHERE a.username=:username AND  h.code=:hospitalCode AND h.apiKey=:apiKey";
 
 
-    public static final String QUERY_TO_VERIFY_LOGGED_IN_USER=
+    public static final String QUERY_TO_VERIFY_LOGGED_IN_USER =
             " SELECT" +
                     " a.fullName as fullName," +
                     " a.username as username," +
                     " a.email as email," +
                     " a.password as password," +
-                    " h.code as hospitalCode" +
+                    " h.code as hospitalCode," +
+                    " h.apiKey as apiKey," +
+                    " h.apiSecret as apiSecret" +
                     " FROM Admin a" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                     " LEFT JOIN Department d ON d.id=p.department.id" +

@@ -8,6 +8,7 @@ public class QueryConstants {
     //A
     public static final String APPOINTMENT_DATE = "appointmentDate";
     public static final String APPOINTMENT_TIME = "appointmentTime";
+    public static final String API_KEY = "apiKey";
 
     //B
 
@@ -37,6 +38,7 @@ public class QueryConstants {
     //H
     public static final String HOSPITAL_ID = "hospitalId";
     public static final String HOSPITAL_CODE = "hospitalCode";
+
 
 
     //I

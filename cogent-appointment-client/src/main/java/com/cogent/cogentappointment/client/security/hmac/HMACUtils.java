@@ -23,13 +23,16 @@ public class HMACUtils {
         final String nonce = generateNonce();
         String username=admin.getUsername();
         String hospitalCode=admin.getHospitalCode();
+        String apiKey=admin.getApiKey();
+        String apiSecret=admin.getApiSecret();
 
         final HMACBuilder signatureBuilder = new HMACBuilder()
                 .algorithm(HMAC_ALGORITHM)
                 .nonce(nonce)
-                .apiKey(HMAC_API_KEY)
+                .apiKey(apiKey)
                 .hospitalCode(hospitalCode)
-                .username(username);
+                .username(username)
+                .apiSecret(apiSecret);
 
         final String signature = signatureBuilder
                 .buildAsBase64String();
@@ -40,7 +43,7 @@ public class HMACUtils {
                 COLON+
                 hospitalCode+
                 COLON +
-                HMAC_API_KEY +
+                apiKey +
                 COLON +
                 nonce +
                 COLON +
@@ -55,14 +58,14 @@ public class HMACUtils {
         final HMACBuilder signatureBuilder = new HMACBuilder()
                 .algorithm(HMAC_ALGORITHM)
                 .nonce(nonce)
-                .apiKey(HMAC_API_KEY);
+                .apiKey("eab85708-0215-4f74-b646-a67e718cf332");
 
         final String signature = signatureBuilder
                 .buildAsBase64String();
 
         String authToken = HMAC_ALGORITHM +
                 SPACE +
-                HMAC_API_KEY +
+                "eab85708-0215-4f74-b646-a67e718cf332" +
                 COLON +
                 nonce +
                 COLON +

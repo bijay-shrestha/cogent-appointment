@@ -8,7 +8,6 @@ import com.cogent.cogentappointment.client.service.impl.UserDetailsServiceImpl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -25,7 +24,6 @@ import java.util.regex.Pattern;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.HMAC_BAD_SIGNATURE;
 import static com.cogent.cogentappointment.client.constants.PatternConstants.AUTHORIZATION_HEADER_PATTERN;
 import static com.cogent.cogentappointment.client.constants.PatternConstants.AUTHORIZATION_HEADER_PATTERN_FOR_ESEWA;
-import static com.cogent.cogentappointment.client.constants.StringConstant.SPACE;
 
 /**
  * @author Sauravi Thapa २०/१/१९
@@ -56,17 +54,21 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
         if (authHeader != null) {
 
             String apiKey = authHeader.getApiKey();
+            String username=authHeader.getUsername();
+            String hospitalCode=authHeader.getHospitalCode();
 
-            AdminMinDetails adminMinDetails = adminRepository.getAdminInfoByUsernameAndHospitalCode(
-                    authHeader.getUsername(),
-                    authHeader.getHospitalCode());
+            AdminMinDetails adminMinDetails = adminRepository.getAdminInfoByUsernameAndHospitalCodeAndApikey(
+                    username,
+                   hospitalCode,
+                    apiKey);
 
             final HMACBuilder signatureBuilder = new HMACBuilder()
                     .algorithm(authHeader.getAlgorithm())
                     .nonce(authHeader.getNonce())
                     .username(adminMinDetails.getUsername())
                     .hospitalCode(adminMinDetails.getHospitalCode())
-                    .apiKey(apiKey);
+                    .apiKey(adminMinDetails.getApiKey())
+                    .apiSecret(adminMinDetails.getApiSecret());
 
             compareSignature(signatureBuilder, authHeader.getDigest());
 

@@ -7,13 +7,10 @@ import com.cogent.cogentappointment.client.dto.request.admin.AdminInfoRequestDTO
 import com.cogent.cogentappointment.client.dto.request.admin.AdminMinDetails;
 import com.cogent.cogentappointment.client.dto.request.admin.AdminSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.admin.AdminUpdateRequestDTO;
+import com.cogent.cogentappointment.client.dto.response.admin.*;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.model.Admin;
-import com.cogent.cogentappointment.client.query.AdminQuery;
 import com.cogent.cogentappointment.client.repository.custom.AdminRepositoryCustom;
-import com.cogent.cogentappointment.client.utils.commons.PageableUtils;
-import com.cogent.cogentappointment.client.utils.commons.QueryUtils;
-import com.cogent.cogentappointment.client.dto.response.admin.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +28,7 @@ import static com.cogent.cogentappointment.client.constants.ErrorMessageConstant
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.query.AdminQuery.*;
 import static com.cogent.cogentappointment.client.utils.AdminUtils.parseToAdminInfoByUsernameResponseDTO;
-import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.*;
+import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
 
 /**
@@ -153,10 +150,11 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     }
 
     @Override
-    public AdminMinDetails getAdminInfoByUsernameAndHospitalCode(String username, String hospitalCode) {
+    public AdminMinDetails getAdminInfoByUsernameAndHospitalCodeAndApikey(String username, String hospitalCode, String apiKey) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ADMIN_BY_USERNAME_AND_HOSPITAL_CODE)
                 .setParameter(USERNAME, username)
-                .setParameter(HOSPITAL_CODE,hospitalCode);
+                .setParameter(API_KEY, "7ddb7cb6-937b-4615-a202-a8c0637e4d03")
+                .setParameter(HOSPITAL_CODE, hospitalCode);
 
         return transformQueryToSingleResult(query, AdminMinDetails.class);
     }
@@ -165,10 +163,10 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     public AdminMinDetails verifyLoggedInAdmin(String username, String hospitalCode) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VERIFY_LOGGED_IN_USER)
                 .setParameter(USERNAME, username)
-                .setParameter(HOSPITAL_CODE,hospitalCode);
+                .setParameter(HOSPITAL_CODE, hospitalCode);
         try {
             return transformQueryToSingleResult(query, AdminMinDetails.class);
-        }catch (NoResultException e){
+        } catch (NoResultException e) {
             throw new NoContentFoundException(INVALID_USERNAME_OR_HOSPITAL_CODE);
         }
     }

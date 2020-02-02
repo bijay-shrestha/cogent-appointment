@@ -38,7 +38,7 @@ public interface AdminRepositoryCustom {
 
     List<AdminSubDepartmentResponseDTO> fetchLoggedInAdminSubDepartmentList(String username);
 
-    AdminMinDetails getAdminInfoByUsernameAndHospitalCode(String username, String hospitalCode);
+    AdminMinDetails getAdminInfoByUsernameAndHospitalCodeAndApikey(String username, String hospitalCode, String apiKey);
 
     AdminMinDetails verifyLoggedInAdmin(String username, String hospitalCode);
 

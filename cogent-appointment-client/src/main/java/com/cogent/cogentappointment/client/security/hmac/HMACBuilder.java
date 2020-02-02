@@ -11,7 +11,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.CANNOT_CREATE_SIGNATURE;
-import static com.cogent.cogentappointment.client.constants.HMACConstant.*;
+import static com.cogent.cogentappointment.client.constants.HMACConstant.DELIMITER;
+import static com.cogent.cogentappointment.client.constants.HMACConstant.HMAC_ALGORITHM;
 
 /**
  * @author Sauravi Thapa २०/१/१९
@@ -24,6 +25,7 @@ public class HMACBuilder {
     private String nonce;
     private String algorithm;
     private String hospitalCode;
+    private String apiSecret;
 
 
     public HMACBuilder username(String username) {
@@ -52,10 +54,16 @@ public class HMACBuilder {
         return this;
     }
 
+    public HMACBuilder apiSecret(String apiSecret) {
+        this.apiSecret = apiSecret;
+        return this;
+    }
+
+
     public byte[] build() {
         try {
             final Mac digest = Mac.getInstance(HMAC_ALGORITHM);
-            SecretKeySpec secretKey = new SecretKeySpec(HMAC_API_SECRET.getBytes(), HMAC_ALGORITHM);
+            SecretKeySpec secretKey = new SecretKeySpec(apiSecret.getBytes(), HMAC_ALGORITHM);
             digest.init(secretKey);
             digest.update(algorithm.getBytes(StandardCharsets.UTF_8));
             digest.update(DELIMITER);
@@ -78,7 +86,8 @@ public class HMACBuilder {
 
     public boolean isHashEquals(byte[] expectedSignature) {
         final byte[] signature = build();
-
+        System.out.println("signature---------" + signature);
+        System.out.println("expected signature---------" + expectedSignature);
         return MessageDigest.isEqual(signature, expectedSignature);
     }
 

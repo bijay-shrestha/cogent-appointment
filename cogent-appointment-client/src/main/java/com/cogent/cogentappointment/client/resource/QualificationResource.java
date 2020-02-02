@@ -78,4 +78,10 @@ public class QualificationResource {
     public ResponseEntity<?> fetchDetailsById(@PathVariable("id") Long id) {
         return ok(qualificationService.fetchDetailsById(id));
     }
+
+    @GetMapping(MIN)
+    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
+    public ResponseEntity<?> fetchMinQualification() {
+        return ok(qualificationService.fetchMinQualification());
+    }
 }

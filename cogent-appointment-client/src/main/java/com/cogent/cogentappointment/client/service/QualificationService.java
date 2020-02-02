@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.service;
 
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
+import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.request.qualification.QualificationRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.qualification.QualificationSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.qualification.QualificationUpdateRequestDTO;
@@ -31,4 +32,6 @@ public interface QualificationService {
     List<QualificationDropdownDTO> fetchActiveQualificationForDropDown();
 
     Qualification fetchQualificationById(Long id);
+
+    List<DropDownResponseDTO> fetchMinQualification();
 }

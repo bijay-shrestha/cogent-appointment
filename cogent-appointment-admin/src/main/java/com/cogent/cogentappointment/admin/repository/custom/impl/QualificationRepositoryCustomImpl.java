@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
+import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.request.qualification.QualificationSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.qualification.QualificationDropdownDTO;
 import com.cogent.cogentappointment.admin.dto.response.qualification.QualificationMinimalResponseDTO;
@@ -88,6 +89,16 @@ public class QualificationRepositoryCustomImpl implements QualificationRepositor
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_QUALIFICATION_FOR_DROPDOWN);
 
         List<QualificationDropdownDTO> results = transformQueryToResultList(query, QualificationDropdownDTO.class);
+
+        if (results.isEmpty()) throw QUALIFICATION_NOT_FOUND.get();
+        else return results;
+    }
+
+    @Override
+    public List<DropDownResponseDTO> fetchMinQualification() {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_MIN_QUALIFICATION);
+
+        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
         if (results.isEmpty()) throw QUALIFICATION_NOT_FOUND.get();
         else return results;

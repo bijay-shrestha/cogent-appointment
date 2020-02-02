@@ -4,7 +4,6 @@ import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.qualification.QualificationRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.qualification.QualificationSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.qualification.QualificationUpdateRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.qualification.QualificationDropdownDTO;
 import com.cogent.cogentappointment.admin.service.QualificationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -14,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.QualificationConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
@@ -69,7 +67,7 @@ public class QualificationResource {
 
     @GetMapping(ACTIVE + MIN)
     @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
-    public ResponseEntity<List<QualificationDropdownDTO>> fetchQualificationForDropDown() {
+    public ResponseEntity<?> fetchQualificationForDropDown() {
         return ok(qualificationService.fetchActiveQualificationForDropDown());
     }
 
@@ -77,5 +75,11 @@ public class QualificationResource {
     @ApiOperation(DETAILS_OPERATION)
     public ResponseEntity<?> fetchDetailsById(@PathVariable("id") Long id) {
         return ok(qualificationService.fetchDetailsById(id));
+    }
+
+    @GetMapping(MIN)
+    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
+    public ResponseEntity<?> fetchMinQualification() {
+        return ok(qualificationService.fetchMinQualification());
     }
 }

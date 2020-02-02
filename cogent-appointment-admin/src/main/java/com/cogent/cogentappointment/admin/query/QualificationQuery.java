@@ -85,4 +85,11 @@ public class QualificationQuery {
                     " LEFT JOIN University u ON u.id = q.university.id" +
                     " LEFT JOIN QualificationAlias qa ON qa.id = q.qualificationAlias.id" +
                     " WHERE q.status = 'Y'";
+
+    public static final String QUERY_TO_FETCH_MIN_QUALIFICATION =
+            "SELECT q.id as value," +                                           //[0]
+                    " q.name as label" +                                        //[1]
+                    " FROM Qualification q " +
+                    " WHERE q.status != 'D'";
+
 }

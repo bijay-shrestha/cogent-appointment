@@ -8,5 +8,5 @@ import javax.servlet.http.HttpServletRequest;
  * @author Sauravi Thapa २०/१/१९
  */
 public interface AuthenticateService {
-    String loginUser(HttpServletRequest request, LoginRequestDTO requestDTO);
+    String loginUser(LoginRequestDTO requestDTO);
 }

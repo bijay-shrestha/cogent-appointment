@@ -76,6 +76,8 @@ public class ErrorMessageConstants {
 
 
     //I
+    public static final String INVALID_USERNAME_OR_HOSPITAL_CODE="invalid username or hospitalcode";
+    public static final String INVALID_PASSWORD="invalid password";
 
     //J
 
@@ -116,6 +118,7 @@ public class ErrorMessageConstants {
 
     //U
     public static final String UNAUTHORISED = "Unauthorised";
+
 
     //V
 

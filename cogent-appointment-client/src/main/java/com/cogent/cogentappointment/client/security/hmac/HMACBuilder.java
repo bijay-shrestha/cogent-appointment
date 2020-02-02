@@ -19,20 +19,20 @@ import static com.cogent.cogentappointment.client.constants.HMACConstant.*;
 @Component
 public class HMACBuilder {
 
-    private String scheme;
-    private String host;
     private String username;
     private String apiKey;
     private String nonce;
     private String algorithm;
+    private String hospitalCode;
 
-    public HMACBuilder scheme(String scheme) {
-        this.scheme = scheme;
-        return this;
-    }
 
     public HMACBuilder username(String username) {
         this.username = username;
+        return this;
+    }
+
+    public HMACBuilder hospitalCode(String hospitalCode) {
+        this.hospitalCode = hospitalCode;
         return this;
     }
 
@@ -41,10 +41,6 @@ public class HMACBuilder {
         return this;
     }
 
-    public HMACBuilder host(String host) {
-        this.host = host;
-        return this;
-    }
 
     public HMACBuilder nonce(String nonce) {
         this.nonce = nonce;
@@ -67,6 +63,8 @@ public class HMACBuilder {
             digest.update(DELIMITER);
             digest.update((username != null) ? username.getBytes(StandardCharsets.UTF_8) : null);
             digest.update(DELIMITER);
+            digest.update((hospitalCode != null) ? hospitalCode.getBytes(StandardCharsets.UTF_8) : null);
+            digest.update(DELIMITER);
             digest.update(apiKey.getBytes(StandardCharsets.UTF_8));
             digest.update(DELIMITER);
             final byte[] signatureBytes = digest.doFinal();
@@ -80,6 +78,7 @@ public class HMACBuilder {
 
     public boolean isHashEquals(byte[] expectedSignature) {
         final byte[] signature = build();
+
         return MessageDigest.isEqual(signature, expectedSignature);
     }
 

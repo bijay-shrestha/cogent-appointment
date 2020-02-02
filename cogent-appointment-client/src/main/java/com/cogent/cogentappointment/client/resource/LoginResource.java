@@ -34,9 +34,9 @@ public class LoginResource {
 
     @PostMapping(LOGIN)
     @ApiOperation(LOGIN_OPERATION)
-    public ResponseEntity<?> login(HttpServletRequest request, @RequestBody LoginRequestDTO requestDTO) {
+    public ResponseEntity<?> login(@RequestBody LoginRequestDTO requestDTO) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.AUTHORIZATION, authenticateService.loginUser(request, requestDTO));
+        headers.add(HttpHeaders.AUTHORIZATION, authenticateService.loginUser(requestDTO));
         return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 

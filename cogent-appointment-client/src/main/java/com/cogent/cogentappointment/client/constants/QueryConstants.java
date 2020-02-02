@@ -36,6 +36,7 @@ public class QueryConstants {
 
     //H
     public static final String HOSPITAL_ID = "hospitalId";
+    public static final String HOSPITAL_CODE = "hospitalCode";
 
 
     //I
@@ -60,6 +61,8 @@ public class QueryConstants {
         String ESEWA_ID = "eSewaId";
         String IS_SELF = "isSelf";
     }
+
+    public static final String PASSWORD = "password";
 
     //Q
 

@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.service.impl;
 
+import com.cogent.cogentappointment.client.dto.request.admin.AdminMinDetails;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.model.Admin;
 import com.cogent.cogentappointment.client.repository.AdminRepository;
@@ -37,4 +38,5 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         return UserDetailsImpl.build(admin);
     }
+
 }

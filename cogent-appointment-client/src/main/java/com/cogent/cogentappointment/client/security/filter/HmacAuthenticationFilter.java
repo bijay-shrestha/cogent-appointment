@@ -2,7 +2,6 @@ package com.cogent.cogentappointment.client.security.filter;
 
 import com.cogent.cogentappointment.client.dto.request.admin.AdminMinDetails;
 import com.cogent.cogentappointment.client.dto.request.login.ThirdPartyDetail;
-import com.cogent.cogentappointment.client.repository.AdminRepository;
 import com.cogent.cogentappointment.client.repository.HmacApiInfoRepository;
 import com.cogent.cogentappointment.client.security.hmac.AuthHeader;
 import com.cogent.cogentappointment.client.security.hmac.HMACBuilder;
@@ -32,12 +31,9 @@ import static com.cogent.cogentappointment.client.constants.PatternConstants.AUT
 @Component
 public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
-    private final AdminRepository adminRepository;
-
     private final HmacApiInfoRepository hmacApiInfoRepository;
 
-    public HmacAuthenticationFilter(AdminRepository adminRepository, HmacApiInfoRepository hmacApiInfoRepository) {
-        this.adminRepository = adminRepository;
+    public HmacAuthenticationFilter(HmacApiInfoRepository hmacApiInfoRepository) {
         this.hmacApiInfoRepository = hmacApiInfoRepository;
     }
 

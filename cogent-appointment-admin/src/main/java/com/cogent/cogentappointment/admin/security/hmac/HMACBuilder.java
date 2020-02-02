@@ -19,17 +19,11 @@ import static com.cogent.cogentappointment.admin.constants.HMACConstant.*;
 @Component
 public class HMACBuilder {
 
-    private String scheme;
-    private String host;
     private String username;
     private String apiKey;
     private String nonce;
     private String algorithm;
 
-    public HMACBuilder scheme(String scheme) {
-        this.scheme = scheme;
-        return this;
-    }
 
     public HMACBuilder username(String username) {
         this.username = username;
@@ -38,11 +32,6 @@ public class HMACBuilder {
 
     public HMACBuilder algorithm(String algorithm) {
         this.algorithm = algorithm;
-        return this;
-    }
-
-    public HMACBuilder host(String host) {
-        this.host = host;
         return this;
     }
 
@@ -63,10 +52,6 @@ public class HMACBuilder {
             digest.init(secretKey);
             digest.update(algorithm.getBytes(StandardCharsets.UTF_8));
             digest.update(DELIMITER);
-//            digest.update(scheme.getBytes(StandardCharsets.UTF_8));
-//            digest.update(DELIMITER);
-//            digest.update(host.getBytes(StandardCharsets.UTF_8));
-//            digest.update(DELIMITER);
             digest.update(nonce.getBytes(StandardCharsets.UTF_8));
             digest.update(DELIMITER);
             digest.update((username != null) ? username.getBytes(StandardCharsets.UTF_8) : null);

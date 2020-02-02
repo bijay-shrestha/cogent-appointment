@@ -39,11 +39,10 @@ public class LoginResource {
 
     @PostMapping(LOGIN)
     @ApiOperation(LOGIN_OPERATION)
-    public ResponseEntity<AdminLoggedInInfoResponseDTO> login(HttpServletRequest request, @RequestBody LoginRequestDTO requestDTO) {
+    public ResponseEntity<AdminLoggedInInfoResponseDTO> login(HttpServletRequest request,
+                                                              @RequestBody LoginRequestDTO requestDTO) {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.AUTHORIZATION, authenticateService.loginUser(request, requestDTO));
-        return new ResponseEntity<>( adminService.fetchLoggedInAdminInfo(requestDTO),headers, HttpStatus.OK);
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
-
-
 }

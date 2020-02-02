@@ -1,7 +1,5 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
-import com.cogent.cogentappointment.client.constants.ErrorMessageConstants;
-import com.cogent.cogentappointment.client.constants.QueryConstants;
 import com.cogent.cogentappointment.client.constants.StatusConstants;
 import com.cogent.cogentappointment.client.dto.request.admin.AdminInfoRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.admin.AdminMinDetails;
@@ -24,10 +22,11 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AdminServiceMessages;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AdminServiceMessages.ADMIN_INFO_NOT_FOUND;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.INVALID_USERNAME_OR_HOSPITAL_CODE;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.query.AdminQuery.*;
-import static com.cogent.cogentappointment.client.utils.AdminUtils.parseToAdminInfoByUsernameResponseDTO;
 import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
 
@@ -47,9 +46,9 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FIND_ADMIN_FOR_VALIDATION)
                 .setParameter(USERNAME, username)
-                .setParameter(QueryConstants.EMAIL, email)
-                .setParameter(QueryConstants.MOBILE_NUMBER, mobileNumber)
-                .setParameter(QueryConstants.HOSPITAL_ID, hospitalId);
+                .setParameter(EMAIL, email)
+                .setParameter(MOBILE_NUMBER, mobileNumber)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         return query.getResultList();
     }
@@ -57,10 +56,10 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     @Override
     public List<Object[]> validateDuplicity(AdminUpdateRequestDTO updateRequestDTO) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FIND_ADMIN_EXCEPT_CURRENT_ADMIN)
-                .setParameter(QueryConstants.ID, updateRequestDTO.getId())
-                .setParameter(QueryConstants.EMAIL, updateRequestDTO.getEmail())
-                .setParameter(QueryConstants.MOBILE_NUMBER, updateRequestDTO.getMobileNumber())
-                .setParameter(QueryConstants.HOSPITAL_ID, updateRequestDTO.getHospitalId());
+                .setParameter(ID, updateRequestDTO.getId())
+                .setParameter(EMAIL, updateRequestDTO.getEmail())
+                .setParameter(MOBILE_NUMBER, updateRequestDTO.getMobileNumber())
+                .setParameter(HOSPITAL_ID, updateRequestDTO.getHospitalId());
 
         return query.getResultList();
     }
@@ -109,7 +108,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         try {
             return entityManager.createQuery(QUERY_TO_FETCH_ADMIN_BY_USERNAME_OR_EMAIL, Admin.class)
                     .setParameter(USERNAME, username)
-                    .setParameter(QueryConstants.EMAIL, username)
+                    .setParameter(EMAIL, username)
                     .getSingleResult();
         } catch (NoResultException ex) {
             throw ADMIN_NOT_FOUND.apply(username);
@@ -121,32 +120,13 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ADMIN_INFO)
                 .setParameter(USERNAME, requestDTO.getUsername())
-                .setParameter(QueryConstants.EMAIL, requestDTO.getUsername());
+                .setParameter(EMAIL, requestDTO.getUsername());
 
         try {
             return transformQueryToSingleResult(query, AdminLoggedInInfoResponseDTO.class);
         } catch (NoResultException e) {
-            throw new NoContentFoundException(ErrorMessageConstants.AdminServiceMessages.ADMIN_INFO_NOT_FOUND);
+            throw new NoContentFoundException(ADMIN_INFO_NOT_FOUND);
         }
-    }
-
-    @Override
-    public AdminInfoByUsernameResponseDTO fetchAdminInfoByUsername(String username) {
-        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_ADMIN_INFO_BY_USERNAME)
-                .setParameter(USERNAME, username)
-                .setParameter(QueryConstants.EMAIL, username);
-
-        List<Object[]> results = query.getResultList();
-
-        return results.isEmpty() ? null : parseToAdminInfoByUsernameResponseDTO(results.get(0));
-    }
-
-    @Override
-    public List<AdminSubDepartmentResponseDTO> fetchLoggedInAdminSubDepartmentList(String username) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_LOGGED_IN_ADMIN_SUB_DEPARTMENT_LIST)
-                .setParameter(USERNAME, username);
-
-        return transformQueryToResultList(query, AdminSubDepartmentResponseDTO.class);
     }
 
     @Override
@@ -173,7 +153,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
 
     public AdminDetailResponseDTO fetchAdminDetailResponseDTO(Long id) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ADMIN_DETAIL)
-                .setParameter(QueryConstants.ID, id);
+                .setParameter(ID, id);
 
         List<Object[]> results = query.getResultList();
 
@@ -185,7 +165,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
 
     public List<AdminMacAddressInfoResponseDTO> getMacAddressInfo(Long id) {
         Query query = createQuery.apply(entityManager, QUERY_FO_FETCH_MAC_ADDRESS_INFO)
-                .setParameter(QueryConstants.ID, id);
+                .setParameter(ID, id);
 
         return transformQueryToResultList(query, AdminMacAddressInfoResponseDTO.class);
     }
@@ -197,7 +177,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     };
 
     private Function<String, NoContentFoundException> ADMIN_NOT_FOUND = (username) -> {
-        throw new NoContentFoundException(String.format(ErrorMessageConstants.AdminServiceMessages.ADMIN_NOT_FOUND, username),
+        throw new NoContentFoundException(String.format(AdminServiceMessages.ADMIN_NOT_FOUND, username),
                 "username/email", username);
     };
 }

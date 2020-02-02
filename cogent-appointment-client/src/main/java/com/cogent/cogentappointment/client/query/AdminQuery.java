@@ -145,19 +145,18 @@ public class AdminQuery {
 
     public static final String QUERY_TO_FETCH_ADMIN_INFO =
             " SELECT" +
-                    " a.id as adminId," +
-                    " a.username as username," +
+                    " a.id as adminId," +                                                   //[0]
+                    " a.username as username," +                                            //[1]
                     " a.fullName as fullName," +
                     " CASE " +
                     "    WHEN (av.status = 'N' OR  av.status IS NULL) THEN null" +
-                    "    ELSE av.fileUri END as fileUri," +
-                    " p.id as profileId," +
-                    " p.name as profileName," +
-                    " d.id as departmentId," +
-                    " d.name as departmentName," +
-                    " h.id as hospitalId," +
-                    " h.name as hospitalName," +
-                    " h.code as hospitalCode" +
+                    "    ELSE av.fileUri END as fileUri," +                                //[2]
+                    " p.id as profileId," +                                                 //[3]
+                    " p.name as profileName," +                                             //[4]
+                    " d.id as departmentId," +                                              //[5]
+                    " d.name as departmentName," +                                          //[6]
+                    " h.id as hospitalId," +                                                //[7]
+                    " h.name as hospitalName" +                                             //[8]
                     " FROM Admin a" +
                     " LEFT JOIN AdminAvatar av ON av.admin.id=a.id" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
@@ -165,31 +164,6 @@ public class AdminQuery {
                     " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
                     " WHERE " +
                     " (a.username=:username OR a.email =:email)" +
-                    " AND a.status='Y'";
-
-    public static final String QUERY_TO_FETCH_ADMIN_INFO_BY_USERNAME =
-            " SELECT GROUP_CONCAT(sd.code)," +                                                              //[0]
-                    " a.password" +                                                                         //[1]
-                    " FROM admin_profile ap" +
-                    " LEFT JOIN application_module am ON ap.application_module_id=am.id" +
-                    " LEFT JOIN sub_department sd ON sd.id = am.sub_department_id" +
-                    " LEFT JOIN admin a ON a.id = ap.admin_id" +
-                    " WHERE am.status = 'Y'" +
-                    " AND ap.status = 'Y'" +
-                    " AND a.status ='Y'" +
-                    " AND (a.username =:username OR a.email =:email)" +
-                    " GROUP BY ap.admin_id";
-
-    public static final String QUERY_TO_FETCH_LOGGED_IN_ADMIN_SUB_DEPARTMENT_LIST =
-            "SELECT" +
-                    " sd.id as subDepartmentId," +                              //[0]
-                    " sd.name as subDepartmentName," +                          //[1]
-                    " sd.code as subDepartmentCode" +                           //[2]
-                    " FROM SubDepartment sd" +
-                    " LEFT JOIN Profile p ON p.subDepartment.id=sd.id" +
-                    " LEFT JOIN AdminProfile ap ON ap.profileId=p.id" +
-                    " LEFT JOIN Admin a ON a.id=ap.adminId" +
-                    " WHERE a.username=:username" +
                     " AND a.status='Y'";
 
     public static final String QUERY_TO_FETCH_ADMIN_META_INFO =

@@ -22,6 +22,9 @@ public class University implements Serializable {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "address")
+    private String address;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "country")
     private Country country;

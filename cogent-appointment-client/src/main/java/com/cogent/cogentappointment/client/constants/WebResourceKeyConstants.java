@@ -13,7 +13,6 @@ public class WebResourceKeyConstants {
         String BASE_ADMIN = "/admin";
         String AVATAR = "/avatar";
         String ADMIN_META_INFO = "/metaInfo";
-        String ASSIGNED_SUB_DEPARTMENTS = "/assignedSubDepartments";
         String CHANGE_PASSWORD = "/changePassword";
         String RESET_PASSWORD = "/resetPassword";
         String INFO = "/info";
@@ -54,6 +53,7 @@ public class WebResourceKeyConstants {
         String BASE_DOCTOR_DUTY_ROSTER = "/doctorDutyRoster";
         String DOCTOR_DUTY_ROSTER_OVERRIDE = "/doctorDutyRosterOverride";
         String DOCTOR_DUTY_ROSTER_STATUS = "/doctorDutyRosterStatus";
+        String EXISTING = "/existing";
     }
 
     //E
@@ -121,6 +121,10 @@ public class WebResourceKeyConstants {
     //S
     public static final String SAVE = "/save";
     public static final String SEARCH = "/search";
+
+    public interface SidebarConstants {
+        String BASE_SIDE_BAR = "/sidebar";
+    }
 
 
     public interface SpecializationConstants {

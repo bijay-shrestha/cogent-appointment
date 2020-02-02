@@ -4,10 +4,10 @@ import com.cogent.cogentappointment.client.constants.StringConstant;
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.profile.ProfileDTO;
 import com.cogent.cogentappointment.client.dto.request.profile.ProfileUpdateDTO;
+import com.cogent.cogentappointment.client.dto.response.profile.*;
 import com.cogent.cogentappointment.client.model.Department;
 import com.cogent.cogentappointment.client.model.Profile;
 import com.cogent.cogentappointment.client.utils.commons.StringUtil;
-import com.cogent.cogentappointment.client.dto.response.profile.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +71,9 @@ public class ProfileUtils {
         List<AssignedRolesResponseDTO> assignedRolesResponseDTOS =
                 parseToAssignedRolesResponseDTOS(childMenusResponseDTOS);
 
-        return parseToAssignedProfileMenuResponseDTO(assignedRolesResponseDTOS, results);
+        return AssignedProfileResponseDTO.builder()
+                .assignedRolesResponseDTOS(assignedRolesResponseDTOS)
+                .build();
     }
 
     private static List<ChildMenusResponseDTO> parseToChildMenusResponseDTOS(List<Object[]> results) {
@@ -110,24 +112,5 @@ public class ProfileUtils {
                 .stream()
                 .map(map -> new AssignedRolesResponseDTO(map.getKey(), map.getValue()))
                 .collect(Collectors.toList());
-    }
-
-    private static AssignedProfileResponseDTO parseToAssignedProfileMenuResponseDTO
-            (List<AssignedRolesResponseDTO> assignedRolesResponseDTOS,
-             List<Object[]> queryResults) {
-
-        /*BECAUSE DEPARTMENT DETAILS REMAIN THE SAME*/
-        final int DEPARTMENT_CODE_INDEX = 3;
-        final int DEPARTMENT_NAME_INDEX = 4;
-
-        Object[] firstObject = queryResults.get(0);
-        String departmentName = firstObject[DEPARTMENT_NAME_INDEX].toString();
-        String departmentCode = firstObject[DEPARTMENT_CODE_INDEX].toString();
-
-        return AssignedProfileResponseDTO.builder()
-                .departmentName(departmentName)
-                .departmentCode(departmentCode)
-                .assignedRolesResponseDTOS(assignedRolesResponseDTOS)
-                .build();
     }
 }

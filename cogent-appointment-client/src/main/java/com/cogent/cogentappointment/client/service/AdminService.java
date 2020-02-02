@@ -40,10 +40,6 @@ public interface AdminService {
 
     AdminLoggedInInfoResponseDTO fetchLoggedInAdminInfo(AdminInfoRequestDTO requestDTO);
 
-    AdminInfoByUsernameResponseDTO fetchAdminInfoByUsername(String username);
-
-    List<AdminSubDepartmentResponseDTO> fetchLoggedInAdminSubDepartmentList(String username);
-
     List<AdminMetaInfoResponseDTO> fetchAdminMetaInfoResponseDto();
 }
 

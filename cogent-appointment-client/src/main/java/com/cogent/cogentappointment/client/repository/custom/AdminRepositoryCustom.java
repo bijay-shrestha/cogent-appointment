@@ -4,7 +4,10 @@ import com.cogent.cogentappointment.client.dto.request.admin.AdminInfoRequestDTO
 import com.cogent.cogentappointment.client.dto.request.admin.AdminMinDetails;
 import com.cogent.cogentappointment.client.dto.request.admin.AdminSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.admin.AdminUpdateRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.admin.*;
+import com.cogent.cogentappointment.client.dto.response.admin.AdminDetailResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.admin.AdminDropdownDTO;
+import com.cogent.cogentappointment.client.dto.response.admin.AdminLoggedInInfoResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.admin.AdminMinimalResponseDTO;
 import com.cogent.cogentappointment.client.model.Admin;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
@@ -33,10 +36,6 @@ public interface AdminRepositoryCustom {
     Admin fetchAdminByUsernameOrEmail(String username);
 
     AdminLoggedInInfoResponseDTO fetchLoggedInAdminInfo(AdminInfoRequestDTO requestDTO);
-
-    AdminInfoByUsernameResponseDTO fetchAdminInfoByUsername(String username);
-
-    List<AdminSubDepartmentResponseDTO> fetchLoggedInAdminSubDepartmentList(String username);
 
     AdminMinDetails getAdminInfoByUsernameAndHospitalCodeAndApikey(String username, String hospitalCode, String apiKey);
 

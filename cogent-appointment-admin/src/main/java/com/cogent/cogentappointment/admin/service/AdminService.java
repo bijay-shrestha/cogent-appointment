@@ -2,7 +2,6 @@ package com.cogent.cogentappointment.admin.service;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.*;
-import com.cogent.cogentappointment.admin.dto.request.login.LoginRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.admin.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,11 +36,7 @@ public interface AdminService {
 
     void savePassword(AdminPasswordRequestDTO requestDTO);
 
-    AdminLoggedInInfoResponseDTO fetchLoggedInAdminInfo(LoginRequestDTO requestDTO);
-
-    AdminInfoByUsernameResponseDTO fetchAdminInfoByUsername(String username);
-
-    List<AdminSubDepartmentResponseDTO> fetchLoggedInAdminSubDepartmentList(String username);
+    AdminLoggedInInfoResponseDTO fetchLoggedInAdminInfo(AdminInfoRequestDTO requestDTO);
 
     List<AdminMetaInfoResponseDTO> fetchAdminMetaInfoResponseDto();
 }

@@ -24,10 +24,6 @@ public class SwaggerConstants {
         String SAVE_PASSWORD_OPERATION = "Save admin password";
         String FETCH_LOGGED_IN_ADMIN_INFO = "Fetch logged in admin information." +
                 " Used to show in top-bar and to validate if the admin updates its own profile";
-        String FETCH_INFO_BY_USERNAME = "Fetch admin info by username. Used in UserDetailsServiceImpl to " +
-                " fetch admin password and its respective assigned modules (sub-department code)";
-        String FETCH_ASSIGNED_SUB_DEPARTMENTS = "Fetch all sub-departments assigned to an admin." +
-                "Used in top-bar and display all assigned sub-departments to facilitate single-sign on feature";
         String FETCH_ADMIN_META_INFO = "Fetch active admin meta info for dropdown";
     }
 
@@ -106,6 +102,7 @@ public class SwaggerConstants {
         String DETAILS_OPERATION = "Fetch Doctor Duty Roster details by its id";
         String FETCH_DOCTOR_DUTY_ROSTER_STATUS_OPERATION = "Fetch doctor duty roster status (used in Appointment status)";
         String UPDATE_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION = "Update Doctor Duty Roster Override schedules";
+        String FETCH_EXISTING_ROSTERS = " Fetch existing doctor duty rosters within the selected date range";
     }
 
 
@@ -199,6 +196,11 @@ public class SwaggerConstants {
         String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal Specialization details (id and name) for dropdown";
         String FETCH_BY_DOCTOR_ID = "Fetch active specializations by doctor id";
         String FETCH_BY_HOSPITAL_ID = "Fetch active specializations by hospital id";
+    }
+
+    public interface SideBarConstant {
+        String BASE_API_VALUE = "This is SideBar Controller";
+        String FETCH_ASSIGNED_PROFILE_RESPONSE = "Fetch assigned profile response";
     }
 
 

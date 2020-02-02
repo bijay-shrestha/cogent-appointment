@@ -2,8 +2,6 @@ package com.cogent.cogentappointment.admin.resource;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.*;
-import com.cogent.cogentappointment.admin.dto.request.login.LoginRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.admin.AdminInfoByUsernameResponseDTO;
 import com.cogent.cogentappointment.admin.service.AdminService;
 import com.cogent.cogentappointment.admin.utils.commons.ObjectMapperUtils;
 import io.swagger.annotations.Api;
@@ -122,21 +120,15 @@ public class AdminResource {
         return ok().build();
     }
 
-    @GetMapping(USERNAME_VARIABLE_BASE)
-    @ApiOperation(FETCH_INFO_BY_USERNAME)
-    public AdminInfoByUsernameResponseDTO fetchAdminInfoByUsername(@PathVariable("username") String username) {
-        return adminService.fetchAdminInfoByUsername(username);
-    }
-
-    @GetMapping(ASSIGNED_SUB_DEPARTMENTS + USERNAME_VARIABLE_BASE)
-    @ApiOperation(FETCH_ASSIGNED_SUB_DEPARTMENTS)
-    public ResponseEntity<?> fetchLoggedInAdminSubDepartmentInfo(@PathVariable("username") String username) {
-        return ok(adminService.fetchLoggedInAdminSubDepartmentList(username));
-    }
-
     @GetMapping(ADMIN_META_INFO)
     @ApiOperation(FETCH_ADMIN_META_INFO)
     public ResponseEntity<?> fetchAdminMetaInfoDropdown() {
         return ok(adminService.fetchAdminMetaInfoResponseDto());
+    }
+
+    @PutMapping(INFO)
+    @ApiOperation(FETCH_LOGGED_IN_ADMIN_INFO)
+    public ResponseEntity<?> fetchLoggedInAdminInfo(@Valid @RequestBody AdminInfoRequestDTO requestDTO) {
+        return ok(adminService.fetchLoggedInAdminInfo(requestDTO));
     }
 }

@@ -131,4 +131,24 @@ public class DoctorDutyRosterQuery {
         return SQL;
     }
 
+    public static final String QUERY_TO_FETCH_EXISTING_DOCTOR_DUTY_ROSTERS =
+            " SELECT" +
+                    " dd.id as doctorDutyRosterId," +                                      //[0]
+                    " dd.fromDate as fromDate," +                                          //[1]
+                    " dd.toDate as toDate," +                                              //[2]
+                    " dd.rosterGapDuration as rosterGapDuration" +                         //[3]
+                    " FROM DoctorDutyRoster dd" +
+                    " WHERE dd.status != 'D'" +
+                    " AND dd.doctorId.id=:doctorId" +
+                    " AND dd.specializationId.id= :specializationId" +
+                    " AND dd.toDate >=:fromDate" +
+                    " AND dd.fromDate <=:toDate";
+
+    public static final String QUERY_TO_CHECK_IF_OVERRIDE_EXISTS =
+            " SELECT" +
+                    " dd.hasOverrideDutyRoster as hasOverrideDutyRoster" +             //[0]
+                    " FROM DoctorDutyRoster dd" +
+                    " WHERE dd.status !='D'" +
+                    " AND dd.id = :id";
+
 }

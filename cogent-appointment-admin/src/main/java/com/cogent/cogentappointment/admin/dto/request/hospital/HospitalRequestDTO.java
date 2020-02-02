@@ -42,6 +42,10 @@ public class HospitalRequestDTO implements Serializable {
     @Status
     private Character status;
 
+    @NotNull
+    @Status
+    private Character isCogentAdmin;
+
     @NotEmpty
     private List<String> contactNumber;
 }

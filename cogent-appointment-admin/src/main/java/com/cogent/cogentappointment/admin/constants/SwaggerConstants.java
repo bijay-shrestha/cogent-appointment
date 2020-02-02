@@ -36,10 +36,6 @@ public class SwaggerConstants {
         String SAVE_PASSWORD_OPERATION = "Save admin password";
         String FETCH_LOGGED_IN_ADMIN_INFO = "Fetch logged in admin information." +
                 " Used to show in top-bar and to validate if the admin updates its own profile";
-        String FETCH_INFO_BY_USERNAME = "Fetch admin info by username. Used in UserDetailsServiceImpl to " +
-                " fetch admin password and its respective assigned modules (sub-department code)";
-        String FETCH_ASSIGNED_SUB_DEPARTMENTS = "Fetch all sub-departments assigned to an admin." +
-                "Used in top-bar and display all assigned sub-departments to facilitate single-sign on feature";
         String FETCH_ADMIN_META_INFO = "Fetch active admin meta info for dropdown";
     }
 
@@ -104,6 +100,7 @@ public class SwaggerConstants {
         String DETAILS_OPERATION = "Fetch Doctor Duty Roster details by its id";
         String FETCH_DOCTOR_DUTY_ROSTER_STATUS_OPERATION = "Fetch doctor duty roster status (used in Appointment status)";
         String UPDATE_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION = "Update Doctor Duty Roster Override schedules";
+        String FETCH_EXISTING_ROSTERS = " Fetch existing doctor duty rosters within the selected date range";
     }
 
 
@@ -203,14 +200,19 @@ public class SwaggerConstants {
     }
 
 
-
     //T
 
 
     //U
     public interface UniversityConstant {
         String BASE_API_VALUE = "This is University Controller.";
-        String FETCH_ACTIVE_UNIVERSITY = "Fetch active university for dropdown.";
+        String SAVE_OPERATION = "Save new University";
+        String UPDATE_OPERATION = "Update existing University";
+        String DELETE_OPERATION = "Set University status as 'D' when deleted";
+        String SEARCH_OPERATION = "Search University according to given request parameters";
+        String DETAILS_OPERATION = "Fetch University details by its id";
+        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal University details for dropdown";
+        String FETCH_ACTIVE_UNIVERSITY = "Fetch active University for dropdown.";
     }
 
 

@@ -1,17 +1,13 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
-import com.cogent.cogentappointment.admin.constants.ErrorMessageConstants;
 import com.cogent.cogentappointment.admin.constants.StatusConstants;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.*;
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentBookedDateResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorDutyRosterDetailResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorDutyRosterMinimalResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.*;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.log.constants.DoctorDutyRosterLog;
 import com.cogent.cogentappointment.admin.model.*;
 import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
 import com.cogent.cogentappointment.admin.repository.DoctorDutyRosterOverrideRepository;
@@ -34,7 +30,11 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.*;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.DoctorDutyRosterServiceMessages.BAD_REQUEST_MESSAGE;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.DoctorDutyRosterServiceMessages.DUPLICATION_MESSAGE;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
+import static com.cogent.cogentappointment.admin.log.constants.DoctorDutyRosterLog.*;
 import static com.cogent.cogentappointment.admin.utils.DoctorDutyRosterUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
 
@@ -81,7 +81,9 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(SAVING_PROCESS_STARTED, DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER);
+        log.info(SAVING_PROCESS_STARTED, DOCTOR_DUTY_ROSTER);
+
+        validateIsFirstDateGreater(requestDTO.getFromDate(), requestDTO.getToDate());
 
         validateDoctorDutyRosterCount(requestDTO.getDoctorId(), requestDTO.getSpecializationId(),
                 requestDTO.getFromDate(), requestDTO.getToDate());
@@ -97,7 +99,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
         saveDoctorDutyRosterOverride(doctorDutyRoster, requestDTO.getDoctorDutyRosterOverrideRequestDTOS());
 
-        log.info(SAVING_PROCESS_COMPLETED, DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
+        log.info(SAVING_PROCESS_COMPLETED, DOCTOR_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
@@ -105,7 +107,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(UPDATING_PROCESS_STARTED, DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER);
+        log.info(UPDATING_PROCESS_STARTED, DOCTOR_DUTY_ROSTER);
 
         DoctorDutyRoster doctorDutyRoster = findDoctorDutyRosterById(updateRequestDTO.getDoctorDutyRosterId());
 
@@ -128,7 +130,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
         updateDoctorDutyRosterOverrideStatus(doctorDutyRoster);
 
-        log.info(UPDATING_PROCESS_COMPLETED, DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
+        log.info(UPDATING_PROCESS_COMPLETED, DOCTOR_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
@@ -136,7 +138,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(UPDATING_PROCESS_STARTED, DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER_OVERRIDE);
+        log.info(UPDATING_PROCESS_STARTED, DOCTOR_DUTY_ROSTER_OVERRIDE);
 
         DoctorDutyRoster doctorDutyRoster = findDoctorDutyRosterById(updateRequestDTO.getDoctorDutyRosterId());
 
@@ -156,7 +158,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
         saveOrUpdateDoctorDutyRosterOverride(updateRequestDTO, doctorDutyRoster);
 
-        log.info(UPDATING_PROCESS_COMPLETED, DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER_OVERRIDE, getDifferenceBetweenTwoTime(startTime));
+        log.info(UPDATING_PROCESS_COMPLETED, DOCTOR_DUTY_ROSTER_OVERRIDE, getDifferenceBetweenTwoTime(startTime));
     }
 
     public void saveOrUpdateDoctorDutyRosterOverride(DoctorDutyRosterOverrideUpdateRequestDTO updateRequestDTO,
@@ -179,7 +181,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(DELETING_PROCESS_STARTED, DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER);
+        log.info(DELETING_PROCESS_STARTED, DOCTOR_DUTY_ROSTER);
 
         DoctorDutyRoster doctorDutyRoster = findDoctorDutyRosterById(deleteRequestDTO.getId());
 
@@ -188,7 +190,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
         convertToDeletedDoctorDutyRoster(doctorDutyRoster, deleteRequestDTO);
 
-        log.info(DELETING_PROCESS_COMPLETED, DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
+        log.info(DELETING_PROCESS_COMPLETED, DOCTOR_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
@@ -197,12 +199,12 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(SEARCHING_PROCESS_STARTED, DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER);
+        log.info(SEARCHING_PROCESS_STARTED, DOCTOR_DUTY_ROSTER);
 
         List<DoctorDutyRosterMinimalResponseDTO> responseDTOS =
                 doctorDutyRosterRepository.search(searchRequestDTO, pageable);
 
-        log.info(SEARCHING_PROCESS_COMPLETED, DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
+        log.info(SEARCHING_PROCESS_COMPLETED, DOCTOR_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
     }
@@ -211,13 +213,41 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
     public DoctorDutyRosterDetailResponseDTO fetchDetailsById(Long id) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_DETAIL_PROCESS_STARTED, DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER);
+        log.info(FETCHING_DETAIL_PROCESS_STARTED, DOCTOR_DUTY_ROSTER);
 
         DoctorDutyRosterDetailResponseDTO responseDTO = doctorDutyRosterRepository.fetchDetailsById(id);
 
-        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, DOCTOR_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
+    }
+
+    @Override
+    public List<DoctorExistingDutyRosterResponseDTO> fetchExistingDutyRosters(DoctorExistingDutyRosterRequestDTO requestDTO) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, EXISTING_DOCTOR_DUTY_ROSTER);
+
+        List<DoctorExistingDutyRosterResponseDTO> existingRosters =
+                doctorDutyRosterRepository.fetchExistingDoctorDutyRosters(requestDTO);
+
+        log.info(FETCHING_PROCESS_COMPLETED, EXISTING_DOCTOR_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
+
+        return existingRosters;
+    }
+
+    @Override
+    public DoctorExistingDutyRosterDetailResponseDTO fetchExistingRosterDetails(Long doctorDutyRosterId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_DETAIL_PROCESS_STARTED, EXISTING_DOCTOR_DUTY_ROSTER);
+
+        DoctorExistingDutyRosterDetailResponseDTO existingRosterDetails =
+                doctorDutyRosterRepository.fetchExistingRosterDetails(doctorDutyRosterId);
+
+        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, EXISTING_DOCTOR_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
+
+        return existingRosterDetails;
     }
 
     @Override
@@ -225,7 +255,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
             (DoctorDutyRosterStatusRequestDTO requestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_DETAIL_PROCESS_STARTED, DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER_STATUS);
+        log.info(FETCHING_DETAIL_PROCESS_STARTED, DOCTOR_DUTY_ROSTER_STATUS);
 
         List<DoctorDutyRosterStatusResponseDTO> doctorDutyRosterOverrideStatus =
                 doctorDutyRosterOverrideRepository.fetchDoctorDutyRosterOverrideStatus(requestDTO);
@@ -236,7 +266,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
         List<DoctorDutyRosterStatusResponseDTO> mergedList =
                 mergeOverrideAndActualDoctorDutyRoster(doctorDutyRosterOverrideStatus, doctorDutyRosterStatus);
 
-        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, DOCTOR_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
 
         return mergedList;
     }
@@ -248,7 +278,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
                 overrideFromDate, overrideToDate, doctorId, specializationId);
 
         if (appointments.intValue() > 0)
-            throw new BadRequestException(ErrorMessageConstants.AppointmentServiceMessage.APPOINTMENT_EXISTS_MESSAGE);
+            throw new BadRequestException(AppointmentServiceMessage.APPOINTMENT_EXISTS_MESSAGE);
     }
 
     private void validateDoctorDutyRosterCount(Long doctorId, Long specializationId,
@@ -258,7 +288,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
                 doctorId, specializationId, fromDate, toDate);
 
         if (doctorDutyRosterCount.intValue() > 0)
-            throw new DataDuplicationException(ErrorMessageConstants.DoctorDutyRosterServiceMessages.DUPLICATION_MESSAGE);
+            throw new DataDuplicationException(DUPLICATION_MESSAGE);
     }
 
     private void validateIfOverrideDateIsBetweenDoctorDutyRoster(Date dutyRosterFromDate,
@@ -271,7 +301,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
                         && isDateBetweenInclusive(dutyRosterFromDate, dutyRosterToDate, overrideToDate);
 
         if (!isDateBetweenInclusive)
-            throw new BadRequestException(ErrorMessageConstants.DoctorDutyRosterServiceMessages.BAD_REQUEST_MESSAGE);
+            throw new BadRequestException(BAD_REQUEST_MESSAGE);
     }
 
     private void validateDoctorDutyRosterOverrideCount(Long doctorId, Long specializationId,
@@ -281,7 +311,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
                 doctorId, specializationId, fromDate, toDate);
 
         if (doctorDutyRosterOverrideCount.intValue() > 0)
-            throw new DataDuplicationException(ErrorMessageConstants.DoctorDutyRosterServiceMessages.DUPLICATION_MESSAGE);
+            throw new DataDuplicationException(DUPLICATION_MESSAGE);
     }
 
     private Doctor findDoctorById(Long doctorId) {
@@ -305,7 +335,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(SAVING_PROCESS_STARTED, DoctorDutyRosterLog.DOCTOR_WEEK_DAYS_DUTY_ROSTER);
+        log.info(SAVING_PROCESS_STARTED, DOCTOR_WEEK_DAYS_DUTY_ROSTER);
 
         List<DoctorWeekDaysDutyRoster> doctorWeekDaysDutyRosters = weekDaysDutyRosterRequestDTOS.stream()
                 .map(requestDTO -> {
@@ -316,7 +346,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
         saveDoctorWeekDaysDutyRoster(doctorWeekDaysDutyRosters);
 
-        log.info(SAVING_PROCESS_COMPLETED, DoctorDutyRosterLog.DOCTOR_WEEK_DAYS_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
+        log.info(SAVING_PROCESS_COMPLETED, DOCTOR_WEEK_DAYS_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
     }
 
     private void saveDoctorDutyRosterOverride(DoctorDutyRoster doctorDutyRoster,
@@ -326,7 +356,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
             Long startTime = getTimeInMillisecondsFromLocalDate();
 
-            log.info(SAVING_PROCESS_STARTED, DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER_OVERRIDE);
+            log.info(SAVING_PROCESS_STARTED, DOCTOR_DUTY_ROSTER_OVERRIDE);
 
             List<DoctorDutyRosterOverride> doctorDutyRosterOverrides = overrideRequestDTOS
                     .stream()
@@ -347,7 +377,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
             saveDoctorDutyRosterOverride(doctorDutyRosterOverrides);
 
-            log.info(SAVING_PROCESS_COMPLETED, DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER_OVERRIDE, getDifferenceBetweenTwoTime(startTime));
+            log.info(SAVING_PROCESS_COMPLETED, DOCTOR_DUTY_ROSTER_OVERRIDE, getDifferenceBetweenTwoTime(startTime));
         }
     }
 
@@ -373,7 +403,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(UPDATING_PROCESS_STARTED, DoctorDutyRosterLog.DOCTOR_WEEK_DAYS_DUTY_ROSTER);
+        log.info(UPDATING_PROCESS_STARTED, DOCTOR_WEEK_DAYS_DUTY_ROSTER);
 
         List<DoctorWeekDaysDutyRoster> doctorWeekDaysDutyRosters = updateRequestDTOS.stream()
                 .map(requestDTO -> {
@@ -384,7 +414,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
         saveDoctorWeekDaysDutyRoster(doctorWeekDaysDutyRosters);
 
-        log.info(UPDATING_PROCESS_COMPLETED, DoctorDutyRosterLog.DOCTOR_WEEK_DAYS_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
+        log.info(UPDATING_PROCESS_COMPLETED, DOCTOR_WEEK_DAYS_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
     }
 
     private void updateDoctorDutyRosterOverrideStatus(DoctorDutyRoster doctorDutyRoster) {
@@ -404,4 +434,11 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
     private Function<Long, NoContentFoundException> DOCTOR_DUTY_ROSTER_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         throw new NoContentFoundException(DoctorDutyRoster.class, "id", id.toString());
     };
+
+    private void validateIsFirstDateGreater(Date fromDate, Date toDate) {
+        boolean fromDateGreaterThanToDate = isFirstDateGreater(fromDate, toDate);
+
+        if (fromDateGreaterThanToDate)
+            throw new BadRequestException(INVALID_DATE_MESSAGE, INVALID_DATE_DEBUG_MESSAGE);
+    }
 }

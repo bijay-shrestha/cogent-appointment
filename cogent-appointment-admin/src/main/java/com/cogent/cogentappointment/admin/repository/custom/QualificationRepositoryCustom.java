@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.repository.custom;
 
+import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.qualification.QualificationDropdownDTO;
 import com.cogent.cogentappointment.admin.dto.response.qualification.QualificationMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.qualification.QualificationResponseDTO;
@@ -27,5 +28,7 @@ public interface QualificationRepositoryCustom {
     QualificationResponseDTO fetchDetailsById(Long id);
 
     List<QualificationDropdownDTO> fetchActiveQualificationForDropDown();
+
+    List<DropDownResponseDTO> fetchMinQualification();
 
 }

@@ -61,4 +61,10 @@ public class QualificationQuery {
                     " q.qualificationAlias.name as qualificationAliasName" +   //[4]
                     " FROM Qualification q " +
                     " WHERE q.status = 'Y'";
+
+    public static final String QUERY_TO_FETCH_MIN_QUALIFICATION =
+            "SELECT q.id as value," +                                           //[0]
+                    " q.name as label" +                                        //[1]
+                    " FROM Qualification q " +
+                    " WHERE q.status != 'D'";
 }

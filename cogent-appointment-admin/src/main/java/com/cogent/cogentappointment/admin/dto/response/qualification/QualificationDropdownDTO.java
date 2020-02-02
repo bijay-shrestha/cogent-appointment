@@ -19,7 +19,5 @@ public class QualificationDropdownDTO implements Serializable {
 
     private String universityName;
 
-    private String countryName;
-
     private String qualificationAliasName;
 }

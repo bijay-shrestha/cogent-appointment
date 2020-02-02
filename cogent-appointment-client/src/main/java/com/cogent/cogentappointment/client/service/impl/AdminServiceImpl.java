@@ -298,33 +298,6 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public AdminInfoByUsernameResponseDTO fetchAdminInfoByUsername(String username) {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(CommonLogConstant.FETCHING_PROCESS_STARTED, AdminLog.ADMIN);
-
-        AdminInfoByUsernameResponseDTO responseDTO = adminRepository.fetchAdminInfoByUsername(username);
-
-        log.info(CommonLogConstant.FETCHING_PROCESS_COMPLETED, AdminLog.ADMIN, getDifferenceBetweenTwoTime(startTime));
-
-        return responseDTO;
-    }
-
-    @Override
-    public List<AdminSubDepartmentResponseDTO> fetchLoggedInAdminSubDepartmentList(String username) {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(CommonLogConstant.FETCHING_PROCESS_STARTED, AdminLog.ADMIN);
-
-        List<AdminSubDepartmentResponseDTO> responseDTO =
-                adminRepository.fetchLoggedInAdminSubDepartmentList(username);
-
-        log.info(CommonLogConstant.FETCHING_PROCESS_COMPLETED, AdminLog.ADMIN, getDifferenceBetweenTwoTime(startTime));
-
-        return responseDTO;
-    }
-
-    @Override
     public List<AdminMetaInfoResponseDTO> fetchAdminMetaInfoResponseDto() {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 

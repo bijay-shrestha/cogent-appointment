@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
+import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.request.qualification.QualificationRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.qualification.QualificationSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.qualification.QualificationUpdateRequestDTO;
@@ -9,12 +10,10 @@ import com.cogent.cogentappointment.admin.dto.response.qualification.Qualificati
 import com.cogent.cogentappointment.admin.dto.response.qualification.QualificationResponseDTO;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.model.Country;
 import com.cogent.cogentappointment.admin.model.Qualification;
 import com.cogent.cogentappointment.admin.model.QualificationAlias;
 import com.cogent.cogentappointment.admin.model.University;
 import com.cogent.cogentappointment.admin.repository.QualificationRepository;
-import com.cogent.cogentappointment.admin.service.CountryService;
 import com.cogent.cogentappointment.admin.service.QualificationAliasService;
 import com.cogent.cogentappointment.admin.service.QualificationService;
 import com.cogent.cogentappointment.admin.service.UniversityService;
@@ -42,18 +41,14 @@ public class QualificationServiceImpl implements QualificationService {
 
     private final QualificationRepository qualificationRepository;
 
-    private final CountryService countryService;
-
     private final QualificationAliasService qualificationAliasService;
 
     private final UniversityService universityService;
 
     public QualificationServiceImpl(QualificationRepository qualificationRepository,
-                                    CountryService countryService,
                                     QualificationAliasService qualificationAliasService,
                                     UniversityService universityService) {
         this.qualificationRepository = qualificationRepository;
-        this.countryService = countryService;
         this.qualificationAliasService = qualificationAliasService;
         this.universityService = universityService;
     }
@@ -68,13 +63,11 @@ public class QualificationServiceImpl implements QualificationService {
 
         validateName(count, requestDTO.getName());
 
-        Country country = fetchCountry(requestDTO.getCountryId());
-
         QualificationAlias qualificationAlias = fetchQualificationAlias(requestDTO.getQualificationAliasId());
 
         University university = fetchUniversity(requestDTO.getUniversityId());
 
-        save(parseToQualification(requestDTO, country, qualificationAlias, university));
+        save(parseToQualification(requestDTO, qualificationAlias, university));
 
         log.info(SAVING_PROCESS_COMPLETED, QUALIFICATION, getDifferenceBetweenTwoTime(startTime));
     }
@@ -91,13 +84,11 @@ public class QualificationServiceImpl implements QualificationService {
 
         validateName(count, requestDTO.getName());
 
-        Country country = fetchCountry(requestDTO.getCountryId());
-
         QualificationAlias qualificationAlias = fetchQualificationAlias(requestDTO.getQualificationAliasId());
 
         University university = fetchUniversity(requestDTO.getUniversityId());
 
-        parseToUpdatedQualification(requestDTO, country, qualificationAlias, university, qualification);
+        parseToUpdatedQualification(requestDTO, qualificationAlias, university, qualification);
 
         log.info(UPDATING_PROCESS_COMPLETED, QUALIFICATION, getDifferenceBetweenTwoTime(startTime));
     }
@@ -157,6 +148,19 @@ public class QualificationServiceImpl implements QualificationService {
     }
 
     @Override
+    public List<DropDownResponseDTO> fetchMinQualification() {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, QUALIFICATION);
+
+        List<DropDownResponseDTO> responseDTOS = qualificationRepository.fetchMinQualification();
+
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, QUALIFICATION, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
     public Qualification fetchQualificationById(Long id) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -174,10 +178,6 @@ public class QualificationServiceImpl implements QualificationService {
         if (qualificationCount.intValue() > 0)
             throw new DataDuplicationException(
                     String.format(NAME_DUPLICATION_MESSAGE, Qualification.class.getSimpleName(), name));
-    }
-
-    private Country fetchCountry(Long id) {
-        return countryService.fetchCountryById(id);
     }
 
     private QualificationAlias fetchQualificationAlias(Long id) {

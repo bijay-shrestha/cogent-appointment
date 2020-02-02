@@ -1,9 +1,7 @@
 package com.cogent.cogentappointment.admin.resource;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDutyRosterRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDutyRosterSearchRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDutyRosterUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.*;
 import com.cogent.cogentappointment.admin.service.DoctorDutyRosterService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -16,7 +14,7 @@ import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.DoctorDutyRosterConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.DoctorDutyRosterConstants.BASE_DOCTOR_DUTY_ROSTER;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.DoctorDutyRosterConstants.*;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
@@ -70,6 +68,26 @@ public class DoctorDutyRosterResource {
     @ApiOperation(DETAILS_OPERATION)
     public ResponseEntity<?> fetchDetailsById(@PathVariable("id") Long id) {
         return ok(doctorDutyRosterService.fetchDetailsById(id));
+    }
+
+    @PutMapping(DOCTOR_DUTY_ROSTER_OVERRIDE)
+    @ApiOperation(UPDATE_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION)
+    public ResponseEntity<?> updateDoctorDutyRosterOverride(
+            @Valid @RequestBody DoctorDutyRosterOverrideUpdateRequestDTO updateRequestDTO) {
+        doctorDutyRosterService.updateDoctorDutyRosterOverride(updateRequestDTO);
+        return ok().build();
+    }
+
+    @PutMapping(EXISTING)
+    @ApiOperation(FETCH_EXISTING_ROSTERS)
+    public ResponseEntity<?> fetchExistingDutyRosters(@Valid @RequestBody DoctorExistingDutyRosterRequestDTO requestDTO) {
+        return ok(doctorDutyRosterService.fetchExistingDutyRosters(requestDTO));
+    }
+
+    @GetMapping(EXISTING + DETAIL + ID_PATH_VARIABLE_BASE)
+    @ApiOperation(DETAILS_OPERATION)
+    public ResponseEntity<?> fetchExistingRosterDetails(@PathVariable("id") Long id) {
+        return ok(doctorDutyRosterService.fetchExistingRosterDetails(id));
     }
 
 //

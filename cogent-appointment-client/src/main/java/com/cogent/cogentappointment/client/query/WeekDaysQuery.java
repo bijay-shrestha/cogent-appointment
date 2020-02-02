@@ -6,8 +6,8 @@ package com.cogent.cogentappointment.client.query;
 public class WeekDaysQuery {
     public static final String QUERY_TO_FETCH_ACTIVE_WEEK_DAYS =
             "SELECT" +
-                    " w.id as value," +
-                    " w.name as label" +
+                    " w.id as weekDaysId," +
+                    " w.name as weekDaysName" +
                     " FROM WeekDays w" +
                     " WHERE w.status = 'Y'";
 }

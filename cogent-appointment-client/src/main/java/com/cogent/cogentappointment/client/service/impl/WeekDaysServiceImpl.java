@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.client.service.impl;
 
-import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.weekDays.WeekDaysMinResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.log.constants.WeekDaysLog;
 import com.cogent.cogentappointment.client.model.WeekDays;
@@ -31,12 +31,12 @@ public class WeekDaysServiceImpl implements WeekDaysService {
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchActiveWeekDays() {
+    public List<WeekDaysMinResponseDTO> fetchActiveWeekDays() {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, WeekDaysLog.WEEK_DAYS);
 
-        List<DropDownResponseDTO> responseDTOS = weekDaysRepository.fetchActiveWeekDays();
+        List<WeekDaysMinResponseDTO> responseDTOS = weekDaysRepository.fetchActiveWeekDays();
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, WeekDaysLog.WEEK_DAYS, getDifferenceBetweenTwoTime(startTime));
 

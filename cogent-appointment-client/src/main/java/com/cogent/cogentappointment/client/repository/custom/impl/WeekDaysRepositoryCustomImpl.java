@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
-import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.weekDays.WeekDaysMinResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.model.WeekDays;
 import com.cogent.cogentappointment.client.repository.custom.WeekDaysRepositoryCustom;
@@ -25,10 +25,10 @@ public class WeekDaysRepositoryCustomImpl implements WeekDaysRepositoryCustom {
     private EntityManager entityManager;
 
     @Override
-    public List<DropDownResponseDTO> fetchActiveWeekDays() {
+    public List<WeekDaysMinResponseDTO> fetchActiveWeekDays() {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_WEEK_DAYS);
 
-        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
+        List<WeekDaysMinResponseDTO> results = transformQueryToResultList(query, WeekDaysMinResponseDTO.class);
 
         if (results.isEmpty()) throw new NoContentFoundException(WeekDays.class);
         else return results;

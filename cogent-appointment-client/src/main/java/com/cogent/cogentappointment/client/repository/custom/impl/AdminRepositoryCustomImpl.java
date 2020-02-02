@@ -2,7 +2,6 @@ package com.cogent.cogentappointment.client.repository.custom.impl;
 
 import com.cogent.cogentappointment.client.constants.StatusConstants;
 import com.cogent.cogentappointment.client.dto.request.admin.AdminInfoRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.admin.AdminMinDetails;
 import com.cogent.cogentappointment.client.dto.request.admin.AdminSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.admin.AdminUpdateRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.admin.*;
@@ -24,7 +23,6 @@ import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AdminServiceMessages;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AdminServiceMessages.ADMIN_INFO_NOT_FOUND;
-import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.INVALID_USERNAME_OR_HOSPITAL_CODE;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.query.AdminQuery.*;
 import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
@@ -126,28 +124,6 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
             return transformQueryToSingleResult(query, AdminLoggedInInfoResponseDTO.class);
         } catch (NoResultException e) {
             throw new NoContentFoundException(ADMIN_INFO_NOT_FOUND);
-        }
-    }
-
-    @Override
-    public AdminMinDetails getAdminInfoByUsernameAndHospitalCodeAndApikey(String username, String hospitalCode, String apiKey) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ADMIN_BY_USERNAME_AND_HOSPITAL_CODE)
-                .setParameter(USERNAME, username)
-                .setParameter(API_KEY, "7ddb7cb6-937b-4615-a202-a8c0637e4d03")
-                .setParameter(HOSPITAL_CODE, hospitalCode);
-
-        return transformQueryToSingleResult(query, AdminMinDetails.class);
-    }
-
-    @Override
-    public AdminMinDetails verifyLoggedInAdmin(String username, String hospitalCode) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_VERIFY_LOGGED_IN_USER)
-                .setParameter(USERNAME, username)
-                .setParameter(HOSPITAL_CODE, hospitalCode);
-        try {
-            return transformQueryToSingleResult(query, AdminMinDetails.class);
-        } catch (NoResultException e) {
-            throw new NoContentFoundException(INVALID_USERNAME_OR_HOSPITAL_CODE);
         }
     }
 

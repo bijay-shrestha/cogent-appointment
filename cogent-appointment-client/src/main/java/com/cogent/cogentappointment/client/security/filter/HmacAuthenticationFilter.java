@@ -1,10 +1,11 @@
 package com.cogent.cogentappointment.client.security.filter;
 
 import com.cogent.cogentappointment.client.dto.request.admin.AdminMinDetails;
+import com.cogent.cogentappointment.client.dto.request.login.ThirdPartyDetail;
 import com.cogent.cogentappointment.client.repository.AdminRepository;
+import com.cogent.cogentappointment.client.repository.HmacApiInfoRepository;
 import com.cogent.cogentappointment.client.security.hmac.AuthHeader;
 import com.cogent.cogentappointment.client.security.hmac.HMACBuilder;
-import com.cogent.cogentappointment.client.service.impl.UserDetailsServiceImpl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,14 +32,13 @@ import static com.cogent.cogentappointment.client.constants.PatternConstants.AUT
 @Component
 public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
-    private final UserDetailsServiceImpl userDetailsService;
-
     private final AdminRepository adminRepository;
 
-    public HmacAuthenticationFilter(UserDetailsServiceImpl userDetailsService,
-                                    AdminRepository adminRepository) {
-        this.userDetailsService = userDetailsService;
+    private final HmacApiInfoRepository hmacApiInfoRepository;
+
+    public HmacAuthenticationFilter(AdminRepository adminRepository, HmacApiInfoRepository hmacApiInfoRepository) {
         this.adminRepository = adminRepository;
+        this.hmacApiInfoRepository = hmacApiInfoRepository;
     }
 
     @Override
@@ -54,12 +54,12 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
         if (authHeader != null) {
 
             String apiKey = authHeader.getApiKey();
-            String username=authHeader.getUsername();
-            String hospitalCode=authHeader.getHospitalCode();
+            String username = authHeader.getUsername();
+            String hospitalCode = authHeader.getHospitalCode();
 
-            AdminMinDetails adminMinDetails = adminRepository.getAdminInfoByUsernameAndHospitalCodeAndApikey(
+            AdminMinDetails adminMinDetails = hmacApiInfoRepository.getAdminDetailsForAuthentication(
                     username,
-                   hospitalCode,
+                    hospitalCode,
                     apiKey);
 
             final HMACBuilder signatureBuilder = new HMACBuilder()
@@ -82,13 +82,19 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
         if (authHeader == null && eSewaAuthHeader != null) {
             String apiKey = eSewaAuthHeader.getApiKey();
+            String hospitalCode = eSewaAuthHeader.getHospitalCode();
+            ThirdPartyDetail thirdPartyDetail = hmacApiInfoRepository.getDetailsForAuthentication(hospitalCode, apiKey);
+
             final HMACBuilder signatureBuilder = new HMACBuilder()
                     .algorithm(eSewaAuthHeader.getAlgorithm())
                     .nonce(eSewaAuthHeader.getNonce())
-                    .apiKey(apiKey);
+                    .hospitalCode(thirdPartyDetail.getHospitalCode())
+                    .apiKey(thirdPartyDetail.getApiKey())
+                    .apiSecret(thirdPartyDetail.getApiSecret());
+
             compareSignature(signatureBuilder, eSewaAuthHeader.getDigest());
             final PreAuthenticatedAuthenticationToken authentication = new PreAuthenticatedAuthenticationToken(
-                    "eSewa",
+                    hospitalCode,
                     null,
                     null);
 //            authentication.setDetails(apiKey);
@@ -129,10 +135,10 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
         }
         return new AuthHeader(authHeaderMatcher.group(1),
                 null,
-                null,
                 authHeaderMatcher.group(2),
                 authHeaderMatcher.group(3),
-                DatatypeConverter.parseBase64Binary(authHeaderMatcher.group(4)));
+                authHeaderMatcher.group(4),
+                DatatypeConverter.parseBase64Binary(authHeaderMatcher.group(5)));
     }
 
     public void compareSignature(HMACBuilder signatureBuilder, byte[] digest) {

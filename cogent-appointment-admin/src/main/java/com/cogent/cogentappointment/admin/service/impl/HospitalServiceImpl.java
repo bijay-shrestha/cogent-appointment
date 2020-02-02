@@ -13,9 +13,11 @@ import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalMinimalR
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.exception.utils.ValidationUtils;
+import com.cogent.cogentappointment.admin.model.HmacApiInfo;
 import com.cogent.cogentappointment.admin.model.Hospital;
 import com.cogent.cogentappointment.admin.model.HospitalContactNumber;
 import com.cogent.cogentappointment.admin.model.HospitalLogo;
+import com.cogent.cogentappointment.admin.repository.HmacApiInfoRepository;
 import com.cogent.cogentappointment.admin.repository.HospitalContactNumberRepository;
 import com.cogent.cogentappointment.admin.repository.HospitalLogoRepository;
 import com.cogent.cogentappointment.admin.repository.HospitalRepository;
@@ -37,6 +39,7 @@ import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.HOSPITAL;
+import static com.cogent.cogentappointment.admin.utils.HmacApiInfoUtils.parseToHmacApiInfo;
 import static com.cogent.cogentappointment.admin.utils.HospitalUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
@@ -56,6 +59,8 @@ public class HospitalServiceImpl implements HospitalService {
 
     private final HospitalLogoRepository hospitalLogoRepository;
 
+    private final HmacApiInfoRepository hmacApiInfoRepository;
+
     private final FileService fileService;
 
     private final Validator validator;
@@ -63,11 +68,12 @@ public class HospitalServiceImpl implements HospitalService {
     public HospitalServiceImpl(HospitalRepository hospitalRepository,
                                HospitalContactNumberRepository hospitalContactNumberRepository,
                                HospitalLogoRepository hospitalLogoRepository,
-                               FileService fileService,
+                               HmacApiInfoRepository hmacApiInfoRepository, FileService fileService,
                                Validator validator) {
         this.hospitalRepository = hospitalRepository;
         this.hospitalContactNumberRepository = hospitalContactNumberRepository;
         this.hospitalLogoRepository = hospitalLogoRepository;
+        this.hmacApiInfoRepository = hmacApiInfoRepository;
         this.fileService = fileService;
         this.validator = validator;
     }
@@ -88,6 +94,8 @@ public class HospitalServiceImpl implements HospitalService {
                 Hospital.class.getSimpleName());
 
         Hospital hospital = save(convertDTOToHospital(requestDTO));
+
+        saveHmacApiInfo(parseToHmacApiInfo(hospital));
 
         saveHospitalContactNumber(hospital.getId(), requestDTO.getContactNumber());
 
@@ -191,6 +199,10 @@ public class HospitalServiceImpl implements HospitalService {
 
     private Hospital save(Hospital hospital) {
         return hospitalRepository.save(hospital);
+    }
+
+    private void saveHmacApiInfo(HmacApiInfo hmacApiInfo) {
+        hmacApiInfoRepository.save(hmacApiInfo);
     }
 
     private void saveHospitalContactNumber(Long hospitalId, List<String> contactNumbers) {

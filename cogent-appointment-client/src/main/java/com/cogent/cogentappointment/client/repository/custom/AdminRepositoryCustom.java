@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.client.repository.custom;
 
 import com.cogent.cogentappointment.client.dto.request.admin.AdminInfoRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.admin.AdminMinDetails;
 import com.cogent.cogentappointment.client.dto.request.admin.AdminSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.admin.AdminUpdateRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.admin.AdminDetailResponseDTO;
@@ -36,10 +35,6 @@ public interface AdminRepositoryCustom {
     Admin fetchAdminByUsernameOrEmail(String username);
 
     AdminLoggedInInfoResponseDTO fetchLoggedInAdminInfo(AdminInfoRequestDTO requestDTO);
-
-    AdminMinDetails getAdminInfoByUsernameAndHospitalCodeAndApikey(String username, String hospitalCode, String apiKey);
-
-    AdminMinDetails verifyLoggedInAdmin(String username, String hospitalCode);
 
 }
 

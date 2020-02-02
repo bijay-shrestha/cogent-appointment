@@ -9,8 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AuthenticateConstant.BASE_API_VALUE;
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AuthenticateConstant.LOGIN_OPERATION;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;

@@ -88,6 +88,8 @@ public class SwaggerConstants {
         String DETAILS_OPERATION = "Fetch Doctor details by its id";
         String DETAILS_FOR_UPDATE_MODAL_OPERATION = "Fetch Doctor details for update modal by its id";
         String FETCH_DETAILS_FOR_DROPDOWN = "Fetch Doctor details (id and name) for dropdown";
+        String FETCH_BY_SPECIALIZATION_ID = "Fetch active doctors by specialization id";
+        String FETCH_BY_HOSPITAL_ID = "Fetch active doctors by hospital id";
     }
 
     public interface DoctorDutyRosterConstant {

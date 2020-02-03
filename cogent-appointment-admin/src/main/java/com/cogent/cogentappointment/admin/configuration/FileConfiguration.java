@@ -12,5 +12,5 @@ import org.springframework.context.annotation.Configuration;
 public class FileConfiguration {
     private String location = "cogent-uploads";
 
-    public  String fileBasePath = "files/";
+    public  String fileBasePath = "api/v1/files/";
 }

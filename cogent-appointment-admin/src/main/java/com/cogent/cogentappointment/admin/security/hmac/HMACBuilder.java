@@ -20,9 +20,9 @@ import static com.cogent.cogentappointment.admin.constants.HMACConstant.*;
 public class HMACBuilder {
 
     private String username;
-    private String apiKey;
-    private String nonce;
+     private String nonce;
     private String algorithm;
+    private String apiKey;
 
 
     public HMACBuilder username(String username) {

@@ -49,14 +49,10 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
         if (authHeader != null) {
 
-            String apiKey = authHeader.getApiKey();
-            String username = authHeader.getUsername();
-            String hospitalCode = authHeader.getHospitalCode();
-
-            AdminMinDetails adminMinDetails = hmacApiInfoRepository.getAdminDetailsForAuthentication(
-                    username,
-                    hospitalCode,
-                    apiKey);
+            AdminMinDetails adminMinDetails = hmacApiInfoRepository.getAdminDetailForAuthentication(
+                    authHeader.getUsername(),
+                    authHeader.getHospitalCode(),
+                    authHeader.getApiKey());
 
             final HMACBuilder signatureBuilder = new HMACBuilder()
                     .algorithm(authHeader.getAlgorithm())
@@ -68,18 +64,14 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
             compareSignature(signatureBuilder, authHeader.getDigest());
 
-            final PreAuthenticatedAuthenticationToken authentication = new PreAuthenticatedAuthenticationToken(
-                    adminMinDetails.getUsername(),
-                    null,
-                    null);
-//            authentication.setDetails(adminMinDetails.getUsername() + adminMinDetails.getHospitalCode());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            SecurityContextHolder.getContext().setAuthentication(getAuthentication(adminMinDetails.getUsername()));
         }
 
         if (authHeader == null && eSewaAuthHeader != null) {
-            String apiKey = eSewaAuthHeader.getApiKey();
-            String hospitalCode = eSewaAuthHeader.getHospitalCode();
-            ThirdPartyDetail thirdPartyDetail = hmacApiInfoRepository.getDetailsForAuthentication(hospitalCode, apiKey);
+
+            ThirdPartyDetail thirdPartyDetail = hmacApiInfoRepository.getDetailForAuthentication(
+                    eSewaAuthHeader.getHospitalCode(),
+                    eSewaAuthHeader.getApiKey());
 
             final HMACBuilder signatureBuilder = new HMACBuilder()
                     .algorithm(eSewaAuthHeader.getAlgorithm())
@@ -89,13 +81,10 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
                     .apiSecret(thirdPartyDetail.getApiSecret());
 
             compareSignature(signatureBuilder, eSewaAuthHeader.getDigest());
-            final PreAuthenticatedAuthenticationToken authentication = new PreAuthenticatedAuthenticationToken(
-                    hospitalCode,
-                    null,
-                    null);
-//            authentication.setDetails(apiKey);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            SecurityContextHolder.getContext().setAuthentication(getAuthentication(thirdPartyDetail.getHospitalCode()));
         }
+
         try {
             filterChain.doFilter(request, response);
         } finally {
@@ -103,15 +92,17 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
         }
     }
 
-    public static AuthHeader getAuthHeader(HttpServletRequest request) {
+    public AuthHeader getAuthHeader(HttpServletRequest request) {
+
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+
         if (authHeader == null) {
             return null;
         }
-        final Matcher authHeaderMatcher = Pattern.compile(AUTHORIZATION_HEADER_PATTERN).matcher(authHeader);
-        if (!authHeaderMatcher.matches()) {
-            return null;
-        }
+
+        final Matcher authHeaderMatcher = checkIfHeaderMatches(authHeader,
+                AUTHORIZATION_HEADER_PATTERN);
+
         return new AuthHeader(authHeaderMatcher.group(1),
                 authHeaderMatcher.group(2),
                 authHeaderMatcher.group(3),
@@ -120,15 +111,17 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
                 DatatypeConverter.parseBase64Binary(authHeaderMatcher.group(6)));
     }
 
-    public static AuthHeader getAuthHeaderForeSewa(HttpServletRequest request) {
+    public AuthHeader getAuthHeaderForeSewa(HttpServletRequest request) {
+
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+
         if (authHeader == null) {
             return null;
         }
-        final Matcher authHeaderMatcher = Pattern.compile(AUTHORIZATION_HEADER_PATTERN_FOR_ESEWA).matcher(authHeader);
-        if (!authHeaderMatcher.matches()) {
-            return null;
-        }
+
+        final Matcher authHeaderMatcher = checkIfHeaderMatches(authHeader,
+                AUTHORIZATION_HEADER_PATTERN_FOR_ESEWA);
+
         return new AuthHeader(authHeaderMatcher.group(1),
                 null,
                 authHeaderMatcher.group(2),
@@ -140,5 +133,20 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
     public void compareSignature(HMACBuilder signatureBuilder, byte[] digest) {
         if (!signatureBuilder.isHashEquals(digest))
             throw new BadCredentialsException(HMAC_BAD_SIGNATURE);
+    }
+
+    public Matcher checkIfHeaderMatches(String authHeader, String pattern) {
+        final Matcher authHeaderMatcher = Pattern.compile(pattern).matcher(authHeader);
+        if (!authHeaderMatcher.matches()) {
+            return null;
+        }
+        return authHeaderMatcher;
+    }
+
+    public PreAuthenticatedAuthenticationToken getAuthentication(String principal) {
+        return new PreAuthenticatedAuthenticationToken(
+                principal,
+                null,
+                null);
     }
 }

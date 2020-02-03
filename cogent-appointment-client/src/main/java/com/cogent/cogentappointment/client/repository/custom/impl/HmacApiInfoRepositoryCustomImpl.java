@@ -25,7 +25,7 @@ public class HmacApiInfoRepositoryCustomImpl implements HmacApiInfoRepositoryCus
     private EntityManager entityManager;
 
     @Override
-    public ThirdPartyDetail getDetailsForAuthentication(String hospitalCode, String apiKey) {
+    public ThirdPartyDetail getDetailForAuthentication(String hospitalCode, String apiKey) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_THIRD_PARTY_INFO_FOR_AUTHENTICATION)
                 .setParameter(API_KEY, apiKey)
                 .setParameter(HOSPITAL_CODE, hospitalCode);
@@ -60,7 +60,7 @@ public class HmacApiInfoRepositoryCustomImpl implements HmacApiInfoRepositoryCus
     }
 
     @Override
-    public AdminMinDetails getAdminDetailsForAuthentication(String username, String hospitalCode, String apiKey) {
+    public AdminMinDetails getAdminDetailForAuthentication(String username, String hospitalCode, String apiKey) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FECTH_ADMIN_FOR_AUTHENTICATION)
                 .setParameter(USERNAME, username)
                 .setParameter(HOSPITAL_CODE, hospitalCode)

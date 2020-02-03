@@ -21,12 +21,11 @@ import static com.cogent.cogentappointment.client.constants.HMACConstant.HMAC_AL
 public class HMACBuilder {
 
     private String username;
-    private String apiKey;
+    private String hospitalCode;
     private String nonce;
     private String algorithm;
-    private String hospitalCode;
+    private String apiKey;
     private String apiSecret;
-
 
     public HMACBuilder username(String username) {
         this.username = username;
@@ -86,14 +85,9 @@ public class HMACBuilder {
 
     public boolean isHashEquals(byte[] expectedSignature) {
         final byte[] signature = build();
-        System.out.println("signature---------" + signature);
-        System.out.println("expected signature---------" + expectedSignature);
         return MessageDigest.isEqual(signature, expectedSignature);
     }
 
-    public String buildAsBase64String() {
-
-        return DatatypeConverter.printBase64Binary(build());
-    }
+    public String buildAsBase64String() { return DatatypeConverter.printBase64Binary(build()); }
 
 }

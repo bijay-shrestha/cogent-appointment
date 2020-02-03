@@ -172,16 +172,14 @@ public class HospitalServiceImpl implements HospitalService {
         return responseDTOS;
     }
 
-
     @Override
-    public List<HospitalDropdownResponseDTO> search(HospitalMinSearchRequestDTO searchRequestDTO,
-                                                    Pageable pageable) {
+    public List<HospitalMinResponseDTO> fetchMinDetails(HospitalMinSearchRequestDTO searchRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_DETAIL_PROCESS_STARTED, HOSPITAL);
 
-        List<HospitalDropdownResponseDTO> responseDTO = hospitalRepository.search(searchRequestDTO, pageable);
+        List<HospitalMinResponseDTO> responseDTO = hospitalRepository.fetchMinDetails(searchRequestDTO);
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
 
@@ -196,19 +194,6 @@ public class HospitalServiceImpl implements HospitalService {
         log.info(FETCHING_DETAIL_PROCESS_STARTED, HOSPITAL);
 
         HospitalResponseDTO responseDTO = hospitalRepository.fetchDetailsById(hospitalId);
-
-        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
-
-        return responseDTO;
-    }
-
-    @Override
-    public HospitalMinResponseDTO fetchMinDetailsById(Long hospitalId) {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(FETCHING_DETAIL_PROCESS_STARTED, HOSPITAL);
-
-        HospitalMinResponseDTO responseDTO = hospitalRepository.fetchMinDetailsById(hospitalId);
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
 

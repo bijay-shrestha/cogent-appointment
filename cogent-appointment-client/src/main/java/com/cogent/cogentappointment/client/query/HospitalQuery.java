@@ -110,48 +110,33 @@ public class HospitalQuery {
                     " AND h.status !='D'";
 
     public static String QUERY_TO_FETCH_MIN_HOSPITAL(HospitalMinSearchRequestDTO requestDTO) {
-
         String query = " SELECT" +
-                " h.id as value," +                                     //[0]
-                " h.name as label," +                                    //[1]
+                " h.id as hospitalId," +                                   //[0]
+                " h.name as name," +                                       //[1]
+                " h.address as address," +                                 //[2]
                 " CASE WHEN" +
                 " (hl.status IS NULL OR hl.status = 'N')" +
                 " THEN null" +
                 " ELSE" +
-                " hl.fileUri" +
-                " END as fileUri" +                                     //[2]
+                " hl.file_uri" +
+                " END as fileUri," +                                      //[3]
+                " tbl1.contactNumber"+                                    //[4]
                 " FROM" +
-                " Hospital h" +
-                " LEFT JOIN HospitalLogo hl ON h.id =hl.hospital.id" +
+                " hospital h" +
+                " LEFT JOIN hospital_logo hl ON h.id =hl.hospital_id " +
+                " LEFT JOIN " +
+                " (" +
+                " SELECT hc.hospital_id as hospitalId," +
+                " GROUP_CONCAT(hc.contact_number) as contactNumber" +
+                " FROM hospital_contact_number hc" +
+                " WHERE hc.status = 'Y'" +
+                " GROUP BY hc.hospital_id" +
+                " )tbl1 ON tbl1.hospitalId = h.id" +
                 " WHERE h.status ='Y'";
 
         if (!ObjectUtils.isEmpty(requestDTO.getName()))
             query += " AND h.name LIKE '%" + requestDTO.getName() + "%'";
 
-        return query;
+        return query + " ORDER by h.name";
     }
-
-    public static final String QUERY_TO_FETCH_MIN_HOSPITAL_DETAILS =
-            "SELECT" +
-                    " h.name as name," +                                      //[0]
-                    " h.address as address," +                                //[1]
-                    " CASE WHEN" +
-                    " (hl.status IS NULL OR hl.status = 'N')" +
-                    " THEN null" +
-                    " ELSE" +
-                    " hl.fileUri" +
-                    " END as fileUri" +                                      //[2]
-                    " FROM" +
-                    " Hospital h" +
-                    " LEFT JOIN HospitalLogo hl ON h.id =hl.hospital.id" +
-                    " WHERE h.id =:id" +
-                    " AND h.status ='Y'";
-
-    public static final String QUERY_TO_FETCH_HOSPITAL_CONTACT_NUMBER =
-            " SELECT hc.id, hc.contactNumber" +
-                    " FROM Hospital h  " +
-                    " LEFT JOIN HospitalContactNumber hc ON h.id =hc.hospitalId" +
-                    " WHERE hc.status = 'Y'" +
-                    " AND h.id=:id";
-
 }

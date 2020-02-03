@@ -82,23 +82,14 @@ public class HospitalResource {
     }
 
     @PutMapping(SEARCH + MIN)
-    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
-    public ResponseEntity<?> searchMinAdmin(@RequestBody HospitalMinSearchRequestDTO searchRequestDTO,
-                                            @RequestParam("page") int page,
-                                            @RequestParam("size") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return ok(hospitalService.search(searchRequestDTO, pageable));
+    @ApiOperation(FETCH_MIN_DETAILS)
+    public ResponseEntity<?> fetchMinDetails(@RequestBody HospitalMinSearchRequestDTO searchRequestDTO) {
+        return ok(hospitalService.fetchMinDetails(searchRequestDTO));
     }
 
     @GetMapping(DETAIL + ID_PATH_VARIABLE_BASE)
     @ApiOperation(DETAILS_OPERATION)
     public ResponseEntity<?> fetchDetailsById(@PathVariable("id") Long id) {
         return ok(hospitalService.fetchDetailsById(id));
-    }
-
-    @GetMapping(DETAIL + MIN + ID_PATH_VARIABLE_BASE)
-    @ApiOperation(MIN_DETAILS_OPERATION)
-    public ResponseEntity<?> fetchMinDetailsById(@PathVariable("id") Long id) {
-        return ok(hospitalService.fetchMinDetailsById(id));
     }
 }

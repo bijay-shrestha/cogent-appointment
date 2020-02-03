@@ -35,10 +35,5 @@ public interface HospitalService {
 
     HospitalResponseDTO fetchDetailsById(Long hospitalId);
 
-    List<HospitalDropdownResponseDTO> search(HospitalMinSearchRequestDTO searchRequestDTO,
-                                             Pageable pageable);
-
-    HospitalMinResponseDTO fetchMinDetailsById(Long hospitalId);
-
-
+    List<HospitalMinResponseDTO> fetchMinDetails(HospitalMinSearchRequestDTO searchRequestDTO);
 }

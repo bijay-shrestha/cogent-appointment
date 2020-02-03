@@ -29,7 +29,5 @@ public interface HospitalRepositoryCustom {
 
     HospitalResponseDTO fetchDetailsById(Long hospitalId);
 
-    HospitalMinResponseDTO fetchMinDetailsById(Long hospitalId);
-
-    List<HospitalDropdownResponseDTO> search(HospitalMinSearchRequestDTO searchRequestDTO, Pageable pageable);
+    List<HospitalMinResponseDTO> fetchMinDetails(HospitalMinSearchRequestDTO searchRequestDTO);
 }

@@ -46,9 +46,10 @@ public class AppointmentUtils {
         appointment.setAppointmentTime(parseAppointmentTime(requestDTO.getAppointmentDate(),
                 requestDTO.getAppointmentTime()));
         appointment.setAppointmentNumber(appointmentNumber);
-        appointment.setUniqueId(NumberFormatterUtils.generateRandomNumber(6));
+        appointment.setSerialNumber(NumberFormatterUtils.generateRandomNumber(6));
         appointment.setCreatedDateNepali(requestDTO.getCreatedDateNepali());
         appointment.setStatus("PA");
+//        appointment.setHospitalId();
 
         parseToAppointment(patient, specialization, doctor, appointment);
         return appointment;

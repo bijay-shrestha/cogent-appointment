@@ -50,8 +50,9 @@ public class Appointment implements Serializable {
     @Column(name = "appointment_number", updatable = false)
     private String appointmentNumber;
 
-    @Column(name = "unique_id")
-    private String uniqueId;
+    @Column(name = "serial_number")
+    private String serialNumber;
+
     @Column(name = "created_date_nepali")
     private String createdDateNepali;
 
@@ -66,4 +67,8 @@ public class Appointment implements Serializable {
     /*If cancel the appointment, cancellation remarks is must*/
     @Column(name = "remarks")
     private String remarks;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hospital_id")
+    private Hospital hospitalId;
 }

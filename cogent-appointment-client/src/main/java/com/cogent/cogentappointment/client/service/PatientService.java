@@ -13,7 +13,7 @@ import java.util.List;
  * @author smriti ON 16/01/2020
  */
 public interface PatientService {
-    Patient save(PatientRequestDTO requestDTO);
+    Patient save(PatientRequestDTO requestDTO, Long hospitalId);
 
     Patient fetchPatient(Long id);
 

@@ -40,4 +40,7 @@ public class AppointmentRequestDTO implements Serializable {
     @NotNull
     @NotEmpty
     private String createdDateNepali;
+
+    @NotNull
+    private Long hospitalId;
 }

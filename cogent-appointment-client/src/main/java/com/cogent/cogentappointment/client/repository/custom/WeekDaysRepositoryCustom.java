@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.client.repository.custom;
 
-import com.cogent.cogentappointment.client.dto.response.weekDays.WeekDaysMinResponseDTO;
+import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
@@ -13,5 +13,5 @@ import java.util.List;
 @Qualifier("weekDaysRepositoryCustom")
 public interface WeekDaysRepositoryCustom {
 
-    List<WeekDaysMinResponseDTO> fetchActiveWeekDays();
+    List<DropDownResponseDTO> fetchActiveWeekDays();
 }

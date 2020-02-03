@@ -126,6 +126,7 @@ public class HospitalServiceImpl implements HospitalService {
         updateHospitalLogo(hospital, multipartFile);
 
         log.info(UPDATING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
+        log.info(UPDATING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
@@ -264,6 +265,7 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error("Hospital with id : {} not found",id);
         throw new NoContentFoundException(Hospital.class, "id", id.toString());
     };
 

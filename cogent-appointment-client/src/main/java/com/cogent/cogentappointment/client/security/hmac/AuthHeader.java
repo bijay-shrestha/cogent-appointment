@@ -8,7 +8,6 @@ import lombok.Setter;
  */
 
 @Getter
-@Setter
 public class AuthHeader {
 
     private final String algorithm;

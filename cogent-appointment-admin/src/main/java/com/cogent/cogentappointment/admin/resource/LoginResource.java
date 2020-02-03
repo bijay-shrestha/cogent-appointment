@@ -5,6 +5,7 @@ import com.cogent.cogentappointment.admin.dto.response.admin.AdminLoggedInInfoRe
 import com.cogent.cogentappointment.admin.service.impl.AuthenticateServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstan
 @CrossOrigin
 @RequestMapping(API_V1)
 @Api(BASE_API_VALUE)
+@Slf4j
 public class LoginResource {
 
     private final AuthenticateServiceImpl authenticateService;

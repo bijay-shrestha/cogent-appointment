@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <property name="PROD_HOME" value="${application.home:-logs}"/>
+    <property name="PROD_HOME" value="${application.home:-logs}/client"/>
     <property name="COMMON_LOG" value="${application.home:-logs}/common"/>
     <!--console output-->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">

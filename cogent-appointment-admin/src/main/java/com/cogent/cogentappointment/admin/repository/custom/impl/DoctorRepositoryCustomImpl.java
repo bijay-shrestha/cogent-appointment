@@ -37,20 +37,23 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
     private EntityManager entityManager;
 
     @Override
-    public Long validateDoctorDuplicity(String name, String mobileNumber) {
+    public Long validateDoctorDuplicity(String name, String mobileNumber, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DOCTOR_DUPLICITY)
                 .setParameter(NAME, name)
-                .setParameter(MOBILE_NUMBER, mobileNumber);
+                .setParameter(MOBILE_NUMBER, mobileNumber)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Long) query.getSingleResult();
     }
 
     @Override
-    public Long validateDoctorDuplicityForUpdate(Long id, String name, String mobileNumber) {
+    public Long validateDoctorDuplicityForUpdate(Long id, String name,
+                                                 String mobileNumber, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DOCTOR_DUPLICITY_FOR_UPDATE)
                 .setParameter(ID, id)
                 .setParameter(NAME, name)
-                .setParameter(MOBILE_NUMBER, mobileNumber);
+                .setParameter(MOBILE_NUMBER, mobileNumber)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Long) query.getSingleResult();
     }

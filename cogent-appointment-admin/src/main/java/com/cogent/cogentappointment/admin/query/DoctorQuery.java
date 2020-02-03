@@ -13,14 +13,18 @@ public class DoctorQuery {
 
     public static final String QUERY_TO_VALIDATE_DOCTOR_DUPLICITY =
             "SELECT COUNT(d.id) FROM Doctor d" +
-                    " WHERE d.name =:name" +
+                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
+                    " WHERE (d.name =:name" +
                     " AND d.mobileNumber=:mobileNumber" +
+                    " AND h.id=:hospitalId)" +
                     " AND d.status != 'D'";
 
     public static final String QUERY_TO_VALIDATE_DOCTOR_DUPLICITY_FOR_UPDATE =
             "SELECT COUNT(d.id) FROM Doctor d" +
+                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE d.name =:name" +
                     " AND d.mobileNumber=:mobileNumber" +
+                    " AND h.id=:hospitalId" +
                     " AND d.id!=:id" +
                     " AND d.status != 'D'";
 

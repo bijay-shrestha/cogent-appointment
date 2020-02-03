@@ -87,7 +87,8 @@ public class DoctorServiceImpl implements DoctorService {
 
         log.info(SAVING_PROCESS_STARTED, DOCTOR);
 
-        Long doctorCount = doctorRepository.validateDoctorDuplicity(requestDTO.getName(), requestDTO.getMobileNumber());
+        Long doctorCount = doctorRepository.validateDoctorDuplicity(
+                requestDTO.getName(), requestDTO.getMobileNumber(), requestDTO.getHospitalId());
 
         validateDoctor(doctorCount, requestDTO.getName(), requestDTO.getMobileNumber());
 
@@ -122,7 +123,8 @@ public class DoctorServiceImpl implements DoctorService {
         Long doctorCount = doctorRepository.validateDoctorDuplicityForUpdate(
                 requestDTO.getUpdateDTO().getId(),
                 requestDTO.getUpdateDTO().getName(),
-                requestDTO.getUpdateDTO().getMobileNumber());
+                requestDTO.getUpdateDTO().getMobileNumber(),
+                requestDTO.getUpdateDTO().getHospitalId());
 
         validateDoctor(doctorCount,
                 requestDTO.getUpdateDTO().getName(),

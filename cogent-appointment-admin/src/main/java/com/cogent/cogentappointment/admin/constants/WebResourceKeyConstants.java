@@ -45,6 +45,7 @@ public class WebResourceKeyConstants {
     public interface DoctorConstants {
         String BASE_DOCTOR = "/doctor";
         String UPDATE_DETAILS = "/updateDetails";
+        String DOCTOR_WISE = "/doctor-wise";
         String DOCTOR_ID_PATH_VARIABLE_BASE = "/{doctorId}";
     }
 

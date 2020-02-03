@@ -194,6 +194,7 @@ public class SwaggerConstants {
         String DETAILS_OPERATION = "Fetch Specialization details by its id";
         String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal Specialization details (id and name) for dropdown";
         String FETCH_BY_DOCTOR_ID = "Fetch active specializations by doctor id";
+        String FETCH_BY_HOSPITAL_ID = "Fetch active specializations by hospital id";
     }
 
     public interface SideBarConstant {

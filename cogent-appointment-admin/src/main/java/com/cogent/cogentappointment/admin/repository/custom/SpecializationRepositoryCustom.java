@@ -29,4 +29,6 @@ public interface SpecializationRepositoryCustom {
     SpecializationResponseDTO fetchDetailsById(Long id);
 
     List<DropDownResponseDTO> fetchSpecializationByDoctorId(Long doctorId);
+
+    List<DropDownResponseDTO> fetchSpecializationByHospitalId(Long hospitalId);
 }

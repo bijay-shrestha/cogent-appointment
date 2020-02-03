@@ -19,8 +19,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.admin.constants.QueryConstants.ID;
-import static com.cogent.cogentappointment.admin.constants.QueryConstants.NAME;
+import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.query.SpecializationQuery.*;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
@@ -97,6 +96,17 @@ public class SpecializationRepositoryCustomImpl implements SpecializationReposit
     public List<DropDownResponseDTO> fetchSpecializationByDoctorId(Long DoctorId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_SPECIALIZATION_BY_DOCTOR_ID)
                 .setParameter(ID, DoctorId);
+
+        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
+
+        if (results.isEmpty()) throw SPECIALIZATION_NOT_FOUND.get();
+        else return results;
+    }
+
+    @Override
+    public List<DropDownResponseDTO> fetchSpecializationByHospitalId(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_SPECIALIZATION_BY_HOSPITAL_ID)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 

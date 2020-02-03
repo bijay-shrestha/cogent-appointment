@@ -74,4 +74,15 @@ public class SpecializationQuery {
                     " cs.doctorId =:id" +
                     " AND cs.status = 'Y'" +
                     " AND s.status = 'Y'";
+
+    public static final String QUERY_TO_FETCH_SPECIALIZATION_BY_HOSPITAL_ID =
+            " SELECT" +
+                    " s.id as value," +                                      //[0]
+                    " s.name as label" +                                     //[1]
+                    " FROM" +
+                    " Specialization s" +
+                    " LEFT JOIN Hospital h ON h.id = s.hospital.id" +
+                    " WHERE s.status ='Y'" +
+                    " AND h.status = 'Y'" +
+                    " AND h.id =:hospitalId";
 }

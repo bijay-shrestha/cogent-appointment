@@ -10,11 +10,23 @@ import java.util.function.Function;
  */
 public class SpecializationQuery {
 
-    public static final String QUERY_TO_FIND_SPECIALIZATION_COUNT_BY_NAME =
-            "SELECT COUNT(s.id) FROM Specialization s WHERE s.name =:name AND s.status != 'D'";
+    public static final String QUERY_TO_VALIDATE_SPECIALIZATION =
+            "SELECT COUNT(s.id)" +
+                    " FROM Specialization s" +
+                    " LEFT JOIN Hospital h ON h.id = s.hospital.id" +
+                    " WHERE s.name =:name" +
+                    " AND s.status != 'D'" +
+                    " AND h.id=:hospitalId";
 
-    public static final String QUERY_TO_FIND_SPECIALIZATION_COUNT_BY_ID_AND_NAME =
-            "SELECT COUNT(s.id) FROM Specialization s WHERE s.id!= :id AND s.name =:name AND s.status != 'D'";
+    public static final String QUERY_TO_VALIDATE_SPECIALIZATION_FOR_UPDATE =
+            "SELECT" +
+                    " COUNT(s.id)" +
+                    " FROM Specialization s" +
+                    " LEFT JOIN Hospital h ON h.id = s.hospital.id" +
+                    " WHERE s.id!= :id" +
+                    " AND s.name =:name" +
+                    " AND s.status != 'D'" +
+                    " AND h.id=:hospitalId";
 
     public static final String QUERY_TO_FETCH_ACTIVE_SPECIALIZATION_FOR_DROPDOWN =
             " SELECT" +

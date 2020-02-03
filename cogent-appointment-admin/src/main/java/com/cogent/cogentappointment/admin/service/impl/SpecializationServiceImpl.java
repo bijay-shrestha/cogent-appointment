@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
-import com.cogent.cogentappointment.admin.constants.ErrorMessageConstants;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.request.specialization.SpecializationRequestDTO;
@@ -21,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.function.Function;
 
-import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.*;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NAME_DUPLICATION_MESSAGE;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.SpecializationLog.SPECIALIZATION;
 import static com.cogent.cogentappointment.admin.utils.SpecializationUtils.*;
@@ -48,8 +47,10 @@ public class SpecializationServiceImpl implements SpecializationService {
 
         log.info(SAVING_PROCESS_STARTED, SPECIALIZATION);
 
-        validateName(specializationRepository.fetchSpecializationByName(requestDTO.getName()),
-                requestDTO.getName());
+        Long specializationCount = specializationRepository.validateDuplicity(
+                requestDTO.getName(), requestDTO.getHospitalId());
+
+        validateName(specializationCount, requestDTO.getName());
 
         Specialization specialization = save(parseToSpecialization(requestDTO));
 
@@ -67,8 +68,10 @@ public class SpecializationServiceImpl implements SpecializationService {
 
         Specialization specialization = findById(requestDTO.getId());
 
-        validateName(specializationRepository.fetchSpecializationByIdAndName
-                (requestDTO.getId(), requestDTO.getName()), requestDTO.getName());
+        Long specializationCount = specializationRepository.validateDuplicity(
+                requestDTO.getId(), requestDTO.getName(), requestDTO.getHospitalId());
+
+        validateName(specializationCount, requestDTO.getName());
 
         save(parseToUpdatedSpecialization(requestDTO, specialization));
 

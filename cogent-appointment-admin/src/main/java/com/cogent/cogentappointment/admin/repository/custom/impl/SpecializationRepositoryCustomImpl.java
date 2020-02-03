@@ -35,18 +35,20 @@ public class SpecializationRepositoryCustomImpl implements SpecializationReposit
     private EntityManager entityManager;
 
     @Override
-    public Long fetchSpecializationByName(String name) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FIND_SPECIALIZATION_COUNT_BY_NAME)
-                .setParameter(NAME, name);
+    public Long validateDuplicity(String name, Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_SPECIALIZATION)
+                .setParameter(NAME, name)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Long) query.getSingleResult();
     }
 
     @Override
-    public Long fetchSpecializationByIdAndName(Long id, String name) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FIND_SPECIALIZATION_COUNT_BY_ID_AND_NAME)
+    public Long validateDuplicity(Long id, String name, Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_SPECIALIZATION_FOR_UPDATE)
                 .setParameter(ID, id)
-                .setParameter(NAME, name);
+                .setParameter(NAME, name)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Long) query.getSingleResult();
     }

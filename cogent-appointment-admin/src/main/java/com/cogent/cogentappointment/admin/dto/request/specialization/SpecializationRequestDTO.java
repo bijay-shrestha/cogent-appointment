@@ -27,4 +27,7 @@ public class SpecializationRequestDTO implements Serializable {
     @NotNull
     @Status
     private Character status;
+
+    @NotNull
+    private Long hospitalId;
 }

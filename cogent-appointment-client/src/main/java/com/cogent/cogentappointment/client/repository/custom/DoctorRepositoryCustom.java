@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.client.repository.custom;
 
-import com.cogent.cogentappointment.client.dto.request.doctor.DoctorMinSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.doctor.DoctorSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.doctor.*;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -32,7 +31,5 @@ public interface DoctorRepositoryCustom {
 
     DoctorUpdateResponseDTO fetchDetailsForUpdate(Long id);
 
-    List<DoctorMinResponseDTO> fetchDoctorMinInfo(DoctorMinSearchRequestDTO requestDTO);
-
-    DoctorMinDetailResponseDTO fetchMinDoctorDetails(DoctorMinSearchRequestDTO requestDTO);
+    List<DoctorMinResponseDTO> fetchDoctorMinInfo(Long hospitalId);
 }

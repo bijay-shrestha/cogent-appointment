@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.client.service;
 
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.doctor.DoctorMinSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.doctor.DoctorRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.doctor.DoctorSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.doctor.DoctorUpdateRequestDTO;
@@ -38,7 +37,5 @@ public interface DoctorService {
 
     DoctorUpdateResponseDTO fetchDetailsForUpdate(Long id);
 
-    List<DoctorMinResponseDTO> fetchDoctorMinInfo(DoctorMinSearchRequestDTO requestDTO);
-
-    DoctorMinDetailResponseDTO fetchMinDoctorDetails(DoctorMinSearchRequestDTO requestDTO);
+    List<DoctorMinResponseDTO> fetchDoctorMinInfo(Long hospitalId);
 }

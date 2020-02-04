@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
-import com.cogent.cogentappointment.client.dto.request.doctor.DoctorMinSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.doctor.DoctorSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.doctor.*;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
@@ -131,29 +130,15 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
     }
 
     @Override
-    public List<DoctorMinResponseDTO> fetchDoctorMinInfo(DoctorMinSearchRequestDTO requestDTO) {
-        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_MIN_DOCTOR_INFO(requestDTO))
-                .setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
+    public List<DoctorMinResponseDTO> fetchDoctorMinInfo(Long hospitalId) {
+        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_MIN_DOCTOR_INFO)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         List<DoctorMinResponseDTO> results = transformNativeQueryToResultList(query, DoctorMinResponseDTO.class);
 
         if (results.isEmpty()) throw DOCTOR_NOT_FOUND.get();
 
         return results;
-    }
-
-    @Override
-    public DoctorMinDetailResponseDTO fetchMinDoctorDetails(DoctorMinSearchRequestDTO requestDTO) {
-        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_MIN_DOCTOR_DETAILS)
-                .setParameter(HOSPITAL_ID, requestDTO.getHospitalId())
-                .setParameter(DOCTOR_ID, requestDTO.getDoctorId())
-                .setParameter(SPECIALIZATION_ID, requestDTO.getSpecializationId());
-
-        try {
-            return transformNativeQueryToSingleResult(query, DoctorMinDetailResponseDTO.class);
-        } catch (NoResultException e) {
-            throw DOCTOR_WITH_GIVEN_ID_NOT_FOUND.apply(requestDTO.getDoctorId());
-        }
     }
 
     private Supplier<NoContentFoundException> DOCTOR_NOT_FOUND = () ->

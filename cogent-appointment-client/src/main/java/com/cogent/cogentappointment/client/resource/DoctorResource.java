@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.client.resource;
 
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.doctor.DoctorMinSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.doctor.DoctorRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.doctor.DoctorSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.doctor.DoctorUpdateRequestDTO;
@@ -108,15 +107,9 @@ public class DoctorResource {
         return ok(doctorService.fetchDoctorByHospitalId(hospitalId));
     }
 
-    @PutMapping(MIN)
+    @GetMapping(MIN + HOSPITAL_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_DOCTOR_MIN_INFO)
-    public ResponseEntity<?> fetchDoctorMinInfo(@Valid @RequestBody DoctorMinSearchRequestDTO requestDTO) {
-        return ok(doctorService.fetchDoctorMinInfo(requestDTO));
-    }
-
-    @PutMapping(DETAIL + MIN)
-    @ApiOperation(FETCH_DOCTOR_MIN_DETAILS)
-    public ResponseEntity<?> fetchDoctorMinDetails(@RequestBody DoctorMinSearchRequestDTO requestDTO) {
-        return ok(doctorService.fetchMinDoctorDetails(requestDTO));
+    public ResponseEntity<?> fetchDoctorMinInfo(@PathVariable("hospitalId") Long hospitalId) {
+        return ok(doctorService.fetchDoctorMinInfo(hospitalId));
     }
 }

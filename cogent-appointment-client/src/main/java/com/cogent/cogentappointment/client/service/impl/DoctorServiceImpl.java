@@ -255,25 +255,12 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public  List<DoctorMinResponseDTO> fetchDoctorMinInfo(DoctorMinSearchRequestDTO requestDTO){
+    public  List<DoctorMinResponseDTO> fetchDoctorMinInfo(Long hospitalId){
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, DOCTOR);
 
-        List<DoctorMinResponseDTO> doctorInfo = doctorRepository.fetchDoctorMinInfo(requestDTO);
-
-        log.info(FETCHING_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
-
-        return doctorInfo;
-    }
-
-    @Override
-    public DoctorMinDetailResponseDTO fetchMinDoctorDetails(DoctorMinSearchRequestDTO requestDTO) {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(FETCHING_PROCESS_STARTED, DOCTOR);
-
-        DoctorMinDetailResponseDTO doctorInfo = doctorRepository.fetchMinDoctorDetails(requestDTO);
+        List<DoctorMinResponseDTO> doctorInfo = doctorRepository.fetchDoctorMinInfo(hospitalId);
 
         log.info(FETCHING_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 

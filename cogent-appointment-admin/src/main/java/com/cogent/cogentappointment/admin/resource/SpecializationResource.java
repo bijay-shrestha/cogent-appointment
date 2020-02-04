@@ -16,6 +16,10 @@ import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.SpecializationConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.DoctorConstants.DOCTOR_ID_PATH_VARIABLE_BASE;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.DoctorConstants.DOCTOR_WISE;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.HospitalConstants.HOSPITAL_ID_PATH_VARIABLE_BASE;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.HospitalConstants.HOSPITAL_WISE;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.SpecializationConstants.BASE_SPECIALIZATION;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
@@ -76,9 +80,15 @@ public class SpecializationResource {
         return ok(specializationService.fetchDetailsById(id));
     }
 
-    @GetMapping(DoctorConstants.DOCTOR_ID_PATH_VARIABLE_BASE)
+    @GetMapping(DOCTOR_WISE + DOCTOR_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_BY_DOCTOR_ID)
     public ResponseEntity<?> fetchSpecializationByDoctorId(@PathVariable("doctorId") Long doctorId) {
         return ok(specializationService.fetchSpecializationByDoctorId(doctorId));
+    }
+
+    @GetMapping(HOSPITAL_WISE + HOSPITAL_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_BY_HOSPITAL_ID)
+    public ResponseEntity<?> fetchSpecializationByHospitalId(@PathVariable("hospitalId") Long hospitalId) {
+        return ok(specializationService.fetchSpecializationByHospitalId(hospitalId));
     }
 }

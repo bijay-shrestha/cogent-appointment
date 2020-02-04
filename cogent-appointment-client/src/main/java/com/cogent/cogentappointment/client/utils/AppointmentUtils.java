@@ -9,7 +9,6 @@ import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentB
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentCheckAvailabilityMinResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentCheckAvailabilityResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
-import com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.Doctor;
 import com.cogent.cogentappointment.persistence.model.Patient;
@@ -46,9 +45,10 @@ public class AppointmentUtils {
 //        appointment.setAppointmentTime(parseAppointmentTime(requestDTO.getAppointmentDate(),
 //                requestDTO.getAppointmentTime()));
         appointment.setAppointmentNumber(appointmentNumber);
-        appointment.setUniqueId(NumberFormatterUtils.generateRandomNumber(6));
+//        appointment.setSerialNumber(NumberFormatterUtils.generateRandomNumber(6));
         appointment.setCreatedDateNepali(requestDTO.getCreatedDateNepali());
-//        appointment.setStatus('PA');
+//        appointment.setStatus("PA");
+//        appointment.setHospitalId();
 
         parseToAppointment(patient, specialization, doctor, appointment);
         return appointment;

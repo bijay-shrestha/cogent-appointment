@@ -215,7 +215,6 @@ public class DoctorServiceImpl implements DoctorService {
         return responseDTO;
     }
 
-
     @Override
     public Doctor fetchDoctorById(Long id) {
         Long startTime = getTimeInMillisecondsFromLocalDate();

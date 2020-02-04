@@ -47,8 +47,10 @@ public class SpecializationServiceImpl implements SpecializationService {
 
         log.info(SAVING_PROCESS_STARTED, SPECIALIZATION);
 
-        validateName(specializationRepository.fetchSpecializationByName(requestDTO.getName()),
-                requestDTO.getName());
+        Long specializationCount = specializationRepository.validateDuplicity(
+                requestDTO.getName(), requestDTO.getHospitalId());
+
+        validateName(specializationCount, requestDTO.getName());
 
         Specialization specialization = save(parseToSpecialization(requestDTO));
 
@@ -66,8 +68,10 @@ public class SpecializationServiceImpl implements SpecializationService {
 
         Specialization specialization = findById(requestDTO.getId());
 
-        validateName(specializationRepository.fetchSpecializationByIdAndName
-                (requestDTO.getId(), requestDTO.getName()), requestDTO.getName());
+        Long specializationCount = specializationRepository.validateDuplicity(
+                requestDTO.getId(), requestDTO.getName(), requestDTO.getHospitalId());
+
+        validateName(specializationCount, requestDTO.getName());
 
         save(parseToUpdatedSpecialization(requestDTO, specialization));
 
@@ -139,6 +143,21 @@ public class SpecializationServiceImpl implements SpecializationService {
                 specializationRepository.fetchSpecializationByDoctorId(DoctorId);
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, SPECIALIZATION, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public List<DropDownResponseDTO> fetchSpecializationByHospitalId(Long hospitalId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, SPECIALIZATION);
+
+        List<DropDownResponseDTO> responseDTOS =
+                specializationRepository.fetchSpecializationByHospitalId(hospitalId);
+
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, SPECIALIZATION,
+                getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
     }

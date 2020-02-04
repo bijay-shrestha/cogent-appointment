@@ -49,7 +49,7 @@ public class Patient implements Serializable {
     @Column(name = "is_registered")
     private Character isRegistered;
 
-    @Column(name = "eSewa_id")
+    @Column(name = "eSewa_id", nullable = false)
     private String eSewaId;
 
     @Column(name = "address")

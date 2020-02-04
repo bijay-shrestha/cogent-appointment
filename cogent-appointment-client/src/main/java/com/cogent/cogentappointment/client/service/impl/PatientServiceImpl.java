@@ -46,7 +46,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public Patient save(PatientRequestDTO requestDTO) {
+    public Patient save(PatientRequestDTO requestDTO, Long hospitalId) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -54,12 +54,13 @@ public class PatientServiceImpl implements PatientService {
 
         Long patientCount = patientRepository.fetchPatientForValidation(
                 requestDTO.getName(), requestDTO.getMobileNumber(),
-                requestDTO.getDateOfBirth(), requestDTO.getHospitalId());
+                requestDTO.getDateOfBirth(),
+                hospitalId);
 
         validatePatientDuplicity(patientCount, requestDTO.getName(),
                 requestDTO.getMobileNumber(), requestDTO.getDateOfBirth());
 
-        Patient patient = savePatient(requestDTO);
+        Patient patient = savePatient(requestDTO, hospitalId);
 
         log.info(SAVING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
@@ -234,10 +235,10 @@ public class PatientServiceImpl implements PatientService {
         return hospitalService.fetchActiveHospital(hospitalId);
     }
 
-    public Patient savePatient(PatientRequestDTO requestDTO) {
+    public Patient savePatient(PatientRequestDTO requestDTO, Long hospitalId) {
 
         Gender gender = fetchGender(requestDTO.getGender());
-        Hospital hospital = fetchHospital(requestDTO.getHospitalId());
+        Hospital hospital = fetchHospital(hospitalId);
 
         return save(parseToPatient(requestDTO, gender, hospital));
     }

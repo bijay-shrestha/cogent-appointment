@@ -9,11 +9,11 @@ import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentB
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentCheckAvailabilityMinResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentCheckAvailabilityResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
-import com.cogent.cogentappointment.client.model.Appointment;
-import com.cogent.cogentappointment.client.model.Doctor;
-import com.cogent.cogentappointment.client.model.Patient;
-import com.cogent.cogentappointment.client.model.Specialization;
 import com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils;
+import com.cogent.cogentappointment.persistence.model.Appointment;
+import com.cogent.cogentappointment.persistence.model.Doctor;
+import com.cogent.cogentappointment.persistence.model.Patient;
+import com.cogent.cogentappointment.persistence.model.Specialization;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Minutes;
@@ -43,12 +43,12 @@ public class AppointmentUtils {
 
         Appointment appointment = new Appointment();
         appointment.setAppointmentDate(requestDTO.getAppointmentDate());
-        appointment.setAppointmentTime(parseAppointmentTime(requestDTO.getAppointmentDate(),
-                requestDTO.getAppointmentTime()));
+//        appointment.setAppointmentTime(parseAppointmentTime(requestDTO.getAppointmentDate(),
+//                requestDTO.getAppointmentTime()));
         appointment.setAppointmentNumber(appointmentNumber);
         appointment.setUniqueId(NumberFormatterUtils.generateRandomNumber(6));
         appointment.setCreatedDateNepali(requestDTO.getCreatedDateNepali());
-        appointment.setStatus("PA");
+//        appointment.setStatus('PA');
 
         parseToAppointment(patient, specialization, doctor, appointment);
         return appointment;

@@ -5,10 +5,10 @@ import com.cogent.cogentappointment.client.dto.request.profile.ProfileMenuSearch
 import com.cogent.cogentappointment.client.dto.request.profile.ProfileSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.profile.*;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.model.Profile;
-import com.cogent.cogentappointment.client.model.ProfileMenu;
 import com.cogent.cogentappointment.client.repository.custom.ProfileRepositoryCustom;
 import com.cogent.cogentappointment.client.utils.commons.PageableUtils;
+import com.cogent.cogentappointment.persistence.model.Profile;
+import com.cogent.cogentappointment.persistence.model.ProfileMenu;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

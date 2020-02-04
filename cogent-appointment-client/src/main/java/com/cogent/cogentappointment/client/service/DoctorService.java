@@ -8,7 +8,7 @@ import com.cogent.cogentappointment.client.dto.response.doctor.DoctorDetailRespo
 import com.cogent.cogentappointment.client.dto.response.doctor.DoctorDropdownDTO;
 import com.cogent.cogentappointment.client.dto.response.doctor.DoctorMinimalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.doctor.DoctorUpdateResponseDTO;
-import com.cogent.cogentappointment.client.model.Doctor;
+import com.cogent.cogentappointment.persistence.model.Doctor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 

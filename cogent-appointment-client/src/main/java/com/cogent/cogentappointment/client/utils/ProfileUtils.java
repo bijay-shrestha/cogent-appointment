@@ -5,9 +5,9 @@ import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.profile.ProfileDTO;
 import com.cogent.cogentappointment.client.dto.request.profile.ProfileUpdateDTO;
 import com.cogent.cogentappointment.client.dto.response.profile.*;
-import com.cogent.cogentappointment.client.model.Department;
-import com.cogent.cogentappointment.client.model.Profile;
 import com.cogent.cogentappointment.client.utils.commons.StringUtil;
+import com.cogent.cogentappointment.persistence.model.Department;
+import com.cogent.cogentappointment.persistence.model.Profile;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -9,9 +9,9 @@ import com.cogent.cogentappointment.client.dto.response.doctor.DoctorQualificati
 import com.cogent.cogentappointment.client.dto.response.doctor.DoctorSpecializationResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.doctor.DoctorUpdateResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.files.FileUploadResponseDTO;
-import com.cogent.cogentappointment.client.enums.Gender;
 import com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils;
-import com.cogent.cogentappointment.client.model.*;
+import com.cogent.cogentappointment.persistence.enums.Gender;
+import com.cogent.cogentappointment.persistence.model.*;
 
 import java.util.List;
 import java.util.Objects;

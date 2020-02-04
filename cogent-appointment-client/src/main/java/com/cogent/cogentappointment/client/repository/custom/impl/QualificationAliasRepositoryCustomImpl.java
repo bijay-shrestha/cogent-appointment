@@ -2,8 +2,8 @@ package com.cogent.cogentappointment.client.repository.custom.impl;
 
 import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.model.QualificationAlias;
 import com.cogent.cogentappointment.client.repository.custom.QualificationAliasRepositoryCustom;
+import com.cogent.cogentappointment.persistence.model.QualificationAlias;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 

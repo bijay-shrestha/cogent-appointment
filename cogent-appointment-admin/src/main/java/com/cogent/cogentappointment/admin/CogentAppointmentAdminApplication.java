@@ -24,9 +24,6 @@ public class CogentAppointmentAdminApplication {
         SpringApplication.run(CogentAppointmentAdminApplication.class, args);
     }
 
-
-
-
     @Bean
     public BeanUtil beanUtil(){
         return new BeanUtil();

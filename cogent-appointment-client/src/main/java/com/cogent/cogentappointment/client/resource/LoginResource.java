@@ -34,7 +34,7 @@ public class LoginResource {
     @ApiOperation(LOGIN_OPERATION)
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO requestDTO) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.AUTHORIZATION, authenticateService.loginUser(requestDTO));
+        headers.add(HttpHeaders.AUTHORIZATION, authenticateService.loginThirdParty(requestDTO));
         return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 

@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.client.utils;
 
-import com.cogent.cogentappointment.client.enums.Gender;
 import com.cogent.cogentappointment.client.exception.BadRequestException;
+import com.cogent.cogentappointment.persistence.enums.Gender;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.INVALID_GENDER_CODE_DEBUG_MESSAGE;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.INVALID_GENDER_CODE_MESSAGE;

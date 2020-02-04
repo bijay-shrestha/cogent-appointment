@@ -6,10 +6,6 @@ import com.cogent.cogentappointment.client.dto.response.appointment.*;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.model.Appointment;
-import com.cogent.cogentappointment.client.model.Doctor;
-import com.cogent.cogentappointment.client.model.Patient;
-import com.cogent.cogentappointment.client.model.Specialization;
 import com.cogent.cogentappointment.client.repository.AppointmentRepository;
 import com.cogent.cogentappointment.client.repository.DoctorDutyRosterOverrideRepository;
 import com.cogent.cogentappointment.client.repository.DoctorDutyRosterRepository;
@@ -17,6 +13,10 @@ import com.cogent.cogentappointment.client.service.AppointmentService;
 import com.cogent.cogentappointment.client.service.DoctorService;
 import com.cogent.cogentappointment.client.service.PatientService;
 import com.cogent.cogentappointment.client.service.SpecializationService;
+import com.cogent.cogentappointment.persistence.model.Appointment;
+import com.cogent.cogentappointment.persistence.model.Doctor;
+import com.cogent.cogentappointment.persistence.model.Patient;
+import com.cogent.cogentappointment.persistence.model.Specialization;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.Duration;
 import org.joda.time.Minutes;
@@ -150,7 +150,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public String save(AppointmentRequestDTO appointmentRequestDTO){
+    public String save(AppointmentRequestDTO appointmentRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 

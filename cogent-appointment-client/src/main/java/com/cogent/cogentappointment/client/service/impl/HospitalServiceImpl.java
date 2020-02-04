@@ -9,14 +9,14 @@ import com.cogent.cogentappointment.client.dto.response.hospital.HospitalMinResp
 import com.cogent.cogentappointment.client.dto.response.hospital.HospitalMinimalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospital.HospitalResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.model.Hospital;
-import com.cogent.cogentappointment.client.model.HospitalContactNumber;
-import com.cogent.cogentappointment.client.model.HospitalLogo;
 import com.cogent.cogentappointment.client.repository.HospitalContactNumberRepository;
 import com.cogent.cogentappointment.client.repository.HospitalLogoRepository;
 import com.cogent.cogentappointment.client.repository.HospitalRepository;
 import com.cogent.cogentappointment.client.service.FileService;
 import com.cogent.cogentappointment.client.service.HospitalService;
+import com.cogent.cogentappointment.persistence.model.Hospital;
+import com.cogent.cogentappointment.persistence.model.HospitalContactNumber;
+import com.cogent.cogentappointment.persistence.model.HospitalLogo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

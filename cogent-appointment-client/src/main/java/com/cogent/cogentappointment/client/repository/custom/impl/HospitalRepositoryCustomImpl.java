@@ -7,8 +7,8 @@ import com.cogent.cogentappointment.client.dto.response.hospital.HospitalMinResp
 import com.cogent.cogentappointment.client.dto.response.hospital.HospitalMinimalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospital.HospitalResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.model.Hospital;
 import com.cogent.cogentappointment.client.repository.custom.HospitalRepositoryCustom;
+import com.cogent.cogentappointment.persistence.model.Hospital;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

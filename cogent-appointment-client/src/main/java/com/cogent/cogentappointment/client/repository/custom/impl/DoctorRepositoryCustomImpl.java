@@ -6,10 +6,10 @@ import com.cogent.cogentappointment.client.dto.response.doctor.DoctorDropdownDTO
 import com.cogent.cogentappointment.client.dto.response.doctor.DoctorMinimalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.doctor.DoctorUpdateResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.model.Doctor;
 import com.cogent.cogentappointment.client.repository.custom.DoctorRepositoryCustom;
 import com.cogent.cogentappointment.client.utils.DoctorUtils;
 import com.cogent.cogentappointment.client.utils.commons.PageableUtils;
+import com.cogent.cogentappointment.persistence.model.Doctor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

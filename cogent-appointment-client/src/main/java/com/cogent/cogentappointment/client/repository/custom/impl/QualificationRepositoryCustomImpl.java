@@ -7,9 +7,9 @@ import com.cogent.cogentappointment.client.dto.response.qualification.Qualificat
 import com.cogent.cogentappointment.client.dto.response.qualification.QualificationMinimalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.qualification.QualificationResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.model.Qualification;
 import com.cogent.cogentappointment.client.repository.custom.QualificationRepositoryCustom;
 import com.cogent.cogentappointment.client.utils.commons.PageableUtils;
+import com.cogent.cogentappointment.persistence.model.Qualification;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

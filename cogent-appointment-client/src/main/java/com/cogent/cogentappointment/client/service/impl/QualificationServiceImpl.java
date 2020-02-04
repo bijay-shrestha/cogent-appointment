@@ -9,13 +9,13 @@ import com.cogent.cogentappointment.client.dto.response.qualification.Qualificat
 import com.cogent.cogentappointment.client.dto.response.qualification.QualificationMinimalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.qualification.QualificationResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.model.Country;
-import com.cogent.cogentappointment.client.model.Qualification;
-import com.cogent.cogentappointment.client.model.QualificationAlias;
 import com.cogent.cogentappointment.client.repository.QualificationRepository;
 import com.cogent.cogentappointment.client.service.CountryService;
 import com.cogent.cogentappointment.client.service.QualificationAliasService;
 import com.cogent.cogentappointment.client.service.QualificationService;
+import com.cogent.cogentappointment.persistence.model.Country;
+import com.cogent.cogentappointment.persistence.model.Qualification;
+import com.cogent.cogentappointment.persistence.model.QualificationAlias;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.client.repository;
 
-import com.cogent.cogentappointment.client.model.ProfileMenu;
+import com.cogent.cogentappointment.persistence.model.ProfileMenu;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -7,7 +7,7 @@ import com.cogent.cogentappointment.client.dto.request.specialization.Specializa
 import com.cogent.cogentappointment.client.dto.request.specialization.SpecializationUpdateRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.specialization.SpecializationMinimalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.specialization.SpecializationResponseDTO;
-import com.cogent.cogentappointment.client.model.Specialization;
+import com.cogent.cogentappointment.persistence.model.Specialization;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;

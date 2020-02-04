@@ -22,7 +22,6 @@ import java.util.regex.Pattern;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.HMAC_BAD_SIGNATURE;
 import static com.cogent.cogentappointment.admin.constants.PatternConstants.AUTHORIZATION_HEADER_PATTERN;
-import static com.cogent.cogentappointment.admin.constants.PatternConstants.AUTHORIZATION_HEADER_PATTERN_FOR_ESEWA;
 
 /**
  * @author Sauravi Thapa २०/१/१९

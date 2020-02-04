@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.admin.utils;
 
-import com.cogent.cogentappointment.admin.constants.StatusConstants;
 import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDutyRosterOverrideRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDutyRosterOverrideUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
@@ -15,6 +14,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.NO;
+
 /**
  * @author smriti ON 16/12/2019
  */
@@ -28,12 +29,16 @@ public class DoctorDutyRosterOverrideUtils {
         DoctorDutyRosterOverride doctorDutyRosterOverride = new DoctorDutyRosterOverride();
         doctorDutyRosterOverride.setFromDate(requestDTO.getFromDate());
         doctorDutyRosterOverride.setToDate(requestDTO.getToDate());
-        doctorDutyRosterOverride.setStartTime(requestDTO.getStartTime());
-        doctorDutyRosterOverride.setEndTime(requestDTO.getEndTime());
         doctorDutyRosterOverride.setDayOffStatus(requestDTO.getDayOffStatus());
         doctorDutyRosterOverride.setStatus(requestDTO.getStatus());
         doctorDutyRosterOverride.setRemarks(requestDTO.getRemarks());
         doctorDutyRosterOverride.setDoctorDutyRosterId(doctorDutyRoster);
+
+        if (requestDTO.getDayOffStatus().equals(NO)) {
+            doctorDutyRosterOverride.setStartTime(requestDTO.getStartTime());
+            doctorDutyRosterOverride.setEndTime(requestDTO.getEndTime());
+        }
+
         return doctorDutyRosterOverride;
     }
 
@@ -43,8 +48,15 @@ public class DoctorDutyRosterOverrideUtils {
 
         doctorDutyRosterOverride.setFromDate(updateRequestDTO.getOverrideFromDate());
         doctorDutyRosterOverride.setToDate(updateRequestDTO.getOverrideToDate());
-        doctorDutyRosterOverride.setEndTime(updateRequestDTO.getEndTime());
-        doctorDutyRosterOverride.setStartTime(updateRequestDTO.getStartTime());
+
+        if (updateRequestDTO.getDayOffStatus().equals(NO)) {
+            doctorDutyRosterOverride.setStartTime(updateRequestDTO.getStartTime());
+            doctorDutyRosterOverride.setEndTime(updateRequestDTO.getEndTime());
+        } else {
+            doctorDutyRosterOverride.setStartTime(null);
+            doctorDutyRosterOverride.setEndTime(null);
+        }
+
         doctorDutyRosterOverride.setDayOffStatus(updateRequestDTO.getDayOffStatus());
         doctorDutyRosterOverride.setStatus(updateRequestDTO.getStatus());
         doctorDutyRosterOverride.setRemarks(updateRequestDTO.getRemarks());
@@ -52,7 +64,7 @@ public class DoctorDutyRosterOverrideUtils {
     }
 
     public static void updateDutyRosterOverrideStatus(List<DoctorDutyRosterOverride> doctorDutyRosterOverrides) {
-        doctorDutyRosterOverrides.forEach(doctorDutyRosterOverride -> doctorDutyRosterOverride.setStatus(StatusConstants.NO));
+        doctorDutyRosterOverrides.forEach(doctorDutyRosterOverride -> doctorDutyRosterOverride.setStatus(NO));
     }
 
     public static List<DoctorDutyRosterStatusResponseDTO> parseQueryResultToDoctorDutyRosterStatusResponseDTO

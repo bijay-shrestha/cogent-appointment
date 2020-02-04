@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AppointmentServiceMessage.APPOINTMENT_EXISTS_MESSAGE;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.convertDateToLocalDate;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.isLocalDateBetweenInclusive;
 
@@ -28,7 +29,8 @@ public class DoctorDutyRosterUtils {
 
     public static DoctorDutyRoster parseToDoctorDutyRoster(DoctorDutyRosterRequestDTO requestDTO,
                                                            Doctor doctor,
-                                                           Specialization specialization) {
+                                                           Specialization specialization,
+                                                           Hospital hospital) {
 
         DoctorDutyRoster doctorDutyRoster = new DoctorDutyRoster();
         doctorDutyRoster.setFromDate(requestDTO.getFromDate());
@@ -36,15 +38,10 @@ public class DoctorDutyRosterUtils {
         doctorDutyRoster.setRosterGapDuration(requestDTO.getRosterGapDuration());
         doctorDutyRoster.setStatus(requestDTO.getStatus());
         doctorDutyRoster.setHasOverrideDutyRoster(requestDTO.getHasOverrideDutyRoster());
-        parseToDoctorDutyRoster(doctorDutyRoster, doctor, specialization);
-        return doctorDutyRoster;
-    }
-
-    private static void parseToDoctorDutyRoster(DoctorDutyRoster doctorDutyRoster,
-                                                Doctor doctor,
-                                                Specialization specialization) {
+        doctorDutyRoster.setHospitalId(hospital);
         doctorDutyRoster.setDoctorId(doctor);
         doctorDutyRoster.setSpecializationId(specialization);
+        return doctorDutyRoster;
     }
 
     public static DoctorWeekDaysDutyRoster parseToDoctorWeekDaysDutyRoster(DoctorWeekDaysDutyRosterRequestDTO requestDTO,
@@ -52,8 +49,11 @@ public class DoctorDutyRosterUtils {
                                                                            WeekDays weekDays) {
 
         DoctorWeekDaysDutyRoster weekDaysDutyRoster = new DoctorWeekDaysDutyRoster();
-        weekDaysDutyRoster.setStartTime(requestDTO.getStartTime());
-        weekDaysDutyRoster.setEndTime(requestDTO.getEndTime());
+
+        if(requestDTO.getDayOffStatus().equals(NO)){
+            weekDaysDutyRoster.setStartTime(requestDTO.getStartTime());
+            weekDaysDutyRoster.setEndTime(requestDTO.getEndTime());
+        }
         weekDaysDutyRoster.setDayOffStatus(requestDTO.getDayOffStatus());
         weekDaysDutyRoster.setDoctorDutyRosterId(doctorDutyRoster);
         weekDaysDutyRoster.setWeekDaysId(weekDays);

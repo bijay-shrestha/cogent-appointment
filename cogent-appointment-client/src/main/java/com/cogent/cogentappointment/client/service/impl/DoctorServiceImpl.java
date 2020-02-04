@@ -3,10 +3,7 @@ package com.cogent.cogentappointment.client.service.impl;
 import com.cogent.cogentappointment.client.constants.StatusConstants;
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.doctor.*;
-import com.cogent.cogentappointment.client.dto.response.doctor.DoctorDetailResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.doctor.DoctorDropdownDTO;
-import com.cogent.cogentappointment.client.dto.response.doctor.DoctorMinimalResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.doctor.DoctorUpdateResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.doctor.*;
 import com.cogent.cogentappointment.client.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.client.enums.Gender;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
@@ -255,6 +252,32 @@ public class DoctorServiceImpl implements DoctorService {
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
+    }
+
+    @Override
+    public  List<DoctorMinResponseDTO> fetchDoctorMinInfo(DoctorMinSearchRequestDTO requestDTO){
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, DOCTOR);
+
+        List<DoctorMinResponseDTO> doctorInfo = doctorRepository.fetchDoctorMinInfo(requestDTO);
+
+        log.info(FETCHING_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
+
+        return doctorInfo;
+    }
+
+    @Override
+    public DoctorMinDetailResponseDTO fetchMinDoctorDetails(DoctorMinSearchRequestDTO requestDTO) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, DOCTOR);
+
+        DoctorMinDetailResponseDTO doctorInfo = doctorRepository.fetchMinDoctorDetails(requestDTO);
+
+        log.info(FETCHING_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
+
+        return doctorInfo;
     }
 
     private Gender fetchGender(Character genderCode) {

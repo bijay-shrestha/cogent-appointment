@@ -280,8 +280,7 @@ public class DoctorQuery {
                 " LEFT JOIN(" +
                 " SELECT" +
                 " GROUP_CONCAT(qa.name) as qualificationAlias," +
-                " dq.doctor_id as doctorId," +
-                " dac.appointment_charge as appointmentCharge"+
+                " dq.doctor_id as doctorId" +
                 " FROM" +
                 " doctor_qualification dq" +
                 " LEFT JOIN qualification q ON q.id = dq.qualification_id" +
@@ -321,12 +320,14 @@ public class DoctorQuery {
                     " s.id as specializationId," +                                      //[3]
                     " s.name as specializationName," +                                  //[4]
                     " tbl1.qualificationAlias as qualificationAlias," +                 //[5]
-                    " d.nmc_number as nmcNumber" +                                      //[6]
+                    " d.nmc_number as nmcNumber," +                                     //[6]
+                    " dac.appointment_charge as appointmentCharge"+                     //[7]
                     " FROM" +
                     " doctor d" +
                     " LEFT JOIN doctor_avatar da ON d.id = da.doctor_id" +
                     " LEFT JOIN doctor_specialization ds ON d.id = ds.doctor_id" +
                     " LEFT JOIN specialization s ON s.id = ds.specialization_id" +
+                    " LEFT JOIN doctor_appointment_charge dac ON d.id = dac.doctor_id" +
                     " LEFT JOIN(" +
                     " SELECT" +
                     " GROUP_CONCAT(qa.name) as qualificationAlias," +

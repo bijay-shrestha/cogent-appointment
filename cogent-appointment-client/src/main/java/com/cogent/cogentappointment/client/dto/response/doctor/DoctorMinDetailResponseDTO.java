@@ -28,4 +28,6 @@ public class DoctorMinDetailResponseDTO implements Serializable {
     private String qualificationAlias;
 
     private String nmcNumber;
+
+    private Double appointmentCharge;
 }

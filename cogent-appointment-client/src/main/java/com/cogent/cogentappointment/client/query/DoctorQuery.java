@@ -280,7 +280,8 @@ public class DoctorQuery {
                 " LEFT JOIN(" +
                 " SELECT" +
                 " GROUP_CONCAT(qa.name) as qualificationAlias," +
-                " dq.doctor_id as doctorId" +
+                " dq.doctor_id as doctorId," +
+                " dac.appointment_charge as appointmentCharge"+
                 " FROM" +
                 " doctor_qualification dq" +
                 " LEFT JOIN qualification q ON q.id = dq.qualification_id" +
@@ -292,6 +293,7 @@ public class DoctorQuery {
                 " dq.doctor_id" +
                 " )tbl1 ON tbl1.doctorId = d.id" +
                 " LEFT JOIN hospital h ON h.id = d.hospital_id" +
+                " LEFT JOIN doctor_appointment_charge dac ON d.id = dac.doctor_id" +
                 " WHERE" +
                 " d.status = 'Y'" +
                 " AND ds.status = 'Y'" +

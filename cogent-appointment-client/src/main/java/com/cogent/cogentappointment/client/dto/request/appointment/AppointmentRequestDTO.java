@@ -20,7 +20,7 @@ public class AppointmentRequestDTO implements Serializable {
 
     private PatientRequestDTO patientRequestDTO;
 
-    private Boolean IsNewRegistration;
+    private Boolean isNewRegistration;
 
     private Long patientId;
 

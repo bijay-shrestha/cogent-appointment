@@ -1,8 +1,8 @@
 package com.cogent.cogentappointment.admin.utils;
 
 
-import com.cogent.cogentappointment.admin.model.HmacApiInfo;
-import com.cogent.cogentappointment.admin.model.Hospital;
+import com.cogent.cogentappointment.persistence.model.HmacApiInfo;
+import com.cogent.cogentappointment.persistence.model.Hospital;
 
 import java.security.NoSuchAlgorithmException;
 

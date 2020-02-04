@@ -4,7 +4,7 @@ import com.cogent.cogentappointment.admin.dto.request.patient.PatientRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.patient.PatientSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.patient.PatientDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.patient.PatientMinimalResponseDTO;
-import com.cogent.cogentappointment.admin.model.Patient;
+import com.cogent.cogentappointment.persistence.model.Patient;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;

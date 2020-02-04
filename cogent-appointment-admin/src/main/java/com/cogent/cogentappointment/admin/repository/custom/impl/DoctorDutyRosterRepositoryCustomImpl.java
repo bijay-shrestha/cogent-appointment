@@ -5,8 +5,8 @@ import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDut
 import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorExistingDutyRosterRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.*;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.model.DoctorDutyRoster;
 import com.cogent.cogentappointment.admin.repository.custom.DoctorDutyRosterRepositoryCustom;
+import com.cogent.cogentappointment.persistence.model.DoctorDutyRoster;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

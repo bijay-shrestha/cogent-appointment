@@ -5,8 +5,8 @@ import com.cogent.cogentappointment.admin.dto.request.university.UniversitySearc
 import com.cogent.cogentappointment.admin.dto.response.university.UniversityMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.university.UniversityResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.model.University;
 import com.cogent.cogentappointment.admin.repository.custom.UniversityRepositoryCustom;
+import com.cogent.cogentappointment.persistence.model.University;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

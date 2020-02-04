@@ -5,8 +5,8 @@ import com.cogent.cogentappointment.admin.dto.request.specialization.Specializat
 import com.cogent.cogentappointment.admin.dto.response.specialization.SpecializationMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.specialization.SpecializationResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.model.Specialization;
 import com.cogent.cogentappointment.admin.repository.custom.SpecializationRepositoryCustom;
+import com.cogent.cogentappointment.persistence.model.Specialization;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

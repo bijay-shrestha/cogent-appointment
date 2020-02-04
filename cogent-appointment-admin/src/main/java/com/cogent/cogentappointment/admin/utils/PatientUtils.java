@@ -3,10 +3,10 @@ package com.cogent.cogentappointment.admin.utils;
 import com.cogent.cogentappointment.admin.constants.StatusConstants;
 import com.cogent.cogentappointment.admin.dto.request.patient.PatientRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.patient.PatientMinimalResponseDTO;
-import com.cogent.cogentappointment.admin.enums.Gender;
-import com.cogent.cogentappointment.admin.model.Hospital;
-import com.cogent.cogentappointment.admin.model.Patient;
 import com.cogent.cogentappointment.admin.utils.commons.StringUtil;
+import com.cogent.cogentappointment.persistence.enums.Gender;
+import com.cogent.cogentappointment.persistence.model.Hospital;
+import com.cogent.cogentappointment.persistence.model.Patient;
 
 import java.util.List;
 import java.util.function.Function;
@@ -53,7 +53,7 @@ public class PatientUtils {
                 .patientId(Long.parseLong(object[PATIENT_ID_INDEX].toString()))
                 .name(object[NAME_INDEX].toString())
                 .mobileNumber(object[MOBILE_NUMBER_INDEX].toString())
-                .gender((Gender) (object[GENDER_INDEX]))
+                .gender((Gender) object[GENDER_INDEX])
                 .build();
     };
 }

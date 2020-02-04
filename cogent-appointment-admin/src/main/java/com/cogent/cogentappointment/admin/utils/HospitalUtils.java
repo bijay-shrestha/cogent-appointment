@@ -9,10 +9,10 @@ import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalUpdateReq
 import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalContactNumberResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalResponseDTO;
-import com.cogent.cogentappointment.admin.model.Hospital;
-import com.cogent.cogentappointment.admin.model.HospitalContactNumber;
-import com.cogent.cogentappointment.admin.model.HospitalLogo;
 import com.cogent.cogentappointment.admin.utils.commons.StringUtil;
+import com.cogent.cogentappointment.persistence.model.Hospital;
+import com.cogent.cogentappointment.persistence.model.HospitalContactNumber;
+import com.cogent.cogentappointment.persistence.model.HospitalLogo;
 
 import java.util.ArrayList;
 import java.util.Arrays;

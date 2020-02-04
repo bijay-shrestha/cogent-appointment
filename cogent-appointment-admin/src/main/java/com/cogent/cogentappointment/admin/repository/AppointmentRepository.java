@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.admin.repository;
 
-import com.cogent.cogentappointment.admin.model.Appointment;
 import com.cogent.cogentappointment.admin.repository.custom.AppointmentRepositoryCustom;
+import com.cogent.cogentappointment.persistence.model.Appointment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

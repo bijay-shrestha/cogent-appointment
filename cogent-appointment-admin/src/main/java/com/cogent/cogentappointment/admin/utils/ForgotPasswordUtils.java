@@ -5,9 +5,9 @@ import com.cogent.cogentappointment.admin.constants.EmailTemplates;
 import com.cogent.cogentappointment.admin.constants.StatusConstants;
 import com.cogent.cogentappointment.admin.constants.StringConstant;
 import com.cogent.cogentappointment.admin.dto.request.email.EmailRequestDTO;
-import com.cogent.cogentappointment.admin.model.Admin;
-import com.cogent.cogentappointment.admin.model.ForgotPasswordVerification;
 import com.cogent.cogentappointment.admin.utils.commons.NumberFormatterUtils;
+import com.cogent.cogentappointment.persistence.model.Admin;
+import com.cogent.cogentappointment.persistence.model.ForgotPasswordVerification;
 
 import java.util.Date;
 

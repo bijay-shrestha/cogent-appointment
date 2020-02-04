@@ -13,18 +13,20 @@ import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalMinimalR
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.exception.utils.ValidationUtils;
-import com.cogent.cogentappointment.admin.model.HmacApiInfo;
-import com.cogent.cogentappointment.admin.model.Hospital;
-import com.cogent.cogentappointment.admin.model.HospitalContactNumber;
-import com.cogent.cogentappointment.admin.model.HospitalLogo;
 import com.cogent.cogentappointment.admin.repository.HmacApiInfoRepository;
 import com.cogent.cogentappointment.admin.repository.HospitalContactNumberRepository;
 import com.cogent.cogentappointment.admin.repository.HospitalLogoRepository;
 import com.cogent.cogentappointment.admin.repository.HospitalRepository;
 import com.cogent.cogentappointment.admin.service.FileService;
 import com.cogent.cogentappointment.admin.service.HospitalService;
+import com.cogent.cogentappointment.persistence.model.HmacApiInfo;
+import com.cogent.cogentappointment.persistence.model.Hospital;
+import com.cogent.cogentappointment.persistence.model.HospitalContactNumber;
+import com.cogent.cogentappointment.persistence.model.HospitalLogo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import javax.validation.Validator;
 import java.security.NoSuchAlgorithmException;
+import java.security.Principal;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -84,6 +87,10 @@ public class HospitalServiceImpl implements HospitalService {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, HOSPITAL);
+
+        UserDetails principal= (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        System.out.println("--------------------"+principal.getUsername());
 
         ValidationUtils.validateConstraintViolation(validator.validate(requestDTO));
 
@@ -265,7 +272,7 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        log.error("Hospital with id : {} not found",id);
+        log.error("Hospital with id : {} not found", id);
         throw new NoContentFoundException(Hospital.class, "id", id.toString());
     };
 

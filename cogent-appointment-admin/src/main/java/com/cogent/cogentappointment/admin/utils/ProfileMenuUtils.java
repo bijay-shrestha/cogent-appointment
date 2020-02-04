@@ -2,8 +2,8 @@ package com.cogent.cogentappointment.admin.utils;
 
 import com.cogent.cogentappointment.admin.dto.request.profile.ProfileMenuRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.profile.ProfileMenuUpdateRequestDTO;
-import com.cogent.cogentappointment.admin.model.Profile;
-import com.cogent.cogentappointment.admin.model.ProfileMenu;
+import com.cogent.cogentappointment.persistence.model.Profile;
+import com.cogent.cogentappointment.persistence.model.ProfileMenu;
 
 import java.util.List;
 import java.util.function.BiFunction;

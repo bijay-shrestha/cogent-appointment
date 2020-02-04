@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.admin.security.filter;
 import com.cogent.cogentappointment.admin.security.hmac.AuthHeader;
 import com.cogent.cogentappointment.admin.security.hmac.HMACBuilder;
 import com.cogent.cogentappointment.admin.service.impl.UserDetailsServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,6 +28,7 @@ import static com.cogent.cogentappointment.admin.constants.PatternConstants.AUTH
  * @author Sauravi Thapa २०/१/१९
  */
 @Component
+@Slf4j
 public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
     private final UserDetailsServiceImpl userDetailsService;

@@ -46,9 +46,6 @@ public class PatientRequestDTO implements Serializable {
     private String address;
 
     @NotNull
-    private Long hospitalId;
-
-    @NotNull
     @Status
     private Character status;
 }

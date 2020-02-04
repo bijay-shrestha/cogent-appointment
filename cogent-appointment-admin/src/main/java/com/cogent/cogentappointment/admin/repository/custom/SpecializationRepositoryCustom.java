@@ -17,9 +17,9 @@ import java.util.List;
 @Qualifier("specializationRepositoryCustom")
 public interface SpecializationRepositoryCustom {
 
-    Long fetchSpecializationByName(String name);
+    Long validateDuplicity(String name, Long hospitalId);
 
-    Long fetchSpecializationByIdAndName(Long id, String name);
+    Long validateDuplicity(Long id, String name, Long hospitalId);
 
     List<SpecializationMinimalResponseDTO> search(SpecializationSearchRequestDTO searchRequestDTO,
                                                   Pageable pageable);
@@ -29,4 +29,6 @@ public interface SpecializationRepositoryCustom {
     SpecializationResponseDTO fetchDetailsById(Long id);
 
     List<DropDownResponseDTO> fetchSpecializationByDoctorId(Long doctorId);
+
+    List<DropDownResponseDTO> fetchSpecializationByHospitalId(Long hospitalId);
 }

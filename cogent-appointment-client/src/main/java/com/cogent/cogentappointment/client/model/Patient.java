@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.model;
 
+import com.cogent.cogentappointment.client.audit.Auditable;
 import com.cogent.cogentappointment.client.enums.Gender;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +17,7 @@ import java.util.Date;
 @Setter
 @Entity
 @Table(name = "patient")
-public class Patient implements Serializable {
+public class Patient extends Auditable<String> implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,9 +37,6 @@ public class Patient implements Serializable {
     @Column(name = "date_of_birth")
     @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
-
-    @Column(name = "nepali_date_of_birth")
-    private String nepaliDateOfBirth;
 
     @Column(name = "email", length = 50)
     private String email;

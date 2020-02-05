@@ -15,7 +15,6 @@ public class WebResourceKeyConstants {
         String ADMIN_META_INFO = "/metaInfo";
         String CHANGE_PASSWORD = "/changePassword";
         String RESET_PASSWORD = "/resetPassword";
-        String INFO = "/info";
         String VERIFY = "/verify";
     }
 
@@ -33,6 +32,10 @@ public class WebResourceKeyConstants {
         String BASE_COUNTRY = "/country";
     }
 
+    public interface CommonConstants {
+        String BASE_COMMON = "/common";
+        String DOCTOR_SPECIALIZATION = "/doctor-specialization";
+    }
 
     //D
     public static final String DETAIL = "/detail";
@@ -77,6 +80,7 @@ public class WebResourceKeyConstants {
     }
 
     //I
+    public static final String INFO = "/info";
     public static final String ID_PATH_VARIABLE_BASE = "/{id}";
 
 

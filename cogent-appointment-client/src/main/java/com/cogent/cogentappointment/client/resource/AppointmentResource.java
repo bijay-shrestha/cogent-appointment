@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.text.ParseException;
 
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AppointmentConstant.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
@@ -47,9 +46,8 @@ public class AppointmentResource {
 
     @PostMapping
     @ApiOperation(SAVE_OPERATION)
-    public ResponseEntity<?> save(@Valid @RequestBody AppointmentRequestDTO requestDTO) throws ParseException {
-        return created(create(API_V1 + BASE_APPOINTMENT))
-                .body(appointmentService.save(requestDTO));
+    public ResponseEntity<?> save(@Valid @RequestBody AppointmentRequestDTO requestDTO) {
+        return created(create(API_V1 + BASE_APPOINTMENT)).body(appointmentService.save(requestDTO));
     }
 
 //    @PutMapping

@@ -32,6 +32,10 @@ public class DoctorDutyRoster implements Serializable {
     @JoinColumn(name = "specialization_id", updatable = false)
     private Specialization specializationId;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hospital_id", updatable = false)
+    private Hospital hospitalId;
+
     @Column(name = "roster_gap_duration")
     private Integer rosterGapDuration;
 

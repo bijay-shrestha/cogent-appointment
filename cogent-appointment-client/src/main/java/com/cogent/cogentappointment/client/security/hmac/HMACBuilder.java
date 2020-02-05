@@ -11,7 +11,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.CANNOT_CREATE_SIGNATURE;
-import static com.cogent.cogentappointment.client.constants.HMACConstant.*;
+import static com.cogent.cogentappointment.client.constants.HMACConstant.DELIMITER;
+import static com.cogent.cogentappointment.client.constants.HMACConstant.HMAC_ALGORITHM;
 
 /**
  * @author Sauravi Thapa २०/१/१९
@@ -19,20 +20,20 @@ import static com.cogent.cogentappointment.client.constants.HMACConstant.*;
 @Component
 public class HMACBuilder {
 
-    private String scheme;
-    private String host;
     private String username;
-    private String apiKey;
+    private String hospitalCode;
     private String nonce;
     private String algorithm;
-
-    public HMACBuilder scheme(String scheme) {
-        this.scheme = scheme;
-        return this;
-    }
+    private String apiKey;
+    private String apiSecret;
 
     public HMACBuilder username(String username) {
         this.username = username;
+        return this;
+    }
+
+    public HMACBuilder hospitalCode(String hospitalCode) {
+        this.hospitalCode = hospitalCode;
         return this;
     }
 
@@ -41,10 +42,6 @@ public class HMACBuilder {
         return this;
     }
 
-    public HMACBuilder host(String host) {
-        this.host = host;
-        return this;
-    }
 
     public HMACBuilder nonce(String nonce) {
         this.nonce = nonce;
@@ -56,16 +53,24 @@ public class HMACBuilder {
         return this;
     }
 
+    public HMACBuilder apiSecret(String apiSecret) {
+        this.apiSecret = apiSecret;
+        return this;
+    }
+
+
     public byte[] build() {
         try {
             final Mac digest = Mac.getInstance(HMAC_ALGORITHM);
-            SecretKeySpec secretKey = new SecretKeySpec(HMAC_API_SECRET.getBytes(), HMAC_ALGORITHM);
+            SecretKeySpec secretKey = new SecretKeySpec(apiSecret.getBytes(), HMAC_ALGORITHM);
             digest.init(secretKey);
             digest.update(algorithm.getBytes(StandardCharsets.UTF_8));
             digest.update(DELIMITER);
             digest.update(nonce.getBytes(StandardCharsets.UTF_8));
             digest.update(DELIMITER);
             digest.update((username != null) ? username.getBytes(StandardCharsets.UTF_8) : null);
+            digest.update(DELIMITER);
+            digest.update((hospitalCode != null) ? hospitalCode.getBytes(StandardCharsets.UTF_8) : null);
             digest.update(DELIMITER);
             digest.update(apiKey.getBytes(StandardCharsets.UTF_8));
             digest.update(DELIMITER);
@@ -83,9 +88,6 @@ public class HMACBuilder {
         return MessageDigest.isEqual(signature, expectedSignature);
     }
 
-    public String buildAsBase64String() {
-
-        return DatatypeConverter.printBase64Binary(build());
-    }
+    public String buildAsBase64String() { return DatatypeConverter.printBase64Binary(build()); }
 
 }

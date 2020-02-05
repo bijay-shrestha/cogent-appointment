@@ -2,11 +2,11 @@ package com.cogent.cogentappointment.client.service;
 
 import com.cogent.cogentappointment.client.dto.request.login.LoginRequestDTO;
 
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * @author Sauravi Thapa २०/१/१९
  */
 public interface AuthenticateService {
-    String loginUser(HttpServletRequest request, LoginRequestDTO requestDTO);
+    String loginUser(LoginRequestDTO requestDTO);
+
+    String loginThirdParty(LoginRequestDTO requestDTO);
 }

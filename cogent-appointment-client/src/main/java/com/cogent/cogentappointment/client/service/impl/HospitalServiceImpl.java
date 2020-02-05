@@ -10,8 +10,10 @@ import com.cogent.cogentappointment.client.dto.response.hospital.HospitalMinimal
 import com.cogent.cogentappointment.client.dto.response.hospital.HospitalResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.model.Hospital;
+import com.cogent.cogentappointment.client.model.HospitalBanner;
 import com.cogent.cogentappointment.client.model.HospitalContactNumber;
 import com.cogent.cogentappointment.client.model.HospitalLogo;
+import com.cogent.cogentappointment.client.repository.HospitalBannerRepository;
 import com.cogent.cogentappointment.client.repository.HospitalContactNumberRepository;
 import com.cogent.cogentappointment.client.repository.HospitalLogoRepository;
 import com.cogent.cogentappointment.client.repository.HospitalRepository;
@@ -53,6 +55,8 @@ public class HospitalServiceImpl implements HospitalService {
 
     private final HospitalLogoRepository hospitalLogoRepository;
 
+    private final HospitalBannerRepository hospitalBannerRepository;
+
     private final FileService fileService;
 
     private final Validator validator;
@@ -60,17 +64,19 @@ public class HospitalServiceImpl implements HospitalService {
     public HospitalServiceImpl(HospitalRepository hospitalRepository,
                                HospitalContactNumberRepository hospitalContactNumberRepository,
                                HospitalLogoRepository hospitalLogoRepository,
+                               HospitalBannerRepository hospitalBannerRepository,
                                FileService fileService,
                                Validator validator) {
         this.hospitalRepository = hospitalRepository;
         this.hospitalContactNumberRepository = hospitalContactNumberRepository;
         this.hospitalLogoRepository = hospitalLogoRepository;
+        this.hospitalBannerRepository = hospitalBannerRepository;
         this.fileService = fileService;
         this.validator = validator;
     }
 
     @Override
-    public void save(@Valid HospitalRequestDTO requestDTO, MultipartFile multipartFile) {
+    public void save(@Valid HospitalRequestDTO requestDTO, MultipartFile logo, MultipartFile banner) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -88,13 +94,15 @@ public class HospitalServiceImpl implements HospitalService {
 
         saveHospitalContactNumber(hospital.getId(), requestDTO.getContactNumber());
 
-        saveHospitalLogo(hospital, multipartFile);
+        saveHospitalLogo(hospital, logo);
+
+        saveHospitalBanner(hospital, banner);
 
         log.info(SAVING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
-    public void update(HospitalUpdateRequestDTO updateRequestDTO, MultipartFile multipartFile) {
+    public void update(HospitalUpdateRequestDTO updateRequestDTO, MultipartFile logo, MultipartFile banner) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -112,7 +120,9 @@ public class HospitalServiceImpl implements HospitalService {
 
         updateHospitalContactNumber(hospital.getId(), updateRequestDTO.getContactNumberUpdateRequestDTOS());
 
-        updateHospitalLogo(hospital, multipartFile);
+        updateHospitalLogo(hospital, logo);
+
+        updateHospitalBanner(hospital, banner);
 
         log.info(UPDATING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
     }
@@ -172,16 +182,14 @@ public class HospitalServiceImpl implements HospitalService {
         return responseDTOS;
     }
 
-
     @Override
-    public List<HospitalDropdownResponseDTO> search(HospitalMinSearchRequestDTO searchRequestDTO,
-                                                    Pageable pageable) {
+    public List<HospitalMinResponseDTO> fetchMinDetails(HospitalMinSearchRequestDTO searchRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_DETAIL_PROCESS_STARTED, HOSPITAL);
 
-        List<HospitalDropdownResponseDTO> responseDTO = hospitalRepository.search(searchRequestDTO, pageable);
+        List<HospitalMinResponseDTO> responseDTO = hospitalRepository.fetchMinDetails(searchRequestDTO);
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
 
@@ -196,19 +204,6 @@ public class HospitalServiceImpl implements HospitalService {
         log.info(FETCHING_DETAIL_PROCESS_STARTED, HOSPITAL);
 
         HospitalResponseDTO responseDTO = hospitalRepository.fetchDetailsById(hospitalId);
-
-        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
-
-        return responseDTO;
-    }
-
-    @Override
-    public HospitalMinResponseDTO fetchMinDetailsById(Long hospitalId) {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(FETCHING_DETAIL_PROCESS_STARTED, HOSPITAL);
-
-        HospitalMinResponseDTO responseDTO = hospitalRepository.fetchMinDetailsById(hospitalId);
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
 
@@ -231,10 +226,17 @@ public class HospitalServiceImpl implements HospitalService {
         hospitalContactNumberRepository.saveAll(hospitalContactNumbers);
     }
 
-    private void saveHospitalLogo(Hospital hospital, MultipartFile files) {
-        if (!Objects.isNull(files)) {
-            List<FileUploadResponseDTO> responseList = uploadFiles(hospital, new MultipartFile[]{files});
+    private void saveHospitalLogo(Hospital hospital, MultipartFile logo) {
+        if (!Objects.isNull(logo)) {
+            List<FileUploadResponseDTO> responseList = uploadFiles(hospital, new MultipartFile[]{logo});
             saveHospitalLogo(convertFileToHospitalLogo(responseList.get(0), hospital));
+        }
+    }
+
+    private void saveHospitalBanner(Hospital hospital, MultipartFile hospitalBanner) {
+        if (!Objects.isNull(hospitalBanner)) {
+            List<FileUploadResponseDTO> responseList = uploadFiles(hospital, new MultipartFile[]{hospitalBanner});
+            saveHospitalBanner(convertFileToHospitalHospitalBanner(responseList.get(0), hospital));
         }
     }
 
@@ -245,6 +247,10 @@ public class HospitalServiceImpl implements HospitalService {
 
     private void saveHospitalLogo(HospitalLogo hospitalLogo) {
         hospitalLogoRepository.save(hospitalLogo);
+    }
+
+    private void saveHospitalBanner(HospitalBanner hospitalBanner) {
+        hospitalBannerRepository.save(hospitalBanner);
     }
 
     private Hospital findById(Long id) {
@@ -261,20 +267,36 @@ public class HospitalServiceImpl implements HospitalService {
         saveHospitalContactNumber(hospitalContactNumbers);
     }
 
-    public void updateHospitalLogo(Hospital hospital, MultipartFile files) {
+    public void updateHospitalLogo(Hospital hospital, MultipartFile logo) {
         HospitalLogo hospitalLogo = hospitalLogoRepository.findHospitalLogoByHospitalId(hospital.getId());
 
-        if (Objects.isNull(hospitalLogo)) saveHospitalLogo(hospital, files);
-        else updateHospitalLogo(hospital, hospitalLogo, files);
+        if (Objects.isNull(hospitalLogo)) saveHospitalLogo(hospital, logo);
+        else updateHospitalLogo(hospital, hospitalLogo, logo);
     }
 
-    private void updateHospitalLogo(Hospital hospital, HospitalLogo hospitalLogo, MultipartFile files) {
+    private void updateHospitalLogo(Hospital hospital, HospitalLogo hospitalLogo, MultipartFile logo) {
 
-        if (!Objects.isNull(files)) {
-            List<FileUploadResponseDTO> responseList = uploadFiles(hospital, new MultipartFile[]{files});
-            setFileProperties(responseList.get(0), hospitalLogo);
+        if (!Objects.isNull(logo)) {
+            List<FileUploadResponseDTO> responseList = uploadFiles(hospital, new MultipartFile[]{logo});
+            setLogoFileProperties(responseList.get(0), hospitalLogo);
         } else
             hospitalLogo.setStatus(StatusConstants.INACTIVE);
+    }
+
+    private void updateHospitalBanner(Hospital hospital, HospitalBanner hospitalBanner, MultipartFile banner) {
+
+        if (!Objects.isNull(banner)) {
+            List<FileUploadResponseDTO> responseList = uploadFiles(hospital, new MultipartFile[]{banner});
+            setBannerFileProperties(responseList.get(0), hospitalBanner);
+        } else
+            hospitalBanner.setStatus(StatusConstants.INACTIVE);
+    }
+
+    public void updateHospitalBanner(Hospital hospital, MultipartFile banner) {
+        HospitalBanner hospitalBanner = hospitalBannerRepository.findHospitalBannerByHospitalId(hospital.getId());
+
+        if (Objects.isNull(hospitalBanner)) saveHospitalBanner(hospital, banner);
+        else updateHospitalBanner(hospital, hospitalBanner, banner);
     }
 
     private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {

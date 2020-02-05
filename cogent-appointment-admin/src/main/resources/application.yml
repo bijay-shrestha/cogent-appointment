@@ -29,6 +29,3 @@ spring:
       file-size-threshold: 2KB
       max-file-size: 20000MB
       max-request-size: 215000MB
-
-
-#hmac :HmacSHA512 admin:eab85708-0215-4f74-b646-a67e718cf332:009124699369179:6dvfnUIrT2E1WFDMQ5XAPU5IhlnUTnZqNYivaNR0rK6/bDTas5eF95K8fLNz9s6CMk0KQaupn76Y4muVL3cSIQ==

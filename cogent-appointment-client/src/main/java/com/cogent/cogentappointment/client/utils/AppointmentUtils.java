@@ -9,10 +9,7 @@ import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentB
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentCheckAvailabilityMinResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentCheckAvailabilityResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
-import com.cogent.cogentappointment.client.model.Appointment;
-import com.cogent.cogentappointment.client.model.Doctor;
-import com.cogent.cogentappointment.client.model.Patient;
-import com.cogent.cogentappointment.client.model.Specialization;
+import com.cogent.cogentappointment.client.model.*;
 import com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -39,7 +36,8 @@ public class AppointmentUtils {
                                                  String appointmentNumber,
                                                  Patient patient,
                                                  Specialization specialization,
-                                                 Doctor doctor) {
+                                                 Doctor doctor,
+                                                 Hospital hospital) {
 
         Appointment appointment = new Appointment();
         appointment.setAppointmentDate(requestDTO.getAppointmentDate());
@@ -49,9 +47,7 @@ public class AppointmentUtils {
         appointment.setSerialNumber(NumberFormatterUtils.generateRandomNumber(6));
         appointment.setCreatedDateNepali(requestDTO.getCreatedDateNepali());
         appointment.setStatus("PA");
-//        appointment.setHospitalId();
-
-        parseToAppointment(patient, specialization, doctor, appointment);
+        parseToAppointment(patient, specialization, doctor, hospital, appointment);
         return appointment;
     }
 
@@ -62,9 +58,11 @@ public class AppointmentUtils {
     private static void parseToAppointment(Patient patient,
                                            Specialization specialization,
                                            Doctor doctor,
+                                           Hospital hospital,
                                            Appointment appointment) {
         appointment.setDoctorId(doctor);
         appointment.setSpecializationId(specialization);
+        appointment.setHospitalId(hospital);
         appointment.setPatientId(patient);
     }
 

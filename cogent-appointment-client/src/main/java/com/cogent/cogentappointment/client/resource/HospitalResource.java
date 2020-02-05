@@ -41,21 +41,23 @@ public class HospitalResource {
 
     @PostMapping
     @ApiOperation(SAVE_OPERATION)
-    public ResponseEntity<?> save(@RequestParam(value = "file", required = false) MultipartFile file,
+    public ResponseEntity<?> save(@RequestParam(value = "logo", required = false) MultipartFile logo,
+                                  @RequestParam(value = "banner", required = false) MultipartFile banner,
                                   @RequestParam("request") String request) throws IOException {
 
         HospitalRequestDTO requestDTO = ObjectMapperUtils.map(request, HospitalRequestDTO.class);
-        hospitalService.save(requestDTO, file);
+        hospitalService.save(requestDTO, logo, banner);
         return created(create(API_V1 + BASE_HOSPITAL)).build();
     }
 
     @PutMapping
     @ApiOperation(UPDATE_OPERATION)
-    public ResponseEntity<?> update(@RequestParam(value = "file", required = false) MultipartFile file,
+    public ResponseEntity<?> update(@RequestParam(value = "logo", required = false) MultipartFile logo,
+                                    @RequestParam(value = "banner", required = false) MultipartFile banner,
                                     @RequestParam("request") String request) throws IOException {
 
         HospitalUpdateRequestDTO updateRequestDTO = ObjectMapperUtils.map(request, HospitalUpdateRequestDTO.class);
-        hospitalService.update(updateRequestDTO, file);
+        hospitalService.update(updateRequestDTO, logo, banner);
         return ok().build();
     }
 
@@ -82,23 +84,14 @@ public class HospitalResource {
     }
 
     @PutMapping(SEARCH + MIN)
-    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
-    public ResponseEntity<?> searchMinAdmin(@RequestBody HospitalMinSearchRequestDTO searchRequestDTO,
-                                            @RequestParam("page") int page,
-                                            @RequestParam("size") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return ok(hospitalService.search(searchRequestDTO, pageable));
+    @ApiOperation(FETCH_MIN_DETAILS)
+    public ResponseEntity<?> fetchMinDetails(@RequestBody HospitalMinSearchRequestDTO searchRequestDTO) {
+        return ok(hospitalService.fetchMinDetails(searchRequestDTO));
     }
 
     @GetMapping(DETAIL + ID_PATH_VARIABLE_BASE)
     @ApiOperation(DETAILS_OPERATION)
     public ResponseEntity<?> fetchDetailsById(@PathVariable("id") Long id) {
         return ok(hospitalService.fetchDetailsById(id));
-    }
-
-    @GetMapping(DETAIL + MIN + ID_PATH_VARIABLE_BASE)
-    @ApiOperation(MIN_DETAILS_OPERATION)
-    public ResponseEntity<?> fetchMinDetailsById(@PathVariable("id") Long id) {
-        return ok(hospitalService.fetchMinDetailsById(id));
     }
 }

@@ -1,8 +1,13 @@
 package com.cogent.cogentappointment.admin.security.hmac;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * @author Sauravi Thapa २०/१/१९
  */
+
+@Getter
 public class AuthHeader {
 
     private final String algorithm;
@@ -19,31 +24,5 @@ public class AuthHeader {
         this.digest = digest;
     }
 
-    public AuthHeader(String algorithm, String apiKey, String username, byte[] digest) {
-        this(algorithm, apiKey, username, null, digest);
-    }
 
-    public String getAlgorithm() {
-
-        return algorithm;
-    }
-
-    public String getApiKey() {
-        return apiKey;
-    }
-
-    public byte[] getDigest() {
-
-        return digest;
-    }
-
-    public String getNonce() {
-
-        return nonce;
-    }
-
-    public String getUsername() {
-
-        return username;
-    }
 }

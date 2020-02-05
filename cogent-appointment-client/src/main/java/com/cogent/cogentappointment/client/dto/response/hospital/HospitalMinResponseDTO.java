@@ -21,7 +21,9 @@ public class HospitalMinResponseDTO implements Serializable {
 
     private String address;
 
-    private String fileUri;
+    private String hospitalLogo;
+
+    private String hospitalBanner;
 
     private String contactNumber;
 }

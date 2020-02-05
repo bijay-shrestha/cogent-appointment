@@ -119,9 +119,10 @@ public class HospitalUtils {
         final int ADDRESS_INDEX = 3;
         final int PAN_NUMBER_INDEX = 4;
         final int REMARKS_INDEX = 5;
-        final int FILE_URI_INDEX = 6;
-        final int HOSPITAL_CODE_INDEX = 7;
-        final int CONTACT_DETAILS_INDEX = 8;
+        final int HOSPITAL_LOGO_INDEX = 6;
+        final int HOSPITAL_BANNER_INDEX = 7;
+        final int HOSPITAL_CODE_INDEX = 8;
+        final int CONTACT_DETAILS_INDEX = 9;
 
         return HospitalResponseDTO.builder()
                 .id(Long.parseLong(results[HOSPITAL_ID_INDEX].toString()))
@@ -130,7 +131,8 @@ public class HospitalUtils {
                 .address(results[ADDRESS_INDEX].toString())
                 .panNumber(results[PAN_NUMBER_INDEX].toString())
                 .remarks(Objects.isNull(results[REMARKS_INDEX]) ? null : results[REMARKS_INDEX].toString())
-                .fileUri(Objects.isNull(results[FILE_URI_INDEX]) ? null : results[FILE_URI_INDEX].toString())
+                .hospitalLogo(Objects.isNull(results[HOSPITAL_LOGO_INDEX]) ? null : results[HOSPITAL_LOGO_INDEX].toString())
+                .hospitalBanner(Objects.isNull(results[HOSPITAL_BANNER_INDEX]) ? null : results[HOSPITAL_BANNER_INDEX].toString())
                 .contactNumberResponseDTOS(Objects.isNull(results[CONTACT_DETAILS_INDEX]) ?
                         new ArrayList<>() : parseToHospitalContactNumberResponseDTOS(results))
                 .hospitalCode(results[HOSPITAL_CODE_INDEX].toString())
@@ -139,7 +141,7 @@ public class HospitalUtils {
 
     private static List<HospitalContactNumberResponseDTO> parseToHospitalContactNumberResponseDTOS(Object[] results) {
 
-        final int CONTACT_DETAILS_INDEX = 8;
+        final int CONTACT_DETAILS_INDEX = 9;
 
         String[] contactWithIdAndNumber = results[CONTACT_DETAILS_INDEX].toString().split(StringConstant.COMMA_SEPARATED);
 

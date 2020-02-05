@@ -74,8 +74,8 @@ public class DoctorQuery {
 
                 String whereClause = " WHERE d.status!='D'";
 
-                if (!ObjectUtils.isEmpty(searchRequestDTO.getDoctorId()))
-                    whereClause += " AND d.id= " + searchRequestDTO.getDoctorId();
+                if (!ObjectUtils.isEmpty(searchRequestDTO.getId()))
+                    whereClause += " AND d.id= " + searchRequestDTO.getId();
 
                 if (!ObjectUtils.isEmpty(searchRequestDTO.getCode()))
                     whereClause += " AND d.code LIKE '%" + searchRequestDTO.getCode() + "%'";

@@ -31,5 +31,7 @@ public class DoctorMinimalResponseDTO implements Serializable {
 
     private String hospitalName;
 
+    private String fileUri;
+
     private int totalItems;
 }

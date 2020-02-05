@@ -44,7 +44,7 @@ public class DoctorQuery {
     }
 
     private static final String SELECT_CLAUSE_TO_FETCH_MINIMAL_DOCTOR =
-            " d.id as doctorId," +                                              //[0]
+            " d.id as id," +                                              //[0]
                     " d.name as doctorName," +                                  //[1]
                     " d.mobile_number as mobileNumber," +                      //[2]
                     " d.status as status," +                                   //[3]

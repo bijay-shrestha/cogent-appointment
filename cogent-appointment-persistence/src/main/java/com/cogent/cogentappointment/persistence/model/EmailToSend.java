@@ -1,6 +1,10 @@
 package com.cogent.cogentappointment.persistence.model;
 
+import com.cogent.cogentappointment.persistence.audit.Auditable;
+import com.cogent.cogentappointment.persistence.listener.EmailToSendEntityListener;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -11,11 +15,14 @@ import java.util.Date;
 /**
  * @author smriti on 2019-08-26
  */
-@Entity
 @Table(name = "email_to_send")
+@Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
-public class EmailToSend implements Serializable {
+@EntityListeners(EmailToSendEntityListener.class)
+public class EmailToSend extends Auditable<String> implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -42,4 +49,18 @@ public class EmailToSend implements Serializable {
 
     @Column(name = "template_name")
     private String templateName;
+
+    @Override
+    public String toString() {
+        return "EmailToSend{" +
+                "id=" + id +
+                ", isSent=" + isSent +
+                ", recordedDate=" + recordedDate +
+                ", sentDate=" + sentDate +
+                ", subject='" + subject + '\'' +
+                ", receiverEmailAddress='" + receiverEmailAddress + '\'' +
+                ", paramValue='" + paramValue + '\'' +
+                ", templateName='" + templateName + '\'' +
+                '}';
+    }
 }

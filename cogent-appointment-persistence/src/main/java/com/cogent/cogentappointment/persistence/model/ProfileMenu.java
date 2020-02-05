@@ -1,5 +1,7 @@
 package com.cogent.cogentappointment.persistence.model;
 
+import com.cogent.cogentappointment.persistence.audit.Auditable;
+import com.cogent.cogentappointment.persistence.listener.ProfileMenuEntityListener;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +19,8 @@ import java.io.Serializable;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProfileMenu implements Serializable {
+@EntityListeners(ProfileMenuEntityListener.class)
+public class ProfileMenu extends Auditable<String> implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,4 +41,16 @@ public class ProfileMenu implements Serializable {
 
     @Column(name = "status")
     private Character status;
+
+    @Override
+    public String toString() {
+        return "ProfileMenu{" +
+                "id=" + id +
+                ", profile=" + profile.getName() +
+                ", parentId=" + parentId +
+                ", userMenuId=" + userMenuId +
+                ", roleId=" + roleId +
+                ", status=" + status +
+                '}';
+    }
 }

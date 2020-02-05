@@ -1,7 +1,11 @@
 
 package com.cogent.cogentappointment.persistence.model;
 
+import com.cogent.cogentappointment.persistence.audit.Auditable;
+import com.cogent.cogentappointment.persistence.listener.AppointmentEntityListener;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -16,7 +20,10 @@ import java.util.Date;
 @Table(name = "appointment")
 @Getter
 @Setter
-public class Appointment implements Serializable {
+@AllArgsConstructor
+@NoArgsConstructor
+@EntityListeners(AppointmentEntityListener.class)
+public class Appointment extends Auditable<String> implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,7 +45,7 @@ public class Appointment implements Serializable {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hospital_id")
-    private Hospital patient;
+    private Hospital hospital;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "appointment_date")
@@ -72,4 +79,24 @@ public class Appointment implements Serializable {
     /*If cancel the appointment, cancellation remarks is must*/
     @Column(name = "remarks")
     private String remarks;
+
+
+    @Override
+    public String toString() {
+        return "Appointment{" +
+                "id=" + id +
+                ", specializationId=" + specializationId.getName() +
+                ", doctorId=" + doctorId.getName() +
+                ", patientId=" + patientId.getName() +
+                ", hospital=" + hospital.getName() +
+                ", appointmentDate=" + appointmentDate +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", appointmentNumber='" + appointmentNumber + '\'' +
+                ", uniqueId='" + uniqueId + '\'' +
+                ", createdDateNepali='" + createdDateNepali + '\'' +
+                ", status=" + status +
+                ", remarks='" + remarks + '\'' +
+                '}';
+    }
 }

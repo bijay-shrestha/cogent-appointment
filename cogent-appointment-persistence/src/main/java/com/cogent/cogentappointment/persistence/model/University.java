@@ -1,6 +1,10 @@
 package com.cogent.cogentappointment.persistence.model;
 
+import com.cogent.cogentappointment.persistence.audit.Auditable;
+import com.cogent.cogentappointment.persistence.listener.UniversityEntityListener;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -9,11 +13,14 @@ import java.io.Serializable;
 /**
  * @author smriti ON 30/01/2020
  */
-@Table(name = "university")
 @Entity
+@Table(name = "university")
 @Getter
 @Setter
-public class University implements Serializable {
+@AllArgsConstructor
+@NoArgsConstructor
+@EntityListeners(UniversityEntityListener.class)
+public class University extends Auditable<String> implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,4 +41,16 @@ public class University implements Serializable {
 
     @Column(name = "remarks")
     private String remarks;
+
+    @Override
+    public String toString() {
+        return "University{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", country=" + country.getName() +
+                ", status=" + status +
+                ", remarks='" + remarks + '\'' +
+                '}';
+    }
 }

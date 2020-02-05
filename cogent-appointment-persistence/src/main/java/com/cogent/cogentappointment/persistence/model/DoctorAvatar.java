@@ -1,6 +1,10 @@
 package com.cogent.cogentappointment.persistence.model;
 
+import com.cogent.cogentappointment.persistence.audit.Auditable;
+import com.cogent.cogentappointment.persistence.listener.DoctorAvatarEntityListener;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -13,7 +17,10 @@ import java.io.Serializable;
 @Entity
 @Getter
 @Setter
-public class DoctorAvatar implements Serializable {
+@AllArgsConstructor
+@NoArgsConstructor
+@EntityListeners(DoctorAvatarEntityListener.class)
+public class DoctorAvatar extends Auditable<String> implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,4 +40,16 @@ public class DoctorAvatar implements Serializable {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doctor_id")
     private Doctor doctorId;
+
+    @Override
+    public String toString() {
+        return "DoctorAvatar{" +
+                "id=" + id +
+                ", fileUri='" + fileUri + '\'' +
+                ", fileType='" + fileType + '\'' +
+                ", fileSize=" + fileSize +
+                ", status=" + status +
+                ", doctorId=" + doctorId.getName() +
+                '}';
+    }
 }

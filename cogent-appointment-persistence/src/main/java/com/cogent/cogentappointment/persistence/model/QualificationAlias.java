@@ -1,5 +1,7 @@
 package com.cogent.cogentappointment.persistence.model;
 
+import com.cogent.cogentappointment.persistence.audit.Auditable;
+import com.cogent.cogentappointment.persistence.listener.QualificationAliasEntityListener;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +19,8 @@ import java.io.Serializable;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class QualificationAlias implements Serializable {
+@EntityListeners(QualificationAliasEntityListener.class)
+public class QualificationAlias extends Auditable<String> implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,4 +30,13 @@ public class QualificationAlias implements Serializable {
 
     @Column(name = "status")
     private Character status;
+
+    @Override
+    public String toString() {
+        return "QualificationAlias{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", status=" + status +
+                '}';
+    }
 }

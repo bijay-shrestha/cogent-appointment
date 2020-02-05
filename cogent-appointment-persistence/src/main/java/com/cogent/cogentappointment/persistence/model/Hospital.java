@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.persistence.model;
 
 import com.cogent.cogentappointment.persistence.audit.Auditable;
-import com.cogent.cogentappointment.persistence.listener.AdminEntityListener;
 import com.cogent.cogentappointment.persistence.listener.HospitalEntityListener;
 import lombok.*;
 
@@ -13,11 +12,10 @@ import java.io.Serializable;
  */
 @Table(name = "hospital")
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
-@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @EntityListeners(HospitalEntityListener.class)
 public class Hospital extends Auditable<String> implements Serializable {
 

@@ -1,5 +1,7 @@
 package com.cogent.cogentappointment.persistence.model;
 
+import com.cogent.cogentappointment.persistence.audit.Auditable;
+import com.cogent.cogentappointment.persistence.listener.AdminMacAddressInfoEntityListener;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +16,8 @@ import java.io.Serializable;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AdminMacAddressInfo implements Serializable {
+@EntityListeners(AdminMacAddressInfoEntityListener.class)
+public class AdminMacAddressInfo extends Auditable<String> implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,4 +33,13 @@ public class AdminMacAddressInfo implements Serializable {
     @JoinColumn(name = "admin_id")
     private Admin admin;
 
+    @Override
+    public String toString() {
+        return "AdminMacAddressInfo{" +
+                "id=" + id +
+                ", macAddress='" + macAddress + '\'' +
+                ", status=" + status +
+                ", admin=" + admin.getUsername() +
+                '}';
+    }
 }

@@ -1,5 +1,7 @@
 package com.cogent.cogentappointment.persistence.model;
 
+import com.cogent.cogentappointment.persistence.audit.Auditable;
+import com.cogent.cogentappointment.persistence.listener.DoctorDutyRosterEntityListener;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +20,8 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class DoctorDutyRoster implements Serializable {
+@EntityListeners(DoctorDutyRosterEntityListener.class)
+public class DoctorDutyRoster extends Auditable<String> implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,4 +54,19 @@ public class DoctorDutyRoster implements Serializable {
 
     @Column(name = "remarks")
     private String remarks;
+
+    @Override
+    public String toString() {
+        return "DoctorDutyRoster{" +
+                "id=" + id +
+                ", doctorId=" + doctorId.getName() +
+                ", specializationId=" + specializationId.getName() +
+                ", rosterGapDuration=" + rosterGapDuration +
+                ", fromDate=" + fromDate +
+                ", toDate=" + toDate +
+                ", status=" + status +
+                ", hasOverrideDutyRoster=" + hasOverrideDutyRoster +
+                ", remarks='" + remarks + '\'' +
+                '}';
+    }
 }

@@ -1,6 +1,10 @@
 package com.cogent.cogentappointment.persistence.model;
 
+import com.cogent.cogentappointment.persistence.audit.Auditable;
+import com.cogent.cogentappointment.persistence.listener.AdminConfirmationTokenEntityListener;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -13,7 +17,10 @@ import java.io.Serializable;
 @Table(name = "admin_confirmation_token")
 @Getter
 @Setter
-public class AdminConfirmationToken implements Serializable {
+@AllArgsConstructor
+@NoArgsConstructor
+@EntityListeners(AdminConfirmationTokenEntityListener.class)
+public class AdminConfirmationToken extends Auditable<String> implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,4 +35,14 @@ public class AdminConfirmationToken implements Serializable {
 
     @Column(name = "status")
     private Character status;
+
+    @Override
+    public String toString() {
+        return "AdminConfirmationToken{" +
+                "id=" + id +
+                ", admin=" + admin.getUsername() +
+                ", confirmationToken='" + confirmationToken + '\'' +
+                ", status=" + status +
+                '}';
+    }
 }

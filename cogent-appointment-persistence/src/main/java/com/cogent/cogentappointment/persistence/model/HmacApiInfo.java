@@ -2,9 +2,11 @@ package com.cogent.cogentappointment.persistence.model;
 
 
 import com.cogent.cogentappointment.persistence.audit.Auditable;
+import com.cogent.cogentappointment.persistence.listener.HmacApiInfoEntityListener;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -17,7 +19,9 @@ import java.io.Serializable;
 @Table(name = "hmac_api_info")
 @Getter
 @Setter
-@EntityListeners(AuditingEntityListener.class)
+@NoArgsConstructor
+@AllArgsConstructor
+@EntityListeners(HmacApiInfoEntityListener.class)
 public class HmacApiInfo extends Auditable<String> implements Serializable {
 
     @Id
@@ -39,4 +43,16 @@ public class HmacApiInfo extends Auditable<String> implements Serializable {
 
     @Column(name = "remarks")
     private String remarks;
+
+    @Override
+    public String toString() {
+        return "HmacApiInfo{" +
+                "id=" + id +
+                ", hospital=" + hospital.getName() +
+                ", apiKey='" + apiKey + '\'' +
+                ", apiSecret='" + apiSecret + '\'' +
+                ", status=" + status +
+                ", remarks='" + remarks + '\'' +
+                '}';
+    }
 }

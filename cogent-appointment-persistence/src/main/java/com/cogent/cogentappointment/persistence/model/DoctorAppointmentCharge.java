@@ -1,5 +1,7 @@
 package com.cogent.cogentappointment.persistence.model;
 
+import com.cogent.cogentappointment.persistence.audit.Auditable;
+import com.cogent.cogentappointment.persistence.listener.DoctorAppointmentChargeEntityListener;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +20,8 @@ import java.io.Serializable;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DoctorAppointmentCharge implements Serializable {
+@EntityListeners(DoctorAppointmentChargeEntityListener.class)
+public class DoctorAppointmentCharge extends Auditable<String> implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,4 +33,13 @@ public class DoctorAppointmentCharge implements Serializable {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doctorId")
     private Doctor doctorId;
+
+    @Override
+    public String toString() {
+        return "DoctorAppointmentCharge{" +
+                "id=" + id +
+                ", appointmentCharge=" + appointmentCharge +
+                ", doctorId=" + doctorId.getName() +
+                '}';
+    }
 }

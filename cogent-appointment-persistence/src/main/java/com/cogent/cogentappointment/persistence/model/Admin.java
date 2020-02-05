@@ -15,7 +15,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Getter
 @Setter
-@Builder
 @EntityListeners(AdminEntityListener.class)
 public class Admin extends Auditable<String> implements Serializable {
     @Id

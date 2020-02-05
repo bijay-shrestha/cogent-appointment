@@ -1,6 +1,10 @@
 package com.cogent.cogentappointment.persistence.model;
 
+import com.cogent.cogentappointment.persistence.audit.Auditable;
+import com.cogent.cogentappointment.persistence.listener.CountryEntityListener;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -14,7 +18,10 @@ import java.io.Serializable;
 @Table(name = "country")
 @Getter
 @Setter
-public class Country implements Serializable {
+@AllArgsConstructor
+@NoArgsConstructor
+@EntityListeners(CountryEntityListener.class)
+public class Country extends Auditable<String> implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -39,4 +46,18 @@ public class Country implements Serializable {
 
     @Column(name = "status")
     private Character status;
+
+    @Override
+    public String toString() {
+        return "Country{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", niceName='" + niceName + '\'' +
+                ", iso='" + iso + '\'' +
+                ", iso3='" + iso3 + '\'' +
+                ", numCode=" + numCode +
+                ", phoneCode=" + phoneCode +
+                ", status=" + status +
+                '}';
+    }
 }

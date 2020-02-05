@@ -1,7 +1,11 @@
 package com.cogent.cogentappointment.persistence.model;
 
+import com.cogent.cogentappointment.persistence.audit.Auditable;
 import com.cogent.cogentappointment.persistence.enums.Gender;
+import com.cogent.cogentappointment.persistence.listener.PatientEntityListener;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -12,11 +16,14 @@ import java.util.Date;
 /**
  * @author smriti ON 14/01/2020
  */
-@Getter
-@Setter
 @Entity
 @Table(name = "patient")
-public class Patient implements Serializable {
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@EntityListeners(PatientEntityListener.class)
+public class Patient extends Auditable<String> implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -67,5 +74,26 @@ public class Patient implements Serializable {
 
     @Column(name = "remarks")
     private String remarks;
+
+    @Override
+    public String toString() {
+        return "Patient{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", mobileNumber='" + mobileNumber + '\'' +
+                ", gender=" + gender +
+                ", dateOfBirth=" + dateOfBirth +
+                ", nepaliDateOfBirth='" + nepaliDateOfBirth + '\'' +
+                ", email='" + email + '\'' +
+                ", isSelf=" + isSelf +
+                ", isRegistered=" + isRegistered +
+                ", eSewaId='" + eSewaId + '\'' +
+                ", address='" + address + '\'' +
+                ", hospitalId=" + hospitalId.getName() +
+                ", registrationNumber='" + registrationNumber + '\'' +
+                ", status=" + status +
+                ", remarks='" + remarks + '\'' +
+                '}';
+    }
 }
 

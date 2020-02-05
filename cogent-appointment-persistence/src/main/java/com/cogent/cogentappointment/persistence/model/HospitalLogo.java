@@ -1,6 +1,10 @@
 package com.cogent.cogentappointment.persistence.model;
 
+import com.cogent.cogentappointment.persistence.audit.Auditable;
+import com.cogent.cogentappointment.persistence.listener.HospitalLogoEntityListener;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -13,7 +17,10 @@ import java.io.Serializable;
 @Table(name = "hospital_logo")
 @Getter
 @Setter
-public class HospitalLogo implements Serializable {
+@NoArgsConstructor
+@AllArgsConstructor
+@EntityListeners(HospitalLogoEntityListener.class)
+public class HospitalLogo extends Auditable<String> implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,4 +40,16 @@ public class HospitalLogo implements Serializable {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hospital_id")
     private Hospital hospital;
+
+    @Override
+    public String toString() {
+        return "HospitalLogo{" +
+                "id=" + id +
+                ", fileUri='" + fileUri + '\'' +
+                ", fileType='" + fileType + '\'' +
+                ", fileSize=" + fileSize +
+                ", status=" + status +
+                ", hospital=" + hospital.getName() +
+                '}';
+    }
 }

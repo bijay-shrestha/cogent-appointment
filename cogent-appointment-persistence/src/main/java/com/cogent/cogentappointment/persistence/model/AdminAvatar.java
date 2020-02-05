@@ -3,7 +3,6 @@ package com.cogent.cogentappointment.persistence.model;
 
 import com.cogent.cogentappointment.persistence.audit.Auditable;
 import com.cogent.cogentappointment.persistence.listener.AdminAvatarEntityListener;
-import com.cogent.cogentappointment.persistence.listener.AdminEntityListener;
 import lombok.*;
 
 import javax.persistence.*;
@@ -15,7 +14,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Getter
 @Setter
-@Builder
 @EntityListeners(AdminAvatarEntityListener.class)
 public class AdminAvatar extends Auditable<String> implements Serializable {
     @Id
@@ -37,4 +35,16 @@ public class AdminAvatar extends Auditable<String> implements Serializable {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admin_id")
     private Admin admin;
+
+    @Override
+    public String toString() {
+        return "AdminAvatar{" +
+                "id=" + id +
+                ", fileUri='" + fileUri + '\'' +
+                ", fileType='" + fileType + '\'' +
+                ", fileSize=" + fileSize +
+                ", status=" + status +
+                ", admin=" + admin.getUsername() +
+                '}';
+    }
 }

@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.admin.utils;
 
-import com.cogent.cogentappointment.admin.constants.StatusConstants;
 import com.cogent.cogentappointment.admin.constants.StringConstant;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalContactNumberUpdateRequestDTO;
@@ -10,26 +9,25 @@ import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseD
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalContactNumberResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalResponseDTO;
 import com.cogent.cogentappointment.admin.model.Hospital;
+import com.cogent.cogentappointment.admin.model.HospitalBanner;
 import com.cogent.cogentappointment.admin.model.HospitalContactNumber;
 import com.cogent.cogentappointment.admin.model.HospitalLogo;
 import com.cogent.cogentappointment.admin.utils.commons.StringUtil;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.cogent.cogentappointment.admin.utils.HMACKeyGenerator.generateApiKey;
-import static com.cogent.cogentappointment.admin.utils.HMACKeyGenerator.generateApiSecret;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
 
 /**
  * @author smriti ON 12/01/2020
  */
 public class HospitalUtils {
 
-    public static Hospital convertDTOToHospital(HospitalRequestDTO hospitalRequestDTO) throws NoSuchAlgorithmException {
+    public static Hospital convertDTOToHospital(HospitalRequestDTO hospitalRequestDTO) {
         Hospital hospital = new Hospital();
         hospital.setName(StringUtil.toUpperCase(hospitalRequestDTO.getName()));
         hospital.setCode(StringUtil.toUpperCase(hospitalRequestDTO.getHospitalCode()));
@@ -37,31 +35,45 @@ public class HospitalUtils {
         hospital.setPanNumber(hospitalRequestDTO.getPanNumber());
         hospital.setStatus(hospitalRequestDTO.getStatus());
         hospital.setIsCogentAdmin(hospitalRequestDTO.getIsCogentAdmin());
-        hospital.setApiKey(generateApiKey());
-        hospital.setApiSecret(generateApiSecret());
         return hospital;
     }
 
     public static HospitalContactNumber parseToHospitalContactNumber(Long hospitalId, String contactNumber) {
         HospitalContactNumber hospitalContactNumber = new HospitalContactNumber();
-        parseToHospitalContactNumber(hospitalId, contactNumber, StatusConstants.ACTIVE, hospitalContactNumber);
+        parseToHospitalContactNumber(hospitalId, contactNumber, ACTIVE, hospitalContactNumber);
         return hospitalContactNumber;
     }
 
     public static HospitalLogo convertFileToHospitalLogo(FileUploadResponseDTO fileUploadResponseDTO,
                                                          Hospital hospital) {
         HospitalLogo hospitalLogo = new HospitalLogo();
-        setFileProperties(fileUploadResponseDTO, hospitalLogo);
+        setLogoFileProperties(fileUploadResponseDTO, hospitalLogo);
         hospitalLogo.setHospital(hospital);
         return hospitalLogo;
     }
 
-    public static void setFileProperties(FileUploadResponseDTO fileUploadResponseDTO,
+    public static void setLogoFileProperties(FileUploadResponseDTO fileUploadResponseDTO,
                                          HospitalLogo hospitalLogo) {
         hospitalLogo.setFileSize(fileUploadResponseDTO.getFileSize());
         hospitalLogo.setFileUri(fileUploadResponseDTO.getFileUri());
         hospitalLogo.setFileType(fileUploadResponseDTO.getFileType());
-        hospitalLogo.setStatus(StatusConstants.ACTIVE);
+        hospitalLogo.setStatus(ACTIVE);
+    }
+
+    public static HospitalBanner convertFileToHospitalHospitalBanner(FileUploadResponseDTO fileUploadResponseDTO,
+                                                                     Hospital hospital) {
+        HospitalBanner hospitalBanner = new HospitalBanner();
+        setBannerFileProperties(fileUploadResponseDTO, hospitalBanner);
+        hospitalBanner.setHospital(hospital);
+        return hospitalBanner;
+    }
+
+    public static void setBannerFileProperties(FileUploadResponseDTO fileUploadResponseDTO,
+                                               HospitalBanner hospitalBanner) {
+        hospitalBanner.setFileSize(fileUploadResponseDTO.getFileSize());
+        hospitalBanner.setFileUri(fileUploadResponseDTO.getFileUri());
+        hospitalBanner.setFileType(fileUploadResponseDTO.getFileType());
+        hospitalBanner.setStatus(ACTIVE);
     }
 
     public static void parseToUpdatedHospital(HospitalUpdateRequestDTO updateRequestDTO,
@@ -107,9 +119,10 @@ public class HospitalUtils {
         final int ADDRESS_INDEX = 3;
         final int PAN_NUMBER_INDEX = 4;
         final int REMARKS_INDEX = 5;
-        final int FILE_URI_INDEX = 6;
-        final int HOSPITAL_CODE_INDEX = 7;
-        final int CONTACT_DETAILS_INDEX = 8;
+        final int HOSPITAL_LOGO_INDEX = 6;
+        final int HOSPITAL_BANNER_INDEX = 7;
+        final int HOSPITAL_CODE_INDEX = 8;
+        final int CONTACT_DETAILS_INDEX = 9;
 
         return HospitalResponseDTO.builder()
                 .id(Long.parseLong(results[HOSPITAL_ID_INDEX].toString()))
@@ -118,7 +131,8 @@ public class HospitalUtils {
                 .address(results[ADDRESS_INDEX].toString())
                 .panNumber(results[PAN_NUMBER_INDEX].toString())
                 .remarks(Objects.isNull(results[REMARKS_INDEX]) ? null : results[REMARKS_INDEX].toString())
-                .fileUri(Objects.isNull(results[FILE_URI_INDEX]) ? null : results[FILE_URI_INDEX].toString())
+                .hospitalLogo(Objects.isNull(results[HOSPITAL_LOGO_INDEX]) ? null : results[HOSPITAL_LOGO_INDEX].toString())
+                .hospitalBanner(Objects.isNull(results[HOSPITAL_BANNER_INDEX]) ? null : results[HOSPITAL_BANNER_INDEX].toString())
                 .contactNumberResponseDTOS(Objects.isNull(results[CONTACT_DETAILS_INDEX]) ?
                         new ArrayList<>() : parseToHospitalContactNumberResponseDTOS(results))
                 .hospitalCode(results[HOSPITAL_CODE_INDEX].toString())
@@ -127,7 +141,7 @@ public class HospitalUtils {
 
     private static List<HospitalContactNumberResponseDTO> parseToHospitalContactNumberResponseDTOS(Object[] results) {
 
-        final int CONTACT_DETAILS_INDEX = 8;
+        final int CONTACT_DETAILS_INDEX = 9;
 
         String[] contactWithIdAndNumber = results[CONTACT_DETAILS_INDEX].toString().split(StringConstant.COMMA_SEPARATED);
 

@@ -17,7 +17,7 @@ public interface PatientService {
 
     Patient fetchPatient(Long id);
 
-    PatientDetailResponseDTO search(PatientSearchRequestDTO searchRequestDTO);
+    PatientDetailResponseDTO searchForSelf(PatientSearchRequestDTO searchRequestDTO);
 
     List<PatientMinimalResponseDTO> fetchMinimalPatientInfo(PatientSearchRequestDTO searchRequestDTO,
                                                             Pageable pageable);

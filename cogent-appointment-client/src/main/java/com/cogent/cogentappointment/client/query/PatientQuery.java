@@ -24,8 +24,8 @@ public class PatientQuery {
                     " p.address as address," +                          //[3]
                     " p.email as email," +                              //[4]
                     " p.gender as gender," +                            //[5]
-                    " p.dateOfBirth as dateOfBirth," +                  //[6]
-                    " p.nepaliDateOfBirth as nepaliDateOfBirth" +       //[7]
+                    " p.dateOfBirth as dateOfBirth," +                   //[6]
+                    " p.registrationNumber as registrationNumber" +      //[7]
                     " FROM Patient p";
 
     public static final String GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS =

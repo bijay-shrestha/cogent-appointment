@@ -28,6 +28,6 @@ public class DoctorAppointmentCharge implements Serializable {
     private Double appointmentCharge;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "doctorId")
+    @JoinColumn(name = "doctor_id")
     private Doctor doctorId;
 }

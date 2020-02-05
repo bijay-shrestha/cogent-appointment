@@ -32,7 +32,7 @@ public class PatientDetailResponseDTO implements Serializable {
 
     private Date dateOfBirth;
 
-    private String nepaliDateOfBirth;
-
     private String age;
+
+    private String registrationNumber;
 }

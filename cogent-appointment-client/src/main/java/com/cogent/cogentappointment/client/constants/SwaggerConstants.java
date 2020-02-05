@@ -64,6 +64,11 @@ public class SwaggerConstants {
         String FETCH_ACTIVE_COUNTRY = "Fetch active country for dropdown.";
     }
 
+    public interface CommonConstant {
+        String BASE_API_VALUE = "This is Common Resource";
+        String FETCH_DOCTOR_SPECIALIZATION_INFO = "Fetch doctor and specialization combined info";
+    }
+
 
     //D
     public interface DepartmentConstant {
@@ -90,7 +95,6 @@ public class SwaggerConstants {
         String FETCH_DETAILS_FOR_DROPDOWN = "Fetch Doctor details (id and name) for dropdown";
         String FETCH_BY_SPECIALIZATION_ID = "Fetch active doctors by specialization id";
         String FETCH_BY_HOSPITAL_ID = "Fetch active doctors by hospital id";
-        String FETCH_DOCTOR_MIN_INFO= "Fetch min doctor info";
     }
 
     public interface DoctorDutyRosterConstant {

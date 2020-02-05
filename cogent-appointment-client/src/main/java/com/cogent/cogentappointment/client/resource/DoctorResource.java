@@ -107,9 +107,4 @@ public class DoctorResource {
         return ok(doctorService.fetchDoctorByHospitalId(hospitalId));
     }
 
-    @GetMapping(MIN + HOSPITAL_ID_PATH_VARIABLE_BASE)
-    @ApiOperation(FETCH_DOCTOR_MIN_INFO)
-    public ResponseEntity<?> fetchDoctorMinInfo(@PathVariable("hospitalId") Long hospitalId) {
-        return ok(doctorService.fetchDoctorMinInfo(hospitalId));
-    }
 }

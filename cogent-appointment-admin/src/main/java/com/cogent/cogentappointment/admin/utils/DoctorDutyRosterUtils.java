@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AppointmentServiceMessage.APPOINTMENT_EXISTS_MESSAGE;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.convertDateToLocalDate;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.isLocalDateBetweenInclusive;
 
@@ -49,11 +48,8 @@ public class DoctorDutyRosterUtils {
                                                                            WeekDays weekDays) {
 
         DoctorWeekDaysDutyRoster weekDaysDutyRoster = new DoctorWeekDaysDutyRoster();
-
-        if(requestDTO.getDayOffStatus().equals(NO)){
-            weekDaysDutyRoster.setStartTime(requestDTO.getStartTime());
-            weekDaysDutyRoster.setEndTime(requestDTO.getEndTime());
-        }
+        weekDaysDutyRoster.setStartTime(requestDTO.getStartTime());
+        weekDaysDutyRoster.setEndTime(requestDTO.getEndTime());
         weekDaysDutyRoster.setDayOffStatus(requestDTO.getDayOffStatus());
         weekDaysDutyRoster.setDoctorDutyRosterId(doctorDutyRoster);
         weekDaysDutyRoster.setWeekDaysId(weekDays);

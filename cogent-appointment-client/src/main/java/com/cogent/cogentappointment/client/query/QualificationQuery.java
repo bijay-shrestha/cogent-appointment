@@ -28,9 +28,8 @@ public class QualificationQuery {
     private static final String SELECT_CLAUSE_TO_FETCH_MINIMAL_QUALIFICATION =
             "SELECT q.id as id," +                                               //[0]
                     " q.name as name," +                                        //[1]
-                    " q.university as university," +                             //[2]
-                    " q.country.name as countryName," +                          //[3]
-                    " q.qualificationAlias.name as qualificationAliasName," +   //[4]
+                    " q.university.name as university," +                             //[2]
+                    " q.qualificationAlias.name as qualificationAliasName," +   //[3]
                     " q.status as status" +                                     //[5]
                     " FROM Qualification q ";
 
@@ -57,9 +56,7 @@ public class QualificationQuery {
     public static final String QUERY_TO_FETCH_QUALIFICATION_DETAILS =
             "SELECT" +
                     " q.name as name," +                                        //[0]
-                    " q.university as university," +                            //[1]
-                    " q.country.id as countryId," +                             //[2]
-                    " q.country.name as countryName," +                         //[3]
+                    " q.university.name as university," +                            //[1]
                     " q.qualificationAlias.id as qualificationAliasId," +       //[4]
                     " q.qualificationAlias.name as qualificationAliasName," +    //[5]
                     " q.status as status," +                                    //[6]
@@ -71,8 +68,7 @@ public class QualificationQuery {
     public static final String QUERY_TO_FETCH_ACTIVE_QUALIFICATION_FOR_DROPDOWN =
             "SELECT q.id as id," +                                               //[0]
                     " q.name as name," +                                        //[1]
-                    " q.university as university," +                             //[2]
-                    " q.country.name as countryName," +                          //[3]
+                    " q.university.name as university," +                             //[2]
                     " q.qualificationAlias.name as qualificationAliasName" +   //[4]
                     " FROM Qualification q " +
                     " WHERE q.status = 'Y'";

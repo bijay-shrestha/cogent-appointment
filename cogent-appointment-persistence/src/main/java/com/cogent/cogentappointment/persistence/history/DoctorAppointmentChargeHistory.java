@@ -33,7 +33,7 @@ public class DoctorAppointmentChargeHistory implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "doctor_appointment_charge_id",
-            foreignKey = @ForeignKey(name = "FK_doctor_appointment_charge_history_doctor_appointment_charge"))
+            foreignKey = @ForeignKey(name = "FK_doctor_charge_history_doctor_charge"))
     private DoctorAppointmentCharge doctorAppointmentCharge;
 
     @Column(name = "doctor_appointment_charge_content")

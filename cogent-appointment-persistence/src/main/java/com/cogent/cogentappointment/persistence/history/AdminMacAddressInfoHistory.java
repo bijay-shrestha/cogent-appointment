@@ -33,7 +33,7 @@ public class AdminMacAddressInfoHistory implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "admin_mac_address_info_id",
-            foreignKey = @ForeignKey(name = "FK_admin_mac_address_info_history_admin_mac_address_info"))
+            foreignKey = @ForeignKey(name = "FK_admin_mac_history_admin_mac"))
     private AdminMacAddressInfo adminMacAddressInfo;
 
     @Column(name = "admin_avatar_content")

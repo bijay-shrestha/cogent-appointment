@@ -33,7 +33,7 @@ public class AdminConfirmationTokenHistory implements Serializable {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admin_confirmation_token_id",
-            foreignKey = @ForeignKey(name = "FK_admin_confirmation_token_history_admin_confirmation_token"))
+            foreignKey = @ForeignKey(name = "FK_admin_confirmation_tk_history_admin_confirmation_tk"))
     private AdminConfirmationToken adminConfirmationToken;
 
     @Column(name = "admin_confirmation_token_content")

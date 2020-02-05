@@ -33,7 +33,7 @@ public class HospitalContactNumberHistory implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "hospital_contact_number_id",
-            foreignKey = @ForeignKey(name = "FK_hospital_contact_number_history_hospital_contact_number"))
+            foreignKey = @ForeignKey(name = "FK_hospital_contact_history_hospital_contact"))
     private HospitalContactNumber hospitalContactNumber;
 
     @Column(name = "hospital_contact_number_content")

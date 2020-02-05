@@ -34,7 +34,7 @@ public class ForgotPasswordVerificationHistory implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "forgot_password_verification_id",
-            foreignKey = @ForeignKey(name = "FK_forgot_password_verification_history_forgot_password_verification"))
+            foreignKey = @ForeignKey(name = "FK_fgpassword_verification_history_fgpassword_verification"))
     private ForgotPasswordVerification forgotPasswordVerification;
 
     @Column(name = "admin_content")

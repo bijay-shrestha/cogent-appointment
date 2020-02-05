@@ -34,7 +34,7 @@ public class DoctorDutyRosterOverrideHistory implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "doctor_duty_roster_override_id",
-            foreignKey = @ForeignKey(name = "FK_doctor_duty_roster_override_history_doctor_duty_roster_override"))
+            foreignKey = @ForeignKey(name = "FK_roster_override_history_roster_override"))
     private DoctorDutyRosterOverride doctorDutyRosterOverride;
 
     @Column(name = "doctor_duty_roster_override_content")

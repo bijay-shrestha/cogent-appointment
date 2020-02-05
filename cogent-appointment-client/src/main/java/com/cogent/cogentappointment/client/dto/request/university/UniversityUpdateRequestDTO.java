@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.dto.request.qualification;
+package com.cogent.cogentappointment.client.dto.request.university;
 
 import com.cogent.cogentappointment.client.constraintvalidator.Status;
 import lombok.AllArgsConstructor;
@@ -17,20 +17,24 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class QualificationRequestDTO implements Serializable {
+public class UniversityUpdateRequestDTO implements Serializable {
 
     @NotNull
-    @NotEmpty
+    private Long id;
+
+    @NotNull
     private String name;
 
-    @NotNull
-    private Long universityId;
-
+    private String address;
 
     @NotNull
-    private Long qualificationAliasId;
+    private Long countryId;
 
     @NotNull
     @Status
     private Character status;
+
+    @NotNull
+    @NotEmpty
+    private String remarks;
 }

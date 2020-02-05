@@ -32,7 +32,7 @@ public class DoctorWeekDaysDutyRosterHistory implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "doctor_week_days_duty_roster_id",
-            foreignKey = @ForeignKey(name = "FK_doctor_week_days_duty_roster_history_doctor_week_days_duty_roster"))
+            foreignKey = @ForeignKey(name = "FK_week_days_roster_history_week_days_roster"))
     private DoctorWeekDaysDutyRoster doctorWeekDaysDutyRoster;
 
     @Column(name = "doctor_content")

@@ -10,6 +10,21 @@ import java.util.function.Function;
  */
 public class QualificationQuery {
 
+    public static final String QUERY_TO_VALIDATE_DUPLICITY =
+            " SELECT COUNT(q.id)" +
+                    " FROM Qualification q" +
+                    " WHERE" +
+                    " q.status !='D'" +
+                    " AND q.name=:name";
+
+    public static final String QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE =
+            " SELECT COUNT(q.id)" +
+                    " FROM Qualification q" +
+                    " WHERE" +
+                    " q.status !='D'" +
+                    " AND q.id!=:id" +
+                    " AND q.name=:name";
+
     private static final String SELECT_CLAUSE_TO_FETCH_MINIMAL_QUALIFICATION =
             "SELECT q.id as id," +                                               //[0]
                     " q.name as name," +                                        //[1]

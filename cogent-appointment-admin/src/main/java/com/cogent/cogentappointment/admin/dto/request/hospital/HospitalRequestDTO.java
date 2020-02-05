@@ -25,7 +25,7 @@ public class HospitalRequestDTO implements Serializable {
     @SpecialCharacters
     private String name;
 
-    @Size(max = 4)
+
     private String hospitalCode;
 
     @NotNull

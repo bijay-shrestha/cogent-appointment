@@ -20,7 +20,7 @@ public interface PatientRepositoryCustom {
     Long fetchPatientForValidation(String name, String mobileNumber,
                                    Date dateOfBirth, Long hospitalId);
 
-    PatientDetailResponseDTO search(PatientSearchRequestDTO searchRequestDTO);
+    PatientDetailResponseDTO searchForSelf(PatientSearchRequestDTO searchRequestDTO);
 
     List<PatientMinimalResponseDTO> fetchMinimalPatientInfo(PatientSearchRequestDTO searchRequestDTO,
                                                             Pageable pageable);

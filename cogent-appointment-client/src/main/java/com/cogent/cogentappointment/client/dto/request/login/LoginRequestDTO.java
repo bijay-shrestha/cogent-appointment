@@ -14,7 +14,10 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginRequestDTO implements Serializable {
+
     private String username;
 
     private String password;
+
+    private String hospitalCode;
 }

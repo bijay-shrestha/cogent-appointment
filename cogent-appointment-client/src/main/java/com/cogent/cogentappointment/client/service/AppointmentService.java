@@ -16,7 +16,7 @@ public interface AppointmentService {
 
     AppointmentCheckAvailabilityMinResponseDTO checkAvailability(AppointmentCheckAvailabilityRequestDTO requestDTO);
 
-    String save(AppointmentRequestDTO appointmentRequestDTO);
+    AppointmentSuccessResponseDTO save(AppointmentRequestDTO appointmentRequestDTO);
 
     List<AppointmentBookedDateResponseDTO> fetchBookedAppointmentDates(Date fromDate,
                                                                        Date toDate,

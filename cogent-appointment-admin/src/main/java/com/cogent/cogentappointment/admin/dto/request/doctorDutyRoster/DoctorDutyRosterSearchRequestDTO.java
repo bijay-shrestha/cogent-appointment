@@ -15,6 +15,8 @@ import java.util.Date;
 @NoArgsConstructor
 public class DoctorDutyRosterSearchRequestDTO implements Serializable {
 
+    private Long hospitalId;
+
     private Long doctorId;
 
     private Long specializationId;

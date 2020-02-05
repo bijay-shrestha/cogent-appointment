@@ -28,10 +28,12 @@ public class DoctorDutyRosterQuery {
                 " ddr.rosterGapDuration as rosterGapDuration," +                        //[3]
                 " ddr.fromDate as fromDate," +                                          //[4]
                 " ddr.toDate as toDate," +                                              //[5]
-                " ddr.status as status" +                                               //[6]
+                " ddr.status as status," +                                              //[6]
+                " h.name as hospitalName" +                                             //[7]
                 " FROM DoctorDutyRoster ddr" +
                 " LEFT JOIN Doctor d ON ddr.doctorId.id = d.id" +
                 " LEFT JOIN Specialization s ON ddr.specializationId.id = s.id" +
+                " LEFT JOIN Hospital h ON ddr.hospitalId.id = h.id" +
                 " WHERE" +
                 " ddr.status !='D'" +
                 " AND ddr.toDate >=:fromDate AND ddr.fromDate <=:toDate";
@@ -42,7 +44,10 @@ public class DoctorDutyRosterQuery {
         if (!Objects.isNull(searchRequestDTO.getSpecializationId()))
             sql += " AND s.id = " + searchRequestDTO.getSpecializationId();
 
-        return sql;
+        if (!Objects.isNull(searchRequestDTO.getHospitalId()))
+            sql += " AND h.id = " + searchRequestDTO.getHospitalId();
+
+        return sql + " ORDER BY ddr.id DESC";
     }
 
     public static final String QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_DETAILS =
@@ -57,10 +62,12 @@ public class DoctorDutyRosterQuery {
                     " ddr.toDate as toDate," +                                          //[7]
                     " ddr.status as status," +                                          //[8]
                     " ddr.remarks as remarks," +                                        //[9]
-                    " ddr.hasOverrideDutyRoster as hasOverrideDutyRoster" +             //[10]
+                    " ddr.hasOverrideDutyRoster as hasOverrideDutyRoster," +            //[10]
+                    " h.name as hospitalName" +                                         //[11]
                     " FROM DoctorDutyRoster ddr" +
                     " LEFT JOIN Doctor d ON ddr.doctorId.id = d.id" +
                     " LEFT JOIN Specialization s ON ddr.specializationId.id = s.id" +
+                    " LEFT JOIN Hospital h ON ddr.hospitalId.id = h.id" +
                     " WHERE ddr.status !='D'" +
                     " AND ddr.id = :id";
 

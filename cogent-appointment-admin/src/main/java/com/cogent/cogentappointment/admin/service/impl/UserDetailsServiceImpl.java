@@ -1,9 +1,11 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
+import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.model.Admin;
 import com.cogent.cogentappointment.admin.model.User;
 import com.cogent.cogentappointment.admin.repository.AdminRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
+@Slf4j
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final AdminRepository adminRepository;
@@ -31,10 +34,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        log.info("--------info--------");
         Admin admin = getAdmin(username);
-
-        if (admin == null) throw new DataDuplicationException("USER NOT FOUND");
-
+        if (admin == null) {
+            log.error("test");
+            throw new NoContentFoundException("USER NOT FOUND");
+        }
         return UserDetailsImpl.build(admin);
     }
 }

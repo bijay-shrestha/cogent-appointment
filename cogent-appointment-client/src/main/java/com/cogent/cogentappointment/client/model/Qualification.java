@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.model;
 
+import com.cogent.cogentappointment.client.audit.Auditable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,7 @@ import java.io.Serializable;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Qualification implements Serializable {
+public class Qualification extends Auditable<String> implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -18,9 +18,14 @@ import java.util.Date;
 @Builder
 public class AppointmentRequestDTO implements Serializable {
 
-    private PatientRequestDTO patientRequestDTO;
+    private PatientRequestDTO patientInfo;
 
-    private Boolean IsNewRegistration;
+    private AppointmentTransactionRequestDTO transactionInfo;
+
+    private Boolean isNewRegistration;
+
+    @NotNull
+    private Long hospitalId;
 
     private Long patientId;
 
@@ -40,7 +45,4 @@ public class AppointmentRequestDTO implements Serializable {
     @NotNull
     @NotEmpty
     private String createdDateNepali;
-
-    @NotNull
-    private Long hospitalId;
 }

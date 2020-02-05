@@ -1,12 +1,13 @@
 package com.cogent.cogentappointment.client.security.filter;
 
+import com.cogent.cogentappointment.client.dto.request.admin.AdminMinDetails;
+import com.cogent.cogentappointment.client.dto.request.login.ThirdPartyDetail;
+import com.cogent.cogentappointment.client.repository.HmacApiInfoRepository;
 import com.cogent.cogentappointment.client.security.hmac.AuthHeader;
 import com.cogent.cogentappointment.client.security.hmac.HMACBuilder;
-import com.cogent.cogentappointment.client.service.impl.UserDetailsServiceImpl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -30,10 +31,10 @@ import static com.cogent.cogentappointment.client.constants.PatternConstants.AUT
 @Component
 public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
-    private final UserDetailsServiceImpl userDetailsService;
+    private final HmacApiInfoRepository hmacApiInfoRepository;
 
-    public HmacAuthenticationFilter(UserDetailsServiceImpl userDetailsService) {
-        this.userDetailsService = userDetailsService;
+    public HmacAuthenticationFilter(HmacApiInfoRepository hmacApiInfoRepository) {
+        this.hmacApiInfoRepository = hmacApiInfoRepository;
     }
 
     @Override
@@ -48,44 +49,42 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
         if (authHeader != null) {
 
-            String apiKey = authHeader.getApiKey();
+            AdminMinDetails adminMinDetails = hmacApiInfoRepository.getAdminDetailForAuthentication(
+                    authHeader.getUsername(),
+                    authHeader.getHospitalCode(),
+                    authHeader.getApiKey());
 
-            UserDetails userDetails = userDetailsService.loadUserByUsername(authHeader.getUsername());
             final HMACBuilder signatureBuilder = new HMACBuilder()
                     .algorithm(authHeader.getAlgorithm())
                     .nonce(authHeader.getNonce())
-                    .username(userDetails.getUsername())
-                    .apiKey(apiKey);
+                    .username(adminMinDetails.getUsername())
+                    .hospitalCode(adminMinDetails.getHospitalCode())
+                    .apiKey(adminMinDetails.getApiKey())
+                    .apiSecret(adminMinDetails.getApiSecret());
 
-            if (!signatureBuilder.isHashEquals(authHeader.getDigest())) {
-                throw new BadCredentialsException(HMAC_BAD_SIGNATURE);
-            }
-            final PreAuthenticatedAuthenticationToken authentication = new PreAuthenticatedAuthenticationToken(
-                    userDetails,
-                    null,
-                    null);
-            authentication.setDetails(userDetails);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            compareSignature(signatureBuilder, authHeader.getDigest());
+
+            SecurityContextHolder.getContext().setAuthentication(getAuthentication(adminMinDetails.getUsername()));
         }
 
-        if (authHeader == null && eSewaAuthHeader !=null) {
-            String apiKey = eSewaAuthHeader.getApiKey();
+        if (authHeader == null && eSewaAuthHeader != null) {
+
+            ThirdPartyDetail thirdPartyDetail = hmacApiInfoRepository.getDetailForAuthentication(
+                    eSewaAuthHeader.getHospitalCode(),
+                    eSewaAuthHeader.getApiKey());
 
             final HMACBuilder signatureBuilder = new HMACBuilder()
                     .algorithm(eSewaAuthHeader.getAlgorithm())
                     .nonce(eSewaAuthHeader.getNonce())
-                    .apiKey(apiKey);
+                    .hospitalCode(thirdPartyDetail.getHospitalCode())
+                    .apiKey(thirdPartyDetail.getApiKey())
+                    .apiSecret(thirdPartyDetail.getApiSecret());
 
-            if (!signatureBuilder.isHashEquals(eSewaAuthHeader.getDigest())) {
-                throw new BadCredentialsException(HMAC_BAD_SIGNATURE);
-            }
-            final PreAuthenticatedAuthenticationToken authentication = new PreAuthenticatedAuthenticationToken(
-                    apiKey,
-                    null,
-                    null);
-            authentication.setDetails(apiKey);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            compareSignature(signatureBuilder, eSewaAuthHeader.getDigest());
+
+            SecurityContextHolder.getContext().setAuthentication(getAuthentication(thirdPartyDetail.getHospitalCode()));
         }
+
         try {
             filterChain.doFilter(request, response);
         } finally {
@@ -93,38 +92,51 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
         }
     }
 
-    public static AuthHeader getAuthHeader(HttpServletRequest request) {
-        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+    public AuthHeader getAuthHeader(HttpServletRequest request) {
+
+         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+
         if (authHeader == null) {
             return null;
         }
+
         final Matcher authHeaderMatcher = Pattern.compile(AUTHORIZATION_HEADER_PATTERN).matcher(authHeader);
+
         if (!authHeaderMatcher.matches()) {
             return null;
         }
 
         return new AuthHeader(authHeaderMatcher.group(1),
-                authHeaderMatcher.group(3),
                 authHeaderMatcher.group(2),
+                authHeaderMatcher.group(3),
+                authHeaderMatcher.group(4),
+                authHeaderMatcher.group(5),
+                DatatypeConverter.parseBase64Binary(authHeaderMatcher.group(6)));
+    }
+
+    public AuthHeader getAuthHeaderForeSewa(HttpServletRequest request) {
+
+         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (authHeader == null) { return null; }
+        final Matcher authHeaderMatcher = Pattern.compile( AUTHORIZATION_HEADER_PATTERN_FOR_ESEWA).matcher(authHeader);
+        if (!authHeaderMatcher.matches()) { return null; }
+        return new AuthHeader(authHeaderMatcher.group(1),
+                null,
+                authHeaderMatcher.group(2),
+                authHeaderMatcher.group(3),
                 authHeaderMatcher.group(4),
                 DatatypeConverter.parseBase64Binary(authHeaderMatcher.group(5)));
     }
 
-    public static AuthHeader getAuthHeaderForeSewa(HttpServletRequest request) {
-        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (authHeader == null) {
-            return null;
-        }
-        final Matcher authHeaderMatcher = Pattern.compile(AUTHORIZATION_HEADER_PATTERN_FOR_ESEWA).matcher(authHeader);
-        if (!authHeaderMatcher.matches()) {
-            return null;
-        }
-      
-        return new AuthHeader(authHeaderMatcher.group(1),
-                authHeaderMatcher.group(2),
-                null,
-                authHeaderMatcher.group(3),
-                DatatypeConverter.parseBase64Binary( authHeaderMatcher.group(4)));
+    public void compareSignature(HMACBuilder signatureBuilder, byte[] digest) {
+        if (!signatureBuilder.isHashEquals(digest))
+            throw new BadCredentialsException(HMAC_BAD_SIGNATURE);
     }
 
+    public PreAuthenticatedAuthenticationToken getAuthentication(String principal) {
+        return new PreAuthenticatedAuthenticationToken(
+                principal,
+                null,
+                null);
+    }
 }

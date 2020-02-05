@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <property name="PROD_HOME" value="${application.home:-logs}"/>
+    <property name="PROD_HOME" value="${application.home:-logs}/admin"/>
     <property name="COMMON_LOG" value="${application.home:-logs}/common"/>
     <!--console output-->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
@@ -11,8 +11,26 @@
         </layout>
     </appender>
 
-    <appender name="FILE_INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${PROD_HOME}/info.log</file>
+    <!--    <appender name="FILE_INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+    <!--        <file>${PROD_HOME}/info.log</file>-->
+    <!--        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">-->
+    <!--            <pattern>-->
+    <!--                %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} -%msg%n-->
+    <!--            </pattern>-->
+    <!--        </encoder>-->
+
+    <!--        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+    <!--            <fileNamePattern>-->
+    <!--                ${PROD_HOME}/archived/info.%d{yyyy-MM-dd}.%i.log-->
+    <!--            </fileNamePattern>-->
+    <!--            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">-->
+    <!--                <maxFileSize>100MB</maxFileSize>-->
+    <!--            </timeBasedFileNamingAndTriggeringPolicy>-->
+    <!--        </rollingPolicy>-->
+    <!--    </appender>-->
+
+    <appender name="FILE_INFO_ERROR_REPO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${PROD_HOME}/info-error-repository.log</file>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>
                 %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} -%msg%n
@@ -21,7 +39,7 @@
 
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>
-                ${PROD_HOME}/archived/info.%d{yyyy-MM-dd}.%i.log
+                ${PROD_HOME}/archived/info-error-repository.%d{yyyy-MM-dd}.%i.log
             </fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>100MB</maxFileSize>
@@ -29,29 +47,29 @@
         </rollingPolicy>
     </appender>
 
-    <appender name="FILE_INFO_REPO" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${PROD_HOME}/repositoryinfo.log</file>
-        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>
-                %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} -%msg%n
-            </pattern>
-        </encoder>
+    <!--    <appender name="FILE_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+    <!--        <file>${PROD_HOME}/error.log</file>-->
+    <!--        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">-->
+    <!--            <fileNamePattern>-->
+    <!--                ${PROD_HOME}/archived/error.%d{yyyy-MM-dd}.%i.log-->
+    <!--            </fileNamePattern>-->
+    <!--            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">-->
+    <!--                <maxFileSize>100MB</maxFileSize>-->
+    <!--            </timeBasedFileNamingAndTriggeringPolicy>-->
+    <!--        </rollingPolicy>-->
 
+    <!--        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">-->
+    <!--            <pattern>-->
+    <!--                %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} -%msg%n-->
+    <!--            </pattern>-->
+    <!--        </encoder>-->
+    <!--    </appender>-->
+
+    <appender name="INFO_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${PROD_HOME}/info-error.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>
-                ${PROD_HOME}/archived/repositoryinfo.%d{yyyy-MM-dd}.%i.log
-            </fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>100MB</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
-        </rollingPolicy>
-    </appender>
-
-    <appender name="FILE_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${PROD_HOME}/error.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>
-                ${PROD_HOME}/archived/error.%d{yyyy-MM-dd}.%i.log
+                ${PROD_HOME}/archived/info-error.%d{yyyy-MM-dd}.%i.log
             </fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>100MB</maxFileSize>
@@ -122,48 +140,64 @@
         </rollingPolicy>
     </appender>
 
-    <!--send info logs to file-->
+    <!--all the logs(info,warn,error..) of service-imp is logged in this folder(info-error)
+
+       while segregation of the level, error overrides all the other levels(ingo debug)
+     -->
     <logger name="com.cogent.cogentappointment.admin.service.impl" additivity="false">
-        <appender-ref ref="FILE_INFO"/>
+        <Level value="INFO"/>
+        <appender-ref ref="INFO_ERROR"/>
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+        <appender-ref ref="COMMON"/>
+    </logger>
+
+    <!--all the logs(info,warn,error..) of repositorycustom-imp is logged in this folder(info-error-repository)-->
+    <logger name="com.cogent.cogentappointment.admin.repository.custom.impl" additivity="false">
+        <Level value="INFO"/>
+        <appender-ref ref="FILE_INFO_ERROR_REPO"/>
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
         <appender-ref ref="COMMON"/>
     </logger>
 
     <logger name="com.cogent.cogentappointment.admin" additivity="false">
-        <Level value="ERROR"/>
-        <appender-ref ref="FILE_ERROR"/>
-        <appender-ref ref="FILE"/>
-        <appender-ref ref="CONSOLE"/>
-    </logger>
-
-    <logger name="com.cogent.cogentappointment.admin" additivity="false" >
-        <Level value="INFO" />
-        <appender-ref ref="FILE_INFO"/>
+        <Level value="INFO"/>
         <appender-ref ref="FILE"/>
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="COMMON"/>
     </logger>
 
-    <logger name="org.springframework"  additivity="false">
-        <Level value="INFO" />
-        <appender-ref ref="FILE_INFO"/>
+    <logger name="org.springframework" additivity="false">
+        <Level value="INFO"/>
         <appender-ref ref="FILE"/>
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="COMMON"/>
     </logger>
 
-    <logger name="org.springframework.web" Level="ERROR" additivity="false">
-        <Level value="ERROR" />
-        <appender-ref ref="FILE_ERROR"/>
+    <logger name="org.springframework.web" additivity="false">
+        <Level value="INFO"/>
         <appender-ref ref="FILE"/>
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="COMMON"/>
     </logger>
 
-    <logger name="org.springframework.transaction" Level="ERROR" additivity="false" >
-        <Level value="ERROR" />
-        <appender-ref ref="FILE_ERROR"/>
+    <!--    <logger name="org.springframework.web"  additivity="false">-->
+    <!--        <Level value="ERROR" />-->
+    <!--        <appender-ref ref="FILE"/>-->
+    <!--        <appender-ref ref="CONSOLE"/>-->
+    <!--        <appender-ref ref="COMMON"/>-->
+    <!--    </logger>-->
+
+    <!--    <logger name="org.springframework.transaction" additivity="false" >-->
+    <!--        <Level value="ERROR" />-->
+    <!--        <appender-ref ref="FILE"/>-->
+    <!--        <appender-ref ref="CONSOLE"/>-->
+    <!--        <appender-ref ref="COMMON"/>-->
+    <!--    </logger>-->
+
+    <logger name="org.springframework.transaction" additivity="false">
+        <Level value="INFO"/>
         <appender-ref ref="FILE"/>
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="COMMON"/>

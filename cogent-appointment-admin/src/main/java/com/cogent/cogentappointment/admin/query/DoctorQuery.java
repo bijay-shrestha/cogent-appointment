@@ -33,9 +33,16 @@ public class DoctorQuery {
         return " SELECT" +
                 SELECT_CLAUSE_TO_FETCH_MINIMAL_DOCTOR + "," +
                 " tbl1.specialization_name as specializationName," +
-                " h.name as hospitalName" +
+                " h.name as hospitalName," +
+                " CASE WHEN" +
+                " (da.status is null OR da.status = 'N')" +
+                " THEN null" +
+                " ELSE" +
+                " da.fileUri" +
+                " END as fileUri" +
                 " FROM doctor d" +
                 " LEFT JOIN hospital h ON h.id = d.hospital_id" +
+                " LEFT JOIN doctor_avatar da ON da.doctor_id = d.id" +
                 " RIGHT JOIN" +
                 " (" +
                 QUERY_TO_SEARCH_DOCTOR_SPECIALIZATION.apply(searchRequestDTO) +
@@ -74,8 +81,8 @@ public class DoctorQuery {
 
                 String whereClause = " WHERE d.status!='D'";
 
-                if (!ObjectUtils.isEmpty(searchRequestDTO.getDoctorId()))
-                    whereClause += " AND d.id= " + searchRequestDTO.getDoctorId();
+                if (!ObjectUtils.isEmpty(searchRequestDTO.getId()))
+                    whereClause += " AND d.id= " + searchRequestDTO.getId();
 
                 if (!ObjectUtils.isEmpty(searchRequestDTO.getCode()))
                     whereClause += " AND d.code LIKE '%" + searchRequestDTO.getCode() + "%'";

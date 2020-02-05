@@ -27,7 +27,6 @@ public class Hospital extends Auditable<String> implements Serializable {
     private String name;
 
     @Column(name = "code")
-    @Size(max = 4)
     private String code;
 
     @Column(name = "address")
@@ -47,9 +46,4 @@ public class Hospital extends Auditable<String> implements Serializable {
     @Column(name = "remarks")
     private String remarks;
 
-    @Column(name = "api_key")
-    private String apiKey;
-
-    @Column(name = "api_secret")
-    private String apiSecret;
 }

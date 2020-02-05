@@ -34,4 +34,8 @@ public class Specialization implements Serializable {
 
     @Column(name = "remarks")
     private String remarks;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hospital_id")
+    private Hospital hospital;
 }

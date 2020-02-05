@@ -4,10 +4,7 @@ import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentCa
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentUpdateRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentAvailabilityResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedTimeResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentCheckAvailabilityMinResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentCheckAvailabilityResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.*;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import com.cogent.cogentappointment.client.model.*;
 import com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils;
@@ -22,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import static com.cogent.cogentappointment.client.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.client.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 
@@ -228,6 +226,13 @@ public class AppointmentUtils {
                                        Duration durationInMinutes) {
         responseDTO.setStartTime(getTimeIn12HourFormat(startDateTime.toDate()));
         responseDTO.setEndTime(getTimeIn12HourFormat(startDateTime.plus(durationInMinutes).toDate()));
+    }
+
+    public static AppointmentSuccessResponseDTO parseToAppointmentSuccessResponseDTO(String appointmentNumber) {
+        return AppointmentSuccessResponseDTO.builder()
+                .appointmentNumber(appointmentNumber)
+                .appointmentTransactionStatus(ACTIVE)
+                .build();
     }
 
 }

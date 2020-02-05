@@ -154,7 +154,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public String save(AppointmentRequestDTO appointmentRequestDTO) {
+    public AppointmentSuccessResponseDTO save(AppointmentRequestDTO appointmentRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -190,7 +190,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
 
-        return appointmentNumber;
+        return parseToAppointmentSuccessResponseDTO(appointmentNumber);
     }
 
     @Override

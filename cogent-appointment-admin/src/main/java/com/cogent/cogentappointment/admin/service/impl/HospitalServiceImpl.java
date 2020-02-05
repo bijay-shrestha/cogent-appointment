@@ -40,6 +40,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.HOSPITAL;
 import static com.cogent.cogentappointment.admin.utils.HmacApiInfoUtils.parseToHmacApiInfo;
@@ -92,7 +93,7 @@ public class HospitalServiceImpl implements HospitalService {
 
         System.out.println("--------------------"+principal.getUsername());
 
-        ValidationUtils.validateConstraintViolation(validator.validate(requestDTO));
+        validateConstraintViolation(validator.validate(requestDTO));
 
         List<Object[]> hospitals = hospitalRepository.validateHospitalDuplicity(
                 requestDTO.getName(), requestDTO.getHospitalCode());
@@ -102,11 +103,11 @@ public class HospitalServiceImpl implements HospitalService {
 
         Hospital hospital = save(convertDTOToHospital(requestDTO));
 
-        saveHmacApiInfo(parseToHmacApiInfo(hospital));
-
         saveHospitalContactNumber(hospital.getId(), requestDTO.getContactNumber());
 
         saveHospitalLogo(hospital, multipartFile);
+
+        saveHmacApiInfo(parseToHmacApiInfo(hospital));
 
         log.info(SAVING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
     }
@@ -132,7 +133,6 @@ public class HospitalServiceImpl implements HospitalService {
 
         updateHospitalLogo(hospital, multipartFile);
 
-        log.info(UPDATING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
         log.info(UPDATING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
     }
 

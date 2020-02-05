@@ -36,6 +36,10 @@ public class Appointment implements Serializable {
     @JoinColumn(name = "patient_id")
     private Patient patientId;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hospital_id")
+    private Hospital patient;
+
     @Temporal(TemporalType.DATE)
     @Column(name = "appointment_date")
     private Date appointmentDate;
@@ -53,6 +57,7 @@ public class Appointment implements Serializable {
 
     @Column(name = "unique_id")
     private String uniqueId;
+
     @Column(name = "created_date_nepali")
     private String createdDateNepali;
 

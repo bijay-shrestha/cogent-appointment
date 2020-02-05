@@ -1,17 +1,23 @@
 
 package com.cogent.cogentappointment.persistence.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.cogent.cogentappointment.persistence.audit.Auditable;
+import com.cogent.cogentappointment.persistence.listener.AdminAvatarEntityListener;
+import com.cogent.cogentappointment.persistence.listener.AdminEntityListener;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Table(name = "admin_avatar")
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
-public class AdminAvatar implements Serializable {
+@Builder
+@EntityListeners(AdminAvatarEntityListener.class)
+public class AdminAvatar extends Auditable<String> implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

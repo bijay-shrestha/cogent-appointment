@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.persistence.model;
 
 import com.cogent.cogentappointment.persistence.audit.Auditable;
-import com.cogent.cogentappointment.persistence.listener.DoctorDutyRosterEntityListener;
+import com.cogent.cogentappointment.persistence.listener.DoctorDutyRosterOverrideEntityListener;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,7 +22,7 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EntityListeners(DoctorDutyRosterEntityListener.class)
+@EntityListeners(DoctorDutyRosterOverrideEntityListener.class)
 public class DoctorDutyRosterOverride extends Auditable<String> implements Serializable {
 
     @Id

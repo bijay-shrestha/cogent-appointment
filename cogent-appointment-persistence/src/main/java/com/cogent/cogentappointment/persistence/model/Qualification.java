@@ -34,7 +34,7 @@ public class Qualification extends Auditable<String> implements Serializable {
     private QualificationAlias qualificationAlias;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "university")
+    @JoinColumn(name = "university_id")
     private University university;
 
     @Column(name = "status")

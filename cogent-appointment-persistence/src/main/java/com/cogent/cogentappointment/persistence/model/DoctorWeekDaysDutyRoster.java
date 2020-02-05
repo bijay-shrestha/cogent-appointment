@@ -53,7 +53,7 @@ public class DoctorWeekDaysDutyRoster extends Auditable<String> implements Seria
                 ", startTime=" + startTime +
                 ", endTime=" + endTime +
                 ", dayOffStatus=" + dayOffStatus +
-                ", doctorDutyRosterId=" + doctorDutyRosterId +
+                ", doctorDutyRosterId=" + doctorDutyRosterId.getId() +
                 ", weekDaysId=" + weekDaysId.getName() +
                 '}';
     }

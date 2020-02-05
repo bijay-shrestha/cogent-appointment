@@ -33,7 +33,7 @@ public class University extends Auditable<String> implements Serializable {
     private String address;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "country")
+    @JoinColumn(name = "country_id")
     private Country country;
 
     @Column(name = "status")

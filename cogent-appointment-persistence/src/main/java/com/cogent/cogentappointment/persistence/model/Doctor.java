@@ -4,6 +4,7 @@ package com.cogent.cogentappointment.persistence.model;
 import com.cogent.cogentappointment.persistence.audit.Auditable;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.listener.DepartmentEntityListener;
+import com.cogent.cogentappointment.persistence.listener.DoctorEntityListener;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +22,7 @@ import java.io.Serializable;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EntityListeners(DepartmentEntityListener.class)
+@EntityListeners(DoctorEntityListener.class)
 public class Doctor extends Auditable<String> implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

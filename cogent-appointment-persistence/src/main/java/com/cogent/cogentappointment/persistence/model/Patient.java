@@ -66,6 +66,9 @@ public class Patient extends Auditable<String> implements Serializable {
     @JoinColumn(name = "hospital_id")
     private Hospital hospitalId;
 
+    @Column(name = "hospital_number")
+    private String hospitalNumber;
+
     @Column(name = "registration_number")
     private String registrationNumber;
 

@@ -8,6 +8,7 @@ import com.cogent.cogentappointment.client.dto.response.files.FileUploadResponse
 import com.cogent.cogentappointment.client.dto.response.hospital.HospitalContactNumberResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospital.HospitalResponseDTO;
 import com.cogent.cogentappointment.client.model.Hospital;
+import com.cogent.cogentappointment.client.model.HospitalBanner;
 import com.cogent.cogentappointment.client.model.HospitalContactNumber;
 import com.cogent.cogentappointment.client.model.HospitalLogo;
 
@@ -51,12 +52,28 @@ public class HospitalUtils {
         return hospitalLogo;
     }
 
+    public static HospitalBanner convertFileToHospitalHospitalBanner(FileUploadResponseDTO fileUploadResponseDTO,
+                                                                     Hospital hospital) {
+        HospitalBanner hospitalBanner = new HospitalBanner();
+        setFileProperties(fileUploadResponseDTO, hospitalBanner);
+        hospitalBanner.setHospital(hospital);
+        return hospitalBanner;
+    }
+
     public static void setFileProperties(FileUploadResponseDTO fileUploadResponseDTO,
                                          HospitalLogo hospitalLogo) {
         hospitalLogo.setFileSize(fileUploadResponseDTO.getFileSize());
         hospitalLogo.setFileUri(fileUploadResponseDTO.getFileUri());
         hospitalLogo.setFileType(fileUploadResponseDTO.getFileType());
         hospitalLogo.setStatus(ACTIVE);
+    }
+
+    public static void setFileProperties(FileUploadResponseDTO fileUploadResponseDTO,
+                                         HospitalBanner hospitalBanner) {
+        hospitalBanner.setFileSize(fileUploadResponseDTO.getFileSize());
+        hospitalBanner.setFileUri(fileUploadResponseDTO.getFileUri());
+        hospitalBanner.setFileType(fileUploadResponseDTO.getFileType());
+        hospitalBanner.setStatus(ACTIVE);
     }
 
     public static void parseToUpdatedHospital(HospitalUpdateRequestDTO updateRequestDTO,

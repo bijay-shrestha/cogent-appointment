@@ -13,14 +13,8 @@ import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalMinimalR
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.exception.utils.ValidationUtils;
-import com.cogent.cogentappointment.admin.model.Hospital;
-import com.cogent.cogentappointment.admin.model.HospitalBanner;
-import com.cogent.cogentappointment.admin.model.HospitalContactNumber;
-import com.cogent.cogentappointment.admin.model.HospitalLogo;
-import com.cogent.cogentappointment.admin.repository.HospitalBannerRepository;
-import com.cogent.cogentappointment.admin.repository.HospitalContactNumberRepository;
-import com.cogent.cogentappointment.admin.repository.HospitalLogoRepository;
-import com.cogent.cogentappointment.admin.repository.HospitalRepository;
+import com.cogent.cogentappointment.admin.model.*;
+import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.FileService;
 import com.cogent.cogentappointment.admin.service.HospitalService;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.Validator;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -38,6 +33,7 @@ import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.HOSPITAL;
+import static com.cogent.cogentappointment.admin.utils.HmacApiInfoUtils.parseToHmacApiInfo;
 import static com.cogent.cogentappointment.admin.utils.HospitalUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
@@ -59,6 +55,8 @@ public class HospitalServiceImpl implements HospitalService {
 
     private final HospitalBannerRepository hospitalBannerRepository;
 
+    private final HmacApiInfoRepository hmacApiInfoRepository;
+
     private final FileService fileService;
 
     private final Validator validator;
@@ -67,18 +65,21 @@ public class HospitalServiceImpl implements HospitalService {
                                HospitalContactNumberRepository hospitalContactNumberRepository,
                                HospitalLogoRepository hospitalLogoRepository,
                                HospitalBannerRepository hospitalBannerRepository,
+                               HmacApiInfoRepository hmacApiInfoRepository,
                                FileService fileService,
                                Validator validator) {
         this.hospitalRepository = hospitalRepository;
         this.hospitalContactNumberRepository = hospitalContactNumberRepository;
         this.hospitalLogoRepository = hospitalLogoRepository;
         this.hospitalBannerRepository = hospitalBannerRepository;
+        this.hmacApiInfoRepository = hmacApiInfoRepository;
         this.fileService = fileService;
         this.validator = validator;
     }
 
     @Override
-    public void save(@Valid HospitalRequestDTO requestDTO, MultipartFile logo, MultipartFile banner) {
+    public void save(@Valid HospitalRequestDTO requestDTO, MultipartFile logo, MultipartFile banner)
+            throws NoSuchAlgorithmException {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -93,6 +94,8 @@ public class HospitalServiceImpl implements HospitalService {
                 Hospital.class.getSimpleName());
 
         Hospital hospital = save(convertDTOToHospital(requestDTO));
+
+        saveHmacApiInfo(parseToHmacApiInfo(hospital));
 
         saveHospitalContactNumber(hospital.getId(), requestDTO.getContactNumber());
 
@@ -202,6 +205,10 @@ public class HospitalServiceImpl implements HospitalService {
         return hospitalRepository.save(hospital);
     }
 
+    private void saveHmacApiInfo(HmacApiInfo hmacApiInfo) {
+        hmacApiInfoRepository.save(hmacApiInfo);
+    }
+
     private void saveHospitalContactNumber(Long hospitalId, List<String> contactNumbers) {
         List<HospitalContactNumber> hospitalContactNumbers = contactNumbers.stream()
                 .map(contactNumber -> parseToHospitalContactNumber(hospitalId, contactNumber))
@@ -288,6 +295,7 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error("Hospital with id : {} not found",id);
         throw new NoContentFoundException(Hospital.class, "id", id.toString());
     };
 

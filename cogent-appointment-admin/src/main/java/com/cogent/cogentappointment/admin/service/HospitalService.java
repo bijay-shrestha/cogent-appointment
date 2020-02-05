@@ -11,6 +11,7 @@ import com.cogent.cogentappointment.admin.model.Hospital;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 /**
@@ -18,7 +19,7 @@ import java.util.List;
  */
 public interface HospitalService {
 
-    void save(HospitalRequestDTO requestDTO, MultipartFile logo, MultipartFile banner);
+    void save(HospitalRequestDTO requestDTO, MultipartFile logo, MultipartFile banner) throws NoSuchAlgorithmException;
 
     void update(HospitalUpdateRequestDTO updateRequestDTO, MultipartFile logo, MultipartFile banner);
 

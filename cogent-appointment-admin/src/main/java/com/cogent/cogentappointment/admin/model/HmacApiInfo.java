@@ -6,44 +6,36 @@ import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 /**
- * @author smriti ON 12/01/2020
+ * @author Sauravi Thapa २०/२/२
  */
+
 @Entity
-@Table(name = "hospital")
+@Table(name = "hmac_api_info")
 @Getter
 @Setter
 @EntityListeners(AuditingEntityListener.class)
-public class Hospital extends Auditable<String> implements Serializable {
+public class HmacApiInfo extends Auditable<String> implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
-    private String name;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hospital_id")
+    private Hospital hospital;
 
-    @Column(name = "code")
-    private String code;
+    @Column(name = "api_key")
+    private String apiKey;
 
-    @Column(name = "address")
-    private String address;
-
-    @Column(name = "pan_number")
-    private String panNumber;
-
-    /*Y= IF COGENT ADMIN
-     * N= IF HOSPITALS ADMIN*/
-    @Column(name = "is_cogent_admin")
-    private Character isCogentAdmin;
+    @Column(name = "api_secret")
+    private String apiSecret;
 
     @Column(name = "status")
     private Character status;
 
     @Column(name = "remarks")
     private String remarks;
-
 }

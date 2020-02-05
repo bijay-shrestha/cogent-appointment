@@ -171,4 +171,6 @@ public class AdminQuery {
                     " a.metaInfo as metaInfo" +                   //[1]
                     " FROM AdminMetaInfo a" +
                     " WHERE a.admin.status !='D'";
+
+
 }

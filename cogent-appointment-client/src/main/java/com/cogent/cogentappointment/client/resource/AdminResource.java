@@ -131,4 +131,6 @@ public class AdminResource {
     public ResponseEntity<?> fetchAdminMetaInfoDropdown() {
         return ok(adminService.fetchAdminMetaInfoResponseDto());
     }
+
+    
 }

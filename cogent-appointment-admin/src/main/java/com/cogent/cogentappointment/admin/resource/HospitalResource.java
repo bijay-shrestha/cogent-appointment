@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.HospitalConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
@@ -42,7 +43,7 @@ public class HospitalResource {
     @ApiOperation(SAVE_OPERATION)
     public ResponseEntity<?> save(@RequestParam(value = "logo", required = false) MultipartFile logo,
                                   @RequestParam(value = "banner", required = false) MultipartFile banner,
-                                  @RequestParam("request") String request) throws IOException  {
+                                  @RequestParam("request") String request) throws IOException, NoSuchAlgorithmException {
 
         HospitalRequestDTO requestDTO = ObjectMapperUtils.map(request, HospitalRequestDTO.class);
         hospitalService.save(requestDTO, logo, banner);

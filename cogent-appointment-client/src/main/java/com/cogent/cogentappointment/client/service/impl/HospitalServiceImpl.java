@@ -278,7 +278,7 @@ public class HospitalServiceImpl implements HospitalService {
 
         if (!Objects.isNull(logo)) {
             List<FileUploadResponseDTO> responseList = uploadFiles(hospital, new MultipartFile[]{logo});
-            setFileProperties(responseList.get(0), hospitalLogo);
+            setLogoFileProperties(responseList.get(0), hospitalLogo);
         } else
             hospitalLogo.setStatus(StatusConstants.INACTIVE);
     }
@@ -287,7 +287,7 @@ public class HospitalServiceImpl implements HospitalService {
 
         if (!Objects.isNull(banner)) {
             List<FileUploadResponseDTO> responseList = uploadFiles(hospital, new MultipartFile[]{banner});
-            setFileProperties(responseList.get(0), hospitalBanner);
+            setBannerFileProperties(responseList.get(0), hospitalBanner);
         } else
             hospitalBanner.setStatus(StatusConstants.INACTIVE);
     }

@@ -47,29 +47,29 @@ public class HospitalUtils {
     public static HospitalLogo convertFileToHospitalLogo(FileUploadResponseDTO fileUploadResponseDTO,
                                                          Hospital hospital) {
         HospitalLogo hospitalLogo = new HospitalLogo();
-        setFileProperties(fileUploadResponseDTO, hospitalLogo);
+        setLogoFileProperties(fileUploadResponseDTO, hospitalLogo);
         hospitalLogo.setHospital(hospital);
         return hospitalLogo;
     }
 
-    public static HospitalBanner convertFileToHospitalHospitalBanner(FileUploadResponseDTO fileUploadResponseDTO,
-                                                                     Hospital hospital) {
-        HospitalBanner hospitalBanner = new HospitalBanner();
-        setFileProperties(fileUploadResponseDTO, hospitalBanner);
-        hospitalBanner.setHospital(hospital);
-        return hospitalBanner;
-    }
-
-    public static void setFileProperties(FileUploadResponseDTO fileUploadResponseDTO,
-                                         HospitalLogo hospitalLogo) {
+    public static void setLogoFileProperties(FileUploadResponseDTO fileUploadResponseDTO,
+                                               HospitalLogo hospitalLogo) {
         hospitalLogo.setFileSize(fileUploadResponseDTO.getFileSize());
         hospitalLogo.setFileUri(fileUploadResponseDTO.getFileUri());
         hospitalLogo.setFileType(fileUploadResponseDTO.getFileType());
         hospitalLogo.setStatus(ACTIVE);
     }
 
-    public static void setFileProperties(FileUploadResponseDTO fileUploadResponseDTO,
-                                         HospitalBanner hospitalBanner) {
+    public static HospitalBanner convertFileToHospitalHospitalBanner(FileUploadResponseDTO fileUploadResponseDTO,
+                                                                     Hospital hospital) {
+        HospitalBanner hospitalBanner = new HospitalBanner();
+        setBannerFileProperties(fileUploadResponseDTO, hospitalBanner);
+        hospitalBanner.setHospital(hospital);
+        return hospitalBanner;
+    }
+
+    public static void setBannerFileProperties(FileUploadResponseDTO fileUploadResponseDTO,
+                                               HospitalBanner hospitalBanner) {
         hospitalBanner.setFileSize(fileUploadResponseDTO.getFileSize());
         hospitalBanner.setFileUri(fileUploadResponseDTO.getFileUri());
         hospitalBanner.setFileType(fileUploadResponseDTO.getFileType());

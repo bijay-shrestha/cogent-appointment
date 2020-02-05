@@ -16,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.HospitalConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
@@ -41,21 +40,23 @@ public class HospitalResource {
 
     @PostMapping
     @ApiOperation(SAVE_OPERATION)
-    public ResponseEntity<?> save(@RequestParam(value = "file", required = false) MultipartFile file,
-                                  @RequestParam("request") String request) throws IOException, NoSuchAlgorithmException {
+    public ResponseEntity<?> save(@RequestParam(value = "logo", required = false) MultipartFile logo,
+                                  @RequestParam(value = "banner", required = false) MultipartFile banner,
+                                  @RequestParam("request") String request) throws IOException  {
 
         HospitalRequestDTO requestDTO = ObjectMapperUtils.map(request, HospitalRequestDTO.class);
-        hospitalService.save(requestDTO, file);
+        hospitalService.save(requestDTO, logo, banner);
         return created(create(API_V1 + BASE_HOSPITAL)).build();
     }
 
     @PutMapping
     @ApiOperation(UPDATE_OPERATION)
-    public ResponseEntity<?> update(@RequestParam(value = "file", required = false) MultipartFile file,
-                                    @RequestParam("request") String request) throws IOException {
+    public ResponseEntity<?> update(@RequestParam(value = "logo", required = false) MultipartFile logo,
+                                    @RequestParam(value = "banner", required = false) MultipartFile banner,
+                                    @RequestParam("request") String request) throws IOException  {
 
         HospitalUpdateRequestDTO updateRequestDTO = ObjectMapperUtils.map(request, HospitalUpdateRequestDTO.class);
-        hospitalService.update(updateRequestDTO, file);
+        hospitalService.update(updateRequestDTO, logo, banner);
         return ok().build();
     }
 

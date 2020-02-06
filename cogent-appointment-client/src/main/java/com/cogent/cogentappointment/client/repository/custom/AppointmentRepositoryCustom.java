@@ -1,11 +1,9 @@
 package com.cogent.cogentappointment.client.repository.custom;
 
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentPendingSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentSearchRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedDateResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedTimeResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentMinimalResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.*;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -23,9 +21,12 @@ public interface AppointmentRepositoryCustom {
     Long validateIfAppointmentExists(Date appointmentDate, String appointmentTime,
                                      Long doctorId, Long specializationId);
 
+    String generateAppointmentNumber(String nepaliCreatedDate);
+
+    List<AppointmentPendingResponseDTO> fetchPendingAppointments(AppointmentPendingSearchDTO searchDTO);
+
     List<AppointmentBookedTimeResponseDTO> fetchBookedAppointments(AppointmentCheckAvailabilityRequestDTO requestDTO);
 
-    String generateAppointmentNumber(String nepaliCreatedDate);
 
     List<AppointmentBookedDateResponseDTO> fetchBookedAppointmentDates(Date fromDate,
                                                                        Date toDate,
@@ -36,7 +37,7 @@ public interface AppointmentRepositoryCustom {
 
     List<AppointmentMinimalResponseDTO> search(AppointmentSearchRequestDTO searchRequestDTO, Pageable pageable);
 
-    AppointmentResponseDTO fetchDetailsById(Long id);
+    AppointmentDetailResponseDTO fetchDetailsById(Long id);
 
 //    List<AppointmentStatusResponseDTO> fetchAppointmentForAppointmentStatus(AppointmentStatusRequestDTO requestDTO);
 

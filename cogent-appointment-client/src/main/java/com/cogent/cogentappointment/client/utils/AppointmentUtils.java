@@ -21,6 +21,7 @@ import java.util.Objects;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.client.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
+import static com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils.generateRandomNumber;
 
 /**
  * @author smriti on 2019-10-24
@@ -38,12 +39,13 @@ public class AppointmentUtils {
 
         Appointment appointment = new Appointment();
         appointment.setAppointmentDate(requestDTO.getAppointmentDate());
-//        appointment.setAppointmentTime(parseAppointmentTime(requestDTO.getAppointmentDate(),
-//        requestDTO.getAppointmentTime()));
+        appointment.setAppointmentTime(parseAppointmentTime(
+                requestDTO.getAppointmentDate(),
+                requestDTO.getAppointmentTime()));
         appointment.setAppointmentNumber(appointmentNumber);
-//        appointment.setSerialNumber(NumberFormatterUtils.generateRandomNumber(6));
+        appointment.setSerialNumber(generateRandomNumber(6));
         appointment.setCreatedDateNepali(requestDTO.getCreatedDateNepali());
-//        appointment.setStatus("PA");
+        appointment.setStatus("PA");
         parseToAppointment(patient, specialization, doctor, hospital, appointment);
         return appointment;
     }
@@ -59,7 +61,7 @@ public class AppointmentUtils {
                                            Appointment appointment) {
         appointment.setDoctorId(doctor);
         appointment.setSpecializationId(specialization);
-//        appointment.setHospitalId(hospital);
+        appointment.setHospitalId(hospital);
         appointment.setPatientId(patient);
     }
 

@@ -9,7 +9,6 @@ import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentBo
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentCheckAvailabilityResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import com.cogent.cogentappointment.admin.utils.commons.DateUtils;
-import com.cogent.cogentappointment.admin.utils.commons.NumberFormatterUtils;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.Doctor;
 import com.cogent.cogentappointment.persistence.model.Patient;
@@ -21,7 +20,13 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.datePlusTime;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
+import static com.cogent.cogentappointment.admin.utils.commons.NumberFormatterUtils.generateRandomNumber;
 
 /**
  * @author smriti on 2019-10-24
@@ -38,15 +43,21 @@ public class AppointmentUtils {
 
         Appointment appointment = new Appointment();
         appointment.setAppointmentDate(requestDTO.getAppointmentDate());
-        appointment.setStartTime(requestDTO.getStartTime());
-        appointment.setEndTime(requestDTO.getEndTime());
+        appointment.setAppointmentTime(parseAppointmentTime(
+                requestDTO.getAppointmentDate(),
+                requestDTO.getAppointmentTime()));
         appointment.setAppointmentNumber(appointmentNumber);
-        appointment.setUniqueId(NumberFormatterUtils.generateRandomNumber(6));
+        appointment.setSerialNumber(generateRandomNumber(6));
         appointment.setCreatedDateNepali(requestDTO.getCreatedDateNepali());
-        appointment.setStatus(requestDTO.getStatus());
+        appointment.setStatus("PA");
 
         parseToAppointment(patient, specialization, doctor, appointment);
         return appointment;
+    }
+
+    private static Date parseAppointmentTime(Date appointmentDate, String appointmentTime) {
+        return datePlusTime(utilDateToSqlDate(appointmentDate),
+                Objects.requireNonNull(DateUtils.parseTime(appointmentTime)));
     }
 
     private static void parseToAppointment(Patient patient,
@@ -63,9 +74,9 @@ public class AppointmentUtils {
                                                  Patient patient) {
 
         appointment.setAppointmentDate(updateRequestDTO.getAppointmentDate());
-        appointment.setStartTime(updateRequestDTO.getStartTime());
-        appointment.setEndTime(updateRequestDTO.getEndTime());
-        appointment.setStatus(updateRequestDTO.getStatus());
+//        appointment.setStartTime(updateRequestDTO.getStartTime());
+//        appointment.setEndTime(updateRequestDTO.getEndTime());
+//        appointment.setStatus(updateRequestDTO.getStatus());
 
         appointment.setRemarks(updateRequestDTO.getRemarks());
 //        parseToAppointment(appointment, patient);
@@ -74,8 +85,8 @@ public class AppointmentUtils {
 
     public static void convertToCancelledAppointment(Appointment appointment,
                                                      AppointmentCancelRequestDTO cancelRequestDTO) {
-        appointment.setRemarks(cancelRequestDTO.getRemarks());
-        appointment.setStatus(cancelRequestDTO.getStatus());
+//        appointment.setRemarks(cancelRequestDTO.getRemarks());
+//        appointment.setStatus(cancelRequestDTO.getStatus());
     }
 
     public static String generateAppointmentNumber(List results) {
@@ -86,8 +97,8 @@ public class AppointmentUtils {
     public static void parseToRescheduleAppointment(Appointment appointment,
                                                     AppointmentRescheduleRequestDTO rescheduleRequestDTO) {
         appointment.setAppointmentDate(rescheduleRequestDTO.getAppointmentDate());
-        appointment.setStartTime(rescheduleRequestDTO.getStartTime());
-        appointment.setEndTime(rescheduleRequestDTO.getEndTime());
+//        appointment.setStartTime(rescheduleRequestDTO.getStartTime());
+//        appointment.setEndTime(rescheduleRequestDTO.getEndTime());
         appointment.setRemarks(rescheduleRequestDTO.getRemarks());
     }
 

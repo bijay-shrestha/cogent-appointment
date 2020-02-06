@@ -12,11 +12,15 @@ import java.util.List;
  */
 public interface AppointmentService {
 
-    AppointmentCheckAvailabilityResponseDTO checkAvailabilityWithEndTime(AppointmentCheckAvailabilityRequestDTO requestDTO);
-
     AppointmentCheckAvailabilityMinResponseDTO checkAvailability(AppointmentCheckAvailabilityRequestDTO requestDTO);
 
     AppointmentSuccessResponseDTO save(AppointmentRequestDTO appointmentRequestDTO);
+
+    List<AppointmentPendingResponseDTO>  fetchPendingAppointments(AppointmentPendingSearchDTO searchDTO);
+
+
+
+    AppointmentCheckAvailabilityResponseDTO checkAvailabilityWithEndTime(AppointmentCheckAvailabilityRequestDTO requestDTO);
 
     List<AppointmentBookedDateResponseDTO> fetchBookedAppointmentDates(Date fromDate,
                                                                        Date toDate,
@@ -33,8 +37,7 @@ public interface AppointmentService {
     List<AppointmentMinimalResponseDTO> search(AppointmentSearchRequestDTO searchRequestDTO,
                                                Pageable pageable);
 
-    AppointmentResponseDTO fetchDetailsById(Long id);
-
+    AppointmentDetailResponseDTO fetchDetailsById(Long id);
 
     void rescheduleAppointment(AppointmentRescheduleRequestDTO rescheduleRequestDTO);
 

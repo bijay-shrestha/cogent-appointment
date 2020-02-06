@@ -230,11 +230,11 @@ public class AppointmentServiceImpl implements AppointmentService {
         log.info(RESCHEDULE_PROCESS_STARTED);
 
         Appointment appointment = findIncompleteAppointmentById(rescheduleRequestDTO.getAppointmentId());
-
-        Date originalAppointmentDate = appointment.getAppointmentDate();
-        Date originalAppointmentTime = appointment.getStartTime();
-
-        parseToRescheduleAppointment(appointment, rescheduleRequestDTO);
+//
+//        Date originalAppointmentDate = appointment.getAppointmentDate();
+//        Date originalAppointmentTime = appointment.getStartTime();
+//
+//        parseToRescheduleAppointment(appointment, rescheduleRequestDTO);
 
         log.info(RESCHEDULE_PROCESS_STARTED, getDifferenceBetweenTwoTime(startTime));
     }

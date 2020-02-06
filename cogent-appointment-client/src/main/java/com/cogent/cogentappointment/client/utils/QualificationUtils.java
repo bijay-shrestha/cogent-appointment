@@ -3,10 +3,12 @@ package com.cogent.cogentappointment.client.utils;
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.qualification.QualificationRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.qualification.QualificationUpdateRequestDTO;
-import com.cogent.cogentappointment.client.model.Country;
-import com.cogent.cogentappointment.client.model.Qualification;
-import com.cogent.cogentappointment.client.model.QualificationAlias;
-import com.cogent.cogentappointment.client.utils.commons.StringUtil;
+import com.cogent.cogentappointment.persistence.model.Country;
+import com.cogent.cogentappointment.persistence.model.Qualification;
+import com.cogent.cogentappointment.persistence.model.QualificationAlias;
+import com.cogent.cogentappointment.persistence.model.University;
+
+import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toUpperCase;
 
 
 /**
@@ -15,32 +17,30 @@ import com.cogent.cogentappointment.client.utils.commons.StringUtil;
 public class QualificationUtils {
 
     public static Qualification parseToQualification(QualificationRequestDTO requestDTO,
-                                                     Country country,
+                                                     University university,
                                                      QualificationAlias qualificationAlias) {
         Qualification qualification = new Qualification();
-        qualification.setName(StringUtil.toUpperCase(requestDTO.getName()));
-        qualification.setUniversity(requestDTO.getUniversity());
+        qualification.setName(toUpperCase(requestDTO.getName()));
         qualification.setStatus(requestDTO.getStatus());
-        parseToQualification(qualification, country, qualificationAlias);
+        parseToQualification(qualification, qualificationAlias, university);
         return qualification;
     }
 
     private static void parseToQualification(Qualification qualification,
-                                             Country country,
-                                             QualificationAlias qualificationAlias) {
-        qualification.setCountry(country);
+                                             QualificationAlias qualificationAlias,
+                                             University university) {
         qualification.setQualificationAlias(qualificationAlias);
+        qualification.setUniversity(university);
     }
 
     public static void parseToUpdatedQualification(QualificationUpdateRequestDTO requestDTO,
-                                                   Country country,
                                                    QualificationAlias qualificationAlias,
+                                                   University university,
                                                    Qualification qualification) {
-        qualification.setName(StringUtil.toUpperCase(requestDTO.getName()));
-        qualification.setUniversity(requestDTO.getUniversity());
+        qualification.setName(toUpperCase(requestDTO.getName()));
         qualification.setStatus(requestDTO.getStatus());
         qualification.setRemarks(requestDTO.getRemarks());
-        parseToQualification(qualification, country, qualificationAlias);
+        parseToQualification(qualification, qualificationAlias, university);
     }
 
     public static void parseToDeletedQualification(Qualification qualification,

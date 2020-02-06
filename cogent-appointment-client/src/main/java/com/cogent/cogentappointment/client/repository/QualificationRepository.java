@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.client.repository;
 
-import com.cogent.cogentappointment.client.model.Qualification;
 import com.cogent.cogentappointment.client.repository.custom.QualificationRepositoryCustom;
+import com.cogent.cogentappointment.persistence.model.Qualification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

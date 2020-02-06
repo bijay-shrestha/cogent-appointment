@@ -5,9 +5,9 @@ import com.cogent.cogentappointment.admin.dto.request.patient.PatientSearchReque
 import com.cogent.cogentappointment.admin.dto.response.patient.PatientDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.patient.PatientMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.model.Patient;
 import com.cogent.cogentappointment.admin.repository.custom.PatientRepositoryCustom;
 import com.cogent.cogentappointment.admin.utils.commons.PageableUtils;
+import com.cogent.cogentappointment.persistence.model.Patient;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

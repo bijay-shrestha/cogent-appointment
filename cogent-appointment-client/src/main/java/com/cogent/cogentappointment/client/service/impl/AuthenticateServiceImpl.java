@@ -4,7 +4,6 @@ import com.cogent.cogentappointment.client.dto.request.admin.AdminMinDetails;
 import com.cogent.cogentappointment.client.dto.request.login.LoginRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.login.ThirdPartyDetail;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.repository.AdminRepository;
 import com.cogent.cogentappointment.client.repository.HmacApiInfoRepository;
 import com.cogent.cogentappointment.client.security.hmac.HMACUtils;
 import com.cogent.cogentappointment.client.service.AuthenticateService;
@@ -24,15 +23,12 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 
     private final HMACUtils hmacUtils;
 
-    private final AdminRepository adminRepository;
 
     private final HmacApiInfoRepository hmacApiInfoRepository;
 
     public AuthenticateServiceImpl(HMACUtils hmacUtils,
-                                   AdminRepository adminRepository,
                                    HmacApiInfoRepository hmacApiInfoRepository) {
         this.hmacUtils = hmacUtils;
-        this.adminRepository = adminRepository;
         this.hmacApiInfoRepository = hmacApiInfoRepository;
     }
 

@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.client.repository;
 
-import com.cogent.cogentappointment.client.model.AppointmentTransactionDetail;
+import com.cogent.cogentappointment.persistence.model.AppointmentTransactionDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -10,13 +10,13 @@ import com.cogent.cogentappointment.admin.dto.response.qualification.Qualificati
 import com.cogent.cogentappointment.admin.dto.response.qualification.QualificationResponseDTO;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.model.Qualification;
-import com.cogent.cogentappointment.admin.model.QualificationAlias;
-import com.cogent.cogentappointment.admin.model.University;
 import com.cogent.cogentappointment.admin.repository.QualificationRepository;
 import com.cogent.cogentappointment.admin.service.QualificationAliasService;
 import com.cogent.cogentappointment.admin.service.QualificationService;
 import com.cogent.cogentappointment.admin.service.UniversityService;
+import com.cogent.cogentappointment.persistence.model.Qualification;
+import com.cogent.cogentappointment.persistence.model.QualificationAlias;
+import com.cogent.cogentappointment.persistence.model.University;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -80,7 +80,7 @@ public class QualificationServiceImpl implements QualificationService {
 
         Qualification qualification = findQualificationById(requestDTO.getId());
 
-        Long count = qualificationRepository.validateDuplicity(requestDTO.getId(),requestDTO.getName());
+        Long count = qualificationRepository.validateDuplicity(requestDTO.getId(), requestDTO.getName());
 
         validateName(count, requestDTO.getName());
 

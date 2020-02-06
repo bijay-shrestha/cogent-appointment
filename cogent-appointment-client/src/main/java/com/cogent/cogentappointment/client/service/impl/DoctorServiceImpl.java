@@ -3,14 +3,17 @@ package com.cogent.cogentappointment.client.service.impl;
 import com.cogent.cogentappointment.client.constants.StatusConstants;
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.doctor.*;
-import com.cogent.cogentappointment.client.dto.response.doctor.*;
+import com.cogent.cogentappointment.client.dto.response.doctor.DoctorDetailResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.doctor.DoctorDropdownDTO;
+import com.cogent.cogentappointment.client.dto.response.doctor.DoctorMinimalResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.doctor.DoctorUpdateResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.files.FileUploadResponseDTO;
-import com.cogent.cogentappointment.client.enums.Gender;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.model.*;
 import com.cogent.cogentappointment.client.repository.*;
 import com.cogent.cogentappointment.client.service.*;
+import com.cogent.cogentappointment.persistence.enums.Gender;
+import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -116,7 +119,9 @@ public class DoctorServiceImpl implements DoctorService {
 
         log.info(UPDATING_PROCESS_STARTED, DOCTOR);
 
-        Doctor doctor = findById(requestDTO.getDoctorInfo().getId(), requestDTO.getDoctorInfo().getHospitalId());
+        Doctor doctor = findByDoctorAndHospitalId(
+                requestDTO.getDoctorInfo().getId(),
+                requestDTO.getDoctorInfo().getHospitalId());
 
         Long doctorCount = doctorRepository.validateDoctorDuplicityForUpdate(
                 requestDTO.getDoctorInfo().getId(),
@@ -152,7 +157,7 @@ public class DoctorServiceImpl implements DoctorService {
 
         log.info(DELETING_PROCESS_STARTED, DOCTOR);
 
-        Doctor doctor = findById(deleteRequestDTO.getId(), deleteRequestDTO.getHospitalId());
+        Doctor doctor = findById(deleteRequestDTO.getId());
 
         convertToDeletedDoctor(doctor, deleteRequestDTO);
 
@@ -441,8 +446,13 @@ public class DoctorServiceImpl implements DoctorService {
         doctorAvatarRepository.save(doctorAvatar);
     }
 
-    public Doctor findById(Long doctorId, Long hospitalId) {
-        return doctorRepository.findDoctorById(doctorId, hospitalId)
+    public Doctor findByDoctorAndHospitalId(Long doctorId, Long hospitalId) {
+        return doctorRepository.findByIdDoctorAndHospitalId(doctorId, hospitalId)
+                .orElseThrow(() -> DOCTOR_WITH_GIVEN_ID_NOT_FOUND.apply(doctorId));
+    }
+
+    public Doctor findById(Long doctorId) {
+        return doctorRepository.findDoctorById(doctorId)
                 .orElseThrow(() -> DOCTOR_WITH_GIVEN_ID_NOT_FOUND.apply(doctorId));
     }
 

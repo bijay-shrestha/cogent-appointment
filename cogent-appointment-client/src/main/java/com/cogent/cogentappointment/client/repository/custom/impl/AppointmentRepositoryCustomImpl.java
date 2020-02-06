@@ -7,10 +7,10 @@ import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentB
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentMinimalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.model.Appointment;
 import com.cogent.cogentappointment.client.repository.custom.AppointmentRepositoryCustom;
 import com.cogent.cogentappointment.client.utils.AppointmentUtils;
 import com.cogent.cogentappointment.client.utils.commons.PageableUtils;
+import com.cogent.cogentappointment.persistence.model.Appointment;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

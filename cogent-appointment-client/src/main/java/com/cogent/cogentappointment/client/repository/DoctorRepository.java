@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.client.repository;
 
-import com.cogent.cogentappointment.client.model.Doctor;
 import com.cogent.cogentappointment.client.repository.custom.DoctorRepositoryCustom;
+import com.cogent.cogentappointment.persistence.model.Doctor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,8 +16,11 @@ import java.util.Optional;
 public interface DoctorRepository extends JpaRepository<Doctor, Long>, DoctorRepositoryCustom {
 
     @Query("SELECT d FROM Doctor d WHERE d.status!='D' AND d.id = :doctorId AND d.hospital.id =:hospitalId")
-    Optional<Doctor> findDoctorById(@Param("doctorId") Long doctorId,
-                                    @Param("hospitalId") Long hospitalId);
+    Optional<Doctor> findByIdDoctorAndHospitalId(@Param("doctorId") Long doctorId,
+                                                 @Param("hospitalId") Long hospitalId);
+
+    @Query("SELECT d FROM Doctor d WHERE d.status!='D' AND d.id = :doctorId")
+    Optional<Doctor> findDoctorById(@Param("doctorId") Long doctorId);
 
     @Query("SELECT d FROM Doctor d WHERE d.status='Y' AND d.id = :id")
     Optional<Doctor> findActiveDoctorById(@Param("id") Long id);

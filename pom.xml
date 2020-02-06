@@ -13,6 +13,7 @@
 <modules>
     <module>cogent-appointment-admin</module>
     <module>cogent-appointment-client</module>
+    <module>cogent-appointment-persistence</module>
 </modules>
 
 </project>

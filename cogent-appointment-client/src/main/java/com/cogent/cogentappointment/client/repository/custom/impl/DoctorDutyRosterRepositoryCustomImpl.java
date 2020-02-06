@@ -5,9 +5,8 @@ import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.DoctorDu
 import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.DoctorExistingDutyRosterRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.*;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.model.DoctorDutyRoster;
 import com.cogent.cogentappointment.client.repository.custom.DoctorDutyRosterRepositoryCustom;
-import com.cogent.cogentappointment.client.utils.commons.PageableUtils;
+import com.cogent.cogentappointment.persistence.model.DoctorDutyRoster;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +29,7 @@ import static com.cogent.cogentappointment.client.query.DoctorDutyRosterQuery.*;
 import static com.cogent.cogentappointment.client.utils.DoctorDutyRosterUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDayCodeFromDate;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
-import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.*;
+import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
 
 /**
@@ -162,7 +161,6 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
 
         return parseToExistingRosterDetails(weekDaysDutyRosterResponseDTO, overrideResponseDTOS);
     }
-
 
     private DoctorDutyRosterResponseDTO fetchDoctorDutyRosterDetails(Long doctorDutyRosterId) {
 

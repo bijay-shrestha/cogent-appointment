@@ -12,11 +12,10 @@ import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalDropdown
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.exception.utils.ValidationUtils;
-import com.cogent.cogentappointment.admin.model.*;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.FileService;
 import com.cogent.cogentappointment.admin.service.HospitalService;
+import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,6 +30,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.HOSPITAL;
 import static com.cogent.cogentappointment.admin.utils.HmacApiInfoUtils.parseToHmacApiInfo;
@@ -85,7 +85,7 @@ public class HospitalServiceImpl implements HospitalService {
 
         log.info(SAVING_PROCESS_STARTED, HOSPITAL);
 
-        ValidationUtils.validateConstraintViolation(validator.validate(requestDTO));
+        validateConstraintViolation(validator.validate(requestDTO));
 
         List<Object[]> hospitals = hospitalRepository.validateHospitalDuplicity(
                 requestDTO.getName(), requestDTO.getHospitalCode());
@@ -95,13 +95,13 @@ public class HospitalServiceImpl implements HospitalService {
 
         Hospital hospital = save(convertDTOToHospital(requestDTO));
 
-        saveHmacApiInfo(parseToHmacApiInfo(hospital));
-
         saveHospitalContactNumber(hospital.getId(), requestDTO.getContactNumber());
 
         saveHospitalLogo(hospital, logo);
 
         saveHospitalBanner(hospital, banner);
+
+        saveHmacApiInfo(parseToHmacApiInfo(hospital));
 
         log.info(SAVING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
     }
@@ -295,7 +295,7 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        log.error("Hospital with id : {} not found",id);
+        log.error("Hospital with id : {} not found", id);
         throw new NoContentFoundException(Hospital.class, "id", id.toString());
     };
 

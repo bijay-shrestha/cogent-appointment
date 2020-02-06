@@ -2,9 +2,9 @@ package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.model.Country;
 import com.cogent.cogentappointment.client.repository.CountryRepository;
 import com.cogent.cogentappointment.client.service.CountryService;
+import com.cogent.cogentappointment.persistence.model.Country;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

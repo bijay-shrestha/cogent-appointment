@@ -3,8 +3,8 @@ package com.cogent.cogentappointment.client.utils;
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.specialization.SpecializationRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.specialization.SpecializationUpdateRequestDTO;
-import com.cogent.cogentappointment.client.model.Specialization;
 import com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils;
+import com.cogent.cogentappointment.persistence.model.Specialization;
 
 import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toUpperCase;
 

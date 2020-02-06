@@ -63,7 +63,8 @@ public class DoctorDutyRosterQuery {
                     " ddr.status as status," +                                          //[8]
                     " ddr.remarks as remarks," +                                        //[9]
                     " ddr.hasOverrideDutyRoster as hasOverrideDutyRoster," +            //[10]
-                    " h.name as hospitalName" +                                         //[11]
+                    " h.name as hospitalName," +                                        //[11]
+                    " h.id as hospitalId"+                                              //[12]
                     " FROM DoctorDutyRoster ddr" +
                     " LEFT JOIN Doctor d ON ddr.doctorId.id = d.id" +
                     " LEFT JOIN Specialization s ON ddr.specializationId.id = s.id" +

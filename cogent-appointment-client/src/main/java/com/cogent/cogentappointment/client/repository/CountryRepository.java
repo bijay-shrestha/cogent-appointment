@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.client.repository;
 
-import com.cogent.cogentappointment.client.model.Country;
 import com.cogent.cogentappointment.client.repository.custom.CountryRepositoryCustom;
+import com.cogent.cogentappointment.persistence.model.Country;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

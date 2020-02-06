@@ -1,8 +1,8 @@
 package com.cogent.cogentappointment.client.utils;
 
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentTransactionRequestDTO;
-import com.cogent.cogentappointment.client.model.Appointment;
-import com.cogent.cogentappointment.client.model.AppointmentTransactionDetail;
+import com.cogent.cogentappointment.persistence.model.AppointmentTransactionDetail;
+import com.cogent.cogentappointment.persistence.model.Appointment;
 
 /**
  * @author smriti ON 04/02/2020

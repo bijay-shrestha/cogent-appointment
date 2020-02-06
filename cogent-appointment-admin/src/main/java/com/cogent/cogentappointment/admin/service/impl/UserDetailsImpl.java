@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
-import com.cogent.cogentappointment.admin.model.Admin;
-import com.cogent.cogentappointment.admin.model.User;
+import com.cogent.cogentappointment.persistence.model.Admin;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

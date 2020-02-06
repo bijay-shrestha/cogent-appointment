@@ -2,9 +2,9 @@ package com.cogent.cogentappointment.client.utils;
 
 import com.cogent.cogentappointment.client.dto.request.department.DepartmentRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.department.DepartmentUpdateRequestDTO;
-import com.cogent.cogentappointment.client.model.Department;
-import com.cogent.cogentappointment.client.model.Hospital;
 import com.cogent.cogentappointment.client.utils.commons.StringUtil;
+import com.cogent.cogentappointment.persistence.model.Department;
+import com.cogent.cogentappointment.persistence.model.Hospital;
 
 /**
  * @author smriti ON 25/01/2020

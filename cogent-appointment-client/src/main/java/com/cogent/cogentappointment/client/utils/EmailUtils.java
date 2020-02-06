@@ -2,7 +2,7 @@ package com.cogent.cogentappointment.client.utils;
 
 import com.cogent.cogentappointment.client.constants.StatusConstants;
 import com.cogent.cogentappointment.client.dto.request.email.EmailRequestDTO;
-import com.cogent.cogentappointment.client.model.EmailToSend;
+import com.cogent.cogentappointment.persistence.model.EmailToSend;
 
 import java.util.Date;
 

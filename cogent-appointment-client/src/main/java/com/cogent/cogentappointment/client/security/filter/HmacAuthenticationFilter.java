@@ -94,12 +94,10 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
     public AuthHeader getAuthHeader(HttpServletRequest request) {
 
-         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-
+        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (authHeader == null) {
             return null;
         }
-
         final Matcher authHeaderMatcher = Pattern.compile(AUTHORIZATION_HEADER_PATTERN).matcher(authHeader);
 
         if (!authHeaderMatcher.matches()) {
@@ -116,10 +114,14 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
     public AuthHeader getAuthHeaderForeSewa(HttpServletRequest request) {
 
-         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (authHeader == null) { return null; }
-        final Matcher authHeaderMatcher = Pattern.compile( AUTHORIZATION_HEADER_PATTERN_FOR_ESEWA).matcher(authHeader);
-        if (!authHeaderMatcher.matches()) { return null; }
+        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (authHeader == null) {
+            return null;
+        }
+        final Matcher authHeaderMatcher = Pattern.compile(AUTHORIZATION_HEADER_PATTERN_FOR_ESEWA).matcher(authHeader);
+        if (!authHeaderMatcher.matches()) {
+            return null;
+        }
         return new AuthHeader(authHeaderMatcher.group(1),
                 null,
                 authHeaderMatcher.group(2),

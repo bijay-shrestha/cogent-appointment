@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.admin.security.filter;
 import com.cogent.cogentappointment.admin.security.hmac.AuthHeader;
 import com.cogent.cogentappointment.admin.security.hmac.HMACBuilder;
 import com.cogent.cogentappointment.admin.service.impl.UserDetailsServiceImpl;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,6 +28,7 @@ import static com.cogent.cogentappointment.admin.constants.PatternConstants.AUTH
  * @author Sauravi Thapa २०/१/१९
  */
 @Component
+@Slf4j
 public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
     private final UserDetailsServiceImpl userDetailsService;
@@ -68,14 +70,13 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
     public AuthHeader getAuthHeader(HttpServletRequest request) {
 
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-
         if (authHeader == null) {
             return null;
         }
-
-        final Matcher authHeaderMatcher = checkIfHeaderExistsAndMatches(authHeader,
-                AUTHORIZATION_HEADER_PATTERN);
-
+        final Matcher authHeaderMatcher = Pattern.compile(AUTHORIZATION_HEADER_PATTERN).matcher(authHeader);
+        if (!authHeaderMatcher.matches()) {
+            return null;
+        }
         return new AuthHeader(
                 authHeaderMatcher.group(1),
                 authHeaderMatcher.group(3),
@@ -87,14 +88,6 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
     public void compareSignature(HMACBuilder signatureBuilder, byte[] digest) {
         if (!signatureBuilder.isHashEquals(digest))
             throw new BadCredentialsException(HMAC_BAD_SIGNATURE);
-    }
-
-    public Matcher checkIfHeaderExistsAndMatches(String authHeader, String pattern) {
-        final Matcher authHeaderMatcher = Pattern.compile(pattern).matcher(authHeader);
-        if (!authHeaderMatcher.matches()) {
-            return null;
-        }
-        return authHeaderMatcher;
     }
 
     public PreAuthenticatedAuthenticationToken getAuthentication(UserDetails userDetails) {

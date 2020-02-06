@@ -9,11 +9,11 @@ import com.cogent.cogentappointment.admin.dto.response.department.DepartmentMini
 import com.cogent.cogentappointment.admin.dto.response.department.DepartmentResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.log.constants.DepartmentLog;
-import com.cogent.cogentappointment.admin.model.Department;
-import com.cogent.cogentappointment.admin.model.Hospital;
 import com.cogent.cogentappointment.admin.repository.DepartmentRepository;
 import com.cogent.cogentappointment.admin.service.DepartmentService;
 import com.cogent.cogentappointment.admin.service.HospitalService;
+import com.cogent.cogentappointment.persistence.model.Department;
+import com.cogent.cogentappointment.persistence.model.Hospital;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

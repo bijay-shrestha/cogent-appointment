@@ -3,9 +3,9 @@ package com.cogent.cogentappointment.admin.utils;
 import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDutyRosterOverrideRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDutyRosterOverrideUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
-import com.cogent.cogentappointment.admin.model.DoctorDutyRoster;
-import com.cogent.cogentappointment.admin.model.DoctorDutyRosterOverride;
 import com.cogent.cogentappointment.admin.utils.commons.DateUtils;
+import com.cogent.cogentappointment.persistence.model.DoctorDutyRoster;
+import com.cogent.cogentappointment.persistence.model.DoctorDutyRosterOverride;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;

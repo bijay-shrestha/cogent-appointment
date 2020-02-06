@@ -1,14 +1,16 @@
 package com.cogent.cogentappointment.client;
 
-import com.cogent.cogentappointment.client.audit.AuditorAwareImpl;
+import com.cogent.cogentappointment.persistence.util.BeanUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.domain.AuditorAware;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@EnableJpaAuditing(auditorAwareRef = "auditorAware")
+@EntityScan(basePackages = {"com.cogent.cogentappointment.persistence.model",
+        "com.cogent.cogentappointment.persistence.history"})
+@EnableJpaRepositories
 public class CogentAppointmentClientApplication {
 
     public static void main(String[] args) {
@@ -16,7 +18,7 @@ public class CogentAppointmentClientApplication {
     }
 
     @Bean
-    public AuditorAware<String> auditorAware() {
-        return new AuditorAwareImpl();
+    public BeanUtil beanUtil() {
+        return new BeanUtil();
     }
 }

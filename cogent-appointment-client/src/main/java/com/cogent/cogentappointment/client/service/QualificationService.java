@@ -8,7 +8,7 @@ import com.cogent.cogentappointment.client.dto.request.qualification.Qualificati
 import com.cogent.cogentappointment.client.dto.response.qualification.QualificationDropdownDTO;
 import com.cogent.cogentappointment.client.dto.response.qualification.QualificationMinimalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.qualification.QualificationResponseDTO;
-import com.cogent.cogentappointment.client.model.Qualification;
+import com.cogent.cogentappointment.persistence.model.Qualification;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;

@@ -6,8 +6,8 @@ import com.cogent.cogentappointment.client.dto.request.admin.AdminSearchRequestD
 import com.cogent.cogentappointment.client.dto.request.admin.AdminUpdateRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.admin.*;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.model.Admin;
 import com.cogent.cogentappointment.client.repository.custom.AdminRepositoryCustom;
+import com.cogent.cogentappointment.persistence.model.Admin;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.client.repository;
 
-import com.cogent.cogentappointment.client.model.QualificationAlias;
 import com.cogent.cogentappointment.client.repository.custom.QualificationAliasRepositoryCustom;
+import com.cogent.cogentappointment.persistence.model.QualificationAlias;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

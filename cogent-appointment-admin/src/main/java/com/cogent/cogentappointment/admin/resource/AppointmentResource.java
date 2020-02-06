@@ -1,19 +1,21 @@
 package com.cogent.cogentappointment.admin.resource;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentRequestDTO;
 import com.cogent.cogentappointment.admin.service.AppointmentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentConstant.*;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.BASE_APPOINTMENT;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.CHECK_AVAILABILITY;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.*;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
@@ -42,6 +44,25 @@ public class AppointmentResource {
     @ApiOperation(SAVE_OPERATION)
     public ResponseEntity<?> save(@Valid @RequestBody AppointmentRequestDTO requestDTO) {
         return created(create(API_V1 + BASE_APPOINTMENT)).body(appointmentService.save(requestDTO));
+    }
+
+    @GetMapping(DETAILS + ID_PATH_VARIABLE_BASE)
+    @ApiOperation(DETAILS_APPROVAL_VISIT_OPERATION)
+    public ResponseEntity<?> fetchDetailsById(@PathVariable("id") Long id,
+                                              @RequestParam("page") int page,
+                                              @RequestParam("size") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        return ok(appointmentService.fetchPendingApprovals(id,pageable));
+    }
+
+    @PutMapping(SEARCH)
+    @ApiOperation(SEARCH_OPERATION)
+    public ResponseEntity<?> search(@RequestBody AppointmentPendingApprovalSearchDTO searchRequestDTO,
+                                    @RequestParam("page") int page,
+                                    @RequestParam("size") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ok().body(appointmentService.fetchPendingApprovals(searchRequestDTO, pageable));
     }
 
 //    @PutMapping

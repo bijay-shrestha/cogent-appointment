@@ -23,6 +23,8 @@ public class WebResourceKeyConstants {
         String BASE_APPOINTMENT = "/appointment";
         String CHECK_AVAILABILITY = "/checkAvailability";
         String RESCHEDULE = "/reschedule";
+        String DETAILS = "/detail";
+
     }
 
     //B

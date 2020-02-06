@@ -48,6 +48,7 @@ public class SwaggerConstants {
         String DELETE_OPERATION = "Set appointment status as 'D' when deleted";
         String SEARCH_OPERATION = "Search appointment according to given request parameters";
         String DETAILS_OPERATION = "Fetch appointment details by its id";
+        String DETAILS_APPROVAL_VISIT_OPERATION = "Fetch appointment visit approval details by its id";
         String RESCHEDULE_OPERATION = "Reschedule appointment date and time.";
     }
 

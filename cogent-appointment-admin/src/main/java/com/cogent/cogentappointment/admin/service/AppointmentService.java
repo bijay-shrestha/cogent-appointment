@@ -1,10 +1,7 @@
 package com.cogent.cogentappointment.admin.service;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.*;
-import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentBookedDateResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentCheckAvailabilityResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentMinimalResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.*;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Date;
@@ -38,6 +35,11 @@ public interface AppointmentService {
 
 
     void rescheduleAppointment(AppointmentRescheduleRequestDTO rescheduleRequestDTO);
+
+    AppointmentPendingApprovalSearchDetailDTO fetchPendingApprovals(Long hospitalId, Pageable pageable);
+
+    AppointmentPendingApprovalSearchDetailDTO fetchPendingApprovals(AppointmentPendingApprovalSearchDTO searchRequestDTO, Pageable pageable);
+
 
 //    List<AppointmentStatusResponseDTO> fetchAppointmentForAppointmentStatus(AppointmentStatusRequestDTO requestDTO);
 //

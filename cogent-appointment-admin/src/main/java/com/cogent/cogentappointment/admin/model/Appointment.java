@@ -48,6 +48,10 @@ public class Appointment implements Serializable {
     @Column(name = "end_time")
     private Date endTime;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "appointment_time")
+    private Date appointmentTime;
+
     @Column(name = "appointment_number", updatable = false)
     private String appointmentNumber;
 
@@ -62,9 +66,13 @@ public class Appointment implements Serializable {
     C = CANCELLED
      */
     @Column(name = "status")
-    private Character status;
+    private String status;
 
     /*If cancel the appointment, cancellation remarks is must*/
     @Column(name = "remarks")
     private String remarks;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hospital_id")
+    private Hospital hospitalId;
 }

@@ -23,5 +23,5 @@ public class AppointmentCancelRequestDTO implements Serializable {
     private String remarks;
 
     @NotNull
-    private Character status;
+    private String status;
 }

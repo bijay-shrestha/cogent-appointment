@@ -59,7 +59,7 @@ public class AppointmentUpdateRequestDTO implements Serializable {
 
     @NotNull
     @Status
-    private Character status;
+    private String status;
 
     private String referredBy;
 

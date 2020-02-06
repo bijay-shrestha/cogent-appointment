@@ -83,10 +83,40 @@ public class PatientRepositoryTest {
         System.out.println(ldt.toLocalDate());
 
         Date date12 = new Date();
-        Timestamp ts=new Timestamp(date12.getTime());
+        Timestamp ts = new Timestamp(date12.getTime());
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         System.out.println(formatter.format(ts));
 
+    }
+
+    @Test
+    public void fetchAppointmentLog() {
+        String sql = "SELECT" +
+//                            " a.status as status," +
+                " a.appointmentDate as appointmentDate," +
+                " a.appointmentNumber as appointmentNumber," +
+                " p.eSewaId as esewaId," +
+                " p.registrationNumber as registrationNumber," +
+                " p.name as patientName," +
+                " p.isRegistered as isRegistered," +
+                " p.isSelf as isSelf," +
+                " p.mobileNumber as mobileNumber," +
+                " sp.name as specializationName," +
+                " atd.transactionNumber as transactionNumber," +
+                " atd.appointmentAmount as appointmentAmount" +
+                " FROM Appointment a" +
+                " LEFT JOIN Patient p ON a.patientId=p.id" +
+                " LEFT JOIN Specialization sp ON a.specializationId=sp.id" +
+                " LEFT JOIN Hospital h ON a.hospitalId=h.id" +
+                " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
+                " WHERE p.status='Y' " +
+                " AND sp.status='Y' " +
+                " AND a.status='PA' " +
+                " AND a.hospitalId=" + 1L;
+
+        Query query = testEntityManager.getEntityManager().createQuery(sql);
+
+        Object result = query.getSingleResult();
 
 
     }

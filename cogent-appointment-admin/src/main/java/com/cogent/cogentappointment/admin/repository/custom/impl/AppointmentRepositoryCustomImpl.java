@@ -2,15 +2,14 @@ package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.constants.QueryConstants;
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentSearchRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentBookedDateResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentBookedTimeResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentMinimalResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.*;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.model.Appointment;
 import com.cogent.cogentappointment.admin.repository.custom.AppointmentRepositoryCustom;
 import com.cogent.cogentappointment.admin.utils.AppointmentUtils;
+import com.cogent.cogentappointment.admin.utils.commons.AgeConverterUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -114,6 +113,43 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
+    public AppointmentPendingApprovalSearchDetailDTO findPendingApprovalList(Long hospitalId, Pageable pageable) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_VISIT_APPROVAL_DETAILS.apply(hospitalId));
+
+        int totalItems = query.getResultList().size();
+
+        addPagination.accept(pageable, query);
+
+        List<AppointmentPendingApprovalResponseDTO> results = transformQueryToResultList(
+                query, AppointmentPendingApprovalResponseDTO.class);
+
+        AppointmentPendingApprovalSearchDetailDTO pendingApprovalSearchDetailDTO = new AppointmentPendingApprovalSearchDetailDTO();
+        pendingApprovalSearchDetailDTO.setPendingApprovalList(results);
+
+        Query query1 = createQuery.apply(entityManager, " SELECT sum(appointmentAmount) FROM appointmentTransactionDetail");
+
+        Double totalAmount = (Double) query1.getSingleResult();
+
+
+//        Double totalAmount = 0.00;
+//        for (AppointmentPendingApprovalResponseDTO pendingApprovalResponseDTO : results) {
+//
+//            if (pendingApprovalResponseDTO.getAppointmentAmount() != null) {
+//                totalAmount += pendingApprovalResponseDTO.getAppointmentAmount();
+//            }
+//        }
+
+        pendingApprovalSearchDetailDTO.setTotalAmount(totalAmount);
+
+        if (results.isEmpty()) throw APPOINTMENT_NOT_FOUND.get();
+        else {
+            results.get(0).setTotalItems(totalItems);
+            return pendingApprovalSearchDetailDTO;
+        }
+    }
+
+    @Override
     public AppointmentResponseDTO fetchDetailsById(Long id) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_DETAILS)
                 .setParameter(QueryConstants.ID, id);
@@ -121,6 +157,44 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
             return transformQueryToSingleResult(query, AppointmentResponseDTO.class);
         } catch (NoResultException e) {
             throw APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(id);
+        }
+    }
+
+    @Override
+    public AppointmentPendingApprovalSearchDetailDTO searchPendingVisitApprovals(AppointmentPendingApprovalSearchDTO searchRequestDTO, Pageable pageable) {
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_PENDING_APPOINTMENT_VISIT_APPROVAL_DETAILS.apply(searchRequestDTO))
+                .setParameter("fromDate", searchRequestDTO.getFromDate()).setParameter("toDate", searchRequestDTO.getToDate());
+
+        int totalItems = query.getResultList().size();
+
+        addPagination.accept(pageable, query);
+
+        List<AppointmentPendingApprovalResponseDTO> results = transformQueryToResultList(
+                query, AppointmentPendingApprovalResponseDTO.class);
+
+        AppointmentPendingApprovalSearchDetailDTO pendingApprovalSearchDetailDTO = new AppointmentPendingApprovalSearchDetailDTO();
+        pendingApprovalSearchDetailDTO.setPendingApprovalList(results);
+
+        results.forEach(patientResponseDTO -> {
+            String age = AgeConverterUtils.calculateAge(patientResponseDTO.getPatientDob());
+            patientResponseDTO.setPatientAge(age);
+        });
+
+        Double totalAmount = 0.00;
+        for (AppointmentPendingApprovalResponseDTO appointmentPendingApprovalResponseDTO : results) {
+
+            if (appointmentPendingApprovalResponseDTO.getAppointmentAmount() != null) {
+                totalAmount += appointmentPendingApprovalResponseDTO.getAppointmentAmount();
+            }
+        }
+
+        pendingApprovalSearchDetailDTO.setTotalAmount(totalAmount);
+
+        if (results.isEmpty()) throw APPOINTMENT_NOT_FOUND.get();
+        else {
+            results.get(0).setTotalItems(totalItems);
+            return pendingApprovalSearchDetailDTO;
         }
     }
 

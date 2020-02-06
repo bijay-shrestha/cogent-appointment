@@ -41,7 +41,7 @@ public class AppointmentRequestDTO implements Serializable {
 
     @NotNull
     @Status
-    private Character status;
+    private String status;
 
     @NotNull
     @NotEmpty

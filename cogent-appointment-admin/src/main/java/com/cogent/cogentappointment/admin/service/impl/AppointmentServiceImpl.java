@@ -239,6 +239,34 @@ public class AppointmentServiceImpl implements AppointmentService {
         log.info(RESCHEDULE_PROCESS_STARTED, getDifferenceBetweenTwoTime(startTime));
     }
 
+    @Override
+    public AppointmentPendingApprovalSearchDetailDTO fetchPendingApprovals(Long hospitalId, Pageable pageable) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_VISIT_APPROVAL_LIST);
+
+        AppointmentPendingApprovalSearchDetailDTO responseDTOS =
+                appointmentRepository.findPendingApprovalList(hospitalId, pageable);
+
+        log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_VISIT_APPROVAL_LIST, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public AppointmentPendingApprovalSearchDetailDTO fetchPendingApprovals(AppointmentPendingApprovalSearchDTO searchRequestDTO, Pageable pageable) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_VISIT_APPROVAL_LIST);
+
+        AppointmentPendingApprovalSearchDetailDTO responseDTOS =
+                appointmentRepository.searchPendingVisitApprovals(searchRequestDTO, pageable);
+
+        log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_VISIT_APPROVAL_LIST, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
 //    @Override
 //    public List<AppointmentStatusResponseDTO> fetchAppointmentForAppointmentStatus(
 //            AppointmentStatusRequestDTO requestDTO) {

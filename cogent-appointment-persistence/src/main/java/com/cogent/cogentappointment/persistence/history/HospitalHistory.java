@@ -16,11 +16,9 @@ import java.util.Date;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.TemporalType.TIMESTAMP;
 
-
 /**
  * @author Sauravi Thapa २०/२/३
  */
-
 @Entity
 @Getter
 @Setter

@@ -97,7 +97,8 @@ public class HospitalQuery {
                     " hb.file_uri" +
                     " END as hospitalBanner," +                                 //[7]
                     " h.code as hospitalCode," +                                //[8]
-                    " tbl1.contact_details as contact_details" +               //[9]
+                    " tbl1.contact_details as contact_details," +               //[9]
+                    " h.refund_percentage as refundPercentage"+                //[10]
                     " FROM" +
                     " hospital h" +
                     " LEFT JOIN hospital_logo hl ON h.id =hl.hospital_id " +

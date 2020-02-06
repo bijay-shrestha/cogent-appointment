@@ -47,6 +47,8 @@ public class HospitalUpdateRequestDTO implements Serializable {
     @Status
     private Character isHospital;
 
+    private Double refundPercentage;
+
     @NotEmpty
     private List<HospitalContactNumberUpdateRequestDTO> contactNumberUpdateRequestDTOS;
 }

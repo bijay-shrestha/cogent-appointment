@@ -30,20 +30,4 @@ public interface PatientService {
                                     Pageable pageable);
 
     void update(PatientUpdateRequestDTO patientUpdateRequestDTO);
-
-//    List<PatientDetailResponseDTO> fetchPatientDetails(PatientSearchRequestDTO searchRequestDTO);
-//
-//    void deletePatient(DeleteRequestDTO deleteRequestDTO);
-//
-//    List<PatientMinimalResponseDTO> searchPatient(PatientSearchRequestDTO searchDTO, Pageable pageable);
-//
-//    PatientDetailResponseDTO fetchPatientDetails(Long id);
-//
-//    List<DropDownResponseDTO> dropDownList();
-//
-//    List<DropDownResponseDTO> activeDropDownList();
-//
-//    void updatePatient(PatientUpdateRequestDTO updateRequestDTO);
-
-
 }

@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.client.service.impl;
 
-import com.cogent.cogentappointment.client.constants.ErrorMessageConstants;
+import com.cogent.cogentappointment.client.constants.ErrorMessageConstants.PatientServiceMessages;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateRequestDTO;
@@ -154,13 +154,12 @@ public class PatientServiceImpl implements PatientService {
 
         log.info(UPDATING_PROCESS_STARTED, PATIENT);
 
-        Patient patientToBeUpdated = patientRepository.fetchPatientById(updateRequestDTO.getId())
-                .orElseThrow(() -> PATIENT_WITH_GIVEN_ID_NOT_FOUND.apply(updateRequestDTO.getId()));
+        Patient patientToBeUpdated = fetchPatientById(updateRequestDTO.getId());
 
         Long patientCount = patientRepository.fetchPatientForValidation(
                 updateRequestDTO.getName(), updateRequestDTO.getMobileNumber(),
                 updateRequestDTO.getDateOfBirth(),
-               null);
+                null);
 
         validatePatientDuplicity(patientCount, updateRequestDTO.getName(),
                 updateRequestDTO.getMobileNumber(), updateRequestDTO.getDateOfBirth());
@@ -177,7 +176,10 @@ public class PatientServiceImpl implements PatientService {
 
         if (patientCount.intValue() > 0)
             throw new DataDuplicationException(
-                    String.format(ErrorMessageConstants.PatientServiceMessages.DUPLICATE_PATIENT_MESSAGE, name, mobileNumber, utilDateToSqlDate(dateOfBirth)));
+                    String.format(PatientServiceMessages.DUPLICATE_PATIENT_MESSAGE,
+                            name,
+                            mobileNumber,
+                            utilDateToSqlDate(dateOfBirth)));
     }
 
     private Gender fetchGender(Character genderCode) {
@@ -209,10 +211,5 @@ public class PatientServiceImpl implements PatientService {
                 new NoContentFoundException(Patient.class));
     }
 
-//    public PatientMinimalResponseDTO getAge(PatientMinimalResponseDTO minimalResponseDTO) {
-//        String age = convertDateToAge(minimalResponseDTO.getDateOfBirth());
-//        minimalResponseDTO.setAge(age);
-//        return minimalResponseDTO;
-//    }
 }
 

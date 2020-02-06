@@ -218,7 +218,7 @@ public class AppointmentUtils {
     private static boolean isAppointmentDateMatched(List<AppointmentBookedTimeResponseDTO> bookedAppointments,
                                                     String date) {
         return bookedAppointments.stream()
-                .anyMatch(bookedAppointment -> bookedAppointment.getAppointmentTime().contains(date));
+                .anyMatch(bookedAppointment -> bookedAppointment.getAppointmentTime().equals(date));
     }
 
     private static void setTimeSlotMap(AppointmentAvailabilityResponseDTO responseDTO,

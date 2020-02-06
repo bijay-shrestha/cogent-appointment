@@ -84,6 +84,18 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
+    public Double calculateRefundAmount(Long appointmentId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_REFUND_AMOUNT)
+                .setParameter(ID, appointmentId);
+
+        try {
+            return Double.parseDouble(query.getSingleResult().toString());
+        } catch (NoResultException e) {
+            throw APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId);
+        }
+    }
+
+    @Override
     public List<AppointmentBookedDateResponseDTO> fetchBookedAppointmentDates(Date fromDate,
                                                                               Date toDate,
                                                                               Long doctorId,

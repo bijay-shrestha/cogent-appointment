@@ -25,6 +25,8 @@ public interface AppointmentRepositoryCustom {
 
     List<AppointmentPendingResponseDTO> fetchPendingAppointments(AppointmentPendingSearchDTO searchDTO);
 
+    Double calculateRefundAmount(Long appointmentId);
+
     List<AppointmentBookedTimeResponseDTO> fetchBookedAppointments(AppointmentCheckAvailabilityRequestDTO requestDTO);
 
 

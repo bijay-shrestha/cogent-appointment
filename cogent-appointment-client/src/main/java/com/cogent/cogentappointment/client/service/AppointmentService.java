@@ -18,7 +18,7 @@ public interface AppointmentService {
 
     List<AppointmentPendingResponseDTO>  fetchPendingAppointments(AppointmentPendingSearchDTO searchDTO);
 
-
+    void cancelAppointment(AppointmentCancelRequestDTO cancelRequestDTO);
 
     AppointmentCheckAvailabilityResponseDTO checkAvailabilityWithEndTime(AppointmentCheckAvailabilityRequestDTO requestDTO);
 
@@ -32,7 +32,7 @@ public interface AppointmentService {
 
     void update(AppointmentUpdateRequestDTO updateRequestDTO);
 
-    void cancel(AppointmentCancelRequestDTO cancelRequestDTO);
+
 
     List<AppointmentMinimalResponseDTO> search(AppointmentSearchRequestDTO searchRequestDTO,
                                                Pageable pageable);

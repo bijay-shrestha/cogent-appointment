@@ -33,6 +33,7 @@ public class SwaggerConstants {
                 " for specific doctor and specialization";
         String SAVE_OPERATION = "Save new appointment";
         String FETCH_PENDING_APPOINTMENT = "Fetch pending appointments";
+        String CANCEL_APPOINTMENT_OPERATION = "Cancel appointment and request refund";
         String UPDATE_OPERATION = "Update existing appointment";
         String DELETE_OPERATION = "Set appointment status as 'D' when deleted";
         String SEARCH_OPERATION = "Search appointment according to given request parameters";

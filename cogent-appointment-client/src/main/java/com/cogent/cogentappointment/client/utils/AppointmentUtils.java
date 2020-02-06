@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.client.utils;
 
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentCancelRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentUpdateRequestDTO;
@@ -65,24 +64,17 @@ public class AppointmentUtils {
         appointment.setPatientId(patient);
     }
 
-    public static void parseToUpdatedAppointment(Appointment appointment,
-                                                 AppointmentUpdateRequestDTO updateRequestDTO,
-                                                 Patient patient) {
+    public static AppointmentRefundDetail parseToAppointmentRefundDetail(Appointment appointment,
+                                                                         Double refundAmount,
+                                                                         String remarks){
 
-        appointment.setAppointmentDate(updateRequestDTO.getAppointmentDate());
-//        appointment.setStartTime(updateRequestDTO.getStartTime());
-//        appointment.setEndTime(updateRequestDTO.getEndTime());
-//        appointment.setStatus(updateRequestDTO.getStatus());
+        AppointmentRefundDetail refundDetail = new AppointmentRefundDetail();
+        refundDetail.setAppointmentId(appointment);
+        refundDetail.setRemarks(remarks);
+        refundDetail.setRefundAmount(refundAmount);
+        refundDetail.setStatus("PA");
 
-        appointment.setRemarks(updateRequestDTO.getRemarks());
-//        parseToAppointment(appointment, patient);
-    }
-
-
-    public static void convertToCancelledAppointment(Appointment appointment,
-                                                     AppointmentCancelRequestDTO cancelRequestDTO) {
-        appointment.setRemarks(cancelRequestDTO.getRemarks());
-//        appointment.setStatus(cancelRequestDTO.getStatus());
+        return refundDetail;
     }
 
     public static String generateAppointmentNumber(List results) {
@@ -234,6 +226,19 @@ public class AppointmentUtils {
                 .appointmentNumber(appointmentNumber)
                 .appointmentTransactionStatus(ACTIVE)
                 .build();
+    }
+
+    public static void parseToUpdatedAppointment(Appointment appointment,
+                                                 AppointmentUpdateRequestDTO updateRequestDTO,
+                                                 Patient patient) {
+
+        appointment.setAppointmentDate(updateRequestDTO.getAppointmentDate());
+//        appointment.setStartTime(updateRequestDTO.getStartTime());
+//        appointment.setEndTime(updateRequestDTO.getEndTime());
+//        appointment.setStatus(updateRequestDTO.getStatus());
+
+        appointment.setRemarks(updateRequestDTO.getRemarks());
+//        parseToAppointment(appointment, patient);
     }
 
 }

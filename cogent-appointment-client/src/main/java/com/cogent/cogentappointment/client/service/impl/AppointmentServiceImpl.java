@@ -6,10 +6,7 @@ import com.cogent.cogentappointment.client.dto.response.appointment.*;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.repository.AppointmentRepository;
-import com.cogent.cogentappointment.client.repository.AppointmentTransactionInfoRepository;
-import com.cogent.cogentappointment.client.repository.DoctorDutyRosterOverrideRepository;
-import com.cogent.cogentappointment.client.repository.DoctorDutyRosterRepository;
+import com.cogent.cogentappointment.client.repository.*;
 import com.cogent.cogentappointment.client.service.*;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
@@ -59,6 +56,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final HospitalService hospitalService;
 
+    private final AppointmentRefundDetailRepository appointmentRefundDetailRepository;
+
     public AppointmentServiceImpl(PatientService patientService,
                                   DoctorService doctorService,
                                   SpecializationService specializationService,
@@ -66,7 +65,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   DoctorDutyRosterRepository doctorDutyRosterRepository,
                                   DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository,
                                   AppointmentTransactionInfoRepository appointmentTransactionInfoRepository,
-                                  HospitalService hospitalService) {
+                                  HospitalService hospitalService,
+                                  AppointmentRefundDetailRepository appointmentRefundDetailRepository) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -75,6 +75,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.doctorDutyRosterOverrideRepository = doctorDutyRosterOverrideRepository;
         this.appointmentTransactionInfoRepository = appointmentTransactionInfoRepository;
         this.hospitalService = hospitalService;
+        this.appointmentRefundDetailRepository = appointmentRefundDetailRepository;
     }
 
     @Override
@@ -165,6 +166,23 @@ public class AppointmentServiceImpl implements AppointmentService {
         return pendingAppointments;
     }
 
+    @Override
+    public void cancelAppointment(AppointmentCancelRequestDTO cancelRequestDTO) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(CANCELLING_PROCESS_STARTED);
+
+        Appointment appointment = findPendingAppointmentById(cancelRequestDTO.getAppointmentId());
+
+        Double refundAmount = appointmentRepository.calculateRefundAmount(cancelRequestDTO.getAppointmentId());
+
+        saveAppointmentRefundDetail(
+                parseToAppointmentRefundDetail(appointment, refundAmount, cancelRequestDTO.getRemarks())
+        );
+
+        log.info(CANCELLING_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
+    }
 
     /*WITH END TIME AND 12 HOUR FORMAT*/
     @Override
@@ -249,19 +267,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         log.info(UPDATING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
     }
 
-    @Override
-    public void cancel(AppointmentCancelRequestDTO cancelRequestDTO) {
-
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(CANCELLING_PROCESS_STARTED);
-
-        Appointment appointment = findById(cancelRequestDTO.getId());
-
-        convertToCancelledAppointment(appointment, cancelRequestDTO);
-
-        log.info(CANCELLING_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
-    }
 
     @Override
     public List<AppointmentMinimalResponseDTO> search(AppointmentSearchRequestDTO searchRequestDTO,
@@ -299,7 +304,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         log.info(RESCHEDULE_PROCESS_STARTED);
 
-        Appointment appointment = findIncompleteAppointmentById(rescheduleRequestDTO.getAppointmentId());
+        Appointment appointment = findPendingAppointmentById(rescheduleRequestDTO.getAppointmentId());
 
 //        Date originalAppointmentDate = appointment.getAppointmentDate();
 //        Date originalAppointmentTime = appointment.getStartTime();
@@ -363,8 +368,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
     }
 
-    private Appointment findIncompleteAppointmentById(Long appointmentId) {
-        return appointmentRepository.fetchIncompleteAppointmentById(appointmentId)
+    private Appointment findPendingAppointmentById(Long appointmentId) {
+        return appointmentRepository.fetchPendingAppointmentById(appointmentId)
                 .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
     }
 
@@ -422,6 +427,10 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         AppointmentTransactionDetail transactionDetail = parseToAppointmentTransactionInfo(requestDTO, appointment);
         appointmentTransactionInfoRepository.save(transactionDetail);
+    }
+
+    private void saveAppointmentRefundDetail(AppointmentRefundDetail appointmentRefundDetail) {
+        appointmentRefundDetailRepository.save(appointmentRefundDetail);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.resource;
 
+import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentCancelRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentPendingSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRequestDTO;
@@ -56,6 +57,14 @@ public class AppointmentResource {
         return ok(appointmentService.fetchPendingAppointments(searchDTO));
     }
 
+    @PutMapping(CANCEL_APPOINTMENT)
+    @ApiOperation(CANCEL_APPOINTMENT_OPERATION)
+    public ResponseEntity<?> cancelAppointment(@Valid @RequestBody AppointmentCancelRequestDTO cancelRequestDTO) {
+        appointmentService.cancelAppointment(cancelRequestDTO);
+        return ok().build();
+    }
+//
+
 //    @PutMapping
 //    @ApiOperation(UPDATE_OPERATION)
 //    public ResponseEntity<?> update(@Valid @RequestBody AppointmentUpdateRequestDTO requestDTO) {
@@ -63,13 +72,7 @@ public class AppointmentResource {
 //        return ok().build();
 //    }
 //
-//    @DeleteMapping
-//    @ApiOperation(DELETE_OPERATION)
-//    public ResponseEntity<?> cancel(@Valid @RequestBody AppointmentCancelRequestDTO cancelRequestDTO) {
-//        appointmentService.cancel(cancelRequestDTO);
-//        return ok().build();
-//    }
-//
+
 //    @PutMapping(SEARCH)
 //    @ApiOperation(SEARCH_OPERATION)
 //    public ResponseEntity<?> search(@RequestBody AppointmentSearchRequestDTO searchRequestDTO,

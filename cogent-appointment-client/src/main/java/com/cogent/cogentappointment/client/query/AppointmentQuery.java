@@ -183,9 +183,9 @@ public class AppointmentQuery {
                     " AND a.specializationId.id = :specializationId";
 
     /*%H - hour (e.g., 00,01,02,…12)
-    * %i - minutes (e.g., 00,01,02,…12)
-    * %p - AM/PM
-    * */
+     * %i - minutes (e.g., 00,01,02,…12)
+     * %p - AM/PM
+     * */
     public static final String QUERY_TO_FETCH_PENDING_APPOINTMENTS =
             " SELECT" +
                     " a.id as appointmentId," +                                             //[0]
@@ -206,5 +206,13 @@ public class AppointmentQuery {
                     " WHERE a.status = 'PA'" +
                     " AND a.appointmentDate BETWEEN :fromDate AND :toDate" +
                     " ORDER BY a.appointmentDate DESC";
+
+    public static final String QUERY_TO_FETCH_REFUND_AMOUNT =
+            " SELECT" +
+                    " (h.refundPercentage * atd.appointmentAmount)/100" +
+                    " FROM Appointment a" +
+                    " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
+                    " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +
+                    " WHERE a.id =:id";
 
 }

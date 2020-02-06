@@ -156,10 +156,7 @@ public class PatientServiceImpl implements PatientService {
 
         Patient patientToBeUpdated = fetchPatientById(updateRequestDTO.getId());
 
-        Long patientCount = patientRepository.fetchPatientForValidation(
-                updateRequestDTO.getName(), updateRequestDTO.getMobileNumber(),
-                updateRequestDTO.getDateOfBirth(),
-                null);
+        Long patientCount = patientRepository.fetchPatientForValidationToUpdate(updateRequestDTO);
 
         validatePatientDuplicity(patientCount, updateRequestDTO.getName(),
                 updateRequestDTO.getMobileNumber(), updateRequestDTO.getDateOfBirth());

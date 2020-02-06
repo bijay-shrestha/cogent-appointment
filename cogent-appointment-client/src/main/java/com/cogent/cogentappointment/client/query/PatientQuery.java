@@ -20,6 +20,18 @@ public class PatientQuery {
                     " AND h.id =:hospitalId" +
                     " AND p.status != 'D'";
 
+    public final static String QUERY_TO_VALIDATE_UPDATED_PATIENT_DUPLICITY =
+            "SELECT " +
+                    " COUNT(p.id)" +
+                    " FROM Patient p" +
+                    " LEFT JOIN Hospital h ON h.id = p.hospitalId.id" +
+                    " WHERE " +
+                    " (p.name =:name" +
+                    " AND p.mobileNumber =:mobileNumber" +
+                    " AND p.dateOfBirth =:dateOfBirth" +
+                    " AND p.id !=:id)" +
+                    " AND p.status != 'D'";
+
     public static final String SELECT_CLAUSE_TO_FETCH_PATIENT_DETAILS =
             " SELECT p.id as patientId," +                              //[0]
                     " p.name as name," +                                //[1]

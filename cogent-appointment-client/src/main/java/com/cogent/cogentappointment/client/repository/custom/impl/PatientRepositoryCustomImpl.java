@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
 import com.cogent.cogentappointment.client.dto.request.patient.PatientSearchRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientMinimalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientResponseDTO;
@@ -48,6 +49,17 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
                 .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Long) query.getSingleResult();
+    }
+
+    @Override
+    public Long fetchPatientForValidationToUpdate(PatientUpdateRequestDTO patientUpdateRequestDTO) {
+            Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_UPDATED_PATIENT_DUPLICITY)
+                    .setParameter(NAME, patientUpdateRequestDTO.getName())
+                    .setParameter(MOBILE_NUMBER, patientUpdateRequestDTO.getMobileNumber())
+                    .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(patientUpdateRequestDTO.getDateOfBirth()))
+                    .setParameter(ID, patientUpdateRequestDTO.getId());
+
+            return (Long) query.getSingleResult();
     }
 
     @Override

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Getter
 public class HMACConfig {
 
-    @Value("${hmac.uri:/api/v1/**}")
+    @Value("${hmac.uri:/api/v1/login}")
     private String uri;
 
     @Value("${hmac.header:Authorization}")

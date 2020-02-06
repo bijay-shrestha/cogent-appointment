@@ -3,10 +3,7 @@ package com.cogent.cogentappointment.client.service.impl;
 import com.cogent.cogentappointment.client.constants.StatusConstants;
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.doctor.*;
-import com.cogent.cogentappointment.client.dto.response.doctor.DoctorDetailResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.doctor.DoctorDropdownDTO;
-import com.cogent.cogentappointment.client.dto.response.doctor.DoctorMinimalResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.doctor.DoctorUpdateResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.doctor.*;
 import com.cogent.cogentappointment.client.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
@@ -119,29 +116,29 @@ public class DoctorServiceImpl implements DoctorService {
 
         log.info(UPDATING_PROCESS_STARTED, DOCTOR);
 
-        Doctor doctor = findById(requestDTO.getUpdateDTO().getId(), requestDTO.getUpdateDTO().getHospitalId());
+        Doctor doctor = findById(requestDTO.getDoctorInfo().getId(), requestDTO.getDoctorInfo().getHospitalId());
 
         Long doctorCount = doctorRepository.validateDoctorDuplicityForUpdate(
-                requestDTO.getUpdateDTO().getId(),
-                requestDTO.getUpdateDTO().getName(),
-                requestDTO.getUpdateDTO().getMobileNumber(),
-                requestDTO.getUpdateDTO().getHospitalId());
+                requestDTO.getDoctorInfo().getId(),
+                requestDTO.getDoctorInfo().getName(),
+                requestDTO.getDoctorInfo().getMobileNumber(),
+                requestDTO.getDoctorInfo().getHospitalId());
 
         validateDoctor(doctorCount,
-                requestDTO.getUpdateDTO().getName(),
-                requestDTO.getUpdateDTO().getMobileNumber());
+                requestDTO.getDoctorInfo().getName(),
+                requestDTO.getDoctorInfo().getMobileNumber());
 
         convertToUpdatedDoctor(
-                requestDTO.getUpdateDTO(),
+                requestDTO.getDoctorInfo(),
                 doctor,
-                fetchGender(requestDTO.getUpdateDTO().getGenderCode()),
-                fetchHospitalById(requestDTO.getUpdateDTO().getHospitalId()));
+                fetchGender(requestDTO.getDoctorInfo().getGenderCode()),
+                fetchHospitalById(requestDTO.getDoctorInfo().getHospitalId()));
 
-        updateDoctorAppointmentCharge(doctor.getId(), requestDTO.getUpdateDTO().getAppointmentCharge());
+        updateDoctorAppointmentCharge(doctor.getId(), requestDTO.getDoctorInfo().getAppointmentCharge());
 
-        updateDoctorSpecialization(doctor.getId(), requestDTO.getSpecializationUpdateRequestDTOS());
+        updateDoctorSpecialization(doctor.getId(), requestDTO.getDoctorSpecializationInfo());
 
-        updateDoctorQualification(doctor.getId(), requestDTO.getDoctorQualificationUpdateDTOS());
+        updateDoctorQualification(doctor.getId(), requestDTO.getDoctorQualificationInfo());
 
         updateDoctorAvatar(doctor, avatar);
 

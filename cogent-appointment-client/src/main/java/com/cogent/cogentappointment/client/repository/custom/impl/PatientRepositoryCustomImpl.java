@@ -51,7 +51,7 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
     }
 
     @Override
-    public PatientDetailResponseDTO search(PatientSearchRequestDTO searchRequestDTO) {
+    public PatientDetailResponseDTO searchForSelf(PatientSearchRequestDTO searchRequestDTO) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_DETAILS)
                 .setParameter(ESEWA_ID, searchRequestDTO.getEsewaId())
                 .setParameter(IS_SELF, searchRequestDTO.getIsSelf())

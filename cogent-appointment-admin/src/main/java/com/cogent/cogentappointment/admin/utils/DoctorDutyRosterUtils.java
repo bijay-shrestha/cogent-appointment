@@ -28,7 +28,8 @@ public class DoctorDutyRosterUtils {
 
     public static DoctorDutyRoster parseToDoctorDutyRoster(DoctorDutyRosterRequestDTO requestDTO,
                                                            Doctor doctor,
-                                                           Specialization specialization) {
+                                                           Specialization specialization,
+                                                           Hospital hospital) {
 
         DoctorDutyRoster doctorDutyRoster = new DoctorDutyRoster();
         doctorDutyRoster.setFromDate(requestDTO.getFromDate());
@@ -36,15 +37,10 @@ public class DoctorDutyRosterUtils {
         doctorDutyRoster.setRosterGapDuration(requestDTO.getRosterGapDuration());
         doctorDutyRoster.setStatus(requestDTO.getStatus());
         doctorDutyRoster.setHasOverrideDutyRoster(requestDTO.getHasOverrideDutyRoster());
-        parseToDoctorDutyRoster(doctorDutyRoster, doctor, specialization);
-        return doctorDutyRoster;
-    }
-
-    private static void parseToDoctorDutyRoster(DoctorDutyRoster doctorDutyRoster,
-                                                Doctor doctor,
-                                                Specialization specialization) {
+        doctorDutyRoster.setHospitalId(hospital);
         doctorDutyRoster.setDoctorId(doctor);
         doctorDutyRoster.setSpecializationId(specialization);
+        return doctorDutyRoster;
     }
 
     public static DoctorWeekDaysDutyRoster parseToDoctorWeekDaysDutyRoster(DoctorWeekDaysDutyRosterRequestDTO requestDTO,

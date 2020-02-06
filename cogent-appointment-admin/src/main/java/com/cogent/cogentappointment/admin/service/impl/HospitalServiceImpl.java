@@ -12,21 +12,12 @@ import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalDropdown
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.exception.utils.ValidationUtils;
-import com.cogent.cogentappointment.admin.repository.HmacApiInfoRepository;
-import com.cogent.cogentappointment.admin.repository.HospitalContactNumberRepository;
-import com.cogent.cogentappointment.admin.repository.HospitalLogoRepository;
-import com.cogent.cogentappointment.admin.repository.HospitalRepository;
+import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.FileService;
 import com.cogent.cogentappointment.admin.service.HospitalService;
-import com.cogent.cogentappointment.persistence.model.HmacApiInfo;
-import com.cogent.cogentappointment.persistence.model.Hospital;
-import com.cogent.cogentappointment.persistence.model.HospitalContactNumber;
-import com.cogent.cogentappointment.persistence.model.HospitalLogo;
+import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,13 +25,12 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import javax.validation.Validator;
 import java.security.NoSuchAlgorithmException;
-import java.security.Principal;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.*;
+import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.HOSPITAL;
 import static com.cogent.cogentappointment.admin.utils.HmacApiInfoUtils.parseToHmacApiInfo;
@@ -63,6 +53,8 @@ public class HospitalServiceImpl implements HospitalService {
 
     private final HospitalLogoRepository hospitalLogoRepository;
 
+    private final HospitalBannerRepository hospitalBannerRepository;
+
     private final HmacApiInfoRepository hmacApiInfoRepository;
 
     private final FileService fileService;
@@ -72,26 +64,26 @@ public class HospitalServiceImpl implements HospitalService {
     public HospitalServiceImpl(HospitalRepository hospitalRepository,
                                HospitalContactNumberRepository hospitalContactNumberRepository,
                                HospitalLogoRepository hospitalLogoRepository,
-                               HmacApiInfoRepository hmacApiInfoRepository, FileService fileService,
+                               HospitalBannerRepository hospitalBannerRepository,
+                               HmacApiInfoRepository hmacApiInfoRepository,
+                               FileService fileService,
                                Validator validator) {
         this.hospitalRepository = hospitalRepository;
         this.hospitalContactNumberRepository = hospitalContactNumberRepository;
         this.hospitalLogoRepository = hospitalLogoRepository;
+        this.hospitalBannerRepository = hospitalBannerRepository;
         this.hmacApiInfoRepository = hmacApiInfoRepository;
         this.fileService = fileService;
         this.validator = validator;
     }
 
     @Override
-    public void save(@Valid HospitalRequestDTO requestDTO, MultipartFile multipartFile) throws NoSuchAlgorithmException {
+    public void save(@Valid HospitalRequestDTO requestDTO, MultipartFile logo, MultipartFile banner)
+            throws NoSuchAlgorithmException {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, HOSPITAL);
-
-        UserDetails principal= (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        System.out.println("--------------------"+principal.getUsername());
 
         validateConstraintViolation(validator.validate(requestDTO));
 
@@ -105,7 +97,9 @@ public class HospitalServiceImpl implements HospitalService {
 
         saveHospitalContactNumber(hospital.getId(), requestDTO.getContactNumber());
 
-        saveHospitalLogo(hospital, multipartFile);
+        saveHospitalLogo(hospital, logo);
+
+        saveHospitalBanner(hospital, banner);
 
         saveHmacApiInfo(parseToHmacApiInfo(hospital));
 
@@ -113,7 +107,7 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     @Override
-    public void update(HospitalUpdateRequestDTO updateRequestDTO, MultipartFile multipartFile) {
+    public void update(HospitalUpdateRequestDTO updateRequestDTO, MultipartFile logo, MultipartFile banner) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -131,7 +125,9 @@ public class HospitalServiceImpl implements HospitalService {
 
         updateHospitalContactNumber(hospital.getId(), updateRequestDTO.getContactNumberUpdateRequestDTOS());
 
-        updateHospitalLogo(hospital, multipartFile);
+        updateHospitalLogo(hospital, logo);
+
+        updateHospitalBanner(hospital, banner);
 
         log.info(UPDATING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
     }
@@ -232,6 +228,13 @@ public class HospitalServiceImpl implements HospitalService {
         }
     }
 
+    private void saveHospitalBanner(Hospital hospital, MultipartFile hospitalBanner) {
+        if (!Objects.isNull(hospitalBanner)) {
+            List<FileUploadResponseDTO> responseList = uploadFiles(hospital, new MultipartFile[]{hospitalBanner});
+            saveHospitalBanner(convertFileToHospitalHospitalBanner(responseList.get(0), hospital));
+        }
+    }
+
     private List<FileUploadResponseDTO> uploadFiles(Hospital hospital, MultipartFile[] files) {
         String subDirectory = hospital.getClass().getSimpleName() + StringConstant.FORWARD_SLASH + hospital.getName();
         return fileService.uploadFiles(files, subDirectory);
@@ -239,6 +242,10 @@ public class HospitalServiceImpl implements HospitalService {
 
     private void saveHospitalLogo(HospitalLogo hospitalLogo) {
         hospitalLogoRepository.save(hospitalLogo);
+    }
+
+    private void saveHospitalBanner(HospitalBanner hospitalBanner) {
+        hospitalBannerRepository.save(hospitalBanner);
     }
 
     private Hospital findById(Long id) {
@@ -266,9 +273,25 @@ public class HospitalServiceImpl implements HospitalService {
 
         if (!Objects.isNull(files)) {
             List<FileUploadResponseDTO> responseList = uploadFiles(hospital, new MultipartFile[]{files});
-            setFileProperties(responseList.get(0), hospitalLogo);
+            setLogoFileProperties(responseList.get(0), hospitalLogo);
         } else
             hospitalLogo.setStatus(StatusConstants.INACTIVE);
+    }
+
+    private void updateHospitalBanner(Hospital hospital, HospitalBanner hospitalBanner, MultipartFile banner) {
+
+        if (!Objects.isNull(banner)) {
+            List<FileUploadResponseDTO> responseList = uploadFiles(hospital, new MultipartFile[]{banner});
+            setBannerFileProperties(responseList.get(0), hospitalBanner);
+        } else
+            hospitalBanner.setStatus(StatusConstants.INACTIVE);
+    }
+
+    public void updateHospitalBanner(Hospital hospital, MultipartFile banner) {
+        HospitalBanner hospitalBanner = hospitalBannerRepository.findHospitalBannerByHospitalId(hospital.getId());
+
+        if (Objects.isNull(hospitalBanner)) saveHospitalBanner(hospital, banner);
+        else updateHospitalBanner(hospital, hospitalBanner, banner);
     }
 
     private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {

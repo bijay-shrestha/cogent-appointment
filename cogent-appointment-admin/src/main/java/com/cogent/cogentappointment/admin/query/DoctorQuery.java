@@ -32,8 +32,10 @@ public class DoctorQuery {
     public static String QUERY_TO_SEARCH_DOCTOR(DoctorSearchRequestDTO searchRequestDTO) {
         return " SELECT" +
                 SELECT_CLAUSE_TO_FETCH_MINIMAL_DOCTOR + "," +
-                " tbl1.specialization_name as specializationName" +
+                " tbl1.specialization_name as specializationName," +
+                " h.name as hospitalName" +
                 " FROM doctor d" +
+                " LEFT JOIN hospital h ON h.id = d.hospital_id" +
                 " RIGHT JOIN" +
                 " (" +
                 QUERY_TO_SEARCH_DOCTOR_SPECIALIZATION.apply(searchRequestDTO) +
@@ -72,17 +74,20 @@ public class DoctorQuery {
 
                 String whereClause = " WHERE d.status!='D'";
 
-                if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
-                    whereClause += " AND d.status='" + searchRequestDTO.getStatus() + "'";
-
-                if (!ObjectUtils.isEmpty(searchRequestDTO.getName()))
-                    whereClause += " AND d.name LIKE '%" + searchRequestDTO.getName() + "%'";
+                if (!ObjectUtils.isEmpty(searchRequestDTO.getId()))
+                    whereClause += " AND d.id= " + searchRequestDTO.getId();
 
                 if (!ObjectUtils.isEmpty(searchRequestDTO.getCode()))
                     whereClause += " AND d.code LIKE '%" + searchRequestDTO.getCode() + "%'";
 
+                if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
+                    whereClause += " AND d.status='" + searchRequestDTO.getStatus() + "'";
+
                 if (!ObjectUtils.isEmpty(searchRequestDTO.getMobileNumber()))
                     whereClause += " AND d.mobile_number LIKE '%" + searchRequestDTO.getMobileNumber() + "%'";
+
+                if (!ObjectUtils.isEmpty(searchRequestDTO.getHospitalId()))
+                    whereClause += " AND h.id= " + searchRequestDTO.getHospitalId();
 
                 whereClause += " ORDER BY d.id DESC";
 
@@ -99,12 +104,10 @@ public class DoctorQuery {
                     " THEN null" +
                     " ELSE" +
                     " da.fileUri" +
-                    " END as fileUri," +                                    //[2]
-                    " dac.appointmentCharge as appointmentCharge" +          //[3]
+                    " END as fileUri" +                                    //[2]
                     " FROM" +
                     " Doctor d" +
                     " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId" +
-                    " LEFT JOIN DoctorAppointmentCharge dac ON d.id = dac.doctorId.id" +
                     " WHERE d.status ='Y'";
 
     private static final String QUERY_TO_FETCH_DOCTOR_QUALIFICATION_FOR_DETAIL =
@@ -227,12 +230,10 @@ public class DoctorQuery {
                     " THEN null" +
                     " ELSE" +
                     " da.fileUri" +
-                    " END as fileUri," +                                     //[2]
-                    " dac.appointmentCharge as appointmentCharge" +          //[3]
+                    " END as fileUri" +                                     //[2]
                     " FROM DoctorSpecialization cs" +
                     " LEFT JOIN Doctor d ON d.id = cs.doctorId" +
                     " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId" +
-                    " LEFT JOIN DoctorAppointmentCharge dac ON d.id = dac.doctorId.id" +
                     " WHERE cs.specializationId = :id" +
                     " AND cs.status = 'Y'" +
                     " AND d.status = 'Y'";
@@ -246,12 +247,10 @@ public class DoctorQuery {
                     " THEN null" +
                     " ELSE" +
                     " da.fileUri" +
-                    " END as fileUri," +                                    //[2]
-                    " dac.appointmentCharge as appointmentCharge" +          //[3]
+                    " END as fileUri" +                                    //[2]
                     " FROM" +
                     " Doctor d" +
                     " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId" +
-                    " LEFT JOIN DoctorAppointmentCharge dac ON d.id = dac.doctorId.id" +
                     " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE d.status ='Y'" +
                     " AND h.id=:hospitalId ";

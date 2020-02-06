@@ -4,6 +4,11 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.util.Date;
+
+/**
+ * @author smriti on 26/11/2019
+ */
+
 @Getter
 @Setter
 @Builder

@@ -44,9 +44,6 @@ public class Patient extends Auditable<String> implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
 
-    @Column(name = "nepali_date_of_birth")
-    private String nepaliDateOfBirth;
-
     @Column(name = "email", length = 50)
     private String email;
 
@@ -86,13 +83,13 @@ public class Patient extends Auditable<String> implements Serializable {
                 ", mobileNumber='" + mobileNumber + '\'' +
                 ", gender=" + gender +
                 ", dateOfBirth=" + dateOfBirth +
-                ", nepaliDateOfBirth='" + nepaliDateOfBirth + '\'' +
                 ", email='" + email + '\'' +
                 ", isSelf=" + isSelf +
                 ", isRegistered=" + isRegistered +
                 ", eSewaId='" + eSewaId + '\'' +
                 ", address='" + address + '\'' +
                 ", hospitalId=" + hospitalId.getName() +
+                ", hospitalNumber='" + hospitalNumber + '\'' +
                 ", registrationNumber='" + registrationNumber + '\'' +
                 ", status=" + status +
                 ", remarks='" + remarks + '\'' +

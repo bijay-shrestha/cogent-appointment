@@ -20,9 +20,9 @@ import java.util.List;
  */
 public interface HospitalService {
 
-    void save(HospitalRequestDTO requestDTO, MultipartFile multipartFile);
+    void save(HospitalRequestDTO requestDTO, MultipartFile logo, MultipartFile banner);
 
-    void update(HospitalUpdateRequestDTO updateRequestDTO, MultipartFile multipartFile);
+    void update(HospitalUpdateRequestDTO updateRequestDTO, MultipartFile logo, MultipartFile banner);
 
     void delete(DeleteRequestDTO deleteRequestDTO);
 
@@ -35,10 +35,5 @@ public interface HospitalService {
 
     HospitalResponseDTO fetchDetailsById(Long hospitalId);
 
-    List<HospitalDropdownResponseDTO> search(HospitalMinSearchRequestDTO searchRequestDTO,
-                                             Pageable pageable);
-
-    HospitalMinResponseDTO fetchMinDetailsById(Long hospitalId);
-
-
+    List<HospitalMinResponseDTO> fetchMinDetails(HospitalMinSearchRequestDTO searchRequestDTO);
 }

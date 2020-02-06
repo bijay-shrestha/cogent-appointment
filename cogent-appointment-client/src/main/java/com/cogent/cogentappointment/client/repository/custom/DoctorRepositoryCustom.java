@@ -1,10 +1,7 @@
 package com.cogent.cogentappointment.client.repository.custom;
 
 import com.cogent.cogentappointment.client.dto.request.doctor.DoctorSearchRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.doctor.DoctorDetailResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.doctor.DoctorDropdownDTO;
-import com.cogent.cogentappointment.client.dto.response.doctor.DoctorMinimalResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.doctor.DoctorUpdateResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.doctor.*;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -33,4 +30,6 @@ public interface DoctorRepositoryCustom {
     List<DoctorDropdownDTO> fetchDoctorByHospitalId(Long hospitalId);
 
     DoctorUpdateResponseDTO fetchDetailsForUpdate(Long id);
+
+    List<DoctorMinResponseDTO> fetchDoctorMinInfo(Long hospitalId);
 }

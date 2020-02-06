@@ -154,14 +154,15 @@ public class PatientServiceImpl implements PatientService {
 
         log.info(UPDATING_PROCESS_STARTED, PATIENT);
 
-        Patient patientToBeUpdated=patientRepository.fetchPatientById(updateRequestDTO.getId())
+        Patient patientToBeUpdated = patientRepository.fetchPatientById(updateRequestDTO.getId())
                 .orElseThrow(() -> PATIENT_WITH_GIVEN_ID_NOT_FOUND.apply(updateRequestDTO.getId()));
 
-        if(patientRepository.checkIfHISNumberExists(updateRequestDTO.getHospitalNumber()) > 0){
+        if (patientRepository
+                .checkIfHISNumberExists(updateRequestDTO.getHospitalNumber(), updateRequestDTO.getId()) > 0) {
             throw new DataDuplicationException("his number already exists");
         }
 
-        save(updatePatient(updateRequestDTO,patientToBeUpdated));
+        save(updatePatient(updateRequestDTO, patientToBeUpdated));
 
         log.info(UPDATING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 

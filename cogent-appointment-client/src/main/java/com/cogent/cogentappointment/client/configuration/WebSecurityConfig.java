@@ -56,6 +56,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(AUTH_WHITELIST).permitAll()
                 .antMatchers(HttpMethod.POST, hmaconfig.getUri()).permitAll()
                 .antMatchers(HttpMethod.POST, "/api/v1/admin").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/v1/admin").permitAll()
                 .anyRequest().authenticated();
     }
 

@@ -20,8 +20,4 @@ public interface PatientRepository extends JpaRepository<Patient, Long>, Patient
 
     @Query("SELECT p FROM Patient p WHERE p.id=:id AND p.status ='Y' AND p.isRegistered='Y'")
     Optional<Patient> fetchRegisteredPatientById(@Param("id") Long id);
-
-    @Query("SELECT COUNT(p.id) FROM Patient p WHERE p.hospitalNumber=:hisNumber AND p.id!=:id")
-    Long checkIfHISNumberExists(@Param("hisNumber") String hisNumber,@Param("id") Long id);
-
 }

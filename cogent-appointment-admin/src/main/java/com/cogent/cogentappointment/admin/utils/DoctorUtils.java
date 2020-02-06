@@ -11,10 +11,10 @@ import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorQualificatio
 import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorSpecializationResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorUpdateResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
-import com.cogent.cogentappointment.admin.enums.Gender;
-import com.cogent.cogentappointment.admin.model.*;
 import com.cogent.cogentappointment.admin.utils.commons.NumberFormatterUtils;
 import com.cogent.cogentappointment.admin.utils.commons.StringUtil;
+import com.cogent.cogentappointment.persistence.enums.Gender;
+import com.cogent.cogentappointment.persistence.model.*;
 
 import java.util.List;
 import java.util.Objects;

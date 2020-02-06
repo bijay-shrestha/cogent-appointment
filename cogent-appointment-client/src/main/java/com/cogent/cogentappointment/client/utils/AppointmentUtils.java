@@ -6,8 +6,7 @@ import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRe
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentUpdateRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.*;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
-import com.cogent.cogentappointment.client.model.*;
-import com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils;
+import com.cogent.cogentappointment.persistence.model.*;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Minutes;
@@ -39,12 +38,12 @@ public class AppointmentUtils {
 
         Appointment appointment = new Appointment();
         appointment.setAppointmentDate(requestDTO.getAppointmentDate());
-        appointment.setAppointmentTime(parseAppointmentTime(requestDTO.getAppointmentDate(),
-                requestDTO.getAppointmentTime()));
+//        appointment.setAppointmentTime(parseAppointmentTime(requestDTO.getAppointmentDate(),
+//        requestDTO.getAppointmentTime()));
         appointment.setAppointmentNumber(appointmentNumber);
-        appointment.setSerialNumber(NumberFormatterUtils.generateRandomNumber(6));
+//        appointment.setSerialNumber(NumberFormatterUtils.generateRandomNumber(6));
         appointment.setCreatedDateNepali(requestDTO.getCreatedDateNepali());
-        appointment.setStatus("PA");
+//        appointment.setStatus("PA");
         parseToAppointment(patient, specialization, doctor, hospital, appointment);
         return appointment;
     }
@@ -60,7 +59,7 @@ public class AppointmentUtils {
                                            Appointment appointment) {
         appointment.setDoctorId(doctor);
         appointment.setSpecializationId(specialization);
-        appointment.setHospitalId(hospital);
+//        appointment.setHospitalId(hospital);
         appointment.setPatientId(patient);
     }
 

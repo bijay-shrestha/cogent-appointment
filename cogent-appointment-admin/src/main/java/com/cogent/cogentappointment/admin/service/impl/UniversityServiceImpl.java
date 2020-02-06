@@ -9,11 +9,11 @@ import com.cogent.cogentappointment.admin.dto.response.university.UniversityMini
 import com.cogent.cogentappointment.admin.dto.response.university.UniversityResponseDTO;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.model.Country;
-import com.cogent.cogentappointment.admin.model.University;
 import com.cogent.cogentappointment.admin.repository.UniversityRepository;
 import com.cogent.cogentappointment.admin.service.CountryService;
 import com.cogent.cogentappointment.admin.service.UniversityService;
+import com.cogent.cogentappointment.persistence.model.Country;
+import com.cogent.cogentappointment.persistence.model.University;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

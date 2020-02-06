@@ -7,8 +7,8 @@ import com.cogent.cogentappointment.admin.dto.request.department.DepartmentUpdat
 import com.cogent.cogentappointment.admin.dto.response.department.DepartmentMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.department.DepartmentResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.model.Department;
 import com.cogent.cogentappointment.admin.repository.custom.DepartmentRepositoryCustom;
+import com.cogent.cogentappointment.persistence.model.Department;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

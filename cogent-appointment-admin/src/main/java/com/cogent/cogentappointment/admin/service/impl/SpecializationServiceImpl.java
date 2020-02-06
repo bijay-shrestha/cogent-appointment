@@ -9,9 +9,9 @@ import com.cogent.cogentappointment.admin.dto.response.specialization.Specializa
 import com.cogent.cogentappointment.admin.dto.response.specialization.SpecializationResponseDTO;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.model.Specialization;
 import com.cogent.cogentappointment.admin.repository.SpecializationRepository;
 import com.cogent.cogentappointment.admin.service.SpecializationService;
+import com.cogent.cogentappointment.persistence.model.Specialization;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

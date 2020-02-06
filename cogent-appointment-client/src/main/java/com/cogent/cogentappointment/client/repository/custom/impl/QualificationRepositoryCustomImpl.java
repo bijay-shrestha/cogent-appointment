@@ -7,9 +7,9 @@ import com.cogent.cogentappointment.client.dto.response.qualification.Qualificat
 import com.cogent.cogentappointment.client.dto.response.qualification.QualificationMinimalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.qualification.QualificationResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.model.Qualification;
 import com.cogent.cogentappointment.client.repository.custom.QualificationRepositoryCustom;
 import com.cogent.cogentappointment.client.utils.commons.PageableUtils;
+import com.cogent.cogentappointment.persistence.model.Qualification;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +21,8 @@ import javax.persistence.Query;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.client.constants.QueryConstants.ID;
+import static com.cogent.cogentappointment.client.constants.QueryConstants.NAME;
 import static com.cogent.cogentappointment.client.query.QualificationQuery.*;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
 
@@ -34,6 +36,23 @@ public class QualificationRepositoryCustomImpl implements QualificationRepositor
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    @Override
+    public Long validateDuplicity(String name) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY)
+                .setParameter(NAME, name);
+
+        return (Long) query.getSingleResult();
+    }
+
+    @Override
+    public Long validateDuplicity(Long id, String name) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE)
+                .setParameter(ID, id)
+                .setParameter(NAME, name);
+
+        return (Long) query.getSingleResult();
+    }
 
     @Override
     public List<QualificationMinimalResponseDTO> search(QualificationSearchRequestDTO searchRequestDTO,

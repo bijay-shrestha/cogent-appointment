@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.admin.service;
 
-import com.cogent.cogentappointment.admin.model.QualificationAlias;
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
+import com.cogent.cogentappointment.persistence.model.QualificationAlias;
 
 import java.util.List;
 

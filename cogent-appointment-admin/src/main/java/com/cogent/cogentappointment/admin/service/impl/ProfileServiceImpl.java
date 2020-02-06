@@ -13,13 +13,13 @@ import com.cogent.cogentappointment.admin.dto.response.profile.ProfileMinimalRes
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.log.constants.ProfileLog;
-import com.cogent.cogentappointment.admin.model.Department;
-import com.cogent.cogentappointment.admin.model.Profile;
-import com.cogent.cogentappointment.admin.model.ProfileMenu;
 import com.cogent.cogentappointment.admin.repository.DepartmentRepository;
 import com.cogent.cogentappointment.admin.repository.ProfileMenuRepository;
 import com.cogent.cogentappointment.admin.repository.ProfileRepository;
 import com.cogent.cogentappointment.admin.service.ProfileService;
+import com.cogent.cogentappointment.persistence.model.Department;
+import com.cogent.cogentappointment.persistence.model.Profile;
+import com.cogent.cogentappointment.persistence.model.ProfileMenu;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

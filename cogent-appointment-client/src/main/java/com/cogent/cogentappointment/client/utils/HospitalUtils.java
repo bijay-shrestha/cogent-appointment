@@ -7,10 +7,10 @@ import com.cogent.cogentappointment.client.dto.request.hospital.HospitalUpdateRe
 import com.cogent.cogentappointment.client.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospital.HospitalContactNumberResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospital.HospitalResponseDTO;
-import com.cogent.cogentappointment.client.model.Hospital;
-import com.cogent.cogentappointment.client.model.HospitalBanner;
-import com.cogent.cogentappointment.client.model.HospitalContactNumber;
-import com.cogent.cogentappointment.client.model.HospitalLogo;
+import com.cogent.cogentappointment.persistence.model.HospitalBanner;
+import com.cogent.cogentappointment.persistence.model.Hospital;
+import com.cogent.cogentappointment.persistence.model.HospitalContactNumber;
+import com.cogent.cogentappointment.persistence.model.HospitalLogo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,7 +53,7 @@ public class HospitalUtils {
     }
 
     public static void setLogoFileProperties(FileUploadResponseDTO fileUploadResponseDTO,
-                                               HospitalLogo hospitalLogo) {
+                                             HospitalLogo hospitalLogo) {
         hospitalLogo.setFileSize(fileUploadResponseDTO.getFileSize());
         hospitalLogo.setFileUri(fileUploadResponseDTO.getFileUri());
         hospitalLogo.setFileType(fileUploadResponseDTO.getFileType());

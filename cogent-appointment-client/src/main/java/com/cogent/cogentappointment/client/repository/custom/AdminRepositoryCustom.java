@@ -7,7 +7,7 @@ import com.cogent.cogentappointment.client.dto.response.admin.AdminDetailRespons
 import com.cogent.cogentappointment.client.dto.response.admin.AdminDropdownDTO;
 import com.cogent.cogentappointment.client.dto.response.admin.AdminLoggedInInfoResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.admin.AdminMinimalResponseDTO;
-import com.cogent.cogentappointment.client.model.Admin;
+import com.cogent.cogentappointment.persistence.model.Admin;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;

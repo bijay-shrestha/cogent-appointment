@@ -9,7 +9,7 @@ import com.cogent.cogentappointment.client.dto.response.hospital.HospitalDropdow
 import com.cogent.cogentappointment.client.dto.response.hospital.HospitalMinResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospital.HospitalMinimalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospital.HospitalResponseDTO;
-import com.cogent.cogentappointment.client.model.Hospital;
+import com.cogent.cogentappointment.persistence.model.Hospital;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 

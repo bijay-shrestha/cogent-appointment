@@ -2,9 +2,9 @@ package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.model.QualificationAlias;
 import com.cogent.cogentappointment.admin.repository.QualificationAliasRepository;
 import com.cogent.cogentappointment.admin.service.QualificationAliasService;
+import com.cogent.cogentappointment.persistence.model.QualificationAlias;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

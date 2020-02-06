@@ -1,8 +1,8 @@
 package com.cogent.cogentappointment.admin.utils;
 
 import com.cogent.cogentappointment.admin.dto.request.email.EmailRequestDTO;
-import com.cogent.cogentappointment.admin.model.Admin;
-import com.cogent.cogentappointment.admin.model.ForgotPasswordVerification;
+import com.cogent.cogentappointment.persistence.model.Admin;
+import com.cogent.cogentappointment.persistence.model.ForgotPasswordVerification;
 
 import java.util.Date;
 

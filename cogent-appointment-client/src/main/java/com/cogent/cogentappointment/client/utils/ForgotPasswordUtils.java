@@ -3,9 +3,9 @@ package com.cogent.cogentappointment.client.utils;
 import com.cogent.cogentappointment.client.constants.StatusConstants;
 import com.cogent.cogentappointment.client.constants.StringConstant;
 import com.cogent.cogentappointment.client.dto.request.email.EmailRequestDTO;
-import com.cogent.cogentappointment.client.model.Admin;
-import com.cogent.cogentappointment.client.model.ForgotPasswordVerification;
 import com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils;
+import com.cogent.cogentappointment.persistence.model.Admin;
+import com.cogent.cogentappointment.persistence.model.ForgotPasswordVerification;
 
 import java.util.Date;
 

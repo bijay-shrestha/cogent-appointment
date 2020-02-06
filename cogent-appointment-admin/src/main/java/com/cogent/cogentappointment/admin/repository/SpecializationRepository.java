@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.admin.repository;
 
-import com.cogent.cogentappointment.admin.model.Specialization;
 import com.cogent.cogentappointment.admin.repository.custom.SpecializationRepositoryCustom;
+import com.cogent.cogentappointment.persistence.model.Specialization;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -22,5 +22,5 @@ public interface SpecializationRepository extends JpaRepository<Specialization, 
     Optional<Specialization> findActiveSpecializationById(@Param("id") Long id);
 
     @Query("FROM Specialization s WHERE s.status='Y' AND s.id = :id")
-   Specialization fetchActiveSpecializationById(@Param("id") Long id);
+    Specialization fetchActiveSpecializationById(@Param("id") Long id);
 }

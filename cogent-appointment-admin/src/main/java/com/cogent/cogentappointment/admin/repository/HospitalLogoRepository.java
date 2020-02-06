@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.admin.repository;
 
-import com.cogent.cogentappointment.admin.model.HospitalLogo;
+import com.cogent.cogentappointment.persistence.model.HospitalLogo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

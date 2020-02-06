@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.admin.dto.response.patient;
 
-import com.cogent.cogentappointment.admin.enums.Gender;
+import com.cogent.cogentappointment.persistence.enums.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

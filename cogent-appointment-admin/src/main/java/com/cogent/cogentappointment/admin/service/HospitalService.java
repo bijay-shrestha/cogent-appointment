@@ -7,7 +7,7 @@ import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalUpdateReq
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalDropdownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalResponseDTO;
-import com.cogent.cogentappointment.admin.model.Hospital;
+import com.cogent.cogentappointment.persistence.model.Hospital;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,9 +19,9 @@ import java.util.List;
  */
 public interface HospitalService {
 
-    void save(HospitalRequestDTO requestDTO, MultipartFile multipartFile) throws NoSuchAlgorithmException;
+    void save(HospitalRequestDTO requestDTO, MultipartFile logo, MultipartFile banner) throws NoSuchAlgorithmException;
 
-    void update(HospitalUpdateRequestDTO updateRequestDTO, MultipartFile multipartFile);
+    void update(HospitalUpdateRequestDTO updateRequestDTO, MultipartFile logo, MultipartFile banner);
 
     void delete(DeleteRequestDTO deleteRequestDTO);
 

@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.client.dto.response.patient;
 
-import com.cogent.cogentappointment.client.enums.Gender;
+import com.cogent.cogentappointment.persistence.enums.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,7 +32,7 @@ public class PatientDetailResponseDTO implements Serializable {
 
     private Date dateOfBirth;
 
-    private String nepaliDateOfBirth;
-
     private String age;
+
+    private String registrationNumber;
 }

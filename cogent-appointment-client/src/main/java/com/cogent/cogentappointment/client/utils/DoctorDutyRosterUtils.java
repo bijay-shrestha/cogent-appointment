@@ -10,8 +10,8 @@ import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.DoctorWe
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedDateResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.*;
 import com.cogent.cogentappointment.client.exception.BadRequestException;
-import com.cogent.cogentappointment.client.model.*;
 import com.cogent.cogentappointment.client.utils.commons.DateUtils;
+import com.cogent.cogentappointment.persistence.model.*;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -106,13 +106,13 @@ public class DoctorDutyRosterUtils {
 
     public static DoctorDutyRosterDetailResponseDTO parseToDoctorDutyRosterDetailResponseDTO(
             DoctorDutyRosterResponseDTO dutyRosterResponseDTO,
-            List<DoctorWeekDaysDutyRosterResponseDTO> weekDaysDutyRosterResponseDTOS,
-            List<DoctorDutyRosterOverrideResponseDTO> doctorDutyRosterOverrideResponseDTOS) {
+            List<DoctorWeekDaysDutyRosterResponseDTO> weekDaysRosters,
+            List<DoctorDutyRosterOverrideResponseDTO> overrideRosters) {
 
         return DoctorDutyRosterDetailResponseDTO.builder()
-                .doctorDutyRosterResponseDTO(dutyRosterResponseDTO)
-                .weekDaysDutyRosterResponseDTOS(weekDaysDutyRosterResponseDTOS)
-                .doctorDutyRosterOverrideResponseDTOS(doctorDutyRosterOverrideResponseDTOS)
+                .doctorDutyRosterInfo(dutyRosterResponseDTO)
+                .weekDaysRosters(weekDaysRosters)
+                .overrideRosters(overrideRosters)
                 .build();
     }
 

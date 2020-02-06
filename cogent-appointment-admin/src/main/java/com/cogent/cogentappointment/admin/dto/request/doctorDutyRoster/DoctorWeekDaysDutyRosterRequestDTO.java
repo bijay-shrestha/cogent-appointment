@@ -17,10 +17,8 @@ import java.util.Date;
 @NoArgsConstructor
 public class DoctorWeekDaysDutyRosterRequestDTO implements Serializable {
 
-    @NotNull
     private Date startTime;
 
-    @NotNull
     private Date endTime;
 
     @NotNull

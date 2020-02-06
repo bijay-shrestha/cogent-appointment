@@ -18,10 +18,6 @@ public class QualificationResponseDTO implements Serializable {
 
     private String university;
 
-    private Long countryId;
-
-    private String countryName;
-
     private Long qualificationAliasId;
 
     private String qualificationAliasName;

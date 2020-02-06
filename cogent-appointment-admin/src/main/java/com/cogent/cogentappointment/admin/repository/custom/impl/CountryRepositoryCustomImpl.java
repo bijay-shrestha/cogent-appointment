@@ -2,8 +2,8 @@ package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.model.Country;
 import com.cogent.cogentappointment.admin.repository.custom.CountryRepositoryCustom;
+import com.cogent.cogentappointment.persistence.model.Country;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 

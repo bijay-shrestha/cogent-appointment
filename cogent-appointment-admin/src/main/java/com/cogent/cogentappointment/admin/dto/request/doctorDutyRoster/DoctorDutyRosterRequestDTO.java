@@ -20,6 +20,9 @@ import java.util.List;
 public class DoctorDutyRosterRequestDTO implements Serializable {
 
     @NotNull
+    private Long hospitalId;
+
+    @NotNull
     private Long doctorId;
 
     @NotNull

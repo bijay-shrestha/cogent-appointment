@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.client.dto.response.admin;
 
-import com.cogent.cogentappointment.client.enums.Gender;
+import com.cogent.cogentappointment.persistence.enums.Gender;
 import lombok.*;
 
 import java.io.Serializable;

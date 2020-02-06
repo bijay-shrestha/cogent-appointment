@@ -17,7 +17,7 @@ import java.math.BigInteger;
 @Data
 public class DoctorMinimalResponseDTO implements Serializable {
 
-    private BigInteger doctorId;
+    private BigInteger id;
 
     private String doctorName;
 
@@ -28,6 +28,10 @@ public class DoctorMinimalResponseDTO implements Serializable {
     private Character status;
 
     private String specializationName;
+
+    private String hospitalName;
+
+    private String fileUri;
 
     private int totalItems;
 }

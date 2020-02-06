@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.admin.repository;
 
-import com.cogent.cogentappointment.admin.model.DoctorQualification;
+import com.cogent.cogentappointment.persistence.model.DoctorQualification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

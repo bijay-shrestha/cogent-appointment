@@ -79,6 +79,8 @@ public class ErrorMessageConstants {
     public static final String INVALID_DATE_MESSAGE = "From date cannot be greater than to date";
     public static final String INVALID_DATE_DEBUG_MESSAGE = "Failed to complete operation due to invalid from and to date";
 
+    public static final String INVALID_USERNAME_OR_HOSPITAL_CODE = "Invalid username or hospitalcode";
+    public static final String INVALID_PASSWORD = "Invalid password";
 
     //J
 

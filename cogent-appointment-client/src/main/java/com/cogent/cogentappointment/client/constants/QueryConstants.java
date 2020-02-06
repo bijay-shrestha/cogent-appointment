@@ -8,6 +8,7 @@ public class QueryConstants {
     //A
     public static final String APPOINTMENT_DATE = "appointmentDate";
     public static final String APPOINTMENT_TIME = "appointmentTime";
+    public static final String API_KEY = "apiKey";
 
     //B
 
@@ -60,7 +61,11 @@ public class QueryConstants {
     public interface PatientQueryConstants {
         String ESEWA_ID = "eSewaId";
         String IS_SELF = "isSelf";
+        String META_INFO="metaInfo";
+        String STATUS="status";
     }
+
+    public static final String PASSWORD = "password";
 
     //Q
 

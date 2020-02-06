@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.client.repository;
 
-import com.cogent.cogentappointment.client.model.Patient;
 import com.cogent.cogentappointment.client.repository.custom.PatientRepositoryCustom;
+import com.cogent.cogentappointment.persistence.model.Patient;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,4 +20,8 @@ public interface PatientRepository extends JpaRepository<Patient, Long>, Patient
 
     @Query("SELECT p FROM Patient p WHERE p.id=:id AND p.status ='Y' AND p.isRegistered='Y'")
     Optional<Patient> fetchRegisteredPatientById(@Param("id") Long id);
+
+    @Query("SELECT COUNT(p.id) FROM Patient p WHERE p.hospitalNumber=:hisNumber ")
+    Long checkIfHISNumberExists(@Param("hisNumber") String hisNumber);
+
 }

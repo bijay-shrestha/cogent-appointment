@@ -4,16 +4,9 @@ import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentCa
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentUpdateRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentAvailabilityResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedTimeResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentCheckAvailabilityMinResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentCheckAvailabilityResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.*;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
-import com.cogent.cogentappointment.client.model.Appointment;
-import com.cogent.cogentappointment.client.model.Doctor;
-import com.cogent.cogentappointment.client.model.Patient;
-import com.cogent.cogentappointment.client.model.Specialization;
-import com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils;
+import com.cogent.cogentappointment.persistence.model.*;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Minutes;
@@ -25,7 +18,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import static com.cogent.cogentappointment.client.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.client.constants.StringConstant.HYPHEN;
+import static com.cogent.cogentappointment.client.constants.StringConstant.OR;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 
 /**
@@ -39,19 +34,18 @@ public class AppointmentUtils {
                                                  String appointmentNumber,
                                                  Patient patient,
                                                  Specialization specialization,
-                                                 Doctor doctor) {
+                                                 Doctor doctor,
+                                                 Hospital hospital) {
 
         Appointment appointment = new Appointment();
         appointment.setAppointmentDate(requestDTO.getAppointmentDate());
-        appointment.setAppointmentTime(parseAppointmentTime(requestDTO.getAppointmentDate(),
-                requestDTO.getAppointmentTime()));
+//        appointment.setAppointmentTime(parseAppointmentTime(requestDTO.getAppointmentDate(),
+//        requestDTO.getAppointmentTime()));
         appointment.setAppointmentNumber(appointmentNumber);
-        appointment.setSerialNumber(NumberFormatterUtils.generateRandomNumber(6));
+//        appointment.setSerialNumber(NumberFormatterUtils.generateRandomNumber(6));
         appointment.setCreatedDateNepali(requestDTO.getCreatedDateNepali());
-        appointment.setStatus("PA");
-//        appointment.setHospitalId();
-
-        parseToAppointment(patient, specialization, doctor, appointment);
+//        appointment.setStatus("PA");
+        parseToAppointment(patient, specialization, doctor, hospital, appointment);
         return appointment;
     }
 
@@ -62,9 +56,11 @@ public class AppointmentUtils {
     private static void parseToAppointment(Patient patient,
                                            Specialization specialization,
                                            Doctor doctor,
+                                           Hospital hospital,
                                            Appointment appointment) {
         appointment.setDoctorId(doctor);
         appointment.setSpecializationId(specialization);
+//        appointment.setHospitalId(hospital);
         appointment.setPatientId(patient);
     }
 
@@ -222,7 +218,7 @@ public class AppointmentUtils {
     private static boolean isAppointmentDateMatched(List<AppointmentBookedTimeResponseDTO> bookedAppointments,
                                                     String date) {
         return bookedAppointments.stream()
-                .anyMatch(bookedAppointment -> bookedAppointment.getAppointmentTime().contains(date));
+                .anyMatch(bookedAppointment -> bookedAppointment.getAppointmentTime().equals(date));
     }
 
     private static void setTimeSlotMap(AppointmentAvailabilityResponseDTO responseDTO,
@@ -230,6 +226,25 @@ public class AppointmentUtils {
                                        Duration durationInMinutes) {
         responseDTO.setStartTime(getTimeIn12HourFormat(startDateTime.toDate()));
         responseDTO.setEndTime(getTimeIn12HourFormat(startDateTime.plus(durationInMinutes).toDate()));
+    }
+
+    public static AppointmentSuccessResponseDTO parseToAppointmentSuccessResponseDTO(String appointmentNumber) {
+        return AppointmentSuccessResponseDTO.builder()
+                .appointmentNumber(appointmentNumber)
+                .appointmentTransactionStatus(ACTIVE)
+                .build();
+    }
+
+    public static PatientMetaInfo parseToPatientMetaInfo(Patient patient) {
+        PatientMetaInfo patientMetaInfo = new PatientMetaInfo();
+        patientMetaInfo.setPatient(patient);
+        patientMetaInfo.setMetaInfo(patient.getName()
+                + OR +
+                patient.getMobileNumber()
+                + OR +
+                patient.getRegistrationNumber());
+
+        return patientMetaInfo;
     }
 
 }

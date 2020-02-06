@@ -30,9 +30,9 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     }
 
     @Override
-    public String loginUser(HttpServletRequest request, LoginRequestDTO requestDTO) {
+    public String loginUser(LoginRequestDTO requestDTO) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(requestDTO.getUsername(), requestDTO.getPassword()));
-        return hmacUtils.getAuthToken(request, authentication);
+        return hmacUtils.getAuthToken(authentication);
     }
 }

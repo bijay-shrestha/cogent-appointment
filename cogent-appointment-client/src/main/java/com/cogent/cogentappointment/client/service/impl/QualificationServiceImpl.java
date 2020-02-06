@@ -8,14 +8,15 @@ import com.cogent.cogentappointment.client.dto.request.qualification.Qualificati
 import com.cogent.cogentappointment.client.dto.response.qualification.QualificationDropdownDTO;
 import com.cogent.cogentappointment.client.dto.response.qualification.QualificationMinimalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.qualification.QualificationResponseDTO;
+import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.model.Country;
-import com.cogent.cogentappointment.client.model.Qualification;
-import com.cogent.cogentappointment.client.model.QualificationAlias;
 import com.cogent.cogentappointment.client.repository.QualificationRepository;
-import com.cogent.cogentappointment.client.service.CountryService;
 import com.cogent.cogentappointment.client.service.QualificationAliasService;
 import com.cogent.cogentappointment.client.service.QualificationService;
+import com.cogent.cogentappointment.client.service.UniversityService;
+import com.cogent.cogentappointment.persistence.model.Qualification;
+import com.cogent.cogentappointment.persistence.model.QualificationAlias;
+import com.cogent.cogentappointment.persistence.model.University;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.NAME_DUPLICATION_MESSAGE;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.QualificationLog.QUALIFICATION;
 import static com.cogent.cogentappointment.client.utils.QualificationUtils.*;
@@ -39,16 +41,18 @@ public class QualificationServiceImpl implements QualificationService {
 
     private final QualificationRepository qualificationRepository;
 
-    private final CountryService countryService;
 
     private final QualificationAliasService qualificationAliasService;
 
+    private final UniversityService universityService;
+
+
     public QualificationServiceImpl(QualificationRepository qualificationRepository,
-                                    CountryService countryService,
-                                    QualificationAliasService qualificationAliasService) {
+                                    QualificationAliasService qualificationAliasService,
+                                    UniversityService universityService) {
         this.qualificationRepository = qualificationRepository;
-        this.countryService = countryService;
         this.qualificationAliasService = qualificationAliasService;
+        this.universityService = universityService;
     }
 
     @Override
@@ -57,11 +61,11 @@ public class QualificationServiceImpl implements QualificationService {
 
         log.info(SAVING_PROCESS_STARTED, QUALIFICATION);
 
-        Country country = fetchCountry(requestDTO.getCountryId());
-
         QualificationAlias qualificationAlias = fetchQualificationAlias(requestDTO.getQualificationAliasId());
 
-        save(parseToQualification(requestDTO, country, qualificationAlias));
+        University university = fetchUniversity(requestDTO.getUniversityId());
+
+        save(parseToQualification(requestDTO, university, qualificationAlias));
 
         log.info(SAVING_PROCESS_COMPLETED, QUALIFICATION, getDifferenceBetweenTwoTime(startTime));
     }
@@ -74,11 +78,15 @@ public class QualificationServiceImpl implements QualificationService {
 
         Qualification qualification = findQualificationById(requestDTO.getId());
 
-        Country country = fetchCountry(requestDTO.getCountryId());
+        Long count = qualificationRepository.validateDuplicity(requestDTO.getId(), requestDTO.getName());
+
+        validateName(count, requestDTO.getName());
 
         QualificationAlias qualificationAlias = fetchQualificationAlias(requestDTO.getQualificationAliasId());
 
-        parseToUpdatedQualification(requestDTO, country, qualificationAlias, qualification);
+        University university = fetchUniversity(requestDTO.getUniversityId());
+
+        parseToUpdatedQualification(requestDTO, qualificationAlias, university, qualification);
 
         log.info(UPDATING_PROCESS_COMPLETED, QUALIFICATION, getDifferenceBetweenTwoTime(startTime));
     }
@@ -164,8 +172,10 @@ public class QualificationServiceImpl implements QualificationService {
         return responseDTOS;
     }
 
-    private Country fetchCountry(Long id) {
-        return countryService.fetchCountryById(id);
+    private void validateName(Long qualificationCount, String name) {
+        if (qualificationCount.intValue() > 0)
+            throw new DataDuplicationException(
+                    String.format(NAME_DUPLICATION_MESSAGE, Qualification.class.getSimpleName(), name));
     }
 
     private QualificationAlias fetchQualificationAlias(Long id) {
@@ -175,6 +185,10 @@ public class QualificationServiceImpl implements QualificationService {
     private Qualification findQualificationById(Long id) {
         return qualificationRepository.findQualificationById(id)
                 .orElseThrow(() -> new NoContentFoundException(Qualification.class, "id", id.toString()));
+    }
+
+    private University fetchUniversity(Long universityId) {
+        return universityService.fetchUniversityById(universityId);
     }
 
     private void save(Qualification qualification) {

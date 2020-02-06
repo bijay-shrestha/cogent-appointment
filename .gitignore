@@ -39,3 +39,5 @@ build/
 **/*.yml
 
 /cogent-uploads/**
+
+/src/main/resources/application.yml

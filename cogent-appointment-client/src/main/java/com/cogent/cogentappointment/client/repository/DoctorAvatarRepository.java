@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.client.repository;
 
-import com.cogent.cogentappointment.client.model.DoctorAvatar;
+import com.cogent.cogentappointment.persistence.model.DoctorAvatar;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface DoctorAvatarRepository extends JpaRepository<DoctorAvatar, Long> {
-    
+
     @Query("SELECT c FROM DoctorAvatar c WHERE c.doctorId.id = :id")
     DoctorAvatar findByDoctorId(@Param("id") Long id);
 }

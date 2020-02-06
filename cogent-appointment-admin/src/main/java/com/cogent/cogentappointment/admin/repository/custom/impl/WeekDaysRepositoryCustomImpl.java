@@ -2,8 +2,8 @@ package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.model.WeekDays;
 import com.cogent.cogentappointment.admin.repository.custom.WeekDaysRepositoryCustom;
+import com.cogent.cogentappointment.persistence.model.WeekDays;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;

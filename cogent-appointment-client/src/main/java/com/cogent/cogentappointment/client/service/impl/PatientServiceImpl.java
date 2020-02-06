@@ -3,16 +3,18 @@ package com.cogent.cogentappointment.client.service.impl;
 import com.cogent.cogentappointment.client.constants.ErrorMessageConstants;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientSearchRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientMinimalResponseDTO;
-import com.cogent.cogentappointment.client.enums.Gender;
+import com.cogent.cogentappointment.client.dto.response.patient.PatientResponseDTO;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.model.Hospital;
-import com.cogent.cogentappointment.client.model.Patient;
 import com.cogent.cogentappointment.client.repository.PatientRepository;
 import com.cogent.cogentappointment.client.service.HospitalService;
 import com.cogent.cogentappointment.client.service.PatientService;
+import com.cogent.cogentappointment.persistence.enums.Gender;
+import com.cogent.cogentappointment.persistence.model.Hospital;
+import com.cogent.cogentappointment.persistence.model.Patient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,8 @@ import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.PatientLog.PATIENT;
 import static com.cogent.cogentappointment.client.utils.GenderUtils.fetchGenderByCode;
 import static com.cogent.cogentappointment.client.utils.PatientUtils.parseToPatient;
+import static com.cogent.cogentappointment.client.utils.PatientUtils.updatePatient;
+import static com.cogent.cogentappointment.client.utils.commons.AgeConverterUtils.calculateAge;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 
 /**
@@ -83,12 +87,12 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public PatientDetailResponseDTO search(PatientSearchRequestDTO searchRequestDTO) {
+    public PatientDetailResponseDTO searchForSelf(PatientSearchRequestDTO searchRequestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, PATIENT);
 
-        PatientDetailResponseDTO responseDTO = patientRepository.search(searchRequestDTO);
+        PatientDetailResponseDTO responseDTO = patientRepository.searchForSelf(searchRequestDTO);
 
         log.info(SEARCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
@@ -122,6 +126,44 @@ public class PatientServiceImpl implements PatientService {
         log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
+
+    }
+
+    @Override
+    public List<PatientResponseDTO> search(PatientSearchRequestDTO searchRequestDTO, Pageable pageable) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SEARCHING_PROCESS_STARTED, PATIENT);
+
+        List<PatientResponseDTO> responseDTO = patientRepository.search(searchRequestDTO, pageable);
+
+        responseDTO.forEach(patientResponseDTO -> {
+            String age = calculateAge(patientResponseDTO.getDateOfBirth());
+            patientResponseDTO.setAge(age);
+        });
+
+        log.info(SEARCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTO;
+    }
+
+    @Override
+    public void update(PatientUpdateRequestDTO updateRequestDTO) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(UPDATING_PROCESS_STARTED, PATIENT);
+
+        Patient patientToBeUpdated=patientRepository.fetchPatientById(updateRequestDTO.getId())
+                .orElseThrow(() -> PATIENT_WITH_GIVEN_ID_NOT_FOUND.apply(updateRequestDTO.getId()));
+
+        if(patientRepository.checkIfHISNumberExists(updateRequestDTO.getHospitalNumber()) > 0){
+            throw new DataDuplicationException("his number already exists");
+        }
+
+        save(updatePatient(updateRequestDTO,patientToBeUpdated));
+
+        log.info(UPDATING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
     }
 

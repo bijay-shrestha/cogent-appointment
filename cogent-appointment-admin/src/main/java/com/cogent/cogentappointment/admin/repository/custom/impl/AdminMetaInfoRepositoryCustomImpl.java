@@ -2,8 +2,8 @@ package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.dto.response.admin.AdminMetaInfoResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.model.AdminMetaInfo;
 import com.cogent.cogentappointment.admin.repository.custom.AdminMetaInfoRepositoryCustom;
+import com.cogent.cogentappointment.persistence.model.AdminMetaInfo;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 

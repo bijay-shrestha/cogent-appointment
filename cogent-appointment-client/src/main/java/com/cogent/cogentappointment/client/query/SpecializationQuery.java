@@ -97,5 +97,6 @@ public class SpecializationQuery {
                     " LEFT JOIN Hospital h ON h.id = s.hospital.id" +
                     " WHERE s.status ='Y'" +
                     " AND h.status = 'Y'" +
-                    " AND h.id =:hospitalId";
+                    " AND h.id =:hospitalId" +
+                    " ORDER BY s.name";
 }

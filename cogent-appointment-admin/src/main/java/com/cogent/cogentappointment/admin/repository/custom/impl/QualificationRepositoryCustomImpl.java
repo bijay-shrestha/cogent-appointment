@@ -6,8 +6,8 @@ import com.cogent.cogentappointment.admin.dto.response.qualification.Qualificati
 import com.cogent.cogentappointment.admin.dto.response.qualification.QualificationMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.qualification.QualificationResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.model.Qualification;
 import com.cogent.cogentappointment.admin.repository.custom.QualificationRepositoryCustom;
+import com.cogent.cogentappointment.persistence.model.Qualification;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

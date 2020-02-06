@@ -7,20 +7,18 @@ import com.cogent.cogentappointment.client.dto.response.hospital.HospitalMinResp
 import com.cogent.cogentappointment.client.dto.response.hospital.HospitalMinimalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospital.HospitalResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.model.Hospital;
 import com.cogent.cogentappointment.client.repository.custom.HospitalRepositoryCustom;
+import com.cogent.cogentappointment.persistence.model.Hospital;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.query.HospitalQuery.*;
@@ -87,29 +85,6 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
     }
 
     @Override
-    public HospitalMinResponseDTO fetchMinDetailsById(Long hospitalId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_MIN_HOSPITAL_DETAILS)
-                .setParameter(ID, hospitalId);
-
-        try {
-            HospitalMinResponseDTO responseDTO = transformQueryToSingleResult(query, HospitalMinResponseDTO.class);
-            responseDTO.setContactNumbers(fetchHospitalContactDetails(hospitalId));
-            return responseDTO;
-        } catch (NoResultException e) {
-            throw HOSPITAL_WITH_GIVEN_ID_NOT_FOUND.apply(hospitalId);
-        }
-    }
-
-    private List<String> fetchHospitalContactDetails(Long hospitalId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_CONTACT_NUMBER)
-                .setParameter(ID, hospitalId);
-
-        List<Object[]> results = query.getResultList();
-
-        return results.stream().map(result -> result[1].toString()).collect(Collectors.toList());
-    }
-
-    @Override
     public List<HospitalDropdownResponseDTO> fetchActiveHospitalForDropDown() {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_FOR_DROPDOWN);
 
@@ -120,14 +95,11 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
     }
 
     @Override
-    public List<HospitalDropdownResponseDTO> search(HospitalMinSearchRequestDTO searchRequestDTO,
-                                                    Pageable pageable) {
+    public List<HospitalMinResponseDTO> fetchMinDetails(HospitalMinSearchRequestDTO searchRequestDTO) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_MIN_HOSPITAL(searchRequestDTO));
+        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_MIN_HOSPITAL(searchRequestDTO));
 
-        addPagination.accept(pageable, query);
-
-        List<HospitalDropdownResponseDTO> results = transformQueryToResultList(query, HospitalDropdownResponseDTO.class);
+        List<HospitalMinResponseDTO> results = transformNativeQueryToResultList(query, HospitalMinResponseDTO.class);
 
         if (results.isEmpty()) throw HOSPITAL_NOT_FOUND.get();
         else return results;

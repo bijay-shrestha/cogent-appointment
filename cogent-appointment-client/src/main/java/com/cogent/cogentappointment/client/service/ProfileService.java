@@ -9,7 +9,7 @@ import com.cogent.cogentappointment.client.dto.request.profile.ProfileUpdateRequ
 import com.cogent.cogentappointment.client.dto.response.profile.AssignedProfileResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.profile.ProfileDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.profile.ProfileMinimalResponseDTO;
-import com.cogent.cogentappointment.client.model.Profile;
+import com.cogent.cogentappointment.persistence.model.Profile;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;

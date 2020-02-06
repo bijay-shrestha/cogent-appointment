@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.client.service.impl;
 
-import com.cogent.cogentappointment.client.constants.ErrorMessageConstants;
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.request.specialization.SpecializationRequestDTO;
@@ -10,9 +9,9 @@ import com.cogent.cogentappointment.client.dto.response.specialization.Specializ
 import com.cogent.cogentappointment.client.dto.response.specialization.SpecializationResponseDTO;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.model.Specialization;
 import com.cogent.cogentappointment.client.repository.SpecializationRepository;
 import com.cogent.cogentappointment.client.service.SpecializationService;
+import com.cogent.cogentappointment.persistence.model.Specialization;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.function.Function;
 
-import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.*;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.NAME_DUPLICATION_MESSAGE;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.SpecializationLog.SPECIALIZATION;
 import static com.cogent.cogentappointment.client.utils.SpecializationUtils.*;
@@ -86,7 +85,7 @@ public class SpecializationServiceImpl implements SpecializationService {
 
         log.info(DELETING_PROCESS_STARTED, SPECIALIZATION);
 
-        Specialization specialization = findById(deleteRequestDTO.getId(), deleteRequestDTO.getHospitalId());
+        Specialization specialization = findById(deleteRequestDTO.getId(),null);
 
         save(parseToDeletedSpecialization(specialization, deleteRequestDTO));
 

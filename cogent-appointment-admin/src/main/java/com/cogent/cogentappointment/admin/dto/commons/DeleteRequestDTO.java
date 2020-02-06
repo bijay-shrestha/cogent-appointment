@@ -22,6 +22,4 @@ public class DeleteRequestDTO implements Serializable {
     @DeleteStatus
     private Character status;
 
-    private Long hospitalId;
-
 }

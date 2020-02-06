@@ -35,7 +35,6 @@ public class WebResourceKeyConstants {
         String BASE_COUNTRY = "/country";
     }
 
-
     //D
     public static final String DETAIL = "/detail";
 

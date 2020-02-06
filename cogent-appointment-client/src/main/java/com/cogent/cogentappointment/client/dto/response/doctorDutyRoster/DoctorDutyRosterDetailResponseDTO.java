@@ -14,9 +14,10 @@ import java.util.List;
 @NoArgsConstructor
 public class DoctorDutyRosterDetailResponseDTO implements Serializable {
 
-    private DoctorDutyRosterResponseDTO doctorDutyRosterResponseDTO;
+    private DoctorDutyRosterResponseDTO doctorDutyRosterInfo;
 
-    private List<DoctorWeekDaysDutyRosterResponseDTO> weekDaysDutyRosterResponseDTOS;
+    private List<DoctorWeekDaysDutyRosterResponseDTO> weekDaysRosters;
 
-    private List<DoctorDutyRosterOverrideResponseDTO> doctorDutyRosterOverrideResponseDTOS;
+    private List<DoctorDutyRosterOverrideResponseDTO> overrideRosters;
 }
+

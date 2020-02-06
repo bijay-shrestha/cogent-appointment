@@ -6,10 +6,10 @@ import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentPen
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.*;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.model.Appointment;
 import com.cogent.cogentappointment.admin.repository.custom.AppointmentRepositoryCustom;
 import com.cogent.cogentappointment.admin.utils.AppointmentUtils;
 import com.cogent.cogentappointment.admin.utils.commons.AgeConverterUtils;
+import com.cogent.cogentappointment.persistence.model.Appointment;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

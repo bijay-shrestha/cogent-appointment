@@ -8,18 +8,18 @@ import com.cogent.cogentappointment.admin.dto.request.admin.*;
 import com.cogent.cogentappointment.admin.dto.request.email.EmailRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.admin.*;
 import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
-import com.cogent.cogentappointment.admin.enums.Gender;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.exception.OperationUnsuccessfulException;
-import com.cogent.cogentappointment.admin.model.*;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.AdminService;
 import com.cogent.cogentappointment.admin.service.EmailService;
 import com.cogent.cogentappointment.admin.service.FileService;
 import com.cogent.cogentappointment.admin.service.ProfileService;
 import com.cogent.cogentappointment.admin.validator.LoginValidator;
+import com.cogent.cogentappointment.persistence.enums.Gender;
+import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -249,7 +249,7 @@ public class AdminServiceImpl implements AdminService {
 
         updateAdminMetaInfo(admin);
 
-        sendEmail(emailRequestDTO);
+//        sendEmail(emailRequestDTO);
 
         log.info(UPDATING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
     }

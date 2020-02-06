@@ -1,15 +1,16 @@
 package com.cogent.cogentappointment.admin.utils;
 
-import com.cogent.cogentappointment.admin.constants.EmailConstants;
-import com.cogent.cogentappointment.admin.constants.EmailTemplates;
-import com.cogent.cogentappointment.admin.constants.StatusConstants;
-import com.cogent.cogentappointment.admin.constants.StringConstant;
 import com.cogent.cogentappointment.admin.dto.request.email.EmailRequestDTO;
-import com.cogent.cogentappointment.admin.model.Admin;
-import com.cogent.cogentappointment.admin.model.ForgotPasswordVerification;
-import com.cogent.cogentappointment.admin.utils.commons.NumberFormatterUtils;
+import com.cogent.cogentappointment.persistence.model.Admin;
+import com.cogent.cogentappointment.persistence.model.ForgotPasswordVerification;
 
 import java.util.Date;
+
+import static com.cogent.cogentappointment.admin.constants.EmailConstants.SUBJECT_FOR_FORGOT_PASSWORD;
+import static com.cogent.cogentappointment.admin.constants.EmailTemplates.FORGOT_PASSWORD;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
+import static com.cogent.cogentappointment.admin.constants.StringConstant.COMMA_SEPARATED;
+import static com.cogent.cogentappointment.admin.utils.commons.NumberFormatterUtils.generateRandomNumber;
 
 /**
  * @author smriti on 2019-09-20
@@ -21,10 +22,10 @@ public class ForgotPasswordUtils {
             int expirationTime,
             ForgotPasswordVerification verification) {
 
-        verification.setResetCode(NumberFormatterUtils.generateRandomNumber(6));
+        verification.setResetCode(generateRandomNumber(6));
         verification.setExpirationDate(calculateExpirationDate(expirationTime));
         verification.setAdmin(admin);
-        verification.setStatus(StatusConstants.ACTIVE);
+        verification.setStatus(ACTIVE);
         return verification;
     }
 
@@ -33,9 +34,9 @@ public class ForgotPasswordUtils {
                                                          String resetCode) {
         return EmailRequestDTO.builder()
                 .receiverEmailAddress(emailAddress)
-                .subject(EmailConstants.SUBJECT_FOR_FORGOT_PASSWORD)
-                .templateName(EmailTemplates.FORGOT_PASSWORD)
-                .paramValue(username + StringConstant.COMMA_SEPARATED + resetCode)
+                .subject(SUBJECT_FOR_FORGOT_PASSWORD)
+                .templateName(FORGOT_PASSWORD)
+                .paramValue(username + COMMA_SEPARATED + resetCode)
                 .build();
     }
 

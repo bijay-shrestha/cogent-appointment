@@ -3,8 +3,8 @@ package com.cogent.cogentappointment.admin.utils;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.university.UniversityRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.university.UniversityUpdateRequestDTO;
-import com.cogent.cogentappointment.admin.model.Country;
-import com.cogent.cogentappointment.admin.model.University;
+import com.cogent.cogentappointment.persistence.model.Country;
+import com.cogent.cogentappointment.persistence.model.University;
 
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.toUpperCase;
 

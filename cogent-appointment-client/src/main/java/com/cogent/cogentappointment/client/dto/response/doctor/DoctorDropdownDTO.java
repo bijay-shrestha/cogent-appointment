@@ -18,6 +18,4 @@ public class DoctorDropdownDTO implements Serializable {
     private String label;
 
     private String fileUri;
-
-    private Double appointmentCharge;
 }

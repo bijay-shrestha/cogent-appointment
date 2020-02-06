@@ -1,8 +1,8 @@
 package com.cogent.cogentappointment.admin.query;
 
 import com.cogent.cogentappointment.admin.dto.request.admin.AdminSearchRequestDTO;
-import com.cogent.cogentappointment.admin.enums.Gender;
 import com.cogent.cogentappointment.admin.utils.GenderUtils;
+import com.cogent.cogentappointment.persistence.enums.Gender;
 import org.springframework.util.ObjectUtils;
 
 /**

@@ -6,9 +6,10 @@ import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalDropdown
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.model.Hospital;
 import com.cogent.cogentappointment.admin.repository.custom.HospitalRepositoryCustom;
 import com.cogent.cogentappointment.admin.utils.commons.PageableUtils;
+import com.cogent.cogentappointment.persistence.model.Hospital;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +30,7 @@ import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
  */
 @Repository
 @Transactional(readOnly = true)
+@Slf4j
 public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
     @PersistenceContext
@@ -63,8 +65,9 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
         List<HospitalMinimalResponseDTO> results = transformNativeQueryToResultList(query, HospitalMinimalResponseDTO.class);
 
-        if (results.isEmpty()) throw HOSPITAL_NOT_FOUND.get();
-        else {
+        if (results.isEmpty()) {
+            throw HOSPITAL_NOT_FOUND.get();
+        } else {
             results.get(0).setTotalItems(totalItems);
             return results;
         }
@@ -95,6 +98,7 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
     private Supplier<NoContentFoundException> HOSPITAL_NOT_FOUND = () -> new NoContentFoundException(Hospital.class);
 
     private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error("Hospital with id : {} not found", id);
         throw new NoContentFoundException(Hospital.class, "id", id.toString());
     };
 }

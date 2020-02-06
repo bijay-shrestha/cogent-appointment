@@ -6,17 +6,10 @@ import com.cogent.cogentappointment.client.dto.response.appointment.*;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.model.Appointment;
-import com.cogent.cogentappointment.client.model.Doctor;
-import com.cogent.cogentappointment.client.model.Patient;
-import com.cogent.cogentappointment.client.model.Specialization;
-import com.cogent.cogentappointment.client.repository.AppointmentRepository;
-import com.cogent.cogentappointment.client.repository.DoctorDutyRosterOverrideRepository;
-import com.cogent.cogentappointment.client.repository.DoctorDutyRosterRepository;
-import com.cogent.cogentappointment.client.service.AppointmentService;
-import com.cogent.cogentappointment.client.service.DoctorService;
-import com.cogent.cogentappointment.client.service.PatientService;
-import com.cogent.cogentappointment.client.service.SpecializationService;
+import com.cogent.cogentappointment.client.repository.*;
+import com.cogent.cogentappointment.persistence.model.AppointmentTransactionDetail;
+import com.cogent.cogentappointment.client.service.*;
+import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.Duration;
 import org.joda.time.Minutes;
@@ -36,6 +29,7 @@ import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.FETCHING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.FETCHING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.*;
+import static com.cogent.cogentappointment.client.utils.AppointmentTransactionDetailUtils.parseToAppointmentTransactionInfo;
 import static com.cogent.cogentappointment.client.utils.AppointmentUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 
@@ -59,18 +53,29 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository;
 
+    private final AppointmentTransactionInfoRepository appointmentTransactionInfoRepository;
+
+    private final HospitalService hospitalService;
+
+    private final PatientMetaInfoRepository patientMetaInfoRepository;
+
     public AppointmentServiceImpl(PatientService patientService,
                                   DoctorService doctorService,
                                   SpecializationService specializationService,
                                   AppointmentRepository appointmentRepository,
                                   DoctorDutyRosterRepository doctorDutyRosterRepository,
-                                  DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository) {
+                                  DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository,
+                                  AppointmentTransactionInfoRepository appointmentTransactionInfoRepository,
+                                  HospitalService hospitalService, PatientMetaInfoRepository patientMetaInfoRepository) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
         this.appointmentRepository = appointmentRepository;
         this.doctorDutyRosterRepository = doctorDutyRosterRepository;
         this.doctorDutyRosterOverrideRepository = doctorDutyRosterOverrideRepository;
+        this.appointmentTransactionInfoRepository = appointmentTransactionInfoRepository;
+        this.hospitalService = hospitalService;
+        this.patientMetaInfoRepository = patientMetaInfoRepository;
     }
 
     /*WITH END TIME AND 12 HOUR FORMAT*/
@@ -150,7 +155,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public String save(AppointmentRequestDTO appointmentRequestDTO){
+    public AppointmentSuccessResponseDTO save(AppointmentRequestDTO appointmentRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -167,24 +172,28 @@ public class AppointmentServiceImpl implements AppointmentService {
         Patient patient = fetchPatient(appointmentRequestDTO.getIsNewRegistration(),
                 appointmentRequestDTO.getPatientId(),
                 appointmentRequestDTO.getHospitalId(),
-                appointmentRequestDTO.getPatientRequestDTO()
-            );
-
-        Doctor doctor = fetchDoctor(appointmentRequestDTO.getDoctorId());
-
-        Specialization specialization = fetchSpecialization(appointmentRequestDTO.getSpecializationId());
+                appointmentRequestDTO.getPatientInfo()
+        );
 
         String appointmentNumber = appointmentRepository.generateAppointmentNumber(
                 appointmentRequestDTO.getCreatedDateNepali());
 
-        Appointment appointment = parseToAppointment(appointmentRequestDTO, appointmentNumber,
-                patient, specialization, doctor);
+        Appointment appointment = parseToAppointment(
+                appointmentRequestDTO, appointmentNumber,
+                patient,
+                fetchSpecialization(appointmentRequestDTO.getSpecializationId()),
+                fetchDoctor(appointmentRequestDTO.getDoctorId()),
+                fetchHospital(appointmentRequestDTO.getHospitalId()));
 
         save(appointment);
 
+        savePatientMetaInfo(parseToPatientMetaInfo(appointment.getPatientId()));
+
+        saveAppointmentTransactionDetail(appointmentRequestDTO.getTransactionInfo(), appointment);
+
         log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
 
-        return appointmentNumber;
+        return parseToAppointmentSuccessResponseDTO(appointmentNumber);
     }
 
     @Override
@@ -391,5 +400,21 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         return overrideRosters;
     }
+
+    private Hospital fetchHospital(Long hospitalId) {
+        return hospitalService.fetchActiveHospital(hospitalId);
+    }
+
+    private void saveAppointmentTransactionDetail(AppointmentTransactionRequestDTO requestDTO,
+                                                  Appointment appointment) {
+
+        AppointmentTransactionDetail transactionDetail = parseToAppointmentTransactionInfo(requestDTO, appointment);
+        appointmentTransactionInfoRepository.save(transactionDetail);
+    }
+
+    public void savePatientMetaInfo(PatientMetaInfo patientMetaInfo){
+        patientMetaInfoRepository.save(patientMetaInfo);
+    }
+
 }
 

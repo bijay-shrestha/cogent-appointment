@@ -1,8 +1,8 @@
 package com.cogent.cogentappointment.client.query;
 
 import com.cogent.cogentappointment.client.dto.request.admin.AdminSearchRequestDTO;
-import com.cogent.cogentappointment.client.enums.Gender;
 import com.cogent.cogentappointment.client.utils.GenderUtils;
+import com.cogent.cogentappointment.persistence.enums.Gender;
 import org.springframework.util.ObjectUtils;
 
 /**
@@ -171,4 +171,6 @@ public class AdminQuery {
                     " a.metaInfo as metaInfo" +                   //[1]
                     " FROM AdminMetaInfo a" +
                     " WHERE a.admin.status !='D'";
+
+
 }

@@ -83,29 +83,34 @@ public class HospitalQuery {
                     " h.status as status," +                                    //[2]
                     " h.address as address," +                                  //[3]
                     " h.pan_number as panNumber," +                             //[4]
-                    " h.remarks as remarks," +                                  //[5]
-                    " tbl1.file_uri as fileUri," +                              //[6]
-                    " h.code as hospitalCode," +                                 //[7]
-                    " tbl2.contact_details as contact_details" +                //[8]
+                    " h.remarks as remarks," +                                   //[5]
+                    " CASE WHEN" +
+                    " (hl.status IS NULL OR hl.status = 'N')" +
+                    " THEN null" +
+                    " ELSE" +
+                    " hl.file_uri" +
+                    " END as hospitalLogo," +                                   //[6]
+                    " CASE WHEN" +
+                    " (hb.status IS NULL OR hb.status = 'N')" +
+                    " THEN null" +
+                    " ELSE" +
+                    " hb.file_uri" +
+                    " END as hospitalBanner," +                                 //[7]
+                    " h.code as hospitalCode," +                                //[8]
+                    " tbl1.contact_details as contact_details" +               //[9]
                     " FROM" +
                     " hospital h" +
-                    " LEFT JOIN" +
-                    " (" +
-                    " SELECT" +
-                    " hl.hospital_id as hospitalId," +
-                    " hl.file_uri" +
-                    " FROM hospital_logo hl" +
-                    " WHERE hl.status = 'Y'" +
-                    " )tbl1 ON tbl1.hospitalId= h.id" +
+                    " LEFT JOIN hospital_logo hl ON h.id =hl.hospital_id " +
+                    " LEFT JOIN hospital_banner hb ON h.id = hb.hospital_id" +
                     " LEFT JOIN " +
                     " (" +
-                    " SELECT" +
-                    " hc.hospital_id as hospitalId," +
-                    " GROUP_CONCAT((CONCAT(hc.id, '-', hc.contact_number , '-', hc.status))) as contact_details" +
+                    " SELECT hc.hospital_id as hospitalId," +
+                    " GROUP_CONCAT((CONCAT(hc.id, '-', hc.contact_number))) as contact_details" +
                     " FROM hospital_contact_number hc" +
                     " WHERE hc.status = 'Y'" +
                     " GROUP by hc.hospital_id" +
-                    " )tbl2 ON tbl2.hospitalId = h.id" +
+                    " )tbl1 ON tbl1.hospitalId = h.id" +
                     " WHERE h.id =:id" +
                     " AND h.status !='D'";
+
 }

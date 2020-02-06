@@ -79,7 +79,7 @@ public class PatientQuery {
     }
 
     private static final String  GET_WHERE_CLAUSE_FOR_SEARCH_PATIENT(PatientSearchRequestDTO searchRequestDTO) {
-        String whereClause =" WHERE";
+        String whereClause =" WHERE p.status!='D'";
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getEsewaId()))
             whereClause += " p.eSewaId=" + searchRequestDTO.getEsewaId();

@@ -22,6 +22,9 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.admin.constants.StringConstant.OR;
+import static com.cogent.cogentappointment.admin.utils.commons.NumberFormatterUtils.generateRandomToken;
+
 /**
  * @author smriti on 2019-08-11
  */
@@ -83,14 +86,14 @@ public class AdminUtils {
 
     public static void parseMetaInfo(Admin admin,
                                      AdminMetaInfo adminMetaInfo) {
-        adminMetaInfo.setMetaInfo(admin.getFullName() + StringConstant.OR + admin.getUsername() + StringConstant.OR + admin.getMobileNumber());
+        adminMetaInfo.setMetaInfo(admin.getFullName() + OR + admin.getUsername() + OR + admin.getMobileNumber());
     }
 
     public static AdminConfirmationToken parseInAdminConfirmationToken(Admin admin) {
         AdminConfirmationToken confirmationToken = new AdminConfirmationToken();
         confirmationToken.setAdmin(admin);
         confirmationToken.setStatus(StatusConstants.ACTIVE);
-        confirmationToken.setConfirmationToken(NumberFormatterUtils.generateRandomToken());
+        confirmationToken.setConfirmationToken(generateRandomToken());
 
         return confirmationToken;
     }

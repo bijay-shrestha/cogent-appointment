@@ -1,5 +1,8 @@
 package com.cogent.cogentappointment.client.query;
 
+import com.cogent.cogentappointment.client.dto.request.patient.PatientSearchRequestDTO;
+import org.springframework.util.ObjectUtils;
+
 /**
  * @author smriti ON 16/01/2020
  */
@@ -56,16 +59,40 @@ public class PatientQuery {
     public static final String QUERY_TO_FETCH_PATIENT_DETAILS_BY_ID =
             SELECT_CLAUSE_TO_FETCH_PATIENT_DETAILS + GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS_BY_ID;
 
-//
-//    public static final String QUERY_TO_FETCH_LATEST_PATIENT_HIS_NUMBER =
-//            " SELECT " +
-//                    " p.his_number" +
-//                    " FROM patient p " +
-//                    " WHERE p.status !='D'" +
-//                    " AND (" +
-//                    " SELECT max(p.created_date)" +
-//                    " FROM" +
-//                    " patient p)" +
-//                    " ORDER BY p.id DESC";
-//
+    public static final String QUERY_TO_FETCH_PATIENT(PatientSearchRequestDTO searchRequestDTO){
+        return "SELECT" +
+                " p.name as name," +
+                " p.gender as gender," +
+                " p.address as address," +
+                " p.email as email," +
+                " p.mobileNumber as mobileNumber," +
+                " p.registrationNumber as registrationNumber," +
+                " p.eSewaId as eSewaId," +
+                " p.status as status," +
+                " p.dateOfBirth as dateOfBirth," +
+                " p.hospitalNumber as hospitalNumber," +
+                " h.name as hospitalName" +
+                " FROM Patient p" +
+                " LEFT JOIN Hospital h ON h.id=p.hospitalId" +
+                " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id" +
+                GET_WHERE_CLAUSE_FOR_SEARCH_PATIENT(searchRequestDTO);
+    }
+
+    private static final String  GET_WHERE_CLAUSE_FOR_SEARCH_PATIENT(PatientSearchRequestDTO searchRequestDTO) {
+        String whereClause =" WHERE";
+
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getEsewaId()))
+            whereClause += " p.eSewaId=" + searchRequestDTO.getEsewaId();
+
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
+            whereClause += " p.status='" + searchRequestDTO.getStatus() + "'";
+
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getPatientMetaInfo())) {
+            whereClause += " pmi.metaInfo LIKE '%" + searchRequestDTO.getPatientMetaInfo() + "%'";
+        }
+
+        whereClause += " ORDER BY p.id DESC";
+
+        return whereClause;
+    }
 }

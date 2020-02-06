@@ -2,8 +2,10 @@ package com.cogent.cogentappointment.client.service;
 
 import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientSearchRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientMinimalResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.patient.PatientResponseDTO;
 import com.cogent.cogentappointment.persistence.model.Patient;
 import org.springframework.data.domain.Pageable;
 
@@ -23,6 +25,11 @@ public interface PatientService {
                                                             Pageable pageable);
 
     PatientDetailResponseDTO fetchDetailsById(Long id);
+
+    List<PatientResponseDTO> search(PatientSearchRequestDTO searchRequestDTO,
+                                    Pageable pageable);
+
+    void update(PatientUpdateRequestDTO patientUpdateRequestDTO);
 
 //    List<PatientDetailResponseDTO> fetchPatientDetails(PatientSearchRequestDTO searchRequestDTO);
 //

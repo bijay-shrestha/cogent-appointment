@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.resource;
 
 import com.cogent.cogentappointment.client.dto.request.patient.PatientSearchRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateRequestDTO;
 import com.cogent.cogentappointment.client.service.PatientService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -41,6 +42,21 @@ public class PatientResource {
                                     @RequestParam("page") int page,
                                     @RequestParam("size") int size) {
         return ok(patientService.fetchMinimalPatientInfo(searchRequestDTO, getPageable(page, size)));
+    }
+
+    @PutMapping(SEARCH)
+    @ApiOperation(SEARCH_PATIENT_WITH_OTHERS_TYPE_OPERATION)
+    public ResponseEntity<?> searchPatient(@Valid @RequestBody PatientSearchRequestDTO searchRequestDTO,
+                                    @RequestParam("page") int page,
+                                    @RequestParam("size") int size) {
+        return ok(patientService.search(searchRequestDTO, getPageable(page, size)));
+    }
+
+    @PutMapping()
+    @ApiOperation(UPDATE_PATIENT_INFO_OPERATION)
+    public ResponseEntity<?> update(@Valid @RequestBody PatientUpdateRequestDTO updateRequestDTO) {
+        patientService.update(updateRequestDTO);
+        return ok().build();
     }
 
     @GetMapping(DETAIL + ID_PATH_VARIABLE_BASE)

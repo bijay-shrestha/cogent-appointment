@@ -6,11 +6,8 @@ import com.cogent.cogentappointment.client.dto.response.appointment.*;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
+import com.cogent.cogentappointment.client.repository.*;
 import com.cogent.cogentappointment.persistence.model.AppointmentTransactionDetail;
-import com.cogent.cogentappointment.client.repository.AppointmentRepository;
-import com.cogent.cogentappointment.client.repository.AppointmentTransactionInfoRepository;
-import com.cogent.cogentappointment.client.repository.DoctorDutyRosterOverrideRepository;
-import com.cogent.cogentappointment.client.repository.DoctorDutyRosterRepository;
 import com.cogent.cogentappointment.client.service.*;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
@@ -60,6 +57,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final HospitalService hospitalService;
 
+    private final PatientMetaInfoRepository patientMetaInfoRepository;
+
     public AppointmentServiceImpl(PatientService patientService,
                                   DoctorService doctorService,
                                   SpecializationService specializationService,
@@ -67,7 +66,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   DoctorDutyRosterRepository doctorDutyRosterRepository,
                                   DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository,
                                   AppointmentTransactionInfoRepository appointmentTransactionInfoRepository,
-                                  HospitalService hospitalService) {
+                                  HospitalService hospitalService, PatientMetaInfoRepository patientMetaInfoRepository) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -76,6 +75,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.doctorDutyRosterOverrideRepository = doctorDutyRosterOverrideRepository;
         this.appointmentTransactionInfoRepository = appointmentTransactionInfoRepository;
         this.hospitalService = hospitalService;
+        this.patientMetaInfoRepository = patientMetaInfoRepository;
     }
 
     /*WITH END TIME AND 12 HOUR FORMAT*/
@@ -186,6 +186,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 fetchHospital(appointmentRequestDTO.getHospitalId()));
 
         save(appointment);
+
+        savePatientMetaInfo(parseToPatientMetaInfo(appointment.getPatientId()));
 
         saveAppointmentTransactionDetail(appointmentRequestDTO.getTransactionInfo(), appointment);
 
@@ -408,6 +410,10 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         AppointmentTransactionDetail transactionDetail = parseToAppointmentTransactionInfo(requestDTO, appointment);
         appointmentTransactionInfoRepository.save(transactionDetail);
+    }
+
+    public void savePatientMetaInfo(PatientMetaInfo patientMetaInfo){
+        patientMetaInfoRepository.save(patientMetaInfo);
     }
 
 }

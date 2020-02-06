@@ -61,6 +61,8 @@ public class QueryConstants {
     public interface PatientQueryConstants {
         String ESEWA_ID = "eSewaId";
         String IS_SELF = "isSelf";
+        String META_INFO="metaInfo";
+        String STATUS="status";
     }
 
     public static final String PASSWORD = "password";

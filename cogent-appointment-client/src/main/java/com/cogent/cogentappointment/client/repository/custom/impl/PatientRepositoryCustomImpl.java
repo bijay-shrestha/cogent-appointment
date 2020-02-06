@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.client.repository.custom.impl;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientMinimalResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.patient.PatientResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.PatientRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Patient;
@@ -25,8 +26,7 @@ import static com.cogent.cogentappointment.client.utils.PatientUtils.parseToPati
 import static com.cogent.cogentappointment.client.utils.commons.AgeConverterUtils.calculateAge;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
-import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
-import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.transformQueryToSingleResult;
+import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
 
 /**
  * @author smriti ON 16/01/2020
@@ -103,6 +103,26 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
             return detailResponseDTO;
         } catch (NoResultException e) {
             throw new NoContentFoundException(Patient.class, "id", id.toString());
+        }
+    }
+
+    @Override
+    public List<PatientResponseDTO> search(PatientSearchRequestDTO searchRequestDTO,Pageable pageable) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT(searchRequestDTO));
+
+        List<Object[]> results = query.getResultList();
+
+        Integer totalItems = query.getResultList().size();
+
+        addPagination.accept(pageable, query);
+
+        if (results.isEmpty()) throw new NoContentFoundException(Patient.class);
+
+        else {
+            List<PatientResponseDTO> responseDTOS = transformQueryToResultList(query,PatientResponseDTO.class);
+            responseDTOS.get(0).setTotalItems(totalItems);
+            return responseDTOS;
         }
     }
 

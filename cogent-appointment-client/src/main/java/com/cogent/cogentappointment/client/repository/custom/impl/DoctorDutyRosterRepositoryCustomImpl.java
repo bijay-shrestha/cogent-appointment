@@ -163,7 +163,6 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
         return parseToExistingRosterDetails(weekDaysDutyRosterResponseDTO, overrideResponseDTOS);
     }
 
-
     private DoctorDutyRosterResponseDTO fetchDoctorDutyRosterDetails(Long doctorDutyRosterId) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_DETAILS)

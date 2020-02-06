@@ -110,8 +110,8 @@ public class DoctorDutyRosterUtils {
             List<DoctorDutyRosterOverrideResponseDTO> doctorDutyRosterOverrideResponseDTOS) {
 
         return DoctorDutyRosterDetailResponseDTO.builder()
-                .doctorDutyRosterResponseDTO(dutyRosterResponseDTO)
-                .weekDaysDutyRosterResponseDTOS(weekDaysDutyRosterResponseDTOS)
+                .doctorDutyRosterInfo(dutyRosterResponseDTO)
+                .weekDaysRosters(weekDaysDutyRosterResponseDTOS)
                 .doctorDutyRosterOverrideResponseDTOS(doctorDutyRosterOverrideResponseDTOS)
                 .build();
     }

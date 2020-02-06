@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.client.service.impl;
 
-import com.cogent.cogentappointment.client.constants.ErrorMessageConstants;
 import com.cogent.cogentappointment.client.constants.StatusConstants;
 import com.cogent.cogentappointment.client.dto.request.email.EmailRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.forgotPassword.ForgotPasswordRequestDTO;
@@ -13,7 +12,6 @@ import com.cogent.cogentappointment.client.repository.AdminRepository;
 import com.cogent.cogentappointment.client.repository.ForgotPasswordRepository;
 import com.cogent.cogentappointment.client.service.EmailService;
 import com.cogent.cogentappointment.client.service.ForgotPasswordService;
-import com.cogent.cogentappointment.client.utils.ForgotPasswordUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
@@ -22,7 +20,11 @@ import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AdminServiceMessages.ADMIN_NOT_ACTIVE;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.ForgotPasswordMessages.RESET_CODE_EXPIRED;
 import static com.cogent.cogentappointment.client.log.constants.AdminLog.*;
+import static com.cogent.cogentappointment.client.utils.ForgotPasswordUtils.convertToForgotPasswordVerification;
+import static com.cogent.cogentappointment.client.utils.ForgotPasswordUtils.parseToEmailRequestDTO;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static java.util.Objects.isNull;
@@ -65,14 +67,17 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
         ForgotPasswordVerification forgotPasswordVerification = verificationRepository.findByAdminId(admin.getId());
 
-        ForgotPasswordUtils.convertToForgotPasswordVerification(admin,
+        convertToForgotPasswordVerification(
+                admin,
                 expirationTimeProperties.getForgotPassword(),
                 isNull(forgotPasswordVerification) ? new ForgotPasswordVerification() : forgotPasswordVerification);
 
         save(forgotPasswordVerification);
 
-        EmailRequestDTO emailRequestDTO = ForgotPasswordUtils.parseToEmailRequestDTO(admin.getEmail(),
-                admin.getUsername(), forgotPasswordVerification.getResetCode());
+        EmailRequestDTO emailRequestDTO = parseToEmailRequestDTO(
+                admin.getEmail(),
+                admin.getUsername(),
+                forgotPasswordVerification.getResetCode());
 
         emailService.sendEmail(emailRequestDTO);
 
@@ -112,7 +117,6 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     public void updateForgotPasswordVerification(Long adminId) {
         ForgotPasswordVerification forgotPasswordVerification = verificationRepository.findByAdminId(adminId);
         forgotPasswordVerification.setStatus(StatusConstants.INACTIVE);
-        save(forgotPasswordVerification);
     }
 
     private void validateExpirationTime(Object expirationTime) {
@@ -125,9 +129,9 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
     private void validateAdmin(Admin admin, String username) {
         if (!admin.getStatus().equals(StatusConstants.ACTIVE))
-            throw new NoContentFoundException(String.format(ErrorMessageConstants.AdminServiceMessages.ADMIN_NOT_ACTIVE, username), "username/email", username);
+            throw new NoContentFoundException(String.format(ADMIN_NOT_ACTIVE, username), "username/email", username);
     }
 
     private Supplier<BadRequestException> RESET_CODE_HAS_EXPIRED = () ->
-            new BadRequestException(ErrorMessageConstants.ForgotPasswordMessages.RESET_CODE_EXPIRED);
+            new BadRequestException(RESET_CODE_EXPIRED);
 }

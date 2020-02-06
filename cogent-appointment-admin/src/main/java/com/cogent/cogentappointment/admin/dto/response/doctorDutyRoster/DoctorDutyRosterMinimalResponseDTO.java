@@ -30,7 +30,5 @@ public class DoctorDutyRosterMinimalResponseDTO implements Serializable {
 
     private Character status;
 
-    private String remarks;
-
     private int totalItems;
 }

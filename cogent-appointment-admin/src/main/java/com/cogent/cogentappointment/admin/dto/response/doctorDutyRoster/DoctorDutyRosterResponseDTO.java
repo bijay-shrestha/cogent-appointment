@@ -24,6 +24,8 @@ public class DoctorDutyRosterResponseDTO implements Serializable {
 
     private String specializationName;
 
+    private Long hospitalId;
+
     private String hospitalName;
 
     private Integer rosterGapDuration;

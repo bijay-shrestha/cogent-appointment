@@ -19,7 +19,7 @@ import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants
  */
 
 @Component
-public class AuthEntryPointJwt implements AuthenticationEntryPoint {
+public class AuthEntryPointHmac implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,

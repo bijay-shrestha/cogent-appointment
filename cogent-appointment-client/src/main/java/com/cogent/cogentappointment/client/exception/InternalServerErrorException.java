@@ -1,10 +1,9 @@
-package com.cogent.cogentappointment.admin.exception;
+package com.cogent.cogentappointment.client.exception;
 
-import com.cogent.cogentappointment.admin.exception.utils.ExceptionUtils;
 import lombok.Getter;
 
-import static com.cogent.cogentappointment.admin.exception.utils.ExceptionUtils.generateMessage;
-import static org.springframework.http.HttpStatus.CONFLICT;
+import static com.cogent.cogentappointment.client.exception.utils.ExceptionUtils.generateMessage;
+import static com.cogent.cogentappointment.client.exception.utils.ExceptionUtils.getLocalDateTime;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 /**
@@ -21,7 +20,7 @@ public class InternalServerErrorException extends RuntimeException {
                 .errorMessage(generateMessage(clazz))
                 .debugMessage(debugMessage)
                 .status(INTERNAL_SERVER_ERROR)
-                .timeStamp(ExceptionUtils.getLocalDateTime())
+                .timeStamp(getLocalDateTime())
                 .build();
 
     }

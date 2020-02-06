@@ -66,7 +66,8 @@ public class SpecializationServiceImpl implements SpecializationService {
 
         log.info(UPDATING_PROCESS_STARTED, SPECIALIZATION);
 
-        Specialization specialization = findById(requestDTO.getId());
+        Specialization specialization = findBySpecializationAndHospitalId(requestDTO.getId(),
+                requestDTO.getHospitalId());
 
         Long specializationCount = specializationRepository.validateDuplicity(
                 requestDTO.getId(), requestDTO.getName(), requestDTO.getHospitalId());
@@ -85,7 +86,7 @@ public class SpecializationServiceImpl implements SpecializationService {
 
         log.info(DELETING_PROCESS_STARTED, SPECIALIZATION);
 
-        Specialization specialization = findById(deleteRequestDTO.getId());
+        Specialization specialization = findBySpecializationId(deleteRequestDTO.getId());
 
         save(parseToDeletedSpecialization(specialization, deleteRequestDTO));
 
@@ -186,7 +187,12 @@ public class SpecializationServiceImpl implements SpecializationService {
         return specializationRepository.save(specialization);
     }
 
-    public Specialization findById(Long specializationId) {
+    public Specialization findBySpecializationAndHospitalId(Long specializationId, Long hospitalId) {
+        return specializationRepository.findBySpecializationAndHospital(specializationId, hospitalId)
+                .orElseThrow(() -> SPECIALIZATION_WITH_GIVEN_ID_NOT_FOUND.apply(specializationId));
+    }
+
+    public Specialization findBySpecializationId(Long specializationId) {
         return specializationRepository.findSpecializationById(specializationId)
                 .orElseThrow(() -> SPECIALIZATION_WITH_GIVEN_ID_NOT_FOUND.apply(specializationId));
     }

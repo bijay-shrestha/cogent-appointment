@@ -3,7 +3,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/esewa-appointment
+    url: jdbc:mysql://localhost:3306/cogent-appointment
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver

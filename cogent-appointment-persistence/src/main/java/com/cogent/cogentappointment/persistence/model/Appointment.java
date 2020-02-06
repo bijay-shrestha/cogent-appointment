@@ -84,11 +84,6 @@ public class Appointment extends Auditable<String> implements Serializable {
     @Column(name = "remarks")
     private String remarks;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hospital_id")
-    private Hospital hospitalId;
-
-
     @Override
     public String toString() {
         return "Appointment{" +

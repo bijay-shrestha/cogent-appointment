@@ -212,17 +212,19 @@ public class AppointmentQuery {
                             " p.eSewaId as esewaId," +
                             " p.registrationNumber as registrationNumber," +
                             " p.name as patientName," +
-                            " p.gender as patientGender,"+
-                            " p.dateOfBirth as patientDob,"+
+                            " p.gender as patientGender," +
+                            " p.dateOfBirth as patientDob," +
                             " p.isRegistered as isRegistered," +
                             " p.isSelf as isSelf," +
                             " p.mobileNumber as mobileNumber," +
                             " sp.name as specializationName," +
-                            " atd.transactionNumber as transactionNumber,atd.appointmentAmount as appointmentAmount" +
+                            " atd.transactionNumber as transactionNumber,atd.appointmentAmount as appointmentAmount," +
+                            " pi.id as patientMetaInfoId" +
                             " FROM Appointment a" +
                             " LEFT JOIN Patient p ON a.patientId=p.id" +
                             " LEFT JOIN Specialization sp ON a.specializationId=sp.id" +
-                            " LEFT JOIN Hospital h ON a.hospitalId=h.id" +
+                            " LEFT JOIN Hospital h ON a.hospital.id=h.id" +
+                            " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id" +
                             " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" + GET_WHERE_CLAUSE_TO_SEARCH_PENDING_APPOINTMENT_DETAILS(searchRequestDTO);
 
     private static String ageCalculator() {

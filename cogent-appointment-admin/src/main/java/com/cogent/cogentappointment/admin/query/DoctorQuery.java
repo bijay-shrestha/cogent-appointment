@@ -38,7 +38,7 @@ public class DoctorQuery {
                 " (da.status is null OR da.status = 'N')" +
                 " THEN null" +
                 " ELSE" +
-                " da.fileUri" +
+                " da.file_uri" +
                 " END as fileUri" +
                 " FROM doctor d" +
                 " LEFT JOIN hospital h ON h.id = d.hospital_id" +

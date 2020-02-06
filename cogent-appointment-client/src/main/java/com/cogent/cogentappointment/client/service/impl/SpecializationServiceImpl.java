@@ -85,7 +85,7 @@ public class SpecializationServiceImpl implements SpecializationService {
 
         log.info(DELETING_PROCESS_STARTED, SPECIALIZATION);
 
-        Specialization specialization = findById(deleteRequestDTO.getId(), deleteRequestDTO.getHospitalId());
+        Specialization specialization = findById(deleteRequestDTO.getId(), null);
 
         save(parseToDeletedSpecialization(specialization, deleteRequestDTO));
 

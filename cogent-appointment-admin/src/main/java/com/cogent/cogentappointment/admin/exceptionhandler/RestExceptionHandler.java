@@ -22,6 +22,12 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler
+    public ResponseEntity<Object> handleInternalServerException(InternalServerErrorException ex) {
+        log.error("-------- NO CONTENT FOUND EXCEPTION ------");
+        return buildResponseEntity(ex.getException());
+    }
+
+    @ExceptionHandler
     public ResponseEntity<Object> handleNoContentFoundException(NoContentFoundException ex) {
         log.error("-------- NO CONTENT FOUND EXCEPTION ------");
         return buildResponseEntity(ex.getException());

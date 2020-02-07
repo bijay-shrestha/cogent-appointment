@@ -65,21 +65,5 @@ public class PatientResource {
         return ok(patientService.fetchDetailsById(id));
     }
 
-//    @GetMapping(DETAILS + ID_PATH_VARIABLE_BASE)
-//    @ApiOperation(PATIENT_DETAILS_OPERATION)
-//    public ResponseEntity<?> fetchPatientDetails(@PathVariable Long id) {
-//        return ok(patientService.search(id));
-//    }
-//
-//    @GetMapping(DROPDOWN)
-//    @ApiOperation(FETCH_PATIENT_FOR_DROP_DOWN_OPERATION)
-//    public ResponseEntity<?> dropDown() {
-//        return ok(patientService.dropDownList());
-//    }
-//
-//    @GetMapping(ACTIVE + DROPDOWN)
-//    @ApiOperation(FETCH_ACTIVE_PATIENT_FOR_DROP_DOWN_OPERATION)
-//    public ResponseEntity<?> activeDropDown() {
-//        return ok(patientService.activeDropDownList());
-//    }
+
 }

@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
 import com.cogent.cogentappointment.client.dto.request.patient.PatientSearchRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientMinimalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientResponseDTO;
@@ -48,6 +49,17 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
                 .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Long) query.getSingleResult();
+    }
+
+    @Override
+    public Long fetchPatientForValidationToUpdate(PatientUpdateRequestDTO patientUpdateRequestDTO) {
+            Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_UPDATED_PATIENT_DUPLICITY)
+                    .setParameter(NAME, patientUpdateRequestDTO.getName())
+                    .setParameter(MOBILE_NUMBER, patientUpdateRequestDTO.getMobileNumber())
+                    .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(patientUpdateRequestDTO.getDateOfBirth()))
+                    .setParameter(ID, patientUpdateRequestDTO.getId());
+
+            return (Long) query.getSingleResult();
     }
 
     @Override
@@ -126,72 +138,4 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
         }
     }
 
-//    @Override
-//    public List<PatientMinimalResponseDTO> searchPatient(PatientSearchRequestDTO searchRequestDTO,
-//                                                         Pageable pageable) {
-//        Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_PATIENT.apply(searchRequestDTO));
-//
-//        Integer totalItems = query.getResultList().size();
-//
-//        addPagination.accept(pageable, query);
-//
-//        List<PatientMinimalResponseDTO> minimalResponseDTOS = transformQueryToResultList(query,
-//                PatientMinimalResponseDTO.class);
-//
-//        if (minimalResponseDTOS.isEmpty()) throw new NoContentFoundException(Patient.class);
-//        else {
-//            minimalResponseDTOS.get(0).setTotalItems(totalItems);
-//            return minimalResponseDTOS;
-//        }
-//    }
-//
-//    @Override
-//    public PatientDetailResponseDTO fetchPatientDetailsById(Long id) {
-//        Query query = createQuery.apply(entityManager, FETCH_PATIENT_DETAILS_BY_ID)
-//                .setParameter(QueryConstants.ID, id);
-//        try {
-//            PatientDetailResponseDTO singleResult = transformQueryToSingleResult(query,
-//                    PatientDetailResponseDTO.class);
-//            return singleResult;
-//        } catch (NoResultException e) {
-//            throw new NoContentFoundException(Patient.class, "id", id.toString());
-//        }
-//    }
-//
-//    @Override
-//    public Optional<List<DropDownResponseDTO>> fetchActiveDropDownList() {
-//        Query query = createQuery.apply(entityManager, QUERY_FOR_ACTIVE_DROP_DOWN_PATIENT);
-//
-//        List<DropDownResponseDTO> minimalResponseDTOS = transformQueryToResultList(query,
-//                DropDownResponseDTO.class);
-//
-//        return minimalResponseDTOS.isEmpty() ? Optional.empty() : Optional.of(minimalResponseDTOS);
-//    }
-//
-//    @Override
-//    public Optional<List<DropDownResponseDTO>> fetchDropDownList() {
-//        Query query = createQuery.apply(entityManager, QUERY_FOR_DROP_DOWN_PATIENT);
-//
-//        List<DropDownResponseDTO> minimalResponseDTOS = transformQueryToResultList(query,
-//                DropDownResponseDTO.class);
-//
-//        return minimalResponseDTOS.isEmpty() ? Optional.empty() : Optional.of(minimalResponseDTOS);
-//    }
-//
-//    @Override
-//    public List<Object[]> getPatient() {
-//        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_OBJECT);
-//        List<Object[]> object = query.getResultList();
-//        return object;
-//    }
-//
-//    @Override
-//    public String fetchLatestPatientHisNumber() {
-//        List<String> s = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_LATEST_PATIENT_HIS_NUMBER).getResultList();
-//
-//        if (!s.isEmpty()) {
-//            return s.get(0);
-//        }
-//        return "";
-//    }
 }

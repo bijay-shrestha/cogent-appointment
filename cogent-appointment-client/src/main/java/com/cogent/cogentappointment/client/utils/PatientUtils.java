@@ -46,6 +46,7 @@ public class PatientUtils {
         patient.setHospitalNumber(requestDTO.getHospitalNumber());
         patient.setEmail(requestDTO.getEmail());
         patient.setRemarks(requestDTO.getRemarks());
+        patient.setStatus(requestDTO.getStatus());
 
         return patient;
     }

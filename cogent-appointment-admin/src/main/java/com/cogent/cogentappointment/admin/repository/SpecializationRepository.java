@@ -15,12 +15,9 @@ import java.util.Optional;
 @Repository
 public interface SpecializationRepository extends JpaRepository<Specialization, Long>, SpecializationRepositoryCustom {
 
-    @Query("SELECT s FROM Specialization s WHERE s.status!='D' AND s.id = :id")
-    Optional<Specialization> findSpecializationById(@Param("id") Long id);
+    @Query("SELECT s FROM Specialization s WHERE s.status!='D' AND s.id = :specializationId")
+    Optional<Specialization> findSpecializationById(@Param("specializationId") Long specializationId);
 
     @Query("SELECT s FROM Specialization s WHERE s.status='Y' AND s.id = :id")
     Optional<Specialization> findActiveSpecializationById(@Param("id") Long id);
-
-    @Query("FROM Specialization s WHERE s.status='Y' AND s.id = :id")
-    Specialization fetchActiveSpecializationById(@Param("id") Long id);
 }

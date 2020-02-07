@@ -52,13 +52,13 @@ public class PatientResource {
 
     @GetMapping(META_INFO + ACTIVE + MIN + HOSPITAL_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_ACTIVE_PATIENT_META_INFO_DETAILS_FOR_DROPDOWN)
-    public ResponseEntity<?> fetchActivePatientMetaInfoForDropdown(@PathVariable("hospitalId") Long hospitalId) {
+    public ResponseEntity<?> fetchActivePatientMetaInfoForDropdownByHospitalId(@PathVariable("hospitalId") Long hospitalId) {
         return ok(patientService.patientMetaInfoActiveDropDownListByHospitalId(hospitalId));
     }
 
     @GetMapping(META_INFO + MIN + HOSPITAL_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_PATIENT_META_INFO_DETAILS_FOR_DROPDOWN)
-    public ResponseEntity<?> fetchPatientMetaInfoForDropdown(@PathVariable("hospitalId") Long hospitalId) {
+    public ResponseEntity<?> fetchPatientMetaInfoForDropdownByHospitalId(@PathVariable("hospitalId") Long hospitalId) {
         return ok(patientService.patientMetaInfoDropDownListByHospitalId(hospitalId));
     }
 

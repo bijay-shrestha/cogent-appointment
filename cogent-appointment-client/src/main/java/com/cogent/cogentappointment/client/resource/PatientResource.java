@@ -12,6 +12,7 @@ import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.PatientConstant.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.HospitalConstants.HOSPITAL_ID_PATH_VARIABLE_BASE;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.PatientConstant.*;
 import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.getPageable;
 import static org.springframework.http.ResponseEntity.ok;
@@ -65,16 +66,16 @@ public class PatientResource {
         return ok(patientService.fetchDetailsById(id));
     }
 
-    @GetMapping(META_INFO + ACTIVE + MIN)
+    @GetMapping(META_INFO + ACTIVE + MIN + HOSPITAL_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_ACTIVE_PATIENT_META_INFO_DETAILS_FOR_DROPDOWN)
-    public ResponseEntity<?> fetchActivePatientMetaInfoForDropdown() {
-        return ok(patientService.fetchActivePatientMetaInfoDropDownList());
+    public ResponseEntity<?> fetchActivePatientMetaInfoForDropdownByHospitalId(@PathVariable("hospitalId") Long hospitalId) {
+        return ok(patientService.patientMetaInfoActiveDropDownListByHospitalId(hospitalId));
     }
 
-    @GetMapping(META_INFO + MIN)
+    @GetMapping(META_INFO + MIN + HOSPITAL_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_PATIENT_META_INFO_DETAILS_FOR_DROPDOWN)
-    public ResponseEntity<?> fetchPatientMetaInfoForDropdown() {
-        return ok(patientService.fetchPatientMetaInfoDropDownList());
+    public ResponseEntity<?> fetchPatientMetaInfoForDropdownByHospitalId(@PathVariable("hospitalId") Long hospitalId) {
+        return ok(patientService.patientMetaInfoDropDownListByHospitalId(hospitalId));
     }
 
 

@@ -13,7 +13,7 @@ import java.util.List;
 @Qualifier("patientMetaInfoRepositoryCustom")
 public interface PatientMetaInfoRepositoryCustom {
 
-    List<DropDownResponseDTO> fetchDropDownList();
+    List<DropDownResponseDTO> fetchDropDownList(Long hospitalId);
 
-    List<DropDownResponseDTO> fetchActiveDropDownList();
+    List<DropDownResponseDTO> fetchActiveDropDownList(Long hospitalId);
 }

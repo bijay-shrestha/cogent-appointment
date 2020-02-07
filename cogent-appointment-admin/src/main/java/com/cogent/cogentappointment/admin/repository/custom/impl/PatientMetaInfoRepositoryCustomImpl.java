@@ -30,7 +30,7 @@ public class PatientMetaInfoRepositoryCustomImpl implements PatientMetaInfoRepos
     private EntityManager entityManager;
 
     @Override
-    public List<DropDownResponseDTO> fetchDropDownList(Long hospitalId) {
+    public List<DropDownResponseDTO> fetchPatientMetaInfoDropDownListByHospitalId(Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_META_INFO_FOR_DROP_DOWN)
                 .setParameter(HOSPITAL_ID, hospitalId);
 
@@ -41,7 +41,7 @@ public class PatientMetaInfoRepositoryCustomImpl implements PatientMetaInfoRepos
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchActiveDropDownList(Long hospitalId) {
+    public List<DropDownResponseDTO> fetchActivePatientMetaInfoDropDownListByHospitalId(Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_PATIENT_META_INFO_FOR_DROP_DOWN)
                 .setParameter(HOSPITAL_ID, hospitalId);
 

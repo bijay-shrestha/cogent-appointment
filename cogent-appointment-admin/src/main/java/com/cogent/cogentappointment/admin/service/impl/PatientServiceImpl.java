@@ -138,7 +138,8 @@ public class PatientServiceImpl implements PatientService {
 
         log.info(FETCHING_PROCESS_STARTED, PATIENT);
 
-        List<DropDownResponseDTO> responseDTOS = patientMetaInfoRepository.fetchDropDownList(hospitalId);
+        List<DropDownResponseDTO> responseDTOS = patientMetaInfoRepository
+                .fetchPatientMetaInfoDropDownListByHospitalId(hospitalId);
 
         log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
@@ -151,7 +152,8 @@ public class PatientServiceImpl implements PatientService {
 
         log.info(FETCHING_PROCESS_STARTED, PATIENT);
 
-        List<DropDownResponseDTO> responseDTOS = patientMetaInfoRepository.fetchActiveDropDownList(hospitalId);
+        List<DropDownResponseDTO> responseDTOS = patientMetaInfoRepository
+                .fetchActivePatientMetaInfoDropDownListByHospitalId(hospitalId);
 
         log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 

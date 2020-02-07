@@ -118,9 +118,7 @@ public class DoctorServiceImpl implements DoctorService {
 
         log.info(UPDATING_PROCESS_STARTED, DOCTOR);
 
-        Doctor doctor = findByDoctorAndHospitalId(
-                requestDTO.getDoctorInfo().getId(),
-                requestDTO.getDoctorInfo().getHospitalId());
+        Doctor doctor = findById(requestDTO.getDoctorInfo().getId());
 
         Long doctorCount = doctorRepository.validateDoctorDuplicityForUpdate(
                 requestDTO.getDoctorInfo().getId(),
@@ -447,12 +445,7 @@ public class DoctorServiceImpl implements DoctorService {
         doctorAvatarRepository.save(doctorAvatar);
     }
 
-    public Doctor findByDoctorAndHospitalId(Long doctorId, Long hospitalId) {
-        return doctorRepository.findByIdDoctorAndHospitalId(doctorId, hospitalId)
-                .orElseThrow(() -> DOCTOR_WITH_GIVEN_ID_NOT_FOUND.apply(doctorId));
-    }
-
-    public Doctor findById(Long doctorId) {
+    private Doctor findById(Long doctorId) {
         return doctorRepository.findDoctorById(doctorId)
                 .orElseThrow(() -> DOCTOR_WITH_GIVEN_ID_NOT_FOUND.apply(doctorId));
     }

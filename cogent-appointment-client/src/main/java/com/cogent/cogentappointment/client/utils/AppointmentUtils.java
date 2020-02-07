@@ -20,6 +20,7 @@ import java.util.Objects;
 
 import static com.cogent.cogentappointment.client.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.client.constants.StringConstant.HYPHEN;
+import static com.cogent.cogentappointment.client.constants.StringConstant.OR;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 
 /**
@@ -232,6 +233,18 @@ public class AppointmentUtils {
                 .appointmentNumber(appointmentNumber)
                 .appointmentTransactionStatus(ACTIVE)
                 .build();
+    }
+
+    public static PatientMetaInfo parseToPatientMetaInfo(Patient patient) {
+        PatientMetaInfo patientMetaInfo = new PatientMetaInfo();
+        patientMetaInfo.setPatient(patient);
+        patientMetaInfo.setMetaInfo(patient.getName()
+                + OR +
+                patient.getMobileNumber()
+                + OR +
+                patient.getRegistrationNumber());
+
+        return patientMetaInfo;
     }
 
 }

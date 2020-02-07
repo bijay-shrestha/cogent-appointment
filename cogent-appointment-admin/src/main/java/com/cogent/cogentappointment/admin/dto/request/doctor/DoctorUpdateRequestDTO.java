@@ -20,13 +20,13 @@ import java.util.List;
 public class DoctorUpdateRequestDTO implements Serializable {
 
     @Valid
-    private DoctorUpdateDTO updateDTO;
+    private DoctorUpdateDTO doctorInfo;
 
     @Valid
     @NotEmpty
-    private List<DoctorSpecializationUpdateDTO> specializationUpdateRequestDTOS;
+    private List<DoctorSpecializationUpdateDTO> doctorSpecializationInfo;
 
     @Valid
     @NotEmpty
-    private List<DoctorQualificationUpdateDTO> doctorQualificationUpdateDTOS;
+    private List<DoctorQualificationUpdateDTO> doctorQualificationInfo;
 }

@@ -119,30 +119,30 @@ public class DoctorServiceImpl implements DoctorService {
         log.info(UPDATING_PROCESS_STARTED, DOCTOR);
 
         Doctor doctor = findByDoctorAndHospitalId(
-                requestDTO.getUpdateDTO().getId(),
-                requestDTO.getUpdateDTO().getHospitalId());
+                requestDTO.getDoctorInfo().getId(),
+                requestDTO.getDoctorInfo().getHospitalId());
 
         Long doctorCount = doctorRepository.validateDoctorDuplicityForUpdate(
-                requestDTO.getUpdateDTO().getId(),
-                requestDTO.getUpdateDTO().getName(),
-                requestDTO.getUpdateDTO().getMobileNumber(),
-                requestDTO.getUpdateDTO().getHospitalId());
+                requestDTO.getDoctorInfo().getId(),
+                requestDTO.getDoctorInfo().getName(),
+                requestDTO.getDoctorInfo().getMobileNumber(),
+                requestDTO.getDoctorInfo().getHospitalId());
 
         validateDoctor(doctorCount,
-                requestDTO.getUpdateDTO().getName(),
-                requestDTO.getUpdateDTO().getMobileNumber());
+                requestDTO.getDoctorInfo().getName(),
+                requestDTO.getDoctorInfo().getMobileNumber());
 
         convertToUpdatedDoctor(
-                requestDTO.getUpdateDTO(),
+                requestDTO.getDoctorInfo(),
                 doctor,
-                fetchGender(requestDTO.getUpdateDTO().getGenderCode()),
-                fetchHospitalById(requestDTO.getUpdateDTO().getHospitalId()));
+                fetchGender(requestDTO.getDoctorInfo().getGenderCode()),
+                fetchHospitalById(requestDTO.getDoctorInfo().getHospitalId()));
 
-        updateDoctorAppointmentCharge(doctor.getId(), requestDTO.getUpdateDTO().getAppointmentCharge());
+        updateDoctorAppointmentCharge(doctor.getId(), requestDTO.getDoctorInfo().getAppointmentCharge());
 
-        updateDoctorSpecialization(doctor.getId(), requestDTO.getSpecializationUpdateRequestDTOS());
+        updateDoctorSpecialization(doctor.getId(), requestDTO.getDoctorSpecializationInfo());
 
-        updateDoctorQualification(doctor.getId(), requestDTO.getDoctorQualificationUpdateDTOS());
+        updateDoctorQualification(doctor.getId(), requestDTO.getDoctorQualificationInfo());
 
         updateDoctorAvatar(doctor, avatar);
 

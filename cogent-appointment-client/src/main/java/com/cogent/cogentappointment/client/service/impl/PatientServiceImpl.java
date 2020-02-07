@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.constants.ErrorMessageConstants.PatientServiceMessages;
+import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateRequestDTO;
@@ -9,12 +10,14 @@ import com.cogent.cogentappointment.client.dto.response.patient.PatientMinimalRe
 import com.cogent.cogentappointment.client.dto.response.patient.PatientResponseDTO;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
+import com.cogent.cogentappointment.client.repository.PatientMetaInfoRepository;
 import com.cogent.cogentappointment.client.repository.PatientRepository;
 import com.cogent.cogentappointment.client.service.HospitalService;
 import com.cogent.cogentappointment.client.service.PatientService;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.Patient;
+import com.cogent.cogentappointment.persistence.model.PatientMetaInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,9 +30,7 @@ import java.util.function.Function;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.PatientLog.PATIENT;
 import static com.cogent.cogentappointment.client.utils.GenderUtils.fetchGenderByCode;
-import static com.cogent.cogentappointment.client.utils.PatientUtils.parseToPatient;
-import static com.cogent.cogentappointment.client.utils.PatientUtils.updatePatient;
-import static com.cogent.cogentappointment.client.utils.commons.AgeConverterUtils.calculateAge;
+import static com.cogent.cogentappointment.client.utils.PatientUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 
 /**
@@ -44,9 +45,14 @@ public class PatientServiceImpl implements PatientService {
 
     private final HospitalService hospitalService;
 
-    public PatientServiceImpl(PatientRepository patientRepository, HospitalService hospitalService) {
+    private final PatientMetaInfoRepository patientMetaInfoRepository;
+
+    public PatientServiceImpl(PatientRepository patientRepository,
+                              HospitalService hospitalService,
+                              PatientMetaInfoRepository patientMetaInfoRepository) {
         this.patientRepository = patientRepository;
         this.hospitalService = hospitalService;
+        this.patientMetaInfoRepository = patientMetaInfoRepository;
     }
 
     @Override
@@ -137,11 +143,6 @@ public class PatientServiceImpl implements PatientService {
 
         List<PatientResponseDTO> responseDTO = patientRepository.search(searchRequestDTO, pageable);
 
-        responseDTO.forEach(patientResponseDTO -> {
-            String age = calculateAge(patientResponseDTO.getDateOfBirth());
-            patientResponseDTO.setAge(age);
-        });
-
         log.info(SEARCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
@@ -163,8 +164,39 @@ public class PatientServiceImpl implements PatientService {
 
         save(updatePatient(updateRequestDTO, patientToBeUpdated));
 
+        PatientMetaInfo patientMetaInfoToBeUpdated = patientMetaInfoRepository.fetchByPatientId(updateRequestDTO.getId());
+
+        savePatientMetaInfo(updatePatientMetaInfo(patientToBeUpdated, patientMetaInfoToBeUpdated, updateRequestDTO));
+
         log.info(UPDATING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
+    }
+
+    @Override
+    public List<DropDownResponseDTO> fetchPatientMetaInfoDropDownList() {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, PATIENT);
+
+        List<DropDownResponseDTO> responseDTOS = patientMetaInfoRepository.fetchDropDownList();
+
+        log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public List<DropDownResponseDTO> fetchActivePatientMetaInfoDropDownList() {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, PATIENT);
+
+        List<DropDownResponseDTO> responseDTOS = patientMetaInfoRepository.fetchActiveDropDownList();
+
+        log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
     }
 
 
@@ -206,6 +238,10 @@ public class PatientServiceImpl implements PatientService {
     public Patient fetchPatientById(Long id) {
         return patientRepository.fetchPatientById(id).orElseThrow(() ->
                 new NoContentFoundException(Patient.class));
+    }
+
+    public void savePatientMetaInfo(PatientMetaInfo patientMetaInfo) {
+        patientMetaInfoRepository.save(patientMetaInfo);
     }
 
 }

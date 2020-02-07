@@ -16,15 +16,11 @@ public class PatientSearchRequestDTO implements Serializable {
 
     private String esewaId;
 
-
-    private String patientMetaInfo;
-
+    private Long patientMetaInfo;
 
     private Character Status;
 
-
     private Character isSelf;
-
 
     private Long hospitalId;
 }

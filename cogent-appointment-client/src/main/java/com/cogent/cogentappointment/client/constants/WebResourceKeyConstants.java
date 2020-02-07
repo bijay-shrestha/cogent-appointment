@@ -93,6 +93,7 @@ public class WebResourceKeyConstants {
 
     //M
     public static final String MIN = "/min";
+    public static final String META_INFO = "/metaInfo";
 
     //N
 

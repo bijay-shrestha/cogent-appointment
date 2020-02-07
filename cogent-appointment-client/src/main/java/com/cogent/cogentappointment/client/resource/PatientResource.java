@@ -47,8 +47,8 @@ public class PatientResource {
     @PutMapping(SEARCH)
     @ApiOperation(SEARCH_PATIENT_WITH_OTHERS_TYPE_OPERATION)
     public ResponseEntity<?> searchPatient(@Valid @RequestBody PatientSearchRequestDTO searchRequestDTO,
-                                    @RequestParam("page") int page,
-                                    @RequestParam("size") int size) {
+                                           @RequestParam("page") int page,
+                                           @RequestParam("size") int size) {
         return ok(patientService.search(searchRequestDTO, getPageable(page, size)));
     }
 
@@ -63,6 +63,18 @@ public class PatientResource {
     @ApiOperation(FETCH_DETAILS_BY_ID)
     public ResponseEntity<?> fetchDetailsById(@PathVariable("id") Long id) {
         return ok(patientService.fetchDetailsById(id));
+    }
+
+    @GetMapping(META_INFO + ACTIVE + MIN)
+    @ApiOperation(FETCH_ACTIVE_DETAILS_FOR_DROPDOWN)
+    public ResponseEntity<?> fetchActivePatientMetaInfoForDropdown() {
+        return ok(patientService.fetchActivePatientMetaInfoDropDownList());
+    }
+
+    @GetMapping(META_INFO + MIN)
+    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
+    public ResponseEntity<?> fetchPatientMetaInfoForDropdown() {
+        return ok(patientService.fetchPatientMetaInfoDropDownList());
     }
 
 

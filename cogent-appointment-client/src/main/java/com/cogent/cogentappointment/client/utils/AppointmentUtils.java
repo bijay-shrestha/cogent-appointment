@@ -243,6 +243,7 @@ public class AppointmentUtils {
                 patient.getMobileNumber()
                 + OR +
                 patient.getRegistrationNumber());
+        patientMetaInfo.setStatus(patient.getStatus());
 
         return patientMetaInfo;
     }

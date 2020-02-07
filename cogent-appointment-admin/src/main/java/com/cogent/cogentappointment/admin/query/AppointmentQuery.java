@@ -175,81 +175,40 @@ public class AppointmentQuery {
                     " AND a.doctorId.id = :doctorId" +
                     " AND a.specializationId.id = :specializationId";
 
-
-    public static Function<Long, String> QUERY_TO_FETCH_APPOINTMENT_VISIT_APPROVAL_DETAILS =
-            (hospitalId) ->
-                    "SELECT" +
-                            " h.name as hospitalName," +
-                            " a.appointmentDate as appointmentDate," +
-                            " a.appointmentNumber as appointmentNumber," +
-                            " a.appointmentTime as appointmentTime," +
-                            " p.eSewaId as esewaId," +
-                            " p.registrationNumber as registrationNumber," +
-                            " p.name as patientName," +
-                            " p.gender as patientGender," +
-                            " p.isRegistered as isRegistered," +
-                            " p.isSelf as isSelf," +
-                            " p.mobileNumber as mobileNumber," +
-                            " sp.name as specializationName," +
-                            " atd.transactionNumber as transactionNumber,atd.appointmentAmount as appointmentAmount" +
-                            " FROM Appointment a" +
-                            " LEFT JOIN Patient p ON a.patientId=p.id" +
-                            " LEFT JOIN Specialization sp ON a.specializationId=sp.id" +
-                            " LEFT JOIN Hospital h ON a.hospitalId=h.id" +
-                            " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
-                            " WHERE p.status='Y' " +
-                            " AND sp.status='Y' " +
-                            " AND a.status='PA' " +
-                            " AND a.hospitalId=" + hospitalId;
-
-    public static Function<AppointmentPendingApprovalSearchDTO, String> QUERY_TO_FETCH_PENDING_APPOINTMENT_VISIT_APPROVAL_DETAILS =
+    public static Function<AppointmentPendingApprovalSearchDTO, String> QUERY_TO_FETCH_PENDING_APPROVALS =
             (searchRequestDTO) ->
                     "SELECT" +
-                            " h.name as hospitalName," +
-                            " a.appointmentDate as appointmentDate," +
-                            " a.appointmentNumber as appointmentNumber," +
-                            " a.appointmentTime as appointmentTime," +
-                            " p.eSewaId as esewaId," +
-                            " p.registrationNumber as registrationNumber," +
-                            " p.name as patientName," +
-                            " p.gender as patientGender," +
-                            " p.dateOfBirth as patientDob," +
-                            " p.isRegistered as isRegistered," +
-                            " p.isSelf as isSelf," +
-                            " p.mobileNumber as mobileNumber," +
-                            " sp.name as specializationName," +
-                            " atd.transactionNumber as transactionNumber,atd.appointmentAmount as appointmentAmount," +
-                            " pi.id as patientMetaInfoId" +
+                            " h.name as hospitalName," +                                    //[0]
+                            " a.appointmentDate as appointmentDate," +                      //[1]
+                            " a.appointmentNumber as appointmentNumber," +                  //[2]
+                            " DATE_FORMAT(a.appointmentTime, '%H:%i %p') as appointmentTime,"+          //[3]
+                            " p.eSewaId as esewaId," +                                      //[4]
+                            " p.registrationNumber as registrationNumber," +                //[5]
+                            " p.name as patientName," +                                     //[6]
+                            " p.gender as patientGender," +                                 //[7]
+                            " p.dateOfBirth as patientDob," +                               //[8]
+                            " p.isRegistered as isRegistered," +                            //[9]
+                            " p.isSelf as isSelf," +                                        //[10]
+                            " p.mobileNumber as mobileNumber," +                            //[11]
+                            " sp.name as specializationName," +                             //[12]
+                            " atd.transactionNumber as transactionNumber," +                //[13]
+                            " atd.appointmentAmount as appointmentAmount," +                //[14]
+                            " d.name as doctorName" +                                       //[15]
                             " FROM Appointment a" +
                             " LEFT JOIN Patient p ON a.patientId=p.id" +
+                            " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
                             " LEFT JOIN Specialization sp ON a.specializationId=sp.id" +
                             " LEFT JOIN Hospital h ON a.hospital.id=h.id" +
                             " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id" +
-                            " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" + GET_WHERE_CLAUSE_TO_SEARCH_PENDING_APPOINTMENT_DETAILS(searchRequestDTO);
-
-    private static String ageCalculator() {
-
-        String calculateAge = "" +
-                "CASE value" +
-                "WHEN TIMESTAMPDIFF(YEAR, p.dateOfBirth, now())==0 THEN empty" +
-                "END" +
-                "(TIMESTAMPDIFF( MONTH,  p.dateOfBirth, now()) % 12)" +
-                " as patientAge, ";
-
-//        String calculateAge = " year(CURDATE())- year(p.dateOfBirth) AS patientAge,";
-
-//        String calculateAge = "TIMESTAMPDIFF(YEAR, p.dateOfBirth, now())" +
-//                        " TIMESTAMPDIFF( MONTH, p.dateOfBirth, now() ) % 12 as _month," +
-//                " FLOOR( TIMESTAMPDIFF( DAY, p.dateOfBirth, now() ) % 30.4375 ) as _day, ";
-
-        return calculateAge;
-    }
+                            " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id"
+                            + GET_WHERE_CLAUSE_TO_SEARCH_PENDING_APPOINTMENT_DETAILS(searchRequestDTO);
 
 
-    private static String GET_WHERE_CLAUSE_TO_SEARCH_PENDING_APPOINTMENT_DETAILS(AppointmentPendingApprovalSearchDTO pendingApprovalSearchDTO) {
+    private static String GET_WHERE_CLAUSE_TO_SEARCH_PENDING_APPOINTMENT_DETAILS(
+            AppointmentPendingApprovalSearchDTO pendingApprovalSearchDTO) {
 
-        String whereClause = " WHERE a.status!= 'C'" +
-                " AND p.status='Y' " +
+        String whereClause = " WHERE " +
+                " p.status='Y' " +
                 " AND sp.status='Y' " +
                 " AND a.status='PA'" +
                 " AND a.appointmentDate BETWEEN :fromDate AND :toDate";
@@ -257,9 +216,8 @@ public class AppointmentQuery {
         if (!Objects.isNull(pendingApprovalSearchDTO.getHospitalId()))
             whereClause += " AND h.id = " + pendingApprovalSearchDTO.getHospitalId();
 
-        if (!Objects.isNull(pendingApprovalSearchDTO.getPatientId()))
-            whereClause += " AND p.id = " + pendingApprovalSearchDTO.getPatientId();
-
+        if (!Objects.isNull(pendingApprovalSearchDTO.getPatientMetaInfoId()))
+            whereClause += " AND pi.id = " + pendingApprovalSearchDTO.getPatientMetaInfoId();
 
         if (!Objects.isNull(pendingApprovalSearchDTO.getSpecializationId()))
             whereClause += " AND sp.id = " + pendingApprovalSearchDTO.getSpecializationId();
@@ -267,12 +225,11 @@ public class AppointmentQuery {
         if (!Objects.isNull(pendingApprovalSearchDTO.getPatientType()))
             whereClause += " AND p.isRegistered = '" + pendingApprovalSearchDTO.getPatientType() + "'";
 
-
         if (!Objects.isNull(pendingApprovalSearchDTO.getPatientCategory()))
             whereClause += " AND p.isSelf = '" + pendingApprovalSearchDTO.getPatientCategory() + "'";
 
         if (!Objects.isNull(pendingApprovalSearchDTO.getDoctorId()))
-            whereClause += " AND a.doctorId = " + pendingApprovalSearchDTO.getDoctorId();
+            whereClause += " AND d.id = " + pendingApprovalSearchDTO.getDoctorId();
 
         return whereClause;
     }

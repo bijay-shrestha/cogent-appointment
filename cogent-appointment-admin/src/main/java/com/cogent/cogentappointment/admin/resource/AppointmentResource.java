@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentConstant.*;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.*;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
@@ -46,18 +46,8 @@ public class AppointmentResource {
         return created(create(API_V1 + BASE_APPOINTMENT)).body(appointmentService.save(requestDTO));
     }
 
-    @GetMapping(DETAILS + ID_PATH_VARIABLE_BASE)
-    @ApiOperation(DETAILS_APPROVAL_VISIT_OPERATION)
-    public ResponseEntity<?> fetchDetailsById(@PathVariable("id") Long id,
-                                              @RequestParam("page") int page,
-                                              @RequestParam("size") int size) {
-
-        Pageable pageable = PageRequest.of(page, size);
-        return ok(appointmentService.fetchPendingApprovals(id,pageable));
-    }
-
-    @PutMapping(SEARCH)
-    @ApiOperation(SEARCH_OPERATION)
+    @PutMapping(PENDING_APPROVAL)
+    @ApiOperation(FETCH_PENDING_APPOINTMENT_APPROVAL)
     public ResponseEntity<?> search(@RequestBody AppointmentPendingApprovalSearchDTO searchRequestDTO,
                                     @RequestParam("page") int page,
                                     @RequestParam("size") int size) {

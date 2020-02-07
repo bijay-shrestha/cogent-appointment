@@ -44,6 +44,7 @@ public class SwaggerConstants {
         String CHECK_APPOINTMENT_AVAILABILITY = "Check available time schedules in requested date" +
                 " for specific doctor and specialization";
         String SAVE_OPERATION = "Save new appointment";
+        String FETCH_PENDING_APPOINTMENT_APPROVAL = "Fetch pending appointment approvals";
         String UPDATE_OPERATION = "Update existing appointment";
         String DELETE_OPERATION = "Set appointment status as 'D' when deleted";
         String SEARCH_OPERATION = "Search appointment according to given request parameters";

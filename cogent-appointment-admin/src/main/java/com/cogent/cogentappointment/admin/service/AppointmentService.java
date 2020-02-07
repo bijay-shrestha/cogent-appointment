@@ -36,9 +36,7 @@ public interface AppointmentService {
 
     void rescheduleAppointment(AppointmentRescheduleRequestDTO rescheduleRequestDTO);
 
-    AppointmentPendingApprovalSearchDetailDTO fetchPendingApprovals(Long hospitalId, Pageable pageable);
-
-    AppointmentPendingApprovalSearchDetailDTO fetchPendingApprovals(AppointmentPendingApprovalSearchDTO searchRequestDTO, Pageable pageable);
+    AppointmentPendingApprovalResponseDTO fetchPendingApprovals(AppointmentPendingApprovalSearchDTO searchRequestDTO, Pageable pageable);
 
 
 //    List<AppointmentStatusResponseDTO> fetchAppointmentForAppointmentStatus(AppointmentStatusRequestDTO requestDTO);

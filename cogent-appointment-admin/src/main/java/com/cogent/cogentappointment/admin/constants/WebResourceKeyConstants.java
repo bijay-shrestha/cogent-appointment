@@ -22,6 +22,7 @@ public class WebResourceKeyConstants {
     public interface AppointmentConstants {
         String BASE_APPOINTMENT = "/appointment";
         String CHECK_AVAILABILITY = "/checkAvailability";
+        String PENDING_APPROVAL = "/pending-approval";
         String RESCHEDULE = "/reschedule";
         String DETAILS = "/detail";
 
@@ -97,6 +98,9 @@ public class WebResourceKeyConstants {
     //O
 
     //P
+
+
+
     public interface PatientConstant {
         String BASE_PATIENT = "/patient";
         String SELF = "/self";

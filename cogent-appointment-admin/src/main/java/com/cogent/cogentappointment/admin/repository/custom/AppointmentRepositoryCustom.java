@@ -2,8 +2,8 @@ package com.cogent.cogentappointment.admin.repository.custom;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentPendingApprovalSearchDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.*;
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.*;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -31,11 +31,10 @@ public interface AppointmentRepositoryCustom {
 
     List<AppointmentMinimalResponseDTO> search(AppointmentSearchRequestDTO searchRequestDTO, Pageable pageable);
 
-    AppointmentPendingApprovalSearchDetailDTO findPendingApprovalList(Long hospitalId,Pageable pageable);
-
     AppointmentResponseDTO fetchDetailsById(Long id);
 
-    AppointmentPendingApprovalSearchDetailDTO searchPendingVisitApprovals(AppointmentPendingApprovalSearchDTO searchRequestDTO, Pageable pageable);
+    AppointmentPendingApprovalResponseDTO searchPendingVisitApprovals(
+            AppointmentPendingApprovalSearchDTO searchRequestDTO, Pageable pageable);
 
 //    List<AppointmentStatusResponseDTO> fetchAppointmentForAppointmentStatus(AppointmentStatusRequestDTO requestDTO);
 

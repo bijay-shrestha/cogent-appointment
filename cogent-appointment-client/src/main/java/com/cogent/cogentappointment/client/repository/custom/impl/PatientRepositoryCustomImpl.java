@@ -57,7 +57,8 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
                 .setParameter(NAME, patientUpdateRequestDTO.getName())
                 .setParameter(MOBILE_NUMBER, patientUpdateRequestDTO.getMobileNumber())
                 .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(patientUpdateRequestDTO.getDateOfBirth()))
-                .setParameter(ID, patientUpdateRequestDTO.getId());
+                .setParameter(ID, patientUpdateRequestDTO.getId())
+                .setParameter(HOSPITAL_ID, patientUpdateRequestDTO.getHospitalId());
 
         return (Long) query.getSingleResult();
     }

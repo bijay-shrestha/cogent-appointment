@@ -17,6 +17,7 @@ import com.cogent.cogentappointment.client.service.PatientService;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.Patient;
+import com.cogent.cogentappointment.persistence.model.PatientMetaInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,9 +30,7 @@ import java.util.function.Function;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.PatientLog.PATIENT;
 import static com.cogent.cogentappointment.client.utils.GenderUtils.fetchGenderByCode;
-import static com.cogent.cogentappointment.client.utils.PatientUtils.parseToPatient;
-import static com.cogent.cogentappointment.client.utils.PatientUtils.updatePatient;
-import static com.cogent.cogentappointment.client.utils.commons.AgeConverterUtils.calculateAge;
+import static com.cogent.cogentappointment.client.utils.PatientUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 
 /**
@@ -144,11 +143,6 @@ public class PatientServiceImpl implements PatientService {
 
         List<PatientResponseDTO> responseDTO = patientRepository.search(searchRequestDTO, pageable);
 
-        responseDTO.forEach(patientResponseDTO -> {
-            String age = calculateAge(patientResponseDTO.getDateOfBirth());
-            patientResponseDTO.setAge(age);
-        });
-
         log.info(SEARCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
@@ -169,6 +163,10 @@ public class PatientServiceImpl implements PatientService {
                 updateRequestDTO.getMobileNumber(), updateRequestDTO.getDateOfBirth());
 
         save(updatePatient(updateRequestDTO, patientToBeUpdated));
+
+        PatientMetaInfo patientMetaInfoToBeUpdated = patientMetaInfoRepository.fetchByPatientId(updateRequestDTO.getId());
+
+        savePatientMetaInfo(updatePatientMetaInfo(patientToBeUpdated, patientMetaInfoToBeUpdated, updateRequestDTO));
 
         log.info(UPDATING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
@@ -240,6 +238,10 @@ public class PatientServiceImpl implements PatientService {
     public Patient fetchPatientById(Long id) {
         return patientRepository.fetchPatientById(id).orElseThrow(() ->
                 new NoContentFoundException(Patient.class));
+    }
+
+    public void savePatientMetaInfo(PatientMetaInfo patientMetaInfo) {
+        patientMetaInfoRepository.save(patientMetaInfo);
     }
 
 }

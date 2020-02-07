@@ -30,6 +30,7 @@ public class PatientQuery {
                     " AND p.mobileNumber =:mobileNumber" +
                     " AND p.dateOfBirth =:dateOfBirth" +
                     " AND p.id !=:id)" +
+                    " AND h.id =:hospitalId" +
                     " AND p.status != 'D'";
 
     public static final String SELECT_CLAUSE_TO_FETCH_PATIENT_DETAILS =
@@ -90,17 +91,17 @@ public class PatientQuery {
 
     public static final String QUERY_TO_FETCH_PATIENT(PatientSearchRequestDTO searchRequestDTO) {
         return "SELECT" +
-                " p.name as name," +
-                " p.gender as gender," +
-                " p.address as address," +
-                " p.email as email," +
-                " p.mobileNumber as mobileNumber," +
-                " p.registrationNumber as registrationNumber," +
-                " p.eSewaId as eSewaId," +
-                " p.status as status," +
-                " p.dateOfBirth as dateOfBirth," +
-                " p.hospitalNumber as hospitalNumber," +
-                " h.name as hospitalName" +
+                " p.name as name," +                                             //[0]
+                " p.gender as gender," +                                         //[1]
+                " p.address as address," +                                       //[2]
+                " p.email as email," +                                           //[3]
+                " p.mobileNumber as mobileNumber," +                             //[4]
+                " p.registrationNumber as registrationNumber," +                 //[5]
+                " p.eSewaId as eSewaId," +                                       //[6]
+                " p.status as status," +                                         //[7]
+                " p.dateOfBirth as dateOfBirth," +                               //[8]
+                " p.hospitalNumber as hospitalNumber," +                         //[9]
+                " h.name as hospitalName" +                                      //[10]
                 " FROM Patient p" +
                 " LEFT JOIN Hospital h ON h.id=p.hospitalId" +
                 " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id" +

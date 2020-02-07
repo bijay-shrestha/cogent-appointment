@@ -11,7 +11,7 @@ import static com.cogent.cogentappointment.client.utils.commons.DateUtils.conver
  */
 public class AgeConverterUtils {
 
-    public static String calculateAge(Date date) {
+    public static String  calculateAge(Date date) {
 
         LocalDate today = LocalDate.now();
         LocalDate birthDate = convertDateToLocalDate(date);

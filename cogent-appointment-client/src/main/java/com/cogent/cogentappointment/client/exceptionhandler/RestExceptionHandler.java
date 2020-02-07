@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import static com.cogent.cogentappointment.client.exception.MethodArgumentNotValidException.*;
+import static com.cogent.cogentappointment.client.exception.MethodArgumentNotValidException.handleMethodArgumentNotValidException;
 
 /**
  * @author smriti on 2019-09-09
@@ -23,6 +23,12 @@ import static com.cogent.cogentappointment.client.exception.MethodArgumentNotVal
 @Slf4j
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
+
+    @ExceptionHandler
+    public ResponseEntity<Object> handleInternalServerException(InternalServerErrorException ex) {
+        log.error("-------- NO CONTENT FOUND EXCEPTION ------");
+        return buildResponseEntity(ex.getException());
+    }
 
     @ExceptionHandler
     public ResponseEntity<Object> handleNoContentFoundException(NoContentFoundException ex) {

@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.cogent.cogentappointment.client.constants.StatusConstants.ACTIVE;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.CANCELLED;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.PENDING_APPROVAL;
 import static com.cogent.cogentappointment.client.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils.generateRandomNumber;
@@ -44,7 +46,7 @@ public class AppointmentUtils {
         appointment.setAppointmentNumber(appointmentNumber);
         appointment.setSerialNumber(generateRandomNumber(6));
         appointment.setCreatedDateNepali(requestDTO.getCreatedDateNepali());
-        appointment.setStatus("PA");
+        appointment.setStatus(PENDING_APPROVAL);
         parseToAppointment(patient, specialization, doctor, hospital, appointment);
         return appointment;
     }
@@ -64,16 +66,20 @@ public class AppointmentUtils {
         appointment.setPatientId(patient);
     }
 
+    public static void parseCancelledDetails(Appointment appointment,
+                                             String remarks) {
+
+        appointment.setRemarks(remarks);
+        appointment.setStatus(CANCELLED);
+    }
+
     public static AppointmentRefundDetail parseToAppointmentRefundDetail(Appointment appointment,
-                                                                         Double refundAmount,
-                                                                         String remarks){
+                                                                         Double refundAmount) {
 
         AppointmentRefundDetail refundDetail = new AppointmentRefundDetail();
         refundDetail.setAppointmentId(appointment);
-        refundDetail.setRemarks(remarks);
         refundDetail.setRefundAmount(refundAmount);
-        refundDetail.setStatus("PA");
-
+        refundDetail.setStatus(PENDING_APPROVAL);
         return refundDetail;
     }
 

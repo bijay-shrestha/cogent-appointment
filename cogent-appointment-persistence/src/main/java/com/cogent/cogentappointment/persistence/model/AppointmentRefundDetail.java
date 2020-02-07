@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author smriti ON 06/02/2020
@@ -41,6 +42,10 @@ public class AppointmentRefundDetail extends Auditable<String> implements Serial
      * R = Rejected*/
     @Column(name = "status")
     private String status;
+
+    @Temporal(TemporalType.DATE)
+    @Column(name = "cancelled_date")
+    private Date cancelledDate;
 
     @Override
     public String toString() {

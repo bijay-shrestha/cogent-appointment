@@ -190,7 +190,7 @@ public class AppointmentQuery {
             " SELECT" +
                     " a.id as appointmentId," +                                             //[0]
                     " a.appointmentDate as appointmentDate," +                              //[1]
-                    " DATE_FORMAT(a.appointmentTime,'%H:%i %p') as appointmentTime," +                              //[2]
+                    " DATE_FORMAT(a.appointmentTime,'%H:%i %p') as appointmentTime," +      //[2]
                     " a.appointmentNumber as appointmentNumber," +                          //[3]
                     " p.name as patientName," +                                             //[4]
                     " d.name as doctorName," +                                              //[5]
@@ -214,5 +214,34 @@ public class AppointmentQuery {
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
                     " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +
                     " WHERE a.id =:id";
+
+    public static final String QUERY_TO_FETCH_REFUND_APPOINTMENTS =
+            " SELECT" +
+                    " a.id as appointmentId," +                                             //[0]
+                    " a.appointmentDate as appointmentDate," +                              //[1]
+                    " DATE_FORMAT(a.appointmentTime,'%H:%i %p') as appointmentTime," +      //[2]
+                    " a.appointmentNumber as appointmentNumber," +                          //[3]
+                    " h.name as hospitalName," +                                            //[4]
+                    " p.name as patientName," +                                             //[5]
+                    " p.registrationNumber as registrationNumber," +                        //[6]
+                    " p.gender as gender," +                                                //[7]
+                    " p.dateOfBirth as dateOfBirth," +                                      //[8]
+                    " d.name as doctorName," +                                              //[9]
+                    " s.name as specializationName," +                                      //[10]
+                    " p.eSewaId as eSewaId," +                                              //[11]
+                    " atd.transactionNumber as transactionNumber," +                        //[12]
+                    " ard.cancelledDate as cancelledDate," +                                //[13]
+                    " ard.refundAmount as refundAmount," +                                   //[14]
+                    " a.remarks as cancellationRemarks" +                                   //[15]
+                    " FROM Appointment a" +
+                    " LEFT JOIN Patient p ON p.id = a.patientId.id" +
+                    " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
+                    " LEFT JOIN Specialization s ON s.id = a.specializationId.id" +
+                    " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +
+                    " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
+                    " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId.id = a.id" +
+                    " WHERE ard.status = 'PA'" +
+                    " AND a.appointmentDate BETWEEN :fromDate AND :toDate" +
+                    " ORDER BY a.appointmentDate DESC";
 
 }

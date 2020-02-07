@@ -175,10 +175,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Appointment appointment = findPendingAppointmentById(cancelRequestDTO.getAppointmentId());
 
+        parseCancelledDetails(appointment, cancelRequestDTO.getRemarks());
+
         Double refundAmount = appointmentRepository.calculateRefundAmount(cancelRequestDTO.getAppointmentId());
 
         saveAppointmentRefundDetail(
-                parseToAppointmentRefundDetail(appointment, refundAmount, cancelRequestDTO.getRemarks())
+                parseToAppointmentRefundDetail(appointment, refundAmount)
         );
 
         log.info(CANCELLING_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));

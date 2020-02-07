@@ -7,25 +7,22 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @author smriti ON 03/02/2020
+ * @author smriti ON 07/02/2020
  */
 @Getter
 @Setter
-public class AppointmentPendingApprovalSearchDTO implements Serializable {
-
-    private Long hospitalId;
+public class AppointmentRefundSearchDTO implements Serializable {
 
     private Date fromDate;
 
     private Date toDate;
 
-    private Long doctorId;
+    private Long hospitalId;
 
-    private Long specializationId;
+    private Long patientMetaInfoId;
+
+    private Long doctorId;
 
     /*NEW OR REGISTERED*/
     private Character patientType;
-
-    /*SELF OR OTHERS*/
-    private Character patientCategory;
 }

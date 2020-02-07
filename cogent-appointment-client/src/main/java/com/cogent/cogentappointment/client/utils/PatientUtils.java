@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.utils;
 
 import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientMinimalResponseDTO;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.Hospital;
@@ -32,6 +33,21 @@ public class PatientUtils {
         patient.setAddress(requestDTO.getAddress());
         patient.setGender(gender);
         patient.setHospitalId(hospital);
+        return patient;
+    }
+
+    public static Patient updatePatient(PatientUpdateRequestDTO requestDTO,
+                                        Patient patient) {
+        patient.setName(requestDTO.getName());
+        patient.setDateOfBirth(requestDTO.getDateOfBirth());
+        patient.setMobileNumber(requestDTO.getMobileNumber());
+        patient.setAddress(requestDTO.getAddress());
+        patient.setGender(requestDTO.getGender());
+        patient.setHospitalNumber(requestDTO.getHospitalNumber());
+        patient.setEmail(requestDTO.getEmail());
+        patient.setRemarks(requestDTO.getRemarks());
+        patient.setStatus(requestDTO.getStatus());
+
         return patient;
     }
 

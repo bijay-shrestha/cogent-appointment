@@ -118,31 +118,29 @@ public class DoctorServiceImpl implements DoctorService {
 
         log.info(UPDATING_PROCESS_STARTED, DOCTOR);
 
-        Doctor doctor = findByDoctorAndHospitalId(
-                requestDTO.getUpdateDTO().getId(),
-                requestDTO.getUpdateDTO().getHospitalId());
+        Doctor doctor = findById(requestDTO.getDoctorInfo().getId());
 
         Long doctorCount = doctorRepository.validateDoctorDuplicityForUpdate(
-                requestDTO.getUpdateDTO().getId(),
-                requestDTO.getUpdateDTO().getName(),
-                requestDTO.getUpdateDTO().getMobileNumber(),
-                requestDTO.getUpdateDTO().getHospitalId());
+                requestDTO.getDoctorInfo().getId(),
+                requestDTO.getDoctorInfo().getName(),
+                requestDTO.getDoctorInfo().getMobileNumber(),
+                requestDTO.getDoctorInfo().getHospitalId());
 
         validateDoctor(doctorCount,
-                requestDTO.getUpdateDTO().getName(),
-                requestDTO.getUpdateDTO().getMobileNumber());
+                requestDTO.getDoctorInfo().getName(),
+                requestDTO.getDoctorInfo().getMobileNumber());
 
         convertToUpdatedDoctor(
-                requestDTO.getUpdateDTO(),
+                requestDTO.getDoctorInfo(),
                 doctor,
-                fetchGender(requestDTO.getUpdateDTO().getGenderCode()),
-                fetchHospitalById(requestDTO.getUpdateDTO().getHospitalId()));
+                fetchGender(requestDTO.getDoctorInfo().getGenderCode()),
+                fetchHospitalById(requestDTO.getDoctorInfo().getHospitalId()));
 
-        updateDoctorAppointmentCharge(doctor.getId(), requestDTO.getUpdateDTO().getAppointmentCharge());
+        updateDoctorAppointmentCharge(doctor.getId(), requestDTO.getDoctorInfo().getAppointmentCharge());
 
-        updateDoctorSpecialization(doctor.getId(), requestDTO.getSpecializationUpdateRequestDTOS());
+        updateDoctorSpecialization(doctor.getId(), requestDTO.getDoctorSpecializationInfo());
 
-        updateDoctorQualification(doctor.getId(), requestDTO.getDoctorQualificationUpdateDTOS());
+        updateDoctorQualification(doctor.getId(), requestDTO.getDoctorQualificationInfo());
 
         updateDoctorAvatar(doctor, avatar);
 
@@ -447,12 +445,7 @@ public class DoctorServiceImpl implements DoctorService {
         doctorAvatarRepository.save(doctorAvatar);
     }
 
-    public Doctor findByDoctorAndHospitalId(Long doctorId, Long hospitalId) {
-        return doctorRepository.findByIdDoctorAndHospitalId(doctorId, hospitalId)
-                .orElseThrow(() -> DOCTOR_WITH_GIVEN_ID_NOT_FOUND.apply(doctorId));
-    }
-
-    public Doctor findById(Long doctorId) {
+    private Doctor findById(Long doctorId) {
         return doctorRepository.findDoctorById(doctorId)
                 .orElseThrow(() -> DOCTOR_WITH_GIVEN_ID_NOT_FOUND.apply(doctorId));
     }

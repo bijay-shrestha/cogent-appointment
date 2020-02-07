@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.admin.configuration;
 
-import com.cogent.cogentappointment.admin.exception.authentication.AuthEntryPointJwt;
+import com.cogent.cogentappointment.admin.exception.authentication.AuthEntryPointHmac;
 import com.cogent.cogentappointment.admin.security.filter.HmacAuthenticationFilter;
 import com.cogent.cogentappointment.admin.security.hmac.HMACConfig;
 import com.cogent.cogentappointment.admin.service.impl.UserDetailsServiceImpl;
@@ -29,13 +29,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsServiceImpl userDetailsService;
 
-    private final AuthEntryPointJwt unauthorizedHandler;
+    private final AuthEntryPointHmac unauthorizedHandler;
 
     private final HmacAuthenticationFilter hmacAuthenticationFilter;
 
     public WebSecurityConfig(HMACConfig hmaconfig,
                              UserDetailsServiceImpl userDetailsService,
-                             AuthEntryPointJwt unauthorizedHandler, HmacAuthenticationFilter hmacAuthenticationFilter) {
+                             AuthEntryPointHmac unauthorizedHandler, HmacAuthenticationFilter hmacAuthenticationFilter) {
         this.hmaconfig = hmaconfig;
         this.userDetailsService = userDetailsService;
         this.unauthorizedHandler = unauthorizedHandler;
@@ -54,8 +54,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 //    allow swagger
                 .antMatchers(AUTH_WHITELIST).permitAll()
                 .antMatchers(HttpMethod.POST, hmaconfig.getUri()).permitAll()
-                .antMatchers(HttpMethod.POST, "/api/v1/files").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/v1/admin/verify").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/files/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/admin/verify/**").permitAll()
                 .anyRequest().authenticated();
     }
 

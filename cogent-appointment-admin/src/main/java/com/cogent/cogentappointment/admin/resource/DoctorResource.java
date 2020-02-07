@@ -54,7 +54,7 @@ public class DoctorResource {
 
     @PutMapping(consumes = MULTIPART_FORM_DATA_VALUE)
     @ApiOperation(UPDATE_OPERATION)
-    public ResponseEntity<?> update(@RequestPart(value = "file", required = false) MultipartFile avatar,
+    public ResponseEntity<?> update(@RequestPart(value = "avatar", required = false) MultipartFile avatar,
                                     @RequestParam("request") String request) throws IOException {
         DoctorUpdateRequestDTO updateRequestDTO = ObjectMapperUtils.map(request, DoctorUpdateRequestDTO.class);
         doctorService.update(updateRequestDTO, avatar);

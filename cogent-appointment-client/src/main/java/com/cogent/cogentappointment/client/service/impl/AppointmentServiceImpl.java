@@ -58,6 +58,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentRefundDetailRepository appointmentRefundDetailRepository;
 
+    private final PatientMetaInfoRepository patientMetaInfoRepository;
+
     public AppointmentServiceImpl(PatientService patientService,
                                   DoctorService doctorService,
                                   SpecializationService specializationService,
@@ -66,7 +68,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository,
                                   AppointmentTransactionInfoRepository appointmentTransactionInfoRepository,
                                   HospitalService hospitalService,
-                                  AppointmentRefundDetailRepository appointmentRefundDetailRepository) {
+                                  AppointmentRefundDetailRepository appointmentRefundDetailRepository,
+                                  PatientMetaInfoRepository patientMetaInfoRepository) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -76,6 +79,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.appointmentTransactionInfoRepository = appointmentTransactionInfoRepository;
         this.hospitalService = hospitalService;
         this.appointmentRefundDetailRepository = appointmentRefundDetailRepository;
+        this.patientMetaInfoRepository = patientMetaInfoRepository;
     }
 
     @Override
@@ -144,6 +148,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 fetchHospital(appointmentRequestDTO.getHospitalId()));
 
         save(appointment);
+
+        savePatientMetaInfo(parseToPatientMetaInfo(appointment.getPatientId()));
 
         saveAppointmentTransactionDetail(appointmentRequestDTO.getTransactionInfo(), appointment);
 
@@ -433,6 +439,10 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private void saveAppointmentRefundDetail(AppointmentRefundDetail appointmentRefundDetail) {
         appointmentRefundDetailRepository.save(appointmentRefundDetail);
+    }
+
+    public void savePatientMetaInfo(PatientMetaInfo patientMetaInfo) {
+        patientMetaInfoRepository.save(patientMetaInfo);
     }
 
 }

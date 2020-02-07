@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.resource;
 
 import com.cogent.cogentappointment.client.dto.request.patient.PatientSearchRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateRequestDTO;
 import com.cogent.cogentappointment.client.service.PatientService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -43,27 +44,26 @@ public class PatientResource {
         return ok(patientService.fetchMinimalPatientInfo(searchRequestDTO, getPageable(page, size)));
     }
 
+    @PutMapping(SEARCH)
+    @ApiOperation(SEARCH_PATIENT_WITH_OTHERS_TYPE_OPERATION)
+    public ResponseEntity<?> searchPatient(@Valid @RequestBody PatientSearchRequestDTO searchRequestDTO,
+                                    @RequestParam("page") int page,
+                                    @RequestParam("size") int size) {
+        return ok(patientService.search(searchRequestDTO, getPageable(page, size)));
+    }
+
+    @PutMapping()
+    @ApiOperation(UPDATE_PATIENT_INFO_OPERATION)
+    public ResponseEntity<?> update(@Valid @RequestBody PatientUpdateRequestDTO updateRequestDTO) {
+        patientService.update(updateRequestDTO);
+        return ok().build();
+    }
+
     @GetMapping(DETAIL + ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_DETAILS_BY_ID)
     public ResponseEntity<?> fetchDetailsById(@PathVariable("id") Long id) {
         return ok(patientService.fetchDetailsById(id));
     }
 
-//    @GetMapping(DETAILS + ID_PATH_VARIABLE_BASE)
-//    @ApiOperation(PATIENT_DETAILS_OPERATION)
-//    public ResponseEntity<?> fetchPatientDetails(@PathVariable Long id) {
-//        return ok(patientService.search(id));
-//    }
-//
-//    @GetMapping(DROPDOWN)
-//    @ApiOperation(FETCH_PATIENT_FOR_DROP_DOWN_OPERATION)
-//    public ResponseEntity<?> dropDown() {
-//        return ok(patientService.dropDownList());
-//    }
-//
-//    @GetMapping(ACTIVE + DROPDOWN)
-//    @ApiOperation(FETCH_ACTIVE_PATIENT_FOR_DROP_DOWN_OPERATION)
-//    public ResponseEntity<?> activeDropDown() {
-//        return ok(patientService.activeDropDownList());
-//    }
+
 }

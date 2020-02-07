@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.service;
 
+import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateRequestDTO;
@@ -30,4 +31,8 @@ public interface PatientService {
                                     Pageable pageable);
 
     void update(PatientUpdateRequestDTO patientUpdateRequestDTO);
+
+    List<DropDownResponseDTO> fetchPatientMetaInfoDropDownList();
+
+    List<DropDownResponseDTO> fetchActivePatientMetaInfoDropDownList();
 }

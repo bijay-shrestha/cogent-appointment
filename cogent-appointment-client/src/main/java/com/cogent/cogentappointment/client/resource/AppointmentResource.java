@@ -32,12 +32,6 @@ public class AppointmentResource {
         this.appointmentService = appointmentService;
     }
 
-//    @PutMapping(CHECK_AVAILABILITY)
-//    @ApiOperation(CHECK_APPOINTMENT_AVAILABILITY)
-//    public ResponseEntity<?> checkAvailability(@Valid @RequestBody AppointmentCheckAvailabilityRequestDTO requestDTO) {
-//        return ok(appointmentService.checkAvailability(requestDTO));
-//    }
-
     @PutMapping(CHECK_AVAILABILITY)
     @ApiOperation(CHECK_APPOINTMENT_AVAILABILITY)
     public ResponseEntity<?> checkAvailability(@Valid @RequestBody AppointmentCheckAvailabilityRequestDTO requestDTO) {
@@ -50,39 +44,4 @@ public class AppointmentResource {
         return created(create(API_V1 + BASE_APPOINTMENT)).body(appointmentService.save(requestDTO));
     }
 
-//    @PutMapping
-//    @ApiOperation(UPDATE_OPERATION)
-//    public ResponseEntity<?> update(@Valid @RequestBody AppointmentUpdateRequestDTO requestDTO) {
-//        appointmentService.update(requestDTO);
-//        return ok().build();
-//    }
-//
-//    @DeleteMapping
-//    @ApiOperation(DELETE_OPERATION)
-//    public ResponseEntity<?> cancel(@Valid @RequestBody AppointmentCancelRequestDTO cancelRequestDTO) {
-//        appointmentService.cancel(cancelRequestDTO);
-//        return ok().build();
-//    }
-//
-//    @PutMapping(SEARCH)
-//    @ApiOperation(SEARCH_OPERATION)
-//    public ResponseEntity<?> search(@RequestBody AppointmentSearchRequestDTO searchRequestDTO,
-//                                    @RequestParam("page") int page,
-//                                    @RequestParam("size") int size) {
-//        Pageable pageable = PageRequest.of(page, size);
-//        return ok().body(appointmentService.search(searchRequestDTO, pageable));
-//    }
-//
-//    @GetMapping(DETAILS + ID_PATH_VARIABLE_BASE)
-//    @ApiOperation(DETAILS_OPERATION)
-//    public ResponseEntity<?> fetchDetailsById(@PathVariable("id") Long id) {
-//        return ok(appointmentService.fetchDetailsById(id));
-//    }
-//
-//    @PutMapping(RESCHEDULE)
-//    @ApiOperation(RESCHEDULE_OPERATION)
-//    public ResponseEntity<?> rescheduleAppointment(@Valid @RequestBody AppointmentRescheduleRequestDTO requestDTO) {
-//        appointmentService.rescheduleAppointment(requestDTO);
-//        return ok().build();
-//    }
 }

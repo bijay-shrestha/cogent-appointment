@@ -152,11 +152,13 @@ public class SwaggerConstants {
     //P
     public interface PatientConstant {
         String BASE_PATIENT_API_VALUE = "This is Patient Controller";
+        String FETCH_ACTIVE_DETAILS_FOR_DROPDOWN = "Fetch minimal active patient meta info details (id and metaInfo) for dropdown";
+        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal patient meta info details (id and metaInfo) for dropdown";
         String SEARCH_PATIENT_WITH_SELF_TYPE_OPERATION = "Search patient info according to given " +
                 "request parameters (esewa id, isSelf='Y' and hospital id)";
         String SEARCH_PATIENT_WITH_OTHERS_TYPE_OPERATION = "Fetch list of minimal patient info according to given " +
                 "request parameters (esewa id, isSelf='N' and hospital id)";
-        String UPDATE_PATIENT_INFO_OPERATION = "Update patient info  to given";
+             String UPDATE_PATIENT_INFO_OPERATION = "Update patient info  to given";
         String FETCH_DETAILS_BY_ID = " Fetch patient(with type: OTHERS) details by id";
     }
 

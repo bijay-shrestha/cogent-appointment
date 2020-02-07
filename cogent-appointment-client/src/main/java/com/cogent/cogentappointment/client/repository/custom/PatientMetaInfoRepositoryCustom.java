@@ -1,7 +1,10 @@
 package com.cogent.cogentappointment.client.repository.custom;
 
+import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 /**
  * @author smriti ON 13/01/2020
@@ -10,4 +13,7 @@ import org.springframework.stereotype.Repository;
 @Qualifier("patientMetaInfoRepositoryCustom")
 public interface PatientMetaInfoRepositoryCustom {
 
+    List<DropDownResponseDTO> fetchDropDownList();
+
+    List<DropDownResponseDTO> fetchActiveDropDownList();
 }

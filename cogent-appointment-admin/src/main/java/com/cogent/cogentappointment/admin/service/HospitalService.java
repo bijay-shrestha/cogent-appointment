@@ -21,7 +21,7 @@ public interface HospitalService {
 
     void save(HospitalRequestDTO requestDTO, MultipartFile logo, MultipartFile banner) throws NoSuchAlgorithmException;
 
-    void update(HospitalUpdateRequestDTO updateRequestDTO, MultipartFile logo, MultipartFile banner);
+    void update(HospitalUpdateRequestDTO updateRequestDTO, MultipartFile logo, MultipartFile banner) throws NoSuchAlgorithmException;
 
     void delete(DeleteRequestDTO deleteRequestDTO);
 

@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.utils;
 
 
+import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalUpdateRequestDTO;
 import com.cogent.cogentappointment.persistence.model.HmacApiInfo;
 import com.cogent.cogentappointment.persistence.model.Hospital;
 
@@ -17,6 +18,12 @@ public class HmacApiInfoUtils {
         hmacApiInfo.setApiSecret(HMACKeyGenerator.generateApiSecret());
         hmacApiInfo.setStatus(hospital.getStatus());
 
+        return hmacApiInfo;
+    }
+
+    public static HmacApiInfo updateHmacApiInfoAsHospital(HmacApiInfo hmacApiInfo, Character status,String remarks) {
+        hmacApiInfo.setStatus(status);
+        hmacApiInfo.setRemarks(remarks);
         return hmacApiInfo;
     }
 }

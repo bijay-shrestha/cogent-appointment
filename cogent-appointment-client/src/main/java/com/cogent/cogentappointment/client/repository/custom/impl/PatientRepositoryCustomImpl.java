@@ -53,13 +53,13 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
 
     @Override
     public Long fetchPatientForValidationToUpdate(PatientUpdateRequestDTO patientUpdateRequestDTO) {
-            Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_UPDATED_PATIENT_DUPLICITY)
-                    .setParameter(NAME, patientUpdateRequestDTO.getName())
-                    .setParameter(MOBILE_NUMBER, patientUpdateRequestDTO.getMobileNumber())
-                    .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(patientUpdateRequestDTO.getDateOfBirth()))
-                    .setParameter(ID, patientUpdateRequestDTO.getId());
+        Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_UPDATED_PATIENT_DUPLICITY)
+                .setParameter(NAME, patientUpdateRequestDTO.getName())
+                .setParameter(MOBILE_NUMBER, patientUpdateRequestDTO.getMobileNumber())
+                .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(patientUpdateRequestDTO.getDateOfBirth()))
+                .setParameter(ID, patientUpdateRequestDTO.getId());
 
-            return (Long) query.getSingleResult();
+        return (Long) query.getSingleResult();
     }
 
     @Override
@@ -119,7 +119,7 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
     }
 
     @Override
-    public List<PatientResponseDTO> search(PatientSearchRequestDTO searchRequestDTO,Pageable pageable) {
+    public List<PatientResponseDTO> search(PatientSearchRequestDTO searchRequestDTO, Pageable pageable) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT(searchRequestDTO));
 
@@ -132,7 +132,7 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
         if (results.isEmpty()) throw new NoContentFoundException(Patient.class);
 
         else {
-            List<PatientResponseDTO> responseDTOS = transformQueryToResultList(query,PatientResponseDTO.class);
+            List<PatientResponseDTO> responseDTOS = transformQueryToResultList(query, PatientResponseDTO.class);
             responseDTOS.get(0).setTotalItems(totalItems);
             return responseDTOS;
         }

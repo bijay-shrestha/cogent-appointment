@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.constants.ErrorMessageConstants.PatientServiceMessages;
+import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateRequestDTO;
@@ -9,6 +10,7 @@ import com.cogent.cogentappointment.client.dto.response.patient.PatientMinimalRe
 import com.cogent.cogentappointment.client.dto.response.patient.PatientResponseDTO;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
+import com.cogent.cogentappointment.client.repository.PatientMetaInfoRepository;
 import com.cogent.cogentappointment.client.repository.PatientRepository;
 import com.cogent.cogentappointment.client.service.HospitalService;
 import com.cogent.cogentappointment.client.service.PatientService;
@@ -44,9 +46,14 @@ public class PatientServiceImpl implements PatientService {
 
     private final HospitalService hospitalService;
 
-    public PatientServiceImpl(PatientRepository patientRepository, HospitalService hospitalService) {
+    private final PatientMetaInfoRepository patientMetaInfoRepository;
+
+    public PatientServiceImpl(PatientRepository patientRepository,
+                              HospitalService hospitalService,
+                              PatientMetaInfoRepository patientMetaInfoRepository) {
         this.patientRepository = patientRepository;
         this.hospitalService = hospitalService;
+        this.patientMetaInfoRepository = patientMetaInfoRepository;
     }
 
     @Override
@@ -165,6 +172,33 @@ public class PatientServiceImpl implements PatientService {
 
         log.info(UPDATING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
+    }
+
+    @Override
+    public List<DropDownResponseDTO> fetchPatientMetaInfoDropDownList() {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, PATIENT);
+
+        List<DropDownResponseDTO> responseDTOS = patientMetaInfoRepository.fetchDropDownList();
+
+        log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public List<DropDownResponseDTO> fetchActivePatientMetaInfoDropDownList() {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, PATIENT);
+
+        List<DropDownResponseDTO> responseDTOS = patientMetaInfoRepository.fetchActiveDropDownList();
+
+        log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
     }
 
 

@@ -364,30 +364,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointmentRepository.save(appointment);
     }
 
-//    private void saveFollowUpTracker(AppointmentRequestDTO appointmentRequestDTO,
-//                                     String appointmentNumber,
-//                                     AdminAppointmentResponseDTO responseDTO,
-//                                     Patient patient) {
-//
-//        String parentAppointmentNumber;
-//
-//        if (Objects.isNull(appointmentRequestDTO.getParentAppointmentNumber())) {
-//            parentAppointmentNumber = appointmentNumber;
-//            followUpTrackerService.saveFollowUpTracker(
-//                    appointmentRequestDTO.getAppointmentDate(),
-//                    parentAppointmentNumber,
-//                    responseDTO.getPatientType(),
-//                    responseDTO.getDoctor(),
-//                    patient);
-//        } else {
-//            parentAppointmentNumber = appointmentRequestDTO.getParentAppointmentNumber();
-//            followUpTrackerService.updateNumberOfFollowupsInFollowUpTracker(
-//                    parentAppointmentNumber,
-//                    responseDTO.getDoctor().getId(),
-//                    patient.getId());
-//        }
-//    }
-
     private DoctorDutyRosterTimeResponseDTO fetchDoctorDutyRosterInfo(Date date,
                                                                       Long doctorId,
                                                                       Long specializationId) {

@@ -111,13 +111,13 @@ public class PatientQuery {
         String whereClause = " WHERE p.status!='D'";
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getEsewaId()))
-            whereClause += " p.eSewaId=" + searchRequestDTO.getEsewaId();
+            whereClause += " AND p.eSewaId=" + searchRequestDTO.getEsewaId();
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
-            whereClause += " p.status='" + searchRequestDTO.getStatus() + "'";
+            whereClause += " AND p.status='" + searchRequestDTO.getStatus() + "'";
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getPatientMetaInfo())) {
-            whereClause += " pmi.metaInfo LIKE '%" + searchRequestDTO.getPatientMetaInfo() + "%'";
+            whereClause += " AND pmi.id=" + searchRequestDTO.getPatientMetaInfo();
         }
 
         whereClause += " ORDER BY p.id DESC";

@@ -66,13 +66,13 @@ public class PatientResource {
     }
 
     @GetMapping(META_INFO + ACTIVE + MIN)
-    @ApiOperation(FETCH_ACTIVE_DETAILS_FOR_DROPDOWN)
+    @ApiOperation(FETCH_ACTIVE_PATIENT_META_INFO_DETAILS_FOR_DROPDOWN)
     public ResponseEntity<?> fetchActivePatientMetaInfoForDropdown() {
         return ok(patientService.fetchActivePatientMetaInfoDropDownList());
     }
 
     @GetMapping(META_INFO + MIN)
-    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
+    @ApiOperation(FETCH_PATIENT_META_INFO_DETAILS_FOR_DROPDOWN)
     public ResponseEntity<?> fetchPatientMetaInfoForDropdown() {
         return ok(patientService.fetchPatientMetaInfoDropDownList());
     }

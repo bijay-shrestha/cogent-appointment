@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.service;
 
+import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.request.patient.PatientRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.patient.PatientSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.patient.PatientDetailResponseDTO;
@@ -32,9 +33,9 @@ public interface PatientService {
 //
 //    PatientDetailResponseDTO fetchPatientDetails(Long id);
 //
-//    List<DropDownResponseDTO> dropDownList();
-//
-//    List<DropDownResponseDTO> activeDropDownList();
+    List<DropDownResponseDTO> patientMetaInfoDropDownListByHospitalId(Long hospitalId);
+
+    List<DropDownResponseDTO> patientMetaInfoActiveDropDownListByHospitalId(Long hospitalId);
 //
 //    void updatePatient(PatientUpdateRequestDTO updateRequestDTO);
 

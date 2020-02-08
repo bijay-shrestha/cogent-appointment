@@ -19,7 +19,6 @@ import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
-
 /**
  * @author smriti on 26/11/2019
  */
@@ -74,8 +73,7 @@ public class DoctorDutyRosterResource {
     @ApiOperation(UPDATE_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION)
     public ResponseEntity<?> updateDoctorDutyRosterOverride(
             @Valid @RequestBody DoctorDutyRosterOverrideUpdateRequestDTO updateRequestDTO) {
-        doctorDutyRosterService.updateDoctorDutyRosterOverride(updateRequestDTO);
-        return ok().build();
+        return ok(doctorDutyRosterService.updateDoctorDutyRosterOverride(updateRequestDTO));
     }
 
     @PutMapping(EXISTING)

@@ -15,7 +15,7 @@ public interface DoctorDutyRosterService {
 
     void update(DoctorDutyRosterUpdateRequestDTO updateRequestDTO);
 
-    void updateDoctorDutyRosterOverride(DoctorDutyRosterOverrideUpdateRequestDTO updateRequestDTO);
+    Long updateDoctorDutyRosterOverride(DoctorDutyRosterOverrideUpdateRequestDTO updateRequestDTO);
 
     void delete(DeleteRequestDTO deleteRequestDTO);
 

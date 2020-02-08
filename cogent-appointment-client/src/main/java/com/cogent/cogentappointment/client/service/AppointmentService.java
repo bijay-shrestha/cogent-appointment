@@ -1,10 +1,10 @@
 package com.cogent.cogentappointment.client.service;
 
 import com.cogent.cogentappointment.client.dto.request.appointment.*;
-import com.cogent.cogentappointment.client.dto.response.appointment.*;
-import org.springframework.data.domain.Pageable;
+import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentCheckAvailabilityResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentPendingResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentSuccessResponseDTO;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -12,33 +12,13 @@ import java.util.List;
  */
 public interface AppointmentService {
 
-    AppointmentCheckAvailabilityResponseDTO checkAvailabilityWithEndTime(AppointmentCheckAvailabilityRequestDTO requestDTO);
-
-    AppointmentCheckAvailabilityMinResponseDTO checkAvailability(AppointmentCheckAvailabilityRequestDTO requestDTO);
+    AppointmentCheckAvailabilityResponseDTO checkAvailability(AppointmentCheckAvailabilityRequestDTO requestDTO);
 
     AppointmentSuccessResponseDTO save(AppointmentRequestDTO appointmentRequestDTO);
 
-    List<AppointmentBookedDateResponseDTO> fetchBookedAppointmentDates(Date fromDate,
-                                                                       Date toDate,
-                                                                       Long doctorId,
-                                                                       Long specializationId);
+    List<AppointmentPendingResponseDTO> fetchPendingAppointments(AppointmentPendingSearchDTO searchDTO);
 
-    Long fetchBookedAppointmentCount(Date fromDate, Date toDate,
-                                     Long doctorId, Long specializationId);
-
-    void update(AppointmentUpdateRequestDTO updateRequestDTO);
-
-    void cancel(AppointmentCancelRequestDTO cancelRequestDTO);
-
-    List<AppointmentMinimalResponseDTO> search(AppointmentSearchRequestDTO searchRequestDTO,
-                                               Pageable pageable);
-
-    AppointmentResponseDTO fetchDetailsById(Long id);
-
+    void cancelAppointment(AppointmentCancelRequestDTO cancelRequestDTO);
 
     void rescheduleAppointment(AppointmentRescheduleRequestDTO rescheduleRequestDTO);
-
-//    List<AppointmentStatusResponseDTO> fetchAppointmentForAppointmentStatus(AppointmentStatusRequestDTO requestDTO);
-//
-
 }

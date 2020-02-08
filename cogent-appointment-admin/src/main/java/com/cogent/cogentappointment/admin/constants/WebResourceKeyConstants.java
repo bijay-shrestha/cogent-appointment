@@ -21,8 +21,9 @@ public class WebResourceKeyConstants {
 
     public interface AppointmentConstants {
         String BASE_APPOINTMENT = "/appointment";
-        String CHECK_AVAILABILITY = "/checkAvailability";
-        String RESCHEDULE = "/reschedule";
+        String APPOINTMENT_ID_PATH_VARIABLE_BASE = "/{appointmentId}";
+        String REFUND = "/refund";
+        String REJECT = "/reject";
     }
 
     //B

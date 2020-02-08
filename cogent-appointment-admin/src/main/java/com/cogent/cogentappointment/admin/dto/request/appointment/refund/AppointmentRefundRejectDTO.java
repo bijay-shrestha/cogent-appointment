@@ -1,19 +1,18 @@
-package com.cogent.cogentappointment.client.dto.request.appointment;
+package com.cogent.cogentappointment.admin.dto.request.appointment.refund;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+
 /**
- * @author smriti on 2019-10-22
+ * @author smriti ON 08/02/2020
  */
 @Getter
 @Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class AppointmentCancelRequestDTO implements Serializable {
+public class AppointmentRefundRejectDTO implements Serializable {
 
     @NotNull
     private Long appointmentId;

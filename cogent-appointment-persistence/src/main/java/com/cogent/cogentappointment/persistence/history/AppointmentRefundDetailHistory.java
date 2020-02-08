@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.persistence.history;
 
 import com.cogent.cogentappointment.persistence.config.Action;
-import com.cogent.cogentappointment.persistence.model.Hospital;
+import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,25 +17,28 @@ import static javax.persistence.EnumType.STRING;
 import static javax.persistence.TemporalType.TIMESTAMP;
 
 /**
- * @author Sauravi Thapa २०/२/३
+ * @author smriti ON 06/02/2020
  */
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "hospital_history")
-public class HospitalHistory implements Serializable {
+@Table(name = "appointment_refund_detail_history")
+public class AppointmentRefundDetailHistory implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "hospital_id", foreignKey = @ForeignKey(name = "FK_hospital_history_hospital"))
-    private Hospital hospital;
+    @JoinColumn(name = "appointment_refund_detail_id",
+            foreignKey = @ForeignKey(name = "FK_appointment_refund_detail_history_appointment_refund_detail"))
+    private AppointmentRefundDetail appointmentRefundDetail;
 
-    private String hospitalContent;
+    @Column(name = "appointment_refund_detail_content")
+    @Lob
+    private String appointmentRefundDetailContent;
 
     @CreatedBy
     private String modifiedBy;
@@ -47,11 +50,9 @@ public class HospitalHistory implements Serializable {
     @Enumerated(STRING)
     private Action action;
 
-    public HospitalHistory(Hospital hospital, Action action) {
-        this.hospital = hospital;
-        this.hospitalContent = hospital.toString();
+    public AppointmentRefundDetailHistory(AppointmentRefundDetail appointmentRefundDetail, Action action) {
+        this.appointmentRefundDetail = appointmentRefundDetail;
+        this.appointmentRefundDetailContent = appointmentRefundDetail.toString();
         this.action = action;
     }
-
-
 }

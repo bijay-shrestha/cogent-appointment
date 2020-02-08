@@ -41,14 +41,8 @@ public class SwaggerConstants {
 
     public interface AppointmentConstant {
         String BASE_API_VALUE = "This is Appointment Controller";
-        String CHECK_APPOINTMENT_AVAILABILITY = "Check available time schedules in requested date" +
-                " for specific doctor and specialization";
-        String SAVE_OPERATION = "Save new appointment";
-        String UPDATE_OPERATION = "Update existing appointment";
-        String DELETE_OPERATION = "Set appointment status as 'D' when deleted";
-        String SEARCH_OPERATION = "Search appointment according to given request parameters";
-        String DETAILS_OPERATION = "Fetch appointment details by its id";
-        String RESCHEDULE_OPERATION = "Reschedule appointment date and time.";
+        String FETCH_REFUND_APPOINTMENTS = "Fetch Refund Appointment Request List";
+        String REJECT_REFUND_APPOINTMENT = "Reject Refund Request Appointment";
     }
 
     public interface AuthenticateConstant {

@@ -16,5 +16,4 @@ public class AppointmentBookedTimeResponseDTO implements Serializable {
 
     private String appointmentTime;
 
-//    private String endTime;
 }

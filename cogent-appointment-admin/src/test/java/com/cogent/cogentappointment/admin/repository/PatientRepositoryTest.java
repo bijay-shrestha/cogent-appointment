@@ -57,36 +57,26 @@ public class PatientRepositoryTest {
     @Test
     public void test1() throws ParseException {
 
-        SimpleDateFormat dateParser = new SimpleDateFormat("h:mm a");
+       String sql = "SELECT\n" +
+               "CASE \n" +
+               "WHEN \n" +
+               "(((TIMESTAMPDIFF(YEAR, dateOfBirth, CURDATE()))<=0) AND\n" +
+               "((TIMESTAMPDIFF(MONTH, dateOfBirth, CURDATE()) % 12)<=0))\n" +
+               "THEN \n" +
+               "CONCAT((FLOOR(TIMESTAMPDIFF(DAY, dateOfBirth, CURDATE()) % 30.4375)),'DAYS')\n" +
+               "WHEN \n" +
+               "((TIMESTAMPDIFF(YEAR, dateOfBirth ,CURDATE()))<=0)\n" +
+               "THEN \n" +
+               "CONCAT(((TIMESTAMPDIFF(MONTH, dateOfBirth, CURDATE()) % 12)), 'MONTHS')\n" +
+               "ELSE \n" +
+               "CONCAT(((TIMESTAMPDIFF(YEAR, dateOfBirth ,CURDATE()))), 'years')\n" +
+               "END AS age\n" +
+               "FROM \n" +
+               "    Patient p \n";
 
-        // Parse the time string
-        Date date = dateParser.parse("3:30 AM");
+        Query query = testEntityManager.getEntityManager().createQuery(sql);
 
-        // Declare a date format for printing
-        SimpleDateFormat dateFormater = new SimpleDateFormat("HH:mm");
-
-        // Print the previously parsed time
-        System.out.println(dateFormater.format(date));
-        String time24 = dateFormater.format(date);
-
-        LocalDateTime date1 = LocalDateTime.of(                      // Represent a date with time-of-day, but lacking in zone/offset so NOT a moment, NOT a point on the timeline.
-                LocalDate.parse("2018-01-23"),  // Parse the date-only value.
-                LocalTime.parse("21:54")         // Parse the time-of-day.
-        );
-        System.out.println(date1.toLocalDate());
-
-        LocalDate ld = LocalDate.parse("2018-01-23");
-
-        LocalTime lt = LocalTime.parse("21:54");
-
-        LocalDateTime ldt = LocalDateTime.of(ld, lt);
-        System.out.println(ldt.toLocalDate());
-
-        Date date12 = new Date();
-        Timestamp ts=new Timestamp(date12.getTime());
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        System.out.println(formatter.format(ts));
-
+        Object result = query.getResultList();
 
 
     }

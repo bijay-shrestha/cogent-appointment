@@ -2,14 +2,13 @@ package com.cogent.cogentappointment.client.repository.custom.impl;
 
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentPendingSearchDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentSearchRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.*;
+import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedDateResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedTimeResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentPendingResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.AppointmentRepositoryCustom;
 import com.cogent.cogentappointment.client.utils.AppointmentUtils;
-import com.cogent.cogentappointment.client.utils.commons.PageableUtils;
 import com.cogent.cogentappointment.persistence.model.Appointment;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,6 +49,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         return (Long) query.getSingleResult();
     }
 
+    /*USED WHILE SAVING DOCTOR DUTY ROSTER TO VALIDATE IF APPOINTMENT EXISTS*/
     @Override
     public List<AppointmentBookedTimeResponseDTO> fetchBookedAppointments(AppointmentCheckAvailabilityRequestDTO requestDTO) {
 
@@ -95,6 +95,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         }
     }
 
+    /*USED WHILE SAVING DOCTOR DUTY ROSTER TO VALIDATE IF APPOINTMENT EXISTS*/
     @Override
     public List<AppointmentBookedDateResponseDTO> fetchBookedAppointmentDates(Date fromDate,
                                                                               Date toDate,
@@ -110,6 +111,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         return transformQueryToResultList(query, AppointmentBookedDateResponseDTO.class);
     }
 
+    /*USED IN DOCTOR DUTY ROSTER TO VALIDATE IF APPOINTMENT EXISTS*/
     @Override
     public Long fetchBookedAppointmentCount(Date fromDate, Date toDate, Long doctorId, Long specializationId) {
 
@@ -121,57 +123,6 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         return (Long) query.getSingleResult();
     }
-
-    @Override
-    public List<AppointmentMinimalResponseDTO> search(AppointmentSearchRequestDTO searchRequestDTO,
-                                                      Pageable pageable) {
-
-        Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_APPOINTMENT.apply(searchRequestDTO));
-
-        int totalItems = query.getResultList().size();
-
-        PageableUtils.addPagination.accept(pageable, query);
-
-        List<AppointmentMinimalResponseDTO> results = transformQueryToResultList(
-                query, AppointmentMinimalResponseDTO.class);
-
-        if (results.isEmpty()) throw APPOINTMENT_NOT_FOUND.get();
-        else {
-            results.get(0).setTotalItems(totalItems);
-            return results;
-        }
-    }
-
-    @Override
-    public AppointmentDetailResponseDTO fetchDetailsById(Long id) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_DETAILS)
-                .setParameter(ID, id);
-        try {
-            return transformQueryToSingleResult(query, AppointmentDetailResponseDTO.class);
-        } catch (NoResultException e) {
-            throw APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(id);
-        }
-    }
-
-//    @Override
-//    public List<AppointmentStatusResponseDTO> fetchAppointmentForAppointmentStatus(AppointmentStatusRequestDTO requestDTO) {
-//
-//        Query query = createNativeQuery.apply(entityManager,
-//                QUERY_TO_FETCH_APPOINTMENT_FOR_APPOINTMENT_STATUS(requestDTO))
-//                .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
-//                .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()));
-//
-//        if (!Objects.isNull(requestDTO.getDoctorId()))
-//            query.setParameter(DOCTOR_ID, requestDTO.getDoctorId());
-//
-//        if (!Objects.isNull(requestDTO.getSpecializationId()))
-//            query.setParameter(SPECIALIZATION_ID, requestDTO.getSpecializationId());
-//
-//        List<Object[]> results = query.getResultList();
-//
-//        return parseQueryResultToAppointmentStatusResponseDTOS(results);
-//    }
-
 
     private Supplier<NoContentFoundException> APPOINTMENT_NOT_FOUND = ()
             -> new NoContentFoundException(Appointment.class);

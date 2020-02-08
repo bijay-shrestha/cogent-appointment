@@ -23,6 +23,10 @@ public class AppointmentRefundSearchDTO implements Serializable {
 
     private Long doctorId;
 
+    private Long specializationId;
+
+    private String appointmentNumber;
+
     /*NEW OR REGISTERED*/
     private Character patientType;
 }

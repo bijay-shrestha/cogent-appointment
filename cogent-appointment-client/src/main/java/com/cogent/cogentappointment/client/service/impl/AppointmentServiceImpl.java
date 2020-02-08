@@ -2,7 +2,10 @@ package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.dto.request.appointment.*;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.*;
+import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedTimeResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentCheckAvailabilityResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentPendingResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentSuccessResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
@@ -12,7 +15,6 @@ import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.Duration;
 import org.joda.time.Minutes;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,9 +26,8 @@ import java.util.function.Function;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AppointmentServiceMessage.APPOINTMENT_EXISTS;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
-import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
-import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.FETCHING_PROCESS_COMPLETED;
-import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.FETCHING_PROCESS_STARTED;
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.SAVING_PROCESS_COMPLETED;
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.SAVING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.*;
 import static com.cogent.cogentappointment.client.utils.AppointmentTransactionDetailUtils.parseToAppointmentTransactionInfo;
 import static com.cogent.cogentappointment.client.utils.AppointmentUtils.*;
@@ -83,7 +84,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentCheckAvailabilityMinResponseDTO checkAvailability(
+    public AppointmentCheckAvailabilityResponseDTO checkAvailability(
             AppointmentCheckAvailabilityRequestDTO requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
@@ -97,7 +98,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         String doctorStartTime = getTimeFromDate(doctorDutyRosterInfo.getStartTime());
         String doctorEndTime = getTimeFromDate(doctorDutyRosterInfo.getEndTime());
 
-        AppointmentCheckAvailabilityMinResponseDTO responseDTO;
+        AppointmentCheckAvailabilityResponseDTO responseDTO;
 
         if (doctorDutyRosterInfo.getDayOffStatus().equals(YES)) {
             responseDTO = parseToAvailabilityResponse(doctorStartTime, doctorEndTime, queryDate, new ArrayList<>());
@@ -181,7 +182,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Appointment appointment = findPendingAppointmentById(cancelRequestDTO.getAppointmentId());
 
-        parseCancelledDetails(appointment, cancelRequestDTO.getRemarks());
+        parseAppointmentCancelledDetails(appointment, cancelRequestDTO.getRemarks());
 
         Double refundAmount = appointmentRepository.calculateRefundAmount(cancelRequestDTO.getAppointmentId());
 
@@ -190,119 +191,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         );
 
         log.info(CANCELLING_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
-    }
-
-    /*WITH END TIME AND 12 HOUR FORMAT*/
-    @Override
-    public AppointmentCheckAvailabilityResponseDTO checkAvailabilityWithEndTime(
-            AppointmentCheckAvailabilityRequestDTO requestDTO) {
-
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(CHECK_AVAILABILITY_PROCESS_STARTED);
-
-        DoctorDutyRosterTimeResponseDTO doctorDutyRosterInfo = fetchDoctorDutyRosterInfo(
-                requestDTO.getAppointmentDate(), requestDTO.getDoctorId(), requestDTO.getSpecializationId());
-
-        AppointmentCheckAvailabilityResponseDTO responseDTO;
-
-        if (doctorDutyRosterInfo.getDayOffStatus().equals(YES)) {
-            responseDTO = parseToAppointmentResponseWithEndTime(doctorDutyRosterInfo, new ArrayList<>());
-        } else {
-            List<AppointmentBookedTimeResponseDTO> bookedAppointments =
-                    appointmentRepository.fetchBookedAppointments(requestDTO);
-
-            List<AppointmentAvailabilityResponseDTO> availableSlots =
-                    parseToResponseDTOWithEndTime(doctorDutyRosterInfo, bookedAppointments);
-
-            responseDTO = parseToAppointmentResponseWithEndTime(doctorDutyRosterInfo, availableSlots);
-        }
-
-        log.info(CHECK_AVAILABILITY_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
-
-        return responseDTO;
-    }
-
-    @Override
-    public List<AppointmentBookedDateResponseDTO> fetchBookedAppointmentDates(Date fromDate,
-                                                                              Date toDate,
-                                                                              Long doctorId,
-                                                                              Long specializationId) {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(FETCHING_PROCESS_STARTED);
-
-        List<AppointmentBookedDateResponseDTO> bookedAppointmentDates =
-                appointmentRepository.fetchBookedAppointmentDates(fromDate, toDate, doctorId, specializationId);
-
-        log.info(FETCHING_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
-
-        return bookedAppointmentDates;
-    }
-
-    @Override
-    public Long fetchBookedAppointmentCount(Date fromDate, Date toDate,
-                                            Long doctorId, Long specializationId) {
-
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(FETCHING_PROCESS_STARTED);
-
-        Long appointmentCount = appointmentRepository.fetchBookedAppointmentCount
-                (fromDate, toDate, doctorId, specializationId);
-
-        log.info(FETCHING_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
-
-        return appointmentCount;
-    }
-
-    @Override
-    public void update(AppointmentUpdateRequestDTO updateRequestDTO) {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(UPDATING_PROCESS_STARTED, APPOINTMENT);
-
-        Appointment appointment = findById(updateRequestDTO.getAppointmentId());
-
-//        Patient patient = fetchPatient(updateRequestDTO.getPatientId());
-
-//        AdminAppointmentResponseDTO responseDTO = fetchAdminDetails(updateRequestDTO);
-//
-//        parseToUpdatedAppointment(appointment, updateRequestDTO, responseDTO, patient);
-
-        //todo; appointment status in follow up tracker to be updated as per appointment
-
-        log.info(UPDATING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
-    }
-
-
-    @Override
-    public List<AppointmentMinimalResponseDTO> search(AppointmentSearchRequestDTO searchRequestDTO,
-                                                      Pageable pageable) {
-
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT);
-
-        List<AppointmentMinimalResponseDTO> responseDTOS =
-                appointmentRepository.search(searchRequestDTO, pageable);
-
-        log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
-
-        return responseDTOS;
-    }
-
-    @Override
-    public AppointmentDetailResponseDTO fetchDetailsById(Long id) {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(FETCHING_DETAIL_PROCESS_STARTED, APPOINTMENT);
-
-        AppointmentDetailResponseDTO responseDTO = appointmentRepository.fetchDetailsById(id);
-
-        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
-
-        return responseDTO;
     }
 
     @Override
@@ -322,20 +210,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         log.info(RESCHEDULE_PROCESS_STARTED, getDifferenceBetweenTwoTime(startTime));
     }
 
-    //    @Override
-//    public List<AppointmentStatusResponseDTO> fetchAppointmentForAppointmentStatus(
-//            AppointmentStatusRequestDTO requestDTO) {
-//
-//        Long startTime = getTimeInMillisecondsFromLocalDate();
-//
-//        log.info(FETCHING_DETAIL_PROCESS_STARTED, APPOINTMENT);
-//
-//        List<AppointmentStatusResponseDTO> responseDTOS =
-//                appointmentRepository.fetchAppointmentForAppointmentStatus(requestDTO);
-//
-//        log.info(RESCHEDULE_PROCESS_STARTED, getDifferenceBetweenTwoTime(startTime));
-//        return responseDTOS;
-//    }
     private List<String> filterDoctorTimeWithAppointments(Duration rosterGapDuration,
                                                           String doctorStartTime,
                                                           String doctorEndTime,
@@ -369,11 +243,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         return isNewRegistration ? patientService.save(patientRequestDTO, hospitalId)
                 : patientService.fetchPatient(patientId);
-    }
-
-    private Appointment findById(Long appointmentId) {
-        return appointmentRepository.findAppointmentById(appointmentId)
-                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
     }
 
     private Appointment findPendingAppointmentById(Long appointmentId) {

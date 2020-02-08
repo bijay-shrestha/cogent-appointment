@@ -33,12 +33,6 @@ public class AppointmentResource {
         this.appointmentService = appointmentService;
     }
 
-//    @PutMapping(CHECK_AVAILABILITY)
-//    @ApiOperation(CHECK_APPOINTMENT_AVAILABILITY)
-//    public ResponseEntity<?> checkAvailability(@Valid @RequestBody AppointmentCheckAvailabilityRequestDTO requestDTO) {
-//        return ok(appointmentService.checkAvailability(requestDTO));
-//    }
-
     @PutMapping(CHECK_AVAILABILITY)
     @ApiOperation(CHECK_APPOINTMENT_AVAILABILITY)
     public ResponseEntity<?> checkAvailability(@Valid @RequestBody AppointmentCheckAvailabilityRequestDTO requestDTO) {
@@ -63,31 +57,7 @@ public class AppointmentResource {
         appointmentService.cancelAppointment(cancelRequestDTO);
         return ok().build();
     }
-//
 
-//    @PutMapping
-//    @ApiOperation(UPDATE_OPERATION)
-//    public ResponseEntity<?> update(@Valid @RequestBody AppointmentUpdateRequestDTO requestDTO) {
-//        appointmentService.update(requestDTO);
-//        return ok().build();
-//    }
-//
-
-//    @PutMapping(SEARCH)
-//    @ApiOperation(SEARCH_OPERATION)
-//    public ResponseEntity<?> search(@RequestBody AppointmentSearchRequestDTO searchRequestDTO,
-//                                    @RequestParam("page") int page,
-//                                    @RequestParam("size") int size) {
-//        Pageable pageable = PageRequest.of(page, size);
-//        return ok().body(appointmentService.search(searchRequestDTO, pageable));
-//    }
-//
-//    @GetMapping(DETAILS + ID_PATH_VARIABLE_BASE)
-//    @ApiOperation(DETAILS_OPERATION)
-//    public ResponseEntity<?> fetchDetailsById(@PathVariable("id") Long id) {
-//        return ok(appointmentService.fetchDetailsById(id));
-//    }
-//
 //    @PutMapping(RESCHEDULE)
 //    @ApiOperation(RESCHEDULE_OPERATION)
 //    public ResponseEntity<?> rescheduleAppointment(@Valid @RequestBody AppointmentRescheduleRequestDTO requestDTO) {

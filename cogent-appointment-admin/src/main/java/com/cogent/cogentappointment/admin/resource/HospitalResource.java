@@ -54,8 +54,7 @@ public class HospitalResource {
     @ApiOperation(UPDATE_OPERATION)
     public ResponseEntity<?> update(@RequestParam(value = "logo", required = false) MultipartFile logo,
                                     @RequestParam(value = "banner", required = false) MultipartFile banner,
-                                    @RequestParam("request") String request) throws IOException,
-            NoSuchAlgorithmException {
+                                    @RequestParam("request") String request) throws IOException, NoSuchAlgorithmException {
 
         HospitalUpdateRequestDTO updateRequestDTO = ObjectMapperUtils.map(request, HospitalUpdateRequestDTO.class);
         hospitalService.update(updateRequestDTO, logo, banner);

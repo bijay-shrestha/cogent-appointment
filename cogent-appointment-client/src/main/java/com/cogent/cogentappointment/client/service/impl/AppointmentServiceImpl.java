@@ -343,7 +343,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                                  PatientRequestDTO patientRequestDTO) {
 
         return isNewRegistration ? patientService.save(patientRequestDTO, hospitalId)
-                : patientService.fetchPatient(patientId);
+                : patientService.fetchRegisteredPatientById(patientId);
     }
 
     private Appointment findById(Long appointmentId) {

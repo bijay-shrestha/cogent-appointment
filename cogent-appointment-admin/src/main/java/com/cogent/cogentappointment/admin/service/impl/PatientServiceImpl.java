@@ -289,14 +289,5 @@ public class PatientServiceImpl implements PatientService {
                 new NoContentFoundException(Patient.class));
     }
 
-//    public PatientMinimalResponseDTO getAge(PatientMinimalResponseDTO minimalResponseDTO) {
-//        String age = convertDateToAge(minimalResponseDTO.getDateOfBirth());
-//        minimalResponseDTO.setAge(age);
-//        return minimalResponseDTO;
-//    }
-
-    public String convertDateToAge(LocalDate birthdayDate) {
-        return AgeConverterUtils.ageConverter(birthdayDate);
-    }
 }
 

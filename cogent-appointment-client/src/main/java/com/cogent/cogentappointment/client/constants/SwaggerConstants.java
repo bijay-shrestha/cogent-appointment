@@ -160,7 +160,8 @@ public class SwaggerConstants {
                 "request parameters (esewa id, isSelf='Y' and hospital id)";
         String SEARCH_PATIENT_WITH_OTHERS_TYPE_OPERATION = "Fetch list of minimal patient info according to given " +
                 "request parameters (esewa id, isSelf='N' and hospital id)";
-             String UPDATE_PATIENT_INFO_OPERATION = "Update patient info  to given";
+        String UPDATE_PATIENT_INFO_OPERATION = "Update patient info";
+        String SEARCH_OPERATION ="Search Patient Info";
         String FETCH_DETAILS_BY_ID = " Fetch patient(with type: OTHERS) details by id";
     }
 

@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.resource;
 
+import com.cogent.cogentappointment.client.dto.request.patient.PatientMinSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateRequestDTO;
 import com.cogent.cogentappointment.client.service.PatientService;
@@ -32,27 +33,27 @@ public class PatientResource {
 
     @PutMapping(SEARCH + SELF)
     @ApiOperation(SEARCH_PATIENT_WITH_SELF_TYPE_OPERATION)
-    public ResponseEntity<?> searchForSelf(@Valid @RequestBody PatientSearchRequestDTO searchRequestDTO) {
+    public ResponseEntity<?> searchForSelf(@Valid @RequestBody PatientMinSearchRequestDTO searchRequestDTO) {
         return ok(patientService.searchForSelf(searchRequestDTO));
     }
 
     @PutMapping(SEARCH + OTHERS)
     @ApiOperation(SEARCH_PATIENT_WITH_OTHERS_TYPE_OPERATION)
-    public ResponseEntity<?> search(@Valid @RequestBody PatientSearchRequestDTO searchRequestDTO,
+    public ResponseEntity<?> search(@Valid @RequestBody PatientMinSearchRequestDTO searchRequestDTO,
                                     @RequestParam("page") int page,
                                     @RequestParam("size") int size) {
         return ok(patientService.fetchMinimalPatientInfo(searchRequestDTO, getPageable(page, size)));
     }
 
     @PutMapping(SEARCH)
-    @ApiOperation(SEARCH_PATIENT_WITH_OTHERS_TYPE_OPERATION)
+    @ApiOperation(SEARCH_OPERATION)
     public ResponseEntity<?> searchPatient(@Valid @RequestBody PatientSearchRequestDTO searchRequestDTO,
                                            @RequestParam("page") int page,
                                            @RequestParam("size") int size) {
         return ok(patientService.search(searchRequestDTO, getPageable(page, size)));
     }
 
-    @PutMapping()
+    @PutMapping
     @ApiOperation(UPDATE_PATIENT_INFO_OPERATION)
     public ResponseEntity<?> update(@Valid @RequestBody PatientUpdateRequestDTO updateRequestDTO) {
         patientService.update(updateRequestDTO);

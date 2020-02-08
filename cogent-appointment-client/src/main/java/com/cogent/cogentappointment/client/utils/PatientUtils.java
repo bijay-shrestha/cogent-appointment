@@ -40,7 +40,7 @@ public class PatientUtils {
 
     public static Patient updatePatient(PatientUpdateRequestDTO requestDTO,
                                         Patient patient) {
-        patient.setName(requestDTO.getName());
+        patient.setName(toUpperCase(requestDTO.getName()));
         patient.setDateOfBirth(requestDTO.getDateOfBirth());
         patient.setMobileNumber(requestDTO.getMobileNumber());
         patient.setAddress(requestDTO.getAddress());

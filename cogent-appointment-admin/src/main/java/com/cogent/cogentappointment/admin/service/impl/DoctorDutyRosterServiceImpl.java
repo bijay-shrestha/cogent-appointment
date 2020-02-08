@@ -154,8 +154,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
         validateIfOverrideDateIsBetweenDoctorDutyRoster(
                 doctorDutyRoster.getFromDate(), doctorDutyRoster.getToDate(), overrideFromDate, overrideToDate);
 
-        validateDoctorDutyRosterOverrideCount(doctorId, specializationId,
-                updateRequestDTO.getOverrideFromDate(), updateRequestDTO.getOverrideToDate());
+        validateDoctorDutyRosterOverrideCount(doctorId, specializationId, overrideFromDate, overrideToDate);
 
         /*UPDATE IS ALLOWED ONLY IF THERE ARE NO APPOINTMENTS WITHIN THAT RANGE*/
         validateAppointmentCount(overrideFromDate, overrideToDate, doctorId, specializationId);
@@ -171,15 +170,20 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
                                                      DoctorDutyRoster doctorDutyRoster) {
 
         if (Objects.isNull(updateRequestDTO.getDoctorDutyRosterOverrideId())) {
-            DoctorDutyRosterOverride doctorDutyRosterOverride = parseToUpdatedDoctorDutyRosterOverride(
+            DoctorDutyRosterOverride doctorDutyRosterOverride = parseDoctorDutyRosterOverrideDetails(
                     updateRequestDTO, new DoctorDutyRosterOverride());
+
             doctorDutyRosterOverride.setDoctorDutyRosterId(doctorDutyRoster);
-            DoctorDutyRosterOverride override = saveDoctorDutyRosterOverride(doctorDutyRosterOverride);
-            return override.getId();
+
+            saveDoctorDutyRosterOverride(doctorDutyRosterOverride);
+
+            return doctorDutyRosterOverride.getId();
         } else {
             DoctorDutyRosterOverride doctorDutyRosterOverride =
                     doctorDutyRosterOverrideRepository.fetchById(updateRequestDTO.getDoctorDutyRosterOverrideId());
-            parseToUpdatedDoctorDutyRosterOverride(updateRequestDTO, doctorDutyRosterOverride);
+
+            parseDoctorDutyRosterOverrideDetails(updateRequestDTO, doctorDutyRosterOverride);
+
             return doctorDutyRosterOverride.getId();
         }
     }
@@ -351,9 +355,10 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
         List<DoctorWeekDaysDutyRoster> doctorWeekDaysDutyRosters = weekDaysDutyRosterRequestDTOS.stream()
                 .map(requestDTO -> {
+
                     WeekDays weekDays = findWeekDaysById(requestDTO.getWeekDaysId());
-                    return parseToDoctorWeekDaysDutyRoster(
-                            requestDTO, doctorDutyRoster, weekDays);
+
+                    return parseToDoctorWeekDaysDutyRoster(requestDTO, doctorDutyRoster, weekDays);
                 }).collect(Collectors.toList());
 
         saveDoctorWeekDaysDutyRoster(doctorWeekDaysDutyRosters);
@@ -397,8 +402,8 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
         doctorWeekDaysDutyRosterRepository.saveAll(doctorWeekDaysDutyRosters);
     }
 
-    private DoctorDutyRosterOverride saveDoctorDutyRosterOverride(DoctorDutyRosterOverride doctorDutyRosterOverride) {
-        return doctorDutyRosterOverrideRepository.save(doctorDutyRosterOverride);
+    private void saveDoctorDutyRosterOverride(DoctorDutyRosterOverride doctorDutyRosterOverride) {
+        doctorDutyRosterOverrideRepository.save(doctorDutyRosterOverride);
     }
 
     private void saveDoctorDutyRosterOverride(List<DoctorDutyRosterOverride> doctorDutyRosterOverrides) {

@@ -39,7 +39,7 @@ public class DoctorDutyRosterOverrideUtils {
         return doctorDutyRosterOverride;
     }
 
-    public static DoctorDutyRosterOverride parseToUpdatedDoctorDutyRosterOverride(
+    public static DoctorDutyRosterOverride parseDoctorDutyRosterOverrideDetails(
             DoctorDutyRosterOverrideUpdateRequestDTO updateRequestDTO,
             DoctorDutyRosterOverride doctorDutyRosterOverride) {
 

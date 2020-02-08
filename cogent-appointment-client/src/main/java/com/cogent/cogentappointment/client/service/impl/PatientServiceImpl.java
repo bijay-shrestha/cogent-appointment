@@ -63,7 +63,7 @@ public class PatientServiceImpl implements PatientService {
 
         log.info(SAVING_PROCESS_STARTED, PATIENT);
 
-        Long patientCount = patientRepository.fetchPatientForValidation(
+        Long patientCount = patientRepository.validatePatientDuplicity(
                 requestDTO.getName(), requestDTO.getMobileNumber(),
                 requestDTO.getDateOfBirth(),
                 hospitalId);
@@ -157,7 +157,7 @@ public class PatientServiceImpl implements PatientService {
 
         Patient patientToBeUpdated = fetchPatientById(updateRequestDTO.getId());
 
-        Long patientCount = patientRepository.fetchPatientForValidationToUpdate(updateRequestDTO);
+        Long patientCount = patientRepository.validatePatientDuplicity(updateRequestDTO);
 
         validatePatientDuplicity(patientCount, updateRequestDTO.getName(),
                 updateRequestDTO.getMobileNumber(), updateRequestDTO.getDateOfBirth());
@@ -172,13 +172,13 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchPatientMetaInfoDropDownList() {
+    public List<DropDownResponseDTO> fetchMinPatientMetaInfo() {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, PATIENT);
 
-        List<DropDownResponseDTO> responseDTOS = patientMetaInfoRepository.fetchDropDownList();
+        List<DropDownResponseDTO> responseDTOS = patientMetaInfoRepository.fetchMinPatientMetaInfo();
 
         log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
@@ -186,12 +186,12 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchActivePatientMetaInfoDropDownList() {
+    public List<DropDownResponseDTO> fetchActiveMinPatientMetaInfo() {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, PATIENT);
 
-        List<DropDownResponseDTO> responseDTOS = patientMetaInfoRepository.fetchActiveDropDownList();
+        List<DropDownResponseDTO> responseDTOS = patientMetaInfoRepository.fetchActiveMinPatientMetaInfo();
 
         log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 

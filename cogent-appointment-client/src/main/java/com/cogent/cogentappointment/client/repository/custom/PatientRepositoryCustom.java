@@ -20,10 +20,10 @@ import java.util.List;
 @Qualifier("patientRepositoryCustom")
 public interface PatientRepositoryCustom {
 
-    Long fetchPatientForValidation(String name, String mobileNumber,
-                                   Date dateOfBirth, Long hospitalId);
+    Long validatePatientDuplicity(String name, String mobileNumber,
+                                  Date dateOfBirth, Long hospitalId);
 
-    Long fetchPatientForValidationToUpdate(PatientUpdateRequestDTO patientUpdateRequestDTO);
+    Long validatePatientDuplicity(PatientUpdateRequestDTO patientUpdateRequestDTO);
 
     PatientDetailResponseDTO searchForSelf(PatientMinSearchRequestDTO searchRequestDTO);
 

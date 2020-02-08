@@ -99,8 +99,6 @@ public class WebResourceKeyConstants {
     //P
     public interface PatientConstant {
         String BASE_PATIENT = "/patient";
-        String SELF = "/self";
-        String OTHERS = "/others";
     }
 
     public interface ProfileSetupConstants {

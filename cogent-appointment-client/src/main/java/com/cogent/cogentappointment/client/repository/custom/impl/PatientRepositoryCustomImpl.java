@@ -41,8 +41,8 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
     private EntityManager entityManager;
 
     @Override
-    public Long fetchPatientForValidation(String name, String mobileNumber,
-                                          Date dateOfBirth, Long hospitalId) {
+    public Long validatePatientDuplicity(String name, String mobileNumber,
+                                         Date dateOfBirth, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_PATIENT_DUPLICITY)
                 .setParameter(NAME, name)
                 .setParameter(MOBILE_NUMBER, mobileNumber)
@@ -53,7 +53,7 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
     }
 
     @Override
-    public Long fetchPatientForValidationToUpdate(PatientUpdateRequestDTO patientUpdateRequestDTO) {
+    public Long validatePatientDuplicity(PatientUpdateRequestDTO patientUpdateRequestDTO) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_UPDATED_PATIENT_DUPLICITY)
                 .setParameter(NAME, patientUpdateRequestDTO.getName())
                 .setParameter(MOBILE_NUMBER, patientUpdateRequestDTO.getMobileNumber())

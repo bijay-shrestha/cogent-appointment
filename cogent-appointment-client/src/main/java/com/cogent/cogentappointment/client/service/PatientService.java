@@ -23,9 +23,11 @@ public interface PatientService {
 
     PatientDetailResponseDTO searchForSelf(PatientMinSearchRequestDTO searchRequestDTO);
 
+    /*FETCH MINIMAL DETAILS OF 'OTHERS'*/
     List<PatientMinimalResponseDTO> fetchMinimalPatientInfo(PatientMinSearchRequestDTO searchRequestDTO,
                                                             Pageable pageable);
 
+    /*FETCH DETAILS OF 'OTHERS'*/
     PatientDetailResponseDTO fetchDetailsById(Long id);
 
     List<PatientResponseDTO> search(PatientSearchRequestDTO searchRequestDTO,
@@ -33,7 +35,7 @@ public interface PatientService {
 
     void update(PatientUpdateRequestDTO patientUpdateRequestDTO);
 
-    List<DropDownResponseDTO> fetchPatientMetaInfoDropDownList();
+    List<DropDownResponseDTO> fetchMinPatientMetaInfo();
 
-    List<DropDownResponseDTO> fetchActivePatientMetaInfoDropDownList();
+    List<DropDownResponseDTO> fetchActiveMinPatientMetaInfo();
 }

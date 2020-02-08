@@ -160,7 +160,7 @@ public class SwaggerConstants {
                 "request parameters (esewa id, isSelf='N' and hospital id)";
         String UPDATE_PATIENT_INFO_OPERATION = "Update patient info";
         String SEARCH_OPERATION ="Search Patient Info";
-        String FETCH_DETAILS_BY_ID = " Fetch patient(with type: OTHERS) details by id";
+        String FETCH_DETAILS_BY_ID = " Fetch patient(with type 'OTHERS') details by id";
     }
 
     public interface ProfileConstant {

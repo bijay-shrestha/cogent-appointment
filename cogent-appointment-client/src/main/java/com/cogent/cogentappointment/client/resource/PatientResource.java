@@ -45,6 +45,12 @@ public class PatientResource {
         return ok(patientService.fetchMinimalPatientInfo(searchRequestDTO, getPageable(page, size)));
     }
 
+    @GetMapping(DETAIL + ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_DETAILS_BY_ID)
+    public ResponseEntity<?> fetchDetailsById(@PathVariable("id") Long id) {
+        return ok(patientService.fetchDetailsById(id));
+    }
+
     @PutMapping(SEARCH)
     @ApiOperation(SEARCH_OPERATION)
     public ResponseEntity<?> searchPatient(@Valid @RequestBody PatientSearchRequestDTO searchRequestDTO,
@@ -60,23 +66,15 @@ public class PatientResource {
         return ok().build();
     }
 
-    @GetMapping(DETAIL + ID_PATH_VARIABLE_BASE)
-    @ApiOperation(FETCH_DETAILS_BY_ID)
-    public ResponseEntity<?> fetchDetailsById(@PathVariable("id") Long id) {
-        return ok(patientService.fetchDetailsById(id));
-    }
-
     @GetMapping(META_INFO + ACTIVE + MIN)
     @ApiOperation(FETCH_ACTIVE_PATIENT_META_INFO_DETAILS_FOR_DROPDOWN)
     public ResponseEntity<?> fetchActivePatientMetaInfoForDropdown() {
-        return ok(patientService.fetchActivePatientMetaInfoDropDownList());
+        return ok(patientService.fetchActiveMinPatientMetaInfo());
     }
 
     @GetMapping(META_INFO + MIN)
     @ApiOperation(FETCH_PATIENT_META_INFO_DETAILS_FOR_DROPDOWN)
     public ResponseEntity<?> fetchPatientMetaInfoForDropdown() {
-        return ok(patientService.fetchPatientMetaInfoDropDownList());
+        return ok(patientService.fetchMinPatientMetaInfo());
     }
-
-
 }

@@ -29,7 +29,7 @@ public class PatientMetaInfoRepositoryCustomImpl implements PatientMetaInfoRepos
     private EntityManager entityManager;
 
     @Override
-    public List<DropDownResponseDTO> fetchDropDownList() {
+    public List<DropDownResponseDTO> fetchMinPatientMetaInfo() {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_META_INFO_FOR_DROP_DOWN);
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
@@ -39,7 +39,7 @@ public class PatientMetaInfoRepositoryCustomImpl implements PatientMetaInfoRepos
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchActiveDropDownList() {
+    public List<DropDownResponseDTO> fetchActiveMinPatientMetaInfo() {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_PATIENT_META_INFO_FOR_DROP_DOWN);
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);

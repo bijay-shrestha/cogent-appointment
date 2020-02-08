@@ -29,12 +29,24 @@ public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyR
     private EntityManager entityManager;
 
     @Override
-    public Long validateDoctorDutyRosterOverrideCount(Long doctorId,
-                                                      Long specializationId,
-                                                      Date fromDate,
-                                                      Date toDate) {
+    public Long fetchOverrideCount(Long doctorId, Long specializationId,
+                                   Date fromDate, Date toDate) {
 
         Query query = createQuery.apply(entityManager, VALIDATE_DOCTOR_DUTY_ROSTER_OVERRIDE_COUNT)
+                .setParameter(DOCTOR_ID, doctorId)
+                .setParameter(SPECIALIZATION_ID, specializationId)
+                .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))
+                .setParameter(TO_DATE, utilDateToSqlDate(toDate));
+
+        return (Long) query.getSingleResult();
+    }
+
+    @Override
+    public Long fetchOverrideCount(Long doctorDutyRosterOverrideId, Long doctorId,
+                                   Long specializationId, Date fromDate, Date toDate) {
+
+        Query query = createQuery.apply(entityManager, VALIDATE_DOCTOR_DUTY_ROSTER_OVERRIDE_COUNT_FOR_UPDATE)
+                .setParameter(ID, doctorDutyRosterOverrideId)
                 .setParameter(DOCTOR_ID, doctorId)
                 .setParameter(SPECIALIZATION_ID, specializationId)
                 .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))

@@ -244,4 +244,10 @@ public class DoctorDutyRosterUtils {
                 .overrideRosters(overrideRosters)
                 .build();
     }
+
+    public static DoctorRosterOverrideUpdateResponseDTO parseToOverrideUpdateResponse(Long savedOverrideId) {
+        return DoctorRosterOverrideUpdateResponseDTO.builder()
+                .savedOverrideId(savedOverrideId)
+                .build();
+    }
 }

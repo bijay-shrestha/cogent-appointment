@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.admin.resource;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.*;
 import com.cogent.cogentappointment.admin.service.DoctorDutyRosterService;
+import com.cogent.cogentappointment.persistence.model.DoctorDutyRosterOverride;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.PageRequest;
@@ -74,6 +75,12 @@ public class DoctorDutyRosterResource {
     public ResponseEntity<?> updateDoctorDutyRosterOverride(
             @Valid @RequestBody DoctorDutyRosterOverrideUpdateRequestDTO updateRequestDTO) {
         return ok(doctorDutyRosterService.updateDoctorDutyRosterOverride(updateRequestDTO));
+    }
+
+    @DeleteMapping(DOCTOR_DUTY_ROSTER_OVERRIDE)
+    public ResponseEntity<?> deleteDoctorDutyRosterOverride(@Valid @RequestBody DoctorDutyRosterOverrideDeleteRequestDTO deleteRequestDTO) {
+        doctorDutyRosterService.deleteDoctorDutyRosterOverride(deleteRequestDTO);
+        return ok().build();
     }
 
     @PutMapping(EXISTING)

@@ -1,9 +1,20 @@
 package com.cogent.cogentappointment.admin.utils;
 
+import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundRejectDTO;
+import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
+
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.REJECTED;
+
 /**
  * @author smriti on 2019-10-24
  */
 public class AppointmentUtils {
+
+    public static void parseRefundRejectDetails(AppointmentRefundRejectDTO refundRejectDTO,
+                                                AppointmentRefundDetail refundDetail) {
+        refundDetail.setStatus(REJECTED);
+        refundDetail.setRemarks(refundRejectDTO.getRemarks());
+    }
 
 //    public static AppointmentAvailabilityResponseDTO parseToAppointmentAvailabilityResponseDTO
 //            (List<AppointmentTimeResponseDTO> appointmentTimeResponseDTOS,

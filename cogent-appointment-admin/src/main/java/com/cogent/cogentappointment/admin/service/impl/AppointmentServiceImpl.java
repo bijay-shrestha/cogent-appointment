@@ -1,17 +1,26 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
-import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentRefundSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundRejectDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundSearchDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundResponseDTO;
+import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
+import com.cogent.cogentappointment.admin.repository.AppointmentRefundDetailRepository;
 import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
 import com.cogent.cogentappointment.admin.service.AppointmentService;
+import com.cogent.cogentappointment.persistence.model.Appointment;
+import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.function.Function;
+
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.APPROVED;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
-import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.APPOINTMENT_REFUND;
+import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.*;
+import static com.cogent.cogentappointment.admin.utils.AppointmentUtils.parseRefundRejectDetails;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
@@ -25,8 +34,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
 
-    public AppointmentServiceImpl(AppointmentRepository appointmentRepository) {
+    private final AppointmentRefundDetailRepository appointmentRefundDetailRepository;
+
+    public AppointmentServiceImpl(AppointmentRepository appointmentRepository,
+                                  AppointmentRefundDetailRepository appointmentRefundDetailRepository) {
         this.appointmentRepository = appointmentRepository;
+        this.appointmentRefundDetailRepository = appointmentRefundDetailRepository;
     }
 
     @Override
@@ -44,6 +57,38 @@ public class AppointmentServiceImpl implements AppointmentService {
         return refundAppointments;
     }
 
+    @Override
+    public void approveRefundAppointment(Long appointmentId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(APPROVE_PROCESS_STARTED, APPOINTMENT_REFUND);
+
+        AppointmentRefundDetail refundAppointmentDetail =
+                appointmentRefundDetailRepository.findByAppointmentId(appointmentId)
+                        .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
+
+        refundAppointmentDetail.setStatus(APPROVED);
+
+        log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT_REFUND, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    @Override
+    public void rejectRefundAppointment(AppointmentRefundRejectDTO refundRejectDTO) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(REJECT_PROCESS_STARTED, APPOINTMENT_REFUND);
+
+        AppointmentRefundDetail refundAppointmentDetail =
+                appointmentRefundDetailRepository.findByAppointmentId(refundRejectDTO.getAppointmentId())
+                        .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(refundRejectDTO.getAppointmentId()));
+
+        parseRefundRejectDetails(refundRejectDTO, refundAppointmentDetail);
+
+        log.info(REJECT_PROCESS_COMPLETED, APPOINTMENT_REFUND, getDifferenceBetweenTwoTime(startTime));
+
+    }
+
 //    @Override
 //    public List<AppointmentStatusResponseDTO> fetchAppointmentForAppointmentStatus(
 //            AppointmentStatusRequestDTO requestDTO) {
@@ -58,5 +103,10 @@ public class AppointmentServiceImpl implements AppointmentService {
 //        log.info(RESCHEDULE_PROCESS_STARTED, getDifferenceBetweenTwoTime(startTime));
 //        return responseDTOS;
 //    }
+
+    private Function<Long, NoContentFoundException> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND = (appointmentId) -> {
+        throw new NoContentFoundException(Appointment.class, "appointmentId", appointmentId.toString());
+    };
+
 }
 

@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.admin.query;
 
-import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentRefundSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundSearchDTO;
 import org.springframework.util.ObjectUtils;
 
 import java.util.Objects;

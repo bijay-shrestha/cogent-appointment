@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.service;
 
-import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentRefundSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundRejectDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundSearchDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundResponseDTO;
 import org.springframework.data.domain.Pageable;
 
@@ -10,7 +11,12 @@ import org.springframework.data.domain.Pageable;
 public interface AppointmentService {
 
     AppointmentRefundResponseDTO fetchRefundAppointments(AppointmentRefundSearchDTO searchDTO,
-                                                        Pageable pageable);
+                                                         Pageable pageable);
+
+    void approveRefundAppointment(Long appointmentId);
+
+    void rejectRefundAppointment(AppointmentRefundRejectDTO refundRejectDTO);
+
 
 //    List<AppointmentStatusResponseDTO> fetchAppointmentForAppointmentStatus(AppointmentStatusRequestDTO requestDTO);
 //

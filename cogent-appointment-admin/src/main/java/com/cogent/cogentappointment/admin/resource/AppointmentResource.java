@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.resource;
 
-import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentRefundSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundRejectDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundSearchDTO;
 import com.cogent.cogentappointment.admin.service.AppointmentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -9,11 +10,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentConstant.BASE_API_VALUE;
-import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentConstant.FETCH_REFUND_APPOINTMENTS;
+import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.BASE_APPOINTMENT;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.REFUND;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.*;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -37,6 +36,20 @@ public class AppointmentResource {
                                                      @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ok().body(appointmentService.fetchRefundAppointments(searchDTO, pageable));
+    }
+
+    @GetMapping(REFUND + APPOINTMENT_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(REJECT_REFUND_APPOINTMENT)
+    public ResponseEntity<?> approveRefundAppointment(@PathVariable("appointmentId") Long appointmentId) {
+        appointmentService.approveRefundAppointment(appointmentId);
+        return ok().build();
+    }
+
+    @PutMapping(REFUND + REJECT)
+    @ApiOperation(REJECT_REFUND_APPOINTMENT)
+    public ResponseEntity<?> rejectRefundAppointment(@RequestBody AppointmentRefundRejectDTO refundRejectDTO) {
+        appointmentService.rejectRefundAppointment(refundRejectDTO);
+        return ok().build();
     }
 
 }

@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.dto.request.appointment;
+package com.cogent.cogentappointment.admin.dto.request.appointment.refund;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -41,6 +41,7 @@ public class SwaggerConstants {
 
     public interface AppointmentConstant {
         String BASE_API_VALUE = "This is Appointment Controller";
+        String FETCH_REFUND_APPOINTMENTS ="Fetch Refund Appointment Request List";
     }
 
     public interface AuthenticateConstant {

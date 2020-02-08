@@ -2,7 +2,8 @@ package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentRefundSearchDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentBookedDateResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentRefundResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.AppointmentRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Appointment;
@@ -65,25 +66,40 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
-    public List<AppointmentRefundResponseDTO> fetchRefundAppointments(AppointmentRefundSearchDTO searchDTO,
-                                                                      Pageable pageable) {
+    public AppointmentRefundResponseDTO fetchRefundAppointments(AppointmentRefundSearchDTO searchDTO,
+                                                                Pageable pageable) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_REFUND_APPOINTMENTS(searchDTO))
-                .setParameter(FROM_DATE, utilDateToSqlDate(searchDTO.getFromDate()))
-                .setParameter(TO_DATE, utilDateToSqlDate(searchDTO.getToDate()));
+        Query query = getQueryToFetchRefundAppointments(searchDTO);
 
         int totalItems = query.getResultList().size();
 
         addPagination.accept(pageable, query);
 
-        List<AppointmentRefundResponseDTO> results = transformQueryToResultList(
-                query, AppointmentRefundResponseDTO.class);
+        List<AppointmentRefundDTO> refundAppointments = transformQueryToResultList(query, AppointmentRefundDTO.class);
 
-        if (results.isEmpty()) throw APPOINTMENT_NOT_FOUND.get();
+        if (refundAppointments.isEmpty()) throw APPOINTMENT_NOT_FOUND.get();
         else {
-            results.get(0).setTotalItems(totalItems);
-            return results;
+            Double totalRefundAmount = calculateTotalRefundAmount(searchDTO);
+            return AppointmentRefundResponseDTO.builder()
+                    .refundAppointments(refundAppointments)
+                    .totalItems(totalItems)
+                    .totalRefundAmount(totalRefundAmount)
+                    .build();
         }
+    }
+
+    private Query getQueryToFetchRefundAppointments(AppointmentRefundSearchDTO searchDTO) {
+        return createQuery.apply(entityManager, QUERY_TO_FETCH_REFUND_APPOINTMENTS(searchDTO))
+                .setParameter(FROM_DATE, utilDateToSqlDate(searchDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(searchDTO.getToDate()));
+    }
+
+    private Double calculateTotalRefundAmount(AppointmentRefundSearchDTO searchDTO) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TOTAL_REFUND_AMOUNT(searchDTO))
+                .setParameter(FROM_DATE, utilDateToSqlDate(searchDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(searchDTO.getToDate()));
+
+        return (Double) query.getSingleResult();
     }
 
     private Supplier<NoContentFoundException> APPOINTMENT_NOT_FOUND = ()

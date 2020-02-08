@@ -21,6 +21,7 @@ public class WebResourceKeyConstants {
 
     public interface AppointmentConstants {
         String BASE_APPOINTMENT = "/appointment";
+        String REFUND = "/refund";
     }
 
     //B

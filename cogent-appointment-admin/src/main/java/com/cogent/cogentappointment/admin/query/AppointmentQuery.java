@@ -51,7 +51,7 @@ public class AppointmentQuery {
                     " END AS age";
 
     public static String QUERY_TO_FETCH_REFUND_APPOINTMENTS(AppointmentRefundSearchDTO searchDTO) {
-        String query = " SELECT" +
+        return " SELECT" +
                 " a.id as appointmentId," +                                             //[0]
                 " a.appointmentDate as appointmentDate," +                              //[1]
                 " DATE_FORMAT(a.appointmentTime,'%H:%i %p') as appointmentTime," +      //[2]
@@ -76,28 +76,45 @@ public class AppointmentQuery {
                 " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
                 " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId.id = a.id" +
                 " LEFT JOIN PatientMetaInfo pm ON pm.patient.id = p.id" +
-                " WHERE ard.status = 'PA'" +
-                " AND a.appointmentDate BETWEEN :fromDate AND :toDate" +
-                " ORDER BY a.appointmentDate DESC";
+                GET_WHERE_CLAUSE_TO_FETCH_REFUND_APPOINTMENTS(searchDTO);
+    }
+
+    private static String GET_WHERE_CLAUSE_TO_FETCH_REFUND_APPOINTMENTS(AppointmentRefundSearchDTO searchDTO) {
+        String whereClause = " WHERE ard.status = 'PA'" +
+                " AND a.appointmentDate BETWEEN :fromDate AND :toDate ";
 
         if (!ObjectUtils.isEmpty(searchDTO.getAppointmentNumber()))
-            query += " AND a.appointmentNumber LIKE '%" + searchDTO.getAppointmentNumber() + "%'";
+            whereClause += " AND a.appointmentNumber LIKE '%" + searchDTO.getAppointmentNumber() + "%'";
 
         if (!Objects.isNull(searchDTO.getPatientMetaInfoId()))
-            query += " AND pm.id =" + searchDTO.getPatientMetaInfoId();
+            whereClause += " AND pm.id =" + searchDTO.getPatientMetaInfoId();
 
         if (!Objects.isNull(searchDTO.getDoctorId()))
-            query += " AND d.id=" + searchDTO.getDoctorId();
+            whereClause += " AND d.id=" + searchDTO.getDoctorId();
 
         if (!Objects.isNull(searchDTO.getSpecializationId()))
-            query += " AND s.id=" + searchDTO.getSpecializationId();
+            whereClause += " AND s.id=" + searchDTO.getSpecializationId();
 
         if (!Objects.isNull(searchDTO.getHospitalId()))
-            query += " AND h.id=" + searchDTO.getHospitalId();
+            whereClause += " AND h.id=" + searchDTO.getHospitalId();
 
         if (!ObjectUtils.isEmpty(searchDTO.getPatientType()))
-            query += " AND p.isRegistered='" + searchDTO.getPatientType() + "'";
+            whereClause += " AND p.isRegistered='" + searchDTO.getPatientType() + "'";
 
-        return query;
+        return whereClause + " ORDER BY a.appointmentDate DESC";
+    }
+
+    public static String QUERY_TO_FETCH_TOTAL_REFUND_AMOUNT(AppointmentRefundSearchDTO searchDTO) {
+        return " SELECT SUM(ard.refundAmount)" +
+                " FROM Appointment a" +
+                " LEFT JOIN Patient p ON p.id = a.patientId.id" +
+                " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
+                " LEFT JOIN Specialization s ON s.id = a.specializationId.id" +
+                " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +
+                " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
+                " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId.id = a.id" +
+                " LEFT JOIN PatientMetaInfo pm ON pm.patient.id = p.id" +
+                GET_WHERE_CLAUSE_TO_FETCH_REFUND_APPOINTMENTS(searchDTO);
+
     }
 }

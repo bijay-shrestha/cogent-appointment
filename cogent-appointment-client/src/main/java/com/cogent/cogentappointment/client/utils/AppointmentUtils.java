@@ -87,6 +87,7 @@ public class AppointmentUtils {
         refundDetail.setAppointmentId(appointment);
         refundDetail.setRefundAmount(refundAmount);
         refundDetail.setStatus(PENDING_APPROVAL);
+        refundDetail.setCancelledDate(new Date());
         return refundDetail;
     }
 

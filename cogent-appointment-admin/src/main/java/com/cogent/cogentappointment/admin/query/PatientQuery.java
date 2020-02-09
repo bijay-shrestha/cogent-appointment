@@ -5,6 +5,19 @@ package com.cogent.cogentappointment.admin.query;
  */
 public class PatientQuery {
 
+    public final static String QUERY_TO_VALIDATE_UPDATED_PATIENT_DUPLICITY =
+            "SELECT " +
+                    " COUNT(p.id)" +
+                    " FROM Patient p" +
+                    " LEFT JOIN Hospital h ON h.id = p.hospitalId.id" +
+                    " WHERE " +
+                    " (p.name =:name" +
+                    " AND p.mobileNumber =:mobileNumber" +
+                    " AND p.dateOfBirth =:dateOfBirth" +
+                    " AND p.id !=:id)" +
+                    " AND h.id =:hospitalId" +
+                    " AND p.status != 'D'";
+
     public final static String QUERY_TO_VALIDATE_PATIENT_DUPLICITY =
             "SELECT " +
                     " COUNT(p.id)" +

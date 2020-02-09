@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.admin.constants.ErrorMessageConstants;
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.request.patient.PatientRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.patient.PatientSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.patient.PatientUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.patient.PatientDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.patient.PatientMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
@@ -18,6 +19,7 @@ import com.cogent.cogentappointment.admin.utils.commons.AgeConverterUtils;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.Patient;
+import com.cogent.cogentappointment.persistence.model.PatientMetaInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,8 @@ import java.util.function.Function;
 
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.PatientLog.PATIENT;
+import static com.cogent.cogentappointment.admin.utils.PatientUtils.updatePatient;
+import static com.cogent.cogentappointment.admin.utils.PatientUtils.updatePatientMetaInfo;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
 
 /**
@@ -90,7 +94,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public PatientDetailResponseDTO search(PatientSearchRequestDTO searchRequestDTO) {
+    public PatientDetailResponseDTO searchForSelf(PatientSearchRequestDTO searchRequestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, PATIENT);
@@ -130,6 +134,28 @@ public class PatientServiceImpl implements PatientService {
 
         return responseDTO;
 
+    }
+
+    @Override
+    public void update(PatientUpdateRequestDTO updateRequestDTO) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(UPDATING_PROCESS_STARTED, PATIENT);
+
+        Patient patientToBeUpdated = fetchPatientById(updateRequestDTO.getId());
+
+        Long patientCount = patientRepository.fetchPatientForValidationToUpdate(updateRequestDTO);
+
+        validatePatientDuplicity(patientCount, updateRequestDTO.getName(),
+                updateRequestDTO.getMobileNumber(), updateRequestDTO.getDateOfBirth());
+
+        save(updatePatient(updateRequestDTO, patientToBeUpdated));
+
+        PatientMetaInfo patientMetaInfoToBeUpdated = patientMetaInfoRepository.fetchByPatientId(updateRequestDTO.getId());
+
+        savePatientMetaInfo(updatePatientMetaInfo(patientToBeUpdated, patientMetaInfoToBeUpdated, updateRequestDTO));
+
+        log.info(UPDATING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
@@ -297,8 +323,8 @@ public class PatientServiceImpl implements PatientService {
 //        return minimalResponseDTO;
 //    }
 
-    public String convertDateToAge(LocalDate birthdayDate) {
-        return AgeConverterUtils.ageConverter(birthdayDate);
+    public void savePatientMetaInfo(PatientMetaInfo patientMetaInfo) {
+        patientMetaInfoRepository.save(patientMetaInfo);
     }
 }
 

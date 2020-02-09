@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.repository.custom;
 
 import com.cogent.cogentappointment.admin.dto.request.patient.PatientSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.patient.PatientUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.patient.PatientDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.patient.PatientMinimalResponseDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -25,6 +26,9 @@ public interface PatientRepositoryCustom {
                                                             Pageable pageable);
 
     PatientDetailResponseDTO fetchDetailsById(Long id);
+
+
+    Long fetchPatientForValidationToUpdate(PatientUpdateRequestDTO patientUpdateRequestDTO);
 
 //    List<PatientMinimalResponseDTO> searchPatient(
 //            PatientSearchRequestDTO searchRequestDTO, Pageable pageable);

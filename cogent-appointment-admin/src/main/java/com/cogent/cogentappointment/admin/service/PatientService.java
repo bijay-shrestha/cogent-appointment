@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.admin.service;
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.request.patient.PatientRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.patient.PatientSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.patient.PatientUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.patient.PatientDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.patient.PatientMinimalResponseDTO;
 import com.cogent.cogentappointment.persistence.model.Patient;
@@ -18,7 +19,7 @@ public interface PatientService {
 
     Patient fetchPatient(Long id);
 
-    PatientDetailResponseDTO search(PatientSearchRequestDTO searchRequestDTO);
+    PatientDetailResponseDTO searchForSelf(PatientSearchRequestDTO searchRequestDTO);
 
     List<PatientMinimalResponseDTO> fetchMinimalPatientInfo(PatientSearchRequestDTO searchRequestDTO,
                                                             Pageable pageable);
@@ -32,6 +33,8 @@ public interface PatientService {
 //    List<PatientMinimalResponseDTO> searchPatient(PatientSearchRequestDTO searchDTO, Pageable pageable);
 //
 //    PatientDetailResponseDTO fetchPatientDetails(Long id);
+
+    void update(PatientUpdateRequestDTO patientUpdateRequestDTO);
 //
     List<DropDownResponseDTO> patientMetaInfoDropDownListByHospitalId(Long hospitalId);
 

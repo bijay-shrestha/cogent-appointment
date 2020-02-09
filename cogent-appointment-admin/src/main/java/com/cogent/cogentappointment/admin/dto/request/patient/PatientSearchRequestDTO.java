@@ -13,12 +13,13 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class PatientSearchRequestDTO implements Serializable {
-    @NotNull
     private String esewaId;
 
-    @Status
+    private Long patientMetaInfo;
+
+    private Character Status;
+
     private Character isSelf;
 
-    @NotNull
     private Long hospitalId;
 }

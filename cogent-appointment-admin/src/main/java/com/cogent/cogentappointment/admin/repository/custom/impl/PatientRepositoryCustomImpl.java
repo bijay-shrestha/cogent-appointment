@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.constants.QueryConstants;
 import com.cogent.cogentappointment.admin.dto.request.patient.PatientSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.patient.PatientUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.patient.PatientDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.patient.PatientMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
@@ -19,6 +20,7 @@ import javax.persistence.Query;
 import java.util.Date;
 import java.util.List;
 
+import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.PatientQueryConstants.ESEWA_ID;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.PatientQueryConstants.IS_SELF;
 import static com.cogent.cogentappointment.admin.query.PatientQuery.*;
@@ -40,7 +42,7 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
     @Override
     public Long fetchPatientForValidation(String name, String mobileNumber, Date dateOfBirth) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_PATIENT_DUPLICITY)
-                .setParameter(QueryConstants.NAME, name)
+                .setParameter(NAME, name)
                 .setParameter(QueryConstants.MOBILE_NUMBER, mobileNumber)
                 .setParameter(QueryConstants.DATE_OF_BIRTH, utilDateToSqlDate(dateOfBirth));
 
@@ -96,6 +98,18 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
         } catch (NoResultException e) {
             throw new NoContentFoundException(Patient.class, "id", id.toString());
         }
+    }
+
+    @Override
+    public Long fetchPatientForValidationToUpdate(PatientUpdateRequestDTO patientUpdateRequestDTO) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_UPDATED_PATIENT_DUPLICITY)
+                .setParameter(NAME, patientUpdateRequestDTO.getName())
+                .setParameter(MOBILE_NUMBER, patientUpdateRequestDTO.getMobileNumber())
+                .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(patientUpdateRequestDTO.getDateOfBirth()))
+                .setParameter(ID, patientUpdateRequestDTO.getId())
+                .setParameter(HOSPITAL_ID, patientUpdateRequestDTO.getHospitalId());
+
+        return (Long) query.getSingleResult();
     }
 
 //    @Override

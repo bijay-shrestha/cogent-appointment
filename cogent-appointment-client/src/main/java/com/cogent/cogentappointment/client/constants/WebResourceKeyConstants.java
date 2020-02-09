@@ -79,6 +79,8 @@ public class WebResourceKeyConstants {
         String BASE_HOSPITAL = "/hospital";
         String HOSPITAL_WISE = "/hospital-wise";
         String HOSPITAL_ID_PATH_VARIABLE_BASE = "/{hospitalId}";
+        String REGISTERED="/registered";
+        String COUNT="/count";
     }
 
     //I

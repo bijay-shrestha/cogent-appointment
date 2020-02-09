@@ -13,7 +13,7 @@ import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.PatientConstant.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.HospitalConstants.HOSPITAL_ID_PATH_VARIABLE_BASE;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.HospitalConstants.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.PatientConstant.*;
 import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.getPageable;
 import static org.springframework.http.ResponseEntity.ok;
@@ -77,5 +77,11 @@ public class PatientResource {
     @ApiOperation(FETCH_PATIENT_META_INFO_DETAILS_FOR_DROPDOWN)
     public ResponseEntity<?> fetchPatientMetaInfoForDropdown(@PathVariable("hospitalId") Long hospitalId) {
         return ok(patientService.fetchMinPatientMetaInfo(hospitalId));
+    }
+
+    @GetMapping(REGISTERED + COUNT)
+    @ApiOperation(COUNT_REGISTERED_PATIENTS)
+    public ResponseEntity<?> countRegisteredPatients() {
+        return ok(patientService.countRegisteredPatients());
     }
 }

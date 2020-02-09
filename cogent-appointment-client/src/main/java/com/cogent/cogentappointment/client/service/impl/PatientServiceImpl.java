@@ -173,7 +173,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public List<DropDownResponseDTO> patientMetaInfoDropDownListByHospitalId(Long hospitalId) {
+    public List<DropDownResponseDTO> dropDownListByHospitalId(Long hospitalId) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -187,7 +187,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public List<DropDownResponseDTO> patientMetaInfoActiveDropDownListByHospitalId(Long hospitalId) {
+    public List<DropDownResponseDTO> activeDropDownListByHospitalId(Long hospitalId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, PATIENT);

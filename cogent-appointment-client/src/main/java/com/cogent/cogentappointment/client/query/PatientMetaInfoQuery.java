@@ -5,7 +5,7 @@ package com.cogent.cogentappointment.client.query;
  */
 public class PatientMetaInfoQuery {
 
-    public static String CLAUSE_TO_FIND_BY_HOSPITAL_ID = " AND pmi.patient.hospitalId.id=:hospitalId";
+    public static final String CLAUSE_TO_FIND_BY_HOSPITAL_ID = " AND pmi.patient.hospitalId.id=:hospitalId";
 
     public static final String QUERY_TO_FETCH_ACTIVE_PATIENT_META_INFO_FOR_DROP_DOWN =
             "SELECT" +

@@ -32,7 +32,7 @@ public interface PatientService {
 
     void update(PatientUpdateRequestDTO patientUpdateRequestDTO);
 
-    List<DropDownResponseDTO> patientMetaInfoDropDownListByHospitalId(Long hospitalId);
+    List<DropDownResponseDTO> dropDownListByHospitalId(Long hospitalId);
 
-    List<DropDownResponseDTO> patientMetaInfoActiveDropDownListByHospitalId(Long hospitalId);
+    List<DropDownResponseDTO> activeDropDownListByHospitalId(Long hospitalId);
 }

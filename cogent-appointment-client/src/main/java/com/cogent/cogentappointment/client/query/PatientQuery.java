@@ -89,6 +89,7 @@ public class PatientQuery {
                     " WHERE p.id=:id" +
                     " AND p.status='Y'";
 
+
     public static final String QUERY_TO_FETCH_PATIENT(PatientSearchRequestDTO searchRequestDTO) {
         return "SELECT" +
                 " p.name as name," +                                             //[0]

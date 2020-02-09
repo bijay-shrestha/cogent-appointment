@@ -35,16 +35,4 @@ public interface PatientRepositoryCustom {
 
     List<PatientResponseDTO> search(PatientSearchRequestDTO searchRequestDTO,Pageable pageable);
 
-//    List<PatientMinimalResponseDTO> searchPatient(
-//            PatientSearchRequestDTO searchRequestDTO, Pageable pageable);
-//
-//    PatientDetailResponseDTO fetchPatientDetailsById(Long id);
-//
-//    Optional<List<DropDownResponseDTO>> fetchActiveDropDownList();
-//
-//    Optional<List<DropDownResponseDTO>> fetchDropDownList();
-//
-//    List<Object[]> getPatient();
-//
-//    String fetchLatestPatientHisNumber();
 }

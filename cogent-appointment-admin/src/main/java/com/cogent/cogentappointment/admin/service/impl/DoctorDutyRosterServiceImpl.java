@@ -184,25 +184,22 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
     }
 
     @Override
-    public void deleteDoctorDutyRosterOverride(DoctorDutyRosterOverrideDeleteRequestDTO overrideDeleteRequestDTO) {
+    public void deleteDoctorDutyRosterOverride(DeleteRequestDTO deleteRequestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(UPDATING_PROCESS_STARTED, DOCTOR_DUTY_ROSTER_OVERRIDE);
+        log.info(DELETING_PROCESS_STARTED, DOCTOR_DUTY_ROSTER_OVERRIDE);
 
         DoctorDutyRosterOverride doctorDutyRosterOverride =
-                doctorDutyRosterOverrideRepository.fetchById(overrideDeleteRequestDTO.getDoctorDutyRosterOverrideId());
-
-        Long test = doctorDutyRosterOverride.getDoctorDutyRosterId().getSpecializationId().getId();
+                doctorDutyRosterOverrideRepository.fetchById(deleteRequestDTO.getId());
 
         validateAppointmentCount(doctorDutyRosterOverride.getFromDate(),
                 doctorDutyRosterOverride.getToDate(),
                 doctorDutyRosterOverride.getDoctorDutyRosterId().getDoctorId().getId(),
                 doctorDutyRosterOverride.getDoctorDutyRosterId().getSpecializationId().getId());
 
-        parseDeletedOverrideDetails(doctorDutyRosterOverride, overrideDeleteRequestDTO);
-        log.info(UPDATING_PROCESS_COMPLETED, DOCTOR_DUTY_ROSTER_OVERRIDE, getDifferenceBetweenTwoTime(startTime));
+        parseDeletedOverrideDetails(doctorDutyRosterOverride, deleteRequestDTO);
 
-
+        log.info(DELETING_PROCESS_COMPLETED, DOCTOR_DUTY_ROSTER_OVERRIDE, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override

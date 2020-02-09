@@ -78,7 +78,7 @@ public class DoctorDutyRosterResource {
     }
 
     @DeleteMapping(DOCTOR_DUTY_ROSTER_OVERRIDE)
-    public ResponseEntity<?> deleteDoctorDutyRosterOverride(@Valid @RequestBody DoctorDutyRosterOverrideDeleteRequestDTO deleteRequestDTO) {
+    public ResponseEntity<?> deleteDoctorDutyRosterOverride(@Valid @RequestBody DeleteRequestDTO deleteRequestDTO) {
         doctorDutyRosterService.deleteDoctorDutyRosterOverride(deleteRequestDTO);
         return ok().build();
     }

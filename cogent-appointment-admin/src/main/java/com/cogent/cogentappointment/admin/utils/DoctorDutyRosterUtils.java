@@ -2,7 +2,10 @@ package com.cogent.cogentappointment.admin.utils;
 
 import com.cogent.cogentappointment.admin.constants.StringConstant;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.*;
+import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDutyRosterRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDutyRosterUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorWeekDaysDutyRosterRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorWeekDaysDutyRosterUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentBookedDateResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.*;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
@@ -249,7 +252,7 @@ public class DoctorDutyRosterUtils {
     }
 
     public static void parseDeletedOverrideDetails(DoctorDutyRosterOverride doctorDutyRosterOverride,
-                                                   DoctorDutyRosterOverrideDeleteRequestDTO deleteRequestDTO) {
+                                                   DeleteRequestDTO deleteRequestDTO) {
 
         doctorDutyRosterOverride.setStatus(deleteRequestDTO.getStatus());
         doctorDutyRosterOverride.setRemarks(deleteRequestDTO.getRemarks());

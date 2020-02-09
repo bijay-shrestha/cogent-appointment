@@ -1,8 +1,10 @@
 package com.cogent.cogentappointment.admin.repository.custom;
 
+import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDutyRosterOverrideUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDutyRosterStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
+import com.cogent.cogentappointment.persistence.model.DoctorDutyRosterOverride;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
@@ -24,4 +26,7 @@ public interface DoctorDutyRosterOverrideRepositoryCustom {
 
     List<DoctorDutyRosterStatusResponseDTO> fetchDoctorDutyRosterOverrideStatus
             (DoctorDutyRosterStatusRequestDTO requestDTO);
+
+    List<DoctorDutyRosterOverride> fetchDoctorDutyRosterOverrides(
+            List<DoctorDutyRosterOverrideUpdateRequestDTO> updateRequestDTOS);
 }

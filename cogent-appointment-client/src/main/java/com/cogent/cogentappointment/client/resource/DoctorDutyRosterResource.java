@@ -19,7 +19,6 @@ import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
-
 /**
  * @author smriti on 26/11/2019
  */
@@ -70,14 +69,6 @@ public class DoctorDutyRosterResource {
         return ok(doctorDutyRosterService.fetchDetailsById(id));
     }
 
-//
-//    @PutMapping(DOCTOR_DUTY_ROSTER_STATUS)
-//    @ApiOperation(FETCH_DOCTOR_DUTY_ROSTER_STATUS_OPERATION)
-//    public List<DoctorDutyRosterStatusResponseDTO> fetchDoctorDutyRosterStatus(
-//            @RequestBody DoctorDutyRosterStatusRequestDTO searchRequestDTO) {
-//        return doctorDutyRosterService.fetchDoctorDutyRosterStatus(searchRequestDTO);
-//    }
-
     @PutMapping(DOCTOR_DUTY_ROSTER_OVERRIDE)
     @ApiOperation(UPDATE_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION)
     public ResponseEntity<?> updateDoctorDutyRosterOverride(
@@ -92,12 +83,20 @@ public class DoctorDutyRosterResource {
         return ok(doctorDutyRosterService.fetchExistingDutyRosters(requestDTO));
     }
 
-
     @GetMapping(EXISTING + DETAIL + ID_PATH_VARIABLE_BASE)
     @ApiOperation(DETAILS_OPERATION)
     public ResponseEntity<?> fetchExistingRosterDetails(@PathVariable("id") Long id) {
         return ok(doctorDutyRosterService.fetchExistingRosterDetails(id));
     }
+
+
+//
+//    @PutMapping(DOCTOR_DUTY_ROSTER_STATUS)
+//    @ApiOperation(FETCH_DOCTOR_DUTY_ROSTER_STATUS_OPERATION)
+//    public List<DoctorDutyRosterStatusResponseDTO> fetchDoctorDutyRosterStatus(
+//            @RequestBody DoctorDutyRosterStatusRequestDTO searchRequestDTO) {
+//        return doctorDutyRosterService.fetchDoctorDutyRosterStatus(searchRequestDTO);
+//    }
 }
 
 

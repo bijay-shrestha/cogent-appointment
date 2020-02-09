@@ -3,7 +3,6 @@ package com.cogent.cogentappointment.admin.resource;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.*;
 import com.cogent.cogentappointment.admin.service.DoctorDutyRosterService;
-import com.cogent.cogentappointment.persistence.model.DoctorDutyRosterOverride;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.PageRequest;
@@ -12,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.DoctorDutyRosterConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
@@ -78,8 +78,17 @@ public class DoctorDutyRosterResource {
     }
 
     @DeleteMapping(DOCTOR_DUTY_ROSTER_OVERRIDE)
+    @ApiOperation(DELETE_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION)
     public ResponseEntity<?> deleteDoctorDutyRosterOverride(@Valid @RequestBody DeleteRequestDTO deleteRequestDTO) {
         doctorDutyRosterService.deleteDoctorDutyRosterOverride(deleteRequestDTO);
+        return ok().build();
+    }
+
+    @PutMapping(DOCTOR_DUTY_ROSTER_OVERRIDE + REVERT_DOCTOR_DUTY_ROSTER_OVERRIDE)
+    @ApiOperation(REVERT_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION)
+    public ResponseEntity<?> revertDoctorDutyRosterOverride(
+            @Valid @RequestBody List<DoctorDutyRosterOverrideUpdateRequestDTO> updateRequestDTOS) {
+        doctorDutyRosterService.revertDoctorDutyRosterOverride(updateRequestDTOS);
         return ok().build();
     }
 

@@ -197,9 +197,33 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
                 doctorDutyRosterOverride.getDoctorDutyRosterId().getDoctorId().getId(),
                 doctorDutyRosterOverride.getDoctorDutyRosterId().getSpecializationId().getId());
 
-        parseDeletedOverrideDetails(doctorDutyRosterOverride, deleteRequestDTO);
+        parseDeletedOverrideDetails(doctorDutyRosterOverride, deleteRequestDTO.getStatus(), deleteRequestDTO.getRemarks());
 
         log.info(DELETING_PROCESS_COMPLETED, DOCTOR_DUTY_ROSTER_OVERRIDE, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    @Override
+    public void revertDoctorDutyRosterOverride(List<DoctorDutyRosterOverrideUpdateRequestDTO> updateOverrideRosters) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(REVERTING_PROCESS_STARTED, DOCTOR_DUTY_ROSTER_OVERRIDE);
+
+        List<DoctorDutyRosterOverride> originalOverrideRosters =
+                doctorDutyRosterOverrideRepository.fetchDoctorDutyRosterOverrides(updateOverrideRosters);
+
+        originalOverrideRosters.forEach(
+                originalOverride -> updateOverrideRosters.stream()
+                        .filter(updatedOverride -> originalOverride.getId().equals(updatedOverride.getDoctorDutyRosterOverrideId()))
+                        .forEachOrdered(updatedOverride -> {
+
+                            if (updatedOverride.isOriginal()) {
+                                updateDoctorRosterOverrideDetails(originalOverride, updatedOverride);
+                            } else {
+                                updateDoctorRosterOverrideStatus(originalOverride, updatedOverride);
+                            }
+                        }));
+
+        log.info(REVERTING_PROCESS_COMPLETED, DOCTOR_DUTY_ROSTER_OVERRIDE, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override

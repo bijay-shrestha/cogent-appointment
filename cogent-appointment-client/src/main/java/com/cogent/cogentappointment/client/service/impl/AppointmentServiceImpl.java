@@ -1,11 +1,9 @@
 package com.cogent.cogentappointment.client.service.impl;
 
+import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.*;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedTimeResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentCheckAvailabilityResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentPendingResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentSuccessResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.*;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
@@ -28,9 +26,11 @@ import static com.cogent.cogentappointment.client.constants.ErrorMessageConstant
 import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.*;
+import static com.cogent.cogentappointment.client.log.constants.PatientLog.PATIENT;
 import static com.cogent.cogentappointment.client.utils.AppointmentTransactionDetailUtils.parseToAppointmentTransactionInfo;
 import static com.cogent.cogentappointment.client.utils.AppointmentUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
+import static com.cogent.cogentappointment.client.utils.commons.TimeConverterUtils.dateDifference;
 
 /**
  * @author smriti on 2019-10-22
@@ -207,6 +207,25 @@ public class AppointmentServiceImpl implements AppointmentService {
         parseToRescheduleAppointment(appointment, rescheduleRequestDTO);
 
         log.info(RESCHEDULE_PROCESS_STARTED, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    @Override
+    public AppointmentCountResponseDTO countOverAllAppointment(AppointmentCountRequestDTO appointmentCountRequestDTO) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, APPOINTMENT);
+
+        Long newPatient=appointmentRepository.countNewPatientByHospitalId(appointmentCountRequestDTO);
+
+        Long registeredPatient=appointmentRepository.countRegisteredPatientByHospitalId(appointmentCountRequestDTO);
+
+        Character pillType=dateDifference(appointmentCountRequestDTO.getToDate(),
+                appointmentCountRequestDTO.getFromDate());
+
+        log.info(FETCHING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
+
+        return getOverAllAppointment(newPatient,registeredPatient,pillType);
     }
 
     private List<String> filterDoctorTimeWithAppointments(Duration rosterGapDuration,

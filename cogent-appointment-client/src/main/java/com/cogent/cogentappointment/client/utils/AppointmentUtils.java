@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRe
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentCheckAvailabilityResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentCountResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentSuccessResponseDTO;
 import com.cogent.cogentappointment.persistence.model.*;
 import org.joda.time.DateTime;
@@ -157,4 +158,16 @@ public class AppointmentUtils {
         return patientMetaInfo;
     }
 
+
+    public static AppointmentCountResponseDTO getOverAllAppointment(Long newPatient,
+                                                                 Long registeredPatient,
+                                                                 Character pillType) {
+        AppointmentCountResponseDTO countResponseDTO = new AppointmentCountResponseDTO();
+        countResponseDTO.setTotalAppointment(newPatient + registeredPatient);
+        countResponseDTO.setNewPatient(newPatient);
+        countResponseDTO.setRegisteredPatient(registeredPatient);
+        countResponseDTO.setPillType(pillType);
+
+        return countResponseDTO;
+    }
 }

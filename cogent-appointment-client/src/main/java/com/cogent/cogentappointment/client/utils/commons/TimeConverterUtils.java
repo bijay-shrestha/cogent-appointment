@@ -9,9 +9,9 @@ import static com.cogent.cogentappointment.client.utils.commons.DateUtils.conver
 /**
  * @author smriti ON 16/01/2020
  */
-public class AgeConverterUtils {
+public class TimeConverterUtils {
 
-    public static String  calculateAge(Date date) {
+    public static String calculateAge(Date date) {
 
         LocalDate today = LocalDate.now();
         LocalDate birthDate = convertDateToLocalDate(date);
@@ -33,5 +33,30 @@ public class AgeConverterUtils {
         }
 
         return age;
+    }
+
+    public static Character dateDifference(Date toDate, Date fromDate) {
+
+        LocalDate toLocalDate = convertDateToLocalDate(toDate);
+        LocalDate toFromDate = convertDateToLocalDate(fromDate);
+        int days;
+
+        Period period = Period.between(toFromDate, toLocalDate);
+
+        days = period.getDays();
+
+        Character pillType;
+
+        if (days <= 1) {
+            pillType = 'D';
+        } else if (days > 1 && days <= 7) {
+            pillType = 'W';
+        } else if (days > 7 && days <= 31) {
+            pillType = 'M';
+        } else {
+            pillType = 'Y';
+        }
+
+        return pillType;
     }
 }

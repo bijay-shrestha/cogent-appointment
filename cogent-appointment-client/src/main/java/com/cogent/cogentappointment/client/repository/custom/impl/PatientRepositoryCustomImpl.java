@@ -25,7 +25,7 @@ import static com.cogent.cogentappointment.client.constants.QueryConstants.Patie
 import static com.cogent.cogentappointment.client.constants.QueryConstants.PatientQueryConstants.IS_SELF;
 import static com.cogent.cogentappointment.client.query.PatientQuery.*;
 import static com.cogent.cogentappointment.client.utils.PatientUtils.parseToPatientMinimalResponseDTO;
-import static com.cogent.cogentappointment.client.utils.commons.AgeConverterUtils.calculateAge;
+import static com.cogent.cogentappointment.client.utils.commons.TimeConverterUtils.calculateAge;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;

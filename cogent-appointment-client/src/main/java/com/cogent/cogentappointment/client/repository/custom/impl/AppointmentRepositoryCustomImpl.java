@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentCountRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentPendingSearchDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedDateResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedTimeResponseDTO;
@@ -120,6 +121,26 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                 .setParameter(TO_DATE, utilDateToSqlDate(toDate))
                 .setParameter(DOCTOR_ID, doctorId)
                 .setParameter(SPECIALIZATION_ID, specializationId);
+
+        return (Long) query.getSingleResult();
+    }
+
+    @Override
+    public Long countRegisteredPatientByHospitalId(AppointmentCountRequestDTO appointmentCountRequestDTO) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_COUNT_REGISTERED_APPOINTMENT)
+                .setParameter(FROM_DATE, utilDateToSqlDate(appointmentCountRequestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(appointmentCountRequestDTO.getToDate()))
+                .setParameter(HOSPITAL_ID, appointmentCountRequestDTO.getHospitalId());
+
+        return (Long) query.getSingleResult();
+    }
+
+    @Override
+    public Long countNewPatientByHospitalId(AppointmentCountRequestDTO appointmentCountRequestDTO) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_COUNT_NEW_PATIENT_APPOINTMENT)
+                .setParameter(FROM_DATE, utilDateToSqlDate(appointmentCountRequestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(appointmentCountRequestDTO.getToDate()))
+                .setParameter(HOSPITAL_ID, appointmentCountRequestDTO.getHospitalId());
 
         return (Long) query.getSingleResult();
     }

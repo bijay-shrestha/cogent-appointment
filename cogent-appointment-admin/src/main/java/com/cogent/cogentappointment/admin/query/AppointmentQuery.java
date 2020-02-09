@@ -117,4 +117,6 @@ public class AppointmentQuery {
                 GET_WHERE_CLAUSE_TO_FETCH_REFUND_APPOINTMENTS(searchDTO);
 
     }
+
+
 }

@@ -1,9 +1,6 @@
 package com.cogent.cogentappointment.client.resource;
 
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentCancelRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentPendingSearchDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.*;
 import com.cogent.cogentappointment.client.service.AppointmentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -58,10 +55,12 @@ public class AppointmentResource {
         return ok().build();
     }
 
-//    @PutMapping(RESCHEDULE)
-//    @ApiOperation(RESCHEDULE_OPERATION)
-//    public ResponseEntity<?> rescheduleAppointment(@Valid @RequestBody AppointmentRescheduleRequestDTO requestDTO) {
-//        appointmentService.rescheduleAppointment(requestDTO);
-//        return ok().build();
-//    }
+    @PutMapping("/overAllAppointment")
+    @ApiOperation(CANCEL_APPOINTMENT_OPERATION)
+    public ResponseEntity<?> getOverAllAppointment(@Valid @RequestBody AppointmentCountRequestDTO countRequestDTO) {
+        appointmentService.countOverAllAppointment(countRequestDTO);
+        return ok(appointmentService.countOverAllAppointment(countRequestDTO));
+    }
+
+
 }

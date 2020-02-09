@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.constants.ErrorMessageConstants.PatientServiceMessages;
 import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
+import com.cogent.cogentappointment.client.dto.request.patient.PatientMinSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateRequestDTO;
@@ -62,7 +63,7 @@ public class PatientServiceImpl implements PatientService {
 
         log.info(SAVING_PROCESS_STARTED, PATIENT);
 
-        Long patientCount = patientRepository.fetchPatientForValidation(
+        Long patientCount = patientRepository.validatePatientDuplicity(
                 requestDTO.getName(), requestDTO.getMobileNumber(),
                 requestDTO.getDateOfBirth(),
                 hospitalId);
@@ -78,7 +79,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public Patient fetchPatient(Long id) {
+    public Patient fetchRegisteredPatientById(Long id) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -93,7 +94,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public PatientDetailResponseDTO searchForSelf(PatientSearchRequestDTO searchRequestDTO) {
+    public PatientDetailResponseDTO searchForSelf(PatientMinSearchRequestDTO searchRequestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, PATIENT);
@@ -106,7 +107,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public List<PatientMinimalResponseDTO> fetchMinimalPatientInfo(PatientSearchRequestDTO searchRequestDTO,
+    public List<PatientMinimalResponseDTO> fetchMinimalPatientInfo(PatientMinSearchRequestDTO searchRequestDTO,
                                                                    Pageable pageable) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
@@ -132,7 +133,6 @@ public class PatientServiceImpl implements PatientService {
         log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
-
     }
 
     @Override
@@ -157,7 +157,7 @@ public class PatientServiceImpl implements PatientService {
 
         Patient patientToBeUpdated = fetchPatientById(updateRequestDTO.getId());
 
-        Long patientCount = patientRepository.fetchPatientForValidationToUpdate(updateRequestDTO);
+        Long patientCount = patientRepository.validatePatientDuplicity(updateRequestDTO);
 
         validatePatientDuplicity(patientCount, updateRequestDTO.getName(),
                 updateRequestDTO.getMobileNumber(), updateRequestDTO.getDateOfBirth());
@@ -169,17 +169,16 @@ public class PatientServiceImpl implements PatientService {
         savePatientMetaInfo(updatePatientMetaInfo(patientToBeUpdated, patientMetaInfoToBeUpdated, updateRequestDTO));
 
         log.info(UPDATING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
-
     }
 
     @Override
-    public List<DropDownResponseDTO> dropDownListByHospitalId(Long hospitalId) {
+    public List<DropDownResponseDTO> fetchMinPatientMetaInfo(Long hospitalId) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, PATIENT);
 
-        List<DropDownResponseDTO> responseDTOS = patientMetaInfoRepository.fetchDropDownList(hospitalId);
+        List<DropDownResponseDTO> responseDTOS = patientMetaInfoRepository.fetchMinPatientMetaInfo(hospitalId);
 
         log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
@@ -187,18 +186,17 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public List<DropDownResponseDTO> activeDropDownListByHospitalId(Long hospitalId) {
+    public List<DropDownResponseDTO> fetchActiveMinPatientMetaInfo(Long hospitalId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, PATIENT);
 
-        List<DropDownResponseDTO> responseDTOS = patientMetaInfoRepository.fetchActiveDropDownList(hospitalId);
+        List<DropDownResponseDTO> responseDTOS = patientMetaInfoRepository.fetchActiveMinPatientMetaInfo(hospitalId);
 
         log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
     }
-
 
     private void validatePatientDuplicity(Long patientCount, String name, String mobileNumber,
                                           Date dateOfBirth) {

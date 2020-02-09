@@ -43,6 +43,9 @@ public class Hospital extends Auditable<String> implements Serializable {
     @Column(name = "status")
     private Character status;
 
+    @Column(name = "refund_percentage")
+    private Double refundPercentage;
+
     @Column(name = "remarks")
     private String remarks;
 
@@ -50,13 +53,14 @@ public class Hospital extends Auditable<String> implements Serializable {
     public String toString() {
         return "Hospital{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
-                ", code='" + code + '\'' +
-                ", address='" + address + '\'' +
-                ", panNumber='" + panNumber + '\'' +
+                ", name='" + name +
+                ", code='" + code +
+                ", address='" + address +
+                ", panNumber='" + panNumber +
                 ", isCogentAdmin=" + isCogentAdmin +
                 ", status=" + status +
-                ", remarks='" + remarks + '\'' +
+                ", refundPercentage=" + refundPercentage +
+                ", remarks='" + remarks +
                 '}';
     }
 }

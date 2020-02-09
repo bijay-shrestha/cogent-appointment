@@ -1,19 +1,18 @@
 package com.cogent.cogentappointment.admin.resource;
 
-import com.cogent.cogentappointment.admin.dto.request.patient.PatientSearchRequestDTO;
 import com.cogent.cogentappointment.admin.service.PatientService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.PatientConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.HospitalConstants.HOSPITAL_ID_PATH_VARIABLE_BASE;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.PatientConstant.*;
-import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.getPageable;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.PatientConstant.BASE_PATIENT;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -30,44 +29,15 @@ public class PatientResource {
         this.patientService = patientService;
     }
 
-    @PutMapping(SEARCH + SELF)
-    @ApiOperation(SEARCH_PATIENT_WITH_SELF_TYPE_OPERATION)
-    public ResponseEntity<?> search(@Valid @RequestBody PatientSearchRequestDTO searchRequestDTO) {
-        return ok(patientService.searchForSelf(searchRequestDTO));
-    }
-
-    @PutMapping(SEARCH + OTHERS)
-    @ApiOperation(SEARCH_PATIENT_WITH_OTHERS_TYPE_OPERATION)
-    public ResponseEntity<?> search(@Valid @RequestBody PatientSearchRequestDTO searchRequestDTO,
-                                    @RequestParam("page") int page,
-                                    @RequestParam("size") int size) {
-        return ok(patientService.fetchMinimalPatientInfo(searchRequestDTO, getPageable(page, size)));
-    }
-
-    @GetMapping(DETAIL + ID_PATH_VARIABLE_BASE)
-    @ApiOperation(FETCH_DETAILS_BY_ID)
-    public ResponseEntity<?> fetchDetailsById(@PathVariable("id") Long id) {
-        return ok(patientService.fetchDetailsById(id));
-    }
-
-    @PutMapping(SEARCH)
-    @ApiOperation(SEARCH_PATIENT_WITH_OTHERS_TYPE_OPERATION)
-    public ResponseEntity<?> searchPatient(@Valid @RequestBody PatientSearchRequestDTO searchRequestDTO,
-                                           @RequestParam("page") int page,
-                                           @RequestParam("size") int size) {
-        return ok(patientService.searchForSelf(searchRequestDTO, getPageable(page, size)));
-    }
-
     @GetMapping(META_INFO + ACTIVE + MIN + HOSPITAL_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_ACTIVE_PATIENT_META_INFO_DETAILS_FOR_DROPDOWN)
-    public ResponseEntity<?> fetchActivePatientMetaInfoForDropdownByHospitalId(@PathVariable("hospitalId") Long hospitalId) {
+    public ResponseEntity<?> fetchActivePatientMetaInfoForDropdown(@PathVariable("hospitalId") Long hospitalId) {
         return ok(patientService.patientMetaInfoActiveDropDownListByHospitalId(hospitalId));
     }
 
     @GetMapping(META_INFO + MIN + HOSPITAL_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_PATIENT_META_INFO_DETAILS_FOR_DROPDOWN)
-    public ResponseEntity<?> fetchPatientMetaInfoForDropdownByHospitalId(@PathVariable("hospitalId") Long hospitalId) {
+    public ResponseEntity<?> fetchPatientMetaInfoForDropdown(@PathVariable("hospitalId") Long hospitalId) {
         return ok(patientService.patientMetaInfoDropDownListByHospitalId(hospitalId));
     }
-
 }

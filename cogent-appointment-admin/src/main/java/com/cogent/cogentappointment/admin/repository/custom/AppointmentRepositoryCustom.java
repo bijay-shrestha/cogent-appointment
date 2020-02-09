@@ -1,11 +1,8 @@
 package com.cogent.cogentappointment.admin.repository.custom;
 
-import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundSearchDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentBookedDateResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentBookedTimeResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentMinimalResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentResponseDTO;
-import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundResponseDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -20,10 +17,6 @@ import java.util.List;
 @Qualifier("appointmentRepositoryCustom")
 public interface AppointmentRepositoryCustom {
 
-    List<AppointmentBookedTimeResponseDTO> checkAvailability(AppointmentCheckAvailabilityRequestDTO requestDTO);
-
-    String generateAppointmentNumber(String nepaliCreatedDate);
-
     List<AppointmentBookedDateResponseDTO> fetchBookedAppointmentDates(Date fromDate,
                                                                        Date toDate,
                                                                        Long doctorId,
@@ -31,11 +24,7 @@ public interface AppointmentRepositoryCustom {
 
     Long fetchBookedAppointmentCount(Date fromDate, Date toDate, Long doctorId, Long specializationId);
 
-    List<AppointmentMinimalResponseDTO> search(AppointmentSearchRequestDTO searchRequestDTO, Pageable pageable);
-
-    AppointmentResponseDTO fetchDetailsById(Long id);
-
-//    List<AppointmentStatusResponseDTO> fetchAppointmentForAppointmentStatus(AppointmentStatusRequestDTO requestDTO);
-
+    AppointmentRefundResponseDTO fetchRefundAppointments(AppointmentRefundSearchDTO searchDTO,
+                                                         Pageable pageable);
 
 }

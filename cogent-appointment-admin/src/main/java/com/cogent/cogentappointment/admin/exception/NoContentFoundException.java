@@ -1,9 +1,9 @@
 package com.cogent.cogentappointment.admin.exception;
 
-import com.cogent.cogentappointment.admin.exception.utils.ExceptionUtils;
 import lombok.Getter;
 import org.springframework.util.StringUtils;
 
+import static com.cogent.cogentappointment.admin.exception.utils.ExceptionUtils.*;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 /**
@@ -15,8 +15,8 @@ public class NoContentFoundException extends RuntimeException {
     private ExceptionResponse exception;
 
     public NoContentFoundException(Class clazz) {
-        super(ExceptionUtils.generateMessage(clazz));
-        setErrorResponse(ExceptionUtils.generateMessage(clazz), ExceptionUtils.generateDebugMessage(clazz));
+        super(generateMessage(clazz));
+        setErrorResponse(generateMessage(clazz), generateDebugMessage(clazz));
     }
 
     public NoContentFoundException(String errorMessage) {
@@ -28,22 +28,22 @@ public class NoContentFoundException extends RuntimeException {
                 .errorMessage(errorMessage)
                 .debugMessage(debugMessage)
                 .status(NOT_FOUND)
-                .timeStamp(ExceptionUtils.getLocalDateTime())
+                .timeStamp(getLocalDateTime())
                 .build();
     }
 
     public NoContentFoundException(Class clazz, String... searchParamsMap) {
-        super(ExceptionUtils.generateMessage(clazz.getSimpleName(), ExceptionUtils.toMap(String.class, String.class, searchParamsMap)));
+        super(generateMessage(clazz.getSimpleName(), toMap(String.class, String.class, searchParamsMap)));
         setErrorResponse(
-                ExceptionUtils.generateMessage(clazz),
+                generateMessage(clazz),
                 StringUtils.capitalize("Object returned empty or null for ")
-                        + ExceptionUtils.toMap(String.class, String.class, searchParamsMap));
+                        + toMap(String.class, String.class, searchParamsMap));
     }
 
     public NoContentFoundException(String errorMessage, String... searchParamsMap) {
-        super(ExceptionUtils.generateMessage(errorMessage, ExceptionUtils.toMap(String.class, String.class, searchParamsMap)));
+        super(generateMessage(errorMessage, toMap(String.class, String.class, searchParamsMap)));
         setErrorResponse(errorMessage,
                 StringUtils.capitalize("Object returned empty or null for ")
-                        + ExceptionUtils.toMap(String.class, String.class, searchParamsMap));
+                        + toMap(String.class, String.class, searchParamsMap));
     }
 }

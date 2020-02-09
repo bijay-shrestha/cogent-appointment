@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
+import com.cogent.cogentappointment.client.dto.request.patient.PatientMinSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientDetailResponseDTO;
@@ -40,8 +41,8 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
     private EntityManager entityManager;
 
     @Override
-    public Long fetchPatientForValidation(String name, String mobileNumber,
-                                          Date dateOfBirth, Long hospitalId) {
+    public Long validatePatientDuplicity(String name, String mobileNumber,
+                                         Date dateOfBirth, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_PATIENT_DUPLICITY)
                 .setParameter(NAME, name)
                 .setParameter(MOBILE_NUMBER, mobileNumber)
@@ -52,7 +53,7 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
     }
 
     @Override
-    public Long fetchPatientForValidationToUpdate(PatientUpdateRequestDTO patientUpdateRequestDTO) {
+    public Long validatePatientDuplicity(PatientUpdateRequestDTO patientUpdateRequestDTO) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_UPDATED_PATIENT_DUPLICITY)
                 .setParameter(NAME, patientUpdateRequestDTO.getName())
                 .setParameter(MOBILE_NUMBER, patientUpdateRequestDTO.getMobileNumber())
@@ -64,7 +65,7 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
     }
 
     @Override
-    public PatientDetailResponseDTO searchForSelf(PatientSearchRequestDTO searchRequestDTO) {
+    public PatientDetailResponseDTO searchForSelf(PatientMinSearchRequestDTO searchRequestDTO) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_DETAILS)
                 .setParameter(ESEWA_ID, searchRequestDTO.getEsewaId())
                 .setParameter(IS_SELF, searchRequestDTO.getIsSelf())
@@ -81,7 +82,7 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
     }
 
     @Override
-    public List<PatientMinimalResponseDTO> fetchMinimalPatientInfo(PatientSearchRequestDTO searchRequestDTO,
+    public List<PatientMinimalResponseDTO> fetchMinimalPatientInfo(PatientMinSearchRequestDTO searchRequestDTO,
                                                                    Pageable pageable) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_MINIMAL_PATIENT)

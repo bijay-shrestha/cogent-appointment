@@ -41,14 +41,8 @@ public class SwaggerConstants {
 
     public interface AppointmentConstant {
         String BASE_API_VALUE = "This is Appointment Controller";
-        String CHECK_APPOINTMENT_AVAILABILITY = "Check available time schedules in requested date" +
-                " for specific doctor and specialization";
-        String SAVE_OPERATION = "Save new appointment";
-        String UPDATE_OPERATION = "Update existing appointment";
-        String DELETE_OPERATION = "Set appointment status as 'D' when deleted";
-        String SEARCH_OPERATION = "Search appointment according to given request parameters";
-        String DETAILS_OPERATION = "Fetch appointment details by its id";
-        String RESCHEDULE_OPERATION = "Reschedule appointment date and time.";
+        String FETCH_REFUND_APPOINTMENTS = "Fetch Refund Appointment Request List";
+        String REJECT_REFUND_APPOINTMENT = "Reject Refund Request Appointment";
     }
 
     public interface AuthenticateConstant {
@@ -146,11 +140,6 @@ public class SwaggerConstants {
     //P
     public interface PatientConstant {
         String BASE_PATIENT_API_VALUE = "This is Patient Controller";
-        String SEARCH_PATIENT_WITH_SELF_TYPE_OPERATION = "Search patient info according to given " +
-                "request parameters (esewa id, isSelf='Y' and hospital id)";
-        String SEARCH_PATIENT_WITH_OTHERS_TYPE_OPERATION = "Fetch list of minimal patient info according to given " +
-                "request parameters (esewa id, isSelf='N' and hospital id)";
-        String FETCH_DETAILS_BY_ID = " Fetch patient(with type: OTHERS) details by id";
         String FETCH_ACTIVE_PATIENT_META_INFO_DETAILS_FOR_DROPDOWN = "Fetch minimal active patient meta info details" +
                 " (id and metaInfo) for dropdown by hospital Id";
         String FETCH_PATIENT_META_INFO_DETAILS_FOR_DROPDOWN = "Fetch minimal patient meta info details " +

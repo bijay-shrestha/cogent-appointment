@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.service;
 
 import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
+import com.cogent.cogentappointment.client.dto.request.patient.PatientMinSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateRequestDTO;
@@ -18,13 +19,15 @@ import java.util.List;
 public interface PatientService {
     Patient save(PatientRequestDTO requestDTO, Long hospitalId);
 
-    Patient fetchPatient(Long id);
+    Patient fetchRegisteredPatientById(Long id);
 
-    PatientDetailResponseDTO searchForSelf(PatientSearchRequestDTO searchRequestDTO);
+    PatientDetailResponseDTO searchForSelf(PatientMinSearchRequestDTO searchRequestDTO);
 
-    List<PatientMinimalResponseDTO> fetchMinimalPatientInfo(PatientSearchRequestDTO searchRequestDTO,
+    /*FETCH MINIMAL DETAILS OF 'OTHERS'*/
+    List<PatientMinimalResponseDTO> fetchMinimalPatientInfo(PatientMinSearchRequestDTO searchRequestDTO,
                                                             Pageable pageable);
 
+    /*FETCH DETAILS OF 'OTHERS'*/
     PatientDetailResponseDTO fetchDetailsById(Long id);
 
     List<PatientResponseDTO> search(PatientSearchRequestDTO searchRequestDTO,
@@ -32,7 +35,7 @@ public interface PatientService {
 
     void update(PatientUpdateRequestDTO patientUpdateRequestDTO);
 
-    List<DropDownResponseDTO> dropDownListByHospitalId(Long hospitalId);
+    List<DropDownResponseDTO> fetchMinPatientMetaInfo(Long hospitalId);
 
-    List<DropDownResponseDTO> activeDropDownListByHospitalId(Long hospitalId);
+    List<DropDownResponseDTO> fetchActiveMinPatientMetaInfo(Long hospitalId);
 }

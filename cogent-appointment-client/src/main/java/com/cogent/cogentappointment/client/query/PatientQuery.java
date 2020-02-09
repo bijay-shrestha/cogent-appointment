@@ -65,10 +65,6 @@ public class PatientQuery {
                     " FROM Patient p" +
                     GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS;
 
-    public static final String GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS_BY_ID =
-            " WHERE p.id=:id" +
-                    " AND p.status='Y'";
-
     public static final String QUERY_TO_FETCH_PATIENT_DETAILS_BY_ID =
             "SELECT" +
                     " p.name as name," +
@@ -89,8 +85,7 @@ public class PatientQuery {
                     " WHERE p.id=:id" +
                     " AND p.status='Y'";
 
-
-    public static final String QUERY_TO_FETCH_PATIENT(PatientSearchRequestDTO searchRequestDTO) {
+    public static String QUERY_TO_FETCH_PATIENT(PatientSearchRequestDTO searchRequestDTO) {
         return "SELECT" +
                 " p.name as name," +                                             //[0]
                 " p.gender as gender," +                                         //[1]
@@ -109,7 +104,7 @@ public class PatientQuery {
                 GET_WHERE_CLAUSE_FOR_SEARCH_PATIENT(searchRequestDTO);
     }
 
-    private static final String GET_WHERE_CLAUSE_FOR_SEARCH_PATIENT(PatientSearchRequestDTO searchRequestDTO) {
+    private static String GET_WHERE_CLAUSE_FOR_SEARCH_PATIENT(PatientSearchRequestDTO searchRequestDTO) {
         String whereClause = " WHERE p.status!='D'";
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getEsewaId()))

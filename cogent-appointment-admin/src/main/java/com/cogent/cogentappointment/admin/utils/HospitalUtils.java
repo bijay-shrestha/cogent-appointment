@@ -35,6 +35,7 @@ public class HospitalUtils {
         hospital.setPanNumber(hospitalRequestDTO.getPanNumber());
         hospital.setStatus(hospitalRequestDTO.getStatus());
         hospital.setIsCogentAdmin(hospitalRequestDTO.getIsCogentAdmin());
+        hospital.setRefundPercentage(hospitalRequestDTO.getRefundPercentage());
         return hospital;
     }
 
@@ -85,6 +86,7 @@ public class HospitalUtils {
         hospital.setStatus(updateRequestDTO.getStatus());
         hospital.setRemarks(updateRequestDTO.getRemarks());
         hospital.setIsCogentAdmin(updateRequestDTO.getIsHospital());
+        hospital.setRefundPercentage(updateRequestDTO.getRefundPercentage());
     }
 
     public static HospitalContactNumber parseToUpdatedHospitalContactNumber(
@@ -123,6 +125,7 @@ public class HospitalUtils {
         final int HOSPITAL_BANNER_INDEX = 7;
         final int HOSPITAL_CODE_INDEX = 8;
         final int CONTACT_DETAILS_INDEX = 9;
+        final int REFUND_PERCENTAGE_INDEX =10;
 
         return HospitalResponseDTO.builder()
                 .id(Long.parseLong(results[HOSPITAL_ID_INDEX].toString()))
@@ -133,9 +136,10 @@ public class HospitalUtils {
                 .remarks(Objects.isNull(results[REMARKS_INDEX]) ? null : results[REMARKS_INDEX].toString())
                 .hospitalLogo(Objects.isNull(results[HOSPITAL_LOGO_INDEX]) ? null : results[HOSPITAL_LOGO_INDEX].toString())
                 .hospitalBanner(Objects.isNull(results[HOSPITAL_BANNER_INDEX]) ? null : results[HOSPITAL_BANNER_INDEX].toString())
+                .hospitalCode(results[HOSPITAL_CODE_INDEX].toString())
                 .contactNumberResponseDTOS(Objects.isNull(results[CONTACT_DETAILS_INDEX]) ?
                         new ArrayList<>() : parseToHospitalContactNumberResponseDTOS(results))
-                .hospitalCode(results[HOSPITAL_CODE_INDEX].toString())
+                .refundPercentage(Double.parseDouble(results[REFUND_PERCENTAGE_INDEX].toString()))
                 .build();
     }
 

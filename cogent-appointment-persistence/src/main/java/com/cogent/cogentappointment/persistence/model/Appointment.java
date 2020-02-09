@@ -12,7 +12,6 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
-
 /**
  * @author smriti on 2019-10-14
  */
@@ -43,43 +42,39 @@ public class Appointment extends Auditable<String> implements Serializable {
     @JoinColumn(name = "patient_id")
     private Patient patientId;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hospital_id")
-    private Hospital hospital;
-
     @Temporal(TemporalType.DATE)
     @Column(name = "appointment_date")
     private Date appointmentDate;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "start_time")
-    private Date startTime;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "end_time")
-    private Date endTime;
+    @Column(name = "appointment_time")
+    private Date appointmentTime;
 
     @Column(name = "appointment_number", updatable = false)
     private String appointmentNumber;
 
-    @Column(name = "unique_id")
-    private String uniqueId;
+    @Column(name = "serial_number")
+    private String serialNumber;
 
     @Column(name = "created_date_nepali")
     private String createdDateNepali;
 
     /* PA = PENDING APPROVAL
-    A= APPROVED
-    R= REJECTED
-    C = CANCELLED
-     */
+       A= VISITED AND APPROVED
+       R= REJECTED BY HOSPITAL
+       C = CANCELLED BUT NOT REFUNDED
+       RE = CANCELLED AND REFUNDED
+    */
     @Column(name = "status")
-    private Character status;
+    private String status;
 
     /*If cancel the appointment, cancellation remarks is must*/
     @Column(name = "remarks")
     private String remarks;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hospital_id")
+    private Hospital hospitalId;
 
     @Override
     public String toString() {
@@ -88,15 +83,15 @@ public class Appointment extends Auditable<String> implements Serializable {
                 ", specializationId=" + specializationId.getName() +
                 ", doctorId=" + doctorId.getName() +
                 ", patientId=" + patientId.getName() +
-                ", hospital=" + hospital.getName() +
+                ", hospital=" + hospitalId.getName() +
                 ", appointmentDate=" + appointmentDate +
-                ", startTime=" + startTime +
-                ", endTime=" + endTime +
-                ", appointmentNumber='" + appointmentNumber + '\'' +
-                ", uniqueId='" + uniqueId + '\'' +
-                ", createdDateNepali='" + createdDateNepali + '\'' +
+                ", appointmentTime=" + appointmentTime +
+                ", appointmentNumber='" + appointmentNumber +
+                ", serialNumber='" + serialNumber +
+                ", createdDateNepali='" + createdDateNepali +
                 ", status=" + status +
-                ", remarks='" + remarks + '\'' +
+                ", remarks='" + remarks +
+                ", hospitalId='" + hospitalId +
                 '}';
     }
 }

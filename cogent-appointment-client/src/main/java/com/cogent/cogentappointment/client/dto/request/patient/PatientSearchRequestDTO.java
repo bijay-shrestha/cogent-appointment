@@ -18,7 +18,7 @@ public class PatientSearchRequestDTO implements Serializable {
 
     private Long patientMetaInfo;
 
-    private Character Status;
+    private Character status;
 
     private Character isSelf;
 

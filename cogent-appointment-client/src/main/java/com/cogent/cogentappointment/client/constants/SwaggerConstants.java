@@ -32,10 +32,8 @@ public class SwaggerConstants {
         String CHECK_APPOINTMENT_AVAILABILITY = "Check available time schedules in requested date" +
                 " for specific doctor and specialization";
         String SAVE_OPERATION = "Save new appointment";
-        String UPDATE_OPERATION = "Update existing appointment";
-        String DELETE_OPERATION = "Set appointment status as 'D' when deleted";
-        String SEARCH_OPERATION = "Search appointment according to given request parameters";
-        String DETAILS_OPERATION = "Fetch appointment details by its id";
+        String FETCH_PENDING_APPOINTMENT = "Fetch pending appointments";
+        String CANCEL_APPOINTMENT_OPERATION = "Cancel appointment and request refund";
         String RESCHEDULE_OPERATION = "Reschedule appointment date and time.";
     }
 
@@ -160,8 +158,9 @@ public class SwaggerConstants {
                 "request parameters (esewa id, isSelf='Y' and hospital id)";
         String SEARCH_PATIENT_WITH_OTHERS_TYPE_OPERATION = "Fetch list of minimal patient info according to given " +
                 "request parameters (esewa id, isSelf='N' and hospital id)";
-             String UPDATE_PATIENT_INFO_OPERATION = "Update patient info  to given";
-        String FETCH_DETAILS_BY_ID = " Fetch patient(with type: OTHERS) details by id";
+        String UPDATE_PATIENT_INFO_OPERATION = "Update patient info";
+        String SEARCH_OPERATION ="Search Patient Info";
+        String FETCH_DETAILS_BY_ID = " Fetch patient(with type 'OTHERS') details by id";
     }
 
     public interface ProfileConstant {

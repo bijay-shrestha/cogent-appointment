@@ -6,6 +6,7 @@ import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateRequ
 import com.cogent.cogentappointment.client.dto.response.patient.PatientDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientMinimalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.patient.PatientSearchResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.PatientRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Patient;
@@ -106,13 +107,13 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
     }
 
     @Override
-    public PatientDetailResponseDTO fetchDetailsById(Long id) {
+    public PatientResponseDTO fetchDetailsById(Long id) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_DETAILS_BY_ID)
                 .setParameter(ID, id);
 
         try {
-            PatientDetailResponseDTO detailResponseDTO =
-                    transformQueryToSingleResult(query, PatientDetailResponseDTO.class);
+            PatientResponseDTO detailResponseDTO =
+                    transformQueryToSingleResult(query, PatientResponseDTO.class);
             detailResponseDTO.setAge(calculateAge(detailResponseDTO.getDateOfBirth()));
             return detailResponseDTO;
         } catch (NoResultException e) {
@@ -121,7 +122,7 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
     }
 
     @Override
-    public List<PatientResponseDTO> search(PatientSearchRequestDTO searchRequestDTO, Pageable pageable) {
+    public List<PatientSearchResponseDTO> search(PatientSearchRequestDTO searchRequestDTO, Pageable pageable) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT(searchRequestDTO));
 
@@ -134,7 +135,7 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
         if (results.isEmpty()) throw new NoContentFoundException(Patient.class);
 
         else {
-            List<PatientResponseDTO> responseDTOS = transformQueryToResultList(query, PatientResponseDTO.class);
+            List<PatientSearchResponseDTO> responseDTOS = transformQueryToResultList(query, PatientSearchResponseDTO.class);
             responseDTOS.get(0).setTotalItems(totalItems);
             return responseDTOS;
         }

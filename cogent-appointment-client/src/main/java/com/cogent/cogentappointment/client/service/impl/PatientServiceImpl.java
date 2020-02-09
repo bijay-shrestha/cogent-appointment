@@ -9,6 +9,7 @@ import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateRequ
 import com.cogent.cogentappointment.client.dto.response.patient.PatientDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientMinimalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.patient.PatientSearchResponseDTO;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.PatientMetaInfoRepository;
@@ -33,6 +34,7 @@ import static com.cogent.cogentappointment.client.log.constants.PatientLog.PATIE
 import static com.cogent.cogentappointment.client.utils.GenderUtils.fetchGenderByCode;
 import static com.cogent.cogentappointment.client.utils.PatientUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
+import static com.cogent.cogentappointment.client.utils.commons.TimeConverterUtils.calculateAge;
 
 /**
  * @author smriti ON 16/01/2020
@@ -123,29 +125,33 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public PatientDetailResponseDTO fetchDetailsById(Long id) {
+    public PatientResponseDTO fetchDetailsById(Long id) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, PATIENT);
 
-        PatientDetailResponseDTO responseDTO = patientRepository.fetchDetailsById(id);
+        PatientResponseDTO responseDTOs = patientRepository.fetchDetailsById(id);
 
         log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
-        return responseDTO;
+        return responseDTOs;
     }
 
     @Override
-    public List<PatientResponseDTO> search(PatientSearchRequestDTO searchRequestDTO, Pageable pageable) {
+    public List<PatientSearchResponseDTO> search(PatientSearchRequestDTO searchRequestDTO, Pageable pageable) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, PATIENT);
 
-        List<PatientResponseDTO> responseDTO = patientRepository.search(searchRequestDTO, pageable);
+        List<PatientSearchResponseDTO> responseDTOs = patientRepository.search(searchRequestDTO, pageable);
+
+        responseDTOs.forEach(responseDTO -> {
+            responseDTO.setAge(calculateAge(responseDTO.getDateOfBirth()));
+        });
 
         log.info(SEARCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
-        return responseDTO;
+        return responseDTOs;
     }
 
     @Override

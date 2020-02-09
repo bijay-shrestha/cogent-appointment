@@ -16,5 +16,6 @@ public class DoctorDutyRosterLog {
     public final static String EXISTING_DOCTOR_DUTY_ROSTER = "EXISTING DOCTOR DUTY ROSTER";
 
     public final static String REVERTING_PROCESS_STARTED = " REVERTING {} PROCESS STARTED";
+
     public final static String REVERTING_PROCESS_COMPLETED = " REVERTING {} PROCESS COMPLETED IN {} ms";
 }

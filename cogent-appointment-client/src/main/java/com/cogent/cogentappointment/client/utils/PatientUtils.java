@@ -78,7 +78,7 @@ public class PatientUtils {
     public static PatientMetaInfo updatePatientMetaInfo(Patient patient,
                                                         PatientMetaInfo patientMetaInfo,
                                                         PatientUpdateRequestDTO updateRequestDTO) {
-        patientMetaInfo.setMetaInfo(updateRequestDTO.getName()
+        patientMetaInfo.setMetaInfo(toUpperCase(updateRequestDTO.getName())
                 + OR +
                 updateRequestDTO.getMobileNumber()
                 + OR +

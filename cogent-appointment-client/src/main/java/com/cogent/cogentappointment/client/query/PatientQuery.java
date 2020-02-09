@@ -45,16 +45,19 @@ public class PatientQuery {
                     " FROM Patient p";
 
     public static final String GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS =
-            " WHERE p.eSewaId=:eSewaId" +
-                    " AND p.isSelf=:isSelf" +
+            " WHERE p.name=:name" +
+                    " AND p.mobileNumber=:mobileNumber" +
+                    " AND p.dateOfBirth =:dateOfBirth" +
                     " AND p.hospitalId.id=:hospitalId" +
+                    " AND p.isSelf=:isSelf" +
                     " AND p.status='Y'" +
                     " AND p.isRegistered='Y'";
 
-    public static final String QUERY_TO_FETCH_PATIENT_DETAILS =
+    /*FOR SELF*/
+    public static final String QUERY_TO_FETCH_PATIENT_DETAILS_FOR_SELF =
             SELECT_CLAUSE_TO_FETCH_PATIENT_DETAILS + GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS;
 
-    public static final String QUERY_TO_FETCH_MINIMAL_PATIENT =
+    public static final String QUERY_TO_FETCH_MINIMAL_PATIENT_FOR_OTHERS =
             " SELECT p.id as patientId," +                                  //[0]
                     " p.name as name," +                                    //[1]
                     " p.mobileNumber as mobileNumber," +                    //[2]
@@ -65,7 +68,8 @@ public class PatientQuery {
                     " FROM Patient p" +
                     GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS;
 
-    public static final String QUERY_TO_FETCH_PATIENT_DETAILS_BY_ID =
+    /*FOR OTHERS*/
+    public static final String QUERY_TO_FETCH_OTHER_PATIENT_DETAILS_BY_ID =
             "SELECT" +
                     " p.name as name," +
                     " p.gender as gender," +
@@ -85,7 +89,7 @@ public class PatientQuery {
                     " WHERE p.id=:id" +
                     " AND p.status='Y'";
 
-    public static  String QUERY_TO_FETCH_PATIENT(PatientSearchRequestDTO searchRequestDTO) {
+    public static String QUERY_TO_SEARCH_PATIENT(PatientSearchRequestDTO searchRequestDTO) {
         return "SELECT" +
                 " p.name as name," +                                             //[0]
                 " p.gender as gender," +                                         //[1]
@@ -104,18 +108,17 @@ public class PatientQuery {
                 GET_WHERE_CLAUSE_FOR_SEARCH_PATIENT(searchRequestDTO);
     }
 
-    private static  String GET_WHERE_CLAUSE_FOR_SEARCH_PATIENT(PatientSearchRequestDTO searchRequestDTO) {
+    private static String GET_WHERE_CLAUSE_FOR_SEARCH_PATIENT(PatientSearchRequestDTO searchRequestDTO) {
         String whereClause = " WHERE p.status!='D'";
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getEsewaId()))
-            whereClause += " AND p.eSewaId=" + searchRequestDTO.getEsewaId();
+            whereClause += " AND p.eSewaId LIKE '%" + searchRequestDTO.getEsewaId() + "%'";
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
             whereClause += " AND p.status='" + searchRequestDTO.getStatus() + "'";
 
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getPatientMetaInfo())) {
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getPatientMetaInfo()))
             whereClause += " AND pmi.id=" + searchRequestDTO.getPatientMetaInfo();
-        }
 
         whereClause += " ORDER BY p.id DESC";
 

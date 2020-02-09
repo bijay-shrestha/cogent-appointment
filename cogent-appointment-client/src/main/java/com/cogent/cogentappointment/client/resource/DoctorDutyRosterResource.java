@@ -94,7 +94,6 @@ public class DoctorDutyRosterResource {
         return ok().build();
     }
 
-
     @PutMapping(EXISTING)
     @ApiOperation(FETCH_EXISTING_ROSTERS)
     public ResponseEntity<?> fetchExistingDutyRosters(@Valid @RequestBody DoctorExistingDutyRosterRequestDTO requestDTO) {

@@ -60,9 +60,10 @@ public class Appointment extends Auditable<String> implements Serializable {
     private String createdDateNepali;
 
     /* PA = PENDING APPROVAL
-       A= APPROVED
-       R= REJECTED
-       C = CANCELLED
+       A= VISITED AND APPROVED
+       R= REJECTED BY HOSPITAL
+       C = CANCELLED BUT NOT REFUNDED
+       RE = CANCELLED AND REFUNDED
     */
     @Column(name = "status")
     private String status;

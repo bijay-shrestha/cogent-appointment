@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.APPROVED;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.REFUNDED;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.*;
@@ -67,6 +68,11 @@ public class AppointmentServiceImpl implements AppointmentService {
                 appointmentRefundDetailRepository.findByAppointmentId(appointmentId)
                         .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
 
+        Appointment appointment = appointmentRepository.fetchAppointmentById(appointmentId)
+                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
+
+        appointment.setStatus(REFUNDED);
+
         refundAppointmentDetail.setStatus(APPROVED);
 
         log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT_REFUND, getDifferenceBetweenTwoTime(startTime));
@@ -86,7 +92,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         parseRefundRejectDetails(refundRejectDTO, refundAppointmentDetail);
 
         log.info(REJECT_PROCESS_COMPLETED, APPOINTMENT_REFUND, getDifferenceBetweenTwoTime(startTime));
-
     }
 
 //    @Override

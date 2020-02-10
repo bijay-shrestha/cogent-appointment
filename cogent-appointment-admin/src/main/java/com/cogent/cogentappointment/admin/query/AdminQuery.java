@@ -29,8 +29,8 @@ public class AdminQuery {
 
     public static final String QUERY_TO_VALIDATE_ADMIN_COUNT =
             " SELECT " +
-                    " COUNT(a.id)," +
-                    " h.numberOfAdmins" +
+                    " COUNT(a.id)," +                   //[0]
+                    " h.numberOfAdmins" +               //[1]
                     " FROM Admin a" +
                     " LEFT JOIN Profile p ON p.id = a.profileId" +
                     " LEFT JOIN Department d ON d.id = p.department.id" +

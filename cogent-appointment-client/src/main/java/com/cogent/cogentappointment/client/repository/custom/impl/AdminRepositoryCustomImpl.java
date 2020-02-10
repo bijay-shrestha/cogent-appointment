@@ -39,6 +39,16 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     private EntityManager entityManager;
 
     @Override
+    public Object[] validateAdminCount(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_ADMIN_COUNT)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        List<Object[]> results = query.getResultList();
+
+        return results.get(0);
+    }
+
+    @Override
     public List<Object[]> validateDuplicity(String username, String email, String mobileNumber,
                                             Long hospitalId) {
 

@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.client.dto.response.appointment;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -15,11 +16,9 @@ import java.util.List;
 @NoArgsConstructor
 public class AppointmentCheckAvailabilityResponseDTO implements Serializable {
 
-    private String doctorStartTime;
+    private Date queryDate;
 
-    private String doctorEndTime;
+    private String doctorAvailableTime;
 
-    private Character dayOffStatus;
-
-    private List<AppointmentAvailabilityResponseDTO> availableAppointments;
+    private List<String> availableTimeSlots;
 }

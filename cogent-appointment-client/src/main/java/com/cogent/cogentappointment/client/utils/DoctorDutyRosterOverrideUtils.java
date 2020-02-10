@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.client.constants.StatusConstants;
 import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.DoctorDutyRosterOverrideRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.DoctorDutyRosterOverrideUpdateRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorRosterOverrideUpdateResponseDTO;
 import com.cogent.cogentappointment.client.utils.commons.DateUtils;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRoster;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRosterOverride;
@@ -37,7 +38,7 @@ public class DoctorDutyRosterOverrideUtils {
         return doctorDutyRosterOverride;
     }
 
-    public static DoctorDutyRosterOverride parseToUpdatedDoctorDutyRosterOverride(
+    public static DoctorDutyRosterOverride parseDoctorDutyRosterOverrideDetails(
             DoctorDutyRosterOverrideUpdateRequestDTO updateRequestDTO,
             DoctorDutyRosterOverride doctorDutyRosterOverride) {
 
@@ -106,5 +107,34 @@ public class DoctorDutyRosterOverrideUtils {
         });
 
         return doctorDutyRosterStatusResponseDTOS;
+    }
+
+    public static DoctorRosterOverrideUpdateResponseDTO parseToOverrideUpdateResponse(Long savedOverrideId) {
+        return DoctorRosterOverrideUpdateResponseDTO.builder()
+                .savedOverrideId(savedOverrideId)
+                .build();
+    }
+
+    public static void parseDeletedOverrideDetails(DoctorDutyRosterOverride doctorDutyRosterOverride,
+                                                   Character status,
+                                                   String remarks) {
+
+        doctorDutyRosterOverride.setStatus(status);
+        doctorDutyRosterOverride.setRemarks(remarks);
+    }
+
+    public static void updateDoctorRosterOverrideDetails(DoctorDutyRosterOverride originalInfo,
+                                                         DoctorDutyRosterOverrideUpdateRequestDTO updatedInfo) {
+        originalInfo.setStartTime(updatedInfo.getStartTime());
+        originalInfo.setEndTime(updatedInfo.getEndTime());
+        originalInfo.setFromDate(updatedInfo.getOverrideFromDate());
+        originalInfo.setToDate(updatedInfo.getOverrideToDate());
+        updateDoctorRosterOverrideStatus(originalInfo, updatedInfo);
+    }
+
+    public static void updateDoctorRosterOverrideStatus(DoctorDutyRosterOverride originalInfo,
+                                                        DoctorDutyRosterOverrideUpdateRequestDTO updatedInfo) {
+        originalInfo.setStatus(updatedInfo.getStatus());
+        originalInfo.setRemarks(updatedInfo.getRemarks());
     }
 }

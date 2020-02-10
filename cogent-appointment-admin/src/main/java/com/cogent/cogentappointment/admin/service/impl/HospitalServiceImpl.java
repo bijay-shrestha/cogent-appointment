@@ -34,6 +34,7 @@ import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.HOSPITAL;
 import static com.cogent.cogentappointment.admin.utils.HmacApiInfoUtils.parseToHmacApiInfo;
+import static com.cogent.cogentappointment.admin.utils.HmacApiInfoUtils.updateHmacApiInfoAsHospital;
 import static com.cogent.cogentappointment.admin.utils.HospitalUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
@@ -121,6 +122,8 @@ public class HospitalServiceImpl implements HospitalService {
         validateDuplicity(hospitals, updateRequestDTO.getName(),
                 updateRequestDTO.getHospitalCode(), Hospital.class.getSimpleName());
 
+        HmacApiInfo hmacApiInfo=hmacApiInfoRepository.getHmacApiInfoByHospitalId(updateRequestDTO.getId());
+
         parseToUpdatedHospital(updateRequestDTO, hospital);
 
         updateHospitalContactNumber(hospital.getId(), updateRequestDTO.getContactNumberUpdateRequestDTOS());
@@ -128,6 +131,8 @@ public class HospitalServiceImpl implements HospitalService {
         updateHospitalLogo(hospital, logo);
 
         updateHospitalBanner(hospital, banner);
+
+        updateHmacApiInfo(hmacApiInfo,updateRequestDTO.getStatus(),updateRequestDTO.getRemarks());
 
         log.info(UPDATING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
     }
@@ -154,7 +159,11 @@ public class HospitalServiceImpl implements HospitalService {
 
         Hospital hospital = findById(deleteRequestDTO.getId());
 
+        HmacApiInfo hmacApiInfo=hmacApiInfoRepository.getHmacApiInfoByHospitalId(deleteRequestDTO.getId());
+
         parseToDeletedHospital(hospital, deleteRequestDTO);
+
+        updateHmacApiInfo(hmacApiInfo,deleteRequestDTO.getStatus(),deleteRequestDTO.getRemarks());
 
         log.info(DELETING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
     }
@@ -260,6 +269,14 @@ public class HospitalServiceImpl implements HospitalService {
                 .collect(Collectors.toList());
 
         saveHospitalContactNumber(hospitalContactNumbers);
+    }
+
+    public void updateHmacApiInfo(HmacApiInfo hmacApiInfo,Character status,String remarks) {
+        HmacApiInfo hmacApiInfoToUpdate=updateHmacApiInfoAsHospital(
+                hmacApiInfo,
+                status,
+                remarks);
+        saveHmacApiInfo(hmacApiInfoToUpdate);
     }
 
     public void updateHospitalLogo(Hospital hospital, MultipartFile files) {

@@ -19,6 +19,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.*;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AppointmentServiceMessage.*;
+
 /**
  * @author smriti on 27/11/2019
  */
@@ -34,15 +37,9 @@ public class DoctorDutyRosterUtils {
         doctorDutyRoster.setRosterGapDuration(requestDTO.getRosterGapDuration());
         doctorDutyRoster.setStatus(requestDTO.getStatus());
         doctorDutyRoster.setHasOverrideDutyRoster(requestDTO.getHasOverrideDutyRoster());
-        parseToDoctorDutyRoster(doctorDutyRoster, doctor, specialization);
-        return doctorDutyRoster;
-    }
-
-    private static void parseToDoctorDutyRoster(DoctorDutyRoster doctorDutyRoster,
-                                                Doctor doctor,
-                                                Specialization specialization) {
         doctorDutyRoster.setDoctorId(doctor);
         doctorDutyRoster.setSpecializationId(specialization);
+        return doctorDutyRoster;
     }
 
     public static DoctorWeekDaysDutyRoster parseToDoctorWeekDaysDutyRoster(DoctorWeekDaysDutyRosterRequestDTO requestDTO,
@@ -68,9 +65,9 @@ public class DoctorDutyRosterUtils {
                         .map(appointmentDates ->
                                 DateUtils.convertDateToLocalDate(appointmentDates.getAppointmentDate()).getDayOfWeek().toString())
                         .filter(weekName ->
-                                unmatchedList.getWeekName().equals(weekName))
+                                unmatchedList.getWeekDaysName().equals(weekName))
                         .forEachOrdered(weekName -> {
-                            throw new BadRequestException(String.format(ErrorMessageConstants.AppointmentServiceMessage.APPOINTMENT_EXISTS_MESSAGE, weekName));
+                            throw new BadRequestException(String.format(APPOINTMENT_EXISTS_MESSAGE, weekName));
                         }));
     }
 

@@ -29,5 +29,7 @@ public class HospitalResponseDTO implements Serializable {
 
     private String remarks;
 
+    private Double refundPercentage;
+
     private List<HospitalContactNumberResponseDTO> contactNumberResponseDTOS;
 }

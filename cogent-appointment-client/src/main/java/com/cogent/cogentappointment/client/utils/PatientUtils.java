@@ -6,12 +6,14 @@ import com.cogent.cogentappointment.client.dto.response.patient.PatientMinimalRe
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.Patient;
+import com.cogent.cogentappointment.persistence.model.PatientMetaInfo;
 
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.client.constants.StatusConstants.NO;
+import static com.cogent.cogentappointment.client.constants.StringConstant.OR;
 import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toUpperCase;
 
 /**
@@ -38,7 +40,7 @@ public class PatientUtils {
 
     public static Patient updatePatient(PatientUpdateRequestDTO requestDTO,
                                         Patient patient) {
-        patient.setName(requestDTO.getName());
+        patient.setName(toUpperCase(requestDTO.getName()));
         patient.setDateOfBirth(requestDTO.getDateOfBirth());
         patient.setMobileNumber(requestDTO.getMobileNumber());
         patient.setAddress(requestDTO.getAddress());
@@ -72,4 +74,18 @@ public class PatientUtils {
                 .gender((Gender) object[GENDER_INDEX])
                 .build();
     };
+
+    public static PatientMetaInfo updatePatientMetaInfo(Patient patient,
+                                                        PatientMetaInfo patientMetaInfo,
+                                                        PatientUpdateRequestDTO updateRequestDTO) {
+        patientMetaInfo.setMetaInfo(updateRequestDTO.getName()
+                + OR +
+                updateRequestDTO.getMobileNumber()
+                + OR +
+                patient.getRegistrationNumber());
+        patientMetaInfo.setStatus(updateRequestDTO.getStatus());
+        patientMetaInfo.setRemarks(updateRequestDTO.getRemarks());
+
+        return patientMetaInfo;
+    }
 }

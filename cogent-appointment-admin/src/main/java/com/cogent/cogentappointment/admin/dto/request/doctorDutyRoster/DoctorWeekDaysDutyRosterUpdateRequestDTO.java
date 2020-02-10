@@ -33,5 +33,5 @@ public class DoctorWeekDaysDutyRosterUpdateRequestDTO implements Serializable {
     @NotNull
     private Long weekDaysId;
 
-    private String weekName;
+    private String weekDaysName;
 }

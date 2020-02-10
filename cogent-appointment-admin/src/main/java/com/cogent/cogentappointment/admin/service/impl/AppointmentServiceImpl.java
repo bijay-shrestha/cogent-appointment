@@ -1,38 +1,30 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
-import com.cogent.cogentappointment.admin.constants.StatusConstants;
-import com.cogent.cogentappointment.admin.dto.request.appointment.*;
-import com.cogent.cogentappointment.admin.dto.request.patient.PatientRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.*;
-import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentPendingApprovalSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundRejectDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundSearchDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentLogSearchResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentPendingApprovalResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
+import com.cogent.cogentappointment.admin.repository.AppointmentRefundDetailRepository;
 import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
-import com.cogent.cogentappointment.admin.repository.DoctorDutyRosterOverrideRepository;
-import com.cogent.cogentappointment.admin.repository.DoctorDutyRosterRepository;
 import com.cogent.cogentappointment.admin.service.AppointmentService;
-import com.cogent.cogentappointment.admin.service.DoctorService;
-import com.cogent.cogentappointment.admin.service.PatientService;
-import com.cogent.cogentappointment.admin.service.SpecializationService;
 import com.cogent.cogentappointment.persistence.model.Appointment;
-import com.cogent.cogentappointment.persistence.model.Doctor;
-import com.cogent.cogentappointment.persistence.model.Patient;
-import com.cogent.cogentappointment.persistence.model.Specialization;
+import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
-import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.FETCHING_PROCESS_COMPLETED;
-import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.FETCHING_PROCESS_STARTED;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.APPROVED;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.REFUNDED;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.SEARCHING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.*;
-import static com.cogent.cogentappointment.admin.utils.AppointmentUtils.*;
+import static com.cogent.cogentappointment.admin.utils.AppointmentUtils.parseRefundRejectDetails;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
@@ -44,199 +36,65 @@ import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTime
 @Slf4j
 public class AppointmentServiceImpl implements AppointmentService {
 
-    private final PatientService patientService;
-
-    private final DoctorService doctorService;
-
-    private final SpecializationService specializationService;
-
     private final AppointmentRepository appointmentRepository;
 
-    private final DoctorDutyRosterRepository doctorDutyRosterRepository;
+    private final AppointmentRefundDetailRepository appointmentRefundDetailRepository;
 
-    private final DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository;
-
-    public AppointmentServiceImpl(PatientService patientService,
-                                  DoctorService doctorService,
-                                  SpecializationService specializationService,
-                                  AppointmentRepository appointmentRepository,
-                                  DoctorDutyRosterRepository doctorDutyRosterRepository,
-                                  DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository) {
-        this.patientService = patientService;
-        this.doctorService = doctorService;
-        this.specializationService = specializationService;
+    public AppointmentServiceImpl(AppointmentRepository appointmentRepository,
+                                  AppointmentRefundDetailRepository appointmentRefundDetailRepository) {
         this.appointmentRepository = appointmentRepository;
-        this.doctorDutyRosterRepository = doctorDutyRosterRepository;
-        this.doctorDutyRosterOverrideRepository = doctorDutyRosterOverrideRepository;
+        this.appointmentRefundDetailRepository = appointmentRefundDetailRepository;
     }
 
     @Override
-    public AppointmentCheckAvailabilityResponseDTO checkAvailability(AppointmentCheckAvailabilityRequestDTO requestDTO) {
-
+    public AppointmentRefundResponseDTO fetchRefundAppointments(AppointmentRefundSearchDTO searchDTO,
+                                                                Pageable pageable) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(CHECK_AVAILABILITY_PROCESS_STARTED);
+        log.info(FETCHING_PROCESS_STARTED, APPOINTMENT_REFUND);
 
-        DoctorDutyRosterTimeResponseDTO doctorDutyRosterInfo = fetchDoctorDutyRosterInfo(
-                requestDTO.getAppointmentDate(), requestDTO.getDoctorId(), requestDTO.getSpecializationId());
+        AppointmentRefundResponseDTO refundAppointments =
+                appointmentRepository.fetchRefundAppointments(searchDTO, pageable);
 
-        AppointmentCheckAvailabilityResponseDTO responseDTO;
+        log.info(FETCHING_PROCESS_COMPLETED, APPOINTMENT_REFUND, getDifferenceBetweenTwoTime(startTime));
 
-        if (doctorDutyRosterInfo.getDayOffStatus().equals(StatusConstants.YES)) {
-            responseDTO = parseToAppointmentCheckAvailabilityResponseDTO(doctorDutyRosterInfo, new ArrayList<>());
-        } else {
-            List<AppointmentBookedTimeResponseDTO> bookedAppointments =
-                    appointmentRepository.checkAvailability(requestDTO);
-
-            List<AppointmentAvailabilityResponseDTO> availableSlots =
-                    parseToAppointmentAvailabilityResponseDTO(doctorDutyRosterInfo, bookedAppointments);
-
-            responseDTO = parseToAppointmentCheckAvailabilityResponseDTO(doctorDutyRosterInfo, availableSlots);
-        }
-
-        log.info(CHECK_AVAILABILITY_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
-
-        return responseDTO;
+        return refundAppointments;
     }
 
     @Override
-    public String save(AppointmentRequestDTO appointmentRequestDTO) {
-
+    public void approveRefundAppointment(Long appointmentId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(SAVING_PROCESS_STARTED, APPOINTMENT);
+        log.info(APPROVE_PROCESS_STARTED, APPOINTMENT_REFUND);
 
-        Patient patient = fetchPatient(appointmentRequestDTO.getIsNewRegistration(),
-                appointmentRequestDTO.getPatientId(),
-                appointmentRequestDTO.getPatientRequestDTO());
+        AppointmentRefundDetail refundAppointmentDetail =
+                appointmentRefundDetailRepository.findByAppointmentId(appointmentId)
+                        .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
 
-        Doctor doctor = fetchDoctor(appointmentRequestDTO.getDoctorId());
+        Appointment appointment = appointmentRepository.fetchAppointmentById(appointmentId)
+                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
 
-        Specialization specialization = fetchSpecialization(appointmentRequestDTO.getSpecializationId());
+        appointment.setStatus(REFUNDED);
 
-        String appointmentNumber = appointmentRepository.generateAppointmentNumber(
-                appointmentRequestDTO.getCreatedDateNepali());
+        refundAppointmentDetail.setStatus(APPROVED);
 
-        Appointment appointment = parseToAppointment(appointmentRequestDTO, appointmentNumber,
-                patient, specialization, doctor);
-
-        save(appointment);
-
-        log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
-
-        return appointmentNumber;
+        log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT_REFUND, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
-    public List<AppointmentBookedDateResponseDTO> fetchBookedAppointmentDates(Date fromDate,
-                                                                              Date toDate,
-                                                                              Long doctorId,
-                                                                              Long specializationId) {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(FETCHING_PROCESS_STARTED);
-
-        List<AppointmentBookedDateResponseDTO> bookedAppointmentDates =
-                appointmentRepository.fetchBookedAppointmentDates(fromDate, toDate, doctorId, specializationId);
-
-        log.info(FETCHING_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
-
-        return bookedAppointmentDates;
-    }
-
-    @Override
-    public Long fetchBookedAppointmentCount(Date fromDate, Date toDate,
-                                            Long doctorId, Long specializationId) {
+    public void rejectRefundAppointment(AppointmentRefundRejectDTO refundRejectDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_PROCESS_STARTED);
+        log.info(REJECT_PROCESS_STARTED, APPOINTMENT_REFUND);
 
-        Long appointmentCount = appointmentRepository.fetchBookedAppointmentCount
-                (fromDate, toDate, doctorId, specializationId);
+        AppointmentRefundDetail refundAppointmentDetail =
+                appointmentRefundDetailRepository.findByAppointmentId(refundRejectDTO.getAppointmentId())
+                        .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(refundRejectDTO.getAppointmentId()));
 
-        log.info(FETCHING_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
+        parseRefundRejectDetails(refundRejectDTO, refundAppointmentDetail);
 
-        return appointmentCount;
-    }
-
-    @Override
-    public void update(AppointmentUpdateRequestDTO updateRequestDTO) {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(UPDATING_PROCESS_STARTED, APPOINTMENT);
-
-        Appointment appointment = findById(updateRequestDTO.getAppointmentId());
-
-//        Patient patient = fetchPatient(updateRequestDTO.getPatientId());
-
-//        AdminAppointmentResponseDTO responseDTO = fetchAdminDetails(updateRequestDTO);
-//
-//        parseToUpdatedAppointment(appointment, updateRequestDTO, responseDTO, patient);
-
-        //todo; appointment status in follow up tracker to be updated as per appointment
-
-        log.info(UPDATING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
-    }
-
-    @Override
-    public void cancel(AppointmentCancelRequestDTO cancelRequestDTO) {
-
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(CANCELLING_PROCESS_STARTED);
-
-        Appointment appointment = findById(cancelRequestDTO.getId());
-
-        convertToCancelledAppointment(appointment, cancelRequestDTO);
-
-        log.info(CANCELLING_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
-    }
-
-    @Override
-    public List<AppointmentMinimalResponseDTO> search(AppointmentSearchRequestDTO searchRequestDTO,
-                                                      Pageable pageable) {
-
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT);
-
-        List<AppointmentMinimalResponseDTO> responseDTOS =
-                appointmentRepository.search(searchRequestDTO, pageable);
-
-        log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
-
-        return responseDTOS;
-    }
-
-    @Override
-    public AppointmentResponseDTO fetchDetailsById(Long id) {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(FETCHING_DETAIL_PROCESS_STARTED, APPOINTMENT);
-
-        AppointmentResponseDTO responseDTO = appointmentRepository.fetchDetailsById(id);
-
-        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
-
-        return responseDTO;
-    }
-
-    @Override
-    public void rescheduleAppointment(AppointmentRescheduleRequestDTO rescheduleRequestDTO) {
-
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(RESCHEDULE_PROCESS_STARTED);
-
-        Appointment appointment = findIncompleteAppointmentById(rescheduleRequestDTO.getAppointmentId());
-
-        Date originalAppointmentDate = appointment.getAppointmentDate();
-        Date originalAppointmentTime = appointment.getStartTime();
-
-        parseToRescheduleAppointment(appointment, rescheduleRequestDTO);
-
-        log.info(RESCHEDULE_PROCESS_STARTED, getDifferenceBetweenTwoTime(startTime));
+        log.info(REJECT_PROCESS_COMPLETED, APPOINTMENT_REFUND, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
@@ -280,76 +138,9 @@ public class AppointmentServiceImpl implements AppointmentService {
 //        return responseDTOS;
 //    }
 
-
-    private Doctor fetchDoctor(Long doctorId) {
-        return doctorService.fetchDoctorById(doctorId);
-    }
-
-    private Specialization fetchSpecialization(Long specializationId) {
-        return specializationService.fetchActiveSpecializationById(specializationId);
-    }
-
-    private Patient fetchPatient(Boolean isNewRegistration,
-                                 Long patientId,
-                                 PatientRequestDTO patientRequestDTO) {
-
-        return isNewRegistration ? patientService.save(patientRequestDTO)
-                : patientService.fetchPatient(patientId);
-    }
-
-    private Appointment findById(Long appointmentId) {
-        return appointmentRepository.findAppointmentById(appointmentId)
-                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
-    }
-
-    private Appointment findIncompleteAppointmentById(Long appointmentId) {
-        return appointmentRepository.fetchIncompleteAppointmentById(appointmentId)
-                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
-    }
-
-    private Function<Long, NoContentFoundException> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        throw new NoContentFoundException(Appointment.class, "id", id.toString());
+    private Function<Long, NoContentFoundException> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND = (appointmentId) -> {
+        throw new NoContentFoundException(Appointment.class, "appointmentId", appointmentId.toString());
     };
 
-    private void save(Appointment appointment) {
-        appointmentRepository.save(appointment);
-    }
-
-//    private void saveFollowUpTracker(AppointmentRequestDTO appointmentRequestDTO,
-//                                     String appointmentNumber,
-//                                     AdminAppointmentResponseDTO responseDTO,
-//                                     Patient patient) {
-//
-//        String parentAppointmentNumber;
-//
-//        if (Objects.isNull(appointmentRequestDTO.getParentAppointmentNumber())) {
-//            parentAppointmentNumber = appointmentNumber;
-//            followUpTrackerService.saveFollowUpTracker(
-//                    appointmentRequestDTO.getAppointmentDate(),
-//                    parentAppointmentNumber,
-//                    responseDTO.getPatientType(),
-//                    responseDTO.getDoctor(),
-//                    patient);
-//        } else {
-//            parentAppointmentNumber = appointmentRequestDTO.getParentAppointmentNumber();
-//            followUpTrackerService.updateNumberOfFollowupsInFollowUpTracker(
-//                    parentAppointmentNumber,
-//                    responseDTO.getDoctor().getId(),
-//                    patient.getId());
-//        }
-//    }
-
-    private DoctorDutyRosterTimeResponseDTO fetchDoctorDutyRosterInfo(Date date,
-                                                                      Long doctorId,
-                                                                      Long specializationId) {
-
-        DoctorDutyRosterTimeResponseDTO overrideRosters =
-                doctorDutyRosterOverrideRepository.fetchDoctorDutyRosterOverrideTime(date, doctorId, specializationId);
-
-        if (Objects.isNull(overrideRosters))
-            return doctorDutyRosterRepository.fetchDoctorDutyRosterTime(date, doctorId, specializationId);
-
-        return overrideRosters;
-    }
 }
 

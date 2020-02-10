@@ -66,7 +66,7 @@ public class DoctorDutyRosterUtils {
                         .map(appointmentDates ->
                                 convertDateToLocalDate(appointmentDates.getAppointmentDate()).getDayOfWeek().toString())
                         .filter(weekName ->
-                                unmatchedList.getWeekName().equals(weekName))
+                                unmatchedList.getWeekDaysName().equals(weekName))
                         .forEachOrdered(weekName -> {
                             throw new BadRequestException(String.format(APPOINTMENT_EXISTS_MESSAGE, weekName));
                         }));
@@ -244,4 +244,5 @@ public class DoctorDutyRosterUtils {
                 .overrideRosters(overrideRosters)
                 .build();
     }
+
 }

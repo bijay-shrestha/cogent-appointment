@@ -36,5 +36,7 @@ public class DoctorDutyRosterOverrideUpdateRequestDTO implements Serializable {
 
     @NotNull
     private String remarks;
+
+    private boolean isOriginal;
 }
 

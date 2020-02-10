@@ -1,10 +1,9 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
-import com.cogent.cogentappointment.client.dto.response.admin.AdminMetaInfoResponseDTO;
+import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.repository.custom.AdminMetaInfoRepositoryCustom;
 import com.cogent.cogentappointment.client.repository.custom.PatientMetaInfoRepositoryCustom;
-import com.cogent.cogentappointment.persistence.model.AdminMetaInfo;
+import com.cogent.cogentappointment.persistence.model.PatientMetaInfo;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,8 +11,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
+import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.client.query.AdminQuery.QUERY_TO_FETCH_ADMIN_META_INFO;
+import static com.cogent.cogentappointment.client.query.PatientMetaInfoQuery.QUERY_TO_FETCH_ACTIVE_PATIENT_META_INFO_FOR_DROP_DOWN;
+import static com.cogent.cogentappointment.client.query.PatientMetaInfoQuery.QUERY_TO_FETCH_PATIENT_META_INFO_FOR_DROP_DOWN;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.transformQueryToResultList;
 
@@ -27,4 +28,26 @@ public class PatientMetaInfoRepositoryCustomImpl implements PatientMetaInfoRepos
     @PersistenceContext
     private EntityManager entityManager;
 
+    @Override
+    public List<DropDownResponseDTO> fetchMinPatientMetaInfo() {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_META_INFO_FOR_DROP_DOWN);
+
+        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
+
+        if (results.isEmpty()) throw PATIENT_META_INFO_NOT_FOUND.get();
+        else return results;
+    }
+
+    @Override
+    public List<DropDownResponseDTO> fetchActiveMinPatientMetaInfo() {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_PATIENT_META_INFO_FOR_DROP_DOWN);
+
+        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
+
+        if (results.isEmpty()) throw PATIENT_META_INFO_NOT_FOUND.get();
+        else return results;
+    }
+
+    private Supplier<NoContentFoundException> PATIENT_META_INFO_NOT_FOUND = ()
+            -> new NoContentFoundException(PatientMetaInfo.class);
 }

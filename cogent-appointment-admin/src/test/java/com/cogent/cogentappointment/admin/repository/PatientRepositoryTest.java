@@ -57,66 +57,26 @@ public class PatientRepositoryTest {
     @Test
     public void test1() throws ParseException {
 
-        SimpleDateFormat dateParser = new SimpleDateFormat("h:mm a");
-
-        // Parse the time string
-        Date date = dateParser.parse("3:30 AM");
-
-        // Declare a date format for printing
-        SimpleDateFormat dateFormater = new SimpleDateFormat("HH:mm");
-
-        // Print the previously parsed time
-        System.out.println(dateFormater.format(date));
-        String time24 = dateFormater.format(date);
-
-        LocalDateTime date1 = LocalDateTime.of(                      // Represent a date with time-of-day, but lacking in zone/offset so NOT a moment, NOT a point on the timeline.
-                LocalDate.parse("2018-01-23"),  // Parse the date-only value.
-                LocalTime.parse("21:54")         // Parse the time-of-day.
-        );
-        System.out.println(date1.toLocalDate());
-
-        LocalDate ld = LocalDate.parse("2018-01-23");
-
-        LocalTime lt = LocalTime.parse("21:54");
-
-        LocalDateTime ldt = LocalDateTime.of(ld, lt);
-        System.out.println(ldt.toLocalDate());
-
-        Date date12 = new Date();
-        Timestamp ts = new Timestamp(date12.getTime());
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        System.out.println(formatter.format(ts));
-
-    }
-
-    @Test
-    public void fetchAppointmentLog() {
-        String sql = "SELECT" +
-//                            " a.status as status," +
-                " a.appointmentDate as appointmentDate," +
-                " a.appointmentNumber as appointmentNumber," +
-                " p.eSewaId as esewaId," +
-                " p.registrationNumber as registrationNumber," +
-                " p.name as patientName," +
-                " p.isRegistered as isRegistered," +
-                " p.isSelf as isSelf," +
-                " p.mobileNumber as mobileNumber," +
-                " sp.name as specializationName," +
-                " atd.transactionNumber as transactionNumber," +
-                " atd.appointmentAmount as appointmentAmount" +
-                " FROM Appointment a" +
-                " LEFT JOIN Patient p ON a.patientId=p.id" +
-                " LEFT JOIN Specialization sp ON a.specializationId=sp.id" +
-                " LEFT JOIN Hospital h ON a.hospitalId=h.id" +
-                " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
-                " WHERE p.status='Y' " +
-                " AND sp.status='Y' " +
-                " AND a.status='PA' " +
-                " AND a.hospitalId=" + 1L;
+       String sql = "SELECT\n" +
+               "CASE \n" +
+               "WHEN \n" +
+               "(((TIMESTAMPDIFF(YEAR, dateOfBirth, CURDATE()))<=0) AND\n" +
+               "((TIMESTAMPDIFF(MONTH, dateOfBirth, CURDATE()) % 12)<=0))\n" +
+               "THEN \n" +
+               "CONCAT((FLOOR(TIMESTAMPDIFF(DAY, dateOfBirth, CURDATE()) % 30.4375)),'DAYS')\n" +
+               "WHEN \n" +
+               "((TIMESTAMPDIFF(YEAR, dateOfBirth ,CURDATE()))<=0)\n" +
+               "THEN \n" +
+               "CONCAT(((TIMESTAMPDIFF(MONTH, dateOfBirth, CURDATE()) % 12)), 'MONTHS')\n" +
+               "ELSE \n" +
+               "CONCAT(((TIMESTAMPDIFF(YEAR, dateOfBirth ,CURDATE()))), 'years')\n" +
+               "END AS age\n" +
+               "FROM \n" +
+               "    Patient p \n";
 
         Query query = testEntityManager.getEntityManager().createQuery(sql);
 
-        Object result = query.getSingleResult();
+        Object result = query.getResultList();
 
 
     }

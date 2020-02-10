@@ -2,9 +2,7 @@ package com.cogent.cogentappointment.admin.query;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentPendingApprovalSearchDTO;
-import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentSearchRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentLogResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentLogSearchResponseDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundSearchDTO;
 import org.springframework.util.ObjectUtils;
 
 import java.util.Objects;
@@ -14,149 +12,6 @@ import java.util.function.Function;
  * @author smriti on 2019-10-22
  */
 public class AppointmentQuery {
-
-    public static Function<AppointmentSearchRequestDTO, String> QUERY_TO_SEARCH_APPOINTMENT =
-            (searchRequestDTO) -> " SELECT" +
-                    " a.id as appointmentId," +                                 //[0]
-                    " a.patientTypeId.name as patientTypeName," +               //[1]
-                    " CASE WHEN" +
-                    " p.middleName iS NULL OR p.middleName =''" +
-                    " THEN" +
-                    " CONCAT" +
-                    " (p.firstName, ' ', s.name) " +
-                    " ELSE" +
-                    " CONCAT" +
-                    " (p.firstName, ' ',p.middleName,' ', s.name)" +
-                    " END AS patientName, " +                                    //[2]
-                    " a.appointmentTypeId.name as appointmentTypeName," +       //[3]
-                    " a.appointmentModeId.name as appointmentModeName," +       //[4]
-                    " a.doctorId.name as doctorName," +                          //[5]
-                    " a.billType.name as billTypeName," +                       //[6]
-                    " a.appointmentDate as appointmentDate," +                  //[7]
-                    " a.startTime as startTime," +                             //[8]
-                    " a.endTime as endTime," +                                 //[9]
-                    " a.appointmentNumber as appointmentNumber," +             //[10]
-                    " a.status as status" +                                    //[11]
-                    " FROM Appointment a" +
-                    " LEFT JOIN Patient p ON p.id = a.patientId" +
-                    " LEFT JOIN Surname s ON s.id=p.surname.id" +
-                    " LEFT JOIN PatientMetaInfo pmi ON p.id = pmi.patient"
-                    + GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT(searchRequestDTO);
-
-    private static String GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT(AppointmentSearchRequestDTO searchRequestDTO) {
-
-        String whereClause = " WHERE a.status!= 'C'";
-
-        if (!Objects.isNull(searchRequestDTO.getPatientTypeId()))
-            whereClause += " AND a.patientTypeId = " + searchRequestDTO.getPatientTypeId();
-
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getPatientMetaInfo()))
-            whereClause += " AND pmi.metaInfo LIKE '%" + searchRequestDTO.getPatientMetaInfo() + "%'";
-
-        if (!Objects.isNull(searchRequestDTO.getAppointmentTypeId()))
-            whereClause += " AND a.appointmentTypeId = " + searchRequestDTO.getAppointmentTypeId();
-
-        if (!Objects.isNull(searchRequestDTO.getAppointmentModeId()))
-            whereClause += " AND a.appointmentModeId = " + searchRequestDTO.getAppointmentModeId();
-
-        if (!Objects.isNull(searchRequestDTO.getDoctorId()))
-            whereClause += " AND a.doctorId = " + searchRequestDTO.getDoctorId();
-
-        if (!Objects.isNull(searchRequestDTO.getBillType()))
-            whereClause += " AND a.billType = " + searchRequestDTO.getBillType();
-
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getAppointmentNumber()))
-            whereClause += " AND a.appointmentNumber = '" + searchRequestDTO.getAppointmentNumber() + "'";
-
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
-            whereClause += " AND a.status='" + searchRequestDTO.getStatus() + "'";
-
-        return whereClause;
-    }
-
-    public static final String QUERY_TO_FETCH_APPOINTMENT_DETAILS =
-            " SELECT" +
-                    " a.patientTypeId.id as patientTypeId," +                //[0]
-                    " a.patientTypeId.name as patientTypeName," +            //[1]
-                    " p.id as patientId," +                                  //[2]
-                    " CASE WHEN" +
-                    " p.middleName iS NULL OR p.middleName =''" +
-                    " THEN" +
-                    " CONCAT" +
-                    " (p.firstName, ' ', s.name) " +
-                    " ELSE" +
-                    " CONCAT" +
-                    " (p.firstName, ' ',p.middleName,' ', s.name)" +
-                    " END AS patientName, " +                                //[3]
-                    " a.appointmentTypeId.id as appointmentTypeId," +        //[4]
-                    " a.appointmentTypeId.name as appointmentTypeName," +    //[5]
-                    " a.appointmentModeId.id as appointmentModeId," +        //[6]
-                    " a.appointmentModeId.name as appointmentModeName," +    //[7]
-                    " a.doctorId.id as doctorId," +                          //[8]
-                    " a.doctorId.name as doctorName," +                      //[9]
-                    " a.billType.id as billTypeId," +                       //[10]
-                    " a.billType.name as billTypeName," +                   //[11]
-                    " a.appointmentDate as appointmentDate," +             //[12]
-                    " a.startTime as startTime," +                          //[13]
-                    " a.endTime as endTime," +                               //[14]
-                    " a.appointmentNumber as appointmentNumber," +          //[15]
-                    " a.status as status," +                                //[16]
-                    " a.reason as reason," +                                //[17]
-                    " a.emergency as emergency," +                          //[18]
-                    " a.referredBy as referredBy," +                        //[19]
-                    " a.remarks as remarks," +                               //[20]
-                    " a.specializationId.id as specializationId, " +        //[21]
-                    " a.specializationId.name as specializationName" +      //[22]
-                    " FROM Appointment a" +
-                    " LEFT JOIN Patient p ON p.id = a.patientId" +
-                    " LEFT JOIN Surname s ON s.id=p.surname.id" +
-                    " LEFT JOIN PatientMetaInfo pmi ON p.id = pmi.patient" +
-                    " WHERE a.id =:id";
-
-    public static String QUERY_TO_FETCH_LATEST_APPOINTMENT_NUMBER =
-            "SELECT appointment_number" +
-                    " FROM appointment" +
-                    " WHERE" +
-                    " str_to_date(created_date_nepali,'%Y-%m-%d')" +
-                    " BETWEEN :fromDate AND :toDate" +
-                    " ORDER BY id DESC LIMIT 1";
-
-    public static String QUERY_TO_FETCH_BOOKED_APPOINTMENT =
-            "SELECT DATE_FORMAT(a.startTime, '%H:%i') as startTime," +                          //[0]
-                    " DATE_FORMAT(a.endTime, '%H:%i') as endTime" +                             //[1]
-                    " FROM Appointment a" +
-                    " WHERE" +
-                    " a.appointmentDate = :date" +
-                    " AND a.doctorId.id = :doctorId" +
-                    " AND a.specializationId.id = :specializationId" +
-                    " AND a.status != 'C'";
-
-//    public static String QUERY_TO_FETCH_APPOINTMENT_FOR_APPOINTMENT_STATUS(AppointmentStatusRequestDTO requestDTO) {
-//
-//        String SQL = " SELECT" +
-//                " a.appointment_date as date," +                                                        //[0]
-//                " GROUP_CONCAT(DATE_FORMAT(a.start_time, '%H:%i'), '-', a.status)" +
-//                " as startTimeDetails," +                                                               //[1]
-//                " d.id as doctorId," +                                                                  //[2]
-//                " d.name as doctorName," +                                                              //[3]
-//                " s.id as specializationId," +                                                          //[4]
-//                " s.name as specializationName" +                                                       //[5]
-//                " FROM appointment a" +
-//                " LEFT JOIN doctor d ON d.id = a.doctor_id" +
-//                " LEFT JOIN specialization s ON s.id = a.specialization_id" +
-//                " WHERE" +
-//                " a.appointment_date BETWEEN :fromDate AND :toDate";
-//
-//        if (!Objects.isNull(requestDTO.getDoctorId()))
-//            SQL += " AND d.id =:doctorId";
-//
-//        if (!Objects.isNull(requestDTO.getSpecializationId()))
-//            SQL += " AND s.id = :specializationId ";
-//
-//        SQL += " GROUP BY a.appointment_date, a.doctor_id, a.specialization_id";
-//
-//        return SQL;
-//    }
 
     public static final String QUERY_TO_FETCH_BOOKED_APPOINTMENT_DATES =
             "SELECT" +
@@ -177,6 +32,94 @@ public class AppointmentQuery {
                     " AND a.appointmentDate BETWEEN :fromDate AND :toDate" +
                     " AND a.doctorId.id = :doctorId" +
                     " AND a.specializationId.id = :specializationId";
+
+    /* AGE CALCULATION:
+        TIMESTAMPDIFF(YEAR, date_of_birth , CURDATE() ) as _year
+        TIMESTAMPDIFF(MONTH, date_of_birth, CURDATE() ) % 12 as _month
+        FLOOR( TIMESTAMPDIFF( DAY, date_of_birth ,  CURDATE()) % 30.4375 ) as _day
+    * */
+    public static String QUERY_TO_CALCULATE_PATIENT_AGE =
+            " CASE" +
+                    " WHEN" +
+                    " (((TIMESTAMPDIFF(YEAR, p.dateOfBirth, CURDATE()))<=0) AND" +
+                    " ((TIMESTAMPDIFF(MONTH, p.dateOfBirth, CURDATE()) % 12)<=0))" +
+                    " THEN" +
+                    " CONCAT((FLOOR(TIMESTAMPDIFF(DAY, p.dateOfBirth, CURDATE()) % 30.4375)), ' days')" +
+                    " WHEN" +
+                    " ((TIMESTAMPDIFF(YEAR, p.dateOfBirth ,CURDATE()))<=0)" +
+                    " THEN" +
+                    " CONCAT(((TIMESTAMPDIFF(MONTH, p.dateOfBirth, CURDATE()) % 12)), ' months')" +
+                    " ELSE" +
+                    " CONCAT(((TIMESTAMPDIFF(YEAR, p.dateOfBirth ,CURDATE()))), ' years')" +
+                    " END AS age";
+
+    public static String QUERY_TO_FETCH_REFUND_APPOINTMENTS(AppointmentRefundSearchDTO searchDTO) {
+        return " SELECT" +
+                " a.id as appointmentId," +                                             //[0]
+                " a.appointmentDate as appointmentDate," +                              //[1]
+                " DATE_FORMAT(a.appointmentTime,'%H:%i %p') as appointmentTime," +      //[2]
+                " a.appointmentNumber as appointmentNumber," +                          //[3]
+                " h.name as hospitalName," +                                            //[4]
+                " p.name as patientName," +                                             //[5]
+                " p.registrationNumber as registrationNumber," +                        //[6]
+                " p.gender as gender," +                                                //[7]
+                " d.name as doctorName," +                                              //[8]
+                " s.name as specializationName," +                                      //[9]
+                " p.eSewaId as eSewaId," +                                              //[10]
+                " atd.transactionNumber as transactionNumber," +                        //[11]
+                " ard.cancelledDate as cancelledDate," +                                //[12]
+                " ard.refundAmount as refundAmount," +                                   //[13]
+                " a.remarks as cancellationRemarks," +                                   //[14]
+                QUERY_TO_CALCULATE_PATIENT_AGE +
+                " FROM Appointment a" +
+                " LEFT JOIN Patient p ON p.id = a.patientId.id" +
+                " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
+                " LEFT JOIN Specialization s ON s.id = a.specializationId.id" +
+                " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +
+                " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
+                " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId.id = a.id" +
+                " LEFT JOIN PatientMetaInfo pm ON pm.patient.id = p.id" +
+                GET_WHERE_CLAUSE_TO_FETCH_REFUND_APPOINTMENTS(searchDTO);
+    }
+
+    private static String GET_WHERE_CLAUSE_TO_FETCH_REFUND_APPOINTMENTS(AppointmentRefundSearchDTO searchDTO) {
+        String whereClause = " WHERE ard.status = 'PA'" +
+                " AND a.appointmentDate BETWEEN :fromDate AND :toDate ";
+
+        if (!ObjectUtils.isEmpty(searchDTO.getAppointmentNumber()))
+            whereClause += " AND a.appointmentNumber LIKE '%" + searchDTO.getAppointmentNumber() + "%'";
+
+        if (!Objects.isNull(searchDTO.getPatientMetaInfoId()))
+            whereClause += " AND pm.id =" + searchDTO.getPatientMetaInfoId();
+
+        if (!Objects.isNull(searchDTO.getDoctorId()))
+            whereClause += " AND d.id=" + searchDTO.getDoctorId();
+
+        if (!Objects.isNull(searchDTO.getSpecializationId()))
+            whereClause += " AND s.id=" + searchDTO.getSpecializationId();
+
+        if (!Objects.isNull(searchDTO.getHospitalId()))
+            whereClause += " AND h.id=" + searchDTO.getHospitalId();
+
+        if (!ObjectUtils.isEmpty(searchDTO.getPatientType()))
+            whereClause += " AND p.isRegistered='" + searchDTO.getPatientType() + "'";
+
+        return whereClause + " ORDER BY a.appointmentDate DESC";
+    }
+
+    public static String QUERY_TO_FETCH_TOTAL_REFUND_AMOUNT(AppointmentRefundSearchDTO searchDTO) {
+        return " SELECT SUM(ard.refundAmount)" +
+                " FROM Appointment a" +
+                " LEFT JOIN Patient p ON p.id = a.patientId.id" +
+                " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
+                " LEFT JOIN Specialization s ON s.id = a.specializationId.id" +
+                " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +
+                " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
+                " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId.id = a.id" +
+                " LEFT JOIN PatientMetaInfo pm ON pm.patient.id = p.id" +
+                GET_WHERE_CLAUSE_TO_FETCH_REFUND_APPOINTMENTS(searchDTO);
+
+    }
 
     public static Function<AppointmentPendingApprovalSearchDTO, String> QUERY_TO_FETCH_PENDING_APPROVALS =
             (searchRequestDTO) ->

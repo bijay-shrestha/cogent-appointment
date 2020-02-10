@@ -7,12 +7,11 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @author smriti ON 03/02/2020
+ * @author Rupak
  */
 @Getter
 @Setter
 public class AppointmentPendingApprovalSearchDTO implements Serializable {
-
     private Long hospitalId;
 
     private Date fromDate;

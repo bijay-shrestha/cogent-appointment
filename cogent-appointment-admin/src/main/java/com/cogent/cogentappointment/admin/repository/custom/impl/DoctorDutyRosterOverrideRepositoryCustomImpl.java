@@ -1,9 +1,12 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
+import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDutyRosterOverrideUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDutyRosterStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
+import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.DoctorDutyRosterOverrideRepositoryCustom;
+import com.cogent.cogentappointment.persistence.model.DoctorDutyRosterOverride;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +16,7 @@ import javax.persistence.Query;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.query.DoctorDutyRosterOverrideQuery.*;
@@ -29,12 +33,24 @@ public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyR
     private EntityManager entityManager;
 
     @Override
-    public Long validateDoctorDutyRosterOverrideCount(Long doctorId,
-                                                      Long specializationId,
-                                                      Date fromDate,
-                                                      Date toDate) {
+    public Long fetchOverrideCount(Long doctorId, Long specializationId,
+                                   Date fromDate, Date toDate) {
 
         Query query = createQuery.apply(entityManager, VALIDATE_DOCTOR_DUTY_ROSTER_OVERRIDE_COUNT)
+                .setParameter(DOCTOR_ID, doctorId)
+                .setParameter(SPECIALIZATION_ID, specializationId)
+                .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))
+                .setParameter(TO_DATE, utilDateToSqlDate(toDate));
+
+        return (Long) query.getSingleResult();
+    }
+
+    @Override
+    public Long fetchOverrideCount(Long doctorDutyRosterOverrideId, Long doctorId,
+                                   Long specializationId, Date fromDate, Date toDate) {
+
+        Query query = createQuery.apply(entityManager, VALIDATE_DOCTOR_DUTY_ROSTER_OVERRIDE_COUNT_FOR_UPDATE)
+                .setParameter(ID, doctorDutyRosterOverrideId)
                 .setParameter(DOCTOR_ID, doctorId)
                 .setParameter(SPECIALIZATION_ID, specializationId)
                 .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))
@@ -78,4 +94,23 @@ public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyR
         return parseQueryResultToDoctorDutyRosterStatusResponseDTO(
                 results, requestDTO.getFromDate(), requestDTO.getToDate());
     }
+
+    @Override
+    public List<DoctorDutyRosterOverride> fetchDoctorDutyRosterOverrides(
+            List<DoctorDutyRosterOverrideUpdateRequestDTO> updateRequestDTOS) {
+
+        List<DoctorDutyRosterOverride> doctorDutyRosterOverrides =
+                entityManager.createQuery(QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE(updateRequestDTOS),
+                        DoctorDutyRosterOverride.class)
+                        .getResultList();
+
+        if(doctorDutyRosterOverrides.isEmpty())
+            throw DOCTOR_DUTY_ROSTER_OVERRIDE_NOT_FOUND.get();
+
+        return doctorDutyRosterOverrides;
+    }
+
+    private Supplier<NoContentFoundException> DOCTOR_DUTY_ROSTER_OVERRIDE_NOT_FOUND = () ->
+            new NoContentFoundException(DoctorDutyRosterOverride.class);
+
 }

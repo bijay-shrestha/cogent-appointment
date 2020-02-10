@@ -18,10 +18,6 @@ public interface AdminRepository extends JpaRepository<Admin, Long>, AdminReposi
     @Query("SELECT a FROM Admin a WHERE a.status!='D' AND a.username = :username")
     Optional<Admin> findAdminByUsername(@Param("username") String username);
 
-    @Query("SELECT a FROM Admin a WHERE (a.username=:username OR a.email =:email) AND a.status != 'D'")
-    Optional<Admin> fetchAdminByUsernameOrEmail(@Param("username") String username,
-                                                @Param("email") String email);
-
     @Query("SELECT a FROM Admin a WHERE a.username=:username AND a.status='Y'")
     Admin getLoggedInAdmin(@Param("username") String username);
 }

@@ -30,6 +30,7 @@ public class PatientQuery {
                     " AND p.mobileNumber =:mobileNumber" +
                     " AND p.dateOfBirth =:dateOfBirth" +
                     " AND p.id !=:id)" +
+                    " AND h.id =:hospitalId" +
                     " AND p.status != 'D'";
 
     public static final String SELECT_CLAUSE_TO_FETCH_PATIENT_DETAILS =
@@ -64,10 +65,6 @@ public class PatientQuery {
                     " FROM Patient p" +
                     GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS;
 
-    public static final String GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS_BY_ID =
-            " WHERE p.id=:id" +
-                    " AND p.status='Y'";
-
     public static final String QUERY_TO_FETCH_PATIENT_DETAILS_BY_ID =
             "SELECT" +
                     " p.name as name," +
@@ -88,36 +85,36 @@ public class PatientQuery {
                     " WHERE p.id=:id" +
                     " AND p.status='Y'";
 
-    public static final String QUERY_TO_FETCH_PATIENT(PatientSearchRequestDTO searchRequestDTO) {
+    public static  String QUERY_TO_FETCH_PATIENT(PatientSearchRequestDTO searchRequestDTO) {
         return "SELECT" +
-                " p.name as name," +
-                " p.gender as gender," +
-                " p.address as address," +
-                " p.email as email," +
-                " p.mobileNumber as mobileNumber," +
-                " p.registrationNumber as registrationNumber," +
-                " p.eSewaId as eSewaId," +
-                " p.status as status," +
-                " p.dateOfBirth as dateOfBirth," +
-                " p.hospitalNumber as hospitalNumber," +
-                " h.name as hospitalName" +
+                " p.name as name," +                                             //[0]
+                " p.gender as gender," +                                         //[1]
+                " p.address as address," +                                       //[2]
+                " p.email as email," +                                           //[3]
+                " p.mobileNumber as mobileNumber," +                             //[4]
+                " p.registrationNumber as registrationNumber," +                 //[5]
+                " p.eSewaId as eSewaId," +                                       //[6]
+                " p.status as status," +                                         //[7]
+                " p.dateOfBirth as dateOfBirth," +                               //[8]
+                " p.hospitalNumber as hospitalNumber," +                         //[9]
+                " h.name as hospitalName" +                                      //[10]
                 " FROM Patient p" +
                 " LEFT JOIN Hospital h ON h.id=p.hospitalId" +
                 " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id" +
                 GET_WHERE_CLAUSE_FOR_SEARCH_PATIENT(searchRequestDTO);
     }
 
-    private static final String GET_WHERE_CLAUSE_FOR_SEARCH_PATIENT(PatientSearchRequestDTO searchRequestDTO) {
+    private static  String GET_WHERE_CLAUSE_FOR_SEARCH_PATIENT(PatientSearchRequestDTO searchRequestDTO) {
         String whereClause = " WHERE p.status!='D'";
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getEsewaId()))
-            whereClause += " p.eSewaId=" + searchRequestDTO.getEsewaId();
+            whereClause += " AND p.eSewaId=" + searchRequestDTO.getEsewaId();
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
-            whereClause += " p.status='" + searchRequestDTO.getStatus() + "'";
+            whereClause += " AND p.status='" + searchRequestDTO.getStatus() + "'";
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getPatientMetaInfo())) {
-            whereClause += " pmi.metaInfo LIKE '%" + searchRequestDTO.getPatientMetaInfo() + "%'";
+            whereClause += " AND pmi.id=" + searchRequestDTO.getPatientMetaInfo();
         }
 
         whereClause += " ORDER BY p.id DESC";

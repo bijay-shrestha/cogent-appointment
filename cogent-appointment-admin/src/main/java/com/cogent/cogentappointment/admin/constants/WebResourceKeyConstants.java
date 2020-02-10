@@ -21,6 +21,9 @@ public class WebResourceKeyConstants {
 
     public interface AppointmentConstants {
         String BASE_APPOINTMENT = "/appointment";
+        String APPOINTMENT_ID_PATH_VARIABLE_BASE = "/{appointmentId}";
+        String REFUND = "/refund";
+        String REJECT = "/reject";
         String CHECK_AVAILABILITY = "/checkAvailability";
         String LOG = "/log";
         String PENDING_APPROVAL = "/pending-approval";
@@ -56,6 +59,7 @@ public class WebResourceKeyConstants {
         String BASE_DOCTOR_DUTY_ROSTER = "/doctorDutyRoster";
         String DOCTOR_DUTY_ROSTER_OVERRIDE = "/doctorDutyRosterOverride";
         String EXISTING = "/existing";
+        String REVERT_DOCTOR_DUTY_ROSTER_OVERRIDE = "/revert";
         String DOCTOR_DUTY_ROSTER_STATUS = "/doctorDutyRosterStatus";
     }
 
@@ -91,6 +95,7 @@ public class WebResourceKeyConstants {
     public static final String LOGIN = "/login";
 
     //M
+    public static final String META_INFO = "/metaInfo";
     public static final String MIN = "/min";
 
     //N
@@ -99,13 +104,8 @@ public class WebResourceKeyConstants {
     //O
 
     //P
-
-
-
     public interface PatientConstant {
         String BASE_PATIENT = "/patient";
-        String SELF = "/self";
-        String OTHERS = "/others";
     }
 
     public interface ProfileSetupConstants {

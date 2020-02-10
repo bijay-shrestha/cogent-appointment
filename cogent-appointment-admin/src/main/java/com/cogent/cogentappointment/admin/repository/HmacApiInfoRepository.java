@@ -2,6 +2,8 @@ package com.cogent.cogentappointment.admin.repository;
 
 import com.cogent.cogentappointment.persistence.model.HmacApiInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -10,6 +12,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface HmacApiInfoRepository extends JpaRepository<HmacApiInfo, Long> {
 
+    @Query("FROM HmacApiInfo hai WHERE hai.hospital.id=:hospitalId AND hai.status!='D'")
+    HmacApiInfo getHmacApiInfoByHospitalId(@Param("hospitalId") Long hospitalId);
 }
 
 

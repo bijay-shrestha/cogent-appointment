@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.persistence.model;
 
 import com.cogent.cogentappointment.persistence.audit.Auditable;
-import com.cogent.cogentappointment.persistence.listener.AdminMetaInfoEntityListener;
 import com.cogent.cogentappointment.persistence.listener.PatientMetaInfoEntityListener;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,9 +29,16 @@ public class PatientMetaInfo extends Auditable<String> implements Serializable {
     @Column(name = "meta_info")
     private String metaInfo;
 
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id")
     private Patient patient;
+
+    @Column(name = "status")
+    private Character status;
+
+    @Column(name = "remarks")
+    private String remarks;
 
     @Override
     public String toString() {

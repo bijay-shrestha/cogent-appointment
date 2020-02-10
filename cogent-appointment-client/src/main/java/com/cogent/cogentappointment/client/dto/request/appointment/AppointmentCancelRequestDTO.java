@@ -16,12 +16,9 @@ import java.io.Serializable;
 public class AppointmentCancelRequestDTO implements Serializable {
 
     @NotNull
-    private Long id;
+    private Long appointmentId;
 
     @NotNull
     @NotEmpty
     private String remarks;
-
-    @NotNull
-    private Character status;
 }

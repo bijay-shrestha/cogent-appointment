@@ -32,10 +32,8 @@ public class SwaggerConstants {
         String CHECK_APPOINTMENT_AVAILABILITY = "Check available time schedules in requested date" +
                 " for specific doctor and specialization";
         String SAVE_OPERATION = "Save new appointment";
-        String UPDATE_OPERATION = "Update existing appointment";
-        String DELETE_OPERATION = "Set appointment status as 'D' when deleted";
-        String SEARCH_OPERATION = "Search appointment according to given request parameters";
-        String DETAILS_OPERATION = "Fetch appointment details by its id";
+        String FETCH_PENDING_APPOINTMENT = "Fetch pending appointments";
+        String CANCEL_APPOINTMENT_OPERATION = "Cancel appointment and request refund";
         String RESCHEDULE_OPERATION = "Reschedule appointment date and time.";
     }
 
@@ -102,12 +100,22 @@ public class SwaggerConstants {
         String SAVE_OPERATION = "Save Doctor Duty Roster";
         String UPDATE_OPERATION = "Update Doctor Duty Roster. Note that week days time can be updated " +
                 "only if there are no appointments within the selected date range";
-        String DELETE_OPERATION = "Set Doctor Duty Roster status as 'D' when deleted";
+        String DELETE_OPERATION = "Set Doctor Duty Roster status as 'D' when deleted. " +
+                " Note that doctor duty roster can be deleted " +
+                " only if there are no appointments within the selected date range";
         String SEARCH_OPERATION = "Search Doctor Duty Roster according to given request parameters";
         String DETAILS_OPERATION = "Fetch Doctor Duty Roster details by its id";
-        String FETCH_DOCTOR_DUTY_ROSTER_STATUS_OPERATION = "Fetch doctor duty roster status (used in Appointment status)";
-        String UPDATE_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION = "Update Doctor Duty Roster Override schedules";
+        String UPDATE_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION = "Update Doctor Duty Roster Override schedules." +
+                " (Can save new override schedules for the same roster or update existing rosters). " +
+                " Returns saved/updated override id as response.";
+        String DELETE_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION = "Set Doctor Duty Roster Override status as 'D' when deleted. " +
+                " Note that doctor duty roster override can be deleted " +
+                " only if there are no appointments within the selected date range";
         String FETCH_EXISTING_ROSTERS = " Fetch existing doctor duty rosters within the selected date range";
+        String REVERT_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION = "Revert doctor duty roster." +
+                " In case, user 'Cancel' roster while updating doctor duty roster." +
+                " If 'isOriginal' flag is true, then update all override details else simply update status and remarks.";
+        String FETCH_DOCTOR_DUTY_ROSTER_STATUS_OPERATION = "Fetch doctor duty roster status (used in Appointment status)";
     }
 
 
@@ -152,12 +160,17 @@ public class SwaggerConstants {
     //P
     public interface PatientConstant {
         String BASE_PATIENT_API_VALUE = "This is Patient Controller";
+        String FETCH_ACTIVE_PATIENT_META_INFO_DETAILS_FOR_DROPDOWN = "Fetch minimal active patient meta info details " +
+                "(id and metaInfo) for dropdown";
+        String FETCH_PATIENT_META_INFO_DETAILS_FOR_DROPDOWN = "Fetch minimal patient meta info details " +
+                "(id and metaInfo) for dropdown";
         String SEARCH_PATIENT_WITH_SELF_TYPE_OPERATION = "Search patient info according to given " +
                 "request parameters (esewa id, isSelf='Y' and hospital id)";
         String SEARCH_PATIENT_WITH_OTHERS_TYPE_OPERATION = "Fetch list of minimal patient info according to given " +
                 "request parameters (esewa id, isSelf='N' and hospital id)";
-        String UPDATE_PATIENT_INFO_OPERATION = "Update patient info  to given";
-        String FETCH_DETAILS_BY_ID = " Fetch patient(with type: OTHERS) details by id";
+        String UPDATE_PATIENT_INFO_OPERATION = "Update patient info";
+        String SEARCH_OPERATION ="Search Patient Info";
+        String FETCH_DETAILS_BY_ID = " Fetch patient(with type 'OTHERS') details by id";
     }
 
     public interface ProfileConstant {

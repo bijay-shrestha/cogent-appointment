@@ -3,7 +3,10 @@ package com.cogent.cogentappointment.client.dto.request.patient;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author smriti ON 08/02/2020
@@ -11,9 +14,21 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class PatientMinSearchRequestDTO implements Serializable {
-    private String esewaId;
 
-    private Character isSelf;
+    @NotNull
+    @NotEmpty
+    private String name;
 
+    @NotNull
+    @NotEmpty
+    private String mobileNumber;
+
+    @NotNull
+    private Date dateOfBirth;
+
+    @NotNull
     private Long hospitalId;
+
+    @NotNull
+    private Character isSelf;
 }

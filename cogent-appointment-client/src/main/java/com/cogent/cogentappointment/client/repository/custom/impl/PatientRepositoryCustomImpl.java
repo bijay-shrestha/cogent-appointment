@@ -21,8 +21,8 @@ import java.util.Date;
 import java.util.List;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
-import static com.cogent.cogentappointment.client.constants.QueryConstants.PatientQueryConstants.ESEWA_ID;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.PatientQueryConstants.IS_SELF;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.query.PatientQuery.*;
 import static com.cogent.cogentappointment.client.utils.PatientUtils.parseToPatientMinimalResponseDTO;
 import static com.cogent.cogentappointment.client.utils.commons.AgeConverterUtils.calculateAge;
@@ -66,10 +66,12 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
 
     @Override
     public PatientDetailResponseDTO searchForSelf(PatientMinSearchRequestDTO searchRequestDTO) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_DETAILS)
-                .setParameter(ESEWA_ID, searchRequestDTO.getEsewaId())
-                .setParameter(IS_SELF, searchRequestDTO.getIsSelf())
-                .setParameter(HOSPITAL_ID, searchRequestDTO.getHospitalId());
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_DETAILS_FOR_SELF)
+                .setParameter(NAME, searchRequestDTO.getName())
+                .setParameter(MOBILE_NUMBER, searchRequestDTO.getMobileNumber())
+                .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(searchRequestDTO.getDateOfBirth()))
+                .setParameter(HOSPITAL_ID, searchRequestDTO.getHospitalId())
+                .setParameter(IS_SELF, searchRequestDTO.getIsSelf());
 
         try {
             PatientDetailResponseDTO detailResponseDTO =
@@ -77,17 +79,17 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
             detailResponseDTO.setAge(calculateAge(detailResponseDTO.getDateOfBirth()));
             return detailResponseDTO;
         } catch (NoResultException e) {
-            throw new NoContentFoundException(Patient.class, "eSewaId", searchRequestDTO.getEsewaId());
+            throw new NoContentFoundException(Patient.class, "name", searchRequestDTO.getName());
         }
     }
 
     @Override
-    public List<PatientMinimalResponseDTO> fetchMinimalPatientInfo(PatientMinSearchRequestDTO searchRequestDTO,
-                                                                   Pageable pageable) {
+    public List<PatientMinimalResponseDTO> searchForOthers(PatientMinSearchRequestDTO searchRequestDTO,
+                                                           Pageable pageable) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_MINIMAL_PATIENT)
-                .setParameter(ESEWA_ID, searchRequestDTO.getEsewaId())
-                .setParameter(IS_SELF, searchRequestDTO.getIsSelf())
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_MINIMAL_PATIENT_FOR_OTHERS)
+//                .setParameter(ESEWA_ID, searchRequestDTO.getEsewaId())
+//                .setParameter(IS_SELF, searchRequestDTO.getIsSelf())
                 .setParameter(HOSPITAL_ID, searchRequestDTO.getHospitalId());
 
         List<Object[]> results = query.getResultList();
@@ -106,8 +108,8 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
     }
 
     @Override
-    public PatientDetailResponseDTO fetchDetailsById(Long id) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_DETAILS_BY_ID)
+    public PatientDetailResponseDTO fetchOtherPatientDetailsById(Long id) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_OTHER_PATIENT_DETAILS_BY_ID)
                 .setParameter(ID, id);
 
         try {
@@ -123,7 +125,7 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
     @Override
     public List<PatientResponseDTO> search(PatientSearchRequestDTO searchRequestDTO, Pageable pageable) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT(searchRequestDTO));
+        Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_PATIENT(searchRequestDTO));
 
         List<Object[]> results = query.getResultList();
 

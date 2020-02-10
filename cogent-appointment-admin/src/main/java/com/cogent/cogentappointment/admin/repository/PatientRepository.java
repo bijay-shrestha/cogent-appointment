@@ -15,9 +15,9 @@ import java.util.Optional;
 @Repository
 public interface PatientRepository extends JpaRepository<Patient, Long>, PatientRepositoryCustom {
 
-    @Query("SELECT p FROM Patient p WHERE p.id=:id AND p.status !='D'")
+    @Query("SELECT p FROM Patient p WHERE p.id=:id ")
     Optional<Patient> fetchPatientById(@Param("id") Long id);
 
-    @Query("SELECT p FROM Patient p WHERE p.id=:id AND p.status ='Y'")
+    @Query("SELECT p FROM Patient p WHERE p.id=:id ")
     Optional<Patient> fetchActivePatientById(@Param("id") Long id);
 }

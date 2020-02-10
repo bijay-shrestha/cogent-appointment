@@ -27,10 +27,10 @@ public interface PatientRepositoryCustom {
 
     PatientDetailResponseDTO searchForSelf(PatientMinSearchRequestDTO searchRequestDTO);
 
-    List<PatientMinimalResponseDTO> fetchMinimalPatientInfo(PatientMinSearchRequestDTO searchRequestDTO,
-                                                            Pageable pageable);
+    List<PatientMinimalResponseDTO> searchForOthers(PatientMinSearchRequestDTO searchRequestDTO,
+                                                    Pageable pageable);
 
-    PatientDetailResponseDTO fetchDetailsById(Long id);
+    PatientDetailResponseDTO fetchOtherPatientDetailsById(Long id);
 
     List<PatientResponseDTO> search(PatientSearchRequestDTO searchRequestDTO,Pageable pageable);
 }

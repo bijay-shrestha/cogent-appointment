@@ -65,8 +65,7 @@ public class PatientServiceImpl implements PatientService {
 
         Long patientCount = patientRepository.validatePatientDuplicity(
                 requestDTO.getName(), requestDTO.getMobileNumber(),
-                requestDTO.getDateOfBirth(),
-                hospitalId);
+                requestDTO.getDateOfBirth(), hospitalId);
 
         validatePatientDuplicity(patientCount, requestDTO.getName(),
                 requestDTO.getMobileNumber(), requestDTO.getDateOfBirth());
@@ -114,7 +113,7 @@ public class PatientServiceImpl implements PatientService {
 
         log.info(FETCHING_PROCESS_STARTED, PATIENT);
 
-        List<PatientMinimalResponseDTO> responseDTOS = patientRepository.fetchMinimalPatientInfo
+        List<PatientMinimalResponseDTO> responseDTOS = patientRepository.searchForOthers
                 (searchRequestDTO, pageable);
 
         log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
@@ -128,7 +127,7 @@ public class PatientServiceImpl implements PatientService {
 
         log.info(FETCHING_PROCESS_STARTED, PATIENT);
 
-        PatientDetailResponseDTO responseDTO = patientRepository.fetchDetailsById(id);
+        PatientDetailResponseDTO responseDTO = patientRepository.fetchOtherPatientDetailsById(id);
 
         log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 

@@ -75,8 +75,7 @@ public class DoctorDutyRosterResource {
     @ApiOperation(UPDATE_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION)
     public ResponseEntity<?> updateDoctorDutyRosterOverride(
             @Valid @RequestBody DoctorDutyRosterOverrideUpdateRequestDTO updateRequestDTO) {
-        doctorDutyRosterService.updateDoctorDutyRosterOverride(updateRequestDTO);
-        return ok().build();
+        return ok(doctorDutyRosterService.updateDoctorDutyRosterOverride(updateRequestDTO));
     }
 
     @DeleteMapping(DOCTOR_DUTY_ROSTER_OVERRIDE)
@@ -93,7 +92,6 @@ public class DoctorDutyRosterResource {
         doctorDutyRosterService.revertDoctorDutyRosterOverride(updateRequestDTOS);
         return ok().build();
     }
-
 
     @PutMapping(EXISTING)
     @ApiOperation(FETCH_EXISTING_ROSTERS)

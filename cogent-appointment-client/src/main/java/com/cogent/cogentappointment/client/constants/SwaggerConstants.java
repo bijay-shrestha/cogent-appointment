@@ -112,9 +112,7 @@ public class SwaggerConstants {
                 " Note that doctor duty roster override can be deleted " +
                 " only if there are no appointments within the selected date range";
         String FETCH_EXISTING_ROSTERS = " Fetch existing doctor duty rosters within the selected date range";
-        String REVERT_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION = "Revert doctor duty roster." +
-                " In case, user 'Cancel' roster while updating doctor duty roster." +
-                " If 'isOriginal' flag is true, then update all override details else simply update status and remarks.";
+        String REVERT_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION = "Revert doctor duty roster.";
         String FETCH_DOCTOR_DUTY_ROSTER_STATUS_OPERATION = "Fetch doctor duty roster status (used in Appointment status)";
     }
 
@@ -169,7 +167,7 @@ public class SwaggerConstants {
         String SEARCH_PATIENT_WITH_OTHERS_TYPE_OPERATION = "Fetch list of minimal patient info according to given " +
                 "request parameters (esewa id, isSelf='N' and hospital id)";
         String UPDATE_PATIENT_INFO_OPERATION = "Update patient info";
-        String SEARCH_OPERATION ="Search Patient Info";
+        String SEARCH_OPERATION = "Search Patient Info";
         String FETCH_DETAILS_BY_ID = " Fetch patient(with type 'OTHERS') details by id";
     }
 

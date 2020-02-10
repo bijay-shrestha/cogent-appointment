@@ -44,55 +44,18 @@ public class Patient extends Auditable<String> implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
 
-    @Column(name = "email", length = 50)
-    private String email;
-
-    @Column(name = "is_self")
-    private Character isSelf;
-
-    @Column(name = "is_registered")
-    private Character isRegistered;
-
     @Column(name = "eSewa_id", nullable = false)
     private String eSewaId;
-
-    @Column(name = "address")
-    private String address;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hospital_id")
-    private Hospital hospitalId;
-
-    @Column(name = "hospital_number")
-    private String hospitalNumber;
-
-    @Column(name = "registration_number")
-    private String registrationNumber;
-
-    @Column(name = "status")
-    private Character status;
-
-    @Column(name = "remarks")
-    private String remarks;
 
     @Override
     public String toString() {
         return "Patient{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
-                ", mobileNumber='" + mobileNumber + '\'' +
+                ", name='" + name +
+                ", mobileNumber='" + mobileNumber +
                 ", gender=" + gender +
                 ", dateOfBirth=" + dateOfBirth +
-                ", email='" + email + '\'' +
-                ", isSelf=" + isSelf +
-                ", isRegistered=" + isRegistered +
-                ", eSewaId='" + eSewaId + '\'' +
-                ", address='" + address + '\'' +
-                ", hospitalId=" + hospitalId.getName() +
-                ", hospitalNumber='" + hospitalNumber + '\'' +
-                ", registrationNumber='" + registrationNumber + '\'' +
-                ", status=" + status +
-                ", remarks='" + remarks + '\'' +
+                ", eSewaId='" + eSewaId +
                 '}';
     }
 }

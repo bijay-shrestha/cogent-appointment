@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.persistence.history;
 
 import com.cogent.cogentappointment.persistence.config.Action;
+import com.cogent.cogentappointment.persistence.model.HospitalPatientInfo;
 import com.cogent.cogentappointment.persistence.model.Patient;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,28 +18,28 @@ import static javax.persistence.EnumType.STRING;
 import static javax.persistence.TemporalType.TIMESTAMP;
 
 /**
- * @author Sauravi Thapa २०/२/५
+ * @author smriti ON 10/02/2020
  */
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "patient_history")
-public class PatientHistory implements Serializable {
+@Table(name = "hospital_patient_info_history")
+public class HospitalPatientInfoHistory implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "patient_id",
-            foreignKey = @ForeignKey(name = "FK_patient_history_patient"))
-    private Patient patient;
+    @JoinColumn(name = "hospital_patient_info_id",
+            foreignKey = @ForeignKey(name = "FK_hospital_patient_info"))
+    private HospitalPatientInfo hospitalPatientInfo;
 
-    @Column(name = "patient_content")
+    @Column(name = "hospital_patient_info_content")
     @Lob
-    private String patientContent;
+    private String hospitalPatientInfoContent;
 
     @CreatedBy
     private String modifiedBy;
@@ -50,9 +51,9 @@ public class PatientHistory implements Serializable {
     @Enumerated(STRING)
     private Action action;
 
-    public PatientHistory(Patient patient, Action action) {
-        this.patient = patient;
-        this.patientContent = patient.toString();
+    public HospitalPatientInfoHistory(HospitalPatientInfo hospitalPatientInfo, Action action) {
+        this.hospitalPatientInfo = hospitalPatientInfo;
+        this.hospitalPatientInfoContent = hospitalPatientInfoContent.toString();
         this.action = action;
     }
 }

@@ -129,11 +129,6 @@ public class DoctorDutyRosterOverrideUtils {
         originalInfo.setEndTime(updatedInfo.getEndTime());
         originalInfo.setFromDate(updatedInfo.getOverrideFromDate());
         originalInfo.setToDate(updatedInfo.getOverrideToDate());
-        updateDoctorRosterOverrideStatus(originalInfo, updatedInfo);
-    }
-
-    public static void updateDoctorRosterOverrideStatus(DoctorDutyRosterOverride originalInfo,
-                                                        DoctorDutyRosterOverrideUpdateRequestDTO updatedInfo) {
         originalInfo.setStatus(updatedInfo.getStatus());
         originalInfo.setRemarks(updatedInfo.getRemarks());
     }

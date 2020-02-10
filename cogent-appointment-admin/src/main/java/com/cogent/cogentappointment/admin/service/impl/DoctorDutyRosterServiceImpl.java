@@ -202,6 +202,12 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
         log.info(DELETING_PROCESS_COMPLETED, DOCTOR_DUTY_ROSTER_OVERRIDE, getDifferenceBetweenTwoTime(startTime));
     }
 
+    /*SATISFIES FOLLOWING CASES:
+    * 1. ORIGINALLY SAVED OVERRIDE IS UPDATED AND CANCELLED
+    * 2. NEW OVERRIDE IS SAVED AND CANCELLED
+    * 3. ORIGINALLY SAVED OVERRIDE IS DELETED AND CANCELLED
+    * 4. NEW OVERRIDE IS DELETED AND CANCELLED
+    * */
     @Override
     public void revertDoctorDutyRosterOverride(List<DoctorDutyRosterOverrideUpdateRequestDTO> updateOverrideRosters) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
@@ -213,14 +219,10 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
         originalOverrideRosters.forEach(
                 originalOverride -> updateOverrideRosters.stream()
-                        .filter(updatedOverride -> originalOverride.getId().equals(updatedOverride.getDoctorDutyRosterOverrideId()))
+                        .filter(updatedOverride -> originalOverride.getId().equals(
+                                updatedOverride.getDoctorDutyRosterOverrideId()))
                         .forEachOrdered(updatedOverride -> {
-
-                            if (updatedOverride.isOriginal()) {
-                                updateDoctorRosterOverrideDetails(originalOverride, updatedOverride);
-                            } else {
-                                updateDoctorRosterOverrideStatus(originalOverride, updatedOverride);
-                            }
+                            updateDoctorRosterOverrideDetails(originalOverride, updatedOverride);
                         }));
 
         log.info(REVERTING_PROCESS_COMPLETED, DOCTOR_DUTY_ROSTER_OVERRIDE, getDifferenceBetweenTwoTime(startTime));

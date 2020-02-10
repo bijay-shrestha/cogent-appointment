@@ -40,6 +40,11 @@ public class WebResourceKeyConstants {
     }
 
     //D
+    public interface DashboardConstants {
+        String BASE_DASHBOARD = "/dashboard";
+        String GENERATE_REVENUE = "/generateRevenue";
+    }
+
     public static final String DETAIL = "/detail";
 
     public interface DepartmentConstants {

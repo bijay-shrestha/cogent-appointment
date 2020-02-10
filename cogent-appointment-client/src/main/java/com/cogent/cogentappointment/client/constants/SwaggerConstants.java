@@ -69,6 +69,12 @@ public class SwaggerConstants {
 
 
     //D
+
+    public interface DashboardConstant {
+        String BASE_API_VALUE = "This is Dashboard Controller";
+        String GENERATE_REVENUE_OPERATION = "Generate Revenue.";
+    }
+
     public interface DepartmentConstant {
         String BASE_DEPARTMENT_API_VALUE = "This is Department Controller";
         String SAVE_DEPARTMENT_OPERATION = "Save new department";

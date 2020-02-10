@@ -98,7 +98,7 @@ public class AppointmentQuery {
                     " COUNT(a.id)" +
                     " FROM Appointment a" +
                     " LEFT JOIN Hospital h ON h.id=a.hospitalId" +
-                    " WHERE (a.createdDate BETWEEN :fromDate AND :toDate)" +
+                    " WHERE (a.appointmentDate BETWEEN :fromDate AND :toDate)" +
                     " AND a.status!='A'" +
                     " AND h.id=:hospitalId";
 

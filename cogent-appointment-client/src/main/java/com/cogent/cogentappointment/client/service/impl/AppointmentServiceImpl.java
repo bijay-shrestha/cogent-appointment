@@ -52,7 +52,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository;
 
-    private final AppointmentTransactionInfoRepository appointmentTransactionInfoRepository;
+    private final AppointmentTransactionDetailRepository appointmentTransactionDetailRepository;
 
     private final HospitalService hospitalService;
 
@@ -66,7 +66,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   AppointmentRepository appointmentRepository,
                                   DoctorDutyRosterRepository doctorDutyRosterRepository,
                                   DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository,
-                                  AppointmentTransactionInfoRepository appointmentTransactionInfoRepository,
+                                  AppointmentTransactionDetailRepository appointmentTransactionDetailRepository,
                                   HospitalService hospitalService,
                                   AppointmentRefundDetailRepository appointmentRefundDetailRepository,
                                   PatientMetaInfoRepository patientMetaInfoRepository) {
@@ -76,7 +76,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.appointmentRepository = appointmentRepository;
         this.doctorDutyRosterRepository = doctorDutyRosterRepository;
         this.doctorDutyRosterOverrideRepository = doctorDutyRosterOverrideRepository;
-        this.appointmentTransactionInfoRepository = appointmentTransactionInfoRepository;
+        this.appointmentTransactionDetailRepository = appointmentTransactionDetailRepository;
         this.hospitalService = hospitalService;
         this.appointmentRefundDetailRepository = appointmentRefundDetailRepository;
         this.patientMetaInfoRepository = patientMetaInfoRepository;
@@ -278,7 +278,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                                                   Appointment appointment) {
 
         AppointmentTransactionDetail transactionDetail = parseToAppointmentTransactionInfo(requestDTO, appointment);
-        appointmentTransactionInfoRepository.save(transactionDetail);
+        appointmentTransactionDetailRepository.save(transactionDetail);
     }
 
     private void saveAppointmentRefundDetail(AppointmentRefundDetail appointmentRefundDetail) {

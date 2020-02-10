@@ -34,4 +34,6 @@ public interface PatientRepositoryCustom {
     PatientResponseDTO fetchDetailsById(Long id);
 
     List<PatientSearchResponseDTO> search(PatientSearchRequestDTO searchRequestDTO, Pageable pageable);
+
+    Long countOverallRegisteredPatients(Long HospitalId);
 }

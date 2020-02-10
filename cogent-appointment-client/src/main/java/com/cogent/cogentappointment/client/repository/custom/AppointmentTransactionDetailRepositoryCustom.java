@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.repository.custom.impl;
+package com.cogent.cogentappointment.client.repository.custom;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -12,5 +12,5 @@ import java.util.Date;
 @Qualifier("appointmentTransactionDetailRepositoryCustom")
 public interface AppointmentTransactionDetailRepositoryCustom {
 
-    Double getRevenueByDates(Date toDate,Date fromDate);
+    Double getRevenueByDates(Date toDate, Date fromDate, Long hospitalId);
 }

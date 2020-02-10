@@ -11,7 +11,7 @@ import com.cogent.cogentappointment.client.dto.response.dashboard.GenerateRevenu
 public interface DashboardService {
     GenerateRevenueResponseDTO getRevenueGeneratedDetail(GenerateRevenueRequestDTO requestDTO);
 
-    AppointmentCountResponseDTO countOverAllAppointment(AppointmentCountRequestDTO appointmentCountRequestDTO);
+    AppointmentCountResponseDTO countOverallAppointments(AppointmentCountRequestDTO appointmentCountRequestDTO);
 
-    Long countRegisteredPatients();
+    Long countOverallRegisteredPatients();
 }

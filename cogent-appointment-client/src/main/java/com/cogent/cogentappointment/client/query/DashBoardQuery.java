@@ -9,8 +9,10 @@ public class DashBoardQuery {
             "SELECT" +
                     " SUM(atd.appointmentAmount)" +
                     " FROM AppointmentTransactionDetail atd" +
+                    " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
                     " WHERE " +
-                    " atd.transactionDate BETWEEN :fromDate AND :toDate";
+                    " (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
+                    " AND a.hospitalId.id=:hospitalId";
 
     public static String QUERY_TO_COUNT_REGISTERED_APPOINTMENT=
             "SELECT" +

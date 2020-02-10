@@ -159,9 +159,9 @@ public class AppointmentUtils {
     }
 
 
-    public static AppointmentCountResponseDTO getOverAllAppointment(Long newPatient,
-                                                                 Long registeredPatient,
-                                                                 Character pillType) {
+    public static AppointmentCountResponseDTO parseToAppointmentCountResponseDTO(Long newPatient,
+                                                                                 Long registeredPatient,
+                                                                                 Character pillType) {
         AppointmentCountResponseDTO countResponseDTO = new AppointmentCountResponseDTO();
         countResponseDTO.setTotalAppointment(newPatient + registeredPatient);
         countResponseDTO.setNewPatient(newPatient);

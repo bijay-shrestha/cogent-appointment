@@ -5,7 +5,7 @@ import com.cogent.cogentappointment.client.dto.request.dashboard.GenerateRevenue
 import com.cogent.cogentappointment.client.dto.response.dashboard.AppointmentCountResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.GenerateRevenueResponseDTO;
 import com.cogent.cogentappointment.client.repository.AppointmentRepository;
-import com.cogent.cogentappointment.client.repository.AppointmentTransactionInfoRepository;
+import com.cogent.cogentappointment.client.repository.AppointmentTransactionDetailRepository;
 import com.cogent.cogentappointment.client.repository.PatientRepository;
 import com.cogent.cogentappointment.client.service.DashboardService;
 import lombok.extern.slf4j.Slf4j;
@@ -14,9 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
-import static com.cogent.cogentappointment.client.log.constants.DashboardLog.DASHBOARD;
-import static com.cogent.cogentappointment.client.log.constants.PatientLog.PATIENT;
-import static com.cogent.cogentappointment.client.utils.AppointmentUtils.getOverAllAppointment;
+import static com.cogent.cogentappointment.client.log.constants.DashboardLog.*;
+import static com.cogent.cogentappointment.client.utils.AppointmentUtils.parseToAppointmentCountResponseDTO;
 import static com.cogent.cogentappointment.client.utils.DashboardUtils.parseToGenerateRevenueResponseDTO;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
@@ -32,15 +31,15 @@ import static com.cogent.cogentappointment.client.utils.commons.TimeConverterUti
 @Transactional
 public class DashboardServiceImpl implements DashboardService {
 
-    private AppointmentTransactionInfoRepository appointmentTransactionInfoRepository;
+    private AppointmentTransactionDetailRepository appointmentTransactionDetailRepository;
 
     private final AppointmentRepository appointmentRepository;
 
     private final PatientRepository patientRepository;
 
-    public DashboardServiceImpl(AppointmentTransactionInfoRepository appointmentTransactionInfoRepository,
+    public DashboardServiceImpl(AppointmentTransactionDetailRepository appointmentTransactionDetailRepository,
                                 AppointmentRepository appointmentRepository, PatientRepository patientRepository) {
-        this.appointmentTransactionInfoRepository = appointmentTransactionInfoRepository;
+        this.appointmentTransactionDetailRepository = appointmentTransactionDetailRepository;
         this.appointmentRepository = appointmentRepository;
         this.patientRepository = patientRepository;
     }
@@ -49,54 +48,51 @@ public class DashboardServiceImpl implements DashboardService {
     public GenerateRevenueResponseDTO getRevenueGeneratedDetail(GenerateRevenueRequestDTO requestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_PROCESS_STARTED, DASHBOARD);
+        log.info(FETCHING_PROCESS_STARTED, REVENUE_GENERATED);
 
-        Double currentTransaction = appointmentTransactionInfoRepository.getRevenueByDates(requestDTO.getCurrentToDate(),
-                requestDTO.getCurrentFromDate());
+        Double currentTransaction = appointmentTransactionDetailRepository.getRevenueByDates(requestDTO.getCurrentToDate(),
+                requestDTO.getCurrentFromDate(),requestDTO.getHospitalId());
 
-        Double previousTransaction=appointmentTransactionInfoRepository.getRevenueByDates(requestDTO.getPreviousToDate(),
-                requestDTO.getPreviousFromDate());
+        Double previousTransaction = appointmentTransactionDetailRepository.getRevenueByDates(requestDTO.getPreviousToDate(),
+                requestDTO.getPreviousFromDate(),requestDTO.getHospitalId());
 
-        Double growthPercent=calculatePercenatge(currentTransaction,previousTransaction);
+        GenerateRevenueResponseDTO responseDTO = parseToGenerateRevenueResponseDTO(currentTransaction,
+                calculatePercenatge(currentTransaction, previousTransaction),
+                dateDifference(requestDTO.getCurrentToDate(), requestDTO.getCurrentFromDate()));
 
-        Character revenueType=dateDifference(requestDTO.getCurrentToDate(),
-                requestDTO.getCurrentFromDate());
-
-        GenerateRevenueResponseDTO responseDTO=parseToGenerateRevenueResponseDTO(currentTransaction,growthPercent,revenueType);
-
-
-        log.info(FETCHING_PROCESS_COMPLETED, DASHBOARD, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_COMPLETED, REVENUE_GENERATED, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
     }
 
     @Override
-    public AppointmentCountResponseDTO countOverAllAppointment(AppointmentCountRequestDTO appointmentCountRequestDTO) {
+    public AppointmentCountResponseDTO countOverallAppointments(AppointmentCountRequestDTO appointmentCountRequestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_PROCESS_STARTED, DASHBOARD);
+        log.info(FETCHING_PROCESS_STARTED, OVER_ALL_APPOINTMETS);
 
-        Long newPatient=appointmentRepository.countNewPatientByHospitalId(appointmentCountRequestDTO);
+        Long newPatient = appointmentRepository.countNewPatientByHospitalId(appointmentCountRequestDTO);
 
-        Long registeredPatient=appointmentRepository.countRegisteredPatientByHospitalId(appointmentCountRequestDTO);
+        Long registeredPatient = appointmentRepository.countRegisteredPatientByHospitalId(appointmentCountRequestDTO);
 
-        Character pillType=dateDifference(appointmentCountRequestDTO.getToDate(),
+        Character pillType = dateDifference(appointmentCountRequestDTO.getToDate(),
                 appointmentCountRequestDTO.getFromDate());
 
-        log.info(FETCHING_PROCESS_COMPLETED, DASHBOARD, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_COMPLETED, OVER_ALL_APPOINTMETS, getDifferenceBetweenTwoTime(startTime));
 
-        return getOverAllAppointment(newPatient,registeredPatient,pillType);
+        return parseToAppointmentCountResponseDTO(newPatient, registeredPatient, pillType);
     }
 
     @Override
-    public Long countRegisteredPatients() {
+    public Long countOverallRegisteredPatients() {
+
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_PROCESS_STARTED, PATIENT);
+        log.info(FETCHING_PROCESS_STARTED, OVER_ALL_REGISTERED_PATIENTS);
 
-        Long resgisteredPatients = patientRepository.getCountOfRegisteredPatient();
+        Long resgisteredPatients = patientRepository.countOverallRegisteredPatients();
 
-        log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_COMPLETED, OVER_ALL_REGISTERED_PATIENTS, getDifferenceBetweenTwoTime(startTime));
 
         return resgisteredPatients;
     }

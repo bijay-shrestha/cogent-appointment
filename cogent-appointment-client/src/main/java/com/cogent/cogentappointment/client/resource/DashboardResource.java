@@ -13,8 +13,6 @@ import javax.validation.Valid;
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.DashboardConstant.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.DashboardConstants.*;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.HospitalConstants.COUNT;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.HospitalConstants.REGISTERED;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -40,12 +38,12 @@ public class DashboardResource {
     @PutMapping(OVER_ALL_APPOINTMENT)
     @ApiOperation(OVER_ALL_APPOINTMENT_OPERATION)
     public ResponseEntity<?> getOverAllAppointment(@Valid @RequestBody AppointmentCountRequestDTO countRequestDTO) {
-        return ok(dashboardService.countOverAllAppointment(countRequestDTO));
+        return ok(dashboardService.countOverallAppointments(countRequestDTO));
     }
 
     @GetMapping(REGISTERED + COUNT)
     @ApiOperation(COUNT_REGISTERED_PATIENTS)
     public ResponseEntity<?> countRegisteredPatients() {
-        return ok(dashboardService.countRegisteredPatients());
+        return ok(dashboardService.countOverallRegisteredPatients());
     }
 }

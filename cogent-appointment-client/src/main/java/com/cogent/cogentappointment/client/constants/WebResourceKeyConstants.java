@@ -42,8 +42,10 @@ public class WebResourceKeyConstants {
     //D
     public interface DashboardConstants {
         String BASE_DASHBOARD = "/dashboard";
-        String GENERATE_REVENUE = "/generateRevenue";
-        String OVER_ALL_APPOINTMENT = "/overAllAppointment";
+        String GENERATE_REVENUE = "/revenueGenerated";
+        String OVER_ALL_APPOINTMENT = "/overAllAppointments";
+        String REGISTERED="/registeredPatients";
+        String COUNT="/count";
     }
 
     public static final String DETAIL = "/detail";
@@ -85,8 +87,6 @@ public class WebResourceKeyConstants {
         String BASE_HOSPITAL = "/hospital";
         String HOSPITAL_WISE = "/hospital-wise";
         String HOSPITAL_ID_PATH_VARIABLE_BASE = "/{hospitalId}";
-        String REGISTERED="/registeredPatient";
-        String COUNT="/count";
     }
 
     //I

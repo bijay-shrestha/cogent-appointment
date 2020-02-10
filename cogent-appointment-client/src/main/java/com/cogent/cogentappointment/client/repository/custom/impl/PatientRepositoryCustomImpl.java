@@ -141,4 +141,9 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
         }
     }
 
+    @Override
+    public Long countOverallRegisteredPatients(Long HospitalId) {
+        return null;
+    }
+
 }

@@ -53,7 +53,7 @@ public class HospitalPatientInfoHistory implements Serializable {
 
     public HospitalPatientInfoHistory(HospitalPatientInfo hospitalPatientInfo, Action action) {
         this.hospitalPatientInfo = hospitalPatientInfo;
-        this.hospitalPatientInfoContent = hospitalPatientInfoContent.toString();
+        this.hospitalPatientInfoContent = hospitalPatientInfo.toString();
         this.action = action;
     }
 }

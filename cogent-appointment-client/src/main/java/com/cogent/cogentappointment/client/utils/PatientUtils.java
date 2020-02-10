@@ -34,8 +34,8 @@ public class PatientUtils {
     }
 
     public static HospitalPatientInfo parseHospitalPatientInfo(PatientRequestDTO requestDTO,
-                                                               Long hospitalId,
-                                                               Long patientId) {
+                                                               Long patientId,
+                                                               Long hospitalId) {
         HospitalPatientInfo hospitalPatientInfo = new HospitalPatientInfo();
         hospitalPatientInfo.setHospitalId(hospitalId);
         hospitalPatientInfo.setPatientId(patientId);
@@ -46,6 +46,18 @@ public class PatientUtils {
         hospitalPatientInfo.setStatus(requestDTO.getStatus());
         return hospitalPatientInfo;
     }
+
+    public static PatientMetaInfo parseToPatientMetaInfo(Patient patient,
+                                                         String registrationNumber,
+                                                         Character status) {
+        PatientMetaInfo patientMetaInfo = new PatientMetaInfo();
+        patientMetaInfo.setPatient(patient);
+        patientMetaInfo.setMetaInfo(
+                patient.getName() + OR + patient.getMobileNumber() + OR + registrationNumber);
+        patientMetaInfo.setStatus(status);
+        return patientMetaInfo;
+    }
+
 
     public static Patient updatePatient(PatientUpdateRequestDTO requestDTO,
                                         Patient patient) {

@@ -64,15 +64,25 @@ public class PatientServiceImpl implements PatientService {
         log.info(SAVING_PROCESS_STARTED, PATIENT);
 
         Long patientCount = patientRepository.validatePatientDuplicity(
-                requestDTO.getName(), requestDTO.getMobileNumber(),
-                requestDTO.getDateOfBirth(), hospitalId);
+                requestDTO.getName(),
+                requestDTO.getMobileNumber(),
+                requestDTO.getDateOfBirth(),
+                hospitalId);
 
-        validatePatientDuplicity(patientCount, requestDTO.getName(),
-                requestDTO.getMobileNumber(), requestDTO.getDateOfBirth());
+        validatePatientDuplicity(
+                patientCount,
+                requestDTO.getName(),
+                requestDTO.getMobileNumber(),
+                requestDTO.getDateOfBirth()
+        );
 
         Patient patient = savePatient(requestDTO);
 
-        saveHospitalPatientInfo(parseHospitalPatientInfo(requestDTO, patient.getId(), hospitalId));
+        HospitalPatientInfo hospitalPatientInfo = saveHospitalPatientInfo(
+                parseHospitalPatientInfo(requestDTO, patient.getId(), hospitalId));
+
+        savePatientMetaInfo(parseToPatientMetaInfo(patient, hospitalPatientInfo.getRegistrationNumber(),
+                hospitalPatientInfo.getStatus()));
 
         log.info(SAVING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 

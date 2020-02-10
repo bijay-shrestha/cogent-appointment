@@ -29,7 +29,6 @@ public class PatientMetaInfo extends Auditable<String> implements Serializable {
     @Column(name = "meta_info")
     private String metaInfo;
 
-
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id")
     private Patient patient;
@@ -42,10 +41,12 @@ public class PatientMetaInfo extends Auditable<String> implements Serializable {
 
     @Override
     public String toString() {
-        return "AdminMetaInfo{" +
+        return "PatientMetaInfo{" +
                 "id=" + id +
                 ", metaInfo='" + metaInfo + '\'' +
                 ", patient=" + patient.getName() +
+                ", status =" + status +
+                ", remarks=" + remarks +
                 '}';
     }
 }

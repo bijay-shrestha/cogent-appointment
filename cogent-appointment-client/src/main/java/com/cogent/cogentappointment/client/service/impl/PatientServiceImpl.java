@@ -11,12 +11,12 @@ import com.cogent.cogentappointment.client.dto.response.patient.PatientMinimalRe
 import com.cogent.cogentappointment.client.dto.response.patient.PatientResponseDTO;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
+import com.cogent.cogentappointment.client.repository.HospitalPatientInfoRepository;
 import com.cogent.cogentappointment.client.repository.PatientMetaInfoRepository;
 import com.cogent.cogentappointment.client.repository.PatientRepository;
-import com.cogent.cogentappointment.client.service.HospitalService;
 import com.cogent.cogentappointment.client.service.PatientService;
 import com.cogent.cogentappointment.persistence.enums.Gender;
-import com.cogent.cogentappointment.persistence.model.Hospital;
+import com.cogent.cogentappointment.persistence.model.HospitalPatientInfo;
 import com.cogent.cogentappointment.persistence.model.Patient;
 import com.cogent.cogentappointment.persistence.model.PatientMetaInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -44,16 +44,16 @@ public class PatientServiceImpl implements PatientService {
 
     private final PatientRepository patientRepository;
 
-    private final HospitalService hospitalService;
-
     private final PatientMetaInfoRepository patientMetaInfoRepository;
 
+    private final HospitalPatientInfoRepository hospitalPatientInfoRepository;
+
     public PatientServiceImpl(PatientRepository patientRepository,
-                              HospitalService hospitalService,
-                              PatientMetaInfoRepository patientMetaInfoRepository) {
+                              PatientMetaInfoRepository patientMetaInfoRepository,
+                              HospitalPatientInfoRepository hospitalPatientInfoRepository) {
         this.patientRepository = patientRepository;
-        this.hospitalService = hospitalService;
         this.patientMetaInfoRepository = patientMetaInfoRepository;
+        this.hospitalPatientInfoRepository = hospitalPatientInfoRepository;
     }
 
     @Override
@@ -64,13 +64,25 @@ public class PatientServiceImpl implements PatientService {
         log.info(SAVING_PROCESS_STARTED, PATIENT);
 
         Long patientCount = patientRepository.validatePatientDuplicity(
-                requestDTO.getName(), requestDTO.getMobileNumber(),
-                requestDTO.getDateOfBirth(), hospitalId);
+                requestDTO.getName(),
+                requestDTO.getMobileNumber(),
+                requestDTO.getDateOfBirth(),
+                hospitalId);
 
-        validatePatientDuplicity(patientCount, requestDTO.getName(),
-                requestDTO.getMobileNumber(), requestDTO.getDateOfBirth());
+        validatePatientDuplicity(
+                patientCount,
+                requestDTO.getName(),
+                requestDTO.getMobileNumber(),
+                requestDTO.getDateOfBirth()
+        );
 
-        Patient patient = savePatient(requestDTO, hospitalId);
+        Patient patient = savePatient(requestDTO);
+
+        HospitalPatientInfo hospitalPatientInfo = saveHospitalPatientInfo(
+                parseHospitalPatientInfo(requestDTO, patient.getId(), hospitalId));
+
+        savePatientMetaInfo(parseToPatientMetaInfo(patient, hospitalPatientInfo.getRegistrationNumber(),
+                hospitalPatientInfo.getStatus()));
 
         log.info(SAVING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
@@ -78,13 +90,13 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public Patient fetchRegisteredPatientById(Long id) {
+    public Patient fetchActivePatientById(Long id) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, PATIENT);
 
-        Patient patient = patientRepository.fetchRegisteredPatientById(id)
+        Patient patient = patientRepository.fetchActivePatientById(id)
                 .orElseThrow(() -> PATIENT_WITH_GIVEN_ID_NOT_FOUND.apply(id));
 
         log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
@@ -212,16 +224,13 @@ public class PatientServiceImpl implements PatientService {
         return fetchGenderByCode(genderCode);
     }
 
-    private Hospital fetchHospital(Long hospitalId) {
-        return hospitalService.fetchActiveHospital(hospitalId);
+    private Patient savePatient(PatientRequestDTO requestDTO) {
+        Gender gender = fetchGender(requestDTO.getGender());
+        return save(parseToPatient(requestDTO, gender));
     }
 
-    public Patient savePatient(PatientRequestDTO requestDTO, Long hospitalId) {
-
-        Gender gender = fetchGender(requestDTO.getGender());
-        Hospital hospital = fetchHospital(hospitalId);
-
-        return save(parseToPatient(requestDTO, gender, hospital));
+    private HospitalPatientInfo saveHospitalPatientInfo(HospitalPatientInfo hospitalPatientInfo) {
+        return hospitalPatientInfoRepository.save(hospitalPatientInfo);
     }
 
     private Patient save(Patient patient) {

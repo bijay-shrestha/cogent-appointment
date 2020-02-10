@@ -12,46 +12,46 @@ public class PatientQuery {
             "SELECT " +
                     " COUNT(p.id)" +
                     " FROM Patient p" +
-                    " LEFT JOIN Hospital h ON h.id = p.hospitalId.id" +
+                    " LEFT JOIN HospitalPatientInfo hp ON hp.patientId = p.id" +
                     " WHERE " +
                     " (p.name =:name" +
                     " AND p.mobileNumber =:mobileNumber" +
                     " AND p.dateOfBirth =:dateOfBirth)" +
-                    " AND h.id =:hospitalId" +
-                    " AND p.status != 'D'";
+                    " AND hp.hospitalId =:hospitalId" +
+                    " AND hp.status != 'D'";
 
     public final static String QUERY_TO_VALIDATE_UPDATED_PATIENT_DUPLICITY =
             "SELECT " +
                     " COUNT(p.id)" +
                     " FROM Patient p" +
-                    " LEFT JOIN Hospital h ON h.id = p.hospitalId.id" +
+                    " LEFT JOIN HospitalPatientInfo hp ON hp.patientId = p.id" +
                     " WHERE " +
                     " (p.name =:name" +
                     " AND p.mobileNumber =:mobileNumber" +
                     " AND p.dateOfBirth =:dateOfBirth" +
                     " AND p.id !=:id)" +
-                    " AND h.id =:hospitalId" +
-                    " AND p.status != 'D'";
+                    " AND hp.hospitalId =:hospitalId" +
+                    " AND hp.status != 'D'";
 
     public static final String SELECT_CLAUSE_TO_FETCH_PATIENT_DETAILS =
-            " SELECT p.id as patientId," +                              //[0]
-                    " p.name as name," +                                //[1]
-                    " p.mobileNumber as mobileNumber," +                //[2]
-                    " p.address as address," +                          //[3]
-                    " p.email as email," +                              //[4]
-                    " p.gender as gender," +                            //[5]
-                    " p.dateOfBirth as dateOfBirth," +                   //[6]
-                    " p.registrationNumber as registrationNumber" +      //[7]
-                    " FROM Patient p";
+            " SELECT p.id as patientId," +                                  //[0]
+                    " p.name as name," +                                    //[1]
+                    " p.mobileNumber as mobileNumber," +                    //[2]
+                    " p.gender as gender," +                                //[3]
+                    " p.dateOfBirth as dateOfBirth," +                      //[4]
+                    " hp.address as address," +                             //[5]
+                    " hp.email as email," +                                 //[6]
+                    " hp.registrationNumber as registrationNumber" +        //[7]
+                    " FROM Patient p" +
+                    " LEFT JOIN HospitalPatientInfo hp ON hp.patientId = p.id";
 
     public static final String GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS =
             " WHERE p.name=:name" +
                     " AND p.mobileNumber=:mobileNumber" +
                     " AND p.dateOfBirth =:dateOfBirth" +
-                    " AND p.hospitalId.id=:hospitalId" +
-                    " AND p.isSelf=:isSelf" +
-                    " AND p.status='Y'" +
-                    " AND p.isRegistered='Y'";
+                    " AND hp.hospitalId =:hospitalId" +
+                    " AND hp.isSelf=:isSelf" +
+                    " AND hp.status='Y'";
 
     /*FOR SELF*/
     public static final String QUERY_TO_FETCH_PATIENT_DETAILS_FOR_SELF =

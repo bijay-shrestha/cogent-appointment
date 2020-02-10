@@ -20,7 +20,6 @@ import static com.cogent.cogentappointment.client.constants.StatusConstants.ACTI
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.CANCELLED;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.PENDING_APPROVAL;
 import static com.cogent.cogentappointment.client.constants.StringConstant.HYPHEN;
-import static com.cogent.cogentappointment.client.constants.StringConstant.OR;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils.generateRandomNumber;
 
@@ -143,18 +142,4 @@ public class AppointmentUtils {
         return bookedAppointments.stream()
                 .anyMatch(bookedAppointment -> bookedAppointment.getAppointmentTime().equals(date));
     }
-
-    public static PatientMetaInfo parseToPatientMetaInfo(Patient patient) {
-        PatientMetaInfo patientMetaInfo = new PatientMetaInfo();
-        patientMetaInfo.setPatient(patient);
-        patientMetaInfo.setMetaInfo(patient.getName()
-                + OR +
-                patient.getMobileNumber()
-                + OR +
-                patient.getRegistrationNumber());
-        patientMetaInfo.setStatus(patient.getStatus());
-
-        return patientMetaInfo;
-    }
-
 }

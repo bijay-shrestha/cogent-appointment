@@ -50,6 +50,7 @@ public class HospitalPatientInfo extends Auditable<String> implements Serializab
     @Column(name = "address")
     private String address;
 
+    /*PATIENT STATUS*/
     @Column(name = "status")
     private Character status;
 

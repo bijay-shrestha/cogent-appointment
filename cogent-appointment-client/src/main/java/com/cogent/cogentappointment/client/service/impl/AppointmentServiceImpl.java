@@ -241,7 +241,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                                  PatientRequestDTO patientRequestDTO) {
 
         return isNewRegistration ? patientService.save(patientRequestDTO, hospitalId)
-                : patientService.fetchRegisteredPatientById(patientId);
+                : patientService.fetchActivePatientById(patientId);
     }
 
     private Appointment findPendingAppointmentById(Long appointmentId) {

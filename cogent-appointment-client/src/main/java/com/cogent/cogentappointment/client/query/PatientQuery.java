@@ -12,25 +12,25 @@ public class PatientQuery {
             "SELECT " +
                     " COUNT(p.id)" +
                     " FROM Patient p" +
-                    " LEFT JOIN Hospital h ON h.id = p.hospitalId.id" +
+                    " LEFT JOIN HospitalPatientInfo hp ON hp.patientId = p.id" +
                     " WHERE " +
                     " (p.name =:name" +
                     " AND p.mobileNumber =:mobileNumber" +
                     " AND p.dateOfBirth =:dateOfBirth)" +
-                    " AND h.id =:hospitalId" +
+                    " AND hp.hospitalId =:hospitalId" +
                     " AND p.status != 'D'";
 
     public final static String QUERY_TO_VALIDATE_UPDATED_PATIENT_DUPLICITY =
             "SELECT " +
                     " COUNT(p.id)" +
                     " FROM Patient p" +
-                    " LEFT JOIN Hospital h ON h.id = p.hospitalId.id" +
+                    " LEFT JOIN HospitalPatientInfo hp ON hp.patientId = p.id" +
                     " WHERE " +
                     " (p.name =:name" +
                     " AND p.mobileNumber =:mobileNumber" +
                     " AND p.dateOfBirth =:dateOfBirth" +
                     " AND p.id !=:id)" +
-                    " AND h.id =:hospitalId" +
+                    " AND hp.hospitalId =:hospitalId" +
                     " AND p.status != 'D'";
 
     public static final String SELECT_CLAUSE_TO_FETCH_PATIENT_DETAILS =
@@ -42,13 +42,14 @@ public class PatientQuery {
                     " p.gender as gender," +                            //[5]
                     " p.dateOfBirth as dateOfBirth," +                   //[6]
                     " p.registrationNumber as registrationNumber" +      //[7]
-                    " FROM Patient p";
+                    " FROM Patient p" +
+                    " LEFT JOIN HospitalPatientInfo hp ON hp.patientId = p.id";
 
     public static final String GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS =
             " WHERE p.name=:name" +
                     " AND p.mobileNumber=:mobileNumber" +
                     " AND p.dateOfBirth =:dateOfBirth" +
-                    " AND p.hospitalId.id=:hospitalId" +
+                    " AND hp.hospitalId =:hospitalId" +
                     " AND p.isSelf=:isSelf" +
                     " AND p.status='Y'";
 

@@ -77,6 +77,11 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
         if (!authHeaderMatcher.matches()) {
             return null;
         }
+
+        String a= authHeaderMatcher.group(1);
+
+
+
         return new AuthHeader(
                 authHeaderMatcher.group(1),
                 authHeaderMatcher.group(3),

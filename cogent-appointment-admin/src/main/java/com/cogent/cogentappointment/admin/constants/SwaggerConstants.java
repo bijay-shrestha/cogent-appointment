@@ -43,6 +43,17 @@ public class SwaggerConstants {
         String BASE_API_VALUE = "This is Appointment Controller";
         String FETCH_REFUND_APPOINTMENTS = "Fetch Refund Appointment Request List";
         String REJECT_REFUND_APPOINTMENT = "Reject Refund Request Appointment";
+        String CHECK_APPOINTMENT_AVAILABILITY = "Check available time schedules in requested date" +
+                " for specific doctor and specialization";
+        String SAVE_OPERATION = "Save new appointment";
+        String FETCH_PENDING_APPOINTMENT_APPROVAL = "Fetch pending appointment approvals";
+        String FETCH_APPOINTMENT_LOG = "Fetch Appointment Log";
+        String UPDATE_OPERATION = "Update existing appointment";
+        String DELETE_OPERATION = "Set appointment status as 'D' when deleted";
+        String SEARCH_OPERATION = "Search appointment according to given request parameters";
+        String DETAILS_OPERATION = "Fetch appointment details by its id";
+        String DETAILS_APPROVAL_VISIT_OPERATION = "Fetch appointment visit approval details by its id";
+        String RESCHEDULE_OPERATION = "Reschedule appointment date and time.";
     }
 
     public interface AuthenticateConstant {
@@ -228,6 +239,7 @@ public class SwaggerConstants {
     public interface WeekDaysConstant {
         String BASE_API_VALUE = "This is Week Days Controller.";
         String FETCH_ACTIVE_WEEK_DAYS = "Fetch active week days.";
+        String FETCH_PREPARE_WEEK_DAYS = "Fetch PREPARE active week days.";
     }
 
 

@@ -50,8 +50,7 @@ public class PatientQuery {
                     " AND p.dateOfBirth =:dateOfBirth" +
                     " AND p.hospitalId.id=:hospitalId" +
                     " AND p.isSelf=:isSelf" +
-                    " AND p.status='Y'" +
-                    " AND p.isRegistered='Y'";
+                    " AND p.status='Y'";
 
     /*FOR SELF*/
     public static final String QUERY_TO_FETCH_PATIENT_DETAILS_FOR_SELF =

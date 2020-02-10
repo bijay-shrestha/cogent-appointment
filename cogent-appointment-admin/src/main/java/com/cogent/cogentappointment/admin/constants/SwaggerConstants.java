@@ -238,6 +238,7 @@ public class SwaggerConstants {
     public interface WeekDaysConstant {
         String BASE_API_VALUE = "This is Week Days Controller.";
         String FETCH_ACTIVE_WEEK_DAYS = "Fetch active week days.";
+        String FETCH_PREPARE_WEEK_DAYS = "Fetch PREPARE active week days.";
     }
 
 

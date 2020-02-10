@@ -174,8 +174,8 @@ public class PatientServiceImpl implements PatientService {
 
         Patient patientToBeUpdated = fetchPatientById(updateRequestDTO.getId());
 
-//        HospitalPatientInfo hospitalPatientInfoToBeUpdated = hospitalPatientInfoRepository
-//                .getByPatientId(updateRequestDTO.getId());
+        HospitalPatientInfo hospitalPatientInfoToBeUpdated = hospitalPatientInfoRepository
+                .fetchHospitalPatientInfoByPatientId(updateRequestDTO.getId());
 
         Long patientCount = patientRepository.validatePatientDuplicity(updateRequestDTO);
 
@@ -184,12 +184,12 @@ public class PatientServiceImpl implements PatientService {
 
         save(updatePatient(updateRequestDTO, patientToBeUpdated));
 
-//        saveHospitalPatientInfo(updateHospitalPatientInfo(updateRequestDTO, hospitalPatientInfoToBeUpdated));
+        saveHospitalPatientInfo(updateHospitalPatientInfo(updateRequestDTO, hospitalPatientInfoToBeUpdated));
 
         PatientMetaInfo patientMetaInfoToBeUpdated = patientMetaInfoRepository.fetchByPatientId(updateRequestDTO.getId());
 
-//        savePatientMetaInfo(updatePatientMetaInfo(hospitalPatientInfoToBeUpdated,
-//                patientMetaInfoToBeUpdated, updateRequestDTO));
+        savePatientMetaInfo(updatePatientMetaInfo(hospitalPatientInfoToBeUpdated,
+                patientMetaInfoToBeUpdated, updateRequestDTO));
 
         log.info(UPDATING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
     }

@@ -12,6 +12,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface HospitalPatientInfoRepository extends JpaRepository<HospitalPatientInfo, Long> {
 
-//    @Query("FROM HospitalPatientInfo hpi WHERE hpi.patientId=:patientId AND hpi.status!='D")
-//    HospitalPatientInfo getByPatientId(@Param("patientId") Long patientId);
+    @Query("SELECT hpi FROM HospitalPatientInfo hpi WHERE hpi.patientId=:patientId AND hpi.status!='D'")
+    HospitalPatientInfo fetchHospitalPatientInfoByPatientId(@Param("patientId") Long patientId);
 }

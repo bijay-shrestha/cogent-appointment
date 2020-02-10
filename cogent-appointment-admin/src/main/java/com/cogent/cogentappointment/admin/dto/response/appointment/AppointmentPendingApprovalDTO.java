@@ -50,4 +50,6 @@ public class AppointmentPendingApprovalDTO implements Serializable {
     private String transactionNumber;
 
     private Double appointmentAmount;
+
+    private Double refundAmount;
 }

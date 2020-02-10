@@ -96,12 +96,16 @@ public class AppointmentUtils {
             final int TRANSACTION_NUMBER_INDEX = 13;
             final int APPOINTMENT_AMOUNT_INDEX = 14;
             final int DOCTOR_NAME_INDEX = 15;
+            final int REFUND_AMOUNT_INDEX = 16;
 
             Date appointmentDate = (Date) result[APPOINTMENT_DATE_INDEX];
             Date patientDob = (Date) result[PATIENT_DOB_INDEX];
 
             Double appointmentAmount = Objects.isNull(result[APPOINTMENT_AMOUNT_INDEX]) ?
                     0D : Double.parseDouble(result[APPOINTMENT_AMOUNT_INDEX].toString());
+
+            Double refundAmount = Objects.isNull(result[REFUND_AMOUNT_INDEX]) ?
+                    0D : Double.parseDouble(result[REFUND_AMOUNT_INDEX].toString());
 
             AppointmentPendingApprovalDTO appointmentStatusResponseDTO =
                     AppointmentPendingApprovalDTO.builder()
@@ -124,6 +128,7 @@ public class AppointmentUtils {
                             .appointmentAmount(appointmentAmount)
                             .specializationName(result[SPECIALIZATION_NAME_INDEX].toString())
                             .doctorName(result[DOCTOR_NAME_INDEX].toString())
+                            .refundAmount(refundAmount)
                             .build();
 
             appointmentPendingApprovalDTOS.add(appointmentStatusResponseDTO);
@@ -163,12 +168,16 @@ public class AppointmentUtils {
             final int APPOINTMENT_AMOUNT_INDEX = 14;
             final int DOCTOR_NAME_INDEX = 15;
             final int APPOINTMENT_STATUS_INDEX = 16;
+            final int REFUND_AMOUNT_INDEX = 17;
 
             Date appointmentDate = (Date) result[APPOINTMENT_DATE_INDEX];
             Date patientDob = (Date) result[PATIENT_DOB_INDEX];
 
             Double appointmentAmount = Objects.isNull(result[APPOINTMENT_AMOUNT_INDEX]) ?
                     0D : Double.parseDouble(result[APPOINTMENT_AMOUNT_INDEX].toString());
+
+            Double refundAmount = Objects.isNull(result[REFUND_AMOUNT_INDEX]) ?
+                    0D : Double.parseDouble(result[REFUND_AMOUNT_INDEX].toString());
 
             AppointmentLogResponseDTO appointmentLogResponseDTO =
                     AppointmentLogResponseDTO.builder()
@@ -192,6 +201,7 @@ public class AppointmentUtils {
                             .appointmentAmount(appointmentAmount)
                             .doctorName(result[DOCTOR_NAME_INDEX].toString())
                             .status(result[APPOINTMENT_STATUS_INDEX].toString())
+                            .refundAmount(refundAmount)
                             .build();
 
             appointmentLogSearchDTOS.add(appointmentLogResponseDTO);

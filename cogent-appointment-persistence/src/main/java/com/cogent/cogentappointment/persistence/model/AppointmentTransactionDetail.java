@@ -32,7 +32,7 @@ public class AppointmentTransactionDetail extends Auditable<String> implements S
     private Appointment appointment;
 
     @Temporal(TemporalType.DATE)
-    @Column(name = "appointment_date")
+    @Column(name = "transaction_date")
     private Date transactionDate;
 
     @Column(name = "transaction_number")

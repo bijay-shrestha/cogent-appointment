@@ -50,4 +50,6 @@ public class AppointmentLogResponseDTO {
     private String transactionNumber;
 
     private Double appointmentAmount;
+
+    private Double refundAmount;
 }

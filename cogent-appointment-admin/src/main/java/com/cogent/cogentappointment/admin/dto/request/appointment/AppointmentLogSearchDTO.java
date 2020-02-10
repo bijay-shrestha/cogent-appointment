@@ -23,6 +23,8 @@ public class AppointmentLogSearchDTO implements Serializable {
 
     private Date toDate;
 
+    private String appointmentNumber;
+
     private Long appointmentId;
 
     private Long patientMetaInfoId;

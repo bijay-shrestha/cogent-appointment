@@ -139,14 +139,16 @@ public class AppointmentQuery {
                             " sp.name as specializationName," +                             //[12]
                             " atd.transactionNumber as transactionNumber," +                //[13]
                             " atd.appointmentAmount as appointmentAmount," +                //[14]
-                            " d.name as doctorName" +                                       //[15]
+                            " d.name as doctorName," +                                       //[15]
+                            " ard.refundAmount as refundAmount" +
                             " FROM Appointment a" +
                             " LEFT JOIN Patient p ON a.patientId=p.id" +
                             " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
                             " LEFT JOIN Specialization sp ON a.specializationId=sp.id" +
-                            " LEFT JOIN Hospital h ON a.hospital.id=h.id" +
+                            " LEFT JOIN Hospital h ON a.hospitalId=h.id" +
                             " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id" +
-                            " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id"
+                            " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
+                            " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id"
                             + GET_WHERE_CLAUSE_TO_SEARCH_PENDING_APPOINTMENT_DETAILS(searchRequestDTO);
 
 
@@ -181,7 +183,7 @@ public class AppointmentQuery {
         if (!Objects.isNull(pendingApprovalSearchDTO.getDoctorId()))
             whereClause += " AND d.id = " + pendingApprovalSearchDTO.getDoctorId();
 
-        whereClause+=" ORDER BY a.appointmentDate DESC";
+        whereClause += " ORDER BY a.appointmentDate DESC";
 
         return whereClause;
     }
@@ -205,14 +207,16 @@ public class AppointmentQuery {
                             " atd.transactionNumber as transactionNumber," +                //[13]
                             " atd.appointmentAmount as appointmentAmount," +                //[14]
                             " d.name as doctorName," +                                       //[15]
-                            " a.status as status" +                                        //[16]
+                            " a.status as status," +                                        //[16]
+                            " ard.refundAmount as refundAmount" +                           //[17]
                             " FROM Appointment a" +
                             " LEFT JOIN Patient p ON a.patientId=p.id" +
                             " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
                             " LEFT JOIN Specialization sp ON a.specializationId=sp.id" +
-                            " LEFT JOIN Hospital h ON a.hospital.id=h.id" +
+                            " LEFT JOIN Hospital h ON a.hospitalId=h.id" +
                             " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id" +
-                            " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id"
+                            " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id"+
+                            " LEFT JOIN AppointmentRefundDetail ard ON a.id=ard.appointmentId"
                             + GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_LOG_DETAILS(appointmentLogSearchDTO);
 
 
@@ -222,16 +226,19 @@ public class AppointmentQuery {
         String whereClause = " WHERE " +
                 " p.status='Y' " +
                 " AND sp.status='Y' " +
-                " AND a.status='PA'" +
                 " AND a.appointmentDate BETWEEN :fromDate AND :toDate";
+
+        if (!Objects.isNull(appointmentLogSearchDTO.getAppointmentNumber()))
+            whereClause += " AND a.appointmentNumber = '" + appointmentLogSearchDTO.getAppointmentNumber()+"'";
+
+        if (!Objects.isNull(appointmentLogSearchDTO.getStatus()))
+            whereClause += " AND a.status = '" + appointmentLogSearchDTO.getStatus()+"'";
 
         if (!Objects.isNull(appointmentLogSearchDTO.getAppointmentId()))
             whereClause += " AND a.id = " + appointmentLogSearchDTO.getAppointmentId();
 
         if (!Objects.isNull(appointmentLogSearchDTO.getHospitalId()))
             whereClause += " AND h.id = " + appointmentLogSearchDTO.getHospitalId();
-
-
 
         if (!Objects.isNull(appointmentLogSearchDTO.getPatientMetaInfoId()))
             whereClause += " AND pi.id = " + appointmentLogSearchDTO.getPatientMetaInfoId();
@@ -248,7 +255,7 @@ public class AppointmentQuery {
         if (!Objects.isNull(appointmentLogSearchDTO.getDoctorId()))
             whereClause += " AND d.id = " + appointmentLogSearchDTO.getDoctorId();
 
-        whereClause+=" ORDER BY a.appointmentDate DESC";
+        whereClause += " ORDER BY a.appointmentDate DESC";
 
         return whereClause;
     }

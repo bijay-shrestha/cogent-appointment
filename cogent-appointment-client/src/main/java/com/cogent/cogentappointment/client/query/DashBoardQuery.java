@@ -32,5 +32,13 @@ public class DashBoardQuery {
                     " AND a.status!='A'" +
                     " AND h.id=:hospitalId";
 
+    public static String QUERY_TO_COUNT_OVERALL_REGISTERED_PATIENTS=
+            "SELECT" +
+                    " COUNT(hpi.id)" +
+                    " FROM HospitalPatientInfo hpi" +
+                    " WHERE " +
+                    " hpi.hospitalId=:hospitalId" +
+                    " AND hpi.isRegistered='Y'";
+
 
 }

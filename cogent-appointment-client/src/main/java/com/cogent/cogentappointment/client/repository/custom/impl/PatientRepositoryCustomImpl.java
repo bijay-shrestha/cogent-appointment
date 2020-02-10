@@ -23,6 +23,7 @@ import java.util.List;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.PatientQueryConstants.IS_SELF;
+import static com.cogent.cogentappointment.client.query.DashBoardQuery.QUERY_TO_COUNT_OVERALL_REGISTERED_PATIENTS;
 import static com.cogent.cogentappointment.client.query.PatientQuery.*;
 import static com.cogent.cogentappointment.client.utils.PatientUtils.parseToPatientMinimalResponseDTO;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
@@ -143,7 +144,11 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
 
     @Override
     public Long countOverallRegisteredPatients(Long HospitalId) {
-        return null;
+        Query query = createQuery.apply(entityManager, QUERY_TO_COUNT_OVERALL_REGISTERED_PATIENTS)
+                .setParameter(HOSPITAL_ID, HospitalId);
+
+        return (Long) query.getSingleResult();
+
     }
 
 }

@@ -84,13 +84,13 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    public Long countOverallRegisteredPatients() {
+    public Long countOverallRegisteredPatients(Long hospitalId) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, OVER_ALL_REGISTERED_PATIENTS);
 
-        Long resgisteredPatients = patientRepository.countOverallRegisteredPatients();
+        Long resgisteredPatients = patientRepository.countOverallRegisteredPatients(hospitalId);
 
         log.info(FETCHING_PROCESS_COMPLETED, OVER_ALL_REGISTERED_PATIENTS, getDifferenceBetweenTwoTime(startTime));
 

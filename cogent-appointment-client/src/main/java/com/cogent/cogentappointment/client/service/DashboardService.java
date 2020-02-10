@@ -13,5 +13,5 @@ public interface DashboardService {
 
     AppointmentCountResponseDTO countOverallAppointments(AppointmentCountRequestDTO appointmentCountRequestDTO);
 
-    Long countOverallRegisteredPatients();
+    Long countOverallRegisteredPatients(Long hospitalId);
 }

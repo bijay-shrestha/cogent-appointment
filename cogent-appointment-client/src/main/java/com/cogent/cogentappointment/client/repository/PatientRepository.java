@@ -23,9 +23,4 @@ public interface PatientRepository extends JpaRepository<Patient, Long>, Patient
             " WHERE p.id=:id AND hp.status ='Y'")
     Optional<Patient> fetchActivePatientById(@Param("id") Long id);
 
-    @Query("SELECT COUNT(p.id) FROM Patient p")
-//            "" +
-//            " WHERE p.isRegistered='Y' AND p.status ='Y'")
-    Long countOverallRegisteredPatients();
-
 }

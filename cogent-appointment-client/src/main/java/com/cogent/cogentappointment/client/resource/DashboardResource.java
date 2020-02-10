@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import static com.cogent.cogentappointment.client.constants.QueryConstants.HOSPITAL_ID;
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.DashboardConstant.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.DashboardConstants.*;
@@ -41,9 +42,9 @@ public class DashboardResource {
         return ok(dashboardService.countOverallAppointments(countRequestDTO));
     }
 
-    @GetMapping(REGISTERED + COUNT)
+    @GetMapping(REGISTERED + COUNT + HOSPITAL_ID_PATH_VARIABLE_BASE)
     @ApiOperation(COUNT_REGISTERED_PATIENTS)
-    public ResponseEntity<?> countRegisteredPatients() {
-        return ok(dashboardService.countOverallRegisteredPatients());
+    public ResponseEntity<?> countRegisteredPatients(@PathVariable("hospitalId") Long hospitalId) {
+        return ok(dashboardService.countOverallRegisteredPatients(hospitalId));
     }
 }

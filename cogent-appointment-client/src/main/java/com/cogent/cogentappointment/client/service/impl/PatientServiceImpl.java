@@ -204,18 +204,6 @@ public class PatientServiceImpl implements PatientService {
         return responseDTOS;
     }
 
-    @Override
-    public Long countRegisteredPatients() {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(FETCHING_PROCESS_STARTED, PATIENT);
-
-        Long resgisteredPatients = patientRepository.getCountOfRegisteredPatient();
-
-        log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
-
-        return resgisteredPatients;
-    }
 
     private void validatePatientDuplicity(Long patientCount, String name, String mobileNumber,
                                           Date dateOfBirth) {

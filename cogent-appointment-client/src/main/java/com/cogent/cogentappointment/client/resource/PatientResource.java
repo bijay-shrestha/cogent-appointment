@@ -79,9 +79,4 @@ public class PatientResource {
         return ok(patientService.fetchMinPatientMetaInfo(hospitalId));
     }
 
-    @GetMapping(REGISTERED + COUNT)
-    @ApiOperation(COUNT_REGISTERED_PATIENTS)
-    public ResponseEntity<?> countRegisteredPatients() {
-        return ok(patientService.countRegisteredPatients());
-    }
 }

@@ -55,12 +55,7 @@ public class AppointmentResource {
         return ok().build();
     }
 
-    @PutMapping("/overAllAppointment")
-    @ApiOperation(CANCEL_APPOINTMENT_OPERATION)
-    public ResponseEntity<?> getOverAllAppointment(@Valid @RequestBody AppointmentCountRequestDTO countRequestDTO) {
-        appointmentService.countOverAllAppointment(countRequestDTO);
-        return ok(appointmentService.countOverAllAppointment(countRequestDTO));
-    }
+
 
 
 }

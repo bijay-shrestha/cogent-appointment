@@ -73,6 +73,8 @@ public class SwaggerConstants {
     public interface DashboardConstant {
         String BASE_API_VALUE = "This is Dashboard Controller";
         String GENERATE_REVENUE_OPERATION = "Generate Revenue.";
+        String OVER_ALL_APPOINTMENT_OPERATION = "Over all appointment.";
+        String COUNT_REGISTERED_PATIENTS = " Count no. of registered patients";
     }
 
     public interface DepartmentConstant {
@@ -167,7 +169,7 @@ public class SwaggerConstants {
         String UPDATE_PATIENT_INFO_OPERATION = "Update patient info";
         String SEARCH_OPERATION ="Search Patient Info";
         String FETCH_DETAILS_BY_ID = " Fetch patient(with type 'OTHERS') details by id";
-        String COUNT_REGISTERED_PATIENTS = " Count no. of registered patients";
+
     }
 
     public interface ProfileConstant {

@@ -2,7 +2,6 @@ package com.cogent.cogentappointment.client.service;
 
 import com.cogent.cogentappointment.client.dto.request.appointment.*;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentCheckAvailabilityResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentCountResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentPendingResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentSuccessResponseDTO;
 
@@ -22,6 +21,4 @@ public interface AppointmentService {
     void cancelAppointment(AppointmentCancelRequestDTO cancelRequestDTO);
 
     void rescheduleAppointment(AppointmentRescheduleRequestDTO rescheduleRequestDTO);
-
-    AppointmentCountResponseDTO countOverAllAppointment(AppointmentCountRequestDTO appointmentCountRequestDTO);
 }

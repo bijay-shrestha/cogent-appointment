@@ -84,22 +84,5 @@ public class AppointmentQuery {
                     " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +
                     " WHERE a.id =:id";
 
-    public static String QUERY_TO_COUNT_REGISTERED_APPOINTMENT=
-            "SELECT" +
-                    " COUNT(a.id)" +
-                    " FROM Appointment a" +
-                    " LEFT JOIN Hospital h ON h.id=a.hospitalId" +
-                    " WHERE (a.createdDate BETWEEN :fromDate AND :toDate)" +
-                    " AND a.status='A'" +
-                    " AND h.id=:hospitalId";
-
-    public static String QUERY_TO_COUNT_NEW_PATIENT_APPOINTMENT=
-            "SELECT" +
-                    " COUNT(a.id)" +
-                    " FROM Appointment a" +
-                    " LEFT JOIN Hospital h ON h.id=a.hospitalId" +
-                    " WHERE (a.appointmentDate BETWEEN :fromDate AND :toDate)" +
-                    " AND a.status!='A'" +
-                    " AND h.id=:hospitalId";
 
 }

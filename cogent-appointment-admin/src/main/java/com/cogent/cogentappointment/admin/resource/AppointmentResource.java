@@ -60,16 +60,15 @@ public class AppointmentResource {
                                     @RequestParam("page") int page,
                                     @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return ok().body(appointmentService.fetchPendingApprovals(searchRequestDTO, pageable));
+        return ok().body(appointmentService.searchPendingVisitApprovals(searchRequestDTO, pageable));
     }
 
     @PutMapping(LOG)
-    @ApiOperation(FETCH_PENDING_APPOINTMENT_APPROVAL)
-    public ResponseEntity<?> searchLog(@RequestBody AppointmentLogSearchDTO searchRequestDTO,
+    @ApiOperation(FETCH_APPOINTMENT_LOG)
+    public ResponseEntity<?> fetchAppointmentLog(@RequestBody AppointmentLogSearchDTO searchRequestDTO,
                                     @RequestParam("page") int page,
                                     @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
-
-        return ok().body(appointmentService.fetchAppointmentLogs(searchRequestDTO, pageable));
+        return ok().body(appointmentService.searchAppointmentLogs(searchRequestDTO, pageable));
     }
 }

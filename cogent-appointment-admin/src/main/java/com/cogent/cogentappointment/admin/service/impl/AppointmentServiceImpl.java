@@ -4,7 +4,7 @@ import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLog
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundSearchDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentLogSearchResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentLogResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentPendingApprovalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
@@ -23,6 +23,7 @@ import java.util.function.Function;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.APPROVED;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.REFUNDED;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.SEARCHING_PROCESS_COMPLETED;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.SEARCHING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.*;
 import static com.cogent.cogentappointment.admin.utils.AppointmentUtils.parseRefundRejectDetails;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
@@ -98,10 +99,12 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentPendingApprovalResponseDTO fetchPendingApprovals(
+    public AppointmentPendingApprovalResponseDTO searchPendingVisitApprovals(
             AppointmentPendingApprovalSearchDTO searchRequestDTO, Pageable pageable) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SEARCHING_PROCESS_STARTED, PENDING_APPROVAL_LIST);
 
         AppointmentPendingApprovalResponseDTO responseDTOS =
                 appointmentRepository.searchPendingVisitApprovals(searchRequestDTO, pageable);
@@ -112,13 +115,16 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentLogSearchResponseDTO fetchAppointmentLogs(AppointmentLogSearchDTO searchRequestDTO, Pageable pageable) {
+    public AppointmentLogResponseDTO searchAppointmentLogs(AppointmentLogSearchDTO searchRequestDTO,
+                                                           Pageable pageable) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        AppointmentLogSearchResponseDTO responseDTOS =
+        log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_LOG);
+
+        AppointmentLogResponseDTO responseDTOS =
                 appointmentRepository.searchAppointmentLogs(searchRequestDTO, pageable);
 
-        log.info(SEARCHING_PROCESS_COMPLETED, PENDING_APPROVAL_LIST, getDifferenceBetweenTwoTime(startTime));
+        log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_LOG, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
     }

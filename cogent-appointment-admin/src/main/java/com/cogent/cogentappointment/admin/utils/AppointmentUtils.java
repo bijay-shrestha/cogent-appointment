@@ -1,8 +1,8 @@
 package com.cogent.cogentappointment.admin.utils;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundRejectDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentLogDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentLogResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentLogSearchResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentPendingApprovalDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentPendingApprovalResponseDTO;
 import com.cogent.cogentappointment.persistence.enums.Gender;
@@ -144,11 +144,11 @@ public class AppointmentUtils {
         return appointmentPendingApprovalResponseDTO;
     }
 
-    public static AppointmentLogSearchResponseDTO parseQueryResultToAppointmentLogResponse(List<Object[]> results) {
+    public static AppointmentLogResponseDTO parseQueryResultToAppointmentLogResponse(List<Object[]> results) {
 
-        AppointmentLogSearchResponseDTO appointmentLogSearchResponseDTO = new AppointmentLogSearchResponseDTO();
+        AppointmentLogResponseDTO appointmentLogResponseDTO = new AppointmentLogResponseDTO();
 
-        List<AppointmentLogResponseDTO> appointmentLogSearchDTOS = new ArrayList<>();
+        List<AppointmentLogDTO> appointmentLogSearchDTOS = new ArrayList<>();
 
         AtomicReference<Double> totalAmount = new AtomicReference<>(0D);
 
@@ -185,8 +185,8 @@ public class AppointmentUtils {
                     null : result[REGISTRATION_NUMBER_INDEX].toString();
 
 
-            AppointmentLogResponseDTO appointmentLogResponseDTO =
-                    AppointmentLogResponseDTO.builder()
+            AppointmentLogDTO appointmentLogDTO =
+                    AppointmentLogDTO.builder()
                             .hospitalName(result[HOSPITAL_NAME_INDEX].toString())
                             .appointmentDate(appointmentDate)
                             .appointmentNumber(result[APPOINTMENT_NUMBER_INDEX].toString())
@@ -209,15 +209,15 @@ public class AppointmentUtils {
                             .refundAmount(refundAmount)
                             .build();
 
-            appointmentLogSearchDTOS.add(appointmentLogResponseDTO);
+            appointmentLogSearchDTOS.add(appointmentLogDTO);
 
             totalAmount.updateAndGet(v -> v + appointmentAmount);
         });
 
-        appointmentLogSearchResponseDTO.setAppointmentLogSearchDTOList(appointmentLogSearchDTOS);
-        appointmentLogSearchResponseDTO.setTotalAmount(totalAmount.get());
+        appointmentLogResponseDTO.setAppointmentLogSearchDTOList(appointmentLogSearchDTOS);
+        appointmentLogResponseDTO.setTotalAmount(totalAmount.get());
 
-        return appointmentLogSearchResponseDTO;
+        return appointmentLogResponseDTO;
 
     }
 }

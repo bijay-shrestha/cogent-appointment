@@ -165,7 +165,6 @@ public class AppointmentQuery {
         if (!Objects.isNull(pendingApprovalSearchDTO.getAppointmentId()))
             whereClause += " AND a.id = " + pendingApprovalSearchDTO.getAppointmentId();
 
-
         if (!Objects.isNull(pendingApprovalSearchDTO.getHospitalId()))
             whereClause += " AND h.id = " + pendingApprovalSearchDTO.getHospitalId();
 
@@ -231,7 +230,7 @@ public class AppointmentQuery {
                 " AND a.appointmentDate BETWEEN :fromDate AND :toDate";
 
         if (!Objects.isNull(appointmentLogSearchDTO.getAppointmentNumber()))
-            whereClause += " AND a.appointmentNumber = '" + appointmentLogSearchDTO.getAppointmentNumber() + "'";
+            whereClause += " AND a.appointmentNumber LIKE '%" + appointmentLogSearchDTO.getAppointmentNumber() + "%'";
 
         if (!Objects.isNull(appointmentLogSearchDTO.getStatus()))
             whereClause += " AND a.status = '" + appointmentLogSearchDTO.getStatus() + "'";

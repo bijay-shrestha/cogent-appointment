@@ -4,7 +4,7 @@ import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLog
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundSearchDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentBookedDateResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentLogSearchResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentLogResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentPendingApprovalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundResponseDTO;
@@ -132,8 +132,9 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
-    public AppointmentLogSearchResponseDTO searchAppointmentLogs(AppointmentLogSearchDTO searchRequestDTO, Pageable
-            pageable) {
+    public AppointmentLogResponseDTO searchAppointmentLogs(AppointmentLogSearchDTO searchRequestDTO,
+                                                           Pageable pageable) {
+
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_LOGS.apply(searchRequestDTO))
                 .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
                 .setParameter(TO_DATE, searchRequestDTO.getToDate());
@@ -144,7 +145,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         List<Object[]> objects = query.getResultList();
 
-        AppointmentLogSearchResponseDTO results = parseQueryResultToAppointmentLogResponse(objects);
+        AppointmentLogResponseDTO results = parseQueryResultToAppointmentLogResponse(objects);
 
         if (results.getAppointmentLogSearchDTOList().isEmpty()) throw APPOINTMENT_NOT_FOUND.get();
         else {

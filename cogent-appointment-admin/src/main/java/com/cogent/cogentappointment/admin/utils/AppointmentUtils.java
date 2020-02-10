@@ -107,6 +107,9 @@ public class AppointmentUtils {
             Double refundAmount = Objects.isNull(result[REFUND_AMOUNT_INDEX]) ?
                     0D : Double.parseDouble(result[REFUND_AMOUNT_INDEX].toString());
 
+            String registrationNumber = Objects.isNull(result[REGISTRATION_NUMBER_INDEX]) ?
+                    null : result[REGISTRATION_NUMBER_INDEX].toString();
+
             AppointmentPendingApprovalDTO appointmentStatusResponseDTO =
                     AppointmentPendingApprovalDTO.builder()
                             .hospitalName(result[HOSPITAL_NAME_INDEX].toString())
@@ -114,8 +117,7 @@ public class AppointmentUtils {
                             .appointmentNumber(result[APPOINTMENT_NUMBER_INDEX].toString())
                             .appointmentTime(result[APPOINTMENT_TIME_INDEX].toString())
                             .esewaId(result[ESEWA_ID_INDEX].toString())
-                            .registrationNumber((result[REGISTRATION_NUMBER_INDEX] == null)
-                                    ? null : result[REGISTRATION_NUMBER_INDEX].toString())
+                            .registrationNumber(registrationNumber)
                             .patientName(result[PATIENT_NAME_INDEX].toString())
                             .patientGender((Gender) result[PATIENT_GENDER_INDEX])
                             .patientDob(patientDob)
@@ -179,6 +181,10 @@ public class AppointmentUtils {
             Double refundAmount = Objects.isNull(result[REFUND_AMOUNT_INDEX]) ?
                     0D : Double.parseDouble(result[REFUND_AMOUNT_INDEX].toString());
 
+            String registrationNumber = Objects.isNull(result[REGISTRATION_NUMBER_INDEX]) ?
+                    null : result[REGISTRATION_NUMBER_INDEX].toString();
+
+
             AppointmentLogResponseDTO appointmentLogResponseDTO =
                     AppointmentLogResponseDTO.builder()
                             .hospitalName(result[HOSPITAL_NAME_INDEX].toString())
@@ -186,8 +192,7 @@ public class AppointmentUtils {
                             .appointmentNumber(result[APPOINTMENT_NUMBER_INDEX].toString())
                             .appointmentTime(result[APPOINTMENT_TIME_INDEX].toString())
                             .esewaId(result[ESEWA_ID_INDEX].toString())
-                            .registrationNumber((result[REGISTRATION_NUMBER_INDEX] == null)
-                                    ? null : result[REGISTRATION_NUMBER_INDEX].toString())
+                            .registrationNumber(registrationNumber)
                             .patientName(result[PATIENT_NAME_INDEX].toString())
                             .patientGender((Gender) result[PATIENT_GENDER_INDEX])
                             .patientDob(patientDob)

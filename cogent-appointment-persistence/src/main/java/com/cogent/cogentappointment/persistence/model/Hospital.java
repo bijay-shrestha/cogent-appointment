@@ -2,7 +2,10 @@ package com.cogent.cogentappointment.persistence.model;
 
 import com.cogent.cogentappointment.persistence.audit.Auditable;
 import com.cogent.cogentappointment.persistence.listener.HospitalEntityListener;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -46,6 +49,9 @@ public class Hospital extends Auditable<String> implements Serializable {
     @Column(name = "refund_percentage")
     private Double refundPercentage;
 
+    @Column(name = "number_of_admins")
+    private Integer numberOfAdmins;
+
     @Column(name = "remarks")
     private String remarks;
 
@@ -60,6 +66,7 @@ public class Hospital extends Auditable<String> implements Serializable {
                 ", isCogentAdmin=" + isCogentAdmin +
                 ", status=" + status +
                 ", refundPercentage=" + refundPercentage +
+                ", numberOfAdmins=" + numberOfAdmins +
                 ", remarks='" + remarks +
                 '}';
     }

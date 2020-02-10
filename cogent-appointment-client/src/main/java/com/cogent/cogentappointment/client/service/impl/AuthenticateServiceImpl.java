@@ -23,7 +23,6 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 
     private final HMACUtils hmacUtils;
 
-
     private final HmacApiInfoRepository hmacApiInfoRepository;
 
     public AuthenticateServiceImpl(HMACUtils hmacUtils,
@@ -35,7 +34,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     @Override
     public String loginUser(LoginRequestDTO requestDTO) {
         AdminMinDetails adminMinDetails = hmacApiInfoRepository.verifyLoggedInAdmin(requestDTO.getUsername(),
-                requestDTO.getHospitalCode());
+                requestDTO.getCompanyCode());
         if (BCrypt.checkpw(requestDTO.getPassword(), adminMinDetails.getPassword())) {
             return hmacUtils.getAuthToken(adminMinDetails);
         }
@@ -45,7 +44,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 
     @Override
     public String loginThirdParty(LoginRequestDTO requestDTO) {
-        ThirdPartyDetail thirdPartyDetail = hmacApiInfoRepository.getDetailsByHositalCode(requestDTO.getHospitalCode());
+        ThirdPartyDetail thirdPartyDetail = hmacApiInfoRepository.getDetailsByHospitalCode(requestDTO.getCompanyCode());
 
         return hmacUtils.getAuthTokenForEsewa(thirdPartyDetail);
     }

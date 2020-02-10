@@ -27,6 +27,17 @@ public class AdminQuery {
                     " (a.username =:username OR a.email =:email OR a.mobileNumber = :mobileNumber)" +
                     " AND h.id=:hospitalId";
 
+    public static final String QUERY_TO_VALIDATE_ADMIN_COUNT =
+            " SELECT " +
+                    " COUNT(a.id)," +
+                    " h.numberOfAdmins" +
+                    " FROM Admin a" +
+                    " LEFT JOIN Profile p ON p.id = a.profileId" +
+                    " LEFT JOIN Department d ON d.id = p.department.id" +
+                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
+                    " WHERE h.id = :hospitalId" +
+                    " AND a.status !='D'";
+
     public static final String QUERY_TO_FIND_ADMIN_EXCEPT_CURRENT_ADMIN =
             "SELECT " +
                     " a.email," +                               //[0]

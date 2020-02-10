@@ -22,7 +22,7 @@ public class AdminMinDetails implements Serializable {
 
     private String email;
 
-    private String hospitalCode;
+    private String companyCode;
 
     private String password;
 

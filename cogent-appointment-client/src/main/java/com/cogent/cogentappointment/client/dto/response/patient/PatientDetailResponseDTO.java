@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -19,32 +18,22 @@ import java.util.Date;
 @NoArgsConstructor
 public class PatientDetailResponseDTO implements Serializable {
 
+    private Long patientId;
+
     private String name;
 
-    private Gender gender;
+    private String mobileNumber;
 
     private String address;
 
     private String email;
 
-    private String registrationNumber;
-
-    private String mobileNumber;
-
-    private String eSewaId;
-
-    private String age;
-
-    private Character status;
-
-    private String hospitalNumber;
-
-    private String hospitalName;
+    private Gender gender;
 
     private Date dateOfBirth;
 
-    private Character isSelf;
+    private String age;
 
-    private Character isRegistered;
+    private String registrationNumber;
 
 }

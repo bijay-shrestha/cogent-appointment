@@ -4,7 +4,7 @@ import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestDTO
 import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientMinimalResponseDTO;
 import com.cogent.cogentappointment.persistence.enums.Gender;
-import com.cogent.cogentappointment.persistence.model.Hospital;
+import com.cogent.cogentappointment.persistence.model.HospitalPatientInfo;
 import com.cogent.cogentappointment.persistence.model.Patient;
 import com.cogent.cogentappointment.persistence.model.PatientMetaInfo;
 
@@ -22,35 +22,63 @@ import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toUpp
 public class PatientUtils {
 
     public static Patient parseToPatient(PatientRequestDTO requestDTO,
-                                         Gender gender,
-                                         Hospital hospital) {
+                                         Gender gender) {
         Patient patient = new Patient();
         patient.setName(toUpperCase(requestDTO.getName()));
         patient.setMobileNumber(requestDTO.getMobileNumber());
         patient.setDateOfBirth(requestDTO.getDateOfBirth());
-        patient.setEmail(requestDTO.getEmail());
-        patient.setIsSelf(requestDTO.getIsSelf());
-        patient.setIsRegistered(NO);
         patient.setESewaId(requestDTO.getESewaId());
-        patient.setAddress(requestDTO.getAddress());
         patient.setGender(gender);
-        patient.setHospitalId(hospital);
+
         return patient;
     }
+
+    public static HospitalPatientInfo parseHospitalPatientInfo(PatientRequestDTO requestDTO,
+                                                               Long patientId,
+                                                               Long hospitalId) {
+        HospitalPatientInfo hospitalPatientInfo = new HospitalPatientInfo();
+        hospitalPatientInfo.setHospitalId(hospitalId);
+        hospitalPatientInfo.setPatientId(patientId);
+        hospitalPatientInfo.setIsSelf(requestDTO.getIsSelf());
+        hospitalPatientInfo.setIsRegistered(NO);
+        hospitalPatientInfo.setEmail(requestDTO.getEmail());
+        hospitalPatientInfo.setAddress(requestDTO.getAddress());
+        hospitalPatientInfo.setStatus(requestDTO.getStatus());
+        return hospitalPatientInfo;
+    }
+
+    public static PatientMetaInfo parseToPatientMetaInfo(Patient patient,
+                                                         String registrationNumber,
+                                                         Character status) {
+        PatientMetaInfo patientMetaInfo = new PatientMetaInfo();
+        patientMetaInfo.setPatient(patient);
+        patientMetaInfo.setMetaInfo(
+                patient.getName() + OR + patient.getMobileNumber() + OR + registrationNumber);
+        patientMetaInfo.setStatus(status);
+        return patientMetaInfo;
+    }
+
 
     public static Patient updatePatient(PatientUpdateRequestDTO requestDTO,
                                         Patient patient) {
         patient.setName(toUpperCase(requestDTO.getName()));
         patient.setDateOfBirth(requestDTO.getDateOfBirth());
         patient.setMobileNumber(requestDTO.getMobileNumber());
-        patient.setAddress(requestDTO.getAddress());
         patient.setGender(requestDTO.getGender());
-        patient.setHospitalNumber(requestDTO.getHospitalNumber());
-        patient.setEmail(requestDTO.getEmail());
-        patient.setRemarks(requestDTO.getRemarks());
-        patient.setStatus(requestDTO.getStatus());
 
         return patient;
+    }
+
+    public static HospitalPatientInfo updateHospitalPatientInfo(PatientUpdateRequestDTO requestDTO,
+                                                                HospitalPatientInfo hospitalPatientInfo) {
+
+        hospitalPatientInfo.setAddress(requestDTO.getAddress());
+        hospitalPatientInfo.setHospitalNumber(requestDTO.getHospitalNumber());
+        hospitalPatientInfo.setEmail(requestDTO.getEmail());
+        hospitalPatientInfo.setRemarks(requestDTO.getRemarks());
+        hospitalPatientInfo.setStatus(requestDTO.getStatus());
+
+        return hospitalPatientInfo;
     }
 
     public static List<PatientMinimalResponseDTO> parseToPatientMinimalResponseDTO(List<Object[]> results) {
@@ -75,14 +103,14 @@ public class PatientUtils {
                 .build();
     };
 
-    public static PatientMetaInfo updatePatientMetaInfo(Patient patient,
+    public static PatientMetaInfo updatePatientMetaInfo(HospitalPatientInfo hospitalPatientInfo,
                                                         PatientMetaInfo patientMetaInfo,
                                                         PatientUpdateRequestDTO updateRequestDTO) {
-        patientMetaInfo.setMetaInfo(toUpperCase(updateRequestDTO.getName())
-                + OR +
-                updateRequestDTO.getMobileNumber()
-                + OR +
-                patient.getRegistrationNumber());
+        patientMetaInfo.setMetaInfo(updateRequestDTO.getName()
+                        + OR +
+                        updateRequestDTO.getMobileNumber()
+                        + OR+
+                hospitalPatientInfo.getRegistrationNumber());
         patientMetaInfo.setStatus(updateRequestDTO.getStatus());
         patientMetaInfo.setRemarks(updateRequestDTO.getRemarks());
 

@@ -1,8 +1,11 @@
 package com.cogent.cogentappointment.client.query;
 
+import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.DoctorDutyRosterOverrideUpdateRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.DoctorDutyRosterStatusRequestDTO;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class DoctorDutyRosterOverrideQuery {
 
@@ -12,6 +15,18 @@ public class DoctorDutyRosterOverrideQuery {
                     " LEFT JOIN DoctorDutyRoster dr ON dr.id = d.doctorDutyRosterId.id" +
                     " WHERE dr.status != 'D'" +
                     " AND d.status = 'Y'" +
+                    " AND dr.doctorId.id=:doctorId" +
+                    " AND dr.specializationId.id= :specializationId" +
+                    " AND d.toDate >=:fromDate" +
+                    " AND d.fromDate <=:toDate";
+
+    public static final String VALIDATE_DOCTOR_DUTY_ROSTER_OVERRIDE_COUNT_FOR_UPDATE =
+            " SELECT COUNT(d.id)" +
+                    " FROM DoctorDutyRosterOverride d" +
+                    " LEFT JOIN DoctorDutyRoster dr ON dr.id = d.doctorDutyRosterId.id" +
+                    " WHERE dr.status != 'D'" +
+                    " AND d.status = 'Y'" +
+                    " AND d.id!=:id" +
                     " AND dr.doctorId.id=:doctorId" +
                     " AND dr.specializationId.id= :specializationId" +
                     " AND d.toDate >=:fromDate" +
@@ -74,6 +89,17 @@ public class DoctorDutyRosterOverrideQuery {
             SQL += " AND dd.specializationId.id = :specializationId";
 
         return SQL;
+    }
+
+    public static String QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE(
+            List<DoctorDutyRosterOverrideUpdateRequestDTO> overrideUpdateRequestDTOS) {
+
+        String overrideIds = overrideUpdateRequestDTOS.stream()
+                .map(request -> request.getDoctorDutyRosterOverrideId().toString())
+                .collect(Collectors.joining(","));
+
+        return " SELECT d FROM DoctorDutyRosterOverride d" +
+                " WHERE d.id IN (" + overrideIds + ")";
     }
 
 }

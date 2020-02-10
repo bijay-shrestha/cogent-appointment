@@ -20,7 +20,7 @@ import java.util.List;
 public interface PatientService {
     Patient save(PatientRequestDTO requestDTO, Long hospitalId);
 
-    Patient fetchRegisteredPatientById(Long id);
+    Patient fetchActivePatientById(Long id);
 
     PatientDetailResponseDTO searchForSelf(PatientMinSearchRequestDTO searchRequestDTO);
 
@@ -28,7 +28,7 @@ public interface PatientService {
     List<PatientMinimalResponseDTO> fetchMinimalPatientInfo(PatientMinSearchRequestDTO searchRequestDTO,
                                                             Pageable pageable);
 
-    /*FETCH DETAILS OF 'OTHERS'*/
+
     PatientResponseDTO fetchDetailsById(Long id);
 
     List<PatientSearchResponseDTO> search(PatientSearchRequestDTO searchRequestDTO,

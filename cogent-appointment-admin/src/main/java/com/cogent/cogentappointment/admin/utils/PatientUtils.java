@@ -16,12 +16,12 @@ public class PatientUtils {
         patient.setName(toUpperCase(requestDTO.getName()));
         patient.setDateOfBirth(requestDTO.getDateOfBirth());
         patient.setMobileNumber(requestDTO.getMobileNumber());
-        patient.setAddress(requestDTO.getAddress());
+//        patient.setAddress(requestDTO.getAddress());
         patient.setGender(requestDTO.getGender());
-        patient.setHospitalNumber(requestDTO.getHospitalNumber());
-        patient.setEmail(requestDTO.getEmail());
-        patient.setRemarks(requestDTO.getRemarks());
-        patient.setStatus(requestDTO.getStatus());
+//        patient.setHospitalNumber(requestDTO.getHospitalNumber());
+//        patient.setEmail(requestDTO.getEmail());
+//        patient.setRemarks(requestDTO.getRemarks());
+//        patient.setStatus(requestDTO.getStatus());
 
         return patient;
     }
@@ -29,11 +29,7 @@ public class PatientUtils {
     public static PatientMetaInfo updatePatientMetaInfo(Patient patient,
                                                         PatientMetaInfo patientMetaInfo,
                                                         PatientUpdateRequestDTO updateRequestDTO) {
-        patientMetaInfo.setMetaInfo(toUpperCase(updateRequestDTO.getName())
-                + OR +
-                updateRequestDTO.getMobileNumber()
-                + OR +
-                patient.getRegistrationNumber());
+//merge with
         patientMetaInfo.setStatus(updateRequestDTO.getStatus());
         patientMetaInfo.setRemarks(updateRequestDTO.getRemarks());
 

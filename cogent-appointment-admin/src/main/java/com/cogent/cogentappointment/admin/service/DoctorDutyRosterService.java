@@ -20,6 +20,8 @@ public interface DoctorDutyRosterService {
 
     void deleteDoctorDutyRosterOverride(DeleteRequestDTO deleteRequestDTO);
 
+    void revertDoctorDutyRosterOverride(List<DoctorDutyRosterOverrideUpdateRequestDTO> updateInfo);
+
     void delete(DeleteRequestDTO deleteRequestDTO);
 
     List<DoctorDutyRosterMinimalResponseDTO> search(DoctorDutyRosterSearchRequestDTO searchRequestDTO,

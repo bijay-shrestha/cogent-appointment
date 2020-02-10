@@ -65,9 +65,11 @@ public class WebResourceKeyConstants {
     public interface DoctorDutyRosterConstants {
         String BASE_DOCTOR_DUTY_ROSTER = "/doctorDutyRoster";
         String DOCTOR_DUTY_ROSTER_OVERRIDE = "/doctorDutyRosterOverride";
-        String DOCTOR_DUTY_ROSTER_STATUS = "/doctorDutyRosterStatus";
         String EXISTING = "/existing";
+        String REVERT_DOCTOR_DUTY_ROSTER_OVERRIDE = "/revert";
+        String DOCTOR_DUTY_ROSTER_STATUS = "/doctorDutyRosterStatus";
     }
+
 
     //E
 

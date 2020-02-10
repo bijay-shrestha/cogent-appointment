@@ -91,12 +91,22 @@ public class SwaggerConstants {
         String SAVE_OPERATION = "Save Doctor Duty Roster";
         String UPDATE_OPERATION = "Update Doctor Duty Roster. Note that week days time can be updated " +
                 "only if there are no appointments within the selected date range";
-        String DELETE_OPERATION = "Set Doctor Duty Roster status as 'D' when deleted";
+        String DELETE_OPERATION = "Set Doctor Duty Roster status as 'D' when deleted. " +
+                " Note that doctor duty roster can be deleted " +
+                " only if there are no appointments within the selected date range";
         String SEARCH_OPERATION = "Search Doctor Duty Roster according to given request parameters";
         String DETAILS_OPERATION = "Fetch Doctor Duty Roster details by its id";
-        String FETCH_DOCTOR_DUTY_ROSTER_STATUS_OPERATION = "Fetch doctor duty roster status (used in Appointment status)";
-        String UPDATE_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION = "Update Doctor Duty Roster Override schedules";
+        String UPDATE_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION = "Update Doctor Duty Roster Override schedules." +
+                " (Can save new override schedules for the same roster or update existing rosters). " +
+                " Returns saved/updated override id as response.";
+        String DELETE_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION = "Set Doctor Duty Roster Override status as 'D' when deleted. " +
+                " Note that doctor duty roster override can be deleted " +
+                " only if there are no appointments within the selected date range";
         String FETCH_EXISTING_ROSTERS = " Fetch existing doctor duty rosters within the selected date range";
+        String REVERT_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION = "Revert doctor duty roster." +
+                " In case, user 'Cancel' roster while updating doctor duty roster." +
+                " If 'isOriginal' flag is true, then update all override details else simply update status and remarks.";
+        String FETCH_DOCTOR_DUTY_ROSTER_STATUS_OPERATION = "Fetch doctor duty roster status (used in Appointment status)";
     }
 
 

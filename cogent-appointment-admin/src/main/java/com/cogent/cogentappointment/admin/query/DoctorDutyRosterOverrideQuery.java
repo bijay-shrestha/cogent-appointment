@@ -1,8 +1,11 @@
 package com.cogent.cogentappointment.admin.query;
 
+import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDutyRosterOverrideUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDutyRosterStatusRequestDTO;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class DoctorDutyRosterOverrideQuery {
 
@@ -86,6 +89,17 @@ public class DoctorDutyRosterOverrideQuery {
             SQL += " AND dd.specializationId.id = :specializationId";
 
         return SQL;
+    }
+
+    public static String QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE(
+            List<DoctorDutyRosterOverrideUpdateRequestDTO> overrideUpdateRequestDTOS) {
+
+        String overrideIds = overrideUpdateRequestDTOS.stream()
+                .map(request -> request.getDoctorDutyRosterOverrideId().toString())
+                .collect(Collectors.joining(","));
+
+        return " SELECT d FROM DoctorDutyRosterOverride d" +
+                " WHERE d.id IN (" + overrideIds + ")";
     }
 
 }

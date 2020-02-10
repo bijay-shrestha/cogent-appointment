@@ -66,7 +66,7 @@ public class DoctorDutyRosterUtils {
                         .map(appointmentDates ->
                                 convertDateToLocalDate(appointmentDates.getAppointmentDate()).getDayOfWeek().toString())
                         .filter(weekName ->
-                                unmatchedList.getWeekName().equals(weekName))
+                                unmatchedList.getWeekDaysName().equals(weekName))
                         .forEachOrdered(weekName -> {
                             throw new BadRequestException(String.format(APPOINTMENT_EXISTS_MESSAGE, weekName));
                         }));
@@ -245,16 +245,4 @@ public class DoctorDutyRosterUtils {
                 .build();
     }
 
-    public static DoctorRosterOverrideUpdateResponseDTO parseToOverrideUpdateResponse(Long savedOverrideId) {
-        return DoctorRosterOverrideUpdateResponseDTO.builder()
-                .savedOverrideId(savedOverrideId)
-                .build();
-    }
-
-    public static void parseDeletedOverrideDetails(DoctorDutyRosterOverride doctorDutyRosterOverride,
-                                                   DeleteRequestDTO deleteRequestDTO) {
-
-        doctorDutyRosterOverride.setStatus(deleteRequestDTO.getStatus());
-        doctorDutyRosterOverride.setRemarks(deleteRequestDTO.getRemarks());
-    }
 }

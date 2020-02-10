@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.resource;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentRequestDTO;
 import com.cogent.cogentappointment.admin.service.AppointmentService;
@@ -54,6 +55,19 @@ public class AppointmentResource {
         Pageable pageable = PageRequest.of(page, size);
         return ok().body(appointmentService.fetchPendingApprovals(searchRequestDTO, pageable));
     }
+
+    @PutMapping(LOG)
+    @ApiOperation(FETCH_PENDING_APPOINTMENT_APPROVAL)
+    public ResponseEntity<?> searchLog(@RequestBody AppointmentLogSearchDTO searchRequestDTO,
+                                    @RequestParam("page") int page,
+                                    @RequestParam("size") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+
+
+        return ok().body(appointmentService.fetchAppointmentLogs(searchRequestDTO, pageable));
+    }
+
 
 //    @PutMapping
 //    @ApiOperation(UPDATE_OPERATION)

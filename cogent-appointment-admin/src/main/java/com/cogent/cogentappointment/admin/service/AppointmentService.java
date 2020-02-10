@@ -38,6 +38,7 @@ public interface AppointmentService {
 
     AppointmentPendingApprovalResponseDTO fetchPendingApprovals(AppointmentPendingApprovalSearchDTO searchRequestDTO, Pageable pageable);
 
+    AppointmentLogSearchResponseDTO fetchAppointmentLogs(AppointmentLogSearchDTO searchRequestDTO, Pageable pageable);
 
 //    List<AppointmentStatusResponseDTO> fetchAppointmentForAppointmentStatus(AppointmentStatusRequestDTO requestDTO);
 //

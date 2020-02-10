@@ -19,4 +19,6 @@ public class AppointmentPendingApprovalResponseDTO implements Serializable {
     private List<AppointmentPendingApprovalDTO> pendingAppointmentApprovals;
 
     private Double totalAmount;
+
+    private int totalItems;
 }

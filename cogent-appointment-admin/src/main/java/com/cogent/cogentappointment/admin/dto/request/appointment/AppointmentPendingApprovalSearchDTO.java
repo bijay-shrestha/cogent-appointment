@@ -19,6 +19,8 @@ public class AppointmentPendingApprovalSearchDTO implements Serializable {
 
     private Date toDate;
 
+    private Long appointmentId;
+
     private Long patientMetaInfoId;
 
     private Long doctorId;

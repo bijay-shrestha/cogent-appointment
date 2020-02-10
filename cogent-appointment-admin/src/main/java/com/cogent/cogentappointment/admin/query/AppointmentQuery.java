@@ -1,7 +1,10 @@
 package com.cogent.cogentappointment.admin.query;
 
+import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentLogResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentLogSearchResponseDTO;
 import org.springframework.util.ObjectUtils;
 
 import java.util.Objects;
@@ -181,7 +184,7 @@ public class AppointmentQuery {
                             " h.name as hospitalName," +                                    //[0]
                             " a.appointmentDate as appointmentDate," +                      //[1]
                             " a.appointmentNumber as appointmentNumber," +                  //[2]
-                            " DATE_FORMAT(a.appointmentTime, '%H:%i %p') as appointmentTime,"+          //[3]
+                            " DATE_FORMAT(a.appointmentTime, '%H:%i %p') as appointmentTime," +          //[3]
                             " p.eSewaId as esewaId," +                                      //[4]
                             " p.registrationNumber as registrationNumber," +                //[5]
                             " p.name as patientName," +                                     //[6]
@@ -213,6 +216,10 @@ public class AppointmentQuery {
                 " AND a.status='PA'" +
                 " AND a.appointmentDate BETWEEN :fromDate AND :toDate";
 
+        if (!Objects.isNull(pendingApprovalSearchDTO.getAppointmentId()))
+            whereClause += " AND a.id = " + pendingApprovalSearchDTO.getAppointmentId();
+
+
         if (!Objects.isNull(pendingApprovalSearchDTO.getHospitalId()))
             whereClause += " AND h.id = " + pendingApprovalSearchDTO.getHospitalId();
 
@@ -231,8 +238,76 @@ public class AppointmentQuery {
         if (!Objects.isNull(pendingApprovalSearchDTO.getDoctorId()))
             whereClause += " AND d.id = " + pendingApprovalSearchDTO.getDoctorId();
 
+        whereClause+=" ORDER BY a.appointmentDate DESC";
+
         return whereClause;
     }
 
+    public static Function<AppointmentLogSearchDTO, String> QUERY_TO_FETCH_APPOINTMENT_LOGS =
+            (appointmentLogSearchDTO) ->
+                    "SELECT" +
+                            " h.name as hospitalName," +                                    //[0]
+                            " a.appointmentDate as appointmentDate," +                      //[1]
+                            " a.appointmentNumber as appointmentNumber," +                  //[2]
+                            " DATE_FORMAT(a.appointmentTime, '%H:%i %p') as appointmentTime," +          //[3]
+                            " p.eSewaId as esewaId," +                                      //[4]
+                            " p.registrationNumber as registrationNumber," +                //[5]
+                            " p.name as patientName," +                                     //[6]
+                            " p.gender as patientGender," +                                 //[7]
+                            " p.dateOfBirth as patientDob," +                               //[8]
+                            " p.isRegistered as isRegistered," +                            //[9]
+                            " p.isSelf as isSelf," +                                        //[10]
+                            " p.mobileNumber as mobileNumber," +                            //[11]
+                            " sp.name as specializationName," +                             //[12]
+                            " atd.transactionNumber as transactionNumber," +                //[13]
+                            " atd.appointmentAmount as appointmentAmount," +                //[14]
+                            " d.name as doctorName," +                                       //[15]
+                            " a.status as status" +                                        //[16]
+                            " FROM Appointment a" +
+                            " LEFT JOIN Patient p ON a.patientId=p.id" +
+                            " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
+                            " LEFT JOIN Specialization sp ON a.specializationId=sp.id" +
+                            " LEFT JOIN Hospital h ON a.hospital.id=h.id" +
+                            " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id" +
+                            " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id"
+                            + GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_LOG_DETAILS(appointmentLogSearchDTO);
+
+
+    private static String GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_LOG_DETAILS(
+            AppointmentLogSearchDTO appointmentLogSearchDTO) {
+
+        String whereClause = " WHERE " +
+                " p.status='Y' " +
+                " AND sp.status='Y' " +
+                " AND a.status='PA'" +
+                " AND a.appointmentDate BETWEEN :fromDate AND :toDate";
+
+        if (!Objects.isNull(appointmentLogSearchDTO.getAppointmentId()))
+            whereClause += " AND a.id = " + appointmentLogSearchDTO.getAppointmentId();
+
+        if (!Objects.isNull(appointmentLogSearchDTO.getHospitalId()))
+            whereClause += " AND h.id = " + appointmentLogSearchDTO.getHospitalId();
+
+
+
+        if (!Objects.isNull(appointmentLogSearchDTO.getPatientMetaInfoId()))
+            whereClause += " AND pi.id = " + appointmentLogSearchDTO.getPatientMetaInfoId();
+
+        if (!Objects.isNull(appointmentLogSearchDTO.getSpecializationId()))
+            whereClause += " AND sp.id = " + appointmentLogSearchDTO.getSpecializationId();
+
+        if (!Objects.isNull(appointmentLogSearchDTO.getPatientType()))
+            whereClause += " AND p.isRegistered = '" + appointmentLogSearchDTO.getPatientType() + "'";
+
+        if (!Objects.isNull(appointmentLogSearchDTO.getPatientCategory()))
+            whereClause += " AND p.isSelf = '" + appointmentLogSearchDTO.getPatientCategory() + "'";
+
+        if (!Objects.isNull(appointmentLogSearchDTO.getDoctorId()))
+            whereClause += " AND d.id = " + appointmentLogSearchDTO.getDoctorId();
+
+        whereClause+=" ORDER BY a.appointmentDate DESC";
+
+        return whereClause;
+    }
 
 }

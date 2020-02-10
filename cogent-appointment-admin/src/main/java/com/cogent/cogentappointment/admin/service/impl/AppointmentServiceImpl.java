@@ -253,6 +253,18 @@ public class AppointmentServiceImpl implements AppointmentService {
         return responseDTOS;
     }
 
+    @Override
+    public AppointmentLogSearchResponseDTO fetchAppointmentLogs(AppointmentLogSearchDTO searchRequestDTO, Pageable pageable) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        AppointmentLogSearchResponseDTO responseDTOS =
+                appointmentRepository.searchAppointmentLogs(searchRequestDTO, pageable);
+
+        log.info(SEARCHING_PROCESS_COMPLETED, PENDING_APPROVAL_LIST, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
 //    @Override
 //    public List<AppointmentStatusResponseDTO> fetchAppointmentForAppointmentStatus(
 //            AppointmentStatusRequestDTO requestDTO) {

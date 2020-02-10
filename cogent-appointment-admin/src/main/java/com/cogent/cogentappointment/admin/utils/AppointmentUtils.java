@@ -23,6 +23,7 @@ import org.joda.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -220,7 +221,8 @@ public class AppointmentUtils {
             Date appointmentDate = (Date) result[APPOINTMENT_DATE_INDEX];
             Date patientDob = (Date) result[PATIENT_DOB_INDEX];
 
-            Double appointmentAmount = Double.parseDouble(result[APPOINTMENT_AMOUNT_INDEX].toString());
+            Double appointmentAmount = Objects.isNull(result[APPOINTMENT_AMOUNT_INDEX]) ?
+                    0D : Double.parseDouble(result[APPOINTMENT_AMOUNT_INDEX].toString());
 
             AppointmentPendingApprovalDTO appointmentStatusResponseDTO =
                     AppointmentPendingApprovalDTO.builder()
@@ -254,6 +256,75 @@ public class AppointmentUtils {
         appointmentPendingApprovalResponseDTO.setTotalAmount(totalAmount.get());
 
         return appointmentPendingApprovalResponseDTO;
+    }
+
+    public static AppointmentLogSearchResponseDTO parseQueryResultToAppointmentLogResponse(List<Object[]> results) {
+
+        AppointmentLogSearchResponseDTO appointmentLogSearchResponseDTO = new AppointmentLogSearchResponseDTO();
+
+        List<AppointmentLogResponseDTO> appointmentLogSearchDTOS = new ArrayList<>();
+
+        AtomicReference<Double> totalAmount = new AtomicReference<>(0D);
+
+        results.forEach(result -> {
+            final int HOSPITAL_NAME_INDEX = 0;
+            final int APPOINTMENT_DATE_INDEX = 1;
+            final int APPOINTMENT_NUMBER_INDEX = 2;
+            final int APPOINTMENT_TIME_INDEX = 3;
+            final int ESEWA_ID_INDEX = 4;
+            final int REGISTRATION_NUMBER_INDEX = 5;
+            final int PATIENT_NAME_INDEX = 6;
+            final int PATIENT_GENDER_INDEX = 7;
+            final int PATIENT_DOB_INDEX = 8;
+            final int IS_REGISTERED_INDEX = 9;
+            final int IS_SELF_INDEX = 10;
+            final int PATIENT_MOBILE_NUMBER_INDEX = 11;
+            final int SPECIALIZATION_NAME_INDEX = 12;
+            final int TRANSACTION_NUMBER_INDEX = 13;
+            final int APPOINTMENT_AMOUNT_INDEX = 14;
+            final int DOCTOR_NAME_INDEX = 15;
+            final int APPOINTMENT_STATUS_INDEX = 16;
+
+            Date appointmentDate = (Date) result[APPOINTMENT_DATE_INDEX];
+            Date patientDob = (Date) result[PATIENT_DOB_INDEX];
+
+            Double appointmentAmount = Objects.isNull(result[APPOINTMENT_AMOUNT_INDEX]) ?
+                    0D : Double.parseDouble(result[APPOINTMENT_AMOUNT_INDEX].toString());
+
+            AppointmentLogResponseDTO appointmentLogResponseDTO =
+                    AppointmentLogResponseDTO.builder()
+                            .hospitalName(result[HOSPITAL_NAME_INDEX].toString())
+                            .appointmentDate(appointmentDate)
+                            .appointmentNumber(result[APPOINTMENT_NUMBER_INDEX].toString())
+                            .appointmentTime(result[APPOINTMENT_TIME_INDEX].toString())
+                            .esewaId(result[ESEWA_ID_INDEX].toString())
+                            .registrationNumber((result[REGISTRATION_NUMBER_INDEX] == null)
+                                    ? null : result[REGISTRATION_NUMBER_INDEX].toString())
+                            .patientName(result[PATIENT_NAME_INDEX].toString())
+                            .patientGender((Gender) result[PATIENT_GENDER_INDEX])
+                            .patientDob(patientDob)
+                            .patientAge(AgeConverterUtils.calculateAge(patientDob))
+                            .isRegistered((Character) result[IS_REGISTERED_INDEX])
+                            .isSelf((Character) result[IS_SELF_INDEX])
+                            .mobileNumber(result[PATIENT_MOBILE_NUMBER_INDEX].toString())
+                            .specializationName(result[SPECIALIZATION_NAME_INDEX].toString())
+                            .transactionNumber(Objects.isNull(result[TRANSACTION_NUMBER_INDEX])
+                                    ? null : result[TRANSACTION_NUMBER_INDEX].toString())
+                            .appointmentAmount(appointmentAmount)
+                            .doctorName(result[DOCTOR_NAME_INDEX].toString())
+                            .status(result[APPOINTMENT_STATUS_INDEX].toString())
+                            .build();
+
+            appointmentLogSearchDTOS.add(appointmentLogResponseDTO);
+
+            totalAmount.updateAndGet(v -> v + appointmentAmount);
+        });
+
+        appointmentLogSearchResponseDTO.setAppointmentLogSearchDTOList(appointmentLogSearchDTOS);
+        appointmentLogSearchResponseDTO.setTotalAmount(totalAmount.get());
+
+        return appointmentLogSearchResponseDTO;
+
     }
 
 

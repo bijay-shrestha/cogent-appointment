@@ -2,12 +2,15 @@ package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.constants.QueryConstants;
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.*;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.AppointmentRepositoryCustom;
 import com.cogent.cogentappointment.admin.utils.AppointmentUtils;
+import com.cogent.cogentappointment.admin.utils.commons.AgeConverterUtils;
+import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -17,8 +20,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -29,9 +34,6 @@ import static com.cogent.cogentappointment.admin.utils.AppointmentUtils.parseQue
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
-
-;
-;
 
 /**
  * @author smriti on 2019-10-22
@@ -143,7 +145,28 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         if (results.getPendingAppointmentApprovals().isEmpty()) throw APPOINTMENT_NOT_FOUND.get();
         else {
-            results.getPendingAppointmentApprovals().get(0).setTotalItems(totalItems);
+            results.setTotalItems(totalItems);
+            return results;
+        }
+    }
+
+    @Override
+    public AppointmentLogSearchResponseDTO searchAppointmentLogs(AppointmentLogSearchDTO searchRequestDTO, Pageable pageable) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_LOGS.apply(searchRequestDTO))
+                .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
+                .setParameter(TO_DATE, searchRequestDTO.getToDate());
+
+        int totalItems = query.getResultList().size();
+
+        addPagination.accept(pageable, query);
+
+        List<Object[]> objects = query.getResultList();
+
+        AppointmentLogSearchResponseDTO results = AppointmentUtils.parseQueryResultToAppointmentLogResponse(objects);
+
+        if (results.getAppointmentLogSearchDTOList().isEmpty()) throw APPOINTMENT_NOT_FOUND.get();
+        else {
+            results.setTotalItems(totalItems);
             return results;
         }
     }

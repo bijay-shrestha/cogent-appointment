@@ -17,7 +17,7 @@ public class HMACUtils {
     public String getAuthToken(AdminMinDetails admin) {
         final String nonce = generateNonce();
         String username = admin.getUsername();
-        String hospitalCode = admin.getHospitalCode();
+        String hospitalCode = admin.getCompanyCode();
         String apiKey = admin.getApiKey();
         String apiSecret = admin.getApiSecret();
 
@@ -49,7 +49,7 @@ public class HMACUtils {
 
     public String getAuthTokenForEsewa(ThirdPartyDetail thirdPartyDetail) {
         final String nonce = generateNonce();
-        String hospitalCode = thirdPartyDetail.getHospitalCode();
+        String hospitalCode = thirdPartyDetail.getCompanyCode();
         String apiKey = thirdPartyDetail.getApiKey();
         String apiSecret = thirdPartyDetail.getApiSecret();
 

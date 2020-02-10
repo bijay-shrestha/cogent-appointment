@@ -122,7 +122,7 @@ public class HospitalServiceImpl implements HospitalService {
         validateDuplicity(hospitals, updateRequestDTO.getName(),
                 updateRequestDTO.getHospitalCode(), Hospital.class.getSimpleName());
 
-        HmacApiInfo hmacApiInfo=hmacApiInfoRepository.getHmacApiInfoByHospitalId(updateRequestDTO.getId());
+        HmacApiInfo hmacApiInfo = hmacApiInfoRepository.getHmacApiInfoByHospitalId(updateRequestDTO.getId());
 
         parseToUpdatedHospital(updateRequestDTO, hospital);
 
@@ -132,7 +132,7 @@ public class HospitalServiceImpl implements HospitalService {
 
         updateHospitalBanner(hospital, banner);
 
-        updateHmacApiInfo(hmacApiInfo,updateRequestDTO.getStatus(),updateRequestDTO.getRemarks());
+        updateHmacApiInfo(hmacApiInfo, updateRequestDTO.getStatus(), updateRequestDTO.getRemarks());
 
         log.info(UPDATING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
     }
@@ -159,11 +159,11 @@ public class HospitalServiceImpl implements HospitalService {
 
         Hospital hospital = findById(deleteRequestDTO.getId());
 
-        HmacApiInfo hmacApiInfo=hmacApiInfoRepository.getHmacApiInfoByHospitalId(deleteRequestDTO.getId());
+        HmacApiInfo hmacApiInfo = hmacApiInfoRepository.getHmacApiInfoByHospitalId(deleteRequestDTO.getId());
 
         parseToDeletedHospital(hospital, deleteRequestDTO);
 
-        updateHmacApiInfo(hmacApiInfo,deleteRequestDTO.getStatus(),deleteRequestDTO.getRemarks());
+        updateHmacApiInfo(hmacApiInfo, deleteRequestDTO.getStatus(), deleteRequestDTO.getRemarks());
 
         log.info(DELETING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
     }
@@ -271,8 +271,8 @@ public class HospitalServiceImpl implements HospitalService {
         saveHospitalContactNumber(hospitalContactNumbers);
     }
 
-    public void updateHmacApiInfo(HmacApiInfo hmacApiInfo,Character status,String remarks) {
-        HmacApiInfo hmacApiInfoToUpdate=updateHmacApiInfoAsHospital(
+    public void updateHmacApiInfo(HmacApiInfo hmacApiInfo, Character status, String remarks) {
+        HmacApiInfo hmacApiInfoToUpdate = updateHmacApiInfoAsHospital(
                 hmacApiInfo,
                 status,
                 remarks);

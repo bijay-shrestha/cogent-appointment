@@ -47,6 +47,9 @@ public class HospitalRequestDTO implements Serializable {
     @NotNull
     private Double refundPercentage;
 
+    @NotNull
+    private Integer numberOfAdmins;
+
     @NotEmpty
     private List<String> contactNumber;
 }

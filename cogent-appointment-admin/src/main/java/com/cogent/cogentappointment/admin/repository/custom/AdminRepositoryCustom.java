@@ -21,6 +21,8 @@ import java.util.List;
 @Qualifier("adminRepositoryCustom")
 public interface AdminRepositoryCustom {
 
+    Object[] validateAdminCount(Long hospitalId);
+
     List<Object[]> validateDuplicity(String username, String email, String mobileNumber,
                                      Long hospitalId);
 

@@ -37,7 +37,7 @@ public class HmacApiInfoRepositoryCustomImpl implements HmacApiInfoRepositoryCus
     }
 
     @Override
-    public ThirdPartyDetail getDetailsByHositalCode(String hospitalCode) {
+    public ThirdPartyDetail getDetailsByHospitalCode(String hospitalCode) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_THIRD_PARTY_INFO_FOR_HMAC_GENERATION)
                 .setParameter(HOSPITAL_CODE, hospitalCode);
         try {

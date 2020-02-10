@@ -13,7 +13,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ThirdPartyDetail implements Serializable {
-    private String hospitalCode;
+    private String companyCode;
 
     private String apiSecret;
 

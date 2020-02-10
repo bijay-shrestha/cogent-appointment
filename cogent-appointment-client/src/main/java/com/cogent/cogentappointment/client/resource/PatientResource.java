@@ -7,8 +7,10 @@ import com.cogent.cogentappointment.client.service.PatientService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.PatientConstant.*;
@@ -69,6 +71,8 @@ public class PatientResource {
     @GetMapping(META_INFO + ACTIVE + MIN)
     @ApiOperation(FETCH_ACTIVE_PATIENT_META_INFO_DETAILS_FOR_DROPDOWN)
     public ResponseEntity<?> fetchActivePatientMetaInfoForDropdown() {
+        SecurityContextHolder.getContext().getAuthentication()
+                .getCredentials().toString();
         return ok(patientService.fetchActiveMinPatientMetaInfo());
     }
 

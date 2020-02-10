@@ -21,10 +21,15 @@ import static com.cogent.cogentappointment.client.constants.HMACConstant.HMAC_AL
 public class HMACBuilder {
 
     private String username;
+
     private String hospitalCode;
+
     private String nonce;
+
     private String algorithm;
+
     private String apiKey;
+
     private String apiSecret;
 
     public HMACBuilder username(String username) {

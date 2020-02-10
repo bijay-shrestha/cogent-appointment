@@ -99,8 +99,7 @@ public class DoctorDutyRosterOverrideQuery {
                 .collect(Collectors.joining(","));
 
         return " SELECT d FROM DoctorDutyRosterOverride d" +
-                " WHERE d.id IN (" + overrideIds + ")" +
-                " AND d.status = 'Y'";
+                " WHERE d.id IN (" + overrideIds + ")";
     }
 
 }

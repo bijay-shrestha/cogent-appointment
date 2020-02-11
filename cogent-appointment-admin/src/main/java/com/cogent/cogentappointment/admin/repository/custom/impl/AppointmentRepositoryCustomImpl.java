@@ -3,12 +3,14 @@ package com.cogent.cogentappointment.admin.repository.custom.impl;
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentBookedDateResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentLogResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentPendingApprovalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
+import com.cogent.cogentappointment.admin.query.AppointmentQuery;
 import com.cogent.cogentappointment.admin.repository.custom.AppointmentRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import org.springframework.data.domain.Pageable;
@@ -154,6 +156,26 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         }
     }
 
+    @Override
+    public AppointmentRefundResponseDTO rescheduleAppointment(AppointmentRescheduleDTO rescheduleDTO, Pageable pageable) {
+//        Query query = createQuery.apply(entityManager, AppointmentQuery.QUERY_TO_RESCHEDULE_APPOINTMENT_LOGS.apply(rescheduleDTO))
+//        int totalItems = query.getResultList().size();
+//
+//        addPagination.accept(pageable, query);
+//
+//        List<Object[]> objects = query.getResultList();
+//
+//        AppointmentLogResponseDTO results = parseQueryResultToAppointmentLogResponse(objects);
+//
+//        if (results.getAppointmentLogSearchDTOList().isEmpty()) throw APPOINTMENT_NOT_FOUND.get();
+//        else {
+//            results.setTotalItems(totalItems);
+//            return results;
+//        }
+
+        return null;
+    }
+
 //    @Override
 //    public List<AppointmentStatusResponseDTO> fetchAppointmentForAppointmentStatus(AppointmentStatusRequestDTO requestDTO) {
 //
@@ -172,6 +194,9 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 //
 //        return parseQueryResultToAppointmentApprovalResponse(results);
 //    }
+
+
+
 
     private Supplier<NoContentFoundException> APPOINTMENT_NOT_FOUND = ()
             -> new NoContentFoundException(Appointment.class);

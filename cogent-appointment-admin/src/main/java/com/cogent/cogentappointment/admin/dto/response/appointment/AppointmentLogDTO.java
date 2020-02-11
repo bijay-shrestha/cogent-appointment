@@ -32,6 +32,8 @@ public class AppointmentLogDTO implements Serializable {
 
     private String patientName;
 
+    private String patientAddress;
+
     private Gender patientGender;
 
     private String patientAge;

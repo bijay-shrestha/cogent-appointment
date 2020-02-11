@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLog
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentLogResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentPendingApprovalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundResponseDTO;
@@ -20,8 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.function.Function;
 
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.APPROVED;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.REFUNDED;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.SEARCHING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.SEARCHING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.*;
@@ -123,6 +123,27 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         AppointmentLogResponseDTO responseDTOS =
                 appointmentRepository.searchAppointmentLogs(searchRequestDTO, pageable);
+
+        log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_LOG, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public AppointmentRefundResponseDTO rescheduleAppointment(AppointmentRescheduleDTO rescheduleDTO, Pageable pageable) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_LOG);
+//
+//        Appointment appointment = appointmentRepository.fetchAppointmentById(rescheduleDTO.getAppointmentId())
+//                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(rescheduleDTO.getAppointmentId()));
+//
+//        appointment.setStatus(RESCHEDULED);
+//
+//
+
+        AppointmentRefundResponseDTO responseDTOS =
+                appointmentRepository.rescheduleAppointment(rescheduleDTO, pageable);
 
         log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_LOG, getDifferenceBetweenTwoTime(startTime));
 

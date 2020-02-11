@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.admin.repository.custom;
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentBookedDateResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentLogResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentPendingApprovalResponseDTO;
@@ -36,6 +37,8 @@ public interface AppointmentRepositoryCustom {
 
     AppointmentLogResponseDTO searchAppointmentLogs(
             AppointmentLogSearchDTO searchRequestDTO, Pageable pageable);
+
+    AppointmentRefundResponseDTO rescheduleAppointment(AppointmentRescheduleDTO rescheduleDTO, Pageable pageable);
 
 //    List<AppointmentStatusResponseDTO> fetchAppointmentForAppointmentStatus(AppointmentStatusRequestDTO requestDTO);
 

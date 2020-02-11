@@ -232,7 +232,7 @@ public class AppointmentQuery {
         if (!Objects.isNull(appointmentLogSearchDTO.getAppointmentNumber()))
             whereClause += " AND a.appointmentNumber LIKE '%" + appointmentLogSearchDTO.getAppointmentNumber() + "%'";
 
-        if (!Objects.isNull(appointmentLogSearchDTO.getStatus()))
+        if (!Objects.isNull(appointmentLogSearchDTO.getStatus()) && !appointmentLogSearchDTO.getStatus().equals(""))
             whereClause += " AND a.status = '" + appointmentLogSearchDTO.getStatus() + "'";
 
         if (!Objects.isNull(appointmentLogSearchDTO.getAppointmentId()))

@@ -120,33 +120,6 @@ public class PatientServiceImpl implements PatientService {
         return responseDTOS;
     }
 
-    @Override
-    public List<DropDownResponseDTO> patientMetaInfoDropDownList() {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(FETCHING_PROCESS_STARTED, PATIENT);
-
-        List<DropDownResponseDTO> responseDTOS = patientMetaInfoRepository
-                .fetchPatientMetaInfoDropDownList();
-
-        log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
-
-        return responseDTOS;
-    }
-
-    @Override
-    public List<DropDownResponseDTO> patientMetaInfoActiveDropDownList() {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(FETCHING_PROCESS_STARTED, PATIENT);
-
-        List<DropDownResponseDTO> responseDTOS = patientMetaInfoRepository
-                .fetchActivePatientMetaInfoDropDownList();
-
-        log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
-
-        return responseDTOS;
-    }
 
     public Patient fetchPatientById(Long id) {
         return patientRepository.fetchPatientById(id).orElseThrow(() ->

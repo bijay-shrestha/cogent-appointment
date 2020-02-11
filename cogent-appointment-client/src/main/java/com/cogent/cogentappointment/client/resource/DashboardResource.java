@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.client.resource;
 
-import com.cogent.cogentappointment.client.dto.request.dashboard.AppointmentCountRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.GenerateRevenueRequestDTO;
 import com.cogent.cogentappointment.client.service.DashboardService;
 import io.swagger.annotations.Api;
@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import static com.cogent.cogentappointment.client.constants.QueryConstants.HOSPITAL_ID;
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.DashboardConstant.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.DashboardConstants.*;
@@ -38,13 +37,19 @@ public class DashboardResource {
 
     @PutMapping(OVER_ALL_APPOINTMENT)
     @ApiOperation(OVER_ALL_APPOINTMENT_OPERATION)
-    public ResponseEntity<?> getOverAllAppointment(@Valid @RequestBody AppointmentCountRequestDTO countRequestDTO) {
+    public ResponseEntity<?> getOverAllAppointment(@Valid @RequestBody DashBoardRequestDTO countRequestDTO) {
         return ok(dashboardService.countOverallAppointments(countRequestDTO));
     }
 
     @GetMapping(REGISTERED + COUNT + HOSPITAL_ID_PATH_VARIABLE_BASE)
-    @ApiOperation(COUNT_REGISTERED_PATIENTS)
+    @ApiOperation(COUNT_REGISTERED_PATIENTS_OPERATION)
     public ResponseEntity<?> countRegisteredPatients(@PathVariable("hospitalId") Long hospitalId) {
         return ok(dashboardService.countOverallRegisteredPatients(hospitalId));
+    }
+
+    @PutMapping(REVENUE_STATISTICS)
+    @ApiOperation(REVENUE_STATISTICS_OPERATION)
+    public ResponseEntity<?> getRevenueStatistics(@Valid @RequestBody DashBoardRequestDTO countRequestDTO) {
+        return ok(dashboardService.getRevenueStatistic(countRequestDTO));
     }
 }

@@ -1,9 +1,10 @@
 package com.cogent.cogentappointment.client.service.impl;
 
-import com.cogent.cogentappointment.client.dto.request.dashboard.AppointmentCountRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.GenerateRevenueRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.AppointmentCountResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.GenerateRevenueResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.dashboard.RevenueStatisticsResponseDTO;
 import com.cogent.cogentappointment.client.repository.AppointmentRepository;
 import com.cogent.cogentappointment.client.repository.AppointmentTransactionDetailRepository;
 import com.cogent.cogentappointment.client.repository.PatientRepository;
@@ -66,17 +67,17 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    public AppointmentCountResponseDTO countOverallAppointments(AppointmentCountRequestDTO appointmentCountRequestDTO) {
+    public AppointmentCountResponseDTO countOverallAppointments(DashBoardRequestDTO dashBoardRequestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, OVER_ALL_APPOINTMETS);
 
-        Long newPatient = appointmentRepository.countNewPatientByHospitalId(appointmentCountRequestDTO);
+        Long newPatient = appointmentRepository.countNewPatientByHospitalId(dashBoardRequestDTO);
 
-        Long registeredPatient = appointmentRepository.countRegisteredPatientByHospitalId(appointmentCountRequestDTO);
+        Long registeredPatient = appointmentRepository.countRegisteredPatientByHospitalId(dashBoardRequestDTO);
 
-        Character pillType = dateDifference(appointmentCountRequestDTO.getToDate(),
-                appointmentCountRequestDTO.getFromDate());
+        Character pillType = dateDifference(dashBoardRequestDTO.getToDate(),
+                dashBoardRequestDTO.getFromDate());
 
         log.info(FETCHING_PROCESS_COMPLETED, OVER_ALL_APPOINTMETS, getDifferenceBetweenTwoTime(startTime));
 
@@ -95,5 +96,22 @@ public class DashboardServiceImpl implements DashboardService {
         log.info(FETCHING_PROCESS_COMPLETED, OVER_ALL_REGISTERED_PATIENTS, getDifferenceBetweenTwoTime(startTime));
 
         return resgisteredPatients;
+    }
+
+    @Override
+    public RevenueStatisticsResponseDTO getRevenueStatistic(DashBoardRequestDTO dashBoardRequestDTO) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, REVENUE_STATISTICS);
+
+        Character filter = dateDifference(dashBoardRequestDTO.getToDate(),
+                dashBoardRequestDTO.getFromDate());
+
+        RevenueStatisticsResponseDTO revenueStatisticsResponseDTO=appointmentTransactionDetailRepository
+                .getRevenueStatistics(dashBoardRequestDTO,filter);
+
+        log.info(FETCHING_PROCESS_COMPLETED, REVENUE_STATISTICS, getDifferenceBetweenTwoTime(startTime));
+
+        return revenueStatisticsResponseDTO;
     }
 }

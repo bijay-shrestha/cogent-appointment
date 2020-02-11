@@ -74,7 +74,8 @@ public class SwaggerConstants {
         String BASE_API_VALUE = "This is Dashboard Controller";
         String GENERATE_REVENUE_OPERATION = "Fetch revenue generated.";
         String OVER_ALL_APPOINTMENT_OPERATION = "Fetch over all appointments.";
-        String COUNT_REGISTERED_PATIENTS = "Count no. of registered patients";
+        String COUNT_REGISTERED_PATIENTS_OPERATION = "Count no. of registered patients";
+        String REVENUE_STATISTICS_OPERATION = "Revenue statistics as per the filter";
     }
 
     public interface DepartmentConstant {

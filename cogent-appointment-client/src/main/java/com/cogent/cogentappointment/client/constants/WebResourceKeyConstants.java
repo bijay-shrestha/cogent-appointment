@@ -44,6 +44,7 @@ public class WebResourceKeyConstants {
         String BASE_DASHBOARD = "/dashboard";
         String GENERATE_REVENUE = "/revenueGenerated";
         String OVER_ALL_APPOINTMENT = "/overAllAppointments";
+        String REVENUE_STATISTICS = "/revenueStatistics";
         String REGISTERED="/registeredPatients";
         String COUNT="/count";
         String HOSPITAL_ID_PATH_VARIABLE_BASE = "/{hospitalId}";

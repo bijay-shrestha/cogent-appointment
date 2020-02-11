@@ -40,18 +40,20 @@ public class TimeConverterUtils {
         LocalDate toLocalDate = convertDateToLocalDate(toDate);
         LocalDate toFromDate = convertDateToLocalDate(fromDate);
         int days;
+        int years;
 
         Period period = Period.between(toFromDate, toLocalDate);
 
         days = period.getDays();
+        years = period.getYears();
 
         Character pillType;
 
-        if (days <= 1) {
+        if (years == 0 && days <= 1) {
             pillType = 'D';
-        } else if (days > 1 && days <= 7) {
+        } else if (years == 0 && days > 1 && days <= 7) {
             pillType = 'W';
-        } else if (days > 7 && days <= 31) {
+        } else if (years == 0 && days > 7 && days <= 31) {
             pillType = 'M';
         } else {
             pillType = 'Y';

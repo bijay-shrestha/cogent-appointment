@@ -12,7 +12,7 @@ import java.util.Date;
  */
 @Getter
 @Setter
-public class AppointmentCountRequestDTO implements Serializable {
+public class DashBoardRequestDTO implements Serializable {
 
     @NotNull
     private Date fromDate;

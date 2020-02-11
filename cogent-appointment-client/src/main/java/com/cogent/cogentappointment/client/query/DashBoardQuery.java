@@ -14,7 +14,7 @@ public class DashBoardQuery {
                     " (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
                     " AND a.hospitalId.id=:hospitalId";
 
-    public static String QUERY_TO_COUNT_REGISTERED_APPOINTMENT=
+    public static String QUERY_TO_COUNT_REGISTERED_APPOINTMENT =
             "SELECT" +
                     " COUNT(a.id)" +
                     " FROM Appointment a" +
@@ -23,7 +23,7 @@ public class DashBoardQuery {
                     " AND a.status='A'" +
                     " AND h.id=:hospitalId";
 
-    public static String QUERY_TO_COUNT_NEW_PATIENT_APPOINTMENT=
+    public static String QUERY_TO_COUNT_NEW_PATIENT_APPOINTMENT =
             "SELECT" +
                     " COUNT(a.id)" +
                     " FROM Appointment a" +
@@ -32,7 +32,7 @@ public class DashBoardQuery {
                     " AND a.status!='A'" +
                     " AND h.id=:hospitalId";
 
-    public static String QUERY_TO_COUNT_OVERALL_REGISTERED_PATIENTS=
+    public static String QUERY_TO_COUNT_OVERALL_REGISTERED_PATIENTS =
             "SELECT" +
                     " COUNT(hpi.id)" +
                     " FROM HospitalPatientInfo hpi" +
@@ -40,5 +40,56 @@ public class DashBoardQuery {
                     " hpi.hospitalId=:hospitalId" +
                     " AND hpi.isRegistered='Y'";
 
+    public static String QUERY_TO_FETCH_REVENUE_WEEKLY =
+            "SELECT" +
+                    "  CASE" +
+                    "  WHEN DAYOFWEEK(atd.transactionDate) = 1" +
+                    "    THEN 'SUN'" +
+                    "  WHEN DAYOFWEEK(atd.transactionDate) = 2" +
+                    "    THEN 'MON'" +
+                    "  WHEN DAYOFWEEK(atd.transactionDate) = 3" +
+                    "    THEN 'TUE'" +
+                    "  WHEN DAYOFWEEK(atd.transactionDate) = 4" +
+                    "    THEN 'WED'" +
+                    "  WHEN DAYOFWEEK(atd.transactionDate) = 5" +
+                    "    THEN 'THU'" +
+                    "  WHEN DAYOFWEEK(atd.transactionDate) = 6" +
+                    "    THEN 'FRI'" +
+                    "  WHEN DAYOFWEEK(atd.transactionDate) = 7" +
+                    "    THEN 'SAT'" +
+                    "  END AS day," +
+                    "  COALESCE(SUM(atd.appointmentAmount),0) AS revenue" +
+                    " FROM AppointmentTransactionDetail atd" +
+                    " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
+                    " WHERE " +
+                    " atd.transactionDate BETWEEN :fromDate AND :toDate" +
+                    " AND" +
+                    " a.hospitalId.id=:hospitalId" +
+                    " GROUP BY atd.transactionDate" +
+                    " ORDER BY atd.transactionDate";
 
+
+    public static String QUERY_TO_FETCH_REVENUE_YEARLY =
+            " SELECT" +
+                    "  MONTHNAME(atd.transactionDate) as monthName," +
+                    "  COALESCE(SUM(atd.appointmentAmount),0) AS revenue" +
+                    "  FROM AppointmentTransactionDetail atd" +
+                    " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
+                    " WHERE" +
+                    " atd.transactionDate BETWEEN :fromDate AND :toDate" +
+                    " AND" +
+                    " a.hospitalId.id=:hospitalId" +
+                    " GROUP BY MONTHNAME(atd.transactionDate)";
+
+    public static String QUERY_TO_FETCH_REVENUE_MONTHLY =
+            "SELECT" +
+                    " DATE_FORMAT(atd.transactionDate, '%b %e') AS Week," +
+                    " COALESCE(SUM(atd.appointmentAmount),0) AS revenue" +
+                    " FROM AppointmentTransactionDetail atd" +
+                    " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
+                    " WHERE" +
+                    " atd.transactionDate BETWEEN :fromDate AND :toDate" +
+                    " AND" +
+                    " a.hospitalId.id=:hospitalId" +
+                    " GROUP BY DATE_FORMAT(atd.transactionDate, '%b %e')";
 }

@@ -45,6 +45,11 @@ public class SwaggerConstants {
         String REJECT_REFUND_APPOINTMENT = "Reject Refund Request Appointment";
     }
 
+    public interface AppointmentStatusConstant {
+        String BASE_API_VALUE = "This is Appointment Status Controller";
+        String FETCH_APPOINTMENT_STATUS = "Fetch appointment status.";
+    }
+
     public interface AuthenticateConstant {
         String BASE_API_VALUE = "This is Login and SignUp Controller.";
         String LOGIN_OPERATION = "Login User";

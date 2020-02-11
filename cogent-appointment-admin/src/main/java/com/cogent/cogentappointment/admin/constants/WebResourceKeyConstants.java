@@ -24,6 +24,7 @@ public class WebResourceKeyConstants {
         String APPOINTMENT_ID_PATH_VARIABLE_BASE = "/{appointmentId}";
         String REFUND = "/refund";
         String REJECT = "/reject";
+        String STATUS = "/status";
     }
 
     //B

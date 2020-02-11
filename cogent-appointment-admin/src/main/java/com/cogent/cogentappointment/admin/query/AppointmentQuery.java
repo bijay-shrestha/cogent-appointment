@@ -1,9 +1,12 @@
 package com.cogent.cogentappointment.admin.query;
 
+import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundSearchDTO;
 import org.springframework.util.ObjectUtils;
 
 import java.util.Objects;
+
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.VACANT;
 
 /**
  * @author smriti on 2019-10-22
@@ -115,6 +118,41 @@ public class AppointmentQuery {
                 " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId.id = a.id" +
                 " LEFT JOIN PatientMetaInfo pm ON pm.patient.id = p.id" +
                 GET_WHERE_CLAUSE_TO_FETCH_REFUND_APPOINTMENTS(searchDTO);
-
     }
+
+    public static String QUERY_TO_FETCH_APPOINTMENT_FOR_APPOINTMENT_STATUS(AppointmentStatusRequestDTO requestDTO) {
+
+        String SQL = " SELECT" +
+                " a.appointment_date as date," +                                                        //[0]
+                " GROUP_CONCAT(DATE_FORMAT(a.appointment_time, '%H:%i'), '-', a.status)" +
+                " as startTimeDetails," +                                                               //[1]
+                " d.id as doctorId," +                                                                  //[2]
+                " d.name as doctorName," +                                                              //[3]
+                " s.id as specializationId," +                                                          //[4]
+                " s.name as specializationName" +                                                       //[5]
+                " FROM appointment a" +
+                " LEFT JOIN doctor d ON d.id = a.doctor_id" +
+                " LEFT JOIN specialization s ON s.id = a.specialization_id" +
+                " LEFT JOIN hospital h ON h.id = a.hospital_id" +
+                " WHERE" +
+                " a.appointment_date BETWEEN :fromDate AND :toDate" +
+                " AND a.status IN ('PA', 'A', 'C')";
+
+        if (!Objects.isNull(requestDTO.getDoctorId()))
+            SQL += " AND d.id =:doctorId";
+
+        if (!Objects.isNull(requestDTO.getSpecializationId()))
+            SQL += " AND s.id = :specializationId ";
+
+        if (!Objects.isNull(requestDTO.getHospitalId()))
+            SQL += " AND h.id =:hospitalId";
+
+        if ((!ObjectUtils.isEmpty(requestDTO.getStatus())) && (!(requestDTO.getStatus().equals(VACANT))))
+            SQL += " AND a.status='" + requestDTO.getStatus() + "'";
+
+        SQL += " GROUP BY a.appointment_date, a.doctor_id, a.specialization_id";
+
+        return SQL;
+    }
+
 }

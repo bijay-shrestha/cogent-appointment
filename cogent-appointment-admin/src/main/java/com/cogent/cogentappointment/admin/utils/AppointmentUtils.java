@@ -214,7 +214,7 @@ public class AppointmentUtils {
             totalAmount.updateAndGet(v -> v + appointmentAmount);
         });
 
-        appointmentLogResponseDTO.setAppointmentLogSearchDTOList(appointmentLogSearchDTOS);
+        appointmentLogResponseDTO.setAppointmentLogs(appointmentLogSearchDTOS);
         appointmentLogResponseDTO.setTotalAmount(totalAmount.get());
 
         return appointmentLogResponseDTO;

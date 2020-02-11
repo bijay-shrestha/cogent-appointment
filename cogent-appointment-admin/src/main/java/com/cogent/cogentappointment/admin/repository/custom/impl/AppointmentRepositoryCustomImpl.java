@@ -147,7 +147,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         AppointmentLogResponseDTO results = parseQueryResultToAppointmentLogResponse(objects);
 
-        if (results.getAppointmentLogSearchDTOList().isEmpty()) throw APPOINTMENT_NOT_FOUND.get();
+        if (results.getAppointmentLogs().isEmpty()) throw APPOINTMENT_NOT_FOUND.get();
         else {
             results.setTotalItems(totalItems);
             return results;

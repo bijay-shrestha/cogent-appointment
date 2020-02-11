@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 public class AppointmentLogResponseDTO implements Serializable {
 
-    private List<AppointmentLogDTO> appointmentLogSearchDTOList;
+    private List<AppointmentLogDTO> appointmentLogs;
 
     private Double totalAmount;
 

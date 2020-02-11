@@ -66,8 +66,8 @@ public class AppointmentResource {
     @PutMapping(LOG)
     @ApiOperation(FETCH_APPOINTMENT_LOG)
     public ResponseEntity<?> fetchAppointmentLog(@RequestBody AppointmentLogSearchDTO searchRequestDTO,
-                                    @RequestParam("page") int page,
-                                    @RequestParam("size") int size) {
+                                                 @RequestParam("page") int page,
+                                                 @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ok().body(appointmentService.searchAppointmentLogs(searchRequestDTO, pageable));
     }

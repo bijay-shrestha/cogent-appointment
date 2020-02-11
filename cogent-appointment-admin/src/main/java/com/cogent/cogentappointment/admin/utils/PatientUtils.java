@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.utils;
 
 import com.cogent.cogentappointment.admin.dto.request.patient.PatientUpdateRequestDTO;
+import com.cogent.cogentappointment.persistence.model.HospitalPatientInfo;
 import com.cogent.cogentappointment.persistence.model.Patient;
 import com.cogent.cogentappointment.persistence.model.PatientMetaInfo;
 
@@ -16,20 +17,32 @@ public class PatientUtils {
         patient.setName(toUpperCase(requestDTO.getName()));
         patient.setDateOfBirth(requestDTO.getDateOfBirth());
         patient.setMobileNumber(requestDTO.getMobileNumber());
-//        patient.setAddress(requestDTO.getAddress());
         patient.setGender(requestDTO.getGender());
-//        patient.setHospitalNumber(requestDTO.getHospitalNumber());
-//        patient.setEmail(requestDTO.getEmail());
-//        patient.setRemarks(requestDTO.getRemarks());
-//        patient.setStatus(requestDTO.getStatus());
+
 
         return patient;
     }
 
-    public static PatientMetaInfo updatePatientMetaInfo(Patient patient,
+    public static HospitalPatientInfo updateHospitalPatientInfo(PatientUpdateRequestDTO requestDTO,
+                                                                HospitalPatientInfo hospitalPatientInfo) {
+
+        hospitalPatientInfo.setAddress(requestDTO.getAddress());
+        hospitalPatientInfo.setHospitalNumber(requestDTO.getHospitalNumber());
+        hospitalPatientInfo.setEmail(requestDTO.getEmail());
+        hospitalPatientInfo.setRemarks(requestDTO.getRemarks());
+        hospitalPatientInfo.setStatus(requestDTO.getStatus());
+
+        return hospitalPatientInfo;
+    }
+
+    public static PatientMetaInfo updatePatientMetaInfo(HospitalPatientInfo hospitalPatientInfo,
                                                         PatientMetaInfo patientMetaInfo,
                                                         PatientUpdateRequestDTO updateRequestDTO) {
-//merge with
+        patientMetaInfo.setMetaInfo(updateRequestDTO.getName()
+                + OR +
+                updateRequestDTO.getMobileNumber()
+                + OR+
+                hospitalPatientInfo.getRegistrationNumber());
         patientMetaInfo.setStatus(updateRequestDTO.getStatus());
         patientMetaInfo.setRemarks(updateRequestDTO.getRemarks());
 

@@ -7,9 +7,11 @@ import com.cogent.cogentappointment.admin.dto.response.patient.PatientDetailResp
 import com.cogent.cogentappointment.admin.dto.response.patient.PatientResponseDTO;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
+import com.cogent.cogentappointment.admin.repository.HospitalPatientInfoRepository;
 import com.cogent.cogentappointment.admin.repository.PatientMetaInfoRepository;
 import com.cogent.cogentappointment.admin.repository.PatientRepository;
 import com.cogent.cogentappointment.admin.service.PatientService;
+import com.cogent.cogentappointment.persistence.model.HospitalPatientInfo;
 import com.cogent.cogentappointment.persistence.model.Patient;
 import com.cogent.cogentappointment.persistence.model.PatientMetaInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -23,8 +25,7 @@ import java.util.List;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.PatientServiceMessages.DUPLICATE_PATIENT_MESSAGE;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.PatientLog.PATIENT;
-import static com.cogent.cogentappointment.admin.utils.PatientUtils.updatePatient;
-import static com.cogent.cogentappointment.admin.utils.PatientUtils.updatePatientMetaInfo;
+import static com.cogent.cogentappointment.admin.utils.PatientUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
 
 /**
@@ -39,9 +40,14 @@ public class PatientServiceImpl implements PatientService {
 
     private final PatientMetaInfoRepository patientMetaInfoRepository;
 
-    public PatientServiceImpl(PatientRepository patientRepository, PatientMetaInfoRepository patientMetaInfoRepository) {
+    private final HospitalPatientInfoRepository hospitalPatientInfoRepository;
+
+    public PatientServiceImpl(PatientRepository patientRepository,
+                              PatientMetaInfoRepository patientMetaInfoRepository,
+                              HospitalPatientInfoRepository hospitalPatientInfoRepository) {
         this.patientRepository = patientRepository;
         this.patientMetaInfoRepository = patientMetaInfoRepository;
+        this.hospitalPatientInfoRepository = hospitalPatientInfoRepository;
     }
 
     @Override
@@ -78,6 +84,9 @@ public class PatientServiceImpl implements PatientService {
 
         Patient patientToBeUpdated = fetchPatientById(updateRequestDTO.getId());
 
+        HospitalPatientInfo hospitalPatientInfoToBeUpdated = hospitalPatientInfoRepository
+                .fetchHospitalPatientInfoByPatientId(updateRequestDTO.getId());
+
         Long patientCount = patientRepository.validatePatientDuplicity(updateRequestDTO);
 
         validatePatientDuplicity(patientCount, updateRequestDTO.getName(),
@@ -85,9 +94,13 @@ public class PatientServiceImpl implements PatientService {
 
         save(updatePatient(updateRequestDTO, patientToBeUpdated));
 
+        saveHospitalPatientInfo(updateHospitalPatientInfo(updateRequestDTO, hospitalPatientInfoToBeUpdated));
+
         PatientMetaInfo patientMetaInfoToBeUpdated = patientMetaInfoRepository.fetchByPatientId(updateRequestDTO.getId());
 
-        savePatientMetaInfo(updatePatientMetaInfo(patientToBeUpdated, patientMetaInfoToBeUpdated, updateRequestDTO));
+        savePatientMetaInfo(updatePatientMetaInfo(hospitalPatientInfoToBeUpdated,
+                patientMetaInfoToBeUpdated,
+                updateRequestDTO));
 
         log.info(UPDATING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
     }
@@ -143,6 +156,10 @@ public class PatientServiceImpl implements PatientService {
                             name,
                             mobileNumber,
                             utilDateToSqlDate(dateOfBirth)));
+    }
+
+    private HospitalPatientInfo saveHospitalPatientInfo(HospitalPatientInfo hospitalPatientInfo) {
+        return hospitalPatientInfoRepository.save(hospitalPatientInfo);
     }
 }
 

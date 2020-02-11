@@ -18,8 +18,6 @@ public class PatientResponseDTO implements Serializable {
 
     private String name;
 
-    private Gender gender;
-
     private String address;
 
     private String email;

@@ -43,6 +43,7 @@ public class PatientQuery {
 
     public static String QUERY_TO_FETCH_PATIENT(PatientSearchRequestDTO searchRequestDTO) {
         return "SELECT" +
+                " p.id as id," +
                 " p.name as name," +                                             //[0]
                 " hpi.address as address," +                                       //[1]
                 " hpi.email as email," +                                           //[2]

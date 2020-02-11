@@ -16,6 +16,8 @@ import java.util.Date;
 @Builder
 public class PatientResponseDTO implements Serializable {
 
+    private Long id;
+
     private String name;
 
     private String address;

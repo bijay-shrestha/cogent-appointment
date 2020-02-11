@@ -129,7 +129,7 @@ public class ProfileQuery {
                     " AND h.status ='Y'" +
                     " AND p.status = 'Y'" +
                     " AND a.status ='Y'" +
-                    " AND (a.username = :username OR a.email=:email)" +
+                    " AND :username = (a.username OR a.email)" +
                     " AND h.is_cogent_admin ='Y'" +
                     " GROUP BY pm.parent_id, pm.user_menu_id, pm.profile_id";
 }

@@ -53,6 +53,21 @@ public class AppointmentQuery {
                     " CONCAT(((TIMESTAMPDIFF(YEAR, p.dateOfBirth ,CURDATE()))), ' years')" +
                     " END AS age";
 
+    public static String QUERY_TO_CALCULATE_PATIENT_AGE_NATIVE =
+            " CASE" +
+                    " WHEN" +
+                    " (((TIMESTAMPDIFF(YEAR, p.date_of_birth, CURDATE()))<=0) AND" +
+                    " ((TIMESTAMPDIFF(MONTH, p.date_of_birth, CURDATE()) % 12)<=0))" +
+                    " THEN" +
+                    " CONCAT((FLOOR(TIMESTAMPDIFF(DAY, p.date_of_birth, CURDATE()) % 30.4375)), ' days')" +
+                    " WHEN" +
+                    " ((TIMESTAMPDIFF(YEAR, p.date_of_birth ,CURDATE()))<=0)" +
+                    " THEN" +
+                    " CONCAT(((TIMESTAMPDIFF(MONTH, p.date_of_birth, CURDATE()) % 12)), ' months')" +
+                    " ELSE" +
+                    " CONCAT(((TIMESTAMPDIFF(YEAR, p.date_of_birth ,CURDATE()))), ' years')" +
+                    " END AS age";
+
     public static String QUERY_TO_FETCH_REFUND_APPOINTMENTS(AppointmentRefundSearchDTO searchDTO) {
         return " SELECT" +
                 " a.id as appointmentId," +                                             //[0]
@@ -127,13 +142,17 @@ public class AppointmentQuery {
                 " GROUP_CONCAT(DATE_FORMAT(a.appointment_time, '%H:%i'), '-', a.status)" +
                 " as startTimeDetails," +                                                               //[1]
                 " d.id as doctorId," +                                                                  //[2]
-                " d.name as doctorName," +                                                              //[3]
-                " s.id as specializationId," +                                                          //[4]
-                " s.name as specializationName" +                                                       //[5]
+                " s.id as specializationId," +                                                          //[3]
+                " a.appointment_number as appointmentNumber," +                                         //[4]
+                " p.name as patientName," +                                                             //[5]
+                " p.gender as gender," +                                                                //[6]
+                " p.mobile_number as mobileNumber," +                                                   //[7]
+                QUERY_TO_CALCULATE_PATIENT_AGE_NATIVE +                                                 //[8]
                 " FROM appointment a" +
                 " LEFT JOIN doctor d ON d.id = a.doctor_id" +
                 " LEFT JOIN specialization s ON s.id = a.specialization_id" +
                 " LEFT JOIN hospital h ON h.id = a.hospital_id" +
+                " LEFT JOIN patient p ON p.id = a.patient_id" +
                 " WHERE" +
                 " a.appointment_date BETWEEN :fromDate AND :toDate" +
                 " AND a.status IN ('PA', 'A', 'C')";
@@ -150,7 +169,7 @@ public class AppointmentQuery {
         if ((!ObjectUtils.isEmpty(requestDTO.getStatus())) && (!(requestDTO.getStatus().equals(VACANT))))
             SQL += " AND a.status='" + requestDTO.getStatus() + "'";
 
-        SQL += " GROUP BY a.appointment_date, a.doctor_id, a.specialization_id";
+        SQL += " GROUP BY a.appointment_date, a.doctor_id, a.specialization_id, a.id";
 
         return SQL;
     }

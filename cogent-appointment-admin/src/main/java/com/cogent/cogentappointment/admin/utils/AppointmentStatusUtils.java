@@ -25,11 +25,12 @@ public class AppointmentStatusUtils {
 
     private static final DateTimeFormatter FORMAT = DateTimeFormat.forPattern("HH:mm");
 
-    public static List<DoctorTimeSlotResponseDTO> calculateTimeSlotsForAllAppointmentStatus(String startTime,
-                                                                                            String endTime,
-                                                                                            int durationInMinutes,
-                                                                                            String appointmentTimeDetails,
-                                                                                            String searchAppointmentStatus) {
+    public static List<DoctorTimeSlotResponseDTO> calculateTimeSlotsForAllAppointmentStatus(
+            String startTime,
+            String endTime,
+            int durationInMinutes,
+            AppointmentStatusResponseDTO appointmentStatus,
+            String searchAppointmentStatus) {
 
         final Duration duration = Minutes.minutes(durationInMinutes).toStandardDuration();
 
@@ -40,10 +41,10 @@ public class AppointmentStatusUtils {
         do {
             DoctorTimeSlotResponseDTO doctorTimeSlotResponseDTO = new DoctorTimeSlotResponseDTO();
 
-            if (!Objects.isNull(appointmentTimeDetails)) {
+            if (!Objects.isNull(appointmentStatus)) {
 
                 /*APPOINTMENT TIME - APPOINTMENT STATUS*/
-                String[] appointmentTime = appointmentTimeDetails.split(COMMA_SEPARATED);
+                String[] appointmentTime = appointmentStatus.getAppointmentTimeDetails().split(COMMA_SEPARATED);
 
                 DateTime finalDateTime = dateTime;
                 String timeMatched = Arrays.stream(appointmentTime)
@@ -59,10 +60,10 @@ public class AppointmentStatusUtils {
                             timeSlotResponseDTOS);
 
                 else setTimeSlotMapForOtherAppointmentStatus(doctorTimeSlotResponseDTO, timeMatched, dateTime,
-                        timeSlotResponseDTOS);
+                        timeSlotResponseDTOS, appointmentStatus);
 
             } else {
-                setTimeSlotMapForAllAppointmentStatus(doctorTimeSlotResponseDTO, dateTime, VACANT);
+                setTimeSlotMapWithAppointmentStatus(doctorTimeSlotResponseDTO, dateTime, VACANT);
                 timeSlotResponseDTOS.add(doctorTimeSlotResponseDTO);
             }
 
@@ -77,13 +78,16 @@ public class AppointmentStatusUtils {
     private static void setTimeSlotMapForOtherAppointmentStatus(DoctorTimeSlotResponseDTO doctorTimeSlotResponseDTO,
                                                                 String timeMatched,
                                                                 DateTime dateTime,
-                                                                List<DoctorTimeSlotResponseDTO> doctorTimeSlots) {
+                                                                List<DoctorTimeSlotResponseDTO> doctorTimeSlots,
+                                                                AppointmentStatusResponseDTO appointmentStatus) {
 
         if (!Objects.isNull(timeMatched)) {
             String[] timeMatchedSplit = timeMatched.split(HYPHEN);
-            setTimeSlotMapForAllAppointmentStatus(doctorTimeSlotResponseDTO, dateTime, timeMatchedSplit[1]);
+            setTimeSlotMapWithAppointmentStatus(doctorTimeSlotResponseDTO, dateTime, timeMatchedSplit[1]);
+
+            parseAppointmentDetails(doctorTimeSlotResponseDTO, appointmentStatus);
         } else
-            setTimeSlotMapForAllAppointmentStatus(doctorTimeSlotResponseDTO, dateTime, VACANT);
+            setTimeSlotMapWithAppointmentStatus(doctorTimeSlotResponseDTO, dateTime, VACANT);
 
         doctorTimeSlots.add(doctorTimeSlotResponseDTO);
     }
@@ -95,14 +99,14 @@ public class AppointmentStatusUtils {
                                                               DateTime dateTime,
                                                               List<DoctorTimeSlotResponseDTO> doctorTimeSlots) {
         if (Objects.isNull(timeMatched)) {
-            setTimeSlotMapForAllAppointmentStatus(doctorTimeSlotResponseDTO, dateTime, VACANT);
+            setTimeSlotMapWithAppointmentStatus(doctorTimeSlotResponseDTO, dateTime, VACANT);
             doctorTimeSlots.add(doctorTimeSlotResponseDTO);
         }
     }
 
-    private static void setTimeSlotMapForAllAppointmentStatus(DoctorTimeSlotResponseDTO responseDTO,
-                                                              DateTime dateTime,
-                                                              String status) {
+    private static void setTimeSlotMapWithAppointmentStatus(DoctorTimeSlotResponseDTO responseDTO,
+                                                            DateTime dateTime,
+                                                            String status) {
 
         responseDTO.setAppointmentTime(convert24HourTo12HourFormat(FORMAT.print(dateTime)));
         responseDTO.setStatus(status);
@@ -141,12 +145,12 @@ public class AppointmentStatusUtils {
                 if (!Objects.isNull(timeMatched)) {
                     String[] timeMatchedSplit = timeMatched.split(HYPHEN);
 
-                    setTimeSlotMapForAllAppointmentStatus(doctorTimeSlotResponseDTO, dateTime, timeMatchedSplit[1]);
+                    setTimeSlotMapWithAppointmentStatus(doctorTimeSlotResponseDTO, dateTime, timeMatchedSplit[1]);
                 } else {
-                    setTimeSlotMapForAllAppointmentStatus(doctorTimeSlotResponseDTO, dateTime, VACANT);
+                    setTimeSlotMapWithAppointmentStatus(doctorTimeSlotResponseDTO, dateTime, VACANT);
                 }
             } else {
-                setTimeSlotMapForAllAppointmentStatus(doctorTimeSlotResponseDTO, dateTime, VACANT);
+                setTimeSlotMapWithAppointmentStatus(doctorTimeSlotResponseDTO, dateTime, VACANT);
             }
 
             dateTime = dateTime.plus(duration);
@@ -180,9 +184,21 @@ public class AppointmentStatusUtils {
 
                 doctorTimeSlotResponseDTOS.add(responseDTO);
             }
+
+            parseAppointmentDetails(responseDTO, appointment);
         });
 
         return doctorTimeSlotResponseDTOS;
+    }
+
+    private static void parseAppointmentDetails(DoctorTimeSlotResponseDTO responseDTO,
+                                                AppointmentStatusResponseDTO appointmentStatusResponseDTO) {
+
+        responseDTO.setAppointmentNumber(appointmentStatusResponseDTO.getAppointmentNumber());
+        responseDTO.setPatientName(appointmentStatusResponseDTO.getPatientName());
+        responseDTO.setAge(appointmentStatusResponseDTO.getAge());
+        responseDTO.setMobileNumber(appointmentStatusResponseDTO.getMobileNumber());
+        responseDTO.setGender(appointmentStatusResponseDTO.getGender());
     }
 
 }

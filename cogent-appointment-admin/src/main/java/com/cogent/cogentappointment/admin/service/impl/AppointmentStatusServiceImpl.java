@@ -109,7 +109,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
                     for (AppointmentStatusResponseDTO appointment : appointments) {
                         if (hasAppointment(appointment, doctorDutyRosterStatusResponseDTO)) {
                             setTimeSlotForAllAppointmentStatus(doctorDutyRosterStatusResponseDTO,
-                                    appointment.getAppointmentTimeDetails(), searchAppointmentStatus);
+                                    appointment, searchAppointmentStatus);
                             break;
                         } else {
                             setTimeSlotForAllAppointmentStatus(doctorDutyRosterStatusResponseDTO,
@@ -135,7 +135,8 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
                     doctorDutyRosterStatusResponseDTO.getDate().getDayOfWeek().toString());
 
             if (doctorDutyRosterStatusResponseDTO.getDayOffStatus().equals(NO)) {
-                List<DoctorTimeSlotResponseDTO> doctorTimeSlots = calculateTimeSlotsForSelectedAppointmentStatus(appointments);
+                List<DoctorTimeSlotResponseDTO> doctorTimeSlots =
+                        calculateTimeSlotsForSelectedAppointmentStatus(appointments);
                 doctorDutyRosterStatusResponseDTO.setDoctorTimeSlots(doctorTimeSlots);
             }
         }
@@ -151,14 +152,14 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
 
     private static void setTimeSlotForAllAppointmentStatus
             (DoctorDutyRosterStatusResponseDTO doctorDutyRosterStatusResponseDTO,
-             String appointmentTimeDetails,
+             AppointmentStatusResponseDTO appointmentStatus,
              String searchAppointmentStatus) {
 
         List<DoctorTimeSlotResponseDTO> doctorTimeSlots =
                 calculateTimeSlotsForAllAppointmentStatus(doctorDutyRosterStatusResponseDTO.getStartTime(),
                         doctorDutyRosterStatusResponseDTO.getEndTime(),
                         doctorDutyRosterStatusResponseDTO.getRosterGapDuration(),
-                        appointmentTimeDetails,
+                        appointmentStatus,
                         searchAppointmentStatus);
 
         doctorDutyRosterStatusResponseDTO.setDoctorTimeSlots(doctorTimeSlots);

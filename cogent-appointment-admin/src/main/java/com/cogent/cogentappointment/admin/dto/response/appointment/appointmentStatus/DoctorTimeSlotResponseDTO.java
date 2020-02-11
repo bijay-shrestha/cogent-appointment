@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus;
 
-import com.cogent.cogentappointment.persistence.enums.Gender;
 import lombok.*;
 
 import java.io.Serializable;
@@ -25,7 +24,7 @@ public class DoctorTimeSlotResponseDTO implements Serializable {
 
     private String age;
 
-    private Gender gender;
+    private String gender;
 
     private String patientName;
 }

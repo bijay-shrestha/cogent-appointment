@@ -59,7 +59,7 @@ public class AppointmentUtils {
                     .patientName(result[PATIENT_NAME_INDEX].toString())
                     .mobileNumber(result[MOBILE_NUMBER_INDEX].toString())
                     .age(result[AGE_INDEX].toString())
-//                    .gender((Gender) result[GENDER_INDEX])
+                    .gender(result[GENDER_INDEX].toString())
                     .build();
 
             appointmentStatusResponseDTOS.add(appointmentStatusResponseDTO);

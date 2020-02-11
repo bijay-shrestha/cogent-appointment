@@ -16,8 +16,4 @@ public interface PatientMetaInfoRepositoryCustom {
 
     List<DropDownResponseDTO> fetchActivePatientMetaInfoDropDownListByHospitalId(Long hospitalId);
 
-    List<DropDownResponseDTO> fetchPatientMetaInfoDropDownList();
-
-    List<DropDownResponseDTO> fetchActivePatientMetaInfoDropDownList();
-
 }

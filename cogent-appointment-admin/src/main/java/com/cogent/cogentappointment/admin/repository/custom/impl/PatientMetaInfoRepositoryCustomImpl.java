@@ -30,8 +30,7 @@ public class PatientMetaInfoRepositoryCustomImpl implements PatientMetaInfoRepos
 
     @Override
     public List<DropDownResponseDTO> fetchPatientMetaInfoDropDownListByHospitalId(Long hospitalId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_META_INFO_FOR_DROP_DOWN_BY_HOSPITAL_ID)
-                .setParameter(HOSPITAL_ID, hospitalId);
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_META_INFO_FOR_DROP_DOWN_BY_HOSPITAL_ID(hospitalId));
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
@@ -41,35 +40,14 @@ public class PatientMetaInfoRepositoryCustomImpl implements PatientMetaInfoRepos
 
     @Override
     public List<DropDownResponseDTO> fetchActivePatientMetaInfoDropDownListByHospitalId(Long hospitalId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_PATIENT_META_INFO_FOR_DROP_DOWN_BY_HOSPITAL_ID)
-                .setParameter(HOSPITAL_ID, hospitalId);
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_ACTIVE_PATIENT_META_INFO_FOR_DROP_DOWN_BY_HOSPITAL_ID(hospitalId));
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
         if (results.isEmpty()) throw PATIENT_META_INFO_NOT_FOUND.get();
         else return results;
     }
-
-    @Override
-    public List<DropDownResponseDTO> fetchPatientMetaInfoDropDownList() {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_META_INFO_FOR_DROP_DOWN);
-
-        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
-
-        if (results.isEmpty()) throw PATIENT_META_INFO_NOT_FOUND.get();
-        else return results;
-    }
-
-    @Override
-    public List<DropDownResponseDTO> fetchActivePatientMetaInfoDropDownList() {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_PATIENT_META_INFO_FOR_DROP_DOWN);
-
-        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
-
-        if (results.isEmpty()) throw PATIENT_META_INFO_NOT_FOUND.get();
-        else return results;
-    }
-
 
     private Supplier<NoContentFoundException> PATIENT_META_INFO_NOT_FOUND = ()
             -> new NoContentFoundException(PatientMetaInfo.class);

@@ -61,7 +61,7 @@ public class AppointmentQuery {
                 " a.appointmentNumber as appointmentNumber," +                          //[3]
                 " h.name as hospitalName," +                                            //[4]
                 " p.name as patientName," +                                             //[5]
-                " p.registrationNumber as registrationNumber," +                        //[6]
+                " hp.registrationNumber as registrationNumber," +                        //[6]
                 " p.gender as gender," +                                                //[7]
                 " d.name as doctorName," +                                              //[8]
                 " s.name as specializationName," +                                      //[9]
@@ -79,6 +79,7 @@ public class AppointmentQuery {
                 " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
                 " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId.id = a.id" +
                 " LEFT JOIN PatientMetaInfo pm ON pm.patient.id = p.id" +
+                " LEFT JOIN HospitalPatientInfo hp ON hp.patientId = p.id" +
                 GET_WHERE_CLAUSE_TO_FETCH_REFUND_APPOINTMENTS(searchDTO);
     }
 
@@ -102,7 +103,7 @@ public class AppointmentQuery {
             whereClause += " AND h.id=" + searchDTO.getHospitalId();
 
         if (!ObjectUtils.isEmpty(searchDTO.getPatientType()))
-            whereClause += " AND p.isRegistered='" + searchDTO.getPatientType() + "'";
+            whereClause += " AND hp.isRegistered='" + searchDTO.getPatientType() + "'";
 
         return whereClause + " ORDER BY a.appointmentDate DESC";
     }

@@ -14,23 +14,33 @@ public class DashBoardQuery {
                     " (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
                     " AND a.hospitalId.id=:hospitalId";
 
-    public static String QUERY_TO_COUNT_REGISTERED_APPOINTMENT =
+    public static String QUERY_TO_OVER_ALL_APPOINTMENTS =
             "SELECT" +
                     " COUNT(a.id)" +
                     " FROM Appointment a" +
-                    " LEFT JOIN Hospital h ON h.id=a.hospitalId" +
-                    " WHERE (a.appointmentDate BETWEEN :fromDate AND :toDate)" +
-                    " AND a.status='A'" +
-                    " AND h.id=:hospitalId";
+                    " WHERE " +
+                    " (a.appointmentDate BETWEEN :fromDate AND :toDate)" +
+                    " AND a.hospitalId.id=:hospitalId";
+
+    public static String QUERY_TO_COUNT_REGISTERED_APPOINTMENT =
+            "SELECT" +
+                    " COUNT(hpi.id)" +
+                    " FROM HospitalPatientInfo hpi" +
+                    " WHERE " +
+                    " hpi.hospitalId.id=:hospitalId" +
+                    " AND (hpi.createdDate BETWEEN :fromDate AND :toDate)" +
+                    " AND hpi.isRegistered='Y'";
+
 
     public static String QUERY_TO_COUNT_NEW_PATIENT_APPOINTMENT =
             "SELECT" +
-                    " COUNT(a.id)" +
-                    " FROM Appointment a" +
-                    " LEFT JOIN Hospital h ON h.id=a.hospitalId" +
-                    " WHERE (a.appointmentDate BETWEEN :fromDate AND :toDate)" +
-                    " AND a.status!='A'" +
-                    " AND h.id=:hospitalId";
+                    " COUNT(hpi.id)" +
+                    " FROM HospitalPatientInfo hpi" +
+                    " WHERE " +
+                    " hpi.hospitalId.id=:hospitalId" +
+                    " AND (hpi.createdDate BETWEEN :fromDate AND :toDate)" +
+                    " AND hpi.isRegistered='N'";
+
 
     public static String QUERY_TO_COUNT_OVERALL_REGISTERED_PATIENTS =
             "SELECT" +

@@ -159,11 +159,11 @@ public class AppointmentUtils {
     }
 
 
-    public static AppointmentCountResponseDTO parseToAppointmentCountResponseDTO(Long newPatient,
+    public static AppointmentCountResponseDTO parseToAppointmentCountResponseDTO(Long overAllAppointment,Long newPatient,
                                                                                  Long registeredPatient,
                                                                                  Character pillType) {
         AppointmentCountResponseDTO countResponseDTO = new AppointmentCountResponseDTO();
-        countResponseDTO.setTotalAppointment(newPatient + registeredPatient);
+        countResponseDTO.setTotalAppointment(overAllAppointment);
         countResponseDTO.setNewPatient(newPatient);
         countResponseDTO.setRegisteredPatient(registeredPatient);
         countResponseDTO.setPillType(pillType);

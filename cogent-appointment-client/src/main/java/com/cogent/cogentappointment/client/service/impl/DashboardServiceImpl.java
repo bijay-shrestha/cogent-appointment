@@ -52,10 +52,10 @@ public class DashboardServiceImpl implements DashboardService {
         log.info(FETCHING_PROCESS_STARTED, REVENUE_GENERATED);
 
         Double currentTransaction = appointmentTransactionDetailRepository.getRevenueByDates(requestDTO.getCurrentToDate(),
-                requestDTO.getCurrentFromDate(),requestDTO.getHospitalId());
+                requestDTO.getCurrentFromDate(), requestDTO.getHospitalId());
 
         Double previousTransaction = appointmentTransactionDetailRepository.getRevenueByDates(requestDTO.getPreviousToDate(),
-                requestDTO.getPreviousFromDate(),requestDTO.getHospitalId());
+                requestDTO.getPreviousFromDate(), requestDTO.getHospitalId());
 
         GenerateRevenueResponseDTO responseDTO = parseToGenerateRevenueResponseDTO(currentTransaction,
                 calculatePercenatge(currentTransaction, previousTransaction),
@@ -72,6 +72,8 @@ public class DashboardServiceImpl implements DashboardService {
 
         log.info(FETCHING_PROCESS_STARTED, OVER_ALL_APPOINTMETS);
 
+        Long overAllAppointment = appointmentRepository.countOverAllAppointment(dashBoardRequestDTO);
+
         Long newPatient = appointmentRepository.countNewPatientByHospitalId(dashBoardRequestDTO);
 
         Long registeredPatient = appointmentRepository.countRegisteredPatientByHospitalId(dashBoardRequestDTO);
@@ -81,7 +83,7 @@ public class DashboardServiceImpl implements DashboardService {
 
         log.info(FETCHING_PROCESS_COMPLETED, OVER_ALL_APPOINTMETS, getDifferenceBetweenTwoTime(startTime));
 
-        return parseToAppointmentCountResponseDTO(newPatient, registeredPatient, pillType);
+        return parseToAppointmentCountResponseDTO(overAllAppointment, newPatient, registeredPatient, pillType);
     }
 
     @Override
@@ -107,8 +109,8 @@ public class DashboardServiceImpl implements DashboardService {
         Character filter = dateDifference(dashBoardRequestDTO.getToDate(),
                 dashBoardRequestDTO.getFromDate());
 
-        RevenueStatisticsResponseDTO revenueStatisticsResponseDTO=appointmentTransactionDetailRepository
-                .getRevenueStatistics(dashBoardRequestDTO,filter);
+        RevenueStatisticsResponseDTO revenueStatisticsResponseDTO = appointmentTransactionDetailRepository
+                .getRevenueStatistics(dashBoardRequestDTO, filter);
 
         log.info(FETCHING_PROCESS_COMPLETED, REVENUE_STATISTICS, getDifferenceBetweenTwoTime(startTime));
 

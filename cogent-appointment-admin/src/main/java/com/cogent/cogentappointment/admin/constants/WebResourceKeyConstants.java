@@ -28,6 +28,7 @@ public class WebResourceKeyConstants {
         String LOG = "/log";
         String PENDING_APPROVAL = "/pending-approval";
         String RESCHEDULE = "/reschedule";
+        String RESCHEDULE_LOG = "/reschedule-log";
         String DETAILS = "/detail";
 
     }

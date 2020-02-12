@@ -6,6 +6,8 @@ import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentLo
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentPendingApprovalDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentPendingApprovalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.AppointmentStatusResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogDTO;
+import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
 
@@ -142,6 +144,71 @@ public class AppointmentUtils {
         return appointmentPendingApprovalResponseDTO;
     }
 
+    public static AppointmentRescheduleLogResponseDTO parseQueryResultToAppointmentRescheduleLogResponse(List<Object[]> results) {
+
+        AppointmentRescheduleLogResponseDTO rescheduleLogResponseDTO = new AppointmentRescheduleLogResponseDTO();
+
+        List<AppointmentRescheduleLogDTO> appointmentLogSearchDTOS = new ArrayList<>();
+
+        AtomicReference<Double> totalAmount = new AtomicReference<>(0D);
+
+        results.forEach(result -> {
+            final int HOSPITAL_NAME_INDEX = 0;
+            final int ESEWA_ID_INDEX = 1;
+            final int PREVIOUS_APPOINTMENT_DATE_INDEX = 2;
+            final int APPOINTMENT_RESCHEDULED_DATE_INDEX = 3;
+            final int APPOINTMENT_NUMBER_INDEX = 4;
+            final int REGISTRATION_NUMBER_INDEX = 5;
+            final int PATIENT_NAME_INDEX = 6;
+            final int PATIENT_DOB_INDEX = 7;
+            final int PATIENT_GENDER_INDEX = 8;
+            final int PATIENT_MOBILE_NUMBER_INDEX = 9;
+            final int SPECIALIZATION_NAME_INDEX = 10;
+            final int DOCTOR_NAME_INDEX = 11;
+            final int TRANSACTION_NUMBER_INDEX = 12;
+            final int APPOINTMENT_AMOUNT_INDEX = 13;
+
+            Date previosAppointmentDate = (Date) result[PREVIOUS_APPOINTMENT_DATE_INDEX];
+            Date rescheduledAppointmentDate = (Date) result[APPOINTMENT_RESCHEDULED_DATE_INDEX];
+            Date patientDob = (Date) result[PATIENT_DOB_INDEX];
+
+            Double appointmentAmount = Objects.isNull(result[APPOINTMENT_AMOUNT_INDEX]) ?
+                    0D : Double.parseDouble(result[APPOINTMENT_AMOUNT_INDEX].toString());
+
+            String registrationNumber = Objects.isNull(result[REGISTRATION_NUMBER_INDEX]) ?
+                    null : result[REGISTRATION_NUMBER_INDEX].toString();
+
+            AppointmentRescheduleLogDTO appointmentRescheduleLogDTO =
+                    AppointmentRescheduleLogDTO.builder()
+                            .hospitalName(result[HOSPITAL_NAME_INDEX].toString())
+                            .previousAppointmentDate(previosAppointmentDate)
+                            .rescheduleAppointmentDate(rescheduledAppointmentDate)
+                            .rescheduleAppointmentDate(rescheduledAppointmentDate)
+                            .esewaId(result[ESEWA_ID_INDEX].toString())
+                            .registrationNumber(registrationNumber)
+                            .patientName(result[PATIENT_NAME_INDEX].toString())
+                            .patientGender((Gender) result[PATIENT_GENDER_INDEX])
+                            .patientAge(calculateAge(patientDob))
+                            .mobileNumber(result[PATIENT_MOBILE_NUMBER_INDEX].toString())
+                            .specializationName(result[SPECIALIZATION_NAME_INDEX].toString())
+                            .transactionNumber(Objects.isNull(result[TRANSACTION_NUMBER_INDEX])
+                                    ? null : result[TRANSACTION_NUMBER_INDEX].toString())
+                            .amount(appointmentAmount)
+                            .doctorName(result[DOCTOR_NAME_INDEX].toString())
+                            .build();
+
+            appointmentLogSearchDTOS.add(appointmentRescheduleLogDTO);
+
+            totalAmount.updateAndGet(v -> v + appointmentAmount);
+        });
+
+        rescheduleLogResponseDTO.setAppointmentRescheduleLogDTOS(appointmentLogSearchDTOS);
+        rescheduleLogResponseDTO.setTotalAmount(totalAmount.get());
+
+        return rescheduleLogResponseDTO;
+
+    }
+
     public static AppointmentLogResponseDTO parseQueryResultToAppointmentLogResponse(List<Object[]> results) {
 
         AppointmentLogResponseDTO appointmentLogResponseDTO = new AppointmentLogResponseDTO();
@@ -169,7 +236,6 @@ public class AppointmentUtils {
             final int DOCTOR_NAME_INDEX = 15;
             final int APPOINTMENT_STATUS_INDEX = 16;
             final int REFUND_AMOUNT_INDEX = 17;
-            final int PATIENT_ADDRESS_INDEX = 18;
 
             Date appointmentDate = (Date) result[APPOINTMENT_DATE_INDEX];
             Date patientDob = (Date) result[PATIENT_DOB_INDEX];
@@ -206,7 +272,6 @@ public class AppointmentUtils {
                             .doctorName(result[DOCTOR_NAME_INDEX].toString())
                             .status(result[APPOINTMENT_STATUS_INDEX].toString())
                             .refundAmount(refundAmount)
-                            .patientAddress(result[PATIENT_ADDRESS_INDEX].toString())
                             .build();
 
             appointmentLogSearchDTOS.add(appointmentLogDTO);
@@ -220,4 +285,5 @@ public class AppointmentUtils {
         return appointmentLogResponseDTO;
 
     }
+
 }

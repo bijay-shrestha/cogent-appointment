@@ -48,6 +48,7 @@ public class SwaggerConstants {
         String SAVE_OPERATION = "Save new appointment";
         String FETCH_PENDING_APPOINTMENT_APPROVAL = "Fetch pending appointment approvals";
         String FETCH_APPOINTMENT_LOG = "Fetch Appointment Log";
+        String FETCH_APPOINTMENT_RESCHEDULE_LOG = "Fetch Appointment Reschedule Log";
         String UPDATE_OPERATION = "Update existing appointment";
         String DELETE_OPERATION = "Set appointment status as 'D' when deleted";
         String SEARCH_OPERATION = "Search appointment according to given request parameters";

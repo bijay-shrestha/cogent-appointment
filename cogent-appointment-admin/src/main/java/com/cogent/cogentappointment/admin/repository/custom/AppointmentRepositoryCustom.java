@@ -5,11 +5,13 @@ import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentPen
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleDTO;
+import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentBookedDateResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentLogResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentPendingApprovalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.AppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -43,5 +45,5 @@ public interface AppointmentRepositoryCustom {
     AppointmentLogResponseDTO searchAppointmentLogs(
             AppointmentLogSearchDTO searchRequestDTO, Pageable pageable);
 
-    AppointmentRefundResponseDTO rescheduleAppointment(AppointmentRescheduleDTO rescheduleDTO, Pageable pageable);
+    AppointmentRescheduleLogResponseDTO fetchrescheduleAppointment(AppointmentRescheduleLogSearchDTO rescheduleDTO, Pageable pageable);
 }

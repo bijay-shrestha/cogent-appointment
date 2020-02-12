@@ -27,7 +27,6 @@ public class GenerateRevenueRequestDTO implements Serializable {
     @NotNull
     private Date previousFromDate;
 
-    @NotNull
     private Long hospitalId;
 
 }

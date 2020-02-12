@@ -34,7 +34,7 @@ import static com.cogent.cogentappointment.client.log.constants.PatientLog.PATIE
 import static com.cogent.cogentappointment.client.utils.GenderUtils.fetchGenderByCode;
 import static com.cogent.cogentappointment.client.utils.PatientUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
-import static com.cogent.cogentappointment.client.utils.commons.TimeConverterUtils.calculateAge;
+import static com.cogent.cogentappointment.client.utils.commons.DateConverterUtils.calculateAge;
 
 /**
  * @author smriti ON 16/01/2020

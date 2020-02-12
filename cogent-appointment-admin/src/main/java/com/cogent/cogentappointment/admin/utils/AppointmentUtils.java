@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.utils;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundRejectDTO;
+import com.cogent.cogentappointment.admin.dto.response.dashboard.AppointmentCountResponseDTO;
 import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.REJECTED;
@@ -14,6 +15,17 @@ public class AppointmentUtils {
                                                 AppointmentRefundDetail refundDetail) {
         refundDetail.setStatus(REJECTED);
         refundDetail.setRemarks(refundRejectDTO.getRemarks());
+    }
+    public static AppointmentCountResponseDTO parseToAppointmentCountResponseDTO(Long overAllAppointment, Long newPatient,
+                                                                                 Long registeredPatient,
+                                                                                 Character pillType) {
+        AppointmentCountResponseDTO countResponseDTO = new AppointmentCountResponseDTO();
+        countResponseDTO.setTotalAppointment(overAllAppointment);
+        countResponseDTO.setNewPatient(newPatient);
+        countResponseDTO.setRegisteredPatient(registeredPatient);
+        countResponseDTO.setPillType(pillType);
+
+        return countResponseDTO;
     }
 
 //    public static AppointmentAvailabilityResponseDTO parseToAppointmentAvailabilityResponseDTO

@@ -1,27 +1,29 @@
-package com.cogent.cogentappointment.client.service.impl;
+package com.cogent.cogentappointment.admin.service.impl;
 
-import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.dashboard.GenerateRevenueRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.dashboard.AppointmentCountResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.dashboard.GenerateRevenueResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.dashboard.RevenueStatisticsResponseDTO;
-import com.cogent.cogentappointment.client.repository.AppointmentRepository;
-import com.cogent.cogentappointment.client.repository.AppointmentTransactionDetailRepository;
-import com.cogent.cogentappointment.client.repository.PatientRepository;
-import com.cogent.cogentappointment.client.service.DashboardService;
+
+import com.cogent.cogentappointment.admin.dto.request.dashboard.DashBoardRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.dashboard.GenerateRevenueRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.dashboard.AppointmentCountResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.dashboard.GenerateRevenueResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueStatisticsResponseDTO;
+import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
+import com.cogent.cogentappointment.admin.repository.AppointmentTransactionDetailRepository;
+import com.cogent.cogentappointment.admin.repository.PatientRepository;
+import com.cogent.cogentappointment.admin.service.DashboardService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.cogent.cogentappointment.client.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
-import static com.cogent.cogentappointment.client.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
-import static com.cogent.cogentappointment.client.log.constants.DashboardLog.*;
-import static com.cogent.cogentappointment.client.utils.AppointmentUtils.parseToAppointmentCountResponseDTO;
-import static com.cogent.cogentappointment.client.utils.DashboardUtils.parseToGenerateRevenueResponseDTO;
-import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
-import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
-import static com.cogent.cogentappointment.client.utils.commons.MathUtils.calculatePercenatge;
-import static com.cogent.cogentappointment.client.utils.commons.DateConverterUtils.dateDifference;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
+import static com.cogent.cogentappointment.admin.log.constants.DashboardLog.*;
+import static com.cogent.cogentappointment.admin.utils.AppointmentUtils.parseToAppointmentCountResponseDTO;
+import static com.cogent.cogentappointment.admin.utils.DashboardUtils.parseToGenerateRevenueResponseDTO;
+import static com.cogent.cogentappointment.admin.utils.commons.DateConverterUtils.dateDifference;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
+import static com.cogent.cogentappointment.admin.utils.commons.MathUtils.calculatePercenatge;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+
 
 /**
  * @author Sauravi Thapa २०/२/१०

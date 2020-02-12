@@ -18,8 +18,9 @@ import javax.persistence.Query;
 import java.util.List;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.admin.query.DashBoardQuery.QUERY_TO_COUNT_OVERALL_REGISTERED_PATIENTS;
 import static com.cogent.cogentappointment.admin.query.PatientQuery.*;
-import static com.cogent.cogentappointment.admin.utils.commons.AgeConverterUtils.ageConverter;
+import static com.cogent.cogentappointment.admin.utils.commons.DateConverterUtils.ageConverter;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.convertDateToLocalDate;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
@@ -81,5 +82,13 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
             responseDTOS.get(0).setTotalItems(totalItems);
             return responseDTOS;
         }
+    }
+
+    @Override
+    public Long countOverallRegisteredPatients(Long HospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_COUNT_OVERALL_REGISTERED_PATIENTS)
+                .setParameter(HOSPITAL_ID, HospitalId);
+
+        return (Long) query.getSingleResult();
     }
 }

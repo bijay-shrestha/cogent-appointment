@@ -1,6 +1,4 @@
-package com.cogent.cogentappointment.client.query;
-
-
+package com.cogent.cogentappointment.admin.query;
 
 /**
  * @author Sauravi Thapa २०/२/१०

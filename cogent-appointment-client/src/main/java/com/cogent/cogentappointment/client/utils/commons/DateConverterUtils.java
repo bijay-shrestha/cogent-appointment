@@ -9,7 +9,7 @@ import static com.cogent.cogentappointment.client.utils.commons.DateUtils.conver
 /**
  * @author smriti ON 16/01/2020
  */
-public class TimeConverterUtils {
+public class DateConverterUtils {
 
     public static String calculateAge(Date date) {
 

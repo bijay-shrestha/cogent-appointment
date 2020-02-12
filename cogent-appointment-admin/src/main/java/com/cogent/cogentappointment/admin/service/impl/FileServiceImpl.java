@@ -1,13 +1,11 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.configuration.FileConfiguration;
-import com.cogent.cogentappointment.admin.constants.ErrorMessageConstants;
 import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.exception.OperationUnsuccessfulException;
 import com.cogent.cogentappointment.admin.service.FileService;
-import com.cogent.cogentappointment.admin.utils.commons.DateUtils;
 import com.cogent.cogentappointment.admin.utils.commons.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
@@ -28,9 +26,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.FileServiceMessages.*;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.FORWARD_SLASH;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.admin.log.constants.FileLog.*;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
 /**
  * @author smriti on 2019-08-27
@@ -50,7 +51,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public Resource loadAsResource(String subDirectoryLocation, String fileName) {
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
         log.info(LOADING_FILE_PROCESS_STARTED);
 
         try {
@@ -59,18 +60,18 @@ public class FileServiceImpl implements FileService {
             Resource resource = new UrlResource(file.toUri());
 
             if (resource.exists() || resource.isReadable()) {
-                log.info(LOADING_FILE_PROCESS_COMPLETED, DateUtils.getDifferenceBetweenTwoTime(startTime));
+                log.info(LOADING_FILE_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
                 return resource;
             } else {
-                throw new NoContentFoundException(ErrorMessageConstants.FileServiceMessages.INVALID_FILE_TYPE_MESSAGE + fileName);
+                throw new NoContentFoundException(INVALID_FILE_TYPE_MESSAGE + fileName);
             }
         } catch (MalformedURLException e) {
-            throw new NoContentFoundException(ErrorMessageConstants.FileServiceMessages.INVALID_FILE_TYPE_MESSAGE + fileName);
+            throw new NoContentFoundException(INVALID_FILE_TYPE_MESSAGE + fileName);
         }
     }
 
     private FileUploadResponseDTO uploadFile(MultipartFile file, String subDirectoryLocation) {
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(UPLOADING_FILE_PROCESS_STARTED);
 
@@ -88,7 +89,7 @@ public class FileServiceImpl implements FileService {
                 .fileType(file.getContentType())
                 .fileSize(file.getSize()).build();
 
-        log.info(UPLOADING_FILE_PROCESS_COMPLETED, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(UPLOADING_FILE_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
     }
@@ -96,7 +97,7 @@ public class FileServiceImpl implements FileService {
     @Override
     public List<FileUploadResponseDTO> uploadFiles(MultipartFile[] files,
                                                    String subDirectoryLocation) {
-        Long startTime = DateUtils.getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(UPLOADING_FILE_PROCESS_STARTED);
 
@@ -104,7 +105,7 @@ public class FileServiceImpl implements FileService {
                 .map(file -> uploadFile(file, subDirectoryLocation))
                 .collect(Collectors.toList());
 
-        log.info(UPLOADING_FILE_PROCESS_COMPLETED, DateUtils.getDifferenceBetweenTwoTime(startTime));
+        log.info(UPLOADING_FILE_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
 
         return fileUploadResponseDTOS;
     }
@@ -115,10 +116,10 @@ public class FileServiceImpl implements FileService {
         String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         try {
             if (file.isEmpty())
-                throw new NoContentFoundException(ErrorMessageConstants.FileServiceMessages.FILES_EMPTY_MESSAGE + filename);
+                throw new NoContentFoundException(FILES_EMPTY_MESSAGE + filename);
 
             if (filename.contains(".."))
-                throw new BadRequestException(ErrorMessageConstants.FileServiceMessages.INVALID_FILE_SEQUENCE);
+                throw new BadRequestException(INVALID_FILE_SEQUENCE);
 
             resolvePath(subDirectory);
 
@@ -128,7 +129,7 @@ public class FileServiceImpl implements FileService {
 
             return filename;
         } catch (IOException exception) {
-            throw new OperationUnsuccessfulException(ErrorMessageConstants.FileServiceMessages.FILE_EXCEPTION);
+            throw new OperationUnsuccessfulException(FILE_EXCEPTION);
         }
     }
 

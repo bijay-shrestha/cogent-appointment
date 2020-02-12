@@ -1,8 +1,8 @@
 package com.cogent.cogentappointment.persistence.listener;
 
 import com.cogent.cogentappointment.persistence.config.Action;
-import com.cogent.cogentappointment.persistence.history.AppointmentRescheduleHistory;
-import com.cogent.cogentappointment.persistence.model.AppointmentReschedule;
+import com.cogent.cogentappointment.persistence.history.AppointmentRescheduleLogHistory;
+import com.cogent.cogentappointment.persistence.model.AppointmentRescheduleLog;
 import com.cogent.cogentappointment.persistence.util.BeanUtil;
 
 import javax.persistence.EntityManager;
@@ -15,29 +15,29 @@ import static com.cogent.cogentappointment.persistence.config.Action.*;
 import static javax.transaction.Transactional.TxType.MANDATORY;
 
 /**
- * @author Rupak
+ * @author smriti ON 12/02/2020
  */
-public class AppointmentRescheduleEntityListener {
+public class AppointmentRescheduleLogEntityListener {
+
     @PrePersist
-    public void prePersist(AppointmentReschedule target) {
+    public void prePersist(AppointmentRescheduleLog target) {
         perform(target, INSERTED);
     }
 
     @PreUpdate
-    public void preUpdate(AppointmentReschedule target) {
+    public void preUpdate(AppointmentRescheduleLog target) {
         perform(target, UPDATED);
     }
 
     @PreRemove
-    public void preRemove(AppointmentReschedule target) {
+    public void preRemove(AppointmentRescheduleLog target) {
         perform(target, DELETED);
     }
 
     @Transactional(MANDATORY)
-    public void perform(AppointmentReschedule target, Action action) {
+    public void perform(AppointmentRescheduleLog target, Action action) {
         EntityManager entityManager = BeanUtil.getBean(EntityManager.class);
-        entityManager.persist(new AppointmentRescheduleHistory(target, action));
+        entityManager.persist(new AppointmentRescheduleLogHistory(target, action));
     }
-
-
 }
+

@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.dto.request.appointment;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -11,22 +12,16 @@ import java.util.Date;
  */
 @Getter
 @Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class AppointmentRescheduleRequestDTO implements Serializable {
 
     @NotNull
     private Long appointmentId;
 
     @NotNull
-    private Date appointmentDate;
+    private Date rescheduleDate;
 
     @NotNull
-    private Date startTime;
-
-    @NotNull
-    private Date endTime;
+    private String rescheduleTime;
 
     @NotNull
     @NotEmpty

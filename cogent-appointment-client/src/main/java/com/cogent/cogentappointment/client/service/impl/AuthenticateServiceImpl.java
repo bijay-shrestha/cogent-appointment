@@ -34,7 +34,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     @Override
     public String loginUser(LoginRequestDTO requestDTO) {
         AdminMinDetails adminMinDetails = hmacApiInfoRepository.verifyLoggedInAdmin(requestDTO.getUsername(),
-                requestDTO.getCompanyCode());
+                requestDTO.getHospitalCode());
         if (BCrypt.checkpw(requestDTO.getPassword(), adminMinDetails.getPassword())) {
             return hmacUtils.getAuthToken(adminMinDetails);
         }
@@ -44,7 +44,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 
     @Override
     public String loginThirdParty(LoginRequestDTO requestDTO) {
-        ThirdPartyDetail thirdPartyDetail = hmacApiInfoRepository.getDetailsByHospitalCode(requestDTO.getCompanyCode());
+        ThirdPartyDetail thirdPartyDetail = hmacApiInfoRepository.getDetailsByHospitalCode(requestDTO.getHospitalCode());
 
         return hmacUtils.getAuthTokenForEsewa(thirdPartyDetail);
     }

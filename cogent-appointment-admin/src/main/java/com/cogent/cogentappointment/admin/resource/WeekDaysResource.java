@@ -14,6 +14,7 @@ import java.util.List;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.WeekDaysConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.WeekDaysConstants.BASE_WEEK_DAYS;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.WeekDaysConstants.PREPARE_WEEK_DAYS_DATA;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -36,7 +37,7 @@ public class WeekDaysResource {
         return ok(weekDaysService.fetchActiveWeekDays());
     }
 
-    @GetMapping("/prepare")
+    @GetMapping(PREPARE_WEEK_DAYS_DATA)
     @ApiOperation(FETCH_PREPARE_WEEK_DAYS)
     public ResponseEntity<?> fetchPrepareWeekDays() {
 

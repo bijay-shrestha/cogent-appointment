@@ -203,17 +203,6 @@ public class DoctorDutyRosterUtils {
         return doctorDutyRosterOverrideStatus;
     }
 
-//    public static AppointmentCountRequestDTO parseToAppointmentCountRequestTO(
-//            Date fromDate, Date toDate, Long doctorId, Long specializationId) {
-//
-//        AppointmentCountRequestDTO appointmentCountRequestDTO = new AppointmentCountRequestDTO();
-//        appointmentCountRequestDTO.setFromDate(fromDate);
-//        appointmentCountRequestDTO.setToDate(toDate);
-//        appointmentCountRequestDTO.setDoctorId(doctorId);
-//        appointmentCountRequestDTO.setSpecializationId(specializationId);
-//        return appointmentCountRequestDTO;
-//    }
-
     public static List<DoctorWeekDaysDutyRosterUpdateRequestDTO> filterOriginalAndUpdatedWeekDaysRoster(
             List<DoctorWeekDaysDutyRosterUpdateRequestDTO> updateRequestDTO,
             List<DoctorWeekDaysDutyRoster> weekDaysDutyRosters) {

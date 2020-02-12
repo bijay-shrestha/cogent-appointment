@@ -24,7 +24,7 @@ public class WebResourceKeyConstants {
         String APPOINTMENT_ID_PATH_VARIABLE_BASE = "/{appointmentId}";
         String REFUND = "/refund";
         String REJECT = "/reject";
-        String CHECK_AVAILABILITY = "/checkAvailability";
+        String STATUS = "/status";
         String LOG = "/log";
         String PENDING_APPROVAL = "/pending-approval";
         String RESCHEDULE = "/reschedule";
@@ -155,6 +155,7 @@ public class WebResourceKeyConstants {
     //W
     public interface WeekDaysConstants {
         String BASE_WEEK_DAYS = "/weekDays";
+        String PREPARE_WEEK_DAYS_DATA="/prepare-weekdays-data";
     }
 
 

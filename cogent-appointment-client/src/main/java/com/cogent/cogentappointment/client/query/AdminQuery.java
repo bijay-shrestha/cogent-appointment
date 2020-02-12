@@ -10,6 +10,17 @@ import org.springframework.util.ObjectUtils;
  */
 public class AdminQuery {
 
+    public static final String QUERY_TO_VALIDATE_ADMIN_COUNT =
+            " SELECT " +
+                    " COUNT(a.id)," +                   //[0]
+                    " h.numberOfAdmins" +               //[1]
+                    " FROM Admin a" +
+                    " LEFT JOIN Profile p ON p.id = a.profileId" +
+                    " LEFT JOIN Department d ON d.id = p.department.id" +
+                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
+                    " WHERE h.id = :hospitalId" +
+                    " AND a.status !='D'";
+
     public static final String QUERY_TO_FIND_ADMIN_FOR_VALIDATION =
             "SELECT " +
                     " a.username," +                            //[0]

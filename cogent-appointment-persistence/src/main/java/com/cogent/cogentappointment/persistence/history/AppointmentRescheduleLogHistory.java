@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.persistence.history;
 
 import com.cogent.cogentappointment.persistence.config.Action;
-import com.cogent.cogentappointment.persistence.model.AppointmentReschedule;
+import com.cogent.cogentappointment.persistence.model.AppointmentRescheduleLog;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,13 +10,14 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.TemporalType.TIMESTAMP;
 
 /**
- * @author Rupak
+ * @author smriti ON 12/02/2020
  */
 @Entity
 @Getter
@@ -24,7 +25,7 @@ import static javax.persistence.TemporalType.TIMESTAMP;
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "appointment_reschedule_log_history")
-public class AppointmentRescheduleHistory {
+public class AppointmentRescheduleLogHistory implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,12 +33,12 @@ public class AppointmentRescheduleHistory {
 
     @ManyToOne
     @JoinColumn(name = "appointment_reschedule_log_id",
-            foreignKey = @ForeignKey(name = "FK_reschedule_log_history_reschedule_log"))
-    private AppointmentReschedule appointmentReschedule;
+            foreignKey = @ForeignKey(name = "FK_appointment_reschedule_log_history_app_appointment_reschedule_log"))
+    private AppointmentRescheduleLog appointmentRescheduleLog;
 
-    @Column(name = "appointment_refund_detail_content")
+    @Column(name = "appointment_reschedule_log_content")
     @Lob
-    private String appointmentRefundDetailContent;
+    private String appointmentRescheduleLogContent;
 
     @CreatedBy
     private String modifiedBy;
@@ -49,9 +50,10 @@ public class AppointmentRescheduleHistory {
     @Enumerated(STRING)
     private Action action;
 
-    public AppointmentRescheduleHistory(AppointmentReschedule appointmentReschedule, Action action) {
-        this.appointmentReschedule = appointmentReschedule;
-        this.appointmentRefundDetailContent = appointmentReschedule.toString();
+    public AppointmentRescheduleLogHistory(AppointmentRescheduleLog appointmentRescheduleLog, Action action) {
+        this.appointmentRescheduleLog = appointmentRescheduleLog;
+        this.appointmentRescheduleLogContent = appointmentRescheduleLog.toString();
         this.action = action;
     }
+
 }

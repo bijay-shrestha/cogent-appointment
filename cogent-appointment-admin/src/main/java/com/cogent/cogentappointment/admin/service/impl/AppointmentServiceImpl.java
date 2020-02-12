@@ -13,9 +13,9 @@ import com.cogent.cogentappointment.admin.dto.response.appointment.refund.Appoin
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.AppointmentRefundDetailRepository;
 import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
+import com.cogent.cogentappointment.admin.service.AppointmentFollowUpTrackerService;
 import com.cogent.cogentappointment.admin.service.AppointmentService;
-import com.cogent.cogentappointment.persistence.model.Appointment;
-import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
+import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -47,10 +47,14 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentRefundDetailRepository appointmentRefundDetailRepository;
 
+    private final AppointmentFollowUpTrackerService appointmentFollowUpTrackerService;
+
     public AppointmentServiceImpl(AppointmentRepository appointmentRepository,
-                                  AppointmentRefundDetailRepository appointmentRefundDetailRepository) {
+                                  AppointmentRefundDetailRepository appointmentRefundDetailRepository,
+                                  AppointmentFollowUpTrackerService appointmentFollowUpTrackerService) {
         this.appointmentRepository = appointmentRepository;
         this.appointmentRefundDetailRepository = appointmentRefundDetailRepository;
+        this.appointmentFollowUpTrackerService = appointmentFollowUpTrackerService;
     }
 
     @Override
@@ -137,6 +141,25 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    public void approveAppointment(Long appointmentId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(APPROVE_PROCESS_STARTED, APPOINTMENT);
+
+        Appointment appointment = appointmentRepository.fetchPendingAppointmentById(appointmentId)
+                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
+
+        appointment.setStatus(APPROVED);
+
+        saveAppointmentFollowUpTracker(appointment.getAppointmentNumber(),
+                appointment.getDoctorId(),
+                appointment.getSpecializationId(),
+                appointment.getPatientId());
+
+        log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    @Override
     public void rejectAppointment(AppointmentRejectDTO rejectDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -169,6 +192,23 @@ public class AppointmentServiceImpl implements AppointmentService {
     private Function<Long, NoContentFoundException> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND = (appointmentId) -> {
         throw new NoContentFoundException(Appointment.class, "appointmentId", appointmentId.toString());
     };
+
+    private void saveAppointmentFollowUpTracker(String parentAppointmentNumber,
+                                                Doctor doctor,
+                                                Specialization specialization,
+                                                Patient patient) {
+
+        appointmentFollowUpTrackerService.save(parentAppointmentNumber, doctor, specialization, patient);
+
+
+//        } else {
+//            parentAppointmentNumber = appointmentRequestDTO.getParentAppointmentNumber();
+//            followUpTrackerService.updateNumberOfFollowupsInFollowUpTracker(
+//                    parentAppointmentNumber,
+//                    responseDTO.getDoctor().getId(),
+//                    patient.getId());
+//        }
+    }
 
 }
 

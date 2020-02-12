@@ -31,6 +31,8 @@ public interface AppointmentService {
     AppointmentPendingApprovalResponseDTO searchPendingVisitApprovals(AppointmentPendingApprovalSearchDTO searchRequestDTO,
                                                                       Pageable pageable);
 
+    void approveAppointment(Long appointmentId);
+
     void rejectAppointment(AppointmentRejectDTO rejectDTO);
 
     AppointmentLogResponseDTO searchAppointmentLogs(AppointmentLogSearchDTO searchRequestDTO, Pageable pageable);

@@ -14,11 +14,11 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppointmentRescheduleSearchDTO {
-
-    private Long doctorId;
+public class AppointmentRescheduleLogSearchDTO {
 
     private Long hospitalId;
+
+    private Long doctorId;
 
     private Date fromDate;
 

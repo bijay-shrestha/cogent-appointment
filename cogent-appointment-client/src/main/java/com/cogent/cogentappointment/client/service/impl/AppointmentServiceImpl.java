@@ -60,6 +60,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final PatientMetaInfoRepository patientMetaInfoRepository;
 
+    private final AppointmentRescheduleLogRepository appointmentRescheduleLogRepository;
+
     public AppointmentServiceImpl(PatientService patientService,
                                   DoctorService doctorService,
                                   SpecializationService specializationService,
@@ -69,7 +71,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   AppointmentTransactionInfoRepository appointmentTransactionInfoRepository,
                                   HospitalService hospitalService,
                                   AppointmentRefundDetailRepository appointmentRefundDetailRepository,
-                                  PatientMetaInfoRepository patientMetaInfoRepository) {
+                                  PatientMetaInfoRepository patientMetaInfoRepository,
+                                  AppointmentRescheduleLogRepository appointmentRescheduleLogRepository) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -80,6 +83,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.hospitalService = hospitalService;
         this.appointmentRefundDetailRepository = appointmentRefundDetailRepository;
         this.patientMetaInfoRepository = patientMetaInfoRepository;
+        this.appointmentRescheduleLogRepository = appointmentRescheduleLogRepository;
     }
 
     @Override
@@ -201,8 +205,15 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Appointment appointment = findPendingAppointmentById(rescheduleRequestDTO.getAppointmentId());
 
-//        Date originalAppointmentDate = appointment.getAppointmentDate();
-//        Date originalAppointmentTime = appointment.getStartTime();
+        Long appointmentCount = appointmentRepository.validateIfAppointmentExists(
+                rescheduleRequestDTO.getRescheduleDate(),
+                rescheduleRequestDTO.getRescheduleTime(),
+                appointment.getDoctorId().getId(),
+                appointment.getSpecializationId().getId());
+
+        validateAppointmentExists(appointmentCount, rescheduleRequestDTO.getRescheduleTime());
+
+        saveAppointmentRescheduleLog(appointment, rescheduleRequestDTO);
 
         parseToRescheduleAppointment(appointment, rescheduleRequestDTO);
 
@@ -287,6 +298,13 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     public void savePatientMetaInfo(PatientMetaInfo patientMetaInfo) {
         patientMetaInfoRepository.save(patientMetaInfo);
+    }
+
+    private void saveAppointmentRescheduleLog(Appointment appointment,
+                                              AppointmentRescheduleRequestDTO rescheduleRequestDTO) {
+        AppointmentRescheduleLog appointmentRescheduleLog = parseToAppointmentRescheduleLog(
+                appointment, rescheduleRequestDTO);
+        appointmentRescheduleLogRepository.save(appointmentRescheduleLog);
     }
 
 }

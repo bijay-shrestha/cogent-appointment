@@ -1,9 +1,12 @@
 package com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster;
 
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.DoctorTimeSlotResponseDTO;
 import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
+
 /**
  * @author smriti ON 14/12/2019
  */
@@ -31,4 +34,8 @@ public class DoctorDutyRosterStatusResponseDTO implements Serializable {
     private Long specializationId;
 
     private String specializationName;
+
+    private String weekDayName;
+
+    private List<DoctorTimeSlotResponseDTO> doctorTimeSlots;
 }

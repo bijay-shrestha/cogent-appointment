@@ -8,7 +8,7 @@ public class AppointmentQuery {
     public static String QUERY_TO_VALIDATE_APPOINTMENT_EXISTS =
             "SELECT COUNT(a.id)" +
                     " FROM  Appointment a" +
-                    " WHERE  a.appointmentDate =:appointmentDate" +
+                    " WHERE a.appointmentDate =:appointmentDate" +
                     " AND a.doctorId.id =:doctorId" +
                     " AND a.specializationId.id =:specializationId" +
                     " AND DATE_FORMAT(a.appointmentTime,'%H:%i') =:appointmentTime" +

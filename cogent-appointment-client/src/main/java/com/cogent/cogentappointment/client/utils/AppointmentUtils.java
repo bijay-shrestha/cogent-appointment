@@ -11,15 +11,13 @@ import org.joda.time.Duration;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 import static com.cogent.cogentappointment.client.constants.StatusConstants.ACTIVE;
-import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.CANCELLED;
-import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.PENDING_APPROVAL;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.*;
 import static com.cogent.cogentappointment.client.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils.generateRandomNumber;
@@ -96,14 +94,6 @@ public class AppointmentUtils {
                 String.format("%04d", Integer.parseInt(results.get(0).toString()) + 1);
     }
 
-    public static void parseToRescheduleAppointment(Appointment appointment,
-                                                    AppointmentRescheduleRequestDTO rescheduleRequestDTO) {
-        appointment.setAppointmentDate(rescheduleRequestDTO.getAppointmentDate());
-//        appointment.setStartTime(rescheduleRequestDTO.getStartTime());
-//        appointment.setEndTime(rescheduleRequestDTO.getEndTime());
-        appointment.setRemarks(rescheduleRequestDTO.getRemarks());
-    }
-
     public static List<String> calculateAvailableTimeSlots(String startTime,
                                                            String endTime,
                                                            Duration rosterGapDuration,
@@ -143,4 +133,29 @@ public class AppointmentUtils {
         return bookedAppointments.stream()
                 .anyMatch(bookedAppointment -> bookedAppointment.getAppointmentTime().equals(date));
     }
+
+    public static void parseToRescheduleAppointment(Appointment appointment,
+                                                    AppointmentRescheduleRequestDTO rescheduleRequestDTO) {
+
+        appointment.setAppointmentDate(rescheduleRequestDTO.getRescheduleDate());
+        appointment.setAppointmentTime(parseAppointmentTime(
+                rescheduleRequestDTO.getRescheduleDate(),
+                rescheduleRequestDTO.getRescheduleTime()));
+        appointment.setRemarks(rescheduleRequestDTO.getRemarks());
+    }
+
+    public static AppointmentRescheduleLog parseToAppointmentRescheduleLog(
+            Appointment appointment,
+            AppointmentRescheduleRequestDTO rescheduleRequestDTO) {
+
+        AppointmentRescheduleLog appointmentRescheduleLog = new AppointmentRescheduleLog();
+        appointmentRescheduleLog.setAppointmentId(appointment);
+        appointmentRescheduleLog.setPreviousAppointmentDate(appointment.getAppointmentDate());
+        appointmentRescheduleLog.setRescheduleDate(rescheduleRequestDTO.getRescheduleDate());
+        appointmentRescheduleLog.setRemarks(rescheduleRequestDTO.getRemarks());
+        appointmentRescheduleLog.setStatus(RESCHEDULED);
+        return appointmentRescheduleLog;
+    }
+
+
 }

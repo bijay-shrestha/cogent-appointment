@@ -1,5 +1,7 @@
 package com.cogent.cogentappointment.client.query;
 
+import com.cogent.cogentappointment.client.utils.commons.DateUtils;
+
 /**
  * @author Sauravi Thapa २०/२/१०
  */
@@ -24,22 +26,22 @@ public class DashBoardQuery {
 
     public static String QUERY_TO_COUNT_REGISTERED_APPOINTMENT =
             "SELECT" +
-                    " COUNT(hpi.id)" +
-                    " FROM HospitalPatientInfo hpi" +
-                    " WHERE " +
-                    " hpi.hospitalId.id=:hospitalId" +
-                    " AND (hpi.createdDate BETWEEN :fromDate AND :toDate)" +
-                    " AND hpi.isRegistered='Y'";
+                    " COUNT(a.id)" +
+                    " FROM Appointment a" +
+                    " LEFT JOIN HospitalPatientInfo hpi ON a.patientId=hpi.patientId" +
+                    " WHERE hpi.isRegistered='Y'" +
+                    " AND hpi.hospitalId=:hospitalId" +
+                    " AND (a.appointmentDate BETWEEN :fromDate AND :toDate)";
 
 
     public static String QUERY_TO_COUNT_NEW_PATIENT_APPOINTMENT =
             "SELECT" +
-                    " COUNT(hpi.id)" +
-                    " FROM HospitalPatientInfo hpi" +
-                    " WHERE " +
-                    " hpi.hospitalId.id=:hospitalId" +
-                    " AND (hpi.createdDate BETWEEN :fromDate AND :toDate)" +
-                    " AND hpi.isRegistered='N'";
+                    " COUNT(a.id)" +
+                    " FROM Appointment a" +
+                    " LEFT JOIN HospitalPatientInfo hpi ON a.patientId=hpi.patientId" +
+                    " WHERE hpi.isRegistered='N'" +
+                    " AND  hpi.hospitalId=:hospitalId" +
+                    " AND (a.appointmentDate BETWEEN :fromDate AND :toDate)";
 
 
     public static String QUERY_TO_COUNT_OVERALL_REGISTERED_PATIENTS =

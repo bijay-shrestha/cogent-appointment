@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardReques
 import com.cogent.cogentappointment.client.dto.request.dashboard.GenerateRevenueRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.AppointmentCountResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.GenerateRevenueResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.dashboard.OverallRegisteredPatientsResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.RevenueStatisticsResponseDTO;
 import com.cogent.cogentappointment.client.repository.AppointmentRepository;
 import com.cogent.cogentappointment.client.repository.AppointmentTransactionDetailRepository;
@@ -18,6 +19,7 @@ import static com.cogent.cogentappointment.client.log.CommonLogConstant.FETCHING
 import static com.cogent.cogentappointment.client.log.constants.DashboardLog.*;
 import static com.cogent.cogentappointment.client.utils.AppointmentUtils.parseToAppointmentCountResponseDTO;
 import static com.cogent.cogentappointment.client.utils.DashboardUtils.parseToGenerateRevenueResponseDTO;
+import static com.cogent.cogentappointment.client.utils.DashboardUtils.parseToOverallRegisteredPatientsResponseDTO;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static com.cogent.cogentappointment.client.utils.commons.MathUtils.calculatePercenatge;

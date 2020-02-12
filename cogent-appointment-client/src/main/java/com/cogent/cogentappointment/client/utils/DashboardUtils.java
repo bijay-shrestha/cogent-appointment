@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.utils;
 
 import com.cogent.cogentappointment.client.dto.response.dashboard.GenerateRevenueResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.dashboard.OverallRegisteredPatientsResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.RevenueStatisticsResponseDTO;
 
 import java.util.LinkedHashMap;
@@ -22,18 +23,28 @@ public class DashboardUtils {
         return generateRevenueResponseDTO;
     }
 
-    public static RevenueStatisticsResponseDTO revenueStatisticsResponseDTO(List<Object[]> resultList,Character filter){
-        RevenueStatisticsResponseDTO revenueStatisticsResponseDTO=new RevenueStatisticsResponseDTO();
+    public static RevenueStatisticsResponseDTO revenueStatisticsResponseDTO(List<Object[]> resultList, Character filter) {
+        RevenueStatisticsResponseDTO revenueStatisticsResponseDTO = new RevenueStatisticsResponseDTO();
         revenueStatisticsResponseDTO.setData(getMapFromObject(resultList));
         revenueStatisticsResponseDTO.setFilterType(filter);
 
         return revenueStatisticsResponseDTO;
     }
 
+    public static OverallRegisteredPatientsResponseDTO parseToOverallRegisteredPatientsResponseDTO(Long registeredpatientCount,
+                                                                                                   Character pillType) {
+        OverallRegisteredPatientsResponseDTO overallRegisteredPatientsResponseDTO =
+                new OverallRegisteredPatientsResponseDTO();
+        overallRegisteredPatientsResponseDTO.setRegisteredPatient(registeredpatientCount);
+        overallRegisteredPatientsResponseDTO.setPillType(pillType);
+
+        return overallRegisteredPatientsResponseDTO;
+    }
+
 
     public static Map<String, String> getMapFromObject(List<Object[]> resultList) {
         final int WEEK_MONTH_YEAR_INDEX = 0; //VARIES ACCORDING TO FILTER
-        final int  TOTAL_REVENUE= 1;
+        final int TOTAL_REVENUE = 1;
         Map<String, String> map = new LinkedHashMap<>();
         resultList.stream().forEach(objects -> {
             map.put(objects[WEEK_MONTH_YEAR_INDEX].toString(), objects[TOTAL_REVENUE].toString());

@@ -9,23 +9,28 @@ import com.cogent.cogentappointment.admin.repository.DoctorDutyRosterOverrideRep
 import com.cogent.cogentappointment.admin.repository.DoctorDutyRosterRepository;
 import com.cogent.cogentappointment.admin.service.AppointmentService;
 import com.cogent.cogentappointment.admin.service.AppointmentStatusService;
+import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRoster;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.VACANT;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.NO;
+import static com.cogent.cogentappointment.admin.constants.StringConstant.COMMA_SEPARATED;
+import static com.cogent.cogentappointment.admin.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.APPOINTMENT_STATUS;
 import static com.cogent.cogentappointment.admin.utils.AppointmentStatusUtils.calculateTimeSlotsForAllAppointmentStatus;
-import static com.cogent.cogentappointment.admin.utils.AppointmentStatusUtils.calculateTimeSlotsForSelectedAppointmentStatus;
+import static com.cogent.cogentappointment.admin.utils.AppointmentStatusUtils.parseAppointmentDetails;
 import static com.cogent.cogentappointment.admin.utils.DoctorDutyRosterUtils.mergeOverrideAndActualDoctorDutyRoster;
-import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
-import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
 
 /**
  * @author smriti ON 16/12/2019
@@ -63,7 +68,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
 
         List<AppointmentStatusResponseDTO> appointments = fetchAppointmentStatus(requestDTO);
 
-        if (ObjectUtils.isEmpty(requestDTO.getStatus()))
+        if (ObjectUtils.isEmpty(requestDTO.getStatus()) || (requestDTO.getStatus().equals(VACANT)))
             setDoctorTimeSlotForAllAppointmentStatus(doctorDutyRosterStatus, appointments, requestDTO.getStatus());
         else
             setDoctorTimeSlotForSelectedAppointmentStatus(doctorDutyRosterStatus, appointments);
@@ -129,15 +134,48 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
     private void setDoctorTimeSlotForSelectedAppointmentStatus(List<DoctorDutyRosterStatusResponseDTO> doctorDutyRosterStatusResponseDTOS,
                                                                List<AppointmentStatusResponseDTO> appointments) {
 
-        for (DoctorDutyRosterStatusResponseDTO doctorDutyRosterStatusResponseDTO : doctorDutyRosterStatusResponseDTOS) {
+        if (appointments.isEmpty())
+            throw new NoContentFoundException(Appointment.class);
 
-            doctorDutyRosterStatusResponseDTO.setWeekDayName(
-                    doctorDutyRosterStatusResponseDTO.getDate().getDayOfWeek().toString());
+        List<DoctorDutyRosterStatusResponseDTO> rostersWithAppointment =
+                doctorDutyRosterStatusResponseDTOS
+                        .stream()
+                        .filter(doctorDutyRoster ->
+                                (appointments.stream()
+                                        .anyMatch(appointment ->
+                                                hasAppointment(appointment, doctorDutyRoster)))
+                        )
+                        .collect(Collectors.toList());
 
-            if (doctorDutyRosterStatusResponseDTO.getDayOffStatus().equals(NO)) {
-                List<DoctorTimeSlotResponseDTO> doctorTimeSlots =
-                        calculateTimeSlotsForSelectedAppointmentStatus(appointments);
-                doctorDutyRosterStatusResponseDTO.setDoctorTimeSlots(doctorTimeSlots);
+        for (DoctorDutyRosterStatusResponseDTO doctorDutyRoster : rostersWithAppointment) {
+
+            List<DoctorTimeSlotResponseDTO> doctorTimeSlotResponseDTOS = new ArrayList<>();
+
+            for (AppointmentStatusResponseDTO appointment : appointments) {
+                if (hasAppointment(appointment, doctorDutyRoster)) {
+
+                    if (doctorDutyRoster.getDayOffStatus().equals(NO)) {
+                        DoctorTimeSlotResponseDTO responseDTO = new DoctorTimeSlotResponseDTO();
+
+                        doctorDutyRoster.setWeekDayName(
+                                doctorDutyRoster.getDate().getDayOfWeek().toString());
+
+                        /*APPOINTMENT TIME - APPOINTMENT STATUS*/
+                        String[] appointmentTimeDetails = appointment.getAppointmentTimeDetails().split(COMMA_SEPARATED);
+
+                        for (String appointmentTimeAndStatus : appointmentTimeDetails) {
+                            String[] timeAndStatus = appointmentTimeAndStatus.split(HYPHEN);
+
+                            responseDTO.setAppointmentTime(convert24HourTo12HourFormat(timeAndStatus[0]));
+                            responseDTO.setStatus(timeAndStatus[1]);
+
+                            doctorTimeSlotResponseDTOS.add(responseDTO);
+                            parseAppointmentDetails(responseDTO, appointment);
+                        }
+                    }
+
+                    doctorDutyRoster.setDoctorTimeSlots(doctorTimeSlotResponseDTOS);
+                }
             }
         }
     }
@@ -149,6 +187,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
                 && (appointment.getDoctorId().equals(doctorDutyRosterStatusResponseDTO.getDoctorId()))
                 && (appointment.getSpecializationId().equals(doctorDutyRosterStatusResponseDTO.getSpecializationId()));
     }
+
 
     private static void setTimeSlotForAllAppointmentStatus
             (DoctorDutyRosterStatusResponseDTO doctorDutyRosterStatusResponseDTO,

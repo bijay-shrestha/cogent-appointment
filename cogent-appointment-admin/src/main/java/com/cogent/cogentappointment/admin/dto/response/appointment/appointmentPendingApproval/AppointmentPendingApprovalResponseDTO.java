@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.dto.response.appointment;
+package com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPendingApproval;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

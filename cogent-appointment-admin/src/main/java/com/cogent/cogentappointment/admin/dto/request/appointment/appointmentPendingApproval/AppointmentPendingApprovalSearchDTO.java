@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.dto.request.appointment;
+package com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPendingApproval;
 
 import lombok.Getter;
 import lombok.Setter;

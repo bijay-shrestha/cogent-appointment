@@ -10,4 +10,5 @@ import org.springframework.stereotype.Repository;
 @Qualifier("patientRepositoryCustom")
 public interface PatientRepositoryCustom {
 
+    String fetchLatestRegistrationNumber();
 }

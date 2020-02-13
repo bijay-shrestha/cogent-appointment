@@ -1,12 +1,14 @@
 package com.cogent.cogentappointment.admin.utils;
 
+import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPendingApproval.AppointmentRejectDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundRejectDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentLogDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentLogResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentPendingApprovalDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentPendingApprovalResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.AppointmentLogDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.AppointmentLogResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPendingApproval.AppointmentPendingApprovalDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPendingApproval.AppointmentPendingApprovalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.AppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.persistence.enums.Gender;
+import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
 
 import java.time.LocalDate;
@@ -28,6 +30,12 @@ public class AppointmentUtils {
                                                 AppointmentRefundDetail refundDetail) {
         refundDetail.setStatus(REJECTED);
         refundDetail.setRemarks(refundRejectDTO.getRemarks());
+    }
+
+    public static void parseAppointmentRejectDetails(AppointmentRejectDTO rejectDTO,
+                                                     Appointment appointment) {
+        appointment.setStatus(REJECTED);
+        appointment.setRemarks(rejectDTO.getRemarks());
     }
 
     public static List<AppointmentStatusResponseDTO> parseQueryResultToAppointmentStatusResponseDTOS
@@ -95,6 +103,7 @@ public class AppointmentUtils {
             final int APPOINTMENT_AMOUNT_INDEX = 14;
             final int DOCTOR_NAME_INDEX = 15;
             final int REFUND_AMOUNT_INDEX = 16;
+            final int APPOINTMENT_ID_INDEX = 17;
 
             Date appointmentDate = (Date) result[APPOINTMENT_DATE_INDEX];
             Date patientDob = (Date) result[PATIENT_DOB_INDEX];
@@ -129,6 +138,7 @@ public class AppointmentUtils {
                             .specializationName(result[SPECIALIZATION_NAME_INDEX].toString())
                             .doctorName(result[DOCTOR_NAME_INDEX].toString())
                             .refundAmount(refundAmount)
+                            .appointmentId(Long.parseLong(result[APPOINTMENT_ID_INDEX].toString()))
                             .build();
 
             appointmentPendingApprovalDTOS.add(appointmentStatusResponseDTO);

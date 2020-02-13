@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.admin.query;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
-import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentPendingApprovalSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPendingApproval.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundSearchDTO;
 import org.springframework.util.ObjectUtils;
@@ -197,7 +197,8 @@ public class AppointmentQuery {
                             " atd.transactionNumber as transactionNumber," +                //[13]
                             " atd.appointmentAmount as appointmentAmount," +                //[14]
                             " d.name as doctorName," +                                       //[15]
-                            " ard.refundAmount as refundAmount" +
+                            " ard.refundAmount as refundAmount," +                           //[16]
+                            " a.id as appointmentId"+                                        //[17]
                             " FROM Appointment a" +
                             " LEFT JOIN Patient p ON a.patientId=p.id" +
                             " LEFT JOIN HospitalPatientInfo hpi ON hpi.patientId =p.id" +

@@ -37,6 +37,8 @@ public class HospitalUtils {
         hospital.setIsCogentAdmin(hospitalRequestDTO.getIsCogentAdmin());
         hospital.setRefundPercentage(hospitalRequestDTO.getRefundPercentage());
         hospital.setNumberOfAdmins(hospitalRequestDTO.getNumberOfAdmins());
+        hospital.setNumberOfFreeFollowUps(hospitalRequestDTO.getNumberOfFreeFollowUps());
+        hospital.setFollowUpIntervalDays(hospitalRequestDTO.getFollowUpIntervalDays());
         return hospital;
     }
 
@@ -89,6 +91,8 @@ public class HospitalUtils {
         hospital.setIsCogentAdmin(updateRequestDTO.getIsHospital());
         hospital.setRefundPercentage(updateRequestDTO.getRefundPercentage());
         hospital.setNumberOfAdmins(updateRequestDTO.getNumberOfAdmins());
+        hospital.setNumberOfFreeFollowUps(updateRequestDTO.getNumberOfFreeFollowUps());
+        hospital.setFollowUpIntervalDays(updateRequestDTO.getFollowUpIntervalDays());
     }
 
     public static HospitalContactNumber parseToUpdatedHospitalContactNumber(
@@ -129,6 +133,8 @@ public class HospitalUtils {
         final int CONTACT_DETAILS_INDEX = 9;
         final int REFUND_PERCENTAGE_INDEX = 10;
         final int NUMBER_OF_ADMINS_INDEX = 11;
+        final int NUMBER_OF_FREE_FOLLOWUPS_INDEX = 12;
+        final int FOLLOW_UP_INTERVAL_DAYS_INDEX = 13;
 
         return HospitalResponseDTO.builder()
                 .id(Long.parseLong(results[HOSPITAL_ID_INDEX].toString()))
@@ -145,6 +151,8 @@ public class HospitalUtils {
                 .refundPercentage(Double.parseDouble(results[REFUND_PERCENTAGE_INDEX].toString()))
                 .numberOfAdmins(Objects.isNull(results[NUMBER_OF_ADMINS_INDEX]) ? 0 :
                         Integer.parseInt(results[NUMBER_OF_ADMINS_INDEX].toString()))
+                .numberOfFreeFollowUps(Integer.parseInt(results[NUMBER_OF_FREE_FOLLOWUPS_INDEX].toString()))
+                .followUpIntervalDays(Integer.parseInt(results[FOLLOW_UP_INTERVAL_DAYS_INDEX].toString()))
                 .build();
     }
 

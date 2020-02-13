@@ -5,6 +5,7 @@ import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPen
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPendingApproval.AppointmentRejectDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.admin.service.AppointmentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -87,5 +88,14 @@ public class AppointmentResource {
                                                  @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ok().body(appointmentService.searchAppointmentLogs(searchRequestDTO, pageable));
+    }
+
+    @PutMapping(RESCHEDULE_LOG)
+    @ApiOperation(FETCH_APPOINTMENT_RESCHEDULE_LOG)
+    public ResponseEntity<?> fetchAppointmentLog(@RequestBody AppointmentRescheduleLogSearchDTO rescheduleLogSearchDTO,
+                                                 @RequestParam("page") int page,
+                                                 @RequestParam("size") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ok().body(appointmentService.fetchRescheduleAppointment(rescheduleLogSearchDTO, pageable));
     }
 }

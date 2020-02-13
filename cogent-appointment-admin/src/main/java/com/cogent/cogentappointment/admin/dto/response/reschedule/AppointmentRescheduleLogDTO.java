@@ -1,9 +1,8 @@
-package com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog;
+package com.cogent.cogentappointment.admin.dto.response.reschedule;
 
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import lombok.*;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -11,22 +10,20 @@ import java.util.Date;
  */
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class AppointmentLogDTO implements Serializable {
-
-    private String status;
-    
-    private String hospitalName;
-
-    private Date appointmentDate;
-
-    private String appointmentNumber;
-
-    private String appointmentTime;
+public class AppointmentRescheduleLogDTO {
 
     private String esewaId;
+
+    private String hospitalName;
+
+    private Date previousAppointmentDate;
+
+    private Date rescheduleAppointmentDate;
+
+    private String appointmentNumber;
 
     private String registrationNumber;
 
@@ -38,12 +35,6 @@ public class AppointmentLogDTO implements Serializable {
 
     private String patientAge;
 
-    private Date patientDob;
-
-    private Character isSelf;
-
-    private Character isRegistered;
-
     private String mobileNumber;
 
     private String doctorName;
@@ -54,5 +45,5 @@ public class AppointmentLogDTO implements Serializable {
 
     private Double appointmentAmount;
 
-    private Double refundAmount;
+    private String remarks;
 }

@@ -6,10 +6,12 @@ import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPen
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.AppointmentLogResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPendingApproval.AppointmentPendingApprovalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.AppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.AppointmentRefundDetailRepository;
 import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
@@ -195,6 +197,22 @@ public class AppointmentServiceImpl implements AppointmentService {
                 appointmentRepository.searchAppointmentLogs(searchRequestDTO, pageable);
 
         log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_LOG, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public AppointmentRescheduleLogResponseDTO fetchRescheduleAppointment(AppointmentRescheduleLogSearchDTO rescheduleDTO,
+                                                                          Pageable pageable) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_RESCHEDULE_LOG);
+
+        AppointmentRescheduleLogResponseDTO responseDTOS =
+                appointmentRepository.fetchRescheduleAppointment(rescheduleDTO, pageable);
+
+        log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_RESCHEDULE_LOG, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
     }

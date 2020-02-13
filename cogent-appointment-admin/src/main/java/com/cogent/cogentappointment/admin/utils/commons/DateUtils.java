@@ -146,7 +146,6 @@ public class DateUtils {
         }
     }
 
-
     public static String convert24HourTo12HourFormat(String timeIn24HrFormat) {
         try {
             SimpleDateFormat dateParser = new SimpleDateFormat("HH:mm");

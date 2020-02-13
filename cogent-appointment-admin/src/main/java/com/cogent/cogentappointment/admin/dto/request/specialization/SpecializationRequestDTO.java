@@ -24,6 +24,9 @@ public class SpecializationRequestDTO implements Serializable {
     @SpecialCharacters
     private String name;
 
+    @NotEmpty
+    private String code;
+
     @NotNull
     @Status
     private Character status;

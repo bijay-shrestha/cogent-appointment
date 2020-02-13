@@ -10,6 +10,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.cogent.cogentappointment.admin.utils.commons.DateConverterUtils.getFiscalYear;
+
 /**
  * @author Sauravi Thapa २०/२/१०
  */
@@ -19,6 +21,7 @@ public class DashboardUtils {
         GenerateRevenueResponseDTO generateRevenueResponseDTO = new GenerateRevenueResponseDTO();
         generateRevenueResponseDTO.setAmount(currentTransaction);
         generateRevenueResponseDTO.setGrowthPercent(growthPercent);
+        generateRevenueResponseDTO.setFiscalYear(getFiscalYear());
 
         return generateRevenueResponseDTO;
     }

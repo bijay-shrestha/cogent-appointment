@@ -12,6 +12,7 @@ public interface AppointmentFollowUpTrackerService {
 //    List<FollowUpTrackerResponseDTO> fetchMinimalFollowUpTracker(FollowUpTrackerSearchRequestDTO requestDTO);
 
     void save(String parentAppointmentNumber,
+              Long hospitalId,
               Doctor doctor,
               Specialization specialization,
               Patient patient);

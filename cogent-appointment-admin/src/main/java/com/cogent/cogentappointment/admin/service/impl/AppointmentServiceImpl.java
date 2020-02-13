@@ -15,6 +15,7 @@ import com.cogent.cogentappointment.admin.repository.AppointmentRefundDetailRepo
 import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
 import com.cogent.cogentappointment.admin.service.AppointmentFollowUpTrackerService;
 import com.cogent.cogentappointment.admin.service.AppointmentService;
+import com.cogent.cogentappointment.admin.service.PatientService;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -49,12 +50,16 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentFollowUpTrackerService appointmentFollowUpTrackerService;
 
+    private final PatientService patientService;
+
     public AppointmentServiceImpl(AppointmentRepository appointmentRepository,
                                   AppointmentRefundDetailRepository appointmentRefundDetailRepository,
-                                  AppointmentFollowUpTrackerService appointmentFollowUpTrackerService) {
+                                  AppointmentFollowUpTrackerService appointmentFollowUpTrackerService,
+                                  PatientService patientService) {
         this.appointmentRepository = appointmentRepository;
         this.appointmentRefundDetailRepository = appointmentRefundDetailRepository;
         this.appointmentFollowUpTrackerService = appointmentFollowUpTrackerService;
+        this.patientService = patientService;
     }
 
     @Override
@@ -151,10 +156,15 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         appointment.setStatus(APPROVED);
 
-        saveAppointmentFollowUpTracker(appointment.getAppointmentNumber(),
-                appointment.getDoctorId(),
-                appointment.getSpecializationId(),
-                appointment.getPatientId());
+//        saveAppointmentFollowUpTracker(
+//                appointment.getAppointmentNumber(),
+//                appointment.getHospitalId().getId(),
+//                appointment.getDoctorId(),
+//                appointment.getSpecializationId(),
+//                appointment.getPatientId()
+//        );
+
+        registerPatient(appointment.getPatientId().getId());
 
         log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
     }
@@ -194,20 +204,16 @@ public class AppointmentServiceImpl implements AppointmentService {
     };
 
     private void saveAppointmentFollowUpTracker(String parentAppointmentNumber,
+                                                Long hospitalId,
                                                 Doctor doctor,
                                                 Specialization specialization,
                                                 Patient patient) {
 
-        appointmentFollowUpTrackerService.save(parentAppointmentNumber, doctor, specialization, patient);
+        appointmentFollowUpTrackerService.save(parentAppointmentNumber, hospitalId, doctor, specialization, patient);
+    }
 
-
-//        } else {
-//            parentAppointmentNumber = appointmentRequestDTO.getParentAppointmentNumber();
-//            followUpTrackerService.updateNumberOfFollowupsInFollowUpTracker(
-//                    parentAppointmentNumber,
-//                    responseDTO.getDoctor().getId(),
-//                    patient.getId());
-//        }
+    private void registerPatient(Long patientId) {
+        patientService.registerPatient(patientId);
     }
 
 }

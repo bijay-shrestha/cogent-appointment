@@ -66,7 +66,14 @@ public class AppointmentResource {
         return ok().body(appointmentService.searchPendingVisitApprovals(searchRequestDTO, pageable));
     }
 
-    @PutMapping(PENDING_APPROVAL + REJECT)
+    @GetMapping(APPROVE + APPOINTMENT_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(APPROVE_APPOINTMENT)
+    public ResponseEntity<?> approveAppointment(@PathVariable("appointmentId") Long appointmentId) {
+        appointmentService.approveAppointment(appointmentId);
+        return ok().build();
+    }
+
+    @PutMapping(REJECT)
     @ApiOperation(REJECT_APPOINTMENT)
     public ResponseEntity<?> rejectAppointment(@Valid @RequestBody AppointmentRejectDTO rejectDTO) {
         appointmentService.rejectAppointment(rejectDTO);

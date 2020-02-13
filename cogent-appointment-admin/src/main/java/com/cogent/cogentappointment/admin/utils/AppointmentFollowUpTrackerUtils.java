@@ -14,12 +14,11 @@ import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIV
  */
 public class AppointmentFollowUpTrackerUtils {
 
-    public static AppointmentFollowUpTracker parseToAppointmentFollowUpTracker(
-            String parentAppointmentNumber,
-            Integer remainingFollowUpCount,
-            Doctor doctor,
-            Specialization specialization,
-            Patient patient) {
+    public static AppointmentFollowUpTracker parseToAppointmentFollowUpTracker(String parentAppointmentNumber,
+                                                                               Integer remainingFollowUpCount,
+                                                                               Doctor doctor,
+                                                                               Specialization specialization,
+                                                                               Patient patient) {
 
         AppointmentFollowUpTracker followUpTracker = new AppointmentFollowUpTracker();
         followUpTracker.setDoctorId(doctor);

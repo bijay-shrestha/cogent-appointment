@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.repository.AppointmentFollowUpTrackerRepository;
+import com.cogent.cogentappointment.admin.repository.HospitalRepository;
 import com.cogent.cogentappointment.admin.service.AppointmentFollowUpTrackerService;
 import com.cogent.cogentappointment.persistence.model.AppointmentFollowUpTracker;
 import com.cogent.cogentappointment.persistence.model.Doctor;
@@ -27,8 +28,12 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
 
     private final AppointmentFollowUpTrackerRepository appointmentFollowUpTrackerRepository;
 
-    public AppointmentFollowUpTrackerServiceImpl(AppointmentFollowUpTrackerRepository appointmentFollowUpTrackerRepository) {
+    private final HospitalRepository hospitalRepository;
+
+    public AppointmentFollowUpTrackerServiceImpl(AppointmentFollowUpTrackerRepository appointmentFollowUpTrackerRepository,
+                                                 HospitalRepository hospitalRepository) {
         this.appointmentFollowUpTrackerRepository = appointmentFollowUpTrackerRepository;
+        this.hospitalRepository = hospitalRepository;
     }
 
 //    @Override
@@ -48,6 +53,7 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
 
     @Override
     public void save(String parentAppointmentNumber,
+                     Long hospitalId,
                      Doctor doctor,
                      Specialization specialization,
                      Patient patient) {
@@ -56,11 +62,10 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
 
         log.info(SAVING_PROCESS_STARTED, APPOINTMENT_FOLLOW_UP_TRACKER);
 
-//        Integer numberOfFollowUps = patientType.getCode().equalsIgnoreCase(IP_CODE) ?
-//                followUpProperties.getIpNumberOfFollowups() : followUpProperties.getOpNumberOfFollowups();
+        Integer numberOfFreeFollowUps = hospitalRepository.fetchHospitalFollowUpCount(hospitalId);
 
         save(parseToAppointmentFollowUpTracker(
-                parentAppointmentNumber, null, doctor, specialization, patient));
+                parentAppointmentNumber, numberOfFreeFollowUps, doctor, specialization, patient));
 
         log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT_FOLLOW_UP_TRACKER, getDifferenceBetweenTwoTime(startTime));
     }

@@ -115,4 +115,9 @@ public class HospitalQuery {
                     " WHERE h.id =:id" +
                     " AND h.status !='D'";
 
+    public static final String FETCH_HOSPITAL_FREE_FOLLOW_UP_COUNT =
+            " SELECT h.numberOfFreeFollowUps as numberOfFreeFollowUps" +
+                    " FROM Hospital h" +
+                    " WHERE h.id =:id";
+
 }

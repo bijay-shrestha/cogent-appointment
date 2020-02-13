@@ -323,18 +323,29 @@ public class AppointmentQuery {
     public static Function<AppointmentRescheduleLogSearchDTO, String> QUERY_TO_RESCHEDULE_APPOINTMENT_LOGS =
             (appointmentRescheduleLogSearchDTO) ->
                     " SELECT" +
-                            " h.name as hospitalName,p.eSewaId as esewaId,ars.previousAppointmentDate as previousAppointmentDate," +
-                            " ars.rescheduledDate as appointmentRescheduledDate,a.appointmentNumber as appointmen,hpi.registrationNumber," +
-                            " p.name,p.dateOfBirth,p.gender," +
-                            " p.mobileNumber,sp.name,atd.transactionNumber," +
-                            " atd.transactionNumber,atd.appointmentAmount,ars.remarks" +
-                            " FROM AppointmentReschedule ars" +
-                            " LEFT JOIN Appointment a ON a.id=ars.appointment.id" +
-                            " LEFT JOIN Patient p ON a.patient.id=p.id" +
-                            " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id" +
-                            " LEFT JOIN specialization sp ON a.specialization.id=sp.id" +
-                            " LEFT JOIN hospital h ON a.hospital.id=h.id" +
+                            " h.name as hospitalName," +
+                            " p.eSewaId as esewaId," +
+                            " ars.previousAppointmentDate as previousAppointmentDate," +
+                            " ars.rescheduleDate as appointmentRescheduledDate," +
+                            " a.appointmentNumber as appointmentNumber," +
+                            " hpi.registrationNumber as registrationNumber," +
+                            " p.name as patientName," +
+                            " p.dateOfBirth as dateOfBirth," +
+                            " p.gender as patientGender," +
+                            " p.mobileNumber as mobileNumber," +
+                            " sp.name as specializationName," +
+                            " atd.transactionNumber as transactionNumber," +
+                            " atd.appointmentAmount as appointmentAmount," +
+                            " ars.remarks as remarks" +
+                            " FROM AppointmentRescheduleLog ars" +
+                            " LEFT JOIN Appointment a ON a.id=ars.appointmentId.id" +
+                            " LEFT JOIN Patient p ON a.patientId.id=p.id" +
+                            " LEFT JOIN HospitalPatientInfo hpi ON hpi.patientId.id =p.id" +
+                            " LEFT JOIN Specialization sp ON a.specializationId.id=sp.id" +
+                            " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id" +
+                            " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
                             " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id" +
+                            " LEFT JOIN Doctor d ON d.id=a.doctorId.id" +
                             GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_RESCHEDULE_LOG_DETAILS(appointmentRescheduleLogSearchDTO);
 
     private static String GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_RESCHEDULE_LOG_DETAILS(AppointmentRescheduleLogSearchDTO appointmentRescheduleLogSearchDTO) {
@@ -342,7 +353,7 @@ public class AppointmentQuery {
         String whereClause = " WHERE " +
                 " hpi.status='Y' " +
                 " AND ars.status='RES' " +
-                " AND a.appointmentDate BETWEEN :fromDate AND :toDate";
+                " AND ars.rescheduleDate BETWEEN :fromDate AND :toDate";
 
         if (!Objects.isNull(appointmentRescheduleLogSearchDTO.getAppointmentNumber()))
             whereClause += " AND a.appointmentNumber LIKE '%" + appointmentRescheduleLogSearchDTO.getAppointmentNumber() + "%'";
@@ -366,7 +377,7 @@ public class AppointmentQuery {
         if (!Objects.isNull(appointmentRescheduleLogSearchDTO.getDoctorId()))
             whereClause += " AND d.id = " + appointmentRescheduleLogSearchDTO.getDoctorId();
 
-        whereClause += " ORDER BY a.appointmentDate DESC";
+        whereClause += " ORDER BY ars.rescheduleDate DESC";
 
         return whereClause;
     }

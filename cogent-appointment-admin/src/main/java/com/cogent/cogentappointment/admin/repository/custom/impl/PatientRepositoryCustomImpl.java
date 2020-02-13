@@ -85,9 +85,8 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
     }
 
     @Override
-    public Long countOverallRegisteredPatients(Long HospitalId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_COUNT_OVERALL_REGISTERED_PATIENTS)
-                .setParameter(HOSPITAL_ID, HospitalId);
+    public Long countOverallRegisteredPatients(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_COUNT_OVERALL_REGISTERED_PATIENTS(hospitalId));
 
         return (Long) query.getSingleResult();
     }

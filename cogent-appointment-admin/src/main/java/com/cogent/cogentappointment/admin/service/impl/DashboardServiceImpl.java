@@ -14,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.admin.log.constants.DashboardLog.*;
@@ -60,8 +62,7 @@ public class DashboardServiceImpl implements DashboardService {
                 requestDTO.getPreviousFromDate(), requestDTO.getHospitalId());
 
         GenerateRevenueResponseDTO responseDTO = parseToGenerateRevenueResponseDTO(currentTransaction,
-                calculatePercenatge(currentTransaction, previousTransaction),
-                dateDifference(requestDTO.getCurrentToDate(), requestDTO.getCurrentFromDate()));
+                calculatePercenatge(currentTransaction, previousTransaction));
 
         log.info(FETCHING_PROCESS_COMPLETED, REVENUE_GENERATED, getDifferenceBetweenTwoTime(startTime));
 

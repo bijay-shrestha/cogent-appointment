@@ -92,30 +92,29 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
     @Override
     public Long countRegisteredPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_COUNT_REGISTERED_APPOINTMENT)
+        Query query = createQuery.apply(entityManager, QUERY_TO_COUNT_REGISTERED_APPOINTMENT(
+                dashBoardRequestDTO.getHospitalId()))
                 .setParameter(FROM_DATE, utilDateToSqlDate(dashBoardRequestDTO.getFromDate()))
-                .setParameter(TO_DATE, utilDateToSqlDate(dashBoardRequestDTO.getToDate()))
-                .setParameter(HOSPITAL_ID, dashBoardRequestDTO.getHospitalId());
+                .setParameter(TO_DATE, utilDateToSqlDate(dashBoardRequestDTO.getToDate()));
 
         return (Long) query.getSingleResult();
     }
 
     @Override
     public Long countNewPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_COUNT_NEW_PATIENT_APPOINTMENT)
+        Query query = createQuery.apply(entityManager, QUERY_TO_COUNT_NEW_PATIENT_APPOINTMENT(
+                dashBoardRequestDTO.getHospitalId()))
                 .setParameter(FROM_DATE, utilDateToSqlDate(dashBoardRequestDTO.getFromDate()))
-                .setParameter(TO_DATE, utilDateToSqlDate(dashBoardRequestDTO.getToDate()))
-                .setParameter(HOSPITAL_ID, dashBoardRequestDTO.getHospitalId());
+                .setParameter(TO_DATE, utilDateToSqlDate(dashBoardRequestDTO.getToDate()));
 
         return (Long) query.getSingleResult();
     }
 
     @Override
     public Long countOverAllAppointment(DashBoardRequestDTO dashBoardRequestDTO) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_OVER_ALL_APPOINTMENTS)
+        Query query = createQuery.apply(entityManager, QUERY_TO_OVER_ALL_APPOINTMENTS(dashBoardRequestDTO.getHospitalId()))
                 .setParameter(FROM_DATE, utilDateToSqlDate(dashBoardRequestDTO.getFromDate()))
-                .setParameter(TO_DATE, utilDateToSqlDate(dashBoardRequestDTO.getToDate()))
-                .setParameter(HOSPITAL_ID, dashBoardRequestDTO.getHospitalId());
+                .setParameter(TO_DATE, utilDateToSqlDate(dashBoardRequestDTO.getToDate()));
 
         return (Long) query.getSingleResult();
     }

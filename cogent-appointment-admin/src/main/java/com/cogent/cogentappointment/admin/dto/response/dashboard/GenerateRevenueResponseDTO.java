@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * @author Sauravi Thapa २०/२/१०
@@ -11,8 +12,6 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class GenerateRevenueResponseDTO implements Serializable {
-
-    private Character revenueType;
 
     private Double amount;
 

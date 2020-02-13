@@ -5,6 +5,7 @@ import com.cogent.cogentappointment.admin.dto.response.dashboard.GenerateRevenue
 import com.cogent.cogentappointment.admin.dto.response.dashboard.OverallRegisteredPatientsResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueStatisticsResponseDTO;
 
+import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,12 +15,10 @@ import java.util.Map;
  */
 public class DashboardUtils {
     public static GenerateRevenueResponseDTO parseToGenerateRevenueResponseDTO(Double currentTransaction,
-                                                                               Double growthPercent,
-                                                                               Character revenueType) {
+                                                                               Double growthPercent) {
         GenerateRevenueResponseDTO generateRevenueResponseDTO = new GenerateRevenueResponseDTO();
         generateRevenueResponseDTO.setAmount(currentTransaction);
         generateRevenueResponseDTO.setGrowthPercent(growthPercent);
-        generateRevenueResponseDTO.setRevenueType(revenueType);
 
         return generateRevenueResponseDTO;
     }

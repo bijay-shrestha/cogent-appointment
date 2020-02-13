@@ -32,37 +32,37 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
     EntityManager entityManager;
 
     @Override
-    public Double getRevenueByDates(Date toDate, Date fromDate,Long hospitalId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_GET_REVENUE_BY_DATE)
+    public Double getRevenueByDates(Date toDate, Date fromDate, Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_GET_REVENUE_BY_DATE(hospitalId))
                 .setParameter(TO_DATE, toDate)
-                .setParameter(FROM_DATE, fromDate)
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(FROM_DATE, fromDate);
 
-        return (Double) query.getSingleResult();
+        Double amount=(Double) query.getSingleResult();
+        return (amount==null)? 0D:amount;
     }
 
     @Override
     public RevenueStatisticsResponseDTO getRevenueStatistics(DashBoardRequestDTO dashBoardRequestDTO, Character filter) {
 
-        final String queryByFilter = getQueryByFilter(filter);
+        final String queryByFilter = getQueryByFilter(dashBoardRequestDTO.getHospitalId(), filter);
 
         Query query = createQuery.apply(entityManager, queryByFilter)
                 .setParameter(TO_DATE, dashBoardRequestDTO.getToDate())
-                .setParameter(FROM_DATE, dashBoardRequestDTO.getFromDate())
-                .setParameter(HOSPITAL_ID, dashBoardRequestDTO.getHospitalId());
-        List<Object[]> objects=query.getResultList();
+                .setParameter(FROM_DATE, dashBoardRequestDTO.getFromDate());
+        List<Object[]> objects = query.getResultList();
 
-        RevenueStatisticsResponseDTO responseDTO=revenueStatisticsResponseDTO(objects,filter);
+        RevenueStatisticsResponseDTO responseDTO = revenueStatisticsResponseDTO(objects, filter);
 
         return responseDTO;
     }
 
 
-    private String getQueryByFilter(Character filter) {
+    private String getQueryByFilter(Long hospitalId, Character filter) {
         Map<Character, String> queriesWithFilterAsKey = new HashMap<>();
-        queriesWithFilterAsKey.put('W', QUERY_TO_FETCH_REVENUE_WEEKLY);
-        queriesWithFilterAsKey.put('M',QUERY_TO_FETCH_REVENUE_MONTHLY);
-        queriesWithFilterAsKey.put('Y', QUERY_TO_FETCH_REVENUE_YEARLY);
+        queriesWithFilterAsKey.put('D', QUERY_TO_FETCH_REVENUE_DAILY(hospitalId));
+        queriesWithFilterAsKey.put('W', QUERY_TO_FETCH_REVENUE_WEEKLY(hospitalId));
+        queriesWithFilterAsKey.put('M', QUERY_TO_FETCH_REVENUE_MONTHLY(hospitalId));
+        queriesWithFilterAsKey.put('Y', QUERY_TO_FETCH_REVENUE_YEARLY(hospitalId));
 
         return queriesWithFilterAsKey.get(filter);
     }

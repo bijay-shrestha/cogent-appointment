@@ -45,4 +45,16 @@ public class AppointmentRescheduleLog extends Auditable<String> implements Seria
 
     @Column(name = "remarks")
     private String remarks;
+
+    @Override
+    public String toString() {
+        return "AppointmentRescheduleLog{" +
+                " id=" + id +
+                ", appointmentId=" + appointmentId.getAppointmentNumber() +
+                ", previousAppointmentDate='" + previousAppointmentDate +
+                ", rescheduleDate=" + rescheduleDate +
+                ", status=" + status +
+                ", remarks =" + remarks +
+                '}';
+    }
 }

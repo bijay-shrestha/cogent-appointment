@@ -27,6 +27,7 @@ public class SpecializationUtils {
         specialization.setName(toUpperCase(updateRequestDTO.getName()));
         specialization.setStatus(updateRequestDTO.getStatus());
         specialization.setRemarks(updateRequestDTO.getRemarks());
+        specialization.setCode(updateRequestDTO.getCode());
         return specialization;
     }
 

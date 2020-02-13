@@ -26,6 +26,10 @@ public class QueryConstants {
     public static final String EMAIL = "email";
 
     //F
+    public interface AppointmentFollowUpTrackerConstants {
+        String PARENT_APPOINTMENT_NUMBER = "parentAppointmentNumber";
+        String PATIENT_ID = "patientId";
+    }
 
 
     public static final String FROM_DATE = "fromDate";

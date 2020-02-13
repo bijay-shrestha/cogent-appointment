@@ -1,9 +1,10 @@
 package com.cogent.cogentappointment.admin.query;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
-import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentPendingApprovalSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPendingApproval.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import org.springframework.util.ObjectUtils;
 
 import java.util.Objects;
@@ -41,7 +42,7 @@ public class AppointmentQuery {
         TIMESTAMPDIFF(MONTH, date_of_birth, CURDATE() ) % 12 as _month
         FLOOR( TIMESTAMPDIFF( DAY, date_of_birth ,  CURDATE()) % 30.4375 ) as _day
     * */
-    public static String QUERY_TO_CALCULATE_PATIENT_AGE =
+    private static String QUERY_TO_CALCULATE_PATIENT_AGE =
             " CASE" +
                     " WHEN" +
                     " (((TIMESTAMPDIFF(YEAR, p.dateOfBirth, CURDATE()))<=0) AND" +
@@ -56,7 +57,7 @@ public class AppointmentQuery {
                     " CONCAT(((TIMESTAMPDIFF(YEAR, p.dateOfBirth ,CURDATE()))), ' years')" +
                     " END AS age";
 
-    public static String QUERY_TO_CALCULATE_PATIENT_AGE_NATIVE =
+    private static String QUERY_TO_CALCULATE_PATIENT_AGE_NATIVE =
             " CASE" +
                     " WHEN" +
                     " (((TIMESTAMPDIFF(YEAR, p.date_of_birth, CURDATE()))<=0) AND" +
@@ -197,7 +198,8 @@ public class AppointmentQuery {
                             " atd.transactionNumber as transactionNumber," +                //[13]
                             " atd.appointmentAmount as appointmentAmount," +                //[14]
                             " d.name as doctorName," +                                       //[15]
-                            " ard.refundAmount as refundAmount" +
+                            " ard.refundAmount as refundAmount," +                           //[16]
+                            " a.id as appointmentId"+                                        //[17]
                             " FROM Appointment a" +
                             " LEFT JOIN Patient p ON a.patientId=p.id" +
                             " LEFT JOIN HospitalPatientInfo hpi ON hpi.patientId =p.id" +
@@ -265,7 +267,8 @@ public class AppointmentQuery {
                             " atd.appointmentAmount as appointmentAmount," +                //[14]
                             " d.name as doctorName," +                                       //[15]
                             " a.status as status," +                                        //[16]
-                            " ard.refundAmount as refundAmount" +                           //[17]
+                            " ard.refundAmount as refundAmount" +                            //[17]
+                            " p.patientAddress" +                                             //[18]
                             " FROM Appointment a" +
                             " LEFT JOIN Patient p ON a.patientId=p.id" +
                             " LEFT JOIN HospitalPatientInfo hpi ON hpi.patientId =p.id" +
@@ -289,7 +292,7 @@ public class AppointmentQuery {
         if (!Objects.isNull(appointmentLogSearchDTO.getAppointmentNumber()))
             whereClause += " AND a.appointmentNumber LIKE '%" + appointmentLogSearchDTO.getAppointmentNumber() + "%'";
 
-        if (!Objects.isNull(appointmentLogSearchDTO.getStatus()))
+        if (!Objects.isNull(appointmentLogSearchDTO.getStatus()) && !appointmentLogSearchDTO.getStatus().equals(""))
             whereClause += " AND a.status = '" + appointmentLogSearchDTO.getStatus() + "'";
 
         if (!Objects.isNull(appointmentLogSearchDTO.getAppointmentId()))
@@ -317,4 +320,71 @@ public class AppointmentQuery {
 
         return whereClause;
     }
+
+    public static Function<AppointmentRescheduleLogSearchDTO, String> QUERY_TO_RESCHEDULE_APPOINTMENT_LOGS =
+            (appointmentRescheduleLogSearchDTO) ->
+                    " SELECT" +
+                            " h.name as hospitalName," +                                                 //[0]
+                            " p.eSewaId as eSewaId," +                                                   //[1]
+                            " arl.previousAppointmentDate as previousAppointmentDate," +                 //[2]
+                            " arl.rescheduleDate as rescheduleDate," +                                   //[3]
+                            " a.appointmentNumber as appointmentNumber," +                               //[4]
+                            " hpi.registrationNumber as registeredNumber," +                             //[5]
+                            " p.name as patientName," +                                                  //[6]
+                            " p.dateOfBirth as dateOfBirth," +                                           //[7]
+                            " p.gender as gender," +                                                     //[8]
+                            " p.mobileNumber as mobileNumber," +                                         //[9]
+                            " sp.name as specializationName," +                                         //[10]
+                            " d.name as doctorName," +                                                  //[11]
+                            " atd.transactionNumber as transactionNumber," +                            //[12]
+                            " atd.appointmentAmount as appointmentAmount," +                            //[13]
+                            " arl.remarks as remarks" +                                                 //[14]
+                            " from AppointmentRescheduleLog arl" +
+                            " LEFT JOIN Appointment a ON a.id=arl.appointmentId.id" +
+                            " LEFT JOIN Patient p ON p.id=a.patientId" +
+                            " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id" +
+                            " LEFT JOIN HospitalPatientInfo hpi ON hpi.patientId=p.id" +
+                            " LEFT JOIN Hospital h ON h.id=a.hospitalId" +
+                            " LEFT JOIN Specialization sp ON sp.id=a.specializationId" +
+                            " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id" +
+                            " LEFT JOIN Doctor d ON d.id=a.doctorId.id" +
+                            GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_RESCHEDULE_LOG_DETAILS(appointmentRescheduleLogSearchDTO);
+
+    private static String GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_RESCHEDULE_LOG_DETAILS(AppointmentRescheduleLogSearchDTO appointmentRescheduleLogSearchDTO) {
+
+        String whereClause = " WHERE " +
+                " hpi.status='Y' " +
+                " AND arl.status='RES' " +
+                " AND arl.rescheduleDate BETWEEN :fromDate AND :toDate";
+
+        if (!ObjectUtils.isEmpty(appointmentRescheduleLogSearchDTO.getAppointmentNumber()))
+            whereClause += " AND a.appointmentNumber LIKE '%" + appointmentRescheduleLogSearchDTO.getAppointmentNumber() + "%'";
+
+        if (!Objects.isNull(appointmentRescheduleLogSearchDTO.getEsewaId()))
+            whereClause += " AND p.eSewaId = '" + appointmentRescheduleLogSearchDTO.getEsewaId() + "'";
+
+        if (!Objects.isNull(appointmentRescheduleLogSearchDTO.getAppointmentId()))
+            whereClause += " AND a.id = " + appointmentRescheduleLogSearchDTO.getAppointmentId();
+
+        if (!Objects.isNull(appointmentRescheduleLogSearchDTO.getHospitalId()))
+            whereClause += " AND h.id = " + appointmentRescheduleLogSearchDTO.getHospitalId();
+
+        if (!Objects.isNull(appointmentRescheduleLogSearchDTO.getPatientMetaInfoId()))
+            whereClause += " AND pmi.id = " + appointmentRescheduleLogSearchDTO.getPatientMetaInfoId();
+
+        if (!Objects.isNull(appointmentRescheduleLogSearchDTO.getSpecializationId()))
+            whereClause += " AND sp.id = " + appointmentRescheduleLogSearchDTO.getSpecializationId();
+
+        if (!ObjectUtils.isEmpty(appointmentRescheduleLogSearchDTO.getPatientType()))
+            whereClause += " AND hpi.isRegistered = '" + appointmentRescheduleLogSearchDTO.getPatientType() + "'";
+
+        if (!Objects.isNull(appointmentRescheduleLogSearchDTO.getDoctorId()))
+            whereClause += " AND d.id = " + appointmentRescheduleLogSearchDTO.getDoctorId();
+
+        whereClause += " ORDER BY arl.rescheduleDate";
+
+        return whereClause;
+    }
+
+
 }

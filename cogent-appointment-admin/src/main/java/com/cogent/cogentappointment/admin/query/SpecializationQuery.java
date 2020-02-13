@@ -80,6 +80,7 @@ public class SpecializationQuery {
             "SELECT" +
                     " s.id as value," +                                                   //[0]
                     " s.name as label" +                                                 //[1]
+                    " s.code as code" +
                     " FROM DoctorSpecialization cs" +
                     " LEFT JOIN Specialization s ON s.id = cs.specializationId" +
                     " WHERE" +
@@ -91,6 +92,7 @@ public class SpecializationQuery {
             " SELECT" +
                     " s.id as value," +                                      //[0]
                     " s.name as label" +                                     //[1]
+                    " s.code as code" +
                     " FROM" +
                     " Specialization s" +
                     " LEFT JOIN Hospital h ON h.id = s.hospital.id" +

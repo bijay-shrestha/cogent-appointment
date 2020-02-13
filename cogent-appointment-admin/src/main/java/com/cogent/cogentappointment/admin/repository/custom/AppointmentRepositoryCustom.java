@@ -4,7 +4,7 @@ import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLog
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPendingApproval.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundSearchDTO;
-import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleDTO;
+import com.cogent.cogentappointment.admin.dto.request.dashboard.DashBoardRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentBookedDateResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.AppointmentLogResponseDTO;
@@ -46,4 +46,11 @@ public interface AppointmentRepositoryCustom {
             AppointmentLogSearchDTO searchRequestDTO, Pageable pageable);
 
     AppointmentRescheduleLogResponseDTO fetchRescheduleAppointment(AppointmentRescheduleLogSearchDTO rescheduleDTO, Pageable pageable);
+
+    Long countRegisteredPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO);
+
+    Long countNewPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO);
+
+    Long countOverAllAppointment(DashBoardRequestDTO dashBoardRequestDTO);
+
 }

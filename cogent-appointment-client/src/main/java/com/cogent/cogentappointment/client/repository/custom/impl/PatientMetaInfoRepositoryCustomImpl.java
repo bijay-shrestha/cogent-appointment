@@ -13,6 +13,7 @@ import javax.persistence.Query;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.client.constants.QueryConstants.HOSPITAL_ID;
 import static com.cogent.cogentappointment.client.query.PatientMetaInfoQuery.QUERY_TO_FETCH_ACTIVE_PATIENT_META_INFO_FOR_DROP_DOWN;
 import static com.cogent.cogentappointment.client.query.PatientMetaInfoQuery.QUERY_TO_FETCH_PATIENT_META_INFO_FOR_DROP_DOWN;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
@@ -29,8 +30,9 @@ public class PatientMetaInfoRepositoryCustomImpl implements PatientMetaInfoRepos
     private EntityManager entityManager;
 
     @Override
-    public List<DropDownResponseDTO> fetchMinPatientMetaInfo() {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_META_INFO_FOR_DROP_DOWN);
+    public List<DropDownResponseDTO> fetchMinPatientMetaInfo(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_META_INFO_FOR_DROP_DOWN)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
@@ -39,8 +41,9 @@ public class PatientMetaInfoRepositoryCustomImpl implements PatientMetaInfoRepos
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchActiveMinPatientMetaInfo() {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_PATIENT_META_INFO_FOR_DROP_DOWN);
+    public List<DropDownResponseDTO> fetchActiveMinPatientMetaInfo(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_PATIENT_META_INFO_FOR_DROP_DOWN)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 

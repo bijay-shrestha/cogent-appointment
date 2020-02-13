@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.repository.custom;
 
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentPendingSearchDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedDateResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedTimeResponseDTO;
@@ -36,4 +37,10 @@ public interface AppointmentRepositoryCustom {
                                                                        Long specializationId);
 
     Long fetchBookedAppointmentCount(Date fromDate, Date toDate, Long doctorId, Long specializationId);
+
+    Long countRegisteredPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO);
+
+    Long countNewPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO);
+
+    Long countOverAllAppointment(DashBoardRequestDTO dashBoardRequestDTO);
 }

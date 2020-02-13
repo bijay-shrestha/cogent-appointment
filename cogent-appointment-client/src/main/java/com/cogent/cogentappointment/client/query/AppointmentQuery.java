@@ -84,4 +84,5 @@ public class AppointmentQuery {
                     " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +
                     " WHERE a.id =:id";
 
+
 }

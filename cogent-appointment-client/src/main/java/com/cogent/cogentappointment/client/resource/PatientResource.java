@@ -7,14 +7,13 @@ import com.cogent.cogentappointment.client.service.PatientService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.PatientConstant.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.HospitalConstants.HOSPITAL_ID_PATH_VARIABLE_BASE;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.PatientConstant.*;
 import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.getPageable;
 import static org.springframework.http.ResponseEntity.ok;
@@ -68,17 +67,16 @@ public class PatientResource {
         return ok().build();
     }
 
-    @GetMapping(META_INFO + ACTIVE + MIN)
+    @GetMapping(META_INFO + ACTIVE + MIN + HOSPITAL_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_ACTIVE_PATIENT_META_INFO_DETAILS_FOR_DROPDOWN)
-    public ResponseEntity<?> fetchActivePatientMetaInfoForDropdown() {
-        SecurityContextHolder.getContext().getAuthentication()
-                .getCredentials().toString();
-        return ok(patientService.fetchActiveMinPatientMetaInfo());
+    public ResponseEntity<?> fetchActivePatientMetaInfoForDropdown(@PathVariable("hospitalId") Long hospitalId) {
+        return ok(patientService.fetchActiveMinPatientMetaInfo(hospitalId));
     }
 
-    @GetMapping(META_INFO + MIN)
+    @GetMapping(META_INFO + MIN + HOSPITAL_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_PATIENT_META_INFO_DETAILS_FOR_DROPDOWN)
-    public ResponseEntity<?> fetchPatientMetaInfoForDropdown() {
-        return ok(patientService.fetchMinPatientMetaInfo());
+    public ResponseEntity<?> fetchPatientMetaInfoForDropdown(@PathVariable("hospitalId") Long hospitalId) {
+        return ok(patientService.fetchMinPatientMetaInfo(hospitalId));
     }
+
 }

@@ -22,4 +22,5 @@ public interface PatientRepository extends JpaRepository<Patient, Long>, Patient
     @Query("SELECT p FROM Patient p LEFT JOIN HospitalPatientInfo hp ON hp.patientId= p.id" +
             " WHERE p.id=:id AND hp.status ='Y'")
     Optional<Patient> fetchActivePatientById(@Param("id") Long id);
+
 }

@@ -7,6 +7,7 @@ import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLo
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPendingApproval.AppointmentPendingApprovalDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPendingApproval.AppointmentPendingApprovalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.AppointmentStatusResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.dashboard.AppointmentCountResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogDTO;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.persistence.enums.Gender;
@@ -32,6 +33,18 @@ public class AppointmentUtils {
                                                 AppointmentRefundDetail refundDetail) {
         refundDetail.setStatus(REJECTED);
         refundDetail.setRemarks(refundRejectDTO.getRemarks());
+    }
+
+    public static AppointmentCountResponseDTO parseToAppointmentCountResponseDTO(Long overAllAppointment, Long newPatient,
+                                                                                 Long registeredPatient,
+                                                                                 Character pillType) {
+        AppointmentCountResponseDTO countResponseDTO = new AppointmentCountResponseDTO();
+        countResponseDTO.setTotalAppointment(overAllAppointment);
+        countResponseDTO.setNewPatient(newPatient);
+        countResponseDTO.setRegisteredPatient(registeredPatient);
+        countResponseDTO.setPillType(pillType);
+
+        return countResponseDTO;
     }
 
     public static void parseAppointmentRejectDetails(AppointmentRejectDTO rejectDTO,
@@ -191,7 +204,7 @@ public class AppointmentUtils {
                     "" : result[REGISTRATION_NUMBER_INDEX].toString();
 
             String remarks = Objects.isNull(result[REMARKS_INDEX]) ?
-                   null : result[REMARKS_INDEX].toString();
+                    null : result[REMARKS_INDEX].toString();
 
             AppointmentRescheduleLogDTO appointmentRescheduleLogDTO =
                     AppointmentRescheduleLogDTO.builder()

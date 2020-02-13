@@ -72,6 +72,14 @@ public class SwaggerConstants {
 
 
     //D
+    public interface DashboardConstant {
+        String BASE_API_VALUE = "This is Dashboard Controller";
+        String GENERATE_REVENUE_OPERATION = "Fetch revenue generated.";
+        String OVER_ALL_APPOINTMENT_OPERATION = "Fetch over all appointments.";
+        String COUNT_REGISTERED_PATIENTS_OPERATION = "Count no. of registered patients";
+        String REVENUE_STATISTICS_OPERATION = "Revenue statistics as per the filter";
+    }
+
     public interface DepartmentConstant {
         String BASE_DEPARTMENT_API_VALUE = "This is Department Controller";
         String SAVE_DEPARTMENT_OPERATION = "Save new department";
@@ -162,10 +170,13 @@ public class SwaggerConstants {
     //P
     public interface PatientConstant {
         String BASE_PATIENT_API_VALUE = "This is Patient Controller";
-        String FETCH_ACTIVE_PATIENT_META_INFO_DETAILS_FOR_DROPDOWN = "Fetch minimal active patient meta info details" +
-                " (id and metaInfo) for dropdown by hospital Id";
+        String FETCH_ACTIVE_PATIENT_META_INFO_DETAILS_FOR_DROPDOWN = "Fetch minimal active patient meta info details " +
+                "(id and metaInfo) for dropdown";
         String FETCH_PATIENT_META_INFO_DETAILS_FOR_DROPDOWN = "Fetch minimal patient meta info details " +
-                "(id and metaInfo) for dropdown by hospital Id";
+                "(id and metaInfo) for dropdown";
+        String UPDATE_PATIENT_INFO_OPERATION = "Update patient info";
+        String SEARCH_OPERATION ="Search Patient Info";
+        String FETCH_DETAILS_BY_ID = " Fetch patient(with type 'OTHERS') details by id";
     }
 
     public interface ProfileConstant {

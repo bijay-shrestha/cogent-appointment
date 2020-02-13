@@ -1,9 +1,9 @@
 package com.cogent.cogentappointment.client.dto.request.patient;
 
-import com.cogent.cogentappointment.client.constraintvalidator.Status;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
@@ -20,7 +20,6 @@ public class PatientSearchRequestDTO implements Serializable {
 
     private Character status;
 
-    private Character isSelf;
-
+    @NotNull
     private Long hospitalId;
 }

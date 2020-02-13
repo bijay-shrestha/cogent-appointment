@@ -199,7 +199,7 @@ public class AppointmentQuery {
                             " atd.appointmentAmount as appointmentAmount," +                //[14]
                             " d.name as doctorName," +                                       //[15]
                             " ard.refundAmount as refundAmount," +                           //[16]
-                            " a.id as appointmentId"+                                        //[17]
+                            " a.id as appointmentId" +                                        //[17]
                             " FROM Appointment a" +
                             " LEFT JOIN Patient p ON a.patientId=p.id" +
                             " LEFT JOIN HospitalPatientInfo hpi ON hpi.patientId =p.id" +
@@ -320,6 +320,7 @@ public class AppointmentQuery {
 
         return whereClause;
     }
+
 
     public static Function<AppointmentRescheduleLogSearchDTO, String> QUERY_TO_RESCHEDULE_APPOINTMENT_LOGS =
             (appointmentRescheduleLogSearchDTO) ->

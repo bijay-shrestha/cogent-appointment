@@ -8,6 +8,7 @@ import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateRequ
 import com.cogent.cogentappointment.client.dto.response.patient.PatientDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientMinimalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.patient.PatientSearchResponseDTO;
 import com.cogent.cogentappointment.persistence.model.Patient;
 import org.springframework.data.domain.Pageable;
 
@@ -27,15 +28,15 @@ public interface PatientService {
     List<PatientMinimalResponseDTO> fetchMinimalPatientInfo(PatientMinSearchRequestDTO searchRequestDTO,
                                                             Pageable pageable);
 
-    /*FETCH DETAILS OF 'OTHERS'*/
-    PatientDetailResponseDTO fetchDetailsById(Long id);
 
-    List<PatientResponseDTO> search(PatientSearchRequestDTO searchRequestDTO,
-                                    Pageable pageable);
+    PatientResponseDTO fetchDetailsById(Long id);
+
+    List<PatientSearchResponseDTO> search(PatientSearchRequestDTO searchRequestDTO,
+                                          Pageable pageable);
 
     void update(PatientUpdateRequestDTO patientUpdateRequestDTO);
 
-    List<DropDownResponseDTO> fetchMinPatientMetaInfo();
+    List<DropDownResponseDTO> fetchMinPatientMetaInfo(Long hospitalId);
 
-    List<DropDownResponseDTO> fetchActiveMinPatientMetaInfo();
+    List<DropDownResponseDTO> fetchActiveMinPatientMetaInfo(Long hospitalId);
 }

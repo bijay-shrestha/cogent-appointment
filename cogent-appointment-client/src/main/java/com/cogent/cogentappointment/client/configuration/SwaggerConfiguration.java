@@ -43,7 +43,7 @@ public class SwaggerConfiguration {
         return new ApiInfo(
                 "Cogent Appointment System with eSewa Integration (Client)" ,
                 "HMAC CODE: " +
-                        "HmacSHA512 ESEWA:2a6d801c-589b-4958-b006-807a2fa80677:834895484276401:kNrad/67OZkczalQpmgfOSN4h7Jty2lTFqARRIfz2VvicrXxOU6lpnD5JoK+KNB+4NnKO//tAS0OAQzlbf6B4w==",
+                        "HmacSHA512 NIDA:2a6d801c-589b-4958-b006-807a2fa80677:359180073706848:cW57ipQV7DHgHGCAwwiqdvQfTPPucl4+7iwPT/jeOORp6+cgianmWafrO9iSop8tDhods9IGVf0fdw0T8LHPLw==",
                 "V1",
                 "http://www.cogenthealth.com.np/",
                 new Contact(

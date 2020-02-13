@@ -5,6 +5,7 @@ import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRe
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentCheckAvailabilityResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentSuccessResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.dashboard.AppointmentCountResponseDTO;
 import com.cogent.cogentappointment.persistence.model.*;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -155,6 +156,18 @@ public class AppointmentUtils {
         appointmentRescheduleLog.setRemarks(rescheduleRequestDTO.getRemarks());
         appointmentRescheduleLog.setStatus(RESCHEDULED);
         return appointmentRescheduleLog;
+    }
+
+    public static AppointmentCountResponseDTO parseToAppointmentCountResponseDTO(Long overAllAppointment, Long newPatient,
+                                                                                 Long registeredPatient,
+                                                                                 Character pillType) {
+        AppointmentCountResponseDTO countResponseDTO = new AppointmentCountResponseDTO();
+        countResponseDTO.setTotalAppointment(overAllAppointment);
+        countResponseDTO.setNewPatient(newPatient);
+        countResponseDTO.setRegisteredPatient(registeredPatient);
+        countResponseDTO.setPillType(pillType);
+
+        return countResponseDTO;
     }
 
 

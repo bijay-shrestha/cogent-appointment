@@ -14,8 +14,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.HOSPITAL_ID;
-import static com.cogent.cogentappointment.admin.query.PatientMetaInfoQuery.QUERY_TO_FETCH_ACTIVE_PATIENT_META_INFO_FOR_DROP_DOWN;
-import static com.cogent.cogentappointment.admin.query.PatientMetaInfoQuery.QUERY_TO_FETCH_PATIENT_META_INFO_FOR_DROP_DOWN;
+import static com.cogent.cogentappointment.admin.query.PatientMetaInfoQuery.*;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
 
@@ -30,9 +29,8 @@ public class PatientMetaInfoRepositoryCustomImpl implements PatientMetaInfoRepos
     private EntityManager entityManager;
 
     @Override
-    public List<DropDownResponseDTO> fetchDropDownList(Long hospitalId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_META_INFO_FOR_DROP_DOWN)
-                .setParameter(HOSPITAL_ID, hospitalId);
+    public List<DropDownResponseDTO> fetchPatientMetaInfoDropDownListByHospitalId(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_META_INFO_FOR_DROP_DOWN_BY_HOSPITAL_ID(hospitalId));
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
@@ -41,9 +39,9 @@ public class PatientMetaInfoRepositoryCustomImpl implements PatientMetaInfoRepos
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchActiveDropDownList(Long hospitalId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_PATIENT_META_INFO_FOR_DROP_DOWN)
-                .setParameter(HOSPITAL_ID, hospitalId);
+    public List<DropDownResponseDTO> fetchActivePatientMetaInfoDropDownListByHospitalId(Long hospitalId) {
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_ACTIVE_PATIENT_META_INFO_FOR_DROP_DOWN_BY_HOSPITAL_ID(hospitalId));
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 

@@ -17,12 +17,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.admin.log.constants.DashboardLog.*;
 import static com.cogent.cogentappointment.admin.utils.AppointmentUtils.parseToAppointmentCountResponseDTO;
-import static com.cogent.cogentappointment.admin.utils.DashboardUtils.parseToGenerateRevenueResponseDTO;
+import static com.cogent.cogentappointment.admin.utils.DashboardUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateConverterUtils.dateDifference;
 import static com.cogent.cogentappointment.admin.utils.commons.DateConverterUtils.dateDifferenceForTiles;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
@@ -119,6 +120,15 @@ public class DashboardServiceImpl implements DashboardService {
         RevenueStatisticsResponseDTO revenueStatisticsResponseDTO = appointmentTransactionDetailRepository
                 .getRevenueStatistics(dashBoardRequestDTO, filter);
 
+        Map<String, String> map = revenueStatisticsResponseDTO.getData();
+
+        if (!isMapContainsEveryField(map, dashBoardRequestDTO.getFromDate(), filter)) {
+            map = addRemainingFields(revenueStatisticsResponseDTO.getData(),
+                    dashBoardRequestDTO.getFromDate(),
+                    dashBoardRequestDTO.getToDate(), filter);
+        }
+
+        revenueStatisticsResponseDTO.setData(map);
         log.info(FETCHING_PROCESS_COMPLETED, REVENUE_STATISTICS, getDifferenceBetweenTwoTime(startTime));
 
         return revenueStatisticsResponseDTO;

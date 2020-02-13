@@ -323,27 +323,28 @@ public class AppointmentQuery {
     public static Function<AppointmentRescheduleLogSearchDTO, String> QUERY_TO_RESCHEDULE_APPOINTMENT_LOGS =
             (appointmentRescheduleLogSearchDTO) ->
                     " SELECT" +
-                            " h.name as hospitalName," +
-                            " p.eSewaId as esewaId," +
-                            " ars.previousAppointmentDate as previousAppointmentDate," +
-                            " ars.rescheduleDate as appointmentRescheduledDate," +
-                            " a.appointmentNumber as appointmentNumber," +
-                            " hpi.registrationNumber as registrationNumber," +
-                            " p.name as patientName," +
-                            " p.dateOfBirth as dateOfBirth," +
-                            " p.gender as patientGender," +
-                            " p.mobileNumber as mobileNumber," +
-                            " sp.name as specializationName," +
-                            " atd.transactionNumber as transactionNumber," +
-                            " atd.appointmentAmount as appointmentAmount," +
-                            " ars.remarks as remarks" +
-                            " FROM AppointmentRescheduleLog ars" +
-                            " LEFT JOIN Appointment a ON a.id=ars.appointmentId.id" +
-                            " LEFT JOIN Patient p ON a.patientId.id=p.id" +
-                            " LEFT JOIN HospitalPatientInfo hpi ON hpi.patientId.id =p.id" +
-                            " LEFT JOIN Specialization sp ON a.specializationId.id=sp.id" +
-                            " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id" +
-                            " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
+                            " h.name as hospitalName," +                                                 //[0]
+                            " p.eSewaId as eSewaId," +                                                   //[1]
+                            " arl.previousAppointmentDate as previousAppointmentDate," +                 //[2]
+                            " arl.rescheduleDate as rescheduleDate," +                                   //[3]
+                            " a.appointmentNumber as appointmentNumber," +                               //[4]
+                            " hpi.registrationNumber as registeredNumber," +                             //[5]
+                            " p.name as patientName," +                                                  //[6]
+                            " p.dateOfBirth as dateOfBirth," +                                           //[7]
+                            " p.gender as gender," +                                                     //[8]
+                            " p.mobileNumber as mobileNumber," +                                         //[9]
+                            " sp.name as specializationName," +                                         //[10]
+                            " d.name as doctorName," +                                                  //[11]
+                            " atd.transactionNumber as transactionNumber," +                            //[12]
+                            " atd.appointmentAmount as appointmentAmount," +                            //[13]
+                            " arl.remarks as remarks" +                                                 //[14]
+                            " from AppointmentRescheduleLog arl" +
+                            " LEFT JOIN Appointment a ON a.id=arl.appointmentId.id" +
+                            " LEFT JOIN Patient p ON p.id=a.patientId" +
+                            " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id" +
+                            " LEFT JOIN HospitalPatientInfo hpi ON hpi.patientId=p.id" +
+                            " LEFT JOIN Hospital h ON h.id=a.hospitalId" +
+                            " LEFT JOIN Specialization sp ON sp.id=a.specializationId" +
                             " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id" +
                             " LEFT JOIN Doctor d ON d.id=a.doctorId.id" +
                             GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_RESCHEDULE_LOG_DETAILS(appointmentRescheduleLogSearchDTO);
@@ -352,12 +353,14 @@ public class AppointmentQuery {
 
         String whereClause = " WHERE " +
                 " hpi.status='Y' " +
-                " AND ars.status='RES' " +
-                " AND ars.rescheduleDate BETWEEN :fromDate AND :toDate";
+                " AND arl.status='RES' " +
+                " AND arl.rescheduleDate BETWEEN :fromDate AND :toDate";
 
-        if (!Objects.isNull(appointmentRescheduleLogSearchDTO.getAppointmentNumber()))
+        if (!ObjectUtils.isEmpty(appointmentRescheduleLogSearchDTO.getAppointmentNumber()))
             whereClause += " AND a.appointmentNumber LIKE '%" + appointmentRescheduleLogSearchDTO.getAppointmentNumber() + "%'";
 
+        if (!Objects.isNull(appointmentRescheduleLogSearchDTO.getEsewaId()))
+            whereClause += " AND p.eSewaId = '" + appointmentRescheduleLogSearchDTO.getEsewaId() + "'";
 
         if (!Objects.isNull(appointmentRescheduleLogSearchDTO.getAppointmentId()))
             whereClause += " AND a.id = " + appointmentRescheduleLogSearchDTO.getAppointmentId();
@@ -366,18 +369,18 @@ public class AppointmentQuery {
             whereClause += " AND h.id = " + appointmentRescheduleLogSearchDTO.getHospitalId();
 
         if (!Objects.isNull(appointmentRescheduleLogSearchDTO.getPatientMetaInfoId()))
-            whereClause += " AND pi.id = " + appointmentRescheduleLogSearchDTO.getPatientMetaInfoId();
+            whereClause += " AND pmi.id = " + appointmentRescheduleLogSearchDTO.getPatientMetaInfoId();
 
         if (!Objects.isNull(appointmentRescheduleLogSearchDTO.getSpecializationId()))
             whereClause += " AND sp.id = " + appointmentRescheduleLogSearchDTO.getSpecializationId();
 
-        if (!Objects.isNull(appointmentRescheduleLogSearchDTO.getPatientType()))
+        if (!ObjectUtils.isEmpty(appointmentRescheduleLogSearchDTO.getPatientType()))
             whereClause += " AND hpi.isRegistered = '" + appointmentRescheduleLogSearchDTO.getPatientType() + "'";
 
         if (!Objects.isNull(appointmentRescheduleLogSearchDTO.getDoctorId()))
             whereClause += " AND d.id = " + appointmentRescheduleLogSearchDTO.getDoctorId();
 
-        whereClause += " ORDER BY ars.rescheduleDate DESC";
+        whereClause += " ORDER BY arl.rescheduleDate";
 
         return whereClause;
     }

@@ -181,10 +181,11 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
-    public AppointmentRescheduleLogResponseDTO fetchrescheduleAppointment(AppointmentRescheduleLogSearchDTO rescheduleDTO, Pageable pageable) {
+    public AppointmentRescheduleLogResponseDTO fetchRescheduleAppointment(AppointmentRescheduleLogSearchDTO rescheduleDTO,
+                                                                          Pageable pageable) {
         Query query = createQuery.apply(entityManager, AppointmentQuery.QUERY_TO_RESCHEDULE_APPOINTMENT_LOGS.apply(rescheduleDTO))
-                .setParameter(FROM_DATE, rescheduleDTO.getFromDate())
-                .setParameter(TO_DATE, rescheduleDTO.getToDate());
+                .setParameter(FROM_DATE, utilDateToSqlDate(rescheduleDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(rescheduleDTO.getToDate()));
 
         int totalItems = query.getResultList().size();
 

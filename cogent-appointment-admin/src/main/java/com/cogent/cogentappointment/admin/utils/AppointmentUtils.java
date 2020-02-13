@@ -167,6 +167,8 @@ public class AppointmentUtils {
             final int DOCTOR_NAME_INDEX = 11;
             final int TRANSACTION_NUMBER_INDEX = 12;
             final int APPOINTMENT_AMOUNT_INDEX = 13;
+            final int REMARKS_INDEX = 14;
+
 
             Date previosAppointmentDate = (Date) result[PREVIOUS_APPOINTMENT_DATE_INDEX];
             Date rescheduledAppointmentDate = (Date) result[APPOINTMENT_RESCHEDULED_DATE_INDEX];
@@ -176,14 +178,17 @@ public class AppointmentUtils {
                     0D : Double.parseDouble(result[APPOINTMENT_AMOUNT_INDEX].toString());
 
             String registrationNumber = Objects.isNull(result[REGISTRATION_NUMBER_INDEX]) ?
-                    null : result[REGISTRATION_NUMBER_INDEX].toString();
+                    "" : result[REGISTRATION_NUMBER_INDEX].toString();
+
+            String remarks = Objects.isNull(result[REMARKS_INDEX]) ?
+                   null : result[REMARKS_INDEX].toString();
 
             AppointmentRescheduleLogDTO appointmentRescheduleLogDTO =
                     AppointmentRescheduleLogDTO.builder()
                             .hospitalName(result[HOSPITAL_NAME_INDEX].toString())
                             .previousAppointmentDate(previosAppointmentDate)
                             .rescheduleAppointmentDate(rescheduledAppointmentDate)
-                            .rescheduleAppointmentDate(rescheduledAppointmentDate)
+                            .appointmentNumber(result[APPOINTMENT_NUMBER_INDEX].toString())
                             .esewaId(result[ESEWA_ID_INDEX].toString())
                             .registrationNumber(registrationNumber)
                             .patientName(result[PATIENT_NAME_INDEX].toString())
@@ -193,8 +198,9 @@ public class AppointmentUtils {
                             .specializationName(result[SPECIALIZATION_NAME_INDEX].toString())
                             .transactionNumber(Objects.isNull(result[TRANSACTION_NUMBER_INDEX])
                                     ? null : result[TRANSACTION_NUMBER_INDEX].toString())
-                            .amount(appointmentAmount)
+                            .appointmentAmount(appointmentAmount)
                             .doctorName(result[DOCTOR_NAME_INDEX].toString())
+                            .remarks(remarks)
                             .build();
 
             appointmentLogSearchDTOS.add(appointmentRescheduleLogDTO);

@@ -45,14 +45,16 @@ public class DateConverterUtils {
 
         Character pillType;
 
-        if (years == 0 && months == 0 && days <= 1) {
+        if (years==0 && months==0 && days <= 1) {
             pillType = 'D';
-        } else if (years == 0  && days > 1 && days <= 7) {
+        } else if (years==0 && months==0 && days > 1 && days <= 7) {
             pillType = 'W';
-        } else if (years == 0  && days > 7 && days <= 31) {
+        } else if (years==0 || months>=1 || days>7 ) {
             pillType = 'M';
-        } else {
+        } else if(years>=1) {
             pillType = 'Y';
+        }else {
+            return null;
         }
 
         return pillType;

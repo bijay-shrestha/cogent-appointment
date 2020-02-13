@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.cogent.cogentappointment.admin.utils.commons.DateConverterUtils.getFiscalYear;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.convertDateToLocalDate;
 
 /**
  * @author Sauravi Thapa २०/२/१०
@@ -88,7 +89,13 @@ public class DashboardUtils {
 
         switch (filter) {
             case 'M':
-                return map.size() == getDatesOfMonth(currentDate.getYear(), currentDate.getMonth())
+
+                LocalDate toLocalDate = convertDateToLocalDate(currentDate);
+
+                int year=toLocalDate.getMonthValue();
+                int month=toLocalDate.getMonthValue();
+
+                return map.size() == getDatesOfMonth(year, month)
                         .size() ? true : false;
             case 'W':
                 return map.size() == NUMBER_OF_DAYS_OF_WEEK ? true : false;

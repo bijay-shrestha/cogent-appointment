@@ -29,4 +29,6 @@ public class GenerateRevenueRequestDTO implements Serializable {
 
     private Long hospitalId;
 
+    private Character filterType;
+
 }

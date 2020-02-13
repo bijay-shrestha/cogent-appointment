@@ -1,5 +1,7 @@
 package com.cogent.cogentappointment.admin.utils.commons;
 
+import com.cogent.cogentappointment.admin.dto.request.dashboard.GenerateRevenueRequestDTO;
+
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Calendar;
@@ -63,6 +65,10 @@ public class DateConverterUtils {
         } else {
             return year + "/" + (year + 1);
         }
+    }
+
+    public static Character dateDifferenceForTiles(GenerateRevenueRequestDTO requestDTO) {
+        return 'N';
     }
 
 }

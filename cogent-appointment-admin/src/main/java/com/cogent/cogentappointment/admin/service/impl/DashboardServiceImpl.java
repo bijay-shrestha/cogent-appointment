@@ -24,6 +24,7 @@ import static com.cogent.cogentappointment.admin.log.constants.DashboardLog.*;
 import static com.cogent.cogentappointment.admin.utils.AppointmentUtils.parseToAppointmentCountResponseDTO;
 import static com.cogent.cogentappointment.admin.utils.DashboardUtils.parseToGenerateRevenueResponseDTO;
 import static com.cogent.cogentappointment.admin.utils.commons.DateConverterUtils.dateDifference;
+import static com.cogent.cogentappointment.admin.utils.commons.DateConverterUtils.dateDifferenceForTiles;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.MathUtils.calculatePercenatge;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
@@ -64,7 +65,8 @@ public class DashboardServiceImpl implements DashboardService {
                 requestDTO.getPreviousFromDate(), requestDTO.getHospitalId());
 
         GenerateRevenueResponseDTO responseDTO = parseToGenerateRevenueResponseDTO(currentTransaction,
-                calculatePercenatge(currentTransaction, previousTransaction));
+                calculatePercenatge(currentTransaction, previousTransaction),
+                dateDifferenceForTiles(requestDTO));
 
         log.info(FETCHING_PROCESS_COMPLETED, REVENUE_GENERATED, getDifferenceBetweenTwoTime(startTime));
 

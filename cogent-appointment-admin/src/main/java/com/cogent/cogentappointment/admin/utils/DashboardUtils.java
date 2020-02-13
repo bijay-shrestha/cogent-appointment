@@ -17,11 +17,13 @@ import static com.cogent.cogentappointment.admin.utils.commons.DateConverterUtil
  */
 public class DashboardUtils {
     public static GenerateRevenueResponseDTO parseToGenerateRevenueResponseDTO(Double currentTransaction,
-                                                                               Double growthPercent) {
+                                                                               Double growthPercent,
+                                                                               Character filterType) {
         GenerateRevenueResponseDTO generateRevenueResponseDTO = new GenerateRevenueResponseDTO();
         generateRevenueResponseDTO.setAmount(currentTransaction);
         generateRevenueResponseDTO.setGrowthPercent(growthPercent);
         generateRevenueResponseDTO.setFiscalYear(getFiscalYear());
+        generateRevenueResponseDTO.setFilterType(filterType);
 
         return generateRevenueResponseDTO;
     }

@@ -17,4 +17,6 @@ public class GenerateRevenueResponseDTO implements Serializable {
     private Double amount;
 
     private Double growthPercent;
+
+    private Character filterType;
 }

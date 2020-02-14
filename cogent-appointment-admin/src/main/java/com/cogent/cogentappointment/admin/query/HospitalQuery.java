@@ -98,15 +98,11 @@ public class HospitalQuery {
                     " END as hospitalBanner," +                                 //[7]
                     " h.code as hospitalCode," +                                //[8]
                     " tbl1.contact_details as contact_details," +               //[9]
-<<<<<<< HEAD
                     " h.refund_percentage as refundPercentage," +                //[10]
                     " h.number_of_admins as numberOfAdmins," +                   //[11]
                     " h.number_of_free_follow_ups as numberOfFreeFollowUps," +   //[12]
-                    " h.follow_up_interval_days as followUpIntervalDays" +       //[13]
-=======
-                    " h.refund_percentage as refundPercentage," +            //[10]
-                    " h.is_cogent_admin as isCogentAdmin"+                //[11]
->>>>>>> f8521fa793d42813374b9429f2c5822a9ef39ad9
+                    " h.follow_up_interval_days as followUpIntervalDays," +       //[13]
+                    " h.is_cogent_admin as isCogentAdmin"+                      //[14]
                     " FROM" +
                     " hospital h" +
                     " LEFT JOIN hospital_logo hl ON h.id =hl.hospital_id " +

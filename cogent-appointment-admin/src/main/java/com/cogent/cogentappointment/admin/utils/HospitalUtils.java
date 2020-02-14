@@ -131,15 +131,12 @@ public class HospitalUtils {
         final int HOSPITAL_BANNER_INDEX = 7;
         final int HOSPITAL_CODE_INDEX = 8;
         final int CONTACT_DETAILS_INDEX = 9;
-<<<<<<< HEAD
         final int REFUND_PERCENTAGE_INDEX = 10;
         final int NUMBER_OF_ADMINS_INDEX = 11;
         final int NUMBER_OF_FREE_FOLLOWUPS_INDEX = 12;
         final int FOLLOW_UP_INTERVAL_DAYS_INDEX = 13;
-=======
-        final int REFUND_PERCENTAGE_INDEX =10;
-        final int IS_COGENT_ADMIN_INDEX =11;
->>>>>>> f8521fa793d42813374b9429f2c5822a9ef39ad9
+        final int IS_COGENT_ADMIN_INDEX =14;
+
 
         return HospitalResponseDTO.builder()
                 .id(Long.parseLong(results[HOSPITAL_ID_INDEX].toString()))
@@ -154,14 +151,11 @@ public class HospitalUtils {
                 .contactNumberResponseDTOS(Objects.isNull(results[CONTACT_DETAILS_INDEX]) ?
                         new ArrayList<>() : parseToHospitalContactNumberResponseDTOS(results))
                 .refundPercentage(Double.parseDouble(results[REFUND_PERCENTAGE_INDEX].toString()))
-<<<<<<< HEAD
                 .numberOfAdmins(Objects.isNull(results[NUMBER_OF_ADMINS_INDEX]) ? 0 :
                         Integer.parseInt(results[NUMBER_OF_ADMINS_INDEX].toString()))
                 .numberOfFreeFollowUps(Integer.parseInt(results[NUMBER_OF_FREE_FOLLOWUPS_INDEX].toString()))
                 .followUpIntervalDays(Integer.parseInt(results[FOLLOW_UP_INTERVAL_DAYS_INDEX].toString()))
-=======
                 .isCogentAdmin(results[IS_COGENT_ADMIN_INDEX].toString().charAt(0))
->>>>>>> f8521fa793d42813374b9429f2c5822a9ef39ad9
                 .build();
     }
 

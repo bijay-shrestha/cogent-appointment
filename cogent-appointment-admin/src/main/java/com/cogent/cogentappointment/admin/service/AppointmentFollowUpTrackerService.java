@@ -10,8 +10,6 @@ import com.cogent.cogentappointment.persistence.model.Specialization;
  */
 public interface AppointmentFollowUpTrackerService {
 
-//    List<FollowUpTrackerResponseDTO> fetchMinimalFollowUpTracker(FollowUpTrackerSearchRequestDTO requestDTO);
-
     void save(Long parentAppointmentId, String parentAppointmentNumber, Hospital hospital,
               Doctor doctor, Specialization specialization, Patient patient);
 

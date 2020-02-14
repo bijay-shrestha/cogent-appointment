@@ -166,8 +166,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         saveAppointmentFollowUpTracker(appointment);
 
-        registerPatient(appointment.getPatientId().getId());
-
         log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
     }
 
@@ -222,8 +220,9 @@ public class AppointmentServiceImpl implements AppointmentService {
                     appointment.getDoctorId(),
                     appointment.getSpecializationId(),
                     appointment.getPatientId()
-
             );
+
+            registerPatient(appointment.getPatientId().getId());
         }
     }
 

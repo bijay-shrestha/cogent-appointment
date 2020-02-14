@@ -38,21 +38,6 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
         this.hospitalRepository = hospitalRepository;
     }
 
-//    @Override
-//    public List<FollowUpTrackerResponseDTO> fetchMinimalFollowUpTracker(FollowUpTrackerSearchRequestDTO requestDTO) {
-//
-//        Long startTime = getTimeInMillisecondsFromLocalDate();
-//
-//        log.info(FETCHING_MINIMAL_PROCESS_STARTED, FOLLOW_UP_TRACKER);
-//
-//        List<FollowUpTrackerResponseDTO> responseDTOS =
-//                followUpTrackerRepository.fetchMinimalFollowUpTracker(requestDTO);
-//
-//        log.info(FETCHING_MINIMAL_PROCESS_COMPLETED, FOLLOW_UP_TRACKER, getDifferenceBetweenTwoTime(startTime));
-//
-//        return responseDTOS;
-//    }
-
     @Override
     public void save(Long parentAppointmentId,
                      String parentAppointmentNumber,
@@ -112,8 +97,11 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
 
             Date currentDate = utilDateToSqlDate(new Date());
 
-            if ((Objects.requireNonNull(expiryDate).compareTo(Objects.requireNonNull(currentDate))) < 0)
+            if ((Objects.requireNonNull(expiryDate).compareTo(Objects.requireNonNull(currentDate))) < 0){
+
                 followUpTracker.setStatus(INACTIVE);
+                appointmentFollowUpTrackerRepository.save(followUpTracker);
+            }
         });
 
         log.info(UPDATING_PROCESS_COMPLETED, APPOINTMENT_FOLLOW_UP_TRACKER_STATUS, getDifferenceBetweenTwoTime(startTime));

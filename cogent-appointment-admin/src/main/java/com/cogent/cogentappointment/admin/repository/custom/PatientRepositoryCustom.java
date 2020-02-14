@@ -20,9 +20,9 @@ public interface PatientRepositoryCustom {
 
     PatientDetailResponseDTO fetchDetailsById(Long id);
 
-    String fetchLatestRegistrationNumber();
-
     List<PatientResponseDTO> search(PatientSearchRequestDTO searchRequestDTO, Pageable pageable);
+
+    String fetchLatestRegistrationNumber();
 
     Long countOverallRegisteredPatients(Long HospitalId);
 }

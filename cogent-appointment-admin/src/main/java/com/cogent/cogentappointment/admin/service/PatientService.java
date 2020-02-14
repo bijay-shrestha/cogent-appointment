@@ -26,5 +26,4 @@ public interface PatientService {
     List<DropDownResponseDTO> patientMetaInfoActiveDropDownListByHospitalId(Long hospitalId);
 
     void registerPatient(Long patientId);
-
 }

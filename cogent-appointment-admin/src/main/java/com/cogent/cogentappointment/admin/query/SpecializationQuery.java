@@ -54,7 +54,8 @@ public class SpecializationQuery {
                 " s.id as id," +                                      //[0]
                 " s.name as name," +                                  //[1]
                 " s.status as status," +                              //[2]
-                " s.code as code" +                                   //[3]
+                " s.code as code," +
+                " s.hospital.name as hospitalName" +                                   //[3]
                 " FROM" +
                 " Specialization s" +
                 GET_WHERE_CLAUSE_FOR_SEARCHING_SPECIALIZATION.apply(searchRequestDTO);

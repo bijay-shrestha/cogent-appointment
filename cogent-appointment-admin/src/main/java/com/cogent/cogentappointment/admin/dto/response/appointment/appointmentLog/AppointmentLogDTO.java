@@ -55,4 +55,5 @@ public class AppointmentLogDTO implements Serializable {
     private Double appointmentAmount;
 
     private Double refundAmount;
+
 }

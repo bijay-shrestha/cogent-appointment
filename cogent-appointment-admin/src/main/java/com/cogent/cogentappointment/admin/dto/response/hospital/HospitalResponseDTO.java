@@ -31,7 +31,11 @@ public class HospitalResponseDTO implements Serializable {
 
     private Double refundPercentage;
 
+<<<<<<< HEAD
     private Integer numberOfAdmins;
+=======
+    private Character isCogentAdmin;
+>>>>>>> f8521fa793d42813374b9429f2c5822a9ef39ad9
 
     private List<HospitalContactNumberResponseDTO> contactNumberResponseDTOS;
 

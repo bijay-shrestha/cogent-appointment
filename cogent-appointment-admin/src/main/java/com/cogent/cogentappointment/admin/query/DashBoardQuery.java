@@ -106,16 +106,16 @@ public class DashBoardQuery {
 
     public static String QUERY_TO_FETCH_REVENUE_YEARLY(Long hospitalId) {
         return " SELECT" +
-                "  CONCAT(MONTHNAME(atd.transactionDate),CONCAT(',',YEAR(atd.transactionDate)))," +
-                "  COALESCE(SUM(atd.appointmentAmount),0) AS revenue" +
-                "  FROM AppointmentTransactionDetail atd" +
+                " DATE_FORMAT(atd.transactionDate, '%b,%Y')," +
+                " COALESCE(SUM(atd.appointmentAmount),0) AS revenue" +
+                " FROM AppointmentTransactionDetail atd" +
                 " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
                 " WHERE" +
                 " atd.transactionDate BETWEEN :fromDate AND :toDate" +
                 " AND a.status='A'" +
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId) +
-                " GROUP BY CONCAT(MONTHNAME(atd.transactionDate),CONCAT(',',YEAR(atd.transactionDate)))"+
-                " ORDER BY CONCAT(MONTHNAME(atd.transactionDate),CONCAT(',',YEAR(atd.transactionDate)))";
+                " GROUP BY DATE_FORMAT(atd.transactionDate, '%b,%Y')"+
+                " ORDER BY DATE_FORMAT(atd.transactionDate, '%b,%Y')";
 
     }
 

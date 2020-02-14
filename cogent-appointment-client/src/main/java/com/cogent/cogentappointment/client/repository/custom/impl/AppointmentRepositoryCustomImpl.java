@@ -62,14 +62,16 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
-    public String generateAppointmentNumber(String nepaliCreatedDate) {
+    public String generateAppointmentNumber(String nepaliCreatedDate,
+                                            Long hospitalId) {
 
         int year = getYearFromNepaliDate(nepaliCreatedDate);
         int month = getMonthFromNepaliDate(nepaliCreatedDate);
 
         Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_LATEST_APPOINTMENT_NUMBER)
                 .setParameter(FROM_DATE, fetchStartingFiscalYear(year, month))
-                .setParameter(TO_DATE, fetchEndingFiscalYear(year, month));
+                .setParameter(TO_DATE, fetchEndingFiscalYear(year, month))
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         return AppointmentUtils.generateAppointmentNumber(query.getResultList());
     }

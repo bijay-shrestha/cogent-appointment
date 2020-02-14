@@ -27,7 +27,7 @@ public class QueryConstants {
 
     //F
     public interface AppointmentFollowUpTrackerConstants {
-        String PARENT_APPOINTMENT_NUMBER = "parentAppointmentNumber";
+        String PARENT_APPOINTMENT_ID = "parentAppointmentId";
         String PATIENT_ID = "patientId";
     }
 

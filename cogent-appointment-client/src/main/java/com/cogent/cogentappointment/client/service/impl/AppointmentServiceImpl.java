@@ -28,6 +28,7 @@ import static com.cogent.cogentappointment.client.constants.ErrorMessageConstant
 import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.*;
+import static com.cogent.cogentappointment.client.utils.AppointmentFollowUpLogUtils.parseToAppointmentFollowUpLog;
 import static com.cogent.cogentappointment.client.utils.AppointmentTransactionDetailUtils.parseToAppointmentTransactionInfo;
 import static com.cogent.cogentappointment.client.utils.AppointmentUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
@@ -58,9 +59,9 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentRefundDetailRepository appointmentRefundDetailRepository;
 
-    private final PatientMetaInfoRepository patientMetaInfoRepository;
-
     private final AppointmentRescheduleLogRepository appointmentRescheduleLogRepository;
+
+    private final AppointmentFollowUpLogRepository appointmentFollowUpLogRepository;
 
     public AppointmentServiceImpl(PatientService patientService,
                                   DoctorService doctorService,
@@ -71,8 +72,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   AppointmentTransactionInfoRepository appointmentTransactionInfoRepository,
                                   HospitalService hospitalService,
                                   AppointmentRefundDetailRepository appointmentRefundDetailRepository,
-                                  PatientMetaInfoRepository patientMetaInfoRepository,
-                                  AppointmentRescheduleLogRepository appointmentRescheduleLogRepository) {
+                                  AppointmentRescheduleLogRepository appointmentRescheduleLogRepository,
+                                  AppointmentFollowUpLogRepository appointmentFollowUpLogRepository) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -82,8 +83,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.appointmentTransactionInfoRepository = appointmentTransactionInfoRepository;
         this.hospitalService = hospitalService;
         this.appointmentRefundDetailRepository = appointmentRefundDetailRepository;
-        this.patientMetaInfoRepository = patientMetaInfoRepository;
         this.appointmentRescheduleLogRepository = appointmentRescheduleLogRepository;
+        this.appointmentFollowUpLogRepository = appointmentFollowUpLogRepository;
     }
 
     @Override
@@ -131,7 +132,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 appointmentRequestDTO.getAppointmentDate(),
                 appointmentRequestDTO.getAppointmentTime(),
                 appointmentRequestDTO.getDoctorId(),
-                appointmentRequestDTO.getSpecializationId());
+                appointmentRequestDTO.getSpecializationId()
+        );
 
         validateAppointmentExists(appointmentCount, appointmentRequestDTO.getAppointmentTime());
 
@@ -142,23 +144,33 @@ public class AppointmentServiceImpl implements AppointmentService {
         );
 
         String appointmentNumber = appointmentRepository.generateAppointmentNumber(
-                appointmentRequestDTO.getCreatedDateNepali());
+                appointmentRequestDTO.getCreatedDateNepali(),
+                appointmentRequestDTO.getHospitalId()
+        );
 
         Appointment appointment = parseToAppointment(
                 appointmentRequestDTO, appointmentNumber,
                 patient,
                 fetchSpecialization(appointmentRequestDTO.getSpecializationId()),
                 fetchDoctor(appointmentRequestDTO.getDoctorId()),
-                fetchHospital(appointmentRequestDTO.getHospitalId()));
+                fetchHospital(appointmentRequestDTO.getHospitalId())
+        );
 
         save(appointment);
 
         saveAppointmentTransactionDetail(appointmentRequestDTO.getTransactionInfo(), appointment);
 
+        saveAppointmentFollowUpLog(
+                appointmentRequestDTO.getIsFreeFollowUp(),
+                appointmentRequestDTO.getParentAppointmentId(),
+                appointment.getId()
+        );
+
         log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
 
         return parseToAppointmentSuccessResponseDTO(appointmentNumber);
     }
+
 
     @Override
     public List<AppointmentPendingResponseDTO> fetchPendingAppointments(AppointmentPendingSearchDTO searchDTO) {
@@ -300,6 +312,17 @@ public class AppointmentServiceImpl implements AppointmentService {
                 appointment, rescheduleRequestDTO);
         appointmentRescheduleLogRepository.save(appointmentRescheduleLog);
     }
+
+    private void saveAppointmentFollowUpLog(Character isFreeFollowUp,
+                                            Long parentAppointmentId,
+                                            Long followUpAppointmentId) {
+        if (isFreeFollowUp.equals(YES))
+            appointmentFollowUpLogRepository.save(
+                    parseToAppointmentFollowUpLog(parentAppointmentId, followUpAppointmentId)
+            );
+
+    }
+
 
 }
 

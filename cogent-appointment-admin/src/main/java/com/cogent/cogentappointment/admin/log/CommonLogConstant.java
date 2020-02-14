@@ -62,6 +62,8 @@ public class CommonLogConstant {
     public static String SEARCHING_PROCESS_STARTED = ":::: SEARCHING {} PROCESS STARTED ::::";
     public static String SEARCHING_PROCESS_COMPLETED = ":::: SEARCHING {} PROCESS COMPLETED IN :::: {} ms";
 
+    public static String SCHEDULER_RUNNING = " :::: {} SCHEDULER RUNNING ::::";
+
     //T
 
     //U

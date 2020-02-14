@@ -67,7 +67,8 @@ public class PatientServiceImpl implements PatientService {
                 requestDTO.getName(),
                 requestDTO.getMobileNumber(),
                 requestDTO.getDateOfBirth(),
-                hospitalId);
+                hospitalId
+        );
 
         validatePatientDuplicity(
                 patientCount,

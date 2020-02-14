@@ -21,7 +21,7 @@ public interface AppointmentRepositoryCustom {
     Long validateIfAppointmentExists(Date appointmentDate, String appointmentTime,
                                      Long doctorId, Long specializationId);
 
-    String generateAppointmentNumber(String nepaliCreatedDate);
+    String generateAppointmentNumber(String nepaliCreatedDate, Long hospitalId);
 
     List<AppointmentPendingResponseDTO> fetchPendingAppointments(AppointmentPendingSearchDTO searchDTO);
 

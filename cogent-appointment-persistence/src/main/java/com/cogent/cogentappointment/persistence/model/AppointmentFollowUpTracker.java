@@ -39,6 +39,13 @@ public class AppointmentFollowUpTracker extends Auditable<String> implements Ser
     @JoinColumn(name = "specialization_id")
     private Specialization specializationId;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hospital_id")
+    private Hospital hospitalId;
+
+    @Column(name = "parent_appointment_id")
+    private Long parentAppointmentId;
+
     @Column(name = "parent_appointment_number")
     private String parentAppointmentNumber;
 
@@ -49,8 +56,8 @@ public class AppointmentFollowUpTracker extends Auditable<String> implements Ser
     @Column(name = "appointment_approved_date")
     private Date appointmentApprovedDate;
 
-    @Column(name = "active")
-    private Character active;
+    @Column(name = "status")
+    private Character status;
 
     @Override
     public String toString() {
@@ -59,10 +66,12 @@ public class AppointmentFollowUpTracker extends Auditable<String> implements Ser
                 ", patientId=" + patientId.getName() +
                 ", doctorId=" + doctorId.getName() +
                 ", specializationId=" + specializationId.getName() +
+                ", hospitalId=" + hospitalId.getName() +
+                ", parentAppointmentId=" + parentAppointmentId +
                 ", parentAppointmentNumber=" + parentAppointmentNumber +
                 ", remainingNumberOfFollowUps=" + remainingNumberOfFollowUps +
                 ", appointmentApprovedDate=" + appointmentApprovedDate +
-                ", active=" + active +
+                ", status=" + status +
                 '}';
     }
 }

@@ -8,13 +8,9 @@ import org.springframework.stereotype.Repository;
  * @author smriti on 18/11/2019
  */
 @Repository
-@Qualifier("followUpRepositoryCustom")
+@Qualifier("appointmentFollowUpRepositoryCustom")
 public interface AppointmentFollowUpTrackerRepositoryCustom {
 
-//    List<FollowUpTrackerResponseDTO> fetchMinimalFollowUpTracker(FollowUpTrackerSearchRequestDTO requestDTO);
+    AppointmentFollowUpTracker fetchLatestAppointmentFollowUpTracker(Long parentAppointmentId);
 
-    AppointmentFollowUpTracker fetchAppointmentFollowUpTracker(String parentAppointmentNumber,
-                                                               Long doctorId,
-                                                               Long patientId,
-                                                               Long specializationId);
 }

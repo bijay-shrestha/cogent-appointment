@@ -169,8 +169,8 @@ public class HospitalUtils {
                 .map(contact -> contact.split(StringConstant.HYPHEN))
                 .map(contactDetails -> HospitalContactNumberResponseDTO.builder()
                         .hospitalContactNumberId(Long.parseLong(contactDetails[0]))
-                        .contactNumber((contactDetails[1]==null)? null:contactDetails[1])
-                        .status((contactDetails[2].charAt(0)==' ')? null:(contactDetails[2].charAt(0)))
+                        .contactNumber(contactDetails[1])
+                        .status(contactDetails[2].charAt(0))
                         .build())
                 .collect(Collectors.toList());
     }

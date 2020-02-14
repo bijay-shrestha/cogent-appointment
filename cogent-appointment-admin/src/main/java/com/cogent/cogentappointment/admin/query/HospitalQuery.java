@@ -98,7 +98,8 @@ public class HospitalQuery {
                     " END as hospitalBanner," +                                 //[7]
                     " h.code as hospitalCode," +                                //[8]
                     " tbl1.contact_details as contact_details," +               //[9]
-                    " h.refund_percentage as refundPercentage"+                //[10]
+                    " h.refund_percentage as refundPercentage," +            //[10]
+                    " h.is_cogent_admin as isCogentAdmin"+                //[11]
                     " FROM" +
                     " hospital h" +
                     " LEFT JOIN hospital_logo hl ON h.id =hl.hospital_id " +

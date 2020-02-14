@@ -126,6 +126,7 @@ public class HospitalUtils {
         final int HOSPITAL_CODE_INDEX = 8;
         final int CONTACT_DETAILS_INDEX = 9;
         final int REFUND_PERCENTAGE_INDEX =10;
+        final int IS_COGENT_ADMIN_INDEX =11;
 
         return HospitalResponseDTO.builder()
                 .id(Long.parseLong(results[HOSPITAL_ID_INDEX].toString()))
@@ -140,6 +141,7 @@ public class HospitalUtils {
                 .contactNumberResponseDTOS(Objects.isNull(results[CONTACT_DETAILS_INDEX]) ?
                         new ArrayList<>() : parseToHospitalContactNumberResponseDTOS(results))
                 .refundPercentage(Double.parseDouble(results[REFUND_PERCENTAGE_INDEX].toString()))
+                .isCogentAdmin(results[IS_COGENT_ADMIN_INDEX].toString().charAt(0))
                 .build();
     }
 

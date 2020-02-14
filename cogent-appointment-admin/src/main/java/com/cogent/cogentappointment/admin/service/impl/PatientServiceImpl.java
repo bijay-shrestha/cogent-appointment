@@ -50,7 +50,6 @@ public class PatientServiceImpl implements PatientService {
         this.hospitalPatientInfoRepository = hospitalPatientInfoRepository;
     }
 
-
     @Override
     public PatientDetailResponseDTO fetchDetailsById(Long id) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
@@ -149,11 +148,9 @@ public class PatientServiceImpl implements PatientService {
         registerPatientDetails(hospitalPatientInfo, latestRegistrationNumber);
 
         log.info(REGISTERING_PATIENT_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
-
     }
 
-
-    public Patient fetchPatientById(Long id) {
+    private Patient fetchPatientById(Long id) {
         return patientRepository.fetchPatientById(id).orElseThrow(() ->
                 new NoContentFoundException(Patient.class));
     }
@@ -162,7 +159,7 @@ public class PatientServiceImpl implements PatientService {
         return patientRepository.save(patient);
     }
 
-    public void savePatientMetaInfo(PatientMetaInfo patientMetaInfo) {
+    private void savePatientMetaInfo(PatientMetaInfo patientMetaInfo) {
         patientMetaInfoRepository.save(patientMetaInfo);
     }
 

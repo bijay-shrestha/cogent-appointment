@@ -67,7 +67,7 @@ public class DashboardServiceImpl implements DashboardService {
 
         GenerateRevenueResponseDTO responseDTO = parseToGenerateRevenueResponseDTO(currentTransaction,
                 calculatePercenatge(currentTransaction, previousTransaction),
-                dateDifferenceForTiles(requestDTO));
+                requestDTO.getFilterType());
 
         log.info(FETCHING_PROCESS_COMPLETED, REVENUE_GENERATED, getDifferenceBetweenTwoTime(startTime));
 
@@ -122,7 +122,7 @@ public class DashboardServiceImpl implements DashboardService {
 
         Map<String, String> map = revenueStatisticsResponseDTO.getData();
 
-        if (!isMapContainsEveryField(map, dashBoardRequestDTO.getFromDate(), filter)) {
+        if (!isMapContainsEveryField(map, dashBoardRequestDTO.getToDate(), filter)) {
             map = addRemainingFields(revenueStatisticsResponseDTO.getData(),
                     dashBoardRequestDTO.getFromDate(),
                     dashBoardRequestDTO.getToDate(), filter);

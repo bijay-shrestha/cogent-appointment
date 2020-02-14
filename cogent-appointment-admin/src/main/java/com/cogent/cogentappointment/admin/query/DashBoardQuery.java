@@ -78,19 +78,19 @@ public class DashBoardQuery {
         return "SELECT" +
                 "  CASE" +
                 "  WHEN DAYOFWEEK(atd.transactionDate) = 1" +
-                "    THEN 'SUN'" +
+                "    THEN CONCAT('SUN,',DATE_FORMAT(atd.transactionDate, '%b %d'))" +
                 "  WHEN DAYOFWEEK(atd.transactionDate) = 2" +
-                "    THEN 'MON'" +
+                "    THEN CONCAT('MON,',DATE_FORMAT(atd.transactionDate, '%b %d'))" +
                 "  WHEN DAYOFWEEK(atd.transactionDate) = 3" +
-                "    THEN 'TUE'" +
+                "    THEN CONCAT('TUE,',DATE_FORMAT(atd.transactionDate, '%b %d'))" +
                 "  WHEN DAYOFWEEK(atd.transactionDate) = 4" +
-                "    THEN 'WED'" +
+                "    THEN CONCAT('WED,',DATE_FORMAT(atd.transactionDate, '%b %d'))" +
                 "  WHEN DAYOFWEEK(atd.transactionDate) = 5" +
-                "    THEN 'THU'" +
+                "    THEN CONCAT('THU,',DATE_FORMAT(atd.transactionDate, '%b %d'))" +
                 "  WHEN DAYOFWEEK(atd.transactionDate) = 6" +
-                "    THEN 'FRI'" +
+                "    THEN CONCAT('FRI,',DATE_FORMAT(atd.transactionDate, '%b %d'))" +
                 "  WHEN DAYOFWEEK(atd.transactionDate) = 7" +
-                "    THEN 'SAT'" +
+                "    THEN CONCAT('SAT,',DATE_FORMAT(atd.transactionDate, '%b %d'))" +
                 "  END AS day," +
                 "  COALESCE(SUM(atd.appointmentAmount),0) AS revenue" +
                 " FROM AppointmentTransactionDetail atd" +
@@ -106,16 +106,16 @@ public class DashBoardQuery {
 
     public static String QUERY_TO_FETCH_REVENUE_YEARLY(Long hospitalId) {
         return " SELECT" +
-                "  CONCAT(MONTHNAME(atd.transactionDate),CONCAT('_',YEAR(atd.transactionDate)))," +
-                "  COALESCE(SUM(atd.appointmentAmount),0) AS revenue" +
-                "  FROM AppointmentTransactionDetail atd" +
+                " DATE_FORMAT(atd.transactionDate, '%b,%Y')," +
+                " COALESCE(SUM(atd.appointmentAmount),0) AS revenue" +
+                " FROM AppointmentTransactionDetail atd" +
                 " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
                 " WHERE" +
                 " atd.transactionDate BETWEEN :fromDate AND :toDate" +
                 " AND a.status='A'" +
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId) +
-                " GROUP BY CONCAT(MONTHNAME(atd.transactionDate),CONCAT('_',YEAR(atd.transactionDate)))"+
-                " ORDER BY CONCAT(MONTHNAME(atd.transactionDate),CONCAT('_',YEAR(atd.transactionDate)))";
+                " GROUP BY DATE_FORMAT(atd.transactionDate, '%b,%Y')"+
+                " ORDER BY DATE_FORMAT(atd.transactionDate, '%b,%Y')";
 
     }
 

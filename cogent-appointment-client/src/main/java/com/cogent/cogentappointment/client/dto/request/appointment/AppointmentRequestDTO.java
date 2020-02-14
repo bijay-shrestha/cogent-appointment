@@ -45,4 +45,8 @@ public class AppointmentRequestDTO implements Serializable {
     @NotNull
     @NotEmpty
     private String createdDateNepali;
+
+    private Character isFreeFollowUp;
+
+    private Long parentAppointmentId;
 }

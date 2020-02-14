@@ -76,22 +76,26 @@ public class Appointment extends Auditable<String> implements Serializable {
     @JoinColumn(name = "hospital_id")
     private Hospital hospitalId;
 
+    @Column(name = "is_free_follow_up")
+    private Character isFreeFollowUp;
+
     @Override
     public String toString() {
         return "Appointment{" +
-                "id=" + id +
-                ", specializationId=" + specializationId.getName() +
+                "id=" + id + ", " +
+                "specializationId=" + specializationId.getName() +
                 ", doctorId=" + doctorId.getName() +
                 ", patientId=" + patientId.getName() +
                 ", hospital=" + hospitalId.getName() +
                 ", appointmentDate=" + appointmentDate +
                 ", appointmentTime=" + appointmentTime +
-                ", appointmentNumber='" + appointmentNumber +
-                ", serialNumber='" + serialNumber +
-                ", createdDateNepali='" + createdDateNepali +
+                ", appointmentNumber=" + appointmentNumber +
+                ", serialNumber=" + serialNumber +
+                ", createdDateNepali=" + createdDateNepali +
                 ", status=" + status +
-                ", remarks='" + remarks +
-                ", hospitalId='" + hospitalId +
+                ", remarks=" + remarks +
+                ", hospitalId=" + hospitalId +
+                ", isFreeFollowUp=" + isFreeFollowUp +
                 '}';
     }
 }

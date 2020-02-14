@@ -9,5 +9,4 @@ public class AppointmentFollowUpTrackerLog {
 
     public final static String APPOINTMENT_FOLLOW_UP_TRACKER_STATUS = "APPOINTMENT FOLLOW UP TRACKER STATUS";
 
-    public final static String APPOINTMENT_FOLLOW_UP_TRACKER_COUNT = "APPOINTMENT FOLLOW UP TRACKER COUNT";
 }

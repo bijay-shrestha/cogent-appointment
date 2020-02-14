@@ -178,7 +178,7 @@ public class DashboardUtils {
         //if current and previous dates are 2018-9-2 and 2017-9-2 respectively then the months in the list will be from
         //september to september. The magic is happening  because of  localDate.isEqual(current) :p
         for (LocalDate localDate = previous; localDate.isBefore(current) || localDate.isEqual(current); localDate = localDate.plusMonths(ONE)) {
-            monthsOfYear.add(toTitleCase(localDate.getMonth().name().toLowerCase()) + "_" + localDate.getYear());
+            monthsOfYear.add(toTitleCase(localDate.getMonth().name().toLowerCase()) + "," + localDate.getYear());
         }
         return monthsOfYear;
     }

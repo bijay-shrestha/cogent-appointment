@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.admin.query;
 
+import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDutyRosterSearchRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDutyRosterStatusRequestDTO;
 
 import java.util.Objects;
 
@@ -85,23 +85,7 @@ public class DoctorDutyRosterQuery {
                     " dw.doctorDutyRosterId.status !='D'" +
                     " AND dw.doctorDutyRosterId.id = :id";
 
-    public static final String QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_TIME =
-            " SELECT" +
-                    " dw.startTime as startTime," +                                     //[0]
-                    " dw.endTime as endTime," +                                         //[1]
-                    " dw.dayOffStatus as dayOffStatus," +                               //[2]
-                    " d.rosterGapDuration as rosterGapDuration" +                       //[3]
-                    " FROM DoctorDutyRoster d" +
-                    " LEFT JOIN DoctorWeekDaysDutyRoster dw ON dw.doctorDutyRosterId.id = d.id" +
-                    " LEFT JOIN WeekDays w ON w.id = dw.weekDaysId.id" +
-                    " WHERE" +
-                    " d.status = 'Y'" +
-                    " AND :date BETWEEN d.fromDate AND d.toDate" +
-                    " AND d.doctorId.id = :doctorId" +
-                    " AND d.specializationId.id = :specializationId" +
-                    " AND w.code = :code";
-
-    public static String QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_STATUS(DoctorDutyRosterStatusRequestDTO requestDTO) {
+    public static String QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_STATUS(AppointmentStatusRequestDTO requestDTO) {
 
         String SQL = "SELECT" +
                 " d.from_date," +                                       //[0]
@@ -124,6 +108,7 @@ public class DoctorDutyRosterQuery {
                 " LEFT JOIN week_days w ON w.id = dw.week_days_id" +
                 " LEFT JOIN doctor dr ON dr.id = d.doctor_id" +
                 " LEFT JOIN specialization s ON s.id = d.specialization_id" +
+                " LEFT JOIN hospital h ON h.id = d.hospital_id"+
                 " WHERE d.status = 'Y'" +
                 " AND d.to_date >=:fromDate" +
                 " AND d.from_date <=:toDate";
@@ -133,6 +118,9 @@ public class DoctorDutyRosterQuery {
 
         if (!Objects.isNull(requestDTO.getSpecializationId()))
             SQL += " AND s.id = :specializationId";
+
+        if (!Objects.isNull(requestDTO.getHospitalId()))
+            SQL += " AND h.id = :hospitalId";
 
         SQL += " GROUP BY d.id";
 

@@ -23,7 +23,6 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 
     private final HMACUtils hmacUtils;
 
-
     private final HmacApiInfoRepository hmacApiInfoRepository;
 
     public AuthenticateServiceImpl(HMACUtils hmacUtils,
@@ -45,7 +44,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 
     @Override
     public String loginThirdParty(LoginRequestDTO requestDTO) {
-        ThirdPartyDetail thirdPartyDetail = hmacApiInfoRepository.getDetailsByHositalCode(requestDTO.getHospitalCode());
+        ThirdPartyDetail thirdPartyDetail = hmacApiInfoRepository.getDetailsByHospitalCode(requestDTO.getHospitalCode());
 
         return hmacUtils.getAuthTokenForEsewa(thirdPartyDetail);
     }

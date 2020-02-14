@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -20,6 +19,8 @@ public interface PatientRepositoryCustom {
     Long validatePatientDuplicity(PatientUpdateRequestDTO patientUpdateRequestDTO);
 
     PatientDetailResponseDTO fetchDetailsById(Long id);
+
+    String fetchLatestRegistrationNumber();
 
     List<PatientResponseDTO> search(PatientSearchRequestDTO searchRequestDTO, Pageable pageable);
 

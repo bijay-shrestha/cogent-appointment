@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.admin.query;
 
+import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDutyRosterOverrideUpdateRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDutyRosterStatusRequestDTO;
 
 import java.util.List;
 import java.util.Objects;
@@ -47,21 +47,7 @@ public class DoctorDutyRosterOverrideQuery {
                     " AND d.status = 'Y'" +
                     " AND d.doctorDutyRosterId.id = :id";
 
-    public static final String QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_TIME =
-            "SELECT d.startTime as startTime," +                             //[0]
-                    " d.endTime as endTime," +                              //[1]
-                    " d.dayOffStatus as dayOffStatus," +                    //[2]
-                    " dd.rosterGapDuration as rosterGapDuration" +          //[3]
-                    " FROM DoctorDutyRosterOverride d" +
-                    " LEFT JOIN DoctorDutyRoster dd ON dd.id = d.doctorDutyRosterId.id" +
-                    " WHERE" +
-                    " d.status = 'Y'" +
-                    " AND dd.status = 'Y'" +
-                    " AND :date BETWEEN d.fromDate AND d.toDate" +
-                    " AND dd.doctorId.id = :doctorId" +
-                    " AND dd.specializationId.id = :specializationId";
-
-    public static String QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_STATUS(DoctorDutyRosterStatusRequestDTO requestDTO) {
+    public static String QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_STATUS(AppointmentStatusRequestDTO requestDTO) {
 
         String SQL = "SELECT" +
                 " d.fromDate," +                                            //[0]
@@ -76,6 +62,7 @@ public class DoctorDutyRosterOverrideQuery {
                 " dd.rosterGapDuration as rosterGapDuration" +              //[9]
                 " FROM DoctorDutyRosterOverride d" +
                 " LEFT JOIN DoctorDutyRoster dd ON dd.id = d.doctorDutyRosterId.id" +
+                " LEFT JOIN Hospital h ON h.id = dd.hospitalId.id" +
                 " WHERE" +
                 " d.status = 'Y'" +
                 " AND dd.status = 'Y'" +
@@ -87,6 +74,9 @@ public class DoctorDutyRosterOverrideQuery {
 
         if (!Objects.isNull(requestDTO.getSpecializationId()))
             SQL += " AND dd.specializationId.id = :specializationId";
+
+        if (!Objects.isNull(requestDTO.getHospitalId()))
+            SQL += " AND h.id = :hospitalId";
 
         return SQL;
     }

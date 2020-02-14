@@ -31,5 +31,11 @@ public class HospitalResponseDTO implements Serializable {
 
     private Double refundPercentage;
 
+    private Integer numberOfAdmins;
+
     private List<HospitalContactNumberResponseDTO> contactNumberResponseDTOS;
+
+    private Integer numberOfFreeFollowUps;
+
+    private Integer followUpIntervalDays;
 }

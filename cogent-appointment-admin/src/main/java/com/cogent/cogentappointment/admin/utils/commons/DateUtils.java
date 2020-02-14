@@ -145,4 +145,17 @@ public class DateUtils {
             return false;
         }
     }
+
+    public static String convert24HourTo12HourFormat(String timeIn24HrFormat) {
+        try {
+            SimpleDateFormat dateParser = new SimpleDateFormat("HH:mm");
+            Date date = dateParser.parse(timeIn24HrFormat);
+            SimpleDateFormat dateFormatter = new SimpleDateFormat("h:mm a");
+            return dateFormatter.format(date);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }

@@ -15,6 +15,11 @@ import java.util.Optional;
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Long>, AppointmentRepositoryCustom {
 
-    @Query(" SELECT a FROM Appointment a WHERE a.id=:id")
-    Optional<Appointment> fetchAppointmentById(@Param("id") Long id);
+    @Query(" SELECT a FROM Appointment a WHERE a.id=:id AND a.status = 'C'")
+    Optional<Appointment> fetchRefundAppointmentById(@Param("id") Long id);
+
+    @Query(" SELECT a FROM Appointment a WHERE a.id=:id AND a.status = 'PA'")
+    Optional<Appointment> fetchPendingAppointmentById(@Param("id") Long id);
+
+
 }

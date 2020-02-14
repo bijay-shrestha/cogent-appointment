@@ -38,6 +38,15 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
 
 
     @Override
+    public String fetchLatestRegistrationNumber() {
+        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_LATEST_REGISTRATION_NUMBER);
+
+        List results = query.getResultList();
+
+        return results.isEmpty() ? null : results.get(0).toString();
+    }
+
+    @Override
     public Long validatePatientDuplicity(PatientUpdateRequestDTO patientUpdateRequestDTO) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_UPDATED_PATIENT_DUPLICITY)
                 .setParameter(NAME, patientUpdateRequestDTO.getName())

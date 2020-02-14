@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.NO;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
 
 /**
  * @author smriti ON 16/12/2019
@@ -63,8 +64,8 @@ public class DoctorDutyRosterOverrideUtils {
              Date searchFromDate,
              Date searchToDate) {
 
-        LocalDate searchFromLocalDate = DateUtils.convertDateToLocalDate(searchFromDate);
-        LocalDate searchToLocalDate = DateUtils.convertDateToLocalDate(searchToDate);
+        LocalDate searchFromLocalDate = convertDateToLocalDate(searchFromDate);
+        LocalDate searchToLocalDate = convertDateToLocalDate(searchToDate);
 
         List<DoctorDutyRosterStatusResponseDTO> doctorDutyRosterStatusResponseDTOS = new ArrayList<>();
 
@@ -81,14 +82,14 @@ public class DoctorDutyRosterOverrideUtils {
             final int SPECIALIZATION_NAME_INDEX = 8;
             final int ROSTER_GAP_DURATION_INDEX = 9;
 
-            LocalDate startLocalDate = DateUtils.convertDateToLocalDate((Date) result[FROM_DATE_INDEX]);
-            LocalDate endLocalDate = DateUtils.convertDateToLocalDate((Date) result[TO_DATE_INDEX]);
+            LocalDate startLocalDate = convertDateToLocalDate((Date) result[FROM_DATE_INDEX]);
+            LocalDate endLocalDate = convertDateToLocalDate((Date) result[TO_DATE_INDEX]);
 
             Stream.iterate(startLocalDate, date -> date.plusDays(1))
                     .limit(ChronoUnit.DAYS.between(startLocalDate, endLocalDate) + 1)
                     .forEach(localDate -> {
 
-                        if (DateUtils.isLocalDateBetweenInclusive(searchFromLocalDate, searchToLocalDate, localDate)) {
+                        if (isLocalDateBetweenInclusive(searchFromLocalDate, searchToLocalDate, localDate)) {
 
                             DoctorDutyRosterStatusResponseDTO responseDTO =
                                     DoctorDutyRosterStatusResponseDTO.builder()

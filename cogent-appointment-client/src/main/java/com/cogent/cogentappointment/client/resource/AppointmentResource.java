@@ -55,7 +55,10 @@ public class AppointmentResource {
         return ok().build();
     }
 
-
-
-
+    @PutMapping(RESCHEDULE)
+    @ApiOperation(RESCHEDULE_OPERATION)
+    public ResponseEntity<?> rescheduleAppointment(@Valid @RequestBody AppointmentRescheduleRequestDTO requestDTO) {
+        appointmentService.rescheduleAppointment(requestDTO);
+        return ok().build();
+    }
 }

@@ -23,4 +23,8 @@ public class SpecializationResponseDTO implements Serializable {
     private Character status;
 
     private String remarks;
+
+    private Long hospitalId;
+
+    private String hospitalName;
 }

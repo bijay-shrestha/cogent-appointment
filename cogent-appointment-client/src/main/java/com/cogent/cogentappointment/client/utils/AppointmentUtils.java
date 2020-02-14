@@ -18,10 +18,8 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.cogent.cogentappointment.client.constants.StatusConstants.ACTIVE;
-import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.CANCELLED;
-import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.PENDING_APPROVAL;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.*;
 import static com.cogent.cogentappointment.client.constants.StringConstant.HYPHEN;
-import static com.cogent.cogentappointment.client.constants.StringConstant.OR;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils.generateRandomNumber;
 
@@ -47,6 +45,7 @@ public class AppointmentUtils {
         appointment.setAppointmentNumber(appointmentNumber);
         appointment.setSerialNumber(generateRandomNumber(6));
         appointment.setCreatedDateNepali(requestDTO.getCreatedDateNepali());
+        appointment.setIsFreeFollowUp(requestDTO.getIsFreeFollowUp());
         appointment.setStatus(PENDING_APPROVAL);
         parseToAppointment(patient, specialization, doctor, hospital, appointment);
         return appointment;
@@ -97,14 +96,6 @@ public class AppointmentUtils {
                 String.format("%04d", Integer.parseInt(results.get(0).toString()) + 1);
     }
 
-    public static void parseToRescheduleAppointment(Appointment appointment,
-                                                    AppointmentRescheduleRequestDTO rescheduleRequestDTO) {
-        appointment.setAppointmentDate(rescheduleRequestDTO.getAppointmentDate());
-//        appointment.setStartTime(rescheduleRequestDTO.getStartTime());
-//        appointment.setEndTime(rescheduleRequestDTO.getEndTime());
-        appointment.setRemarks(rescheduleRequestDTO.getRemarks());
-    }
-
     public static List<String> calculateAvailableTimeSlots(String startTime,
                                                            String endTime,
                                                            Duration rosterGapDuration,
@@ -145,21 +136,30 @@ public class AppointmentUtils {
                 .anyMatch(bookedAppointment -> bookedAppointment.getAppointmentTime().equals(date));
     }
 
-    public static PatientMetaInfo parseToPatientMetaInfo(Patient patient) {
-        PatientMetaInfo patientMetaInfo = new PatientMetaInfo();
-        patientMetaInfo.setPatient(patient);
-//        patientMetaInfo.setMetaInfo(patient.getName()
-//                + OR +
-//                patient.getMobileNumber()
-//                + OR +
-//                patient.getRegistrationNumber());
-//        patientMetaInfo.setStatus(patient.getStatus());
+    public static void parseToRescheduleAppointment(Appointment appointment,
+                                                    AppointmentRescheduleRequestDTO rescheduleRequestDTO) {
 
-        return patientMetaInfo;
+        appointment.setAppointmentDate(rescheduleRequestDTO.getRescheduleDate());
+        appointment.setAppointmentTime(parseAppointmentTime(
+                rescheduleRequestDTO.getRescheduleDate(),
+                rescheduleRequestDTO.getRescheduleTime()));
+        appointment.setRemarks(rescheduleRequestDTO.getRemarks());
     }
 
+    public static AppointmentRescheduleLog parseToAppointmentRescheduleLog(
+            Appointment appointment,
+            AppointmentRescheduleRequestDTO rescheduleRequestDTO) {
 
-    public static AppointmentCountResponseDTO parseToAppointmentCountResponseDTO(Long overAllAppointment,Long newPatient,
+        AppointmentRescheduleLog appointmentRescheduleLog = new AppointmentRescheduleLog();
+        appointmentRescheduleLog.setAppointmentId(appointment);
+        appointmentRescheduleLog.setPreviousAppointmentDate(appointment.getAppointmentDate());
+        appointmentRescheduleLog.setRescheduleDate(rescheduleRequestDTO.getRescheduleDate());
+        appointmentRescheduleLog.setRemarks(rescheduleRequestDTO.getRemarks());
+        appointmentRescheduleLog.setStatus(RESCHEDULED);
+        return appointmentRescheduleLog;
+    }
+
+    public static AppointmentCountResponseDTO parseToAppointmentCountResponseDTO(Long overAllAppointment, Long newPatient,
                                                                                  Long registeredPatient,
                                                                                  Character pillType) {
         AppointmentCountResponseDTO countResponseDTO = new AppointmentCountResponseDTO();

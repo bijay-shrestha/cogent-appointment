@@ -304,27 +304,6 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
         return existingRosterDetails;
     }
 
-    @Override
-    public List<DoctorDutyRosterStatusResponseDTO> fetchDoctorDutyRosterStatus
-            (DoctorDutyRosterStatusRequestDTO requestDTO) {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(FETCHING_DETAIL_PROCESS_STARTED, DOCTOR_DUTY_ROSTER_STATUS);
-
-        List<DoctorDutyRosterStatusResponseDTO> doctorDutyRosterOverrideStatus =
-                doctorDutyRosterOverrideRepository.fetchDoctorDutyRosterOverrideStatus(requestDTO);
-
-        List<DoctorDutyRosterStatusResponseDTO> doctorDutyRosterStatus =
-                doctorDutyRosterRepository.fetchDoctorDutyRosterStatus(requestDTO);
-
-        List<DoctorDutyRosterStatusResponseDTO> mergedList =
-                mergeOverrideAndActualDoctorDutyRoster(doctorDutyRosterOverrideStatus, doctorDutyRosterStatus);
-
-        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, DOCTOR_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
-
-        return mergedList;
-    }
-
     private void validateAppointmentCount(Date overrideFromDate, Date overrideToDate,
                                           Long doctorId, Long specializationId) {
 

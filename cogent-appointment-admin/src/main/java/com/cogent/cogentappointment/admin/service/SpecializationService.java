@@ -16,7 +16,7 @@ import java.util.List;
  * @author smriti on 2019-08-11
  */
 public interface SpecializationService {
-    String save(SpecializationRequestDTO requestDTO);
+    void save(SpecializationRequestDTO requestDTO);
 
     void update(SpecializationUpdateRequestDTO requestDTO);
 

@@ -36,6 +36,10 @@ public class ErrorMessageConstants {
         String PASSWORD_MISMATCH_MESSAGE = "Old password doesn't match.";
 
         String ADMIN_INFO_NOT_FOUND = "Admin info is not found.";
+
+        String ADMIN_CANNOT_BE_REGISTERED_MESSAGE = "Admin exceeds for the selected hospital";
+
+        String ADMIN_CANNOT_BE_REGISTERED_DEBUG_MESSAGE = "Admin count is equal to hospital's allowed number of admins";
     }
 
 

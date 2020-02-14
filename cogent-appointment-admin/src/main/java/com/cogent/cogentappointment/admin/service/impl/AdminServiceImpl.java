@@ -1,7 +1,5 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
-import com.cogent.cogentappointment.admin.constants.ErrorMessageConstants;
-import com.cogent.cogentappointment.admin.constants.StatusConstants;
 import com.cogent.cogentappointment.admin.constants.StringConstant;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.*;
@@ -37,6 +35,9 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.*;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.AdminLog.*;
@@ -101,6 +102,8 @@ public class AdminServiceImpl implements AdminService {
         log.info(SAVING_PROCESS_STARTED, ADMIN);
 
         validateConstraintViolation(validator.validate(adminRequestDTO));
+
+        validateAdminCount(adminRequestDTO.getHospitalId());
 
         List<Object[]> admins = adminRepository.validateDuplicity(adminRequestDTO.getUsername(),
                 adminRequestDTO.getEmail(), adminRequestDTO.getMobileNumber(), adminRequestDTO.getHospitalId());
@@ -242,14 +245,14 @@ public class AdminServiceImpl implements AdminService {
 
         update(updateRequestDTO, admin);
 
-        if (updateRequestDTO.getIsAvatarUpdate().equals(StatusConstants.YES))
+        if (updateRequestDTO.getIsAvatarUpdate().equals(YES))
             updateAvatar(admin, files);
 
         updateMacAddressInfo(updateRequestDTO.getMacAddressUpdateInfo(), admin);
 
         updateAdminMetaInfo(admin);
 
-//        sendEmail(emailRequestDTO);
+        sendEmail(emailRequestDTO);
 
         log.info(UPDATING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
     }
@@ -278,7 +281,8 @@ public class AdminServiceImpl implements AdminService {
                         .orElseThrow(() -> CONFIRMATION_TOKEN_NOT_FOUND.apply(requestDTO.getToken()));
 
         save(saveAdminPassword(requestDTO, adminConfirmationToken));
-        adminConfirmationToken.setStatus(StatusConstants.INACTIVE);
+
+        adminConfirmationToken.setStatus(INACTIVE);
 
         log.info(SAVING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
     }
@@ -312,7 +316,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private void validateStatus(Object status) {
-        if (status.equals(StatusConstants.INACTIVE)) throw ADMIN_ALREADY_REGISTERED.get();
+        if (status.equals(INACTIVE)) throw ADMIN_ALREADY_REGISTERED.get();
     }
 
     private void validateAdminDuplicity(List<Object[]> adminList, String requestUsername, String requestEmail,
@@ -336,22 +340,33 @@ public class AdminServiceImpl implements AdminService {
         });
     }
 
+    /*CAN SAVE NUMBER OF ADMINS BASED ON HOSPITAL*/
+    private void validateAdminCount(Long hospitalId) {
+
+        Object[] objects = adminRepository.validateAdminCount(hospitalId);
+        Long savedAdmin = (Long) get(objects, 0);
+        Integer numberOfAdminsAllowed = (Integer) get(objects, 1);
+
+        if (savedAdmin.intValue() == numberOfAdminsAllowed)
+            throw new BadRequestException(ADMIN_CANNOT_BE_REGISTERED_MESSAGE, ADMIN_CANNOT_BE_REGISTERED_DEBUG_MESSAGE);
+    }
+
     public void validateUsername(boolean isUsernameExists, String username) {
         if (isUsernameExists)
             throw new DataDuplicationException(
-                    String.format(ErrorMessageConstants.AdminServiceMessages.USERNAME_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), username));
+                    String.format(USERNAME_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), username));
     }
 
     private void validateEmail(boolean isEmailExists, String email) {
         if (isEmailExists)
             throw new DataDuplicationException(
-                    String.format(ErrorMessageConstants.AdminServiceMessages.EMAIL_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), email));
+                    String.format(EMAIL_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), email));
     }
 
     private void validateMobileNumber(boolean isMobileNumberExists, String mobileNumber) {
         if (isMobileNumberExists)
             throw new DataDuplicationException(
-                    String.format(ErrorMessageConstants.AdminServiceMessages.MOBILE_NUMBER_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), mobileNumber));
+                    String.format(MOBILE_NUMBER_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), mobileNumber));
     }
 
     private Admin save(AdminRequestDTO adminRequestDTO) {
@@ -380,7 +395,7 @@ public class AdminServiceImpl implements AdminService {
         if (!Objects.isNull(files)) {
             List<FileUploadResponseDTO> responseList = uploadFiles(admin, new MultipartFile[]{files});
             setFileProperties(responseList.get(0), adminAvatar);
-        } else adminAvatar.setStatus(StatusConstants.INACTIVE);
+        } else adminAvatar.setStatus(INACTIVE);
 
         saveAdminAvatar(adminAvatar);
     }
@@ -390,7 +405,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     public void saveMacAddressInfo(Admin admin, List<String> macAddresses) {
-        if (admin.getHasMacBinding().equals(StatusConstants.YES)) {
+        if (admin.getHasMacBinding().equals(YES)) {
             validateMacAddressInfoSize.accept(macAddresses);
 
             List<AdminMacAddressInfo> adminMacAddressInfos = macAddresses
@@ -471,7 +486,8 @@ public class AdminServiceImpl implements AdminService {
         convertAdminUpdateRequestDTOToAdmin(admin, adminRequestDTO, gender, profile);
     }
 
-    public void updateMacAddressInfo(List<AdminMacAddressInfoUpdateRequestDTO> adminMacAddressInfoUpdateRequestDTOS, Admin admin) {
+    public void updateMacAddressInfo(List<AdminMacAddressInfoUpdateRequestDTO> adminMacAddressInfoUpdateRequestDTOS,
+                                     Admin admin) {
 
         List<AdminMacAddressInfo> adminMacAddressInfos = convertToUpdatedMACAddressInfo(
                 adminMacAddressInfoUpdateRequestDTOS, admin);
@@ -492,23 +508,23 @@ public class AdminServiceImpl implements AdminService {
     private void validatePassword(Admin admin, AdminChangePasswordRequestDTO requestDTO) {
 
         if (!LoginValidator.checkPassword(requestDTO.getOldPassword(), admin.getPassword()))
-            throw new OperationUnsuccessfulException(ErrorMessageConstants.AdminServiceMessages.PASSWORD_MISMATCH_MESSAGE);
+            throw new OperationUnsuccessfulException(PASSWORD_MISMATCH_MESSAGE);
 
         if (LoginValidator.checkPassword(requestDTO.getNewPassword(), admin.getPassword()))
-            throw new DataDuplicationException(ErrorMessageConstants.AdminServiceMessages.DUPLICATE_PASSWORD_MESSAGE);
+            throw new DataDuplicationException(DUPLICATE_PASSWORD_MESSAGE);
     }
 
     private Supplier<DataDuplicationException> ADMIN_DUPLICATION = () ->
-            new DataDuplicationException(ErrorMessageConstants.AdminServiceMessages.ADMIN_DUPLICATION_MESSAGE);
+            new DataDuplicationException(ADMIN_DUPLICATION_MESSAGE);
 
     private Function<Long, NoContentFoundException> ADMIN_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         throw new NoContentFoundException(Admin.class, "id", id.toString());
     };
 
-    private Supplier<BadRequestException> ADMIN_ALREADY_REGISTERED = () -> new BadRequestException(ErrorMessageConstants.AdminServiceMessages.ADMIN_REGISTERED);
+    private Supplier<BadRequestException> ADMIN_ALREADY_REGISTERED = () -> new BadRequestException(ADMIN_REGISTERED);
 
     private Function<String, NoContentFoundException> CONFIRMATION_TOKEN_NOT_FOUND = (confirmationToken) -> {
-        throw new NoContentFoundException(ErrorMessageConstants.AdminServiceMessages.INVALID_CONFIRMATION_TOKEN, "confirmationToken", confirmationToken);
+        throw new NoContentFoundException(INVALID_CONFIRMATION_TOKEN, "confirmationToken", confirmationToken);
     };
 
     private Gender fetchGender(Character genderCode) {

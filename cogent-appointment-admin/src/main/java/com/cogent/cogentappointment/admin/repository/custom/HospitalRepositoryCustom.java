@@ -26,4 +26,8 @@ public interface HospitalRepositoryCustom {
     List<HospitalDropdownResponseDTO> fetchActiveHospitalForDropDown();
 
     HospitalResponseDTO fetchDetailsById(Long id);
+
+    Integer fetchHospitalFollowUpCount(Long hospitalId);
+
+    Integer fetchHospitalFreeFollowUpIntervalDays(Long hospitalId);
 }

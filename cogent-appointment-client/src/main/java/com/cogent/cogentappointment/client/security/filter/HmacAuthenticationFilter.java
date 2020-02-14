@@ -51,7 +51,7 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
             AdminMinDetails adminMinDetails = hmacApiInfoRepository.getAdminDetailForAuthentication(
                     authHeader.getUsername(),
-                    authHeader.getHospitalCode(),
+                    authHeader.getCompanyCode(),
                     authHeader.getApiKey());
 
             final HMACBuilder signatureBuilder = new HMACBuilder()
@@ -64,13 +64,14 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
             compareSignature(signatureBuilder, authHeader.getDigest());
 
-            SecurityContextHolder.getContext().setAuthentication(getAuthentication(adminMinDetails.getUsername()));
+            SecurityContextHolder.getContext().setAuthentication(getAuthentication(adminMinDetails.getUsername(),
+                    adminMinDetails.getHospitalCode()));
         }
 
         if (authHeader == null && eSewaAuthHeader != null) {
 
             ThirdPartyDetail thirdPartyDetail = hmacApiInfoRepository.getDetailForAuthentication(
-                    eSewaAuthHeader.getHospitalCode(),
+                    eSewaAuthHeader.getCompanyCode(),
                     eSewaAuthHeader.getApiKey());
 
             final HMACBuilder signatureBuilder = new HMACBuilder()
@@ -82,7 +83,8 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
             compareSignature(signatureBuilder, eSewaAuthHeader.getDigest());
 
-            SecurityContextHolder.getContext().setAuthentication(getAuthentication(thirdPartyDetail.getHospitalCode()));
+            SecurityContextHolder.getContext().setAuthentication(getAuthentication(thirdPartyDetail.getHospitalCode(),
+                    thirdPartyDetail.getHospitalCode()));
         }
 
         try {
@@ -135,10 +137,10 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
             throw new BadCredentialsException(HMAC_BAD_SIGNATURE);
     }
 
-    public PreAuthenticatedAuthenticationToken getAuthentication(String principal) {
+    public PreAuthenticatedAuthenticationToken getAuthentication(String username, String hospitalCode) {
         return new PreAuthenticatedAuthenticationToken(
-                principal,
-                null,
+                username,
+                hospitalCode,
                 null);
     }
 }

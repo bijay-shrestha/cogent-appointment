@@ -24,7 +24,7 @@ import java.util.List;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.PatientServiceMessages.DUPLICATE_PATIENT_MESSAGE;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
-import static com.cogent.cogentappointment.admin.log.constants.PatientLog.PATIENT;
+import static com.cogent.cogentappointment.admin.log.constants.PatientLog.*;
 import static com.cogent.cogentappointment.admin.utils.PatientUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
 
@@ -49,6 +49,7 @@ public class PatientServiceImpl implements PatientService {
         this.patientMetaInfoRepository = patientMetaInfoRepository;
         this.hospitalPatientInfoRepository = hospitalPatientInfoRepository;
     }
+
 
     @Override
     public PatientDetailResponseDTO fetchDetailsById(Long id) {
@@ -131,6 +132,24 @@ public class PatientServiceImpl implements PatientService {
         log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
+    }
+
+    @Override
+    public void registerPatient(Long patientId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(REGISTERING_PATIENT_PROCESS_STARTED);
+
+        HospitalPatientInfo hospitalPatientInfo = hospitalPatientInfoRepository.findByPatientId(patientId)
+                .orElseThrow(() -> new NoContentFoundException(Patient.class, "patientId", patientId.toString()));
+
+        String latestRegistrationNumber =
+                patientRepository.fetchLatestRegistrationNumber();
+
+        registerPatientDetails(hospitalPatientInfo, latestRegistrationNumber);
+
+        log.info(REGISTERING_PATIENT_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
+
     }
 
 

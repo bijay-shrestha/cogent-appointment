@@ -1,9 +1,8 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
+import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDutyRosterOverrideUpdateRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDutyRosterStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.DoctorDutyRosterOverrideRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRosterOverride;
@@ -23,7 +22,6 @@ import static com.cogent.cogentappointment.admin.query.DoctorDutyRosterOverrideQ
 import static com.cogent.cogentappointment.admin.utils.DoctorDutyRosterOverrideUtils.parseQueryResultToDoctorDutyRosterStatusResponseDTO;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
-import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
 
 @Repository
 @Transactional(readOnly = true)
@@ -60,28 +58,15 @@ public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyR
     }
 
     @Override
-    public DoctorDutyRosterTimeResponseDTO fetchDoctorDutyRosterOverrideTime(Date date,
-                                                                             Long doctorId,
-                                                                             Long specializationId) {
-
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_TIME)
-                .setParameter(DATE, utilDateToSqlDate(date))
-                .setParameter(DOCTOR_ID, doctorId)
-                .setParameter(SPECIALIZATION_ID, specializationId);
-
-        List<DoctorDutyRosterTimeResponseDTO> responseDTOList =
-                transformQueryToResultList(query, DoctorDutyRosterTimeResponseDTO.class);
-
-        return responseDTOList.isEmpty() ? null : responseDTOList.get(0);
-    }
-
-    @Override
     public List<DoctorDutyRosterStatusResponseDTO> fetchDoctorDutyRosterOverrideStatus(
-            DoctorDutyRosterStatusRequestDTO requestDTO) {
+            AppointmentStatusRequestDTO requestDTO) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_STATUS(requestDTO))
                 .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
                 .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()));
+
+        if (!Objects.isNull(requestDTO.getHospitalId()))
+            query.setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
 
         if (!Objects.isNull(requestDTO.getDoctorId()))
             query.setParameter(DOCTOR_ID, requestDTO.getDoctorId());

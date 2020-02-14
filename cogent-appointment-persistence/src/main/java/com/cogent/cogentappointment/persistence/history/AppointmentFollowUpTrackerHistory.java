@@ -34,7 +34,7 @@ public class AppointmentFollowUpTrackerHistory implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "appointment_follow_up_tracker_id",
-            foreignKey = @ForeignKey(name = "FK_appointment_follow_up_tracker_history_appointment_follow_up_tracker"))
+            foreignKey = @ForeignKey(name = "FK_follow_up_tracker_history_follow_up_tracker"))
     private AppointmentFollowUpTracker appointmentFollowUpTracker;
 
     @Column(name = "appointment_follow_up_tracker_content")

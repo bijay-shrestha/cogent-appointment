@@ -33,7 +33,7 @@ public class AppointmentRescheduleLogHistory implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "appointment_reschedule_log_id",
-            foreignKey = @ForeignKey(name = "FK_appointment_reschedule_log_history_app_appointment_reschedule_log"))
+            foreignKey = @ForeignKey(name = "FK_reschedule_log_history_app_reschedule_log"))
     private AppointmentRescheduleLog appointmentRescheduleLog;
 
     @Column(name = "appointment_reschedule_log_content")

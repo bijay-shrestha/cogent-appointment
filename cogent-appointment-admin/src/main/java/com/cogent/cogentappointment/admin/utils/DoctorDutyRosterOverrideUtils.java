@@ -4,7 +4,6 @@ import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDut
 import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDutyRosterOverrideUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorRosterOverrideUpdateResponseDTO;
-import com.cogent.cogentappointment.admin.utils.commons.DateUtils;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRoster;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRosterOverride;
 
@@ -16,7 +15,8 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.NO;
-import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.convertDateToLocalDate;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.isLocalDateBetweenInclusive;
 
 /**
  * @author smriti ON 16/12/2019
@@ -61,9 +61,9 @@ public class DoctorDutyRosterOverrideUtils {
 
     /*ADD TO FINAL LIST ONLY IF QUERY RESULT IS WITHIN THE SELECTED SEARCH DATE RANGE*/
     public static List<DoctorDutyRosterStatusResponseDTO> parseQueryResultToDoctorDutyRosterStatusResponseDTO
-            (List<Object[]> results,
-             Date searchFromDate,
-             Date searchToDate) {
+    (List<Object[]> results,
+     Date searchFromDate,
+     Date searchToDate) {
 
         LocalDate searchFromLocalDate = convertDateToLocalDate(searchFromDate);
         LocalDate searchToLocalDate = convertDateToLocalDate(searchToDate);
@@ -82,6 +82,7 @@ public class DoctorDutyRosterOverrideUtils {
             final int SPECIALIZATION_ID_INDEX = 7;
             final int SPECIALIZATION_NAME_INDEX = 8;
             final int ROSTER_GAP_DURATION_INDEX = 9;
+            final int FILE_URI_INDEX = 10;
 
             LocalDate startLocalDate = convertDateToLocalDate((Date) result[FROM_DATE_INDEX]);
             LocalDate endLocalDate = convertDateToLocalDate((Date) result[TO_DATE_INDEX]);
@@ -103,6 +104,7 @@ public class DoctorDutyRosterOverrideUtils {
                                             .doctorName(result[DOCTOR_NAME_INDEX].toString())
                                             .specializationId(Long.parseLong(result[SPECIALIZATION_ID_INDEX].toString()))
                                             .specializationName(result[SPECIALIZATION_NAME_INDEX].toString())
+                                            .fileUri(result[FILE_URI_INDEX].toString())
                                             .build();
 
                             doctorDutyRosterStatusResponseDTOS.add(responseDTO);

@@ -170,7 +170,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         return parseToAppointmentSuccessResponseDTO(appointmentNumber);
     }
 
-
     @Override
     public List<AppointmentPendingResponseDTO> fetchPendingAppointments(AppointmentPendingSearchDTO searchDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();

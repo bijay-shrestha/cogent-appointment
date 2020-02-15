@@ -55,14 +55,23 @@ public class DoctorDutyRosterOverrideQuery {
                 " DATE_FORMAT(d.startTime, '%H:%i') as startTime," +        //[2]
                 " DATE_FORMAT(d.endTime, '%H:%i') as endTime," +            //[3]
                 " d.dayOffStatus," +                                        //[4]
-                " dd.doctorId.id as doctorId," +                            //[5]
-                " dd.doctorId.name as doctorName," +                        //[6]
+                " d.id as doctorId," +                                      //[5]
+                " d.name as doctorName," +                                  //[6]
                 " dd.specializationId.id as specializationId," +            //[7]
                 " dd.specializationId.name as specializationName," +        //[8]
-                " dd.rosterGapDuration as rosterGapDuration" +              //[9]
+                " dd.rosterGapDuration as rosterGapDuration," +             //[9]
+                " CASE WHEN" +
+                " (da.status IS NULL" +
+                " OR da.status = 'N')" +
+                " THEN NULL" +
+                " ELSE" +
+                " da.fileUri" +
+                " END as fileUri" +                                        //[10]
                 " FROM DoctorDutyRosterOverride d" +
                 " LEFT JOIN DoctorDutyRoster dd ON dd.id = d.doctorDutyRosterId.id" +
                 " LEFT JOIN Hospital h ON h.id = dd.hospitalId.id" +
+                " LEFT JOIN Doctor d ON d.id = dd.doctorId.id" +
+                " LEFT JOIN DoctorAvatar da ON da.doctorId.id = d.id" +
                 " WHERE" +
                 " d.status = 'Y'" +
                 " AND dd.status = 'Y'" +

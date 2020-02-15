@@ -22,8 +22,10 @@ public class PatientUtils {
      * FOR FIRST RECORD : YY + MM + DD + 0001
      *  eg.2002130001
      * THEN 0001 INCREMENTS BY 1
-     *  NEXT REGISTRATION NUMBER = 2002130002*/
-    public static String generateRegistrationNumber(String latestRegistrationNumber) {
+     *  NEXT REGISTRATION NUMBER = 2002130002
+     *  NOTE THAT REGISTRATION NUMBER IS UNIQUELY GENERATED ONLY ONCE FOR THE PATIENT IN SPECIFIC HOSPITAL
+     *  */
+    private static String generateRegistrationNumber(String latestRegistrationNumber) {
 
         LocalDateTime date = LocalDateTime.now();
 

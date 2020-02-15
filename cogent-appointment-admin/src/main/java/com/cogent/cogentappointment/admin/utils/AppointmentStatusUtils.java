@@ -92,8 +92,9 @@ public class AppointmentStatusUtils {
         doctorTimeSlots.add(doctorTimeSlotResponseDTO);
     }
 
-    /*IF STATUS IN SEARCH IS 'V'(VACANT), THEN ONLY ADD VACANT TIMESLOTS.
-     * NO NEED TO SHOW APPOINTMENT WITH OTHER STATUS*/
+    /*IF STATUS IN SEARCH IS 'V'(VACANT), THEN ONLY ADD VACANT TIME SLOTS.
+     * ADD ONLY THOSE TIME WHICH MATCHES WITH APPOINTMENT - NO NEED TO SHOW APPOINTMENT WITH OTHER STATUS
+     * */
     private static void setTimeSlotForVacantAppointmentStatus(DoctorTimeSlotResponseDTO doctorTimeSlotResponseDTO,
                                                               String timeMatched,
                                                               DateTime dateTime,

@@ -37,7 +37,5 @@ public class DoctorDutyRosterStatusResponseDTO implements Serializable {
 
     private String weekDayName;
 
-    private String fileUri;
-
     private List<DoctorTimeSlotResponseDTO> doctorTimeSlots;
 }

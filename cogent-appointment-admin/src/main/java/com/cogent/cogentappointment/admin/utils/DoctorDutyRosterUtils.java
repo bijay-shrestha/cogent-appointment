@@ -135,7 +135,6 @@ public class DoctorDutyRosterUtils {
             final int SPECIALIZATION_ID_INDEX = 5;
             final int SPECIALIZATION_NAME_INDEX = 6;
             final int ROSTER_GAP_DURATION_INDEX = 7;
-            final int FILE_URI_INDEX = 8;
 
             LocalDate startLocalDate = convertDateToLocalDate((Date) result[START_DATE_INDEX]);
             LocalDate endLocalDate = convertDateToLocalDate((Date) result[END_DATE_INDEX]);
@@ -170,7 +169,6 @@ public class DoctorDutyRosterUtils {
                                         .specializationId(Long.parseLong(result[SPECIALIZATION_ID_INDEX].toString()))
                                         .specializationName(result[SPECIALIZATION_NAME_INDEX].toString())
                                         .rosterGapDuration(Integer.parseInt(result[ROSTER_GAP_DURATION_INDEX].toString()))
-                                        .fileUri(result[FILE_URI_INDEX].toString())
                                         .build();
 
                                 doctorDutyRosterStatusResponseDTOS.add(responseDTO);

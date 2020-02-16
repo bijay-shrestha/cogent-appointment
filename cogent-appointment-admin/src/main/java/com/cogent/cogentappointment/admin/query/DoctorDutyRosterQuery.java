@@ -102,21 +102,13 @@ public class DoctorDutyRosterQuery {
                 " dr.name as doctorName," +                               //[4]
                 " s.id as specializationId," +                            //[5]
                 " s.name as specializationName," +                        //[6]
-                " d.roster_gap_duration as rosterGapDuration," +          //[7]
-                " CASE WHEN" +
-                " (da.status IS NULL" +
-                " OR da.status = 'N')" +
-                " THEN NULL" +
-                " ELSE" +
-                " da.file_uri" +
-                " END as fileUri," +                                     //[8]
+                " d.roster_gap_duration as rosterGapDuration" +           //[7]
                 " FROM doctor_duty_roster d" +
                 " LEFT JOIN doctor_week_days_duty_roster dw ON d.id = dw.doctor_duty_roster_id" +
                 " LEFT JOIN week_days w ON w.id = dw.week_days_id" +
                 " LEFT JOIN doctor dr ON dr.id = d.doctor_id" +
                 " LEFT JOIN specialization s ON s.id = d.specialization_id" +
                 " LEFT JOIN hospital h ON h.id = d.hospital_id" +
-                " LEFT JOIN doctor_avatar da ON da.doctor_id = dr.id" +
                 " WHERE d.status = 'Y'" +
                 " AND d.to_date >=:fromDate" +
                 " AND d.from_date <=:toDate";

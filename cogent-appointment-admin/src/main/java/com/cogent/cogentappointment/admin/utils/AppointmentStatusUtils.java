@@ -1,14 +1,16 @@
 package com.cogent.cogentappointment.admin.utils;
 
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.AppointmentStatusDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.AppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.DoctorTimeSlotResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorDropdownDTO;
+import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Minutes;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -30,11 +32,10 @@ public class AppointmentStatusUtils {
             String endTime,
             int durationInMinutes,
             AppointmentStatusResponseDTO appointmentStatus,
-            String searchAppointmentStatus) {
+            String searchAppointmentStatus,
+            List<DoctorTimeSlotResponseDTO> doctorTimeSlots) {
 
         final Duration duration = Minutes.minutes(durationInMinutes).toStandardDuration();
-
-        List<DoctorTimeSlotResponseDTO> timeSlotResponseDTOS = new ArrayList<>();
 
         DateTime dateTime = new DateTime(FORMAT.parseDateTime(startTime));
 
@@ -57,21 +58,21 @@ public class AppointmentStatusUtils {
 
                 if (searchAppointmentStatus.equals(VACANT))
                     setTimeSlotForVacantAppointmentStatus(doctorTimeSlotResponseDTO, timeMatched, dateTime,
-                            timeSlotResponseDTOS);
+                            doctorTimeSlots);
 
                 else setTimeSlotMapForOtherAppointmentStatus(doctorTimeSlotResponseDTO, timeMatched, dateTime,
-                        timeSlotResponseDTOS, appointmentStatus);
+                        doctorTimeSlots, appointmentStatus);
 
             } else {
                 setTimeSlotMapWithAppointmentStatus(doctorTimeSlotResponseDTO, dateTime, VACANT);
-                timeSlotResponseDTOS.add(doctorTimeSlotResponseDTO);
+                doctorTimeSlots.add(doctorTimeSlotResponseDTO);
             }
 
             dateTime = dateTime.plus(duration);
 
         } while (dateTime.compareTo(FORMAT.parseDateTime(endTime)) <= 0);
 
-        return timeSlotResponseDTOS;
+        return doctorTimeSlots;
     }
 
     /*IF STATUS IN SEARCH IS OTHER THAN 'V'(VACANT), THEN SHOW APPOINTMENT AS PER STATUS*/
@@ -92,8 +93,9 @@ public class AppointmentStatusUtils {
         doctorTimeSlots.add(doctorTimeSlotResponseDTO);
     }
 
-    /*IF STATUS IN SEARCH IS 'V'(VACANT), THEN ONLY ADD VACANT TIMESLOTS.
-     * NO NEED TO SHOW APPOINTMENT WITH OTHER STATUS*/
+    /*IF STATUS IN SEARCH IS 'V'(VACANT), THEN ONLY ADD VACANT TIME SLOTS.
+     * ADD ONLY THOSE TIME WHICH MATCHES WITH APPOINTMENT - NO NEED TO SHOW APPOINTMENT WITH OTHER STATUS
+     * */
     private static void setTimeSlotForVacantAppointmentStatus(DoctorTimeSlotResponseDTO doctorTimeSlotResponseDTO,
                                                               String timeMatched,
                                                               DateTime dateTime,
@@ -113,13 +115,23 @@ public class AppointmentStatusUtils {
     }
 
     public static void parseAppointmentDetails(DoctorTimeSlotResponseDTO responseDTO,
-                                                AppointmentStatusResponseDTO appointmentStatusResponseDTO) {
+                                               AppointmentStatusResponseDTO appointmentStatusResponseDTO) {
 
         responseDTO.setAppointmentNumber(appointmentStatusResponseDTO.getAppointmentNumber());
         responseDTO.setPatientName(appointmentStatusResponseDTO.getPatientName());
         responseDTO.setAge(appointmentStatusResponseDTO.getAge());
         responseDTO.setMobileNumber(appointmentStatusResponseDTO.getMobileNumber());
         responseDTO.setGender(appointmentStatusResponseDTO.getGender());
+    }
+
+    public static AppointmentStatusDTO parseToAppointmentStatusDTO(
+            List<DoctorDutyRosterStatusResponseDTO> doctorDutyRostersInfo,
+            List<DoctorDropdownDTO> doctorInfo) {
+
+        return AppointmentStatusDTO.builder()
+                .doctorDutyRosterInfo(doctorDutyRostersInfo)
+                .doctorInfo(doctorInfo)
+                .build();
     }
 
 }

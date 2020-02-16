@@ -10,6 +10,7 @@ public class PatientQuery {
                     " FROM hospital_patient_info p " +
                     " WHERE" +
                     " registration_number IS NOT NULL" +
+                    " AND p.hospital_id=:hospitalId" +
                     " ORDER BY id DESC" +
                     " LIMIT 1";
 }

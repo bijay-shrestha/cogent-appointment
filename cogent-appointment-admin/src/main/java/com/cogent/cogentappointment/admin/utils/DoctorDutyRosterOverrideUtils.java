@@ -4,7 +4,6 @@ import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDut
 import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDutyRosterOverrideUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorRosterOverrideUpdateResponseDTO;
-import com.cogent.cogentappointment.admin.utils.commons.DateUtils;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRoster;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRosterOverride;
 
@@ -16,7 +15,8 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.NO;
-import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.convertDateToLocalDate;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.isLocalDateBetweenInclusive;
 
 /**
  * @author smriti ON 16/12/2019
@@ -59,10 +59,11 @@ public class DoctorDutyRosterOverrideUtils {
         doctorDutyRosterOverrides.forEach(doctorDutyRosterOverride -> doctorDutyRosterOverride.setStatus(NO));
     }
 
+    /*ADD TO FINAL LIST ONLY IF QUERY RESULT IS WITHIN THE SELECTED SEARCH DATE RANGE*/
     public static List<DoctorDutyRosterStatusResponseDTO> parseQueryResultToDoctorDutyRosterStatusResponseDTO
-            (List<Object[]> results,
-             Date searchFromDate,
-             Date searchToDate) {
+    (List<Object[]> results,
+     Date searchFromDate,
+     Date searchToDate) {
 
         LocalDate searchFromLocalDate = convertDateToLocalDate(searchFromDate);
         LocalDate searchToLocalDate = convertDateToLocalDate(searchToDate);

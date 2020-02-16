@@ -31,7 +31,7 @@ public class DoctorAppointmentCharge extends Auditable<String> implements Serial
     private Double appointmentCharge;
 
     @Column(name = "appointment_follow_up_charge")
-    private Double appointment_follow_up_charge;
+    private Double appointmentFollowUpCharge;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doctorId")

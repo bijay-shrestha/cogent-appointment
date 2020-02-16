@@ -42,7 +42,8 @@ public class SpecializationResource {
     @PostMapping
     @ApiOperation(SAVE_OPERATION)
     public ResponseEntity<?> save(@Valid @RequestBody SpecializationRequestDTO requestDTO) {
-        return created(create(API_V1 + BASE_SPECIALIZATION)).body(specializationService.save(requestDTO));
+        specializationService.save(requestDTO);
+        return created(create(API_V1 + BASE_SPECIALIZATION)).build();
     }
 
     @PutMapping

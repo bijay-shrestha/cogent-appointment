@@ -10,7 +10,9 @@ import com.cogent.cogentappointment.admin.dto.response.specialization.Specializa
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.SpecializationRepository;
+import com.cogent.cogentappointment.admin.service.HospitalService;
 import com.cogent.cogentappointment.admin.service.SpecializationService;
+import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.Specialization;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -37,12 +39,16 @@ public class SpecializationServiceImpl implements SpecializationService {
 
     private final SpecializationRepository specializationRepository;
 
-    public SpecializationServiceImpl(SpecializationRepository specializationRepository) {
+    private final HospitalService hospitalService;
+
+    public SpecializationServiceImpl(SpecializationRepository specializationRepository,
+                                     HospitalService hospitalService) {
         this.specializationRepository = specializationRepository;
+        this.hospitalService = hospitalService;
     }
 
     @Override
-    public String save(SpecializationRequestDTO requestDTO) {
+    public void save(SpecializationRequestDTO requestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, SPECIALIZATION);
@@ -50,13 +56,14 @@ public class SpecializationServiceImpl implements SpecializationService {
         Long specializationCount = specializationRepository.validateDuplicity(
                 requestDTO.getName(), requestDTO.getHospitalId());
 
+        //todo: validate code duplicity
         validateName(specializationCount, requestDTO.getName());
 
-        Specialization specialization = save(parseToSpecialization(requestDTO));
+        Hospital hospital = fetchHospitalById(requestDTO.getHospitalId());
+
+        save(parseToSpecialization(requestDTO, hospital));
 
         log.info(SAVING_PROCESS_COMPLETED, SPECIALIZATION, getDifferenceBetweenTwoTime(startTime));
-
-        return specialization.getCode();
     }
 
     @Override
@@ -73,7 +80,9 @@ public class SpecializationServiceImpl implements SpecializationService {
 
         validateName(specializationCount, requestDTO.getName());
 
-        save(parseToUpdatedSpecialization(requestDTO, specialization));
+        Hospital hospital = fetchHospitalById(requestDTO.getHospitalId());
+
+        parseToUpdatedSpecialization(requestDTO, specialization, hospital);
 
         log.info(UPDATING_PROCESS_COMPLETED, SPECIALIZATION, getDifferenceBetweenTwoTime(startTime));
     }
@@ -194,4 +203,9 @@ public class SpecializationServiceImpl implements SpecializationService {
     private Function<Long, NoContentFoundException> SPECIALIZATION_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         throw new NoContentFoundException(Specialization.class, "id", id.toString());
     };
+
+    private Hospital fetchHospitalById(Long hospitalId) {
+        return hospitalService.fetchActiveHospital(hospitalId);
+    }
+
 }

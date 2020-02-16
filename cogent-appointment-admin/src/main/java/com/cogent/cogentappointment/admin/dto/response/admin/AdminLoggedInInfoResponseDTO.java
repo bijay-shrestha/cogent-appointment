@@ -31,4 +31,6 @@ public class AdminLoggedInInfoResponseDTO implements Serializable {
     private Long hospitalId;
 
     private String hospitalName;
+
+    private Character isCogentAdmin;
 }

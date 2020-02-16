@@ -101,7 +101,8 @@ public class HospitalQuery {
                     " h.refund_percentage as refundPercentage," +                //[10]
                     " h.number_of_admins as numberOfAdmins," +                   //[11]
                     " h.number_of_free_follow_ups as numberOfFreeFollowUps," +   //[12]
-                    " h.follow_up_interval_days as followUpIntervalDays" +       //[13]
+                    " h.follow_up_interval_days as followUpIntervalDays," +       //[13]
+                    " h.is_cogent_admin as isCogentAdmin"+                      //[14]
                     " FROM" +
                     " hospital h" +
                     " LEFT JOIN hospital_logo hl ON h.id =hl.hospital_id " +
@@ -109,7 +110,7 @@ public class HospitalQuery {
                     " LEFT JOIN " +
                     " (" +
                     " SELECT hc.hospital_id as hospitalId," +
-                    " GROUP_CONCAT((CONCAT(hc.id, '-', hc.contact_number))) as contact_details" +
+                    " GROUP_CONCAT((CONCAT(hc.id, '-', hc.contact_number, '-', hc.status))) as contact_details" +
                     " FROM hospital_contact_number hc" +
                     " WHERE hc.status = 'Y'" +
                     " GROUP by hc.hospital_id" +
@@ -117,9 +118,13 @@ public class HospitalQuery {
                     " WHERE h.id =:id" +
                     " AND h.status !='D'";
 
-    public static final String FETCH_HOSPITAL_FREE_FOLLOW_UP_COUNT =
+    public static final String QUERY_TO_FETCH_HOSPITAL_FREE_FOLLOW_UP_COUNT =
             " SELECT h.numberOfFreeFollowUps as numberOfFreeFollowUps" +
                     " FROM Hospital h" +
-                    " WHERE h.id =:id";
+                    " WHERE h.id =:hospitalId";
 
+    public static final String QUERY_TO_FETCH_HOSPITAL_FREE_FOLLOW_UP_INTERVAL_DAYS =
+            " SELECT h.followUpIntervalDays as followUpIntervalDays" +
+                    " FROM Hospital h" +
+                    " WHERE h.id =:hospitalId";
 }

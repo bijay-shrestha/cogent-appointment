@@ -135,6 +135,8 @@ public class HospitalUtils {
         final int NUMBER_OF_ADMINS_INDEX = 11;
         final int NUMBER_OF_FREE_FOLLOWUPS_INDEX = 12;
         final int FOLLOW_UP_INTERVAL_DAYS_INDEX = 13;
+        final int IS_COGENT_ADMIN_INDEX =14;
+
 
         return HospitalResponseDTO.builder()
                 .id(Long.parseLong(results[HOSPITAL_ID_INDEX].toString()))
@@ -153,6 +155,7 @@ public class HospitalUtils {
                         Integer.parseInt(results[NUMBER_OF_ADMINS_INDEX].toString()))
                 .numberOfFreeFollowUps(Integer.parseInt(results[NUMBER_OF_FREE_FOLLOWUPS_INDEX].toString()))
                 .followUpIntervalDays(Integer.parseInt(results[FOLLOW_UP_INTERVAL_DAYS_INDEX].toString()))
+                .isCogentAdmin(results[IS_COGENT_ADMIN_INDEX].toString().charAt(0))
                 .build();
     }
 

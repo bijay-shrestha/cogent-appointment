@@ -1,8 +1,7 @@
 package com.cogent.cogentappointment.persistence.history;
 
 import com.cogent.cogentappointment.persistence.config.Action;
-import com.cogent.cogentappointment.persistence.model.Admin;
-import com.cogent.cogentappointment.persistence.model.HospitalContactNumber;
+import com.cogent.cogentappointment.persistence.model.AppointmentFollowUpLog;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,27 +17,28 @@ import static javax.persistence.EnumType.STRING;
 import static javax.persistence.TemporalType.TIMESTAMP;
 
 /**
- * @author Sauravi Thapa २०/२/५
+ * @author smriti ON 12/02/2020
  */
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "hospital_contact_number_history")
-public class HospitalContactNumberHistory implements Serializable {
+@Table(name = "appointment_follow_up_log_history")
+public class AppointmentFollowUpLogHistory implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "hospital_contact_number_id",
-            foreignKey = @ForeignKey(name = "FK_hospital_contact_history_hospital_contact"))
-    private HospitalContactNumber hospitalContactNumber;
+    @JoinColumn(name = "appointment_follow_up_log_id",
+            foreignKey = @ForeignKey(name = "FK_appointment_follow_up_log_history"))
+    private AppointmentFollowUpLog appointmentFollowUpLog;
 
-    @Column(name = "hospital_contact_number_content")
+    @Column(name = "appointment_follow_up_log_content")
     @Lob
-    private String hospitalContactNumberContent;
+    private String appointmentFollowUpLogContent;
 
     @CreatedBy
     private String modifiedBy;
@@ -50,9 +50,10 @@ public class HospitalContactNumberHistory implements Serializable {
     @Enumerated(STRING)
     private Action action;
 
-    public HospitalContactNumberHistory(HospitalContactNumber hospitalContactNumber,Action action) {
-        this.hospitalContactNumber = hospitalContactNumber;
-        this.hospitalContactNumberContent = hospitalContactNumber.toString();
+    public AppointmentFollowUpLogHistory(AppointmentFollowUpLog appointmentFollowUpLog, Action action) {
+        this.appointmentFollowUpLog = appointmentFollowUpLog;
+        this.appointmentFollowUpLogContent = appointmentFollowUpLog.toString();
         this.action = action;
     }
+
 }

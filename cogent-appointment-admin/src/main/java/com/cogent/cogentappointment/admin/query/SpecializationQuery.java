@@ -38,11 +38,14 @@ public class SpecializationQuery {
 
     public static final String QUERY_TO_FETCH_SPECIALIZATION_DETAILS =
             " SELECT s.name as name," +                                     //[0]
-                    " s.code as code,"+                                     //[1]
+                    " s.code as code," +                                     //[1]
                     " s.status as status," +                                //[2]
-                    " s.remarks as remarks" +                               //[3]
+                    " s.remarks as remarks," +                               //[3]
+                    " h.id as hospitalId," +                                 //[4]
+                    " h.name as hospitalName" +                              //[5]
                     " FROM" +
                     " Specialization s" +
+                    " LEFT JOIN Hospital h ON h.id = s.hospital.id" +
                     " WHERE s.id = :id" +
                     " AND s.status != 'D'";
 
@@ -51,7 +54,8 @@ public class SpecializationQuery {
                 " s.id as id," +                                      //[0]
                 " s.name as name," +                                  //[1]
                 " s.status as status," +                              //[2]
-                " s.code as code" +                                   //[3]
+                " s.code as code," +
+                " s.hospital.name as hospitalName" +                                   //[3]
                 " FROM" +
                 " Specialization s" +
                 GET_WHERE_CLAUSE_FOR_SEARCHING_SPECIALIZATION.apply(searchRequestDTO);
@@ -80,7 +84,6 @@ public class SpecializationQuery {
             "SELECT" +
                     " s.id as value," +                                                   //[0]
                     " s.name as label" +                                                 //[1]
-                    " s.code as code" +
                     " FROM DoctorSpecialization cs" +
                     " LEFT JOIN Specialization s ON s.id = cs.specializationId" +
                     " WHERE" +
@@ -92,7 +95,6 @@ public class SpecializationQuery {
             " SELECT" +
                     " s.id as value," +                                      //[0]
                     " s.name as label" +                                     //[1]
-                    " s.code as code" +
                     " FROM" +
                     " Specialization s" +
                     " LEFT JOIN Hospital h ON h.id = s.hospital.id" +

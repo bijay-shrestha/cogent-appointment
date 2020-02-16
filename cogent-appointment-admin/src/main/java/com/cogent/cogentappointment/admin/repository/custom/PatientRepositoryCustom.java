@@ -22,7 +22,7 @@ public interface PatientRepositoryCustom {
 
     List<PatientResponseDTO> search(PatientSearchRequestDTO searchRequestDTO, Pageable pageable);
 
-    Long countOverallRegisteredPatients(Long HospitalId);
-
     String fetchLatestRegistrationNumber();
+
+    Long countOverallRegisteredPatients(Long HospitalId);
 }

@@ -28,4 +28,6 @@ public interface HospitalRepositoryCustom {
     HospitalResponseDTO fetchDetailsById(Long id);
 
     Integer fetchHospitalFollowUpCount(Long hospitalId);
+
+    Integer fetchHospitalFreeFollowUpIntervalDays(Long hospitalId);
 }

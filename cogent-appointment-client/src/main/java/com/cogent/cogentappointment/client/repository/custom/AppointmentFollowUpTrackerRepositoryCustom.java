@@ -3,6 +3,8 @@ package com.cogent.cogentappointment.client.repository.custom;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * @author smriti on 18/11/2019
  */
@@ -10,8 +12,8 @@ import org.springframework.stereotype.Repository;
 @Qualifier("appointmentFollowUpTrackerRepositoryCustom")
 public interface AppointmentFollowUpTrackerRepositoryCustom {
 
-    Long validateIfFollowUpTrackerExists(Long patientId,
-                                         Long doctorId,
-                                         Long specializationId,
-                                         Long hospitalId);
+    List<Object[]> fetchFollowUpDetails(Long patientId,
+                                        Long doctorId,
+                                        Long specializationId,
+                                        Long hospitalId);
 }

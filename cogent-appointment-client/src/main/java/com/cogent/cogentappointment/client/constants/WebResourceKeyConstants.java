@@ -24,6 +24,7 @@ public class WebResourceKeyConstants {
         String PENDING_APPOINTMENT = "/pending-appointment";
         String CANCEL_APPOINTMENT = "/cancel";
         String RESCHEDULE = "/reschedule";
+        String FOLLOW_UP = "/follow-up";
     }
 
     //B
@@ -45,8 +46,8 @@ public class WebResourceKeyConstants {
         String GENERATE_REVENUE = "/revenueGenerated";
         String OVER_ALL_APPOINTMENT = "/overAllAppointments";
         String REVENUE_STATISTICS = "/revenueStatistics";
-        String REGISTERED="/registeredPatients";
-        String COUNT="/count";
+        String REGISTERED = "/registeredPatients";
+        String COUNT = "/count";
         String HOSPITAL_ID_PATH_VARIABLE_BASE = "/{hospitalId}";
     }
 

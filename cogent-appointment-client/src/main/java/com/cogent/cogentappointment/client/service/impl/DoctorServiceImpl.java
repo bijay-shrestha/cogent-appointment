@@ -99,7 +99,7 @@ public class DoctorServiceImpl implements DoctorService {
 
         saveDoctor(doctor);
 
-        saveDoctorAppointmentCharge(doctor, requestDTO.getAppointmentCharge());
+        saveDoctorAppointmentCharge(doctor, requestDTO.getAppointmentCharge(), requestDTO.getAppointmentFollowUpCharge());
 
         saveDoctorSpecialization(doctor.getId(), requestDTO.getSpecializationIds());
 
@@ -137,7 +137,11 @@ public class DoctorServiceImpl implements DoctorService {
                 fetchGender(requestDTO.getDoctorInfo().getGenderCode()),
                 fetchHospitalById(requestDTO.getDoctorInfo().getHospitalId()));
 
-        updateDoctorAppointmentCharge(doctor.getId(), requestDTO.getDoctorInfo().getAppointmentCharge());
+        updateDoctorAppointmentCharge(
+                doctor.getId(),
+                requestDTO.getDoctorInfo().getAppointmentCharge(),
+                requestDTO.getDoctorInfo().getAppointmentFollowUpCharge()
+        );
 
         updateDoctorSpecialization(doctor.getId(), requestDTO.getDoctorSpecializationInfo());
 
@@ -328,13 +332,14 @@ public class DoctorServiceImpl implements DoctorService {
         return fileService.uploadFiles(file, subDirectoryLocation);
     }
 
-    private void saveDoctorAppointmentCharge(Doctor doctor, Double appointmentCharge) {
+    private void saveDoctorAppointmentCharge(Doctor doctor, Double appointmentCharge, Double appointmentFollowUpCharge) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, DOCTOR_APPOINTMENT_CHARGE);
 
-        DoctorAppointmentCharge doctorAppointmentCharge = parseToDoctorAppointmentCharge(doctor, appointmentCharge);
+        DoctorAppointmentCharge doctorAppointmentCharge =
+                parseToDoctorAppointmentCharge(doctor, appointmentCharge, appointmentFollowUpCharge);
 
         doctorAppointmentChargeRepository.save(doctorAppointmentCharge);
 
@@ -381,7 +386,9 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     private void updateDoctorAppointmentCharge(Long doctorId,
-                                               Double appointmentCharge) {
+                                               Double appointmentCharge,
+                                               Double appointmentFollowUpCharge) {
+
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(UPDATING_PROCESS_STARTED, DOCTOR_APPOINTMENT_CHARGE);
@@ -390,7 +397,7 @@ public class DoctorServiceImpl implements DoctorService {
                 doctorAppointmentChargeRepository.findByDoctorId(doctorId)
                         .orElseThrow(() -> new NoContentFoundException(DoctorAppointmentCharge.class));
 
-        updateAppointmentCharge(doctorAppointmentCharge, appointmentCharge);
+        parseDoctorAppointmentChargeDetails(doctorAppointmentCharge, appointmentCharge, appointmentFollowUpCharge);
 
         log.info(UPDATING_PROCESS_COMPLETED, DOCTOR_APPOINTMENT_CHARGE, getDifferenceBetweenTwoTime(startTime));
     }

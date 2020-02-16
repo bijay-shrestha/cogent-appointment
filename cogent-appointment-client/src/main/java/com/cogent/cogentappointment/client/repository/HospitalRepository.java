@@ -15,9 +15,6 @@ import java.util.Optional;
 @Repository
 public interface HospitalRepository extends JpaRepository<Hospital, Long>, HospitalRepositoryCustom {
 
-    @Query("SELECT h FROM Hospital h WHERE h.status!='D' AND h.id = :id")
-    Optional<Hospital> findHospitalById(@Param("id") Long id);
-
     @Query("SELECT h FROM Hospital h WHERE h.status='Y' AND h.id = :id")
     Optional<Hospital> findActiveHospitalById(@Param("id") Long id);
 }

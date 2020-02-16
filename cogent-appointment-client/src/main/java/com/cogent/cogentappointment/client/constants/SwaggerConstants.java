@@ -7,7 +7,7 @@ public class SwaggerConstants {
 
     //A
     public interface AdminConstant {
-        String BASE_API_VALUE = "This is Admin Controller";
+        String BASE_API_VALUE = "This is Admin Resource";
         String SAVE_OPERATION = "Save new admin";
         String UPDATE_OPERATION = "Update existing admin details";
         String DELETE_OPERATION = "Set admin status as 'D' with specific remarks";
@@ -28,7 +28,7 @@ public class SwaggerConstants {
     }
 
     public interface AppointmentConstant {
-        String BASE_API_VALUE = "This is Appointment Controller";
+        String BASE_API_VALUE = "This is Appointment Resource";
         String CHECK_APPOINTMENT_AVAILABILITY = "Check available time schedules in requested date" +
                 " for specific doctor and specialization";
         String SAVE_OPERATION = "Save new appointment";
@@ -38,7 +38,7 @@ public class SwaggerConstants {
     }
 
     public interface AuthenticateConstant {
-        String BASE_API_VALUE = "This is Login and SignUp Controller.";
+        String BASE_API_VALUE = "This is Login and SignUp Resource.";
         String LOGIN_OPERATION = "Login User";
     }
 
@@ -58,7 +58,7 @@ public class SwaggerConstants {
 
     //C
     public interface CountryConstant {
-        String BASE_API_VALUE = "This is Country Controller.";
+        String BASE_API_VALUE = "This is Country Resource.";
         String FETCH_ACTIVE_COUNTRY = "Fetch active country for dropdown.";
     }
 
@@ -71,7 +71,7 @@ public class SwaggerConstants {
     //D
 
     public interface DashboardConstant {
-        String BASE_API_VALUE = "This is Dashboard Controller";
+        String BASE_API_VALUE = "This is Dashboard Resource";
         String GENERATE_REVENUE_OPERATION = "Fetch revenue generated.";
         String OVER_ALL_APPOINTMENT_OPERATION = "Fetch over all appointments.";
         String COUNT_REGISTERED_PATIENTS_OPERATION = "Count no. of registered patients";
@@ -79,7 +79,7 @@ public class SwaggerConstants {
     }
 
     public interface DepartmentConstant {
-        String BASE_DEPARTMENT_API_VALUE = "This is Department Controller";
+        String BASE_DEPARTMENT_API_VALUE = "This is Department Resource";
         String SAVE_DEPARTMENT_OPERATION = "Save new department";
         String UPDATE_DEPARTMENT_OPERATION = "Update existing department";
         String DELETE_DEPARTMENT_OPERATION = "Set department status as 'D' when deleted";
@@ -92,7 +92,7 @@ public class SwaggerConstants {
     }
 
     public interface DoctorConstant {
-        String BASE_API_VALUE = "This is Doctor Controller";
+        String BASE_API_VALUE = "This is Doctor Resource";
         String SAVE_OPERATION = "Save new Doctor like Dr.Sanjeeev Upreti, Dr. Daniel Shrestha, etc";
         String UPDATE_OPERATION = "Update existing Doctor";
         String DELETE_OPERATION = "Set Doctor status as 'D' when deleted";
@@ -105,7 +105,7 @@ public class SwaggerConstants {
     }
 
     public interface DoctorDutyRosterConstant {
-        String BASE_API_VALUE = "This is Doctor Duty Roster Controller";
+        String BASE_API_VALUE = "This is Doctor Duty Roster Resource";
         String SAVE_OPERATION = "Save Doctor Duty Roster";
         String UPDATE_OPERATION = "Update Doctor Duty Roster. Note that week days time can be updated " +
                 "only if there are no appointments within the selected date range";
@@ -122,7 +122,6 @@ public class SwaggerConstants {
                 " only if there are no appointments within the selected date range";
         String FETCH_EXISTING_ROSTERS = " Fetch existing doctor duty rosters within the selected date range";
         String REVERT_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION = "Revert doctor duty roster.";
-        String FETCH_DOCTOR_DUTY_ROSTER_STATUS_OPERATION = "Fetch doctor duty roster status (used in Appointment status)";
     }
 
 
@@ -131,24 +130,25 @@ public class SwaggerConstants {
 
     //F
     public interface ForgotPasswordConstant {
-        String BASE_API_VALUE = "This is Forgot Password Controller";
+        String BASE_API_VALUE = "This is Forgot Password Resource";
         String FORGOT_PASSWORD_OPERATION = "Validate admin and send reset code in email";
         String VERIFY_RESET_CODE = "Verify if the reset code is valid and has not expired";
         String UPDATE_PASSWORD = "Update password of respective admin (Reset password)";
     }
 
 
+    public interface FollowUpTrackerConstant {
+        String BASE_API_VALUE = "This is Follow-Up Tracker Resource";
+        String FETCH_FOLLOW_UP_DETAILS = "Fetch follow up details";
+    }
+
+
+
     //G
 
     //H
     public interface HospitalConstant {
-        String BASE_API_VALUE = "This is Hospital setup Controller";
-        String SAVE_OPERATION = "Save new hospital";
-        String UPDATE_OPERATION = "Update existing hospital";
-        String DELETE_OPERATION = "Set hospital status as 'D' when deleted with remarks";
-        String SEARCH_OPERATION = "Search hospital according to given request parameters";
-        String DETAILS_OPERATION = "Fetch hospital details by id";
-        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch active hospital lists";
+        String BASE_API_VALUE = "This is Hospital Resource";
         String FETCH_MIN_DETAILS = "Fetch min hospital details (search by name)";
     }
 
@@ -166,7 +166,7 @@ public class SwaggerConstants {
 
     //P
     public interface PatientConstant {
-        String BASE_PATIENT_API_VALUE = "This is Patient Controller";
+        String BASE_PATIENT_API_VALUE = "This is Patient Resource";
         String FETCH_ACTIVE_PATIENT_META_INFO_DETAILS_FOR_DROPDOWN = "Fetch minimal active patient meta info details " +
                 "(id and metaInfo) for dropdown";
         String FETCH_PATIENT_META_INFO_DETAILS_FOR_DROPDOWN = "Fetch minimal patient meta info details " +
@@ -182,7 +182,7 @@ public class SwaggerConstants {
     }
 
     public interface ProfileConstant {
-        String BASE_API_VALUE = "This is Profile Controller";
+        String BASE_API_VALUE = "This is Profile Resource";
         String SAVE_OPERATION = "Save new profile";
         String UPDATE_OPERATION = "Update existing profile";
         String DELETE_OPERATION = "Set profile status as 'D' when deleted";
@@ -195,7 +195,7 @@ public class SwaggerConstants {
 
     //Q
     public interface QualificationConstant {
-        String BASE_API_VALUE = "This is Qualification Controller";
+        String BASE_API_VALUE = "This is Qualification Resource";
         String SAVE_OPERATION = "Save new Qualification";
         String UPDATE_OPERATION = "Update existing Qualification";
         String DELETE_OPERATION = "Set Qualification status as 'D' when deleted";
@@ -205,7 +205,7 @@ public class SwaggerConstants {
     }
 
     public interface QualificationAliasConstant {
-        String BASE_API_VALUE = "This is Qualification Alias Controller";
+        String BASE_API_VALUE = "This is Qualification Alias Resource";
         String FETCH_ACTIVE_QUALIFICATION_ALIAS = "Fetch active Qualification Alias like M.D.,M.B.B.S, etc";
     }
 
@@ -214,7 +214,7 @@ public class SwaggerConstants {
     //S
 
     public interface SpecializationConstant {
-        String BASE_API_VALUE = "This is Specialization Controller";
+        String BASE_API_VALUE = "This is Specialization Resource";
         String SAVE_OPERATION = "Save new Specialization like Physician, Surgeon, etc. Generates random 3-digit code.";
         String UPDATE_OPERATION = "Update existing Specialization";
         String DELETE_OPERATION = "Set Specialization status as 'D' when deleted";
@@ -226,7 +226,7 @@ public class SwaggerConstants {
     }
 
     public interface SideBarConstant {
-        String BASE_API_VALUE = "This is SideBar Controller";
+        String BASE_API_VALUE = "This is SideBar Resource";
         String FETCH_ASSIGNED_PROFILE_RESPONSE = "Fetch assigned profile response";
     }
 
@@ -240,7 +240,7 @@ public class SwaggerConstants {
 
     //W
     public interface WeekDaysConstant {
-        String BASE_API_VALUE = "This is Week Days Controller.";
+        String BASE_API_VALUE = "This is Week Days Resource.";
         String FETCH_ACTIVE_WEEK_DAYS = "Fetch active week days.";
     }
 

@@ -123,7 +123,8 @@ public class DoctorQuery {
                     " d.remarks as remarks," +                                      //[7]
                     " d.gender as gender," +                                        //[8]
                     " h.name as hospitalName," +                                    //[9]
-                    " dac.appointment_charge as appointmentCharge";                 //[10]
+                    " dac.appointment_charge as appointmentCharge," +                   //[10]
+                    " dac.appointment_follow_up_charge as appointmentFollowUpCharge";    //[11]
 
     private static String QUERY_TO_FETCH_DOCTOR_AVATAR =
             " SELECT" +
@@ -136,9 +137,9 @@ public class DoctorQuery {
             " SELECT" +
                     SELECT_CLAUSE_TO_FETCH_MINIMAL_DOCTOR + "," +
                     SELECT_CLAUSE_TO_FETCH_DOCTOR_DETAILS + "," +
-                    " tbl1.specialization_name as specializationName," +                //[11]
-                    " tbl2.qualification_name as qualificationName," +                   //[12]
-                    " tbl3.file_uri as fileUri" +                                       //[13]
+                    " tbl1.specialization_name as specializationName," +                 //[12]
+                    " tbl2.qualification_name as qualificationName," +                   //[13]
+                    " tbl3.file_uri as fileUri" +                                       //[14]
                     " FROM doctor d" +
                     " LEFT JOIN hospital h ON h.id = d.hospital_id" +
                     " LEFT JOIN doctor_appointment_charge dac ON dac.doctor_id= d.id" +
@@ -190,14 +191,14 @@ public class DoctorQuery {
             " SELECT" +
                     SELECT_CLAUSE_TO_FETCH_MINIMAL_DOCTOR + "," +
                     SELECT_CLAUSE_TO_FETCH_DOCTOR_DETAILS + "," +
-                    " h.id as hospitalId," +                                                //[11]
-                    " tbl1.doctor_specialization_id as doctorSpecializationId," +           //[12]
-                    " tbl1.specialization_id as specializationId," +                        //[13]
-                    " tbl1.specialization_name as specializationName," +                    //[14]
-                    " tbl2.doctor_qualification_id as doctorQualificationId," +             //[15]
-                    " tbl2.qualification_id as qualificationId," +                          //[16]
-                    " tbl2.qualification_name as qualificationName," +                      //[17]
-                    " tbl3.file_uri as fileUri" +                                            //[18]
+                    " h.id as hospitalId," +                                                //[12]
+                    " tbl1.doctor_specialization_id as doctorSpecializationId," +           //[13]
+                    " tbl1.specialization_id as specializationId," +                        //[14]
+                    " tbl1.specialization_name as specializationName," +                    //[15]
+                    " tbl2.doctor_qualification_id as doctorQualificationId," +             //[16]
+                    " tbl2.qualification_id as qualificationId," +                          //[17]
+                    " tbl2.qualification_name as qualificationName," +                      //[18]
+                    " tbl3.file_uri as fileUri" +                                            //[19]
                     " FROM doctor d" +
                     " LEFT JOIN hospital h ON h.id = d.hospital_id" +
                     " LEFT JOIN doctor_appointment_charge dac ON dac.doctor_id= d.id" +
@@ -295,4 +296,9 @@ public class DoctorQuery {
                     " AND h.status = 'Y'" +
                     " AND h.id =:hospitalId" +
                     " ORDER BY d.name";
+
+    public static String QUERY_TO_FETCH_DOCTOR_APPOINTMENT_CHARGE =
+            " SELECT da.appointmentFollowUpCharge" +
+                    " FROM DoctorAppointmentCharge da " +
+                    " WHERE da.doctorId.id = :doctorId";
 }

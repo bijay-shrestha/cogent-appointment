@@ -61,12 +61,12 @@ public class HospitalPatientInfo extends Auditable<String> implements Serializab
     public String toString() {
         return "HospitalPatientInfo{" +
                 "id=" + id +
-                ", hospitalId='" + hospitalId +
-                ", patientId='" + patientId +
+                ", hospitalId=" + hospitalId +
+                ", patientId=" + patientId +
                 ", isSelf=" + isSelf +
                 ", isRegistered=" + isRegistered +
-                ", hospitalNumber='" + hospitalNumber +
-                ", registrationNumber='" + registrationNumber +
+                ", hospitalNumber=" + hospitalNumber +
+                ", registrationNumber=" + registrationNumber +
                 ", email=" + email +
                 ", address=" + address +
                 ", status=" + status +

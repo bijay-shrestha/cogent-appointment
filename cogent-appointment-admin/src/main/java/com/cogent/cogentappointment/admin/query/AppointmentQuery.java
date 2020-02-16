@@ -174,7 +174,8 @@ public class AppointmentQuery {
         if ((!ObjectUtils.isEmpty(requestDTO.getStatus())) && (!(requestDTO.getStatus().equals(VACANT))))
             SQL += " AND a.status='" + requestDTO.getStatus() + "'";
 
-        SQL += " GROUP BY a.appointment_date, a.doctor_id, a.specialization_id, a.id";
+        SQL += " GROUP BY a.appointment_date, a.doctor_id, a.specialization_id, a.id" +
+                " ORDER BY appointment_date";
 
         return SQL;
     }
@@ -267,8 +268,9 @@ public class AppointmentQuery {
                             " atd.appointmentAmount as appointmentAmount," +                //[14]
                             " d.name as doctorName," +                                       //[15]
                             " a.status as status," +                                        //[16]
-                            " ard.refundAmount as refundAmount" +                            //[17]
-                            " p.patientAddress" +                                             //[18]
+                            " ard.refundAmount as refundAmount," +
+                            " hpi.address as patientAddress" +                            //[17]
+                            //[18]
                             " FROM Appointment a" +
                             " LEFT JOIN Patient p ON a.patientId=p.id" +
                             " LEFT JOIN HospitalPatientInfo hpi ON hpi.patientId =p.id" +

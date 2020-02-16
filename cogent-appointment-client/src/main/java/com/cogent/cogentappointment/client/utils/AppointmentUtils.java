@@ -45,6 +45,7 @@ public class AppointmentUtils {
         appointment.setAppointmentNumber(appointmentNumber);
         appointment.setSerialNumber(generateRandomNumber(6));
         appointment.setCreatedDateNepali(requestDTO.getCreatedDateNepali());
+        appointment.setIsFreeFollowUp(requestDTO.getIsFreeFollowUp());
         appointment.setStatus(PENDING_APPROVAL);
         parseToAppointment(patient, specialization, doctor, hospital, appointment);
         return appointment;

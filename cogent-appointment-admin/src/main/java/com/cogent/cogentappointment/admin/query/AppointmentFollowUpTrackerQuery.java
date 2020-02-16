@@ -5,17 +5,22 @@ package com.cogent.cogentappointment.admin.query;
  */
 public class AppointmentFollowUpTrackerQuery {
 
-    public static final String QUERY_TO_FETCH_MINIMAL_FOLLOW_UP_TRACKER =
+    public static final String QUERY_TO_VALIDATE_FOLLOW_UP_TRACKER_EXISTS =
             " SELECT" +
-                    " f.parentAppointmentNumber as parentAppointmentNumber," +             //[0]
-                    " f.remainingNumberOfFollowUps as remainingNumberOfFollowUps," +        //[1]
-                    " f.patientTypeId.name as patientType" +                               //[1]
-                    " FROM FollowUpTracker f " +
+                    " f.parentAppointmentId as parentAppointmentId" +
+                    " FROM AppointmentFollowUpTracker f " +
                     " WHERE" +
-                    " f.active = 'Y'" +
-                    " AND f.appointmentStatus= 'S'" +
+                    " f.status = 'Y'" +
                     " AND f.patientId.id = :patientId" +
-                    " AND f.doctorId.id = :doctorId";
+                    " AND f.doctorId.id = :doctorId" +
+                    " AND f.specializationId.id=:specializationId" +
+                    " AND f.hospitalId.id =:hospitalId";
+
+    public static final String QUERY_TO_FETCH_LATEST_APPOINTMENT_FOLLOW_UP_TRACKER =
+            " SELECT * FROM appointment_follow_up_tracker f" +
+                    " WHERE f.status ='Y'" +
+                    " AND f.parent_appointment_id=:parentAppointmentId" +
+                    " ORDER BY f.id DESC LIMIT 1";
 
     public static final String QUERY_TO_FETCH_APPOINTMENT_FOLLOW_UP_TRACKER =
             " SELECT f FROM FollowUpTracker f" +

@@ -64,7 +64,7 @@ public class DoctorDutyRosterQuery {
                     " ddr.remarks as remarks," +                                        //[9]
                     " ddr.hasOverrideDutyRoster as hasOverrideDutyRoster," +            //[10]
                     " h.name as hospitalName," +                                        //[11]
-                    " h.id as hospitalId"+                                              //[12]
+                    " h.id as hospitalId" +                                              //[12]
                     " FROM DoctorDutyRoster ddr" +
                     " LEFT JOIN Doctor d ON ddr.doctorId.id = d.id" +
                     " LEFT JOIN Specialization s ON ddr.specializationId.id = s.id" +
@@ -108,7 +108,7 @@ public class DoctorDutyRosterQuery {
                 " LEFT JOIN week_days w ON w.id = dw.week_days_id" +
                 " LEFT JOIN doctor dr ON dr.id = d.doctor_id" +
                 " LEFT JOIN specialization s ON s.id = d.specialization_id" +
-                " LEFT JOIN hospital h ON h.id = d.hospital_id"+
+                " LEFT JOIN hospital h ON h.id = d.hospital_id" +
                 " WHERE d.status = 'Y'" +
                 " AND d.to_date >=:fromDate" +
                 " AND d.from_date <=:toDate";

@@ -143,12 +143,11 @@ public class PatientServiceImpl implements PatientService {
                 .orElseThrow(() -> new NoContentFoundException(Patient.class, "patientId", patientId.toString()));
 
         String latestRegistrationNumber =
-                patientRepository.fetchLatestRegistrationNumber();
+                patientRepository.fetchLatestRegistrationNumber(hospitalPatientInfo.getHospitalId());
 
         registerPatientDetails(hospitalPatientInfo, latestRegistrationNumber);
 
         log.info(REGISTERING_PATIENT_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
-
     }
 
     private Patient fetchPatientById(Long id) {
@@ -178,7 +177,5 @@ public class PatientServiceImpl implements PatientService {
     private HospitalPatientInfo saveHospitalPatientInfo(HospitalPatientInfo hospitalPatientInfo) {
         return hospitalPatientInfoRepository.save(hospitalPatientInfo);
     }
-
-
 }
 

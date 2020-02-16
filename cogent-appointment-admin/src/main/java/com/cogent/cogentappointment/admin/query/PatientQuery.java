@@ -41,6 +41,15 @@ public class PatientQuery {
                     " WHERE p.id=:id" +
                     " AND hpi.status='Y'";
 
+    public static final String QUERY_TO_FETCH_LATEST_REGISTRATION_NUMBER =
+            " SELECT registration_number" +
+                    " FROM hospital_patient_info p " +
+                    " WHERE" +
+                    " registration_number IS NOT NULL" +
+                    " AND p.hospital_id=:hospitalId" +
+                    " ORDER BY id DESC" +
+                    " LIMIT 1";
+
     public static String QUERY_TO_FETCH_PATIENT(PatientSearchRequestDTO searchRequestDTO) {
         return "SELECT" +
                 " p.id as id," +
@@ -81,12 +90,4 @@ public class PatientQuery {
 
         return whereClause;
     }
-
-    public static final String QUERY_TO_FETCH_LATEST_REGISTRATION_NUMBER =
-            " SELECT registration_number" +
-                    " FROM hospital_patient_info p " +
-                    " WHERE" +
-                    " registration_number IS NOT NULL" +
-                    " ORDER BY id DESC" +
-                    " LIMIT 1";
 }

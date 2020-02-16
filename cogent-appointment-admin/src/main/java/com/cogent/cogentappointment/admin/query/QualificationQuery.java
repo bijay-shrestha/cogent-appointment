@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.admin.query;
 import com.cogent.cogentappointment.admin.dto.request.qualification.QualificationSearchRequestDTO;
 import org.springframework.util.ObjectUtils;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -46,13 +47,13 @@ public class QualificationQuery {
 
         String whereClause = " WHERE q.status!='D'";
 
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getQualificationId()))
+        if (!Objects.isNull(searchRequestDTO.getQualificationId()))
             whereClause += " AND q.id = " + searchRequestDTO.getQualificationId();
 
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getUniversityId()))
+        if (!Objects.isNull(searchRequestDTO.getUniversityId()))
             whereClause += " AND u.id=" + searchRequestDTO.getUniversityId();
 
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getQualificationAliasId()))
+        if (!Objects.isNull(searchRequestDTO.getQualificationAliasId()))
             whereClause += " AND qa.id=" + searchRequestDTO.getQualificationAliasId();
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))

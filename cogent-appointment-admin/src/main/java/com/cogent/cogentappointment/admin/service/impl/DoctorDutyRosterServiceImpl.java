@@ -27,6 +27,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.*;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AppointmentServiceMessage.*;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.DoctorDutyRosterServiceMessages.BAD_REQUEST_MESSAGE;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.DoctorDutyRosterServiceMessages.DUPLICATION_MESSAGE;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
@@ -311,7 +312,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
                 overrideFromDate, overrideToDate, doctorId, specializationId);
 
         if (appointments.intValue() > 0)
-            throw new BadRequestException(AppointmentServiceMessage.APPOINTMENT_EXISTS_MESSAGE);
+            throw new BadRequestException(APPOINTMENT_EXISTS_MESSAGE);
     }
 
     private void validateDoctorDutyRosterCount(Long doctorId, Long specializationId,

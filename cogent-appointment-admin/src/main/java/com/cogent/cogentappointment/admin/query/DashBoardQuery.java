@@ -78,19 +78,19 @@ public class DashBoardQuery {
         return "SELECT" +
                 "  CASE" +
                 "  WHEN DAYOFWEEK(atd.transactionDate) = 1" +
-                "    THEN 'SUN'" +
+                "    THEN CONCAT('SUN,',DATE_FORMAT(atd.transactionDate, '%b %e'))" +
                 "  WHEN DAYOFWEEK(atd.transactionDate) = 2" +
-                "    THEN 'MON'" +
+                "    THEN CONCAT('MON,',DATE_FORMAT(atd.transactionDate, '%b %e'))" +
                 "  WHEN DAYOFWEEK(atd.transactionDate) = 3" +
-                "    THEN 'TUE'" +
+                "    THEN CONCAT('TUE,',DATE_FORMAT(atd.transactionDate, '%b %e'))" +
                 "  WHEN DAYOFWEEK(atd.transactionDate) = 4" +
-                "    THEN 'WED'" +
+                "    THEN CONCAT('WED,',DATE_FORMAT(atd.transactionDate, '%b %e'))" +
                 "  WHEN DAYOFWEEK(atd.transactionDate) = 5" +
-                "    THEN 'THU'" +
+                "    THEN CONCAT('THU,',DATE_FORMAT(atd.transactionDate, '%b %e'))" +
                 "  WHEN DAYOFWEEK(atd.transactionDate) = 6" +
-                "    THEN 'FRI'" +
+                "    THEN CONCAT('FRI,',DATE_FORMAT(atd.transactionDate, '%b %e'))" +
                 "  WHEN DAYOFWEEK(atd.transactionDate) = 7" +
-                "    THEN 'SAT'" +
+                "    THEN CONCAT('SAT,',DATE_FORMAT(atd.transactionDate, '%b %e'))" +
                 "  END AS day," +
                 "  COALESCE(SUM(atd.appointmentAmount),0) AS revenue" +
                 " FROM AppointmentTransactionDetail atd" +
@@ -106,21 +106,7 @@ public class DashBoardQuery {
 
     public static String QUERY_TO_FETCH_REVENUE_YEARLY(Long hospitalId) {
         return " SELECT" +
-                "  MONTHNAME(atd.transactionDate) as monthName," +
-                "  COALESCE(SUM(atd.appointmentAmount),0) AS revenue" +
-                "  FROM AppointmentTransactionDetail atd" +
-                " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
-                " WHERE" +
-                " atd.transactionDate BETWEEN :fromDate AND :toDate" +
-                " AND a.status='A'" +
-                CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId) +
-                " GROUP BY MONTHNAME(atd.transactionDate)";
-    }
-
-
-    public static String QUERY_TO_FETCH_REVENUE_MONTHLY(Long hospitalId) {
-        return "SELECT" +
-                " DATE_FORMAT(atd.transactionDate, '%b %e') AS Week," +
+                " DATE_FORMAT(atd.transactionDate, '%b,%Y')," +
                 " COALESCE(SUM(atd.appointmentAmount),0) AS revenue" +
                 " FROM AppointmentTransactionDetail atd" +
                 " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
@@ -128,7 +114,24 @@ public class DashBoardQuery {
                 " atd.transactionDate BETWEEN :fromDate AND :toDate" +
                 " AND a.status='A'" +
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId) +
-                " GROUP BY DATE_FORMAT(atd.transactionDate, '%b %e')";
+                " GROUP BY DATE_FORMAT(atd.transactionDate, '%b,%Y')"+
+                " ORDER BY DATE_FORMAT(atd.transactionDate, '%b,%Y')";
+
+    }
+
+
+    public static String QUERY_TO_FETCH_REVENUE_MONTHLY(Long hospitalId) {
+        return "SELECT" +
+                " DATE_FORMAT(atd.transactionDate , '%e %b') As transactionDate," +
+                " COALESCE(SUM(atd.appointmentAmount),0) AS revenue" +
+                " FROM AppointmentTransactionDetail atd" +
+                " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
+                " WHERE" +
+                " atd.transactionDate BETWEEN :fromDate AND :toDate" +
+                " AND a.status='A'" +
+                CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId) +
+                " GROUP BY atd.transactionDate"+
+                " ORDER BY atd.transactionDate";
     }
 
     public static String QUERY_TO_FETCH_REVENUE_DAILY(Long hospitalId) {

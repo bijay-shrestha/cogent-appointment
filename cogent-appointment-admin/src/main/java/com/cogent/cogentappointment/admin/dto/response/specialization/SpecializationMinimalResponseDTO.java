@@ -23,5 +23,7 @@ public class SpecializationMinimalResponseDTO implements Serializable {
 
     private Character status;
 
+    private String hospitalName;
+
     private int totalItems;
 }

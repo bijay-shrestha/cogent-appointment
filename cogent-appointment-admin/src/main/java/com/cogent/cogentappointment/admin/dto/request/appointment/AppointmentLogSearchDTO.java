@@ -37,4 +37,8 @@ public class AppointmentLogSearchDTO implements Serializable {
 
     private Character patientCategory;
 
+    private String patientAddress;
+
+
+
 }

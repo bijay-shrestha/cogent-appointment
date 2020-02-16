@@ -5,9 +5,9 @@ import com.cogent.cogentappointment.admin.dto.response.dashboard.GenerateRevenue
 import com.cogent.cogentappointment.admin.dto.response.dashboard.OverallRegisteredPatientsResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueStatisticsResponseDTO;
 
-import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.ZoneId;
@@ -117,7 +117,7 @@ public class DashboardUtils {
                 Map<String, String> daysOfWeekMap = new LinkedHashMap<>();
                 //EXTRA LOGIC IS NEEDED TO KEEP THE DAYS OF WEEKS IN ORDER
                 getDaysOfWeekBetweenLocalDates(previousLocalDate, currentLocalDate)
-                        .stream().map(s -> s.substring(0, 3)).forEach(day -> {
+                        .stream().map(s -> s).forEach(day -> {
                     if (map.containsKey(day))
                         daysOfWeekMap.put(day, map.get(day));
                     else
@@ -167,7 +167,8 @@ public class DashboardUtils {
         final Integer ONE = 1;
         for (LocalDate localDate = previous; localDate.isBefore(current) ||
                 localDate.isEqual(current); localDate = localDate.plusDays(ONE)) {
-            daysOfWeek.add(localDate.getDayOfWeek().name());
+            int dayOfweek=localDate.getDayOfWeek().getValue();
+            daysOfWeek.add(trimName(localDate.getDayOfWeek().name())+","+ trimName(toTitleCase(localDate.getMonth().name().toLowerCase()))+" "+localDate.getDayOfMonth());
         }
         return daysOfWeek;
     }
@@ -178,7 +179,7 @@ public class DashboardUtils {
         //if current and previous dates are 2018-9-2 and 2017-9-2 respectively then the months in the list will be from
         //september to september. The magic is happening  because of  localDate.isEqual(current) :p
         for (LocalDate localDate = previous; localDate.isBefore(current) || localDate.isEqual(current); localDate = localDate.plusMonths(ONE)) {
-            monthsOfYear.add(trimMonthName(toTitleCase(localDate.getMonth().name().toLowerCase())) + "," + localDate.getYear());
+            monthsOfYear.add(trimName(toTitleCase(localDate.getMonth().name().toLowerCase())) + "," + localDate.getYear());
         }
         return monthsOfYear;
     }
@@ -218,9 +219,9 @@ public class DashboardUtils {
                 .toLocalDate();
     }
 
-    public static String trimMonthName(String monthName){
-        String s=monthName.substring(0,3);
-        return monthName.substring(0,3);
+    public static String trimName(String name){
+        String s=name.substring(0,3);
+        return name.substring(0,3);
     }
 
 }

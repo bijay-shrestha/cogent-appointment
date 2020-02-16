@@ -78,19 +78,19 @@ public class DashBoardQuery {
         return "SELECT" +
                 "  CASE" +
                 "  WHEN DAYOFWEEK(atd.transactionDate) = 1" +
-                "    THEN CONCAT('SUN,',DATE_FORMAT(atd.transactionDate, '%b %d'))" +
+                "    THEN CONCAT('SUN,',DATE_FORMAT(atd.transactionDate, '%b %e'))" +
                 "  WHEN DAYOFWEEK(atd.transactionDate) = 2" +
-                "    THEN CONCAT('MON,',DATE_FORMAT(atd.transactionDate, '%b %d'))" +
+                "    THEN CONCAT('MON,',DATE_FORMAT(atd.transactionDate, '%b %e'))" +
                 "  WHEN DAYOFWEEK(atd.transactionDate) = 3" +
-                "    THEN CONCAT('TUE,',DATE_FORMAT(atd.transactionDate, '%b %d'))" +
+                "    THEN CONCAT('TUE,',DATE_FORMAT(atd.transactionDate, '%b %e'))" +
                 "  WHEN DAYOFWEEK(atd.transactionDate) = 4" +
-                "    THEN CONCAT('WED,',DATE_FORMAT(atd.transactionDate, '%b %d'))" +
+                "    THEN CONCAT('WED,',DATE_FORMAT(atd.transactionDate, '%b %e'))" +
                 "  WHEN DAYOFWEEK(atd.transactionDate) = 5" +
-                "    THEN CONCAT('THU,',DATE_FORMAT(atd.transactionDate, '%b %d'))" +
+                "    THEN CONCAT('THU,',DATE_FORMAT(atd.transactionDate, '%b %e'))" +
                 "  WHEN DAYOFWEEK(atd.transactionDate) = 6" +
-                "    THEN CONCAT('FRI,',DATE_FORMAT(atd.transactionDate, '%b %d'))" +
+                "    THEN CONCAT('FRI,',DATE_FORMAT(atd.transactionDate, '%b %e'))" +
                 "  WHEN DAYOFWEEK(atd.transactionDate) = 7" +
-                "    THEN CONCAT('SAT,',DATE_FORMAT(atd.transactionDate, '%b %d'))" +
+                "    THEN CONCAT('SAT,',DATE_FORMAT(atd.transactionDate, '%b %e'))" +
                 "  END AS day," +
                 "  COALESCE(SUM(atd.appointmentAmount),0) AS revenue" +
                 " FROM AppointmentTransactionDetail atd" +

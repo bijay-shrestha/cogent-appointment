@@ -114,23 +114,25 @@ public class DashboardUtils {
 
         switch (filter) {
             case 'W':
+                List<String> daysOfWeeks = getDaysOfWeekBetweenLocalDates(previousLocalDate, currentLocalDate);
                 Map<String, String> daysOfWeekMap = new LinkedHashMap<>();
-                //EXTRA LOGIC IS NEEDED TO KEEP THE DAYS OF WEEKS IN ORDER
-                getDaysOfWeekBetweenLocalDates(previousLocalDate, currentLocalDate)
-                        .stream().map(s -> s).forEach(day -> {
-                    if (map.containsKey(day))
-                        daysOfWeekMap.put(day, map.get(day));
-                    else
-                        daysOfWeekMap.put(day, ZERO);
+                daysOfWeeks.forEach(days -> {
+                    if (map.containsKey(days)) {
+                        //days contains daysOfWeeks, monthName and Year eg: SAT, Feb 10
+                        daysOfWeekMap.put(days, map.get(days));
+                    } else {
+                        daysOfWeekMap.put(days, ZERO);
+                    }
+
                 });
                 return daysOfWeekMap;
 
             case 'M':
                 List<String> datesOfMonth = getDateBetweenLocalDates(previousLocalDate, currentLocalDate);
                 Map<String, String> datesMap = new LinkedHashMap<>();
-                //JSON is automatically sorted. So, to prevent it. Use _as a preffix
                 datesOfMonth.forEach(month -> {
                     if (map.containsKey(month)) {
+                        //dates contains dayOfMonth And monthName eg: 3 Feb
                         datesMap.put(month, map.get(month));
                     } else {
                         datesMap.put(month, ZERO);
@@ -145,7 +147,7 @@ public class DashboardUtils {
                 Map<String, String> months = new LinkedHashMap<>();
                 monthsOfYear.forEach(month -> {
                     if (map.containsKey(month)) {
-                        //month contains MonthName and year eg: September_2018
+                        //month contains MonthName and year eg: Feburary,2020
                         months.put(month, map.get(month));
                     } else {
                         months.put(month, ZERO);

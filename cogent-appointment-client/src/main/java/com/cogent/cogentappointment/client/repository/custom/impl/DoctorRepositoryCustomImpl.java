@@ -141,6 +141,14 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
         return results;
     }
 
+    @Override
+    public Double fetchDoctorAppointmentFollowUpCharge(Long doctorId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_APPOINTMENT_CHARGE)
+                .setParameter(DOCTOR_ID, doctorId);
+
+        return (Double) query.getSingleResult();
+    }
+
     private Supplier<NoContentFoundException> DOCTOR_NOT_FOUND = () ->
             new NoContentFoundException(Doctor.class);
 

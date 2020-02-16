@@ -126,13 +126,17 @@ public class DashboardUtils {
                 return daysOfWeekMap;
 
             case 'M':
-                List<Integer> datesOfMonth = getDateBetweenLocalDates(previousLocalDate, currentLocalDate);
+                List<String> datesOfMonth = getDateBetweenLocalDates(previousLocalDate, currentLocalDate);
                 Map<String, String> datesMap = new LinkedHashMap<>();
                 //JSON is automatically sorted. So, to prevent it. Use _as a preffix
-                datesOfMonth.stream().filter(integer -> !map.containsKey(integer.toString())).forEach(integer -> {
-                    datesMap.put(integer.toString(), ZERO);
+                datesOfMonth.forEach(month -> {
+                    if (map.containsKey(month)) {
+                        datesMap.put(month, map.get(month));
+                    } else {
+                        datesMap.put(month, ZERO);
+                    }
+
                 });
-                datesMap.putAll(map);
                 return datesMap;
 
 
@@ -153,11 +157,12 @@ public class DashboardUtils {
         return map;
     }
 
-    public static List<Integer> getDateBetweenLocalDates(LocalDate previous, LocalDate current) {
-        List<Integer> dateBetweenLocalDates = new ArrayList<>();
+    public static List<String> getDateBetweenLocalDates(LocalDate previous, LocalDate current) {
+        List<String> dateBetweenLocalDates = new ArrayList<>();
         for (LocalDate localDate = previous; localDate.isBefore(current) ||
                 localDate.isEqual(current); localDate = localDate.plusDays(1)) {
-            dateBetweenLocalDates.add(localDate.getDayOfMonth());
+            dateBetweenLocalDates.add(localDate.getDayOfMonth()+" "+
+                    trimName(toTitleCase(localDate.getMonth().name().toLowerCase())));
         }
         return dateBetweenLocalDates;
     }
@@ -167,7 +172,6 @@ public class DashboardUtils {
         final Integer ONE = 1;
         for (LocalDate localDate = previous; localDate.isBefore(current) ||
                 localDate.isEqual(current); localDate = localDate.plusDays(ONE)) {
-            int dayOfweek=localDate.getDayOfWeek().getValue();
             daysOfWeek.add(trimName(localDate.getDayOfWeek().name())+","+ trimName(toTitleCase(localDate.getMonth().name().toLowerCase()))+" "+localDate.getDayOfMonth());
         }
         return daysOfWeek;

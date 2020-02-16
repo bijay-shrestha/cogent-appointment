@@ -122,7 +122,7 @@ public class DashBoardQuery {
 
     public static String QUERY_TO_FETCH_REVENUE_MONTHLY(Long hospitalId) {
         return "SELECT" +
-                " DAY(atd.transactionDate) As transactionDate," +
+                " DATE_FORMAT(atd.transactionDate , '%e %b') As transactionDate," +
                 " COALESCE(SUM(atd.appointmentAmount),0) AS revenue" +
                 " FROM AppointmentTransactionDetail atd" +
                 " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
@@ -130,8 +130,8 @@ public class DashBoardQuery {
                 " atd.transactionDate BETWEEN :fromDate AND :toDate" +
                 " AND a.status='A'" +
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId) +
-                " GROUP BY DAY(atd.transactionDate)"+
-                " ORDER BY DAY(atd.transactionDate)";
+                " GROUP BY atd.transactionDate"+
+                " ORDER BY atd.transactionDate";
     }
 
     public static String QUERY_TO_FETCH_REVENUE_DAILY(Long hospitalId) {

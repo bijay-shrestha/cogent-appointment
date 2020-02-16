@@ -114,6 +114,7 @@ public class DoctorDutyRosterUtils {
                 .build();
     }
 
+    /*ADD TO FINAL LIST ONLY IF QUERY RESULT IS WITHIN THE SELECTED SEARCH DATE RANGE*/
     public static List<DoctorDutyRosterStatusResponseDTO> parseQueryResultToDoctorDutyRosterStatusResponseDTOS(
             List<Object[]> queryResults,
             Date searchFromDate,

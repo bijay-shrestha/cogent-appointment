@@ -11,7 +11,6 @@ import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorQualificatio
 import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorSpecializationResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorUpdateResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
-import com.cogent.cogentappointment.admin.utils.commons.NumberFormatterUtils;
 import com.cogent.cogentappointment.admin.utils.commons.StringUtil;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
@@ -20,6 +19,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static com.cogent.cogentappointment.admin.utils.commons.NumberFormatterUtils.formatDoubleTo2DecimalPlaces;
+import static com.cogent.cogentappointment.admin.utils.commons.NumberFormatterUtils.generateRandomNumber;
 
 /**
  * @author smriti on 2019-09-29
@@ -31,7 +33,7 @@ public class DoctorUtils {
                                           Hospital hospital) {
         Doctor doctor = new Doctor();
         doctor.setName(StringUtil.toUpperCase(requestDTO.getName()));
-        doctor.setCode(NumberFormatterUtils.generateRandomNumber(3));
+        doctor.setCode(generateRandomNumber(3));
         doctor.setMobileNumber(requestDTO.getMobileNumber());
         doctor.setEmail(requestDTO.getEmail());
         doctor.setNmcNumber(requestDTO.getNmcNumber());
@@ -74,10 +76,11 @@ public class DoctorUtils {
     }
 
     public static DoctorAppointmentCharge parseToDoctorAppointmentCharge(Doctor doctor,
-                                                                         Double appointmentCharge) {
+                                                                         Double appointmentCharge,
+                                                                         Double appointmentFollowUpCharge) {
         DoctorAppointmentCharge doctorAppointmentCharge = new DoctorAppointmentCharge();
         doctorAppointmentCharge.setDoctorId(doctor);
-        doctorAppointmentCharge.setAppointmentCharge(NumberFormatterUtils.formatDoubleTo2DecimalPlaces(appointmentCharge));
+        parseDoctorAppointmentDetails(doctorAppointmentCharge, appointmentCharge, appointmentFollowUpCharge);
         return doctorAppointmentCharge;
     }
 
@@ -98,9 +101,11 @@ public class DoctorUtils {
         doctorAvatar.setStatus(StatusConstants.ACTIVE);
     }
 
-    public static void updateAppointmentCharge(DoctorAppointmentCharge doctorAppointmentCharge,
-                                               Double appointmentCharge) {
-        doctorAppointmentCharge.setAppointmentCharge(NumberFormatterUtils.formatDoubleTo2DecimalPlaces(appointmentCharge));
+    public static void parseDoctorAppointmentDetails(DoctorAppointmentCharge doctorAppointmentCharge,
+                                                     Double appointmentCharge,
+                                                     Double appointmentFollowUpCharge) {
+        doctorAppointmentCharge.setAppointmentCharge(formatDoubleTo2DecimalPlaces(appointmentCharge));
+        doctorAppointmentCharge.setAppointmentFollowUpCharge(formatDoubleTo2DecimalPlaces(appointmentFollowUpCharge));
     }
 
     public static void convertToUpdatedDoctor(DoctorUpdateDTO requestDTO,
@@ -159,7 +164,9 @@ public class DoctorUtils {
         final int GENDER_INDEX = 8;
         final int HOSPITAL_NAME_INDEX = 9;
         final int APPOINTMENT_CHARGE_INDEX = 10;
-        final int HOSPITAL_ID_INDEX = 11;
+        final int APPOINTMENT_FOLLOW_UP_CHARGE = 11;
+        final int HOSPITAL_ID_INDEX = 12;
+        final int FILE_URI_INDEX = 19;
 
         return DoctorUpdateResponseDTO.builder()
                 .doctorId(Long.parseLong(results[DOCTOR_ID_INDEX].toString()))
@@ -174,15 +181,17 @@ public class DoctorUtils {
                 .hospitalId(results[HOSPITAL_ID_INDEX].toString())
                 .hospitalName(results[HOSPITAL_NAME_INDEX].toString())
                 .appointmentCharge(Double.parseDouble(results[APPOINTMENT_CHARGE_INDEX].toString()))
+                .appointmentFollowUpCharge(Double.parseDouble(results[APPOINTMENT_FOLLOW_UP_CHARGE].toString()))
                 .doctorSpecializationResponseDTOS(parseToDoctorSpecialization(results))
                 .doctorQualificationResponseDTOS(parseToDoctorQualification(results))
+                .fileUri(results[FILE_URI_INDEX].toString())
                 .build();
     }
 
     private static List<DoctorSpecializationResponseDTO> parseToDoctorSpecialization(Object[] results) {
-        final int DOCTOR_SPECIALIZATION_ID_INDEX = 12;
-        final int SPECIALIZATION_ID_INDEX = 13;
-        final int SPECIALIZATION_NAME_INDEX = 14;
+        final int DOCTOR_SPECIALIZATION_ID_INDEX = 13;
+        final int SPECIALIZATION_ID_INDEX = 14;
+        final int SPECIALIZATION_NAME_INDEX = 15;
 
         String[] doctorSpecializationIds = results[DOCTOR_SPECIALIZATION_ID_INDEX].toString().split(StringConstant.COMMA_SEPARATED);
         String[] specializationIds = results[SPECIALIZATION_ID_INDEX].toString().split(StringConstant.COMMA_SEPARATED);
@@ -199,9 +208,9 @@ public class DoctorUtils {
 
     private static List<DoctorQualificationResponseDTO> parseToDoctorQualification(Object[] results) {
 
-        final int DOCTOR_QUALIFICATION_ID_INDEX = 15;
-        final int QUALIFICATION_ID_INDEX = 16;
-        final int QUALIFICATION_NAME_INDEX = 17;
+        final int DOCTOR_QUALIFICATION_ID_INDEX = 16;
+        final int QUALIFICATION_ID_INDEX = 17;
+        final int QUALIFICATION_NAME_INDEX = 18;
 
         String[] doctorQualificationIds = results[DOCTOR_QUALIFICATION_ID_INDEX].toString().split(StringConstant.COMMA_SEPARATED);
         String[] qualificationIds = results[QUALIFICATION_ID_INDEX].toString().split(StringConstant.COMMA_SEPARATED);

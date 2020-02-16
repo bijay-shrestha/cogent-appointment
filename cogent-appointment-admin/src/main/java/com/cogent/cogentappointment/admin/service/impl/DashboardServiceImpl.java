@@ -13,8 +13,6 @@ import com.cogent.cogentappointment.admin.service.DashboardService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.security.NoSuchAlgorithmException;
-import java.util.Map;
 import javax.transaction.Transactional;
 import java.util.Map;
 
@@ -127,8 +125,8 @@ public class DashboardServiceImpl implements DashboardService {
                 (map, dashBoardRequestDTO.getToDate(), filter)) {
             map = addRemainingFields
                     (revenueStatisticsResponseDTO.getData(),
-                    dashBoardRequestDTO.getFromDate(),
-                    dashBoardRequestDTO.getToDate(), filter);
+                            dashBoardRequestDTO.getFromDate(),
+                            dashBoardRequestDTO.getToDate(), filter);
         }
 
         revenueStatisticsResponseDTO.setData(map);

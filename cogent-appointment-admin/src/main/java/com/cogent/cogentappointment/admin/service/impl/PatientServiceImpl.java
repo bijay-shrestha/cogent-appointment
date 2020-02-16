@@ -143,7 +143,7 @@ public class PatientServiceImpl implements PatientService {
                 .orElseThrow(() -> new NoContentFoundException(Patient.class, "patientId", patientId.toString()));
 
         String latestRegistrationNumber =
-                patientRepository.fetchLatestRegistrationNumber();
+                patientRepository.fetchLatestRegistrationNumber(hospitalPatientInfo.getHospitalId());
 
         registerPatientDetails(hospitalPatientInfo, latestRegistrationNumber);
 

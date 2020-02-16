@@ -174,7 +174,8 @@ public class AppointmentQuery {
         if ((!ObjectUtils.isEmpty(requestDTO.getStatus())) && (!(requestDTO.getStatus().equals(VACANT))))
             SQL += " AND a.status='" + requestDTO.getStatus() + "'";
 
-        SQL += " GROUP BY a.appointment_date, a.doctor_id, a.specialization_id, a.id";
+        SQL += " GROUP BY a.appointment_date, a.doctor_id, a.specialization_id, a.id" +
+                " ORDER BY appointment_date";
 
         return SQL;
     }

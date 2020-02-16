@@ -59,10 +59,11 @@ public class DoctorDutyRosterOverrideUtils {
         doctorDutyRosterOverrides.forEach(doctorDutyRosterOverride -> doctorDutyRosterOverride.setStatus(NO));
     }
 
+    /*ADD TO FINAL LIST ONLY IF QUERY RESULT IS WITHIN THE SELECTED SEARCH DATE RANGE*/
     public static List<DoctorDutyRosterStatusResponseDTO> parseQueryResultToDoctorDutyRosterStatusResponseDTO
-            (List<Object[]> results,
-             Date searchFromDate,
-             Date searchToDate) {
+    (List<Object[]> results,
+     Date searchFromDate,
+     Date searchToDate) {
 
         LocalDate searchFromLocalDate = convertDateToLocalDate(searchFromDate);
         LocalDate searchToLocalDate = convertDateToLocalDate(searchToDate);

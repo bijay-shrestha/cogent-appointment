@@ -55,14 +55,15 @@ public class DoctorDutyRosterOverrideQuery {
                 " DATE_FORMAT(d.startTime, '%H:%i') as startTime," +        //[2]
                 " DATE_FORMAT(d.endTime, '%H:%i') as endTime," +            //[3]
                 " d.dayOffStatus," +                                        //[4]
-                " dd.doctorId.id as doctorId," +                            //[5]
-                " dd.doctorId.name as doctorName," +                        //[6]
+                " dr.id as doctorId," +                                      //[5]
+                " dr.name as doctorName," +                                  //[6]
                 " dd.specializationId.id as specializationId," +            //[7]
                 " dd.specializationId.name as specializationName," +        //[8]
-                " dd.rosterGapDuration as rosterGapDuration" +              //[9]
+                " dd.rosterGapDuration as rosterGapDuration" +             //[9]
                 " FROM DoctorDutyRosterOverride d" +
                 " LEFT JOIN DoctorDutyRoster dd ON dd.id = d.doctorDutyRosterId.id" +
                 " LEFT JOIN Hospital h ON h.id = dd.hospitalId.id" +
+                " LEFT JOIN Doctor dr ON dr.id = dd.doctorId.id" +
                 " WHERE" +
                 " d.status = 'Y'" +
                 " AND dd.status = 'Y'" +
@@ -70,7 +71,7 @@ public class DoctorDutyRosterOverrideQuery {
                 " AND dd.fromDate <=:toDate";
 
         if (!Objects.isNull(requestDTO.getDoctorId()))
-            SQL += " AND dd.doctorId.id = :doctorId";
+            SQL += " AND dr.id = :doctorId";
 
         if (!Objects.isNull(requestDTO.getSpecializationId()))
             SQL += " AND dd.specializationId.id = :specializationId";

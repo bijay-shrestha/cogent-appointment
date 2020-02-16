@@ -15,12 +15,14 @@ public class AppointmentQuery {
                     " AND a.status='PA'";
 
     public static String QUERY_TO_FETCH_LATEST_APPOINTMENT_NUMBER =
-            "SELECT appointment_number" +
-                    " FROM appointment" +
+            "SELECT a.appointment_number" +
+                    " FROM appointment a" +
+                    " LEFT JOIN hospital h ON h.id =a.hospital_id" +
                     " WHERE" +
-                    " str_to_date(created_date_nepali,'%Y-%m-%d')" +
+                    " str_to_date(a.created_date_nepali,'%Y-%m-%d')" +
                     " BETWEEN :fromDate AND :toDate" +
-                    " ORDER BY id DESC LIMIT 1";
+                    " AND h.id =:hospitalId" +
+                    " ORDER BY a.id DESC LIMIT 1";
 
     public static String QUERY_TO_FETCH_BOOKED_APPOINTMENT =
             "SELECT DATE_FORMAT(a.appointmentTime, '%H:%i') as appointmentTime" +               //[0]

@@ -58,14 +58,14 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
                     .algorithm(authHeader.getAlgorithm())
                     .nonce(authHeader.getNonce())
                     .username(adminMinDetails.getUsername())
-                    .hospitalCode(adminMinDetails.getCompanyCode())
+                    .hospitalCode(adminMinDetails.getHospitalCode())
                     .apiKey(adminMinDetails.getApiKey())
                     .apiSecret(adminMinDetails.getApiSecret());
 
             compareSignature(signatureBuilder, authHeader.getDigest());
 
             SecurityContextHolder.getContext().setAuthentication(getAuthentication(adminMinDetails.getUsername(),
-                    adminMinDetails.getCompanyCode()));
+                    adminMinDetails.getHospitalCode()));
         }
 
         if (authHeader == null && eSewaAuthHeader != null) {
@@ -77,14 +77,14 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
             final HMACBuilder signatureBuilder = new HMACBuilder()
                     .algorithm(eSewaAuthHeader.getAlgorithm())
                     .nonce(eSewaAuthHeader.getNonce())
-                    .hospitalCode(thirdPartyDetail.getCompanyCode())
+                    .hospitalCode(thirdPartyDetail.getHospitalCode())
                     .apiKey(thirdPartyDetail.getApiKey())
                     .apiSecret(thirdPartyDetail.getApiSecret());
 
             compareSignature(signatureBuilder, eSewaAuthHeader.getDigest());
 
-            SecurityContextHolder.getContext().setAuthentication(getAuthentication(thirdPartyDetail.getCompanyCode(),
-                    thirdPartyDetail.getCompanyCode()));
+            SecurityContextHolder.getContext().setAuthentication(getAuthentication(thirdPartyDetail.getHospitalCode(),
+                    thirdPartyDetail.getHospitalCode()));
         }
 
         try {

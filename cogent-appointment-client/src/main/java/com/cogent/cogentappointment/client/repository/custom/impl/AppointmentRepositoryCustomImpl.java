@@ -1,8 +1,8 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentPendingSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedDateResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentPendingResponseDTO;
@@ -84,7 +84,13 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                 .setParameter(FROM_DATE, utilDateToSqlDate(searchDTO.getFromDate()))
                 .setParameter(TO_DATE, utilDateToSqlDate(searchDTO.getToDate()));
 
-        return transformQueryToResultList(query, AppointmentPendingResponseDTO.class);
+        List<AppointmentPendingResponseDTO> pendingAppointments =
+                transformQueryToResultList(query, AppointmentPendingResponseDTO.class);
+
+        if (pendingAppointments.isEmpty())
+            throw new NoContentFoundException(Appointment.class);
+
+        return pendingAppointments;
     }
 
     @Override

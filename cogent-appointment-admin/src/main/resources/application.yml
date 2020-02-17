@@ -19,6 +19,7 @@ spring:
     generate-ddl: true
     open-in-view: false
 
+
   jackson:
     deserialization.fail-on-unknown-properties: false
 

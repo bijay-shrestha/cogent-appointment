@@ -22,6 +22,7 @@ public class PatientQuery {
 
     public static final String QUERY_TO_FETCH_PATIENT_DETAILS_BY_ID =
             "SELECT" +
+                    " p.id as id," +
                     " p.name as name," +
                     " p.dateOfBirth as dateOfBirth," +
                     " p.mobileNumber as mobileNumber," +

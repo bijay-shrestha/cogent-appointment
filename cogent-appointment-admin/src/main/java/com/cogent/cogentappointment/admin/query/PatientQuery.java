@@ -35,7 +35,8 @@ public class PatientQuery {
                     " hpi.email as email," +
                     " hpi.address as address," +
                     " hpi.isSelf as isSelf," +
-                    " hpi.isRegistered as isRegistered" +
+                    " hpi.isRegistered as isRegistered," +
+                    " h.id as hospitalId" +
                     " FROM Patient p " +
                     " LEFT JOIN HospitalPatientInfo hpi On p.id=hpi.patientId" +
                     " LEFT JOIN Hospital h ON h.id=hpi.hospitalId" +

@@ -27,4 +27,6 @@ public class GenerateRevenueRequestDTO implements Serializable {
 
     @NotNull
     private Date previousFromDate;
+
+    private Character filterType;
 }

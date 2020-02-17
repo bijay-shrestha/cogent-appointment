@@ -68,7 +68,7 @@ public class DashboardServiceImpl implements DashboardService {
 
         GenerateRevenueResponseDTO responseDTO = parseToGenerateRevenueResponseDTO(currentTransaction,
                 calculatePercenatge(currentTransaction, previousTransaction),
-                dateDifference(requestDTO.getCurrentToDate(), requestDTO.getCurrentFromDate()));
+                requestDTO.getFilterType());
 
         log.info(FETCHING_PROCESS_COMPLETED, REVENUE_GENERATED, getDifferenceBetweenTwoTime(startTime));
 

@@ -8,7 +8,11 @@ import static com.cogent.cogentappointment.client.utils.commons.NumberFormatterU
 public class MathUtils {
 
     public static Double calculatePercenatge(Double current, Double previous) {
-        return formatDoubleTo2DecimalPlaces((current - previous) * 100 / current);
+
+        if(current==0 && previous==0 || previous==0){
+            return 0D;
+        }
+        return formatDoubleTo2DecimalPlaces((current - previous)/previous * 100 );
     }
 
 

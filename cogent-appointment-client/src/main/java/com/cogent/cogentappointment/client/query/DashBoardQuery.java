@@ -13,6 +13,7 @@ public class DashBoardQuery {
                     " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
                     " WHERE " +
                     " (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
+                    " AND a.status='A'"+
                     " AND a.hospitalId.id=:hospitalId";
 
     public static String QUERY_TO_OVER_ALL_APPOINTMENTS =

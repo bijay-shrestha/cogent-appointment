@@ -36,7 +36,9 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
                 .setParameter(FROM_DATE, fromDate)
                 .setParameter(HOSPITAL_ID, hospitalId);
 
-        return (Double) query.getSingleResult();
+        Double count=(Double) query.getSingleResult();
+
+        return (count==null)? 0D:count;
     }
 
     @Override

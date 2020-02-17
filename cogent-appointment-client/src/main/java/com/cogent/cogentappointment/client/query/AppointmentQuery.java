@@ -86,5 +86,28 @@ public class AppointmentQuery {
                     " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +
                     " WHERE a.id =:id";
 
+    public static final String QUERY_TO_FETCH_APPOINTMENT_DETAILS_BY_ID =
+            " SELECT" +
+                    " a.appointmentDate as appointmentDate," +                              //[0]
+                    " DATE_FORMAT(a.appointmentTime,'%H:%i %p') as appointmentTime," +      //[1]
+                    " a.appointmentNumber as appointmentNumber," +                          //[2]
+                    " d.name as doctorName," +                                              //[3]
+                    " s.name as specializationName," +                                      //[4]
+                    " h.name as hospitalName," +                                            //[5]
+                    " p.name as patientName," +                                             //[6]
+                    " p.mobileNumber as mobileNumber," +                                    //[7]
+                    " p.dateOfBirth as dateOfBirth,"+                                       //[8]
+                    " atd.appointmentAmount as appointmentAmount," +                        //[9]
+                    " atd.taxAmount as taxAmount," +                                        //[10]
+                    " atd.discountAmount as discountAmount," +                             //[11]
+                    " atd.serviceChargeAmount as serviceChargeAmount" +                    //[12]
+                    " FROM Appointment a" +
+                    " LEFT JOIN Patient p ON p.id = a.patientId.id" +
+                    " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
+                    " LEFT JOIN Specialization s ON s.id = a.specializationId.id" +
+                    " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +
+                    " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
+                    " WHERE a.id =:id";
+
 
 }

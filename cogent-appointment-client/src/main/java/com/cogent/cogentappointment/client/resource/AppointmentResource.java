@@ -12,6 +12,7 @@ import javax.validation.Valid;
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AppointmentConstant.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.AppointmentConstants.*;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.DETAIL;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
@@ -60,5 +61,10 @@ public class AppointmentResource {
     public ResponseEntity<?> rescheduleAppointment(@Valid @RequestBody AppointmentRescheduleRequestDTO requestDTO) {
         appointmentService.rescheduleAppointment(requestDTO);
         return ok().build();
+    }
+
+    @GetMapping(DETAIL + APPOINTMENT_ID_PATH_VARIABLE_BASE)
+    public ResponseEntity<?> fetchAppointmentDetails(@PathVariable("appointmentId") Long appointmentId) {
+        return ok().body(appointmentService.fetchAppointmentDetails(appointmentId));
     }
 }

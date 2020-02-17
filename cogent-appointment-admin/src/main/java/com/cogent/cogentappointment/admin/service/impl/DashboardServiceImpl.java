@@ -11,9 +11,9 @@ import com.cogent.cogentappointment.admin.repository.AppointmentTransactionDetai
 import com.cogent.cogentappointment.admin.repository.PatientRepository;
 import com.cogent.cogentappointment.admin.service.DashboardService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.Cacheable;
 import javax.transaction.Transactional;
 import java.util.Map;
 
@@ -97,11 +97,22 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
+    @Cacheable("dashboard")
     public Long countOverallRegisteredPatients(Long hospitalId) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, OVER_ALL_REGISTERED_PATIENTS);
+
+        try
+        {
+            System.out.println("Going to sleep for 5 Secs.. to simulate backend call.");
+            Thread.sleep(1000*5);
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
 
         Long resgisteredPatients = patientRepository.countOverallRegisteredPatients(hospitalId);
 

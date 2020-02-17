@@ -13,6 +13,7 @@ import com.cogent.cogentappointment.admin.service.DashboardService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.Cacheable;
 import javax.transaction.Transactional;
 import java.util.Map;
 
@@ -25,6 +26,7 @@ import static com.cogent.cogentappointment.admin.utils.commons.DateConverterUtil
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static com.cogent.cogentappointment.admin.utils.commons.MathUtils.calculatePercenatge;
+import static java.lang.Boolean.TRUE;
 
 /**
  * @author Sauravi Thapa २०/२/१०
@@ -33,6 +35,7 @@ import static com.cogent.cogentappointment.admin.utils.commons.MathUtils.calcula
 @Service
 @Slf4j
 @Transactional
+@Cacheable
 public class DashboardServiceImpl implements DashboardService {
 
     private AppointmentTransactionDetailRepository appointmentTransactionDetailRepository;

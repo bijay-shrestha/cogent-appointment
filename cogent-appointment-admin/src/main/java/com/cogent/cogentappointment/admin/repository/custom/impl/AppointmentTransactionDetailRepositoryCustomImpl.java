@@ -7,6 +7,7 @@ import com.cogent.cogentappointment.admin.repository.custom.AppointmentTransacti
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.Cacheable;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;

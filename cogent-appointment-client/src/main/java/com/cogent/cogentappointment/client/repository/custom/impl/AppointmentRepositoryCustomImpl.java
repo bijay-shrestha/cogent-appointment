@@ -84,7 +84,13 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                 .setParameter(FROM_DATE, utilDateToSqlDate(searchDTO.getFromDate()))
                 .setParameter(TO_DATE, utilDateToSqlDate(searchDTO.getToDate()));
 
-        return transformQueryToResultList(query, AppointmentPendingResponseDTO.class);
+        List<AppointmentPendingResponseDTO> pendingAppointments =
+                transformQueryToResultList(query, AppointmentPendingResponseDTO.class);
+
+        if (pendingAppointments.isEmpty())
+            throw new NoContentFoundException(Appointment.class);
+
+        return pendingAppointments;
     }
 
     @Override

@@ -25,6 +25,7 @@ public class WebResourceKeyConstants {
         String CANCEL_APPOINTMENT = "/cancel";
         String RESCHEDULE = "/reschedule";
         String FOLLOW_UP = "/follow-up";
+        String APPOINTMENT_ID_PATH_VARIABLE_BASE = "/{appointmentId}";
     }
 
     //B

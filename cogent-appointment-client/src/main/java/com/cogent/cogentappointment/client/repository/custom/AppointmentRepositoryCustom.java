@@ -5,7 +5,9 @@ import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardReques
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentPendingSearchDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedDateResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedTimeResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentPendingResponseDTO;
+import com.cogent.cogentappointment.persistence.model.Appointment;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
@@ -43,4 +45,6 @@ public interface AppointmentRepositoryCustom {
     Long countNewPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO);
 
     Long countOverAllAppointment(DashBoardRequestDTO dashBoardRequestDTO);
+
+    AppointmentDetailResponseDTO fetchAppointmentDetails(Long appointmentId);
 }

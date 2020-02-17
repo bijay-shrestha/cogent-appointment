@@ -20,12 +20,14 @@ public class HMACUtils {
         String hospitalCode = admin.getHospitalCode();
         String apiKey = admin.getApiKey();
         String apiSecret = admin.getApiSecret();
+        Integer hospitalId= Math.toIntExact(admin.getHospitalId());
 
         final HMACBuilder signatureBuilder = new HMACBuilder()
                 .algorithm(HMAC_ALGORITHM)
                 .nonce(nonce)
                 .apiKey(apiKey)
                 .hospitalCode(hospitalCode)
+                .hospitalId(hospitalId)
                 .username(username)
                 .apiSecret(apiSecret);
 
@@ -35,6 +37,8 @@ public class HMACUtils {
         String authToken = HMAC_ALGORITHM +
                 SPACE +
                 username +
+                COLON +
+                hospitalId +
                 COLON +
                 hospitalCode +
                 COLON +

@@ -6,6 +6,7 @@ import com.cogent.cogentappointment.admin.dto.request.dashboard.GenerateRevenueR
 import com.cogent.cogentappointment.admin.service.DashboardService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,5 +55,13 @@ public class DashboardResource {
     @ApiOperation(REVENUE_STATISTICS_OPERATION)
     public ResponseEntity<?> getRevenueStatistics(@Valid @RequestBody DashBoardRequestDTO countRequestDTO) {
         return ok(dashboardService.getRevenueStatistic(countRequestDTO));
+    }
+
+    @GetMapping("/test")
+    @Cacheable(value = "test",key = "#test")
+    public String test(){
+
+        System.out.printf("called::::");
+        return "hello";
     }
 }

@@ -21,7 +21,7 @@ public class CogentAppointmentAdminApplication {
     }
 
     @Bean
-    public BeanUtil beanUtil(){
+    public BeanUtil beanUtil() {
         return new BeanUtil();
     }
 

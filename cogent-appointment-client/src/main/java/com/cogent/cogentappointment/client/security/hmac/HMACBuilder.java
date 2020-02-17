@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
@@ -24,6 +25,8 @@ public class HMACBuilder {
 
     private String hospitalCode;
 
+    private Integer hospitalId;
+
     private String nonce;
 
     private String algorithm;
@@ -32,6 +35,7 @@ public class HMACBuilder {
 
     private String apiSecret;
 
+
     public HMACBuilder username(String username) {
         this.username = username;
         return this;
@@ -39,6 +43,11 @@ public class HMACBuilder {
 
     public HMACBuilder hospitalCode(String hospitalCode) {
         this.hospitalCode = hospitalCode;
+        return this;
+    }
+
+    public HMACBuilder hospitalId(Integer hospitalId) {
+        this.hospitalId = hospitalId;
         return this;
     }
 
@@ -74,6 +83,8 @@ public class HMACBuilder {
             digest.update(nonce.getBytes(StandardCharsets.UTF_8));
             digest.update(DELIMITER);
             digest.update((username != null) ? username.getBytes(StandardCharsets.UTF_8) : null);
+            digest.update(DELIMITER);
+            digest.update(ByteBuffer.allocateDirect((hospitalId != null) ? hospitalId: null));
             digest.update(DELIMITER);
             digest.update((hospitalCode != null) ? hospitalCode.getBytes(StandardCharsets.UTF_8) : null);
             digest.update(DELIMITER);

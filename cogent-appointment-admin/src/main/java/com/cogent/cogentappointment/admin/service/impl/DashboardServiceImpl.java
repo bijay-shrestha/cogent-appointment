@@ -26,7 +26,7 @@ import static com.cogent.cogentappointment.admin.utils.commons.DateConverterUtil
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static com.cogent.cogentappointment.admin.utils.commons.MathUtils.calculatePercenatge;
-import static java.lang.Boolean.TRUE;
+
 
 /**
  * @author Sauravi Thapa २०/२/१०
@@ -35,7 +35,6 @@ import static java.lang.Boolean.TRUE;
 @Service
 @Slf4j
 @Transactional
-@Cacheable
 public class DashboardServiceImpl implements DashboardService {
 
     private AppointmentTransactionDetailRepository appointmentTransactionDetailRepository;
@@ -77,10 +76,21 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
+    @Cacheable(value = "appointment")
     public AppointmentCountResponseDTO countOverallAppointments(DashBoardRequestDTO dashBoardRequestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, OVER_ALL_APPOINTMETS);
+
+        try
+        {
+            System.out.println("Going to sleep for 5 Secs.. to simulate backend call.");
+            Thread.sleep(1000*5);
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
 
         Long overAllAppointment = appointmentRepository.countOverAllAppointment(dashBoardRequestDTO);
 
@@ -97,22 +107,12 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    @Cacheable("dashboard")
+    @Cacheable(value = "patientCount")
     public Long countOverallRegisteredPatients(Long hospitalId) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, OVER_ALL_REGISTERED_PATIENTS);
-
-        try
-        {
-            System.out.println("Going to sleep for 5 Secs.. to simulate backend call.");
-            Thread.sleep(1000*5);
-        }
-        catch (InterruptedException e)
-        {
-            e.printStackTrace();
-        }
 
         Long resgisteredPatients = patientRepository.countOverallRegisteredPatients(hospitalId);
 

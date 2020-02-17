@@ -135,32 +135,32 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
-    public Long countRegisteredPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO) {
+    public Long countRegisteredPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO,Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_COUNT_REGISTERED_APPOINTMENT)
                 .setParameter(FROM_DATE, utilDateToSqlDate(dashBoardRequestDTO.getFromDate()))
                 .setParameter(TO_DATE, utilDateToSqlDate(dashBoardRequestDTO.getToDate()))
-                .setParameter(HOSPITAL_ID, dashBoardRequestDTO.getHospitalId());
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Long) query.getSingleResult();
     }
 
     @Override
-    public Long countNewPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO) {
+    public Long countNewPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO,Long hospitalId) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_COUNT_NEW_PATIENT_APPOINTMENT)
                 .setParameter(FROM_DATE, utilDateToSqlDate(dashBoardRequestDTO.getFromDate()))
                 .setParameter(TO_DATE, utilDateToSqlDate(dashBoardRequestDTO.getToDate()))
-                .setParameter(HOSPITAL_ID, dashBoardRequestDTO.getHospitalId());
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Long) query.getSingleResult();
     }
 
     @Override
-    public Long countOverAllAppointment(DashBoardRequestDTO dashBoardRequestDTO) {
+    public Long countOverAllAppointment(DashBoardRequestDTO dashBoardRequestDTO,Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_OVER_ALL_APPOINTMENTS)
                 .setParameter(FROM_DATE, utilDateToSqlDate(dashBoardRequestDTO.getFromDate()))
                 .setParameter(TO_DATE, utilDateToSqlDate(dashBoardRequestDTO.getToDate()))
-                .setParameter(HOSPITAL_ID, dashBoardRequestDTO.getHospitalId());
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Long) query.getSingleResult();
     }

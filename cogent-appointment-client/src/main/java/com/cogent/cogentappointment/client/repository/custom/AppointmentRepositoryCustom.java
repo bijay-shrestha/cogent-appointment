@@ -40,11 +40,11 @@ public interface AppointmentRepositoryCustom {
 
     Long fetchBookedAppointmentCount(Date fromDate, Date toDate, Long doctorId, Long specializationId);
 
-    Long countRegisteredPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO);
+    Long countRegisteredPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO,Long hospitalId);
 
-    Long countNewPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO);
+    Long countNewPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO,Long hospitalId);
 
-    Long countOverAllAppointment(DashBoardRequestDTO dashBoardRequestDTO);
+    Long countOverAllAppointment(DashBoardRequestDTO dashBoardRequestDTO,Long hospitalId);
 
     AppointmentDetailResponseDTO fetchAppointmentDetails(Long appointmentId);
 }

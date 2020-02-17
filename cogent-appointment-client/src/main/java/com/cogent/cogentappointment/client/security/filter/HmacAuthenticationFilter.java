@@ -65,8 +65,8 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
             compareSignature(signatureBuilder, authHeader.getDigest());
 
-            SecurityContextHolder.getContext().setAuthentication(getAuthentication(adminMinDetails.getUsername(),
-                    adminMinDetails.getHospitalCode()));
+            SecurityContextHolder.getContext().setAuthentication(getAuthenticationForHospital(adminMinDetails.getUsername(),
+                    adminMinDetails.getHospitalId()));
         }
 
         if (authHeader == null && eSewaAuthHeader != null) {
@@ -145,6 +145,13 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
         return new PreAuthenticatedAuthenticationToken(
                 username,
                 hospitalCode,
+                null);
+    }
+
+    public PreAuthenticatedAuthenticationToken getAuthenticationForHospital(String username, Long hospitalId) {
+        return new PreAuthenticatedAuthenticationToken(
+                username,
+                hospitalId,
                 null);
     }
 }

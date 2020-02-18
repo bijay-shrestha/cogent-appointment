@@ -76,21 +76,10 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    @Cacheable(value = "appointment")
     public AppointmentCountResponseDTO countOverallAppointments(DashBoardRequestDTO dashBoardRequestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, OVER_ALL_APPOINTMETS);
-
-        try
-        {
-            System.out.println("Going to sleep for 5 Secs.. to simulate backend call.");
-            Thread.sleep(1000*5);
-        }
-        catch (InterruptedException e)
-        {
-            e.printStackTrace();
-        }
 
         Long overAllAppointment = appointmentRepository.countOverAllAppointment(dashBoardRequestDTO);
 
@@ -107,7 +96,6 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    @Cacheable(value = "patientCount")
     public Long countOverallRegisteredPatients(Long hospitalId) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
@@ -144,6 +132,7 @@ public class DashboardServiceImpl implements DashboardService {
         }
 
         revenueStatisticsResponseDTO.setData(map);
+
         log.info(FETCHING_PROCESS_COMPLETED, REVENUE_STATISTICS, getDifferenceBetweenTwoTime(startTime));
 
         return revenueStatisticsResponseDTO;

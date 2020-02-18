@@ -13,8 +13,8 @@ public class DashBoardQuery {
     }
 
     public static String CLAUSE_TO_FIND_BY_HOSPITAL_ID_FOR_OVERALL_PATIENT(Long hospitalId) {
-       if (hospitalId > 0){
-            return  " AND hpi.hospitalId="+hospitalId ;
+        if (hospitalId > 0) {
+            return " AND hpi.hospitalId=" + hospitalId;
         }
         return "";
     }
@@ -114,7 +114,7 @@ public class DashBoardQuery {
                 " atd.transactionDate BETWEEN :fromDate AND :toDate" +
                 " AND a.status='A'" +
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId) +
-                " GROUP BY DATE_FORMAT(atd.transactionDate, '%b,%Y')"+
+                " GROUP BY DATE_FORMAT(atd.transactionDate, '%b,%Y')" +
                 " ORDER BY DATE_FORMAT(atd.transactionDate, '%b,%Y')";
 
     }
@@ -130,7 +130,7 @@ public class DashBoardQuery {
                 " atd.transactionDate BETWEEN :fromDate AND :toDate" +
                 " AND a.status='A'" +
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId) +
-                " GROUP BY atd.transactionDate"+
+                " GROUP BY atd.transactionDate" +
                 " ORDER BY atd.transactionDate";
     }
 

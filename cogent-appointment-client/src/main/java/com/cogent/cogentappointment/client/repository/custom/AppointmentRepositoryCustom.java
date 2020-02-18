@@ -2,12 +2,11 @@ package com.cogent.cogentappointment.client.repository.custom;
 
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentPendingSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentSearchDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedDateResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentDetailResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentPendingResponseDTO;
-import com.cogent.cogentappointment.persistence.model.Appointment;
+import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentMinResponseDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
@@ -26,7 +25,7 @@ public interface AppointmentRepositoryCustom {
 
     String generateAppointmentNumber(String nepaliCreatedDate, Long hospitalId);
 
-    List<AppointmentPendingResponseDTO> fetchPendingAppointments(AppointmentPendingSearchDTO searchDTO);
+    List<AppointmentMinResponseDTO> fetchPendingAppointments(AppointmentSearchDTO searchDTO);
 
     Double calculateRefundAmount(Long appointmentId);
 
@@ -40,11 +39,13 @@ public interface AppointmentRepositoryCustom {
 
     Long fetchBookedAppointmentCount(Date fromDate, Date toDate, Long doctorId, Long specializationId);
 
-    Long countRegisteredPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO);
+    Long countRegisteredPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO,Long hospitalId);
 
-    Long countNewPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO);
+    Long countNewPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO,Long hospitalId);
 
-    Long countOverAllAppointment(DashBoardRequestDTO dashBoardRequestDTO);
+    Long countOverAllAppointment(DashBoardRequestDTO dashBoardRequestDTO,Long hospitalId);
 
     AppointmentDetailResponseDTO fetchAppointmentDetails(Long appointmentId);
+
+    List<AppointmentMinResponseDTO> fetchAppointmentHistory(AppointmentSearchDTO searchDTO);
 }

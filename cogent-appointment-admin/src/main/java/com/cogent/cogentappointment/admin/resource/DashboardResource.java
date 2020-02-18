@@ -56,12 +56,4 @@ public class DashboardResource {
     public ResponseEntity<?> getRevenueStatistics(@Valid @RequestBody DashBoardRequestDTO countRequestDTO) {
         return ok(dashboardService.getRevenueStatistic(countRequestDTO));
     }
-
-    @GetMapping("/test")
-    @Cacheable(value = "test",key = "#test")
-    public String test(){
-
-        System.out.printf("called::::");
-        return "hello";
-    }
 }

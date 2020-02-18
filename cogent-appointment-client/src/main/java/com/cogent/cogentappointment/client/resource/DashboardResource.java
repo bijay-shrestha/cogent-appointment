@@ -41,10 +41,10 @@ public class DashboardResource {
         return ok(dashboardService.countOverallAppointments(countRequestDTO));
     }
 
-    @GetMapping(REGISTERED + COUNT + HOSPITAL_ID_PATH_VARIABLE_BASE)
+    @GetMapping(REGISTERED + COUNT )
     @ApiOperation(COUNT_REGISTERED_PATIENTS_OPERATION)
-    public ResponseEntity<?> countRegisteredPatients(@PathVariable("hospitalId") Long hospitalId) {
-        return ok(dashboardService.countOverallRegisteredPatients(hospitalId));
+    public ResponseEntity<?> countRegisteredPatients() {
+        return ok(dashboardService.countOverallRegisteredPatients());
     }
 
     @PutMapping(REVENUE_STATISTICS)

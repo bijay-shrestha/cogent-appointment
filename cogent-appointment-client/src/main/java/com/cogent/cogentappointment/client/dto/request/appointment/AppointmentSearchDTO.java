@@ -11,7 +11,7 @@ import java.util.Date;
  */
 @Getter
 @Setter
-public class AppointmentPendingSearchDTO implements Serializable {
+public class AppointmentSearchDTO implements Serializable {
 
     private Date fromDate;
 

@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.cogent.cogentappointment.client.constants.SwaggerConstants.WeekDaysConstant.BASE_API_VALUE;
-import static com.cogent.cogentappointment.client.constants.SwaggerConstants.WeekDaysConstant.FETCH_ACTIVE_WEEK_DAYS;
+import static com.cogent.cogentappointment.client.constants.SwaggerConstants.WeekDaysConstant.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.WeekDaysConstants.BASE_WEEK_DAYS;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.WeekDaysConstants.PREPARE_WEEK_DAYS_DATA;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -32,5 +32,12 @@ public class WeekDaysResource {
     @ApiOperation(FETCH_ACTIVE_WEEK_DAYS)
     public ResponseEntity<?> fetchActiveWeekDays() {
         return ok(weekDaysService.fetchActiveWeekDays());
+    }
+
+    @GetMapping(PREPARE_WEEK_DAYS_DATA)
+    @ApiOperation(FETCH_PREPARE_WEEK_DAYS)
+    public ResponseEntity<?> fetchPrepareWeekDays() {
+
+        return ok(weekDaysService.fetchPrepareWeekDays());
     }
 }

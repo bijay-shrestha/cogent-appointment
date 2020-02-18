@@ -13,7 +13,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppointmentPendingResponseDTO implements Serializable {
+public class AppointmentMinResponseDTO implements Serializable {
 
     private Long appointmentId;
 

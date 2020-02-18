@@ -34,7 +34,8 @@ public class SpecializationQuery {
                     " s.name as label" +                                     //[1]
                     " FROM" +
                     " Specialization s" +
-                    " WHERE s.status ='Y'";
+                    " WHERE s.status ='Y'" +
+                    " AND s.hospital.id=:hospitalId";
 
     public static final String QUERY_TO_FETCH_SPECIALIZATION_DETAILS =
             " SELECT s.name as name," +                                     //[0]
@@ -44,7 +45,8 @@ public class SpecializationQuery {
                     " FROM" +
                     " Specialization s" +
                     " WHERE s.id = :id" +
-                    " AND s.status != 'D'";
+                    " AND s.status != 'D'" +
+                    " AND s.hospital.id=:hospitalId";
 
     public static String QUERY_TO_SEARCH_SPECIALIZATION(SpecializationSearchRequestDTO searchRequestDTO) {
         return " SELECT" +
@@ -61,7 +63,7 @@ public class SpecializationQuery {
     private static Function<SpecializationSearchRequestDTO, String>
             GET_WHERE_CLAUSE_FOR_SEARCHING_SPECIALIZATION = (searchRequestDTO) -> {
 
-        String whereClause = " WHERE s.status!='D' AND h.id =" + searchRequestDTO.getHospitalId();
+        String whereClause = " WHERE s.status!='D' AND h.id =:hospitalId";
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
             whereClause += " AND s.status='" + searchRequestDTO.getStatus() + "'";
@@ -86,7 +88,8 @@ public class SpecializationQuery {
                     " WHERE" +
                     " cs.doctorId =:id" +
                     " AND cs.status = 'Y'" +
-                    " AND s.status = 'Y'";
+                    " AND s.status = 'Y'" +
+                    " AND s.hospital.id=:hospitalId";
 
     public static final String QUERY_TO_FETCH_SPECIALIZATION_BY_HOSPITAL_ID =
             " SELECT" +

@@ -9,8 +9,10 @@ import com.cogent.cogentappointment.client.dto.response.specialization.Specializ
 import com.cogent.cogentappointment.client.dto.response.specialization.SpecializationResponseDTO;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
+import com.cogent.cogentappointment.client.repository.HospitalRepository;
 import com.cogent.cogentappointment.client.repository.SpecializationRepository;
 import com.cogent.cogentappointment.client.service.SpecializationService;
+import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.Specialization;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +28,7 @@ import static com.cogent.cogentappointment.client.log.constants.SpecializationLo
 import static com.cogent.cogentappointment.client.utils.SpecializationUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getHospitalId;
 
 /**
  * @author smriti on 2019-08-11
@@ -37,8 +40,12 @@ public class SpecializationServiceImpl implements SpecializationService {
 
     private final SpecializationRepository specializationRepository;
 
-    public SpecializationServiceImpl(SpecializationRepository specializationRepository) {
+    private final HospitalRepository hospitalRepository;
+
+    public SpecializationServiceImpl(SpecializationRepository specializationRepository,
+                                     HospitalRepository hospitalRepository) {
         this.specializationRepository = specializationRepository;
+        this.hospitalRepository = hospitalRepository;
     }
 
     @Override
@@ -47,12 +54,14 @@ public class SpecializationServiceImpl implements SpecializationService {
 
         log.info(SAVING_PROCESS_STARTED, SPECIALIZATION);
 
+        Long hospitalId = getHospitalId();
+
         Long specializationCount = specializationRepository.validateDuplicity(
-                requestDTO.getName(), requestDTO.getHospitalId());
+                requestDTO.getName(), hospitalId);
 
         validateName(specializationCount, requestDTO.getName());
 
-        Specialization specialization = save(parseToSpecialization(requestDTO));
+        Specialization specialization = save(parseToSpecialization(requestDTO, findHospitalById(hospitalId)));
 
         log.info(SAVING_PROCESS_COMPLETED, SPECIALIZATION, getDifferenceBetweenTwoTime(startTime));
 
@@ -69,7 +78,7 @@ public class SpecializationServiceImpl implements SpecializationService {
         Specialization specialization = findBySpecializationId(requestDTO.getId());
 
         Long specializationCount = specializationRepository.validateDuplicity(
-                requestDTO.getId(), requestDTO.getName(), requestDTO.getHospitalId());
+                requestDTO.getId(), requestDTO.getName(), getHospitalId());
 
         validateName(specializationCount, requestDTO.getName());
 
@@ -100,7 +109,7 @@ public class SpecializationServiceImpl implements SpecializationService {
         log.info(SEARCHING_PROCESS_STARTED, SPECIALIZATION);
 
         List<SpecializationMinimalResponseDTO> responseDTOS =
-                specializationRepository.search(searchRequestDTO, pageable);
+                specializationRepository.search(searchRequestDTO, getHospitalId(), pageable);
 
         log.info(SEARCHING_PROCESS_COMPLETED, SPECIALIZATION, getDifferenceBetweenTwoTime(startTime));
 
@@ -113,7 +122,8 @@ public class SpecializationServiceImpl implements SpecializationService {
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, SPECIALIZATION);
 
-        List<DropDownResponseDTO> responseDTOS = specializationRepository.fetchActiveSpecializationForDropDown();
+        List<DropDownResponseDTO> responseDTOS = specializationRepository.fetchActiveSpecializationForDropDown(
+                getHospitalId());
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, SPECIALIZATION, getDifferenceBetweenTwoTime(startTime));
 
@@ -126,7 +136,7 @@ public class SpecializationServiceImpl implements SpecializationService {
 
         log.info(FETCHING_DETAIL_PROCESS_STARTED, SPECIALIZATION);
 
-        SpecializationResponseDTO responseDTO = specializationRepository.fetchDetailsById(id);
+        SpecializationResponseDTO responseDTO = specializationRepository.fetchDetailsById(id, getHospitalId());
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, SPECIALIZATION, getDifferenceBetweenTwoTime(startTime));
 
@@ -140,7 +150,7 @@ public class SpecializationServiceImpl implements SpecializationService {
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, SPECIALIZATION);
 
         List<DropDownResponseDTO> responseDTOS =
-                specializationRepository.fetchSpecializationByDoctorId(doctorId);
+                specializationRepository.fetchSpecializationByDoctorId(doctorId, getHospitalId());
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, SPECIALIZATION,
                 getDifferenceBetweenTwoTime(startTime));
@@ -149,13 +159,13 @@ public class SpecializationServiceImpl implements SpecializationService {
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchSpecializationByHospitalId(Long hospitalId) {
+    public List<DropDownResponseDTO> fetchSpecializationByHospitalId() {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, SPECIALIZATION);
 
         List<DropDownResponseDTO> responseDTOS =
-                specializationRepository.fetchSpecializationByHospitalId(hospitalId);
+                specializationRepository.fetchSpecializationByHospitalId(getHospitalId());
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, SPECIALIZATION,
                 getDifferenceBetweenTwoTime(startTime));
@@ -195,4 +205,9 @@ public class SpecializationServiceImpl implements SpecializationService {
     private Function<Long, NoContentFoundException> SPECIALIZATION_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         throw new NoContentFoundException(Specialization.class, "id", id.toString());
     };
+
+    private Hospital findHospitalById(Long hospitalId) {
+        return hospitalRepository.findActiveHospitalById(hospitalId)
+                .orElseThrow(() -> new NoContentFoundException(Hospital.class, "hospitalId", hospitalId.toString()));
+    }
 }

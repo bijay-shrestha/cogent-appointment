@@ -110,8 +110,7 @@ public class DoctorUtils {
 
     public static void convertToUpdatedDoctor(DoctorUpdateDTO requestDTO,
                                               Doctor doctor,
-                                              Gender gender,
-                                              Hospital hospital) {
+                                              Gender gender) {
 
         doctor.setName(toUpperCase(requestDTO.getName()));
         doctor.setMobileNumber(requestDTO.getMobileNumber());
@@ -120,7 +119,6 @@ public class DoctorUtils {
         doctor.setStatus(requestDTO.getStatus());
         doctor.setRemarks(requestDTO.getRemarks());
         doctor.setGender(gender);
-        doctor.setHospital(hospital);
     }
 
     public static DoctorSpecialization parseToUpdatedDoctorSpecialization(
@@ -181,10 +179,12 @@ public class DoctorUtils {
                 .hospitalId(results[HOSPITAL_ID_INDEX].toString())
                 .hospitalName(results[HOSPITAL_NAME_INDEX].toString())
                 .appointmentCharge(Double.parseDouble(results[APPOINTMENT_CHARGE_INDEX].toString()))
-                .appointmentFollowUpCharge(Double.parseDouble(results[APPOINTMENT_FOLLOW_UP_CHARGE].toString()))
+                .appointmentFollowUpCharge((results[APPOINTMENT_FOLLOW_UP_CHARGE] != null) ?
+                        Double.parseDouble(results[APPOINTMENT_FOLLOW_UP_CHARGE].toString()) : null)
                 .doctorSpecializationResponseDTOS(parseToDoctorSpecialization(results))
                 .doctorQualificationResponseDTOS(parseToDoctorQualification(results))
-                .fileUri(results[FILE_URI_INDEX].toString())
+                .fileUri((results[FILE_URI_INDEX] != null) ?
+                        results[FILE_URI_INDEX].toString() : null)
                 .build();
     }
 

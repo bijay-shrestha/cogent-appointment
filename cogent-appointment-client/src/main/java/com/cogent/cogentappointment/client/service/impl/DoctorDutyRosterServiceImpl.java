@@ -266,9 +266,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
         log.info(FETCHING_DETAIL_PROCESS_STARTED, DOCTOR_DUTY_ROSTER);
 
-        Long hospitalId = getHospitalId();
-
-        DoctorDutyRosterDetailResponseDTO responseDTO = doctorDutyRosterRepository.fetchDetailsById(id, hospitalId);
+        DoctorDutyRosterDetailResponseDTO responseDTO = doctorDutyRosterRepository.fetchDetailsById(id, getHospitalId());
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, DOCTOR_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
 

@@ -22,13 +22,14 @@ public interface SpecializationRepositoryCustom {
     Long validateDuplicity(Long id, String name, Long hospitalId);
 
     List<SpecializationMinimalResponseDTO> search(SpecializationSearchRequestDTO searchRequestDTO,
+                                                  Long hospitalId,
                                                   Pageable pageable);
 
-    List<DropDownResponseDTO> fetchActiveSpecializationForDropDown();
+    List<DropDownResponseDTO> fetchActiveSpecializationForDropDown(Long hospitalId);
 
-    SpecializationResponseDTO fetchDetailsById(Long id);
+    SpecializationResponseDTO fetchDetailsById(Long id,Long hospitalId);
 
-    List<DropDownResponseDTO> fetchSpecializationByDoctorId(Long doctorId);
+    List<DropDownResponseDTO> fetchSpecializationByDoctorId(Long doctorId,Long hospitalId);
 
     List<DropDownResponseDTO> fetchSpecializationByHospitalId(Long hospitalId);
 }

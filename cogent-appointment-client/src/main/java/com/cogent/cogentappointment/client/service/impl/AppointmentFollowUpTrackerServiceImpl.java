@@ -21,6 +21,7 @@ import static com.cogent.cogentappointment.client.log.CommonLogConstant.FETCHING
 import static com.cogent.cogentappointment.client.log.constants.AppointmentFollowUpTrackerLog.APPOINTMENT_FOLLOW_UP_TRACKER;
 import static com.cogent.cogentappointment.client.utils.AppointmentFollowUpTrackerUtils.parseToAppointmentFollowUpResponseDTO;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
+import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getHospitalId;
 import static java.lang.reflect.Array.get;
 
 /**
@@ -77,7 +78,7 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
 
             if (isAppointmentActive(requestedDate, expiryDate)) {
                 Double doctorFollowUpCharge = doctorRepository.fetchDoctorAppointmentFollowUpCharge(
-                        requestDTO.getDoctorId());
+                        requestDTO.getDoctorId(),getHospitalId());
                 responseDTO = parseToAppointmentFollowUpResponseDTO(YES, doctorFollowUpCharge, parentAppointmentId);
             } else {
                 responseDTO = parseToAppointmentFollowUpResponseDTO(NO, null, null);

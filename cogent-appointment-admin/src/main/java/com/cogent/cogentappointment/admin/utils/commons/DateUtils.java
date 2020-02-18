@@ -94,13 +94,19 @@ public class DateUtils {
         return dateFormat.format(date);
     }
 
-    public static String convert12HourTo24HourFormat(String time12) throws ParseException {
-        SimpleDateFormat dateParser = new SimpleDateFormat("h:mm a");
-        Date date = dateParser.parse(time12);
+    public static String convert12HourTo24HourFormat(String time12) {
 
-        SimpleDateFormat dateFormatter = new SimpleDateFormat("HH:mm");
+        try {
+            SimpleDateFormat dateParser = new SimpleDateFormat("h:mm a");
+            Date date = dateParser.parse(time12);
 
-        return dateFormatter.format(date);
+            SimpleDateFormat dateFormatter = new SimpleDateFormat("HH:mm");
+
+            return dateFormatter.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static Date datePlusTime(Date date, Date time) {

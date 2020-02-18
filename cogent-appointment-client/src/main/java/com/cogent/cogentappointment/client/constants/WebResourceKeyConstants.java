@@ -26,6 +26,7 @@ public class WebResourceKeyConstants {
         String RESCHEDULE = "/reschedule";
         String FOLLOW_UP = "/follow-up";
         String APPOINTMENT_ID_PATH_VARIABLE_BASE = "/{appointmentId}";
+        String HISTORY = "/history";
     }
 
     //B
@@ -166,6 +167,7 @@ public class WebResourceKeyConstants {
     //W
     public interface WeekDaysConstants {
         String BASE_WEEK_DAYS = "/weekDays";
+        String PREPARE_WEEK_DAYS_DATA = "/prepare-weekdays-data";
     }
 
 

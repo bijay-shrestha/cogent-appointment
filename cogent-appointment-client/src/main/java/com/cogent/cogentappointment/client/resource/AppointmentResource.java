@@ -45,7 +45,7 @@ public class AppointmentResource {
 
     @PutMapping(PENDING_APPOINTMENT)
     @ApiOperation((FETCH_PENDING_APPOINTMENT))
-    public ResponseEntity<?> fetchPendingAppointments(@RequestBody AppointmentPendingSearchDTO searchDTO) {
+    public ResponseEntity<?> fetchPendingAppointments(@RequestBody AppointmentSearchDTO searchDTO) {
         return ok(appointmentService.fetchPendingAppointments(searchDTO));
     }
 
@@ -67,4 +67,11 @@ public class AppointmentResource {
     public ResponseEntity<?> fetchAppointmentDetails(@PathVariable("appointmentId") Long appointmentId) {
         return ok().body(appointmentService.fetchAppointmentDetails(appointmentId));
     }
+
+    @PutMapping(HISTORY)
+    @ApiOperation((FETCH_APPOINTMENT_HISTORY))
+    public ResponseEntity<?> fetchAppointmentHistory(@RequestBody AppointmentSearchDTO searchDTO) {
+        return ok(appointmentService.fetchAppointmentHistory(searchDTO));
+    }
+
 }

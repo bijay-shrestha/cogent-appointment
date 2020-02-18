@@ -35,6 +35,7 @@ public class SwaggerConstants {
         String FETCH_PENDING_APPOINTMENT = "Fetch pending appointments";
         String CANCEL_APPOINTMENT_OPERATION = "Cancel appointment and request refund";
         String RESCHEDULE_OPERATION = "Reschedule appointment date and time.";
+        String FETCH_APPOINTMENT_HISTORY = " Fetch appointment history (only approved)";
     }
 
     public interface AuthenticateConstant {
@@ -143,7 +144,6 @@ public class SwaggerConstants {
     }
 
 
-
     //G
 
     //H
@@ -242,6 +242,7 @@ public class SwaggerConstants {
     public interface WeekDaysConstant {
         String BASE_API_VALUE = "This is Week Days Resource.";
         String FETCH_ACTIVE_WEEK_DAYS = "Fetch active week days.";
+        String FETCH_PREPARE_WEEK_DAYS = "Fetch PREPARE active week days.";
     }
 
 

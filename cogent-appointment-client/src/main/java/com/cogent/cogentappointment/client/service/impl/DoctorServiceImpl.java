@@ -34,6 +34,7 @@ import static com.cogent.cogentappointment.client.utils.DoctorUtils.*;
 import static com.cogent.cogentappointment.client.utils.GenderUtils.fetchGenderByCode;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getHospitalId;
 
 /**
  * @author smriti on 2019-09-29
@@ -89,13 +90,13 @@ public class DoctorServiceImpl implements DoctorService {
         log.info(SAVING_PROCESS_STARTED, DOCTOR);
 
         Long doctorCount = doctorRepository.validateDoctorDuplicity(
-                requestDTO.getName(), requestDTO.getMobileNumber(), requestDTO.getHospitalId());
+                requestDTO.getName(), requestDTO.getMobileNumber(), getHospitalId());
 
         validateDoctor(doctorCount, requestDTO.getName(), requestDTO.getMobileNumber());
 
         Doctor doctor = parseDTOToDoctor(requestDTO,
                 fetchGender(requestDTO.getGenderCode()),
-                fetchHospitalById(requestDTO.getHospitalId()));
+                fetchHospitalById(getHospitalId()));
 
         saveDoctor(doctor);
 

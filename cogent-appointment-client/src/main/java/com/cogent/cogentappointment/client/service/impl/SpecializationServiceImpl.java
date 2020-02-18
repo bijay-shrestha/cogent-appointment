@@ -179,7 +179,8 @@ public class SpecializationServiceImpl implements SpecializationService {
 
         log.info(FETCHING_PROCESS_STARTED, SPECIALIZATION);
 
-        Specialization specialization = specializationRepository.findActiveSpecializationById(specializationId)
+        Specialization specialization = specializationRepository
+                .findActiveSpecializationById(specializationId, getHospitalId())
                 .orElseThrow(() -> SPECIALIZATION_WITH_GIVEN_ID_NOT_FOUND.apply(specializationId));
 
         log.info(FETCHING_PROCESS_COMPLETED, SPECIALIZATION, getDifferenceBetweenTwoTime(startTime));

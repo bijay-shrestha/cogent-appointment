@@ -73,10 +73,9 @@ public class WebResourceKeyConstants {
         String EXISTING = "/existing";
         String REVERT_DOCTOR_DUTY_ROSTER_OVERRIDE = "/revert";
     }
-
-    //E
-
+    
     //F
+    public static final String FILES = "/files";
     public static final String FILE = "/files/{subDirectoryLocation}/{filename:.+}";
 
     public interface ForgotPasswordConstants {

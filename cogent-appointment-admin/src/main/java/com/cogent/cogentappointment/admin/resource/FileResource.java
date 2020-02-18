@@ -1,41 +1,67 @@
 package com.cogent.cogentappointment.admin.resource;
 
-import com.cogent.cogentappointment.admin.constants.StringConstant;
 import com.cogent.cogentappointment.admin.service.FileService;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.cogent.cogentappointment.admin.service.MinioFileService;
+import com.jlefebure.spring.boot.minio.MinioException;
+import io.minio.messages.Item;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLConnection;
+import java.util.List;
 
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.FILE;
-import static org.springframework.http.ResponseEntity.ok;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.FILES;
 
 /**
  * @author smriti ON 12/01/2020
  */
 @RestController
-@RequestMapping(API_V1)
+@RequestMapping(API_V1 + FILES)
 public class FileResource {
 
-    private final FileService fileService;
+    private final MinioFileService minioService;
 
-    public FileResource(FileService fileService) {
-        this.fileService = fileService;
+    public FileResource(FileService fileService, MinioFileService minioService) {
+        this.minioService = minioService;
     }
 
-    @GetMapping(FILE)
-    public ResponseEntity<Resource> downloadFile(@PathVariable String subDirectoryLocation,
-                                                 @PathVariable String filename) {
+    @GetMapping
+    public List<Item> getAllList() throws MinioException {
+        return minioService.getAllList();
+    }
 
-        Resource file = fileService.loadAsResource(subDirectoryLocation, filename);
+    //FOR NO SUB-DIRECTORY CASE
+    @GetMapping("/{object}")
+    public InputStream getObject(@PathVariable("object") String object,
+                                 HttpServletResponse response)
+            throws IOException, MinioException {
+        return minioService.getObject(object);
+    }
 
-        return ok().header(
-                HttpHeaders.CONTENT_DISPOSITION,
-                "attachment; filename=" + StringConstant.BACKWARD_SLASH + file.getFilename() + StringConstant.BACKWARD_SLASH)
-                .body(file);
+    //FOR SUB-DIRECTORY CASE
+    @GetMapping("/{subDirectory}/{object}")
+    public void getObjectWithSubDirectory(@PathVariable("subDirectory") String subDirectory,
+                                          @PathVariable("object") String object,
+                                          HttpServletResponse response)
+            throws IOException, MinioException {
+
+        InputStream inputStream = minioService.getObjectWithSubDirectory(subDirectory, object);
+
+//         SET THE CONTENT TYPE AND ATTACHMENT HEADER.
+        response.addHeader("Content-disposition", "attachment;filename=" + object);
+        response.setContentType(URLConnection.guessContentTypeFromName(object));
+
+        // COPY THE STREAM TO THE RESPONSE'S OUTPUT STREAM.
+        IOUtils.copy(inputStream, response.getOutputStream());
+        response.flushBuffer();
+    }
+
+    @PostMapping("/{object}")
+    public void deleteFiles(@PathVariable("object") String object) throws MinioException {
+        minioService.deleteFiles(object);
     }
 }

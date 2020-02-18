@@ -2,7 +2,6 @@ package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.constants.ErrorMessageConstants;
 import com.cogent.cogentappointment.admin.constants.StatusConstants;
-import com.cogent.cogentappointment.admin.constants.StringConstant;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctor.*;
 import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorDetailResponseDTO;
@@ -56,7 +55,7 @@ public class DoctorServiceImpl implements DoctorService {
 
     private final DoctorAppointmentChargeRepository doctorAppointmentChargeRepository;
 
-    private final FileService fileService;
+    private final MinioFileService minioFileService;
 
     private final DoctorAvatarRepository doctorAvatarRepository;
 
@@ -68,7 +67,7 @@ public class DoctorServiceImpl implements DoctorService {
                              HospitalService hospitalService,
                              DoctorAppointmentChargeRepository doctorAppointmentChargeRepository,
                              FileService fileService,
-                             DoctorAvatarRepository doctorAvatarRepository) {
+                             MinioFileService minioFileService, DoctorAvatarRepository doctorAvatarRepository) {
         this.doctorRepository = doctorRepository;
         this.doctorSpecializationRepository = doctorSpecializationRepository;
         this.specializationService = specializationService;
@@ -76,7 +75,7 @@ public class DoctorServiceImpl implements DoctorService {
         this.doctorQualificationRepository = doctorQualificationRepository;
         this.hospitalService = hospitalService;
         this.doctorAppointmentChargeRepository = doctorAppointmentChargeRepository;
-        this.fileService = fileService;
+        this.minioFileService = minioFileService;
         this.doctorAvatarRepository = doctorAvatarRepository;
     }
 
@@ -328,10 +327,10 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     private List<FileUploadResponseDTO> uploadFiles(Doctor Doctor, MultipartFile[] file) {
-        String subDirectoryLocation = Doctor.getClass().getSimpleName()
-                + StringConstant.FORWARD_SLASH + Doctor.getName() + StringConstant.SPACE + Doctor.getMobileNumber();
-
-        return fileService.uploadFiles(file, subDirectoryLocation);
+//        String subDirectoryLocation = Doctor.getClass().getSimpleName()
+//                + StringConstant.FORWARD_SLASH + Doctor.getName() + StringConstant.SPACE + Doctor.getMobileNumber();
+        String subDirectoryLocation = Doctor.getMobileNumber();
+        return minioFileService.addAttachmentIntoSubDirectory(subDirectoryLocation, file);
     }
 
     private void saveDoctorAppointmentCharge(Doctor doctor, Double appointmentCharge, Double appointmentFollowUpCharge) {

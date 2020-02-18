@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.constants.StatusConstants;
-import com.cogent.cogentappointment.admin.constants.StringConstant;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalContactNumberUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalRequestDTO;
@@ -15,6 +14,7 @@ import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.FileService;
 import com.cogent.cogentappointment.admin.service.HospitalService;
+import com.cogent.cogentappointment.admin.service.MinioFileService;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -60,6 +60,8 @@ public class HospitalServiceImpl implements HospitalService {
 
     private final FileService fileService;
 
+    private final MinioFileService minioFileService;
+
     private final Validator validator;
 
     public HospitalServiceImpl(HospitalRepository hospitalRepository,
@@ -68,13 +70,14 @@ public class HospitalServiceImpl implements HospitalService {
                                HospitalBannerRepository hospitalBannerRepository,
                                HmacApiInfoRepository hmacApiInfoRepository,
                                FileService fileService,
-                               Validator validator) {
+                               MinioFileService minioFileService, Validator validator) {
         this.hospitalRepository = hospitalRepository;
         this.hospitalContactNumberRepository = hospitalContactNumberRepository;
         this.hospitalLogoRepository = hospitalLogoRepository;
         this.hospitalBannerRepository = hospitalBannerRepository;
         this.hmacApiInfoRepository = hmacApiInfoRepository;
         this.fileService = fileService;
+        this.minioFileService = minioFileService;
         this.validator = validator;
     }
 
@@ -245,8 +248,10 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     private List<FileUploadResponseDTO> uploadFiles(Hospital hospital, MultipartFile[] files) {
-        String subDirectory = hospital.getClass().getSimpleName() + StringConstant.FORWARD_SLASH + hospital.getName();
-        return fileService.uploadFiles(files, subDirectory);
+//        String subDirectory = hospital.getClass().getSimpleName() + StringConstant.FORWARD_SLASH + hospital.getName();
+
+        String subDirectory = hospital.getName();
+        return minioFileService.addAttachmentIntoSubDirectory(subDirectory, files);
     }
 
     private void saveHospitalLogo(HospitalLogo hospitalLogo) {

@@ -11,10 +11,7 @@ import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.exception.OperationUnsuccessfulException;
 import com.cogent.cogentappointment.admin.repository.*;
-import com.cogent.cogentappointment.admin.service.AdminService;
-import com.cogent.cogentappointment.admin.service.EmailService;
-import com.cogent.cogentappointment.admin.service.FileService;
-import com.cogent.cogentappointment.admin.service.ProfileService;
+import com.cogent.cogentappointment.admin.service.*;
 import com.cogent.cogentappointment.admin.validator.LoginValidator;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
@@ -67,7 +64,9 @@ public class AdminServiceImpl implements AdminService {
 
     private final AdminConfirmationTokenRepository confirmationTokenRepository;
 
-    private final FileService fileService;
+//    private final FileService fileService;
+
+    private final MinioFileService minioFileService;
 
     private final EmailService emailService;
 
@@ -80,7 +79,7 @@ public class AdminServiceImpl implements AdminService {
                             AdminAvatarRepository adminAvatarRepository,
                             AdminConfirmationTokenRepository confirmationTokenRepository,
                             FileService fileService,
-                            EmailService emailService,
+                            MinioFileService minioFileService, EmailService emailService,
                             ProfileService profileService) {
         this.validator = validator;
         this.adminRepository = adminRepository;
@@ -88,7 +87,7 @@ public class AdminServiceImpl implements AdminService {
         this.adminMetaInfoRepository = adminMetaInfoRepository;
         this.adminAvatarRepository = adminAvatarRepository;
         this.confirmationTokenRepository = confirmationTokenRepository;
-        this.fileService = fileService;
+        this.minioFileService = minioFileService;
         this.emailService = emailService;
         this.profileService = profileService;
     }
@@ -387,8 +386,11 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private List<FileUploadResponseDTO> uploadFiles(Admin admin, MultipartFile[] files) {
-        String subDirectory = admin.getClass().getSimpleName() + StringConstant.FORWARD_SLASH + admin.getUsername();
-        return fileService.uploadFiles(files, subDirectory);
+//      String subDirectory = admin.getClass().getSimpleName() + StringConstant.FORWARD_SLASH + admin.getUsername();
+        String subDirectory =  admin.getUsername();
+        //        return fileService.uploadFiles(files, subDirectory);
+        return minioFileService.addAttachmentIntoSubDirectory(subDirectory, files);
+
     }
 
     private void updateAdminAvatar(Admin admin, AdminAvatar adminAvatar, MultipartFile files) {

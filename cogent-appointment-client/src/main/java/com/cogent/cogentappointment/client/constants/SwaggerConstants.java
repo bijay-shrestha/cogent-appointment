@@ -35,6 +35,7 @@ public class SwaggerConstants {
         String FETCH_PENDING_APPOINTMENT = "Fetch pending appointments";
         String CANCEL_APPOINTMENT_OPERATION = "Cancel appointment and request refund";
         String RESCHEDULE_OPERATION = "Reschedule appointment date and time.";
+        String FETCH_APPOINTMENT_HISTORY = " Fetch appointment history (only approved)";
     }
 
     public interface AuthenticateConstant {
@@ -141,7 +142,6 @@ public class SwaggerConstants {
         String BASE_API_VALUE = "This is Follow-Up Tracker Resource";
         String FETCH_FOLLOW_UP_DETAILS = "Fetch follow up details";
     }
-
 
 
     //G

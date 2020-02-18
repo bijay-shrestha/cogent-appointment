@@ -168,12 +168,12 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<AppointmentPendingResponseDTO> fetchPendingAppointments(AppointmentPendingSearchDTO searchDTO) {
+    public List<AppointmentMinResponseDTO> fetchPendingAppointments(AppointmentSearchDTO searchDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, PENDING_APPOINTMENTS);
 
-        List<AppointmentPendingResponseDTO> pendingAppointments =
+        List<AppointmentMinResponseDTO> pendingAppointments =
                 appointmentRepository.fetchPendingAppointments(searchDTO);
 
         log.info(FETCHING_PROCESS_COMPLETED, PENDING_APPOINTMENTS, getDifferenceBetweenTwoTime(startTime));
@@ -237,6 +237,20 @@ public class AppointmentServiceImpl implements AppointmentService {
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
 
         return appointmentDetails;
+    }
+
+    @Override
+    public List<AppointmentMinResponseDTO> fetchAppointmentHistory(AppointmentSearchDTO searchDTO) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, APPOINTMENT);
+
+        List<AppointmentMinResponseDTO> appointmentHistory =
+                appointmentRepository.fetchAppointmentHistory(searchDTO);
+
+        log.info(FETCHING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
+
+        return appointmentHistory;
     }
 
     private List<String> filterDoctorTimeWithAppointments(Duration rosterGapDuration,

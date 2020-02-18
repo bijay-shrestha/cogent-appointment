@@ -104,13 +104,6 @@ public class DoctorDutyRosterResource {
         return ok(doctorDutyRosterService.fetchExistingRosterDetails(id));
     }
 
-//
-//    @PutMapping(DOCTOR_DUTY_ROSTER_STATUS)
-//    @ApiOperation(FETCH_DOCTOR_DUTY_ROSTER_STATUS_OPERATION)
-//    public List<DoctorDutyRosterStatusResponseDTO> fetchDoctorDutyRosterStatus(
-//            @RequestBody DoctorDutyRosterStatusRequestDTO searchRequestDTO) {
-//        return doctorDutyRosterService.fetchDoctorDutyRosterStatus(searchRequestDTO);
-//    }
 }
 
 

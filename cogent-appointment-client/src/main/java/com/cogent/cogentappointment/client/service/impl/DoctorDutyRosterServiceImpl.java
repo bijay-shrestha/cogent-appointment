@@ -8,10 +8,7 @@ import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.*;
 import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.repository.AppointmentRepository;
-import com.cogent.cogentappointment.client.repository.DoctorDutyRosterOverrideRepository;
-import com.cogent.cogentappointment.client.repository.DoctorDutyRosterRepository;
-import com.cogent.cogentappointment.client.repository.DoctorWeekDaysDutyRosterRepository;
+import com.cogent.cogentappointment.client.repository.*;
 import com.cogent.cogentappointment.client.service.DoctorDutyRosterService;
 import com.cogent.cogentappointment.client.service.DoctorService;
 import com.cogent.cogentappointment.client.service.SpecializationService;
@@ -37,6 +34,7 @@ import static com.cogent.cogentappointment.client.log.constants.DoctorDutyRoster
 import static com.cogent.cogentappointment.client.utils.DoctorDutyRosterOverrideUtils.*;
 import static com.cogent.cogentappointment.client.utils.DoctorDutyRosterUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
+import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getHospitalId;
 
 /**
  * @author smriti on 26/11/2019
@@ -60,13 +58,15 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
     private final AppointmentRepository appointmentRepository;
 
+    private final HospitalRepository hospitalRepository;
+
     public DoctorDutyRosterServiceImpl(DoctorDutyRosterRepository doctorDutyRosterRepository,
                                        DoctorService doctorService,
                                        SpecializationService specializationService,
                                        WeekDaysService weekDaysService,
                                        DoctorWeekDaysDutyRosterRepository doctorWeekDaysDutyRosterRepository,
                                        DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository,
-                                       AppointmentRepository appointmentRepository) {
+                                       AppointmentRepository appointmentRepository, HospitalRepository hospitalRepository) {
         this.doctorDutyRosterRepository = doctorDutyRosterRepository;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -74,6 +74,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
         this.doctorWeekDaysDutyRosterRepository = doctorWeekDaysDutyRosterRepository;
         this.doctorDutyRosterOverrideRepository = doctorDutyRosterOverrideRepository;
         this.appointmentRepository = appointmentRepository;
+        this.hospitalRepository = hospitalRepository;
     }
 
     @Override
@@ -91,7 +92,8 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
         DoctorDutyRoster doctorDutyRoster = parseToDoctorDutyRoster(
                 requestDTO,
                 findDoctorById(requestDTO.getDoctorId()),
-                findSpecializationById(requestDTO.getSpecializationId()));
+                findSpecializationById(requestDTO.getSpecializationId()),
+                findHospitalById(getHospitalId()));
 
         save(doctorDutyRoster);
 
@@ -264,7 +266,9 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
         log.info(FETCHING_DETAIL_PROCESS_STARTED, DOCTOR_DUTY_ROSTER);
 
-        DoctorDutyRosterDetailResponseDTO responseDTO = doctorDutyRosterRepository.fetchDetailsById(id);
+        Long hospitalId = getHospitalId();
+
+        DoctorDutyRosterDetailResponseDTO responseDTO = doctorDutyRosterRepository.fetchDetailsById(id, hospitalId);
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, DOCTOR_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
 
@@ -508,6 +512,11 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
         if (fromDateGreaterThanToDate)
             throw new BadRequestException(INVALID_DATE_MESSAGE, INVALID_DATE_DEBUG_MESSAGE);
+    }
+
+    private Hospital findHospitalById(Long hospitalId) {
+        return hospitalRepository.findActiveHospitalById(hospitalId)
+                .orElseThrow(() -> new NoContentFoundException(Hospital.class, "hospitalId", hospitalId.toString()));
     }
 
 }

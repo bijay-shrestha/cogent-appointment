@@ -11,6 +11,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static com.cogent.cogentappointment.client.utils.commons.DateConverterUtils.getFiscalYear;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.convertDateToLocalDate;
 
 /**
@@ -33,7 +34,8 @@ public class DashboardUtils {
         GenerateRevenueResponseDTO generateRevenueResponseDTO = new GenerateRevenueResponseDTO();
         generateRevenueResponseDTO.setAmount(currentTransaction);
         generateRevenueResponseDTO.setGrowthPercent(growthPercent);
-        generateRevenueResponseDTO.setRevenueType(revenueType);
+        generateRevenueResponseDTO.setFiscalYear(getFiscalYear());
+        generateRevenueResponseDTO.setFilterType(revenueType);
 
         return generateRevenueResponseDTO;
     }

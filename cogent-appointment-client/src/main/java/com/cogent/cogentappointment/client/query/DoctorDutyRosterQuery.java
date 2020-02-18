@@ -62,7 +62,8 @@ public class DoctorDutyRosterQuery {
                     " LEFT JOIN Doctor d ON ddr.doctorId.id = d.id" +
                     " LEFT JOIN Specialization s ON ddr.specializationId.id = s.id" +
                     " WHERE ddr.status !='D'" +
-                    " AND ddr.id = :id";
+                    " AND ddr.id = :id" +
+                    " AND ddr.hospitalId.id=:hospitalId";
 
     public static final String QUERY_TO_FETCH_DOCTOR_WEEK_DAYS_DUTY_ROSTER =
             " SELECT" +

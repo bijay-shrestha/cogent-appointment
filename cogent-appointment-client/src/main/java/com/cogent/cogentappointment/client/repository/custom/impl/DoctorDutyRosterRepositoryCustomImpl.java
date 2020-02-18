@@ -80,10 +80,10 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
     }
 
     @Override
-    public DoctorDutyRosterDetailResponseDTO fetchDetailsById(Long doctorDutyRosterId) {
+    public DoctorDutyRosterDetailResponseDTO fetchDetailsById(Long doctorDutyRosterId,Long hospitalId) {
 
         DoctorDutyRosterResponseDTO doctorDutyRosterResponseDTO =
-                fetchDoctorDutyRosterDetails(doctorDutyRosterId);
+                fetchDoctorDutyRosterDetails(doctorDutyRosterId,hospitalId);
 
         List<DoctorWeekDaysDutyRosterResponseDTO> weekDaysDutyRosterResponseDTO =
                 fetchDoctorWeekDaysDutyRosterResponseDTO(doctorDutyRosterId);
@@ -162,10 +162,11 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
         return parseToExistingRosterDetails(weekDaysDutyRosterResponseDTO, overrideResponseDTOS);
     }
 
-    private DoctorDutyRosterResponseDTO fetchDoctorDutyRosterDetails(Long doctorDutyRosterId) {
+    private DoctorDutyRosterResponseDTO fetchDoctorDutyRosterDetails(Long doctorDutyRosterId,Long hospitalId) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_DETAILS)
-                .setParameter(ID, doctorDutyRosterId);
+                .setParameter(ID, doctorDutyRosterId)
+                .setParameter(HOSPITAL_ID, hospitalId);
         try {
             return transformQueryToSingleResult(query, DoctorDutyRosterResponseDTO.class);
         } catch (NoResultException e) {

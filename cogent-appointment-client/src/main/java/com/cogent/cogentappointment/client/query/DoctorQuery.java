@@ -70,7 +70,7 @@ public class DoctorQuery {
     private static Function<DoctorSearchRequestDTO, String> GET_WHERE_CLAUSE_FOR_SEARCH_DOCTOR =
             (searchRequestDTO) -> {
 
-                String whereClause = " WHERE d.status!='D'";
+                String whereClause = " WHERE d.status!='D' AND d.hospital_id=:hospitalId";
 
                 if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
                     whereClause += " AND d.status='" + searchRequestDTO.getStatus() + "'";
@@ -103,7 +103,8 @@ public class DoctorQuery {
                     " FROM" +
                     " Doctor d" +
                     " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId" +
-                    " WHERE d.status ='Y'";
+                    " WHERE d.status ='Y'" +
+                    " AND d.hospital.id=:hospitalId";
 
     private static final String QUERY_TO_FETCH_DOCTOR_QUALIFICATION_FOR_DETAIL =
             " SELECT" +
@@ -156,7 +157,8 @@ public class DoctorQuery {
                     QUERY_TO_FETCH_DOCTOR_AVATAR +
                     " )tbl3 ON tbl3.doctorId= d.id" +
                     " WHERE d.status != 'D'" +
-                    " AND d.id = :id";
+                    " AND d.id = :id" +
+                    " AND d.hospital_id=:hospitalId";
 
     /*UPDATE MODAL*/
     private static final String QUERY_TO_FETCH_DOCTOR_SPECIALIZATION_FOR_UPDATE =
@@ -215,7 +217,8 @@ public class DoctorQuery {
                     QUERY_TO_FETCH_DOCTOR_AVATAR +
                     " )tbl3 ON tbl3.doctorId= d.id" +
                     " WHERE d.status != 'D'" +
-                    " AND d.id = :id";
+                    " AND d.id = :id" +
+                    " AND d.hospital_id=:hospitalId";
 
     public static String QUERY_TO_FETCH_DOCTOR_BY_SPECIALIZATION_ID =
             "SELECT" +
@@ -232,7 +235,8 @@ public class DoctorQuery {
                     " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId" +
                     " WHERE cs.specializationId = :id" +
                     " AND cs.status = 'Y'" +
-                    " AND d.status = 'Y'";
+                    " AND d.status = 'Y'" +
+                    " AND d.hospital.id= :hospitalId";
 
     public static final String QUERY_TO_FETCH_DOCTOR_BY_HOSPITAL_ID =
             " SELECT" +
@@ -300,5 +304,6 @@ public class DoctorQuery {
     public static String QUERY_TO_FETCH_DOCTOR_APPOINTMENT_CHARGE =
             " SELECT da.appointmentFollowUpCharge" +
                     " FROM DoctorAppointmentCharge da " +
-                    " WHERE da.doctorId.id = :doctorId";
+                    " WHERE da.doctorId.id = :doctorId" +
+                    " AND da.doctorId.hospital.id = :hospitalId";
 }

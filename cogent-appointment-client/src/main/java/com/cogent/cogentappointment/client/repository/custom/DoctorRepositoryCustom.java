@@ -19,19 +19,21 @@ public interface DoctorRepositoryCustom {
 
     Long validateDoctorDuplicityForUpdate(Long id, String name, String mobileNumber, Long hospitalId);
 
-    List<DoctorMinimalResponseDTO> search(DoctorSearchRequestDTO searchRequestDTO, Pageable pageable);
+    List<DoctorMinimalResponseDTO> search(DoctorSearchRequestDTO searchRequestDTO,
+                                          Long hospitalId,
+                                          Pageable pageable);
 
-    List<DoctorDropdownDTO> fetchDoctorForDropdown();
+    List<DoctorDropdownDTO> fetchDoctorForDropdown(Long hosiptalId);
 
-    DoctorDetailResponseDTO fetchDetailsById(Long id);
+    DoctorDetailResponseDTO fetchDetailsById(Long id,Long hospitalId);
 
-    List<DoctorDropdownDTO> fetchDoctorBySpecializationId(Long specializationId);
+    List<DoctorDropdownDTO> fetchDoctorBySpecializationId(Long specializationId,Long hospitalId);
 
     List<DoctorDropdownDTO> fetchDoctorByHospitalId(Long hospitalId);
 
-    DoctorUpdateResponseDTO fetchDetailsForUpdate(Long id);
+    DoctorUpdateResponseDTO fetchDetailsForUpdate(Long id,Long hospitalId);
 
     List<DoctorMinResponseDTO> fetchDoctorMinInfo(Long hospitalId);
 
-    Double fetchDoctorAppointmentFollowUpCharge(Long doctorId);
+    Double fetchDoctorAppointmentFollowUpCharge(Long doctorId,Long hospitalId);
 }

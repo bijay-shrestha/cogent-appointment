@@ -220,7 +220,7 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public Doctor fetchDoctorById(Long id) {
+    public Doctor fetchActiveDoctorById(Long id) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, DOCTOR);

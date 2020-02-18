@@ -13,8 +13,6 @@ import java.util.Date;
 @Setter
 public class AppointmentFollowUpRequestDTO implements Serializable {
 
-    private Date appointmentDate;
-
     private Long patientId;
 
     private Long doctorId;
@@ -22,4 +20,8 @@ public class AppointmentFollowUpRequestDTO implements Serializable {
     private Long specializationId;
 
     private Long hospitalId;
+
+    private Date appointmentDate;
+
+    private String appointmentTime;
 }

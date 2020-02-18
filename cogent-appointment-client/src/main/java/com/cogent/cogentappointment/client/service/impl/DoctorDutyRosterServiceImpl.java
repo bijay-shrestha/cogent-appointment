@@ -362,7 +362,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
 
     private Doctor findDoctorById(Long doctorId) {
-        return doctorService.fetchDoctorById(doctorId);
+        return doctorService.fetchActiveDoctorById(doctorId);
     }
 
     private Specialization findSpecializationById(Long specializationId) {

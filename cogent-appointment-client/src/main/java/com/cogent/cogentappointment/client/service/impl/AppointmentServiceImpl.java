@@ -272,7 +272,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     private Doctor fetchDoctor(Long doctorId) {
-        return doctorService.fetchDoctorById(doctorId);
+        return doctorService.fetchActiveDoctorById(doctorId);
     }
 
     private Specialization fetchSpecialization(Long specializationId) {

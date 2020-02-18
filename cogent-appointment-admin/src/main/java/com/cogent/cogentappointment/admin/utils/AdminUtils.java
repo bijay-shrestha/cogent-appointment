@@ -12,6 +12,7 @@ import com.cogent.cogentappointment.admin.utils.commons.NumberFormatterUtils;
 import com.cogent.cogentappointment.admin.utils.commons.StringUtil;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
+import com.cogent.cogentappointment.persistence.model.Admin;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
@@ -22,6 +23,8 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.admin.constants.EmailConstants.*;
+import static com.cogent.cogentappointment.admin.constants.EmailTemplates.*;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.OR;
 import static com.cogent.cogentappointment.admin.utils.commons.NumberFormatterUtils.generateRandomToken;
 
@@ -102,13 +105,15 @@ public class AdminUtils {
                                                                        String confirmationToken,
                                                                        HttpServletRequest httpServletRequest) {
 
-        String origin = httpServletRequest.getHeader("origin");
-        String confirmationUrl = origin + "/#" + "/savePassword" + "?token =" + confirmationToken;
+//        String origin = httpServletRequest.getHeader("origin");
+//        String confirmationUrl = origin + "/#" + "/savePassword" + "?token =" + confirmationToken;
+
+        String confirmationUrl = adminRequestDTO.getBaseUrl() + "/#" + "/savePassword" + "?token =" + confirmationToken;
 
         return EmailRequestDTO.builder()
                 .receiverEmailAddress(adminRequestDTO.getEmail())
-                .subject(EmailConstants.SUBJECT_FOR_ADMIN_VERIFICATION)
-                .templateName(EmailTemplates.ADMIN_VERIFICATION)
+                .subject(SUBJECT_FOR_ADMIN_VERIFICATION)
+                .templateName(ADMIN_VERIFICATION)
                 .paramValue(adminRequestDTO.getUsername() + StringConstant.COMMA_SEPARATED + confirmationUrl)
                 .build();
     }
@@ -215,8 +220,8 @@ public class AdminUtils {
                                                          String updatedMacAddress) {
         return EmailRequestDTO.builder()
                 .receiverEmailAddress(updateRequestDTO.getEmail())
-                .subject(EmailConstants.SUBJECT_FOR_UPDATE_ADMIN)
-                .templateName(EmailTemplates.UPDATE_ADMIN)
+                .subject(SUBJECT_FOR_UPDATE_ADMIN)
+                .templateName(UPDATE_ADMIN)
                 .paramValue(username + StringConstant.HYPHEN + paramValues + StringConstant.HYPHEN +
                         updateRequestDTO.getHasMacBinding() + StringConstant.HYPHEN + updatedMacAddress)
                 .build();
@@ -234,8 +239,8 @@ public class AdminUtils {
 
         return EmailRequestDTO.builder()
                 .receiverEmailAddress(emailAddress)
-                .subject(EmailConstants.SUBJECT_FOR_ADMIN_RESET_PASSWORD)
-                .templateName(EmailTemplates.ADMIN_RESET_PASSWORD)
+                .subject(SUBJECT_FOR_ADMIN_RESET_PASSWORD)
+                .templateName(ADMIN_RESET_PASSWORD)
                 .paramValue(requestDTO.getUsername() + StringConstant.COMMA_SEPARATED
                         + requestDTO.getPassword() + StringConstant.COMMA_SEPARATED + requestDTO.getRemarks())
                 .build();

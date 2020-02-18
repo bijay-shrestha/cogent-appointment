@@ -18,6 +18,8 @@ import java.util.Date;
 @NoArgsConstructor
 public class PatientResponseDTO implements Serializable {
 
+    private Long id;
+
     private String name;
 
     private Gender gender;

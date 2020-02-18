@@ -70,6 +70,7 @@ public class PatientQuery {
 
     public static final String QUERY_TO_FETCH_PATIENT_DETAILS_BY_ID =
             "SELECT" +
+                    " p.id as id,"+
                     " p.name as name," +
                     " p.dateOfBirth as dateOfBirth," +
                     " p.mobileNumber as mobileNumber," +
@@ -101,7 +102,8 @@ public class PatientQuery {
                 " hpi.status as status," +                                         //[6]
                 " p.dateOfBirth as dateOfBirth," +                               //[7]
                 " hpi.hospitalNumber as hospitalNumber," +                         //[8]
-                " h.name as hospitalName" +                                      //[9]
+                " h.name as hospitalName," +
+                " h.id as hospitalId" +                                      //[9]
                 " FROM Patient p" +
                 " LEFT JOIN HospitalPatientInfo hpi ON p.id=hpi.patientId" +
                 " LEFT JOIN Hospital h ON h.id=hpi.hospitalId" +

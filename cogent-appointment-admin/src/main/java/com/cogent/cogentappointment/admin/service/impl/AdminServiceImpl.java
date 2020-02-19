@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
-import com.cogent.cogentappointment.admin.constants.StringConstant;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.*;
 import com.cogent.cogentappointment.admin.dto.request.email.EmailRequestDTO;
@@ -350,7 +349,7 @@ public class AdminServiceImpl implements AdminService {
             throw new BadRequestException(ADMIN_CANNOT_BE_REGISTERED_MESSAGE, ADMIN_CANNOT_BE_REGISTERED_DEBUG_MESSAGE);
     }
 
-    public void validateUsername(boolean isUsernameExists, String username) {
+    private void validateUsername(boolean isUsernameExists, String username) {
         if (isUsernameExists)
             throw new DataDuplicationException(
                     String.format(USERNAME_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), username));
@@ -406,7 +405,7 @@ public class AdminServiceImpl implements AdminService {
         adminAvatarRepository.save(adminAvatar);
     }
 
-    public void saveMacAddressInfo(Admin admin, List<String> macAddresses) {
+    private void saveMacAddressInfo(Admin admin, List<String> macAddresses) {
         if (admin.getHasMacBinding().equals(YES)) {
             validateMacAddressInfoSize.accept(macAddresses);
 
@@ -422,11 +421,11 @@ public class AdminServiceImpl implements AdminService {
         return adminRepository.save(admin);
     }
 
-    public void saveMacAddressInfo(List<AdminMacAddressInfo> adminMacAddressInfos) {
+    private void saveMacAddressInfo(List<AdminMacAddressInfo> adminMacAddressInfos) {
         adminMacAddressInfoRepository.saveAll(adminMacAddressInfos);
     }
 
-    public void saveAdminMetaInfo(Admin admin) {
+    private void saveAdminMetaInfo(Admin admin) {
         adminMetaInfoRepository.save(parseInAdminMetaInfo(admin));
     }
 
@@ -437,7 +436,7 @@ public class AdminServiceImpl implements AdminService {
         parseMetaInfo(admin, adminMetaInfo);
     }
 
-    public AdminConfirmationToken saveAdminConfirmationToken(AdminConfirmationToken adminConfirmationToken) {
+    private AdminConfirmationToken saveAdminConfirmationToken(AdminConfirmationToken adminConfirmationToken) {
         return confirmationTokenRepository.save(adminConfirmationToken);
     }
 
@@ -445,12 +444,12 @@ public class AdminServiceImpl implements AdminService {
         emailService.sendEmail(emailRequestDTO);
     }
 
-    public Admin findById(Long adminId) {
+    private Admin findById(Long adminId) {
         return adminRepository.findAdminById(adminId)
                 .orElseThrow(() -> ADMIN_WITH_GIVEN_ID_NOT_FOUND.apply(adminId));
     }
 
-    public Admin findByUsername(String username) {
+    private Admin findByUsername(String username) {
         return adminRepository.findAdminByUsername(username)
                 .orElseThrow(() -> new NoContentFoundException(Admin.class));
     }
@@ -473,7 +472,7 @@ public class AdminServiceImpl implements AdminService {
         });
     }
 
-    public void updateAvatar(Admin admin, MultipartFile files) {
+    private void updateAvatar(Admin admin, MultipartFile files) {
         AdminAvatar adminAvatar = adminAvatarRepository.findAdminAvatarByAdminId(admin.getId());
 
         if (Objects.isNull(adminAvatar)) saveAdminAvatar(admin, files);
@@ -488,7 +487,7 @@ public class AdminServiceImpl implements AdminService {
         convertAdminUpdateRequestDTOToAdmin(admin, adminRequestDTO, gender, profile);
     }
 
-    public void updateMacAddressInfo(List<AdminMacAddressInfoUpdateRequestDTO> adminMacAddressInfoUpdateRequestDTOS,
+    private void updateMacAddressInfo(List<AdminMacAddressInfoUpdateRequestDTO> adminMacAddressInfoUpdateRequestDTOS,
                                      Admin admin) {
 
         List<AdminMacAddressInfo> adminMacAddressInfos = convertToUpdatedMACAddressInfo(
@@ -497,7 +496,7 @@ public class AdminServiceImpl implements AdminService {
         saveMacAddressInfo(adminMacAddressInfos);
     }
 
-    public EmailRequestDTO parseUpdatedInfo(AdminUpdateRequestDTO adminRequestDTO, Admin admin) {
+    private EmailRequestDTO parseUpdatedInfo(AdminUpdateRequestDTO adminRequestDTO, Admin admin) {
         return parseToEmailRequestDTO(admin.getUsername(), adminRequestDTO,
                 parseUpdatedValues(admin, adminRequestDTO), parseUpdatedMacAddress(adminRequestDTO));
     }

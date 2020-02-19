@@ -67,7 +67,7 @@ public class EmailServiceImpl implements EmailService {
         updateEmailToSend(emailToSend);
     }
 
-    public EmailToSend saveEmailToSend(EmailRequestDTO emailRequestDTO) {
+    private EmailToSend saveEmailToSend(EmailRequestDTO emailRequestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, EMAIL_TO_SEND);
@@ -79,7 +79,7 @@ public class EmailServiceImpl implements EmailService {
         return emailToSend;
     }
 
-    public void send(EmailToSend emailToSend) {
+    private void send(EmailToSend emailToSend) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SENDING_EMAIL_PROCESS_STARTED);

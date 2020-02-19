@@ -1,9 +1,7 @@
 package com.cogent.cogentappointment.persistence.listener;
 
 import com.cogent.cogentappointment.persistence.config.Action;
-import com.cogent.cogentappointment.persistence.history.AdminAvatarHistory;
 import com.cogent.cogentappointment.persistence.history.WeekDaysHistory;
-import com.cogent.cogentappointment.persistence.model.AdminAvatar;
 import com.cogent.cogentappointment.persistence.model.WeekDays;
 import com.cogent.cogentappointment.persistence.util.BeanUtil;
 

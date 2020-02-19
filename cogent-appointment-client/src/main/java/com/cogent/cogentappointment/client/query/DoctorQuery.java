@@ -70,13 +70,13 @@ public class DoctorQuery {
     private static Function<DoctorSearchRequestDTO, String> GET_WHERE_CLAUSE_FOR_SEARCH_DOCTOR =
             (searchRequestDTO) -> {
 
-                String whereClause = " WHERE d.status!='D'";
+                String whereClause = " WHERE d.status!='D' AND d.hospital_id=:hospitalId";
 
                 if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
                     whereClause += " AND d.status='" + searchRequestDTO.getStatus() + "'";
 
-                if (!ObjectUtils.isEmpty(searchRequestDTO.getName()))
-                    whereClause += " AND d.name LIKE '%" + searchRequestDTO.getName() + "%'";
+                if (!ObjectUtils.isEmpty(searchRequestDTO.getDoctorId()))
+                    whereClause += " AND d.id=" + searchRequestDTO.getDoctorId();
 
                 if (!ObjectUtils.isEmpty(searchRequestDTO.getCode()))
                     whereClause += " AND d.code LIKE '%" + searchRequestDTO.getCode() + "%'";
@@ -103,7 +103,8 @@ public class DoctorQuery {
                     " FROM" +
                     " Doctor d" +
                     " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId" +
-                    " WHERE d.status ='Y'";
+                    " WHERE d.status ='Y'" +
+                    " AND d.hospital.id=:hospitalId";
 
     private static final String QUERY_TO_FETCH_DOCTOR_QUALIFICATION_FOR_DETAIL =
             " SELECT" +
@@ -123,7 +124,8 @@ public class DoctorQuery {
                     " d.remarks as remarks," +                                      //[7]
                     " d.gender as gender," +                                        //[8]
                     " h.name as hospitalName," +                                    //[9]
-                    " dac.appointment_charge as appointmentCharge";                 //[10]
+                    " dac.appointment_charge as appointmentCharge," +                   //[10]
+                    " dac.appointment_follow_up_charge as appointmentFollowUpCharge";    //[11]
 
     private static String QUERY_TO_FETCH_DOCTOR_AVATAR =
             " SELECT" +
@@ -136,9 +138,9 @@ public class DoctorQuery {
             " SELECT" +
                     SELECT_CLAUSE_TO_FETCH_MINIMAL_DOCTOR + "," +
                     SELECT_CLAUSE_TO_FETCH_DOCTOR_DETAILS + "," +
-                    " tbl1.specialization_name as specializationName," +                //[11]
-                    " tbl2.qualification_name as qualificationName," +                   //[12]
-                    " tbl3.file_uri as fileUri" +                                       //[13]
+                    " tbl1.specialization_name as specializationName," +                 //[12]
+                    " tbl2.qualification_name as qualificationName," +                   //[13]
+                    " tbl3.file_uri as fileUri" +                                       //[14]
                     " FROM doctor d" +
                     " LEFT JOIN hospital h ON h.id = d.hospital_id" +
                     " LEFT JOIN doctor_appointment_charge dac ON dac.doctor_id= d.id" +
@@ -155,7 +157,8 @@ public class DoctorQuery {
                     QUERY_TO_FETCH_DOCTOR_AVATAR +
                     " )tbl3 ON tbl3.doctorId= d.id" +
                     " WHERE d.status != 'D'" +
-                    " AND d.id = :id";
+                    " AND d.id = :id" +
+                    " AND d.hospital_id=:hospitalId";
 
     /*UPDATE MODAL*/
     private static final String QUERY_TO_FETCH_DOCTOR_SPECIALIZATION_FOR_UPDATE =
@@ -190,14 +193,14 @@ public class DoctorQuery {
             " SELECT" +
                     SELECT_CLAUSE_TO_FETCH_MINIMAL_DOCTOR + "," +
                     SELECT_CLAUSE_TO_FETCH_DOCTOR_DETAILS + "," +
-                    " h.id as hospitalId," +                                                //[11]
-                    " tbl1.doctor_specialization_id as doctorSpecializationId," +           //[12]
-                    " tbl1.specialization_id as specializationId," +                        //[13]
-                    " tbl1.specialization_name as specializationName," +                    //[14]
-                    " tbl2.doctor_qualification_id as doctorQualificationId," +             //[15]
-                    " tbl2.qualification_id as qualificationId," +                          //[16]
-                    " tbl2.qualification_name as qualificationName," +                      //[17]
-                    " tbl3.file_uri as fileUri" +                                            //[18]
+                    " h.id as hospitalId," +                                                //[12]
+                    " tbl1.doctor_specialization_id as doctorSpecializationId," +           //[13]
+                    " tbl1.specialization_id as specializationId," +                        //[14]
+                    " tbl1.specialization_name as specializationName," +                    //[15]
+                    " tbl2.doctor_qualification_id as doctorQualificationId," +             //[16]
+                    " tbl2.qualification_id as qualificationId," +                          //[17]
+                    " tbl2.qualification_name as qualificationName," +                      //[18]
+                    " tbl3.file_uri as fileUri" +                                            //[19]
                     " FROM doctor d" +
                     " LEFT JOIN hospital h ON h.id = d.hospital_id" +
                     " LEFT JOIN doctor_appointment_charge dac ON dac.doctor_id= d.id" +
@@ -214,7 +217,8 @@ public class DoctorQuery {
                     QUERY_TO_FETCH_DOCTOR_AVATAR +
                     " )tbl3 ON tbl3.doctorId= d.id" +
                     " WHERE d.status != 'D'" +
-                    " AND d.id = :id";
+                    " AND d.id = :id" +
+                    " AND d.hospital_id=:hospitalId";
 
     public static String QUERY_TO_FETCH_DOCTOR_BY_SPECIALIZATION_ID =
             "SELECT" +
@@ -231,7 +235,8 @@ public class DoctorQuery {
                     " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId" +
                     " WHERE cs.specializationId = :id" +
                     " AND cs.status = 'Y'" +
-                    " AND d.status = 'Y'";
+                    " AND d.status = 'Y'" +
+                    " AND d.hospital.id= :hospitalId";
 
     public static final String QUERY_TO_FETCH_DOCTOR_BY_HOSPITAL_ID =
             " SELECT" +
@@ -295,4 +300,10 @@ public class DoctorQuery {
                     " AND h.status = 'Y'" +
                     " AND h.id =:hospitalId" +
                     " ORDER BY d.name";
+
+    public static String QUERY_TO_FETCH_DOCTOR_APPOINTMENT_CHARGE =
+            " SELECT da.appointmentFollowUpCharge" +
+                    " FROM DoctorAppointmentCharge da " +
+                    " WHERE da.doctorId.id = :doctorId" +
+                    " AND da.doctorId.hospital.id = :hospitalId";
 }

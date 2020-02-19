@@ -19,5 +19,6 @@ public class StatusConstants {
         String REJECTED = "R";
         String REFUNDED = "RE";
         String VACANT = "V";
+        String ALL = "";
     }
 }

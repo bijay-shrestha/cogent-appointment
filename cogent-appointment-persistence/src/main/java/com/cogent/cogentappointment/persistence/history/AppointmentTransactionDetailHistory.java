@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.persistence.history;
 
 import com.cogent.cogentappointment.persistence.config.Action;
-import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.AppointmentTransactionDetail;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

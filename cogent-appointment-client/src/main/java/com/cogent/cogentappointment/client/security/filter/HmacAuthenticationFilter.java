@@ -58,14 +58,15 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
                     .algorithm(authHeader.getAlgorithm())
                     .nonce(authHeader.getNonce())
                     .username(adminMinDetails.getUsername())
+                    .hospitalId(Math.toIntExact(adminMinDetails.getHospitalId()))
                     .hospitalCode(adminMinDetails.getHospitalCode())
                     .apiKey(adminMinDetails.getApiKey())
                     .apiSecret(adminMinDetails.getApiSecret());
 
             compareSignature(signatureBuilder, authHeader.getDigest());
 
-            SecurityContextHolder.getContext().setAuthentication(getAuthentication(adminMinDetails.getUsername(),
-                    adminMinDetails.getHospitalCode()));
+            SecurityContextHolder.getContext().setAuthentication(getAuthenticationForHospital(adminMinDetails.getUsername(),
+                    adminMinDetails.getHospitalId()));
         }
 
         if (authHeader == null && eSewaAuthHeader != null) {
@@ -108,10 +109,12 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
         return new AuthHeader(authHeaderMatcher.group(1),
                 authHeaderMatcher.group(2),
-                authHeaderMatcher.group(3),
+                Integer.parseInt(authHeaderMatcher.group(3)),
                 authHeaderMatcher.group(4),
                 authHeaderMatcher.group(5),
-                DatatypeConverter.parseBase64Binary(authHeaderMatcher.group(6)));
+                authHeaderMatcher.group(6),
+                DatatypeConverter.parseBase64Binary(authHeaderMatcher.group(7)));
+
     }
 
     public AuthHeader getAuthHeaderForeSewa(HttpServletRequest request) {
@@ -125,6 +128,7 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
             return null;
         }
         return new AuthHeader(authHeaderMatcher.group(1),
+                null,
                 null,
                 authHeaderMatcher.group(2),
                 authHeaderMatcher.group(3),
@@ -141,6 +145,13 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
         return new PreAuthenticatedAuthenticationToken(
                 username,
                 hospitalCode,
+                null);
+    }
+
+    public PreAuthenticatedAuthenticationToken getAuthenticationForHospital(String username, Long hospitalId) {
+        return new PreAuthenticatedAuthenticationToken(
+                username,
+                hospitalId,
                 null);
     }
 }

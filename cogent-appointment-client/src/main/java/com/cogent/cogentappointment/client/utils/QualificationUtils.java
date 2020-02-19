@@ -3,7 +3,6 @@ package com.cogent.cogentappointment.client.utils;
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.qualification.QualificationRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.qualification.QualificationUpdateRequestDTO;
-import com.cogent.cogentappointment.persistence.model.Country;
 import com.cogent.cogentappointment.persistence.model.Qualification;
 import com.cogent.cogentappointment.persistence.model.QualificationAlias;
 import com.cogent.cogentappointment.persistence.model.University;

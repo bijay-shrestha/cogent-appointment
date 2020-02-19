@@ -26,17 +26,17 @@ public interface AdminRepositoryCustom {
     List<Object[]> validateDuplicity(String username, String email, String mobileNumber,
                                      Long hospitalId);
 
-    List<AdminDropdownDTO> fetchActiveAdminsForDropDown();
+    List<AdminDropdownDTO> fetchActiveAdminsForDropDown(Long hospitalId);
 
-    List<AdminMinimalResponseDTO> search(AdminSearchRequestDTO searchRequestDTO, Pageable pageable);
+    List<AdminMinimalResponseDTO> search(AdminSearchRequestDTO searchRequestDTO,Long hospitalId, Pageable pageable);
 
-    AdminDetailResponseDTO fetchDetailsById(Long id);
+    AdminDetailResponseDTO fetchDetailsById(Long id,Long hospitalId);
 
-    List<Object[]> validateDuplicity(AdminUpdateRequestDTO updateRequestDTO);
+    List<Object[]> validateDuplicity(AdminUpdateRequestDTO updateRequestDTO,Long hospitalId);
 
-    Admin fetchAdminByUsernameOrEmail(String username);
+    Admin fetchAdminByUsernameOrEmail(String username,Long hospitalId);
 
-    AdminLoggedInInfoResponseDTO fetchLoggedInAdminInfo(AdminInfoRequestDTO requestDTO);
+    AdminLoggedInInfoResponseDTO fetchLoggedInAdminInfo(AdminInfoRequestDTO requestDTO,Long hospitalId);
 
 }
 

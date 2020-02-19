@@ -22,6 +22,7 @@ public class PatientQuery {
 
     public static final String QUERY_TO_FETCH_PATIENT_DETAILS_BY_ID =
             "SELECT" +
+                    " p.id as id," +
                     " p.name as name," +
                     " p.dateOfBirth as dateOfBirth," +
                     " p.mobileNumber as mobileNumber," +
@@ -34,7 +35,8 @@ public class PatientQuery {
                     " hpi.email as email," +
                     " hpi.address as address," +
                     " hpi.isSelf as isSelf," +
-                    " hpi.isRegistered as isRegistered" +
+                    " hpi.isRegistered as isRegistered," +
+                    " h.id as hospitalId" +
                     " FROM Patient p " +
                     " LEFT JOIN HospitalPatientInfo hpi On p.id=hpi.patientId" +
                     " LEFT JOIN Hospital h ON h.id=hpi.hospitalId" +

@@ -6,22 +6,20 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @author smriti ON 06/02/2020
+ * @author smriti on 17/02/20
  */
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppointmentPendingResponseDTO implements Serializable {
+public class AppointmentDetailResponseDTO implements Serializable {
 
-    private Long appointmentId;
+    private String hospitalName;
 
     private String patientName;
 
     private String doctorName;
-
-    private String hospitalName;
 
     private String specializationName;
 
@@ -31,5 +29,15 @@ public class AppointmentPendingResponseDTO implements Serializable {
 
     private String appointmentTime;
 
+    private String mobileNumber;
+
+    private Date dateOfBirth;
+
     private Double appointmentAmount;
+
+    private Double taxAmount;
+
+    private Double serviceChargeAmount;
+
+    private Double discountAmount;
 }

@@ -1,8 +1,6 @@
 package com.cogent.cogentappointment.persistence.history;
 
 import com.cogent.cogentappointment.persistence.config.Action;
-import com.cogent.cogentappointment.persistence.model.Hospital;
-import com.cogent.cogentappointment.persistence.model.HospitalContactNumber;
 import com.cogent.cogentappointment.persistence.model.HospitalLogo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

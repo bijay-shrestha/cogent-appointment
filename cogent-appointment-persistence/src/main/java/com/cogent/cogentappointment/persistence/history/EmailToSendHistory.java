@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.persistence.history;
 
 import com.cogent.cogentappointment.persistence.config.Action;
-import com.cogent.cogentappointment.persistence.model.DoctorWeekDaysDutyRoster;
 import com.cogent.cogentappointment.persistence.model.EmailToSend;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

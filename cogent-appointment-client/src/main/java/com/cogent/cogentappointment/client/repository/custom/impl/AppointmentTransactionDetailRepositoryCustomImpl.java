@@ -36,18 +36,21 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
                 .setParameter(FROM_DATE, fromDate)
                 .setParameter(HOSPITAL_ID, hospitalId);
 
-        return (Double) query.getSingleResult();
+        Double count=(Double) query.getSingleResult();
+
+        return (count==null)? 0D:count;
     }
 
     @Override
-    public RevenueStatisticsResponseDTO getRevenueStatistics(DashBoardRequestDTO dashBoardRequestDTO, Character filter) {
+    public RevenueStatisticsResponseDTO getRevenueStatistics(DashBoardRequestDTO dashBoardRequestDTO,
+                                                             Long hospitalId,Character filter) {
 
         final String queryByFilter = getQueryByFilter(filter);
 
         Query query = createQuery.apply(entityManager, queryByFilter)
                 .setParameter(TO_DATE, dashBoardRequestDTO.getToDate())
                 .setParameter(FROM_DATE, dashBoardRequestDTO.getFromDate())
-                .setParameter(HOSPITAL_ID, dashBoardRequestDTO.getHospitalId());
+                .setParameter(HOSPITAL_ID, hospitalId);
         List<Object[]> objects=query.getResultList();
 
         RevenueStatisticsResponseDTO responseDTO=revenueStatisticsResponseDTO(objects,filter);
@@ -58,6 +61,7 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
 
     private String getQueryByFilter(Character filter) {
         Map<Character, String> queriesWithFilterAsKey = new HashMap<>();
+        queriesWithFilterAsKey.put('D', QUERY_TO_FETCH_REVENUE_DAILY);
         queriesWithFilterAsKey.put('W', QUERY_TO_FETCH_REVENUE_WEEKLY);
         queriesWithFilterAsKey.put('M',QUERY_TO_FETCH_REVENUE_MONTHLY);
         queriesWithFilterAsKey.put('Y', QUERY_TO_FETCH_REVENUE_YEARLY);

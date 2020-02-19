@@ -56,9 +56,11 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
 
     @Override
     public List<DoctorMinimalResponseDTO> search(DoctorSearchRequestDTO searchRequestDTO,
+                                                 Long hospitalId,
                                                  Pageable pageable) {
 
-        Query query = createNativeQuery.apply(entityManager, QUERY_TO_SEARCH_DOCTOR(searchRequestDTO));
+        Query query = createNativeQuery.apply(entityManager, QUERY_TO_SEARCH_DOCTOR(searchRequestDTO))
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         int totalItems = query.getResultList().size();
 
@@ -75,8 +77,9 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
     }
 
     @Override
-    public List<DoctorDropdownDTO> fetchDoctorForDropdown() {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_FOR_DROPDOWN);
+    public List<DoctorDropdownDTO> fetchDoctorForDropdown(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_FOR_DROPDOWN)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
@@ -85,9 +88,10 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
     }
 
     @Override
-    public DoctorDetailResponseDTO fetchDetailsById(Long doctorId) {
+    public DoctorDetailResponseDTO fetchDetailsById(Long doctorId,Long hospitalId) {
         Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_DETAILS)
-                .setParameter(ID, doctorId);
+                .setParameter(ID, doctorId)
+                .setParameter(HOSPITAL_ID, hospitalId);
         try {
             return transformNativeQueryToSingleResult(query, DoctorDetailResponseDTO.class);
         } catch (NoResultException e) {
@@ -96,9 +100,10 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
     }
 
     @Override
-    public List<DoctorDropdownDTO> fetchDoctorBySpecializationId(Long specializationId) {
+    public List<DoctorDropdownDTO> fetchDoctorBySpecializationId(Long specializationId,Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_BY_SPECIALIZATION_ID)
-                .setParameter(ID, specializationId);
+                .setParameter(ID, specializationId)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
@@ -118,9 +123,10 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
     }
 
     @Override
-    public DoctorUpdateResponseDTO fetchDetailsForUpdate(Long doctorId) {
+    public DoctorUpdateResponseDTO fetchDetailsForUpdate(Long doctorId,Long hospitalId) {
         Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_DETAILS_FOR_UPDATE)
-                .setParameter(ID, doctorId);
+                .setParameter(ID, doctorId)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         List<Object[]> results = query.getResultList();
 
@@ -139,6 +145,15 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
         if (results.isEmpty()) throw DOCTOR_NOT_FOUND.get();
 
         return results;
+    }
+
+    @Override
+    public Double fetchDoctorAppointmentFollowUpCharge(Long doctorId,Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_APPOINTMENT_CHARGE)
+                .setParameter(DOCTOR_ID, doctorId)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        return (Double) query.getSingleResult();
     }
 
     private Supplier<NoContentFoundException> DOCTOR_NOT_FOUND = () ->

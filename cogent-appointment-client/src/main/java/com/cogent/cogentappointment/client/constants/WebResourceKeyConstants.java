@@ -22,8 +22,12 @@ public class WebResourceKeyConstants {
         String BASE_APPOINTMENT = "/appointment";
         String CHECK_AVAILABILITY = "/checkAvailability";
         String PENDING_APPOINTMENT = "/pending-appointment";
-        String CANCEL_APPOINTMENT = "/cancel";
+        String CANCEL = "/cancel";
         String RESCHEDULE = "/reschedule";
+        String FOLLOW_UP = "/follow-up";
+        String APPOINTMENT_ID_PATH_VARIABLE_BASE = "/{appointmentId}";
+        String HISTORY = "/history";
+        String APPOINTMENT_RESERVATION_ID_PATH_VARIABLE_BASE = "/{appointmentReservationId}";
     }
 
     //B
@@ -45,8 +49,8 @@ public class WebResourceKeyConstants {
         String GENERATE_REVENUE = "/revenueGenerated";
         String OVER_ALL_APPOINTMENT = "/overAllAppointments";
         String REVENUE_STATISTICS = "/revenueStatistics";
-        String REGISTERED="/registeredPatients";
-        String COUNT="/count";
+        String REGISTERED = "/registeredPatients";
+        String COUNT = "/count";
         String HOSPITAL_ID_PATH_VARIABLE_BASE = "/{hospitalId}";
     }
 
@@ -164,6 +168,7 @@ public class WebResourceKeyConstants {
     //W
     public interface WeekDaysConstants {
         String BASE_WEEK_DAYS = "/weekDays";
+        String PREPARE_WEEK_DAYS_DATA = "/prepare-weekdays-data";
     }
 
 

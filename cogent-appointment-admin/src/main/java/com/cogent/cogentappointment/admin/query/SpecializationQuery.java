@@ -66,6 +66,9 @@ public class SpecializationQuery {
 
         String whereClause = " WHERE s.status!='D'";
 
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getHospitalId()))
+            whereClause += " AND s.hospital.id=" + searchRequestDTO.getHospitalId() ;
+
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
             whereClause += " AND s.status='" + searchRequestDTO.getStatus() + "'";
 

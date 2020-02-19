@@ -1,0 +1,38 @@
+package com.cogent.cogentappointment.client.repository.custom.impl;
+
+import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
+import com.cogent.cogentappointment.client.repository.custom.AppointmentReservationLogRepositoryCustom;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import java.util.List;
+
+import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.client.query.AppointmentReservationLogQuery.QUERY_TO_FETCH_APPOINTMENT_RESERVATION_LOG;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
+import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
+
+/**
+ * @author smriti on 19/02/20
+ */
+@Repository
+@Transactional(readOnly = true)
+public class AppointmentReservationLogRepositoryCustomImpl implements AppointmentReservationLogRepositoryCustom {
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Override
+    public List<String> fetchBookedAppointmentReservations(AppointmentCheckAvailabilityRequestDTO requestDTO) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_RESERVATION_LOG)
+                .setParameter(DATE, utilDateToSqlDate(requestDTO.getAppointmentDate()))
+                .setParameter(DOCTOR_ID, requestDTO.getDoctorId())
+                .setParameter(SPECIALIZATION_ID, requestDTO.getSpecializationId());
+
+        return query.getResultList();
+    }
+}

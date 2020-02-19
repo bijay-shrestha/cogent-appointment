@@ -21,4 +21,6 @@ public class SpecializationSearchRequestDTO implements Serializable {
     private String code;
 
     private Character status;
+
+    private Long hospitalId;
 }

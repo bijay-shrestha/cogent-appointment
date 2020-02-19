@@ -23,9 +23,6 @@ public class ProfileDTO implements Serializable {
     private String description;
 
     @NotNull
-    private Long hospitalId;
-
-    @NotNull
     @Status
     private Character status;
 

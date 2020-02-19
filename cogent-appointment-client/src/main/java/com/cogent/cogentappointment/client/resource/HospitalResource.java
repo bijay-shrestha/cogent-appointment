@@ -2,9 +2,6 @@ package com.cogent.cogentappointment.client.resource;
 
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospital.HospitalMinSearchRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.hospital.HospitalRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.hospital.HospitalSearchRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.hospital.HospitalUpdateRequestDTO;
 import com.cogent.cogentappointment.client.service.HospitalService;
 import com.cogent.cogentappointment.client.utils.commons.ObjectMapperUtils;
 import io.swagger.annotations.Api;
@@ -39,59 +36,9 @@ public class HospitalResource {
         this.hospitalService = hospitalService;
     }
 
-    @PostMapping
-    @ApiOperation(SAVE_OPERATION)
-    public ResponseEntity<?> save(@RequestParam(value = "logo", required = false) MultipartFile logo,
-                                  @RequestParam(value = "banner", required = false) MultipartFile banner,
-                                  @RequestParam("request") String request) throws IOException {
-
-        HospitalRequestDTO requestDTO = ObjectMapperUtils.map(request, HospitalRequestDTO.class);
-        hospitalService.save(requestDTO, logo, banner);
-        return created(create(API_V1 + BASE_HOSPITAL)).build();
-    }
-
-    @PutMapping
-    @ApiOperation(UPDATE_OPERATION)
-    public ResponseEntity<?> update(@RequestParam(value = "logo", required = false) MultipartFile logo,
-                                    @RequestParam(value = "banner", required = false) MultipartFile banner,
-                                    @RequestParam("request") String request) throws IOException {
-
-        HospitalUpdateRequestDTO updateRequestDTO = ObjectMapperUtils.map(request, HospitalUpdateRequestDTO.class);
-        hospitalService.update(updateRequestDTO, logo, banner);
-        return ok().build();
-    }
-
-    @DeleteMapping
-    @ApiOperation(DELETE_OPERATION)
-    public ResponseEntity<?> delete(@Valid @RequestBody DeleteRequestDTO deleteRequestDTO) {
-        hospitalService.delete(deleteRequestDTO);
-        return ok().build();
-    }
-
-    @PutMapping(SEARCH)
-    @ApiOperation(SEARCH_OPERATION)
-    public ResponseEntity<?> search(@RequestBody HospitalSearchRequestDTO searchRequestDTO,
-                                    @RequestParam("page") int page,
-                                    @RequestParam("size") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return ok().body(hospitalService.search(searchRequestDTO, pageable));
-    }
-
-    @GetMapping(ACTIVE + MIN)
-    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
-    public ResponseEntity<?> fetchHospitalForDropDown() {
-        return ok(hospitalService.fetchHospitalForDropDown());
-    }
-
     @PutMapping(SEARCH + MIN)
     @ApiOperation(FETCH_MIN_DETAILS)
     public ResponseEntity<?> fetchMinDetails(@RequestBody HospitalMinSearchRequestDTO searchRequestDTO) {
         return ok(hospitalService.fetchMinDetails(searchRequestDTO));
-    }
-
-    @GetMapping(DETAIL + ID_PATH_VARIABLE_BASE)
-    @ApiOperation(DETAILS_OPERATION)
-    public ResponseEntity<?> fetchDetailsById(@PathVariable("id") Long id) {
-        return ok(hospitalService.fetchDetailsById(id));
     }
 }

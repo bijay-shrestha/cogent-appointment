@@ -1,8 +1,6 @@
 package com.cogent.cogentappointment.persistence.history;
 
 import com.cogent.cogentappointment.persistence.config.Action;
-import com.cogent.cogentappointment.persistence.model.Doctor;
-import com.cogent.cogentappointment.persistence.model.DoctorDutyRoster;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRosterOverride;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

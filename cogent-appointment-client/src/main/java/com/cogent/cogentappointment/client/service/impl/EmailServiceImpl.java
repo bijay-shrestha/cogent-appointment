@@ -1,7 +1,5 @@
 package com.cogent.cogentappointment.client.service.impl;
 
-import com.cogent.cogentappointment.client.constants.EmailConstants;
-import com.cogent.cogentappointment.client.constants.EmailTemplates;
 import com.cogent.cogentappointment.client.constants.StatusConstants;
 import com.cogent.cogentappointment.client.constants.StringConstant;
 import com.cogent.cogentappointment.client.dto.request.email.EmailRequestDTO;
@@ -17,9 +15,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
-import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -29,7 +25,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.cogent.cogentappointment.client.constants.EmailConstants.Admin.*;
+import static com.cogent.cogentappointment.client.constants.EmailConstants.ForgotPassword.RESET_CODE;
 import static com.cogent.cogentappointment.client.constants.EmailConstants.*;
+import static com.cogent.cogentappointment.client.constants.EmailTemplates.*;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.SAVING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.SAVING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.client.log.constants.EmailLog.*;
@@ -37,6 +36,8 @@ import static com.cogent.cogentappointment.client.utils.EmailUtils.convertDTOToE
 import static com.cogent.cogentappointment.client.utils.EmailUtils.convertToUpdateEmailToSend;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static javax.mail.Message.RecipientType.TO;
+import static org.springframework.ui.freemarker.FreeMarkerTemplateUtils.processTemplateIntoString;
 
 /**
  * @author smriti on 7/23/19
@@ -92,27 +93,27 @@ public class EmailServiceImpl implements EmailService {
             String html = "";
 
             switch (emailToSend.getTemplateName()) {
-                case EmailTemplates.ADMIN_VERIFICATION: {
+                case ADMIN_VERIFICATION: {
                     parseToAdminVerificationTemplate(emailToSend, model);
-                    html = getFreeMarkerContent(model, EmailTemplates.ADMIN_VERIFICATION_TEMPLATE, html);
+                    html = getFreeMarkerContent(model, ADMIN_VERIFICATION_TEMPLATE, html);
                     break;
                 }
 
-                case EmailTemplates.ADMIN_RESET_PASSWORD: {
+                case ADMIN_RESET_PASSWORD: {
                     parseToResetPasswordTemplate(emailToSend, model);
-                    html = getFreeMarkerContent(model, EmailTemplates.ADMIN_RESET_PASSWORD_TEMPLATE, html);
+                    html = getFreeMarkerContent(model, ADMIN_RESET_PASSWORD_TEMPLATE, html);
                     break;
                 }
 
-                case EmailTemplates.UPDATE_ADMIN: {
+                case UPDATE_ADMIN: {
                     parseToUpdateAdminTemplate(emailToSend, model);
-                    html = getFreeMarkerContent(model, EmailTemplates.UPDATE_ADMIN_TEMPLATE, html);
+                    html = getFreeMarkerContent(model, UPDATE_ADMIN_TEMPLATE, html);
                     break;
                 }
 
-                case EmailTemplates.FORGOT_PASSWORD: {
+                case FORGOT_PASSWORD: {
                     parseToForgotPasswordTemplate(emailToSend, model);
-                    html = getFreeMarkerContent(model, EmailTemplates.FORGOT_PASSWORD_TEMPLATE, html);
+                    html = getFreeMarkerContent(model, FORGOT_PASSWORD_TEMPLATE, html);
                     break;
                 }
 
@@ -133,7 +134,7 @@ public class EmailServiceImpl implements EmailService {
 
     private MimeMessage getMimeMessage(EmailToSend emailToSend) throws MessagingException {
         MimeMessage message = javaMailSender.createMimeMessage();
-        message.setRecipient(Message.RecipientType.TO, new InternetAddress(emailToSend.getReceiverEmailAddress()));
+        message.setRecipient(TO, new InternetAddress(emailToSend.getReceiverEmailAddress()));
         message.setSubject(emailToSend.getSubject());
         return message;
     }
@@ -141,7 +142,7 @@ public class EmailServiceImpl implements EmailService {
     private String getFreeMarkerContent(Map<String, Object> model, String templateName, String html) {
         try {
             Template template = configuration.getTemplate(templateName);
-            html = FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
+            html = processTemplateIntoString(template, model);
         } catch (IOException | TemplateException e) {
             e.printStackTrace();
         }
@@ -160,7 +161,7 @@ public class EmailServiceImpl implements EmailService {
         String[] paramValues = emailToSend.getParamValue().split(StringConstant.COMMA_SEPARATED);
 
         model.put(USERNAME, paramValues[USERNAME_INDEX]);
-        model.put(Admin.ADMIN_CONFIRMATION_URL, paramValues[ADMIN_CONFIRMATION_URL_INDEX]);
+        model.put(ADMIN_CONFIRMATION_URL, paramValues[ADMIN_CONFIRMATION_URL_INDEX]);
     }
 
     private void parseToResetPasswordTemplate(EmailToSend emailToSend,
@@ -172,8 +173,8 @@ public class EmailServiceImpl implements EmailService {
         String[] paramValues = emailToSend.getParamValue().split(StringConstant.COMMA_SEPARATED);
 
         model.put(USERNAME, paramValues[USERNAME_INDEX]);
-        model.put(Admin.PASSWORD, paramValues[PASSWORD_INDEX]);
-        model.put(Admin.REMARKS, paramValues[REMARKS_INDEX]);
+        model.put(PASSWORD, paramValues[PASSWORD_INDEX]);
+        model.put(REMARKS, paramValues[REMARKS_INDEX]);
     }
 
     private void parseToUpdateAdminTemplate(EmailToSend emailToSend,
@@ -192,9 +193,9 @@ public class EmailServiceImpl implements EmailService {
                 : new String[]{paramValues[MAC_ADDRESS_INDEX]};
 
         model.put(USERNAME, paramValues[USERNAME_INDEX]);
-        model.put(Admin.UPDATED_DATA, Arrays.asList(updatedValues));
-        model.put(Admin.HAS_MAC_BINDING, paramValues[HAS_MAC_BINDING_INDEX]);
-        model.put(Admin.UPDATED_MAC_ADDRESS, Arrays.asList(updatedMacAddress));
+        model.put(UPDATED_DATA, Arrays.asList(updatedValues));
+        model.put(HAS_MAC_BINDING, paramValues[HAS_MAC_BINDING_INDEX]);
+        model.put(UPDATED_MAC_ADDRESS, Arrays.asList(updatedMacAddress));
     }
 
     private void parseToForgotPasswordTemplate(EmailToSend emailToSend, Map<String, Object> model) {
@@ -203,6 +204,6 @@ public class EmailServiceImpl implements EmailService {
 
         String[] paramValues = emailToSend.getParamValue().split(StringConstant.COMMA_SEPARATED);
         model.put(USERNAME, paramValues[USERNAME_INDEX]);
-        model.put(ForgotPassword.RESET_CODE, paramValues[RESET_CODE_INDEX]);
+        model.put(RESET_CODE, paramValues[RESET_CODE_INDEX]);
     }
 }

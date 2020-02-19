@@ -39,4 +39,6 @@ public interface PatientService {
     List<DropDownResponseDTO> fetchMinPatientMetaInfo(Long hospitalId);
 
     List<DropDownResponseDTO> fetchActiveMinPatientMetaInfo(Long hospitalId);
+
+    void registerPatient(Long patientId);
 }

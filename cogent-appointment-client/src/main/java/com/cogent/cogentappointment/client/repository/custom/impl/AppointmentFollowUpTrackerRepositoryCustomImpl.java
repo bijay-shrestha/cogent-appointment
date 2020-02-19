@@ -1,16 +1,21 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
+import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.AppointmentFollowUpTrackerRepositoryCustom;
+import com.cogent.cogentappointment.persistence.model.AppointmentFollowUpTracker;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
 
+import static com.cogent.cogentappointment.client.constants.QueryConstants.AppointmentFollowUpTrackerConstants.PARENT_APPOINTMENT_ID;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.query.AppointmentFollowUpTrackerQuery.QUERY_TO_FETCH_FOLLOW_UP_DETAILS;
+import static com.cogent.cogentappointment.client.query.AppointmentFollowUpTrackerQuery.QUERY_TO_FETCH_LATEST_APPOINTMENT_FOLLOW_UP_TRACKER;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
 
 /**
@@ -36,6 +41,19 @@ public class AppointmentFollowUpTrackerRepositoryCustomImpl implements Appointme
                 .setParameter(HOSPITAL_ID, hospitalId);
 
         return query.getResultList();
+    }
+
+    @Override
+    public AppointmentFollowUpTracker fetchLatestAppointmentFollowUpTracker(Long parentAppointmentId) {
+        try {
+            return (AppointmentFollowUpTracker) entityManager.createNativeQuery(
+                    QUERY_TO_FETCH_LATEST_APPOINTMENT_FOLLOW_UP_TRACKER, AppointmentFollowUpTracker.class)
+                    .setParameter(PARENT_APPOINTMENT_ID, parentAppointmentId)
+                    .getSingleResult();
+
+        } catch (NoResultException e) {
+            throw new NoContentFoundException(AppointmentFollowUpTracker.class);
+        }
     }
 
 }

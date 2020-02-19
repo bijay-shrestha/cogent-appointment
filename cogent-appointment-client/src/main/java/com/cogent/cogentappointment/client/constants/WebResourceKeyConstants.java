@@ -27,6 +27,14 @@ public class WebResourceKeyConstants {
         String FOLLOW_UP = "/follow-up";
         String APPOINTMENT_ID_PATH_VARIABLE_BASE = "/{appointmentId}";
         String HISTORY = "/history";
+        String PENDING_APPROVAL = "/pending-approval";
+        String REFUND = "/refund";
+        String APPROVE = "/approve";
+        String REJECT = "/reject";
+        String STATUS = "/status";
+        String LOG = "/log";
+        String RESCHEDULE_LOG = "/reschedule-log";
+        String DETAILS = "/detail";
     }
 
     //B

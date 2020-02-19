@@ -1,9 +1,18 @@
 package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.dto.request.appointment.*;
+import com.cogent.cogentappointment.client.dto.request.appointment.appointmentPendingApproval.AppointmentPendingApprovalSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.appointmentPendingApproval.AppointmentRejectDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.*;
+import com.cogent.cogentappointment.client.dto.response.appointment.appointmentLog.AppointmentLogResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.appointmentPendingApproval.AppointmentPendingApprovalResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.*;
@@ -12,6 +21,7 @@ import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.Duration;
 import org.joda.time.Minutes;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +32,8 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AppointmentServiceMessage.APPOINTMENT_EXISTS;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.APPROVED;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.REFUNDED;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.*;
@@ -60,6 +72,9 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentFollowUpLogRepository appointmentFollowUpLogRepository;
 
+    private final AppointmentFollowUpTrackerService appointmentFollowUpTrackerService;
+
+
     public AppointmentServiceImpl(PatientService patientService,
                                   DoctorService doctorService,
                                   SpecializationService specializationService,
@@ -70,7 +85,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   HospitalService hospitalService,
                                   AppointmentRefundDetailRepository appointmentRefundDetailRepository,
                                   AppointmentRescheduleLogRepository appointmentRescheduleLogRepository,
-                                  AppointmentFollowUpLogRepository appointmentFollowUpLogRepository) {
+                                  AppointmentFollowUpLogRepository appointmentFollowUpLogRepository,
+                                  AppointmentFollowUpTrackerService appointmentFollowUpTrackerService) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -82,6 +98,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.appointmentRefundDetailRepository = appointmentRefundDetailRepository;
         this.appointmentRescheduleLogRepository = appointmentRescheduleLogRepository;
         this.appointmentFollowUpLogRepository = appointmentFollowUpLogRepository;
+        this.appointmentFollowUpTrackerService = appointmentFollowUpTrackerService;
     }
 
     @Override
@@ -253,6 +270,129 @@ public class AppointmentServiceImpl implements AppointmentService {
         return appointmentHistory;
     }
 
+    @Override
+    public AppointmentPendingApprovalResponseDTO searchPendingVisitApprovals(AppointmentPendingApprovalSearchDTO searchRequestDTO, Pageable pageable) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SEARCHING_PROCESS_STARTED, PENDING_APPROVAL_LIST);
+
+        AppointmentPendingApprovalResponseDTO responseDTOS =
+                appointmentRepository.searchPendingVisitApprovals(searchRequestDTO, pageable);
+
+        log.info(SEARCHING_PROCESS_COMPLETED, PENDING_APPROVAL_LIST, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public AppointmentLogResponseDTO searchAppointmentLogs(AppointmentLogSearchDTO searchRequestDTO, Pageable pageable) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_LOG);
+
+        AppointmentLogResponseDTO responseDTOS =
+                appointmentRepository.searchAppointmentLogs(searchRequestDTO, pageable);
+
+        log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_LOG, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public void approveAppointment(Long appointmentId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(APPROVE_PROCESS_STARTED, APPOINTMENT);
+
+        Appointment appointment = appointmentRepository.fetchPendingAppointmentById(appointmentId)
+                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
+
+        appointment.setStatus(APPROVED);
+
+        saveAppointmentFollowUpTracker(appointment);
+
+        log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    @Override
+    public void rejectAppointment(AppointmentRejectDTO rejectDTO) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(REJECT_PROCESS_STARTED, APPOINTMENT);
+
+        Appointment appointment = appointmentRepository.fetchPendingAppointmentById(
+                rejectDTO.getAppointmentId())
+                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(rejectDTO.getAppointmentId()));
+
+        parseAppointmentRejectDetails(rejectDTO, appointment);
+
+        log.info(REJECT_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    @Override
+    public AppointmentRescheduleLogResponseDTO fetchRescheduleAppointment(AppointmentRescheduleLogSearchDTO rescheduleDTO, Pageable pageable) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_RESCHEDULE_LOG);
+
+        AppointmentRescheduleLogResponseDTO responseDTOS =
+                appointmentRepository.fetchRescheduleAppointment(rescheduleDTO, pageable);
+
+        log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_RESCHEDULE_LOG, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public AppointmentRefundResponseDTO fetchRefundAppointments(AppointmentRefundSearchDTO searchDTO, Pageable pageable) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, APPOINTMENT_REFUND);
+
+        AppointmentRefundResponseDTO refundAppointments =
+                appointmentRepository.fetchRefundAppointments(searchDTO, pageable);
+
+        log.info(FETCHING_PROCESS_COMPLETED, APPOINTMENT_REFUND, getDifferenceBetweenTwoTime(startTime));
+
+        return refundAppointments;
+    }
+
+    @Override
+    public void approveRefundAppointment(Long appointmentId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(APPROVE_PROCESS_STARTED, APPOINTMENT_REFUND);
+
+        AppointmentRefundDetail refundAppointmentDetail =
+                appointmentRefundDetailRepository.findByAppointmentId(appointmentId)
+                        .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
+
+        Appointment appointment = appointmentRepository.fetchRefundAppointmentById(appointmentId)
+                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
+
+        appointment.setStatus(REFUNDED);
+
+        refundAppointmentDetail.setStatus(APPROVED);
+
+        log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT_REFUND, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    @Override
+    public void rejectRefundAppointment(AppointmentRefundRejectDTO refundRejectDTO) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(REJECT_PROCESS_STARTED, APPOINTMENT_REFUND);
+
+        AppointmentRefundDetail refundAppointmentDetail =
+                appointmentRefundDetailRepository.findByAppointmentId(refundRejectDTO.getAppointmentId())
+                        .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(refundRejectDTO.getAppointmentId()));
+
+        parseRefundRejectDetails(refundRejectDTO, refundAppointmentDetail);
+
+        log.info(REJECT_PROCESS_COMPLETED, APPOINTMENT_REFUND, getDifferenceBetweenTwoTime(startTime));
+    }
+
     private List<String> filterDoctorTimeWithAppointments(Duration rosterGapDuration,
                                                           String doctorStartTime,
                                                           String doctorEndTime,
@@ -344,6 +484,32 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     }
 
+    private void saveAppointmentFollowUpTracker(Appointment appointment) {
+
+        if (appointment.getIsFreeFollowUp().equals(YES)) {
+            AppointmentFollowUpLog appointmentFollowUpLog =
+                    appointmentFollowUpLogRepository.findByFollowUpAppointmentId(appointment.getId())
+                            .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointment.getId()));
+
+            appointmentFollowUpTrackerService.updateFollowUpTracker(appointmentFollowUpLog.getParentAppointmentId());
+
+        } else {
+            appointmentFollowUpTrackerService.save(
+                    appointment.getId(),
+                    appointment.getAppointmentNumber(),
+                    appointment.getHospitalId(),
+                    appointment.getDoctorId(),
+                    appointment.getSpecializationId(),
+                    appointment.getPatientId()
+            );
+
+            registerPatient(appointment.getPatientId().getId());
+        }
+    }
+
+    private void registerPatient(Long patientId) {
+        patientService.registerPatient(patientId);
+    }
 
 }
 

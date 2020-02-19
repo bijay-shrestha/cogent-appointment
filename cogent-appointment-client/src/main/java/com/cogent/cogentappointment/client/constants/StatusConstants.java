@@ -18,5 +18,8 @@ public class StatusConstants {
         String CANCELLED = "C";
         String REJECTED = "R";
         String RESCHEDULED = "RES";
+        String REFUNDED = "RE";
+        String VACANT = "V";
+        String ALL = "";
     }
 }

@@ -31,6 +31,8 @@ import java.util.function.Function;
 
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.PatientLog.PATIENT;
+import static com.cogent.cogentappointment.client.log.constants.PatientLog.REGISTERING_PATIENT_PROCESS_COMPLETED;
+import static com.cogent.cogentappointment.client.log.constants.PatientLog.REGISTERING_PATIENT_PROCESS_STARTED;
 import static com.cogent.cogentappointment.client.utils.GenderUtils.fetchGenderByCode;
 import static com.cogent.cogentappointment.client.utils.PatientUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
@@ -220,6 +222,23 @@ public class PatientServiceImpl implements PatientService {
         log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
+    }
+
+    @Override
+    public void registerPatient(Long patientId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(REGISTERING_PATIENT_PROCESS_STARTED);
+
+        HospitalPatientInfo hospitalPatientInfo = hospitalPatientInfoRepository.findByPatientId(patientId)
+                .orElseThrow(() -> new NoContentFoundException(Patient.class, "patientId", patientId.toString()));
+
+        String latestRegistrationNumber =
+                patientRepository.fetchLatestRegistrationNumber(hospitalPatientInfo.getHospitalId());
+
+        registerPatientDetails(hospitalPatientInfo, latestRegistrationNumber);
+
+        log.info(REGISTERING_PATIENT_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
     }
 
     private void validatePatientDuplicity(Long patientCount, String name, String mobileNumber,

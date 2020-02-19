@@ -38,4 +38,6 @@ public interface PatientRepositoryCustom {
     List<PatientSearchResponseDTO> search(PatientSearchRequestDTO searchRequestDTO, Pageable pageable);
 
     Long countOverallRegisteredPatients(Long HospitalId);
+
+    String fetchLatestRegistrationNumber(Long hospitalId);
 }

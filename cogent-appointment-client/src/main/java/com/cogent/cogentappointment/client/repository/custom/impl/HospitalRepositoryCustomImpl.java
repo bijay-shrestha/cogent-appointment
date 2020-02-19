@@ -16,11 +16,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.HOSPITAL_ID;
-import static com.cogent.cogentappointment.client.query.HospitalQuery.QUERY_TO_FETCH_HOSPITAL_FREE_FOLLOW_UP_INTERVAL_DAYS;
-import static com.cogent.cogentappointment.client.query.HospitalQuery.QUERY_TO_FETCH_MIN_HOSPITAL;
-import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createNativeQuery;
-import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
-import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.transformNativeQueryToResultList;
+import static com.cogent.cogentappointment.client.query.HospitalQuery.*;
+import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
 
 /**
  * @author smriti ON 12/01/2020
@@ -46,6 +43,14 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
     @Override
     public Integer fetchHospitalFreeFollowUpIntervalDays(Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_FREE_FOLLOW_UP_INTERVAL_DAYS)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        return (Integer) query.getSingleResult();
+    }
+
+    @Override
+    public Integer fetchHospitalFollowUpCount(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_FREE_FOLLOW_UP_COUNT)
                 .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Integer) query.getSingleResult();

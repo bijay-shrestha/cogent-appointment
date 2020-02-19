@@ -36,6 +36,15 @@ public class SwaggerConstants {
         String CANCEL_APPOINTMENT_OPERATION = "Cancel appointment and request refund";
         String RESCHEDULE_OPERATION = "Reschedule appointment date and time.";
         String FETCH_APPOINTMENT_HISTORY = " Fetch appointment history (only approved)";
+        String FETCH_REFUND_APPOINTMENTS = "Fetch Refund Appointment Request List";
+        String APPROVE_REFUND_APPOINTMENT = "Approve Refund Request Appointment";
+        String REJECT_REFUND_APPOINTMENT = "Reject Refund Request Appointment";
+        String FETCH_PENDING_APPOINTMENT_APPROVAL = "Fetch pending appointment approvals";
+        String APPROVE_APPOINTMENT = "Approve Appointment and set status as 'A'.";
+        String REJECT_APPOINTMENT = "Reject Appointment and set status as 'R'.";
+        String FETCH_APPOINTMENT_LOG = "Fetch Appointment Log";
+        String FETCH_APPOINTMENT_RESCHEDULE_LOG = "Fetch Appointment Reschedule Log";
+        String DETAILS_APPROVAL_VISIT_OPERATION = "Fetch appointment visit approval details by its id";
     }
 
     public interface AuthenticateConstant {

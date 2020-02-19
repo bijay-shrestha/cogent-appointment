@@ -6,6 +6,8 @@ import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLo
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.AppointmentLogResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPendingApproval.AppointmentPendingApprovalDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPendingApproval.AppointmentPendingApprovalResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentQueue.AppointmentQueueSearchDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.AppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.AppointmentCountResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogDTO;
@@ -314,6 +316,42 @@ public class AppointmentUtils {
         appointmentLogResponseDTO.setTotalAmount(totalAmount.get());
 
         return appointmentLogResponseDTO;
+
+    }
+
+    public static AppointmentQueueSearchDTO parseQueryResultToAppointmentQueueForTodayResponse(List<Object[]> results) {
+
+        AppointmentQueueSearchDTO appointmentQueueSearchDTO = new AppointmentQueueSearchDTO();
+
+        List<AppointmentQueueDTO> appointmentQueueDTOS = new ArrayList<>();
+
+        AtomicReference<Double> totalAmount = new AtomicReference<>(0D);
+
+        results.forEach(result -> {
+            final int APPOINTMENT_TIME_INDEX = 0;
+            final int DOCTOR_NAME_INDEX = 1;
+            final int SPECIALIZATION_NAME_INDEX = 2;
+            final int PATIENT_NAME_INDEX = 3;
+            final int PATIENT_MOBILE_NUMBER_INDEX = 4;
+            final int DOCTOR_AVATAR_INDEX = 5;
+
+            AppointmentQueueDTO appointmentQueueDTO =
+                    AppointmentQueueDTO.builder()
+                            .appointmentTime(result[APPOINTMENT_TIME_INDEX].toString())
+                            .doctorName(result[DOCTOR_NAME_INDEX].toString())
+                            .specializationName(result[SPECIALIZATION_NAME_INDEX].toString())
+                            .patientName(result[PATIENT_NAME_INDEX].toString())
+                            .patientMobileNumber(result[PATIENT_MOBILE_NUMBER_INDEX].toString())
+                            .doctorAvatar(result[DOCTOR_AVATAR_INDEX].toString())
+                            .build();
+
+            appointmentQueueDTOS.add(appointmentQueueDTO);
+
+        });
+
+        appointmentQueueSearchDTO.setAppointmentQueueDTOList(appointmentQueueDTOS);
+
+        return appointmentQueueSearchDTO;
 
     }
 

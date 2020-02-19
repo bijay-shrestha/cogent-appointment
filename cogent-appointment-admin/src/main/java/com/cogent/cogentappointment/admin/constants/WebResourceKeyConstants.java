@@ -31,6 +31,8 @@ public class WebResourceKeyConstants {
         String RESCHEDULE = "/reschedule";
         String RESCHEDULE_LOG = "/reschedule-log";
         String DETAILS = "/detail";
+        String APPOINTMENT_QUEUE = "/appointment-queue";
+
 
     }
 

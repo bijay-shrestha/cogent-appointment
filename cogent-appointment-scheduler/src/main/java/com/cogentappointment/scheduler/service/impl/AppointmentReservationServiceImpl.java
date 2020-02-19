@@ -51,7 +51,7 @@ public class AppointmentReservationServiceImpl implements AppointmentReservation
         appointmentReservations.forEach(appointmentReservation -> {
 
             long expiryDate = appointmentReservation.getCreatedDate().getTime() +
-                    TimeUnit.MINUTES.toMillis(Long.parseLong(reservationProperties.getDeleteTime()));
+                    TimeUnit.MINUTES.toMillis(Long.parseLong(reservationProperties.getDeleteIntervalInMinutes()));
 
             long currentDateInMillis = new Date().getTime();
 

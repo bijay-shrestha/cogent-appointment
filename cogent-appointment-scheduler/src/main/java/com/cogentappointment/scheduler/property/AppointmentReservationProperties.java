@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "reservation")
 public class AppointmentReservationProperties {
 
-    private String schedulerTime;
+    private String schedulerTimeInMilliSeconds;
 
-    private String deleteTime;
+    private String deleteIntervalInMinutes;
 }

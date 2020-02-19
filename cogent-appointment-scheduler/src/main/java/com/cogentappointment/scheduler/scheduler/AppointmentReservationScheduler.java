@@ -14,7 +14,7 @@ import static com.cogentappointment.scheduler.log.CommonLogConstant.SCHEDULER_RU
  */
 @Configuration
 @EnableScheduling
-//@Slf4j
+@Slf4j
 public class AppointmentReservationScheduler {
 
     private final AppointmentReservationService appointmentReservationService;
@@ -23,9 +23,10 @@ public class AppointmentReservationScheduler {
         this.appointmentReservationService = appointmentReservationService;
     }
 
-    @Scheduled(fixedDelayString = "${reservation.schedulerTime}")
+    /*RUNS IN 2 MINS*/
+    @Scheduled(fixedDelayString = "${reservation.schedulerTimeInMilliSeconds}")
     public void deleteExpiredAppointmentReservation() {
-//        log.info(SCHEDULER_RUNNING, APPOINTMENT_RESERVATION);
+        log.info(SCHEDULER_RUNNING, APPOINTMENT_RESERVATION);
         appointmentReservationService.deleteExpiredAppointmentReservation();
     }
 }

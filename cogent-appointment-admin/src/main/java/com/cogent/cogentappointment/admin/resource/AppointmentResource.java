@@ -99,14 +99,4 @@ public class AppointmentResource {
         Pageable pageable = PageRequest.of(page, size);
         return ok().body(appointmentService.fetchRescheduleAppointment(rescheduleLogSearchDTO, pageable));
     }
-
-    @PutMapping(APPOINTMENT_QUEUE)
-    @ApiOperation(FETCH_APPOINTMENT_QUEUE)
-    public ResponseEntity<?> fetchTodayAppointmentQueue(@RequestBody AppointmentQueueRequestDTO appointmentQueueRequestDTO,
-                                                        @RequestParam("page") int page,
-                                                        @RequestParam("size") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        appointmentService.fetchTodayAppointmentQueue(appointmentQueueRequestDTO, pageable);
-        return ok().body(appointmentService.fetchTodayAppointmentQueue(appointmentQueueRequestDTO, pageable));
-    }
 }

@@ -14,7 +14,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class DoctorSearchRequestDTO implements Serializable {
 
-    private String name;
+    private String doctorId;
 
     private String code;
 

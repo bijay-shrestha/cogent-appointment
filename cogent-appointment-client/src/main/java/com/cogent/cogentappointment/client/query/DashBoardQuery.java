@@ -28,7 +28,7 @@ public class DashBoardQuery {
             "SELECT" +
                     " COUNT(a.id)" +
                     " FROM Appointment a" +
-                    " LEFT JOIN HospitalPatientInfo hpi ON a.patientId=hpi.patientId" +
+                    " LEFT JOIN HospitalPatientInfo hpi ON a.patientId.id=hpi.patientId" +
                     " WHERE hpi.isRegistered='Y'" +
                     " AND (a.appointmentDate BETWEEN :fromDate AND :toDate)" +
                     " AND hpi.hospitalId=:hospitalId";
@@ -38,7 +38,7 @@ public class DashBoardQuery {
             "SELECT" +
                     " COUNT(a.id)" +
                     " FROM Appointment a" +
-                    " LEFT JOIN HospitalPatientInfo hpi ON a.patientId=hpi.patientId" +
+                    " LEFT JOIN HospitalPatientInfo hpi ON a.patientId.id=hpi.patientId" +
                     " WHERE hpi.isRegistered='N'" +
                     " AND (a.appointmentDate BETWEEN :fromDate AND :toDate)" +
                     " AND  hpi.hospitalId=:hospitalId";

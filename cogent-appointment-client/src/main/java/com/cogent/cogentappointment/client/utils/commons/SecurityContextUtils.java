@@ -4,7 +4,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 public class SecurityContextUtils {
     public static Long getHospitalId(){
-        return  (Long) SecurityContextHolder.getContext().getAuthentication().getCredentials();
+         return  (Long) SecurityContextHolder.getContext().getAuthentication().getCredentials();
     }
 
 }

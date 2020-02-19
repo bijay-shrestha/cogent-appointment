@@ -45,9 +45,6 @@ public class AdminUpdateRequestDTO implements Serializable {
     private Character genderCode;
 
     @NotNull
-    private Long hospitalId;
-
-    @NotNull
     private Long profileId;
 
     @NotNull

@@ -57,11 +57,15 @@ public class AdminQuery {
 
     public static final String QUERY_TO_FETCH_ACTIVE_ADMIN_FOR_DROPDOWN =
             " SELECT" +
-                    " id as value," +                     //[0]
-                    " username as label" +               //[1]
+                    " a.id as value," +                     //[0]
+                    " a.username as label" +               //[1]
                     " FROM" +
-                    " Admin" +
-                    " WHERE status ='Y'";
+                    " Admin a" +
+                    " LEFT JOIN Profile p ON p.id = a.profileId" +
+                    " LEFT JOIN Department d ON d.id = p.department.id" +
+                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
+                    " WHERE a.status ='Y'" +
+                    " AND h.id=:hospitalId";
 
     public static String QUERY_TO_SEARCH_ADMIN(AdminSearchRequestDTO searchRequestDTO) {
 
@@ -96,7 +100,7 @@ public class AdminQuery {
                     " END as fileUri";                                           //[9]
 
     private static final String GET_WHERE_CLAUSE_TO_FETCH_ADMIN =
-            " WHERE a.status != 'D' AND h.status !='D' AND p.status !='D' AND d.status != 'D'";
+            " WHERE a.status != 'D' AND h.id=:hospitalId AND h.status !='D' AND p.status !='D' AND d.status != 'D'";
 
     private static String GET_WHERE_CLAUSE_FOR_SEARCH_ADMIN(AdminSearchRequestDTO searchRequestDTO) {
         String whereClause = GET_WHERE_CLAUSE_TO_FETCH_ADMIN;
@@ -113,12 +117,9 @@ public class AdminQuery {
         if (!ObjectUtils.isEmpty(searchRequestDTO.getProfileId()))
             whereClause += " AND p.id=" + searchRequestDTO.getProfileId();
 
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getHospitalId()))
-            whereClause += " AND h.id=" + searchRequestDTO.getHospitalId();
-
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getHospitalId())) {
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getGenderCode())) {
             Gender gender = GenderUtils.fetchGenderByCode(searchRequestDTO.getGenderCode());
-            whereClause += " AND a.gender LIKE '%" + gender + "%'";
+            whereClause += " AND a.gender='" + gender + "'";
         }
 
         whereClause += " ORDER BY a.id DESC";
@@ -151,8 +152,12 @@ public class AdminQuery {
     public static final String QUERY_TO_FETCH_ADMIN_BY_USERNAME_OR_EMAIL =
             " SELECT a FROM Admin a" +
                     " WHERE" +
+                    " LEFT JOIN Profile p ON p.id = a.profileId" +
+                    " LEFT JOIN Department d ON d.id = p.department.id" +
+                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " (a.username=:username OR a.email =:email)" +
-                    " AND a.status != 'D'";
+                    " AND a.status != 'D'" +
+                    " AND h.id=:hospitalId";
 
     public static final String QUERY_TO_FETCH_ADMIN_INFO =
             " SELECT" +
@@ -175,13 +180,19 @@ public class AdminQuery {
                     " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
                     " WHERE " +
                     " (a.username=:username OR a.email =:email)" +
-                    " AND a.status='Y'";
+                    " AND a.status='Y'" +
+                    " AND h.id=:hospitalId";
 
     public static final String QUERY_TO_FETCH_ADMIN_META_INFO =
-            " SELECT a.id as adminMetaInfoId," +                   //[0]
-                    " a.metaInfo as metaInfo" +                   //[1]
-                    " FROM AdminMetaInfo a" +
-                    " WHERE a.admin.status !='D'";
+            " SELECT ami.id as adminMetaInfoId," +                   //[0]
+                    " ami.metaInfo as metaInfo" +                   //[1]
+                    " FROM AdminMetaInfo ami" +
+                    " LEFT JOIN Admin a On a.id=ami.admin.id" +
+                    " LEFT JOIN Profile p ON p.id=a.profileId.id" +
+                    " LEFT JOIN Department d ON d.id=p.department.id" +
+                    " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
+                    " WHERE a.status !='D'" +
+                    " AND h.id=:hospitalId";
 
 
 }

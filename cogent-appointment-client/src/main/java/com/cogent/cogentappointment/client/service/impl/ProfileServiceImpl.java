@@ -34,6 +34,7 @@ import static com.cogent.cogentappointment.client.utils.ProfileMenuUtils.convert
 import static com.cogent.cogentappointment.client.utils.ProfileUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getHospitalId;
 
 /**
  * @author smriti on 7/2/19
@@ -63,12 +64,14 @@ public class ProfileServiceImpl implements ProfileService {
 
         log.info(SAVING_PROCESS_STARTED, PROFILE);
 
+        Long hospitalId = getHospitalId();
+
         Long profileCount = profileRepository.validateDuplicity(profileRequestDTO.getProfileDTO().getName(),
-                profileRequestDTO.getProfileDTO().getHospitalId());
+                hospitalId);
 
         validateName(profileCount, profileRequestDTO.getProfileDTO().getName());
 
-        Department department = findDepartmentById(profileRequestDTO.getProfileDTO().getDepartmentId());
+        Department department = findDepartmentById(profileRequestDTO.getProfileDTO().getDepartmentId(), hospitalId);
 
         Profile savedProfile = save(convertDTOToProfile(profileRequestDTO.getProfileDTO(), department));
 
@@ -91,16 +94,18 @@ public class ProfileServiceImpl implements ProfileService {
 
         log.info(UPDATING_PROCESS_STARTED, PROFILE);
 
-        Profile profile = findById(requestDTO.getProfileDTO().getId());
+        Long hospitalId = getHospitalId();
+
+        Profile profile = findById(requestDTO.getProfileDTO().getId(), hospitalId);
 
         Long profileCount = profileRepository.validateDuplicityForUpdate(
                 requestDTO.getProfileDTO().getId(),
                 requestDTO.getProfileDTO().getName(),
-                requestDTO.getProfileDTO().getHospitalId());
+                hospitalId);
 
         validateName(profileCount, requestDTO.getProfileDTO().getName());
 
-        Department department = findDepartmentById(requestDTO.getProfileDTO().getDepartmentId());
+        Department department = findDepartmentById(requestDTO.getProfileDTO().getDepartmentId(), hospitalId);
 
         save(convertToUpdatedProfile(requestDTO.getProfileDTO(), department, profile));
 
@@ -109,8 +114,8 @@ public class ProfileServiceImpl implements ProfileService {
         log.info(UPDATING_PROCESS_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
     }
 
-    public Profile findById(Long profileId) {
-        return profileRepository.findProfileById(profileId)
+    public Profile findById(Long profileId, Long hospitalId) {
+        return profileRepository.findProfileById(profileId, hospitalId)
                 .orElseThrow(() -> PROFILE_WITH_GIVEN_ID_NOT_FOUND.apply(profileId));
     }
 
@@ -126,7 +131,7 @@ public class ProfileServiceImpl implements ProfileService {
 
         log.info(DELETING_PROCESS_STARTED, PROFILE);
 
-        Profile profile = findById(deleteRequestDTO.getId());
+        Profile profile = findById(deleteRequestDTO.getId(), getHospitalId());
 
         save(convertProfileToDeleted.apply(profile, deleteRequestDTO));
 
@@ -140,7 +145,9 @@ public class ProfileServiceImpl implements ProfileService {
 
         log.info(SEARCHING_PROCESS_STARTED, PROFILE);
 
-        List<ProfileMinimalResponseDTO> responseDTOS = profileRepository.search(searchRequestDTO, pageable);
+        Long hospitalId = getHospitalId();
+
+        List<ProfileMinimalResponseDTO> responseDTOS = profileRepository.search(searchRequestDTO, hospitalId, pageable);
 
         log.info(SEARCHING_PROCESS_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
 
@@ -153,7 +160,7 @@ public class ProfileServiceImpl implements ProfileService {
 
         log.info(FETCHING_DETAIL_PROCESS_STARTED, PROFILE);
 
-        ProfileDetailResponseDTO detailResponseDTO = profileRepository.fetchDetailsById(id);
+        ProfileDetailResponseDTO detailResponseDTO = profileRepository.fetchDetailsById(id,getHospitalId());
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
 
@@ -167,7 +174,7 @@ public class ProfileServiceImpl implements ProfileService {
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, PROFILE);
 
-        List<DropDownResponseDTO> responseDTOS = profileRepository.fetchActiveProfilesForDropDown();
+        List<DropDownResponseDTO> responseDTOS = profileRepository.fetchActiveProfilesForDropDown(getHospitalId());
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
 
@@ -176,7 +183,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public Profile fetchActiveProfileById(Long id) {
-        return profileRepository.findActiveProfileById(id)
+        return profileRepository.findActiveProfileById(id,getHospitalId())
                 .orElseThrow(() -> PROFILE_WITH_GIVEN_ID_NOT_FOUND.apply(id));
     }
 
@@ -186,7 +193,7 @@ public class ProfileServiceImpl implements ProfileService {
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, PROFILE);
 
-        List<DropDownResponseDTO> responseDTOS = profileRepository.fetchProfileByDepartmentId(departmentId);
+        List<DropDownResponseDTO> responseDTOS = profileRepository.fetchProfileByDepartmentId(departmentId,getHospitalId());
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
 
@@ -212,8 +219,8 @@ public class ProfileServiceImpl implements ProfileService {
         throw new NoContentFoundException(Profile.class, "id", id.toString());
     };
 
-    public Department findDepartmentById(Long id) {
-        return departmentRepository.findActiveDepartmentById(id)
+    public Department findDepartmentById(Long id, Long hospitalId) {
+        return departmentRepository.findActiveDepartmentById(id, hospitalId)
                 .orElseThrow(() -> new NoContentFoundException(Department.class, "id", id.toString()));
     }
 }

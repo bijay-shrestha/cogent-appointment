@@ -17,6 +17,4 @@ public class ProfileSearchRequestDTO implements Serializable {
     private Character status;
 
     private Long departmentId;
-
-    private Long hospitalId;
 }

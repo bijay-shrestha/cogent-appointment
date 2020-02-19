@@ -58,9 +58,11 @@ public class ProfileRepositoryCustomImpl implements ProfileRepositoryCustom {
 
     @Override
     public List<ProfileMinimalResponseDTO> search(ProfileSearchRequestDTO searchRequestDTO,
+                                                  Long hospitalId,
                                                   Pageable pageable) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_PROFILE.apply(searchRequestDTO));
+        Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_PROFILE.apply(searchRequestDTO))
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         int totalItems = query.getResultList().size();
 
@@ -76,13 +78,14 @@ public class ProfileRepositoryCustomImpl implements ProfileRepositoryCustom {
     }
 
     @Override
-    public ProfileDetailResponseDTO fetchDetailsById(Long id) {
-        return parseToProfileDetailResponseDTO(getProfileResponseDTO(id), getProfileMenuResponseDTO(id));
+    public ProfileDetailResponseDTO fetchDetailsById(Long id, Long hospitalId) {
+        return parseToProfileDetailResponseDTO(getProfileResponseDTO(id, hospitalId), getProfileMenuResponseDTO(id));
     }
 
-    private ProfileResponseDTO getProfileResponseDTO(Long id) {
+    private ProfileResponseDTO getProfileResponseDTO(Long id, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PROFILE_DETAILS)
-                .setParameter(ID, id);
+                .setParameter(ID, id)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         try {
             return transformQueryToSingleResult(query, ProfileResponseDTO.class);
@@ -99,8 +102,9 @@ public class ProfileRepositoryCustomImpl implements ProfileRepositoryCustom {
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchActiveProfilesForDropDown() {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_PROFILES_FOR_DROPDOWN);
+    public List<DropDownResponseDTO> fetchActiveProfilesForDropDown(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_PROFILES_FOR_DROPDOWN)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
@@ -109,9 +113,10 @@ public class ProfileRepositoryCustomImpl implements ProfileRepositoryCustom {
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchProfileByDepartmentId(Long departmentId) {
+    public List<DropDownResponseDTO> fetchProfileByDepartmentId(Long departmentId,Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PROFILE_BY_DEPARTMENT_ID)
-                .setParameter(ID, departmentId);
+                .setParameter(ID, departmentId)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 

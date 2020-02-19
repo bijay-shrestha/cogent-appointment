@@ -11,13 +11,14 @@ import org.joda.time.Minutes;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.VACANT;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.HYPHEN;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.convert12HourTo24HourFormat;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.convert24HourTo12HourFormat;
 
 /**
@@ -27,12 +28,11 @@ public class AppointmentStatusUtils {
 
     private static final DateTimeFormatter FORMAT = DateTimeFormat.forPattern("HH:mm");
 
+    /*ADD TO LIST ONLY IF DoctorTimeSlotResponseDTO LIST DOES NOT CONTAIN DOCTOR DUTY ROSTER TIME*/
     public static List<DoctorTimeSlotResponseDTO> calculateTimeSlotsForAllAppointmentStatus(
             String startTime,
             String endTime,
             int durationInMinutes,
-            AppointmentStatusResponseDTO appointmentStatus,
-            String searchAppointmentStatus,
             List<DoctorTimeSlotResponseDTO> doctorTimeSlots) {
 
         final Duration duration = Minutes.minutes(durationInMinutes).toStandardDuration();
@@ -42,28 +42,14 @@ public class AppointmentStatusUtils {
         do {
             DoctorTimeSlotResponseDTO doctorTimeSlotResponseDTO = new DoctorTimeSlotResponseDTO();
 
-            if (!Objects.isNull(appointmentStatus)) {
+            DateTime finalDateTime = dateTime;
 
-                /*APPOINTMENT TIME - APPOINTMENT STATUS*/
-                String[] appointmentTime = appointmentStatus.getAppointmentTimeDetails().split(COMMA_SEPARATED);
+            boolean timeMatched = doctorTimeSlots.stream()
+                    .anyMatch(doctorTimeSlot -> Objects.equals(doctorTimeSlot.getAppointmentTime(),
+                            convert24HourTo12HourFormat(FORMAT.print(finalDateTime)))
+                    );
 
-                DateTime finalDateTime = dateTime;
-                String timeMatched = Arrays.stream(appointmentTime)
-                        .filter(str -> {
-                            String date = FORMAT.print(finalDateTime);
-                            return str.contains(date);
-                        })
-                        .findAny()
-                        .orElse(null);
-
-                if (searchAppointmentStatus.equals(VACANT))
-                    setTimeSlotForVacantAppointmentStatus(doctorTimeSlotResponseDTO, timeMatched, dateTime,
-                            doctorTimeSlots);
-
-                else setTimeSlotMapForOtherAppointmentStatus(doctorTimeSlotResponseDTO, timeMatched, dateTime,
-                        doctorTimeSlots, appointmentStatus);
-
-            } else {
+            if (!timeMatched) {
                 setTimeSlotMapWithAppointmentStatus(doctorTimeSlotResponseDTO, dateTime, VACANT);
                 doctorTimeSlots.add(doctorTimeSlotResponseDTO);
             }
@@ -72,38 +58,67 @@ public class AppointmentStatusUtils {
 
         } while (dateTime.compareTo(FORMAT.parseDateTime(endTime)) <= 0);
 
+        /*SORT BY APPOINTMENT TIME*/
+        doctorTimeSlots.sort((o1, o2) -> {
+
+            try {
+                return new SimpleDateFormat("hh:mm a").parse(o1.getAppointmentTime())
+                        .compareTo(new SimpleDateFormat("hh:mm a").parse(o2.getAppointmentTime()));
+            } catch (ParseException e) {
+                return 0;
+            }
+        });
+
         return doctorTimeSlots;
     }
 
-    /*IF STATUS IN SEARCH IS OTHER THAN 'V'(VACANT), THEN SHOW APPOINTMENT AS PER STATUS*/
-    private static void setTimeSlotMapForOtherAppointmentStatus(DoctorTimeSlotResponseDTO doctorTimeSlotResponseDTO,
-                                                                String timeMatched,
-                                                                DateTime dateTime,
-                                                                List<DoctorTimeSlotResponseDTO> doctorTimeSlots,
-                                                                AppointmentStatusResponseDTO appointmentStatus) {
-
-        if (!Objects.isNull(timeMatched)) {
-            String[] timeMatchedSplit = timeMatched.split(HYPHEN);
-            setTimeSlotMapWithAppointmentStatus(doctorTimeSlotResponseDTO, dateTime, timeMatchedSplit[1]);
-
-            parseAppointmentDetails(doctorTimeSlotResponseDTO, appointmentStatus);
-        } else
-            setTimeSlotMapWithAppointmentStatus(doctorTimeSlotResponseDTO, dateTime, VACANT);
-
-        doctorTimeSlots.add(doctorTimeSlotResponseDTO);
-    }
-
     /*IF STATUS IN SEARCH IS 'V'(VACANT), THEN ONLY ADD VACANT TIME SLOTS.
-     * ADD ONLY THOSE TIME WHICH MATCHES WITH APPOINTMENT - NO NEED TO SHOW APPOINTMENT WITH OTHER STATUS
+     * ADD ONLY THOSE TIME WHICH DOES NOT MATCH WITH APPOINTMENT - NO NEED TO SHOW APPOINTMENT WITH OTHER STATUS
      * */
-    private static void setTimeSlotForVacantAppointmentStatus(DoctorTimeSlotResponseDTO doctorTimeSlotResponseDTO,
-                                                              String timeMatched,
-                                                              DateTime dateTime,
-                                                              List<DoctorTimeSlotResponseDTO> doctorTimeSlots) {
-        if (Objects.isNull(timeMatched)) {
-            setTimeSlotMapWithAppointmentStatus(doctorTimeSlotResponseDTO, dateTime, VACANT);
-            doctorTimeSlots.add(doctorTimeSlotResponseDTO);
-        }
+    public static List<DoctorTimeSlotResponseDTO> calculateTimeSlotsForVacantAppointmentStatus(
+            String startTime,
+            String endTime,
+            int durationInMinutes,
+            String matchedAppointmentWithStatus,
+            List<DoctorTimeSlotResponseDTO> doctorTimeSlots) {
+
+        final Duration duration = Minutes.minutes(durationInMinutes).toStandardDuration();
+
+        DateTime dateTime = new DateTime(FORMAT.parseDateTime(startTime));
+
+        do {
+            DoctorTimeSlotResponseDTO doctorTimeSlotResponseDTO = new DoctorTimeSlotResponseDTO();
+
+            if (!Objects.isNull(matchedAppointmentWithStatus)) {
+                 /*APPOINTMENT TIME - APPOINTMENT STATUS*/
+                String[] appointmentTime = matchedAppointmentWithStatus.split(COMMA_SEPARATED);
+
+                DateTime finalDateTime = dateTime;
+
+                String timeMatched = Arrays.stream(appointmentTime)
+                        .filter(str -> {
+                            String date = FORMAT.print(finalDateTime);
+                            return str.contains(date);
+                        })
+                        .findAny()
+                        .orElse(null);
+
+                if (Objects.isNull(timeMatched)) {
+                    setTimeSlotMapWithAppointmentStatus(doctorTimeSlotResponseDTO, dateTime, VACANT);
+                    doctorTimeSlots.add(doctorTimeSlotResponseDTO);
+                }
+
+            } else {
+                setTimeSlotMapWithAppointmentStatus(doctorTimeSlotResponseDTO, dateTime, VACANT);
+                doctorTimeSlots.add(doctorTimeSlotResponseDTO);
+            }
+
+
+            dateTime = dateTime.plus(duration);
+
+        } while (dateTime.compareTo(FORMAT.parseDateTime(endTime)) <= 0);
+
+        return doctorTimeSlots;
     }
 
     private static void setTimeSlotMapWithAppointmentStatus(DoctorTimeSlotResponseDTO responseDTO,

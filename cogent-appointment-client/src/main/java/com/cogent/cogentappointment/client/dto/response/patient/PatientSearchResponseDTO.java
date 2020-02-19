@@ -40,6 +40,8 @@ public class PatientSearchResponseDTO implements Serializable {
 
     private String hospitalName;
 
+    private Long hospitalId;
+
     private Date dateOfBirth;
 
     private Integer totalItems;

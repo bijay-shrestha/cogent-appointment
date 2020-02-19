@@ -387,7 +387,6 @@ public class AdminServiceImpl implements AdminService {
     private List<FileUploadResponseDTO> uploadFiles(Admin admin, MultipartFile[] files) {
 //      String subDirectory = admin.getClass().getSimpleName() + StringConstant.FORWARD_SLASH + admin.getUsername();
         String subDirectory =  admin.getUsername();
-        //        return fileService.uploadFiles(files, subDirectory);
         return minioFileService.addAttachmentIntoSubDirectory(subDirectory, files);
 
     }

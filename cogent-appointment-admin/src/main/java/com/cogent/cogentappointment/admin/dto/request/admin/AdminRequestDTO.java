@@ -52,4 +52,6 @@ public class AdminRequestDTO implements Serializable {
     private Long profileId;
 
     private List<String> macAddressInfo;
+
+    private String baseUrl;
 }

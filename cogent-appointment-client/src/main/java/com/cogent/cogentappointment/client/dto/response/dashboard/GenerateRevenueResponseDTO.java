@@ -12,9 +12,11 @@ import java.io.Serializable;
 @Setter
 public class GenerateRevenueResponseDTO implements Serializable {
 
-    private Character revenueType;
+    private String fiscalYear;
 
     private Double amount;
 
     private Double growthPercent;
+
+    private Character filterType;
 }

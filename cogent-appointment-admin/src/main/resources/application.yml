@@ -15,9 +15,14 @@ spring:
       generate_statistics: true
       format_sql: true
       temp.use_jdbc_metadata_defaults: false
+      cache:
+              region.factory_class: org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory
+              use_second_level_cache: true
+              use_query_cache: true
     show-sql: true
     generate-ddl: true
     open-in-view: false
+
 
   jackson:
     deserialization.fail-on-unknown-properties: false

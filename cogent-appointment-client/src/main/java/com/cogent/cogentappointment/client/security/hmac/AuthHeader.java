@@ -13,6 +13,8 @@ public class AuthHeader {
 
     private final String username;
 
+    private final Integer companyId;
+
     private final String companyCode;
 
     private final String apiKey;
@@ -21,9 +23,16 @@ public class AuthHeader {
 
     private final byte[] digest;
 
-    public AuthHeader(String algorithm, String username, String companyCode, String apiKey, String nonce, byte[] digest) {
+    public AuthHeader(String algorithm,
+                      String username,
+                      Integer companyId,
+                      String companyCode,
+                      String apiKey,
+                      String nonce,
+                      byte[] digest) {
         this.algorithm = algorithm;
         this.username = username;
+        this.companyId=companyId;
         this.companyCode = companyCode;
         this.apiKey = apiKey;
         this.nonce = nonce;

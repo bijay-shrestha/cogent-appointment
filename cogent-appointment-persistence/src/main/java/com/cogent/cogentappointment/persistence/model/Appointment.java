@@ -29,16 +29,16 @@ public class Appointment extends Auditable<String> implements Serializable {
     private Long id;
 
     /*eg.Doctor name like Dr.Sanjeev Uprety*/
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "specialization_id")
     private Specialization specializationId;
 
     /*eg.Doctor name like Dr.Sanjeev Uprety*/
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doctor_id")
     private Doctor doctorId;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id")
     private Patient patientId;
 

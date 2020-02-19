@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.client.utils;
 
-import com.cogent.cogentappointment.client.constants.ErrorMessageConstants;
 import com.cogent.cogentappointment.client.constants.StringConstant;
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.DoctorDutyRosterRequestDTO;
@@ -19,7 +18,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.*;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AppointmentServiceMessage.*;
 
 /**
@@ -29,7 +27,8 @@ public class DoctorDutyRosterUtils {
 
     public static DoctorDutyRoster parseToDoctorDutyRoster(DoctorDutyRosterRequestDTO requestDTO,
                                                            Doctor doctor,
-                                                           Specialization specialization) {
+                                                           Specialization specialization,
+                                                           Hospital hospital) {
 
         DoctorDutyRoster doctorDutyRoster = new DoctorDutyRoster();
         doctorDutyRoster.setFromDate(requestDTO.getFromDate());
@@ -38,6 +37,7 @@ public class DoctorDutyRosterUtils {
         doctorDutyRoster.setStatus(requestDTO.getStatus());
         doctorDutyRoster.setHasOverrideDutyRoster(requestDTO.getHasOverrideDutyRoster());
         doctorDutyRoster.setDoctorId(doctor);
+        doctorDutyRoster.setHospitalId(hospital);
         doctorDutyRoster.setSpecializationId(specialization);
         return doctorDutyRoster;
     }

@@ -43,5 +43,7 @@ public class DoctorDetailResponseDTO implements Serializable {
 
     private Double appointmentCharge;
 
+    private Double appointmentFollowUpCharge;
+
     private String fileUri;
 }

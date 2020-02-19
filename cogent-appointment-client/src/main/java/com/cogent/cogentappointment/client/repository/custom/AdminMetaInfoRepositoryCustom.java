@@ -12,5 +12,5 @@ import java.util.List;
 @Repository
 @Qualifier("adminMetaInfoRepositoryCustom")
 public interface AdminMetaInfoRepositoryCustom {
-    List<AdminMetaInfoResponseDTO> fetchAdminMetaInfoResponseDTOS();
+    List<AdminMetaInfoResponseDTO> fetchAdminMetaInfoResponseDTOS(Long hospitalId);
 }

@@ -1,11 +1,12 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentPendingSearchDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedDateResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedTimeResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentPendingResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentDetailResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentMinResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.AppointmentRepositoryCustom;
 import com.cogent.cogentappointment.client.utils.AppointmentUtils;
@@ -20,7 +21,6 @@ import javax.persistence.Query;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.query.AppointmentQuery.*;
@@ -51,7 +51,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         return (Long) query.getSingleResult();
     }
 
-    /*USED WHILE SAVING DOCTOR DUTY ROSTER TO VALIDATE IF APPOINTMENT EXISTS*/
+    /*USED IN APPOINTMENT CHECK AVAILABILITY*/
     @Override
     public List<AppointmentBookedTimeResponseDTO> fetchBookedAppointments(AppointmentCheckAvailabilityRequestDTO requestDTO) {
 
@@ -79,12 +79,18 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
-    public List<AppointmentPendingResponseDTO> fetchPendingAppointments(AppointmentPendingSearchDTO searchDTO) {
+    public List<AppointmentMinResponseDTO> fetchPendingAppointments(AppointmentSearchDTO searchDTO) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PENDING_APPOINTMENTS)
                 .setParameter(FROM_DATE, utilDateToSqlDate(searchDTO.getFromDate()))
                 .setParameter(TO_DATE, utilDateToSqlDate(searchDTO.getToDate()));
 
-        return transformQueryToResultList(query, AppointmentPendingResponseDTO.class);
+        List<AppointmentMinResponseDTO> pendingAppointments =
+                transformQueryToResultList(query, AppointmentMinResponseDTO.class);
+
+        if (pendingAppointments.isEmpty())
+            throw new NoContentFoundException(Appointment.class);
+
+        return pendingAppointments;
     }
 
     @Override
@@ -129,38 +135,64 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
-    public Long countRegisteredPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO) {
+    public Long countRegisteredPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO,Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_COUNT_REGISTERED_APPOINTMENT)
                 .setParameter(FROM_DATE, utilDateToSqlDate(dashBoardRequestDTO.getFromDate()))
                 .setParameter(TO_DATE, utilDateToSqlDate(dashBoardRequestDTO.getToDate()))
-                .setParameter(HOSPITAL_ID, dashBoardRequestDTO.getHospitalId());
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Long) query.getSingleResult();
     }
 
     @Override
-    public Long countNewPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO) {
+    public Long countNewPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO,Long hospitalId) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_COUNT_NEW_PATIENT_APPOINTMENT)
                 .setParameter(FROM_DATE, utilDateToSqlDate(dashBoardRequestDTO.getFromDate()))
                 .setParameter(TO_DATE, utilDateToSqlDate(dashBoardRequestDTO.getToDate()))
-                .setParameter(HOSPITAL_ID, dashBoardRequestDTO.getHospitalId());
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Long) query.getSingleResult();
     }
 
     @Override
-    public Long countOverAllAppointment(DashBoardRequestDTO dashBoardRequestDTO) {
+    public Long countOverAllAppointment(DashBoardRequestDTO dashBoardRequestDTO,Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_OVER_ALL_APPOINTMENTS)
                 .setParameter(FROM_DATE, utilDateToSqlDate(dashBoardRequestDTO.getFromDate()))
                 .setParameter(TO_DATE, utilDateToSqlDate(dashBoardRequestDTO.getToDate()))
-                .setParameter(HOSPITAL_ID, dashBoardRequestDTO.getHospitalId());
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Long) query.getSingleResult();
     }
 
-    private Supplier<NoContentFoundException> APPOINTMENT_NOT_FOUND = ()
-            -> new NoContentFoundException(Appointment.class);
+    @Override
+    public AppointmentDetailResponseDTO fetchAppointmentDetails(Long appointmentId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_DETAILS_BY_ID)
+                .setParameter(ID, appointmentId);
+
+        List<AppointmentDetailResponseDTO> appointmentDetails =
+                transformQueryToResultList(query, AppointmentDetailResponseDTO.class);
+
+        if (appointmentDetails.isEmpty()) throw APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId);
+
+        return appointmentDetails.get(0);
+    }
+
+    @Override
+    public List<AppointmentMinResponseDTO> fetchAppointmentHistory(AppointmentSearchDTO searchDTO) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_HISTORY)
+                .setParameter(FROM_DATE, utilDateToSqlDate(searchDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(searchDTO.getToDate()));
+
+        List<AppointmentMinResponseDTO> appointmentHistory =
+                transformQueryToResultList(query, AppointmentMinResponseDTO.class);
+
+        if (appointmentHistory.isEmpty())
+            throw new NoContentFoundException(Appointment.class);
+
+        return appointmentHistory;
+    }
 
     private Function<Long, NoContentFoundException> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         throw new NoContentFoundException(Appointment.class, "id", id.toString());

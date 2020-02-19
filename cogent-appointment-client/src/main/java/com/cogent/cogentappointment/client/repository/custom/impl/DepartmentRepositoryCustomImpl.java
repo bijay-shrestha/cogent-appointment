@@ -36,32 +36,34 @@ public class DepartmentRepositoryCustomImpl implements DepartmentRepositoryCusto
     private EntityManager entityManager;
 
     @Override
-    public List<Object[]> validateDuplicity(DepartmentRequestDTO requestDTO) {
+    public List<Object[]> validateDuplicity(DepartmentRequestDTO requestDTO, Long hospitalId) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY)
                 .setParameter(NAME, requestDTO.getName())
                 .setParameter(CODE, requestDTO.getDepartmentCode())
-                .setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         return query.getResultList();
     }
 
     @Override
-    public List<Object[]> validateDuplicity(DepartmentUpdateRequestDTO requestDTO) {
+    public List<Object[]> validateDuplicity(DepartmentUpdateRequestDTO requestDTO, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE)
                 .setParameter(ID, requestDTO.getId())
                 .setParameter(NAME, requestDTO.getName())
                 .setParameter(CODE, requestDTO.getDepartmentCode())
-                .setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         return query.getResultList();
     }
 
     @Override
     public List<DepartmentMinimalResponseDTO> search(DepartmentSearchRequestDTO searchRequestDTO,
+                                                     Long hospitalId,
                                                      Pageable pageable) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_DEPARTMENT.apply(searchRequestDTO));
+        Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_DEPARTMENT.apply(searchRequestDTO))
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         int totalItems = query.getResultList().size();
 
@@ -78,10 +80,11 @@ public class DepartmentRepositoryCustomImpl implements DepartmentRepositoryCusto
     }
 
     @Override
-    public DepartmentResponseDTO fetchDetails(Long id) {
+    public DepartmentResponseDTO fetchDetails(Long id, Long hospitalId) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DETAILS)
-                .setParameter(ID, id);
+                .setParameter(ID, id)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         try {
             return transformQueryToSingleResult(query, DepartmentResponseDTO.class);
@@ -91,19 +94,10 @@ public class DepartmentRepositoryCustomImpl implements DepartmentRepositoryCusto
     }
 
     @Override
-    public Optional<List<DropDownResponseDTO>> fetchDepartmentForDropdown() {
+    public Optional<List<DropDownResponseDTO>> fetchDepartmentForDropdown(Long hospitalId) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DEPARTMENT_FOR_DROPDOWN);
-
-        List<DropDownResponseDTO> dropDownDTOS = transformQueryToResultList(query, DropDownResponseDTO.class);
-
-        return dropDownDTOS.isEmpty() ? Optional.empty() : Optional.of(dropDownDTOS);
-    }
-
-    @Override
-    public Optional<List<DropDownResponseDTO>> fetchActiveDropDownList() {
-
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_DEPARTMENT_FOR_DROPDOWN);
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DEPARTMENT_FOR_DROPDOWN)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         List<DropDownResponseDTO> dropDownDTOS = transformQueryToResultList(query, DropDownResponseDTO.class);
 
@@ -111,8 +105,9 @@ public class DepartmentRepositoryCustomImpl implements DepartmentRepositoryCusto
     }
 
     @Override
-    public Optional<List<DropDownResponseDTO>> fetchDepartmentByHospitalId(Long hospitalId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DEPARTMENT_BY_HOSPITAL_ID)
+    public Optional<List<DropDownResponseDTO>> fetchActiveDropDownList(Long hospitalId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_DEPARTMENT_FOR_DROPDOWN)
                 .setParameter(HOSPITAL_ID, hospitalId);
 
         List<DropDownResponseDTO> dropDownDTOS = transformQueryToResultList(query, DropDownResponseDTO.class);

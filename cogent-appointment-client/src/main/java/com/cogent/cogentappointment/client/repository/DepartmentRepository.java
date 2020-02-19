@@ -15,11 +15,11 @@ import java.util.Optional;
 @Repository
 public interface DepartmentRepository extends JpaRepository<Department, Long>, DepartmentRepositoryCustom {
 
-    @Query(value = "SELECT d FROM Department d WHERE d.id = :id AND d.status != 'D'")
-    Optional<Department> findDepartmentById(@Param("id") Long id);
+    @Query(value = "SELECT d FROM Department d WHERE d.id = :id AND d.hospital.id= :hospitalId AND d.status != 'D'")
+    Optional<Department> findDepartmentById(@Param("id") Long id,@Param("hospitalId") Long hospitalId);
 
-    @Query(value = "SELECT d FROM Department d WHERE d.id = :id AND d.status = 'Y'")
-    Optional<Department> findActiveDepartmentById(@Param("id") Long id);
+    @Query(value = "SELECT d FROM Department d WHERE d.id = :id AND d.hospital.id= :hospitalId AND d.status = 'Y'")
+    Optional<Department> findActiveDepartmentById(@Param("id") Long id,@Param("hospitalId") Long hospitalId);
 
     @Query("FROM Department d WHERE d.id = :id AND d.status = 'Y'")
     Department fetchActiveDepartmentById(@Param("id") Long id);

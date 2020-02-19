@@ -97,11 +97,9 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
 
             Date currentDate = utilDateToSqlDate(new Date());
 
-            if ((Objects.requireNonNull(expiryDate).compareTo(Objects.requireNonNull(currentDate))) < 0){
-
+            if ((Objects.requireNonNull(expiryDate).compareTo(Objects.requireNonNull(currentDate))) < 0)
                 followUpTracker.setStatus(INACTIVE);
-                appointmentFollowUpTrackerRepository.save(followUpTracker);
-            }
+
         });
 
         log.info(UPDATING_PROCESS_COMPLETED, APPOINTMENT_FOLLOW_UP_TRACKER_STATUS, getDifferenceBetweenTwoTime(startTime));

@@ -11,6 +11,7 @@ import com.cogent.cogentappointment.admin.repository.AppointmentTransactionDetai
 import com.cogent.cogentappointment.admin.repository.PatientRepository;
 import com.cogent.cogentappointment.admin.service.DashboardService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -25,6 +26,7 @@ import static com.cogent.cogentappointment.admin.utils.commons.DateConverterUtil
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static com.cogent.cogentappointment.admin.utils.commons.MathUtils.calculatePercenatge;
+
 
 /**
  * @author Sauravi Thapa २०/२/१०
@@ -130,6 +132,7 @@ public class DashboardServiceImpl implements DashboardService {
         }
 
         revenueStatisticsResponseDTO.setData(map);
+
         log.info(FETCHING_PROCESS_COMPLETED, REVENUE_STATISTICS, getDifferenceBetweenTwoTime(startTime));
 
         return revenueStatisticsResponseDTO;

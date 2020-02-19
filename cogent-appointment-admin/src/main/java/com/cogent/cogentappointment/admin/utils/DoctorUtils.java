@@ -80,7 +80,7 @@ public class DoctorUtils {
                                                                          Double appointmentFollowUpCharge) {
         DoctorAppointmentCharge doctorAppointmentCharge = new DoctorAppointmentCharge();
         doctorAppointmentCharge.setDoctorId(doctor);
-        parseDoctorAppointmentDetails(doctorAppointmentCharge, appointmentCharge, appointmentFollowUpCharge);
+        parseDoctorAppointmentChargeDetails(doctorAppointmentCharge, appointmentCharge, appointmentFollowUpCharge);
         return doctorAppointmentCharge;
     }
 
@@ -101,9 +101,9 @@ public class DoctorUtils {
         doctorAvatar.setStatus(StatusConstants.ACTIVE);
     }
 
-    public static void parseDoctorAppointmentDetails(DoctorAppointmentCharge doctorAppointmentCharge,
-                                                     Double appointmentCharge,
-                                                     Double appointmentFollowUpCharge) {
+    public static void parseDoctorAppointmentChargeDetails(DoctorAppointmentCharge doctorAppointmentCharge,
+                                                           Double appointmentCharge,
+                                                           Double appointmentFollowUpCharge) {
         doctorAppointmentCharge.setAppointmentCharge(formatDoubleTo2DecimalPlaces(appointmentCharge));
         doctorAppointmentCharge.setAppointmentFollowUpCharge(formatDoubleTo2DecimalPlaces(appointmentFollowUpCharge));
     }

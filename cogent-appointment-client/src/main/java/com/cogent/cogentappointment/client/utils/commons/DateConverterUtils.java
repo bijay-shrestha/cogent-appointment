@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.client.utils.commons;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Calendar;
 import java.util.Date;
 
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.convertDateToLocalDate;
@@ -60,5 +61,17 @@ public class DateConverterUtils {
         }
 
         return pillType;
+    }
+
+    public static String getFiscalYear() {
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+
+        int month = Calendar.getInstance().get(Calendar.MONTH) + 1;
+
+        if (month < 3) {
+            return (year - 1) + "/" + year;
+        } else {
+            return year + "/" + (year + 1);
+        }
     }
 }

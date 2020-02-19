@@ -62,20 +62,21 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     }
 
     @Override
-    public List<Object[]> validateDuplicity(AdminUpdateRequestDTO updateRequestDTO) {
+    public List<Object[]> validateDuplicity(AdminUpdateRequestDTO updateRequestDTO, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FIND_ADMIN_EXCEPT_CURRENT_ADMIN)
                 .setParameter(ID, updateRequestDTO.getId())
                 .setParameter(EMAIL, updateRequestDTO.getEmail())
                 .setParameter(MOBILE_NUMBER, updateRequestDTO.getMobileNumber())
-                .setParameter(HOSPITAL_ID, updateRequestDTO.getHospitalId());
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         return query.getResultList();
     }
 
     @Override
-    public List<AdminDropdownDTO> fetchActiveAdminsForDropDown() {
+    public List<AdminDropdownDTO> fetchActiveAdminsForDropDown(Long hospitalId) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_ADMIN_FOR_DROPDOWN);
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_ADMIN_FOR_DROPDOWN)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         List<AdminDropdownDTO> list = transformQueryToResultList(query, AdminDropdownDTO.class);
 
@@ -84,8 +85,11 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     }
 
     @Override
-    public List<AdminMinimalResponseDTO> search(AdminSearchRequestDTO searchRequestDTO, Pageable pageable) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_ADMIN(searchRequestDTO));
+    public List<AdminMinimalResponseDTO> search(AdminSearchRequestDTO searchRequestDTO,
+                                                Long hospitalId,
+                                                Pageable pageable) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_ADMIN(searchRequestDTO))
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         int totalItems = query.getResultList().size();
 
@@ -101,8 +105,8 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     }
 
     @Override
-    public AdminDetailResponseDTO fetchDetailsById(Long id) {
-        AdminDetailResponseDTO detailResponseDTO = fetchAdminDetailResponseDTO(id);
+    public AdminDetailResponseDTO fetchDetailsById(Long id, Long hospitalId) {
+        AdminDetailResponseDTO detailResponseDTO = fetchAdminDetailResponseDTO(id, hospitalId);
 
         if (detailResponseDTO.getHasMacBinding().equals(StatusConstants.YES))
             detailResponseDTO.setAdminMacAddressInfo(getMacAddressInfo(id));
@@ -112,11 +116,12 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
 
 
     @Override
-    public Admin fetchAdminByUsernameOrEmail(String username) {
+    public Admin fetchAdminByUsernameOrEmail(String username, Long hospitalId) {
         try {
             return entityManager.createQuery(QUERY_TO_FETCH_ADMIN_BY_USERNAME_OR_EMAIL, Admin.class)
                     .setParameter(USERNAME, username)
                     .setParameter(EMAIL, username)
+                    .setParameter(HOSPITAL_ID, hospitalId)
                     .getSingleResult();
         } catch (NoResultException ex) {
             throw ADMIN_NOT_FOUND.apply(username);
@@ -124,11 +129,12 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     }
 
     @Override
-    public AdminLoggedInInfoResponseDTO fetchLoggedInAdminInfo(AdminInfoRequestDTO requestDTO) {
+    public AdminLoggedInInfoResponseDTO fetchLoggedInAdminInfo(AdminInfoRequestDTO requestDTO, Long hospitalId) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ADMIN_INFO)
                 .setParameter(USERNAME, requestDTO.getUsername())
-                .setParameter(EMAIL, requestDTO.getUsername());
+                .setParameter(EMAIL, requestDTO.getUsername())
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         try {
             return transformQueryToSingleResult(query, AdminLoggedInInfoResponseDTO.class);
@@ -137,9 +143,10 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         }
     }
 
-    public AdminDetailResponseDTO fetchAdminDetailResponseDTO(Long id) {
+    public AdminDetailResponseDTO fetchAdminDetailResponseDTO(Long id, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ADMIN_DETAIL)
-                .setParameter(ID, id);
+                .setParameter(ID, id)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         List<Object[]> results = query.getResultList();
 

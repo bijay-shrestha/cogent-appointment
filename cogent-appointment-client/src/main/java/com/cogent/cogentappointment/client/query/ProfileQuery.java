@@ -35,7 +35,7 @@ public class ProfileQuery {
 
     private static Function<ProfileSearchRequestDTO, String> GET_WHERE_CLAUSE_FOR_SEARCH_PROFILE =
             (searchRequestDTO) -> {
-                String whereClause = " WHERE p.status!='D' AND h.status!='D'";
+                String whereClause = " WHERE p.status!='D' AND h.status!='D' AND h.id=:hospitalId";
 
                 if (!ObjectUtils.isEmpty(searchRequestDTO.getName()))
                     whereClause += " AND p.name LIKE '%" + searchRequestDTO.getName() + "%'";
@@ -45,9 +45,6 @@ public class ProfileQuery {
 
                 if (!ObjectUtils.isEmpty(searchRequestDTO.getDepartmentId()))
                     whereClause += " AND d.id=" + searchRequestDTO.getDepartmentId();
-
-                if (!ObjectUtils.isEmpty(searchRequestDTO.getHospitalId()))
-                    whereClause += " AND h.id=" + searchRequestDTO.getHospitalId();
 
                 whereClause += " ORDER BY p.id DESC";
 
@@ -85,7 +82,8 @@ public class ProfileQuery {
                     " WHERE" +
                     " p.id=:id" +
                     " AND p.status!='D'" +
-                    " AND h.status!='D'";
+                    " AND h.status!='D'" +
+                    " AND h.id=:hospitalId";
 
     public static final String QUERY_TO_FETCH_PROFILE_MENU_DETAILS =
             " SELECT" +
@@ -102,7 +100,13 @@ public class ProfileQuery {
                     " AND pm.status='Y'";
 
     public static final String QUERY_TO_FETCH_ACTIVE_PROFILES_FOR_DROPDOWN =
-            " SELECT id as value, name as label FROM Profile WHERE status ='Y'";
+            " SELECT" +
+                    " p.id as value," +
+                    " p.name as label" +
+                    " FROM Profile p" +
+                    " LEFT JOIN Department d ON d.id = p.department.id" +
+                    " WHERE p.status ='Y'" +
+                    " AND d.hospital.id=:hospitalId";
 
     public static final String QUERY_TO_FETCH_PROFILE_BY_DEPARTMENT_ID =
             " SELECT p.id as value," +
@@ -111,7 +115,8 @@ public class ProfileQuery {
                     " LEFT JOIN Department d ON d.id = p.department.id" +
                     " WHERE p.status ='Y'" +
                     " AND d.status ='Y'" +
-                    " AND d.id =:id";
+                    " AND d.id =:id" +
+                    " AND d.hospital.id=:hospitalId";
 
     public static final String QUERY_TO_FETCH_ASSIGNED_PROFILE_RESPONSE =
             "SELECT" +

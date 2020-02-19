@@ -3,7 +3,6 @@ package com.cogent.cogentappointment.persistence.model;
 
 import com.cogent.cogentappointment.persistence.audit.Auditable;
 import com.cogent.cogentappointment.persistence.enums.Gender;
-import com.cogent.cogentappointment.persistence.listener.DepartmentEntityListener;
 import com.cogent.cogentappointment.persistence.listener.DoctorEntityListener;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

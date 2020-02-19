@@ -53,11 +53,12 @@ public class AppointmentQuery {
                     " AND a.doctorId.id = :doctorId" +
                     " AND a.specializationId.id = :specializationId";
 
+
     /*%H - hour (e.g., 00,01,02,…12)
      * %i - minutes (e.g., 00,01,02,…12)
      * %p - AM/PM
      * */
-    public static final String QUERY_TO_FETCH_PENDING_APPOINTMENTS =
+    public static final String QUERY_TO_FETCH_MIN_APPOINTMENT =
             " SELECT" +
                     " a.id as appointmentId," +                                             //[0]
                     " a.appointmentDate as appointmentDate," +                              //[1]
@@ -73,7 +74,10 @@ public class AppointmentQuery {
                     " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
                     " LEFT JOIN Specialization s ON s.id = a.specializationId.id" +
                     " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +
-                    " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
+                    " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id";
+
+    public static final String QUERY_TO_FETCH_PENDING_APPOINTMENTS =
+            QUERY_TO_FETCH_MIN_APPOINTMENT +
                     " WHERE a.status = 'PA'" +
                     " AND a.appointmentDate BETWEEN :fromDate AND :toDate" +
                     " ORDER BY a.appointmentDate DESC";
@@ -86,5 +90,33 @@ public class AppointmentQuery {
                     " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +
                     " WHERE a.id =:id";
 
+    public static final String QUERY_TO_FETCH_APPOINTMENT_DETAILS_BY_ID =
+            " SELECT" +
+                    " a.appointmentDate as appointmentDate," +                              //[0]
+                    " DATE_FORMAT(a.appointmentTime,'%H:%i %p') as appointmentTime," +      //[1]
+                    " a.appointmentNumber as appointmentNumber," +                          //[2]
+                    " d.name as doctorName," +                                              //[3]
+                    " s.name as specializationName," +                                      //[4]
+                    " h.name as hospitalName," +                                            //[5]
+                    " p.name as patientName," +                                             //[6]
+                    " p.mobileNumber as mobileNumber," +                                    //[7]
+                    " p.dateOfBirth as dateOfBirth," +                                       //[8]
+                    " atd.appointmentAmount as appointmentAmount," +                        //[9]
+                    " atd.taxAmount as taxAmount," +                                        //[10]
+                    " atd.discountAmount as discountAmount," +                             //[11]
+                    " atd.serviceChargeAmount as serviceChargeAmount" +                    //[12]
+                    " FROM Appointment a" +
+                    " LEFT JOIN Patient p ON p.id = a.patientId.id" +
+                    " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
+                    " LEFT JOIN Specialization s ON s.id = a.specializationId.id" +
+                    " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +
+                    " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
+                    " WHERE a.id =:id";
+
+    public static final String QUERY_TO_FETCH_APPOINTMENT_HISTORY =
+            QUERY_TO_FETCH_MIN_APPOINTMENT +
+                    " WHERE a.status = 'A'" +
+                    " AND a.appointmentDate BETWEEN :fromDate AND :toDate" +
+                    " ORDER BY a.appointmentDate DESC";
 
 }

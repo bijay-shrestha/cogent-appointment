@@ -44,9 +44,6 @@ public class AdminRequestDTO implements Serializable {
     private Character hasMacBinding;
 
     @NotNull
-    private Long hospitalId;
-
-    @NotNull
     private Character genderCode;
 
     @NotNull
@@ -55,4 +52,6 @@ public class AdminRequestDTO implements Serializable {
     private List<String> macAddressInfo;
 
     private String password;
+
+    private String baseUrl;
 }

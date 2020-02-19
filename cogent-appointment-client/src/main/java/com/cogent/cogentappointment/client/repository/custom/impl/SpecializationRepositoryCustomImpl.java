@@ -6,7 +6,6 @@ import com.cogent.cogentappointment.client.dto.response.specialization.Specializ
 import com.cogent.cogentappointment.client.dto.response.specialization.SpecializationResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.SpecializationRepositoryCustom;
-import com.cogent.cogentappointment.client.utils.commons.PageableUtils;
 import com.cogent.cogentappointment.persistence.model.Specialization;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -22,6 +21,7 @@ import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.query.SpecializationQuery.*;
+import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
 
 /**
@@ -55,13 +55,15 @@ public class SpecializationRepositoryCustomImpl implements SpecializationReposit
 
     @Override
     public List<SpecializationMinimalResponseDTO> search(SpecializationSearchRequestDTO searchRequestDTO,
+                                                         Long hospitalId,
                                                          Pageable pageable) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_SPECIALIZATION(searchRequestDTO));
+        Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_SPECIALIZATION(searchRequestDTO))
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         int totalItems = query.getResultList().size();
 
-        PageableUtils.addPagination.accept(pageable, query);
+        addPagination.accept(pageable, query);
 
         List<SpecializationMinimalResponseDTO> results = transformQueryToResultList(
                 query, SpecializationMinimalResponseDTO.class);
@@ -74,8 +76,9 @@ public class SpecializationRepositoryCustomImpl implements SpecializationReposit
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchActiveSpecializationForDropDown() {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_SPECIALIZATION_FOR_DROPDOWN);
+    public List<DropDownResponseDTO> fetchActiveSpecializationForDropDown(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_SPECIALIZATION_FOR_DROPDOWN)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
@@ -84,9 +87,10 @@ public class SpecializationRepositoryCustomImpl implements SpecializationReposit
     }
 
     @Override
-    public SpecializationResponseDTO fetchDetailsById(Long id) {
+    public SpecializationResponseDTO fetchDetailsById(Long id, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_SPECIALIZATION_DETAILS)
-                .setParameter(ID, id);
+                .setParameter(ID, id)
+                .setParameter(HOSPITAL_ID, hospitalId);
         try {
             return transformQueryToSingleResult(query, SpecializationResponseDTO.class);
         } catch (NoResultException e) {
@@ -95,9 +99,10 @@ public class SpecializationRepositoryCustomImpl implements SpecializationReposit
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchSpecializationByDoctorId(Long doctorId) {
+    public List<DropDownResponseDTO> fetchSpecializationByDoctorId(Long doctorId, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_SPECIALIZATION_BY_DOCTOR_ID)
-                .setParameter(ID, doctorId);
+                .setParameter(ID, doctorId)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 

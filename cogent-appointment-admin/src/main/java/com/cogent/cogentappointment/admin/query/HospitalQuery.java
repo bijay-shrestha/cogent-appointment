@@ -33,7 +33,8 @@ public class HospitalQuery {
     public static final String QUERY_TO_FETCH_HOSPITAL_FOR_DROPDOWN =
             " SELECT" +
                     " h.id as value," +                     //[0]
-                    " h.name as label" +                    //[1]
+                    " h.name as label," +
+                    " h.isCogentAdmin as isCogentAdmin" +                    //[1]
                     " FROM" +
                     " Hospital h" +
                     " WHERE h.status ='Y'";

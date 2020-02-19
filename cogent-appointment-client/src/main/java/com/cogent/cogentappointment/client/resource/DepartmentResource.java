@@ -84,9 +84,4 @@ public class DepartmentResource {
         return ok(departmentService.fetchActiveDropDownList());
     }
 
-    @GetMapping(HospitalConstants.HOSPITAL_ID_PATH_VARIABLE_BASE)
-    @ApiOperation(FETCH_DEPARTMENT_BY_HOSPITAL_OPERATION)
-    public ResponseEntity<?> fetchDepartmentByHospitalId(@PathVariable("hospitalId") Long hospitalId) {
-        return ok(departmentService.fetchDepartmentByHospitalId(hospitalId));
-    }
 }

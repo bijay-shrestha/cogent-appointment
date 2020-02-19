@@ -31,7 +31,7 @@ public class DashBoardQuery {
                     " LEFT JOIN HospitalPatientInfo hpi ON a.patientId.id=hpi.patientId" +
                     " WHERE hpi.isRegistered='Y'" +
                     " AND (a.appointmentDate BETWEEN :fromDate AND :toDate)" +
-                    " AND hpi.hospitalId=:hospitalId";
+                    " AND a.hospitalId.id=:hospitalId";
 
 
     public static String QUERY_TO_COUNT_NEW_PATIENT_APPOINTMENT =
@@ -41,7 +41,7 @@ public class DashBoardQuery {
                     " LEFT JOIN HospitalPatientInfo hpi ON a.patientId.id=hpi.patientId" +
                     " WHERE hpi.isRegistered='N'" +
                     " AND (a.appointmentDate BETWEEN :fromDate AND :toDate)" +
-                    " AND  hpi.hospitalId=:hospitalId";
+                    " AND  a.hospitalId.id=:hospitalId";
 
 
     public static String QUERY_TO_COUNT_OVERALL_REGISTERED_PATIENTS =

@@ -6,9 +6,7 @@ import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLo
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.AppointmentLogResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPendingApproval.AppointmentPendingApprovalDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPendingApproval.AppointmentPendingApprovalResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentQueue.AppointmentQueueSearchByTimeDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentQueue.AppointmentQueueSearchDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentQueue.*;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.AppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.AppointmentCountResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogDTO;
@@ -322,7 +320,7 @@ public class AppointmentUtils {
 
         AppointmentQueueSearchDTO appointmentQueueSearchDTO = new AppointmentQueueSearchDTO();
 
-        List<AppointmentQueueDTO> appointmentQueueDTOS = new ArrayList<>();
+        List<AppointmentQueueDTO> appointmentQueueByTimeDTOS = new ArrayList<>();
 
         AtomicReference<Double> totalAmount = new AtomicReference<>(0D);
 
@@ -344,23 +342,23 @@ public class AppointmentUtils {
                             .doctorAvatar(result[DOCTOR_AVATAR_INDEX].toString())
                             .build();
 
-            appointmentQueueDTOS.add(appointmentQueueDTO);
+            appointmentQueueByTimeDTOS.add(appointmentQueueDTO);
 
         });
 
-        appointmentQueueSearchDTO.setAppointmentQueueDTOList(appointmentQueueDTOS);
+        appointmentQueueSearchDTO.setAppointmentQueueByTimeDTOList(appointmentQueueByTimeDTOS);
 
         return appointmentQueueSearchDTO;
 
     }
 
-    public static  Map<String, List<AppointmentQueueDTO>> parseQueryResultToAppointmentQueueForTodayByTimeResponse(List<Object[]> results) {
+    public static   Map<String, List<AppointmentQueueDTO>> parseQueryResultToAppointmentQueueForTodayByTimeResponse(List<Object[]> results) {
 
-        List<AppointmentQueueSearchByTimeDTO>appointmentQueueSearchByTimeDTOS=new ArrayList<>();
+        List<AppointmentQueueSearchByTimeDTO> appointmentQueueSearchByTimeDTOS = new ArrayList<>();
 
         AppointmentQueueSearchDTO appointmentQueueSearchDTO = new AppointmentQueueSearchDTO();
 
-        List<AppointmentQueueDTO> appointmentQueueDTOS = new ArrayList<>();
+        List<AppointmentQueueDTO> appointmentQueueByTimeDTOS = new ArrayList<>();
 
         AtomicReference<Double> totalAmount = new AtomicReference<>(0D);
 
@@ -372,9 +370,13 @@ public class AppointmentUtils {
             final int PATIENT_MOBILE_NUMBER_INDEX = 4;
             final int DOCTOR_AVATAR_INDEX = 5;
 
-            AppointmentQueueDTO appointmentQueueDTO =
+            AppointmentTimeDTO appointmentTimeDTO = AppointmentTimeDTO.builder()
+                    .appointmentTime(result[APPOINTMENT_TIME_INDEX].toString())
+                    .build();
+
+            AppointmentQueueDTO appointmentQueueByTimeDTO =
                     AppointmentQueueDTO.builder()
-                            .appointmentTime(result[APPOINTMENT_TIME_INDEX].toString())
+                            .appointmentTime(appointmentTimeDTO.getAppointmentTime())
                             .doctorName(result[DOCTOR_NAME_INDEX].toString())
                             .specializationName(result[SPECIALIZATION_NAME_INDEX].toString())
                             .patientName(result[PATIENT_NAME_INDEX].toString())
@@ -382,20 +384,15 @@ public class AppointmentUtils {
                             .doctorAvatar(result[DOCTOR_AVATAR_INDEX].toString())
                             .build();
 
-            appointmentQueueDTOS.add(appointmentQueueDTO);
+            appointmentQueueByTimeDTOS.add(appointmentQueueByTimeDTO);
 
         });
 
-        appointmentQueueSearchDTO.setAppointmentQueueDTOList(appointmentQueueDTOS);
-
-        appointmentQueueDTOS.forEach(result -> {
-
-
-        });
+        appointmentQueueSearchDTO.setAppointmentQueueByTimeDTOList(appointmentQueueByTimeDTOS);
 
         //group by price
         Map<String, List<AppointmentQueueDTO>> groupByPriceMap =
-                appointmentQueueDTOS.stream().collect(Collectors.groupingBy(AppointmentQueueDTO::getAppointmentTime));
+                appointmentQueueByTimeDTOS.stream().collect(Collectors.groupingBy(AppointmentQueueDTO::getAppointmentTime));
 
         return groupByPriceMap;
 

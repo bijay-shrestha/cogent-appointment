@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 public class AppointmentQueueSearchDTO {
 
-    private List<AppointmentQueueDTO> appointmentQueueDTOList;
+    private List<AppointmentQueueDTO> appointmentQueueByTimeDTOList;
 
     private int totalItems;
 

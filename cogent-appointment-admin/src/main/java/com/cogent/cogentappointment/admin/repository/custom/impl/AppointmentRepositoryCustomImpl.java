@@ -12,6 +12,7 @@ import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLo
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPendingApproval.AppointmentPendingApprovalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentQueue.AppointmentQueueSearchDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentQueue.AppointmentTimeDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.AppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundResponseDTO;
@@ -167,7 +168,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         AppointmentQueueSearchDTO results = parseQueryResultToAppointmentQueueForTodayResponse(objects);
 
-        if (results.getAppointmentQueueDTOList().isEmpty()) throw APPOINTMENT_NOT_FOUND.get();
+        if (results.getAppointmentQueueByTimeDTOList().isEmpty()) throw APPOINTMENT_NOT_FOUND.get();
         else {
             results.setTotalItems(totalItems);
             return results;
@@ -175,7 +176,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
-    public Map<String, List<AppointmentQueueDTO>> fetchTodayAppointmentQueueByTime(AppointmentQueueRequestDTO appointmentQueueRequestDTO, Pageable pageable) {
+    public   Map<String, List<AppointmentQueueDTO>> fetchTodayAppointmentQueueByTime(AppointmentQueueRequestDTO appointmentQueueRequestDTO, Pageable pageable) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TODAY_APPOINTMENT_QUEUE.apply(appointmentQueueRequestDTO));
 
         int totalItems = query.getResultList().size();

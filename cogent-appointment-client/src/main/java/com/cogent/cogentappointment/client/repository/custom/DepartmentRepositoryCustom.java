@@ -20,17 +20,18 @@ import java.util.Optional;
 @Qualifier("departmentRepositoryCustom")
 public interface DepartmentRepositoryCustom {
 
-    List<Object[]> validateDuplicity(DepartmentRequestDTO requestDTO);
+    List<Object[]> validateDuplicity(DepartmentRequestDTO requestDTO, Long hospitalId);
 
-    List<Object[]> validateDuplicity(DepartmentUpdateRequestDTO requestDTO);
+    List<Object[]> validateDuplicity(DepartmentUpdateRequestDTO requestDTO, Long hospitalId);
 
-    List<DepartmentMinimalResponseDTO> search(DepartmentSearchRequestDTO searchRequestDTO, Pageable pageable);
+    List<DepartmentMinimalResponseDTO> search(DepartmentSearchRequestDTO searchRequestDTO,
+                                              Long hospitalId,
+                                              Pageable pageable);
 
-    DepartmentResponseDTO fetchDetails(Long id);
+    DepartmentResponseDTO fetchDetails(Long id,Long hospitalId);
 
-    Optional<List<DropDownResponseDTO>> fetchDepartmentForDropdown();
+    Optional<List<DropDownResponseDTO>> fetchDepartmentForDropdown(Long hospitalId);
 
-    Optional<List<DropDownResponseDTO>> fetchActiveDropDownList();
+    Optional<List<DropDownResponseDTO>> fetchActiveDropDownList(Long hospitalId);
 
-    Optional<List<DropDownResponseDTO>> fetchDepartmentByHospitalId(Long hospitalId);
 }

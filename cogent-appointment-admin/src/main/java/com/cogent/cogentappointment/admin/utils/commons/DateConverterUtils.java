@@ -72,8 +72,5 @@ public class DateConverterUtils {
         }
     }
 
-    public static Character dateDifferenceForTiles(GenerateRevenueRequestDTO requestDTO) {
-        return 'N';
-    }
 
 }

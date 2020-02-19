@@ -48,9 +48,6 @@ public class DoctorRequestDTO implements Serializable {
     private Character status;
 
     @NotNull
-    private Long hospitalId;
-
-    @NotNull
     private Double appointmentCharge;
 
     @NotEmpty

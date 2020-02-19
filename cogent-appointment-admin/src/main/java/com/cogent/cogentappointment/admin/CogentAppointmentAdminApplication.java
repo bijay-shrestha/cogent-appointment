@@ -12,7 +12,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EntityScan(basePackages = {"com.cogent.cogentappointment.persistence.model",
         "com.cogent.cogentappointment.persistence.history"})
 @EnableJpaRepositories
-@EnableCaching
 public class CogentAppointmentAdminApplication {
 
     public static void main(String[] args) {

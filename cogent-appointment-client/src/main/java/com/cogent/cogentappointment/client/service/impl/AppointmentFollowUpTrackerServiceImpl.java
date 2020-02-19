@@ -85,7 +85,7 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
 
             if (isAppointmentActive(requestedDate, expiryDate)) {
                 Double doctorFollowUpCharge = doctorRepository.fetchDoctorAppointmentFollowUpCharge(
-                        requestDTO.getDoctorId());
+                        requestDTO.getDoctorId(), requestDTO.getHospitalId());
                 responseDTO = parseToAppointmentFollowUpResponseDTO(YES, doctorFollowUpCharge, parentAppointmentId,
                         savedAppointmentReservationId);
             } else {

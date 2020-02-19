@@ -27,7 +27,8 @@ public class DoctorDutyRosterUtils {
 
     public static DoctorDutyRoster parseToDoctorDutyRoster(DoctorDutyRosterRequestDTO requestDTO,
                                                            Doctor doctor,
-                                                           Specialization specialization) {
+                                                           Specialization specialization,
+                                                           Hospital hospital) {
 
         DoctorDutyRoster doctorDutyRoster = new DoctorDutyRoster();
         doctorDutyRoster.setFromDate(requestDTO.getFromDate());
@@ -36,6 +37,7 @@ public class DoctorDutyRosterUtils {
         doctorDutyRoster.setStatus(requestDTO.getStatus());
         doctorDutyRoster.setHasOverrideDutyRoster(requestDTO.getHasOverrideDutyRoster());
         doctorDutyRoster.setDoctorId(doctor);
+        doctorDutyRoster.setHospitalId(hospital);
         doctorDutyRoster.setSpecializationId(specialization);
         return doctorDutyRoster;
     }

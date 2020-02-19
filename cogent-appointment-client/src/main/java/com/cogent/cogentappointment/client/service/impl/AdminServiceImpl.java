@@ -45,6 +45,7 @@ import static com.cogent.cogentappointment.client.utils.AdminUtils.*;
 import static com.cogent.cogentappointment.client.utils.GenderUtils.fetchGenderByCode;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getHospitalId;
 import static java.lang.reflect.Array.get;
 
 /**
@@ -101,12 +102,14 @@ public class AdminServiceImpl implements AdminService {
 
         log.info(SAVING_PROCESS_STARTED, ADMIN);
 
+        Long hospitalId=getHospitalId();
+
         validateConstraintViolation(validator.validate(adminRequestDTO));
 
-        validateAdminCount(adminRequestDTO.getHospitalId());
+        validateAdminCount(hospitalId);
 
         List<Object[]> admins = adminRepository.validateDuplicity(adminRequestDTO.getUsername(),
-                adminRequestDTO.getEmail(), adminRequestDTO.getMobileNumber(), adminRequestDTO.getHospitalId());
+                adminRequestDTO.getEmail(), adminRequestDTO.getMobileNumber(), hospitalId);
 
         validateAdminDuplicity(admins, adminRequestDTO.getUsername(), adminRequestDTO.getEmail(),
                 adminRequestDTO.getMobileNumber());
@@ -136,7 +139,7 @@ public class AdminServiceImpl implements AdminService {
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, ADMIN);
 
-        List<AdminDropdownDTO> responseDTOS = adminRepository.fetchActiveAdminsForDropDown();
+        List<AdminDropdownDTO> responseDTOS = adminRepository.fetchActiveAdminsForDropDown(getHospitalId());
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
 
@@ -149,7 +152,7 @@ public class AdminServiceImpl implements AdminService {
 
         log.info(SEARCHING_PROCESS_STARTED, ADMIN);
 
-        List<AdminMinimalResponseDTO> responseDTOS = adminRepository.search(searchRequestDTO, pageable);
+        List<AdminMinimalResponseDTO> responseDTOS = adminRepository.search(searchRequestDTO,getHospitalId(), pageable);
 
         log.info(SEARCHING_PROCESS_STARTED, ADMIN, getDifferenceBetweenTwoTime(startTime));
 
@@ -162,7 +165,7 @@ public class AdminServiceImpl implements AdminService {
 
         log.info(FETCHING_DETAIL_PROCESS_STARTED, ADMIN);
 
-        AdminDetailResponseDTO responseDTO = adminRepository.fetchDetailsById(id);
+        AdminDetailResponseDTO responseDTO = adminRepository.fetchDetailsById(id,getHospitalId());
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
 
@@ -236,7 +239,7 @@ public class AdminServiceImpl implements AdminService {
 
         Admin admin = findById(updateRequestDTO.getId());
 
-        List<Object[]> admins = adminRepository.validateDuplicity(updateRequestDTO);
+        List<Object[]> admins = adminRepository.validateDuplicity(updateRequestDTO,getHospitalId());
 
         validateAdminDuplicity(admins, updateRequestDTO.getEmail(),
                 updateRequestDTO.getMobileNumber());
@@ -293,7 +296,7 @@ public class AdminServiceImpl implements AdminService {
 
         log.info(FETCHING_PROCESS_STARTED, ADMIN);
 
-        AdminLoggedInInfoResponseDTO responseDTO = adminRepository.fetchLoggedInAdminInfo(requestDTO);
+        AdminLoggedInInfoResponseDTO responseDTO = adminRepository.fetchLoggedInAdminInfo(requestDTO,getHospitalId());
 
         log.info(FETCHING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
 
@@ -307,7 +310,7 @@ public class AdminServiceImpl implements AdminService {
         log.info(FETCHING_PROCESS_STARTED, ADMIN_META_INFO);
 
         List<AdminMetaInfoResponseDTO> metaInfoResponseDTOS =
-                adminMetaInfoRepository.fetchAdminMetaInfoResponseDTOS();
+                adminMetaInfoRepository.fetchAdminMetaInfoResponseDTOS(getHospitalId());
 
         log.info(SAVING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
 
@@ -443,12 +446,12 @@ public class AdminServiceImpl implements AdminService {
     }
 
     public Admin findById(Long adminId) {
-        return adminRepository.findAdminById(adminId)
+        return adminRepository.findAdminById(adminId,getHospitalId())
                 .orElseThrow(() -> ADMIN_WITH_GIVEN_ID_NOT_FOUND.apply(adminId));
     }
 
     public Admin findByUsername(String username) {
-        return adminRepository.findAdminByUsername(username)
+        return adminRepository.findAdminByUsername(username,getHospitalId())
                 .orElseThrow(() -> new NoContentFoundException(Admin.class));
     }
 

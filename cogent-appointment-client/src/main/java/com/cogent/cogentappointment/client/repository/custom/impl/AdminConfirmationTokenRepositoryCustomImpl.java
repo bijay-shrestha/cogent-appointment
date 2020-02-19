@@ -15,6 +15,7 @@ import java.util.function.Function;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AdminServiceMessages.INVALID_CONFIRMATION_TOKEN;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.client.query.AdminConfirmationTokenQuery.QUERY_TO_FETCH_CONFIRMATION_TOKEN_STATUS;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
 
 /**
@@ -29,7 +30,7 @@ public class AdminConfirmationTokenRepositoryCustomImpl implements AdminConfirma
 
     @Override
     public Object findByConfirmationToken(String confirmationToken) {
-        Query query = createQuery.apply(entityManager, AdminConfirmationTokenQuery.QUERY_TO_FETCH_CONFIRMATION_TOKEN_STATUS)
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_CONFIRMATION_TOKEN_STATUS)
                 .setParameter(CONFIRMATION_TOKEN, confirmationToken);
         try {
             return query.getSingleResult();

@@ -12,6 +12,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
 
+import static com.cogent.cogentappointment.client.constants.QueryConstants.HOSPITAL_ID;
 import static com.cogent.cogentappointment.client.query.AdminQuery.QUERY_TO_FETCH_ADMIN_META_INFO;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.transformQueryToResultList;
@@ -27,8 +28,9 @@ public class AdminMetaInfoRepositoryCustomImpl implements AdminMetaInfoRepositor
     private EntityManager entityManager;
 
     @Override
-    public List<AdminMetaInfoResponseDTO> fetchAdminMetaInfoResponseDTOS() {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ADMIN_META_INFO);
+    public List<AdminMetaInfoResponseDTO> fetchAdminMetaInfoResponseDTOS(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ADMIN_META_INFO)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         List<AdminMetaInfoResponseDTO> list = transformQueryToResultList(query, AdminMetaInfoResponseDTO.class);
 

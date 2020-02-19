@@ -327,9 +327,9 @@ public class AppointmentUtils {
         results.forEach(result -> {
             final int APPOINTMENT_TIME_INDEX = 0;
             final int DOCTOR_NAME_INDEX = 1;
-            final int SPECIALIZATION_NAME_INDEX = 2;
-            final int PATIENT_NAME_INDEX = 3;
-            final int PATIENT_MOBILE_NUMBER_INDEX = 4;
+            final int PATIENT_NAME_INDEX = 2;
+            final int PATIENT_MOBILE_NUMBER_INDEX = 3;
+            final int SPECIALIZATION_NAME_INDEX = 4;
             final int DOCTOR_AVATAR_INDEX = 5;
 
             AppointmentQueueDTO appointmentQueueDTO =
@@ -352,7 +352,7 @@ public class AppointmentUtils {
 
     }
 
-    public static   Map<String, List<AppointmentQueueDTO>> parseQueryResultToAppointmentQueueForTodayByTimeResponse(List<Object[]> results) {
+    public static    Map<String, List<AppointmentQueueDTO>> parseQueryResultToAppointmentQueueForTodayByTimeResponse(List<Object[]> results) {
 
         List<AppointmentQueueSearchByTimeDTO> appointmentQueueSearchByTimeDTOS = new ArrayList<>();
 

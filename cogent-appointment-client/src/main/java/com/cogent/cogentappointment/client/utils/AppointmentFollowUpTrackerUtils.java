@@ -7,14 +7,17 @@ import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentF
  */
 public class AppointmentFollowUpTrackerUtils {
 
-    public static AppointmentFollowUpResponseDTO parseToAppointmentFollowUpResponseDTO(Character isFollowUp,
-                                                                                       Double followUpAppointmentCharge,
-                                                                                       Long parentAppointmentId) {
+    public static AppointmentFollowUpResponseDTO parseToAppointmentFollowUpResponseDTO(
+            Character isFollowUp,
+            Double followUpAppointmentCharge,
+            Long parentAppointmentId,
+            Long savedAppointmentReservationId) {
 
         return AppointmentFollowUpResponseDTO.builder()
                 .isFreeFollowUp(isFollowUp)
                 .followUpAppointmentCharge(followUpAppointmentCharge)
                 .parentAppointmentId(parentAppointmentId)
+                .appointmentReservationId(savedAppointmentReservationId)
                 .build();
 
     }

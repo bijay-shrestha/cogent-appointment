@@ -7,5 +7,5 @@ import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentFo
  */
 public interface AppointmentReservationService {
 
-    void save(AppointmentFollowUpRequestDTO requestDTO);
+    Long save(AppointmentFollowUpRequestDTO requestDTO);
 }

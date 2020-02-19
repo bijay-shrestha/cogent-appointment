@@ -22,11 +22,12 @@ public class WebResourceKeyConstants {
         String BASE_APPOINTMENT = "/appointment";
         String CHECK_AVAILABILITY = "/checkAvailability";
         String PENDING_APPOINTMENT = "/pending-appointment";
-        String CANCEL_APPOINTMENT = "/cancel";
+        String CANCEL = "/cancel";
         String RESCHEDULE = "/reschedule";
         String FOLLOW_UP = "/follow-up";
         String APPOINTMENT_ID_PATH_VARIABLE_BASE = "/{appointmentId}";
         String HISTORY = "/history";
+        String APPOINTMENT_RESERVATION_ID_PATH_VARIABLE_BASE = "/{appointmentReservationId}";
     }
 
     //B

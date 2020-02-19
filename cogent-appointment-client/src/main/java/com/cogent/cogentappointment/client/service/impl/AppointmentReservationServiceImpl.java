@@ -30,7 +30,7 @@ public class AppointmentReservationServiceImpl implements AppointmentReservation
     }
 
     @Override
-    public void save(AppointmentFollowUpRequestDTO requestDTO) {
+    public Long save(AppointmentFollowUpRequestDTO requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -39,13 +39,16 @@ public class AppointmentReservationServiceImpl implements AppointmentReservation
         AppointmentReservationLog appointmentReservation =
                 parseToAppointmentReservation(requestDTO);
 
-        save(appointmentReservation);
+        Long savedId = save(appointmentReservation);
 
         log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT_RESERVATION_LOG, getDifferenceBetweenTwoTime(startTime));
+
+        return savedId;
     }
 
-    private void save(AppointmentReservationLog appointmentReservation) {
-        appointmentReservationLogRepository.save(appointmentReservation);
+    private Long save(AppointmentReservationLog appointmentReservation) {
+        AppointmentReservationLog reservationLog = appointmentReservationLogRepository.save(appointmentReservation);
+        return reservationLog.getId();
     }
 
 }

@@ -49,7 +49,7 @@ public class AppointmentResource {
         return ok(appointmentService.fetchPendingAppointments(searchDTO));
     }
 
-    @PutMapping(CANCEL_APPOINTMENT)
+    @PutMapping(CANCEL)
     @ApiOperation(CANCEL_APPOINTMENT_OPERATION)
     public ResponseEntity<?> cancelAppointment(@Valid @RequestBody AppointmentCancelRequestDTO cancelRequestDTO) {
         appointmentService.cancelAppointment(cancelRequestDTO);
@@ -69,9 +69,15 @@ public class AppointmentResource {
     }
 
     @PutMapping(HISTORY)
-    @ApiOperation((FETCH_APPOINTMENT_HISTORY))
+    @ApiOperation(FETCH_APPOINTMENT_HISTORY)
     public ResponseEntity<?> fetchAppointmentHistory(@RequestBody AppointmentSearchDTO searchDTO) {
         return ok(appointmentService.fetchAppointmentHistory(searchDTO));
     }
 
+    @GetMapping(CANCEL + APPOINTMENT_RESERVATION_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(CANCEL_REGISTRATION_OPERATION)
+    public ResponseEntity<?> cancelRegistration(@PathVariable("appointmentReservationId") Long appointmentReservationId) {
+        appointmentService.cancelRegistration(appointmentReservationId);
+        return ok().build();
+    }
 }

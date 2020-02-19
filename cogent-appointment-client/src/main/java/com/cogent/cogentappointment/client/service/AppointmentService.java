@@ -27,5 +27,6 @@ public interface AppointmentService {
 
     List<AppointmentMinResponseDTO> fetchAppointmentHistory(AppointmentSearchDTO searchDTO);
 
+    void cancelRegistration(Long appointmentReservationId);
 
 }

@@ -57,6 +57,8 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
 
         log.info(FETCHING_PROCESS_STARTED, APPOINTMENT_FOLLOW_UP_TRACKER);
 
+        Long savedAppointmentReservationId = appointmentReservationService.save(requestDTO);
+
         List<Object[]> followUpDetails = appointmentFollowUpTrackerRepository.fetchFollowUpDetails(
                 requestDTO.getPatientId(),
                 requestDTO.getDoctorId(),
@@ -67,7 +69,8 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
         AppointmentFollowUpResponseDTO responseDTO;
 
         if (followUpDetails.isEmpty()) {
-            responseDTO = parseToAppointmentFollowUpResponseDTO(NO, null, null);
+            responseDTO = parseToAppointmentFollowUpResponseDTO(NO, null, null,
+                    savedAppointmentReservationId);
         } else {
             Object[] followUpObject = followUpDetails.get(0);
 
@@ -83,13 +86,13 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
             if (isAppointmentActive(requestedDate, expiryDate)) {
                 Double doctorFollowUpCharge = doctorRepository.fetchDoctorAppointmentFollowUpCharge(
                         requestDTO.getDoctorId());
-                responseDTO = parseToAppointmentFollowUpResponseDTO(YES, doctorFollowUpCharge, parentAppointmentId);
+                responseDTO = parseToAppointmentFollowUpResponseDTO(YES, doctorFollowUpCharge, parentAppointmentId,
+                        savedAppointmentReservationId);
             } else {
-                responseDTO = parseToAppointmentFollowUpResponseDTO(NO, null, null);
+                responseDTO = parseToAppointmentFollowUpResponseDTO(NO, null, null,
+                        savedAppointmentReservationId);
             }
         }
-
-        appointmentReservationService.save(requestDTO);
 
         log.info(FETCHING_PROCESS_COMPLETED, APPOINTMENT_FOLLOW_UP_TRACKER, getDifferenceBetweenTwoTime(startTime));
 

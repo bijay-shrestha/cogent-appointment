@@ -47,7 +47,7 @@ public class DepartmentQuery {
 
     private static String GET_WHERE_CLAUSE_FOR_SEARCH(DepartmentSearchRequestDTO searchRequestDTO) {
 
-        String whereClause = " WHERE d.status != 'D'";
+        String whereClause = " WHERE d.status != 'D' AND d.hospital.id= :hospitalId";
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getId()))
             whereClause += " AND d.id=" + searchRequestDTO.getId();
@@ -60,9 +60,6 @@ public class DepartmentQuery {
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
             whereClause += " AND d.status='" + searchRequestDTO.getStatus() + "'";
-
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getHospitalId()))
-            whereClause += " AND h.id=" + searchRequestDTO.getHospitalId();
 
         whereClause += " ORDER BY d.id DESC";
 
@@ -81,6 +78,7 @@ public class DepartmentQuery {
                     " LEFT JOIN Hospital h ON h.id =d.hospital.id" +
                     " WHERE d.id =:id" +
                     " AND d.status != 'D'" +
+                    " AND d.hospital.id= :hospitalId" +
                     " AND h.status!='D'";
 
     public static final String QUERY_TO_FETCH_DEPARTMENT_FOR_DROPDOWN =
@@ -89,6 +87,7 @@ public class DepartmentQuery {
                     " d.name as label" +
                     " FROM Department d" +
                     " WHERE d.status != 'D'" +
+                    " AND d.hospital.id= :hospitalId" +
                     " ORDER BY d.id DESC";
 
     public static final String QUERY_TO_FETCH_ACTIVE_DEPARTMENT_FOR_DROPDOWN =
@@ -97,16 +96,6 @@ public class DepartmentQuery {
                     " d.name as label" +
                     " FROM Department d" +
                     " WHERE d.status = 'Y'" +
-                    " ORDER BY d.id DESC";
-
-    public static final String QUERY_TO_FETCH_DEPARTMENT_BY_HOSPITAL_ID =
-            "SELECT" +
-                    " d.id as value," +
-                    " d.name as label" +
-                    " FROM Department d" +
-                    " LEFT JOIN Hospital h ON h.id =d.hospital.id" +
-                    " WHERE d.status = 'Y'" +
-                    " AND h.status = 'Y'" +
-                    " AND h.id=:hospitalId" +
+                    " AND d.hospital.id= :hospitalId" +
                     " ORDER BY d.id DESC";
 }

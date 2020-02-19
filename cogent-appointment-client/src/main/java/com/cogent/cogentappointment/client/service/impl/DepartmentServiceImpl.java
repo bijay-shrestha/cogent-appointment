@@ -27,6 +27,7 @@ import static com.cogent.cogentappointment.client.utils.DepartmentUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static com.cogent.cogentappointment.client.utils.commons.NameAndCodeValidationUtils.validateDuplicity;
+import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getHospitalId;
 
 /**
  * @author smriti ON 25/01/2020
@@ -53,12 +54,14 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         log.info(SAVING_PROCESS_STARTED, DEPARTMENT);
 
-        List<Object[]> departments = departmentRepository.validateDuplicity(requestDTO);
+        Long hospitalId=getHospitalId();
+
+        List<Object[]> departments = departmentRepository.validateDuplicity(requestDTO,hospitalId);
 
         validateDuplicity(departments, requestDTO.getName(), requestDTO.getDepartmentCode(),
                 Department.class.getSimpleName());
 
-        Hospital hospital = fetchHospital(requestDTO.getHospitalId());
+        Hospital hospital = fetchHospital(hospitalId);
 
         save(parseToDepartment(requestDTO, hospital));
 
@@ -72,9 +75,11 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         log.info(UPDATING_PROCESS_STARTED, DEPARTMENT);
 
-        Department department = fetchDepartmentById(updateRequestDTO.getId());
+        Long hospitalId=getHospitalId();
 
-        List<Object[]> departments = departmentRepository.validateDuplicity(updateRequestDTO);
+        Department department = fetchDepartmentById(updateRequestDTO.getId(),hospitalId);
+
+        List<Object[]> departments = departmentRepository.validateDuplicity(updateRequestDTO,hospitalId);
 
         validateDuplicity(departments, updateRequestDTO.getName(), updateRequestDTO.getDepartmentCode(),
                 Department.class.getSimpleName());
@@ -91,7 +96,9 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         log.info(DELETING_PROCESS_STARTED, DEPARTMENT);
 
-        Department department = fetchDepartmentById(deleteRequestDTO.getId());
+        Long hospitalId=getHospitalId();
+
+        Department department = fetchDepartmentById(deleteRequestDTO.getId(),hospitalId);
 
         parseDepartmentStatus(deleteRequestDTO.getStatus(), deleteRequestDTO.getRemarks(), department);
 
@@ -106,8 +113,10 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         log.info(SEARCHING_PROCESS_STARTED, DEPARTMENT);
 
+        Long hospitalId=getHospitalId();
+
         List<DepartmentMinimalResponseDTO> responseDTO = departmentRepository.search
-                (searchRequestDTO, pageable);
+                (searchRequestDTO,hospitalId, pageable);
 
         log.info(SEARCHING_PROCESS_COMPLETED, DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
 
@@ -121,8 +130,10 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         log.info(FETCHING_DETAIL_PROCESS_STARTED, DEPARTMENT);
 
+        Long hospitalId=getHospitalId();
+
         DepartmentResponseDTO departmentResponseDTO = departmentRepository
-                .fetchDetails(id);
+                .fetchDetails(id,hospitalId);
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
 
@@ -136,7 +147,9 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DEPARTMENT);
 
-        List<DropDownResponseDTO> departmentDropDownDTOS = departmentRepository.fetchDepartmentForDropdown()
+        Long hospitalId=getHospitalId();
+
+        List<DropDownResponseDTO> departmentDropDownDTOS = departmentRepository.fetchDepartmentForDropdown(hospitalId)
                 .orElseThrow(() -> DEPARTMENT_NOT_FOUND.get());
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
@@ -151,7 +164,9 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DEPARTMENT);
 
-        List<DropDownResponseDTO> departmentDropDownDTOS = departmentRepository.fetchActiveDropDownList()
+        Long hospitalId=getHospitalId();
+
+        List<DropDownResponseDTO> departmentDropDownDTOS = departmentRepository.fetchActiveDropDownList(hospitalId)
                 .orElseThrow(() -> DEPARTMENT_NOT_FOUND.get());
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
@@ -159,27 +174,12 @@ public class DepartmentServiceImpl implements DepartmentService {
         return departmentDropDownDTOS;
     }
 
-    @Override
-    public List<DropDownResponseDTO> fetchDepartmentByHospitalId(Long hospitalId) {
-
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DEPARTMENT);
-
-        List<DropDownResponseDTO> responseDTOS = departmentRepository.fetchDepartmentByHospitalId(hospitalId)
-                .orElseThrow(() -> DEPARTMENT_NOT_FOUND.get());
-
-        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
-
-        return responseDTOS;
-    }
-
     private Hospital fetchHospital(Long hospitalId) {
         return hospitalService.fetchActiveHospital(hospitalId);
     }
 
-    public Department fetchDepartmentById(Long id) {
-        return departmentRepository.findDepartmentById(id).orElseThrow(() ->
+    public Department fetchDepartmentById(Long id,Long hospitalId) {
+        return departmentRepository.findDepartmentById(id,hospitalId).orElseThrow(() ->
                 new NoContentFoundException(Department.class, "id", id.toString()));
     }
 

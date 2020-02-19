@@ -11,8 +11,8 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 public class MinioStorageConfig {
 
-    @Value("${spring.minio.url}")
-    private String url;
+    @Value("${serverlocation}")
+    private String serverlocation;
 
     @Value("${spring.minio.bucket}")
     private String bucket;

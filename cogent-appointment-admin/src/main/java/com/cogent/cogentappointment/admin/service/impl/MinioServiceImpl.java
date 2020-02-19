@@ -99,7 +99,7 @@ public class MinioServiceImpl implements MinioFileService {
             throw new IllegalStateException("The file cannot be read", e);
         }
 
-        String fileUri = minioStorageConfig.getUrl() + API_V1 + FILES + FORWARD_SLASH + path.toString();
+        String fileUri = minioStorageConfig.getServerlocation() + API_V1 + FILES + FORWARD_SLASH + path.toString();
 
         FileUploadResponseDTO responseDTO = FileUploadResponseDTO.builder()
                 .fileUri(fileUri)

@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.cogent.cogentappointment.client.constants.EmailConstants.*;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.SAVING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.SAVING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.client.log.constants.EmailLog.*;
@@ -120,7 +121,7 @@ public class EmailServiceImpl implements EmailService {
             }
 
             helper.setText(html, true);
-            helper.addInline(EmailConstants.LOGO_FILE_NAME, new FileSystemResource(new File(EmailConstants.LOGO_LOCATION)));
+            helper.addInline(LOGO_FILE_NAME, new FileSystemResource(new File(LOGO_LOCATION)));
 
             javaMailSender.send(message);
 
@@ -158,8 +159,8 @@ public class EmailServiceImpl implements EmailService {
 
         String[] paramValues = emailToSend.getParamValue().split(StringConstant.COMMA_SEPARATED);
 
-        model.put(EmailConstants.USERNAME, paramValues[USERNAME_INDEX]);
-        model.put(EmailConstants.Admin.ADMIN_CONFIRMATION_URL, paramValues[ADMIN_CONFIRMATION_URL_INDEX]);
+        model.put(USERNAME, paramValues[USERNAME_INDEX]);
+        model.put(Admin.ADMIN_CONFIRMATION_URL, paramValues[ADMIN_CONFIRMATION_URL_INDEX]);
     }
 
     private void parseToResetPasswordTemplate(EmailToSend emailToSend,
@@ -170,9 +171,9 @@ public class EmailServiceImpl implements EmailService {
 
         String[] paramValues = emailToSend.getParamValue().split(StringConstant.COMMA_SEPARATED);
 
-        model.put(EmailConstants.USERNAME, paramValues[USERNAME_INDEX]);
-        model.put(EmailConstants.Admin.PASSWORD, paramValues[PASSWORD_INDEX]);
-        model.put(EmailConstants.Admin.REMARKS, paramValues[REMARKS_INDEX]);
+        model.put(USERNAME, paramValues[USERNAME_INDEX]);
+        model.put(Admin.PASSWORD, paramValues[PASSWORD_INDEX]);
+        model.put(Admin.REMARKS, paramValues[REMARKS_INDEX]);
     }
 
     private void parseToUpdateAdminTemplate(EmailToSend emailToSend,
@@ -190,10 +191,10 @@ public class EmailServiceImpl implements EmailService {
                 paramValues[MAC_ADDRESS_INDEX].split(StringConstant.COMMA_SEPARATED)
                 : new String[]{paramValues[MAC_ADDRESS_INDEX]};
 
-        model.put(EmailConstants.USERNAME, paramValues[USERNAME_INDEX]);
-        model.put(EmailConstants.Admin.UPDATED_DATA, Arrays.asList(updatedValues));
-        model.put(EmailConstants.Admin.HAS_MAC_BINDING, paramValues[HAS_MAC_BINDING_INDEX]);
-        model.put(EmailConstants.Admin.UPDATED_MAC_ADDRESS, Arrays.asList(updatedMacAddress));
+        model.put(USERNAME, paramValues[USERNAME_INDEX]);
+        model.put(Admin.UPDATED_DATA, Arrays.asList(updatedValues));
+        model.put(Admin.HAS_MAC_BINDING, paramValues[HAS_MAC_BINDING_INDEX]);
+        model.put(Admin.UPDATED_MAC_ADDRESS, Arrays.asList(updatedMacAddress));
     }
 
     private void parseToForgotPasswordTemplate(EmailToSend emailToSend, Map<String, Object> model) {
@@ -201,7 +202,7 @@ public class EmailServiceImpl implements EmailService {
         final int RESET_CODE_INDEX = 1;
 
         String[] paramValues = emailToSend.getParamValue().split(StringConstant.COMMA_SEPARATED);
-        model.put(EmailConstants.USERNAME, paramValues[USERNAME_INDEX]);
-        model.put(EmailConstants.ForgotPassword.RESET_CODE, paramValues[RESET_CODE_INDEX]);
+        model.put(USERNAME, paramValues[USERNAME_INDEX]);
+        model.put(ForgotPassword.RESET_CODE, paramValues[RESET_CODE_INDEX]);
     }
 }

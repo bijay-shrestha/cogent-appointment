@@ -1,7 +1,5 @@
 package com.cogent.cogentappointment.admin.utils.commons;
 
-import com.cogent.cogentappointment.admin.dto.request.dashboard.GenerateRevenueRequestDTO;
-
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Calendar;
@@ -19,11 +17,11 @@ public class DateConverterUtils {
         LocalDate today = LocalDate.now();                          //Today's date
         Period p = Period.between(birthday, today);
         if ((p.getYears() == 0) && (p.getMonths() == 0)) {
-            return (p.getDays() + "days");
+            return (p.getDays() + " days");
         } else if (p.getYears() == 0) {
-            return (p.getMonths() + "months");
+            return (p.getMonths() + " months");
         } else {
-            return (p.getYears() + "years");
+            return (p.getYears() + " years");
         }
     }
 

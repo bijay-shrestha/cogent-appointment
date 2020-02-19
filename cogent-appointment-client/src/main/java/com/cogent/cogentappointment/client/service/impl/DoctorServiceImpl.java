@@ -122,7 +122,7 @@ public class DoctorServiceImpl implements DoctorService {
 
         Long hospitalId = getHospitalId();
 
-        Doctor doctor = findById(requestDTO.getDoctorInfo().getId(), hospitalId);
+        Doctor doctor = findById(requestDTO.getDoctorInfo().getId());
 
         Long doctorCount = doctorRepository.validateDoctorDuplicityForUpdate(
                 requestDTO.getDoctorInfo().getId(),
@@ -161,7 +161,7 @@ public class DoctorServiceImpl implements DoctorService {
 
         log.info(DELETING_PROCESS_STARTED, DOCTOR);
 
-        Doctor doctor = findById(deleteRequestDTO.getId(), getHospitalId());
+        Doctor doctor = findById(deleteRequestDTO.getId());
 
         convertToDeletedDoctor(doctor, deleteRequestDTO);
 
@@ -229,7 +229,7 @@ public class DoctorServiceImpl implements DoctorService {
 
         log.info(FETCHING_PROCESS_STARTED, DOCTOR);
 
-        Doctor doctor = doctorRepository.findActiveDoctorById(id,getHospitalId())
+        Doctor doctor = doctorRepository.findActiveDoctorById(id)
                 .orElseThrow(() -> DOCTOR_WITH_GIVEN_ID_NOT_FOUND.apply(id));
 
         log.info(FETCHING_PROCESS_COMPLETED, doctor, getDifferenceBetweenTwoTime(startTime));
@@ -455,8 +455,8 @@ public class DoctorServiceImpl implements DoctorService {
         doctorAvatarRepository.save(doctorAvatar);
     }
 
-    private Doctor findById(Long doctorId, Long hospitalId) {
-        return doctorRepository.findDoctorById(doctorId, hospitalId)
+    private Doctor findById(Long doctorId) {
+        return doctorRepository.findDoctorById(doctorId)
                 .orElseThrow(() -> DOCTOR_WITH_GIVEN_ID_NOT_FOUND.apply(doctorId));
     }
 

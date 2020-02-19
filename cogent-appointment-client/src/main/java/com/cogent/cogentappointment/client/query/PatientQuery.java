@@ -33,7 +33,7 @@ public class PatientQuery {
                     " AND hp.hospitalId =:hospitalId" +
                     " AND hp.status != 'D'";
 
-    public static final String SELECT_CLAUSE_TO_FETCH_PATIENT_DETAILS =
+    private static final String SELECT_CLAUSE_TO_FETCH_PATIENT_DETAILS =
             " SELECT p.id as patientId," +                                  //[0]
                     " p.name as name," +                                    //[1]
                     " p.mobileNumber as mobileNumber," +                    //[2]
@@ -45,7 +45,7 @@ public class PatientQuery {
                     " FROM Patient p" +
                     " LEFT JOIN HospitalPatientInfo hp ON hp.patientId = p.id";
 
-    public static final String GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS =
+    private static final String GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS =
             " WHERE p.name=:name" +
                     " AND p.mobileNumber=:mobileNumber" +
                     " AND p.dateOfBirth =:dateOfBirth" +
@@ -70,7 +70,7 @@ public class PatientQuery {
 
     public static final String QUERY_TO_FETCH_PATIENT_DETAILS_BY_ID =
             "SELECT" +
-                    " p.id as id,"+
+                    " p.id as id," +
                     " p.name as name," +
                     " p.dateOfBirth as dateOfBirth," +
                     " p.mobileNumber as mobileNumber," +
@@ -94,16 +94,16 @@ public class PatientQuery {
         return "SELECT" +
                 " p.id as id," +
                 " p.name as name," +                                             //[0]
-                " hpi.address as address," +                                       //[1]
-                " hpi.email as email," +                                           //[2]
+                " hpi.address as address," +                                     //[1]
+                " hpi.email as email," +                                         //[2]
                 " p.mobileNumber as mobileNumber," +                             //[3]
-                " hpi.registrationNumber as registrationNumber," +                 //[4]
+                " hpi.registrationNumber as registrationNumber," +               //[4]
                 " p.eSewaId as eSewaId," +                                       //[5]
-                " hpi.status as status," +                                         //[6]
+                " hpi.status as status," +                                       //[6]
                 " p.dateOfBirth as dateOfBirth," +                               //[7]
-                " hpi.hospitalNumber as hospitalNumber," +                         //[8]
-                " h.name as hospitalName," +
-                " h.id as hospitalId" +                                      //[9]
+                " hpi.hospitalNumber as hospitalNumber," +                       //[8]
+                " h.name as hospitalName," +                                     //[9]
+                " h.id as hospitalId" +                                         //[10]
                 " FROM Patient p" +
                 " LEFT JOIN HospitalPatientInfo hpi ON p.id=hpi.patientId" +
                 " LEFT JOIN Hospital h ON h.id=hpi.hospitalId" +
@@ -112,7 +112,7 @@ public class PatientQuery {
     }
 
     private static String GET_WHERE_CLAUSE_FOR_SEARCH_PATIENT(PatientSearchRequestDTO searchRequestDTO) {
-        String whereClause = " WHERE h.id="+searchRequestDTO.getHospitalId()+" AND hpi.status!='D' ";
+        String whereClause = " WHERE h.id=" + searchRequestDTO.getHospitalId() + " AND hpi.status!='D' ";
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getEsewaId()))
             whereClause += " AND p.eSewaId LIKE '%" + searchRequestDTO.getEsewaId() + "%'";

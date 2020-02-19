@@ -100,7 +100,7 @@ public class AdminQuery {
                     " END as fileUri";                                           //[9]
 
     private static final String GET_WHERE_CLAUSE_TO_FETCH_ADMIN =
-            " WHERE a.status != 'D' AND h.id=:hospitalId AND h.status !='D' AND p.status !='D' AND d.status != 'D'";
+            " WHERE a.status != 'D' AND h.status !='D' AND p.status !='D' AND d.status != 'D'";
 
     private static String GET_WHERE_CLAUSE_FOR_SEARCH_ADMIN(AdminSearchRequestDTO searchRequestDTO) {
         String whereClause = GET_WHERE_CLAUSE_TO_FETCH_ADMIN;
@@ -131,7 +131,9 @@ public class AdminQuery {
             SELECT_CLAUSE_TO_FETCH_ADMIN + "," +
                     " a.remarks as remarks," +                                      //[10]
                     " h.id as hospitalId," +                                        //[11]
-                    " p.id as profileId " +                                         //[12]
+                    " p.id as profileId," +                                         //[12]
+                    " d.id as departmentId," +                                      //[13]
+                    " d.name as departmentName" +                                   //[14]
                     " FROM" +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id = a.profileId.id" +

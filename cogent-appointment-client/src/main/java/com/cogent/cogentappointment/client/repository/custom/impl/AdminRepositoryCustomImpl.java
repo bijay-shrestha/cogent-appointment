@@ -106,7 +106,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
 
     @Override
     public AdminDetailResponseDTO fetchDetailsById(Long id, Long hospitalId) {
-        AdminDetailResponseDTO detailResponseDTO = fetchAdminDetailResponseDTO(id, hospitalId);
+        AdminDetailResponseDTO detailResponseDTO = fetchAdminDetailResponseDTO(id);
 
         if (detailResponseDTO.getHasMacBinding().equals(StatusConstants.YES))
             detailResponseDTO.setAdminMacAddressInfo(getMacAddressInfo(id));
@@ -143,10 +143,9 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         }
     }
 
-    public AdminDetailResponseDTO fetchAdminDetailResponseDTO(Long id, Long hospitalId) {
+    private AdminDetailResponseDTO fetchAdminDetailResponseDTO(Long id) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ADMIN_DETAIL)
-                .setParameter(ID, id)
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(ID, id);
 
         List<Object[]> results = query.getResultList();
 

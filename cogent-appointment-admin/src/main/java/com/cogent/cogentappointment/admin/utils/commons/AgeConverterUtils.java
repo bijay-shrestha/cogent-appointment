@@ -12,7 +12,6 @@ import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.convert
 public class AgeConverterUtils {
 
     public static String calculateAge(Date date) {
-//        Date date = new SimpleDateFormat("yyyy-MM-dd").parse("2019-12-30");
 
         LocalDate today = LocalDate.now();
         LocalDate birthDate = convertDateToLocalDate(date);
@@ -34,18 +33,5 @@ public class AgeConverterUtils {
         }
 
         return age;
-    }
-
-    public static String ageConverter(LocalDate date) {
-        LocalDate birthday = date;
-        LocalDate today = LocalDate.now();                          //Today's date
-        Period p = Period.between(birthday, today);
-        if ((p.getYears() == 0) && (p.getMonths() == 0)) {
-            return (p.getDays() + "days");
-        } else if (p.getYears() == 0) {
-            return (p.getMonths() + "months");
-        } else {
-            return (p.getYears() + "years");
-        }
     }
 }

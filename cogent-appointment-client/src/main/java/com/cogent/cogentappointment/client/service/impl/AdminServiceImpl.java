@@ -54,7 +54,7 @@ import static java.lang.reflect.Array.get;
 @Service
 @Transactional
 @Slf4j
-public class AdminServiceImpl implements AdminService {
+public class    AdminServiceImpl implements AdminService {
 
     private final Validator validator;
 

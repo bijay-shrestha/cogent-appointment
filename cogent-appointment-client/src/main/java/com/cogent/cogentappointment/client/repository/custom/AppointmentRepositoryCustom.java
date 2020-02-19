@@ -6,11 +6,15 @@ import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentPe
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedDateResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentPendingResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author smriti on 2019-10-22
@@ -43,4 +47,6 @@ public interface AppointmentRepositoryCustom {
     Long countNewPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO);
 
     Long countOverAllAppointment(DashBoardRequestDTO dashBoardRequestDTO);
+
+    Map<String, List<AppointmentQueueDTO>> fetchTodayAppointmentQueueByTime(AppointmentQueueRequestDTO appointmentQueueRequestDTO, Pageable pageable);
 }

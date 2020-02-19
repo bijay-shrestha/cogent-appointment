@@ -5,6 +5,10 @@ import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRe
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentCheckAvailabilityResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentSuccessResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueSearchByTimeDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueSearchDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentTimeDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.AppointmentCountResponseDTO;
 import com.cogent.cogentappointment.persistence.model.*;
 import org.joda.time.DateTime;
@@ -12,10 +16,9 @@ import org.joda.time.Duration;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.client.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.*;
@@ -170,6 +173,89 @@ public class AppointmentUtils {
 
         return countResponseDTO;
     }
+
+    public static AppointmentQueueSearchDTO parseQueryResultToAppointmentQueueForTodayResponse(List<Object[]> results) {
+
+        AppointmentQueueSearchDTO appointmentQueueSearchDTO = new AppointmentQueueSearchDTO();
+
+        List<AppointmentQueueDTO> appointmentQueueByTimeDTOS = new ArrayList<>();
+
+        AtomicReference<Double> totalAmount = new AtomicReference<>(0D);
+
+        results.forEach(result -> {
+            final int APPOINTMENT_TIME_INDEX = 0;
+            final int DOCTOR_NAME_INDEX = 1;
+            final int PATIENT_NAME_INDEX = 2;
+            final int PATIENT_MOBILE_NUMBER_INDEX = 3;
+            final int SPECIALIZATION_NAME_INDEX = 4;
+            final int DOCTOR_AVATAR_INDEX = 5;
+
+            AppointmentQueueDTO appointmentQueueDTO =
+                    AppointmentQueueDTO.builder()
+                            .appointmentTime(result[APPOINTMENT_TIME_INDEX].toString())
+                            .doctorName(result[DOCTOR_NAME_INDEX].toString())
+                            .specializationName(result[SPECIALIZATION_NAME_INDEX].toString())
+                            .patientName(result[PATIENT_NAME_INDEX].toString())
+                            .patientMobileNumber(result[PATIENT_MOBILE_NUMBER_INDEX].toString())
+                            .doctorAvatar(result[DOCTOR_AVATAR_INDEX].toString())
+                            .build();
+
+            appointmentQueueByTimeDTOS.add(appointmentQueueDTO);
+
+        });
+
+        appointmentQueueSearchDTO.setAppointmentQueueByTimeDTOList(appointmentQueueByTimeDTOS);
+
+        return appointmentQueueSearchDTO;
+
+    }
+
+    public static Map<String, List<AppointmentQueueDTO>> parseQueryResultToAppointmentQueueForTodayByTimeResponse(List<Object[]> results) {
+
+        List<AppointmentQueueSearchByTimeDTO> appointmentQueueSearchByTimeDTOS = new ArrayList<>();
+
+        AppointmentQueueSearchDTO appointmentQueueSearchDTO = new AppointmentQueueSearchDTO();
+
+        List<AppointmentQueueDTO> appointmentQueueByTimeDTOS = new ArrayList<>();
+
+        AtomicReference<Double> totalAmount = new AtomicReference<>(0D);
+
+        results.forEach(result -> {
+            final int APPOINTMENT_TIME_INDEX = 0;
+            final int DOCTOR_NAME_INDEX = 1;
+            final int SPECIALIZATION_NAME_INDEX = 2;
+            final int PATIENT_NAME_INDEX = 3;
+            final int PATIENT_MOBILE_NUMBER_INDEX = 4;
+            final int DOCTOR_AVATAR_INDEX = 5;
+
+            AppointmentTimeDTO appointmentTimeDTO = AppointmentTimeDTO.builder()
+                    .appointmentTime(result[APPOINTMENT_TIME_INDEX].toString())
+                    .build();
+
+            AppointmentQueueDTO appointmentQueueByTimeDTO =
+                    AppointmentQueueDTO.builder()
+                            .appointmentTime(appointmentTimeDTO.getAppointmentTime())
+                            .doctorName(result[DOCTOR_NAME_INDEX].toString())
+                            .specializationName(result[SPECIALIZATION_NAME_INDEX].toString())
+                            .patientName(result[PATIENT_NAME_INDEX].toString())
+                            .patientMobileNumber(result[PATIENT_MOBILE_NUMBER_INDEX].toString())
+                            .doctorAvatar(result[DOCTOR_AVATAR_INDEX].toString())
+                            .build();
+
+            appointmentQueueByTimeDTOS.add(appointmentQueueByTimeDTO);
+
+        });
+
+        appointmentQueueSearchDTO.setAppointmentQueueByTimeDTOList(appointmentQueueByTimeDTOS);
+
+        //group by price
+        Map<String, List<AppointmentQueueDTO>> groupByPriceMap =
+                appointmentQueueByTimeDTOS.stream().collect(Collectors.groupingBy(AppointmentQueueDTO::getAppointmentTime));
+
+        return groupByPriceMap;
+
+    }
+
 
 
 }

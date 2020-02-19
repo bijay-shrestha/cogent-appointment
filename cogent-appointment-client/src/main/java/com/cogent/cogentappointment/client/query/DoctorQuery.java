@@ -75,8 +75,8 @@ public class DoctorQuery {
                 if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
                     whereClause += " AND d.status='" + searchRequestDTO.getStatus() + "'";
 
-                if (!ObjectUtils.isEmpty(searchRequestDTO.getName()))
-                    whereClause += " AND d.name LIKE '%" + searchRequestDTO.getName() + "%'";
+                if (!ObjectUtils.isEmpty(searchRequestDTO.getDoctorId()))
+                    whereClause += " AND d.id=" + searchRequestDTO.getDoctorId();
 
                 if (!ObjectUtils.isEmpty(searchRequestDTO.getCode()))
                     whereClause += " AND d.code LIKE '%" + searchRequestDTO.getCode() + "%'";

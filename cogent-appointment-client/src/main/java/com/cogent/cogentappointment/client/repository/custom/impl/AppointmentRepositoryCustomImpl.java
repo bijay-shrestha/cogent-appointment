@@ -51,7 +51,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         return (Long) query.getSingleResult();
     }
 
-    /*USED WHILE SAVING DOCTOR DUTY ROSTER TO VALIDATE IF APPOINTMENT EXISTS*/
+    /*USED IN APPOINTMENT CHECK AVAILABILITY*/
     @Override
     public List<AppointmentBookedTimeResponseDTO> fetchBookedAppointments(AppointmentCheckAvailabilityRequestDTO requestDTO) {
 

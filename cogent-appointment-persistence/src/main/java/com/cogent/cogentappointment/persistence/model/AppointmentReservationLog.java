@@ -32,12 +32,12 @@ public class AppointmentReservationLog implements Serializable {
     private Long specializationId;
 
     @Temporal(TemporalType.DATE)
-    @Column(name = "reserved_appointment_date")
-    private Date reservedAppointmentDate;
+    @Column(name = "appointment_date")
+    private Date appointmentDate;
 
     @Temporal(TIMESTAMP)
-    @Column(name = "reserved_appointment_time")
-    private Date reservedAppointmentTime;
+    @Column(name = "appointment_time")
+    private Date appointmentTime;
 
     @Temporal(TIMESTAMP)
     @Column(name = "created_date")

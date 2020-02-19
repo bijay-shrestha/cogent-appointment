@@ -3,9 +3,6 @@ package com.cogent.cogentappointment.client.utils;
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentFollowUpRequestDTO;
 import com.cogent.cogentappointment.persistence.model.AppointmentReservationLog;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
@@ -14,13 +11,13 @@ import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 /**
  * @author smriti on 18/02/20
  */
-public class AppointmentReservationUtils {
+public class AppointmentReservationLogUtils {
 
     public static AppointmentReservationLog parseToAppointmentReservation(AppointmentFollowUpRequestDTO requestDTO) {
 
         AppointmentReservationLog reservation = new AppointmentReservationLog();
-        reservation.setReservedAppointmentDate(requestDTO.getAppointmentDate());
-        reservation.setReservedAppointmentTime(parseAppointmentTime(
+        reservation.setAppointmentDate(requestDTO.getAppointmentDate());
+        reservation.setAppointmentTime(parseAppointmentTime(
                 requestDTO.getAppointmentDate(),
                 requestDTO.getAppointmentTime()));
         reservation.setHospitalId(requestDTO.getHospitalId());

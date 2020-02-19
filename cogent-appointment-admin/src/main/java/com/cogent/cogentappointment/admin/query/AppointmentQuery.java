@@ -413,8 +413,6 @@ public class AppointmentQuery {
                 " s.status='Y' " +
                 " AND a.status='PA'" +
                 " AND DATE(a.appointmentDate) = CURDATE()";
-//                " AND a.appointmentTime >= DATE_SUB(NOW(),1) ";
-//                " AND a.appointmentTime >= DATE_SUB(NOW(), INTERVAL 1 DAY ) ";
 
         if (!Objects.isNull(appointmentQueueRequestDTO.getDoctorId()))
             whereClause += " AND d.id = '" + appointmentQueueRequestDTO.getDoctorId() + "'";

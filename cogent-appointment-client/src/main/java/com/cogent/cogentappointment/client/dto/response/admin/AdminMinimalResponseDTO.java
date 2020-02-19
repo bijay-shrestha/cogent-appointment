@@ -35,6 +35,8 @@ public class AdminMinimalResponseDTO implements Serializable {
 
     private String hospitalName;
 
+    private String departmentName;
+
     private String fileUri;
 
     private Integer totalItems;

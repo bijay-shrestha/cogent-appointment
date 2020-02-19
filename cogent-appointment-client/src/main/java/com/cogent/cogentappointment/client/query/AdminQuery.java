@@ -91,7 +91,8 @@ public class AdminQuery {
                     " a.hasMacBinding as hasMacBinding," +                      //[6]
                     " a.gender as gender," +                                    //[7]
                     " p.name as profileName," +
-                    " h.name as hospitalName," +                                //[8]
+                    " h.name as hospitalName," +
+                    " d.name as departmentName," +                                //[8]
                     " CASE WHEN" +
                     " (av.status IS NULL OR av.status = 'N')" +
                     " THEN null" +

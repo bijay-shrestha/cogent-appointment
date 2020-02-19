@@ -6,6 +6,7 @@ import com.cogent.cogentappointment.client.repository.AppointmentFollowUpTracker
 import com.cogent.cogentappointment.client.repository.DoctorRepository;
 import com.cogent.cogentappointment.client.repository.HospitalRepository;
 import com.cogent.cogentappointment.client.service.AppointmentFollowUpTrackerService;
+import com.cogent.cogentappointment.client.service.AppointmentReservationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -37,12 +38,16 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
 
     private final DoctorRepository doctorRepository;
 
+    private final AppointmentReservationService appointmentReservationService;
+
     public AppointmentFollowUpTrackerServiceImpl(AppointmentFollowUpTrackerRepository appointmentFollowUpTrackerRepository,
                                                  HospitalRepository hospitalRepository,
-                                                 DoctorRepository doctorRepository) {
+                                                 DoctorRepository doctorRepository,
+                                                 AppointmentReservationService appointmentReservationService) {
         this.appointmentFollowUpTrackerRepository = appointmentFollowUpTrackerRepository;
         this.hospitalRepository = hospitalRepository;
         this.doctorRepository = doctorRepository;
+        this.appointmentReservationService = appointmentReservationService;
     }
 
     @Override
@@ -83,6 +88,8 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
                 responseDTO = parseToAppointmentFollowUpResponseDTO(NO, null, null);
             }
         }
+
+        appointmentReservationService.save(requestDTO);
 
         log.info(FETCHING_PROCESS_COMPLETED, APPOINTMENT_FOLLOW_UP_TRACKER, getDifferenceBetweenTwoTime(startTime));
 

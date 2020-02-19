@@ -3,7 +3,6 @@ package com.cogent.cogentappointment.client.service.impl;
 import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.weekdays.WeekDaysResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.log.constants.WeekDaysLog;
 import com.cogent.cogentappointment.client.repository.WeekDaysRepository;
 import com.cogent.cogentappointment.client.service.WeekDaysService;
 import com.cogent.cogentappointment.persistence.model.WeekDays;

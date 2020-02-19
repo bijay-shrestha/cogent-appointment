@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.persistence.model;
 
 import com.cogent.cogentappointment.persistence.audit.Auditable;
-import com.cogent.cogentappointment.persistence.listener.AdminEntityListener;
 import com.cogent.cogentappointment.persistence.listener.DoctorSpecializationEntityListener;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

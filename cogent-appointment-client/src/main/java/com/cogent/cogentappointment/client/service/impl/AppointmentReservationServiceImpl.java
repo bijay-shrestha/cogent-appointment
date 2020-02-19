@@ -51,18 +51,15 @@ public class AppointmentReservationServiceImpl implements AppointmentReservation
 
         log.info(SAVING_PROCESS_STARTED, APPOINTMENT_RESERVATION_LOG);
 
-        AppointmentReservation appointmentReservation =
-                parseToAppointmentReservation(requestDTO,
-                        fetchHospital(requestDTO.getHospitalId()),
-                        fetchDoctor(requestDTO.getDoctorId()),
-                        fetchSpecialization(requestDTO.getSpecializationId()));
+        AppointmentReservationLog appointmentReservation =
+                parseToAppointmentReservation(requestDTO);
 
         save(appointmentReservation);
 
         log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT_RESERVATION_LOG, getDifferenceBetweenTwoTime(startTime));
     }
 
-    private void save(AppointmentReservation appointmentReservation) {
+    private void save(AppointmentReservationLog appointmentReservation) {
         appointmentReservationRepository.save(appointmentReservation);
     }
 

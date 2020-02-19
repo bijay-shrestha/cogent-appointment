@@ -1,9 +1,7 @@
 package com.cogent.cogentappointment.persistence.listener;
 
 import com.cogent.cogentappointment.persistence.config.Action;
-import com.cogent.cogentappointment.persistence.history.AdminConfirmationTokenHistory;
 import com.cogent.cogentappointment.persistence.history.DepartmentHistory;
-import com.cogent.cogentappointment.persistence.model.AdminConfirmationToken;
 import com.cogent.cogentappointment.persistence.model.Department;
 import com.cogent.cogentappointment.persistence.util.BeanUtil;
 

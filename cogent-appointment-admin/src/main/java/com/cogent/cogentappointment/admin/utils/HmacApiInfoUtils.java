@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.admin.utils;
 
 
-import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalUpdateRequestDTO;
 import com.cogent.cogentappointment.persistence.model.HmacApiInfo;
 import com.cogent.cogentappointment.persistence.model.Hospital;
 

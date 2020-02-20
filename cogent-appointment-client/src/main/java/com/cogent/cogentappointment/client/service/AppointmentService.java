@@ -28,7 +28,7 @@ public interface AppointmentService {
 
     void rescheduleAppointment(AppointmentRescheduleRequestDTO rescheduleRequestDTO);
 
-    AppointmentQueueSearchDTO fetchTodayAppointmentQueue(AppointmentQueueRequestDTO searchRequestDTO, Pageable able pageable);
+    AppointmentQueueSearchDTO fetchTodayAppointmentQueue(AppointmentQueueRequestDTO searchRequestDTO, Pageable pageable);
 
     Map<String, List<AppointmentQueueDTO>> fetchTodayAppointmentQueueByTime(AppointmentQueueRequestDTO appointmentQueueRequestDTO, Pageable pageable);
 

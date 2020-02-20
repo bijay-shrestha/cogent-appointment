@@ -32,6 +32,7 @@ public class WebResourceKeyConstants {
         String RESCHEDULE_LOG = "/reschedule-log";
         String DETAILS = "/detail";
 
+
     }
 
     //B
@@ -51,6 +52,8 @@ public class WebResourceKeyConstants {
         String REGISTERED="/registeredPatients";
         String COUNT="/count";
         String HOSPITAL_ID_PATH_VARIABLE_BASE = "/{hospitalId}";
+        String APPOINTMENT_QUEUE = "/today-appointment";
+        String APPOINTMENT_QUEUE_BY_TIME = "/today-appointment-timely";
     }
 
     public static final String DETAIL = "/detail";

@@ -12,11 +12,15 @@ import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentM
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentSuccessResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentLog.AppointmentLogResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentPendingApproval.AppointmentPendingApprovalResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueRequestDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueSearchDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author smriti on 2019-10-22
@@ -32,6 +36,10 @@ public interface AppointmentService {
     void cancelAppointment(AppointmentCancelRequestDTO cancelRequestDTO);
 
     void rescheduleAppointment(AppointmentRescheduleRequestDTO rescheduleRequestDTO);
+
+    AppointmentQueueSearchDTO fetchTodayAppointmentQueue(AppointmentQueueRequestDTO searchRequestDTO, Pageable pageable);
+
+    Map<String, List<AppointmentQueueDTO>> fetchTodayAppointmentQueueByTime(AppointmentQueueRequestDTO appointmentQueueRequestDTO, Pageable pageable);
 
     AppointmentDetailResponseDTO fetchAppointmentDetails(Long appointmentId);
 

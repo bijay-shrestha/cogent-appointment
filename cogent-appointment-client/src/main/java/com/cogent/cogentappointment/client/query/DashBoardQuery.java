@@ -1,6 +1,11 @@
 package com.cogent.cogentappointment.client.query;
 
 
+import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueRequestDTO;
+
+import java.util.Objects;
+import java.util.function.Function;
+
 /**
  * @author Sauravi Thapa २०/२/१०
  */
@@ -13,7 +18,7 @@ public class DashBoardQuery {
                     " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
                     " WHERE " +
                     " (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
-                    " AND a.status='A'"+
+                    " AND a.status='A'" +
                     " AND a.hospitalId.id=:hospitalId";
 
     public static String QUERY_TO_OVER_ALL_APPOINTMENTS =
@@ -117,4 +122,38 @@ public class DashBoardQuery {
                     " WHERE atd.transactionDate BETWEEN :fromDate AND :toDate" +
                     " AND a.status='A'" +
                     " AND a.hospitalId.id=:hospitalId";
+
+    public static Function<AppointmentQueueRequestDTO, String> QUERY_TO_FETCH_TODAY_APPOINTMENT_QUEUE =
+            (appointmentqueueSearchDTO) ->
+                    "SELECT" +
+                            " a.appointmentTime as appointmentTime," +
+                            " d.name as doctorName," +
+                            " p.name as patientName," +
+                            " p.mobileNumber as patientMobileNumber," +
+                            " s.name as specializationName," +
+                            " dv.fileUri as doctorAvatar" +
+                            " FROM Appointment a" +
+                            " LEFT JOIN Patient p ON p.id=a.patientId.id" +
+                            " LEFT JOIN Doctor d ON d.id=a.doctorId.id" +
+                            " LEFT JOIN DoctorSpecialization ds ON ds.doctorId.id=d.id" +
+                            " LEFT JOIN DoctorAvatar dv ON dv.doctorId.id=d.id" +
+                            " LEFT JOIN Specialization s ON s.id=ds.specializationId.id" +
+                            " LEFT JOIN Hospital h ON h.id=a.hospitalId.id"
+                            + GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_QUEUE(appointmentqueueSearchDTO);
+
+    private static String GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_QUEUE(AppointmentQueueRequestDTO appointmentQueueRequestDTO) {
+
+        String whereClause = " WHERE " +
+                " s.status='Y' " +
+                " AND a.status='PA'" +
+                " AND DATE(a.appointmentDate) = CURDATE()" +
+                " AND h.id= :hospitalId";
+
+        if (!Objects.isNull(appointmentQueueRequestDTO.getDoctorId()))
+            whereClause += " AND d.id = '" + appointmentQueueRequestDTO.getDoctorId() + "'";
+
+        whereClause += " ORDER BY a.appointmentTime DESC";
+
+        return whereClause;
+    }
 }

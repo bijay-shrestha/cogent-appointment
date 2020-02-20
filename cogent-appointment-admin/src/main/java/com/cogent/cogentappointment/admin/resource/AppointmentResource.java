@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.admin.resource;
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPendingApproval.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPendingApproval.AppointmentRejectDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
@@ -67,12 +68,12 @@ public class AppointmentResource {
         return ok().body(appointmentService.searchPendingVisitApprovals(searchRequestDTO, pageable));
     }
 
-    @GetMapping(APPROVE + APPOINTMENT_ID_PATH_VARIABLE_BASE)
-    @ApiOperation(APPROVE_APPOINTMENT)
-    public ResponseEntity<?> approveAppointment(@PathVariable("appointmentId") Long appointmentId) {
-        appointmentService.approveAppointment(appointmentId);
-        return ok().build();
-    }
+//    @GetMapping(APPROVE +APPOINTMENT_ID_PATH_VARIABLE_BASE )
+//    @ApiOperation(APPROVE_APPOINTMENT)
+//    public ResponseEntity<?> approveAppointment(@PathVariable("appointmentId") Long appointmentId) {
+//        appointmentService.approveAppointment(appointmentId);
+//        return ok().build();
+//    }
 
     @PutMapping(REJECT)
     @ApiOperation(REJECT_APPOINTMENT)

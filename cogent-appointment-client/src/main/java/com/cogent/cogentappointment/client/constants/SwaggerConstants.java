@@ -78,6 +78,8 @@ public class SwaggerConstants {
         String OVER_ALL_APPOINTMENT_OPERATION = "Fetch over all appointments.";
         String COUNT_REGISTERED_PATIENTS_OPERATION = "Count no. of registered patients";
         String REVENUE_STATISTICS_OPERATION = "Revenue statistics as per the filter";
+        String FETCH_APPOINTMENT_LOG = "Fetch Appointment Log";
+        String FETCH_APPOINTMENT_QUEUE = "Fetch Appointment Queue of Today for Dashboard";
     }
 
     public interface DepartmentConstant {

@@ -2,9 +2,13 @@ package com.cogent.cogentappointment.client.resource;
 
 import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.GenerateRevenueRequestDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueRequestDTO;
+import com.cogent.cogentappointment.client.service.AppointmentService;
 import com.cogent.cogentappointment.client.service.DashboardService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,10 +27,14 @@ import static org.springframework.http.ResponseEntity.ok;
 @Api(BASE_API_VALUE)
 public class DashboardResource {
 
-    private DashboardService dashboardService;
+    private final DashboardService dashboardService;
 
-    public DashboardResource(DashboardService dashboardService) {
+    private final AppointmentService appointmentService;
+
+    public DashboardResource(DashboardService dashboardService,
+                             AppointmentService appointmentService) {
         this.dashboardService = dashboardService;
+        this.appointmentService = appointmentService;
     }
 
     @PutMapping(GENERATE_REVENUE)
@@ -51,5 +59,23 @@ public class DashboardResource {
     @ApiOperation(REVENUE_STATISTICS_OPERATION)
     public ResponseEntity<?> getRevenueStatistics(@Valid @RequestBody DashBoardRequestDTO countRequestDTO) {
         return ok(dashboardService.getRevenueStatistic(countRequestDTO));
+    }
+
+    @PutMapping(APPOINTMENT_QUEUE)
+    @ApiOperation(FETCH_APPOINTMENT_QUEUE)
+    public ResponseEntity<?> fetchTodayAppointmentQueue(@RequestBody AppointmentQueueRequestDTO appointmentQueueRequestDTO,
+                                                        @RequestParam("page") int page,
+                                                        @RequestParam("size") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ok().body(appointmentService.fetchTodayAppointmentQueue(appointmentQueueRequestDTO, pageable));
+    }
+
+    @PutMapping(APPOINTMENT_QUEUE_BY_TIME)
+    @ApiOperation(FETCH_APPOINTMENT_QUEUE)
+    public ResponseEntity<?> fetchTodayAppointmentQueueByTime(@RequestBody AppointmentQueueRequestDTO appointmentQueueRequestDTO,
+                                                              @RequestParam("page") int page,
+                                                              @RequestParam("size") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ok().body(appointmentService.fetchTodayAppointmentQueueByTime(appointmentQueueRequestDTO, pageable));
     }
 }

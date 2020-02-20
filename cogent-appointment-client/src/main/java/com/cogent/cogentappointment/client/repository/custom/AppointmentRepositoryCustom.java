@@ -8,6 +8,7 @@ import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentB
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentPendingResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueRequestDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueSearchDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -48,5 +49,12 @@ public interface AppointmentRepositoryCustom {
 
     Long countOverAllAppointment(DashBoardRequestDTO dashBoardRequestDTO);
 
-    Map<String, List<AppointmentQueueDTO>> fetchTodayAppointmentQueueByTime(AppointmentQueueRequestDTO appointmentQueueRequestDTO, Pageable pageable);
+    AppointmentQueueSearchDTO fetchTodayAppointmentQueue(AppointmentQueueRequestDTO appointmentQueueRequestDTO,
+                                                         Long hospitalId,
+                                                         Pageable pageable);
+
+    Map<String, List<AppointmentQueueDTO>> fetchTodayAppointmentQueueByTime(
+            AppointmentQueueRequestDTO appointmentQueueRequestDTO,
+            Long hospitalId,
+            Pageable pageable);
 }

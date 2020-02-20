@@ -11,8 +11,5 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class AppointmentQueueRequestDTO implements Serializable {
-
-    private Long hospitalId;
-
     private Long doctorId;
 }

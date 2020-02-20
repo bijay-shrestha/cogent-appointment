@@ -33,6 +33,7 @@ import static com.cogent.cogentappointment.client.utils.AppointmentFollowUpLogUt
 import static com.cogent.cogentappointment.client.utils.AppointmentTransactionDetailUtils.parseToAppointmentTransactionInfo;
 import static com.cogent.cogentappointment.client.utils.AppointmentUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
+import static com.cogent.cogentappointment.client.utils.commons.SecurityContextHolderUtils.getHospitalId;
 
 /**
  * @author smriti on 2019-10-22
@@ -230,16 +231,16 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
 
-
     @Override
-    public AppointmentQueueSearchDTO fetchTodayAppointmentQueue(AppointmentQueueRequestDTO appointmentQueueRequestDTO, Pageable pageable) {
+    public AppointmentQueueSearchDTO fetchTodayAppointmentQueue(AppointmentQueueRequestDTO appointmentQueueRequestDTO,
+                                                                Pageable pageable) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_TODAY_QUEUE);
 
         AppointmentQueueSearchDTO responseDTOS =
-                appointmentRepository.fetchTodayAppointmentQueue(appointmentQueueRequestDTO, pageable);
+                appointmentRepository.fetchTodayAppointmentQueue(appointmentQueueRequestDTO, getHospitalId(), pageable);
 
         log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_TODAY_QUEUE, getDifferenceBetweenTwoTime(startTime));
 
@@ -248,13 +249,15 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public Map<String, List<AppointmentQueueDTO>> fetchTodayAppointmentQueueByTime(AppointmentQueueRequestDTO appointmentQueueRequestDTO, Pageable pageable) {
+    public Map<String, List<AppointmentQueueDTO>> fetchTodayAppointmentQueueByTime(
+            AppointmentQueueRequestDTO appointmentQueueRequestDTO,
+            Pageable pageable) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_RESCHEDULE_LOG);
 
         Map<String, List<AppointmentQueueDTO>> responseDTOS =
-                appointmentRepository.fetchTodayAppointmentQueueByTime(appointmentQueueRequestDTO, pageable);
+                appointmentRepository.fetchTodayAppointmentQueueByTime(appointmentQueueRequestDTO, getHospitalId(), pageable);
 
         log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_RESCHEDULE_LOG, getDifferenceBetweenTwoTime(startTime));
 

@@ -17,4 +17,10 @@ public class AppointmentLog {
     public static String RESCHEDULE_PROCESS_STARTED = ":::: RESCHEDULE APPOINTMENT PROCESS STARTED ::::";
     public static String RESCHEDULE_PROCESS_COMPLETED = ":::: RESCHEDULE APPOINTMENT PROCESS COMPLETED IN :::: {} ms";
 
+    public final static String APPOINTMENT_RESCHEDULE_LOG = "APPOINTMENT RESCHEDULE LOG";
+
+    public final static String APPOINTMENT_STATUS = "APPOINTMENT STATUS";
+
+    public final static String APPOINTMENT_TODAY_QUEUE = "APPOINTMENT QUEUE FOR LOG";
+
 }

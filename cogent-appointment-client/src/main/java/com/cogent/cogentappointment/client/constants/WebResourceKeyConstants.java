@@ -28,6 +28,14 @@ public class WebResourceKeyConstants {
         String APPOINTMENT_ID_PATH_VARIABLE_BASE = "/{appointmentId}";
         String HISTORY = "/history";
         String APPOINTMENT_RESERVATION_ID_PATH_VARIABLE_BASE = "/{appointmentReservationId}";
+        String PENDING_APPROVAL = "/pending-approval";
+        String REFUND = "/refund";
+        String APPROVE = "/approve";
+        String REJECT = "/reject";
+        String STATUS = "/status";
+        String LOG = "/log";
+        String RESCHEDULE_LOG = "/reschedule-log";
+        String DETAILS = "/detail";
     }
 
     //B
@@ -52,6 +60,8 @@ public class WebResourceKeyConstants {
         String REGISTERED = "/registeredPatients";
         String COUNT = "/count";
         String HOSPITAL_ID_PATH_VARIABLE_BASE = "/{hospitalId}";
+        String APPOINTMENT_QUEUE = "/today-appointment";
+        String APPOINTMENT_QUEUE_BY_TIME = "/today-appointment-timely";
     }
 
     public static final String DETAIL = "/detail";

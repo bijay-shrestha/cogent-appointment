@@ -76,6 +76,8 @@ public class QueryConstants {
     //T
     public static final String TO_DATE = "toDate";
 
+    public static final String TODAY_INTERVAL = "today";
+
     //U
     public static final String USERNAME = "username";
 

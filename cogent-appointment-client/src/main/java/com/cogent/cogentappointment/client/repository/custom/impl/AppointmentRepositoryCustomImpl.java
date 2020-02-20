@@ -1,16 +1,29 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.appointmentPendingApproval.AppointmentPendingApprovalSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedDateResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentMinResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.appointmentLog.AppointmentLogResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.appointmentPendingApproval.AppointmentPendingApprovalResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueRequestDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueSearchDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.AppointmentRepositoryCustom;
 import com.cogent.cogentappointment.client.utils.AppointmentUtils;
 import com.cogent.cogentappointment.persistence.model.Appointment;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,12 +33,16 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.query.AppointmentQuery.*;
 import static com.cogent.cogentappointment.client.query.DashBoardQuery.*;
+import static com.cogent.cogentappointment.client.utils.AppointmentUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
+import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
 
 /**
@@ -135,7 +152,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
-    public Long countRegisteredPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO,Long hospitalId) {
+    public Long countRegisteredPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_COUNT_REGISTERED_APPOINTMENT)
                 .setParameter(FROM_DATE, utilDateToSqlDate(dashBoardRequestDTO.getFromDate()))
                 .setParameter(TO_DATE, utilDateToSqlDate(dashBoardRequestDTO.getToDate()))
@@ -145,7 +162,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
-    public Long countNewPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO,Long hospitalId) {
+    public Long countNewPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO, Long hospitalId) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_COUNT_NEW_PATIENT_APPOINTMENT)
                 .setParameter(FROM_DATE, utilDateToSqlDate(dashBoardRequestDTO.getFromDate()))
@@ -156,7 +173,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
-    public Long countOverAllAppointment(DashBoardRequestDTO dashBoardRequestDTO,Long hospitalId) {
+    public Long countOverAllAppointment(DashBoardRequestDTO dashBoardRequestDTO, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_OVER_ALL_APPOINTMENTS)
                 .setParameter(FROM_DATE, utilDateToSqlDate(dashBoardRequestDTO.getFromDate()))
                 .setParameter(TO_DATE, utilDateToSqlDate(dashBoardRequestDTO.getToDate()))
@@ -194,7 +211,150 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         return appointmentHistory;
     }
 
+    @Override
+    public AppointmentRescheduleLogResponseDTO fetchRescheduleAppointment(AppointmentRescheduleLogSearchDTO rescheduleDTO, Pageable pageable) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_RESCHEDULE_APPOINTMENT_LOGS.apply(rescheduleDTO))
+                .setParameter(FROM_DATE, utilDateToSqlDate(rescheduleDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(rescheduleDTO.getToDate()));
+
+        int totalItems = query.getResultList().size();
+
+        addPagination.accept(pageable, query);
+
+        List<Object[]> objects = query.getResultList();
+
+        AppointmentRescheduleLogResponseDTO results = parseQueryResultToAppointmentRescheduleLogResponse(objects);
+
+        if (results.getAppointmentRescheduleLogDTOS().isEmpty()) throw APPOINTMENT_NOT_FOUND.get();
+        else {
+            results.setTotalItems(totalItems);
+            return results;
+        }
+    }
+
+    @Override
+    public AppointmentRefundResponseDTO fetchRefundAppointments(AppointmentRefundSearchDTO searchDTO, Pageable pageable) {
+
+        Query query = getQueryToFetchRefundAppointments(searchDTO);
+
+        int totalItems = query.getResultList().size();
+
+        addPagination.accept(pageable, query);
+
+        List<AppointmentRefundDTO> refundAppointments = transformQueryToResultList(query, AppointmentRefundDTO.class);
+
+        if (refundAppointments.isEmpty()) throw APPOINTMENT_NOT_FOUND.get();
+        else {
+            Double totalRefundAmount = calculateTotalRefundAmount(searchDTO);
+            return AppointmentRefundResponseDTO.builder()
+                    .refundAppointments(refundAppointments)
+                    .totalItems(totalItems)
+                    .totalRefundAmount(totalRefundAmount)
+                    .build();
+        }
+    }
+
+    @Override
+    public AppointmentPendingApprovalResponseDTO searchPendingVisitApprovals(AppointmentPendingApprovalSearchDTO searchRequestDTO, Pageable pageable) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PENDING_APPROVALS.apply(searchRequestDTO))
+                .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
+                .setParameter(TO_DATE, searchRequestDTO.getToDate());
+
+        int totalItems = query.getResultList().size();
+
+        addPagination.accept(pageable, query);
+
+        List<Object[]> objects = query.getResultList();
+
+        AppointmentPendingApprovalResponseDTO results = parseQueryResultToAppointmentApprovalResponse(objects);
+
+        if (results.getPendingAppointmentApprovals().isEmpty()) throw APPOINTMENT_NOT_FOUND.get();
+        else {
+            results.setTotalItems(totalItems);
+            return results;
+        }
+    }
+
+    @Override
+    public AppointmentLogResponseDTO searchAppointmentLogs(AppointmentLogSearchDTO searchRequestDTO, Pageable pageable) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_LOGS.apply(searchRequestDTO))
+                .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
+                .setParameter(TO_DATE, searchRequestDTO.getToDate());
+
+        int totalItems = query.getResultList().size();
+
+        addPagination.accept(pageable, query);
+
+        List<Object[]> objects = query.getResultList();
+
+        AppointmentLogResponseDTO results = parseQueryResultToAppointmentLogResponse(objects);
+
+        if (results.getAppointmentLogs().isEmpty()) throw APPOINTMENT_NOT_FOUND.get();
+        else {
+            results.setTotalItems(totalItems);
+            return results;
+        }
+    }
+
+    @Override
+    public AppointmentQueueSearchDTO fetchTodayAppointmentQueue(AppointmentQueueRequestDTO appointmentQueueRequestDTO,
+                                                                Long hospitalId,
+                                                                Pageable pageable) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TODAY_APPOINTMENT_QUEUE.apply(appointmentQueueRequestDTO))
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        int totalItems = query.getResultList().size();
+
+        addPagination.accept(pageable, query);
+
+        List<Object[]> objects = query.getResultList();
+
+        AppointmentQueueSearchDTO results = parseQueryResultToAppointmentQueueForTodayResponse(objects);
+
+        if (results.getAppointmentQueueByTimeDTOList().isEmpty()) throw APPOINTMENT_NOT_FOUND.get();
+        else {
+            results.setTotalItems(totalItems);
+            return results;
+        }
+    }
+
+    @Override
+    public Map<String, List<AppointmentQueueDTO>> fetchTodayAppointmentQueueByTime(
+            AppointmentQueueRequestDTO appointmentQueueRequestDTO,
+            Long hospitalId,
+            Pageable pageable) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TODAY_APPOINTMENT_QUEUE.apply(appointmentQueueRequestDTO))
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        int totalItems = query.getResultList().size();
+
+        addPagination.accept(pageable, query);
+
+        List<Object[]> objects = query.getResultList();
+
+        Map<String, List<AppointmentQueueDTO>> results = parseQueryResultToAppointmentQueueForTodayByTimeResponse(objects);
+
+        return results;
+    }
+
     private Function<Long, NoContentFoundException> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         throw new NoContentFoundException(Appointment.class, "id", id.toString());
     };
+
+    private Supplier<NoContentFoundException> APPOINTMENT_NOT_FOUND = ()
+            -> new NoContentFoundException(Appointment.class);
+
+    private Query getQueryToFetchRefundAppointments(AppointmentRefundSearchDTO searchDTO) {
+        return createQuery.apply(entityManager, QUERY_TO_FETCH_REFUND_APPOINTMENTS(searchDTO))
+                .setParameter(FROM_DATE, utilDateToSqlDate(searchDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(searchDTO.getToDate()));
+    }
+
+    private Double calculateTotalRefundAmount(AppointmentRefundSearchDTO searchDTO) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TOTAL_REFUND_AMOUNT(searchDTO))
+                .setParameter(FROM_DATE, utilDateToSqlDate(searchDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(searchDTO.getToDate()));
+
+        return (Double) query.getSingleResult();
+    }
 }

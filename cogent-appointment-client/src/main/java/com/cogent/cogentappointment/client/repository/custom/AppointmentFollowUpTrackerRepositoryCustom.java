@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.repository.custom;
 
+import com.cogent.cogentappointment.persistence.model.AppointmentFollowUpTracker;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
@@ -16,4 +17,6 @@ public interface AppointmentFollowUpTrackerRepositoryCustom {
                                         Long doctorId,
                                         Long specializationId,
                                         Long hospitalId);
+
+    AppointmentFollowUpTracker fetchLatestAppointmentFollowUpTracker(Long parentAppointmentId);
 }

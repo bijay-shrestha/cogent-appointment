@@ -14,6 +14,8 @@ public class AppointmentLog {
 
     public final static String APPOINTMENT_STATUS = "APPOINTMENT STATUS";
 
+    public final static String APPOINTMENT_TODAY_QUEUE = "APPOINTMENT QUEUE FOR LOG";
+
     public static String PENDING_APPROVAL_LIST = "PENDING APPROVALS";
 
     public final static String APPROVE_PROCESS_STARTED = ":::: APPROVING {} STARTED ::::";

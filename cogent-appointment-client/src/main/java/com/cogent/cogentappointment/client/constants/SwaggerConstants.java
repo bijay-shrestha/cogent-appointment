@@ -33,10 +33,20 @@ public class SwaggerConstants {
                 " for specific doctor and specialization";
         String SAVE_OPERATION = "Save new appointment";
         String FETCH_PENDING_APPOINTMENT = "Fetch pending appointments";
+        String FETCH_APPOINTMENT_QUEUE = "Fetch Appointment Queue of Today for Dashboard";
         String CANCEL_APPOINTMENT_OPERATION = "Cancel appointment and request refund";
         String RESCHEDULE_OPERATION = "Reschedule appointment date and time.";
         String FETCH_APPOINTMENT_HISTORY = " Fetch appointment history (only approved)";
         String CANCEL_REGISTRATION_OPERATION = "Delete Appointment Reservation when user cancels registration process";
+        String FETCH_REFUND_APPOINTMENTS = "Fetch Refund Appointment Request List";
+        String APPROVE_REFUND_APPOINTMENT = "Approve Refund Request Appointment";
+        String REJECT_REFUND_APPOINTMENT = "Reject Refund Request Appointment";
+        String FETCH_PENDING_APPOINTMENT_APPROVAL = "Fetch pending appointment approvals";
+        String APPROVE_APPOINTMENT = "Approve Appointment and set status as 'A'.";
+        String REJECT_APPOINTMENT = "Reject Appointment and set status as 'R'.";
+        String FETCH_APPOINTMENT_LOG = "Fetch Appointment Log";
+        String FETCH_APPOINTMENT_RESCHEDULE_LOG = "Fetch Appointment Reschedule Log";
+        String DETAILS_APPROVAL_VISIT_OPERATION = "Fetch appointment visit approval details by its id";
     }
 
     public interface AuthenticateConstant {
@@ -78,6 +88,8 @@ public class SwaggerConstants {
         String OVER_ALL_APPOINTMENT_OPERATION = "Fetch over all appointments.";
         String COUNT_REGISTERED_PATIENTS_OPERATION = "Count no. of registered patients";
         String REVENUE_STATISTICS_OPERATION = "Revenue statistics as per the filter";
+        String FETCH_APPOINTMENT_LOG = "Fetch Appointment Log";
+        String FETCH_APPOINTMENT_QUEUE = "Fetch Appointment Queue of Today for Dashboard";
     }
 
     public interface DepartmentConstant {

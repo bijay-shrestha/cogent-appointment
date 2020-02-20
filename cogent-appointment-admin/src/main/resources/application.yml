@@ -34,8 +34,8 @@ spring:
       max-file-size: 20000MB
       max-request-size: 215000MB
 
-#  minio:
-#    url: http://192.168.100.4:9000
-#    bucket: cogent
-#    access-key: minioadmin
-#    secret-key: minioadmin
+  minio:
+    url: http://192.168.100.4:9000
+    bucket: cogent
+    access-key: minioadmin
+    secret-key: minioadmin

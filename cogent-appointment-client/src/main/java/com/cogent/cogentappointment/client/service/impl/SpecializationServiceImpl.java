@@ -56,8 +56,8 @@ public class SpecializationServiceImpl implements SpecializationService {
 
         Long hospitalId = getLoggedInHospitalId();
 
-        Long specializationCount = specializationRepository.validateDuplicity(
-                requestDTO.getName(), hospitalId);
+        Long specializationCount =
+                specializationRepository.validateDuplicity(requestDTO.getName(), hospitalId);
 
         validateName(specializationCount, requestDTO.getName());
 
@@ -75,14 +75,16 @@ public class SpecializationServiceImpl implements SpecializationService {
 
         log.info(UPDATING_PROCESS_STARTED, SPECIALIZATION);
 
-        Specialization specialization = findBySpecializationId(requestDTO.getId());
+        Long hospitalId = getLoggedInHospitalId();
+
+        Specialization specialization = findBySpecializationByIdAndHospitalId(requestDTO.getId(), hospitalId);
 
         Long specializationCount = specializationRepository.validateDuplicity(
-                requestDTO.getId(), requestDTO.getName(), getLoggedInHospitalId());
+                requestDTO.getId(), requestDTO.getName(), hospitalId);
 
         validateName(specializationCount, requestDTO.getName());
 
-        save(parseToUpdatedSpecialization(requestDTO, specialization));
+        parseToUpdatedSpecialization(requestDTO, specialization);
 
         log.info(UPDATING_PROCESS_COMPLETED, SPECIALIZATION, getDifferenceBetweenTwoTime(startTime));
     }
@@ -94,9 +96,11 @@ public class SpecializationServiceImpl implements SpecializationService {
 
         log.info(DELETING_PROCESS_STARTED, SPECIALIZATION);
 
-        Specialization specialization = findBySpecializationId(deleteRequestDTO.getId());
+        Specialization specialization = findBySpecializationByIdAndHospitalId(
+                deleteRequestDTO.getId(), getLoggedInHospitalId()
+        );
 
-        save(parseToDeletedSpecialization(specialization, deleteRequestDTO));
+        parseToDeletedSpecialization(specialization, deleteRequestDTO);
 
         log.info(DELETING_PROCESS_COMPLETED, SPECIALIZATION, getDifferenceBetweenTwoTime(startTime));
     }
@@ -104,6 +108,7 @@ public class SpecializationServiceImpl implements SpecializationService {
     @Override
     public List<SpecializationMinimalResponseDTO> search(SpecializationSearchRequestDTO searchRequestDTO,
                                                          Pageable pageable) {
+
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, SPECIALIZATION);
@@ -117,13 +122,13 @@ public class SpecializationServiceImpl implements SpecializationService {
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchActiveSpecializationForDropDown() {
+    public List<DropDownResponseDTO> fetchActiveMinSpecialization() {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, SPECIALIZATION);
 
-        List<DropDownResponseDTO> responseDTOS = specializationRepository.fetchActiveSpecializationForDropDown(
-                getLoggedInHospitalId());
+        List<DropDownResponseDTO> responseDTOS =
+                specializationRepository.fetchActiveMinSpecialization(getLoggedInHospitalId());
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, SPECIALIZATION, getDifferenceBetweenTwoTime(startTime));
 
@@ -136,7 +141,8 @@ public class SpecializationServiceImpl implements SpecializationService {
 
         log.info(FETCHING_DETAIL_PROCESS_STARTED, SPECIALIZATION);
 
-        SpecializationResponseDTO responseDTO = specializationRepository.fetchDetailsById(id, getLoggedInHospitalId());
+        SpecializationResponseDTO responseDTO =
+                specializationRepository.fetchDetailsById(id, getLoggedInHospitalId());
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, SPECIALIZATION, getDifferenceBetweenTwoTime(startTime));
 
@@ -198,8 +204,8 @@ public class SpecializationServiceImpl implements SpecializationService {
         return specializationRepository.save(specialization);
     }
 
-    private Specialization findBySpecializationId(Long specializationId) {
-        return specializationRepository.findSpecializationById(specializationId)
+    private Specialization findBySpecializationByIdAndHospitalId(Long specializationId, Long hospitalId) {
+        return specializationRepository.findSpecializationByIdAndHospitalId(specializationId, hospitalId)
                 .orElseThrow(() -> SPECIALIZATION_WITH_GIVEN_ID_NOT_FOUND.apply(specializationId));
     }
 

@@ -70,7 +70,7 @@ public class SpecializationResource {
     @GetMapping(ACTIVE + MIN)
     @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
     public ResponseEntity<?> fetchActiveSpecializationForDropDown() {
-        return ok(specializationService.fetchActiveSpecializationForDropDown());
+        return ok(specializationService.fetchActiveMinSpecialization());
     }
 
     @GetMapping(DETAIL + ID_PATH_VARIABLE_BASE)

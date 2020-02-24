@@ -415,7 +415,7 @@ public class AppointmentQuery {
                 " AND DATE(a.appointmentDate) = CURDATE()";
 
         if (!Objects.isNull(appointmentQueueRequestDTO.getDoctorId()))
-            whereClause += " AND d.id = '" + appointmentQueueRequestDTO.getDoctorId() + "'";
+            whereClause += " AND d.id = " + appointmentQueueRequestDTO.getDoctorId();
 
         if (!Objects.isNull(appointmentQueueRequestDTO.getHospitalId()))
             whereClause += " AND h.id = " + appointmentQueueRequestDTO.getHospitalId();

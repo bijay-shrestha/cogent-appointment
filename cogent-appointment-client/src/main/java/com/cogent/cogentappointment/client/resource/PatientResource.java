@@ -67,16 +67,16 @@ public class PatientResource {
         return ok().build();
     }
 
-    @GetMapping(META_INFO + ACTIVE + MIN + HOSPITAL_ID_PATH_VARIABLE_BASE)
-    @ApiOperation(FETCH_ACTIVE_PATIENT_META_INFO_DETAILS_FOR_DROPDOWN)
-    public ResponseEntity<?> fetchActivePatientMetaInfoForDropdown(@PathVariable("hospitalId") Long hospitalId) {
-        return ok(patientService.fetchActiveMinPatientMetaInfo(hospitalId));
+    @GetMapping(META_INFO + ACTIVE + MIN)
+    @ApiOperation(FETCH_ACTIVE_MIN_PATIENT_META_INFO)
+    public ResponseEntity<?> fetchActiveMinPatientMetaInfo() {
+        return ok(patientService.fetchActiveMinPatientMetaInfo());
     }
 
-    @GetMapping(META_INFO + MIN + HOSPITAL_ID_PATH_VARIABLE_BASE)
-    @ApiOperation(FETCH_PATIENT_META_INFO_DETAILS_FOR_DROPDOWN)
-    public ResponseEntity<?> fetchPatientMetaInfoForDropdown(@PathVariable("hospitalId") Long hospitalId) {
-        return ok(patientService.fetchMinPatientMetaInfo(hospitalId));
+    @GetMapping(META_INFO + MIN)
+    @ApiOperation(FETCH_MIN_PATIENT_META_INFO)
+    public ResponseEntity<?> fetchPatientMetaInfoForDropdown() {
+        return ok(patientService.fetchMinPatientMetaInfo());
     }
 
 }

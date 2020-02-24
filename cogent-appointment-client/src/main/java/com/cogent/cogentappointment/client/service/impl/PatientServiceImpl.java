@@ -30,13 +30,12 @@ import java.util.List;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
-import static com.cogent.cogentappointment.client.log.constants.PatientLog.PATIENT;
-import static com.cogent.cogentappointment.client.log.constants.PatientLog.REGISTERING_PATIENT_PROCESS_COMPLETED;
-import static com.cogent.cogentappointment.client.log.constants.PatientLog.REGISTERING_PATIENT_PROCESS_STARTED;
+import static com.cogent.cogentappointment.client.log.constants.PatientLog.*;
 import static com.cogent.cogentappointment.client.utils.GenderUtils.fetchGenderByCode;
 import static com.cogent.cogentappointment.client.utils.PatientUtils.*;
-import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateConverterUtils.calculateAge;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
+import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 
 /**
  * @author smriti ON 16/01/2020
@@ -198,13 +197,14 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchMinPatientMetaInfo(Long hospitalId) {
+    public List<DropDownResponseDTO> fetchMinPatientMetaInfo() {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, PATIENT);
 
-        List<DropDownResponseDTO> responseDTOS = patientMetaInfoRepository.fetchMinPatientMetaInfo(hospitalId);
+        List<DropDownResponseDTO> responseDTOS =
+                patientMetaInfoRepository.fetchMinPatientMetaInfo(getLoggedInHospitalId());
 
         log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
@@ -212,12 +212,13 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchActiveMinPatientMetaInfo(Long hospitalId) {
+    public List<DropDownResponseDTO> fetchActiveMinPatientMetaInfo() {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, PATIENT);
 
-        List<DropDownResponseDTO> responseDTOS = patientMetaInfoRepository.fetchActiveMinPatientMetaInfo(hospitalId);
+        List<DropDownResponseDTO> responseDTOS =
+                patientMetaInfoRepository.fetchActiveMinPatientMetaInfo(getLoggedInHospitalId());
 
         log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
@@ -273,12 +274,12 @@ public class PatientServiceImpl implements PatientService {
         throw new NoContentFoundException(Patient.class, "id", id.toString());
     };
 
-    public Patient fetchPatientById(Long id) {
+    private Patient fetchPatientById(Long id) {
         return patientRepository.fetchPatientById(id).orElseThrow(() ->
                 new NoContentFoundException(Patient.class));
     }
 
-    public void savePatientMetaInfo(PatientMetaInfo patientMetaInfo) {
+    private void savePatientMetaInfo(PatientMetaInfo patientMetaInfo) {
         patientMetaInfoRepository.save(patientMetaInfo);
     }
 

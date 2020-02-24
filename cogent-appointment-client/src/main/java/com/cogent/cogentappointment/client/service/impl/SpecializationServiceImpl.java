@@ -28,7 +28,7 @@ import static com.cogent.cogentappointment.client.log.constants.SpecializationLo
 import static com.cogent.cogentappointment.client.utils.SpecializationUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
-import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getHospitalId;
+import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 
 /**
  * @author smriti on 2019-08-11
@@ -54,7 +54,7 @@ public class SpecializationServiceImpl implements SpecializationService {
 
         log.info(SAVING_PROCESS_STARTED, SPECIALIZATION);
 
-        Long hospitalId = getHospitalId();
+        Long hospitalId = getLoggedInHospitalId();
 
         Long specializationCount = specializationRepository.validateDuplicity(
                 requestDTO.getName(), hospitalId);
@@ -78,7 +78,7 @@ public class SpecializationServiceImpl implements SpecializationService {
         Specialization specialization = findBySpecializationId(requestDTO.getId());
 
         Long specializationCount = specializationRepository.validateDuplicity(
-                requestDTO.getId(), requestDTO.getName(), getHospitalId());
+                requestDTO.getId(), requestDTO.getName(), getLoggedInHospitalId());
 
         validateName(specializationCount, requestDTO.getName());
 
@@ -109,7 +109,7 @@ public class SpecializationServiceImpl implements SpecializationService {
         log.info(SEARCHING_PROCESS_STARTED, SPECIALIZATION);
 
         List<SpecializationMinimalResponseDTO> responseDTOS =
-                specializationRepository.search(searchRequestDTO, getHospitalId(), pageable);
+                specializationRepository.search(searchRequestDTO, getLoggedInHospitalId(), pageable);
 
         log.info(SEARCHING_PROCESS_COMPLETED, SPECIALIZATION, getDifferenceBetweenTwoTime(startTime));
 
@@ -123,7 +123,7 @@ public class SpecializationServiceImpl implements SpecializationService {
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, SPECIALIZATION);
 
         List<DropDownResponseDTO> responseDTOS = specializationRepository.fetchActiveSpecializationForDropDown(
-                getHospitalId());
+                getLoggedInHospitalId());
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, SPECIALIZATION, getDifferenceBetweenTwoTime(startTime));
 
@@ -136,7 +136,7 @@ public class SpecializationServiceImpl implements SpecializationService {
 
         log.info(FETCHING_DETAIL_PROCESS_STARTED, SPECIALIZATION);
 
-        SpecializationResponseDTO responseDTO = specializationRepository.fetchDetailsById(id, getHospitalId());
+        SpecializationResponseDTO responseDTO = specializationRepository.fetchDetailsById(id, getLoggedInHospitalId());
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, SPECIALIZATION, getDifferenceBetweenTwoTime(startTime));
 
@@ -150,7 +150,7 @@ public class SpecializationServiceImpl implements SpecializationService {
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, SPECIALIZATION);
 
         List<DropDownResponseDTO> responseDTOS =
-                specializationRepository.fetchSpecializationByDoctorId(doctorId, getHospitalId());
+                specializationRepository.fetchSpecializationByDoctorId(doctorId, getLoggedInHospitalId());
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, SPECIALIZATION,
                 getDifferenceBetweenTwoTime(startTime));
@@ -165,7 +165,7 @@ public class SpecializationServiceImpl implements SpecializationService {
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, SPECIALIZATION);
 
         List<DropDownResponseDTO> responseDTOS =
-                specializationRepository.fetchSpecializationByHospitalId(getHospitalId());
+                specializationRepository.fetchSpecializationByHospitalId(getLoggedInHospitalId());
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, SPECIALIZATION,
                 getDifferenceBetweenTwoTime(startTime));

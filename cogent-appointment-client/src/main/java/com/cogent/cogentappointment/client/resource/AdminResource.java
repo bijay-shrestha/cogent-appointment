@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 
@@ -38,11 +37,10 @@ public class AdminResource {
     @PostMapping(consumes = MULTIPART_FORM_DATA_VALUE)
     @ApiOperation(SAVE_OPERATION)
     public ResponseEntity<?> save(@RequestParam(value = "file", required = false) MultipartFile file,
-                                  @RequestParam("request") String request,
-                                  HttpServletRequest httpServletRequest) throws IOException {
+                                  @RequestParam("request") String request) throws IOException {
 
         AdminRequestDTO adminRequestDTO = ObjectMapperUtils.map(request, AdminRequestDTO.class);
-        adminService.save(adminRequestDTO, file, httpServletRequest);
+        adminService.save(adminRequestDTO, file);
         return created(create(API_V1 + BASE_ADMIN)).build();
     }
 
@@ -132,5 +130,5 @@ public class AdminResource {
         return ok(adminService.fetchAdminMetaInfoResponseDto());
     }
 
-    
+
 }

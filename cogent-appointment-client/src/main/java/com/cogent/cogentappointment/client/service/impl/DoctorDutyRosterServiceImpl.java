@@ -34,7 +34,7 @@ import static com.cogent.cogentappointment.client.log.constants.DoctorDutyRoster
 import static com.cogent.cogentappointment.client.utils.DoctorDutyRosterOverrideUtils.*;
 import static com.cogent.cogentappointment.client.utils.DoctorDutyRosterUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
-import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getHospitalId;
+import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 
 /**
  * @author smriti on 26/11/2019
@@ -93,7 +93,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
                 requestDTO,
                 findDoctorById(requestDTO.getDoctorId()),
                 findSpecializationById(requestDTO.getSpecializationId()),
-                findHospitalById(getHospitalId()));
+                findHospitalById(getLoggedInHospitalId()));
 
         save(doctorDutyRoster);
 
@@ -266,7 +266,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
         log.info(FETCHING_DETAIL_PROCESS_STARTED, DOCTOR_DUTY_ROSTER);
 
-        DoctorDutyRosterDetailResponseDTO responseDTO = doctorDutyRosterRepository.fetchDetailsById(id, getHospitalId());
+        DoctorDutyRosterDetailResponseDTO responseDTO = doctorDutyRosterRepository.fetchDetailsById(id, getLoggedInHospitalId());
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, DOCTOR_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
 

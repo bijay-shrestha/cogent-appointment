@@ -27,7 +27,7 @@ import static com.cogent.cogentappointment.client.utils.ForgotPasswordUtils.conv
 import static com.cogent.cogentappointment.client.utils.ForgotPasswordUtils.parseToEmailRequestDTO;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
-import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getHospitalId;
+import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 import static java.util.Objects.isNull;
 
 /**
@@ -62,7 +62,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
         log.info(FORGOT_PASSWORD_PROCESS_STARTED);
 
-        Admin admin = adminRepository.fetchAdminByUsernameOrEmail(username,getHospitalId());
+        Admin admin = adminRepository.fetchAdminByUsernameOrEmail(username, getLoggedInHospitalId());
 
         validateAdmin(admin, username);
 
@@ -103,7 +103,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
         log.info(UPDATING_PASSWORD_PROCESS_STARTED);
 
-        Admin admin = adminRepository.fetchAdminByUsernameOrEmail(requestDTO.getUsername(),getHospitalId());
+        Admin admin = adminRepository.fetchAdminByUsernameOrEmail(requestDTO.getUsername(), getLoggedInHospitalId());
         updateAdminPassword(requestDTO, admin);
         updateForgotPasswordVerification(admin.getId());
 

@@ -34,7 +34,7 @@ import static com.cogent.cogentappointment.client.utils.DoctorUtils.*;
 import static com.cogent.cogentappointment.client.utils.GenderUtils.fetchGenderByCode;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
-import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getHospitalId;
+import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 
 /**
  * @author smriti on 2019-09-29
@@ -90,13 +90,13 @@ public class DoctorServiceImpl implements DoctorService {
         log.info(SAVING_PROCESS_STARTED, DOCTOR);
 
         Long doctorCount = doctorRepository.validateDoctorDuplicity(
-                requestDTO.getName(), requestDTO.getMobileNumber(), getHospitalId());
+                requestDTO.getName(), requestDTO.getMobileNumber(), getLoggedInHospitalId());
 
         validateDoctor(doctorCount, requestDTO.getName(), requestDTO.getMobileNumber());
 
         Doctor doctor = parseDTOToDoctor(requestDTO,
                 fetchGender(requestDTO.getGenderCode()),
-                fetchHospitalById(getHospitalId()));
+                fetchHospitalById(getLoggedInHospitalId()));
 
         saveDoctor(doctor);
 
@@ -120,7 +120,7 @@ public class DoctorServiceImpl implements DoctorService {
 
         log.info(UPDATING_PROCESS_STARTED, DOCTOR);
 
-        Long hospitalId = getHospitalId();
+        Long hospitalId = getLoggedInHospitalId();
 
         Doctor doctor = findById(requestDTO.getDoctorInfo().getId());
 
@@ -176,7 +176,7 @@ public class DoctorServiceImpl implements DoctorService {
         log.info(SEARCHING_PROCESS_STARTED, DOCTOR);
 
         List<DoctorMinimalResponseDTO> responseDTOS = doctorRepository.search(searchRequestDTO,
-                getHospitalId(),
+                getLoggedInHospitalId(),
                 pageable);
 
         log.info(SEARCHING_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
@@ -190,7 +190,7 @@ public class DoctorServiceImpl implements DoctorService {
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DOCTOR);
 
-        List<DoctorDropdownDTO> responseDTOS = doctorRepository.fetchDoctorForDropdown(getHospitalId());
+        List<DoctorDropdownDTO> responseDTOS = doctorRepository.fetchDoctorForDropdown(getLoggedInHospitalId());
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 
@@ -203,7 +203,7 @@ public class DoctorServiceImpl implements DoctorService {
 
         log.info(FETCHING_DETAIL_PROCESS_STARTED, DOCTOR);
 
-        DoctorDetailResponseDTO responseDTO = doctorRepository.fetchDetailsById(id,getHospitalId());
+        DoctorDetailResponseDTO responseDTO = doctorRepository.fetchDetailsById(id, getLoggedInHospitalId());
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 
@@ -216,7 +216,7 @@ public class DoctorServiceImpl implements DoctorService {
 
         log.info(FETCHING_DETAIL_PROCESS_STARTED, DOCTOR);
 
-        DoctorUpdateResponseDTO responseDTO = doctorRepository.fetchDetailsForUpdate(id,getHospitalId());
+        DoctorUpdateResponseDTO responseDTO = doctorRepository.fetchDetailsForUpdate(id, getLoggedInHospitalId());
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 
@@ -244,7 +244,7 @@ public class DoctorServiceImpl implements DoctorService {
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DOCTOR);
 
         List<DoctorDropdownDTO> responseDTOS =
-                doctorRepository.fetchDoctorBySpecializationId(specializationId,getHospitalId());
+                doctorRepository.fetchDoctorBySpecializationId(specializationId, getLoggedInHospitalId());
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 
@@ -258,7 +258,7 @@ public class DoctorServiceImpl implements DoctorService {
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DOCTOR);
 
         List<DoctorDropdownDTO> responseDTOS =
-                doctorRepository.fetchDoctorByHospitalId(getHospitalId());
+                doctorRepository.fetchDoctorByHospitalId(getLoggedInHospitalId());
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 

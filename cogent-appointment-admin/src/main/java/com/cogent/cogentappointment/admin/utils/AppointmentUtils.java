@@ -235,6 +235,7 @@ public class AppointmentUtils {
 
         rescheduleLogResponseDTO.setAppointmentRescheduleLogDTOS(appointmentLogSearchDTOS);
         rescheduleLogResponseDTO.setTotalAmount(totalAmount.get());
+        rescheduleLogResponseDTO.setTotalItems(appointmentLogSearchDTOS.size());
 
         return rescheduleLogResponseDTO;
 
@@ -314,6 +315,7 @@ public class AppointmentUtils {
 
         appointmentLogResponseDTO.setAppointmentLogs(appointmentLogSearchDTOS);
         appointmentLogResponseDTO.setTotalAmount(totalAmount.get());
+        appointmentLogResponseDTO.setTotalItems(appointmentLogSearchDTOS.size());
 
         return appointmentLogResponseDTO;
 
@@ -351,6 +353,7 @@ public class AppointmentUtils {
         });
 
         appointmentQueueSearchDTO.setAppointmentQueueByTimeDTOList(appointmentQueueByTimeDTOS);
+        appointmentQueueSearchDTO.setTotalItems(appointmentQueueByTimeDTOS.size());
 
         return appointmentQueueSearchDTO;
 
@@ -393,6 +396,7 @@ public class AppointmentUtils {
         });
 
         appointmentQueueSearchDTO.setAppointmentQueueByTimeDTOList(appointmentQueueByTimeDTOS);
+        appointmentQueueSearchDTO.setTotalItems(appointmentQueueByTimeDTOS.size());
 
         //group by price
         Map<String, List<AppointmentQueueDTO>> groupByPriceMap =

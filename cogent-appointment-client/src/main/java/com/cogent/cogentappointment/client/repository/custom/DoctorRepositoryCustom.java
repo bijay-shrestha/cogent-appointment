@@ -23,17 +23,17 @@ public interface DoctorRepositoryCustom {
                                           Long hospitalId,
                                           Pageable pageable);
 
-    List<DoctorDropdownDTO> fetchDoctorForDropdown(Long hosiptalId);
+    List<DoctorDropdownDTO> fetchActiveMinDoctor(Long hospitalId);
 
-    DoctorDetailResponseDTO fetchDetailsById(Long id,Long hospitalId);
+    DoctorDetailResponseDTO fetchDetailsById(Long id, Long hospitalId);
 
-    List<DoctorDropdownDTO> fetchDoctorBySpecializationId(Long specializationId,Long hospitalId);
+    List<DoctorDropdownDTO> fetchDoctorBySpecializationAndHospitalId(Long specializationId, Long hospitalId);
 
     List<DoctorDropdownDTO> fetchDoctorByHospitalId(Long hospitalId);
 
-    DoctorUpdateResponseDTO fetchDetailsForUpdate(Long id,Long hospitalId);
+    DoctorUpdateResponseDTO fetchDetailsForUpdate(Long id, Long hospitalId);
 
     List<DoctorMinResponseDTO> fetchDoctorMinInfo(Long hospitalId);
 
-    Double fetchDoctorAppointmentFollowUpCharge(Long doctorId,Long hospitalId);
+    Double fetchDoctorAppointmentFollowUpCharge(Long doctorId, Long hospitalId);
 }

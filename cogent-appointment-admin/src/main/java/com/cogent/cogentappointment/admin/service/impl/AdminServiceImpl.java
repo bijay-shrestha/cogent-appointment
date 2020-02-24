@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.*;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
+import static com.cogent.cogentappointment.admin.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.AdminLog.*;
@@ -382,10 +383,9 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private List<FileUploadResponseDTO> uploadFiles(Admin admin, MultipartFile[] files) {
-//      String subDirectory = admin.getClass().getSimpleName() + StringConstant.FORWARD_SLASH + admin.getUsername();
-        String subDirectory =  admin.getUsername();
-        return minioFileService.addAttachmentIntoSubDirectory(subDirectory, files);
+        String subDirectory = admin.getUsername();
 
+        return minioFileService.addAttachmentIntoSubDirectory(subDirectory, files);
     }
 
     private void updateAdminAvatar(Admin admin, AdminAvatar adminAvatar, MultipartFile files) {
@@ -484,7 +484,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private void updateMacAddressInfo(List<AdminMacAddressInfoUpdateRequestDTO> adminMacAddressInfoUpdateRequestDTOS,
-                                     Admin admin) {
+                                      Admin admin) {
 
         List<AdminMacAddressInfo> adminMacAddressInfos = convertToUpdatedMACAddressInfo(
                 adminMacAddressInfoUpdateRequestDTOS, admin);

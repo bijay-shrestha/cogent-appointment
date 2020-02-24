@@ -77,7 +77,7 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
     }
 
     @Override
-    public List<DoctorDropdownDTO> fetchDoctorForDropdown(Long hospitalId) {
+    public List<DoctorDropdownDTO> fetchActiveMinDoctor(Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_FOR_DROPDOWN)
                 .setParameter(HOSPITAL_ID, hospitalId);
 
@@ -88,7 +88,7 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
     }
 
     @Override
-    public DoctorDetailResponseDTO fetchDetailsById(Long doctorId,Long hospitalId) {
+    public DoctorDetailResponseDTO fetchDetailsById(Long doctorId, Long hospitalId) {
         Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_DETAILS)
                 .setParameter(ID, doctorId)
                 .setParameter(HOSPITAL_ID, hospitalId);
@@ -100,7 +100,7 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
     }
 
     @Override
-    public List<DoctorDropdownDTO> fetchDoctorBySpecializationId(Long specializationId,Long hospitalId) {
+    public List<DoctorDropdownDTO> fetchDoctorBySpecializationAndHospitalId(Long specializationId, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_BY_SPECIALIZATION_ID)
                 .setParameter(ID, specializationId)
                 .setParameter(HOSPITAL_ID, hospitalId);
@@ -123,7 +123,7 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
     }
 
     @Override
-    public DoctorUpdateResponseDTO fetchDetailsForUpdate(Long doctorId,Long hospitalId) {
+    public DoctorUpdateResponseDTO fetchDetailsForUpdate(Long doctorId, Long hospitalId) {
         Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_DETAILS_FOR_UPDATE)
                 .setParameter(ID, doctorId)
                 .setParameter(HOSPITAL_ID, hospitalId);
@@ -148,7 +148,7 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
     }
 
     @Override
-    public Double fetchDoctorAppointmentFollowUpCharge(Long doctorId,Long hospitalId) {
+    public Double fetchDoctorAppointmentFollowUpCharge(Long doctorId, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_APPOINTMENT_CHARGE)
                 .setParameter(DOCTOR_ID, doctorId)
                 .setParameter(HOSPITAL_ID, hospitalId);

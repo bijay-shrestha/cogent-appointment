@@ -51,7 +51,12 @@ public class MinioFileServiceImpl implements MinioFileService {
 
         log.info(UPLOADING_FILE_PROCESS_STARTED);
 
-        Path path = Paths.get(Objects.requireNonNull(file.getOriginalFilename()));
+        String fileName = file.getOriginalFilename();
+        String suffix = fileName.substring(fileName.lastIndexOf(".") + 1);
+        String randomPath = startTime.toString() + "." + suffix;
+
+
+        Path path = Paths.get(Objects.requireNonNull(randomPath));
         try {
             minioService.upload(path, file.getInputStream(), file.getContentType());
         } catch (MinioException e) {

@@ -14,7 +14,8 @@ public class DoctorQuery {
     public static final String QUERY_TO_VALIDATE_DOCTOR_DUPLICITY =
             "SELECT COUNT(d.id) FROM Doctor d" +
                     " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
-                    " WHERE (d.name =:name" +
+                    " WHERE" +
+                    " (d.name =:name" +
                     " AND d.mobileNumber=:mobileNumber" +
                     " AND h.id=:hospitalId)" +
                     " AND d.status != 'D'";
@@ -119,13 +120,12 @@ public class DoctorQuery {
                     " GROUP BY dq.doctor_id";
 
     private static final String SELECT_CLAUSE_TO_FETCH_DOCTOR_DETAILS =
-            " d.email as email," +                                                  //[5]
-                    " d.nmc_number as nmcNumber," +                                 //[6]
-                    " d.remarks as remarks," +                                      //[7]
-                    " d.gender as gender," +                                        //[8]
-                    " h.name as hospitalName," +                                    //[9]
-                    " dac.appointment_charge as appointmentCharge," +                   //[10]
-                    " dac.appointment_follow_up_charge as appointmentFollowUpCharge";    //[11]
+            " d.email as email," +                                                        //[5]
+                    " d.nmc_number as nmcNumber," +                                       //[6]
+                    " d.remarks as remarks," +                                            //[7]
+                    " d.gender as gender," +                                              //[8]
+                    " dac.appointment_charge as appointmentCharge," +                     //[9]
+                    " dac.appointment_follow_up_charge as appointmentFollowUpCharge";    //[10]
 
     private static String QUERY_TO_FETCH_DOCTOR_AVATAR =
             " SELECT" +
@@ -138,9 +138,9 @@ public class DoctorQuery {
             " SELECT" +
                     SELECT_CLAUSE_TO_FETCH_MINIMAL_DOCTOR + "," +
                     SELECT_CLAUSE_TO_FETCH_DOCTOR_DETAILS + "," +
-                    " tbl1.specialization_name as specializationName," +                 //[12]
-                    " tbl2.qualification_name as qualificationName," +                   //[13]
-                    " tbl3.file_uri as fileUri" +                                       //[14]
+                    " tbl1.specialization_name as specializationName," +                 //[11]
+                    " tbl2.qualification_name as qualificationName," +                   //[12]
+                    " tbl3.file_uri as fileUri" +                                        //[13]
                     " FROM doctor d" +
                     " LEFT JOIN hospital h ON h.id = d.hospital_id" +
                     " LEFT JOIN doctor_appointment_charge dac ON dac.doctor_id= d.id" +
@@ -193,14 +193,13 @@ public class DoctorQuery {
             " SELECT" +
                     SELECT_CLAUSE_TO_FETCH_MINIMAL_DOCTOR + "," +
                     SELECT_CLAUSE_TO_FETCH_DOCTOR_DETAILS + "," +
-                    " h.id as hospitalId," +                                                //[12]
-                    " tbl1.doctor_specialization_id as doctorSpecializationId," +           //[13]
-                    " tbl1.specialization_id as specializationId," +                        //[14]
-                    " tbl1.specialization_name as specializationName," +                    //[15]
-                    " tbl2.doctor_qualification_id as doctorQualificationId," +             //[16]
-                    " tbl2.qualification_id as qualificationId," +                          //[17]
-                    " tbl2.qualification_name as qualificationName," +                      //[18]
-                    " tbl3.file_uri as fileUri" +                                            //[19]
+                    " tbl1.doctor_specialization_id as doctorSpecializationId," +           //[11]
+                    " tbl1.specialization_id as specializationId," +                        //[12]
+                    " tbl1.specialization_name as specializationName," +                    //[13]
+                    " tbl2.doctor_qualification_id as doctorQualificationId," +             //[14]
+                    " tbl2.qualification_id as qualificationId," +                          //[15]
+                    " tbl2.qualification_name as qualificationName," +                      //[16]
+                    " tbl3.file_uri as fileUri" +                                            //[17]
                     " FROM doctor d" +
                     " LEFT JOIN hospital h ON h.id = d.hospital_id" +
                     " LEFT JOIN doctor_appointment_charge dac ON dac.doctor_id= d.id" +

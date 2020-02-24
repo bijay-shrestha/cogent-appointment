@@ -14,9 +14,11 @@ import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentSt
 import com.cogent.cogentappointment.admin.dto.response.dashboard.AppointmentCountResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogDTO;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
+import com.cogent.cogentappointment.admin.utils.commons.DateUtils;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
+import freemarker.template.utility.DateUtil;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.REJECTED;
 import static com.cogent.cogentappointment.admin.utils.commons.AgeConverterUtils.calculateAge;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeIn12HourFormat;
 
 /**
  * @author smriti on 2019-10-24

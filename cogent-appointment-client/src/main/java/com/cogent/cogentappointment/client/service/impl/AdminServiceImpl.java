@@ -481,9 +481,9 @@ public class AdminServiceImpl implements AdminService {
     public void update(AdminUpdateRequestDTO adminRequestDTO, Admin admin) {
         Gender gender = fetchGender(adminRequestDTO.getGenderCode());
 
-        Profile profile = fetchProfile(adminRequestDTO.getProfileId());
+//        Profile profile = fetchProfile(adminRequestDTO.getProfileId());
 
-        convertAdminUpdateRequestDTOToAdmin(admin, adminRequestDTO, gender, profile);
+        convertAdminUpdateRequestDTOToAdmin(admin, adminRequestDTO, gender, null);
     }
 
     public void updateMacAddressInfo(List<AdminMacAddressInfoUpdateRequestDTO> adminMacAddressInfoUpdateRequestDTOS, Admin admin) {
@@ -530,7 +530,7 @@ public class AdminServiceImpl implements AdminService {
         return fetchGenderByCode(genderCode);
     }
 
-    private Profile fetchProfile(Long profileId) {
-        return profileService.fetchActiveProfileById(profileId);
+    private Profile fetchProfile(Long profileId, Long hospitalId) {
+        return profileService.findActiveProfileByIdAndHospitalId(profileId, hospitalId);
     }
 }

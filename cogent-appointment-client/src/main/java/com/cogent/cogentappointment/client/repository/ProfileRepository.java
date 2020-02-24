@@ -16,11 +16,10 @@ import java.util.Optional;
 public interface ProfileRepository extends JpaRepository<Profile, Long>, ProfileRepositoryCustom {
 
     @Query("SELECT p FROM Profile p WHERE p.department.hospital.id=:hospitalId AND p.status!='D' AND p.id = :id")
-    Optional<Profile> findProfileById(@Param("id") Long id, @Param("hospitalId") Long hospitalId);
-
-    @Query("SELECT p FROM Profile p WHERE p.status!='D' AND p.department.id = :id")
-    Profile findProfileByDepartmentId(@Param("id") Long id);
+    Optional<Profile> findProfileByIdAndHospitalId(@Param("id") Long id,
+                                                   @Param("hospitalId") Long hospitalId);
 
     @Query("SELECT p FROM Profile p WHERE p.department.hospital.id=:hospitalId AND p.status='Y' AND p.id = :id")
-    Optional<Profile> findActiveProfileById(@Param("id") Long id,@Param("hospitalId") Long hospitalId);
+    Optional<Profile> findActiveProfileByIdAndHospitalId(@Param("id") Long id,
+                                                         @Param("hospitalId") Long hospitalId);
 }

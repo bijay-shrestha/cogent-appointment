@@ -6,7 +6,6 @@ import com.cogent.cogentappointment.client.dto.request.profile.ProfileSearchRequ
 import com.cogent.cogentappointment.client.dto.response.profile.*;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.ProfileRepositoryCustom;
-import com.cogent.cogentappointment.client.utils.commons.PageableUtils;
 import com.cogent.cogentappointment.persistence.model.Profile;
 import com.cogent.cogentappointment.persistence.model.ProfileMenu;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +24,7 @@ import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.query.ProfileQuery.*;
 import static com.cogent.cogentappointment.client.utils.ProfileUtils.parseToAssignedProfileMenuResponseDTO;
 import static com.cogent.cogentappointment.client.utils.ProfileUtils.parseToProfileDetailResponseDTO;
+import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
 
 /**
@@ -66,7 +66,7 @@ public class ProfileRepositoryCustomImpl implements ProfileRepositoryCustom {
 
         int totalItems = query.getResultList().size();
 
-        PageableUtils.addPagination.accept(pageable, query);
+        addPagination.accept(pageable, query);
 
         List<ProfileMinimalResponseDTO> results = transformQueryToResultList(query, ProfileMinimalResponseDTO.class);
 
@@ -102,7 +102,7 @@ public class ProfileRepositoryCustomImpl implements ProfileRepositoryCustom {
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchActiveProfilesForDropDown(Long hospitalId) {
+    public List<DropDownResponseDTO> fetchActiveMinProfile(Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_PROFILES_FOR_DROPDOWN)
                 .setParameter(HOSPITAL_ID, hospitalId);
 
@@ -113,8 +113,8 @@ public class ProfileRepositoryCustomImpl implements ProfileRepositoryCustom {
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchProfileByDepartmentId(Long departmentId,Long hospitalId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PROFILE_BY_DEPARTMENT_ID)
+    public List<DropDownResponseDTO> fetchProfileByDepartmentAndHospitalId(Long departmentId, Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PROFILE_BY_DEPARTMENT_AND_HOSPITAL_ID)
                 .setParameter(ID, departmentId)
                 .setParameter(HOSPITAL_ID, hospitalId);
 

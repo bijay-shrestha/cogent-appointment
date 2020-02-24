@@ -23,13 +23,15 @@ public interface ProfileRepositoryCustom {
 
     Long validateDuplicityForUpdate(Long profileId, String name, Long hospitalId);
 
-    List<ProfileMinimalResponseDTO> search(ProfileSearchRequestDTO searchRequestDTO,Long hospitalId, Pageable pageable);
+    List<ProfileMinimalResponseDTO> search(ProfileSearchRequestDTO searchRequestDTO,
+                                           Long hospitalId,
+                                           Pageable pageable);
 
-    ProfileDetailResponseDTO fetchDetailsById(Long id,Long hospitalId);
+    ProfileDetailResponseDTO fetchDetailsById(Long id, Long hospitalId);
 
-    List<DropDownResponseDTO> fetchActiveProfilesForDropDown(Long hospitalId);
+    List<DropDownResponseDTO> fetchActiveMinProfile(Long hospitalId);
 
-    List<DropDownResponseDTO> fetchProfileByDepartmentId(Long departmentId,Long hospitalId);
+    List<DropDownResponseDTO> fetchProfileByDepartmentAndHospitalId(Long departmentId, Long hospitalId);
 
     AssignedProfileResponseDTO fetchAssignedProfileResponseDto(ProfileMenuSearchRequestDTO profileMenuSearchRequestDTO);
 }

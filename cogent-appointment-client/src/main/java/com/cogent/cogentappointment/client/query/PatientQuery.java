@@ -3,6 +3,8 @@ package com.cogent.cogentappointment.client.query;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientSearchRequestDTO;
 import org.springframework.util.ObjectUtils;
 
+import java.util.Objects;
+
 /**
  * @author smriti ON 16/01/2020
  */
@@ -68,6 +70,27 @@ public class PatientQuery {
                     " FROM Patient p" +
                     GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS;
 
+
+    /* AGE CALCULATION:
+   TIMESTAMPDIFF(YEAR, date_of_birth , CURDATE() ) as _year
+   TIMESTAMPDIFF(MONTH, date_of_birth, CURDATE() ) % 12 as _month
+   FLOOR( TIMESTAMPDIFF( DAY, date_of_birth ,  CURDATE()) % 30.4375 ) as _day
+* */
+    public static final String QUERY_TO_CALCULATE_PATIENT_AGE =
+            " CASE" +
+                    " WHEN" +
+                    " (((TIMESTAMPDIFF(YEAR, p.dateOfBirth, CURDATE()))<=0) AND" +
+                    " ((TIMESTAMPDIFF(MONTH, p.dateOfBirth, CURDATE()) % 12)<=0))" +
+                    " THEN" +
+                    " CONCAT((FLOOR(TIMESTAMPDIFF(DAY, p.dateOfBirth, CURDATE()) % 30.4375)), ' days')" +
+                    " WHEN" +
+                    " ((TIMESTAMPDIFF(YEAR, p.dateOfBirth ,CURDATE()))<=0)" +
+                    " THEN" +
+                    " CONCAT(((TIMESTAMPDIFF(MONTH, p.dateOfBirth, CURDATE()) % 12)), ' months')" +
+                    " ELSE" +
+                    " CONCAT(((TIMESTAMPDIFF(YEAR, p.dateOfBirth ,CURDATE()))), ' years')" +
+                    " END AS age";
+
     public static final String QUERY_TO_FETCH_PATIENT_DETAILS_BY_ID =
             "SELECT" +
                     " p.id as id," +
@@ -77,17 +100,18 @@ public class PatientQuery {
                     " p.gender as gender," +
                     " p.eSewaId as eSewaId," +
                     " hpi.status as status," +
-                    " h.name as hospitalName," +
                     " hpi.registrationNumber as registrationNumber," +
                     " hpi.hospitalNumber as hospitalNumber," +
                     " hpi.email as email," +
                     " hpi.address as address," +
                     " hpi.isSelf as isSelf," +
-                    " hpi.isRegistered as isRegistered" +
+                    " hpi.isRegistered as isRegistered," +
+                    QUERY_TO_CALCULATE_PATIENT_AGE +
                     " FROM Patient p " +
                     " LEFT JOIN HospitalPatientInfo hpi On p.id=hpi.patientId" +
                     " LEFT JOIN Hospital h ON h.id=hpi.hospitalId" +
                     " WHERE p.id=:id" +
+                    " AND hpi.hospitalId =:hospitalId" +
                     " AND hpi.status='Y'";
 
     public static String QUERY_TO_SEARCH_PATIENT(PatientSearchRequestDTO searchRequestDTO) {
@@ -99,11 +123,9 @@ public class PatientQuery {
                 " p.mobileNumber as mobileNumber," +                             //[3]
                 " hpi.registrationNumber as registrationNumber," +               //[4]
                 " p.eSewaId as eSewaId," +                                       //[5]
-                " hpi.status as status," +                                       //[6]
-                " p.dateOfBirth as dateOfBirth," +                               //[7]
-                " hpi.hospitalNumber as hospitalNumber," +                       //[8]
-                " h.name as hospitalName," +                                     //[9]
-                " h.id as hospitalId" +                                         //[10]
+                " hpi.status as status" +                                       //[6]
+                " hpi.hospitalNumber as hospitalNumber," +                       //[7]
+                QUERY_TO_CALCULATE_PATIENT_AGE +                                //[8]
                 " FROM Patient p" +
                 " LEFT JOIN HospitalPatientInfo hpi ON p.id=hpi.patientId" +
                 " LEFT JOIN Hospital h ON h.id=hpi.hospitalId" +
@@ -112,7 +134,8 @@ public class PatientQuery {
     }
 
     private static String GET_WHERE_CLAUSE_FOR_SEARCH_PATIENT(PatientSearchRequestDTO searchRequestDTO) {
-        String whereClause = " WHERE h.id=" + searchRequestDTO.getHospitalId() + " AND hpi.status!='D' ";
+
+        String whereClause = " WHERE h.id= :hospitalId AND hpi.status!='D'";
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getEsewaId()))
             whereClause += " AND p.eSewaId LIKE '%" + searchRequestDTO.getEsewaId() + "%'";
@@ -120,9 +143,8 @@ public class PatientQuery {
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
             whereClause += " AND hpi.status='" + searchRequestDTO.getStatus() + "'";
 
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getPatientMetaInfo()))
+        if (!Objects.isNull(searchRequestDTO.getPatientMetaInfo()))
             whereClause += " AND pmi.id=" + searchRequestDTO.getPatientMetaInfo();
-
 
         whereClause += " ORDER BY p.id DESC";
 

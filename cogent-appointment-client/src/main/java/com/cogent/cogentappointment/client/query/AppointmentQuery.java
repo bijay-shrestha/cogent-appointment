@@ -9,6 +9,8 @@ import org.springframework.util.ObjectUtils;
 import java.util.Objects;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.client.query.PatientQuery.QUERY_TO_CALCULATE_PATIENT_AGE;
+
 /**
  * @author smriti on 2019-10-22
  */
@@ -67,7 +69,7 @@ public class AppointmentQuery {
      * %i - minutes (e.g., 00,01,02,…12)
      * %p - AM/PM
      * */
-    public static final String QUERY_TO_FETCH_MIN_APPOINTMENT =
+    private static final String QUERY_TO_FETCH_MIN_APPOINTMENT =
             " SELECT" +
                     " a.id as appointmentId," +                                             //[0]
                     " a.appointmentDate as appointmentDate," +                              //[1]
@@ -248,25 +250,6 @@ public class AppointmentQuery {
         return whereClause + " ORDER BY a.appointmentDate DESC";
     }
 
-    /* AGE CALCULATION:
-       TIMESTAMPDIFF(YEAR, date_of_birth , CURDATE() ) as _year
-       TIMESTAMPDIFF(MONTH, date_of_birth, CURDATE() ) % 12 as _month
-       FLOOR( TIMESTAMPDIFF( DAY, date_of_birth ,  CURDATE()) % 30.4375 ) as _day
-   * */
-    private static String QUERY_TO_CALCULATE_PATIENT_AGE =
-            " CASE" +
-                    " WHEN" +
-                    " (((TIMESTAMPDIFF(YEAR, p.dateOfBirth, CURDATE()))<=0) AND" +
-                    " ((TIMESTAMPDIFF(MONTH, p.dateOfBirth, CURDATE()) % 12)<=0))" +
-                    " THEN" +
-                    " CONCAT((FLOOR(TIMESTAMPDIFF(DAY, p.dateOfBirth, CURDATE()) % 30.4375)), ' days')" +
-                    " WHEN" +
-                    " ((TIMESTAMPDIFF(YEAR, p.dateOfBirth ,CURDATE()))<=0)" +
-                    " THEN" +
-                    " CONCAT(((TIMESTAMPDIFF(MONTH, p.dateOfBirth, CURDATE()) % 12)), ' months')" +
-                    " ELSE" +
-                    " CONCAT(((TIMESTAMPDIFF(YEAR, p.dateOfBirth ,CURDATE()))), ' years')" +
-                    " END AS age";
 
     public static String QUERY_TO_FETCH_TOTAL_REFUND_AMOUNT(AppointmentRefundSearchDTO searchDTO) {
         return " SELECT SUM(ard.refundAmount)" +

@@ -16,8 +16,9 @@ import java.util.Optional;
 public interface PatientRepository extends JpaRepository<Patient, Long>, PatientRepositoryCustom {
 
     @Query("SELECT p FROM Patient p LEFT JOIN HospitalPatientInfo hp ON hp.patientId= p.id" +
-            " WHERE p.id=:id AND hp.status !='D'")
-    Optional<Patient> fetchPatientById(@Param("id") Long id);
+            " WHERE p.id=:id AND hp.hospitalId =:hospitalId AND hp.status !='D'")
+    Optional<Patient> fetchPatientByIdAndHospitalId(@Param("id") Long id,
+                                                    @Param("hospitalId") Long hospitalId);
 
     @Query("SELECT p FROM Patient p LEFT JOIN HospitalPatientInfo hp ON hp.patientId= p.id" +
             " WHERE p.id=:id AND hp.status ='Y'")

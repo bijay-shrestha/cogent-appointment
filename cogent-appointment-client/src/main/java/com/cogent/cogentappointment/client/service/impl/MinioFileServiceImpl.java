@@ -1,8 +1,8 @@
-package com.cogent.cogentappointment.admin.service.impl;
+package com.cogent.cogentappointment.client.service.impl;
 
-import com.cogent.cogentappointment.admin.configuration.MinioStorageConfig;
-import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
-import com.cogent.cogentappointment.admin.service.MinioFileService;
+import com.cogent.cogentappointment.client.configuration.MinioStorageConfiguration;
+import com.cogent.cogentappointment.client.dto.response.files.FileUploadResponseDTO;
+import com.cogent.cogentappointment.client.service.MinioFileService;
 import com.jlefebure.spring.boot.minio.MinioException;
 import com.jlefebure.spring.boot.minio.MinioService;
 import io.minio.messages.Item;
@@ -20,27 +20,27 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.cogent.cogentappointment.admin.constants.StringConstant.FORWARD_SLASH;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.FILES;
-import static com.cogent.cogentappointment.admin.log.constants.FileLog.UPLOADING_FILE_PROCESS_COMPLETED;
-import static com.cogent.cogentappointment.admin.log.constants.FileLog.UPLOADING_FILE_PROCESS_STARTED;
-import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
-import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.client.constants.StringConstant.FORWARD_SLASH;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.FILE;
+import static com.cogent.cogentappointment.client.log.constants.FileLog.UPLOADING_FILE_PROCESS_COMPLETED;
+import static com.cogent.cogentappointment.client.log.constants.FileLog.UPLOADING_FILE_PROCESS_STARTED;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
 /**
  * @author Rupak
  */
 @Service
 @Slf4j
-public class MinioServiceImpl implements MinioFileService {
+public class MinioFileServiceImpl implements MinioFileService {
 
     private final MinioService minioService;
-    private final MinioStorageConfig minioStorageConfig;
+    private final MinioStorageConfiguration minioStorageConfiguration;
 
-    public MinioServiceImpl(MinioService minioService, MinioStorageConfig minioStorageConfig) {
+    public MinioFileServiceImpl(MinioService minioService, MinioStorageConfiguration minioStorageConfiguration) {
         this.minioService = minioService;
-        this.minioStorageConfig = minioStorageConfig;
+        this.minioStorageConfiguration = minioStorageConfiguration;
     }
 
 
@@ -49,8 +49,9 @@ public class MinioServiceImpl implements MinioFileService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        Path path = Paths.get(Objects.requireNonNull(file.getOriginalFilename()));
         log.info(UPLOADING_FILE_PROCESS_STARTED);
+
+        Path path = Paths.get(Objects.requireNonNull(file.getOriginalFilename()));
         try {
             minioService.upload(path, file.getInputStream(), file.getContentType());
         } catch (MinioException e) {
@@ -71,11 +72,11 @@ public class MinioServiceImpl implements MinioFileService {
 
         log.info(UPLOADING_FILE_PROCESS_STARTED);
 
-        List<FileUploadResponseDTO> fileUploads =
-                Arrays.stream(files).map(file -> uploadFile(subDirectoryLocation, file)).collect(Collectors.toList());
+        List<FileUploadResponseDTO> fileUploads = Arrays.stream(files)
+                .map(file -> uploadFile(subDirectoryLocation, file))
+                .collect(Collectors.toList());
 
         log.info(UPLOADING_FILE_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
-
 
         return fileUploads;
     }
@@ -97,7 +98,7 @@ public class MinioServiceImpl implements MinioFileService {
             throw new IllegalStateException("The file cannot be read", e);
         }
 
-        String fileUri = minioStorageConfig.getServerlocation() + API_V1 + FILES + FORWARD_SLASH + path.toString();
+        String fileUri = minioStorageConfiguration.getServerlocation() + API_V1 + FILE + FORWARD_SLASH + path.toString();
 
         FileUploadResponseDTO responseDTO = FileUploadResponseDTO.builder()
                 .fileUri(fileUri)

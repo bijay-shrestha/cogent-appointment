@@ -1,10 +1,13 @@
 package com.cogent.cogentappointment.client.service.impl;
 
-import com.cogent.cogentappointment.client.constants.StringConstant;
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
+import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.request.admin.*;
 import com.cogent.cogentappointment.client.dto.request.email.EmailRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.admin.*;
+import com.cogent.cogentappointment.client.dto.response.admin.AdminDetailResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.admin.AdminLoggedInInfoResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.admin.AdminMetaInfoResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.admin.AdminMinimalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
@@ -13,7 +16,7 @@ import com.cogent.cogentappointment.client.exception.OperationUnsuccessfulExcept
 import com.cogent.cogentappointment.client.repository.*;
 import com.cogent.cogentappointment.client.service.AdminService;
 import com.cogent.cogentappointment.client.service.EmailService;
-import com.cogent.cogentappointment.client.service.FileService;
+import com.cogent.cogentappointment.client.service.MinioFileService;
 import com.cogent.cogentappointment.client.service.ProfileService;
 import com.cogent.cogentappointment.client.validator.LoginValidator;
 import com.cogent.cogentappointment.persistence.enums.Gender;
@@ -67,7 +70,7 @@ public class AdminServiceImpl implements AdminService {
 
     private final AdminConfirmationTokenRepository confirmationTokenRepository;
 
-    private final FileService fileService;
+    private final MinioFileService minioFileService;
 
     private final EmailService emailService;
 
@@ -79,7 +82,7 @@ public class AdminServiceImpl implements AdminService {
                             AdminMetaInfoRepository adminMetaInfoRepository,
                             AdminAvatarRepository adminAvatarRepository,
                             AdminConfirmationTokenRepository confirmationTokenRepository,
-                            FileService fileService,
+                            MinioFileService minioFileService,
                             EmailService emailService,
                             ProfileService profileService) {
         this.validator = validator;
@@ -88,7 +91,7 @@ public class AdminServiceImpl implements AdminService {
         this.adminMetaInfoRepository = adminMetaInfoRepository;
         this.adminAvatarRepository = adminAvatarRepository;
         this.confirmationTokenRepository = confirmationTokenRepository;
-        this.fileService = fileService;
+        this.minioFileService = minioFileService;
         this.emailService = emailService;
         this.profileService = profileService;
     }
@@ -112,7 +115,7 @@ public class AdminServiceImpl implements AdminService {
         validateAdminDuplicity(admins, adminRequestDTO.getUsername(), adminRequestDTO.getEmail(),
                 adminRequestDTO.getMobileNumber());
 
-        Admin admin = save(adminRequestDTO);
+        Admin admin = save(adminRequestDTO, hospitalId);
 
         saveAdminAvatar(admin, files);
 
@@ -132,16 +135,16 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public List<AdminDropdownDTO> fetchActiveAdminsForDropdown() {
+    public List<DropDownResponseDTO> fetchActiveMinAdmin() {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, ADMIN);
 
-        List<AdminDropdownDTO> responseDTOS = adminRepository.fetchActiveAdminsForDropDown(getLoggedInHospitalId());
+        List<DropDownResponseDTO> activeMinAdmin = adminRepository.fetchActiveMinAdmin(getLoggedInHospitalId());
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
 
-        return responseDTOS;
+        return activeMinAdmin;
     }
 
     @Override
@@ -150,7 +153,8 @@ public class AdminServiceImpl implements AdminService {
 
         log.info(SEARCHING_PROCESS_STARTED, ADMIN);
 
-        List<AdminMinimalResponseDTO> responseDTOS = adminRepository.search(searchRequestDTO, getLoggedInHospitalId(), pageable);
+        List<AdminMinimalResponseDTO> responseDTOS =
+                adminRepository.search(searchRequestDTO, getLoggedInHospitalId(), pageable);
 
         log.info(SEARCHING_PROCESS_STARTED, ADMIN, getDifferenceBetweenTwoTime(startTime));
 
@@ -176,7 +180,7 @@ public class AdminServiceImpl implements AdminService {
 
         log.info(DELETING_PROCESS_STARTED, ADMIN);
 
-        Admin admin = findById(deleteRequestDTO.getId());
+        Admin admin = findAdminByIdAndHospitalId(deleteRequestDTO.getId(), getLoggedInHospitalId());
 
         convertAdminToDeleted(admin, deleteRequestDTO);
 
@@ -189,7 +193,7 @@ public class AdminServiceImpl implements AdminService {
 
         log.info(UPDATING_PASSWORD_PROCESS_STARTED);
 
-        Admin admin = findById(requestDTO.getId());
+        Admin admin = findAdminByIdAndHospitalId(requestDTO.getId(), getLoggedInHospitalId());
 
         validatePassword(admin, requestDTO);
 
@@ -219,7 +223,7 @@ public class AdminServiceImpl implements AdminService {
 
         log.info(UPDATING_PROCESS_STARTED, ADMIN_AVATAR);
 
-        Admin admin = findById(adminId);
+        Admin admin = findAdminByIdAndHospitalId(adminId, getLoggedInHospitalId());
 
         updateAvatar(admin, files);
 
@@ -235,16 +239,17 @@ public class AdminServiceImpl implements AdminService {
 
         validateConstraintViolation(validator.validate(updateRequestDTO));
 
-        Admin admin = findById(updateRequestDTO.getId());
+        Long hospitalId = getLoggedInHospitalId();
 
-        List<Object[]> admins = adminRepository.validateDuplicity(updateRequestDTO, getLoggedInHospitalId());
+        Admin admin = findAdminByIdAndHospitalId(updateRequestDTO.getId(), hospitalId);
 
-        validateAdminDuplicity(admins, updateRequestDTO.getEmail(),
-                updateRequestDTO.getMobileNumber());
+        List<Object[]> admins = adminRepository.validateDuplicity(updateRequestDTO, hospitalId);
+
+        validateAdminDuplicity(admins, updateRequestDTO.getEmail(), updateRequestDTO.getMobileNumber());
 
         EmailRequestDTO emailRequestDTO = parseUpdatedInfo(updateRequestDTO, admin);
 
-        update(updateRequestDTO, admin);
+        update(updateRequestDTO, admin, hospitalId);
 
         if (updateRequestDTO.getIsAvatarUpdate().equals(YES))
             updateAvatar(admin, files);
@@ -265,6 +270,7 @@ public class AdminServiceImpl implements AdminService {
         log.info(VERIFY_CONFIRMATION_TOKEN_PROCESS_STARTED);
 
         Object status = confirmationTokenRepository.findByConfirmationToken(token);
+
         validateStatus(status);
 
         log.info(VERIFY_CONFIRMATION_TOKEN_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
@@ -294,7 +300,8 @@ public class AdminServiceImpl implements AdminService {
 
         log.info(FETCHING_PROCESS_STARTED, ADMIN);
 
-        AdminLoggedInInfoResponseDTO responseDTO = adminRepository.fetchLoggedInAdminInfo(requestDTO, getLoggedInHospitalId());
+        AdminLoggedInInfoResponseDTO responseDTO =
+                adminRepository.fetchLoggedInAdminInfo(requestDTO, getLoggedInHospitalId());
 
         log.info(FETCHING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
 
@@ -302,15 +309,15 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public List<AdminMetaInfoResponseDTO> fetchAdminMetaInfoResponseDto() {
+    public List<AdminMetaInfoResponseDTO> fetchAdminMetaInfo() {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, ADMIN_META_INFO);
 
         List<AdminMetaInfoResponseDTO> metaInfoResponseDTOS =
-                adminMetaInfoRepository.fetchAdminMetaInfoResponseDTOS(getLoggedInHospitalId());
+                adminMetaInfoRepository.fetchAdminMetaInfo(getLoggedInHospitalId());
 
-        log.info(SAVING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_COMPLETED, ADMIN_META_INFO, getDifferenceBetweenTwoTime(startTime));
 
         return metaInfoResponseDTOS;
     }
@@ -369,10 +376,10 @@ public class AdminServiceImpl implements AdminService {
                     String.format(MOBILE_NUMBER_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), mobileNumber));
     }
 
-    private Admin save(AdminRequestDTO adminRequestDTO) {
+    private Admin save(AdminRequestDTO adminRequestDTO, Long hospitalId) {
         Gender gender = fetchGender(adminRequestDTO.getGenderCode());
 
-        Profile profile = fetchProfile(adminRequestDTO.getProfileId());
+        Profile profile = fetchProfile(adminRequestDTO.getProfileId(), hospitalId);
 
         Admin admin = parseAdminDetails(adminRequestDTO, gender, profile);
 
@@ -387,8 +394,8 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private List<FileUploadResponseDTO> uploadFiles(Admin admin, MultipartFile[] files) {
-        String subDirectory = admin.getClass().getSimpleName() + StringConstant.FORWARD_SLASH + admin.getUsername();
-        return fileService.uploadFiles(files, subDirectory);
+        String subDirectory = admin.getUsername();
+        return minioFileService.addAttachmentIntoSubDirectory(subDirectory, files);
     }
 
     private void updateAdminAvatar(Admin admin, AdminAvatar adminAvatar, MultipartFile files) {
@@ -404,7 +411,7 @@ public class AdminServiceImpl implements AdminService {
         adminAvatarRepository.save(adminAvatar);
     }
 
-    public void saveMacAddressInfo(Admin admin, List<String> macAddresses) {
+    private void saveMacAddressInfo(Admin admin, List<String> macAddresses) {
         if (admin.getHasMacBinding().equals(YES)) {
             validateMacAddressInfoSize.accept(macAddresses);
 
@@ -416,15 +423,15 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
-    public Admin save(Admin admin) {
+    private Admin save(Admin admin) {
         return adminRepository.save(admin);
     }
 
-    public void saveMacAddressInfo(List<AdminMacAddressInfo> adminMacAddressInfos) {
+    private void saveMacAddressInfo(List<AdminMacAddressInfo> adminMacAddressInfos) {
         adminMacAddressInfoRepository.saveAll(adminMacAddressInfos);
     }
 
-    public void saveAdminMetaInfo(Admin admin) {
+    private void saveAdminMetaInfo(Admin admin) {
         adminMetaInfoRepository.save(parseInAdminMetaInfo(admin));
     }
 
@@ -435,7 +442,7 @@ public class AdminServiceImpl implements AdminService {
         parseMetaInfo(admin, adminMetaInfo);
     }
 
-    public AdminConfirmationToken saveAdminConfirmationToken(AdminConfirmationToken adminConfirmationToken) {
+    private AdminConfirmationToken saveAdminConfirmationToken(AdminConfirmationToken adminConfirmationToken) {
         return confirmationTokenRepository.save(adminConfirmationToken);
     }
 
@@ -443,13 +450,13 @@ public class AdminServiceImpl implements AdminService {
         emailService.sendEmail(emailRequestDTO);
     }
 
-    public Admin findById(Long adminId) {
-        return adminRepository.findAdminById(adminId, getLoggedInHospitalId())
+    private Admin findAdminByIdAndHospitalId(Long adminId, Long hospitalId) {
+        return adminRepository.findAdminByIdAndHospitalId(adminId, hospitalId)
                 .orElseThrow(() -> ADMIN_WITH_GIVEN_ID_NOT_FOUND.apply(adminId));
     }
 
-    public Admin findByUsername(String username) {
-        return adminRepository.findAdminByUsername(username, getLoggedInHospitalId())
+    private Admin findByUsername(String username) {
+        return adminRepository.findAdminByUsernameAndHospitalId(username, getLoggedInHospitalId())
                 .orElseThrow(() -> new NoContentFoundException(Admin.class));
     }
 
@@ -471,22 +478,23 @@ public class AdminServiceImpl implements AdminService {
         });
     }
 
-    public void updateAvatar(Admin admin, MultipartFile files) {
+    private void updateAvatar(Admin admin, MultipartFile files) {
         AdminAvatar adminAvatar = adminAvatarRepository.findAdminAvatarByAdminId(admin.getId());
 
         if (Objects.isNull(adminAvatar)) saveAdminAvatar(admin, files);
         else updateAdminAvatar(admin, adminAvatar, files);
     }
 
-    public void update(AdminUpdateRequestDTO adminRequestDTO, Admin admin) {
+    public void update(AdminUpdateRequestDTO adminRequestDTO, Admin admin, Long hospitalId) {
         Gender gender = fetchGender(adminRequestDTO.getGenderCode());
 
-//        Profile profile = fetchProfile(adminRequestDTO.getProfileId());
+        Profile profile = fetchProfile(adminRequestDTO.getProfileId(), hospitalId);
 
-        convertAdminUpdateRequestDTOToAdmin(admin, adminRequestDTO, gender, null);
+        convertAdminUpdateRequestDTOToAdmin(admin, adminRequestDTO, gender, profile);
     }
 
-    public void updateMacAddressInfo(List<AdminMacAddressInfoUpdateRequestDTO> adminMacAddressInfoUpdateRequestDTOS, Admin admin) {
+    private void updateMacAddressInfo(List<AdminMacAddressInfoUpdateRequestDTO> adminMacAddressInfoUpdateRequestDTOS,
+                                      Admin admin) {
 
         List<AdminMacAddressInfo> adminMacAddressInfos = convertToUpdatedMACAddressInfo(
                 adminMacAddressInfoUpdateRequestDTOS, admin);
@@ -494,7 +502,7 @@ public class AdminServiceImpl implements AdminService {
         saveMacAddressInfo(adminMacAddressInfos);
     }
 
-    public EmailRequestDTO parseUpdatedInfo(AdminUpdateRequestDTO adminRequestDTO, Admin admin) {
+    private EmailRequestDTO parseUpdatedInfo(AdminUpdateRequestDTO adminRequestDTO, Admin admin) {
         return parseToEmailRequestDTO(admin.getUsername(), adminRequestDTO,
                 parseUpdatedValues(admin, adminRequestDTO), parseUpdatedMacAddress(adminRequestDTO));
     }

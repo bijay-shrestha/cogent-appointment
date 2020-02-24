@@ -63,8 +63,6 @@ public class AdminServiceImpl implements AdminService {
 
     private final AdminConfirmationTokenRepository confirmationTokenRepository;
 
-//    private final FileService fileService;
-
     private final MinioFileService minioFileService;
 
     private final EmailService emailService;
@@ -77,7 +75,6 @@ public class AdminServiceImpl implements AdminService {
                             AdminMetaInfoRepository adminMetaInfoRepository,
                             AdminAvatarRepository adminAvatarRepository,
                             AdminConfirmationTokenRepository confirmationTokenRepository,
-                            FileService fileService,
                             MinioFileService minioFileService, EmailService emailService,
                             ProfileService profileService) {
         this.validator = validator;

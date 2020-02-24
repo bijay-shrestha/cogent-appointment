@@ -46,8 +46,8 @@ public class AdminResource {
 
     @GetMapping(ACTIVE + MIN)
     @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
-    public ResponseEntity<?> fetchActiveAdminsForDropdown() {
-        return ok(adminService.fetchActiveAdminsForDropdown());
+    public ResponseEntity<?> fetchActiveMinAdmin() {
+        return ok(adminService.fetchActiveMinAdmin());
     }
 
     @PutMapping(SEARCH)
@@ -127,7 +127,7 @@ public class AdminResource {
     @GetMapping(ADMIN_META_INFO)
     @ApiOperation(FETCH_ADMIN_META_INFO)
     public ResponseEntity<?> fetchAdminMetaInfoDropdown() {
-        return ok(adminService.fetchAdminMetaInfoResponseDto());
+        return ok(adminService.fetchAdminMetaInfo());
     }
 
 

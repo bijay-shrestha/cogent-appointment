@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.client.resource;
 
 import com.cogent.cogentappointment.client.constants.StringConstant;
-import com.cogent.cogentappointment.client.service.FileService;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;

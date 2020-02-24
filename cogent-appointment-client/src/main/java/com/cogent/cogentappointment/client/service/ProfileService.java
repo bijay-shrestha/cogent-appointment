@@ -35,5 +35,5 @@ public interface ProfileService {
 
     List<DropDownResponseDTO> fetchProfileByDepartmentId(Long departmentId);
 
-    AssignedProfileResponseDTO fetchAssignedProfileResponseDto(ProfileMenuSearchRequestDTO profileMenuSearchRequestDTO);
+    AssignedProfileResponseDTO fetchAssignedProfile(ProfileMenuSearchRequestDTO profileMenuSearchRequestDTO);
 }

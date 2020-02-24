@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.client.utils;
 
-import com.cogent.cogentappointment.client.constants.StringConstant;
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.profile.ProfileDTO;
 import com.cogent.cogentappointment.client.dto.request.profile.ProfileUpdateDTO;
@@ -16,7 +15,7 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.cogent.cogentappointment.client.constants.StringConstant.*;
+import static com.cogent.cogentappointment.client.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toUpperCase;
 
 /**

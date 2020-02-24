@@ -10,7 +10,10 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.ForgotPasswordConstant.*;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.BASE_PASSWORD;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.ForgotPasswordConstants.FORGOT;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.ForgotPasswordConstants.VERIFY;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -27,14 +30,14 @@ public class ForgotPasswordResource {
         this.forgotPasswordService = forgotPasswordService;
     }
 
-    @PostMapping(ForgotPasswordConstants.FORGOT)
+    @PostMapping(FORGOT)
     @ApiOperation(FORGOT_PASSWORD_OPERATION)
     public ResponseEntity<?> forgotPassword(@RequestParam(name = "username") String username) {
         forgotPasswordService.forgotPassword(username);
         return ok().build();
     }
 
-    @GetMapping(ForgotPasswordConstants.VERIFY)
+    @GetMapping(VERIFY)
     @ApiOperation(VERIFY_RESET_CODE)
     public ResponseEntity<?> verify(@RequestParam(name = "resetCode") String resetCode) {
         forgotPasswordService.verify(resetCode);

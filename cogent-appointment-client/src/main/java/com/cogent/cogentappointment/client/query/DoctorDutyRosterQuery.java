@@ -34,6 +34,7 @@ public class DoctorDutyRosterQuery {
                 " LEFT JOIN Specialization s ON ddr.specializationId.id = s.id" +
                 " WHERE" +
                 " ddr.status !='D'" +
+                " AND ddr.hospitalId.id=:hospitalId" +
                 " AND ddr.toDate >=:fromDate AND ddr.fromDate <=:toDate";
 
         if (!Objects.isNull(searchRequestDTO.getDoctorId()))
@@ -143,7 +144,8 @@ public class DoctorDutyRosterQuery {
                     " AND dd.doctorId.id=:doctorId" +
                     " AND dd.specializationId.id= :specializationId" +
                     " AND dd.toDate >=:fromDate" +
-                    " AND dd.fromDate <=:toDate";
+                    " AND dd.fromDate <=:toDate" +
+                    " AND dd.hospitalId.id=:hospitalId";
 
     public static final String QUERY_TO_CHECK_IF_OVERRIDE_EXISTS =
             " SELECT" +

@@ -17,7 +17,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AppointmentServiceMessage.APPOINTMENT_EXISTS_MESSAGE;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.DoctorDutyRosterServiceMessages.APPOINTMENT_EXISTS_ON_WEEK_DAY_MESSAGE;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.convertDateToLocalDate;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.isLocalDateBetweenInclusive;
 
@@ -68,7 +68,7 @@ public class DoctorDutyRosterUtils {
                         .filter(weekName ->
                                 unmatchedList.getWeekDaysName().equals(weekName))
                         .forEachOrdered(weekName -> {
-                            throw new BadRequestException(String.format(APPOINTMENT_EXISTS_MESSAGE, weekName));
+                            throw new BadRequestException(String.format(APPOINTMENT_EXISTS_ON_WEEK_DAY_MESSAGE, weekName));
                         }));
     }
 

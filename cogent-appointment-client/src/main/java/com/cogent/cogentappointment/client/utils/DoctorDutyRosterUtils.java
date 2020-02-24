@@ -18,7 +18,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AppointmentServiceMessage.*;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.DoctorDutyRosterServiceMessages.APPOINTMENT_EXISTS_ON_WEEK_DAY_MESSAGE;
 
 /**
  * @author smriti on 27/11/2019
@@ -67,7 +67,7 @@ public class DoctorDutyRosterUtils {
                         .filter(weekName ->
                                 unmatchedList.getWeekDaysName().equals(weekName))
                         .forEachOrdered(weekName -> {
-                            throw new BadRequestException(String.format(APPOINTMENT_EXISTS_MESSAGE, weekName));
+                            throw new BadRequestException(String.format(APPOINTMENT_EXISTS_ON_WEEK_DAY_MESSAGE, weekName));
                         }));
     }
 
@@ -202,17 +202,6 @@ public class DoctorDutyRosterUtils {
         return doctorDutyRosterOverrideStatus;
     }
 
-//    public static AppointmentCountRequestDTO parseToAppointmentCountRequestTO(
-//            Date fromDate, Date toDate, Long doctorId, Long specializationId) {
-//
-//        AppointmentCountRequestDTO appointmentCountRequestDTO = new AppointmentCountRequestDTO();
-//        appointmentCountRequestDTO.setFromDate(fromDate);
-//        appointmentCountRequestDTO.setToDate(toDate);
-//        appointmentCountRequestDTO.setDoctorId(doctorId);
-//        appointmentCountRequestDTO.setSpecializationId(specializationId);
-//        return appointmentCountRequestDTO;
-//    }
-
     public static List<DoctorWeekDaysDutyRosterUpdateRequestDTO> filterOriginalAndUpdatedWeekDaysRoster(
             List<DoctorWeekDaysDutyRosterUpdateRequestDTO> updateRequestDTO,
             List<DoctorWeekDaysDutyRoster> weekDaysDutyRosters) {
@@ -229,7 +218,9 @@ public class DoctorDutyRosterUtils {
                                         && (weekDaysDutyRosterUpdateRequestDTO.getDayOffStatus()
                                         .equals(originalRoster.getDayOffStatus()))
                                         && (weekDaysDutyRosterUpdateRequestDTO.getWeekDaysId()
-                                        .equals(originalRoster.getWeekDaysId().getId())))))
+                                        .equals(originalRoster.getWeekDaysId().getId())))
+                                )
+                        )
                         .count()) < 1)
                 .collect(Collectors.toList());
     }

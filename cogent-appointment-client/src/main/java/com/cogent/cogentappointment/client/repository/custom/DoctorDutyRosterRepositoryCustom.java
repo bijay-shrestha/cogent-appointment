@@ -24,9 +24,10 @@ public interface DoctorDutyRosterRepositoryCustom {
                                        Date toDate);
 
     List<DoctorDutyRosterMinimalResponseDTO> search(DoctorDutyRosterSearchRequestDTO searchRequestDTO,
-                                                    Pageable pageable);
+                                                    Pageable pageable,
+                                                    Long hospitalId);
 
-    DoctorDutyRosterDetailResponseDTO fetchDetailsById(Long id,Long hospitalId);
+    DoctorDutyRosterDetailResponseDTO fetchDetailsById(Long id, Long hospitalId);
 
     DoctorDutyRosterTimeResponseDTO fetchDoctorDutyRosterTime(Date date,
                                                               Long doctorId,
@@ -35,7 +36,7 @@ public interface DoctorDutyRosterRepositoryCustom {
     List<DoctorDutyRosterStatusResponseDTO> fetchDoctorDutyRosterStatus(DoctorDutyRosterStatusRequestDTO requestDTO);
 
     List<DoctorExistingDutyRosterResponseDTO> fetchExistingDoctorDutyRosters(
-            DoctorExistingDutyRosterRequestDTO requestDTO);
+            DoctorExistingDutyRosterRequestDTO requestDTO, Long hospitalId);
 
     DoctorExistingDutyRosterDetailResponseDTO fetchExistingRosterDetails(Long doctorDutyRosterId);
 }

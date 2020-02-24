@@ -186,14 +186,14 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public AssignedProfileResponseDTO fetchAssignedProfileResponseDto(ProfileMenuSearchRequestDTO searchRequestDTO) {
+    public AssignedProfileResponseDTO fetchAssignedProfile(ProfileMenuSearchRequestDTO searchRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, PROFILE);
 
         AssignedProfileResponseDTO responseDTO =
-                profileRepository.fetchAssignedProfileResponseDto(searchRequestDTO);
+                profileRepository.fetchAssignedProfile(searchRequestDTO);
 
         log.info(FETCHING_PROCESS_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
 

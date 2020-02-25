@@ -7,19 +7,23 @@ import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentTr
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.cancel.AppointmentCancelRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.log.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.*;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueSearchDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.approval.AppointmentPendingApprovalResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.log.AppointmentLogResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.log.constants.AppointmentReservationLog;
@@ -430,6 +434,39 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         return responseDTOS;
     }
+
+    @Override
+    public AppointmentLogResponseDTO searchAppointmentLogs(AppointmentLogSearchDTO searchRequestDTO,
+                                                           Pageable pageable) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_LOG);
+
+        AppointmentLogResponseDTO responseDTOS =
+                appointmentRepository.searchAppointmentLogs(searchRequestDTO, pageable, getLoggedInHospitalId());
+
+        log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_LOG, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public AppointmentRescheduleLogResponseDTO fetchRescheduleAppointment(AppointmentRescheduleLogSearchDTO rescheduleDTO,
+                                                                          Pageable pageable) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_RESCHEDULE_LOG);
+
+        AppointmentRescheduleLogResponseDTO responseDTOS =
+                appointmentRepository.fetchRescheduleAppointment(rescheduleDTO, pageable, getLoggedInHospitalId());
+
+        log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_RESCHEDULE_LOG, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
 
     /*IF DOCTOR DAY OFF STATUS = 'Y', THEN THERE ARE NO AVAILABLE TIME SLOTS
     * ELSE, CALCULATE AVAILABLE TIME SLOTS BASED ON DOCTOR DUTY ROSTER AND APPOINTMENT FOR THE SELECTED CRITERIA

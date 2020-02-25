@@ -6,10 +6,12 @@ import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentSe
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.cancel.AppointmentCancelRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.log.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentCheckAvailabilityResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentMinResponseDTO;
@@ -18,8 +20,10 @@ import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQ
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueSearchDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.approval.AppointmentPendingApprovalResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.log.AppointmentLogResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -48,6 +52,7 @@ public interface AppointmentService {
     void cancelRegistration(Long appointmentReservationId);
 
     /*admin*/
+    /*PENDING APPROVAL*/
     AppointmentPendingApprovalResponseDTO searchPendingVisitApprovals(AppointmentPendingApprovalSearchDTO searchRequestDTO,
                                                                       Pageable pageable);
 
@@ -55,6 +60,7 @@ public interface AppointmentService {
 
     void rejectAppointment(AppointmentRejectDTO rejectDTO);
 
+    /*REFUND APPROVAL*/
     AppointmentRefundResponseDTO fetchRefundAppointments(AppointmentRefundSearchDTO searchDTO,
                                                          Pageable pageable);
 
@@ -62,12 +68,21 @@ public interface AppointmentService {
 
     void rejectRefundAppointment(AppointmentRefundRejectDTO refundRejectDTO);
 
+    /*APPOINTMENT STATUS*/
     List<AppointmentStatusResponseDTO> fetchAppointmentForAppointmentStatus(AppointmentStatusRequestDTO requestDTO,
                                                                             Long hospitalId);
 
+    AppointmentLogResponseDTO searchAppointmentLogs(AppointmentLogSearchDTO searchRequestDTO,
+                                                    Pageable pageable);
+
+    AppointmentRescheduleLogResponseDTO fetchRescheduleAppointment(AppointmentRescheduleLogSearchDTO rescheduleDTO,
+                                                                   Pageable pageable);
+
+    /*APPOINTMENT QUEUE*/
     AppointmentQueueSearchDTO fetchTodayAppointmentQueue(AppointmentQueueRequestDTO searchRequestDTO, Pageable pageable);
 
     Map<String, List<AppointmentQueueDTO>> fetchTodayAppointmentQueueByTime(
             AppointmentQueueRequestDTO appointmentQueueRequestDTO, Pageable pageable);
+
 
 }

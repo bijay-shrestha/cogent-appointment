@@ -35,7 +35,6 @@ public class WebResourceKeyConstants {
         String STATUS = "/status";
         String LOG = "/log";
         String RESCHEDULE_LOG = "/reschedule-log";
-        String DETAILS = "/detail";
     }
 
     //B

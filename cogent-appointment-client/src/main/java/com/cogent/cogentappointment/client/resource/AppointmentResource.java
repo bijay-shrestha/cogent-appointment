@@ -1,12 +1,16 @@
 package com.cogent.cogentappointment.client.resource;
 
-import com.cogent.cogentappointment.client.dto.request.appointment.*;
+import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.cancel.AppointmentCancelRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.log.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.client.service.AppointmentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -143,6 +147,23 @@ public class AppointmentResource {
         return ok().build();
     }
 
+    @PutMapping(LOG)
+    @ApiOperation(FETCH_APPOINTMENT_LOG)
+    public ResponseEntity<?> fetchAppointmentLog(@RequestBody AppointmentLogSearchDTO searchRequestDTO,
+                                                 @RequestParam("page") int page,
+                                                 @RequestParam("size") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ok().body(appointmentService.searchAppointmentLogs(searchRequestDTO, pageable));
+    }
+
+    @PutMapping(RESCHEDULE_LOG)
+    @ApiOperation(FETCH_APPOINTMENT_RESCHEDULE_LOG)
+    public ResponseEntity<?> fetchAppointmentLog(@RequestBody AppointmentRescheduleLogSearchDTO rescheduleLogSearchDTO,
+                                                 @RequestParam("page") int page,
+                                                 @RequestParam("size") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ok().body(appointmentService.fetchRescheduleAppointment(rescheduleLogSearchDTO, pageable));
+    }
 
 
 }

@@ -17,8 +17,6 @@ public class AppointmentLogSearchDTO implements Serializable {
 
     private String status;
 
-    private Long hospitalId;
-
     private Date fromDate;
 
     private Date toDate;

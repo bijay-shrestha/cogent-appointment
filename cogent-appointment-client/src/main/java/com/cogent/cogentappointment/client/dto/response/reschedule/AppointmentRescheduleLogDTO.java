@@ -17,8 +17,6 @@ public class AppointmentRescheduleLogDTO {
 
     private String esewaId;
 
-    private String hospitalName;
-
     private Date previousAppointmentDate;
 
     private Date rescheduleAppointmentDate;

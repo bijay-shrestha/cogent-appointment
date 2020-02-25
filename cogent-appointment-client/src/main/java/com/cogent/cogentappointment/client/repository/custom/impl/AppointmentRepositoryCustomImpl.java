@@ -70,7 +70,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
     /*USED IN APPOINTMENT CHECK AVAILABILITY*/
     @Override
-    public List<AppointmentBookedTimeResponseDTO> fetchBookedAppointments(AppointmentCheckAvailabilityRequestDTO requestDTO) {
+    public List<AppointmentBookedTimeResponseDTO> fetchBookedAppointments(
+            AppointmentCheckAvailabilityRequestDTO requestDTO) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_BOOKED_APPOINTMENT)
                 .setParameter(DATE, utilDateToSqlDate(requestDTO.getAppointmentDate()))
@@ -212,7 +213,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
-    public AppointmentRescheduleLogResponseDTO fetchRescheduleAppointment(AppointmentRescheduleLogSearchDTO rescheduleDTO, Pageable pageable) {
+    public AppointmentRescheduleLogResponseDTO fetchRescheduleAppointment(AppointmentRescheduleLogSearchDTO rescheduleDTO,
+                                                                          Pageable pageable) {
         Query query = createQuery.apply(entityManager, QUERY_TO_RESCHEDULE_APPOINTMENT_LOGS.apply(rescheduleDTO))
                 .setParameter(FROM_DATE, utilDateToSqlDate(rescheduleDTO.getFromDate()))
                 .setParameter(TO_DATE, utilDateToSqlDate(rescheduleDTO.getToDate()));
@@ -255,7 +257,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
-    public AppointmentPendingApprovalResponseDTO searchPendingVisitApprovals(AppointmentPendingApprovalSearchDTO searchRequestDTO, Pageable pageable) {
+    public AppointmentPendingApprovalResponseDTO searchPendingVisitApprovals(AppointmentPendingApprovalSearchDTO searchRequestDTO,
+                                                                             Pageable pageable) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PENDING_APPROVALS.apply(searchRequestDTO))
                 .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
                 .setParameter(TO_DATE, searchRequestDTO.getToDate());
@@ -297,9 +300,11 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
-    public AppointmentQueueSearchDTO fetchTodayAppointmentQueue(AppointmentQueueRequestDTO appointmentQueueRequestDTO,
-                                                                Long hospitalId,
-                                                                Pageable pageable) {
+    public AppointmentQueueSearchDTO fetchTodayAppointmentQueue(
+            AppointmentQueueRequestDTO appointmentQueueRequestDTO,
+            Long hospitalId,
+            Pageable pageable) {
+
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TODAY_APPOINTMENT_QUEUE.apply(appointmentQueueRequestDTO))
                 .setParameter(HOSPITAL_ID, hospitalId);
 
@@ -323,6 +328,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
             AppointmentQueueRequestDTO appointmentQueueRequestDTO,
             Long hospitalId,
             Pageable pageable) {
+
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TODAY_APPOINTMENT_QUEUE.apply(appointmentQueueRequestDTO))
                 .setParameter(HOSPITAL_ID, hospitalId);
 

@@ -31,24 +31,28 @@ public class AppointmentResource {
         this.appointmentService = appointmentService;
     }
 
+    /*eSewa*/
     @PutMapping(CHECK_AVAILABILITY)
     @ApiOperation(CHECK_APPOINTMENT_AVAILABILITY)
     public ResponseEntity<?> checkAvailability(@Valid @RequestBody AppointmentCheckAvailabilityRequestDTO requestDTO) {
         return ok(appointmentService.checkAvailability(requestDTO));
     }
 
+    /*eSewa*/
     @PostMapping
     @ApiOperation(SAVE_OPERATION)
     public ResponseEntity<?> save(@Valid @RequestBody AppointmentRequestDTO requestDTO) {
         return created(create(API_V1 + BASE_APPOINTMENT)).body(appointmentService.save(requestDTO));
     }
 
+    /*eSewa*/
     @PutMapping(PENDING_APPOINTMENT)
     @ApiOperation((FETCH_PENDING_APPOINTMENT))
     public ResponseEntity<?> fetchPendingAppointments(@RequestBody AppointmentSearchDTO searchDTO) {
         return ok(appointmentService.fetchPendingAppointments(searchDTO));
     }
 
+    /*eSewa*/
     @PutMapping(CANCEL)
     @ApiOperation(CANCEL_APPOINTMENT_OPERATION)
     public ResponseEntity<?> cancelAppointment(@Valid @RequestBody AppointmentCancelRequestDTO cancelRequestDTO) {
@@ -56,6 +60,7 @@ public class AppointmentResource {
         return ok().build();
     }
 
+    /*eSewa*/
     @PutMapping(RESCHEDULE)
     @ApiOperation(RESCHEDULE_OPERATION)
     public ResponseEntity<?> rescheduleAppointment(@Valid @RequestBody AppointmentRescheduleRequestDTO requestDTO) {
@@ -63,17 +68,20 @@ public class AppointmentResource {
         return ok().build();
     }
 
+    /*eSewa*/
     @GetMapping(DETAIL + APPOINTMENT_ID_PATH_VARIABLE_BASE)
     public ResponseEntity<?> fetchAppointmentDetails(@PathVariable("appointmentId") Long appointmentId) {
         return ok().body(appointmentService.fetchAppointmentDetails(appointmentId));
     }
 
+    /*eSewa*/
     @PutMapping(HISTORY)
     @ApiOperation(FETCH_APPOINTMENT_HISTORY)
     public ResponseEntity<?> fetchAppointmentHistory(@RequestBody AppointmentSearchDTO searchDTO) {
         return ok(appointmentService.fetchAppointmentHistory(searchDTO));
     }
 
+    /*eSewa*/
     @GetMapping(CANCEL + APPOINTMENT_RESERVATION_ID_PATH_VARIABLE_BASE)
     @ApiOperation(CANCEL_REGISTRATION_OPERATION)
     public ResponseEntity<?> cancelRegistration(@PathVariable("appointmentReservationId") Long appointmentReservationId) {

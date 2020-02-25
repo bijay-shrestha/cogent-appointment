@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentCh
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentTransactionRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.cancel.AppointmentCancelRequestDTO;
@@ -16,8 +17,6 @@ import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestDTO
 import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.*;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueSearchDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.approval.AppointmentPendingApprovalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.log.AppointmentLogResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundResponseDTO;
@@ -332,19 +331,19 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentQueueSearchDTO fetchTodayAppointmentQueue(AppointmentQueueRequestDTO appointmentQueueRequestDTO,
+    public List<AppointmentQueueDTO> fetchTodayAppointmentQueue(AppointmentQueueRequestDTO appointmentQueueRequestDTO,
                                                                 Pageable pageable) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_TODAY_QUEUE);
 
-        AppointmentQueueSearchDTO responseDTOS =
-                appointmentRepository.fetchTodayAppointmentQueue(appointmentQueueRequestDTO, getLoggedInHospitalId(), pageable);
+        List<AppointmentQueueDTO> appointmentQueue = appointmentRepository.fetchTodayAppointmentQueue(
+                appointmentQueueRequestDTO, getLoggedInHospitalId(), pageable);
 
         log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_TODAY_QUEUE, getDifferenceBetweenTwoTime(startTime));
 
-        return responseDTOS;
+        return appointmentQueue;
     }
 
     @Override

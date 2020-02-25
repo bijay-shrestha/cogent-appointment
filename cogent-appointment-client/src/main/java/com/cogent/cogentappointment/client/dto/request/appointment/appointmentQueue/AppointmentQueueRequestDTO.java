@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue;
+package com.cogent.cogentappointment.client.dto.request.appointment.appointmentQueue;
 
 import lombok.Getter;
 import lombok.Setter;

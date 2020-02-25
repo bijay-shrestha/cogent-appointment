@@ -2,6 +2,8 @@ package com.cogent.cogentappointment.client.dto.response.appointment.appointment
 
 import lombok.*;
 
+import java.io.Serializable;
+
 /**
  * @author Rupak
  */
@@ -10,7 +12,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppointmentQueueDTO {
+public class AppointmentQueueDTO implements Serializable {
 
     private String appointmentTime;
 
@@ -24,5 +26,5 @@ public class AppointmentQueueDTO {
 
     private String doctorAvatar;
 
-
+    private int totalItems;
 }

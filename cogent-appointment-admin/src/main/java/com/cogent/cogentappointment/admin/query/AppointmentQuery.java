@@ -402,7 +402,7 @@ public class AppointmentQuery {
                             " (dv.status is null OR dv.status = 'N')" +
                             " THEN null" +
                             " ELSE" +
-                            " dv.file_uri" +
+                            " dv.fileUri" +
                             " END as doctorAvatar" +
                             " FROM Appointment a" +
                             " LEFT JOIN Patient p ON p.id = a.patientId.id" +

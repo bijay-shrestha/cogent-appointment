@@ -17,8 +17,6 @@ public class AppointmentRefundSearchDTO implements Serializable {
 
     private Date toDate;
 
-    private Long hospitalId;
-
     private Long patientMetaInfoId;
 
     private Long doctorId;

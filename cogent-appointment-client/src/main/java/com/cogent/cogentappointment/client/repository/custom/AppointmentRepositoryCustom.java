@@ -62,11 +62,13 @@ public interface AppointmentRepositoryCustom {
 
     List<AppointmentMinResponseDTO> fetchAppointmentHistory(AppointmentSearchDTO searchDTO);
 
+    AppointmentRefundResponseDTO fetchRefundAppointments(AppointmentRefundSearchDTO searchDTO,
+                                                         Pageable pageable,
+                                                         Long hospitalId);
+
     AppointmentRescheduleLogResponseDTO fetchRescheduleAppointment(AppointmentRescheduleLogSearchDTO rescheduleDTO,
                                                                    Pageable pageable);
 
-    AppointmentRefundResponseDTO fetchRefundAppointments(AppointmentRefundSearchDTO searchDTO,
-                                                         Pageable pageable);
 
     AppointmentPendingApprovalResponseDTO searchPendingVisitApprovals(
             AppointmentPendingApprovalSearchDTO searchRequestDTO, Pageable pageable);

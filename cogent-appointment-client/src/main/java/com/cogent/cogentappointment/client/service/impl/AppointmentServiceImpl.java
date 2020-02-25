@@ -1,11 +1,13 @@
 package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.dto.request.appointment.*;
+import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.*;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueSearchDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
@@ -32,7 +34,7 @@ import static com.cogent.cogentappointment.client.utils.AppointmentFollowUpLogUt
 import static com.cogent.cogentappointment.client.utils.AppointmentTransactionDetailUtils.parseToAppointmentTransactionInfo;
 import static com.cogent.cogentappointment.client.utils.AppointmentUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
-import static com.cogent.cogentappointment.client.utils.commons.SecurityContextHolderUtils.getHospitalId;
+import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 
 /**
  * @author smriti on 2019-10-22
@@ -260,6 +262,53 @@ public class AppointmentServiceImpl implements AppointmentService {
         log.info(DELETING_PROCESS_COMPLETED, APPOINTMENT_RESERVATION_LOG, getDifferenceBetweenTwoTime(startTime));
     }
 
+    @Override
+    public AppointmentQueueSearchDTO fetchTodayAppointmentQueue(AppointmentQueueRequestDTO appointmentQueueRequestDTO,
+                                                                Pageable pageable) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_TODAY_QUEUE);
+
+        AppointmentQueueSearchDTO responseDTOS =
+                appointmentRepository.fetchTodayAppointmentQueue(appointmentQueueRequestDTO, getLoggedInHospitalId(), pageable);
+
+        log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_TODAY_QUEUE, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public Map<String, List<AppointmentQueueDTO>> fetchTodayAppointmentQueueByTime(
+            AppointmentQueueRequestDTO appointmentQueueRequestDTO,
+            Pageable pageable) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_RESCHEDULE_LOG);
+
+        Map<String, List<AppointmentQueueDTO>> responseDTOS =
+                appointmentRepository.fetchTodayAppointmentQueueByTime(appointmentQueueRequestDTO, getLoggedInHospitalId(), pageable);
+
+        log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_RESCHEDULE_LOG, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public AppointmentRefundResponseDTO fetchRefundAppointments(AppointmentRefundSearchDTO searchDTO,
+                                                                Pageable pageable) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, APPOINTMENT_REFUND);
+
+        AppointmentRefundResponseDTO refundAppointments =
+                appointmentRepository.fetchRefundAppointments(searchDTO, pageable, getLoggedInHospitalId());
+
+        log.info(FETCHING_PROCESS_COMPLETED, APPOINTMENT_REFUND, getDifferenceBetweenTwoTime(startTime));
+
+        return refundAppointments;
+    }
+
     /*IF DOCTOR DAY OFF STATUS = 'Y', THEN THERE ARE NO AVAILABLE TIME SLOTS
     * ELSE, CALCULATE AVAILABLE TIME SLOTS BASED ON DOCTOR DUTY ROSTER AND APPOINTMENT FOR THE SELECTED CRITERIA
     * (APPOINTMENT DATE, DOCTOR AND SPECIALIZATION)
@@ -395,38 +444,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         );
     }
 
-    @Override
-    public AppointmentQueueSearchDTO fetchTodayAppointmentQueue(AppointmentQueueRequestDTO appointmentQueueRequestDTO,
-                                                                Pageable pageable) {
-
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_TODAY_QUEUE);
-
-        AppointmentQueueSearchDTO responseDTOS =
-                appointmentRepository.fetchTodayAppointmentQueue(appointmentQueueRequestDTO, getHospitalId(), pageable);
-
-        log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_TODAY_QUEUE, getDifferenceBetweenTwoTime(startTime));
-
-        return responseDTOS;
-
-    }
-
-    @Override
-    public Map<String, List<AppointmentQueueDTO>> fetchTodayAppointmentQueueByTime(
-            AppointmentQueueRequestDTO appointmentQueueRequestDTO,
-            Pageable pageable) {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_RESCHEDULE_LOG);
-
-        Map<String, List<AppointmentQueueDTO>> responseDTOS =
-                appointmentRepository.fetchTodayAppointmentQueueByTime(appointmentQueueRequestDTO, getHospitalId(), pageable);
-
-        log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_RESCHEDULE_LOG, getDifferenceBetweenTwoTime(startTime));
-
-        return responseDTOS;
-    }
 
 
 }

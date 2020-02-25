@@ -235,9 +235,11 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
-    public AppointmentRefundResponseDTO fetchRefundAppointments(AppointmentRefundSearchDTO searchDTO, Pageable pageable) {
+    public AppointmentRefundResponseDTO fetchRefundAppointments(AppointmentRefundSearchDTO searchDTO,
+                                                                Pageable pageable,
+                                                                Long hospitalId) {
 
-        Query query = getQueryToFetchRefundAppointments(searchDTO);
+        Query query = getQueryToFetchRefundAppointments(searchDTO, hospitalId);
 
         int totalItems = query.getResultList().size();
 
@@ -247,7 +249,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         if (refundAppointments.isEmpty()) throw APPOINTMENT_NOT_FOUND.get();
         else {
-            Double totalRefundAmount = calculateTotalRefundAmount(searchDTO);
+            Double totalRefundAmount = calculateTotalRefundAmount(searchDTO, hospitalId);
+
             return AppointmentRefundResponseDTO.builder()
                     .refundAppointments(refundAppointments)
                     .totalItems(totalItems)
@@ -350,16 +353,22 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     private Supplier<NoContentFoundException> APPOINTMENT_NOT_FOUND = ()
             -> new NoContentFoundException(Appointment.class);
 
-    private Query getQueryToFetchRefundAppointments(AppointmentRefundSearchDTO searchDTO) {
+    private Query getQueryToFetchRefundAppointments(AppointmentRefundSearchDTO searchDTO,
+                                                    Long hospitalId) {
+
         return createQuery.apply(entityManager, QUERY_TO_FETCH_REFUND_APPOINTMENTS(searchDTO))
                 .setParameter(FROM_DATE, utilDateToSqlDate(searchDTO.getFromDate()))
-                .setParameter(TO_DATE, utilDateToSqlDate(searchDTO.getToDate()));
+                .setParameter(TO_DATE, utilDateToSqlDate(searchDTO.getToDate()))
+                .setParameter(HOSPITAL_ID, hospitalId);
     }
 
-    private Double calculateTotalRefundAmount(AppointmentRefundSearchDTO searchDTO) {
+    private Double calculateTotalRefundAmount(AppointmentRefundSearchDTO searchDTO,
+                                              Long hospitalId) {
+
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TOTAL_REFUND_AMOUNT(searchDTO))
                 .setParameter(FROM_DATE, utilDateToSqlDate(searchDTO.getFromDate()))
-                .setParameter(TO_DATE, utilDateToSqlDate(searchDTO.getToDate()));
+                .setParameter(TO_DATE, utilDateToSqlDate(searchDTO.getToDate()))
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Double) query.getSingleResult();
     }

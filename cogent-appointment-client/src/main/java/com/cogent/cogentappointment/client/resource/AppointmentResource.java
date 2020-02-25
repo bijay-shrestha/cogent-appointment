@@ -1,9 +1,12 @@
 package com.cogent.cogentappointment.client.resource;
 
 import com.cogent.cogentappointment.client.dto.request.appointment.*;
+import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundSearchDTO;
 import com.cogent.cogentappointment.client.service.AppointmentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -87,5 +90,15 @@ public class AppointmentResource {
     public ResponseEntity<?> cancelRegistration(@PathVariable("appointmentReservationId") Long appointmentReservationId) {
         appointmentService.cancelRegistration(appointmentReservationId);
         return ok().build();
+    }
+
+    /*admin*/
+    @PutMapping(REFUND)
+    @ApiOperation(FETCH_REFUND_APPOINTMENTS)
+    public ResponseEntity<?> fetchRefundAppointments(@RequestBody AppointmentRefundSearchDTO searchDTO,
+                                                     @RequestParam("page") int page,
+                                                     @RequestParam("size") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ok().body(appointmentService.fetchRefundAppointments(searchDTO, pageable));
     }
 }

@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.service;
 
 import com.cogent.cogentappointment.client.dto.request.appointment.*;
+import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundSearchDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentCheckAvailabilityResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentMinResponseDTO;
@@ -8,6 +9,7 @@ import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentS
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueSearchDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundResponseDTO;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -37,5 +39,8 @@ public interface AppointmentService {
     List<AppointmentMinResponseDTO> fetchAppointmentHistory(AppointmentSearchDTO searchDTO);
 
     void cancelRegistration(Long appointmentReservationId);
+
+    AppointmentRefundResponseDTO fetchRefundAppointments(AppointmentRefundSearchDTO searchDTO,
+                                                         Pageable pageable);
 
 }

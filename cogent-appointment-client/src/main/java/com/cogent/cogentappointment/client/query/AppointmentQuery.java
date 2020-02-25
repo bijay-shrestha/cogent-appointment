@@ -227,7 +227,8 @@ public class AppointmentQuery {
 
     private static String GET_WHERE_CLAUSE_TO_FETCH_REFUND_APPOINTMENTS(AppointmentRefundSearchDTO searchDTO) {
         String whereClause = " WHERE ard.status = 'PA'" +
-                " AND a.appointmentDate BETWEEN :fromDate AND :toDate ";
+                " AND a.appointmentDate BETWEEN :fromDate AND :toDate " +
+                " AND h.id =:hospitalId";
 
         if (!ObjectUtils.isEmpty(searchDTO.getAppointmentNumber()))
             whereClause += " AND a.appointmentNumber LIKE '%" + searchDTO.getAppointmentNumber() + "%'";
@@ -240,9 +241,6 @@ public class AppointmentQuery {
 
         if (!Objects.isNull(searchDTO.getSpecializationId()))
             whereClause += " AND s.id=" + searchDTO.getSpecializationId();
-
-        if (!Objects.isNull(searchDTO.getHospitalId()))
-            whereClause += " AND h.id=" + searchDTO.getHospitalId();
 
         if (!ObjectUtils.isEmpty(searchDTO.getPatientType()))
             whereClause += " AND hp.isRegistered='" + searchDTO.getPatientType() + "'";

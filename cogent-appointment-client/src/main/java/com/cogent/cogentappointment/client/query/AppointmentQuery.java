@@ -273,6 +273,7 @@ public class AppointmentQuery {
                 " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
                 " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId.id = a.id" +
                 " LEFT JOIN PatientMetaInfo pm ON pm.patient.id = p.id" +
+                " LEFT JOIN HospitalPatientInfo hp ON hp.patientId = p.id" +
                 GET_WHERE_CLAUSE_TO_FETCH_REFUND_APPOINTMENTS(searchDTO);
     }
 

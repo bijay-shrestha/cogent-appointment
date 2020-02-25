@@ -27,6 +27,7 @@ import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstan
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.FILES;
 import static com.cogent.cogentappointment.admin.log.constants.FileLog.UPLOADING_FILE_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.admin.log.constants.FileLog.UPLOADING_FILE_PROCESS_STARTED;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
@@ -88,9 +89,9 @@ public class MinioServiceImpl implements MinioFileService {
 
         log.info(UPLOADING_FILE_PROCESS_STARTED);
 
-        String renamed = renameFile(file.getOriginalFilename());
+        String renamedFileName = renameFile(file.getOriginalFilename());
 
-        Path path = Paths.get(subDirectoryLocation + FORWARD_SLASH + renamed);
+        Path path = Paths.get(subDirectoryLocation + FORWARD_SLASH + renamedFileName);
         log.info("The designated path is :: {}", path);
         try {
             minioService.upload(path, file.getInputStream(), file.getContentType());
@@ -117,8 +118,7 @@ public class MinioServiceImpl implements MinioFileService {
 
 //        String fileName = FilenameUtils.getName(originalFilename);
         String fileExtension = FilenameUtils.getExtension(originalFilename);
-
-        return DateUtils.getTimeInMillisecondsFromLocalDate().toString().concat(".").concat(fileExtension);
+        return getTimeInMillisecondsFromLocalDate().toString().concat(".").concat(fileExtension);
     }
 
     @Override

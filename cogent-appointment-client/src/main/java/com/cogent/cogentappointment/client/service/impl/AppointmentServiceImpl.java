@@ -10,6 +10,7 @@ import com.cogent.cogentappointment.client.dto.request.appointment.cancel.Appoin
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.*;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
@@ -17,6 +18,7 @@ import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQ
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueSearchDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.approval.AppointmentPendingApprovalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
@@ -350,7 +352,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_RESCHEDULE_LOG);
 
         Map<String, List<AppointmentQueueDTO>> responseDTOS =
-                appointmentRepository.fetchTodayAppointmentQueueByTime(appointmentQueueRequestDTO, getLoggedInHospitalId(), pageable);
+                appointmentRepository.fetchTodayAppointmentQueueByTime(appointmentQueueRequestDTO,
+                        getLoggedInHospitalId(), pageable);
 
         log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_RESCHEDULE_LOG, getDifferenceBetweenTwoTime(startTime));
 
@@ -409,6 +412,23 @@ public class AppointmentServiceImpl implements AppointmentService {
         parseRefundRejectDetails(refundRejectDTO, refundAppointmentDetail);
 
         log.info(REJECT_PROCESS_COMPLETED, APPOINTMENT_REFUND, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    @Override
+    public List<AppointmentStatusResponseDTO> fetchAppointmentForAppointmentStatus(
+            AppointmentStatusRequestDTO requestDTO,
+            Long hospitalId) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, APPOINTMENT);
+
+        List<AppointmentStatusResponseDTO> responseDTOS =
+                appointmentRepository.fetchAppointmentForAppointmentStatus(requestDTO, hospitalId);
+
+        log.info(FETCHING_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
     }
 
     /*IF DOCTOR DAY OFF STATUS = 'Y', THEN THERE ARE NO AVAILABLE TIME SLOTS

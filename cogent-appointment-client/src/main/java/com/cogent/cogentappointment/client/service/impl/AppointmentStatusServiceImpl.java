@@ -1,17 +1,17 @@
-package com.cogent.cogentappointment.admin.service.impl;
+package com.cogent.cogentappointment.client.service.impl;
 
-import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.AppointmentStatusDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.AppointmentStatusResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.DoctorTimeSlotResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorDropdownDTO;
-import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
-import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.repository.DoctorDutyRosterOverrideRepository;
-import com.cogent.cogentappointment.admin.repository.DoctorDutyRosterRepository;
-import com.cogent.cogentappointment.admin.repository.DoctorRepository;
-import com.cogent.cogentappointment.admin.service.AppointmentService;
-import com.cogent.cogentappointment.admin.service.AppointmentStatusService;
+import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentStatus.DoctorTimeSlotResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.doctor.DoctorDropdownDTO;
+import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
+import com.cogent.cogentappointment.client.exception.NoContentFoundException;
+import com.cogent.cogentappointment.client.repository.DoctorDutyRosterOverrideRepository;
+import com.cogent.cogentappointment.client.repository.DoctorDutyRosterRepository;
+import com.cogent.cogentappointment.client.repository.DoctorRepository;
+import com.cogent.cogentappointment.client.service.AppointmentService;
+import com.cogent.cogentappointment.client.service.AppointmentStatusService;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRoster;
 import lombok.extern.slf4j.Slf4j;
@@ -23,17 +23,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.ALL;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.VACANT;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.NO;
-import static com.cogent.cogentappointment.admin.constants.StringConstant.COMMA_SEPARATED;
-import static com.cogent.cogentappointment.admin.constants.StringConstant.HYPHEN;
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
-import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.APPOINTMENT_STATUS;
-import static com.cogent.cogentappointment.admin.utils.AppointmentStatusUtils.*;
-import static com.cogent.cogentappointment.admin.utils.DoctorDutyRosterUtils.mergeOverrideAndActualDoctorDutyRoster;
-import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.ALL;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.VACANT;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.NO;
+import static com.cogent.cogentappointment.client.constants.StringConstant.COMMA_SEPARATED;
+import static com.cogent.cogentappointment.client.constants.StringConstant.HYPHEN;
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
+import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.APPOINTMENT_STATUS;
+import static com.cogent.cogentappointment.client.utils.AppointmentStatusUtils.*;
+import static com.cogent.cogentappointment.client.utils.DoctorDutyRosterUtils.mergeOverrideAndActualDoctorDutyRoster;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
+import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 
 /**
  * @author smriti ON 16/12/2019
@@ -61,24 +62,27 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
         this.appointmentService = appointmentService;
     }
 
+
     @Override
-    public AppointmentStatusDTO fetchAppointmentStatusResponseDTO
-            (AppointmentStatusRequestDTO requestDTO) {
+    public AppointmentStatusDTO fetchAppointmentStatusResponseDTO(
+            com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, APPOINTMENT_STATUS);
 
-        List<DoctorDutyRosterStatusResponseDTO> doctorDutyRosterStatus = fetchDoctorStatus(requestDTO);
+        Long hospitalId = getLoggedInHospitalId();
+
+        List<DoctorDutyRosterStatusResponseDTO> doctorDutyRosterStatus = fetchDoctorStatus(requestDTO, hospitalId);
 
         validateDoctorDutyRosterStatus(doctorDutyRosterStatus);
 
-        List<AppointmentStatusResponseDTO> appointments = fetchAppointmentStatus(requestDTO);
+        List<AppointmentStatusResponseDTO> appointments = fetchAppointmentStatus(requestDTO, hospitalId);
 
         setDoctorTimeSlot(requestDTO.getStatus(), doctorDutyRosterStatus, appointments);
 
         List<DoctorDropdownDTO> doctorInfo =
-                doctorRepository.fetchDoctorAvatarInfo(requestDTO.getHospitalId(), requestDTO.getDoctorId());
+                doctorRepository.fetchDoctorAvatarInfo(hospitalId, requestDTO.getDoctorId());
 
         AppointmentStatusDTO appointmentStatusDTO = parseToAppointmentStatusDTO(doctorDutyRosterStatus, doctorInfo);
 
@@ -106,20 +110,22 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
 
     /*FETCH DOCTOR DUTY ROSTER FROM DOCTOR_DUTY_ROSTER_OVERRIDE FIRST
       AND THEN DOCTOR_DUTY ROSTER. THEN MERGE BOTH ROSTERS BASED ON THE REQUESTED SEARCH DATE, DOCTOR AND SPECIALIZATION*/
-    private List<DoctorDutyRosterStatusResponseDTO> fetchDoctorStatus(AppointmentStatusRequestDTO requestDTO) {
+    private List<DoctorDutyRosterStatusResponseDTO> fetchDoctorStatus(AppointmentStatusRequestDTO requestDTO,
+                                                                      Long hospitalId) {
 
         List<DoctorDutyRosterStatusResponseDTO> doctorDutyRosterOverrideStatus =
-                doctorDutyRosterOverrideRepository.fetchDoctorDutyRosterOverrideStatus(requestDTO);
+                doctorDutyRosterOverrideRepository.fetchDoctorDutyRosterOverrideStatus(requestDTO, hospitalId);
 
         List<DoctorDutyRosterStatusResponseDTO> doctorDutyRosterStatus =
-                doctorDutyRosterRepository.fetchDoctorDutyRosterStatus(requestDTO);
+                doctorDutyRosterRepository.fetchDoctorDutyRosterStatus(requestDTO, hospitalId);
 
         return mergeOverrideAndActualDoctorDutyRoster(doctorDutyRosterOverrideStatus, doctorDutyRosterStatus);
     }
 
     /*FETCH APPOINTMENT DETAILS WITHIN SELECTED DATE RANGE*/
-    private List<AppointmentStatusResponseDTO> fetchAppointmentStatus(AppointmentStatusRequestDTO requestDTO) {
-        return appointmentService.fetchAppointmentForAppointmentStatus(requestDTO);
+    private List<AppointmentStatusResponseDTO> fetchAppointmentStatus(AppointmentStatusRequestDTO requestDTO,
+                                                                      Long hospitalId) {
+        return appointmentService.fetchAppointmentForAppointmentStatus(requestDTO, hospitalId);
     }
 
     /*IF DOCTOR DAY OFF STATUS= 'Y', THEN THERE ARE NO ANY TIME SLOTS
@@ -306,4 +312,6 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
         if (doctorDutyRosterStatus.isEmpty())
             throw new NoContentFoundException(DoctorDutyRoster.class);
     }
+
+
 }

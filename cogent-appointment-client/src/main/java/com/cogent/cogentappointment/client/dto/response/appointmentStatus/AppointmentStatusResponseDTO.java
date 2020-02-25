@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.dto.response.appointment.appointmentStatus;
+package com.cogent.cogentappointment.client.dto.response.appointmentStatus;
 
 import lombok.*;
 

@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.dto.request.appointment.appointmentStatus;
+package com.cogent.cogentappointment.client.dto.request.appointmentStatus;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -19,8 +19,6 @@ public class AppointmentStatusRequestDTO implements Serializable {
 
     @NotNull
     private Date toDate;
-
-    private Long hospitalId;
 
     private Long doctorId;
 

@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.client.repository.custom;
 
+import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.DoctorDutyRosterSearchRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.DoctorDutyRosterStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.DoctorExistingDutyRosterRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.*;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -33,10 +33,12 @@ public interface DoctorDutyRosterRepositoryCustom {
                                                               Long doctorId,
                                                               Long specializationId);
 
-    List<DoctorDutyRosterStatusResponseDTO> fetchDoctorDutyRosterStatus(DoctorDutyRosterStatusRequestDTO requestDTO);
-
     List<DoctorExistingDutyRosterResponseDTO> fetchExistingDoctorDutyRosters(
             DoctorExistingDutyRosterRequestDTO requestDTO, Long hospitalId);
 
     DoctorExistingDutyRosterDetailResponseDTO fetchExistingRosterDetails(Long doctorDutyRosterId);
+
+    List<DoctorDutyRosterStatusResponseDTO> fetchDoctorDutyRosterStatus
+            (AppointmentStatusRequestDTO requestDTO,
+             Long hospitalId);
 }

@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.dto.response.appointment.appointmentStatus;
+package com.cogent.cogentappointment.client.dto.response.appointmentStatus;
 
 import com.cogent.cogentappointment.client.dto.response.doctor.DoctorDropdownDTO;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;

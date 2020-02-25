@@ -305,4 +305,25 @@ public class DoctorQuery {
                     " FROM DoctorAppointmentCharge da " +
                     " WHERE da.doctorId.id = :doctorId" +
                     " AND da.doctorId.hospital.id = :hospitalId";
+
+    public static String QUERY_TO_FETCH_DOCTOR_AVATAR_INFO(Long doctorId) {
+        String sql = " SELECT" +
+                " d.id as value," +                                     //[0]
+                " CASE WHEN" +
+                " (da.status is null OR da.status = 'N')" +
+                " THEN null" +
+                " ELSE" +
+                " da.fileUri" +
+                " END as fileUri" +                                    //[1]
+                " FROM" +
+                " Doctor d" +
+                " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId" +
+                " WHERE d.status ='Y'" +
+                " AND d.hospital.id =:hospitalId";
+
+        if (!Objects.isNull(doctorId))
+            sql += " AND d.id =" + doctorId;
+
+        return sql;
+    }
 }

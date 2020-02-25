@@ -1,21 +1,25 @@
 package com.cogent.cogentappointment.client.query;
 
-import com.cogent.cogentappointment.client.dto.request.appointment.log.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentPendingApprovalSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.log.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import org.springframework.util.ObjectUtils;
 
 import java.util.Objects;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.VACANT;
 import static com.cogent.cogentappointment.client.query.PatientQuery.QUERY_TO_CALCULATE_PATIENT_AGE;
+import static com.cogent.cogentappointment.client.query.PatientQuery.QUERY_TO_CALCULATE_PATIENT_AGE_NATIVE;
 
 /**
  * @author smriti on 2019-10-22
  */
 public class AppointmentQuery {
 
+    /*eSewa*/
     public static String QUERY_TO_VALIDATE_APPOINTMENT_EXISTS =
             "SELECT COUNT(a.id)" +
                     " FROM  Appointment a" +
@@ -25,6 +29,7 @@ public class AppointmentQuery {
                     " AND DATE_FORMAT(a.appointmentTime,'%H:%i') =:appointmentTime" +
                     " AND a.status='PA'";
 
+    /*eSewa*/
     public static String QUERY_TO_FETCH_LATEST_APPOINTMENT_NUMBER =
             "SELECT a.appointment_number" +
                     " FROM appointment a" +
@@ -35,6 +40,7 @@ public class AppointmentQuery {
                     " AND h.id =:hospitalId" +
                     " ORDER BY a.id DESC LIMIT 1";
 
+    /*USED IN DOCTOR DUTY ROSTER*/
     public static String QUERY_TO_FETCH_BOOKED_APPOINTMENT =
             "SELECT DATE_FORMAT(a.appointmentTime, '%H:%i') as appointmentTime" +               //[0]
                     " FROM Appointment a" +
@@ -44,6 +50,7 @@ public class AppointmentQuery {
                     " AND a.specializationId.id = :specializationId" +
                     " AND a.status = 'PA'";
 
+    /*USED IN DOCTOR DUTY ROSTER*/
     public static final String QUERY_TO_FETCH_BOOKED_APPOINTMENT_DATES =
             "SELECT" +
                     " a.appointmentDate as appointmentDate" +
@@ -54,6 +61,7 @@ public class AppointmentQuery {
                     " AND a.doctorId.id = :doctorId" +
                     " AND a.specializationId.id = :specializationId";
 
+    /*USED IN DOCTOR DUTY ROSTER*/
     public static final String QUERY_TO_FETCH_BOOKED_APPOINTMENT_COUNT =
             "SELECT" +
                     " COUNT(a.appointmentDate) as appointmentDate" +
@@ -69,6 +77,7 @@ public class AppointmentQuery {
      * %i - minutes (e.g., 00,01,02,…12)
      * %p - AM/PM
      * */
+    /*eSewa*/
     private static final String QUERY_TO_FETCH_MIN_APPOINTMENT =
             " SELECT" +
                     " a.id as appointmentId," +                                             //[0]
@@ -87,12 +96,14 @@ public class AppointmentQuery {
                     " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id";
 
+    /*eSewa*/
     public static final String QUERY_TO_FETCH_PENDING_APPOINTMENTS =
             QUERY_TO_FETCH_MIN_APPOINTMENT +
                     " WHERE a.status = 'PA'" +
                     " AND a.appointmentDate BETWEEN :fromDate AND :toDate" +
                     " ORDER BY a.appointmentDate DESC";
 
+    /*eSewa*/
     public static final String QUERY_TO_FETCH_REFUND_AMOUNT =
             " SELECT" +
                     " (h.refundPercentage * atd.appointmentAmount)/100" +
@@ -101,6 +112,7 @@ public class AppointmentQuery {
                     " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +
                     " WHERE a.id =:id";
 
+    /*eSewa*/
     public static final String QUERY_TO_FETCH_APPOINTMENT_DETAILS_BY_ID =
             " SELECT" +
                     " a.appointmentDate as appointmentDate," +                              //[0]
@@ -124,12 +136,14 @@ public class AppointmentQuery {
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
                     " WHERE a.id =:id";
 
+    /*eSewa*/
     public static final String QUERY_TO_FETCH_APPOINTMENT_HISTORY =
             QUERY_TO_FETCH_MIN_APPOINTMENT +
                     " WHERE a.status = 'A'" +
                     " AND a.appointmentDate BETWEEN :fromDate AND :toDate" +
                     " ORDER BY a.appointmentDate DESC";
 
+    /*admin*/
     public static Function<AppointmentRescheduleLogSearchDTO, String> QUERY_TO_RESCHEDULE_APPOINTMENT_LOGS =
             (appointmentRescheduleLogSearchDTO) ->
                     " SELECT" +
@@ -159,7 +173,8 @@ public class AppointmentQuery {
                             " LEFT JOIN Doctor d ON d.id=a.doctorId.id" +
                             GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_RESCHEDULE_LOG_DETAILS(appointmentRescheduleLogSearchDTO);
 
-    private static String GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_RESCHEDULE_LOG_DETAILS(AppointmentRescheduleLogSearchDTO appointmentRescheduleLogSearchDTO) {
+    private static String GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_RESCHEDULE_LOG_DETAILS(
+            AppointmentRescheduleLogSearchDTO appointmentRescheduleLogSearchDTO) {
 
         String whereClause = " WHERE " +
                 " hpi.status='Y' " +
@@ -195,6 +210,7 @@ public class AppointmentQuery {
         return whereClause;
     }
 
+    /*admin*/
     public static String QUERY_TO_FETCH_REFUND_APPOINTMENTS(AppointmentRefundSearchDTO searchDTO) {
         return " SELECT" +
                 " a.id as appointmentId," +                                             //[0]
@@ -248,7 +264,7 @@ public class AppointmentQuery {
         return whereClause + " ORDER BY a.appointmentDate DESC";
     }
 
-
+    /*admin*/
     public static String QUERY_TO_FETCH_TOTAL_REFUND_AMOUNT(AppointmentRefundSearchDTO searchDTO) {
         return " SELECT SUM(ard.refundAmount)" +
                 " FROM Appointment a" +
@@ -262,6 +278,7 @@ public class AppointmentQuery {
                 GET_WHERE_CLAUSE_TO_FETCH_REFUND_APPOINTMENTS(searchDTO);
     }
 
+    /*admin*/
     public static Function<AppointmentPendingApprovalSearchDTO, String> QUERY_TO_FETCH_PENDING_APPROVALS =
             (searchRequestDTO) ->
                     "SELECT" +
@@ -327,6 +344,7 @@ public class AppointmentQuery {
         return whereClause;
     }
 
+    /*admin*/
     public static Function<AppointmentLogSearchDTO, String> QUERY_TO_FETCH_APPOINTMENT_LOGS =
             (appointmentLogSearchDTO) ->
                     "SELECT" +
@@ -401,5 +419,45 @@ public class AppointmentQuery {
 
         return whereClause;
     }
+
+    /*admin*/
+    public static String QUERY_TO_FETCH_APPOINTMENT_FOR_APPOINTMENT_STATUS(AppointmentStatusRequestDTO requestDTO) {
+
+        String SQL = " SELECT" +
+                " a.appointment_date as date," +                                                        //[0]
+                " GROUP_CONCAT(DATE_FORMAT(a.appointment_time, '%H:%i'), '-', a.status)" +
+                " as startTimeDetails," +                                                               //[1]
+                " d.id as doctorId," +                                                                  //[2]
+                " s.id as specializationId," +                                                          //[3]
+                " a.appointment_number as appointmentNumber," +                                         //[4]
+                " p.name as patientName," +                                                             //[5]
+                " p.gender as gender," +                                                                //[6]
+                " p.mobile_number as mobileNumber," +                                                   //[7]
+                QUERY_TO_CALCULATE_PATIENT_AGE_NATIVE +                                                 //[8]
+                " FROM appointment a" +
+                " LEFT JOIN doctor d ON d.id = a.doctor_id" +
+                " LEFT JOIN specialization s ON s.id = a.specialization_id" +
+                " LEFT JOIN hospital h ON h.id = a.hospital_id" +
+                " LEFT JOIN patient p ON p.id = a.patient_id" +
+                " WHERE" +
+                " a.appointment_date BETWEEN :fromDate AND :toDate" +
+                " AND a.status IN ('PA', 'A', 'C')" +
+                " AND h.id =:hospitalId";
+
+        if (!Objects.isNull(requestDTO.getDoctorId()))
+            SQL += " AND d.id =:doctorId";
+
+        if (!Objects.isNull(requestDTO.getSpecializationId()))
+            SQL += " AND s.id = :specializationId ";
+
+        if ((!ObjectUtils.isEmpty(requestDTO.getStatus())) && (!(requestDTO.getStatus().equals(VACANT))))
+            SQL += " AND a.status='" + requestDTO.getStatus() + "'";
+
+        SQL += " GROUP BY a.appointment_date, a.doctor_id, a.specialization_id, a.id" +
+                " ORDER BY appointment_date";
+
+        return SQL;
+    }
+
 
 }

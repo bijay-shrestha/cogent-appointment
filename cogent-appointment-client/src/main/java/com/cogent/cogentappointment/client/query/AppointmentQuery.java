@@ -73,7 +73,8 @@ public class AppointmentQuery {
                     " AND a.specializationId.id = :specializationId";
 
 
-    /*%H - hour (e.g., 00,01,02,…12)
+    /*%H - hour (e.g., 00,01,02,…12) IN 24 HOUR FORMAT
+    * %h - hour (e.g., 00,01,02,…12) IN 12 HOUR FORMAT
      * %i - minutes (e.g., 00,01,02,…12)
      * %p - AM/PM
      * */
@@ -82,7 +83,7 @@ public class AppointmentQuery {
             " SELECT" +
                     " a.id as appointmentId," +                                             //[0]
                     " a.appointmentDate as appointmentDate," +                              //[1]
-                    " DATE_FORMAT(a.appointmentTime,'%H:%i %p') as appointmentTime," +      //[2]
+                    " DATE_FORMAT(a.appointmentTime,'%h:%i %p') as appointmentTime," +      //[2]
                     " a.appointmentNumber as appointmentNumber," +                          //[3]
                     " p.name as patientName," +                                             //[4]
                     " d.name as doctorName," +                                              //[5]
@@ -116,7 +117,7 @@ public class AppointmentQuery {
     public static final String QUERY_TO_FETCH_APPOINTMENT_DETAILS_BY_ID =
             " SELECT" +
                     " a.appointmentDate as appointmentDate," +                              //[0]
-                    " DATE_FORMAT(a.appointmentTime,'%H:%i %p') as appointmentTime," +      //[1]
+                    " DATE_FORMAT(a.appointmentTime,'%h:%i %p') as appointmentTime," +      //[1]
                     " a.appointmentNumber as appointmentNumber," +                          //[2]
                     " d.name as doctorName," +                                              //[3]
                     " s.name as specializationName," +                                      //[4]
@@ -212,7 +213,7 @@ public class AppointmentQuery {
         return " SELECT" +
                 " a.id as appointmentId," +                                             //[0]
                 " a.appointmentDate as appointmentDate," +                              //[1]
-                " DATE_FORMAT(a.appointmentTime,'%H:%i %p') as appointmentTime," +      //[2]
+                " DATE_FORMAT(a.appointmentTime,'%h:%i %p') as appointmentTime," +      //[2]
                 " a.appointmentNumber as appointmentNumber," +                          //[3]
                 " h.name as hospitalName," +                                            //[4]
                 " p.name as patientName," +                                             //[5]
@@ -281,7 +282,7 @@ public class AppointmentQuery {
                     "SELECT" +
                             " a.appointmentDate as appointmentDate," +                                   //[0]
                             " a.appointmentNumber as appointmentNumber," +                               //[1]
-                            " DATE_FORMAT(a.appointmentTime, '%H:%i %p') as appointmentTime," +          //[2]
+                            " DATE_FORMAT(a.appointmentTime, '%h:%i %p') as appointmentTime," +          //[2]
                             " p.eSewaId as esewaId," +                                                   //[3]
                             " hpi.registrationNumber as registrationNumber," +                           //[4]
                             " p.name as patientName," +                                                  //[5]
@@ -347,7 +348,7 @@ public class AppointmentQuery {
                     "SELECT" +
                             " a.appointmentDate as appointmentDate," +                              //[0]
                             " a.appointmentNumber as appointmentNumber," +                          //[1]
-                            " DATE_FORMAT(a.appointmentTime, '%H:%i %p') as appointmentTime," +     //[2]
+                            " DATE_FORMAT(a.appointmentTime, '%h:%i %p') as appointmentTime," +     //[2]
                             " p.eSewaId as esewaId," +                                              //[3]
                             " hpi.registrationNumber as registrationNumber," +                      //[4]
                             " p.name as patientName," +                                             //[5]

@@ -6,12 +6,6 @@ package com.cogent.cogentappointment.client.log.constants;
 public class AppointmentLog {
     public final static String APPOINTMENT = "APPOINTMENT";
 
-    public final static String APPOINTMENT_REFUND = "REFUND REQUEST APPOINTMENT";
-
-    public final static String APPOINTMENT_LOG = "APPOINTMENT LOG";
-
-    public static String PENDING_APPOINTMENTS = "PENDING APPOINTMENTS";
-
     public static String CHECK_AVAILABILITY_PROCESS_STARTED = ":::: CHECKING APPOINTMENT AVAILABILITY PROCESS STARTED ::::";
     public static String CHECK_AVAILABILITY_PROCESS_COMPLETED = ":::: CHECKING APPOINTMENT AVAILABILITY PROCESS COMPLETED IN :::: {} ms";
 
@@ -21,17 +15,23 @@ public class AppointmentLog {
     public static String RESCHEDULE_PROCESS_STARTED = ":::: RESCHEDULE APPOINTMENT PROCESS STARTED ::::";
     public static String RESCHEDULE_PROCESS_COMPLETED = ":::: RESCHEDULE APPOINTMENT PROCESS COMPLETED IN :::: {} ms";
 
-    public final static String APPOINTMENT_RESCHEDULE_LOG = "APPOINTMENT RESCHEDULE LOG";
+    public static String APPROVE_PROCESS_STARTED = ":::: APPROVING {} STARTED ::::";
+    public static String APPROVE_PROCESS_COMPLETED = ":::: APPROVING {} COMPLETED IN {} ms ::::";
 
-    public final static String APPOINTMENT_STATUS = "APPOINTMENT STATUS";
+    public static String REJECT_PROCESS_STARTED = ":::: REJECTING {} STARTED ::::";
+    public static String REJECT_PROCESS_COMPLETED = ":::: REJECTING {} COMPLETED IN {} ms ::::";
 
-    public final static String APPOINTMENT_TODAY_QUEUE = "APPOINTMENT QUEUE FOR LOG";
+    public static String APPOINTMENT_REFUND = "REFUND REQUEST APPOINTMENT";
 
-    public final static String APPROVE_PROCESS_STARTED = ":::: APPROVING {} STARTED ::::";
-    public final static String APPROVE_PROCESS_COMPLETED = ":::: APPROVING {} COMPLETED IN {} ms ::::";
+    public static String APPOINTMENT_LOG = "APPOINTMENT LOG";
 
-    public final static String REJECT_PROCESS_STARTED = ":::: REJECTING {} STARTED ::::";
-    public final static String REJECT_PROCESS_COMPLETED = ":::: REJECTING {} COMPLETED IN {} ms ::::";
+    public static String PENDING_APPOINTMENTS = "PENDING APPOINTMENTS";
+
+    public static String APPOINTMENT_RESCHEDULE_LOG = "APPOINTMENT RESCHEDULE LOG";
+
+    public static String APPOINTMENT_STATUS = "APPOINTMENT STATUS";
+
+    public static String APPOINTMENT_TODAY_QUEUE = "APPOINTMENT QUEUE FOR LOG";
 
     public static String PENDING_APPROVAL_LIST = "PENDING APPROVALS";
 

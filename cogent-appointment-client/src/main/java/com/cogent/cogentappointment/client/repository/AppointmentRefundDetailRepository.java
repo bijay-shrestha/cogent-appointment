@@ -14,6 +14,8 @@ import java.util.Optional;
 @Repository
 public interface AppointmentRefundDetailRepository extends JpaRepository<AppointmentRefundDetail, Long> {
 
-    @Query("SELECT a FROM AppointmentRefundDetail a WHERE a.status='PA' AND a.appointmentId.id = :appointmentId")
-    Optional<AppointmentRefundDetail> findByAppointmentId(@Param("appointmentId") Long id);
+    @Query("SELECT a FROM AppointmentRefundDetail a WHERE a.status='PA' AND a.appointmentId.id = :appointmentId" +
+            " AND a.appointmentId.hospitalId.id=:hospitalId")
+    Optional<AppointmentRefundDetail> findByAppointmentIdAndHospitalId(@Param("appointmentId") Long id,
+                                                                       @Param("hospitalId") Long hospitalId);
 }

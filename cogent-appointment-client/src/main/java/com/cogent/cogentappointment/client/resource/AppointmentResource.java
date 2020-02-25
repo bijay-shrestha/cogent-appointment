@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.resource;
 
 import com.cogent.cogentappointment.client.dto.request.appointment.*;
+import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundSearchDTO;
 import com.cogent.cogentappointment.client.service.AppointmentService;
 import io.swagger.annotations.Api;
@@ -92,7 +93,6 @@ public class AppointmentResource {
         return ok().build();
     }
 
-    /*admin*/
     @PutMapping(REFUND)
     @ApiOperation(FETCH_REFUND_APPOINTMENTS)
     public ResponseEntity<?> fetchRefundAppointments(@RequestBody AppointmentRefundSearchDTO searchDTO,
@@ -101,4 +101,19 @@ public class AppointmentResource {
         Pageable pageable = PageRequest.of(page, size);
         return ok().body(appointmentService.fetchRefundAppointments(searchDTO, pageable));
     }
+
+    @GetMapping(REFUND + APPROVE + APPOINTMENT_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(APPROVE_REFUND_APPOINTMENT)
+    public ResponseEntity<?> approveRefundAppointment(@PathVariable("appointmentId") Long appointmentId) {
+        appointmentService.approveRefundAppointment(appointmentId);
+        return ok().build();
+    }
+
+    @PutMapping(REFUND + REJECT)
+    @ApiOperation(REJECT_REFUND_APPOINTMENT)
+    public ResponseEntity<?> rejectRefundAppointment(@Valid @RequestBody AppointmentRefundRejectDTO refundRejectDTO) {
+        appointmentService.rejectRefundAppointment(refundRejectDTO);
+        return ok().build();
+    }
+
 }

@@ -268,14 +268,12 @@ public class DoctorQuery {
                     " s.id as specializationId," +                                      //[3]
                     " s.name as specializationName," +                                  //[4]
                     " tbl1.qualificationAlias as qualificationAlias," +                 //[5]
-                    " d.nmc_number as nmcNumber," +                                     //[6]
-                    " dac.appointment_charge as appointmentCharge" +                    //[7]
+                    " d.nmc_number as nmcNumber" +                                     //[6]
                     " FROM" +
                     " doctor d" +
                     " LEFT JOIN doctor_avatar da ON d.id = da.doctor_id" +
                     " LEFT JOIN doctor_specialization ds ON d.id = ds.doctor_id" +
                     " LEFT JOIN specialization s ON s.id = ds.specialization_id" +
-                    " LEFT JOIN doctor_appointment_charge dac ON d.id = dac.doctor_id" +
                     " LEFT JOIN(" +
                     " SELECT" +
                     " GROUP_CONCAT(qa.name) as qualificationAlias," +
@@ -300,8 +298,14 @@ public class DoctorQuery {
                     " AND h.id =:hospitalId" +
                     " ORDER BY d.name";
 
-    public static String QUERY_TO_FETCH_DOCTOR_APPOINTMENT_CHARGE =
+    public static String QUERY_TO_FETCH_DOCTOR_APPOINTMENT_FOLLOW_UP_CHARGE =
             " SELECT da.appointmentFollowUpCharge" +
+                    " FROM DoctorAppointmentCharge da " +
+                    " WHERE da.doctorId.id = :doctorId" +
+                    " AND da.doctorId.hospital.id = :hospitalId";
+
+    public static String QUERY_TO_FETCH_DOCTOR_APPOINTMENT_CHARGE =
+            " SELECT da.appointmentCharge" +
                     " FROM DoctorAppointmentCharge da " +
                     " WHERE da.doctorId.id = :doctorId" +
                     " AND da.doctorId.hospital.id = :hospitalId";

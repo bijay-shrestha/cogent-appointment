@@ -16,7 +16,7 @@ public class AppointmentFollowUpResponseDTO implements Serializable {
 
     private Character isFreeFollowUp;
 
-    private Double followUpAppointmentCharge;
+    private Double appointmentCharge;
 
     private Long parentAppointmentId;
 

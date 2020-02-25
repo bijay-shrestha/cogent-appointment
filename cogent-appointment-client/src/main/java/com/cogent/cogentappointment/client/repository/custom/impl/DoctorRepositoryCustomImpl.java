@@ -149,11 +149,27 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
 
     @Override
     public Double fetchDoctorAppointmentFollowUpCharge(Long doctorId, Long hospitalId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_APPOINTMENT_CHARGE)
-                .setParameter(DOCTOR_ID, doctorId)
-                .setParameter(HOSPITAL_ID, hospitalId);
+        try {
+            Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_APPOINTMENT_FOLLOW_UP_CHARGE)
+                    .setParameter(DOCTOR_ID, doctorId)
+                    .setParameter(HOSPITAL_ID, hospitalId);
+            return (Double) query.getSingleResult();
+        } catch (NoResultException ex) {
+            throw DOCTOR_NOT_FOUND.get();
+        }
+    }
 
-        return (Double) query.getSingleResult();
+    @Override
+    public Double fetchDoctorAppointmentCharge(Long doctorId, Long hospitalId) {
+        try {
+            Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_APPOINTMENT_CHARGE)
+                    .setParameter(DOCTOR_ID, doctorId)
+                    .setParameter(HOSPITAL_ID, hospitalId);
+
+            return (Double) query.getSingleResult();
+        } catch (NoResultException ex) {
+            throw DOCTOR_NOT_FOUND.get();
+        }
     }
 
     @Override

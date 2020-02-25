@@ -37,5 +37,7 @@ public interface DoctorRepositoryCustom {
 
     Double fetchDoctorAppointmentFollowUpCharge(Long doctorId, Long hospitalId);
 
+    Double fetchDoctorAppointmentCharge(Long doctorId, Long hospitalId);
+
     List<DoctorDropdownDTO> fetchDoctorAvatarInfo(Long hospitalId, Long doctorId);
 }

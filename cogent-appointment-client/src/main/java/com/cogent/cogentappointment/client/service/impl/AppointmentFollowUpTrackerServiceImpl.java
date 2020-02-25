@@ -73,7 +73,10 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
         AppointmentFollowUpResponseDTO responseDTO;
 
         if (followUpDetails.isEmpty()) {
-            responseDTO = parseToAppointmentFollowUpResponseDTO(NO, null, null,
+            Double doctorAppointmentCharge = doctorRepository.fetchDoctorAppointmentCharge(
+                    requestDTO.getDoctorId(), requestDTO.getHospitalId());
+
+            responseDTO = parseToAppointmentFollowUpResponseDTO(NO, doctorAppointmentCharge, null,
                     savedAppointmentReservationId);
         } else {
             Object[] followUpObject = followUpDetails.get(0);
@@ -88,12 +91,17 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
             Date expiryDate = utilDateToSqlDate(addDays(appointmentDate, intervalDays));
 
             if (isAppointmentActive(requestedDate, expiryDate)) {
+
                 Double doctorFollowUpCharge = doctorRepository.fetchDoctorAppointmentFollowUpCharge(
                         requestDTO.getDoctorId(), requestDTO.getHospitalId());
+
                 responseDTO = parseToAppointmentFollowUpResponseDTO(YES, doctorFollowUpCharge, parentAppointmentId,
                         savedAppointmentReservationId);
             } else {
-                responseDTO = parseToAppointmentFollowUpResponseDTO(NO, null, null,
+                Double doctorAppointmentCharge = doctorRepository.fetchDoctorAppointmentCharge(
+                        requestDTO.getDoctorId(), requestDTO.getHospitalId());
+
+                responseDTO = parseToAppointmentFollowUpResponseDTO(NO, doctorAppointmentCharge, null,
                         savedAppointmentReservationId);
             }
         }

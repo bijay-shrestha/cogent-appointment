@@ -1,18 +1,19 @@
-package com.cogent.cogentappointment.client.dto.request.appointment.appointmentPendingApproval;
+package com.cogent.cogentappointment.client.dto.request.appointment.cancel;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-
 /**
- * @author smriti ON 12/02/2020
+ * @author smriti on 2019-10-22
  */
 @Getter
 @Setter
-public class AppointmentRejectDTO implements Serializable {
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class AppointmentCancelRequestDTO implements Serializable {
 
     @NotNull
     private Long appointmentId;

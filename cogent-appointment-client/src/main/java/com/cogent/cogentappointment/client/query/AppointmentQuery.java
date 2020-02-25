@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.client.query;
 
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentLogSearchDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.appointmentPendingApproval.AppointmentPendingApprovalSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.log.AppointmentLogSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import org.springframework.util.ObjectUtils;
@@ -265,24 +265,23 @@ public class AppointmentQuery {
     public static Function<AppointmentPendingApprovalSearchDTO, String> QUERY_TO_FETCH_PENDING_APPROVALS =
             (searchRequestDTO) ->
                     "SELECT" +
-                            " h.name as hospitalName," +                                    //[0]
-                            " a.appointmentDate as appointmentDate," +                      //[1]
-                            " a.appointmentNumber as appointmentNumber," +                  //[2]
-                            " DATE_FORMAT(a.appointmentTime, '%H:%i %p') as appointmentTime," +          //[3]
-                            " p.eSewaId as esewaId," +                                      //[4]
-                            " hpi.registrationNumber as registrationNumber," +                //[5]
-                            " p.name as patientName," +                                     //[6]
-                            " p.gender as patientGender," +                                 //[7]
-                            " p.dateOfBirth as patientDob," +                               //[8]
-                            " hpi.isRegistered as isRegistered," +                            //[9]
-                            " hpi.isSelf as isSelf," +                                        //[10]
-                            " p.mobileNumber as mobileNumber," +                            //[11]
-                            " sp.name as specializationName," +                             //[12]
-                            " atd.transactionNumber as transactionNumber," +                //[13]
-                            " atd.appointmentAmount as appointmentAmount," +                //[14]
-                            " d.name as doctorName," +                                       //[15]
-                            " ard.refundAmount as refundAmount," +                           //[16]
-                            " a.id as appointmentId" +                                        //[17]
+                            " a.appointmentDate as appointmentDate," +                                   //[0]
+                            " a.appointmentNumber as appointmentNumber," +                               //[1]
+                            " DATE_FORMAT(a.appointmentTime, '%H:%i %p') as appointmentTime," +          //[2]
+                            " p.eSewaId as esewaId," +                                                   //[3]
+                            " hpi.registrationNumber as registrationNumber," +                           //[4]
+                            " p.name as patientName," +                                                  //[5]
+                            " p.gender as patientGender," +                                              //[6]
+                            " p.dateOfBirth as patientDob," +                                            //[7]
+                            " hpi.isRegistered as isRegistered," +                                       //[8]
+                            " hpi.isSelf as isSelf," +                                                   //[9]
+                            " p.mobileNumber as mobileNumber," +                                        //[10]
+                            " sp.name as specializationName," +                                         //[11]
+                            " atd.transactionNumber as transactionNumber," +                            //[12]
+                            " atd.appointmentAmount as appointmentAmount," +                            //[13]
+                            " d.name as doctorName," +                                                  //[14]
+                            " ard.refundAmount as refundAmount," +                                      //[15]
+                            " a.id as appointmentId" +                                                 //[16]
                             " FROM Appointment a" +
                             " LEFT JOIN Patient p ON a.patientId=p.id" +
                             " LEFT JOIN HospitalPatientInfo hpi ON hpi.patientId =p.id" +
@@ -302,13 +301,11 @@ public class AppointmentQuery {
                 " hpi.status='Y' " +
                 " AND sp.status='Y' " +
                 " AND a.status='PA'" +
-                " AND a.appointmentDate BETWEEN :fromDate AND :toDate";
+                " AND a.appointmentDate BETWEEN :fromDate AND :toDate" +
+                " AND h.id =:hospitalId";
 
         if (!Objects.isNull(pendingApprovalSearchDTO.getAppointmentId()))
             whereClause += " AND a.id = " + pendingApprovalSearchDTO.getAppointmentId();
-
-        if (!Objects.isNull(pendingApprovalSearchDTO.getHospitalId()))
-            whereClause += " AND h.id = " + pendingApprovalSearchDTO.getHospitalId();
 
         if (!Objects.isNull(pendingApprovalSearchDTO.getPatientMetaInfoId()))
             whereClause += " AND pi.id = " + pendingApprovalSearchDTO.getPatientMetaInfoId();

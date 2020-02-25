@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.dto.response.appointment.appointmentLog;
+package com.cogent.cogentappointment.client.dto.request.appointment.log;
 
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import lombok.*;

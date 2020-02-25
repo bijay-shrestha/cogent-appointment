@@ -1,13 +1,21 @@
 package com.cogent.cogentappointment.client.service.impl;
 
-import com.cogent.cogentappointment.client.dto.request.appointment.*;
+import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentTransactionRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentPendingApprovalSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentRejectDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.cancel.AppointmentCancelRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.*;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueSearchDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.approval.AppointmentPendingApprovalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
@@ -71,6 +79,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentReservationLogRepository appointmentReservationLogRepository;
 
+    private final AppointmentFollowUpTrackerService appointmentFollowUpTrackerService;
+
     public AppointmentServiceImpl(PatientService patientService,
                                   DoctorService doctorService,
                                   SpecializationService specializationService,
@@ -82,7 +92,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   AppointmentRefundDetailRepository appointmentRefundDetailRepository,
                                   AppointmentRescheduleLogRepository appointmentRescheduleLogRepository,
                                   AppointmentFollowUpLogRepository appointmentFollowUpLogRepository,
-                                  AppointmentReservationLogRepository appointmentReservationLogRepository) {
+                                  AppointmentReservationLogRepository appointmentReservationLogRepository,
+                                  AppointmentFollowUpTrackerService appointmentFollowUpTrackerService) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -95,6 +106,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.appointmentRescheduleLogRepository = appointmentRescheduleLogRepository;
         this.appointmentFollowUpLogRepository = appointmentFollowUpLogRepository;
         this.appointmentReservationLogRepository = appointmentReservationLogRepository;
+        this.appointmentFollowUpTrackerService = appointmentFollowUpTrackerService;
     }
 
     @Override
@@ -263,6 +275,54 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointmentReservationLogRepository.delete(appointmentReservationLog);
 
         log.info(DELETING_PROCESS_COMPLETED, APPOINTMENT_RESERVATION_LOG, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    @Override
+    public AppointmentPendingApprovalResponseDTO searchPendingVisitApprovals(
+            AppointmentPendingApprovalSearchDTO searchRequestDTO, Pageable pageable) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SEARCHING_PROCESS_STARTED, PENDING_APPROVAL_LIST);
+
+        AppointmentPendingApprovalResponseDTO responseDTOS =
+                appointmentRepository.searchPendingVisitApprovals(searchRequestDTO, pageable, getLoggedInHospitalId());
+
+        log.info(SEARCHING_PROCESS_COMPLETED, PENDING_APPROVAL_LIST, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public void approveAppointment(Long appointmentId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(APPROVE_PROCESS_STARTED, APPOINTMENT);
+
+        Appointment appointment = appointmentRepository.fetchPendingAppointmentByIdAndHospitalId(
+                appointmentId, getLoggedInHospitalId())
+                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
+
+        appointment.setStatus(APPROVED);
+
+        saveAppointmentFollowUpTracker(appointment);
+
+        log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    @Override
+    public void rejectAppointment(AppointmentRejectDTO rejectDTO) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(REJECT_PROCESS_STARTED, APPOINTMENT);
+
+        Appointment appointment = appointmentRepository.fetchPendingAppointmentByIdAndHospitalId(
+                rejectDTO.getAppointmentId(), getLoggedInHospitalId())
+                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(rejectDTO.getAppointmentId()));
+
+        parseAppointmentRejectDetails(rejectDTO, appointment);
+
+        log.info(REJECT_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
@@ -486,6 +546,32 @@ public class AppointmentServiceImpl implements AppointmentService {
         );
     }
 
+    private void saveAppointmentFollowUpTracker(Appointment appointment) {
+
+        if (appointment.getIsFreeFollowUp().equals(YES)) {
+            AppointmentFollowUpLog appointmentFollowUpLog =
+                    appointmentFollowUpLogRepository.findByFollowUpAppointmentId(appointment.getId())
+                            .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointment.getId()));
+
+            appointmentFollowUpTrackerService.updateFollowUpTracker(appointmentFollowUpLog.getParentAppointmentId());
+
+        } else {
+            appointmentFollowUpTrackerService.save(
+                    appointment.getId(),
+                    appointment.getAppointmentNumber(),
+                    appointment.getHospitalId(),
+                    appointment.getDoctorId(),
+                    appointment.getSpecializationId(),
+                    appointment.getPatientId()
+            );
+
+            registerPatient(appointment.getPatientId().getId());
+        }
+    }
+
+    private void registerPatient(Long patientId) {
+        patientService.registerPatient(patientId);
+    }
 
 }
 

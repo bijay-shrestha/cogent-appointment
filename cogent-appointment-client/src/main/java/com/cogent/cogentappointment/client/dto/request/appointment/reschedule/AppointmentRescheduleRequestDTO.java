@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.dto.request.appointment;
+package com.cogent.cogentappointment.client.dto.request.appointment.reschedule;
 
 import lombok.Getter;
 import lombok.Setter;

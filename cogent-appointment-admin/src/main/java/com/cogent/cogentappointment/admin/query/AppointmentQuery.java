@@ -393,7 +393,7 @@ public class AppointmentQuery {
     public static Function<AppointmentQueueRequestDTO, String> QUERY_TO_FETCH_TODAY_APPOINTMENT_QUEUE =
             (appointmentqueueSearchDTO) ->
                     "SELECT" +
-                            " a.appointmentTime as appointmentTime," +
+                            " DATE_FORMAT(a.appointmentTime,'%h:%i %p') as appointmentTime," +
                             " d.name as doctorName," +
                             " p.name as patientName," +
                             " p.mobileNumber as patientMobileNumber," +
@@ -415,12 +415,12 @@ public class AppointmentQuery {
                 " AND DATE(a.appointmentDate) = CURDATE()";
 
         if (!Objects.isNull(appointmentQueueRequestDTO.getDoctorId()))
-            whereClause += " AND d.id = '" + appointmentQueueRequestDTO.getDoctorId() + "'";
+            whereClause += " AND d.id = " + appointmentQueueRequestDTO.getDoctorId();
 
         if (!Objects.isNull(appointmentQueueRequestDTO.getHospitalId()))
             whereClause += " AND h.id = " + appointmentQueueRequestDTO.getHospitalId();
 
-        whereClause += " ORDER BY a.appointmentTime DESC";
+        whereClause += " ORDER BY a.appointmentTime ASC";
 
         return whereClause;
     }

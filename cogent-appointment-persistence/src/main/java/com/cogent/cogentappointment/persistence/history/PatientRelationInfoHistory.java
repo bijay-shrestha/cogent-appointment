@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.persistence.history;
 
 import com.cogent.cogentappointment.persistence.config.Action;
-import com.cogent.cogentappointment.persistence.model.Patient;
+import com.cogent.cogentappointment.persistence.model.PatientRelationInfo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,27 +17,27 @@ import static javax.persistence.EnumType.STRING;
 import static javax.persistence.TemporalType.TIMESTAMP;
 
 /**
- * @author Sauravi Thapa २०/२/५
+ * @author smriti on 26/02/20
  */
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "patient_history")
-public class PatientHistory implements Serializable {
+@Table(name = "patient_relation_info_history")
+public class PatientRelationInfoHistory implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "patient_id", foreignKey = @ForeignKey(name = "FK_patient_history_patient"))
-    private Patient patient;
+    @JoinColumn(name = "patient_id", foreignKey = @ForeignKey(name = "FK_prf_history_patient_relation_info"))
+    private PatientRelationInfo patientRelationInfo;
 
-    @Column(name = "patient_content")
+    @Column(name = "patient_relation_info_content")
     @Lob
-    private String patientContent;
+    private String patientRelationInfoContent;
 
     @CreatedBy
     private String modifiedBy;
@@ -49,9 +49,9 @@ public class PatientHistory implements Serializable {
     @Enumerated(STRING)
     private Action action;
 
-    public PatientHistory(Patient patient, Action action) {
-        this.patient = patient;
-        this.patientContent = patient.toString();
+    public PatientRelationInfoHistory(PatientRelationInfo patientRelationInfo, Action action) {
+        this.patientRelationInfo = patientRelationInfo;
+        this.patientRelationInfoContent = patientRelationInfo.toString();
         this.action = action;
     }
 }

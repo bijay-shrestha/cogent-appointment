@@ -162,8 +162,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment appointment = parseToAppointment(
                 appointmentRequestDTO, appointmentNumber,
                 patient,
-                fetchSpecialization(appointmentRequestDTO.getSpecializationId()),
-                fetchDoctor(appointmentRequestDTO.getDoctorId()),
+                fetchSpecialization(appointmentRequestDTO.getSpecializationId(), appointmentRequestDTO.getHospitalId()),
+                fetchDoctor(appointmentRequestDTO.getDoctorId(), appointmentRequestDTO.getHospitalId()),
                 fetchHospital(appointmentRequestDTO.getHospitalId())
         );
 
@@ -529,12 +529,12 @@ public class AppointmentServiceImpl implements AppointmentService {
                     convert24HourTo12HourFormat(appointmentTime)));
     }
 
-    private Doctor fetchDoctor(Long doctorId) {
-        return doctorService.fetchActiveDoctorById(doctorId);
+    private Doctor fetchDoctor(Long doctorId, Long hospitalId) {
+        return doctorService.fetchActiveDoctorByIdAndHospitalId(doctorId, hospitalId);
     }
 
-    private Specialization fetchSpecialization(Long specializationId) {
-        return specializationService.fetchActiveSpecializationById(specializationId);
+    private Specialization fetchSpecialization(Long specializationId, Long hospitalId) {
+        return specializationService.fetchActiveSpecializationByIdAndHospitalId(specializationId, hospitalId);
     }
 
     private Patient fetchPatient(Boolean isNewRegistration,

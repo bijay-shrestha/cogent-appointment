@@ -27,7 +27,7 @@ import static com.cogent.cogentappointment.client.utils.DepartmentUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static com.cogent.cogentappointment.client.utils.commons.NameAndCodeValidationUtils.validateDuplicity;
-import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getHospitalId;
+import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 
 /**
  * @author smriti ON 25/01/2020
@@ -54,9 +54,9 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         log.info(SAVING_PROCESS_STARTED, DEPARTMENT);
 
-        Long hospitalId=getHospitalId();
+        Long hospitalId = getLoggedInHospitalId();
 
-        List<Object[]> departments = departmentRepository.validateDuplicity(requestDTO,hospitalId);
+        List<Object[]> departments = departmentRepository.validateDuplicity(requestDTO, hospitalId);
 
         validateDuplicity(departments, requestDTO.getName(), requestDTO.getDepartmentCode(),
                 Department.class.getSimpleName());
@@ -75,11 +75,11 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         log.info(UPDATING_PROCESS_STARTED, DEPARTMENT);
 
-        Long hospitalId=getHospitalId();
+        Long hospitalId = getLoggedInHospitalId();
 
-        Department department = fetchDepartmentById(updateRequestDTO.getId(),hospitalId);
+        Department department = fetchDepartmentByIdAndHospitalId(updateRequestDTO.getId(), hospitalId);
 
-        List<Object[]> departments = departmentRepository.validateDuplicity(updateRequestDTO,hospitalId);
+        List<Object[]> departments = departmentRepository.validateDuplicity(updateRequestDTO, hospitalId);
 
         validateDuplicity(departments, updateRequestDTO.getName(), updateRequestDTO.getDepartmentCode(),
                 Department.class.getSimpleName());
@@ -96,9 +96,9 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         log.info(DELETING_PROCESS_STARTED, DEPARTMENT);
 
-        Long hospitalId=getHospitalId();
+        Long hospitalId = getLoggedInHospitalId();
 
-        Department department = fetchDepartmentById(deleteRequestDTO.getId(),hospitalId);
+        Department department = fetchDepartmentByIdAndHospitalId(deleteRequestDTO.getId(), hospitalId);
 
         parseDepartmentStatus(deleteRequestDTO.getStatus(), deleteRequestDTO.getRemarks(), department);
 
@@ -113,10 +113,10 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         log.info(SEARCHING_PROCESS_STARTED, DEPARTMENT);
 
-        Long hospitalId=getHospitalId();
+        Long hospitalId = getLoggedInHospitalId();
 
-        List<DepartmentMinimalResponseDTO> responseDTO = departmentRepository.search
-                (searchRequestDTO,hospitalId, pageable);
+        List<DepartmentMinimalResponseDTO> responseDTO =
+                departmentRepository.search(searchRequestDTO, hospitalId, pageable);
 
         log.info(SEARCHING_PROCESS_COMPLETED, DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
 
@@ -130,10 +130,10 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         log.info(FETCHING_DETAIL_PROCESS_STARTED, DEPARTMENT);
 
-        Long hospitalId=getHospitalId();
+        Long hospitalId = getLoggedInHospitalId();
 
-        DepartmentResponseDTO departmentResponseDTO = departmentRepository
-                .fetchDetails(id,hospitalId);
+        DepartmentResponseDTO departmentResponseDTO =
+                departmentRepository.fetchDetails(id, hospitalId);
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
 
@@ -141,45 +141,45 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchDepartmentForDropdown() {
+    public List<DropDownResponseDTO> fetchMinDepartment() {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DEPARTMENT);
 
-        Long hospitalId=getHospitalId();
+        Long hospitalId = getLoggedInHospitalId();
 
-        List<DropDownResponseDTO> departmentDropDownDTOS = departmentRepository.fetchDepartmentForDropdown(hospitalId)
+        List<DropDownResponseDTO> minDepartment = departmentRepository.fetchMinDepartment(hospitalId)
                 .orElseThrow(() -> DEPARTMENT_NOT_FOUND.get());
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
 
-        return departmentDropDownDTOS;
+        return minDepartment;
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchActiveDropDownList() {
+    public List<DropDownResponseDTO> fetchActiveMinDepartment() {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DEPARTMENT);
 
-        Long hospitalId=getHospitalId();
+        Long hospitalId = getLoggedInHospitalId();
 
-        List<DropDownResponseDTO> departmentDropDownDTOS = departmentRepository.fetchActiveDropDownList(hospitalId)
+        List<DropDownResponseDTO> minDepartment = departmentRepository.fetchActiveMinDepartment(hospitalId)
                 .orElseThrow(() -> DEPARTMENT_NOT_FOUND.get());
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
 
-        return departmentDropDownDTOS;
+        return minDepartment;
     }
 
     private Hospital fetchHospital(Long hospitalId) {
         return hospitalService.fetchActiveHospital(hospitalId);
     }
 
-    public Department fetchDepartmentById(Long id,Long hospitalId) {
-        return departmentRepository.findDepartmentById(id,hospitalId).orElseThrow(() ->
+    private Department fetchDepartmentByIdAndHospitalId(Long id, Long hospitalId) {
+        return departmentRepository.findByIdAndHospitalId(id, hospitalId).orElseThrow(() ->
                 new NoContentFoundException(Department.class, "id", id.toString()));
     }
 

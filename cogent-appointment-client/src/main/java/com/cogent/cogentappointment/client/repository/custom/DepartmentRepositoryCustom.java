@@ -28,10 +28,10 @@ public interface DepartmentRepositoryCustom {
                                               Long hospitalId,
                                               Pageable pageable);
 
-    DepartmentResponseDTO fetchDetails(Long id,Long hospitalId);
+    DepartmentResponseDTO fetchDetails(Long id, Long hospitalId);
 
-    Optional<List<DropDownResponseDTO>> fetchDepartmentForDropdown(Long hospitalId);
+    Optional<List<DropDownResponseDTO>> fetchMinDepartment(Long hospitalId);
 
-    Optional<List<DropDownResponseDTO>> fetchActiveDropDownList(Long hospitalId);
+    Optional<List<DropDownResponseDTO>> fetchActiveMinDepartment(Long hospitalId);
 
 }

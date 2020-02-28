@@ -22,3 +22,9 @@ spring:
 
   jackson:
     deserialization.fail-on-unknown-properties: false
+
+  minio:
+    url: http://localhost:9000
+    bucket: cogent
+    access-key: minioadmin
+    secret-key: minioadmin

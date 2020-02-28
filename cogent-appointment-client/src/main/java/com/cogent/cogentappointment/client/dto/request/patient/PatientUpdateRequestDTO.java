@@ -54,7 +54,4 @@ public class PatientUpdateRequestDTO implements Serializable {
     @NotNull
     @NotEmpty
     private String remarks;
-
-    @NotNull
-    private Long hospitalId;
 }

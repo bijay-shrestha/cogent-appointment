@@ -77,7 +77,8 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
 
         setDoctorTimeSlot(requestDTO.getStatus(), doctorDutyRosterStatus, appointments);
 
-        List<DoctorDropdownDTO> doctorInfo = doctorRepository.fetchDoctorForDropdown();
+        List<DoctorDropdownDTO> doctorInfo =
+                doctorRepository.fetchDoctorAvatarInfo(requestDTO.getHospitalId(), requestDTO.getDoctorId());
 
         AppointmentStatusDTO appointmentStatusDTO = parseToAppointmentStatusDTO(doctorDutyRosterStatus, doctorInfo);
 

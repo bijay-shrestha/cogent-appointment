@@ -35,7 +35,6 @@ public class WebResourceKeyConstants {
         String STATUS = "/status";
         String LOG = "/log";
         String RESCHEDULE_LOG = "/reschedule-log";
-        String DETAILS = "/detail";
     }
 
     //B
@@ -170,7 +169,9 @@ public class WebResourceKeyConstants {
     //T
 
     //U
-    public static final String USERNAME_VARIABLE_BASE = "/{username}";
+    public interface UniversityConstants {
+        String BASE_UNIVERSITY = "/university";
+    }
 
 
     //V

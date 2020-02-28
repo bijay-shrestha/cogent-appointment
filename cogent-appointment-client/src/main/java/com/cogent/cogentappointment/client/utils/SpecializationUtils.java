@@ -3,7 +3,6 @@ package com.cogent.cogentappointment.client.utils;
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.specialization.SpecializationRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.specialization.SpecializationUpdateRequestDTO;
-import com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils;
 import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.Specialization;
 
@@ -23,20 +22,18 @@ public class SpecializationUtils {
         return specialization;
     }
 
-    public static Specialization parseToUpdatedSpecialization(SpecializationUpdateRequestDTO updateRequestDTO,
-                                                              Specialization specialization) {
+    public static void parseToUpdatedSpecialization(SpecializationUpdateRequestDTO updateRequestDTO,
+                                                    Specialization specialization) {
 
         specialization.setName(toUpperCase(updateRequestDTO.getName()));
         specialization.setStatus(updateRequestDTO.getStatus());
         specialization.setRemarks(updateRequestDTO.getRemarks());
-        return specialization;
     }
 
-    public static Specialization parseToDeletedSpecialization(Specialization specialization,
-                                                              DeleteRequestDTO deleteRequestDTO) {
+    public static void parseToDeletedSpecialization(Specialization specialization,
+                                                    DeleteRequestDTO deleteRequestDTO) {
 
         specialization.setStatus(deleteRequestDTO.getStatus());
         specialization.setRemarks(deleteRequestDTO.getRemarks());
-        return specialization;
     }
 }

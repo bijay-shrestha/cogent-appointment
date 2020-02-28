@@ -9,7 +9,6 @@ import com.cogent.cogentappointment.client.dto.response.doctor.DoctorQualificati
 import com.cogent.cogentappointment.client.dto.response.doctor.DoctorSpecializationResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.doctor.DoctorUpdateResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.files.FileUploadResponseDTO;
-import com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
 
@@ -21,6 +20,7 @@ import java.util.stream.IntStream;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.client.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils.formatDoubleTo2DecimalPlaces;
+import static com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils.generateRandomNumber;
 import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toUpperCase;
 
 /**
@@ -33,7 +33,7 @@ public class DoctorUtils {
                                           Hospital hospital) {
         Doctor doctor = new Doctor();
         doctor.setName(toUpperCase(requestDTO.getName()));
-        doctor.setCode(NumberFormatterUtils.generateRandomNumber(3));
+        doctor.setCode(generateRandomNumber(3));
         doctor.setMobileNumber(requestDTO.getMobileNumber());
         doctor.setEmail(requestDTO.getEmail());
         doctor.setNmcNumber(requestDTO.getNmcNumber());
@@ -160,11 +160,9 @@ public class DoctorUtils {
         final int NMC_NUMBER_INDEX = 6;
         final int REMARKS_INDEX = 7;
         final int GENDER_INDEX = 8;
-        final int HOSPITAL_NAME_INDEX = 9;
-        final int APPOINTMENT_CHARGE_INDEX = 10;
-        final int APPOINTMENT_FOLLOW_UP_CHARGE = 11;
-        final int HOSPITAL_ID_INDEX = 12;
-        final int FILE_URI_INDEX = 19;
+        final int APPOINTMENT_CHARGE_INDEX = 9;
+        final int APPOINTMENT_FOLLOW_UP_CHARGE = 10;
+        final int FILE_URI_INDEX = 17;
 
         return DoctorUpdateResponseDTO.builder()
                 .doctorId(Long.parseLong(results[DOCTOR_ID_INDEX].toString()))
@@ -176,8 +174,6 @@ public class DoctorUtils {
                 .nmcNumber(results[NMC_NUMBER_INDEX].toString())
                 .remarks(Objects.isNull(results[REMARKS_INDEX]) ? null : results[REMARKS_INDEX].toString())
                 .gender(results[GENDER_INDEX].toString())
-                .hospitalId(results[HOSPITAL_ID_INDEX].toString())
-                .hospitalName(results[HOSPITAL_NAME_INDEX].toString())
                 .appointmentCharge(Double.parseDouble(results[APPOINTMENT_CHARGE_INDEX].toString()))
                 .appointmentFollowUpCharge((results[APPOINTMENT_FOLLOW_UP_CHARGE] != null) ?
                         Double.parseDouble(results[APPOINTMENT_FOLLOW_UP_CHARGE].toString()) : null)
@@ -189,9 +185,9 @@ public class DoctorUtils {
     }
 
     private static List<DoctorSpecializationResponseDTO> parseToDoctorSpecialization(Object[] results) {
-        final int DOCTOR_SPECIALIZATION_ID_INDEX = 13;
-        final int SPECIALIZATION_ID_INDEX = 14;
-        final int SPECIALIZATION_NAME_INDEX = 15;
+        final int DOCTOR_SPECIALIZATION_ID_INDEX = 11;
+        final int SPECIALIZATION_ID_INDEX = 12;
+        final int SPECIALIZATION_NAME_INDEX = 13;
 
         String[] doctorSpecializationIds = results[DOCTOR_SPECIALIZATION_ID_INDEX].toString().split(COMMA_SEPARATED);
         String[] specializationIds = results[SPECIALIZATION_ID_INDEX].toString().split(COMMA_SEPARATED);
@@ -208,9 +204,9 @@ public class DoctorUtils {
 
     private static List<DoctorQualificationResponseDTO> parseToDoctorQualification(Object[] results) {
 
-        final int DOCTOR_QUALIFICATION_ID_INDEX = 16;
-        final int QUALIFICATION_ID_INDEX = 17;
-        final int QUALIFICATION_NAME_INDEX = 18;
+        final int DOCTOR_QUALIFICATION_ID_INDEX = 14;
+        final int QUALIFICATION_ID_INDEX = 15;
+        final int QUALIFICATION_NAME_INDEX = 16;
 
         String[] doctorQualificationIds = results[DOCTOR_QUALIFICATION_ID_INDEX].toString().split(COMMA_SEPARATED);
         String[] qualificationIds = results[QUALIFICATION_ID_INDEX].toString().split(COMMA_SEPARATED);

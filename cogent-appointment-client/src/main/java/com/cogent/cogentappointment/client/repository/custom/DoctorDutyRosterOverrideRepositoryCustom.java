@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.client.repository.custom;
 
+import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.DoctorDutyRosterOverrideUpdateRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.DoctorDutyRosterStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRosterOverride;
@@ -24,9 +24,10 @@ public interface DoctorDutyRosterOverrideRepositoryCustom {
                                                                       Long doctorId,
                                                                       Long specializationId);
 
-    List<DoctorDutyRosterStatusResponseDTO> fetchDoctorDutyRosterOverrideStatus
-            (DoctorDutyRosterStatusRequestDTO requestDTO);
-
     List<DoctorDutyRosterOverride> fetchDoctorDutyRosterOverrides(
             List<DoctorDutyRosterOverrideUpdateRequestDTO> updateRequestDTOS);
+
+    List<DoctorDutyRosterStatusResponseDTO> fetchDoctorDutyRosterOverrideStatus
+            (AppointmentStatusRequestDTO requestDTO, Long hospitalId);
+
 }

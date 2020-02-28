@@ -77,7 +77,7 @@ public class AppointmentQuery {
         return " SELECT" +
                 " a.id as appointmentId," +                                             //[0]
                 " a.appointmentDate as appointmentDate," +                              //[1]
-                " DATE_FORMAT(a.appointmentTime,'%H:%i %p') as appointmentTime," +      //[2]
+                " DATE_FORMAT(a.appointmentTime,'%h:%i %p') as appointmentTime," +      //[2]
                 " a.appointmentNumber as appointmentNumber," +                          //[3]
                 " h.name as hospitalName," +                                            //[4]
                 " p.name as patientName," +                                             //[5]
@@ -138,6 +138,7 @@ public class AppointmentQuery {
                 " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
                 " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId.id = a.id" +
                 " LEFT JOIN PatientMetaInfo pm ON pm.patient.id = p.id" +
+                " LEFT JOIN HospitalPatientInfo hp ON hp.patientId = p.id" +
                 GET_WHERE_CLAUSE_TO_FETCH_REFUND_APPOINTMENTS(searchDTO);
     }
 
@@ -187,7 +188,7 @@ public class AppointmentQuery {
                             " h.name as hospitalName," +                                    //[0]
                             " a.appointmentDate as appointmentDate," +                      //[1]
                             " a.appointmentNumber as appointmentNumber," +                  //[2]
-                            " DATE_FORMAT(a.appointmentTime, '%H:%i %p') as appointmentTime," +          //[3]
+                            " DATE_FORMAT(a.appointmentTime, '%h:%i %p') as appointmentTime," +          //[3]
                             " p.eSewaId as esewaId," +                                      //[4]
                             " hpi.registrationNumber as registrationNumber," +                //[5]
                             " p.name as patientName," +                                     //[6]
@@ -255,7 +256,7 @@ public class AppointmentQuery {
                             " h.name as hospitalName," +                                    //[0]
                             " a.appointmentDate as appointmentDate," +                      //[1]
                             " a.appointmentNumber as appointmentNumber," +                  //[2]
-                            " DATE_FORMAT(a.appointmentTime, '%H:%i %p') as appointmentTime," +          //[3]
+                            " DATE_FORMAT(a.appointmentTime, '%h:%i %p') as appointmentTime," +          //[3]
                             " p.eSewaId as esewaId," +                                      //[4]
                             " hpi.registrationNumber as registrationNumber," +                //[5]
                             " p.name as patientName," +                                     //[6]
@@ -391,21 +392,27 @@ public class AppointmentQuery {
     }
 
     public static Function<AppointmentQueueRequestDTO, String> QUERY_TO_FETCH_TODAY_APPOINTMENT_QUEUE =
-            (appointmentqueueSearchDTO) ->
+            (appointmentQueueSearchDTO) ->
                     "SELECT" +
-                            " a.appointmentTime as appointmentTime," +
+                            " DATE_FORMAT(a.appointmentTime,'%h:%i %p') as appointmentTime," +
                             " d.name as doctorName," +
                             " p.name as patientName," +
                             " p.mobileNumber as patientMobileNumber," +
                             " s.name as specializationName," +
-                            " dv.fileUri as doctorAvatar" +
+                            " CASE WHEN" +
+                            " (dv.status is null OR dv.status = 'N')" +
+                            " THEN null" +
+                            " ELSE" +
+                            " dv.fileUri" +
+                            " END as doctorAvatar" +
                             " FROM Appointment a" +
-                            " LEFT JOIN Patient p ON p.id=a.patientId.id" +
-                            " LEFT JOIN Doctor d ON d.id=a.doctorId.id" +
-                            " LEFT JOIN DoctorSpecialization ds ON ds.doctorId.id=d.id" +
-                            " LEFT JOIN DoctorAvatar dv ON dv.doctorId.id=d.id" +
-                            " LEFT JOIN Specialization s ON s.id=ds.specializationId.id" +
-                            " LEFT JOIN Hospital h ON h.id=a.hospitalId.id" + GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_QUEUE(appointmentqueueSearchDTO);
+                            " LEFT JOIN Patient p ON p.id = a.patientId.id" +
+                            " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
+                            " LEFT JOIN DoctorSpecialization ds ON ds.doctorId.id = d.id" +
+                            " LEFT JOIN DoctorAvatar dv ON dv.doctorId.id = d.id" +
+                            " LEFT JOIN Specialization s ON s.id = ds.specializationId.id" +
+                            " LEFT JOIN Hospital h ON h.id = a.hospitalId.id"
+                            + GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_QUEUE(appointmentQueueSearchDTO);
 
     private static String GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_QUEUE(AppointmentQueueRequestDTO appointmentQueueRequestDTO) {
 
@@ -415,12 +422,12 @@ public class AppointmentQuery {
                 " AND DATE(a.appointmentDate) = CURDATE()";
 
         if (!Objects.isNull(appointmentQueueRequestDTO.getDoctorId()))
-            whereClause += " AND d.id = '" + appointmentQueueRequestDTO.getDoctorId() + "'";
+            whereClause += " AND d.id = " + appointmentQueueRequestDTO.getDoctorId();
 
         if (!Objects.isNull(appointmentQueueRequestDTO.getHospitalId()))
             whereClause += " AND h.id = " + appointmentQueueRequestDTO.getHospitalId();
 
-        whereClause += " ORDER BY a.appointmentTime DESC";
+        whereClause += " ORDER BY a.appointmentTime ASC";
 
         return whereClause;
     }

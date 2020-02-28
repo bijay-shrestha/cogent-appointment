@@ -1,19 +1,15 @@
 package com.cogent.cogentappointment.client.utils;
 
-import com.cogent.cogentappointment.client.constants.StatusConstants;
-import com.cogent.cogentappointment.client.constants.StringConstant;
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.admin.*;
 import com.cogent.cogentappointment.client.dto.request.email.EmailRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.files.FileUploadResponseDTO;
-import com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.Admin;
 import com.cogent.cogentappointment.persistence.model.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +18,10 @@ import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.client.constants.EmailConstants.*;
 import static com.cogent.cogentappointment.client.constants.EmailTemplates.*;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.ACTIVE;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
+import static com.cogent.cogentappointment.client.constants.StringConstant.*;
+import static com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils.generateRandomToken;
 import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toUpperCase;
 
 /**
@@ -39,7 +39,7 @@ public class AdminUtils {
         admin.setMobileNumber(adminRequestDTO.getMobileNumber());
         admin.setStatus(adminRequestDTO.getStatus());
         admin.setHasMacBinding(adminRequestDTO.getHasMacBinding());
-        admin.setIsFirstLogin(StatusConstants.YES);
+        admin.setIsFirstLogin(YES);
 
         parseAdminDetails(gender, profile, admin);
         return admin;
@@ -71,7 +71,7 @@ public class AdminUtils {
 
         AdminMacAddressInfo macAddressInfo = new AdminMacAddressInfo();
         macAddressInfo.setMacAddress(macAddress);
-        macAddressInfo.setStatus(StatusConstants.ACTIVE);
+        macAddressInfo.setStatus(ACTIVE);
         macAddressInfo.setAdmin(admin);
         return macAddressInfo;
     }
@@ -83,23 +83,21 @@ public class AdminUtils {
         return adminMetaInfo;
     }
 
-    public static void parseMetaInfo(Admin admin,
-                                     AdminMetaInfo adminMetaInfo) {
-        adminMetaInfo.setMetaInfo(admin.getFullName() + StringConstant.OR + admin.getUsername() + StringConstant.OR + admin.getMobileNumber());
+    public static void parseMetaInfo(Admin admin, AdminMetaInfo adminMetaInfo) {
+        adminMetaInfo.setMetaInfo(admin.getFullName() + OR + admin.getUsername() + OR + admin.getMobileNumber());
     }
 
     public static AdminConfirmationToken parseInAdminConfirmationToken(Admin admin) {
         AdminConfirmationToken confirmationToken = new AdminConfirmationToken();
         confirmationToken.setAdmin(admin);
-        confirmationToken.setStatus(StatusConstants.ACTIVE);
-        confirmationToken.setConfirmationToken(NumberFormatterUtils.generateRandomToken());
+        confirmationToken.setStatus(ACTIVE);
+        confirmationToken.setConfirmationToken(generateRandomToken());
 
         return confirmationToken;
     }
 
     public static EmailRequestDTO convertAdminRequestToEmailRequestDTO(AdminRequestDTO adminRequestDTO,
-                                                                       String confirmationToken,
-                                                                       HttpServletRequest httpServletRequest) {
+                                                                       String confirmationToken) {
 
 //        String origin = httpServletRequest.getHeader("origin");
 //        String confirmationUrl = origin + "/#" + "/savePassword" + "?token =" + confirmationToken;
@@ -110,7 +108,7 @@ public class AdminUtils {
                 .receiverEmailAddress(adminRequestDTO.getEmail())
                 .subject(SUBJECT_FOR_ADMIN_VERIFICATION)
                 .templateName(ADMIN_VERIFICATION)
-                .paramValue(adminRequestDTO.getUsername() + StringConstant.COMMA_SEPARATED + confirmationUrl)
+                .paramValue(adminRequestDTO.getUsername() + COMMA_SEPARATED + confirmationUrl)
                 .build();
     }
 
@@ -127,7 +125,7 @@ public class AdminUtils {
         adminAvatar.setFileSize(fileUploadResponseDTO.getFileSize());
         adminAvatar.setFileUri(fileUploadResponseDTO.getFileUri());
         adminAvatar.setFileType(fileUploadResponseDTO.getFileType());
-        adminAvatar.setStatus(StatusConstants.ACTIVE);
+        adminAvatar.setStatus(ACTIVE);
     }
 
     public static void convertAdminToDeleted(Admin admin, DeleteRequestDTO deleteRequestDTO) {
@@ -173,8 +171,8 @@ public class AdminUtils {
         if (!(updateRequestDTO.getMobileNumber().equalsIgnoreCase(admin.getMobileNumber())))
             params.put("Mobile Number ", updateRequestDTO.getMobileNumber());
 
-//        if (!(updateRequestDTO.getProfileId().equals(admin.getProfile().getId())))
-//            params.put("Profile ", admin.getProfile().getName());
+        if (!(updateRequestDTO.getProfileId().equals(admin.getProfileId().getId())))
+            params.put("Profile ", admin.getProfileId().getName());
 
         if (!(updateRequestDTO.getStatus().equals(admin.getStatus()))) {
             String status = "";
@@ -202,12 +200,12 @@ public class AdminUtils {
 
         List<String> macAddress = updateRequestDTO.getMacAddressUpdateInfo()
                 .stream()
-                .filter(requestDTO -> requestDTO.getStatus().equals(StatusConstants.ACTIVE))
+                .filter(requestDTO -> requestDTO.getStatus().equals(ACTIVE))
                 .map(AdminMacAddressInfoUpdateRequestDTO::getMacAddress)
                 .collect(Collectors.toList());
 
-        return (updateRequestDTO.getHasMacBinding().equals(StatusConstants.ACTIVE))
-                ? StringUtils.join(macAddress, StringConstant.COMMA_SEPARATED) : "N/A";
+        return (updateRequestDTO.getHasMacBinding().equals(ACTIVE))
+                ? StringUtils.join(macAddress, COMMA_SEPARATED) : "N/A";
     }
 
     public static EmailRequestDTO parseToEmailRequestDTO(String username,
@@ -218,8 +216,8 @@ public class AdminUtils {
                 .receiverEmailAddress(updateRequestDTO.getEmail())
                 .subject(SUBJECT_FOR_UPDATE_ADMIN)
                 .templateName(UPDATE_ADMIN)
-                .paramValue(username + StringConstant.HYPHEN + paramValues + StringConstant.HYPHEN +
-                        updateRequestDTO.getHasMacBinding() + StringConstant.HYPHEN + updatedMacAddress)
+                .paramValue(username + HYPHEN + paramValues + HYPHEN +
+                        updateRequestDTO.getHasMacBinding() + HYPHEN + updatedMacAddress)
                 .build();
     }
 
@@ -237,8 +235,8 @@ public class AdminUtils {
                 .receiverEmailAddress(emailAddress)
                 .subject(SUBJECT_FOR_ADMIN_RESET_PASSWORD)
                 .templateName(ADMIN_RESET_PASSWORD)
-                .paramValue(requestDTO.getUsername() + StringConstant.COMMA_SEPARATED
-                        + requestDTO.getPassword() + StringConstant.COMMA_SEPARATED + requestDTO.getRemarks())
+                .paramValue(requestDTO.getUsername() + COMMA_SEPARATED
+                        + requestDTO.getPassword() + COMMA_SEPARATED + requestDTO.getRemarks())
                 .build();
     }
 }

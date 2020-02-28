@@ -133,6 +133,17 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
         return parseToDoctorUpdateResponseDTO(results.get(0));
     }
 
+    @Override
+    public List<DoctorDropdownDTO> fetchDoctorAvatarInfo(Long hospitalId, Long doctorId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_AVATAR_INFO(doctorId))
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
+
+        if (results.isEmpty()) throw DOCTOR_NOT_FOUND.get();
+        else return results;
+    }
+
     private Supplier<NoContentFoundException> DOCTOR_NOT_FOUND = () ->
             new NoContentFoundException(Doctor.class);
 

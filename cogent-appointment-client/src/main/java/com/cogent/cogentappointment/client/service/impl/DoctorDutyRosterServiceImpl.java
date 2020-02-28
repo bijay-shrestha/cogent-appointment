@@ -26,15 +26,15 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.*;
-import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.DoctorDutyRosterServiceMessages.BAD_REQUEST_MESSAGE;
-import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.DoctorDutyRosterServiceMessages.DUPLICATION_MESSAGE;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.DoctorDutyRosterServiceMessages.*;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.INVALID_DATE_DEBUG_MESSAGE;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.INVALID_DATE_MESSAGE;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.DoctorDutyRosterLog.*;
 import static com.cogent.cogentappointment.client.utils.DoctorDutyRosterOverrideUtils.*;
 import static com.cogent.cogentappointment.client.utils.DoctorDutyRosterUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
-import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getHospitalId;
+import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 
 /**
  * @author smriti on 26/11/2019
@@ -93,7 +93,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
                 requestDTO,
                 findDoctorById(requestDTO.getDoctorId()),
                 findSpecializationById(requestDTO.getSpecializationId()),
-                findHospitalById(getHospitalId()));
+                findHospitalById(getLoggedInHospitalId()));
 
         save(doctorDutyRoster);
 
@@ -111,7 +111,9 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
         log.info(UPDATING_PROCESS_STARTED, DOCTOR_DUTY_ROSTER);
 
-        DoctorDutyRoster doctorDutyRoster = findDoctorDutyRosterById(updateRequestDTO.getDoctorDutyRosterId());
+        DoctorDutyRoster doctorDutyRoster = findDoctorDutyRosterByIdAndHospitalId(
+                updateRequestDTO.getDoctorDutyRosterId(), getLoggedInHospitalId()
+        );
 
         //todo; refactor this
         List<DoctorWeekDaysDutyRoster> weekDaysDutyRosters =
@@ -136,13 +138,16 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
     }
 
     @Override
-    public DoctorRosterOverrideUpdateResponseDTO updateDoctorDutyRosterOverride(DoctorDutyRosterOverrideUpdateRequestDTO updateRequestDTO) {
+    public DoctorRosterOverrideUpdateResponseDTO updateDoctorDutyRosterOverride(
+            DoctorDutyRosterOverrideUpdateRequestDTO updateRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(UPDATING_PROCESS_STARTED, DOCTOR_DUTY_ROSTER_OVERRIDE);
 
-        DoctorDutyRoster doctorDutyRoster = findDoctorDutyRosterById(updateRequestDTO.getDoctorDutyRosterId());
+        DoctorDutyRoster doctorDutyRoster = findDoctorDutyRosterByIdAndHospitalId(
+                updateRequestDTO.getDoctorDutyRosterId(), getLoggedInHospitalId()
+        );
 
         validateIsFirstDateGreater(updateRequestDTO.getOverrideFromDate(), updateRequestDTO.getOverrideToDate());
 
@@ -158,19 +163,23 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
         validateAppointmentCount(overrideFromDate, overrideToDate, doctorId, specializationId);
 
         Long savedOverrideId;
+
         if (Objects.isNull(updateRequestDTO.getDoctorDutyRosterOverrideId())) {
 
-            validateDoctorDutyRosterOverrideCount(
-                    doctorDutyRosterOverrideRepository.fetchOverrideCount(
-                            doctorId, specializationId, overrideFromDate, overrideToDate));
+             /*SAVE NEW DOCTOR DUTY ROSTER OVERRIDE*/
+            validateDoctorDutyRosterOverrideCount(doctorDutyRosterOverrideRepository.fetchOverrideCount(
+                    doctorId, specializationId, overrideFromDate, overrideToDate)
+            );
 
             savedOverrideId = saveDoctorRosterOverride(updateRequestDTO, doctorDutyRoster);
 
         } else {
-            validateDoctorDutyRosterOverrideCount(
-                    doctorDutyRosterOverrideRepository.fetchOverrideCount(
-                            updateRequestDTO.getDoctorDutyRosterOverrideId(),
-                            doctorId, specializationId, overrideFromDate, overrideToDate));
+
+             /*UPDATE DOCTOR DUTY ROSTER OVERRIDE*/
+            validateDoctorDutyRosterOverrideCount(doctorDutyRosterOverrideRepository.fetchOverrideCount(
+                    updateRequestDTO.getDoctorDutyRosterOverrideId(),
+                    doctorId, specializationId, overrideFromDate, overrideToDate)
+            );
 
             savedOverrideId = updateDoctorRosterOverride(updateRequestDTO);
         }
@@ -194,9 +203,12 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
         validateAppointmentCount(doctorDutyRosterOverride.getFromDate(),
                 doctorDutyRosterOverride.getToDate(),
                 doctorDutyRosterOverride.getDoctorDutyRosterId().getDoctorId().getId(),
-                doctorDutyRosterOverride.getDoctorDutyRosterId().getSpecializationId().getId());
+                doctorDutyRosterOverride.getDoctorDutyRosterId().getSpecializationId().getId()
+        );
 
-        parseDeletedOverrideDetails(doctorDutyRosterOverride, deleteRequestDTO.getStatus(), deleteRequestDTO.getRemarks());
+        parseDeletedOverrideDetails(doctorDutyRosterOverride,
+                deleteRequestDTO.getStatus(), deleteRequestDTO.getRemarks()
+        );
 
         log.info(DELETING_PROCESS_COMPLETED, DOCTOR_DUTY_ROSTER_OVERRIDE, getDifferenceBetweenTwoTime(startTime));
     }
@@ -218,8 +230,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
         originalOverrideRosters.forEach(
                 originalOverride -> updateOverrideRosters.stream()
-                        .filter(updatedOverride -> originalOverride.getId().equals(
-                                updatedOverride.getDoctorDutyRosterOverrideId()))
+                        .filter(updatedOverride -> isOriginalUpdatedCondition(originalOverride, updatedOverride))
                         .forEachOrdered(updatedOverride -> {
                             updateDoctorRosterOverrideDetails(originalOverride, updatedOverride);
                         }));
@@ -234,7 +245,8 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
         log.info(DELETING_PROCESS_STARTED, DOCTOR_DUTY_ROSTER);
 
-        DoctorDutyRoster doctorDutyRoster = findDoctorDutyRosterById(deleteRequestDTO.getId());
+        DoctorDutyRoster doctorDutyRoster = findDoctorDutyRosterByIdAndHospitalId(
+                deleteRequestDTO.getId(), getLoggedInHospitalId());
 
         validateAppointmentCount(doctorDutyRoster.getFromDate(), doctorDutyRoster.getToDate(),
                 doctorDutyRoster.getDoctorId().getId(), doctorDutyRoster.getSpecializationId().getId());
@@ -253,7 +265,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
         log.info(SEARCHING_PROCESS_STARTED, DOCTOR_DUTY_ROSTER);
 
         List<DoctorDutyRosterMinimalResponseDTO> responseDTOS =
-                doctorDutyRosterRepository.search(searchRequestDTO, pageable);
+                doctorDutyRosterRepository.search(searchRequestDTO, pageable, getLoggedInHospitalId());
 
         log.info(SEARCHING_PROCESS_COMPLETED, DOCTOR_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
 
@@ -266,7 +278,8 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
         log.info(FETCHING_DETAIL_PROCESS_STARTED, DOCTOR_DUTY_ROSTER);
 
-        DoctorDutyRosterDetailResponseDTO responseDTO = doctorDutyRosterRepository.fetchDetailsById(id, getHospitalId());
+        DoctorDutyRosterDetailResponseDTO responseDTO =
+                doctorDutyRosterRepository.fetchDetailsById(id, getLoggedInHospitalId());
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, DOCTOR_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
 
@@ -275,13 +288,15 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
 
     @Override
-    public List<DoctorExistingDutyRosterResponseDTO> fetchExistingDutyRosters(DoctorExistingDutyRosterRequestDTO requestDTO) {
+    public List<DoctorExistingDutyRosterResponseDTO> fetchExistingDutyRosters(
+            DoctorExistingDutyRosterRequestDTO requestDTO) {
+
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, EXISTING_DOCTOR_DUTY_ROSTER);
 
         List<DoctorExistingDutyRosterResponseDTO> existingRosters =
-                doctorDutyRosterRepository.fetchExistingDoctorDutyRosters(requestDTO);
+                doctorDutyRosterRepository.fetchExistingDoctorDutyRosters(requestDTO, getLoggedInHospitalId());
 
         log.info(FETCHING_PROCESS_COMPLETED, EXISTING_DOCTOR_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
 
@@ -302,28 +317,6 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
         return existingRosterDetails;
     }
 
-
-    @Override
-    public List<DoctorDutyRosterStatusResponseDTO> fetchDoctorDutyRosterStatus
-            (DoctorDutyRosterStatusRequestDTO requestDTO) {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(FETCHING_DETAIL_PROCESS_STARTED, DOCTOR_DUTY_ROSTER_STATUS);
-
-        List<DoctorDutyRosterStatusResponseDTO> doctorDutyRosterOverrideStatus =
-                doctorDutyRosterOverrideRepository.fetchDoctorDutyRosterOverrideStatus(requestDTO);
-
-        List<DoctorDutyRosterStatusResponseDTO> doctorDutyRosterStatus =
-                doctorDutyRosterRepository.fetchDoctorDutyRosterStatus(requestDTO);
-
-        List<DoctorDutyRosterStatusResponseDTO> mergedList =
-                mergeOverrideAndActualDoctorDutyRoster(doctorDutyRosterOverrideStatus, doctorDutyRosterStatus);
-
-        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, DOCTOR_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
-
-        return mergedList;
-    }
-
     private void validateAppointmentCount(Date overrideFromDate, Date overrideToDate,
                                           Long doctorId, Long specializationId) {
 
@@ -331,7 +324,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
                 overrideFromDate, overrideToDate, doctorId, specializationId);
 
         if (appointments.intValue() > 0)
-            throw new BadRequestException(AppointmentServiceMessage.APPOINTMENT_EXISTS_MESSAGE);
+            throw new BadRequestException(APPOINTMENT_EXISTS_MESSAGE);
     }
 
     private void validateDoctorDutyRosterCount(Long doctorId, Long specializationId,
@@ -463,8 +456,8 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
         doctorDutyRosterOverrideRepository.saveAll(doctorDutyRosterOverrides);
     }
 
-    public DoctorDutyRoster findDoctorDutyRosterById(Long doctorDutyRosterId) {
-        return doctorDutyRosterRepository.findDoctorDutyRosterById(doctorDutyRosterId)
+    private DoctorDutyRoster findDoctorDutyRosterByIdAndHospitalId(Long doctorDutyRosterId, Long hospitalId) {
+        return doctorDutyRosterRepository.findDoctorDutyRosterByIdAndHospitalId(doctorDutyRosterId, hospitalId)
                 .orElseThrow(() -> DOCTOR_DUTY_ROSTER_WITH_GIVEN_ID_NOT_FOUND.apply(doctorDutyRosterId));
     }
 
@@ -515,6 +508,11 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
     private Hospital findHospitalById(Long hospitalId) {
         return hospitalRepository.findActiveHospitalById(hospitalId)
                 .orElseThrow(() -> new NoContentFoundException(Hospital.class, "hospitalId", hospitalId.toString()));
+    }
+
+    private static boolean isOriginalUpdatedCondition(DoctorDutyRosterOverride originalOverride,
+                                                      DoctorDutyRosterOverrideUpdateRequestDTO updatedOverride) {
+        return originalOverride.getId().equals(updatedOverride.getDoctorDutyRosterOverrideId());
     }
 
 }

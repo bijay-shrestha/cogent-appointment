@@ -40,8 +40,6 @@ public class PatientResponseDTO implements Serializable {
 
     private String hospitalNumber;
 
-    private String hospitalName;
-
     private Date dateOfBirth;
 
     private Character isSelf;

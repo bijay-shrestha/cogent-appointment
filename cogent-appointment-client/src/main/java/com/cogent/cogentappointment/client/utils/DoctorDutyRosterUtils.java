@@ -9,7 +9,6 @@ import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.DoctorWe
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedDateResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.*;
 import com.cogent.cogentappointment.client.exception.BadRequestException;
-import com.cogent.cogentappointment.client.utils.commons.DateUtils;
 import com.cogent.cogentappointment.persistence.model.*;
 
 import java.time.LocalDate;
@@ -18,7 +17,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AppointmentServiceMessage.*;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.DoctorDutyRosterServiceMessages.APPOINTMENT_EXISTS_ON_WEEK_DAY_MESSAGE;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.convertDateToLocalDate;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.isLocalDateBetweenInclusive;
 
 /**
  * @author smriti on 27/11/2019
@@ -63,11 +64,11 @@ public class DoctorDutyRosterUtils {
                 appointmentBookedDateResponseDTO
                         .stream()
                         .map(appointmentDates ->
-                                DateUtils.convertDateToLocalDate(appointmentDates.getAppointmentDate()).getDayOfWeek().toString())
+                                convertDateToLocalDate(appointmentDates.getAppointmentDate()).getDayOfWeek().toString())
                         .filter(weekName ->
                                 unmatchedList.getWeekDaysName().equals(weekName))
                         .forEachOrdered(weekName -> {
-                            throw new BadRequestException(String.format(APPOINTMENT_EXISTS_MESSAGE, weekName));
+                            throw new BadRequestException(String.format(APPOINTMENT_EXISTS_ON_WEEK_DAY_MESSAGE, weekName));
                         }));
     }
 
@@ -113,6 +114,7 @@ public class DoctorDutyRosterUtils {
                 .build();
     }
 
+    /*ADD TO FINAL LIST ONLY IF QUERY RESULT IS WITHIN THE SELECTED SEARCH DATE RANGE*/
     public static List<DoctorDutyRosterStatusResponseDTO> parseQueryResultToDoctorDutyRosterStatusResponseDTOS(
             List<Object[]> queryResults,
             Date searchFromDate,
@@ -120,8 +122,8 @@ public class DoctorDutyRosterUtils {
 
         List<DoctorDutyRosterStatusResponseDTO> doctorDutyRosterStatusResponseDTOS = new ArrayList<>();
 
-        LocalDate searchFromLocalDate = DateUtils.convertDateToLocalDate(searchFromDate);
-        LocalDate searchToLocalDate = DateUtils.convertDateToLocalDate(searchToDate);
+        LocalDate searchFromLocalDate = convertDateToLocalDate(searchFromDate);
+        LocalDate searchToLocalDate = convertDateToLocalDate(searchToDate);
 
         queryResults.forEach(result -> {
 
@@ -134,8 +136,8 @@ public class DoctorDutyRosterUtils {
             final int SPECIALIZATION_NAME_INDEX = 6;
             final int ROSTER_GAP_DURATION_INDEX = 7;
 
-            LocalDate startLocalDate = DateUtils.convertDateToLocalDate((Date) result[START_DATE_INDEX]);
-            LocalDate endLocalDate = DateUtils.convertDateToLocalDate((Date) result[END_DATE_INDEX]);
+            LocalDate startLocalDate = convertDateToLocalDate((Date) result[START_DATE_INDEX]);
+            LocalDate endLocalDate = convertDateToLocalDate((Date) result[END_DATE_INDEX]);
 
             List<String> timeDetails = Arrays.asList(result[DOCTOR_TIME_DETAILS_INDEX].toString()
                     .split(StringConstant.COMMA_SEPARATED));
@@ -144,7 +146,7 @@ public class DoctorDutyRosterUtils {
                     .limit(ChronoUnit.DAYS.between(startLocalDate, endLocalDate) + 1)
                     .forEach(localDate -> {
 
-                        if (DateUtils.isLocalDateBetweenInclusive(searchFromLocalDate, searchToLocalDate, localDate)) {
+                        if (isLocalDateBetweenInclusive(searchFromLocalDate, searchToLocalDate, localDate)) {
 
                             String dayOfWeek = localDate.getDayOfWeek().toString();
 
@@ -202,17 +204,6 @@ public class DoctorDutyRosterUtils {
         return doctorDutyRosterOverrideStatus;
     }
 
-//    public static AppointmentCountRequestDTO parseToAppointmentCountRequestTO(
-//            Date fromDate, Date toDate, Long doctorId, Long specializationId) {
-//
-//        AppointmentCountRequestDTO appointmentCountRequestDTO = new AppointmentCountRequestDTO();
-//        appointmentCountRequestDTO.setFromDate(fromDate);
-//        appointmentCountRequestDTO.setToDate(toDate);
-//        appointmentCountRequestDTO.setDoctorId(doctorId);
-//        appointmentCountRequestDTO.setSpecializationId(specializationId);
-//        return appointmentCountRequestDTO;
-//    }
-
     public static List<DoctorWeekDaysDutyRosterUpdateRequestDTO> filterOriginalAndUpdatedWeekDaysRoster(
             List<DoctorWeekDaysDutyRosterUpdateRequestDTO> updateRequestDTO,
             List<DoctorWeekDaysDutyRoster> weekDaysDutyRosters) {
@@ -222,14 +213,16 @@ public class DoctorDutyRosterUtils {
                 .filter(weekDaysDutyRosterUpdateRequestDTO -> (weekDaysDutyRosters
                         .stream()
                         .filter(originalRoster -> (
-                                (weekDaysDutyRosterUpdateRequestDTO.getStartTime()
-                                        .equals(originalRoster.getStartTime())
-                                        && (weekDaysDutyRosterUpdateRequestDTO.getEndTime()
-                                        .equals(originalRoster.getEndTime()))
-                                        && (weekDaysDutyRosterUpdateRequestDTO.getDayOffStatus()
-                                        .equals(originalRoster.getDayOffStatus()))
-                                        && (weekDaysDutyRosterUpdateRequestDTO.getWeekDaysId()
-                                        .equals(originalRoster.getWeekDaysId().getId())))))
+                                        (weekDaysDutyRosterUpdateRequestDTO.getStartTime()
+                                                .equals(originalRoster.getStartTime())
+                                                && (weekDaysDutyRosterUpdateRequestDTO.getEndTime()
+                                                .equals(originalRoster.getEndTime()))
+                                                && (weekDaysDutyRosterUpdateRequestDTO.getDayOffStatus()
+                                                .equals(originalRoster.getDayOffStatus()))
+                                                && (weekDaysDutyRosterUpdateRequestDTO.getWeekDaysId()
+                                                .equals(originalRoster.getWeekDaysId().getId())))
+                                )
+                        )
                         .count()) < 1)
                 .collect(Collectors.toList());
     }

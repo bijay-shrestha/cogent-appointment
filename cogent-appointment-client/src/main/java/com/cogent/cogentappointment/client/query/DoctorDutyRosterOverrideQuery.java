@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.client.query;
 
+import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.DoctorDutyRosterOverrideUpdateRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.DoctorDutyRosterStatusRequestDTO;
 
 import java.util.List;
 import java.util.Objects;
@@ -61,7 +61,7 @@ public class DoctorDutyRosterOverrideQuery {
                     " AND dd.doctorId.id = :doctorId" +
                     " AND dd.specializationId.id = :specializationId";
 
-    public static String QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_STATUS(DoctorDutyRosterStatusRequestDTO requestDTO) {
+    public static String QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_STATUS(AppointmentStatusRequestDTO requestDTO) {
 
         String SQL = "SELECT" +
                 " d.fromDate," +                                            //[0]
@@ -80,7 +80,8 @@ public class DoctorDutyRosterOverrideQuery {
                 " d.status = 'Y'" +
                 " AND dd.status = 'Y'" +
                 " AND dd.toDate >=:fromDate" +
-                " AND dd.fromDate <=:toDate";
+                " AND dd.fromDate <=:toDate" +
+                " AND dd.hospitalId.id=:hospitalId";
 
         if (!Objects.isNull(requestDTO.getDoctorId()))
             SQL += " AND dd.doctorId.id = :doctorId";

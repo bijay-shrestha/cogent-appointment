@@ -1,13 +1,15 @@
 package com.cogent.cogentappointment.client.service;
 
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
+import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.request.admin.*;
-import com.cogent.cogentappointment.client.dto.request.login.LoginRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.admin.*;
+import com.cogent.cogentappointment.client.dto.response.admin.AdminDetailResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.admin.AdminLoggedInInfoResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.admin.AdminMetaInfoResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.admin.AdminMinimalResponseDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 
@@ -16,9 +18,9 @@ import java.util.List;
  */
 public interface AdminService {
 
-    void save(AdminRequestDTO adminRequestDTO, MultipartFile files, HttpServletRequest httpServletRequest);
+    void save(AdminRequestDTO adminRequestDTO, MultipartFile files);
 
-    List<AdminDropdownDTO> fetchActiveAdminsForDropdown();
+    List<DropDownResponseDTO> fetchActiveMinAdmin();
 
     List<AdminMinimalResponseDTO> search(AdminSearchRequestDTO searchRequestDTO, Pageable pageable);
 
@@ -40,7 +42,7 @@ public interface AdminService {
 
     AdminLoggedInInfoResponseDTO fetchLoggedInAdminInfo(AdminInfoRequestDTO requestDTO);
 
-    List<AdminMetaInfoResponseDTO> fetchAdminMetaInfoResponseDto();
+    List<AdminMetaInfoResponseDTO> fetchAdminMetaInfo();
 }
 
 

@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.client.service.impl;
 
-import com.cogent.cogentappointment.client.constants.StatusConstants;
 import com.cogent.cogentappointment.client.dto.request.email.EmailRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.forgotPassword.ForgotPasswordRequestDTO;
 import com.cogent.cogentappointment.client.exception.BadRequestException;
@@ -22,12 +21,14 @@ import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AdminServiceMessages.ADMIN_NOT_ACTIVE;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.ForgotPasswordMessages.RESET_CODE_EXPIRED;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.ACTIVE;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.INACTIVE;
 import static com.cogent.cogentappointment.client.log.constants.AdminLog.*;
 import static com.cogent.cogentappointment.client.utils.ForgotPasswordUtils.convertToForgotPasswordVerification;
 import static com.cogent.cogentappointment.client.utils.ForgotPasswordUtils.parseToEmailRequestDTO;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
-import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getHospitalId;
+import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 import static java.util.Objects.isNull;
 
 /**
@@ -62,11 +63,12 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
         log.info(FORGOT_PASSWORD_PROCESS_STARTED);
 
-        Admin admin = adminRepository.fetchAdminByUsernameOrEmail(username,getHospitalId());
+        Admin admin = adminRepository.fetchAdminByUsernameOrEmail(username, getLoggedInHospitalId());
 
         validateAdmin(admin, username);
 
-        ForgotPasswordVerification forgotPasswordVerification = verificationRepository.findByAdminId(admin.getId());
+        ForgotPasswordVerification forgotPasswordVerification =
+                verificationRepository.findByAdminId(admin.getId());
 
         convertToForgotPasswordVerification(
                 admin,
@@ -92,6 +94,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
         log.info(VERIFY_CODE_PROCESS_STARTED);
 
         Object expirationTime = verificationRepository.findByResetCode(resetCode);
+
         validateExpirationTime(expirationTime);
 
         log.info(VERIFY_CODE_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
@@ -103,21 +106,23 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
         log.info(UPDATING_PASSWORD_PROCESS_STARTED);
 
-        Admin admin = adminRepository.fetchAdminByUsernameOrEmail(requestDTO.getUsername(),getHospitalId());
+        Admin admin = adminRepository.fetchAdminByUsernameOrEmail(requestDTO.getUsername(), getLoggedInHospitalId());
+
         updateAdminPassword(requestDTO, admin);
+
         updateForgotPasswordVerification(admin.getId());
 
         log.info(UPDATING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
     }
 
-    public void updateAdminPassword(ForgotPasswordRequestDTO requestDTO, Admin admin) {
+    private void updateAdminPassword(ForgotPasswordRequestDTO requestDTO, Admin admin) {
         admin.setPassword(BCrypt.hashpw(requestDTO.getPassword(), BCrypt.gensalt()));
         adminRepository.save(admin);
     }
 
-    public void updateForgotPasswordVerification(Long adminId) {
+    private void updateForgotPasswordVerification(Long adminId) {
         ForgotPasswordVerification forgotPasswordVerification = verificationRepository.findByAdminId(adminId);
-        forgotPasswordVerification.setStatus(StatusConstants.INACTIVE);
+        forgotPasswordVerification.setStatus(INACTIVE);
     }
 
     private void validateExpirationTime(Object expirationTime) {
@@ -129,7 +134,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     }
 
     private void validateAdmin(Admin admin, String username) {
-        if (!admin.getStatus().equals(StatusConstants.ACTIVE))
+        if (!admin.getStatus().equals(ACTIVE))
             throw new NoContentFoundException(String.format(ADMIN_NOT_ACTIVE, username), "username/email", username);
     }
 

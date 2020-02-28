@@ -36,9 +36,9 @@ public interface PatientService {
 
     void update(PatientUpdateRequestDTO patientUpdateRequestDTO);
 
-    List<DropDownResponseDTO> fetchMinPatientMetaInfo(Long hospitalId);
+    List<DropDownResponseDTO> fetchMinPatientMetaInfo();
 
-    List<DropDownResponseDTO> fetchActiveMinPatientMetaInfo(Long hospitalId);
+    List<DropDownResponseDTO> fetchActiveMinPatientMetaInfo();
 
     void registerPatient(Long patientId);
 }

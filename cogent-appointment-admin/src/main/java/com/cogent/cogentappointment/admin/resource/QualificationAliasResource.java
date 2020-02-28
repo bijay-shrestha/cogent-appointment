@@ -1,17 +1,28 @@
 package com.cogent.cogentappointment.admin.resource;
 
+import com.cogent.cogentappointment.admin.constants.SwaggerConstants;
+import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.qualification.QualificationUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.qualificationAlias.QualificationAliasRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.qualificationAlias.QualificationAliasSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.qualificationAlias.QualificationAliasUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.service.QualificationAliasService;
+import com.cogent.cogentappointment.persistence.model.QualificationAlias;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.QualificationAliasConstant.BASE_API_VALUE;
-import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.QualificationAliasConstant.FETCH_ACTIVE_QUALIFICATION_ALIAS;
+import javax.validation.Valid;
+
+import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.QualificationAliasConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.QualificationAliasConstants.BASE_QUALIFICATION_ALIAS;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.SEARCH;
+import static java.net.URI.create;
+import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -26,6 +37,36 @@ public class QualificationAliasResource {
 
     public QualificationAliasResource(QualificationAliasService qualificationAliasService) {
         this.qualificationAliasService = qualificationAliasService;
+    }
+
+    @PostMapping
+    @ApiOperation(SwaggerConstants.QualificationAliasConstant.SAVE_OPERATION)
+    public ResponseEntity<?> save(@Valid @RequestBody QualificationAliasRequestDTO aliasRequestDTO) {
+        qualificationAliasService.save(aliasRequestDTO);
+        return created(create(API_V1 + BASE_QUALIFICATION_ALIAS)).build();
+    }
+
+    @PutMapping
+    @ApiOperation(UPDATE_OPERATION)
+    public ResponseEntity<?> update(@Valid @RequestBody QualificationAliasUpdateRequestDTO updateRequestDTO) {
+        qualificationAliasService.update(updateRequestDTO);
+        return ok().build();
+    }
+
+    @DeleteMapping
+    @ApiOperation(DELETE_OPERATION)
+    public ResponseEntity<?> delete(@Valid @RequestBody DeleteRequestDTO deleteRequestDTO) {
+        qualificationAliasService.delete(deleteRequestDTO);
+        return ok().build();
+    }
+
+    @PutMapping(SEARCH)
+    @ApiOperation(SEARCH_OPERATION)
+    public ResponseEntity<?> search(@RequestBody QualificationAliasSearchRequestDTO searchRequestDTO,
+                                    @RequestParam("page") int page,
+                                    @RequestParam("size") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ok().body(qualificationAliasService.search(searchRequestDTO, pageable));
     }
 
     @GetMapping

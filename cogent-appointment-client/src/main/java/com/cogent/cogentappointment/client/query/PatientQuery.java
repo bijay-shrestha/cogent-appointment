@@ -175,4 +175,11 @@ public class PatientQuery {
                     " CONCAT(((TIMESTAMPDIFF(YEAR, p.date_of_birth ,CURDATE()))), ' years')" +
                     " END AS age";
 
+    public static final String QUERY_TO_FETCH_PATIENT =
+            " SELECT p FROM Patient p" +
+                    " WHERE " +
+                    " p.name =:name" +
+                    " AND p.mobileNumber =:mobileNumber" +
+                    " AND p.dateOfBirth =:dateOfBirth";
+
 }

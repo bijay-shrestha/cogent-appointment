@@ -38,6 +38,8 @@ public interface AppointmentService {
 
     AppointmentSuccessResponseDTO save(AppointmentRequestDTO appointmentRequestDTO);
 
+    AppointmentSuccessResponseDTO saveForOthers(AppointmentRequestDTO appointmentRequestDTO);
+
     List<AppointmentMinResponseDTO> fetchPendingAppointments(AppointmentSearchDTO searchDTO);
 
     void cancelAppointment(AppointmentCancelRequestDTO cancelRequestDTO);

@@ -160,4 +160,18 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
         return results.isEmpty() ? null : results.get(0).toString();
     }
 
+    @Override
+    public Patient fetchPatient(String name, String mobileNumber, Date dateOfBirth) {
+
+        try {
+            return entityManager.createQuery(QUERY_TO_FETCH_PATIENT, Patient.class)
+                    .setParameter(NAME, name)
+                    .setParameter(MOBILE_NUMBER, mobileNumber)
+                    .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(dateOfBirth))
+                    .getSingleResult();
+        } catch (NoResultException ex) {
+            return null;
+        }
+    }
+
 }

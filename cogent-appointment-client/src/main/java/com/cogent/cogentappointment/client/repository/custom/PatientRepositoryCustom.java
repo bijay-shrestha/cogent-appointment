@@ -7,6 +7,7 @@ import com.cogent.cogentappointment.client.dto.response.patient.PatientDetailRes
 import com.cogent.cogentappointment.client.dto.response.patient.PatientMinimalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientSearchResponseDTO;
+import com.cogent.cogentappointment.persistence.model.Patient;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -39,4 +40,6 @@ public interface PatientRepositoryCustom {
     Long countOverallRegisteredPatients(Long HospitalId);
 
     String fetchLatestRegistrationNumber(Long hospitalId);
+
+    Patient fetchPatient(String name, String mobileNumber, Date dateOfBirth);
 }

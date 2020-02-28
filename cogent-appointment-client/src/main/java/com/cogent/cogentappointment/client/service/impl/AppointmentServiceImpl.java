@@ -13,7 +13,7 @@ import com.cogent.cogentappointment.client.dto.request.appointment.refund.Appoin
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestByDTO;
 import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.*;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
@@ -151,7 +151,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         Patient patient = fetchPatient(appointmentRequestDTO.getIsNewRegistration(),
                 appointmentRequestDTO.getPatientId(),
                 appointmentRequestDTO.getHospitalId(),
-                appointmentRequestDTO.getPatientInfo()
+                appointmentRequestDTO.getRequestByPatientInfo()
         );
 
         String appointmentNumber = appointmentRepository.generateAppointmentNumber(
@@ -179,6 +179,55 @@ public class AppointmentServiceImpl implements AppointmentService {
         log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
 
         return parseToAppointmentSuccessResponseDTO(appointmentNumber);
+    }
+
+    @Override
+    public AppointmentSuccessResponseDTO saveForOthers(AppointmentRequestDTO appointmentRequestDTO) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SAVING_PROCESS_STARTED, APPOINTMENT);
+
+//        Long appointmentCount = appointmentRepository.validateIfAppointmentExists(
+//                appointmentRequestDTO.getAppointmentDate(),
+//                appointmentRequestDTO.getAppointmentTime(),
+//                appointmentRequestDTO.getDoctorId(),
+//                appointmentRequestDTO.getSpecializationId()
+//        );
+//
+//        validateAppointmentExists(appointmentCount, appointmentRequestDTO.getAppointmentTime());
+
+        Patient patient = fetchPatient(appointmentRequestDTO.getIsNewRegistration(),
+                appointmentRequestDTO.getPatientId(),
+                appointmentRequestDTO.getHospitalId(),
+                appointmentRequestDTO.getRequestByPatientInfo()
+        );
+
+//        String appointmentNumber = appointmentRepository.generateAppointmentNumber(
+//                appointmentRequestDTO.getCreatedDateNepali(),
+//                appointmentRequestDTO.getHospitalId()
+//        );
+//
+//        Appointment appointment = parseToAppointment(
+//                appointmentRequestDTO, appointmentNumber,
+//                patient,
+//                fetchSpecialization(appointmentRequestDTO.getSpecializationId(), appointmentRequestDTO.getHospitalId()),
+//                fetchDoctor(appointmentRequestDTO.getDoctorId(), appointmentRequestDTO.getHospitalId()),
+//                fetchHospital(appointmentRequestDTO.getHospitalId())
+//        );
+//
+//        save(appointment);
+//
+//        saveAppointmentTransactionDetail(appointmentRequestDTO.getTransactionInfo(), appointment);
+//
+//        if (appointmentRequestDTO.getIsFreeFollowUp().equals(YES))
+//            saveAppointmentFollowUpLog(
+//                    appointmentRequestDTO.getParentAppointmentId(), appointment.getId()
+//            );
+
+        log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
+
+        return parseToAppointmentSuccessResponseDTO("0001");
     }
 
     @Override
@@ -540,7 +589,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     private Patient fetchPatient(Boolean isNewRegistration,
                                  Long patientId,
                                  Long hospitalId,
-                                 PatientRequestDTO patientRequestDTO) {
+                                 PatientRequestByDTO patientRequestDTO) {
 
         return isNewRegistration ? patientService.save(patientRequestDTO, hospitalId)
                 : patientService.fetchActivePatientById(patientId);

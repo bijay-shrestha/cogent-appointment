@@ -1,10 +1,7 @@
 package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
-import com.cogent.cogentappointment.client.dto.request.patient.PatientMinSearchRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.patient.PatientSearchRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.patient.*;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientMinimalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientResponseDTO;
@@ -26,6 +23,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.PatientServiceMessages.DUPLICATE_PATIENT_MESSAGE;
@@ -59,7 +57,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public Patient save(PatientRequestDTO requestDTO, Long hospitalId) {
+    public Patient save(PatientRequestByDTO requestDTO, Long hospitalId) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -239,6 +237,33 @@ public class PatientServiceImpl implements PatientService {
         log.info(REGISTERING_PATIENT_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
     }
 
+    /*CASE 1: BOOK APPOINTMENT FOR SELF AND THEN FOR OTHERS
+    * CASE 2 : BOOK APPOINTMENT FOR OTHERS AND THEN FOR SELF
+    *
+    * FIRST SAVE REQUESTED BY PATIENT INFO*/
+    @Override
+    public Patient savePatientForOthers(PatientRequestByDTO requestByPatientInfo,
+                                        PatientRequestForDTO requestForPatientInfo) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SAVING_PROCESS_STARTED, PATIENT);
+
+        Patient patient = patientRepository.fetchPatient(
+                requestByPatientInfo.getName(),
+                requestByPatientInfo.getMobileNumber(),
+                requestByPatientInfo.getDateOfBirth()
+        );
+
+        if (Objects.isNull(patient))
+            patient = savePatient(requestByPatientInfo);
+
+
+        log.info(SAVING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
+
+        return null;
+    }
+
     private void validatePatientDuplicity(Long patientCount, String name, String mobileNumber,
                                           Date dateOfBirth) {
 
@@ -252,7 +277,7 @@ public class PatientServiceImpl implements PatientService {
         return fetchGenderByCode(genderCode);
     }
 
-    private Patient savePatient(PatientRequestDTO requestDTO) {
+    private Patient savePatient(PatientRequestByDTO requestDTO) {
         Gender gender = fetchGender(requestDTO.getGender());
         return save(parseToPatient(requestDTO, gender));
     }

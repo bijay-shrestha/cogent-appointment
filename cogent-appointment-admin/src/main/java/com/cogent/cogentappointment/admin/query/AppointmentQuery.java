@@ -205,7 +205,7 @@ public class AppointmentQuery {
                             " a.id as appointmentId" +                                        //[17]
                             " FROM Appointment a" +
                             " LEFT JOIN Patient p ON a.patientId=p.id" +
-                            " LEFT JOIN HospitalPatientInfo hpi ON hpi.patientId =p.id" +
+                            " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                             " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
                             " LEFT JOIN Specialization sp ON a.specializationId=sp.id" +
                             " LEFT JOIN Hospital h ON a.hospitalId=h.id" +
@@ -219,8 +219,7 @@ public class AppointmentQuery {
             AppointmentPendingApprovalSearchDTO pendingApprovalSearchDTO) {
 
         String whereClause = " WHERE " +
-                " hpi.status='Y' " +
-                " AND sp.status='Y' " +
+                " sp.status='Y' " +
                 " AND a.status='PA'" +
                 " AND a.appointmentDate BETWEEN :fromDate AND :toDate";
 

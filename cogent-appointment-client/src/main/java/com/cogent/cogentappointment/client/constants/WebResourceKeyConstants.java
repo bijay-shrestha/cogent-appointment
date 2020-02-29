@@ -20,14 +20,14 @@ public class WebResourceKeyConstants {
 
     public interface AppointmentConstants {
         String BASE_APPOINTMENT = "/appointment";
+        String APPOINTMENT_ID_PATH_VARIABLE_BASE = "/{appointmentId}";
+        String APPOINTMENT_RESERVATION_ID_PATH_VARIABLE_BASE = "/{appointmentReservationId}";
         String CHECK_AVAILABILITY = "/checkAvailability";
         String PENDING_APPOINTMENT = "/pending-appointment";
         String CANCEL = "/cancel";
         String RESCHEDULE = "/reschedule";
         String FOLLOW_UP = "/follow-up";
-        String APPOINTMENT_ID_PATH_VARIABLE_BASE = "/{appointmentId}";
         String HISTORY = "/history";
-        String APPOINTMENT_RESERVATION_ID_PATH_VARIABLE_BASE = "/{appointmentReservationId}";
         String PENDING_APPROVAL = "/pending-approval";
         String REFUND = "/refund";
         String APPROVE = "/approve";
@@ -126,12 +126,11 @@ public class WebResourceKeyConstants {
 
 
     //O
+    public static final String OTHERS = "/others";
 
     //P
     public interface PatientConstant {
         String BASE_PATIENT = "/patient";
-        String SELF = "/self";
-        String OTHERS = "/others";
     }
 
     public interface ProfileSetupConstants {
@@ -151,8 +150,10 @@ public class WebResourceKeyConstants {
 
 
     //S
-    public static final String SAVE = "/save";
+    public static final String SAVE = "/saveSelfPatient";
     public static final String SEARCH = "/search";
+
+    public static final String SELF = "/self";
 
     public interface SidebarConstants {
         String BASE_SIDE_BAR = "/sidebar";

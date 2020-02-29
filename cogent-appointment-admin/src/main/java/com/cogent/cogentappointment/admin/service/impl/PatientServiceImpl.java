@@ -92,7 +92,7 @@ public class PatientServiceImpl implements PatientService {
         validatePatientDuplicity(patientCount, updateRequestDTO.getName(),
                 updateRequestDTO.getMobileNumber(), updateRequestDTO.getDateOfBirth());
 
-        save(updatePatient(updateRequestDTO, patientToBeUpdated));
+        updatePatient(updateRequestDTO, patientToBeUpdated);
 
         saveHospitalPatientInfo(updateHospitalPatientInfo(updateRequestDTO, hospitalPatientInfoToBeUpdated));
 
@@ -143,7 +143,7 @@ public class PatientServiceImpl implements PatientService {
                 .orElseThrow(() -> new NoContentFoundException(Patient.class, "patientId", patientId.toString()));
 
         String latestRegistrationNumber =
-                patientRepository.fetchLatestRegistrationNumber(hospitalPatientInfo.getHospitalId());
+                patientRepository.fetchLatestRegistrationNumber(hospitalPatientInfo.getHospital().getId());
 
         registerPatientDetails(hospitalPatientInfo, latestRegistrationNumber);
 
@@ -153,10 +153,6 @@ public class PatientServiceImpl implements PatientService {
     private Patient fetchPatientById(Long id) {
         return patientRepository.fetchPatientById(id).orElseThrow(() ->
                 new NoContentFoundException(Patient.class));
-    }
-
-    private Patient save(Patient patient) {
-        return patientRepository.save(patient);
     }
 
     private void savePatientMetaInfo(PatientMetaInfo patientMetaInfo) {

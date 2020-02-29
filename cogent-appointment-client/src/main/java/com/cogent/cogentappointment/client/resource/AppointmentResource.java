@@ -22,9 +22,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AppointmentConstant.*;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.AppointmentConstants.*;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.DETAIL;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
@@ -51,9 +50,15 @@ public class AppointmentResource {
     }
 
     /*eSewa*/
-    @PostMapping
+    @PostMapping(SAVE + SELF)
     @ApiOperation(SAVE_OPERATION)
-    public ResponseEntity<?> save(@Valid @RequestBody AppointmentRequestDTO requestDTO) {
+    public ResponseEntity<?> saveAppointmentForSelf(@Valid @RequestBody AppointmentRequestDTO requestDTO) {
+        return created(create(API_V1 + BASE_APPOINTMENT)).body(appointmentService.save(requestDTO));
+    }
+
+    @PostMapping(SAVE + OTHERS)
+    @ApiOperation(SAVE_OPERATION)
+    public ResponseEntity<?> saveAppointmentForOthers(@Valid @RequestBody AppointmentRequestDTO requestDTO) {
         return created(create(API_V1 + BASE_APPOINTMENT)).body(appointmentService.save(requestDTO));
     }
 

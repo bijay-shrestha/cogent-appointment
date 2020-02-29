@@ -6,6 +6,7 @@ import com.cogent.cogentappointment.client.dto.response.patient.PatientDetailRes
 import com.cogent.cogentappointment.client.dto.response.patient.PatientMinimalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientSearchResponseDTO;
+import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.Patient;
 import org.springframework.data.domain.Pageable;
 
@@ -15,9 +16,14 @@ import java.util.List;
  * @author smriti ON 16/01/2020
  */
 public interface PatientService {
-    Patient save(PatientRequestByDTO requestDTO, Long hospitalId);
 
-    Patient fetchActivePatientById(Long id);
+    Patient saveSelfPatient(PatientRequestByDTO requestDTO, Hospital hospital);
+
+    Patient saveOtherPatient(PatientRequestByDTO requestByPatientInfo,
+                             PatientRequestForDTO requestForPatientInfo,
+                             Hospital hospital);
+
+    Patient fetchPatientById(Long id);
 
     PatientDetailResponseDTO searchForSelf(PatientMinSearchRequestDTO searchRequestDTO);
 
@@ -38,7 +44,4 @@ public interface PatientService {
     List<DropDownResponseDTO> fetchActiveMinPatientMetaInfo();
 
     void registerPatient(Long patientId);
-
-
-    Patient savePatientForOthers(PatientRequestByDTO requestByPatientInfo, PatientRequestForDTO requestForPatientInfo);
 }

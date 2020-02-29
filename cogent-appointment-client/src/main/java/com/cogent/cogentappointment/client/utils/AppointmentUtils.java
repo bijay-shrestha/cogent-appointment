@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.utils;
 
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRequestDTOForOthers;
+import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRequestDTOForSelf;
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
@@ -44,12 +45,12 @@ public class AppointmentUtils {
 
     private static final DateTimeFormatter FORMAT = DateTimeFormat.forPattern("HH:mm");
 
-    public static Appointment parseToAppointment(AppointmentRequestDTO requestDTO,
-                                                 String appointmentNumber,
-                                                 Patient patient,
-                                                 Specialization specialization,
-                                                 Doctor doctor,
-                                                 Hospital hospital) {
+    public static Appointment parseToAppointmentForSelf(AppointmentRequestDTOForSelf requestDTO,
+                                                        String appointmentNumber,
+                                                        Patient patient,
+                                                        Specialization specialization,
+                                                        Doctor doctor,
+                                                        Hospital hospital) {
 
         Appointment appointment = new Appointment();
         appointment.setAppointmentDate(requestDTO.getAppointmentDate());
@@ -57,10 +58,27 @@ public class AppointmentUtils {
                 requestDTO.getAppointmentDate(),
                 requestDTO.getAppointmentTime()));
         appointment.setAppointmentNumber(appointmentNumber);
-        appointment.setSerialNumber(generateRandomNumber(6));
         appointment.setCreatedDateNepali(requestDTO.getCreatedDateNepali());
         appointment.setIsFreeFollowUp(requestDTO.getIsFreeFollowUp());
-        appointment.setStatus(PENDING_APPROVAL);
+        parseToAppointment(patient, specialization, doctor, hospital, appointment);
+        return appointment;
+    }
+
+    public static Appointment parseToAppointmentForOthers(AppointmentRequestDTOForOthers requestDTO,
+                                                          String appointmentNumber,
+                                                          Patient patient,
+                                                          Specialization specialization,
+                                                          Doctor doctor,
+                                                          Hospital hospital) {
+
+        Appointment appointment = new Appointment();
+        appointment.setAppointmentTime(parseAppointmentTime(
+                requestDTO.getAppointmentDate(),
+                requestDTO.getAppointmentTime()));
+        appointment.setAppointmentDate(requestDTO.getAppointmentDate());
+        appointment.setAppointmentNumber(appointmentNumber);
+        appointment.setCreatedDateNepali(requestDTO.getCreatedDateNepali());
+        appointment.setIsFreeFollowUp(requestDTO.getIsFreeFollowUp());
         parseToAppointment(patient, specialization, doctor, hospital, appointment);
         return appointment;
     }
@@ -78,6 +96,8 @@ public class AppointmentUtils {
         appointment.setSpecializationId(specialization);
         appointment.setHospitalId(hospital);
         appointment.setPatientId(patient);
+        appointment.setStatus(PENDING_APPROVAL);
+        appointment.setSerialNumber(generateRandomNumber(6));
     }
 
     public static AppointmentSuccessResponseDTO parseToAppointmentSuccessResponseDTO(String appointmentNumber) {

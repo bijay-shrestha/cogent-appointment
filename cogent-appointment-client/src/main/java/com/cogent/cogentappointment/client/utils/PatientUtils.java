@@ -4,11 +4,13 @@ import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestByD
 import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientMinimalResponseDTO;
 import com.cogent.cogentappointment.persistence.enums.Gender;
+import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.HospitalPatientInfo;
 import com.cogent.cogentappointment.persistence.model.Patient;
 import com.cogent.cogentappointment.persistence.model.PatientMetaInfo;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -36,31 +38,47 @@ public class PatientUtils {
         return patient;
     }
 
-    public static HospitalPatientInfo parseHospitalPatientInfo(PatientRequestByDTO requestDTO,
-                                                               Long patientId,
-                                                               Long hospitalId) {
+    public static Patient parseToPatient(String name,
+                                         String mobileNumber,
+                                         Date dateOfBirth,
+                                         String eSewaId,
+                                         Gender gender) {
+        Patient patient = new Patient();
+        patient.setName(toUpperCase(name));
+        patient.setMobileNumber(mobileNumber);
+        patient.setDateOfBirth(dateOfBirth);
+        patient.setESewaId(eSewaId);
+        patient.setGender(gender);
+        patient.setCogentId(generateRandomNumber(4));
+        return patient;
+    }
+
+    public static HospitalPatientInfo parseHospitalPatientInfo(Hospital hospital,
+                                                               Patient patient,
+                                                               Character isSelf,
+                                                               String email,
+                                                               String address) {
+
         HospitalPatientInfo hospitalPatientInfo = new HospitalPatientInfo();
-        hospitalPatientInfo.setHospitalId(hospitalId);
-        hospitalPatientInfo.setPatientId(patientId);
-        hospitalPatientInfo.setIsSelf(requestDTO.getIsSelf());
+        hospitalPatientInfo.setHospital(hospital);
+        hospitalPatientInfo.setPatient(patient);
+        hospitalPatientInfo.setIsSelf(isSelf);
+        hospitalPatientInfo.setEmail(email);
+        hospitalPatientInfo.setAddress(address);
         hospitalPatientInfo.setIsRegistered(NO);
-        hospitalPatientInfo.setEmail(requestDTO.getEmail());
-        hospitalPatientInfo.setAddress(requestDTO.getAddress());
         hospitalPatientInfo.setStatus(ACTIVE);
         return hospitalPatientInfo;
     }
 
     public static PatientMetaInfo parseToPatientMetaInfo(Patient patient,
-                                                         String registrationNumber,
                                                          Character status) {
         PatientMetaInfo patientMetaInfo = new PatientMetaInfo();
         patientMetaInfo.setPatient(patient);
         patientMetaInfo.setMetaInfo(
-                patient.getName() + OR + patient.getMobileNumber() + OR + registrationNumber);
+                patient.getName() + OR + patient.getMobileNumber());
         patientMetaInfo.setStatus(status);
         return patientMetaInfo;
     }
-
 
     public static void updatePatient(PatientUpdateRequestDTO requestDTO,
                                      Patient patient) {

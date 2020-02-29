@@ -1,9 +1,6 @@
 package com.cogent.cogentappointment.client.service.impl;
 
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentSearchDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentTransactionRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.*;
 import com.cogent.cogentappointment.client.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentRejectDTO;
@@ -133,7 +130,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentSuccessResponseDTO save(AppointmentRequestDTO appointmentRequestDTO) {
+    public AppointmentSuccessResponseDTO saveAppointmentForSelf(AppointmentRequestDTOForSelf appointmentRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -148,10 +145,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         validateAppointmentExists(appointmentCount, appointmentRequestDTO.getAppointmentTime());
 
-        Patient patient = fetchPatient(appointmentRequestDTO.getIsNewRegistration(),
+        Hospital hospital = fetchHospital(appointmentRequestDTO.getHospitalId());
+
+        Patient patient = fetchPatientForSelf(appointmentRequestDTO.getIsNewRegistration(),
                 appointmentRequestDTO.getPatientId(),
-                appointmentRequestDTO.getHospitalId(),
-                appointmentRequestDTO.getRequestByPatientInfo()
+                hospital,
+                appointmentRequestDTO.getPatientInfo()
         );
 
         String appointmentNumber = appointmentRepository.generateAppointmentNumber(
@@ -159,12 +158,13 @@ public class AppointmentServiceImpl implements AppointmentService {
                 appointmentRequestDTO.getHospitalId()
         );
 
-        Appointment appointment = parseToAppointment(
-                appointmentRequestDTO, appointmentNumber,
+        Appointment appointment = parseToAppointmentForSelf(
+                appointmentRequestDTO,
+                appointmentNumber,
                 patient,
                 fetchSpecialization(appointmentRequestDTO.getSpecializationId(), appointmentRequestDTO.getHospitalId()),
                 fetchDoctor(appointmentRequestDTO.getDoctorId(), appointmentRequestDTO.getHospitalId()),
-                fetchHospital(appointmentRequestDTO.getHospitalId())
+                hospital
         );
 
         save(appointment);
@@ -182,7 +182,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentSuccessResponseDTO saveForOthers(AppointmentRequestDTO appointmentRequestDTO) {
+    public AppointmentSuccessResponseDTO saveAppointmentForOthers(AppointmentRequestDTO appointmentRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -197,11 +197,11 @@ public class AppointmentServiceImpl implements AppointmentService {
 //
 //        validateAppointmentExists(appointmentCount, appointmentRequestDTO.getAppointmentTime());
 
-        Patient patient = fetchPatient(appointmentRequestDTO.getIsNewRegistration(),
-                appointmentRequestDTO.getPatientId(),
-                appointmentRequestDTO.getHospitalId(),
-                appointmentRequestDTO.getRequestByPatientInfo()
-        );
+//        Patient patient = fetchPatientForSelf(appointmentRequestDTO.getIsNewRegistration(),
+//                appointmentRequestDTO.getPatientId(),
+//                appointmentRequestDTO.getHospitalId(),
+//                appointmentRequestDTO.getRequestBy()
+//        );
 
 //        String appointmentNumber = appointmentRepository.generateAppointmentNumber(
 //                appointmentRequestDTO.getCreatedDateNepali(),
@@ -216,7 +216,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 //                fetchHospital(appointmentRequestDTO.getHospitalId())
 //        );
 //
-//        save(appointment);
+//        saveSelfPatient(appointment);
 //
 //        saveAppointmentTransactionDetail(appointmentRequestDTO.getTransactionInfo(), appointment);
 //
@@ -586,13 +586,13 @@ public class AppointmentServiceImpl implements AppointmentService {
         return specializationService.fetchActiveSpecializationByIdAndHospitalId(specializationId, hospitalId);
     }
 
-    private Patient fetchPatient(Boolean isNewRegistration,
-                                 Long patientId,
-                                 Long hospitalId,
-                                 PatientRequestByDTO patientRequestDTO) {
+    private Patient fetchPatientForSelf(Boolean isNewRegistration,
+                                        Long patientId,
+                                        Hospital hospital,
+                                        PatientRequestByDTO patientRequestDTO) {
 
-        return isNewRegistration ? patientService.save(patientRequestDTO, hospitalId)
-                : patientService.fetchActivePatientById(patientId);
+        return isNewRegistration ? patientService.saveSelfPatient(patientRequestDTO, hospital)
+                : patientService.fetchPatientById(patientId);
     }
 
     private Appointment findPendingAppointmentById(Long appointmentId) {

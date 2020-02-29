@@ -19,7 +19,7 @@ public class SwaggerConstants {
         String RESET_PASSWORD_OPERATION = "Reset password of any admin. This can be done only by those admin who has privilege to do so";
         String UPDATE_AVATAR_OPERATION = "Update admin avatar and if the file size is empty " +
                 "then change the isDefaultImage status as 'Y' else update accordingly.";
-        String VERIFY_ADMIN = "Verify if the confirmation token sent in email (after successful save) is valid" +
+        String VERIFY_ADMIN = "Verify if the confirmation token sent in email (after successful saveSelfPatient) is valid" +
                 " and admin has not been registered.";
         String SAVE_PASSWORD_OPERATION = "Save admin password";
         String FETCH_LOGGED_IN_ADMIN_INFO = "Fetch logged in admin information." +
@@ -135,7 +135,7 @@ public class SwaggerConstants {
         String SEARCH_OPERATION = "Search Doctor Duty Roster according to given request parameters";
         String DETAILS_OPERATION = "Fetch Doctor Duty Roster details by its id";
         String UPDATE_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION = "Update Doctor Duty Roster Override schedules." +
-                " (Can save new override schedules for the same roster or update existing rosters). " +
+                " (Can saveSelfPatient new override schedules for the same roster or update existing rosters). " +
                 " Returns saved/updated override id as response.";
         String DELETE_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION = "Set Doctor Duty Roster Override status as 'D' when deleted. " +
                 " Note that doctor duty roster override can be deleted " +

@@ -14,25 +14,25 @@ public class PatientQuery {
             "SELECT " +
                     " COUNT(p.id)" +
                     " FROM Patient p" +
-                    " LEFT JOIN HospitalPatientInfo hp ON hp.patientId = p.id" +
+                    " LEFT JOIN HospitalPatientInfo hp ON hp.patient.id = p.id" +
                     " WHERE " +
                     " (p.name =:name" +
                     " AND p.mobileNumber =:mobileNumber" +
                     " AND p.dateOfBirth =:dateOfBirth)" +
-                    " AND hp.hospitalId =:hospitalId" +
+                    " AND hp.hospital.id =:hospitalId" +
                     " AND hp.status != 'D'";
 
     public final static String QUERY_TO_VALIDATE_UPDATED_PATIENT_DUPLICITY =
             "SELECT " +
                     " COUNT(p.id)" +
                     " FROM Patient p" +
-                    " LEFT JOIN HospitalPatientInfo hp ON hp.patientId = p.id" +
+                    " LEFT JOIN HospitalPatientInfo hp ON hp.patient.id = p.id" +
                     " WHERE " +
                     " (p.name =:name" +
                     " AND p.mobileNumber =:mobileNumber" +
                     " AND p.dateOfBirth =:dateOfBirth" +
                     " AND p.id !=:id)" +
-                    " AND hp.hospitalId =:hospitalId" +
+                    " AND hp.hospital.id =:hospitalId" +
                     " AND hp.status != 'D'";
 
     private static final String SELECT_CLAUSE_TO_FETCH_PATIENT_DETAILS =
@@ -45,13 +45,13 @@ public class PatientQuery {
                     " hp.email as email," +                                 //[6]
                     " hp.registrationNumber as registrationNumber" +        //[7]
                     " FROM Patient p" +
-                    " LEFT JOIN HospitalPatientInfo hp ON hp.patientId = p.id";
+                    " LEFT JOIN HospitalPatientInfo hp ON hp.patient.id = p.id";
 
     private static final String GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS =
             " WHERE p.name=:name" +
                     " AND p.mobileNumber=:mobileNumber" +
                     " AND p.dateOfBirth =:dateOfBirth" +
-                    " AND hp.hospitalId =:hospitalId" +
+                    " AND hp.hospital.id =:hospitalId" +
                     " AND hp.isSelf=:isSelf" +
                     " AND hp.status='Y'";
 
@@ -108,10 +108,10 @@ public class PatientQuery {
                     " hpi.isRegistered as isRegistered," +
                     QUERY_TO_CALCULATE_PATIENT_AGE +
                     " FROM Patient p " +
-                    " LEFT JOIN HospitalPatientInfo hpi On p.id=hpi.patientId" +
-                    " LEFT JOIN Hospital h ON h.id=hpi.hospitalId" +
+                    " LEFT JOIN HospitalPatientInfo hpi ON p.id=hpi.patient.id" +
+                    " LEFT JOIN Hospital h ON h.id=hpi.hospital.id" +
                     " WHERE p.id=:id" +
-                    " AND hpi.hospitalId =:hospitalId" +
+                    " AND h.id =:hospitalId" +
                     " AND hpi.status='Y'";
 
     public static String QUERY_TO_SEARCH_PATIENT(PatientSearchRequestDTO searchRequestDTO) {
@@ -127,8 +127,8 @@ public class PatientQuery {
                 " hpi.hospitalNumber as hospitalNumber," +                       //[7]
                 QUERY_TO_CALCULATE_PATIENT_AGE +                                //[8]
                 " FROM Patient p" +
-                " LEFT JOIN HospitalPatientInfo hpi ON p.id=hpi.patientId" +
-                " LEFT JOIN Hospital h ON h.id=hpi.hospitalId" +
+                " LEFT JOIN HospitalPatientInfo hpi ON p.id=hpi.patient.id" +
+                " LEFT JOIN Hospital h ON h.id=hpi.hospital.id" +
                 " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id" +
                 GET_WHERE_CLAUSE_FOR_SEARCH_PATIENT(searchRequestDTO);
     }

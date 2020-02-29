@@ -21,8 +21,10 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Function;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.PatientServiceMessages.DUPLICATE_PATIENT_MESSAGE;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.PatientLog.*;
 import static com.cogent.cogentappointment.admin.utils.PatientUtils.*;
@@ -134,25 +136,28 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public void registerPatient(Long patientId) {
+    public void registerPatient(Long patientId, Long hospitalId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(REGISTERING_PATIENT_PROCESS_STARTED);
 
-        HospitalPatientInfo hospitalPatientInfo = hospitalPatientInfoRepository.findByPatientId(patientId)
-                .orElseThrow(() -> new NoContentFoundException(Patient.class, "patientId", patientId.toString()));
+        HospitalPatientInfo hospitalPatientInfo =
+                hospitalPatientInfoRepository.findByPatientAndHospitalId(patientId, hospitalId)
+                        .orElseThrow(() -> PATIENT_WITH_GIVEN_ID_NOT_FOUND.apply(patientId));
 
-        String latestRegistrationNumber =
-                patientRepository.fetchLatestRegistrationNumber(hospitalPatientInfo.getHospital().getId());
+        if (hospitalPatientInfo.getIsRegistered().equals(NO)) {
+            String latestRegistrationNumber =
+                    patientRepository.fetchLatestRegistrationNumber(hospitalPatientInfo.getHospital().getId());
 
-        registerPatientDetails(hospitalPatientInfo, latestRegistrationNumber);
+            registerPatientDetails(hospitalPatientInfo, latestRegistrationNumber);
+        }
 
         log.info(REGISTERING_PATIENT_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
     }
 
     private Patient fetchPatientById(Long id) {
-        return patientRepository.fetchPatientById(id).orElseThrow(() ->
-                new NoContentFoundException(Patient.class));
+        return patientRepository.fetchPatientById(id)
+                .orElseThrow(() -> PATIENT_WITH_GIVEN_ID_NOT_FOUND.apply(id));
     }
 
     private void savePatientMetaInfo(PatientMetaInfo patientMetaInfo) {
@@ -163,15 +168,18 @@ public class PatientServiceImpl implements PatientService {
                                           Date dateOfBirth) {
 
         if (patientCount.intValue() > 0)
-            throw new DataDuplicationException(
-                    String.format(DUPLICATE_PATIENT_MESSAGE,
-                            name,
-                            mobileNumber,
-                            utilDateToSqlDate(dateOfBirth)));
+            throw new DataDuplicationException(String.format(DUPLICATE_PATIENT_MESSAGE,
+                    name, mobileNumber, utilDateToSqlDate(dateOfBirth)));
     }
 
     private HospitalPatientInfo saveHospitalPatientInfo(HospitalPatientInfo hospitalPatientInfo) {
         return hospitalPatientInfoRepository.save(hospitalPatientInfo);
     }
+
+
+    private Function<Long, NoContentFoundException> PATIENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        throw new NoContentFoundException(Patient.class, "patientId", id.toString());
+    };
+
 }
 

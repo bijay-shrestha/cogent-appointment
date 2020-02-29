@@ -35,6 +35,26 @@ public class PatientQuery {
                     " AND hp.hospital.id =:hospitalId" +
                     " AND hp.status != 'D'";
 
+    /* AGE CALCULATION:
+    TIMESTAMPDIFF(YEAR, date_of_birth , CURDATE() ) as _year
+    TIMESTAMPDIFF(MONTH, date_of_birth, CURDATE() ) % 12 as _month
+    FLOOR( TIMESTAMPDIFF( DAY, date_of_birth ,  CURDATE()) % 30.4375 ) as _day
+    * */
+    public static final String QUERY_TO_CALCULATE_PATIENT_AGE =
+            " CASE" +
+                    " WHEN" +
+                    " (((TIMESTAMPDIFF(YEAR, p.dateOfBirth, CURDATE()))<=0) AND" +
+                    " ((TIMESTAMPDIFF(MONTH, p.dateOfBirth, CURDATE()) % 12)<=0))" +
+                    " THEN" +
+                    " CONCAT((FLOOR(TIMESTAMPDIFF(DAY, p.dateOfBirth, CURDATE()) % 30.4375)), ' days')" +
+                    " WHEN" +
+                    " ((TIMESTAMPDIFF(YEAR, p.dateOfBirth ,CURDATE()))<=0)" +
+                    " THEN" +
+                    " CONCAT(((TIMESTAMPDIFF(MONTH, p.dateOfBirth, CURDATE()) % 12)), ' months')" +
+                    " ELSE" +
+                    " CONCAT(((TIMESTAMPDIFF(YEAR, p.dateOfBirth ,CURDATE()))), ' years')" +
+                    " END AS age";
+
     private static final String SELECT_CLAUSE_TO_FETCH_PATIENT_DETAILS =
             " SELECT p.id as patientId," +                                  //[0]
                     " p.name as name," +                                    //[1]
@@ -43,7 +63,8 @@ public class PatientQuery {
                     " p.dateOfBirth as dateOfBirth," +                      //[4]
                     " hp.address as address," +                             //[5]
                     " hp.email as email," +                                 //[6]
-                    " hp.registrationNumber as registrationNumber" +        //[7]
+                    " hp.registrationNumber as registrationNumber," +        //[7]
+                    QUERY_TO_CALCULATE_PATIENT_AGE +
                     " FROM Patient p" +
                     " LEFT JOIN HospitalPatientInfo hp ON hp.patient.id = p.id";
 
@@ -51,9 +72,7 @@ public class PatientQuery {
             " WHERE p.name=:name" +
                     " AND p.mobileNumber=:mobileNumber" +
                     " AND p.dateOfBirth =:dateOfBirth" +
-                    " AND hp.hospital.id =:hospitalId" +
-                    " AND hp.isSelf=:isSelf" +
-                    " AND hp.status='Y'";
+                    " AND hp.isSelf=:isSelf";
 
     /*FOR SELF*/
     public static final String QUERY_TO_FETCH_PATIENT_DETAILS_FOR_SELF =
@@ -70,26 +89,6 @@ public class PatientQuery {
                     " FROM Patient p" +
                     GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS;
 
-
-    /* AGE CALCULATION:
-   TIMESTAMPDIFF(YEAR, date_of_birth , CURDATE() ) as _year
-   TIMESTAMPDIFF(MONTH, date_of_birth, CURDATE() ) % 12 as _month
-   FLOOR( TIMESTAMPDIFF( DAY, date_of_birth ,  CURDATE()) % 30.4375 ) as _day
-* */
-    public static final String QUERY_TO_CALCULATE_PATIENT_AGE =
-            " CASE" +
-                    " WHEN" +
-                    " (((TIMESTAMPDIFF(YEAR, p.dateOfBirth, CURDATE()))<=0) AND" +
-                    " ((TIMESTAMPDIFF(MONTH, p.dateOfBirth, CURDATE()) % 12)<=0))" +
-                    " THEN" +
-                    " CONCAT((FLOOR(TIMESTAMPDIFF(DAY, p.dateOfBirth, CURDATE()) % 30.4375)), ' days')" +
-                    " WHEN" +
-                    " ((TIMESTAMPDIFF(YEAR, p.dateOfBirth ,CURDATE()))<=0)" +
-                    " THEN" +
-                    " CONCAT(((TIMESTAMPDIFF(MONTH, p.dateOfBirth, CURDATE()) % 12)), ' months')" +
-                    " ELSE" +
-                    " CONCAT(((TIMESTAMPDIFF(YEAR, p.dateOfBirth ,CURDATE()))), ' years')" +
-                    " END AS age";
 
     public static final String QUERY_TO_FETCH_PATIENT_DETAILS_BY_ID =
             "SELECT" +

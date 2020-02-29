@@ -70,13 +70,12 @@ public class PatientUtils {
         return hospitalPatientInfo;
     }
 
-    public static PatientMetaInfo parseToPatientMetaInfo(Patient patient,
-                                                         Character status) {
+    public static PatientMetaInfo parseToPatientMetaInfo(Patient patient) {
         PatientMetaInfo patientMetaInfo = new PatientMetaInfo();
         patientMetaInfo.setPatient(patient);
         patientMetaInfo.setMetaInfo(
                 patient.getName() + OR + patient.getMobileNumber());
-        patientMetaInfo.setStatus(status);
+        patientMetaInfo.setStatus(ACTIVE);
         return patientMetaInfo;
     }
 

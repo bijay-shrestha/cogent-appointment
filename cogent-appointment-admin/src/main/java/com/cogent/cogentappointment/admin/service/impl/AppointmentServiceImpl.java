@@ -275,12 +275,12 @@ public class AppointmentServiceImpl implements AppointmentService {
                     appointment.getPatientId()
             );
 
-            registerPatient(appointment.getPatientId().getId());
+            registerPatient(appointment.getPatientId().getId(), appointment.getHospitalId().getId());
         }
     }
 
-    private void registerPatient(Long patientId) {
-        patientService.registerPatient(patientId);
+    private void registerPatient(Long patientId, Long hospitalId) {
+        patientService.registerPatient(patientId, hospitalId);
     }
 
 }

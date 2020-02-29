@@ -26,8 +26,7 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.PatientServiceMessages.DUPLICATE_PATIENT_MESSAGE;
-import static com.cogent.cogentappointment.client.constants.StatusConstants.ACTIVE;
-import static com.cogent.cogentappointment.client.constants.StatusConstants.DELETED;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.PatientLog.*;
 import static com.cogent.cogentappointment.client.utils.GenderUtils.fetchGenderByCode;
@@ -71,17 +70,10 @@ public class PatientServiceImpl implements PatientService {
 
         Patient patient = fetchPatient(requestDTO);
 
-        if (Objects.isNull(patient))
+        if (Objects.isNull(patient)) {
             patient = savePatientForSelf(requestDTO);
 
-        Long hospitalPatientInfoCount = fetchHospitalPatientInfoCount(patient.getId(), hospital.getId());
-
-        if (hospitalPatientInfoCount.intValue() <= 0) {
-            HospitalPatientInfo hospitalPatientInfo = saveHospitalPatientInfo(
-                    hospital, patient, requestDTO
-            );
-
-            savePatientMetaInfo(parseToPatientMetaInfo(patient, hospitalPatientInfo.getStatus()));
+            savePatientMetaInfo(parseToPatientMetaInfo(patient));
         }
 
         log.info(SAVING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
@@ -119,27 +111,27 @@ public class PatientServiceImpl implements PatientService {
 
         childPatient = savePatientForOthers(requestForPatientInfo);
 
-        Long hospitalPatientInfoCount = fetchHospitalPatientInfoCount(childPatient.getId(), hospital.getId());
-
-        if (hospitalPatientInfoCount.intValue() <= 0) {
-
-            HospitalPatientInfo hospitalPatientInfo = saveHospitalPatientInfo(
-                    hospital, childPatient, requestForPatientInfo
-            );
-
-            savePatientMetaInfo(parseToPatientMetaInfo(childPatient, hospitalPatientInfo.getStatus()));
-
-            PatientRelationInfo patientRelationInfo = fetchPatientRelationInfo(
-                    parentPatient.getId(), childPatient.getId()
-            );
-
-            if (Objects.isNull(patientRelationInfo)) {
-                savePatientRelationInfo(parentPatient, childPatient);
-            } else {
-                if (patientRelationInfo.getStatus().equals(DELETED))
-                    patientRelationInfo.setStatus(ACTIVE);
-            }
-        }
+//        Long hospitalPatientInfoCount = fetchHospitalPatientInfoCount(requestForPatientInfo, hospital.getId());
+//
+//        if (hospitalPatientInfoCount.intValue() <= 0) {
+//
+//            HospitalPatientInfo hospitalPatientInfo = saveHospitalPatientInfo(
+//                    hospital, childPatient, requestForPatientInfo
+//            );
+//
+//            savePatientMetaInfo(parseToPatientMetaInfo(childPatient, hospitalPatientInfo.getStatus()));
+//
+//            PatientRelationInfo patientRelationInfo = fetchPatientRelationInfo(
+//                    parentPatient.getId(), childPatient.getId()
+//            );
+//
+//            if (Objects.isNull(patientRelationInfo)) {
+//                savePatientRelationInfo(parentPatient, childPatient);
+//            } else {
+//                if (patientRelationInfo.getStatus().equals(DELETED))
+//                    patientRelationInfo.setStatus(ACTIVE);
+//            }
+//        }
 
         log.info(SAVING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
@@ -153,8 +145,8 @@ public class PatientServiceImpl implements PatientService {
 
         log.info(FETCHING_PROCESS_STARTED, PATIENT);
 
-        Patient patient = fetchPatient(id);
-
+        Patient patient = patientRepository.fetchPatientById(id)
+                .orElseThrow(() -> PATIENT_WITH_GIVEN_ID_NOT_FOUND.apply(id));
 
         log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
@@ -277,18 +269,21 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public void registerPatient(Long patientId) {
+    public void registerPatient(Long patientId, Long hospitalId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(REGISTERING_PATIENT_PROCESS_STARTED);
 
-        HospitalPatientInfo hospitalPatientInfo = hospitalPatientInfoRepository.findByPatientId(patientId)
-                .orElseThrow(() -> new NoContentFoundException(Patient.class, "patientId", patientId.toString()));
+        HospitalPatientInfo hospitalPatientInfo =
+                hospitalPatientInfoRepository.findByPatientAndHospitalId(patientId, hospitalId)
+                        .orElseThrow(() -> PATIENT_WITH_GIVEN_ID_NOT_FOUND.apply(patientId));
 
-        String latestRegistrationNumber =
-                patientRepository.fetchLatestRegistrationNumber(hospitalPatientInfo.getHospital().getId());
+        if (hospitalPatientInfo.getIsRegistered().equals(NO)) {
+            String latestRegistrationNumber =
+                    patientRepository.fetchLatestRegistrationNumber(hospitalPatientInfo.getHospital().getId());
 
-        registerPatientDetails(hospitalPatientInfo, latestRegistrationNumber);
+            registerPatientDetails(hospitalPatientInfo, latestRegistrationNumber);
+        }
 
         log.info(REGISTERING_PATIENT_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
     }
@@ -356,36 +351,6 @@ public class PatientServiceImpl implements PatientService {
         );
     }
 
-    private HospitalPatientInfo saveHospitalPatientInfo(Hospital hospital,
-                                                        Patient patient,
-                                                        PatientRequestByDTO requestByDTO) {
-
-        HospitalPatientInfo hospitalPatientInfo = parseHospitalPatientInfo(
-                hospital,
-                patient,
-                requestByDTO.getIsSelf(),
-                requestByDTO.getEmail(),
-                requestByDTO.getAddress()
-        );
-
-        return hospitalPatientInfoRepository.save(hospitalPatientInfo);
-    }
-
-    private HospitalPatientInfo saveHospitalPatientInfo(Hospital hospital,
-                                                        Patient patient,
-                                                        PatientRequestForDTO requestForDTO) {
-
-        HospitalPatientInfo hospitalPatientInfo = parseHospitalPatientInfo(
-                hospital,
-                patient,
-                requestForDTO.getIsSelf(),
-                requestForDTO.getEmail(),
-                requestForDTO.getAddress()
-        );
-
-        return hospitalPatientInfoRepository.save(hospitalPatientInfo);
-    }
-
     private PatientRelationInfo fetchPatientRelationInfo(Long parentPatientId,
                                                          Long childPatientId) {
         return patientRelationInfoRepository.fetchPatientRelationInfo(
@@ -399,7 +364,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     private Function<Long, NoContentFoundException> PATIENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        throw new NoContentFoundException(Patient.class, "id", id.toString());
+        throw new NoContentFoundException(Patient.class, "patientId", id.toString());
     };
 
     private Patient fetchPatientByIdAndHospitalId(Long id, Long hospitalId) {
@@ -415,11 +380,6 @@ public class PatientServiceImpl implements PatientService {
         throw new DataDuplicationException(String.format(DUPLICATE_PATIENT_MESSAGE,
                 name, mobileNumber, utilDateToSqlDate(dateOfBirth))
         );
-    }
-
-    private Patient fetchPatient(Long id) {
-        return patientRepository.fetchPatientById(id)
-                .orElseThrow(() -> PATIENT_WITH_GIVEN_ID_NOT_FOUND.apply(id));
     }
 
 }

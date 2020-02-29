@@ -83,6 +83,9 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentFollowUpTrackerService appointmentFollowUpTrackerService;
 
+    private final HospitalPatientInfoService hospitalPatientInfoService;
+
+
     public AppointmentServiceImpl(PatientService patientService,
                                   DoctorService doctorService,
                                   SpecializationService specializationService,
@@ -95,7 +98,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   AppointmentRescheduleLogRepository appointmentRescheduleLogRepository,
                                   AppointmentFollowUpLogRepository appointmentFollowUpLogRepository,
                                   AppointmentReservationLogRepository appointmentReservationLogRepository,
-                                  AppointmentFollowUpTrackerService appointmentFollowUpTrackerService) {
+                                  AppointmentFollowUpTrackerService appointmentFollowUpTrackerService,
+                                  HospitalPatientInfoService hospitalPatientInfoService) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -109,6 +113,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.appointmentFollowUpLogRepository = appointmentFollowUpLogRepository;
         this.appointmentReservationLogRepository = appointmentReservationLogRepository;
         this.appointmentFollowUpTrackerService = appointmentFollowUpTrackerService;
+        this.hospitalPatientInfoService = hospitalPatientInfoService;
     }
 
     @Override
@@ -591,8 +596,17 @@ public class AppointmentServiceImpl implements AppointmentService {
                                         Hospital hospital,
                                         PatientRequestByDTO patientRequestDTO) {
 
-        return isNewRegistration ? patientService.saveSelfPatient(patientRequestDTO, hospital)
+        Patient patient = isNewRegistration ? patientService.saveSelfPatient(patientRequestDTO, hospital)
                 : patientService.fetchPatientById(patientId);
+
+        hospitalPatientInfoService.saveHospitalPatientInfo(
+                hospital, patient,
+                patientRequestDTO.getIsSelf(),
+                patientRequestDTO.getEmail(),
+                patientRequestDTO.getAddress()
+        );
+
+        return patient;
     }
 
     private Appointment findPendingAppointmentById(Long appointmentId) {
@@ -670,12 +684,12 @@ public class AppointmentServiceImpl implements AppointmentService {
                     appointment.getPatientId()
             );
 
-            registerPatient(appointment.getPatientId().getId());
+            registerPatient(appointment.getPatientId().getId(), appointment.getHospitalId().getId());
         }
     }
 
-    private void registerPatient(Long patientId) {
-        patientService.registerPatient(patientId);
+    private void registerPatient(Long patientId, Long hospitalId) {
+        patientService.registerPatient(patientId, hospitalId);
     }
 
 }

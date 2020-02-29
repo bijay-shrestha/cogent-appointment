@@ -26,7 +26,6 @@ import static com.cogent.cogentappointment.client.constants.QueryConstants.Patie
 import static com.cogent.cogentappointment.client.query.DashBoardQuery.QUERY_TO_COUNT_OVERALL_REGISTERED_PATIENTS;
 import static com.cogent.cogentappointment.client.query.PatientQuery.*;
 import static com.cogent.cogentappointment.client.utils.PatientUtils.parseToPatientMinimalResponseDTO;
-import static com.cogent.cogentappointment.client.utils.commons.DateConverterUtils.calculateAge;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
@@ -71,14 +70,10 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
                 .setParameter(NAME, searchRequestDTO.getName())
                 .setParameter(MOBILE_NUMBER, searchRequestDTO.getMobileNumber())
                 .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(searchRequestDTO.getDateOfBirth()))
-                .setParameter(HOSPITAL_ID, searchRequestDTO.getHospitalId())
                 .setParameter(IS_SELF, searchRequestDTO.getIsSelf());
 
         try {
-            PatientDetailResponseDTO detailResponseDTO =
-                    transformQueryToSingleResult(query, PatientDetailResponseDTO.class);
-            detailResponseDTO.setAge(calculateAge(detailResponseDTO.getDateOfBirth()));
-            return detailResponseDTO;
+            return transformQueryToSingleResult(query, PatientDetailResponseDTO.class);
         } catch (NoResultException e) {
             throw new NoContentFoundException(Patient.class, "name", searchRequestDTO.getName());
         }
@@ -88,10 +83,10 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
     public List<PatientMinimalResponseDTO> searchForOthers(PatientMinSearchRequestDTO searchRequestDTO,
                                                            Pageable pageable) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_MINIMAL_PATIENT_FOR_OTHERS)
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_MINIMAL_PATIENT_FOR_OTHERS);
 //                .setParameter(ESEWA_ID, searchRequestDTO.getEsewaId())
 //                .setParameter(IS_SELF, searchRequestDTO.getIsSelf())
-                .setParameter(HOSPITAL_ID, searchRequestDTO.getHospitalId());
+//                .setParameter(HOSPITAL_ID, searchRequestDTO.getHospitalId());
 
         List<Object[]> results = query.getResultList();
 

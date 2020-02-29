@@ -55,7 +55,7 @@ public class DashBoardQuery {
                     " FROM HospitalPatientInfo hpi" +
                     " WHERE " +
                     " hpi.isRegistered='Y'" +
-                    " AND hpi.hospitalId=:hospitalId";
+                    " AND hpi.hospital.id=:hospitalId";
 
     public static String QUERY_TO_FETCH_REVENUE_WEEKLY =
             "SELECT" +

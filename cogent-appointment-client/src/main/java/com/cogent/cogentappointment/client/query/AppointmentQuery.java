@@ -367,7 +367,7 @@ public class AppointmentQuery {
                             " hpi.address as patientAddress" +                                     //[17]
                             " FROM Appointment a" +
                             " LEFT JOIN Patient p ON a.patientId=p.id" +
-                            " LEFT JOIN HospitalPatientInfo hpi ON hpi.patientId =p.id" +
+                            " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                             " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
                             " LEFT JOIN Specialization sp ON a.specializationId=sp.id" +
                             " LEFT JOIN Hospital h ON a.hospitalId=h.id" +
@@ -380,12 +380,11 @@ public class AppointmentQuery {
             AppointmentLogSearchDTO appointmentLogSearchDTO) {
 
         String whereClause = " WHERE " +
-                " hpi.status='Y' " +
-                " AND sp.status='Y' " +
+                " sp.status='Y' " +
                 " AND a.appointmentDate BETWEEN :fromDate AND :toDate" +
                 " AND h.id=:hospitalId";
 
-        if (!Objects.isNull(appointmentLogSearchDTO.getAppointmentNumber()))
+        if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getAppointmentNumber()))
             whereClause += " AND a.appointmentNumber LIKE '%" + appointmentLogSearchDTO.getAppointmentNumber() + "%'";
 
         if (!Objects.isNull(appointmentLogSearchDTO.getStatus()) && !appointmentLogSearchDTO.getStatus().equals(""))

@@ -272,13 +272,12 @@ public class AppointmentQuery {
                             " a.status as status," +                                        //[16]
                             " ard.refundAmount as refundAmount," +
                             " hpi.address as patientAddress" +                            //[17]
-                            //[18]
                             " FROM Appointment a" +
-                            " LEFT JOIN Patient p ON a.patientId=p.id" +
-                            " LEFT JOIN HospitalPatientInfo hpi ON hpi.patientId =p.id" +
+                            " LEFT JOIN Patient p ON a.patientId.id=p.id" +
+                            " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                             " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
                             " LEFT JOIN Specialization sp ON a.specializationId=sp.id" +
-                            " LEFT JOIN Hospital h ON a.hospitalId=h.id" +
+                            " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
                             " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id" +
                             " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
                             " LEFT JOIN AppointmentRefundDetail ard ON a.id=ard.appointmentId"
@@ -289,11 +288,10 @@ public class AppointmentQuery {
             AppointmentLogSearchDTO appointmentLogSearchDTO) {
 
         String whereClause = " WHERE " +
-                " hpi.status='Y' " +
-                " AND sp.status='Y' " +
+                " sp.status='Y' " +
                 " AND a.appointmentDate BETWEEN :fromDate AND :toDate";
 
-        if (!Objects.isNull(appointmentLogSearchDTO.getAppointmentNumber()))
+        if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getAppointmentNumber()))
             whereClause += " AND a.appointmentNumber LIKE '%" + appointmentLogSearchDTO.getAppointmentNumber() + "%'";
 
         if (!Objects.isNull(appointmentLogSearchDTO.getStatus()) && !appointmentLogSearchDTO.getStatus().equals(""))
@@ -320,7 +318,7 @@ public class AppointmentQuery {
         if (!Objects.isNull(appointmentLogSearchDTO.getDoctorId()))
             whereClause += " AND d.id = " + appointmentLogSearchDTO.getDoctorId();
 
-        whereClause += " ORDER BY a.appointmentDate DESC";
+        whereClause += " ORDER BY a.appointmentDate DESC ";
 
         return whereClause;
     }

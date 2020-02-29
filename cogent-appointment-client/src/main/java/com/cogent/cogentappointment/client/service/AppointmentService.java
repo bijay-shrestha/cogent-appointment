@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.client.service;
 
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRequestDTOForOthers;
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRequestDTOForSelf;
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
@@ -24,7 +24,6 @@ import com.cogent.cogentappointment.client.dto.response.appointment.log.Appointm
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
-import com.cogent.cogentappointment.persistence.model.Appointment;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -40,7 +39,7 @@ public interface AppointmentService {
 
     AppointmentSuccessResponseDTO saveAppointmentForSelf(AppointmentRequestDTOForSelf appointmentRequestDTO);
 
-    AppointmentSuccessResponseDTO saveAppointmentForOthers(AppointmentRequestDTO appointmentRequestDTO);
+    AppointmentSuccessResponseDTO saveAppointmentForOthers(AppointmentRequestDTOForOthers appointmentRequestDTO);
 
     List<AppointmentMinResponseDTO> fetchPendingAppointments(AppointmentSearchDTO searchDTO);
 

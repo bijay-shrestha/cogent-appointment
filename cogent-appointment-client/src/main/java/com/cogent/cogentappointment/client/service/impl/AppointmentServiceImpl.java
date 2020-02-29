@@ -187,7 +187,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentSuccessResponseDTO saveAppointmentForOthers(AppointmentRequestDTO appointmentRequestDTO) {
+    public AppointmentSuccessResponseDTO saveAppointmentForOthers(AppointmentRequestDTOForOthers appointmentRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 

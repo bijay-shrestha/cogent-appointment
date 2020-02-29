@@ -1,8 +1,6 @@
 package com.cogent.cogentappointment.client.resource;
 
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.*;
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.cancel.AppointmentCancelRequestDTO;
@@ -52,14 +50,14 @@ public class AppointmentResource {
     /*eSewa*/
     @PostMapping(SAVE + SELF)
     @ApiOperation(SAVE_OPERATION)
-    public ResponseEntity<?> saveAppointmentForSelf(@Valid @RequestBody AppointmentRequestDTO requestDTO) {
-        return created(create(API_V1 + BASE_APPOINTMENT)).body(appointmentService.save(requestDTO));
+    public ResponseEntity<?> saveAppointmentForSelf(@Valid @RequestBody AppointmentRequestDTOForSelf requestDTO) {
+        return created(create(API_V1 + BASE_APPOINTMENT)).body(appointmentService.saveAppointmentForSelf(requestDTO));
     }
 
     @PostMapping(SAVE + OTHERS)
     @ApiOperation(SAVE_OPERATION)
-    public ResponseEntity<?> saveAppointmentForOthers(@Valid @RequestBody AppointmentRequestDTO requestDTO) {
-        return created(create(API_V1 + BASE_APPOINTMENT)).body(appointmentService.save(requestDTO));
+    public ResponseEntity<?> saveAppointmentForOthers(@Valid @RequestBody AppointmentRequestDTOForOthers requestDTO) {
+        return created(create(API_V1 + BASE_APPOINTMENT)).body(appointmentService.saveAppointmentForOthers(requestDTO));
     }
 
     /*eSewa*/

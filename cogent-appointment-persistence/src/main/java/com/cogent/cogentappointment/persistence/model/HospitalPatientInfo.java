@@ -33,7 +33,7 @@ public class HospitalPatientInfo extends Auditable<String> implements Serializab
     private Hospital hospital;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "patient_id")
+    @JoinColumn(name = "patient_id")
     private Patient patient;
 
     /*Y - MYSELF

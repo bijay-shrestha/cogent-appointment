@@ -1,7 +1,5 @@
 package com.cogent.cogentappointment.client.dto.request.appointment;
 
-import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestByDTO;
-import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestForDTO;
 import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
@@ -19,12 +17,7 @@ import java.util.Date;
 @Builder
 public class AppointmentRequestDTO implements Serializable {
 
-    private PatientRequestByDTO requestBy;
-
-    private PatientRequestForDTO requestFor;
-
-    private AppointmentTransactionRequestDTO transactionInfo;
-
+    @NotNull
     private Boolean isNewRegistration;
 
     @NotNull

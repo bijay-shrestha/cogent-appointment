@@ -70,35 +70,21 @@ public class PatientServiceImpl implements PatientService {
 
         Patient patient = fetchPatient(requestDTO);
 
-        if (Objects.isNull(patient)) {
+        if (Objects.isNull(patient))
             patient = savePatientForSelf(requestDTO);
-
-            savePatientMetaInfo(parseToPatientMetaInfo(patient));
-        }
 
         log.info(SAVING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
         return patient;
     }
 
-    /*CASE 1: BOOK APPOINTMENT FOR SELF AND THEN FOR OTHERS
-   * CASE 2 : BOOK APPOINTMENT FOR OTHERS AND THEN FOR SELF
-   *
-   * FIRST SAVE REQUESTED BY PATIENT INFO IF IT HAS NOT BEEN SAVED (CASE 2)
-   * */
     @Override
-    public Patient saveOtherPatient(PatientRequestByDTO requestByPatientInfo,
-                                    PatientRequestForDTO requestForPatientInfo,
+    public Patient saveOtherPatient(PatientRequestForDTO requestForPatientInfo,
                                     Hospital hospital) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, PATIENT);
-
-        Patient parentPatient = fetchPatient(requestByPatientInfo);
-
-        if (Objects.isNull(parentPatient))
-            parentPatient = savePatientForSelf(requestByPatientInfo);
 
         Patient childPatient = fetchPatient(requestForPatientInfo);
 
@@ -110,28 +96,6 @@ public class PatientServiceImpl implements PatientService {
             );
 
         childPatient = savePatientForOthers(requestForPatientInfo);
-
-//        Long hospitalPatientInfoCount = fetchHospitalPatientInfoCount(requestForPatientInfo, hospital.getId());
-//
-//        if (hospitalPatientInfoCount.intValue() <= 0) {
-//
-//            HospitalPatientInfo hospitalPatientInfo = saveHospitalPatientInfo(
-//                    hospital, childPatient, requestForPatientInfo
-//            );
-//
-//            savePatientMetaInfo(parseToPatientMetaInfo(childPatient, hospitalPatientInfo.getStatus()));
-//
-//            PatientRelationInfo patientRelationInfo = fetchPatientRelationInfo(
-//                    parentPatient.getId(), childPatient.getId()
-//            );
-//
-//            if (Objects.isNull(patientRelationInfo)) {
-//                savePatientRelationInfo(parentPatient, childPatient);
-//            } else {
-//                if (patientRelationInfo.getStatus().equals(DELETED))
-//                    patientRelationInfo.setStatus(ACTIVE);
-//            }
-//        }
 
         log.info(SAVING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 

@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.SAVING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.SAVING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.client.log.constants.PatientLog.HOSPITAL_PATIENT_INFO;
-import static com.cogent.cogentappointment.client.utils.PatientUtils.parseHospitalPatientInfo;
+import static com.cogent.cogentappointment.client.utils.HospitalPatientInfoUtils.parseHospitalPatientInfo;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
@@ -43,7 +43,7 @@ public class HospitalPatientInfoServiceImpl implements HospitalPatientInfoServic
 
         Long hospitalPatientInfoCount = fetchHospitalPatientInfoCount(patient.getId(), hospital.getId());
 
-        if (hospitalPatientInfoCount.intValue() <= 0) {
+        if (hospitalPatientInfoCount.intValue() <= 0){
             HospitalPatientInfo hospitalPatientInfo = parseHospitalPatientInfo(
                     hospital, patient, isSelf, email, address
             );
@@ -54,11 +54,11 @@ public class HospitalPatientInfoServiceImpl implements HospitalPatientInfoServic
         log.info(SAVING_PROCESS_COMPLETED, HOSPITAL_PATIENT_INFO, getDifferenceBetweenTwoTime(startTime));
     }
 
-    private Long fetchHospitalPatientInfoCount(Long patientId, Long hospitalId) {
-        return hospitalPatientInfoRepository.fetchHospitalPatientInfoCount(patientId, hospitalId);
-    }
-
     private void saveHospitalPatientInfo(HospitalPatientInfo hospitalPatientInfo) {
         hospitalPatientInfoRepository.save(hospitalPatientInfo);
+    }
+
+    private Long fetchHospitalPatientInfoCount(Long patientId, Long hospitalId) {
+        return hospitalPatientInfoRepository.fetchHospitalPatientInfoCount(patientId, hospitalId);
     }
 }

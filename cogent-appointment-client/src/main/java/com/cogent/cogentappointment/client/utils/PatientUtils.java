@@ -53,31 +53,7 @@ public class PatientUtils {
         return patient;
     }
 
-    public static HospitalPatientInfo parseHospitalPatientInfo(Hospital hospital,
-                                                               Patient patient,
-                                                               Character isSelf,
-                                                               String email,
-                                                               String address) {
 
-        HospitalPatientInfo hospitalPatientInfo = new HospitalPatientInfo();
-        hospitalPatientInfo.setHospital(hospital);
-        hospitalPatientInfo.setPatient(patient);
-        hospitalPatientInfo.setIsSelf(isSelf);
-        hospitalPatientInfo.setEmail(email);
-        hospitalPatientInfo.setAddress(address);
-        hospitalPatientInfo.setIsRegistered(NO);
-        hospitalPatientInfo.setStatus(ACTIVE);
-        return hospitalPatientInfo;
-    }
-
-    public static PatientMetaInfo parseToPatientMetaInfo(Patient patient) {
-        PatientMetaInfo patientMetaInfo = new PatientMetaInfo();
-        patientMetaInfo.setPatient(patient);
-        patientMetaInfo.setMetaInfo(
-                patient.getName() + OR + patient.getMobileNumber());
-        patientMetaInfo.setStatus(ACTIVE);
-        return patientMetaInfo;
-    }
 
     public static void updatePatient(PatientUpdateRequestDTO requestDTO,
                                      Patient patient) {

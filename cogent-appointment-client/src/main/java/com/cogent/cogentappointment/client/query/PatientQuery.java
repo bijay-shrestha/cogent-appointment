@@ -78,7 +78,7 @@ public class PatientQuery {
     public static final String QUERY_TO_FETCH_PATIENT_DETAILS_FOR_SELF =
             SELECT_CLAUSE_TO_FETCH_PATIENT_DETAILS + GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS;
 
-    public static final String QUERY_TO_FETCH_MINIMAL_PATIENT_FOR_OTHERS =
+    public static final String QUERY_TO_FETCH_MINIMAL_PATIENT_INFO_FOR_OTHERS =
             " SELECT p.id as patientId," +                                  //[0]
                     " p.name as name," +                                    //[1]
                     " p.mobileNumber as mobileNumber," +                    //[2]
@@ -88,7 +88,6 @@ public class PatientQuery {
                     " p.registrationNumber as registrationNumber" +         //[6]
                     " FROM Patient p" +
                     GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS;
-
 
     public static final String QUERY_TO_FETCH_PATIENT_DETAILS_BY_ID =
             "SELECT" +

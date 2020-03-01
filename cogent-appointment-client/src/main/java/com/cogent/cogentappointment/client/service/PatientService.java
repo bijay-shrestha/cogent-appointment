@@ -19,7 +19,7 @@ public interface PatientService {
 
     Patient saveSelfPatient(PatientRequestByDTO requestDTO, Hospital hospital);
 
-    Patient saveOtherPatient(PatientRequestByDTO requestByPatientInfo,
+    Patient saveOtherPatient(
                              PatientRequestForDTO requestForPatientInfo,
                              Hospital hospital);
 

@@ -16,37 +16,12 @@ import java.util.Date;
 @Getter
 @Setter
 public class AppointmentRequestDTOForOthers implements Serializable {
+
     private PatientRequestByDTO requestBy;
 
     private PatientRequestForDTO requestFor;
 
     private AppointmentTransactionRequestDTO transactionInfo;
 
-    private Boolean isNewRegistration;
-
-    @NotNull
-    private Long hospitalId;
-
-    private Long patientId;
-
-    @NotNull
-    private Long specializationId;
-
-    @NotNull
-    private Long doctorId;
-
-    @NotNull
-    private Date appointmentDate;
-
-    @NotNull
-    @NotEmpty
-    private String appointmentTime;
-
-    @NotNull
-    @NotEmpty
-    private String createdDateNepali;
-
-    private Character isFreeFollowUp;
-
-    private Long parentAppointmentId;
+    private AppointmentRequestDTO appointmentInfo;
 }

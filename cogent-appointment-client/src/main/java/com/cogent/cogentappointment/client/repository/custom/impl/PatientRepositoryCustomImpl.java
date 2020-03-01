@@ -83,7 +83,7 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
     public List<PatientMinimalResponseDTO> searchForOthers(PatientMinSearchRequestDTO searchRequestDTO,
                                                            Pageable pageable) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_MINIMAL_PATIENT_FOR_OTHERS);
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_MINIMAL_PATIENT_INFO_FOR_OTHERS);
 //                .setParameter(ESEWA_ID, searchRequestDTO.getEsewaId())
 //                .setParameter(IS_SELF, searchRequestDTO.getIsSelf())
 //                .setParameter(HOSPITAL_ID, searchRequestDTO.getHospitalId());

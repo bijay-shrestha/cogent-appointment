@@ -23,10 +23,7 @@ public class PatientDetailByAppointmentTimeRequestDTO implements Serializable {
     private Long doctorId;
 
     @NotNull
-    private Date appointmentDate;
-
-    @NotNull
-    private String appointmentTime;
+    private Long appointmentId;
 
 
 }

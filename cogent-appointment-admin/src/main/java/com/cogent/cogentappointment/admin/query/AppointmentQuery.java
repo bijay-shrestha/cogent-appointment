@@ -432,7 +432,7 @@ public class AppointmentQuery {
             (appointmentTimeRequestDTO) ->
                     " SELECT " +
                             " a.appointmentNumber as appointmentNumber," +
-                            " a.appointmentTime as appointmentTime," +
+                            " DATE_FORMAT(a.appointmentTime, '%H:%i %p') as appointmentTime," +
                             " p.name as patientName," +
                             " p.mobileNumber as patientMobileNumber," +
                             " hpi.address as patientAddress" +
@@ -446,8 +446,7 @@ public class AppointmentQuery {
     private static String GET_WHERE_CLAUSE_TO_SEARCH_PATIENT_DETAIL_BY_APPOINTMENT_DETAIL(PatientDetailByAppointmentTimeRequestDTO requestDTO) {
 
         String whereClause = " WHERE " +
-                " s.status='Y' " +
-                " AND a.status='PA'";
+                " a.status='PA'";
 
         if (!Objects.isNull(requestDTO.getDoctorId()))
             whereClause += " AND d.id = " + requestDTO.getDoctorId();
@@ -455,11 +454,9 @@ public class AppointmentQuery {
         if (!Objects.isNull(requestDTO.getHospitalId()))
             whereClause += " AND hpi.hospitalId = " + requestDTO.getHospitalId();
 
-        if (!Objects.isNull(requestDTO.getAppointmentTime()))
-            whereClause += " AND a.appointmentTime = '" + requestDTO.getAppointmentTime() + "'";
+        if (!Objects.isNull(requestDTO.getAppointmentId()))
+            whereClause += " AND a.id = " + requestDTO.getAppointmentId();
 
-        if (!Objects.isNull(requestDTO.getAppointmentDate()))
-            whereClause += " AND a.appointmentDate = " + utilDateToSqlDate(requestDTO.getAppointmentDate());
 
         return whereClause;
     }

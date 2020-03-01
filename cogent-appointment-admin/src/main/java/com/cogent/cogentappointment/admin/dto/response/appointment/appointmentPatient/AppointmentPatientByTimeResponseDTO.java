@@ -14,14 +14,14 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class AppointmentPatientByTimeResponseDTO implements Serializable {
 
+    private String appointmentNumber;
+
+    private String appointmentTime;
+
     private String patientName;
 
     private String patientMobileNumber;
 
     private String patientAddress;
-
-    private String appointmentNumber;
-
-    private String appointmentTime;
 
 }

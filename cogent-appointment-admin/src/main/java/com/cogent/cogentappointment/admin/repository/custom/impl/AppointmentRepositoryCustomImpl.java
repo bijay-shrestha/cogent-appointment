@@ -23,6 +23,7 @@ import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.query.AppointmentQuery;
 import com.cogent.cogentappointment.admin.repository.custom.AppointmentRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Appointment;
+import com.cogent.cogentappointment.persistence.model.Patient;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -202,7 +203,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                     transformQueryToSingleResult(query, AppointmentPatientByTimeResponseDTO.class);
             return detailResponseDTO;
         } catch (NoResultException e) {
-            throw new NoContentFoundException(Appointment.class, "name", appointmentTimeRequestDTO.getAppointmentTime().toString());
+            throw new NoContentFoundException(Patient.class, "name", appointmentTimeRequestDTO.getAppointmentId().toString());
         }
     }
 

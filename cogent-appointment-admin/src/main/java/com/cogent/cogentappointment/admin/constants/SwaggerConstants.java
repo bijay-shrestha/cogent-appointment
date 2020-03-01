@@ -56,6 +56,7 @@ public class SwaggerConstants {
     public interface AppointmentStatusConstant {
         String BASE_API_VALUE = "This is Appointment Status Resource";
         String FETCH_APPOINTMENT_STATUS = "Fetch appointment status.";
+        String FETCH_APPOINTMENT_PATIENT_DETAIL_BY_APPOINTMENT_TIME = "Fetch patient detail by appointment time.";
     }
 
     public interface AuthenticateConstant {

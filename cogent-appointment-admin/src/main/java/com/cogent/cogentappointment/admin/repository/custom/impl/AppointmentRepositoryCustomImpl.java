@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPatientDetail.PatientDetailByAppointmentTimeRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPendingApproval.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
@@ -9,6 +10,7 @@ import com.cogent.cogentappointment.admin.dto.request.dashboard.DashBoardRequest
 import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentBookedDateResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.AppointmentLogResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPatient.AppointmentPatientByTimeResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPendingApproval.AppointmentPendingApprovalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentQueue.AppointmentQueueSearchDTO;
@@ -26,6 +28,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.Date;
@@ -189,6 +192,20 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         return results;
     }
+
+    @Override
+    public AppointmentPatientByTimeResponseDTO fetchPatientDetailByAppointmentTime(PatientDetailByAppointmentTimeRequestDTO appointmentTimeRequestDTO) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_DETAIL_BY_APPOINMTENT_TIME.apply(appointmentTimeRequestDTO));
+
+        try {
+            AppointmentPatientByTimeResponseDTO detailResponseDTO =
+                    transformQueryToSingleResult(query, AppointmentPatientByTimeResponseDTO.class);
+            return detailResponseDTO;
+        } catch (NoResultException e) {
+            throw new NoContentFoundException(Appointment.class, "name", appointmentTimeRequestDTO.getAppointmentTime().toString());
+        }
+    }
+
 
     private Query getQueryToFetchRefundAppointments(AppointmentRefundSearchDTO searchDTO) {
         return createQuery.apply(entityManager, QUERY_TO_FETCH_REFUND_APPOINTMENTS(searchDTO))

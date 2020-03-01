@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.query;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPatientDetail.PatientDetailByAppointmentTimeRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPendingApproval.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
@@ -12,6 +13,7 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.VACANT;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
 
 /**
  * @author smriti on 2019-10-22
@@ -421,6 +423,43 @@ public class AppointmentQuery {
             whereClause += " AND h.id = " + appointmentQueueRequestDTO.getHospitalId();
 
         whereClause += " ORDER BY a.appointmentTime ASC";
+
+        return whereClause;
+    }
+
+
+    public static Function<PatientDetailByAppointmentTimeRequestDTO, String> QUERY_TO_FETCH_PATIENT_DETAIL_BY_APPOINMTENT_TIME =
+            (appointmentTimeRequestDTO) ->
+                    " SELECT " +
+                            " a.appointmentNumber as appointmentNumber," +
+                            " a.appointmentTime as appointmentTime," +
+                            " p.name as patientName," +
+                            " p.mobileNumber as patientMobileNumber," +
+                            " hpi.address as patientAddress" +
+                            " FROM Appointment a" +
+                            " LEFT JOIN Doctor d ON d.id=a.doctorId.id" +
+                            " LEFT JOIN Specialization s ON s.id=a.specializationId.id" +
+                            " LEFT JOIN Hospital h ON h.id =a.hospitalId.id" +
+                            " LEFT JOIN Patient p ON p.id=a.patientId.id" +
+                            " LEFT JOIN HospitalPatientInfo hpi ON hpi.patientId=a.id" + GET_WHERE_CLAUSE_TO_SEARCH_PATIENT_DETAIL_BY_APPOINTMENT_DETAIL(appointmentTimeRequestDTO);
+
+    private static String GET_WHERE_CLAUSE_TO_SEARCH_PATIENT_DETAIL_BY_APPOINTMENT_DETAIL(PatientDetailByAppointmentTimeRequestDTO requestDTO) {
+
+        String whereClause = " WHERE " +
+                " s.status='Y' " +
+                " AND a.status='PA'";
+
+        if (!Objects.isNull(requestDTO.getDoctorId()))
+            whereClause += " AND d.id = " + requestDTO.getDoctorId();
+
+        if (!Objects.isNull(requestDTO.getHospitalId()))
+            whereClause += " AND hpi.hospitalId = " + requestDTO.getHospitalId();
+
+        if (!Objects.isNull(requestDTO.getAppointmentTime()))
+            whereClause += " AND a.appointmentTime = '" + requestDTO.getAppointmentTime() + "'";
+
+        if (!Objects.isNull(requestDTO.getAppointmentDate()))
+            whereClause += " AND a.appointmentDate = " + utilDateToSqlDate(requestDTO.getAppointmentDate());
 
         return whereClause;
     }

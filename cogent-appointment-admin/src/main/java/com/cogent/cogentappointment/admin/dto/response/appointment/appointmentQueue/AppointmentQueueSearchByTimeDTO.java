@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.admin.dto.response.appointment.appointmentQ
 
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -12,7 +13,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppointmentQueueSearchByTimeDTO {
+public class AppointmentQueueSearchByTimeDTO implements Serializable {
 
     private Long appointmentTime;
 

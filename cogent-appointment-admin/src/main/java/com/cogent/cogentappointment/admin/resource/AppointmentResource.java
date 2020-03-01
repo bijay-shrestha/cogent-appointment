@@ -67,7 +67,7 @@ public class AppointmentResource {
         return ok().body(appointmentService.searchPendingVisitApprovals(searchRequestDTO, pageable));
     }
 
-    @GetMapping(APPROVE + APPOINTMENT_ID_PATH_VARIABLE_BASE)
+    @GetMapping(CHECK_IN + APPOINTMENT_ID_PATH_VARIABLE_BASE)
     @ApiOperation(APPROVE_APPOINTMENT)
     public ResponseEntity<?> approveAppointment(@PathVariable("appointmentId") Long appointmentId) {
         appointmentService.approveAppointment(appointmentId);

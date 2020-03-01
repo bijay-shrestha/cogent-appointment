@@ -22,7 +22,6 @@ import java.util.Date;
 import java.util.List;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
-import static com.cogent.cogentappointment.client.constants.QueryConstants.PatientQueryConstants.IS_SELF;
 import static com.cogent.cogentappointment.client.query.DashBoardQuery.QUERY_TO_COUNT_OVERALL_REGISTERED_PATIENTS;
 import static com.cogent.cogentappointment.client.query.PatientQuery.*;
 import static com.cogent.cogentappointment.client.utils.PatientUtils.parseToPatientMinimalResponseDTO;
@@ -69,8 +68,7 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_DETAILS_FOR_SELF)
                 .setParameter(NAME, searchRequestDTO.getName())
                 .setParameter(MOBILE_NUMBER, searchRequestDTO.getMobileNumber())
-                .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(searchRequestDTO.getDateOfBirth()))
-                .setParameter(IS_SELF, searchRequestDTO.getIsSelf());
+                .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(searchRequestDTO.getDateOfBirth()));
 
         try {
             return transformQueryToSingleResult(query, PatientDetailResponseDTO.class);

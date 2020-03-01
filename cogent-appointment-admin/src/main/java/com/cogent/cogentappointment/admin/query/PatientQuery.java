@@ -34,7 +34,6 @@ public class PatientQuery {
                     " hpi.hospitalNumber as hospitalNumber," +
                     " hpi.email as email," +
                     " hpi.address as address," +
-                    " hpi.isSelf as isSelf," +
                     " hpi.isRegistered as isRegistered," +
                     " h.id as hospitalId" +
                     " FROM Patient p " +

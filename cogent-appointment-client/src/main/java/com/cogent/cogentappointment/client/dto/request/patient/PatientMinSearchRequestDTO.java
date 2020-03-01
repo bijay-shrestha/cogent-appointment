@@ -25,7 +25,4 @@ public class PatientMinSearchRequestDTO implements Serializable {
 
     @NotNull
     private Date dateOfBirth;
-
-    @NotNull
-    private Character isSelf;
 }

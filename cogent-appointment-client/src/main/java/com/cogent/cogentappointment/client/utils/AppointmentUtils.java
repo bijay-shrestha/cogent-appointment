@@ -286,14 +286,13 @@ public class AppointmentUtils {
             final int PATIENT_GENDER_INDEX = 6;
             final int PATIENT_DOB_INDEX = 7;
             final int IS_REGISTERED_INDEX = 8;
-            final int IS_SELF_INDEX = 9;
-            final int PATIENT_MOBILE_NUMBER_INDEX = 10;
-            final int SPECIALIZATION_NAME_INDEX = 11;
-            final int TRANSACTION_NUMBER_INDEX = 12;
-            final int APPOINTMENT_AMOUNT_INDEX = 13;
-            final int DOCTOR_NAME_INDEX = 14;
-            final int REFUND_AMOUNT_INDEX = 15;
-            final int APPOINTMENT_ID_INDEX = 16;
+            final int PATIENT_MOBILE_NUMBER_INDEX = 9;
+            final int SPECIALIZATION_NAME_INDEX = 10;
+            final int TRANSACTION_NUMBER_INDEX = 11;
+            final int APPOINTMENT_AMOUNT_INDEX = 12;
+            final int DOCTOR_NAME_INDEX = 13;
+            final int REFUND_AMOUNT_INDEX = 14;
+            final int APPOINTMENT_ID_INDEX = 15;
 
             Date appointmentDate = (Date) result[APPOINTMENT_DATE_INDEX];
             Date patientDob = (Date) result[PATIENT_DOB_INDEX];
@@ -319,7 +318,6 @@ public class AppointmentUtils {
                             .patientDob(patientDob)
                             .patientAge(calculateAge(patientDob))
                             .isRegistered((Character) result[IS_REGISTERED_INDEX])
-                            .isSelf((Character) result[IS_SELF_INDEX])
                             .mobileNumber(result[PATIENT_MOBILE_NUMBER_INDEX].toString())
                             .specializationName(result[SPECIALIZATION_NAME_INDEX].toString())
                             .transactionNumber(result[TRANSACTION_NUMBER_INDEX].toString())
@@ -359,15 +357,14 @@ public class AppointmentUtils {
             final int PATIENT_GENDER_INDEX = 6;
             final int PATIENT_DOB_INDEX = 7;
             final int IS_REGISTERED_INDEX = 8;
-            final int IS_SELF_INDEX = 9;
-            final int PATIENT_MOBILE_NUMBER_INDEX = 10;
-            final int SPECIALIZATION_NAME_INDEX = 11;
-            final int TRANSACTION_NUMBER_INDEX = 12;
-            final int APPOINTMENT_AMOUNT_INDEX = 13;
-            final int DOCTOR_NAME_INDEX = 14;
-            final int APPOINTMENT_STATUS_INDEX = 15;
-            final int REFUND_AMOUNT_INDEX = 16;
-            final int PATIENT_ADDRESS_INDEX = 17;
+            final int PATIENT_MOBILE_NUMBER_INDEX = 9;
+            final int SPECIALIZATION_NAME_INDEX = 10;
+            final int TRANSACTION_NUMBER_INDEX = 11;
+            final int APPOINTMENT_AMOUNT_INDEX = 12;
+            final int DOCTOR_NAME_INDEX = 13;
+            final int APPOINTMENT_STATUS_INDEX = 14;
+            final int REFUND_AMOUNT_INDEX = 15;
+            final int PATIENT_ADDRESS_INDEX = 16;
 
             Date appointmentDate = (Date) result[APPOINTMENT_DATE_INDEX];
             Date patientDob = (Date) result[PATIENT_DOB_INDEX];
@@ -394,7 +391,6 @@ public class AppointmentUtils {
                             .patientDob(patientDob)
                             .patientAge(calculateAge(patientDob))
                             .isRegistered((Character) result[IS_REGISTERED_INDEX])
-                            .isSelf((Character) result[IS_SELF_INDEX])
                             .mobileNumber(result[PATIENT_MOBILE_NUMBER_INDEX].toString())
                             .specializationName(result[SPECIALIZATION_NAME_INDEX].toString())
                             .transactionNumber(Objects.isNull(result[TRANSACTION_NUMBER_INDEX])

@@ -63,7 +63,6 @@ public class QueryConstants {
 
     //P
     public interface PatientQueryConstants {
-        String IS_SELF = "isSelf";
         String PARENT_PATIENT_ID = "parentPatientId";
         String CHILD_PATIENT_ID = "childPatientId";
     }

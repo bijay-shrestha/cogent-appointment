@@ -71,8 +71,7 @@ public class PatientQuery {
     private static final String GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS =
             " WHERE p.name=:name" +
                     " AND p.mobileNumber=:mobileNumber" +
-                    " AND p.dateOfBirth =:dateOfBirth" +
-                    " AND hp.isSelf=:isSelf";
+                    " AND p.dateOfBirth =:dateOfBirth" ;
 
     /*FOR SELF*/
     public static final String QUERY_TO_FETCH_PATIENT_DETAILS_FOR_SELF =
@@ -102,7 +101,6 @@ public class PatientQuery {
                     " hpi.hospitalNumber as hospitalNumber," +
                     " hpi.email as email," +
                     " hpi.address as address," +
-                    " hpi.isSelf as isSelf," +
                     " hpi.isRegistered as isRegistered," +
                     QUERY_TO_CALCULATE_PATIENT_AGE +
                     " FROM Patient p " +

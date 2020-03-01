@@ -38,8 +38,6 @@ public class AppointmentLogDTO implements Serializable {
 
     private Date patientDob;
 
-    private Character isSelf;
-
     private Character isRegistered;
 
     private String mobileNumber;

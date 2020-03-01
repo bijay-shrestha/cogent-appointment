@@ -290,14 +290,13 @@ public class AppointmentQuery {
                             " p.gender as patientGender," +                                              //[6]
                             " p.dateOfBirth as patientDob," +                                            //[7]
                             " hpi.isRegistered as isRegistered," +                                       //[8]
-                            " hpi.isSelf as isSelf," +                                                   //[9]
-                            " p.mobileNumber as mobileNumber," +                                        //[10]
-                            " sp.name as specializationName," +                                         //[11]
-                            " atd.transactionNumber as transactionNumber," +                            //[12]
-                            " atd.appointmentAmount as appointmentAmount," +                            //[13]
-                            " d.name as doctorName," +                                                  //[14]
-                            " ard.refundAmount as refundAmount," +                                      //[15]
-                            " a.id as appointmentId" +                                                 //[16]
+                            " p.mobileNumber as mobileNumber," +                                        //[9]
+                            " sp.name as specializationName," +                                         //[10]
+                            " atd.transactionNumber as transactionNumber," +                            //[11]
+                            " atd.appointmentAmount as appointmentAmount," +                            //[12]
+                            " d.name as doctorName," +                                                  //[13]
+                            " ard.refundAmount as refundAmount," +                                      //[14]
+                            " a.id as appointmentId" +                                                 //[15]
                             " FROM Appointment a" +
                             " LEFT JOIN Patient p ON a.patientId=p.id" +
                             " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
@@ -331,9 +330,6 @@ public class AppointmentQuery {
         if (!Objects.isNull(pendingApprovalSearchDTO.getPatientType()))
             whereClause += " AND hpi.isRegistered = '" + pendingApprovalSearchDTO.getPatientType() + "'";
 
-        if (!Objects.isNull(pendingApprovalSearchDTO.getPatientCategory()))
-            whereClause += " AND hpi.isSelf = '" + pendingApprovalSearchDTO.getPatientCategory() + "'";
-
         if (!Objects.isNull(pendingApprovalSearchDTO.getDoctorId()))
             whereClause += " AND d.id = " + pendingApprovalSearchDTO.getDoctorId();
 
@@ -355,15 +351,14 @@ public class AppointmentQuery {
                             " p.gender as patientGender," +                                         //[6]
                             " p.dateOfBirth as patientDob," +                                       //[7]
                             " hpi.isRegistered as isRegistered," +                                  //[8]
-                            " hpi.isSelf as isSelf," +                                             //[9]
-                            " p.mobileNumber as mobileNumber," +                                   //[10]
-                            " sp.name as specializationName," +                                    //[11]
-                            " atd.transactionNumber as transactionNumber," +                       //[12]
-                            " atd.appointmentAmount as appointmentAmount," +                       //[13]
-                            " d.name as doctorName," +                                             //[14]
-                            " a.status as status," +                                               //[15]
-                            " ard.refundAmount as refundAmount," +                                 //[16]
-                            " hpi.address as patientAddress" +                                     //[17]
+                            " p.mobileNumber as mobileNumber," +                                   //[9]
+                            " sp.name as specializationName," +                                    //[10]
+                            " atd.transactionNumber as transactionNumber," +                       //[11]
+                            " atd.appointmentAmount as appointmentAmount," +                       //[12]
+                            " d.name as doctorName," +                                             //[13]
+                            " a.status as status," +                                               //[14]
+                            " ard.refundAmount as refundAmount," +                                 //[15]
+                            " hpi.address as patientAddress" +                                     //[16]
                             " FROM Appointment a" +
                             " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                             " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
@@ -400,9 +395,6 @@ public class AppointmentQuery {
 
         if (!Objects.isNull(appointmentLogSearchDTO.getPatientType()))
             whereClause += " AND hpi.isRegistered = '" + appointmentLogSearchDTO.getPatientType() + "'";
-
-        if (!Objects.isNull(appointmentLogSearchDTO.getPatientCategory()))
-            whereClause += " AND hpi.isSelf = '" + appointmentLogSearchDTO.getPatientCategory() + "'";
 
         if (!Objects.isNull(appointmentLogSearchDTO.getDoctorId()))
             whereClause += " AND d.id = " + appointmentLogSearchDTO.getDoctorId();

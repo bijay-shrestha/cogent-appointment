@@ -23,7 +23,5 @@ public class PatientRequestForDTO implements Serializable {
 
     private String email;
 
-    private Character isSelf;
-
     private String address;
 }

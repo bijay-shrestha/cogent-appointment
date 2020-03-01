@@ -45,6 +45,9 @@ public class PatientRelationInfo extends Auditable<String> implements Serializab
     @Column(name = "status")
     private Character status;
 
+    @Column(name = "is_other")
+    private Character isOther;
+
     @Override
     public String toString() {
         return "PatientRelationInfo{" +

@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.client.dto.request.patient;
 
-import com.cogent.cogentappointment.client.constraintvalidator.Status;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,9 +30,6 @@ public class PatientRequestByDTO implements Serializable {
     private Date dateOfBirth;
 
     private String email;
-
-    @Status
-    private Character isSelf;
 
     private String eSewaId;
 

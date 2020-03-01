@@ -14,19 +14,24 @@ public class HospitalPatientInfoUtils {
 
     public static HospitalPatientInfo parseHospitalPatientInfo(Hospital hospital,
                                                                Patient patient,
-                                                               Character isSelf,
                                                                String email,
                                                                String address) {
 
         HospitalPatientInfo hospitalPatientInfo = new HospitalPatientInfo();
         hospitalPatientInfo.setHospital(hospital);
         hospitalPatientInfo.setPatient(patient);
-        hospitalPatientInfo.setIsSelf(isSelf);
         hospitalPatientInfo.setEmail(email);
         hospitalPatientInfo.setAddress(address);
         hospitalPatientInfo.setIsRegistered(NO);
         hospitalPatientInfo.setStatus(ACTIVE);
         return hospitalPatientInfo;
+    }
+
+    public static void updateHospitalPatientInfo(String email,
+                                                 String address,
+                                                 HospitalPatientInfo hospitalPatientInfo) {
+        hospitalPatientInfo.setEmail(email);
+        hospitalPatientInfo.setAddress(address);
     }
 
 }

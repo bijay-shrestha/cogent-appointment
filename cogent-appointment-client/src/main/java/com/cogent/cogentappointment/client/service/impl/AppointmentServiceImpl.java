@@ -38,9 +38,10 @@ import java.util.*;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AppointmentServiceMessage.APPOINTMENT_EXISTS;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.PatientServiceMessages.DUPLICATE_PATIENT_MESSAGE;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.*;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.APPROVED;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.REFUNDED;
-import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.*;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentReservationLog.APPOINTMENT_RESERVATION_LOG;
@@ -90,7 +91,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final PatientRelationInfoService patientRelationInfoService;
 
-    private final HospitalPatientInfoRepository hospitalPatientInfoRepository;
+    private final PatientRelationInfoRepository patientRelationInfoRepository;
 
     public AppointmentServiceImpl(PatientService patientService,
                                   DoctorService doctorService,
@@ -108,7 +109,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   HospitalPatientInfoService hospitalPatientInfoService,
                                   PatientMetaInfoService patientMetaInfoService,
                                   PatientRelationInfoService patientRelationInfoService,
-                                  HospitalPatientInfoRepository hospitalPatientInfoRepository) {
+                                  PatientRelationInfoRepository patientRelationInfoRepository) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -125,7 +126,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.hospitalPatientInfoService = hospitalPatientInfoService;
         this.patientMetaInfoService = patientMetaInfoService;
         this.patientRelationInfoService = patientRelationInfoService;
-        this.hospitalPatientInfoRepository = hospitalPatientInfoRepository;
+        this.patientRelationInfoRepository = patientRelationInfoRepository;
     }
 
     @Override
@@ -139,7 +140,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         DoctorDutyRosterTimeResponseDTO doctorDutyRosterInfo = fetchDoctorDutyRosterInfo(
                 requestDTO.getAppointmentDate(), requestDTO.getDoctorId(), requestDTO.getSpecializationId());
 
-        AppointmentCheckAvailabilityResponseDTO responseDTO = fetchAvailableTimeSlots(doctorDutyRosterInfo, requestDTO);
+        AppointmentCheckAvailabilityResponseDTO responseDTO =
+                fetchAvailableTimeSlots(doctorDutyRosterInfo, requestDTO);
 
         log.info(CHECK_AVAILABILITY_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
 
@@ -162,7 +164,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 appointmentInfo.getSpecializationId()
         );
 
-        validateAppointmentExists(appointmentCount,appointmentInfo.getAppointmentTime());
+        validateAppointmentExists(appointmentCount, appointmentInfo.getAppointmentTime());
 
         Hospital hospital = fetchHospital(appointmentInfo.getHospitalId());
 
@@ -626,9 +628,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         } else
             patient = patientService.fetchPatientById(patientId);
 
-        hospitalPatientInfoService.saveHospitalPatientInfo(
+        hospitalPatientInfoService.saveHospitalPatientInfoForSelf(
                 hospital, patient,
-                patientRequestDTO.getIsSelf(),
                 patientRequestDTO.getEmail(),
                 patientRequestDTO.getAddress()
         );
@@ -640,11 +641,18 @@ public class AppointmentServiceImpl implements AppointmentService {
  * CASE 2 : BOOK APPOINTMENT FOR OTHERS AND THEN FOR SELF
  *
  * FIRST SAVE REQUESTED BY PATIENT INFO IF IT HAS NOT BEEN SAVED (CASE 2)
- * SAVE CORRESPONDING REQUESTED CHILD PATIENT DETAILS
+ * VALIDATE IF REQUESTED FOR PATIENT INFO EXISTS
+ * IF YES,
+ *      FETCH CORRESPONDING PATIENT RELATION INFO AND SIMPLY CHANGE STATUS AS ACTIVE IF IT IS DELETED
+ *      OTHERWISE THROW PATIENT DUPLICITY EXCEPTION
+ *      (THIS IS NECESSARY BECAUSE USER CAN DELETE 'OTHER' CARD
+ *       AND ENTER SAME INFORMATION (NAME, MOBILE NUMBER, DATE OF BIRTH) AGAIN)
+ * IF NO,
+ *      SAVE CORRESPONDING REQUESTED CHILD PATIENT DETAILS IN
+ *      'Patient', 'PatientMetaInfo' AND 'PatientRelationInfo' ENTITY
+ *      SAVE IN PATIENT RELATION INFO (IF ALREADY SAVED- CHECK STATUS AND SET AS ACTIVE IF IT IS DELETED.)
+ *
  * SAVE IN HOSPITAL PATIENT INFO IF IT HAS NOT BEEN SAVED PREVIOUSLY IN REQUESTED HOSPITAL
- * SAVE IN PATIENT RELATION INFO (IF ALREADY SAVED- CHECK STATUS AND SET AS ACTIVE IF IT IS DELETED.
- * THIS IS NECESSARY BECAUSE USER CAN DELETE OTHER CARD AND ENTER SAME INFORMATION (NAME, MOBILE NUMBER, DATE OF BIRTH) )
-
  * */
     private Patient fetchPatientForOthers(Boolean isNewRegistration,
                                           Long patientId,
@@ -652,24 +660,29 @@ public class AppointmentServiceImpl implements AppointmentService {
                                           PatientRequestByDTO requestByPatientInfo,
                                           PatientRequestForDTO requestForPatientInfo) {
 
-        Patient parentPatient = null;
+        Patient parentPatient;
         Patient childPatient;
 
         if (isNewRegistration) {
             parentPatient = patientService.saveSelfPatient(requestByPatientInfo, hospital);
-            childPatient = patientService.saveOtherPatient(requestForPatientInfo, hospital);
-            patientMetaInfoService.savePatientMetaInfo(childPatient);
+
+            childPatient = patientService.fetchPatient(requestForPatientInfo);
+
+            if (!Objects.isNull(childPatient)) {
+                validatePatientDuplicity(parentPatient, childPatient, requestForPatientInfo);
+            } else {
+                childPatient = patientService.saveOtherPatient(requestForPatientInfo, hospital);
+                patientMetaInfoService.savePatientMetaInfo(childPatient);
+                patientRelationInfoService.savePatientRelationInfo(parentPatient, childPatient);
+            }
         } else
             childPatient = patientService.fetchPatientById(patientId);
 
-        hospitalPatientInfoService.saveHospitalPatientInfo(
+        hospitalPatientInfoService.saveHospitalPatientInfoForOthers(
                 hospital, childPatient,
-                requestForPatientInfo.getIsSelf(),
                 requestForPatientInfo.getEmail(),
                 requestForPatientInfo.getAddress()
         );
-
-        patientRelationInfoService.savePatientRelationInfo(parentPatient, childPatient);
 
         return childPatient;
     }
@@ -755,6 +768,29 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private void registerPatient(Long patientId, Long hospitalId) {
         patientService.registerPatient(patientId, hospitalId);
+    }
+
+    private void validatePatientDuplicity(Patient parentPatient,
+                                          Patient childPatient,
+                                          PatientRequestForDTO requestForPatientInfo) {
+
+        PatientRelationInfo patientRelationInfo =
+                patientRelationInfoRepository.fetchPatientRelationInfo(parentPatient.getId(), childPatient.getId());
+
+        if (!Objects.isNull(patientRelationInfo)) {
+
+            if (patientRelationInfo.getStatus().equals(DELETED))
+                patientRelationInfo.setStatus(ACTIVE);
+            else
+                PATIENT_DUPLICATION_EXCEPTION(requestForPatientInfo.getName(),
+                        requestForPatientInfo.getMobileNumber(), requestForPatientInfo.getDateOfBirth());
+        }
+    }
+
+    private static void PATIENT_DUPLICATION_EXCEPTION(String name, String mobileNumber, Date dateOfBirth) {
+        throw new DataDuplicationException(String.format(DUPLICATE_PATIENT_MESSAGE,
+                name, mobileNumber, utilDateToSqlDate(dateOfBirth))
+        );
     }
 }
 

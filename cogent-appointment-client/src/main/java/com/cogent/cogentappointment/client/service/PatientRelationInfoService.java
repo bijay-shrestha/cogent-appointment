@@ -8,4 +8,5 @@ import com.cogent.cogentappointment.persistence.model.Patient;
 public interface PatientRelationInfoService {
 
     void savePatientRelationInfo(Patient parentPatient, Patient childPatient);
+
 }

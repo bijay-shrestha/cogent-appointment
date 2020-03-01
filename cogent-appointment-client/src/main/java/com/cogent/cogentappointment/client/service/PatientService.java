@@ -19,9 +19,10 @@ public interface PatientService {
 
     Patient saveSelfPatient(PatientRequestByDTO requestDTO, Hospital hospital);
 
-    Patient saveOtherPatient(
-                             PatientRequestForDTO requestForPatientInfo,
+    Patient saveOtherPatient(PatientRequestForDTO requestForPatientInfo,
                              Hospital hospital);
+
+    Patient fetchPatient(PatientRequestForDTO patientRequestForDTO);
 
     Patient fetchPatientById(Long id);
 

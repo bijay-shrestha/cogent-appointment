@@ -52,6 +52,11 @@ public class PatientRelationInfoServiceImpl implements PatientRelationInfoServic
         log.info(SAVING_PROCESS_COMPLETED, PATIENT_RELATION_INFO, getDifferenceBetweenTwoTime(startTime));
     }
 
+    private void updatePatientRelationInfoStatus(PatientRelationInfo patientRelationInfo) {
+        if (patientRelationInfo.getStatus().equals(DELETED))
+            patientRelationInfo.setStatus(ACTIVE);
+    }
+
     private PatientRelationInfo fetchPatientRelationInfo(Long parentPatientId,
                                                          Long childPatientId) {
 
@@ -60,10 +65,5 @@ public class PatientRelationInfoServiceImpl implements PatientRelationInfoServic
 
     private void save(PatientRelationInfo patientRelationInfo) {
         patientRelationInfoRepository.save(patientRelationInfo);
-    }
-
-    private void updatePatientRelationInfoStatus(PatientRelationInfo patientRelationInfo) {
-        if (patientRelationInfo.getStatus().equals(DELETED))
-            patientRelationInfo.setStatus(ACTIVE);
     }
 }

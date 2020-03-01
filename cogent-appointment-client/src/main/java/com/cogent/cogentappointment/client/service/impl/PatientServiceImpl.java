@@ -10,11 +10,13 @@ import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.HospitalPatientInfoRepository;
 import com.cogent.cogentappointment.client.repository.PatientMetaInfoRepository;
-import com.cogent.cogentappointment.client.repository.PatientRelationInfoRepository;
 import com.cogent.cogentappointment.client.repository.PatientRepository;
 import com.cogent.cogentappointment.client.service.PatientService;
 import com.cogent.cogentappointment.persistence.enums.Gender;
-import com.cogent.cogentappointment.persistence.model.*;
+import com.cogent.cogentappointment.persistence.model.Hospital;
+import com.cogent.cogentappointment.persistence.model.HospitalPatientInfo;
+import com.cogent.cogentappointment.persistence.model.Patient;
+import com.cogent.cogentappointment.persistence.model.PatientMetaInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -30,7 +32,6 @@ import static com.cogent.cogentappointment.client.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.PatientLog.*;
 import static com.cogent.cogentappointment.client.utils.GenderUtils.fetchGenderByCode;
-import static com.cogent.cogentappointment.client.utils.PatientRelationInfoUtils.parseToPatientRelationInfo;
 import static com.cogent.cogentappointment.client.utils.PatientUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
@@ -49,16 +50,12 @@ public class PatientServiceImpl implements PatientService {
 
     private final HospitalPatientInfoRepository hospitalPatientInfoRepository;
 
-    private final PatientRelationInfoRepository patientRelationInfoRepository;
-
     public PatientServiceImpl(PatientRepository patientRepository,
                               PatientMetaInfoRepository patientMetaInfoRepository,
-                              HospitalPatientInfoRepository hospitalPatientInfoRepository,
-                              PatientRelationInfoRepository patientRelationInfoRepository) {
+                              HospitalPatientInfoRepository hospitalPatientInfoRepository) {
         this.patientRepository = patientRepository;
         this.patientMetaInfoRepository = patientMetaInfoRepository;
         this.hospitalPatientInfoRepository = hospitalPatientInfoRepository;
-        this.patientRelationInfoRepository = patientRelationInfoRepository;
     }
 
     @Override
@@ -86,20 +83,11 @@ public class PatientServiceImpl implements PatientService {
 
         log.info(SAVING_PROCESS_STARTED, PATIENT);
 
-        Patient childPatient = fetchPatient(requestForPatientInfo);
-
-        if (!Objects.isNull(childPatient))
-            PATIENT_DUPLICATION_EXCEPTION(
-                    requestForPatientInfo.getName(),
-                    requestForPatientInfo.getMobileNumber(),
-                    requestForPatientInfo.getDateOfBirth()
-            );
-
-        childPatient = savePatientForOthers(requestForPatientInfo);
+        Patient patient = savePatientForOthers(requestForPatientInfo);
 
         log.info(SAVING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
-        return childPatient;
+        return patient;
     }
 
     @Override
@@ -252,6 +240,15 @@ public class PatientServiceImpl implements PatientService {
         log.info(REGISTERING_PATIENT_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
     }
 
+    @Override
+    public Patient fetchPatient(PatientRequestForDTO patientRequestForDTO) {
+        return patientRepository.fetchPatient(
+                patientRequestForDTO.getName(),
+                patientRequestForDTO.getMobileNumber(),
+                patientRequestForDTO.getDateOfBirth()
+        );
+    }
+
     private Patient savePatientForSelf(PatientRequestByDTO requestDTO) {
         return savePatientInfo(
                 requestDTO.getName(),
@@ -298,35 +295,6 @@ public class PatientServiceImpl implements PatientService {
         );
     }
 
-    private Patient fetchPatient(PatientRequestForDTO patientRequestForDTO) {
-        return patientRepository.fetchPatient(
-                patientRequestForDTO.getName(),
-                patientRequestForDTO.getMobileNumber(),
-                patientRequestForDTO.getDateOfBirth()
-        );
-    }
-
-    private Long fetchHospitalPatientInfoCount(Long patientId,
-                                               Long hospitalId) {
-
-        return hospitalPatientInfoRepository.fetchHospitalPatientInfoCount(
-                patientId,
-                hospitalId
-        );
-    }
-
-    private PatientRelationInfo fetchPatientRelationInfo(Long parentPatientId,
-                                                         Long childPatientId) {
-        return patientRelationInfoRepository.fetchPatientRelationInfo(
-                parentPatientId, childPatientId);
-    }
-
-    private void savePatientRelationInfo(Patient parentPatientId,
-                                         Patient childPatientId) {
-        PatientRelationInfo patientRelationInfo = parseToPatientRelationInfo(parentPatientId, childPatientId);
-        patientRelationInfoRepository.save(patientRelationInfo);
-    }
-
     private Function<Long, NoContentFoundException> PATIENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         throw new NoContentFoundException(Patient.class, "patientId", id.toString());
     };
@@ -334,10 +302,6 @@ public class PatientServiceImpl implements PatientService {
     private Patient fetchPatientByIdAndHospitalId(Long id, Long hospitalId) {
         return patientRepository.fetchPatientByIdAndHospitalId(id, hospitalId).orElseThrow(() ->
                 new NoContentFoundException(Patient.class));
-    }
-
-    private void savePatientMetaInfo(PatientMetaInfo patientMetaInfo) {
-        patientMetaInfoRepository.save(patientMetaInfo);
     }
 
     private static void PATIENT_DUPLICATION_EXCEPTION(String name, String mobileNumber, Date dateOfBirth) {

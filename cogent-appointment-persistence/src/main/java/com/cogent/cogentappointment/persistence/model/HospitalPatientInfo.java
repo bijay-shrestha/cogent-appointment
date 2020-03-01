@@ -36,12 +36,6 @@ public class HospitalPatientInfo extends Auditable<String> implements Serializab
     @JoinColumn(name = "patient_id")
     private Patient patient;
 
-    /*Y - MYSELF
-    * N- OTHERS
-    * */
-    @Column(name = "is_self")
-    private Character isSelf;
-
     /* Y - PATIENT IS REGISTERED
     * N - PATIENT IS NOT REGISTERED
     * PATIENT IS REGISTERED WHEN HE/SHE CHECKS IN THE HOSPITAL
@@ -78,7 +72,6 @@ public class HospitalPatientInfo extends Auditable<String> implements Serializab
                 "id=" + id +
                 ", hospital=" + hospital.getName() +
                 ", patient=" + patient.getName() +
-                ", isSelf=" + isSelf +
                 ", isRegistered=" + isRegistered +
                 ", hospitalNumber=" + hospitalNumber +
                 ", registrationNumber=" + registrationNumber +

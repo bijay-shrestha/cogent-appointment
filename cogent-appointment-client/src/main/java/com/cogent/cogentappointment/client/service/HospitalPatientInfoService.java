@@ -8,6 +8,9 @@ import com.cogent.cogentappointment.persistence.model.Patient;
  */
 public interface HospitalPatientInfoService {
 
-    void saveHospitalPatientInfo(Hospital hospital, Patient patient,
-                                 Character isSelf, String email, String address);
+    void saveHospitalPatientInfoForSelf(Hospital hospital, Patient patient,
+                                        String email, String address);
+
+    void saveHospitalPatientInfoForOthers(Hospital hospital, Patient patient,
+                                          String email, String address);
 }

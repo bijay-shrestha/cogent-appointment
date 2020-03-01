@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.admin.query;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
-import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPatientDetail.PatientDetailByAppointmentTimeRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPatientDetail.AppointmentPatientDetailRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPendingApproval.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
@@ -13,7 +13,6 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.VACANT;
-import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
 
 /**
  * @author smriti on 2019-10-22
@@ -428,7 +427,7 @@ public class AppointmentQuery {
     }
 
 
-    public static Function<PatientDetailByAppointmentTimeRequestDTO, String> QUERY_TO_FETCH_PATIENT_DETAIL_BY_APPOINMTENT_TIME =
+    public static Function<AppointmentPatientDetailRequestDTO, String> QUERY_TO_FETCH_PATIENT_DETAIL_BY_APPOINMTENT_TIME =
             (appointmentTimeRequestDTO) ->
                     " SELECT " +
                             " a.appointmentNumber as appointmentNumber," +
@@ -443,7 +442,7 @@ public class AppointmentQuery {
                             " LEFT JOIN Patient p ON p.id=a.patientId.id" +
                             " LEFT JOIN HospitalPatientInfo hpi ON hpi.patientId=a.id" + GET_WHERE_CLAUSE_TO_SEARCH_PATIENT_DETAIL_BY_APPOINTMENT_DETAIL(appointmentTimeRequestDTO);
 
-    private static String GET_WHERE_CLAUSE_TO_SEARCH_PATIENT_DETAIL_BY_APPOINTMENT_DETAIL(PatientDetailByAppointmentTimeRequestDTO requestDTO) {
+    private static String GET_WHERE_CLAUSE_TO_SEARCH_PATIENT_DETAIL_BY_APPOINTMENT_DETAIL(AppointmentPatientDetailRequestDTO requestDTO) {
 
         String whereClause = " WHERE " +
                 " a.status='PA'";

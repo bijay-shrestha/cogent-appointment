@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
-import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPatientDetail.PatientDetailByAppointmentTimeRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPatientDetail.AppointmentPatientDetailRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPendingApproval.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
@@ -14,7 +14,6 @@ import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPa
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPendingApproval.AppointmentPendingApprovalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentQueue.AppointmentQueueSearchDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentQueue.AppointmentTimeDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.AppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundResponseDTO;
@@ -180,7 +179,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
-    public    Map<String, List<AppointmentQueueDTO>> fetchTodayAppointmentQueueByTime(AppointmentQueueRequestDTO appointmentQueueRequestDTO, Pageable pageable) {
+    public Map<String, List<AppointmentQueueDTO>> fetchTodayAppointmentQueueByTime(AppointmentQueueRequestDTO appointmentQueueRequestDTO, Pageable pageable) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TODAY_APPOINTMENT_QUEUE.apply(appointmentQueueRequestDTO));
 
         int totalItems = query.getResultList().size();
@@ -195,7 +194,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
-    public AppointmentPatientByTimeResponseDTO fetchPatientDetailByAppointmentTime(PatientDetailByAppointmentTimeRequestDTO appointmentTimeRequestDTO) {
+    public AppointmentPatientByTimeResponseDTO fetchPatientDetailByAppointmentTime(AppointmentPatientDetailRequestDTO appointmentTimeRequestDTO) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_DETAIL_BY_APPOINMTENT_TIME.apply(appointmentTimeRequestDTO));
 
         try {

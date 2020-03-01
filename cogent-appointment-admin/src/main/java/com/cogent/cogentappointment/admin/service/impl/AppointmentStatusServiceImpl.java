@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
-import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPatientDetail.PatientDetailByAppointmentTimeRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPatientDetail.AppointmentPatientDetailRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPatient.AppointmentPatientByTimeResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.AppointmentStatusDTO;
@@ -314,7 +314,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
     }
 
     @Override
-    public AppointmentPatientByTimeResponseDTO fetchPatientDetailByAppointmentTime(PatientDetailByAppointmentTimeRequestDTO patientDetailByAppointmentTime) {
+    public AppointmentPatientByTimeResponseDTO fetchPatientDetailByAppointmentTime(AppointmentPatientDetailRequestDTO patientDetailByAppointmentTime) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, APPOINTMENT_PATIENT_DETAIL_BY_APPOINTMENT_TIME);

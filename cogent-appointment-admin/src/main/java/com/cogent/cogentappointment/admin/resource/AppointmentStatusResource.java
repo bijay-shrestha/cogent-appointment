@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.admin.resource;
 
-import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPatientDetail.PatientDetailByAppointmentTimeRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPatientDetail.AppointmentPatientDetailRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.admin.service.AppointmentStatusService;
 import io.swagger.annotations.Api;
@@ -41,7 +41,7 @@ public class AppointmentStatusResource {
 
     @PutMapping(PATIENT_DETAIL)
     @ApiOperation(FETCH_APPOINTMENT_STATUS)
-    public ResponseEntity<?> fetchPatientDetailByAppointmentTime(@Valid @RequestBody PatientDetailByAppointmentTimeRequestDTO requestDTO) {
+    public ResponseEntity<?> fetchPatientDetailByAppointmentTime(@Valid @RequestBody AppointmentPatientDetailRequestDTO requestDTO) {
         return ok(appointmentStatusService.fetchPatientDetailByAppointmentTime(requestDTO));
     }
 }

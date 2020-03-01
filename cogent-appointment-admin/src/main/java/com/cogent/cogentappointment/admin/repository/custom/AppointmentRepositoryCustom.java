@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.admin.repository.custom;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
-import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPatientDetail.PatientDetailByAppointmentTimeRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPatientDetail.AppointmentPatientDetailRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPendingApproval.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
@@ -63,6 +63,6 @@ public interface AppointmentRepositoryCustom {
 
     Map<String, List<AppointmentQueueDTO>> fetchTodayAppointmentQueueByTime(AppointmentQueueRequestDTO appointmentQueueRequestDTO, Pageable pageable);
 
-    AppointmentPatientByTimeResponseDTO fetchPatientDetailByAppointmentTime(PatientDetailByAppointmentTimeRequestDTO detailByAppointmentTimeRequestDTO);
+    AppointmentPatientByTimeResponseDTO fetchPatientDetailByAppointmentTime(AppointmentPatientDetailRequestDTO detailByAppointmentTimeRequestDTO);
 
 }

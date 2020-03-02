@@ -54,12 +54,12 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public PatientDetailResponseDTO fetchDetailsById(Long id) {
+    public PatientDetailResponseDTO fetchDetailsById(Long hospitalPatientInfoId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, PATIENT);
 
-        PatientDetailResponseDTO responseDTO = patientRepository.fetchDetailsById(id);
+        PatientDetailResponseDTO responseDTO = patientRepository.fetchDetailsById(hospitalPatientInfoId);
 
         log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
@@ -85,7 +85,7 @@ public class PatientServiceImpl implements PatientService {
 
         log.info(UPDATING_PROCESS_STARTED, PATIENT);
 
-        Patient patientToBeUpdated = fetchPatientById(updateRequestDTO.getId());
+        Patient patientToBeUpdated = patientRepository.getPatientByHospitalPatientInfoId(updateRequestDTO.getId());
 
         HospitalPatientInfo hospitalPatientInfoToBeUpdated = hospitalPatientInfoRepository
                 .fetchHospitalPatientInfoByPatientId(updateRequestDTO.getId());
@@ -99,7 +99,7 @@ public class PatientServiceImpl implements PatientService {
 
         saveHospitalPatientInfo(updateHospitalPatientInfo(updateRequestDTO, hospitalPatientInfoToBeUpdated));
 
-        PatientMetaInfo patientMetaInfoToBeUpdated = patientMetaInfoRepository.fetchByPatientId(updateRequestDTO.getId());
+        PatientMetaInfo patientMetaInfoToBeUpdated = patientMetaInfoRepository.fetchByPatientId(patientToBeUpdated.getId());
 
         savePatientMetaInfo(updatePatientMetaInfo(hospitalPatientInfoToBeUpdated,
                 patientMetaInfoToBeUpdated,

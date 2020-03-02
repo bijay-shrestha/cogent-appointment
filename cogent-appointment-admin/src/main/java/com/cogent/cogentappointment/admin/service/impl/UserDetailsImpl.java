@@ -1,7 +1,9 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
+import com.cogent.cogentappointment.admin.dto.response.admin.LoggedInAdminDTO;
 import com.cogent.cogentappointment.persistence.model.Admin;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -11,30 +13,31 @@ import java.util.Objects;
 /**
  * @author Sauravi Thapa २०/१/१६
  */
+@Getter
 public class UserDetailsImpl implements UserDetails {
 
     private Long id;
 
     private String username;
 
-    private String email;
+    private Character isCogentAdmin;
 
     @JsonIgnore
     private String password;
 
 
-    public UserDetailsImpl(Long id, String username, String email, String password) {
+    public UserDetailsImpl(Long id, String username, Character isCogentAdmin, String password) {
         this.id = id;
         this.username = username;
-        this.email = email;
+        this.isCogentAdmin = isCogentAdmin;
         this.password = password;
     }
 
-    public static UserDetailsImpl build(Admin admin) {
+    public static UserDetailsImpl build(LoggedInAdminDTO admin) {
         return new UserDetailsImpl(
                 admin.getId(),
                 admin.getUsername(),
-                admin.getEmail(),
+                admin.getIsCogentAdmin(),
                 admin.getPassword());
     }
 

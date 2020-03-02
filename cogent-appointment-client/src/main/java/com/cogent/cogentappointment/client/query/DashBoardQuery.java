@@ -18,7 +18,7 @@ public class DashBoardQuery {
                     " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
                     " WHERE " +
                     " (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
-                    " AND a.status='A'" +
+                    " AND a.status='PA' OR a.status = 'A'" +
                     " AND a.hospitalId.id=:hospitalId";
 
     public static String QUERY_TO_OVER_ALL_APPOINTMENTS =
@@ -80,7 +80,7 @@ public class DashBoardQuery {
                     " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
                     " WHERE " +
                     " atd.transactionDate BETWEEN :fromDate AND :toDate" +
-                    " AND a.status='A'" +
+                    " AND a.status='PA' OR a.status = 'A'" +
                     " AND a.hospitalId.id=:hospitalId" +
                     " GROUP BY atd.transactionDate" +
                     " ORDER BY atd.transactionDate";
@@ -94,7 +94,7 @@ public class DashBoardQuery {
                     " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
                     " WHERE" +
                     " atd.transactionDate BETWEEN :fromDate AND :toDate" +
-                    " AND a.status='A'" +
+                    " AND a.status='PA' OR a.status = 'A'" +
                     " AND a.hospitalId.id=:hospitalId" +
                     " GROUP BY DATE_FORMAT(atd.transactionDate, '%b,%Y')" +
                     " ORDER BY DATE_FORMAT(atd.transactionDate, '%b,%Y')";
@@ -107,7 +107,7 @@ public class DashBoardQuery {
                     " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
                     " WHERE" +
                     " atd.transactionDate BETWEEN :fromDate AND :toDate" +
-                    " AND a.status='A'" +
+                    " AND a.status='PA' OR a.status = 'A'" +
                     " AND a.hospitalId.id=:hospitalId" +
                     " GROUP BY atd.transactionDate" +
                     " ORDER BY atd.transactionDate";
@@ -120,7 +120,7 @@ public class DashBoardQuery {
                     " LEFT JOIN Appointment a On a.id=atd.appointment.id" +
                     " LEFT JOIN Hospital h ON h.id=a.hospitalId.id" +
                     " WHERE atd.transactionDate BETWEEN :fromDate AND :toDate" +
-                    " AND a.status='A'" +
+                    " AND a.status='PA' OR a.status = 'A'" +
                     " AND a.hospitalId.id=:hospitalId";
 
     public static Function<AppointmentQueueRequestDTO, String> QUERY_TO_FETCH_TODAY_APPOINTMENT_QUEUE =

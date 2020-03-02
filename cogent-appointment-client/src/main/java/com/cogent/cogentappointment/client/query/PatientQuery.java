@@ -148,7 +148,7 @@ public class PatientQuery {
                 " p.mobileNumber as mobileNumber," +                             //[3]
                 " hpi.registrationNumber as registrationNumber," +               //[4]
                 " p.eSewaId as eSewaId," +                                       //[5]
-                " hpi.status as status" +                                       //[6]
+                " hpi.status as status," +                                       //[6]
                 " hpi.hospitalNumber as hospitalNumber," +                       //[7]
                 QUERY_TO_CALCULATE_PATIENT_AGE +                                //[8]
                 " FROM Patient p" +

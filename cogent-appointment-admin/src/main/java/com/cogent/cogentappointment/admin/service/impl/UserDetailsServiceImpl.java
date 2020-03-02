@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
+import com.cogent.cogentappointment.admin.dto.response.admin.LoggedInAdminDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.AdminRepository;
 import com.cogent.cogentappointment.persistence.model.Admin;
@@ -26,16 +27,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         this.adminRepository = adminRepository;
     }
 
-    public Admin getAdmin(String userName) {
+    public LoggedInAdminDTO getAdmin(String userName) {
         return adminRepository.getLoggedInAdmin(userName);
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Admin admin = getAdmin(username);
-        if (admin == null) {
+    public UserDetailsImpl loadUserByUsername(String username) throws UsernameNotFoundException {
+        LoggedInAdminDTO loggedInAdminDTO = getAdmin(username);
+        if (loggedInAdminDTO == null) {
             throw new NoContentFoundException("USER NOT FOUND");
         }
-        return UserDetailsImpl.build(admin);
+        return UserDetailsImpl.build(loggedInAdminDTO);
     }
 }

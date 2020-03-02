@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.*;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.query.AdminQuery.*;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
@@ -131,7 +132,19 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         try {
             return transformQueryToSingleResult(query, AdminLoggedInInfoResponseDTO.class);
         } catch (NoResultException e) {
-            throw new NoContentFoundException(ErrorMessageConstants.AdminServiceMessages.ADMIN_INFO_NOT_FOUND);
+            throw new NoContentFoundException(ADMIN_INFO_NOT_FOUND);
+        }
+    }
+
+    @Override
+    public LoggedInAdminDTO getLoggedInAdmin(String username) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_GET_LOGGED_ADMIN_INFO)
+                .setParameter(USERNAME, username);
+
+        try {
+            return transformQueryToSingleResult(query, LoggedInAdminDTO.class);
+        } catch (NoResultException e) {
+            throw ADMIN_NOT_FOUND.apply(username);
         }
     }
 

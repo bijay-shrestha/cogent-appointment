@@ -1,15 +1,12 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
-import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPatientDetail.AppointmentPatientDetailRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPatient.AppointmentPatientByTimeResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.AppointmentStatusDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.AppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.DoctorTimeSlotResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorDropdownDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
 import com.cogent.cogentappointment.admin.repository.DoctorDutyRosterOverrideRepository;
 import com.cogent.cogentappointment.admin.repository.DoctorDutyRosterRepository;
 import com.cogent.cogentappointment.admin.repository.DoctorRepository;
@@ -33,7 +30,6 @@ import static com.cogent.cogentappointment.admin.constants.StringConstant.COMMA_
 import static com.cogent.cogentappointment.admin.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
-import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.APPOINTMENT_PATIENT_DETAIL_BY_APPOINTMENT_TIME;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.APPOINTMENT_STATUS;
 import static com.cogent.cogentappointment.admin.utils.AppointmentStatusUtils.*;
 import static com.cogent.cogentappointment.admin.utils.DoctorDutyRosterUtils.mergeOverrideAndActualDoctorDutyRoster;
@@ -55,17 +51,14 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
 
     private final AppointmentService appointmentService;
 
-    private final AppointmentRepository appointmentRepository;
-
     public AppointmentStatusServiceImpl(DoctorDutyRosterRepository doctorDutyRosterRepository,
                                         DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository,
                                         DoctorRepository doctorRepository,
-                                        AppointmentService appointmentService, AppointmentRepository appointmentRepository) {
+                                        AppointmentService appointmentService) {
         this.doctorDutyRosterRepository = doctorDutyRosterRepository;
         this.doctorDutyRosterOverrideRepository = doctorDutyRosterOverrideRepository;
         this.doctorRepository = doctorRepository;
         this.appointmentService = appointmentService;
-        this.appointmentRepository = appointmentRepository;
     }
 
     @Override
@@ -312,19 +305,4 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
         if (doctorDutyRosterStatus.isEmpty())
             throw new NoContentFoundException(DoctorDutyRoster.class);
     }
-
-    @Override
-    public AppointmentPatientByTimeResponseDTO fetchPatientDetailByAppointmentId(AppointmentPatientDetailRequestDTO patientDetailByAppointmentTime) {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(FETCHING_PROCESS_STARTED, APPOINTMENT_PATIENT_DETAIL_BY_APPOINTMENT_TIME);
-
-        AppointmentPatientByTimeResponseDTO patientByTimeResponseDTO =
-                appointmentRepository.fetchPatientDetailByAppointmentTime(patientDetailByAppointmentTime);
-
-        log.info(FETCHING_PROCESS_COMPLETED, APPOINTMENT_PATIENT_DETAIL_BY_APPOINTMENT_TIME, getDifferenceBetweenTwoTime(startTime));
-
-        return patientByTimeResponseDTO;
-    }
-
 }

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * @author Rupak
@@ -16,7 +17,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class QualificationAliasRequestDTO {
+public class QualificationAliasRequestDTO implements Serializable {
 
     @NotNull
     @NotEmpty

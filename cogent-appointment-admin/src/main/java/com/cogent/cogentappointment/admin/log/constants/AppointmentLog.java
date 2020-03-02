@@ -10,8 +10,6 @@ public class AppointmentLog {
 
     public final static String APPOINTMENT_LOG = "APPOINTMENT LOG";
 
-    public final static String APPOINTMENT_PATIENT_DETAIL_BY_APPOINTMENT_TIME = "PATIENT DETAIL BY APPOINTMENT TIME";
-
     public final static String APPOINTMENT_RESCHEDULE_LOG = "APPOINTMENT RESCHEDULE LOG";
 
     public final static String APPOINTMENT_STATUS = "APPOINTMENT STATUS";

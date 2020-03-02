@@ -48,14 +48,15 @@ public class QualificationAliasRepositoryCustomImpl implements QualificationAlia
 
     @Override
     public Long validateDuplicity(String name) {
-        Query query = createQuery.apply(entityManager, QualificationAliasQuery.QUERY_TO_VALIDATE_DUPLICITY)
+        Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY)
                 .setParameter(NAME, name);
 
         return (Long) query.getSingleResult();
     }
 
     @Override
-    public List<QualificationAliasMinimalResponseDTO> search(QualificationAliasSearchRequestDTO searchRequestDTO, Pageable pageable) {
+    public List<QualificationAliasMinimalResponseDTO> search(QualificationAliasSearchRequestDTO searchRequestDTO,
+                                                             Pageable pageable) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_QUALIFICATION_ALIAS.apply(searchRequestDTO));
 

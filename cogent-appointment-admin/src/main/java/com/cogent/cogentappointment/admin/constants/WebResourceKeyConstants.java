@@ -28,7 +28,6 @@ public class WebResourceKeyConstants {
         String REJECT = "/reject";
         String STATUS = "/status";
         String LOG = "/log";
-        String PATIENT_DETAIL = "/status/patient-detail";
         String PENDING_APPROVAL = "/pending-approval";
         String RESCHEDULE = "/reschedule";
         String RESCHEDULE_LOG = "/reschedule-log";

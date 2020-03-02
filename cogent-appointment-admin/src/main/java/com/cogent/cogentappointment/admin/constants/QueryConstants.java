@@ -6,6 +6,7 @@ package com.cogent.cogentappointment.admin.constants;
 public class QueryConstants {
 
     //A
+    public static final String APPOINTMENT_ID = "appointmentId";
 
     //B
 

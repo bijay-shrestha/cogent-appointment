@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.admin.query;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
-import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPatientDetail.AppointmentPatientDetailRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPendingApproval.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
@@ -425,34 +424,4 @@ public class AppointmentQuery {
 
         return whereClause;
     }
-
-
-    public static Function<AppointmentPatientDetailRequestDTO, String> QUERY_TO_FETCH_PATIENT_DETAIL_BY_APPOINMTENT_TIME =
-            (appointmentTimeRequestDTO) ->
-                    " SELECT " +
-                            " a.appointmentNumber as appointmentNumber," +
-                            " DATE_FORMAT(a.appointmentTime, '%H:%i %p') as appointmentTime," +
-                            " p.name as patientName," +
-                            " p.mobileNumber as patientMobileNumber," +
-                            " hpi.address as patientAddress" +
-                            " FROM Appointment a" +
-                            " LEFT JOIN Doctor d ON d.id=a.doctorId.id" +
-                            " LEFT JOIN Specialization s ON s.id=a.specializationId.id" +
-                            " LEFT JOIN Hospital h ON h.id =a.hospitalId.id" +
-                            " LEFT JOIN Patient p ON p.id=a.patientId.id" +
-                            " LEFT JOIN HospitalPatientInfo hpi ON hpi.patientId=a.id" + GET_WHERE_CLAUSE_TO_SEARCH_PATIENT_DETAIL_BY_APPOINTMENT_DETAIL(appointmentTimeRequestDTO);
-
-    private static String GET_WHERE_CLAUSE_TO_SEARCH_PATIENT_DETAIL_BY_APPOINTMENT_DETAIL(AppointmentPatientDetailRequestDTO requestDTO) {
-
-        String whereClause = " WHERE " +
-                " a.status='PA'";
-
-        if (!Objects.isNull(requestDTO.getAppointmentId()))
-            whereClause += " AND a.id = " + requestDTO.getAppointmentId();
-
-
-        return whereClause;
-    }
-
-
 }

@@ -24,21 +24,17 @@ public class QualificationAliasQuery {
                     " FROM QualificationAlias qa" +
                     " WHERE qa.status = 'Y'";
 
-
     private static  String SELECT_CLAUSE_TO_FETCH_MINIMAL_QUALIFICATION_ALIAS =
             "SELECT qa.id as id," +                                                //[0]
                     " qa.name as name," +                                          //[1]
                     " qa.status as status" +                                       //[2]
                     " FROM QualificationAlias qa ";
 
-
     public static Function<QualificationAliasSearchRequestDTO, String> QUERY_TO_SEARCH_QUALIFICATION_ALIAS =
             (qualificationSearchRequestDTO -> (
                     SELECT_CLAUSE_TO_FETCH_MINIMAL_QUALIFICATION_ALIAS +
                             GET_WHERE_CLAUSE_FOR_SEARCHING_QUALIFICATION_ALIAS(qualificationSearchRequestDTO)
             ));
-
-
 
     private static String GET_WHERE_CLAUSE_FOR_SEARCHING_QUALIFICATION_ALIAS
             (QualificationAliasSearchRequestDTO searchRequestDTO) {

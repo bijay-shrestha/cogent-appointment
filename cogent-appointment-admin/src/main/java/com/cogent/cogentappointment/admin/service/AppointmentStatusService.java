@@ -1,8 +1,6 @@
 package com.cogent.cogentappointment.admin.service;
 
-import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPatientDetail.AppointmentPatientDetailRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPatient.AppointmentPatientByTimeResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.AppointmentStatusDTO;
 
 /**
@@ -11,6 +9,4 @@ import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentSt
 public interface AppointmentStatusService {
 
     AppointmentStatusDTO fetchAppointmentStatusResponseDTO(AppointmentStatusRequestDTO requestDTO);
-
-    AppointmentPatientByTimeResponseDTO fetchPatientDetailByAppointmentId(AppointmentPatientDetailRequestDTO patientDetailByAppointmentTime);
 }

@@ -19,7 +19,8 @@ public class QualificationAliasUtils {
         return qualificationAlias;
     }
 
-    public static QualificationAlias parseToUpdatedQualificationAlias(QualificationAlias qualificationAlias, QualificationAliasUpdateRequestDTO requestDTO) {
+    public static QualificationAlias parseToUpdatedQualificationAlias(QualificationAlias qualificationAlias,
+                                                                      QualificationAliasUpdateRequestDTO requestDTO) {
 
         qualificationAlias.setName(toUpperCase(requestDTO.getName()));
         qualificationAlias.setStatus(requestDTO.getStatus());
@@ -27,7 +28,8 @@ public class QualificationAliasUtils {
         return qualificationAlias;
     }
 
-    public static void parseToDeletedQualification(QualificationAlias qualificationAlias, DeleteRequestDTO deleteRequestDTO) {
+    public static void parseToDeletedQualification(QualificationAlias qualificationAlias,
+                                                   DeleteRequestDTO deleteRequestDTO) {
 
         qualificationAlias.setStatus(deleteRequestDTO.getStatus());
         qualificationAlias.setRemarks(deleteRequestDTO.getRemarks());

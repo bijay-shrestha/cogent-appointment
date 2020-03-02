@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.*;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.QualificationAliasConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.QualificationAliasConstants.BASE_QUALIFICATION_ALIAS;
@@ -40,7 +41,7 @@ public class QualificationAliasResource {
     }
 
     @PostMapping
-    @ApiOperation(SwaggerConstants.QualificationAliasConstant.SAVE_OPERATION)
+    @ApiOperation(SAVE_OPERATION)
     public ResponseEntity<?> save(@Valid @RequestBody QualificationAliasRequestDTO aliasRequestDTO) {
         qualificationAliasService.save(aliasRequestDTO);
         return created(create(API_V1 + BASE_QUALIFICATION_ALIAS)).build();

@@ -72,8 +72,6 @@ public class DashBoardQuery {
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID_FOR_OVERALL_PATIENT(hospitalId);
     }
 
-    ;
-
     public static String QUERY_TO_FETCH_REVENUE_WEEKLY(Long hospitalId) {
         return "SELECT" +
                 "  CASE" +
@@ -103,7 +101,6 @@ public class DashBoardQuery {
                 " ORDER BY atd.transactionDate";
     }
 
-
     public static String QUERY_TO_FETCH_REVENUE_YEARLY(Long hospitalId) {
         return " SELECT" +
                 " DATE_FORMAT(atd.transactionDate, '%b,%Y')," +
@@ -116,9 +113,7 @@ public class DashBoardQuery {
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId) +
                 " GROUP BY DATE_FORMAT(atd.transactionDate, '%b,%Y')" +
                 " ORDER BY DATE_FORMAT(atd.transactionDate, '%b,%Y')";
-
     }
-
 
     public static String QUERY_TO_FETCH_REVENUE_MONTHLY(Long hospitalId) {
         return "SELECT" +

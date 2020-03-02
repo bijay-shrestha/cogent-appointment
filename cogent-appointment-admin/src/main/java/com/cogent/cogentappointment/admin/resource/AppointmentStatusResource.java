@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.admin.resource;
 
-import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPatientDetail.AppointmentPatientDetailRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.admin.service.AppointmentStatusService;
 import io.swagger.annotations.Api;
@@ -14,10 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentConstant.BASE_API_VALUE;
-import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentStatusConstant.FETCH_APPOINTMENT_PATIENT_DETAIL_BY_APPOINTMENT_TIME;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentStatusConstant.FETCH_APPOINTMENT_STATUS;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.*;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.BASE_APPOINTMENT;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.STATUS;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -38,11 +37,5 @@ public class AppointmentStatusResource {
     @ApiOperation(FETCH_APPOINTMENT_STATUS)
     public ResponseEntity<?> fetchAppointmentStatus(@Valid @RequestBody AppointmentStatusRequestDTO requestDTO) {
         return ok(appointmentStatusService.fetchAppointmentStatusResponseDTO(requestDTO));
-    }
-
-    @PutMapping(PATIENT_DETAIL)
-    @ApiOperation(FETCH_APPOINTMENT_PATIENT_DETAIL_BY_APPOINTMENT_TIME)
-    public ResponseEntity<?> fetchPatientDetailByAppointmentId(@Valid @RequestBody AppointmentPatientDetailRequestDTO requestDTO) {
-        return ok(appointmentStatusService.fetchPatientDetailByAppointmentId(requestDTO));
     }
 }

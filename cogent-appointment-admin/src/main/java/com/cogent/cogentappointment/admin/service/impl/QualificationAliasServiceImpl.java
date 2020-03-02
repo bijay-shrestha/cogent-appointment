@@ -5,13 +5,11 @@ import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.request.qualificationAlias.QualificationAliasRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.qualificationAlias.QualificationAliasSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.qualificationAlias.QualificationAliasUpdateRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.qualification.QualificationMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.qualificationAlias.QualificationAliasMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.QualificationAliasRepository;
 import com.cogent.cogentappointment.admin.service.QualificationAliasService;
-import com.cogent.cogentappointment.admin.utils.QualificationAliasUtils;
 import com.cogent.cogentappointment.persistence.model.QualificationAlias;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +21,7 @@ import java.util.List;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NAME_DUPLICATION_MESSAGE;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.QualificationAliasLog.QUALIFICATION_ALIAS;
+import static com.cogent.cogentappointment.admin.utils.QualificationAliasUtils.*;
 import static com.cogent.cogentappointment.admin.utils.QualificationAliasUtils.parseToDeletedQualification;
 import static com.cogent.cogentappointment.admin.utils.QualificationAliasUtils.parseToUpdatedQualificationAlias;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
@@ -52,10 +51,9 @@ public class QualificationAliasServiceImpl implements QualificationAliasService 
 
         validateName(count, requestDTO.getName());
 
-        save(QualificationAliasUtils.parseToQualificationAlias(requestDTO));
+        save(parseToQualificationAlias(requestDTO));
 
         log.info(SAVING_PROCESS_COMPLETED, QUALIFICATION_ALIAS, getDifferenceBetweenTwoTime(startTime));
-
     }
 
     @Override
@@ -74,12 +72,6 @@ public class QualificationAliasServiceImpl implements QualificationAliasService 
         save(parseToUpdatedQualificationAlias(qualificationAlias, requestDTO));
 
         log.info(UPDATING_PROCESS_COMPLETED, QUALIFICATION_ALIAS, getDifferenceBetweenTwoTime(startTime));
-
-
-    }
-
-    private QualificationAlias fetchQualificationAliasByID(Long id) {
-        return fetchQualificationAliasById(id);
     }
 
     @Override
@@ -89,13 +81,11 @@ public class QualificationAliasServiceImpl implements QualificationAliasService 
 
         log.info(DELETING_PROCESS_STARTED, QUALIFICATION_ALIAS);
 
-        QualificationAlias qualification = fetchQualificationAliasByID(deleteRequestDTO.getId());
+        QualificationAlias qualification = fetchQualificationAliasById(deleteRequestDTO.getId());
 
         parseToDeletedQualification(qualification, deleteRequestDTO);
 
         log.info(DELETING_PROCESS_COMPLETED, QUALIFICATION_ALIAS, getDifferenceBetweenTwoTime(startTime));
-
-
     }
 
     @Override
@@ -126,7 +116,8 @@ public class QualificationAliasServiceImpl implements QualificationAliasService 
     }
 
     @Override
-    public List<QualificationAliasMinimalResponseDTO> search(QualificationAliasSearchRequestDTO searchRequestDTO, Pageable pageable) {
+    public List<QualificationAliasMinimalResponseDTO> search(QualificationAliasSearchRequestDTO searchRequestDTO,
+                                                             Pageable pageable) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, QUALIFICATION_ALIAS);
@@ -149,6 +140,4 @@ public class QualificationAliasServiceImpl implements QualificationAliasService 
     private void save(QualificationAlias qualificationAlias) {
         qualificationAliasRepository.save(qualificationAlias);
     }
-
-
 }

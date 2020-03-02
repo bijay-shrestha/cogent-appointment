@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.admin.repository.custom;
 import com.cogent.cogentappointment.admin.dto.request.patient.PatientSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.patient.PatientUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.patient.PatientDetailResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.patient.PatientMinResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.patient.PatientResponseDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
@@ -25,4 +26,6 @@ public interface PatientRepositoryCustom {
     String fetchLatestRegistrationNumber(Long hospitalId);
 
     Long countOverallRegisteredPatients(Long HospitalId);
+
+    PatientMinResponseDTO fetchDetailByAppointmentId(Long appointmentId);
 }

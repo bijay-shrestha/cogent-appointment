@@ -8,6 +8,41 @@ import org.springframework.util.ObjectUtils;
  */
 public class PatientQuery {
 
+    /* AGE CALCULATION:
+        TIMESTAMPDIFF(YEAR, date_of_birth , CURDATE() ) as _year
+        TIMESTAMPDIFF(MONTH, date_of_birth, CURDATE() ) % 12 as _month
+        FLOOR( TIMESTAMPDIFF( DAY, date_of_birth ,  CURDATE()) % 30.4375 ) as _day
+    * */
+    public static String QUERY_TO_CALCULATE_PATIENT_AGE =
+            " CASE" +
+                    " WHEN" +
+                    " (((TIMESTAMPDIFF(YEAR, p.dateOfBirth, CURDATE()))<=0) AND" +
+                    " ((TIMESTAMPDIFF(MONTH, p.dateOfBirth, CURDATE()) % 12)<=0))" +
+                    " THEN" +
+                    " CONCAT((FLOOR(TIMESTAMPDIFF(DAY, p.dateOfBirth, CURDATE()) % 30.4375)), ' days')" +
+                    " WHEN" +
+                    " ((TIMESTAMPDIFF(YEAR, p.dateOfBirth ,CURDATE()))<=0)" +
+                    " THEN" +
+                    " CONCAT(((TIMESTAMPDIFF(MONTH, p.dateOfBirth, CURDATE()) % 12)), ' months')" +
+                    " ELSE" +
+                    " CONCAT(((TIMESTAMPDIFF(YEAR, p.dateOfBirth ,CURDATE()))), ' years')" +
+                    " END AS age";
+
+    public static String QUERY_TO_CALCULATE_PATIENT_AGE_NATIVE =
+            " CASE" +
+                    " WHEN" +
+                    " (((TIMESTAMPDIFF(YEAR, p.date_of_birth, CURDATE()))<=0) AND" +
+                    " ((TIMESTAMPDIFF(MONTH, p.date_of_birth, CURDATE()) % 12)<=0))" +
+                    " THEN" +
+                    " CONCAT((FLOOR(TIMESTAMPDIFF(DAY, p.date_of_birth, CURDATE()) % 30.4375)), ' days')" +
+                    " WHEN" +
+                    " ((TIMESTAMPDIFF(YEAR, p.date_of_birth ,CURDATE()))<=0)" +
+                    " THEN" +
+                    " CONCAT(((TIMESTAMPDIFF(MONTH, p.date_of_birth, CURDATE()) % 12)), ' months')" +
+                    " ELSE" +
+                    " CONCAT(((TIMESTAMPDIFF(YEAR, p.date_of_birth ,CURDATE()))), ' years')" +
+                    " END AS age";
+
     public final static String QUERY_TO_VALIDATE_UPDATED_PATIENT_DUPLICITY =
             "SELECT " +
                     " COUNT(p.id)" +
@@ -99,7 +134,8 @@ public class PatientQuery {
                     " p.name as name," +                                        //[1]
                     " p.mobileNumber as mobileNumber," +                        //[2]
                     " p.gender as gender," +                                    //[3]
-                    " hpi.address as address" +                                 //[4]
+                    " hpi.address as address," +                                //[4]
+                    QUERY_TO_CALCULATE_PATIENT_AGE +                            //[5]
                     " FROM Appointment a" +
                     " LEFT JOIN Patient p ON p.id=a.patientId.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +

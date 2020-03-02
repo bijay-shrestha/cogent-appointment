@@ -6,6 +6,8 @@ package com.cogent.cogentappointment.client.constants;
 public class QueryConstants {
 
     //A
+    public static final String APPOINTMENT_ID = "appointmentId";
+
     public static final String APPOINTMENT_DATE = "appointmentDate";
     public static final String APPOINTMENT_TIME = "appointmentTime";
     public static final String API_KEY = "apiKey";
@@ -67,7 +69,6 @@ public class QueryConstants {
         String CHILD_PATIENT_ID = "childPatientId";
     }
 
-    public static final String PASSWORD = "password";
     public static final String PATIENT_ID = "patientId";
 
     //Q

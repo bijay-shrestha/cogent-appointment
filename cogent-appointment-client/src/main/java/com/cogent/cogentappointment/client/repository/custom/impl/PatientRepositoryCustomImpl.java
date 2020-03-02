@@ -3,10 +3,7 @@ package com.cogent.cogentappointment.client.repository.custom.impl;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientMinSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.patient.PatientDetailResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.patient.PatientMinimalResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.patient.PatientResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.patient.PatientSearchResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.patient.*;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.PatientRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Patient;
@@ -147,6 +144,18 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
                     .getSingleResult();
         } catch (NoResultException ex) {
             return null;
+        }
+    }
+
+    @Override
+    public PatientMinDetailResponseDTO fetchDetailByAppointmentId(Long appointmentId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_DETAIL_BY_APPOINTMENT_ID)
+                .setParameter(APPOINTMENT_ID, appointmentId);
+
+        try {
+            return transformQueryToSingleResult(query, PatientMinDetailResponseDTO.class);
+        } catch (NoResultException e) {
+            throw new NoContentFoundException(Patient.class, "appointmentId", appointmentId.toString());
         }
     }
 

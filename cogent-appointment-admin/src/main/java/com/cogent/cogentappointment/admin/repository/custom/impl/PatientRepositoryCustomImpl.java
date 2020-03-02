@@ -3,7 +3,7 @@ package com.cogent.cogentappointment.admin.repository.custom.impl;
 import com.cogent.cogentappointment.admin.dto.request.patient.PatientSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.patient.PatientUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.patient.PatientDetailResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.patient.PatientMinResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.patient.PatientMinDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.patient.PatientResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.PatientRepositoryCustom;
@@ -103,12 +103,12 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
     }
 
     @Override
-    public PatientMinResponseDTO fetchDetailByAppointmentId(Long appointmentId) {
+    public PatientMinDetailResponseDTO fetchDetailByAppointmentId(Long appointmentId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_DETAIL_BY_APPOINTMENT_ID)
                 .setParameter(APPOINTMENT_ID, appointmentId);
 
         try {
-            return transformQueryToSingleResult(query, PatientMinResponseDTO.class);
+            return transformQueryToSingleResult(query, PatientMinDetailResponseDTO.class);
         } catch (NoResultException e) {
             throw new NoContentFoundException(Patient.class, "appointmentId", appointmentId.toString());
         }

@@ -2,10 +2,7 @@ package com.cogent.cogentappointment.client.service;
 
 import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.*;
-import com.cogent.cogentappointment.client.dto.response.patient.PatientDetailResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.patient.PatientMinimalResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.patient.PatientResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.patient.PatientSearchResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.patient.*;
 import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.Patient;
 import org.springframework.data.domain.Pageable;
@@ -45,4 +42,6 @@ public interface PatientService {
     List<DropDownResponseDTO> fetchActiveMinPatientMetaInfo();
 
     void registerPatient(Long patientId, Long hospitalId);
+
+    PatientMinDetailResponseDTO fetchDetailByAppointmentId(Long appointmentId);
 }

@@ -2,10 +2,7 @@ package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.*;
-import com.cogent.cogentappointment.client.dto.response.patient.PatientDetailResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.patient.PatientMinimalResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.patient.PatientResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.patient.PatientSearchResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.patient.*;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.HospitalPatientInfoRepository;
@@ -250,6 +247,20 @@ public class PatientServiceImpl implements PatientService {
                 patientRequestForDTO.getMobileNumber(),
                 patientRequestForDTO.getDateOfBirth()
         );
+    }
+
+    @Override
+    public PatientMinDetailResponseDTO fetchDetailByAppointmentId(Long appointmentId) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, PATIENT);
+
+        PatientMinDetailResponseDTO patientInfo = patientRepository.fetchDetailByAppointmentId(appointmentId);
+
+        log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
+
+        return patientInfo;
     }
 
     private Patient savePatientForSelf(PatientRequestByDTO requestDTO) {

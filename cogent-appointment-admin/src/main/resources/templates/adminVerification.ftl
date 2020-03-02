@@ -396,7 +396,7 @@ Sizes: [
 																						you to edit certain row. It makes it easy for you to quickly edit row sections.
 																						http://kb.mailchimp.com/templates/code/create-editable-content-areas-with-mailchimps-template-language
 																					-->
-																					<h3 mc:edit="header" style="color:#101010;line-height:125%;font-family:Helvetica,Arial,sans-serif;font-size:20px;font-weight:normal;margin-top:0;margin-bottom:10px;text-align:left;">Dear ${username},</h3>
+																					<h3 mc:edit="header" style="color:#101010;line-height:125%;font-family:Helvetica,Arial,sans-serif;font-size:20px;font-weight:normal;margin-top:0;margin-bottom:10px;text-align:left;">Dear <b>${username}</b>,</h3>
 																					<div mc:edit="body" style="text-align:left;font-family:Helvetica,Arial,sans-serif;font-size:15px;margin-bottom:0;color:#5F5F5F;line-height:135%;">Glad to have you on board. Please confirm your account by clicking the button below</div>
 
 																				</td>

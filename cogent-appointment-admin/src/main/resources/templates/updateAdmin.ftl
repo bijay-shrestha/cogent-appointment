@@ -381,17 +381,14 @@ Sizes: [
 																						you to edit certain row. It makes it easy for you to quickly edit row sections.
 																						http://kb.mailchimp.com/templates/code/create-editable-content-areas-with-mailchimps-template-language
 																					-->
-																					<h3 mc:edit="header" style="color:#101010;line-height:125%;font-family:Helvetica,Arial,sans-serif;font-size:20px;font-weight:normal;margin-top:0;margin-bottom:10px;text-align:left;">Dear Mr/Mrs/Miss [username]</h3>
+																					<h3 mc:edit="header" style="color:#101010;line-height:125%;font-family:Helvetica,Arial,sans-serif;font-size:20px;font-weight:normal;margin-top:0;margin-bottom:10px;text-align:left;">Dear <b>${username}</b>,</h3>
 																					<div mc:edit="body" style="text-align:left;font-family:Helvetica,Arial,sans-serif;font-size:15px;margin-bottom:0;color:#5F5F5F;line-height:135%;">Your following details has been updated :</div>
 																					<ul style="margin-top:20px; padding:0;text-align:left;font-family:Helvetica,Arial,sans-serif;font-size:15px;margin-bottom:0;color:#5F5F5F;">
-																							<li style="Margin:0 0 5px; list-style:none inside; mso-special-format:bullet;"><span style="font-weight:bold;">Name :</span> [Item one]</li>
-																							<li style="Margin:0 0 5px; list-style:none inside; mso-special-format:bullet;"><span style="font-weight:bold;"> Mobile No :</span> [9876234234]</li>
-
+																							<li style="Margin:0 0 5px; list-style:none inside; mso-special-format:bullet;"><span style="font-weight:bold;">Name :</span>  </li>
 																						</ul>
 																					<div mc:edit="body" style="text-align:left;font-family:Helvetica,Arial,sans-serif;font-size:15px;margin-bottom:0;color:#5F5F5F;line-height:135%;margin-top:30px;">Mac Address :</div>
 																					<ul style="margin-top:10px; padding:0;text-align:left;font-family:Helvetica,Arial,sans-serif;font-size:15px;margin-bottom:0;color:#5F5F5F;">
-																							<li style="Margin:0 0 5px; list-style:disc inside; mso-special-format:bullet;">Item one</li>
-																							<li style="Margin:0 0 5px; list-style:disc inside; mso-special-format:bullet;">Item two</li>
+																							<li style="Margin:0 0 5px; list-style:disc inside; mso-special-format:bullet;"></li>
 
 																						</ul>
 																				</td>
@@ -481,7 +478,7 @@ Sizes: [
 																	<table border="0" cellpadding="0" cellspacing="0" width="50%" class="emailButton" style="background-color: #fff;">
 																		<tr>
 																			<td align="center" valign="middle" class="buttonContent" style="padding-top:15px;padding-bottom:15px;padding-right:15px;padding-left:15px;">
-																				<img src="original-logo-small.png" width="10" class="flexibleImage" style="max-width:80px;width:100%;display:block;margin:0 auto;" alt="Text" title="Text" />
+																				<img src="cid:logo.png" width="10" class="flexibleImage" style="max-width:80px;width:100%;display:block;margin:0 auto;" alt="Cogent Logo" title="Text" />
 																			</td>
 																		</tr>
 																	</table>

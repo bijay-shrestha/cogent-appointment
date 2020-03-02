@@ -16,6 +16,7 @@ import java.util.Optional;
 public interface DoctorDutyRosterRepository extends JpaRepository<DoctorDutyRoster, Long>,
         DoctorDutyRosterRepositoryCustom {
 
-    @Query("SELECT d FROM DoctorDutyRoster d WHERE d.status!='D' AND d.id = :id")
-    Optional<DoctorDutyRoster> findDoctorDutyRosterById(@Param("id") Long id);
+    @Query("SELECT d FROM DoctorDutyRoster d WHERE d.status!='D' AND d.id = :id AND d.hospitalId.id=:hospitalId")
+    Optional<DoctorDutyRoster> findDoctorDutyRosterByIdAndHospitalId(@Param("id") Long id,
+                                                                     @Param("hospitalId") Long hospitalId);
 }

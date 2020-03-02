@@ -1,10 +1,13 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
-import com.cogent.cogentappointment.client.constants.StatusConstants;
+import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.request.admin.AdminInfoRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.admin.AdminSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.admin.AdminUpdateRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.admin.*;
+import com.cogent.cogentappointment.client.dto.response.admin.AdminDetailResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.admin.AdminLoggedInInfoResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.admin.AdminMacAddressInfoResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.admin.AdminMinimalResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.AdminRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Admin;
@@ -24,6 +27,7 @@ import java.util.function.Supplier;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AdminServiceMessages;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AdminServiceMessages.ADMIN_INFO_NOT_FOUND;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.query.AdminQuery.*;
 import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
@@ -73,12 +77,12 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     }
 
     @Override
-    public List<AdminDropdownDTO> fetchActiveAdminsForDropDown(Long hospitalId) {
+    public List<DropDownResponseDTO> fetchActiveMinAdmin(Long hospitalId) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_ADMIN_FOR_DROPDOWN)
                 .setParameter(HOSPITAL_ID, hospitalId);
 
-        List<AdminDropdownDTO> list = transformQueryToResultList(query, AdminDropdownDTO.class);
+        List<DropDownResponseDTO> list = transformQueryToResultList(query, DropDownResponseDTO.class);
 
         if (list.isEmpty()) throw NO_ADMIN_FOUND.get();
         else return list;
@@ -106,9 +110,9 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
 
     @Override
     public AdminDetailResponseDTO fetchDetailsById(Long id, Long hospitalId) {
-        AdminDetailResponseDTO detailResponseDTO = fetchAdminDetailResponseDTO(id);
+        AdminDetailResponseDTO detailResponseDTO = fetchAdminDetailResponseDTO(id, hospitalId);
 
-        if (detailResponseDTO.getHasMacBinding().equals(StatusConstants.YES))
+        if (detailResponseDTO.getHasMacBinding().equals(YES))
             detailResponseDTO.setAdminMacAddressInfo(getMacAddressInfo(id));
 
         return detailResponseDTO;
@@ -143,9 +147,10 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         }
     }
 
-    private AdminDetailResponseDTO fetchAdminDetailResponseDTO(Long id) {
+    private AdminDetailResponseDTO fetchAdminDetailResponseDTO(Long id, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ADMIN_DETAIL)
-                .setParameter(ID, id);
+                .setParameter(ID, id)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         List<Object[]> results = query.getResultList();
 
@@ -155,7 +160,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         return transformQueryToResultList(query, AdminDetailResponseDTO.class).get(0);
     }
 
-    public List<AdminMacAddressInfoResponseDTO> getMacAddressInfo(Long id) {
+    private List<AdminMacAddressInfoResponseDTO> getMacAddressInfo(Long id) {
         Query query = createQuery.apply(entityManager, QUERY_FO_FETCH_MAC_ADDRESS_INFO)
                 .setParameter(ID, id);
 

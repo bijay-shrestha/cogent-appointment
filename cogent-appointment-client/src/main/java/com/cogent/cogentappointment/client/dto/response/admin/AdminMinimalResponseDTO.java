@@ -33,8 +33,6 @@ public class AdminMinimalResponseDTO implements Serializable {
 
     private String profileName;
 
-    private String hospitalName;
-
     private String departmentName;
 
     private String fileUri;

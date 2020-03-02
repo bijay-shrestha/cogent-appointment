@@ -26,10 +26,11 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.*;
-import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AppointmentServiceMessage.*;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.DoctorDutyRosterServiceMessages.APPOINTMENT_EXISTS_MESSAGE;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.DoctorDutyRosterServiceMessages.BAD_REQUEST_MESSAGE;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.DoctorDutyRosterServiceMessages.DUPLICATION_MESSAGE;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INVALID_DATE_DEBUG_MESSAGE;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INVALID_DATE_MESSAGE;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.DoctorDutyRosterLog.*;
 import static com.cogent.cogentappointment.admin.utils.DoctorDutyRosterOverrideUtils.*;
@@ -220,8 +221,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
         originalOverrideRosters.forEach(
                 originalOverride -> updateOverrideRosters.stream()
-                        .filter(updatedOverride -> originalOverride.getId().equals(
-                                updatedOverride.getDoctorDutyRosterOverrideId()))
+                        .filter(updatedOverride -> isOriginalUpdatedCondition(originalOverride, updatedOverride))
                         .forEachOrdered(updatedOverride -> {
                             updateDoctorRosterOverrideDetails(originalOverride, updatedOverride);
                         }));
@@ -495,4 +495,10 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
         if (fromDateGreaterThanToDate)
             throw new BadRequestException(INVALID_DATE_MESSAGE, INVALID_DATE_DEBUG_MESSAGE);
     }
+
+    private static boolean isOriginalUpdatedCondition(DoctorDutyRosterOverride originalOverride,
+                                                      DoctorDutyRosterOverrideUpdateRequestDTO updatedOverride) {
+        return originalOverride.getId().equals(updatedOverride.getDoctorDutyRosterOverrideId());
+    }
+
 }

@@ -25,7 +25,7 @@ public interface SpecializationRepositoryCustom {
                                                   Long hospitalId,
                                                   Pageable pageable);
 
-    List<DropDownResponseDTO> fetchActiveSpecializationForDropDown(Long hospitalId);
+    List<DropDownResponseDTO> fetchActiveMinSpecialization(Long hospitalId);
 
     SpecializationResponseDTO fetchDetailsById(Long id,Long hospitalId);
 

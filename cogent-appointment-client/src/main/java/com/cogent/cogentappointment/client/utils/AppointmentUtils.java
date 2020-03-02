@@ -1,20 +1,20 @@
 package com.cogent.cogentappointment.client.utils;
 
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRescheduleRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.appointmentPendingApproval.AppointmentRejectDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentCheckAvailabilityResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentSuccessResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.appointmentLog.AppointmentLogDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.appointmentLog.AppointmentLogResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.appointmentPendingApproval.AppointmentPendingApprovalDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.appointmentPendingApproval.AppointmentPendingApprovalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueSearchByTimeDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueSearchDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentTimeDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.approval.AppointmentPendingApprovalDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.approval.AppointmentPendingApprovalResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.log.AppointmentLogDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.log.AppointmentLogResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.AppointmentCountResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRescheduleLogDTO;
 import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
@@ -25,6 +25,7 @@ import org.joda.time.Duration;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -196,7 +197,8 @@ public class AppointmentUtils {
         appointment.setRemarks(rejectDTO.getRemarks());
     }
 
-    public static AppointmentRescheduleLogResponseDTO parseQueryResultToAppointmentRescheduleLogResponse(List<Object[]> results) {
+    public static AppointmentRescheduleLogResponseDTO parseQueryResultToAppointmentRescheduleLogResponse
+            (List<Object[]> results) {
 
         AppointmentRescheduleLogResponseDTO rescheduleLogResponseDTO = new AppointmentRescheduleLogResponseDTO();
 
@@ -205,22 +207,21 @@ public class AppointmentUtils {
         AtomicReference<Double> totalAmount = new AtomicReference<>(0D);
 
         results.forEach(result -> {
-            final int HOSPITAL_NAME_INDEX = 0;
-            final int ESEWA_ID_INDEX = 1;
-            final int PREVIOUS_APPOINTMENT_DATE_INDEX = 2;
-            final int APPOINTMENT_RESCHEDULED_DATE_INDEX = 3;
-            final int APPOINTMENT_NUMBER_INDEX = 4;
-            final int REGISTRATION_NUMBER_INDEX = 5;
-            final int PATIENT_NAME_INDEX = 6;
-            final int PATIENT_DOB_INDEX = 7;
-            final int PATIENT_GENDER_INDEX = 8;
-            final int PATIENT_MOBILE_NUMBER_INDEX = 9;
-            final int SPECIALIZATION_NAME_INDEX = 10;
-            final int DOCTOR_NAME_INDEX = 11;
-            final int TRANSACTION_NUMBER_INDEX = 12;
-            final int APPOINTMENT_AMOUNT_INDEX = 13;
-            final int REMARKS_INDEX = 14;
 
+            final int ESEWA_ID_INDEX = 0;
+            final int PREVIOUS_APPOINTMENT_DATE_INDEX = 1;
+            final int APPOINTMENT_RESCHEDULED_DATE_INDEX = 2;
+            final int APPOINTMENT_NUMBER_INDEX = 3;
+            final int REGISTRATION_NUMBER_INDEX = 4;
+            final int PATIENT_NAME_INDEX = 5;
+            final int PATIENT_DOB_INDEX = 6;
+            final int PATIENT_GENDER_INDEX = 7;
+            final int PATIENT_MOBILE_NUMBER_INDEX = 8;
+            final int SPECIALIZATION_NAME_INDEX = 9;
+            final int DOCTOR_NAME_INDEX = 10;
+            final int TRANSACTION_NUMBER_INDEX = 11;
+            final int APPOINTMENT_AMOUNT_INDEX = 12;
+            final int REMARKS_INDEX = 13;
 
             Date previosAppointmentDate = (Date) result[PREVIOUS_APPOINTMENT_DATE_INDEX];
             Date rescheduledAppointmentDate = (Date) result[APPOINTMENT_RESCHEDULED_DATE_INDEX];
@@ -237,7 +238,6 @@ public class AppointmentUtils {
 
             AppointmentRescheduleLogDTO appointmentRescheduleLogDTO =
                     AppointmentRescheduleLogDTO.builder()
-                            .hospitalName(result[HOSPITAL_NAME_INDEX].toString())
                             .previousAppointmentDate(previosAppointmentDate)
                             .rescheduleAppointmentDate(rescheduledAppointmentDate)
                             .appointmentNumber(result[APPOINTMENT_NUMBER_INDEX].toString())
@@ -277,24 +277,23 @@ public class AppointmentUtils {
         AtomicReference<Double> totalAmount = new AtomicReference<>(0D);
 
         results.forEach(result -> {
-            final int HOSPITAL_NAME_INDEX = 0;
-            final int APPOINTMENT_DATE_INDEX = 1;
-            final int APPOINTMENT_NUMBER_INDEX = 2;
-            final int APPOINTMENT_TIME_INDEX = 3;
-            final int ESEWA_ID_INDEX = 4;
-            final int REGISTRATION_NUMBER_INDEX = 5;
-            final int PATIENT_NAME_INDEX = 6;
-            final int PATIENT_GENDER_INDEX = 7;
-            final int PATIENT_DOB_INDEX = 8;
-            final int IS_REGISTERED_INDEX = 9;
-            final int IS_SELF_INDEX = 10;
-            final int PATIENT_MOBILE_NUMBER_INDEX = 11;
-            final int SPECIALIZATION_NAME_INDEX = 12;
-            final int TRANSACTION_NUMBER_INDEX = 13;
-            final int APPOINTMENT_AMOUNT_INDEX = 14;
-            final int DOCTOR_NAME_INDEX = 15;
-            final int REFUND_AMOUNT_INDEX = 16;
-            final int APPOINTMENT_ID_INDEX = 17;
+            final int APPOINTMENT_DATE_INDEX = 0;
+            final int APPOINTMENT_NUMBER_INDEX = 1;
+            final int APPOINTMENT_TIME_INDEX = 2;
+            final int ESEWA_ID_INDEX = 3;
+            final int REGISTRATION_NUMBER_INDEX = 4;
+            final int PATIENT_NAME_INDEX = 5;
+            final int PATIENT_GENDER_INDEX = 6;
+            final int PATIENT_DOB_INDEX = 7;
+            final int IS_REGISTERED_INDEX = 8;
+            final int IS_SELF_INDEX = 9;
+            final int PATIENT_MOBILE_NUMBER_INDEX = 10;
+            final int SPECIALIZATION_NAME_INDEX = 11;
+            final int TRANSACTION_NUMBER_INDEX = 12;
+            final int APPOINTMENT_AMOUNT_INDEX = 13;
+            final int DOCTOR_NAME_INDEX = 14;
+            final int REFUND_AMOUNT_INDEX = 15;
+            final int APPOINTMENT_ID_INDEX = 16;
 
             Date appointmentDate = (Date) result[APPOINTMENT_DATE_INDEX];
             Date patientDob = (Date) result[PATIENT_DOB_INDEX];
@@ -310,7 +309,6 @@ public class AppointmentUtils {
 
             AppointmentPendingApprovalDTO appointmentStatusResponseDTO =
                     AppointmentPendingApprovalDTO.builder()
-                            .hospitalName(result[HOSPITAL_NAME_INDEX].toString())
                             .appointmentDate(appointmentDate)
                             .appointmentNumber(result[APPOINTMENT_NUMBER_INDEX].toString())
                             .appointmentTime(result[APPOINTMENT_TIME_INDEX].toString())
@@ -352,25 +350,24 @@ public class AppointmentUtils {
         AtomicReference<Double> totalAmount = new AtomicReference<>(0D);
 
         results.forEach(result -> {
-            final int HOSPITAL_NAME_INDEX = 0;
-            final int APPOINTMENT_DATE_INDEX = 1;
-            final int APPOINTMENT_NUMBER_INDEX = 2;
-            final int APPOINTMENT_TIME_INDEX = 3;
-            final int ESEWA_ID_INDEX = 4;
-            final int REGISTRATION_NUMBER_INDEX = 5;
-            final int PATIENT_NAME_INDEX = 6;
-            final int PATIENT_GENDER_INDEX = 7;
-            final int PATIENT_DOB_INDEX = 8;
-            final int IS_REGISTERED_INDEX = 9;
-            final int IS_SELF_INDEX = 10;
-            final int PATIENT_MOBILE_NUMBER_INDEX = 11;
-            final int SPECIALIZATION_NAME_INDEX = 12;
-            final int TRANSACTION_NUMBER_INDEX = 13;
-            final int APPOINTMENT_AMOUNT_INDEX = 14;
-            final int DOCTOR_NAME_INDEX = 15;
-            final int APPOINTMENT_STATUS_INDEX = 16;
-            final int REFUND_AMOUNT_INDEX = 17;
-            final int PATIENT_ADDRESS_INDEX = 18;
+            final int APPOINTMENT_DATE_INDEX = 0;
+            final int APPOINTMENT_NUMBER_INDEX = 1;
+            final int APPOINTMENT_TIME_INDEX = 2;
+            final int ESEWA_ID_INDEX = 3;
+            final int REGISTRATION_NUMBER_INDEX = 4;
+            final int PATIENT_NAME_INDEX = 5;
+            final int PATIENT_GENDER_INDEX = 6;
+            final int PATIENT_DOB_INDEX = 7;
+            final int IS_REGISTERED_INDEX = 8;
+            final int IS_SELF_INDEX = 9;
+            final int PATIENT_MOBILE_NUMBER_INDEX = 10;
+            final int SPECIALIZATION_NAME_INDEX = 11;
+            final int TRANSACTION_NUMBER_INDEX = 12;
+            final int APPOINTMENT_AMOUNT_INDEX = 13;
+            final int DOCTOR_NAME_INDEX = 14;
+            final int APPOINTMENT_STATUS_INDEX = 15;
+            final int REFUND_AMOUNT_INDEX = 16;
+            final int PATIENT_ADDRESS_INDEX = 17;
 
             Date appointmentDate = (Date) result[APPOINTMENT_DATE_INDEX];
             Date patientDob = (Date) result[PATIENT_DOB_INDEX];
@@ -387,7 +384,6 @@ public class AppointmentUtils {
 
             AppointmentLogDTO appointmentLogDTO =
                     AppointmentLogDTO.builder()
-                            .hospitalName(result[HOSPITAL_NAME_INDEX].toString())
                             .appointmentDate(appointmentDate)
                             .appointmentNumber(result[APPOINTMENT_NUMBER_INDEX].toString())
                             .appointmentTime(result[APPOINTMENT_TIME_INDEX].toString())
@@ -419,50 +415,51 @@ public class AppointmentUtils {
         appointmentLogResponseDTO.setTotalAmount(totalAmount.get());
 
         return appointmentLogResponseDTO;
-
     }
 
-    public static AppointmentQueueSearchDTO parseQueryResultToAppointmentQueueForTodayResponse(List<Object[]> results) {
+    public static List<AppointmentStatusResponseDTO> parseQueryResultToAppointmentStatusResponseDTOS
+            (List<Object[]> results) {
 
-        AppointmentQueueSearchDTO appointmentQueueSearchDTO = new AppointmentQueueSearchDTO();
-
-        List<AppointmentQueueDTO> appointmentQueueByTimeDTOS = new ArrayList<>();
-
-        AtomicReference<Double> totalAmount = new AtomicReference<>(0D);
+        List<AppointmentStatusResponseDTO> appointmentStatusResponseDTOS = new ArrayList<>();
 
         results.forEach(result -> {
-            final int APPOINTMENT_TIME_INDEX = 0;
-            final int DOCTOR_NAME_INDEX = 1;
-            final int PATIENT_NAME_INDEX = 2;
-            final int PATIENT_MOBILE_NUMBER_INDEX = 3;
-            final int SPECIALIZATION_NAME_INDEX = 4;
-            final int DOCTOR_AVATAR_INDEX = 5;
+            final int APPOINTMENT_DATE_INDEX = 0;
+            final int TIME_WITH_STATUS_DETAILS_INDEX = 1;
+            final int DOCTOR_ID_INDEX = 2;
+            final int SPECIALIZATION_ID_INDEX = 3;
+            final int APPOINTMENT_NUMBER_INDEX = 4;
+            final int PATIENT_NAME_INDEX = 5;
+            final int GENDER_INDEX = 6;
+            final int MOBILE_NUMBER_INDEX = 7;
+            final int AGE_INDEX = 8;
 
-            AppointmentQueueDTO appointmentQueueDTO =
-                    AppointmentQueueDTO.builder()
-                            .appointmentTime(result[APPOINTMENT_TIME_INDEX].toString())
-                            .doctorName(result[DOCTOR_NAME_INDEX].toString())
-                            .specializationName(result[SPECIALIZATION_NAME_INDEX].toString())
-                            .patientName(result[PATIENT_NAME_INDEX].toString())
-                            .patientMobileNumber(result[PATIENT_MOBILE_NUMBER_INDEX].toString())
-                            .doctorAvatar((result[DOCTOR_AVATAR_INDEX] != null) ? result[DOCTOR_AVATAR_INDEX].toString() : null)
-                            .build();
+            Date appointmentDate = (Date) result[APPOINTMENT_DATE_INDEX];
 
-            appointmentQueueByTimeDTOS.add(appointmentQueueDTO);
+            LocalDate appointmentLocalDate = new java.sql.Date(appointmentDate.getTime()).toLocalDate();
 
+            AppointmentStatusResponseDTO appointmentStatusResponseDTO = AppointmentStatusResponseDTO.builder()
+                    .date(appointmentLocalDate)
+                    .appointmentTimeDetails(result[TIME_WITH_STATUS_DETAILS_INDEX].toString())
+                    .doctorId(Long.parseLong(result[DOCTOR_ID_INDEX].toString()))
+                    .specializationId(Long.parseLong(result[SPECIALIZATION_ID_INDEX].toString()))
+                    .appointmentNumber(result[APPOINTMENT_NUMBER_INDEX].toString())
+                    .patientName(result[PATIENT_NAME_INDEX].toString())
+                    .mobileNumber(result[MOBILE_NUMBER_INDEX].toString())
+                    .age(result[AGE_INDEX].toString())
+                    .gender(result[GENDER_INDEX].toString())
+                    .build();
+
+            appointmentStatusResponseDTOS.add(appointmentStatusResponseDTO);
         });
 
-        appointmentQueueSearchDTO.setAppointmentQueueByTimeDTOList(appointmentQueueByTimeDTOS);
-
-        return appointmentQueueSearchDTO;
-
+        return appointmentStatusResponseDTOS;
     }
 
     public static Map<String, List<AppointmentQueueDTO>> parseQueryResultToAppointmentQueueForTodayByTimeResponse(List<Object[]> results) {
 
         List<AppointmentQueueSearchByTimeDTO> appointmentQueueSearchByTimeDTOS = new ArrayList<>();
 
-        AppointmentQueueSearchDTO appointmentQueueSearchDTO = new AppointmentQueueSearchDTO();
+        AppointmentQueueDTO appointmentQueueSearchDTO = new AppointmentQueueDTO();
 
         List<AppointmentQueueDTO> appointmentQueueByTimeDTOS = new ArrayList<>();
 
@@ -494,7 +491,8 @@ public class AppointmentUtils {
 
         });
 
-        appointmentQueueSearchDTO.setAppointmentQueueByTimeDTOList(appointmentQueueByTimeDTOS);
+//        appointmentQueueSearchDTO.setAppointmentQueueByTimeDTOList(appointmentQueueByTimeDTOS);
+        appointmentQueueSearchDTO.setTotalItems(appointmentQueueByTimeDTOS.size());
 
         //group by price
         Map<String, List<AppointmentQueueDTO>> groupByPriceMap =

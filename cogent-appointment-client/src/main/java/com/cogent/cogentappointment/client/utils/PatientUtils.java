@@ -62,26 +62,22 @@ public class PatientUtils {
     }
 
 
-    public static Patient updatePatient(PatientUpdateRequestDTO requestDTO,
-                                        Patient patient) {
+    public static void updatePatient(PatientUpdateRequestDTO requestDTO,
+                                     Patient patient) {
         patient.setName(toUpperCase(requestDTO.getName()));
         patient.setDateOfBirth(requestDTO.getDateOfBirth());
         patient.setMobileNumber(requestDTO.getMobileNumber());
         patient.setGender(requestDTO.getGender());
-
-        return patient;
     }
 
-    public static HospitalPatientInfo updateHospitalPatientInfo(PatientUpdateRequestDTO requestDTO,
-                                                                HospitalPatientInfo hospitalPatientInfo) {
+    public static void updateHospitalPatientInfo(PatientUpdateRequestDTO requestDTO,
+                                                 HospitalPatientInfo hospitalPatientInfo) {
 
         hospitalPatientInfo.setAddress(requestDTO.getAddress());
         hospitalPatientInfo.setHospitalNumber(requestDTO.getHospitalNumber());
         hospitalPatientInfo.setEmail(requestDTO.getEmail());
         hospitalPatientInfo.setRemarks(requestDTO.getRemarks());
         hospitalPatientInfo.setStatus(requestDTO.getStatus());
-
-        return hospitalPatientInfo;
     }
 
     public static List<PatientMinimalResponseDTO> parseToPatientMinimalResponseDTO(List<Object[]> results) {
@@ -106,7 +102,7 @@ public class PatientUtils {
                 .build();
     };
 
-    public static PatientMetaInfo updatePatientMetaInfo(HospitalPatientInfo hospitalPatientInfo,
+    public static void updatePatientMetaInfo(HospitalPatientInfo hospitalPatientInfo,
                                                         PatientMetaInfo patientMetaInfo,
                                                         PatientUpdateRequestDTO updateRequestDTO) {
         patientMetaInfo.setMetaInfo(updateRequestDTO.getName()
@@ -116,8 +112,6 @@ public class PatientUtils {
                 hospitalPatientInfo.getRegistrationNumber());
         patientMetaInfo.setStatus(updateRequestDTO.getStatus());
         patientMetaInfo.setRemarks(updateRequestDTO.getRemarks());
-
-        return patientMetaInfo;
     }
 
     public static void registerPatientDetails(HospitalPatientInfo hospitalPatientInfo,

@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -14,9 +15,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppointmentRescheduleLogSearchDTO {
-
-    private Long hospitalId;
+public class AppointmentRescheduleLogSearchDTO implements Serializable{
 
     private Long doctorId;
 

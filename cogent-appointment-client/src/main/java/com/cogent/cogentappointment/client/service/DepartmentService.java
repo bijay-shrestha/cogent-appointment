@@ -26,7 +26,7 @@ public interface DepartmentService {
 
     DepartmentResponseDTO fetchDetails(Long id);
 
-    List<DropDownResponseDTO> fetchDepartmentForDropdown();
+    List<DropDownResponseDTO> fetchMinDepartment();
 
-    List<DropDownResponseDTO> fetchActiveDropDownList();
+    List<DropDownResponseDTO> fetchActiveMinDepartment();
 }

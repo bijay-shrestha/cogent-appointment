@@ -15,13 +15,13 @@ public class AppointmentFollowUpTrackerUtils {
 
     public static AppointmentFollowUpResponseDTO parseToAppointmentFollowUpResponseDTO(
             Character isFollowUp,
-            Double followUpAppointmentCharge,
+            Double appointmentCharge,
             Long parentAppointmentId,
             Long savedAppointmentReservationId) {
 
         return AppointmentFollowUpResponseDTO.builder()
                 .isFreeFollowUp(isFollowUp)
-                .followUpAppointmentCharge(followUpAppointmentCharge)
+                .appointmentCharge(appointmentCharge)
                 .parentAppointmentId(parentAppointmentId)
                 .appointmentReservationId(savedAppointmentReservationId)
                 .build();

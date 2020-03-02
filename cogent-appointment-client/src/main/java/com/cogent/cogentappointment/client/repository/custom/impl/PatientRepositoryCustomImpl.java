@@ -54,13 +54,13 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
     }
 
     @Override
-    public Long validatePatientDuplicity(PatientUpdateRequestDTO patientUpdateRequestDTO) {
+    public Long validatePatientDuplicity(PatientUpdateRequestDTO updateRequestDTO, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_UPDATED_PATIENT_DUPLICITY)
-                .setParameter(NAME, patientUpdateRequestDTO.getName())
-                .setParameter(MOBILE_NUMBER, patientUpdateRequestDTO.getMobileNumber())
-                .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(patientUpdateRequestDTO.getDateOfBirth()))
-                .setParameter(ID, patientUpdateRequestDTO.getId())
-                .setParameter(HOSPITAL_ID, patientUpdateRequestDTO.getHospitalId());
+                .setParameter(NAME, updateRequestDTO.getName())
+                .setParameter(MOBILE_NUMBER, updateRequestDTO.getMobileNumber())
+                .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(updateRequestDTO.getDateOfBirth()))
+                .setParameter(ID, updateRequestDTO.getId())
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Long) query.getSingleResult();
     }
@@ -109,46 +109,45 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
     }
 
     @Override
-    public PatientResponseDTO fetchPatientDetailsById(Long id) {
+    public PatientResponseDTO fetchPatientDetailsById(Long id, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_DETAILS_BY_ID)
-                .setParameter(ID, id);
+                .setParameter(ID, id)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         try {
-            PatientResponseDTO patientResponseDTO = transformQueryToSingleResult(query, PatientResponseDTO.class);
-            patientResponseDTO.setAge(calculateAge(patientResponseDTO.getDateOfBirth()));
-            return patientResponseDTO;
+            return transformQueryToSingleResult(query, PatientResponseDTO.class);
         } catch (NoResultException e) {
             throw new NoContentFoundException(Patient.class, "id", id.toString());
         }
     }
 
     @Override
-    public List<PatientSearchResponseDTO> search(PatientSearchRequestDTO searchRequestDTO, Pageable pageable) {
+    public List<PatientSearchResponseDTO> search(PatientSearchRequestDTO searchRequestDTO, Pageable pageable,
+                                                 Long hospitalId) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_PATIENT(searchRequestDTO));
+        Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_PATIENT(searchRequestDTO))
+                .setParameter(HOSPITAL_ID, hospitalId);
 
-        List<Object[]> results = query.getResultList();
+        List<PatientSearchResponseDTO> patients = transformQueryToResultList(query, PatientSearchResponseDTO.class);
 
         Integer totalItems = query.getResultList().size();
 
         addPagination.accept(pageable, query);
 
-        if (results.isEmpty()) throw new NoContentFoundException(Patient.class);
+        if (patients.isEmpty()) throw new NoContentFoundException(Patient.class);
 
         else {
-            List<PatientSearchResponseDTO> responseDTOS = transformQueryToResultList(query, PatientSearchResponseDTO.class);
-            responseDTOS.get(0).setTotalItems(totalItems);
-            return responseDTOS;
+            patients.get(0).setTotalItems(totalItems);
+            return patients;
         }
     }
 
     @Override
-    public Long countOverallRegisteredPatients(Long HospitalId) {
+    public Long countOverallRegisteredPatients(Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_COUNT_OVERALL_REGISTERED_PATIENTS)
-                .setParameter(HOSPITAL_ID, HospitalId);
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Long) query.getSingleResult();
-
     }
 
     @Override

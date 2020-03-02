@@ -28,7 +28,7 @@ public class AdminMetaInfoRepositoryCustomImpl implements AdminMetaInfoRepositor
     private EntityManager entityManager;
 
     @Override
-    public List<AdminMetaInfoResponseDTO> fetchAdminMetaInfoResponseDTOS(Long hospitalId) {
+    public List<AdminMetaInfoResponseDTO> fetchAdminMetaInfo(Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ADMIN_META_INFO)
                 .setParameter(HOSPITAL_ID, hospitalId);
 

@@ -76,7 +76,7 @@ public class SpecializationRepositoryCustomImpl implements SpecializationReposit
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchActiveSpecializationForDropDown(Long hospitalId) {
+    public List<DropDownResponseDTO> fetchActiveMinSpecialization(Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_SPECIALIZATION_FOR_DROPDOWN)
                 .setParameter(HOSPITAL_ID, hospitalId);
 

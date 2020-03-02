@@ -13,11 +13,13 @@ import java.util.Optional;
 public interface AdminRepository extends JpaRepository<Admin, Long>, AdminRepositoryCustom {
 
     @Query("SELECT a FROM Admin a WHERE a.profileId.department.hospital.id=:hospitalId AND a.status!='D' AND a.id = :id")
-    Optional<Admin> findAdminById(@Param("id") Long id,@Param("hospitalId") Long hospitalId);
+    Optional<Admin> findAdminByIdAndHospitalId(@Param("id") Long id,
+                                               @Param("hospitalId") Long hospitalId);
 
     @Query("SELECT a FROM Admin a WHERE a.profileId.department.hospital.id=:hospitalId AND a.status!='D' " +
             "AND a.username = :username")
-    Optional<Admin> findAdminByUsername(@Param("username") String username,@Param("hospitalId") Long hospitalId);
+    Optional<Admin> findAdminByUsernameAndHospitalId(@Param("username") String username,
+                                                     @Param("hospitalId") Long hospitalId);
 
     @Query("SELECT a FROM Admin a WHERE a.username=:username AND a.status='Y'")
     Admin getLoggedInAdmin(@Param("username") String username);

@@ -94,6 +94,23 @@ public class FileServiceImpl implements FileService {
         return responseDTO;
     }
 
+
+//    public MultipartFile renameFile(MultipartFile file) {
+//
+//
+//
+//
+//        DiskFileItem fileItem = new DiskFileItem("file", "image/png", false, file.getName(),
+//                (int) file.length(), file.getParentFile());
+//        fileItem.getOutputStream();
+//
+//
+//        MultipartFile renamedFile = null;
+//        renamedFile = new CommonsMultipartFile(FilenameUtils.getBaseName(file.getOriginalFilename()).concat(getTimeInMillisecondsFromLocalDate().toString()) + "." + FilenameUtils.getExtension(file.getOriginalFilename()), file.getInputStream());
+//
+//        return renamedFile;
+//    }
+
     @Override
     public List<FileUploadResponseDTO> uploadFiles(MultipartFile[] files,
                                                    String subDirectoryLocation) {
@@ -123,9 +140,15 @@ public class FileServiceImpl implements FileService {
 
             resolvePath(subDirectory);
 
+//            Files.copy(file.getInputStream(),
+//                    this.rootLocation.resolve(filename.concat(getTimeInMillisecondsFromLocalDate().toString())),
+//                    StandardCopyOption.REPLACE_EXISTING);
+
             Files.copy(file.getInputStream(),
-                    this.rootLocation.resolve(filename),
+                    this.rootLocation.resolve(getTimeInMillisecondsFromLocalDate().toString()),
                     StandardCopyOption.REPLACE_EXISTING);
+
+
 
             return filename;
         } catch (IOException exception) {

@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.client.service.impl;
 
-import com.cogent.cogentappointment.client.constants.ErrorMessageConstants;
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.request.profile.ProfileMenuSearchRequestDTO;
@@ -27,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.NAME_DUPLICATION_MESSAGE;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.ProfileLog.PROFILE;
 import static com.cogent.cogentappointment.client.utils.ProfileMenuUtils.convertToProfileMenu;
@@ -34,7 +34,7 @@ import static com.cogent.cogentappointment.client.utils.ProfileMenuUtils.convert
 import static com.cogent.cogentappointment.client.utils.ProfileUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
-import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getHospitalId;
+import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 
 /**
  * @author smriti on 7/2/19
@@ -64,14 +64,17 @@ public class ProfileServiceImpl implements ProfileService {
 
         log.info(SAVING_PROCESS_STARTED, PROFILE);
 
-        Long hospitalId = getHospitalId();
+        Long hospitalId = getLoggedInHospitalId();
 
-        Long profileCount = profileRepository.validateDuplicity(profileRequestDTO.getProfileDTO().getName(),
-                hospitalId);
+        Long profileCount = profileRepository.validateDuplicity(
+                profileRequestDTO.getProfileDTO().getName(), hospitalId
+        );
 
         validateName(profileCount, profileRequestDTO.getProfileDTO().getName());
 
-        Department department = findDepartmentById(profileRequestDTO.getProfileDTO().getDepartmentId(), hospitalId);
+        Department department = findDepartmentByIdAndHospitalId(
+                profileRequestDTO.getProfileDTO().getDepartmentId(), hospitalId
+        );
 
         Profile savedProfile = save(convertDTOToProfile(profileRequestDTO.getProfileDTO(), department));
 
@@ -80,23 +83,15 @@ public class ProfileServiceImpl implements ProfileService {
         log.info(SAVING_PROCESS_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
     }
 
-    public Profile save(Profile profile) {
-        return profileRepository.save(profile);
-    }
-
-    public void saveProfileMenu(List<ProfileMenu> profileMenus) {
-        profileMenuRepository.saveAll(profileMenus);
-    }
-
     @Override
     public void update(ProfileUpdateRequestDTO requestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(UPDATING_PROCESS_STARTED, PROFILE);
 
-        Long hospitalId = getHospitalId();
+        Long hospitalId = getLoggedInHospitalId();
 
-        Profile profile = findById(requestDTO.getProfileDTO().getId(), hospitalId);
+        Profile profile = findByIdAndHospitalId(requestDTO.getProfileDTO().getId(), hospitalId);
 
         Long profileCount = profileRepository.validateDuplicityForUpdate(
                 requestDTO.getProfileDTO().getId(),
@@ -105,24 +100,13 @@ public class ProfileServiceImpl implements ProfileService {
 
         validateName(profileCount, requestDTO.getProfileDTO().getName());
 
-        Department department = findDepartmentById(requestDTO.getProfileDTO().getDepartmentId(), hospitalId);
+        Department department = findDepartmentByIdAndHospitalId(requestDTO.getProfileDTO().getDepartmentId(), hospitalId);
 
-        save(convertToUpdatedProfile(requestDTO.getProfileDTO(), department, profile));
+        convertToUpdatedProfile(requestDTO.getProfileDTO(), department, profile);
 
         saveProfileMenu(convertToUpdatedProfileMenu(profile, requestDTO.getProfileMenuRequestDTO()));
 
         log.info(UPDATING_PROCESS_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
-    }
-
-    public Profile findById(Long profileId, Long hospitalId) {
-        return profileRepository.findProfileById(profileId, hospitalId)
-                .orElseThrow(() -> PROFILE_WITH_GIVEN_ID_NOT_FOUND.apply(profileId));
-    }
-
-    private void validateName(Long profileCount, String name) {
-        if (profileCount.intValue() > 0)
-            throw new DataDuplicationException(
-                    String.format(ErrorMessageConstants.NAME_DUPLICATION_MESSAGE, Profile.class.getSimpleName(), name));
     }
 
     @Override
@@ -131,9 +115,9 @@ public class ProfileServiceImpl implements ProfileService {
 
         log.info(DELETING_PROCESS_STARTED, PROFILE);
 
-        Profile profile = findById(deleteRequestDTO.getId(), getHospitalId());
+        Profile profile = findByIdAndHospitalId(deleteRequestDTO.getId(), getLoggedInHospitalId());
 
-        save(convertProfileToDeleted.apply(profile, deleteRequestDTO));
+        convertProfileToDeleted.apply(profile, deleteRequestDTO);
 
         log.info(DELETING_PROCESS_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
     }
@@ -145,7 +129,7 @@ public class ProfileServiceImpl implements ProfileService {
 
         log.info(SEARCHING_PROCESS_STARTED, PROFILE);
 
-        Long hospitalId = getHospitalId();
+        Long hospitalId = getLoggedInHospitalId();
 
         List<ProfileMinimalResponseDTO> responseDTOS = profileRepository.search(searchRequestDTO, hospitalId, pageable);
 
@@ -160,7 +144,7 @@ public class ProfileServiceImpl implements ProfileService {
 
         log.info(FETCHING_DETAIL_PROCESS_STARTED, PROFILE);
 
-        ProfileDetailResponseDTO detailResponseDTO = profileRepository.fetchDetailsById(id,getHospitalId());
+        ProfileDetailResponseDTO detailResponseDTO = profileRepository.fetchDetailsById(id, getLoggedInHospitalId());
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
 
@@ -168,13 +152,13 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchActiveProfilesForDropdown() {
+    public List<DropDownResponseDTO> fetchActiveMinProfile() {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, PROFILE);
 
-        List<DropDownResponseDTO> responseDTOS = profileRepository.fetchActiveProfilesForDropDown(getHospitalId());
+        List<DropDownResponseDTO> responseDTOS = profileRepository.fetchActiveMinProfile(getLoggedInHospitalId());
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
 
@@ -182,8 +166,8 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public Profile fetchActiveProfileById(Long id) {
-        return profileRepository.findActiveProfileById(id,getHospitalId())
+    public Profile findActiveProfileByIdAndHospitalId(Long id, Long hospitalId) {
+        return profileRepository.findActiveProfileByIdAndHospitalId(id, hospitalId)
                 .orElseThrow(() -> PROFILE_WITH_GIVEN_ID_NOT_FOUND.apply(id));
     }
 
@@ -193,7 +177,8 @@ public class ProfileServiceImpl implements ProfileService {
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, PROFILE);
 
-        List<DropDownResponseDTO> responseDTOS = profileRepository.fetchProfileByDepartmentId(departmentId,getHospitalId());
+        List<DropDownResponseDTO> responseDTOS =
+                profileRepository.fetchProfileByDepartmentAndHospitalId(departmentId, getLoggedInHospitalId());
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
 
@@ -201,26 +186,46 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public AssignedProfileResponseDTO fetchAssignedProfileResponseDto(ProfileMenuSearchRequestDTO searchRequestDTO) {
+    public AssignedProfileResponseDTO fetchAssignedProfile(ProfileMenuSearchRequestDTO searchRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, PROFILE);
 
         AssignedProfileResponseDTO responseDTO =
-                profileRepository.fetchAssignedProfileResponseDto(searchRequestDTO);
+                profileRepository.fetchAssignedProfile(searchRequestDTO);
 
         log.info(FETCHING_PROCESS_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
     }
 
+
+    private void validateName(Long profileCount, String name) {
+        if (profileCount.intValue() > 0)
+            throw new DataDuplicationException(
+                    String.format(NAME_DUPLICATION_MESSAGE, Profile.class.getSimpleName(), name));
+    }
+
+    public Profile save(Profile profile) {
+        return profileRepository.save(profile);
+    }
+
+    private void saveProfileMenu(List<ProfileMenu> profileMenus) {
+        profileMenuRepository.saveAll(profileMenus);
+    }
+
+    private Profile findByIdAndHospitalId(Long profileId, Long hospitalId) {
+        return profileRepository.findProfileByIdAndHospitalId(profileId, hospitalId)
+                .orElseThrow(() -> PROFILE_WITH_GIVEN_ID_NOT_FOUND.apply(profileId));
+    }
+
     private Function<Long, NoContentFoundException> PROFILE_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         throw new NoContentFoundException(Profile.class, "id", id.toString());
     };
 
-    public Department findDepartmentById(Long id, Long hospitalId) {
-        return departmentRepository.findActiveDepartmentById(id, hospitalId)
+    private Department findDepartmentByIdAndHospitalId(Long id, Long hospitalId) {
+        return departmentRepository.findActiveDepartmentByIdAndHospitalId(id, hospitalId)
                 .orElseThrow(() -> new NoContentFoundException(Department.class, "id", id.toString()));
     }
 }

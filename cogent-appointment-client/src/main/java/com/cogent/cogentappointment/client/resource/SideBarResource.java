@@ -35,6 +35,6 @@ public class SideBarResource {
     @PutMapping
     @ApiOperation(FETCH_ASSIGNED_PROFILE_RESPONSE)
     public ResponseEntity<?> fetchAssignedProfileResponse(@Valid @RequestBody ProfileMenuSearchRequestDTO requestDTO) {
-        return ok(profileService.fetchAssignedProfileResponseDto(requestDTO));
+        return ok(profileService.fetchAssignedProfile(requestDTO));
     }
 }

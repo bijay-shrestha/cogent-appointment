@@ -23,6 +23,7 @@ import java.util.Optional;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.query.DepartmentQuery.*;
+import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
 
 /**
@@ -67,7 +68,7 @@ public class DepartmentRepositoryCustomImpl implements DepartmentRepositoryCusto
 
         int totalItems = query.getResultList().size();
 
-        PageableUtils.addPagination.accept(pageable, query);
+        addPagination.accept(pageable, query);
 
         List<DepartmentMinimalResponseDTO> minimalResponseDTOS = transformQueryToResultList(query,
                 DepartmentMinimalResponseDTO.class);
@@ -94,7 +95,7 @@ public class DepartmentRepositoryCustomImpl implements DepartmentRepositoryCusto
     }
 
     @Override
-    public Optional<List<DropDownResponseDTO>> fetchDepartmentForDropdown(Long hospitalId) {
+    public Optional<List<DropDownResponseDTO>> fetchMinDepartment(Long hospitalId) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DEPARTMENT_FOR_DROPDOWN)
                 .setParameter(HOSPITAL_ID, hospitalId);
@@ -105,7 +106,7 @@ public class DepartmentRepositoryCustomImpl implements DepartmentRepositoryCusto
     }
 
     @Override
-    public Optional<List<DropDownResponseDTO>> fetchActiveDropDownList(Long hospitalId) {
+    public Optional<List<DropDownResponseDTO>> fetchActiveMinDepartment(Long hospitalId) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_DEPARTMENT_FOR_DROPDOWN)
                 .setParameter(HOSPITAL_ID, hospitalId);

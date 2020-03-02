@@ -37,7 +37,6 @@ public class WeekDaysResource {
     @GetMapping(PREPARE_WEEK_DAYS_DATA)
     @ApiOperation(FETCH_PREPARE_WEEK_DAYS)
     public ResponseEntity<?> fetchPrepareWeekDays() {
-
         return ok(weekDaysService.fetchPrepareWeekDays());
     }
 }

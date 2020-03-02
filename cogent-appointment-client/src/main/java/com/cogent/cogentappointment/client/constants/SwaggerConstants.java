@@ -33,11 +33,12 @@ public class SwaggerConstants {
                 " for specific doctor and specialization";
         String SAVE_OPERATION = "Save new appointment";
         String FETCH_PENDING_APPOINTMENT = "Fetch pending appointments";
-        String FETCH_APPOINTMENT_QUEUE = "Fetch Appointment Queue of Today for Dashboard";
         String CANCEL_APPOINTMENT_OPERATION = "Cancel appointment and request refund";
         String RESCHEDULE_OPERATION = "Reschedule appointment date and time.";
         String FETCH_APPOINTMENT_HISTORY = " Fetch appointment history (only approved)";
         String CANCEL_REGISTRATION_OPERATION = "Delete Appointment Reservation when user cancels registration process";
+
+        String FETCH_APPOINTMENT_QUEUE = "Fetch Appointment Queue of Today for Dashboard";
         String FETCH_REFUND_APPOINTMENTS = "Fetch Refund Appointment Request List";
         String APPROVE_REFUND_APPOINTMENT = "Approve Refund Request Appointment";
         String REJECT_REFUND_APPOINTMENT = "Reject Refund Request Appointment";
@@ -47,6 +48,11 @@ public class SwaggerConstants {
         String FETCH_APPOINTMENT_LOG = "Fetch Appointment Log";
         String FETCH_APPOINTMENT_RESCHEDULE_LOG = "Fetch Appointment Reschedule Log";
         String DETAILS_APPROVAL_VISIT_OPERATION = "Fetch appointment visit approval details by its id";
+    }
+
+    public interface AppointmentStatusConstant {
+        String BASE_API_VALUE = "This is Appointment Status Resource";
+        String FETCH_APPOINTMENT_STATUS = "Fetch appointment status.";
     }
 
     public interface AuthenticateConstant {
@@ -180,9 +186,9 @@ public class SwaggerConstants {
     //P
     public interface PatientConstant {
         String BASE_PATIENT_API_VALUE = "This is Patient Resource";
-        String FETCH_ACTIVE_PATIENT_META_INFO_DETAILS_FOR_DROPDOWN = "Fetch minimal active patient meta info details " +
+        String FETCH_ACTIVE_MIN_PATIENT_META_INFO = "Fetch minimal active patient meta info details " +
                 "(id and metaInfo) for dropdown";
-        String FETCH_PATIENT_META_INFO_DETAILS_FOR_DROPDOWN = "Fetch minimal patient meta info details " +
+        String FETCH_MIN_PATIENT_META_INFO = "Fetch minimal patient meta info details " +
                 "(id and metaInfo) for dropdown";
         String SEARCH_PATIENT_WITH_SELF_TYPE_OPERATION = "Search patient info according to given " +
                 "request parameters (esewa id, isSelf='Y' and hospital id)";
@@ -248,6 +254,16 @@ public class SwaggerConstants {
 
 
     //U
+    public interface UniversityConstant {
+        String BASE_API_VALUE = "This is University Resource.";
+        String SAVE_OPERATION = "Save new University";
+        String UPDATE_OPERATION = "Update existing University";
+        String DELETE_OPERATION = "Set University status as 'D' when deleted";
+        String SEARCH_OPERATION = "Search University according to given request parameters";
+        String DETAILS_OPERATION = "Fetch University details by its id";
+        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal University details for dropdown";
+    }
+
 
     //V
 
@@ -255,7 +271,7 @@ public class SwaggerConstants {
     public interface WeekDaysConstant {
         String BASE_API_VALUE = "This is Week Days Resource.";
         String FETCH_ACTIVE_WEEK_DAYS = "Fetch active week days.";
-        String FETCH_PREPARE_WEEK_DAYS = "Fetch PREPARE active week days.";
+        String FETCH_PREPARE_WEEK_DAYS = "Prepare active week days (for doctor duty roster).";
     }
 
 

@@ -329,7 +329,7 @@ Sizes: [
 															<table border="0" cellpadding="30" cellspacing="0" width="100%">
 																<tr>
 																	<td align="center" valign="top" class="textContent">
-																		<h1 style="color:#FFFFFF;line-height:100%;font-family:Helvetica,Arial,sans-serif;font-size:35px;font-weight:normal;margin-bottom:5px;text-align:center;">Welcome</h1>
+																		<h1 style="color:#FFFFFF;line-height:100%;font-family:Helvetica,Arial,sans-serif;font-size:35px;font-weight:normal;margin-bottom:5px;text-align:center;">Password Reset</h1>
 																		<!-- <h2 style="text-align:center;font-weight:normal;font-family:Helvetica,Arial,sans-serif;font-size:23px;margin-bottom:10px;color:#205478;line-height:135%;">Subheader introduction</h2>
 																		<div style="text-align:center;font-family:Helvetica,Arial,sans-serif;font-size:15px;margin-bottom:0;color:#FFFFFF;line-height:135%;">Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante.</div> -->
 																	</td>
@@ -350,10 +350,10 @@ Sizes: [
 							<!-- // MODULE ROW -->
 
 
-			
 
 
-				
+
+
 
 
 							<!-- MODULE ROW // -->
@@ -381,8 +381,8 @@ Sizes: [
 																						http://kb.mailchimp.com/templates/code/create-editable-content-areas-with-mailchimps-template-language
 																					-->
 																					<h3 mc:edit="header" style="color:#5F5F5F;line-height:125%;font-family:Helvetica,Arial,sans-serif;font-size:20px;font-weight:normal;margin-top:0;margin-bottom:10px;text-align:left;">Dear Mr/Mrs/Miss [username]</h3>
-																					<div mc:edit="body" style="text-align:left;font-family:Helvetica,Arial,sans-serif;font-size:15px;margin-bottom:0;color:#5F5F5F;line-height:135%;">Glad to have you on board. Please confirm your account by clicking the button below</div>
-									
+																					<div mc:edit="body" style="text-align:left;font-family:Helvetica,Arial,sans-serif;font-size:15px;margin-bottom:0;color:#5F5F5F;line-height:135%;">We received a request to reset your password.Enter the following password  reset code :</div>
+
 																				</td>
 																			</tr>
 																		</table>
@@ -414,17 +414,18 @@ Sizes: [
 													<table border="0" cellpadding="30" cellspacing="0" width="500" class="flexibleContainer">
 														<tr>
 															<td style="padding-top:0;" align="center" valign="top" width="500" class="flexibleContainerCell">
-	
+
 																<!-- CONTENT TABLE // -->
-																<table border="0" cellpadding="0" cellspacing="0" width="50%" class="emailButton" style="background-color: #007bff;">
+																<table border="0" cellpadding="0" cellspacing="0" width="50%" class="emailButton" style="background-color: #ccc;">
 																	<tr>
 																		<td align="center" valign="middle" class="buttonContent" style="padding-top:15px;padding-bottom:15px;padding-right:15px;padding-left:15px;">
-																			<a style="color:#FFFFFF;text-decoration:none;font-family:Helvetica,Arial,sans-serif;font-size:20px;line-height:135%;" href="#" target="_blank">Confirmation</a>
+																				<h3 mc:edit="header" style="color:#000;line-height:125%;font-family:Helvetica,Arial,sans-serif;font-size:22px;font-weight:normal;margin-top:0;margin-bottom:3px;text-align:center;">1234</h3>
+
 																		</td>
 																	</tr>
 																</table>
 																<!-- // CONTENT TABLE -->
-	
+
 															</td>
 														</tr>
 													</table>
@@ -457,13 +458,13 @@ Sizes: [
 																		<table border="0" cellpadding="0" cellspacing="0" width="210" style="max-width: 100%;">
 																			<tr>
 																				<td align="left" class="textContent">
-				
+
 																					<div style="text-align:left;font-family:Helvetica,Arial,sans-serif;font-size:15px;margin-bottom:0;color:#5F5F5F;line-height:135%;">Best Wishes,<br/>Cogent Team</div>
 																				</td>
 																			</tr>
 																		</table>
 																	</td>
-																	
+
 																</tr>
 															</table>
 															<!-- // CONTENT TABLE -->
@@ -510,10 +511,13 @@ Sizes: [
 																		<!-- CONTENT TABLE // -->
 																		<table border="0" cellpadding="0" cellspacing="0" width="100%">
 																			<tr>
-																				<td align="center" valign="top" class="textContent">
-																					<div style="text-align:center;font-family:Helvetica,Arial,sans-serif;font-size:15px;margin-bottom:0;margin-top:3px;color:#5F5F5F;line-height:135%;">Cogent EMR,Pulchowk</div>
-																				</td>
-																			</tr>
+                                                                            																				<td align="center" valign="top" class="textContent">
+                                                                            																				<!--	<div style="text-align:center;font-family:Helvetica,Arial,sans-serif;font-size:15px;margin-bottom:0;margin-top:3px;color:#5F5F5F;line-height:135%;">Cogent EMR</div> -->
+                                                                            																					<div style="text-align:center;font-family:Helvetica,Arial,sans-serif;font-size:15px;margin-bottom:0;margin-top:3px;color:#959191;line-height:135%;">4th floor M&S Towers, Pulchowk Road, Patan, Nepal</div>
+                                                                            																					<div style="text-align:center;font-family:Helvetica,Arial,sans-serif;font-size:15px;margin-bottom:0;margin-top:3px;color:#959191;line-height:135%;">Phone: 01-5525261</div>
+                                                                            																					<div style="text-align:center;font-family:Helvetica,Arial,sans-serif;font-size:15px;margin-bottom:0;margin-top:3px;color:#959191;line-height:135%;">Email:&nbsp;<a href="mailto:info@cogenthealth.com.np" style="border-radius:0;color:#959191">info@cogenthealth.com.np</a></div>
+                                                                            																				</td>
+                                                                            																			</tr>
 																		</table>
 																		<!-- // CONTENT TABLE -->
 
@@ -565,7 +569,7 @@ Sizes: [
 
 																		<div style="font-family:Helvetica,Arial,sans-serif;font-size:13px;color:#828282;text-align:center;line-height:120%;">
 																			<div>Copyright &#169; 2020 <a href="http://www.charlesmudy.com/respmail/" target="_blank" style="text-decoration:none;color:#828282;"><span style="color:#828282;">Cogent EMR</span></a>. All&nbsp;rights&nbsp;reserved.</div>
-																			
+
 																		</div>
 
 																	</td>

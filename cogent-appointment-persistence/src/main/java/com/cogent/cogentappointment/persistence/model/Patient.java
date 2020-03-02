@@ -45,7 +45,7 @@ public class Patient extends Auditable<String> implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
 
-    @Column(name = "eSewa_id", nullable = false)
+    @Column(name = "eSewa_id")
     private String eSewaId;
 
     @Column(name = "cogent_id")

@@ -54,7 +54,6 @@ public class PatientUtils {
     }
 
 
-
     public static void updatePatient(PatientUpdateRequestDTO requestDTO,
                                      Patient patient) {
         patient.setName(toUpperCase(requestDTO.getName()));
@@ -73,27 +72,17 @@ public class PatientUtils {
         hospitalPatientInfo.setStatus(requestDTO.getStatus());
     }
 
-    public static List<PatientMinimalResponseDTO> parseToPatientMinimalResponseDTO(List<Object[]> results) {
-        return results.stream()
-                .map(parseToPatientMinimalResponseDTO)
-                .collect(Collectors.toList());
-    }
+    public static Function<Patient, PatientMinimalResponseDTO> parseToPatientMinimalResponseDTO =
+            patient -> {
 
-    public static Function<Object[], PatientMinimalResponseDTO> parseToPatientMinimalResponseDTO = object -> {
-
-        final int PATIENT_ID_INDEX = 0;
-        final int NAME_INDEX = 1;
-        final int MOBILE_NUMBER_INDEX = 2;
-        final int GENDER_INDEX = 3;
-
-        //TODO: calculate age
-        return PatientMinimalResponseDTO.builder()
-                .patientId(Long.parseLong(object[PATIENT_ID_INDEX].toString()))
-                .name(object[NAME_INDEX].toString())
-                .mobileNumber(object[MOBILE_NUMBER_INDEX].toString())
-                .gender((Gender) object[GENDER_INDEX])
-                .build();
-    };
+                return PatientMinimalResponseDTO.builder()
+                        .patientId(patient.getId())
+                        .name(patient.getName())
+                        .mobileNumber(patient.getMobileNumber())
+//                        .address(patient.)
+//                .gender((Gender) object[GENDER_INDEX])
+                        .build();
+            };
 
     public static void updatePatientMetaInfo(HospitalPatientInfo hospitalPatientInfo,
                                              PatientMetaInfo patientMetaInfo,

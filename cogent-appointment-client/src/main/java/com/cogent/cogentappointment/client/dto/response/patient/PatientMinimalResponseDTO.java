@@ -19,11 +19,13 @@ public class PatientMinimalResponseDTO implements Serializable {
 
     private String name;
 
+    private String address;
+
     private String mobileNumber;
 
-    private Gender gender;
-
     private String age;
+
+    private String registrationNumber;
 
     private Integer totalItems;
 }

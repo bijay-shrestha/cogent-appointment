@@ -24,7 +24,6 @@ import java.util.List;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.query.DashBoardQuery.QUERY_TO_COUNT_OVERALL_REGISTERED_PATIENTS;
 import static com.cogent.cogentappointment.client.query.PatientQuery.*;
-import static com.cogent.cogentappointment.client.utils.PatientUtils.parseToPatientMinimalResponseDTO;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
@@ -38,18 +37,6 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
 
     @PersistenceContext
     private EntityManager entityManager;
-
-    @Override
-    public Long validatePatientDuplicity(String name, String mobileNumber,
-                                         Date dateOfBirth, Long hospitalId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_PATIENT_DUPLICITY)
-                .setParameter(NAME, name)
-                .setParameter(MOBILE_NUMBER, mobileNumber)
-                .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(dateOfBirth))
-                .setParameter(HOSPITAL_ID, hospitalId);
-
-        return (Long) query.getSingleResult();
-    }
 
     @Override
     public Long validatePatientDuplicity(PatientUpdateRequestDTO updateRequestDTO, Long hospitalId) {
@@ -78,27 +65,23 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
     }
 
     @Override
-    public List<PatientMinimalResponseDTO> searchForOthers(PatientMinSearchRequestDTO searchRequestDTO,
-                                                           Pageable pageable) {
+    public List<Long> fetchChildPatientIds(PatientMinSearchRequestDTO searchRequestDTO) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_MINIMAL_PATIENT_INFO_FOR_OTHERS);
-//                .setParameter(ESEWA_ID, searchRequestDTO.getEsewaId())
-//                .setParameter(IS_SELF, searchRequestDTO.getIsSelf())
-//                .setParameter(HOSPITAL_ID, searchRequestDTO.getHospitalId());
+        Query query = entityManager.createQuery(QUERY_TO_FETCH_CHILD_PATIENT_IDS)
+                .setParameter(NAME, searchRequestDTO.getName())
+                .setParameter(MOBILE_NUMBER, searchRequestDTO.getMobileNumber())
+                .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(searchRequestDTO.getDateOfBirth()));
 
-        List<Object[]> results = query.getResultList();
+        List<Long> childPatientIds = query.getResultList();
 
-        Integer totalItems = query.getResultList().size();
+        if (childPatientIds.isEmpty()) throw new NoContentFoundException(Patient.class);
 
-        addPagination.accept(pageable, query);
+        return childPatientIds;
+    }
 
-        if (results.isEmpty()) throw new NoContentFoundException(Patient.class);
-
-        else {
-            List<PatientMinimalResponseDTO> responseDTOS = parseToPatientMinimalResponseDTO(results);
-            responseDTOS.get(0).setTotalItems(totalItems);
-            return responseDTOS;
-        }
+    @Override
+    public List<PatientMinimalResponseDTO> fetchMinPatientInfoForOthers(List<Long> childPatientIds) {
+        return null;
     }
 
     @Override

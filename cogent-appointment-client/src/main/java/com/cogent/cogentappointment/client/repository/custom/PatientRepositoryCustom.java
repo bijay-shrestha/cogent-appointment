@@ -22,15 +22,15 @@ import java.util.List;
 @Qualifier("patientRepositoryCustom")
 public interface PatientRepositoryCustom {
 
-    Long validatePatientDuplicity(String name, String mobileNumber,
-                                  Date dateOfBirth, Long hospitalId);
-
-    Long validatePatientDuplicity(PatientUpdateRequestDTO updateRequestDTO, Long hospitalId);
-
+    /*eSewa*/
     PatientDetailResponseDTO searchForSelf(PatientMinSearchRequestDTO searchRequestDTO);
 
-    List<PatientMinimalResponseDTO> searchForOthers(PatientMinSearchRequestDTO searchRequestDTO,
-                                                    Pageable pageable);
+    List<Long> fetchChildPatientIds(PatientMinSearchRequestDTO searchRequestDTO);
+
+    List<PatientMinimalResponseDTO> fetchMinPatientInfoForOthers(List<Long> childPatientIds);
+
+    /*admin*/
+    Long validatePatientDuplicity(PatientUpdateRequestDTO updateRequestDTO, Long hospitalId);
 
     PatientResponseDTO fetchPatientDetailsById(Long id, Long hospitalId);
 

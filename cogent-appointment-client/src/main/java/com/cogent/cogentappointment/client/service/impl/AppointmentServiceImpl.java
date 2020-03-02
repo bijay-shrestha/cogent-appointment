@@ -675,6 +675,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 patientMetaInfoService.savePatientMetaInfo(childPatient);
                 patientRelationInfoService.savePatientRelationInfo(parentPatient, childPatient);
             }
+
         } else
             childPatient = patientService.fetchPatientById(patientId);
 

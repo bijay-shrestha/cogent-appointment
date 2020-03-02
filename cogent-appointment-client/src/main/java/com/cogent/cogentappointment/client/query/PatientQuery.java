@@ -10,18 +10,6 @@ import java.util.Objects;
  */
 public class PatientQuery {
 
-    public final static String QUERY_TO_VALIDATE_PATIENT_DUPLICITY =
-            "SELECT " +
-                    " COUNT(p.id)" +
-                    " FROM Patient p" +
-                    " LEFT JOIN HospitalPatientInfo hp ON hp.patient.id = p.id" +
-                    " WHERE " +
-                    " (p.name =:name" +
-                    " AND p.mobileNumber =:mobileNumber" +
-                    " AND p.dateOfBirth =:dateOfBirth)" +
-                    " AND hp.hospital.id =:hospitalId" +
-                    " AND hp.status != 'D'";
-
     public final static String QUERY_TO_VALIDATE_UPDATED_PATIENT_DUPLICITY =
             "SELECT " +
                     " COUNT(p.id)" +
@@ -55,6 +43,22 @@ public class PatientQuery {
                     " CONCAT(((TIMESTAMPDIFF(YEAR, p.dateOfBirth ,CURDATE()))), ' years')" +
                     " END AS age";
 
+    public static final String QUERY_TO_CALCULATE_PATIENT_AGE_NATIVE =
+            " CASE" +
+                    " WHEN" +
+                    " (((TIMESTAMPDIFF(YEAR, p.date_of_birth, CURDATE()))<=0) AND" +
+                    " ((TIMESTAMPDIFF(MONTH, p.date_of_birth, CURDATE()) % 12)<=0))" +
+                    " THEN" +
+                    " CONCAT((FLOOR(TIMESTAMPDIFF(DAY, p.date_of_birth, CURDATE()) % 30.4375)), ' days')" +
+                    " WHEN" +
+                    " ((TIMESTAMPDIFF(YEAR, p.date_of_birth ,CURDATE()))<=0)" +
+                    " THEN" +
+                    " CONCAT(((TIMESTAMPDIFF(MONTH, p.date_of_birth, CURDATE()) % 12)), ' months')" +
+                    " ELSE" +
+                    " CONCAT(((TIMESTAMPDIFF(YEAR, p.date_of_birth ,CURDATE()))), ' years')" +
+                    " END AS age";
+
+    /*FOR SELF*/
     private static final String SELECT_CLAUSE_TO_FETCH_PATIENT_DETAILS =
             " SELECT p.id as patientId," +                                  //[0]
                     " p.name as name," +                                    //[1]
@@ -71,21 +75,16 @@ public class PatientQuery {
     private static final String GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS =
             " WHERE p.name=:name" +
                     " AND p.mobileNumber=:mobileNumber" +
-                    " AND p.dateOfBirth =:dateOfBirth" ;
+                    " AND p.dateOfBirth =:dateOfBirth";
 
     /*FOR SELF*/
     public static final String QUERY_TO_FETCH_PATIENT_DETAILS_FOR_SELF =
             SELECT_CLAUSE_TO_FETCH_PATIENT_DETAILS + GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS;
 
-    public static final String QUERY_TO_FETCH_MINIMAL_PATIENT_INFO_FOR_OTHERS =
-            " SELECT p.id as patientId," +                                  //[0]
-                    " p.name as name," +                                    //[1]
-                    " p.mobileNumber as mobileNumber," +                    //[2]
-                    " p.gender as gender," +                                //[3]
-                    " p.address as address," +                              //[4]
-                    " p.dateOfBirth as dateOfBirth," +                      //[5]
-                    " p.registrationNumber as registrationNumber" +         //[6]
+    public static final String QUERY_TO_FETCH_CHILD_PATIENT_IDS =
+            " SELECT p.childPatientId" +
                     " FROM Patient p" +
+                    " LEFT JOIN PatientRelationInfo pm ON pm.parentPatientId.id= p.id" +
                     GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS;
 
     public static final String QUERY_TO_FETCH_PATIENT_DETAILS_BY_ID =
@@ -156,20 +155,6 @@ public class PatientQuery {
                     " ORDER BY id DESC" +
                     " LIMIT 1";
 
-    public static final String QUERY_TO_CALCULATE_PATIENT_AGE_NATIVE =
-            " CASE" +
-                    " WHEN" +
-                    " (((TIMESTAMPDIFF(YEAR, p.date_of_birth, CURDATE()))<=0) AND" +
-                    " ((TIMESTAMPDIFF(MONTH, p.date_of_birth, CURDATE()) % 12)<=0))" +
-                    " THEN" +
-                    " CONCAT((FLOOR(TIMESTAMPDIFF(DAY, p.date_of_birth, CURDATE()) % 30.4375)), ' days')" +
-                    " WHEN" +
-                    " ((TIMESTAMPDIFF(YEAR, p.date_of_birth ,CURDATE()))<=0)" +
-                    " THEN" +
-                    " CONCAT(((TIMESTAMPDIFF(MONTH, p.date_of_birth, CURDATE()) % 12)), ' months')" +
-                    " ELSE" +
-                    " CONCAT(((TIMESTAMPDIFF(YEAR, p.date_of_birth ,CURDATE()))), ' years')" +
-                    " END AS age";
 
     public static final String QUERY_TO_FETCH_PATIENT =
             " SELECT p FROM Patient p" +

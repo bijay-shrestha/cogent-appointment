@@ -42,7 +42,7 @@ public class PatientResource {
     public ResponseEntity<?> search(@Valid @RequestBody PatientMinSearchRequestDTO searchRequestDTO,
                                     @RequestParam("page") int page,
                                     @RequestParam("size") int size) {
-        return ok(patientService.fetchMinimalPatientInfo(searchRequestDTO, getPageable(page, size)));
+        return ok(patientService.searchForOthers(searchRequestDTO, getPageable(page, size)));
     }
 
     @GetMapping(DETAIL + ID_PATH_VARIABLE_BASE)

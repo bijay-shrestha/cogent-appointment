@@ -7,6 +7,7 @@ import org.springframework.util.ObjectUtils;
  * @author smriti ON 16/01/2020
  */
 public class PatientQuery {
+
     public final static String QUERY_TO_VALIDATE_UPDATED_PATIENT_DUPLICITY =
             "SELECT " +
                     " COUNT(p.id)" +

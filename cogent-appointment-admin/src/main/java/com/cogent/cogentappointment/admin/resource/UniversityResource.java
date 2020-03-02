@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AdminConstant.BASE_API_VALUE;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.UniversityConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.UniversityConstants.BASE_UNIVERSITY;

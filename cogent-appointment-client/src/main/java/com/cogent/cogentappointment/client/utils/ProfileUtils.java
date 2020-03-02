@@ -1,11 +1,9 @@
 package com.cogent.cogentappointment.client.utils;
 
-import com.cogent.cogentappointment.client.constants.StringConstant;
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.profile.ProfileDTO;
 import com.cogent.cogentappointment.client.dto.request.profile.ProfileUpdateDTO;
 import com.cogent.cogentappointment.client.dto.response.profile.*;
-import com.cogent.cogentappointment.client.utils.commons.StringUtil;
 import com.cogent.cogentappointment.persistence.model.Department;
 import com.cogent.cogentappointment.persistence.model.Profile;
 
@@ -17,6 +15,9 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.cogent.cogentappointment.client.constants.StringConstant.COMMA_SEPARATED;
+import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toUpperCase;
+
 /**
  * @author smriti on 7/8/19
  */
@@ -25,30 +26,29 @@ public class ProfileUtils {
     public static Profile convertDTOToProfile(ProfileDTO profileDTO,
                                               Department department) {
         Profile profile = new Profile();
-        profile.setName(StringUtil.toUpperCase(profileDTO.getName()));
+        profile.setName(toUpperCase(profileDTO.getName()));
         profile.setDescription(profileDTO.getDescription());
         profile.setStatus(profileDTO.getStatus());
         profile.setDepartment(department);
         return profile;
     }
 
-    public static Profile convertToUpdatedProfile(ProfileUpdateDTO profileDTO,
+    public static void convertToUpdatedProfile(ProfileUpdateDTO profileDTO,
                                                   Department department,
                                                   Profile profile) {
-        profile.setName(StringUtil.toUpperCase(profileDTO.getName()));
+        profile.setName(toUpperCase(profileDTO.getName()));
         profile.setDescription(profileDTO.getDescription());
         profile.setStatus(profileDTO.getStatus());
         profile.setDepartment(department);
         profile.setRemarks(profileDTO.getRemarks());
-        return profile;
     }
 
     public static ProfileDetailResponseDTO parseToProfileDetailResponseDTO(
             ProfileResponseDTO profileResponseDTO,
             List<ProfileMenuResponseDTO> profileMenuResponseDTOS) {
 
-        Map<Long, List<ProfileMenuResponseDTO>> groupByParentId = new TreeMap<>(
-                profileMenuResponseDTOS.stream()
+        Map<Long, List<ProfileMenuResponseDTO>> groupByParentId =
+                new TreeMap<>(profileMenuResponseDTOS.stream()
                         .collect(Collectors.groupingBy(ProfileMenuResponseDTO::getParentId)));
 
         return ProfileDetailResponseDTO.builder()
@@ -86,7 +86,7 @@ public class ProfileUtils {
 
         results.forEach(result -> {
             List<Long> roleIds = Stream.of(result[ROLE_ID_INDEX].toString()
-                    .split(StringConstant.COMMA_SEPARATED))
+                    .split(COMMA_SEPARATED))
                     .map(Long::parseLong)
                     .collect(Collectors.toList());
 

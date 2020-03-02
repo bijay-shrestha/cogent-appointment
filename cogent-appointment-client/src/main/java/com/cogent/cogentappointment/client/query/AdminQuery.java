@@ -5,6 +5,8 @@ import com.cogent.cogentappointment.client.utils.GenderUtils;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import org.springframework.util.ObjectUtils;
 
+import static com.cogent.cogentappointment.client.utils.GenderUtils.*;
+
 /**
  * @author smriti on 2019-08-05
  */
@@ -41,7 +43,7 @@ public class AdminQuery {
     public static final String QUERY_TO_FIND_ADMIN_EXCEPT_CURRENT_ADMIN =
             "SELECT " +
                     " a.email," +                               //[0]
-                    " a.mobileNumber" +                        //[1]
+                    " a.mobileNumber" +                         //[1]
                     " FROM" +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id = a.profileId" +
@@ -58,7 +60,7 @@ public class AdminQuery {
     public static final String QUERY_TO_FETCH_ACTIVE_ADMIN_FOR_DROPDOWN =
             " SELECT" +
                     " a.id as value," +                     //[0]
-                    " a.username as label" +               //[1]
+                    " a.username as label" +                //[1]
                     " FROM" +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id = a.profileId" +
@@ -90,18 +92,18 @@ public class AdminQuery {
                     " a.status as status," +                                    //[5]
                     " a.hasMacBinding as hasMacBinding," +                      //[6]
                     " a.gender as gender," +                                    //[7]
-                    " p.name as profileName," +
-                    " h.name as hospitalName," +
-                    " d.name as departmentName," +                                //[8]
+                    " p.name as profileName," +                                 //[8]
+                    " d.name as departmentName," +                              //[9]
                     " CASE WHEN" +
                     " (av.status IS NULL OR av.status = 'N')" +
                     " THEN null" +
                     " ELSE" +
                     " av.fileUri" +
-                    " END as fileUri";                                           //[9]
+                    " END as fileUri";                                           //[10]
 
     private static final String GET_WHERE_CLAUSE_TO_FETCH_ADMIN =
-            " WHERE a.status != 'D' AND h.status !='D' AND p.status !='D' AND d.status != 'D'";
+            " WHERE a.status != 'D' AND h.status !='D' AND p.status !='D' AND d.status != 'D'" +
+                    " AND h.id =:hospitalId";
 
     private static String GET_WHERE_CLAUSE_FOR_SEARCH_ADMIN(AdminSearchRequestDTO searchRequestDTO) {
         String whereClause = GET_WHERE_CLAUSE_TO_FETCH_ADMIN;
@@ -119,7 +121,7 @@ public class AdminQuery {
             whereClause += " AND p.id=" + searchRequestDTO.getProfileId();
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getGenderCode())) {
-            Gender gender = GenderUtils.fetchGenderByCode(searchRequestDTO.getGenderCode());
+            Gender gender = fetchGenderByCode(searchRequestDTO.getGenderCode());
             whereClause += " AND a.gender='" + gender + "'";
         }
 
@@ -130,8 +132,7 @@ public class AdminQuery {
 
     public static final String QUERY_TO_FETCH_ADMIN_DETAIL =
             SELECT_CLAUSE_TO_FETCH_ADMIN + "," +
-                    " a.remarks as remarks," +                                      //[10]
-                    " h.id as hospitalId," +                                        //[11]
+                    " a.remarks as remarks," +                                      //[11]
                     " p.id as profileId," +                                         //[12]
                     " d.id as departmentId," +                                      //[13]
                     " d.name as departmentName" +                                   //[14]
@@ -146,7 +147,7 @@ public class AdminQuery {
 
     public static final String QUERY_FO_FETCH_MAC_ADDRESS_INFO =
             "SELECT am.id as id," +                                  //[0]
-                    " am.macAddress as macAddress" +               //[1]
+                    " am.macAddress as macAddress" +                //[1]
                     " FROM AdminMacAddressInfo am" +
                     " WHERE" +
                     " am.status = 'Y'" +
@@ -169,13 +170,12 @@ public class AdminQuery {
                     " a.fullName as fullName," +
                     " CASE " +
                     "    WHEN (av.status = 'N' OR  av.status IS NULL) THEN null" +
-                    "    ELSE av.fileUri END as fileUri," +                                //[2]
-                    " p.id as profileId," +                                                 //[3]
-                    " p.name as profileName," +                                             //[4]
-                    " d.id as departmentId," +                                              //[5]
-                    " d.name as departmentName," +                                          //[6]
-                    " h.id as hospitalId," +                                                //[7]
-                    " h.name as hospitalName" +                                             //[8]
+                    "    ELSE av.fileUri" +
+                    " END as fileUri," +                                                   //[2]
+                    " p.id as profileId," +                                                //[3]
+                    " p.name as profileName," +                                            //[4]
+                    " d.id as departmentId," +                                             //[5]
+                    " d.name as departmentName" +                                          //[6]
                     " FROM Admin a" +
                     " LEFT JOIN AdminAvatar av ON av.admin.id=a.id" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +

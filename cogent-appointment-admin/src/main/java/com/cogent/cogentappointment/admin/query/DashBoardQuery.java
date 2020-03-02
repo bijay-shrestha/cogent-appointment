@@ -5,14 +5,14 @@ package com.cogent.cogentappointment.admin.query;
  */
 public class DashBoardQuery {
 
-    public static String CLAUSE_TO_FIND_BY_HOSPITAL_ID(Long hospitalId) {
+    private static String CLAUSE_TO_FIND_BY_HOSPITAL_ID(Long hospitalId) {
         if (hospitalId != null) {
             return " AND a.hospitalId=" + hospitalId;
         }
         return "";
     }
 
-    public static String CLAUSE_TO_FIND_BY_HOSPITAL_ID_FOR_OVERALL_PATIENT(Long hospitalId) {
+    private static String CLAUSE_TO_FIND_BY_HOSPITAL_ID_FOR_OVERALL_PATIENT(Long hospitalId) {
         if (hospitalId > 0) {
             return " AND hpi.hospitalId=" + hospitalId;
         }
@@ -30,7 +30,6 @@ public class DashBoardQuery {
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId);
     }
 
-
     public static String QUERY_TO_OVER_ALL_APPOINTMENTS(Long hospitalId) {
         return "SELECT" +
                 " COUNT(a.id)" +
@@ -40,12 +39,12 @@ public class DashBoardQuery {
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId);
     }
 
-
     public static String QUERY_TO_COUNT_REGISTERED_APPOINTMENT(Long hospitalId) {
         return "SELECT" +
                 " COUNT(a.id)" +
                 " FROM Appointment a" +
-                " LEFT JOIN HospitalPatientInfo hpi ON a.patientId=hpi.patientId" +
+                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =a.patientId.id" +
+                " AND hpi.hospital.id = a.hospitalId.id" +
                 " WHERE hpi.isRegistered='Y'" +
                 " AND (a.appointmentDate BETWEEN :fromDate AND :toDate)" +
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId);
@@ -56,7 +55,8 @@ public class DashBoardQuery {
         return "SELECT" +
                 " COUNT(a.id)" +
                 " FROM Appointment a" +
-                " LEFT JOIN HospitalPatientInfo hpi ON a.patientId=hpi.patientId" +
+                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =a.patientId.id" +
+                " AND hpi.hospital.id = a.hospitalId.id" +
                 " WHERE hpi.isRegistered='N'" +
                 " AND (a.appointmentDate BETWEEN :fromDate AND :toDate)" +
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId);

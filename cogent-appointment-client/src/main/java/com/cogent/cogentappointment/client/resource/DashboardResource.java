@@ -2,7 +2,7 @@ package com.cogent.cogentappointment.client.resource;
 
 import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.GenerateRevenueRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import com.cogent.cogentappointment.client.service.AppointmentService;
 import com.cogent.cogentappointment.client.service.DashboardService;
 import io.swagger.annotations.Api;

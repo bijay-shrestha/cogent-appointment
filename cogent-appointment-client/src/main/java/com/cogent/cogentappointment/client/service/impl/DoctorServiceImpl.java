@@ -26,15 +26,13 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.NAME_AND_MOBILE_NUMBER_DUPLICATION_MESSAGE;
-import static com.cogent.cogentappointment.client.constants.StringConstant.FORWARD_SLASH;
-import static com.cogent.cogentappointment.client.constants.StringConstant.SPACE;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.DoctorLog.*;
 import static com.cogent.cogentappointment.client.utils.DoctorUtils.*;
 import static com.cogent.cogentappointment.client.utils.GenderUtils.fetchGenderByCode;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
-import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getHospitalId;
+import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 
 /**
  * @author smriti on 2019-09-29
@@ -58,7 +56,7 @@ public class DoctorServiceImpl implements DoctorService {
 
     private final DoctorAppointmentChargeRepository doctorAppointmentChargeRepository;
 
-    private final FileService fileService;
+    private final MinioFileService minioFileService;
 
     private final DoctorAvatarRepository doctorAvatarRepository;
 
@@ -69,7 +67,7 @@ public class DoctorServiceImpl implements DoctorService {
                              DoctorQualificationRepository doctorQualificationRepository,
                              HospitalService hospitalService,
                              DoctorAppointmentChargeRepository doctorAppointmentChargeRepository,
-                             FileService fileService,
+                             MinioFileService minioFileService,
                              DoctorAvatarRepository doctorAvatarRepository) {
         this.doctorRepository = doctorRepository;
         this.doctorSpecializationRepository = doctorSpecializationRepository;
@@ -78,7 +76,7 @@ public class DoctorServiceImpl implements DoctorService {
         this.doctorQualificationRepository = doctorQualificationRepository;
         this.hospitalService = hospitalService;
         this.doctorAppointmentChargeRepository = doctorAppointmentChargeRepository;
-        this.fileService = fileService;
+        this.minioFileService = minioFileService;
         this.doctorAvatarRepository = doctorAvatarRepository;
     }
 
@@ -89,20 +87,22 @@ public class DoctorServiceImpl implements DoctorService {
 
         log.info(SAVING_PROCESS_STARTED, DOCTOR);
 
+        Long hospitalId = getLoggedInHospitalId();
+
         Long doctorCount = doctorRepository.validateDoctorDuplicity(
-                requestDTO.getName(), requestDTO.getMobileNumber(), getHospitalId());
+                requestDTO.getName(), requestDTO.getMobileNumber(), hospitalId);
 
         validateDoctor(doctorCount, requestDTO.getName(), requestDTO.getMobileNumber());
 
         Doctor doctor = parseDTOToDoctor(requestDTO,
                 fetchGender(requestDTO.getGenderCode()),
-                fetchHospitalById(getHospitalId()));
+                fetchHospitalById(hospitalId));
 
         saveDoctor(doctor);
 
         saveDoctorAppointmentCharge(doctor, requestDTO.getAppointmentCharge(), requestDTO.getAppointmentFollowUpCharge());
 
-        saveDoctorSpecialization(doctor.getId(), requestDTO.getSpecializationIds());
+        saveDoctorSpecialization(doctor.getId(), requestDTO.getSpecializationIds(), hospitalId);
 
         saveDoctorQualifications(doctor.getId(), requestDTO.getQualificationIds());
 
@@ -120,9 +120,9 @@ public class DoctorServiceImpl implements DoctorService {
 
         log.info(UPDATING_PROCESS_STARTED, DOCTOR);
 
-        Long hospitalId = getHospitalId();
+        Long hospitalId = getLoggedInHospitalId();
 
-        Doctor doctor = findById(requestDTO.getDoctorInfo().getId());
+        Doctor doctor = findByIdAndHospitalId(requestDTO.getDoctorInfo().getId(), hospitalId);
 
         Long doctorCount = doctorRepository.validateDoctorDuplicityForUpdate(
                 requestDTO.getDoctorInfo().getId(),
@@ -145,7 +145,7 @@ public class DoctorServiceImpl implements DoctorService {
                 requestDTO.getDoctorInfo().getAppointmentFollowUpCharge()
         );
 
-        updateDoctorSpecialization(doctor.getId(), requestDTO.getDoctorSpecializationInfo());
+        updateDoctorSpecialization(doctor.getId(), requestDTO.getDoctorSpecializationInfo(), hospitalId);
 
         updateDoctorQualification(doctor.getId(), requestDTO.getDoctorQualificationInfo());
 
@@ -161,7 +161,7 @@ public class DoctorServiceImpl implements DoctorService {
 
         log.info(DELETING_PROCESS_STARTED, DOCTOR);
 
-        Doctor doctor = findById(deleteRequestDTO.getId());
+        Doctor doctor = findByIdAndHospitalId(deleteRequestDTO.getId(), getLoggedInHospitalId());
 
         convertToDeletedDoctor(doctor, deleteRequestDTO);
 
@@ -171,13 +171,13 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     public List<DoctorMinimalResponseDTO> search(DoctorSearchRequestDTO searchRequestDTO,
                                                  Pageable pageable) {
+
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, DOCTOR);
 
-        List<DoctorMinimalResponseDTO> responseDTOS = doctorRepository.search(searchRequestDTO,
-                getHospitalId(),
-                pageable);
+        List<DoctorMinimalResponseDTO> responseDTOS =
+                doctorRepository.search(searchRequestDTO, getLoggedInHospitalId(), pageable);
 
         log.info(SEARCHING_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 
@@ -185,12 +185,12 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public List<DoctorDropdownDTO> fetchDoctorForDropdown() {
+    public List<DoctorDropdownDTO> fetchActiveMinDoctor() {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DOCTOR);
 
-        List<DoctorDropdownDTO> responseDTOS = doctorRepository.fetchDoctorForDropdown(getHospitalId());
+        List<DoctorDropdownDTO> responseDTOS = doctorRepository.fetchActiveMinDoctor(getLoggedInHospitalId());
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 
@@ -203,7 +203,7 @@ public class DoctorServiceImpl implements DoctorService {
 
         log.info(FETCHING_DETAIL_PROCESS_STARTED, DOCTOR);
 
-        DoctorDetailResponseDTO responseDTO = doctorRepository.fetchDetailsById(id,getHospitalId());
+        DoctorDetailResponseDTO responseDTO = doctorRepository.fetchDetailsById(id, getLoggedInHospitalId());
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 
@@ -216,7 +216,7 @@ public class DoctorServiceImpl implements DoctorService {
 
         log.info(FETCHING_DETAIL_PROCESS_STARTED, DOCTOR);
 
-        DoctorUpdateResponseDTO responseDTO = doctorRepository.fetchDetailsForUpdate(id,getHospitalId());
+        DoctorUpdateResponseDTO responseDTO = doctorRepository.fetchDetailsForUpdate(id, getLoggedInHospitalId());
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 
@@ -224,15 +224,15 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public Doctor fetchActiveDoctorById(Long id) {
+    public Doctor fetchActiveDoctorByIdAndHospitalId(Long id, Long hospitalId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, DOCTOR);
 
-        Doctor doctor = doctorRepository.findActiveDoctorById(id)
+        Doctor doctor = doctorRepository.fetchActiveDoctorByIdAndHospitalId(id, hospitalId)
                 .orElseThrow(() -> DOCTOR_WITH_GIVEN_ID_NOT_FOUND.apply(id));
 
-        log.info(FETCHING_PROCESS_COMPLETED, doctor, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 
         return doctor;
     }
@@ -244,7 +244,7 @@ public class DoctorServiceImpl implements DoctorService {
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DOCTOR);
 
         List<DoctorDropdownDTO> responseDTOS =
-                doctorRepository.fetchDoctorBySpecializationId(specializationId,getHospitalId());
+                doctorRepository.fetchDoctorBySpecializationAndHospitalId(specializationId, getLoggedInHospitalId());
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 
@@ -258,7 +258,7 @@ public class DoctorServiceImpl implements DoctorService {
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DOCTOR);
 
         List<DoctorDropdownDTO> responseDTOS =
-                doctorRepository.fetchDoctorByHospitalId(getHospitalId());
+                doctorRepository.fetchDoctorByHospitalId(getLoggedInHospitalId());
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 
@@ -273,15 +273,17 @@ public class DoctorServiceImpl implements DoctorService {
         return hospitalService.fetchActiveHospital(hospitalId);
     }
 
-    private void findSpecializationById(Long specializationId) {
-        specializationService.fetchActiveSpecializationById(specializationId);
+    private void findSpecializationById(Long specializationId, Long hospitalId) {
+        specializationService.fetchActiveSpecializationByIdAndHospitalId(specializationId, hospitalId);
     }
 
     private void fetchQualificationById(Long qualificationId) {
         qualificationService.fetchQualificationById(qualificationId);
     }
 
-    private void saveDoctorSpecialization(Long doctorId, List<Long> specializationIds) {
+    private void saveDoctorSpecialization(Long doctorId, List<Long> specializationIds,
+                                          Long hospitalId) {
+
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, DOCTOR_SPECIALIZATION);
@@ -289,7 +291,7 @@ public class DoctorServiceImpl implements DoctorService {
         List<DoctorSpecialization> doctorSpecializations = specializationIds.stream()
                 .map(specializationId -> {
                     /*VALIDATE IF THE SPECIALIZATION IS ACTIVE*/
-                    findSpecializationById(specializationId);
+                    findSpecializationById(specializationId, hospitalId);
                     return parseToDoctorSpecialization(doctorId, specializationId);
                 }).collect(Collectors.toList());
 
@@ -329,11 +331,10 @@ public class DoctorServiceImpl implements DoctorService {
         log.info(SAVING_PROCESS_COMPLETED, DOCTOR_AVATAR, getDifferenceBetweenTwoTime(startTime));
     }
 
-    private List<FileUploadResponseDTO> uploadFiles(Doctor Doctor, MultipartFile[] file) {
-        String subDirectoryLocation = Doctor.getClass().getSimpleName()
-                + FORWARD_SLASH + Doctor.getName() + SPACE + Doctor.getMobileNumber();
+    private List<FileUploadResponseDTO> uploadFiles(Doctor doctor, MultipartFile[] file) {
+        String subDirectoryLocation = doctor.getName();
 
-        return fileService.uploadFiles(file, subDirectoryLocation);
+        return minioFileService.addAttachmentIntoSubDirectory(subDirectoryLocation, file);
     }
 
     private void saveDoctorAppointmentCharge(Doctor doctor, Double appointmentCharge, Double appointmentFollowUpCharge) {
@@ -351,7 +352,8 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     private void updateDoctorSpecialization(Long doctorId,
-                                            List<DoctorSpecializationUpdateDTO> specializationUpdateRequestDTO) {
+                                            List<DoctorSpecializationUpdateDTO> specializationUpdateRequestDTO,
+                                            Long hospitalId) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -360,7 +362,7 @@ public class DoctorServiceImpl implements DoctorService {
         List<DoctorSpecialization> doctorSpecializations = specializationUpdateRequestDTO.stream()
                 .map(requestDTO -> {
                     /*VALIDATE IF THE SPECIALIZATION IS ACTIVE*/
-                    findSpecializationById(requestDTO.getSpecializationId());
+                    findSpecializationById(requestDTO.getSpecializationId(), hospitalId);
 
                     return parseToUpdatedDoctorSpecialization(doctorId, requestDTO);
                 }).collect(Collectors.toList());
@@ -455,8 +457,8 @@ public class DoctorServiceImpl implements DoctorService {
         doctorAvatarRepository.save(doctorAvatar);
     }
 
-    private Doctor findById(Long doctorId) {
-        return doctorRepository.findDoctorById(doctorId)
+    private Doctor findByIdAndHospitalId(Long doctorId, Long hospitalId) {
+        return doctorRepository.findDoctorByIdAndHospitalId(doctorId, hospitalId)
                 .orElseThrow(() -> DOCTOR_WITH_GIVEN_ID_NOT_FOUND.apply(doctorId));
     }
 

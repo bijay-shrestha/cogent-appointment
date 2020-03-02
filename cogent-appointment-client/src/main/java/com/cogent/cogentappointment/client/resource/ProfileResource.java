@@ -16,7 +16,7 @@ import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.ProfileConstant.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.DepartmentConstants.*;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.DepartmentConstants.DEPARTMENT_ID_PATH_VARIABLE_BASE;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.ProfileSetupConstants.BASE_PROFILE;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
@@ -74,13 +74,13 @@ public class ProfileResource {
 
     @GetMapping(ACTIVE + MIN)
     @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
-    public ResponseEntity<?> fetchProfilesForDropdown() {
-        return ok(profileService.fetchActiveProfilesForDropdown());
+    public ResponseEntity<?> fetchActiveMinProfile() {
+        return ok(profileService.fetchActiveMinProfile());
     }
 
     @GetMapping(DEPARTMENT_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_PROFILE_BY_DEPARTMENT_ID)
-    public ResponseEntity<?> fetchProfilesForDropdown(@PathVariable("departmentId") Long departmentId) {
+    public ResponseEntity<?> fetchProfileByDepartmentId(@PathVariable("departmentId") Long departmentId) {
         return ok(profileService.fetchProfileByDepartmentId(departmentId));
     }
 }

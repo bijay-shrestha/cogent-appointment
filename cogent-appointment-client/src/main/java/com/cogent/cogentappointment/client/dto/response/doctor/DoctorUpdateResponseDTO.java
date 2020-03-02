@@ -30,10 +30,6 @@ public class DoctorUpdateResponseDTO implements Serializable {
 
     private Character status;
 
-    private String hospitalId;
-
-    private String hospitalName;
-
     private String remarks;
 
     private Double appointmentCharge;

@@ -10,7 +10,6 @@ import com.cogent.cogentappointment.client.repository.AppointmentTransactionDeta
 import com.cogent.cogentappointment.client.repository.PatientRepository;
 import com.cogent.cogentappointment.client.service.DashboardService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +24,7 @@ import static com.cogent.cogentappointment.client.utils.commons.DateConverterUti
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static com.cogent.cogentappointment.client.utils.commons.MathUtils.calculatePercenatge;
-import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getHospitalId;
+import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 
 /**
  * @author Sauravi Thapa २०/२/१०
@@ -55,7 +54,7 @@ public class DashboardServiceImpl implements DashboardService {
 
         log.info(FETCHING_PROCESS_STARTED, REVENUE_GENERATED);
 
-        Long hospitalId = getHospitalId();
+        Long hospitalId = getLoggedInHospitalId();
 
         Double currentTransaction = appointmentTransactionDetailRepository.getRevenueByDates(
                 requestDTO.getCurrentToDate(),
@@ -82,7 +81,7 @@ public class DashboardServiceImpl implements DashboardService {
 
         log.info(FETCHING_PROCESS_STARTED, OVER_ALL_APPOINTMETS);
 
-        Long hospitalId = getHospitalId();
+        Long hospitalId = getLoggedInHospitalId();
 
         Long overAllAppointment = appointmentRepository.countOverAllAppointment(dashBoardRequestDTO, hospitalId);
 
@@ -104,7 +103,7 @@ public class DashboardServiceImpl implements DashboardService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        Long hospitalId = getHospitalId();
+        Long hospitalId = getLoggedInHospitalId();
 
         log.info(FETCHING_PROCESS_STARTED, OVER_ALL_REGISTERED_PATIENTS);
 
@@ -121,7 +120,7 @@ public class DashboardServiceImpl implements DashboardService {
 
         log.info(FETCHING_PROCESS_STARTED, REVENUE_STATISTICS);
 
-        Long hospitalId = getHospitalId();
+        Long hospitalId = getLoggedInHospitalId();
 
         Character filter = dateDifference(dashBoardRequestDTO.getToDate(),
                 dashBoardRequestDTO.getFromDate());

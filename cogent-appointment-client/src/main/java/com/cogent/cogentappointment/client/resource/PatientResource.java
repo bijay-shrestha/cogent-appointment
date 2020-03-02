@@ -13,7 +13,6 @@ import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.PatientConstant.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.HospitalConstants.HOSPITAL_ID_PATH_VARIABLE_BASE;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.PatientConstant.*;
 import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.getPageable;
 import static org.springframework.http.ResponseEntity.ok;
@@ -43,7 +42,7 @@ public class PatientResource {
     public ResponseEntity<?> search(@Valid @RequestBody PatientMinSearchRequestDTO searchRequestDTO,
                                     @RequestParam("page") int page,
                                     @RequestParam("size") int size) {
-        return ok(patientService.fetchMinimalPatientInfo(searchRequestDTO, getPageable(page, size)));
+        return ok(patientService.searchForOthers(searchRequestDTO, getPageable(page, size)));
     }
 
     @GetMapping(DETAIL + ID_PATH_VARIABLE_BASE)
@@ -67,16 +66,16 @@ public class PatientResource {
         return ok().build();
     }
 
-    @GetMapping(META_INFO + ACTIVE + MIN + HOSPITAL_ID_PATH_VARIABLE_BASE)
-    @ApiOperation(FETCH_ACTIVE_PATIENT_META_INFO_DETAILS_FOR_DROPDOWN)
-    public ResponseEntity<?> fetchActivePatientMetaInfoForDropdown(@PathVariable("hospitalId") Long hospitalId) {
-        return ok(patientService.fetchActiveMinPatientMetaInfo(hospitalId));
+    @GetMapping(META_INFO + ACTIVE + MIN)
+    @ApiOperation(FETCH_ACTIVE_MIN_PATIENT_META_INFO)
+    public ResponseEntity<?> fetchActiveMinPatientMetaInfo() {
+        return ok(patientService.fetchActiveMinPatientMetaInfo());
     }
 
-    @GetMapping(META_INFO + MIN + HOSPITAL_ID_PATH_VARIABLE_BASE)
-    @ApiOperation(FETCH_PATIENT_META_INFO_DETAILS_FOR_DROPDOWN)
-    public ResponseEntity<?> fetchPatientMetaInfoForDropdown(@PathVariable("hospitalId") Long hospitalId) {
-        return ok(patientService.fetchMinPatientMetaInfo(hospitalId));
+    @GetMapping(META_INFO + MIN)
+    @ApiOperation(FETCH_MIN_PATIENT_META_INFO)
+    public ResponseEntity<?> fetchPatientMetaInfoForDropdown() {
+        return ok(patientService.fetchMinPatientMetaInfo());
     }
 
 }

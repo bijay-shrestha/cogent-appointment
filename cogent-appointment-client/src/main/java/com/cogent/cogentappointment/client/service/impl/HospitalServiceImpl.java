@@ -46,7 +46,6 @@ public class HospitalServiceImpl implements HospitalService {
         return hospital;
     }
 
-
     @Override
     public List<HospitalMinResponseDTO> fetchMinDetails(HospitalMinSearchRequestDTO searchRequestDTO) {
 

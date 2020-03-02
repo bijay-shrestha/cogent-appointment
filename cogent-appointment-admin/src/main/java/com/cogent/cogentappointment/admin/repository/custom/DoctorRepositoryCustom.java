@@ -21,7 +21,7 @@ public interface DoctorRepositoryCustom {
     Long validateDoctorDuplicity(String name, String mobileNumber, Long hospitalId);
 
     Long validateDoctorDuplicityForUpdate(Long id, String name, String mobileNumber, Long hospitalId);
-    
+
     List<DoctorMinimalResponseDTO> search(DoctorSearchRequestDTO searchRequestDTO, Pageable pageable);
 
     List<DoctorDropdownDTO> fetchDoctorForDropdown();
@@ -33,4 +33,6 @@ public interface DoctorRepositoryCustom {
     List<DoctorDropdownDTO> fetchDoctorByHospitalId(Long hospitalId);
 
     DoctorUpdateResponseDTO fetchDetailsForUpdate(Long id);
+
+    List<DoctorDropdownDTO> fetchDoctorAvatarInfo(Long hospitalId, Long doctorId);
 }

@@ -28,11 +28,11 @@ public interface DoctorService {
     List<DoctorMinimalResponseDTO> search(DoctorSearchRequestDTO searchRequestDTO,
                                           Pageable pageable);
 
-    List<DoctorDropdownDTO> fetchDoctorForDropdown();
+    List<DoctorDropdownDTO> fetchActiveMinDoctor();
 
     DoctorDetailResponseDTO fetchDetailsById(Long id);
 
-    Doctor fetchActiveDoctorById(Long id);
+    Doctor fetchActiveDoctorByIdAndHospitalId(Long id,  Long hospitalId);
 
     List<DoctorDropdownDTO> fetchDoctorBySpecializationId(Long specializationId);
 

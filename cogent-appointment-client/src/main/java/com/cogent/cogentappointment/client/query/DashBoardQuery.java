@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.client.query;
 
 
-import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -33,21 +33,21 @@ public class DashBoardQuery {
             "SELECT" +
                     " COUNT(a.id)" +
                     " FROM Appointment a" +
-                    " LEFT JOIN HospitalPatientInfo hpi ON a.patientId.id=hpi.patientId" +
+                    " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =a.patientId.id" +
+                    " AND hpi.hospital.id = a.hospitalId.id" +
                     " WHERE hpi.isRegistered='Y'" +
                     " AND (a.appointmentDate BETWEEN :fromDate AND :toDate)" +
                     " AND a.hospitalId.id=:hospitalId";
-
 
     public static String QUERY_TO_COUNT_NEW_PATIENT_APPOINTMENT =
             "SELECT" +
                     " COUNT(a.id)" +
                     " FROM Appointment a" +
-                    " LEFT JOIN HospitalPatientInfo hpi ON a.patientId.id=hpi.patientId" +
+                    " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =a.patientId.id" +
+                    " AND hpi.hospital.id = a.hospitalId.id" +
                     " WHERE hpi.isRegistered='N'" +
                     " AND (a.appointmentDate BETWEEN :fromDate AND :toDate)" +
                     " AND  a.hospitalId.id=:hospitalId";
-
 
     public static String QUERY_TO_COUNT_OVERALL_REGISTERED_PATIENTS =
             "SELECT" +
@@ -55,7 +55,7 @@ public class DashBoardQuery {
                     " FROM HospitalPatientInfo hpi" +
                     " WHERE " +
                     " hpi.isRegistered='Y'" +
-                    " AND hpi.hospitalId=:hospitalId";
+                    " AND hpi.hospital.id=:hospitalId";
 
     public static String QUERY_TO_FETCH_REVENUE_WEEKLY =
             "SELECT" +
@@ -124,22 +124,27 @@ public class DashBoardQuery {
                     " AND a.hospitalId.id=:hospitalId";
 
     public static Function<AppointmentQueueRequestDTO, String> QUERY_TO_FETCH_TODAY_APPOINTMENT_QUEUE =
-            (appointmentqueueSearchDTO) ->
+            (searchDTO) ->
                     "SELECT" +
-                            " a.appointmentTime as appointmentTime," +
+                            " DATE_FORMAT(a.appointmentTime,'%H:%i %p') as appointmentTime," +
                             " d.name as doctorName," +
                             " p.name as patientName," +
                             " p.mobileNumber as patientMobileNumber," +
                             " s.name as specializationName," +
-                            " dv.fileUri as doctorAvatar" +
+                            " CASE WHEN" +
+                            " (dv.status is null OR dv.status = 'N')" +
+                            " THEN null" +
+                            " ELSE" +
+                            " dv.fileUri" +
+                            " END as doctorAvatar" +
                             " FROM Appointment a" +
-                            " LEFT JOIN Patient p ON p.id=a.patientId.id" +
-                            " LEFT JOIN Doctor d ON d.id=a.doctorId.id" +
-                            " LEFT JOIN DoctorSpecialization ds ON ds.doctorId.id=d.id" +
-                            " LEFT JOIN DoctorAvatar dv ON dv.doctorId.id=d.id" +
-                            " LEFT JOIN Specialization s ON s.id=ds.specializationId.id" +
-                            " LEFT JOIN Hospital h ON h.id=a.hospitalId.id"
-                            + GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_QUEUE(appointmentqueueSearchDTO);
+                            " LEFT JOIN Patient p ON p.id = a.patientId.id" +
+                            " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
+                            " LEFT JOIN DoctorSpecialization ds ON ds.doctorId.id = d.id" +
+                            " LEFT JOIN DoctorAvatar dv ON dv.doctorId.id = d.id" +
+                            " LEFT JOIN Specialization s ON s.id = ds.specializationId.id" +
+                            " LEFT JOIN Hospital h ON h.id = a.hospitalId.id"
+                            + GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_QUEUE(searchDTO);
 
     private static String GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_QUEUE(AppointmentQueueRequestDTO appointmentQueueRequestDTO) {
 
@@ -150,7 +155,7 @@ public class DashBoardQuery {
                 " AND h.id= :hospitalId";
 
         if (!Objects.isNull(appointmentQueueRequestDTO.getDoctorId()))
-            whereClause += " AND d.id = '" + appointmentQueueRequestDTO.getDoctorId() + "'";
+            whereClause += " AND d.id = " + appointmentQueueRequestDTO.getDoctorId();
 
         whereClause += " ORDER BY a.appointmentTime DESC";
 

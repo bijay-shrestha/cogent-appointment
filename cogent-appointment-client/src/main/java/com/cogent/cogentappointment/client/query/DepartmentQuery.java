@@ -38,16 +38,15 @@ public class DepartmentQuery {
                     " SELECT " +
                             " d.id as id," +                            //[0]
                             " d.name as name," +                        //[1]
-                            " d.code as departmentCode," +               //[2]
-                            " d.status as status," +                     //[3]
-                            " h.name as hospitalName" +                  //[4]
+                            " d.code as departmentCode," +              //[2]
+                            " d.status as status" +                     //[3]
                             " FROM Department d" +
                             " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                             GET_WHERE_CLAUSE_FOR_SEARCH(searchRequestDTO));
 
     private static String GET_WHERE_CLAUSE_FOR_SEARCH(DepartmentSearchRequestDTO searchRequestDTO) {
 
-        String whereClause = " WHERE d.status != 'D' AND d.hospital.id= :hospitalId";
+        String whereClause = " WHERE d.status != 'D' AND h.id= :hospitalId";
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getId()))
             whereClause += " AND d.id=" + searchRequestDTO.getId();
@@ -71,14 +70,12 @@ public class DepartmentQuery {
                     " d.name as name," +                            //[0]
                     " d.code as departmentCode," +                  //[1]
                     " d.status as status," +                        //[2]
-                    " d.remarks as remarks," +                      //[3]
-                    " h.id as hospitalId," +                        //[4]
-                    " h.name as hospitalName" +                     //[5]
+                    " d.remarks as remarks" +                      //[3]
                     " FROM Department d" +
                     " LEFT JOIN Hospital h ON h.id =d.hospital.id" +
                     " WHERE d.id =:id" +
                     " AND d.status != 'D'" +
-                    " AND d.hospital.id= :hospitalId" +
+                    " AND h.id= :hospitalId" +
                     " AND h.status!='D'";
 
     public static final String QUERY_TO_FETCH_DEPARTMENT_FOR_DROPDOWN =

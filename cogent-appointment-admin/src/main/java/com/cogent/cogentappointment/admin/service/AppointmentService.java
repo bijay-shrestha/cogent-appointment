@@ -11,8 +11,6 @@ import com.cogent.cogentappointment.admin.dto.request.reschedule.AppointmentResc
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.AppointmentLogResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPendingApproval.AppointmentPendingApprovalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentQueue.AppointmentQueueSearchDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentQueue.AppointmentTimeDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.AppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
@@ -46,7 +44,7 @@ public interface AppointmentService {
 
     AppointmentRescheduleLogResponseDTO fetchRescheduleAppointment(AppointmentRescheduleLogSearchDTO rescheduleDTO, Pageable pageable);
 
-    AppointmentQueueSearchDTO fetchTodayAppointmentQueue(AppointmentQueueRequestDTO searchRequestDTO, Pageable pageable);
+    List<AppointmentQueueDTO> fetchTodayAppointmentQueue(AppointmentQueueRequestDTO searchRequestDTO, Pageable pageable);
 
     Map<String, List<AppointmentQueueDTO>> fetchTodayAppointmentQueueByTime(AppointmentQueueRequestDTO appointmentQueueRequestDTO, Pageable pageable);
 }

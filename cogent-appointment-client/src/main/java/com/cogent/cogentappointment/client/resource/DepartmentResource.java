@@ -61,7 +61,6 @@ public class DepartmentResource {
     public ResponseEntity<?> search(@RequestBody DepartmentSearchRequestDTO departmentSearchRequestDTO,
                                     @RequestParam("page") int page,
                                     @RequestParam("size") int size) {
-
         Pageable pageable = PageRequest.of(page, size);
         return ok(departmentService.search(departmentSearchRequestDTO, pageable));
     }
@@ -74,14 +73,14 @@ public class DepartmentResource {
 
     @GetMapping(MIN)
     @ApiOperation(FETCH_DEPARTMENT_FOR_DROP_DOWN_OPERATION)
-    public ResponseEntity<?> fetchDropDownList() {
-        return ok(departmentService.fetchDepartmentForDropdown());
+    public ResponseEntity<?> fetchMinDepartment() {
+        return ok(departmentService.fetchMinDepartment());
     }
 
     @GetMapping(ACTIVE + MIN)
     @ApiOperation(FETCH_ACTIVE_DEPARTMENT_FOR_DROP_DOWN_OPERATION)
-    public ResponseEntity<?> fetchActiveDropDownList() {
-        return ok(departmentService.fetchActiveDropDownList());
+    public ResponseEntity<?> fetchActiveMinDepartment() {
+        return ok(departmentService.fetchActiveMinDepartment());
     }
 
 }

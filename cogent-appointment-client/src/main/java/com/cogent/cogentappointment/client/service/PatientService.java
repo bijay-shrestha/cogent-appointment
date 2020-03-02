@@ -1,14 +1,12 @@
 package com.cogent.cogentappointment.client.service;
 
 import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
-import com.cogent.cogentappointment.client.dto.request.patient.PatientMinSearchRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.patient.PatientSearchRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.patient.*;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientMinimalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.PatientSearchResponseDTO;
+import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.Patient;
 import org.springframework.data.domain.Pageable;
 
@@ -18,15 +16,21 @@ import java.util.List;
  * @author smriti ON 16/01/2020
  */
 public interface PatientService {
-    Patient save(PatientRequestDTO requestDTO, Long hospitalId);
 
-    Patient fetchActivePatientById(Long id);
+    Patient saveSelfPatient(PatientRequestByDTO requestDTO, Hospital hospital);
+
+    Patient saveOtherPatient(PatientRequestForDTO requestForPatientInfo,
+                             Hospital hospital);
+
+    Patient fetchPatient(PatientRequestForDTO patientRequestForDTO);
+
+    Patient fetchPatientById(Long id);
 
     PatientDetailResponseDTO searchForSelf(PatientMinSearchRequestDTO searchRequestDTO);
 
     /*FETCH MINIMAL DETAILS OF 'OTHERS'*/
-    List<PatientMinimalResponseDTO> fetchMinimalPatientInfo(PatientMinSearchRequestDTO searchRequestDTO,
-                                                            Pageable pageable);
+    List<PatientMinimalResponseDTO> searchForOthers(PatientMinSearchRequestDTO searchRequestDTO,
+                                                    Pageable pageable);
 
 
     PatientResponseDTO fetchDetailsById(Long id);
@@ -36,9 +40,9 @@ public interface PatientService {
 
     void update(PatientUpdateRequestDTO patientUpdateRequestDTO);
 
-    List<DropDownResponseDTO> fetchMinPatientMetaInfo(Long hospitalId);
+    List<DropDownResponseDTO> fetchMinPatientMetaInfo();
 
-    List<DropDownResponseDTO> fetchActiveMinPatientMetaInfo(Long hospitalId);
+    List<DropDownResponseDTO> fetchActiveMinPatientMetaInfo();
 
-    void registerPatient(Long patientId);
+    void registerPatient(Long patientId, Long hospitalId);
 }

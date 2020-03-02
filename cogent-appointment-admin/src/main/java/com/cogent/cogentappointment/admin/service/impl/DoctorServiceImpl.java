@@ -27,6 +27,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.admin.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.DoctorLog.*;
 import static com.cogent.cogentappointment.admin.utils.DoctorUtils.*;
@@ -326,10 +327,9 @@ public class DoctorServiceImpl implements DoctorService {
         log.info(SAVING_PROCESS_COMPLETED, DOCTOR_AVATAR, getDifferenceBetweenTwoTime(startTime));
     }
 
-    private List<FileUploadResponseDTO> uploadFiles(Doctor Doctor, MultipartFile[] file) {
-//        String subDirectoryLocation = Doctor.getClass().getSimpleName()
-//                + StringConstant.FORWARD_SLASH + Doctor.getName() + StringConstant.SPACE + Doctor.getMobileNumber();
-        String subDirectoryLocation = Doctor.getMobileNumber();
+    private List<FileUploadResponseDTO> uploadFiles(Doctor doctor, MultipartFile[] file) {
+        String subDirectoryLocation = doctor.getName() + HYPHEN + getTimeInMillisecondsFromLocalDate();
+
         return minioFileService.addAttachmentIntoSubDirectory(subDirectoryLocation, file);
     }
 

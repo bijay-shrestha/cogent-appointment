@@ -1,14 +1,14 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.configuration.MinioStorageConfig;
-import com.cogent.cogentappointment.admin.constants.StringConstant;
-import com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants;
 import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.admin.service.MinioFileService;
+import com.cogent.cogentappointment.admin.utils.commons.DateUtils;
 import com.jlefebure.spring.boot.minio.MinioException;
 import com.jlefebure.spring.boot.minio.MinioService;
 import io.minio.messages.Item;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,6 +27,7 @@ import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstan
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.FILES;
 import static com.cogent.cogentappointment.admin.log.constants.FileLog.UPLOADING_FILE_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.admin.log.constants.FileLog.UPLOADING_FILE_PROCESS_STARTED;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
@@ -88,7 +89,9 @@ public class MinioServiceImpl implements MinioFileService {
 
         log.info(UPLOADING_FILE_PROCESS_STARTED);
 
-        Path path = Paths.get(subDirectoryLocation + FORWARD_SLASH + file.getOriginalFilename());
+        String renamedFileName = renameFile(file.getOriginalFilename());
+
+        Path path = Paths.get(subDirectoryLocation + FORWARD_SLASH + renamedFileName);
         log.info("The designated path is :: {}", path);
         try {
             minioService.upload(path, file.getInputStream(), file.getContentType());
@@ -109,6 +112,13 @@ public class MinioServiceImpl implements MinioFileService {
         log.info(UPLOADING_FILE_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
+    }
+
+    private String renameFile(String originalFilename) {
+
+//        String fileName = FilenameUtils.getName(originalFilename);
+        String fileExtension = FilenameUtils.getExtension(originalFilename);
+        return getTimeInMillisecondsFromLocalDate().toString().concat(".").concat(fileExtension);
     }
 
     @Override

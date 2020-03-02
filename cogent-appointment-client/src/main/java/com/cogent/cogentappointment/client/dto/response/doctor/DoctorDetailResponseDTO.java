@@ -37,8 +37,6 @@ public class DoctorDetailResponseDTO implements Serializable {
 
     private String qualificationName;
 
-    private String hospitalName;
-
     private String remarks;
 
     private Double appointmentCharge;

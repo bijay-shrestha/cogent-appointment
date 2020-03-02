@@ -21,8 +21,7 @@ public interface UniversityRepositoryCustom {
 
     Long validateDuplicity(Long id, String name);
 
-    List<UniversityMinimalResponseDTO> search(UniversitySearchRequestDTO searchRequestDTO,
-                                              Pageable pageable);
+    List<UniversityMinimalResponseDTO> search(UniversitySearchRequestDTO searchRequestDTO, Pageable pageable);
 
     UniversityResponseDTO fetchDetailsById(Long id);
 

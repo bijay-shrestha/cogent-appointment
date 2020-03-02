@@ -1,9 +1,11 @@
 package com.cogent.cogentappointment.client.dto.response.doctorDutyRoster;
 
+import com.cogent.cogentappointment.client.dto.response.appointmentStatus.DoctorTimeSlotResponseDTO;
 import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * @author smriti ON 14/12/2019
@@ -32,4 +34,10 @@ public class DoctorDutyRosterStatusResponseDTO implements Serializable {
     private Long specializationId;
 
     private String specializationName;
+
+    private String weekDayName;
+
+    private String fileUri;
+
+    private List<DoctorTimeSlotResponseDTO> doctorTimeSlots;
 }

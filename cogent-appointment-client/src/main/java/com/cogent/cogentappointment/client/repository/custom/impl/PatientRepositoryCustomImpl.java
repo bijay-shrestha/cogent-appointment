@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.client.constants.QueryConstants.PatientQueryConstants.HOSPITAL_PATIENT_INFO_ID;
 import static com.cogent.cogentappointment.client.query.DashBoardQuery.QUERY_TO_COUNT_OVERALL_REGISTERED_PATIENTS;
 import static com.cogent.cogentappointment.client.query.PatientQuery.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
@@ -94,6 +95,18 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
         else {
             patientMinInfo.get(0).setTotalItems(totalItems);
             return patientMinInfo;
+        }
+    }
+
+    @Override
+    public PatientDetailResponseDTO fetchMinPatientDetailsOfOthers(Long hospitalPatientInfoId) {
+        Query query = entityManager.createQuery(QUERY_TO_FETCH_MIN_PATIENT_DETAILS_FOR_OTHERS)
+                .setParameter(HOSPITAL_PATIENT_INFO_ID, hospitalPatientInfoId);
+
+        try {
+            return transformQueryToSingleResult(query, PatientDetailResponseDTO.class);
+        } catch (NoResultException e) {
+            throw new NoContentFoundException(Patient.class, "id", hospitalPatientInfoId.toString());
         }
     }
 

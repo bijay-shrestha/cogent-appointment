@@ -15,6 +15,7 @@ import static com.cogent.cogentappointment.client.constants.SwaggerConstants.Pat
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.AppointmentConstants.APPOINTMENT_ID_PATH_VARIABLE_BASE;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.PatientConstant.BASE_PATIENT;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.PatientConstant.HOSPITAL_PATIENT_INFO_ID_PATH_VARIABLE_BASE;
 import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.getPageable;
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -44,6 +45,13 @@ public class PatientResource {
                                     @RequestParam("page") int page,
                                     @RequestParam("size") int size) {
         return ok(patientService.searchForOthers(searchRequestDTO, getPageable(page, size)));
+    }
+
+    @GetMapping(DETAIL + OTHERS + HOSPITAL_PATIENT_INFO_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_DETAILS_OF_OTHERS)
+    public ResponseEntity<?> fetchMinPatientDetailsOfOthers(@PathVariable("hospitalPatientInfoId")
+                                                                    Long hospitalPatientInfoId) {
+        return ok(patientService.fetchMinPatientDetailsOfOthers(hospitalPatientInfoId));
     }
 
     @GetMapping(DETAIL + ID_PATH_VARIABLE_BASE)

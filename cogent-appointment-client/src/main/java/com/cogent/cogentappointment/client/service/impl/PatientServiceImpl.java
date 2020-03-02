@@ -135,6 +135,20 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
+    public PatientDetailResponseDTO fetchMinPatientDetailsOfOthers(Long hospitalPatientInfoId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, PATIENT);
+
+        PatientDetailResponseDTO patientInfo =
+                patientRepository.fetchMinPatientDetailsOfOthers(hospitalPatientInfoId);
+
+        log.info(FETCHING_PROCESS_STARTED, PATIENT, getDifferenceBetweenTwoTime(startTime));
+
+        return patientInfo;
+    }
+
+    @Override
     public PatientResponseDTO fetchDetailsById(Long id) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 

@@ -9,6 +9,7 @@ import com.cogent.cogentappointment.client.repository.HospitalPatientInfoReposit
 import com.cogent.cogentappointment.client.repository.PatientMetaInfoRepository;
 import com.cogent.cogentappointment.client.repository.PatientRepository;
 import com.cogent.cogentappointment.client.service.PatientService;
+import com.cogent.cogentappointment.client.utils.PatientMetaInfoUtils;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.HospitalPatientInfo;
@@ -125,7 +126,7 @@ public class PatientServiceImpl implements PatientService {
 
         List<Long> childPatientIds = patientRepository.fetchChildPatientIds(searchRequestDTO);
 
-        List<PatientMinimalResponseDTO> patientMinInfo  =
+        List<PatientMinimalResponseDTO> patientMinInfo =
                 patientRepository.fetchMinPatientInfoForOthers(childPatientIds, pageable);
 
         log.info(SEARCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
@@ -234,6 +235,9 @@ public class PatientServiceImpl implements PatientService {
                     patientRepository.fetchLatestRegistrationNumber(hospitalPatientInfo.getHospital().getId());
 
             registerPatientDetails(hospitalPatientInfo, latestRegistrationNumber);
+
+            PatientMetaInfo patientMetaInfo = patientMetaInfoRepository.fetchByPatientId(patientId);
+            PatientMetaInfoUtils.updatePatientMetaInfo(patientMetaInfo, hospitalPatientInfo.getRegistrationNumber());
         }
 
         log.info(REGISTERING_PATIENT_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));

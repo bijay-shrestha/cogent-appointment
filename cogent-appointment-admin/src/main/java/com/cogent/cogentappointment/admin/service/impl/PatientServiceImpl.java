@@ -151,6 +151,9 @@ public class PatientServiceImpl implements PatientService {
                     patientRepository.fetchLatestRegistrationNumber(hospitalPatientInfo.getHospital().getId());
 
             registerPatientDetails(hospitalPatientInfo, latestRegistrationNumber);
+
+            PatientMetaInfo patientMetaInfo = patientMetaInfoRepository.fetchByPatientId(patientId);
+            updatePatientMetaInfo(patientMetaInfo, hospitalPatientInfo.getRegistrationNumber());
         }
 
         log.info(REGISTERING_PATIENT_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
@@ -187,10 +190,9 @@ public class PatientServiceImpl implements PatientService {
                     name, mobileNumber, utilDateToSqlDate(dateOfBirth)));
     }
 
-    private HospitalPatientInfo saveHospitalPatientInfo(HospitalPatientInfo hospitalPatientInfo) {
-        return hospitalPatientInfoRepository.save(hospitalPatientInfo);
+    private void saveHospitalPatientInfo(HospitalPatientInfo hospitalPatientInfo) {
+        hospitalPatientInfoRepository.save(hospitalPatientInfo);
     }
-
 
     private Function<Long, NoContentFoundException> PATIENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         throw new NoContentFoundException(Patient.class, "patientId", id.toString());

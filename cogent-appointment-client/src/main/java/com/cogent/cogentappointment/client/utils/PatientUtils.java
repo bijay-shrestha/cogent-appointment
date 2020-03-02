@@ -1,22 +1,16 @@
 package com.cogent.cogentappointment.client.utils;
 
-import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestByDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.patient.PatientMinimalResponseDTO;
 import com.cogent.cogentappointment.persistence.enums.Gender;
-import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.HospitalPatientInfo;
 import com.cogent.cogentappointment.persistence.model.Patient;
 import com.cogent.cogentappointment.persistence.model.PatientMetaInfo;
 
 import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
-import static com.cogent.cogentappointment.client.constants.StatusConstants.*;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.constants.StringConstant.OR;
 import static com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils.generateRandomNumber;
 import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toUpperCase;
@@ -25,18 +19,6 @@ import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toUpp
  * @author smriti ON 16/01/2020
  */
 public class PatientUtils {
-
-    public static Patient parseToPatient(PatientRequestByDTO requestDTO,
-                                         Gender gender) {
-        Patient patient = new Patient();
-        patient.setName(toUpperCase(requestDTO.getName()));
-        patient.setMobileNumber(requestDTO.getMobileNumber());
-        patient.setDateOfBirth(requestDTO.getDateOfBirth());
-        patient.setESewaId(requestDTO.getESewaId());
-        patient.setGender(gender);
-        patient.setCogentId(generateRandomNumber(4));
-        return patient;
-    }
 
     public static Patient parseToPatient(String name,
                                          String mobileNumber,
@@ -71,18 +53,6 @@ public class PatientUtils {
         hospitalPatientInfo.setRemarks(requestDTO.getRemarks());
         hospitalPatientInfo.setStatus(requestDTO.getStatus());
     }
-
-    public static Function<Patient, PatientMinimalResponseDTO> parseToPatientMinimalResponseDTO =
-            patient -> {
-
-                return PatientMinimalResponseDTO.builder()
-                        .patientId(patient.getId())
-                        .name(patient.getName())
-                        .mobileNumber(patient.getMobileNumber())
-//                        .address(patient.)
-//                .gender((Gender) object[GENDER_INDEX])
-                        .build();
-            };
 
     public static void updatePatientMetaInfo(HospitalPatientInfo hospitalPatientInfo,
                                              PatientMetaInfo patientMetaInfo,

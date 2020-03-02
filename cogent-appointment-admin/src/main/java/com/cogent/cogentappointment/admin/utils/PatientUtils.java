@@ -94,4 +94,11 @@ public class PatientUtils {
         return registrationNumber;
     }
 
+    public static void updatePatientMetaInfo(PatientMetaInfo patientMetaInfo,
+                                             String registrationNumber) {
+
+        String metaInfo = patientMetaInfo.getMetaInfo();
+        patientMetaInfo.setMetaInfo(metaInfo + OR + registrationNumber);
+    }
+
 }

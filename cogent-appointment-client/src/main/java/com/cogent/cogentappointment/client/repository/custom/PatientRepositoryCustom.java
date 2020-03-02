@@ -24,7 +24,8 @@ public interface PatientRepositoryCustom {
 
     List<Long> fetchChildPatientIds(PatientMinSearchRequestDTO searchRequestDTO);
 
-    List<PatientMinimalResponseDTO> fetchMinPatientInfoForOthers(List<Long> childPatientIds);
+    List<PatientMinimalResponseDTO> fetchMinPatientInfoForOthers(List<Long> childPatientIds,
+                                                                 Pageable pageable);
 
     /*admin*/
     Long validatePatientDuplicity(PatientUpdateRequestDTO updateRequestDTO, Long hospitalId);

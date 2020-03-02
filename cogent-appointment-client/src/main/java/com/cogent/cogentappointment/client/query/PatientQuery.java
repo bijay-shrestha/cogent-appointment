@@ -1,9 +1,13 @@
 package com.cogent.cogentappointment.client.query;
 
 import com.cogent.cogentappointment.client.dto.request.patient.PatientSearchRequestDTO;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.ObjectUtils;
 
+import java.util.List;
 import java.util.Objects;
+
+import static com.cogent.cogentappointment.client.constants.StringConstant.COMMA_SEPARATED;
 
 /**
  * @author smriti ON 16/01/2020
@@ -58,8 +62,14 @@ public class PatientQuery {
                     " CONCAT(((TIMESTAMPDIFF(YEAR, p.date_of_birth ,CURDATE()))), ' years')" +
                     " END AS age";
 
+    private static final String GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS =
+            " WHERE p.name=:name" +
+                    " AND p.mobileNumber=:mobileNumber" +
+                    " AND p.dateOfBirth =:dateOfBirth";
+
     /*FOR SELF*/
-    private static final String SELECT_CLAUSE_TO_FETCH_PATIENT_DETAILS =
+    public static final String QUERY_TO_FETCH_PATIENT_DETAILS_FOR_SELF =
+
             " SELECT p.id as patientId," +                                  //[0]
                     " p.name as name," +                                    //[1]
                     " p.mobileNumber as mobileNumber," +                    //[2]
@@ -70,22 +80,33 @@ public class PatientQuery {
                     " hp.registrationNumber as registrationNumber," +        //[7]
                     QUERY_TO_CALCULATE_PATIENT_AGE +
                     " FROM Patient p" +
-                    " LEFT JOIN HospitalPatientInfo hp ON hp.patient.id = p.id";
+                    " LEFT JOIN HospitalPatientInfo hp ON hp.patient.id = p.id"
+                    + GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS;
 
-    private static final String GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS =
-            " WHERE p.name=:name" +
-                    " AND p.mobileNumber=:mobileNumber" +
-                    " AND p.dateOfBirth =:dateOfBirth";
-
-    /*FOR SELF*/
-    public static final String QUERY_TO_FETCH_PATIENT_DETAILS_FOR_SELF =
-            SELECT_CLAUSE_TO_FETCH_PATIENT_DETAILS + GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS;
-
+    /*FOR OTHERS*/
     public static final String QUERY_TO_FETCH_CHILD_PATIENT_IDS =
-            " SELECT p.childPatientId" +
+            " SELECT pm.childPatientId.id" +
                     " FROM Patient p" +
                     " LEFT JOIN PatientRelationInfo pm ON pm.parentPatientId.id= p.id" +
                     GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS;
+
+    public static String QUERY_TO_FETCH_MIN_PATIENT_INFO_FOR_OTHERS(List<Long> childPatientIds) {
+
+        String patientIds = StringUtils.join(childPatientIds, COMMA_SEPARATED);
+
+        return " SELECT" +
+                " hp.id as hospitalPatientInfoId," +              //[0]
+                " p.id as patientId," +                                 //[1]
+                " p.name as name," +                                    //[2]
+                " p.mobileNumber as mobileNumber," +                    //[3]
+                " p.gender as gender," +                                //[4]
+                " hp.address as address," +                             //[5]
+                " hp.registrationNumber as registrationNumber," +       //[6]
+                QUERY_TO_CALCULATE_PATIENT_AGE +                        //[7]
+                " FROM Patient p" +
+                " LEFT JOIN HospitalPatientInfo hp ON hp.patient.id = p.id" +
+                " WHERE p.id IN (" + patientIds + ")";
+    }
 
     public static final String QUERY_TO_FETCH_PATIENT_DETAILS_BY_ID =
             "SELECT" +
@@ -155,7 +176,6 @@ public class PatientQuery {
                     " ORDER BY id DESC" +
                     " LIMIT 1";
 
-
     public static final String QUERY_TO_FETCH_PATIENT =
             " SELECT p FROM Patient p" +
                     " WHERE " +
@@ -175,5 +195,6 @@ public class PatientQuery {
                     " LEFT JOIN Patient p ON p.id=a.patientId.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                     " WHERE a.id =:appointmentId";
+
 
 }

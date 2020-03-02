@@ -77,8 +77,24 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
     }
 
     @Override
-    public List<PatientMinimalResponseDTO> fetchMinPatientInfoForOthers(List<Long> childPatientIds) {
-        return null;
+    public List<PatientMinimalResponseDTO> fetchMinPatientInfoForOthers(List<Long> childPatientIds,
+                                                                        Pageable pageable) {
+
+        Query query = entityManager.createQuery(QUERY_TO_FETCH_MIN_PATIENT_INFO_FOR_OTHERS(childPatientIds));
+
+        List<PatientMinimalResponseDTO> patientMinInfo =
+                transformQueryToResultList(query, PatientMinimalResponseDTO.class);
+
+        Integer totalItems = query.getResultList().size();
+
+        addPagination.accept(pageable, query);
+
+        if (patientMinInfo.isEmpty()) throw new NoContentFoundException(Patient.class);
+
+        else {
+            patientMinInfo.get(0).setTotalItems(totalItems);
+            return patientMinInfo;
+        }
     }
 
     @Override

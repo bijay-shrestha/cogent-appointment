@@ -125,13 +125,12 @@ public class PatientServiceImpl implements PatientService {
 
         List<Long> childPatientIds = patientRepository.fetchChildPatientIds(searchRequestDTO);
 
-//        List<PatientMinimalResponseDTO> minimalInfo  =
-//                childPatientIds.stream()
-//                .map(childPatient -> )
+        List<PatientMinimalResponseDTO> patientMinInfo  =
+                patientRepository.fetchMinPatientInfoForOthers(childPatientIds, pageable);
 
         log.info(SEARCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
-        return null;
+        return patientMinInfo;
     }
 
     @Override

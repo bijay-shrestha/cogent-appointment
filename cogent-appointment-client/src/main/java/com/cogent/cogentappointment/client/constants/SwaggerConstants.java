@@ -192,8 +192,8 @@ public class SwaggerConstants {
                 "(id and metaInfo) for dropdown";
         String SEARCH_PATIENT_WITH_SELF_TYPE_OPERATION = "Search patient info according to given " +
                 "request parameters (name, mobile number, dob)";
-        String SEARCH_PATIENT_WITH_OTHERS_TYPE_OPERATION = "Fetch list of minimal patient info according to given " +
-                "request parameters (name, mobile number, dob)";
+        String SEARCH_PATIENT_WITH_OTHERS_TYPE_OPERATION = "Fetch list of other child patients for" +
+                " selected name, mobile number and dob.";
         String UPDATE_PATIENT_INFO_OPERATION = "Update patient info";
         String SEARCH_OPERATION = "Search Patient Info";
         String FETCH_DETAILS_BY_ID = " Fetch patient(with type 'OTHERS') details by id";

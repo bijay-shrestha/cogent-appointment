@@ -40,7 +40,7 @@ public class PatientQuery {
                     " FROM Patient p " +
                     " LEFT JOIN HospitalPatientInfo hpi On p.id=hpi.patient.id" +
                     " LEFT JOIN Hospital h ON h.id=hpi.hospital.id" +
-                    " WHERE p.id=:id" +
+                    " WHERE hpi.id=:hospitalPatientInfoId" +
                     " AND hpi.status='Y'";
 
     public static final String QUERY_TO_FETCH_LATEST_REGISTRATION_NUMBER =
@@ -54,7 +54,7 @@ public class PatientQuery {
 
     public static String QUERY_TO_FETCH_PATIENT(PatientSearchRequestDTO searchRequestDTO) {
         return "SELECT" +
-                " p.id as id," +
+                " hpi.id as id," +
                 " p.name as name," +                                             //[0]
                 " hpi.address as address," +                                       //[1]
                 " hpi.email as email," +                                           //[2]
@@ -92,4 +92,12 @@ public class PatientQuery {
 
         return whereClause;
     }
+
+    public static String QUERY_TO_FETCH_PATIENT_BY_HOSPITAL_PATIENT_INFO_ID=
+         "SELECT" +
+                " p" +
+                " FROM" +
+                " Patient p" +
+                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id=p.id" +
+                " WHERE hpi.id=:hospitalPatientInfoId";
 }

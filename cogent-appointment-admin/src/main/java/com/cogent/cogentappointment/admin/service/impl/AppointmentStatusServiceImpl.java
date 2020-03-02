@@ -271,7 +271,6 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
                 && (appointment.getSpecializationId().equals(doctorDutyRosterStatus.getSpecializationId()));
     }
 
-
     private static void setTimeSlotForAllAppointmentStatus
             (DoctorDutyRosterStatusResponseDTO doctorDutyRosterStatusResponseDTO,
              List<DoctorTimeSlotResponseDTO> doctorTimeSlots) {

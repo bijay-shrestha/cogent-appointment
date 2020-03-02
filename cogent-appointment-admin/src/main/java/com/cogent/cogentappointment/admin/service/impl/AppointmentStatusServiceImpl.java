@@ -314,7 +314,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
     }
 
     @Override
-    public AppointmentPatientByTimeResponseDTO fetchPatientDetailByAppointmentTime(AppointmentPatientDetailRequestDTO patientDetailByAppointmentTime) {
+    public AppointmentPatientByTimeResponseDTO fetchPatientDetailByAppointmentId(AppointmentPatientDetailRequestDTO patientDetailByAppointmentTime) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, APPOINTMENT_PATIENT_DETAIL_BY_APPOINTMENT_TIME);

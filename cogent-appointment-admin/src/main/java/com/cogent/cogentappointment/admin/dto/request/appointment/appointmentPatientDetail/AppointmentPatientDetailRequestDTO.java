@@ -17,13 +17,6 @@ import java.util.Date;
 public class AppointmentPatientDetailRequestDTO implements Serializable {
 
     @NotNull
-    private Long hospitalId;
-
-    @NotNull
-    private Long doctorId;
-
-    @NotNull
     private Long appointmentId;
-
 
 }

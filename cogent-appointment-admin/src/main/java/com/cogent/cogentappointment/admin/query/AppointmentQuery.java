@@ -447,12 +447,6 @@ public class AppointmentQuery {
         String whereClause = " WHERE " +
                 " a.status='PA'";
 
-        if (!Objects.isNull(requestDTO.getDoctorId()))
-            whereClause += " AND d.id = " + requestDTO.getDoctorId();
-
-        if (!Objects.isNull(requestDTO.getHospitalId()))
-            whereClause += " AND hpi.hospitalId = " + requestDTO.getHospitalId();
-
         if (!Objects.isNull(requestDTO.getAppointmentId()))
             whereClause += " AND a.id = " + requestDTO.getAppointmentId();
 

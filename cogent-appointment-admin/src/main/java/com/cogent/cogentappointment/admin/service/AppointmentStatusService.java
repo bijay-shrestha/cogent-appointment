@@ -12,5 +12,5 @@ public interface AppointmentStatusService {
 
     AppointmentStatusDTO fetchAppointmentStatusResponseDTO(AppointmentStatusRequestDTO requestDTO);
 
-    AppointmentPatientByTimeResponseDTO fetchPatientDetailByAppointmentTime(AppointmentPatientDetailRequestDTO patientDetailByAppointmentTime);
+    AppointmentPatientByTimeResponseDTO fetchPatientDetailByAppointmentId(AppointmentPatientDetailRequestDTO patientDetailByAppointmentTime);
 }

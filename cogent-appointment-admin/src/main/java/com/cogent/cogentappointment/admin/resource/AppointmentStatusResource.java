@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentConstant.BASE_API_VALUE;
+import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentStatusConstant.FETCH_APPOINTMENT_PATIENT_DETAIL_BY_APPOINTMENT_TIME;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentStatusConstant.FETCH_APPOINTMENT_STATUS;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.*;
@@ -22,7 +23,7 @@ import static org.springframework.http.ResponseEntity.ok;
 /**
  * @author smriti ON 16/12/2019
  */
-@RequestMapping(API_V1 + BASE_APPOINTMENT )
+@RequestMapping(API_V1 + BASE_APPOINTMENT)
 @RestController
 @Api(BASE_API_VALUE)
 public class AppointmentStatusResource {
@@ -40,8 +41,8 @@ public class AppointmentStatusResource {
     }
 
     @PutMapping(PATIENT_DETAIL)
-    @ApiOperation(FETCH_APPOINTMENT_STATUS)
-    public ResponseEntity<?> fetchPatientDetailByAppointmentTime(@Valid @RequestBody AppointmentPatientDetailRequestDTO requestDTO) {
-        return ok(appointmentStatusService.fetchPatientDetailByAppointmentTime(requestDTO));
+    @ApiOperation(FETCH_APPOINTMENT_PATIENT_DETAIL_BY_APPOINTMENT_TIME)
+    public ResponseEntity<?> fetchPatientDetailByAppointmentId(@Valid @RequestBody AppointmentPatientDetailRequestDTO requestDTO) {
+        return ok(appointmentStatusService.fetchPatientDetailByAppointmentId(requestDTO));
     }
 }

@@ -152,7 +152,7 @@ public class PatientServiceImpl implements PatientService {
 
         log.info(UPDATING_PROCESS_STARTED, PATIENT);
 
-        HospitalPatientInfo hospitalPatientInfo = fetchHospitalPatientInfo(requestDTO.getHospitalPatientInfoId());
+        HospitalPatientInfo hospitalPatientInfo = fetchHospitalPatientInfoById(requestDTO.getHospitalPatientInfoId());
 
         validatePatientDuplicity(hospitalPatientInfo.getPatient().getId(),
                 requestDTO.getName(),
@@ -208,7 +208,8 @@ public class PatientServiceImpl implements PatientService {
                 updateRequestDTO.getDateOfBirth()
         );
 
-        HospitalPatientInfo hospitalPatientInfo = fetchHospitalPatientInfo(updateRequestDTO.getId());
+        HospitalPatientInfo hospitalPatientInfo =
+                hospitalPatientInfoRepository.fetchHospitalPatientInfoByPatientId(updateRequestDTO.getId());
 
         updatePatient(updateRequestDTO, patient);
 
@@ -359,8 +360,8 @@ public class PatientServiceImpl implements PatientService {
         );
     }
 
-    private HospitalPatientInfo fetchHospitalPatientInfo(Long hospitalPatientInfoId) {
-        return hospitalPatientInfoRepository.fetchHospitalPatientInfoByPatientId(hospitalPatientInfoId)
+    private HospitalPatientInfo fetchHospitalPatientInfoById(Long hospitalPatientInfoId) {
+        return hospitalPatientInfoRepository.fetchHospitalPatientInfoById(hospitalPatientInfoId)
                 .orElseThrow(() -> new NoContentFoundException(Patient.class));
     }
 }

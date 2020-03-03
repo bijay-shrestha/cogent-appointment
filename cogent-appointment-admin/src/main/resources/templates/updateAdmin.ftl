@@ -383,12 +383,36 @@ Sizes: [
 																					-->
 																					<h3 mc:edit="header" style="color:#101010;line-height:125%;font-family:Helvetica,Arial,sans-serif;font-size:20px;font-weight:normal;margin-top:0;margin-bottom:10px;text-align:left;">Dear <b>${username}</b>,</h3>
 																					<div mc:edit="body" style="text-align:left;font-family:Helvetica,Arial,sans-serif;font-size:15px;margin-bottom:0;color:#5F5F5F;line-height:135%;">Your following details has been updated :</div>
+
 																					<ul style="margin-top:20px; padding:0;text-align:left;font-family:Helvetica,Arial,sans-serif;font-size:15px;margin-bottom:0;color:#5F5F5F;">
-																							<li style="Margin:0 0 5px; list-style:none inside; mso-special-format:bullet;"><span style="font-weight:bold;">Name :</span>  </li>
-																						</ul>
+
+																							 <#list updatedData as data>
+                                                                                                   <li style="Margin:0 0 5px; list-style:none inside; mso-special-format:bullet;"><span style="font-weight:bold;"> ${data}</li>
+                                                                                             </#list>
+																					</ul>
+
+
 																					<div mc:edit="body" style="text-align:left;font-family:Helvetica,Arial,sans-serif;font-size:15px;margin-bottom:0;color:#5F5F5F;line-height:135%;margin-top:30px;">Mac Address :</div>
 																					<ul style="margin-top:10px; padding:0;text-align:left;font-family:Helvetica,Arial,sans-serif;font-size:15px;margin-bottom:0;color:#5F5F5F;">
-																							<li style="Margin:0 0 5px; list-style:disc inside; mso-special-format:bullet;"></li>
+
+																						<!--	<li style="Margin:0 0 5px; list-style:disc inside; mso-special-format:bullet;"></li> -->
+
+
+                                                                                        	 <#assign hasMacBinding>${hasMacBinding}</#assign>
+                                                                                                   <#if hasMacBinding=='Y'>
+                                                                                                         Mac Address(s): <br/>
+                                                                                                             <#list updatedMacAddress as macAddress>
+                                                                                                                 <li style="Margin:0 0 5px; list-style:none inside; mso-special-format:bullet;">  ${macAddress_index + 1}. ${macAddress} </li>
+                                                                                                                         <#if macAddress_has_next><br/></#if>
+                                                                                                              </#list>
+                                                                                                                   <#else>
+                                                                                                                        Mac Address(s):
+                                                                                                                          <#list updatedMacAddress as macAddress>
+                                                                                                                            <li style="Margin:0 0 5px; list-style:none inside; mso-special-format:bullet;">    ${macAddress} </li>
+
+                                                                                                                          </#list>
+                                                                                                     </#if>
+
 
 																						</ul>
 																				</td>

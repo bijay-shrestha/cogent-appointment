@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.EmailConstants.*;
 import static com.cogent.cogentappointment.admin.constants.EmailTemplates.*;
+import static com.cogent.cogentappointment.admin.constants.StringConstant.*;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.OR;
 import static com.cogent.cogentappointment.admin.utils.commons.NumberFormatterUtils.generateRandomToken;
 
@@ -111,7 +112,7 @@ public class AdminUtils {
                 .receiverEmailAddress(adminRequestDTO.getEmail())
                 .subject(SUBJECT_FOR_ADMIN_VERIFICATION)
                 .templateName(ADMIN_VERIFICATION)
-                .paramValue(adminRequestDTO.getUsername() + StringConstant.COMMA_SEPARATED + confirmationUrl)
+                .paramValue(adminRequestDTO.getUsername() + COMMA_SEPARATED + confirmationUrl)
                 .build();
     }
 
@@ -208,7 +209,7 @@ public class AdminUtils {
                 .collect(Collectors.toList());
 
         return (updateRequestDTO.getHasMacBinding().equals(StatusConstants.ACTIVE))
-                ? StringUtils.join(macAddress, StringConstant.COMMA_SEPARATED) : "N/A";
+                ? StringUtils.join(macAddress, COMMA_SEPARATED) : "N/A";
     }
 
     public static EmailRequestDTO parseToEmailRequestDTO(String username,
@@ -219,8 +220,8 @@ public class AdminUtils {
                 .receiverEmailAddress(updateRequestDTO.getEmail())
                 .subject(SUBJECT_FOR_UPDATE_ADMIN)
                 .templateName(UPDATE_ADMIN)
-                .paramValue(username + StringConstant.HYPHEN + paramValues + StringConstant.HYPHEN +
-                        updateRequestDTO.getHasMacBinding() + StringConstant.HYPHEN + updatedMacAddress)
+                .paramValue(username + HYPHEN + paramValues + HYPHEN +
+                        updateRequestDTO.getHasMacBinding() + HYPHEN + updatedMacAddress)
                 .build();
     }
 
@@ -238,8 +239,8 @@ public class AdminUtils {
                 .receiverEmailAddress(emailAddress)
                 .subject(SUBJECT_FOR_ADMIN_RESET_PASSWORD)
                 .templateName(ADMIN_RESET_PASSWORD)
-                .paramValue(requestDTO.getUsername() + StringConstant.COMMA_SEPARATED
-                        + requestDTO.getPassword() + StringConstant.COMMA_SEPARATED + requestDTO.getRemarks())
+                .paramValue(requestDTO.getUsername() + COMMA_SEPARATED
+                        + requestDTO.getPassword() + COMMA_SEPARATED + requestDTO.getRemarks())
                 .build();
     }
 }

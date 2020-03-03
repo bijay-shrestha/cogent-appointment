@@ -1,8 +1,8 @@
 package com.cogent.cogentappointment.admin.utils;
 
 
-import com.cogent.cogentappointment.admin.dto.response.dashboard.GenerateRevenueResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueStatisticsResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueTrendResponseDTO;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -29,24 +29,24 @@ public class DashboardUtils {
         return IntStream.rangeClosed(1, numberOfDays).boxed().collect(Collectors.toList());
     }
 
-    public static GenerateRevenueResponseDTO parseToGenerateRevenueResponseDTO(Double currentTransaction,
-                                                                               Double growthPercent,
-                                                                               Character filterType) {
-        GenerateRevenueResponseDTO generateRevenueResponseDTO = new GenerateRevenueResponseDTO();
-        generateRevenueResponseDTO.setAmount(currentTransaction);
-        generateRevenueResponseDTO.setGrowthPercent(growthPercent);
-        generateRevenueResponseDTO.setFiscalYear(getFiscalYear());
-        generateRevenueResponseDTO.setFilterType(filterType);
-
-        return generateRevenueResponseDTO;
-    }
-
-    public static RevenueStatisticsResponseDTO revenueStatisticsResponseDTO(List<Object[]> resultList, Character filter) {
+    public static RevenueStatisticsResponseDTO parseToGenerateRevenueResponseDTO(Double currentTransaction,
+                                                                                 Double growthPercent,
+                                                                                 Character filterType) {
         RevenueStatisticsResponseDTO revenueStatisticsResponseDTO = new RevenueStatisticsResponseDTO();
-        revenueStatisticsResponseDTO.setData(getMapFromObject(resultList));
-        revenueStatisticsResponseDTO.setFilterType(filter);
+        revenueStatisticsResponseDTO.setAmount(currentTransaction);
+        revenueStatisticsResponseDTO.setGrowthPercent(growthPercent);
+        revenueStatisticsResponseDTO.setFiscalYear(getFiscalYear());
+        revenueStatisticsResponseDTO.setFilterType(filterType);
 
         return revenueStatisticsResponseDTO;
+    }
+
+    public static RevenueTrendResponseDTO revenueStatisticsResponseDTO(List<Object[]> resultList, Character filter) {
+        RevenueTrendResponseDTO revenueTrendResponseDTO = new RevenueTrendResponseDTO();
+        revenueTrendResponseDTO.setData(getMapFromObject(resultList));
+        revenueTrendResponseDTO.setFilterType(filter);
+
+        return revenueTrendResponseDTO;
     }
 
     public static Map<String, String> getMapFromObject(List<Object[]> resultList) {

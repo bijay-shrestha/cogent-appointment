@@ -53,7 +53,7 @@ public class AppointmentQuery {
                 " d.name as doctorName," +                                              //[8]
                 " s.name as specializationName," +                                      //[9]
                 " p.eSewaId as eSewaId," +                                              //[10]
-                " atd.transactionNumber as transactionNumber," +                        //[11]
+                " atd.transactionNumber as transactionNumber,ob" +                        //[11]
                 " ard.cancelledDate as cancelledDate," +                                //[12]
                 " ard.refundAmount as refundAmount," +                                  //[13]
                 " a.remarks as cancellationRemarks," +                                  //[14]

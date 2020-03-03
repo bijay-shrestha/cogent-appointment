@@ -14,18 +14,15 @@ import static com.cogent.cogentappointment.client.constants.StringConstant.COMMA
  */
 public class PatientQuery {
 
-    public final static String QUERY_TO_VALIDATE_UPDATED_PATIENT_DUPLICITY =
+    public final static String QUERY_TO_VALIDATE_PATIENT_DUPLICITY =
             "SELECT " +
                     " COUNT(p.id)" +
                     " FROM Patient p" +
-                    " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = p.id" +
                     " WHERE " +
                     " (p.name =:name" +
                     " AND p.mobileNumber =:mobileNumber" +
                     " AND p.dateOfBirth =:dateOfBirth" +
-                    " AND p.id !=:id)" +
-                    " AND hpi.hospital.id =:hospitalId" +
-                    " AND hpi.status != 'D'";
+                    " AND p.id !=:id)";
 
     /* AGE CALCULATION:
     TIMESTAMPDIFF(YEAR, date_of_birth , CURDATE() ) as _year

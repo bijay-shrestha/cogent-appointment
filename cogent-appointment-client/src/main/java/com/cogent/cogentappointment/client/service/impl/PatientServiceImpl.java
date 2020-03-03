@@ -11,7 +11,6 @@ import com.cogent.cogentappointment.client.repository.PatientRepository;
 import com.cogent.cogentappointment.client.service.PatientService;
 import com.cogent.cogentappointment.client.utils.PatientMetaInfoUtils;
 import com.cogent.cogentappointment.persistence.enums.Gender;
-import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.HospitalPatientInfo;
 import com.cogent.cogentappointment.persistence.model.Patient;
 import com.cogent.cogentappointment.persistence.model.PatientMetaInfo;
@@ -148,6 +147,24 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
+    public void updateOtherPatientDetails(PatientUpdateDTOForOthers requestDTO) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(UPDATING_PROCESS_STARTED, PATIENT);
+
+        HospitalPatientInfo hospitalPatientInfo = fetchHospitalPatientInfo(requestDTO.getHospitalPatientInfoId());
+
+        validatePatientDuplicity(hospitalPatientInfo.getPatient().getId(),
+                requestDTO.getName(),
+                requestDTO.getMobileNumber(), requestDTO.getDateOfBirth()
+        );
+
+        updateOtherPatient(requestDTO, hospitalPatientInfo);
+
+        log.info(UPDATING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    @Override
     public PatientResponseDTO fetchDetailsById(Long id) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -185,13 +202,13 @@ public class PatientServiceImpl implements PatientService {
 
         Patient patient = fetchPatientByIdAndHospitalId(updateRequestDTO.getId(), hospitalId);
 
-        Long patientCount = patientRepository.validatePatientDuplicity(updateRequestDTO, hospitalId);
+        validatePatientDuplicity(updateRequestDTO.getId(),
+                updateRequestDTO.getName(),
+                updateRequestDTO.getMobileNumber(),
+                updateRequestDTO.getDateOfBirth()
+        );
 
-        validatePatientDuplicity(patientCount, updateRequestDTO.getName(),
-                updateRequestDTO.getMobileNumber(), updateRequestDTO.getDateOfBirth());
-
-        HospitalPatientInfo hospitalPatientInfo = hospitalPatientInfoRepository
-                .fetchHospitalPatientInfoByPatientId(updateRequestDTO.getId());
+        HospitalPatientInfo hospitalPatientInfo = fetchHospitalPatientInfo(updateRequestDTO.getId());
 
         updatePatient(updateRequestDTO, patient);
 
@@ -306,8 +323,10 @@ public class PatientServiceImpl implements PatientService {
         return patientRepository.save(patient);
     }
 
-    private void validatePatientDuplicity(Long patientCount, String name, String mobileNumber,
+    private void validatePatientDuplicity(Long patientId, String name, String mobileNumber,
                                           Date dateOfBirth) {
+
+        Long patientCount = patientRepository.validatePatientDuplicity(patientId, name, mobileNumber, dateOfBirth);
 
         if (patientCount.intValue() > 0)
             PATIENT_DUPLICATION_EXCEPTION(name, mobileNumber, dateOfBirth);
@@ -340,5 +359,9 @@ public class PatientServiceImpl implements PatientService {
         );
     }
 
+    private HospitalPatientInfo fetchHospitalPatientInfo(Long hospitalPatientInfoId) {
+        return hospitalPatientInfoRepository.fetchHospitalPatientInfoByPatientId(hospitalPatientInfoId)
+                .orElseThrow(() -> new NoContentFoundException(Patient.class));
+    }
 }
 

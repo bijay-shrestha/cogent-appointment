@@ -30,7 +30,7 @@ public interface PatientRepositoryCustom {
     PatientDetailResponseDTO fetchMinPatientDetailsOfOthers(Long hospitalPatientId);
 
     /*admin*/
-    Long validatePatientDuplicity(PatientUpdateRequestDTO updateRequestDTO, Long hospitalId);
+    Long validatePatientDuplicity(Long patientId, String name, String mobileNumber, Date dateOfBirth);
 
     PatientResponseDTO fetchPatientDetailsById(Long id, Long hospitalId);
 

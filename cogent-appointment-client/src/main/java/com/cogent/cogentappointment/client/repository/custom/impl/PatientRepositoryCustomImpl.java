@@ -2,7 +2,6 @@ package com.cogent.cogentappointment.client.repository.custom.impl;
 
 import com.cogent.cogentappointment.client.dto.request.patient.PatientMinSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientSearchRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.*;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.PatientRepositoryCustom;
@@ -37,13 +36,16 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
     private EntityManager entityManager;
 
     @Override
-    public Long validatePatientDuplicity(PatientUpdateRequestDTO updateRequestDTO, Long hospitalId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_UPDATED_PATIENT_DUPLICITY)
-                .setParameter(NAME, updateRequestDTO.getName())
-                .setParameter(MOBILE_NUMBER, updateRequestDTO.getMobileNumber())
-                .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(updateRequestDTO.getDateOfBirth()))
-                .setParameter(ID, updateRequestDTO.getId())
-                .setParameter(HOSPITAL_ID, hospitalId);
+    public Long validatePatientDuplicity(Long patientId,
+                                         String name,
+                                         String mobileNumber,
+                                         Date dateOfBirth) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_PATIENT_DUPLICITY)
+                .setParameter(NAME, name)
+                .setParameter(MOBILE_NUMBER, mobileNumber)
+                .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(dateOfBirth))
+                .setParameter(ID, patientId);
 
         return (Long) query.getSingleResult();
     }

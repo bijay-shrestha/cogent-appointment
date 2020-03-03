@@ -171,6 +171,8 @@ public class WebResourceKeyConstants {
     //T
 
     //U
+    public static final String UPDATE = "/update";
+
     public interface UniversityConstants {
         String BASE_UNIVERSITY = "/university";
     }

@@ -18,7 +18,7 @@ import java.util.List;
 @Repository
 @Qualifier("patientRepositoryCustom")
 public interface PatientRepositoryCustom {
-    Long validatePatientDuplicity(PatientUpdateRequestDTO patientUpdateRequestDTO);
+    Long validatePatientDuplicity(PatientUpdateRequestDTO patientUpdateRequestDTO,Long patientId);
 
     PatientDetailResponseDTO fetchDetailsById(Long hospitalPatientInfoId);
 

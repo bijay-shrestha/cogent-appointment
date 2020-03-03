@@ -90,7 +90,7 @@ public class PatientServiceImpl implements PatientService {
         HospitalPatientInfo hospitalPatientInfoToBeUpdated = hospitalPatientInfoRepository
                 .fetchHospitalPatientInfoByPatientId(updateRequestDTO.getId());
 
-        Long patientCount = patientRepository.validatePatientDuplicity(updateRequestDTO);
+        Long patientCount = patientRepository.validatePatientDuplicity(updateRequestDTO,patientToBeUpdated.getId());
 
         validatePatientDuplicity(patientCount, updateRequestDTO.getName(),
                 updateRequestDTO.getMobileNumber(), updateRequestDTO.getDateOfBirth());
@@ -185,7 +185,7 @@ public class PatientServiceImpl implements PatientService {
     private void validatePatientDuplicity(Long patientCount, String name, String mobileNumber,
                                           Date dateOfBirth) {
 
-        if (patientCount.intValue() > 0)
+        if (patientCount.intValue() != 0)
             throw new DataDuplicationException(String.format(DUPLICATE_PATIENT_MESSAGE,
                     name, mobileNumber, utilDateToSqlDate(dateOfBirth)));
     }

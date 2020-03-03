@@ -26,7 +26,7 @@ public class DashBoardQuery {
                 " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
                 " WHERE " +
                 " (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
-                " AND a.status='PA' OR a.status = 'A'" +
+                " AND (a.status='PA' OR a.status = 'A')" +
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId);
     }
 
@@ -99,7 +99,7 @@ public class DashBoardQuery {
                 " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
                 " WHERE " +
                 " atd.transactionDate BETWEEN :fromDate AND :toDate" +
-                " AND a.status='PA' OR a.status = 'A'" +
+                " AND (a.status='PA' OR a.status = 'A')" +
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId) +
                 " GROUP BY atd.transactionDate" +
                 " ORDER BY atd.transactionDate";
@@ -113,7 +113,7 @@ public class DashBoardQuery {
                 " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
                 " WHERE" +
                 " atd.transactionDate BETWEEN :fromDate AND :toDate" +
-                " AND a.status='PA' OR a.status = 'A'" +
+                " AND (a.status='PA' OR a.status = 'A')" +
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId) +
                 " GROUP BY DATE_FORMAT(atd.transactionDate, '%b,%Y')" +
                 " ORDER BY DATE_FORMAT(atd.transactionDate, '%b,%Y')";
@@ -127,7 +127,7 @@ public class DashBoardQuery {
                 " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
                 " WHERE" +
                 " atd.transactionDate BETWEEN :fromDate AND :toDate" +
-                " AND a.status='PA' OR a.status = 'A'" +
+                " AND (a.status='PA' OR a.status = 'A')" +
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId) +
                 " GROUP BY atd.transactionDate" +
                 " ORDER BY atd.transactionDate";
@@ -135,14 +135,22 @@ public class DashBoardQuery {
 
     public static String QUERY_TO_FETCH_REVENUE_DAILY(Long hospitalId) {
         return "SELECT" +
-                " 'DAILY'," +
+                " DATE_FORMAT(atd.transactionDate , '%e %b,%Y') As transactionDate," +
                 " COALESCE(SUM(atd.appointmentAmount),0) as revenue" +
-                " FROM AppointmentTransactionDetail atd" +
-                " LEFT JOIN Appointment a On a.id=atd.appointment.id" +
-                " LEFT JOIN Hospital h ON h.id=a.hospitalId.id" +
-                " WHERE atd.transactionDate BETWEEN :fromDate AND :toDate" +
-                " AND a.status='PA' OR a.status = 'A'" +
-                CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId);
+                " FROM" +
+                " AppointmentTransactionDetail atd" +
+                " LEFT JOIN Appointment a ON" +
+                " a.id = atd.appointment.id" +
+                " LEFT JOIN Hospital h ON" +
+                " h.id = a.hospitalId.id" +
+                " WHERE" +
+                " atd.transactionDate BETWEEN :fromDate AND :toDate" +
+                " AND (a.status='PA' OR a.status= 'A')" +
+                CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId) +
+                " GROUP BY" +
+                " atd.transactionDate" +
+                " ORDER BY" +
+                " atd.transactionDate";
     }
 
 }

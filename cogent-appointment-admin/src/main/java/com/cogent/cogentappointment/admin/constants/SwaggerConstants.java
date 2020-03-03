@@ -74,11 +74,12 @@ public class SwaggerConstants {
 
     //D
     public interface DashboardConstant {
-        String BASE_API_VALUE = "This is Dashboard Resource";
+        String BASE_API_VALUE = "This is Dashboard Resource.";
         String GENERATE_REVENUE_OPERATION = "Fetch revenue generated.";
         String OVER_ALL_APPOINTMENT_OPERATION = "Fetch over all appointments.";
-        String COUNT_REGISTERED_PATIENTS_OPERATION = "Count no. of registered patients";
-        String REVENUE_STATISTICS_OPERATION = "Revenue statistics as per the filter";
+        String COUNT_REGISTERED_PATIENTS_OPERATION = "Count no. of registered patients.";
+        String REVENUE_STATISTICS_OPERATION = "Revenue statistics as per the filter.";
+        String REVENUE_TREND_OPERATION = "Revenue Trend as per the filter.";
     }
 
     public interface DepartmentConstant {

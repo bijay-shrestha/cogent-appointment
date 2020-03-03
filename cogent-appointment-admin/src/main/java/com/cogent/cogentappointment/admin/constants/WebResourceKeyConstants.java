@@ -49,11 +49,12 @@ public class WebResourceKeyConstants {
         String GENERATE_REVENUE = "/revenueGenerated";
         String OVER_ALL_APPOINTMENT = "/overAllAppointments";
         String REVENUE_STATISTICS = "/revenueStatistics";
-        String REGISTERED="/registeredPatients";
-        String COUNT="/count";
+        String REGISTERED = "/registeredPatients";
+        String COUNT = "/count";
         String HOSPITAL_ID_PATH_VARIABLE_BASE = "/{hospitalId}";
         String APPOINTMENT_QUEUE = "/today-appointment";
         String APPOINTMENT_QUEUE_BY_TIME = "/today-appointment-timely";
+        String REVENUE_TREND = "/revenueTrend";
     }
 
     public static final String DETAIL = "/detail";
@@ -76,7 +77,7 @@ public class WebResourceKeyConstants {
         String EXISTING = "/existing";
         String REVERT_DOCTOR_DUTY_ROSTER_OVERRIDE = "/revert";
     }
-    
+
     //F
     public static final String FILES = "/files";
     public static final String FILE = "/files/{subDirectoryLocation}/{filename:.+}";

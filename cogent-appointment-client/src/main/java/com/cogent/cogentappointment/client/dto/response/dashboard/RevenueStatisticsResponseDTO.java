@@ -4,14 +4,19 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.Map;
 
 /**
- * @author Sauravi Thapa २०/२/११
+ * @author Sauravi Thapa २०/२/१०
  */
 @Getter
 @Setter
 public class RevenueStatisticsResponseDTO implements Serializable {
-    private Map<String, String> data;
+
+    private String fiscalYear;
+
+    private Double amount;
+
+    private Double growthPercent;
+
     private Character filterType;
 }

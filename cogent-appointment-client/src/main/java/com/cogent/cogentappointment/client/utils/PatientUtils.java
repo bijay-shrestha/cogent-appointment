@@ -45,7 +45,7 @@ public class PatientUtils {
         patient.setGender(requestDTO.getGender());
     }
 
-    public static void updateHospitalPatientInfo(PatientUpdateRequestDTO requestDTO,
+    public static HospitalPatientInfo updateHospitalPatientInfo(PatientUpdateRequestDTO requestDTO,
                                                  HospitalPatientInfo hospitalPatientInfo) {
 
         hospitalPatientInfo.setAddress(requestDTO.getAddress());
@@ -53,9 +53,11 @@ public class PatientUtils {
         hospitalPatientInfo.setEmail(requestDTO.getEmail());
         hospitalPatientInfo.setRemarks(requestDTO.getRemarks());
         hospitalPatientInfo.setStatus(requestDTO.getStatus());
+
+        return hospitalPatientInfo;
     }
 
-    public static void updatePatientMetaInfo(HospitalPatientInfo hospitalPatientInfo,
+    public static PatientMetaInfo updatePatientMetaInfo(HospitalPatientInfo hospitalPatientInfo,
                                              PatientMetaInfo patientMetaInfo,
                                              PatientUpdateRequestDTO updateRequestDTO) {
         patientMetaInfo.setMetaInfo(updateRequestDTO.getName()
@@ -65,6 +67,8 @@ public class PatientUtils {
                 hospitalPatientInfo.getRegistrationNumber());
         patientMetaInfo.setStatus(updateRequestDTO.getStatus());
         patientMetaInfo.setRemarks(updateRequestDTO.getRemarks());
+
+        return patientMetaInfo;
     }
 
     public static void registerPatientDetails(HospitalPatientInfo hospitalPatientInfo,

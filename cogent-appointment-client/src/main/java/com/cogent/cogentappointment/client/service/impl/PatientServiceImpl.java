@@ -226,24 +226,25 @@ public class PatientServiceImpl implements PatientService {
 
         Long hospitalId = getLoggedInHospitalId();
 
-        Patient patient = fetchPatientByIdAndHospitalId(updateRequestDTO.getId(), hospitalId);
+        Patient patientToUpdate = patientRepository.getPatientByHospitalPatientInfoId(updateRequestDTO.getId(),
+                hospitalId);
 
-        validatePatientDuplicity(updateRequestDTO.getId(),
+        HospitalPatientInfo hospitalPatientInfoToBeUpdated = hospitalPatientInfoRepository
+                .fetchHospitalPatientInfoByPatientId(updateRequestDTO.getId());
+
+        validatePatientDuplicity(patientToUpdate.getId(),
                 updateRequestDTO.getName(),
                 updateRequestDTO.getMobileNumber(),
                 updateRequestDTO.getDateOfBirth()
         );
 
-        HospitalPatientInfo hospitalPatientInfo =
-                hospitalPatientInfoRepository.fetchHospitalPatientInfoByPatientId(updateRequestDTO.getId());
+        updatePatient(updateRequestDTO, patientToUpdate);
 
-        updatePatient(updateRequestDTO, patient);
+        saveHospitalPatientInfo(updateHospitalPatientInfo(updateRequestDTO, hospitalPatientInfoToBeUpdated));
 
-        updateHospitalPatientInfo(updateRequestDTO, hospitalPatientInfo);
-
-        PatientMetaInfo patientMetaInfo = patientMetaInfoRepository.fetchByPatientId(updateRequestDTO.getId());
-
-        updatePatientMetaInfo(hospitalPatientInfo, patientMetaInfo, updateRequestDTO);
+        savePatientMetaInfo(updatePatientMetaInfo(hospitalPatientInfoToBeUpdated,
+                patientMetaInfoRepository.fetchByPatientId(patientToUpdate.getId()),
+                updateRequestDTO));
 
         log.info(UPDATING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
     }
@@ -390,5 +391,14 @@ public class PatientServiceImpl implements PatientService {
         return hospitalPatientInfoRepository.fetchHospitalPatientInfoById(hospitalPatientInfoId)
                 .orElseThrow(() -> new NoContentFoundException(Patient.class));
     }
+
+    private void saveHospitalPatientInfo(HospitalPatientInfo hospitalPatientInfo) {
+        hospitalPatientInfoRepository.save(hospitalPatientInfo);
+    }
+
+    private void savePatientMetaInfo(PatientMetaInfo patientMetaInfo) {
+        patientMetaInfoRepository.save(patientMetaInfo);
+    }
+
 }
 

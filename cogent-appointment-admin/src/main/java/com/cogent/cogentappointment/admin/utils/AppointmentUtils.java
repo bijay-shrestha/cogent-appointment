@@ -287,7 +287,7 @@ public class AppointmentUtils {
                             .appointmentDate(appointmentDate)
                             .appointmentNumber(result[APPOINTMENT_NUMBER_INDEX].toString())
                             .appointmentTime(result[APPOINTMENT_TIME_INDEX].toString())
-                            .esewaId(result[ESEWA_ID_INDEX].toString())
+                            .esewaId(Objects.isNull(result[ESEWA_ID_INDEX]) ? null : result[ESEWA_ID_INDEX].toString())
                             .registrationNumber(registrationNumber)
                             .patientName(result[PATIENT_NAME_INDEX].toString())
                             .patientGender((Gender) result[PATIENT_GENDER_INDEX])

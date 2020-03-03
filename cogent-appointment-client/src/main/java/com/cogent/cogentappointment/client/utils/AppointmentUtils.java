@@ -388,7 +388,7 @@ public class AppointmentUtils {
                             .appointmentDate(appointmentDate)
                             .appointmentNumber(result[APPOINTMENT_NUMBER_INDEX].toString())
                             .appointmentTime(result[APPOINTMENT_TIME_INDEX].toString())
-                            .esewaId(result[ESEWA_ID_INDEX].toString())
+                            .esewaId(Objects.isNull(result[ESEWA_ID_INDEX]) ? null : result[ESEWA_ID_INDEX].toString())
                             .registrationNumber(registrationNumber)
                             .patientName(result[PATIENT_NAME_INDEX].toString())
                             .patientGender((Gender) result[PATIENT_GENDER_INDEX])
@@ -432,6 +432,7 @@ public class AppointmentUtils {
             final int GENDER_INDEX = 6;
             final int MOBILE_NUMBER_INDEX = 7;
             final int AGE_INDEX = 8;
+            final int APPOINTMENT_ID_INDEX = 9;
 
             Date appointmentDate = (Date) result[APPOINTMENT_DATE_INDEX];
 
@@ -447,6 +448,7 @@ public class AppointmentUtils {
                     .mobileNumber(result[MOBILE_NUMBER_INDEX].toString())
                     .age(result[AGE_INDEX].toString())
                     .gender(result[GENDER_INDEX].toString())
+                    .appointmentId(Long.parseLong(result[APPOINTMENT_ID_INDEX].toString()))
                     .build();
 
             appointmentStatusResponseDTOS.add(appointmentStatusResponseDTO);

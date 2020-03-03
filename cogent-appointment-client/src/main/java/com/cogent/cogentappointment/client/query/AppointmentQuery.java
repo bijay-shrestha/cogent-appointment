@@ -395,8 +395,11 @@ public class AppointmentQuery {
         if (!Objects.isNull(appointmentLogSearchDTO.getSpecializationId()))
             whereClause += " AND sp.id = " + appointmentLogSearchDTO.getSpecializationId();
 
-        if (!Objects.isNull(appointmentLogSearchDTO.getPatientType()))
+        if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getPatientType()))
             whereClause += " AND hpi.isRegistered = '" + appointmentLogSearchDTO.getPatientType() + "'";
+
+        if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getAppointmentCategory()))
+            whereClause += " AND a.isSelf = '" + appointmentLogSearchDTO.getAppointmentCategory() + "'";
 
         if (!Objects.isNull(appointmentLogSearchDTO.getDoctorId()))
             whereClause += " AND d.id = " + appointmentLogSearchDTO.getDoctorId();
@@ -419,7 +422,8 @@ public class AppointmentQuery {
                 " p.name as patientName," +                                                             //[5]
                 " p.gender as gender," +                                                                //[6]
                 " p.mobile_number as mobileNumber," +                                                   //[7]
-                QUERY_TO_CALCULATE_PATIENT_AGE_NATIVE +                                                 //[8]
+                QUERY_TO_CALCULATE_PATIENT_AGE_NATIVE + "," +                                           //[8]
+                " a.id as appointmentId" +                                                              //[9]
                 " FROM appointment a" +
                 " LEFT JOIN doctor d ON d.id = a.doctor_id" +
                 " LEFT JOIN specialization s ON s.id = a.specialization_id" +

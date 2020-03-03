@@ -165,8 +165,8 @@ public class PatientQuery {
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
             whereClause += " AND hpi.status='" + searchRequestDTO.getStatus() + "'";
 
-        if (!Objects.isNull(searchRequestDTO.getPatientMetaInfo()))
-            whereClause += " AND pmi.id=" + searchRequestDTO.getPatientMetaInfo();
+        if (!Objects.isNull(searchRequestDTO.getPatientMetaInfoId()))
+            whereClause += " AND pmi.id=" + searchRequestDTO.getPatientMetaInfoId();
 
         whereClause += " ORDER BY p.id DESC";
 

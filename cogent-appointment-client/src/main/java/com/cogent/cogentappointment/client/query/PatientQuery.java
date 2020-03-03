@@ -1,31 +1,24 @@
 package com.cogent.cogentappointment.client.query;
 
 import com.cogent.cogentappointment.client.dto.request.patient.PatientSearchRequestDTO;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.ObjectUtils;
 
-import java.util.List;
 import java.util.Objects;
-
-import static com.cogent.cogentappointment.client.constants.StringConstant.COMMA_SEPARATED;
 
 /**
  * @author smriti ON 16/01/2020
  */
 public class PatientQuery {
 
-    public final static String QUERY_TO_VALIDATE_UPDATED_PATIENT_DUPLICITY =
+    public final static String QUERY_TO_VALIDATE_PATIENT_DUPLICITY =
             "SELECT " +
                     " COUNT(p.id)" +
                     " FROM Patient p" +
-                    " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = p.id" +
                     " WHERE " +
                     " (p.name =:name" +
                     " AND p.mobileNumber =:mobileNumber" +
                     " AND p.dateOfBirth =:dateOfBirth" +
-                    " AND p.id !=:id)" +
-                    " AND hpi.hospital.id =:hospitalId" +
-                    " AND hpi.status != 'D'";
+                    " AND p.id !=:id)";
 
     /* AGE CALCULATION:
     TIMESTAMPDIFF(YEAR, date_of_birth , CURDATE() ) as _year
@@ -87,15 +80,15 @@ public class PatientQuery {
 
     /*FOR OTHERS*/
     public static final String QUERY_TO_FETCH_CHILD_PATIENT_IDS =
-            " SELECT pm.childPatientId.id" +
+            " SELECT " +
+                    " pm.parentPatientId.id as parentPatientId," +                 //[0]
+                    " pm.childPatientId.id as childPatientId" +                   //[1]
                     " FROM Patient p" +
                     " LEFT JOIN PatientRelationInfo pm ON pm.parentPatientId.id= p.id" +
                     GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS +
                     " AND pm.status = 'Y'";
 
-    public static String QUERY_TO_FETCH_MIN_PATIENT_INFO_FOR_OTHERS(List<Long> childPatientIds) {
-
-        String patientIds = StringUtils.join(childPatientIds, COMMA_SEPARATED);
+    public static String QUERY_TO_FETCH_MIN_PATIENT_INFO_FOR_OTHERS(String childPatientIds) {
 
         return " SELECT" +
                 " hpi.id as hospitalPatientInfoId," +                    //[0]
@@ -107,8 +100,8 @@ public class PatientQuery {
                 " hpi.registrationNumber as registrationNumber," +      //[6]
                 QUERY_TO_CALCULATE_PATIENT_AGE +                        //[7]
                 " FROM Patient p" +
-                " LEFT JOIN HospitalPatientInfo hpi ON hp.patient.id = p.id" +
-                " WHERE p.id IN (" + patientIds + ")";
+                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = p.id" +
+                " WHERE p.id IN (" + childPatientIds + ")";
     }
 
     public static String QUERY_TO_FETCH_MIN_PATIENT_DETAILS_FOR_OTHERS =

@@ -3,7 +3,6 @@ package com.cogent.cogentappointment.client.service;
 import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.*;
 import com.cogent.cogentappointment.client.dto.response.patient.*;
-import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.Patient;
 import org.springframework.data.domain.Pageable;
 
@@ -26,10 +25,14 @@ public interface PatientService {
     PatientDetailResponseDTO searchForSelf(PatientMinSearchRequestDTO searchRequestDTO);
 
     /*FETCH MINIMAL DETAILS OF 'OTHERS'*/
-    List<PatientMinimalResponseDTO> searchForOthers(PatientMinSearchRequestDTO searchRequestDTO,
-                                                    Pageable pageable);
+    PatientResponseDTOForOthers searchForOthers(PatientMinSearchRequestDTO searchRequestDTO,
+                                                         Pageable pageable);
 
     PatientDetailResponseDTO fetchMinPatientDetailsOfOthers(Long hospitalPatientId);
+
+    void updateOtherPatientDetails(PatientUpdateDTOForOthers requestDTO);
+
+    void deleteOtherPatient(PatientDeleteRequestDTOForOthers requestDTO);
 
     /*admin*/
     PatientResponseDTO fetchDetailsById(Long id);

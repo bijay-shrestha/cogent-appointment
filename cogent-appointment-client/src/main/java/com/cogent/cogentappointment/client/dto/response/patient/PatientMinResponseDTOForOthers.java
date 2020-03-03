@@ -13,7 +13,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PatientMinimalResponseDTO implements Serializable {
+public class PatientMinResponseDTOForOthers implements Serializable {
 
     private Long hospitalPatientInfoId;
 

@@ -183,6 +183,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment appointment = parseToAppointment(
                 requestDTO.getAppointmentInfo(),
                 appointmentNumber,
+                YES,
                 patient,
                 fetchSpecialization(appointmentInfo.getSpecializationId(), appointmentInfo.getHospitalId()),
                 fetchDoctor(appointmentInfo.getDoctorId(), appointmentInfo.getHospitalId()),
@@ -239,6 +240,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment appointment = parseToAppointment(
                 appointmentInfo,
                 appointmentNumber,
+                NO,
                 patient,
                 fetchSpecialization(appointmentInfo.getSpecializationId(), appointmentInfo.getHospitalId()),
                 fetchDoctor(appointmentInfo.getDoctorId(), appointmentInfo.getHospitalId()),

@@ -46,6 +46,7 @@ public class AppointmentUtils {
 
     public static Appointment parseToAppointment(AppointmentRequestDTO requestDTO,
                                                  String appointmentNumber,
+                                                 Character isSelf,
                                                  Patient patient,
                                                  Specialization specialization,
                                                  Doctor doctor,
@@ -59,6 +60,7 @@ public class AppointmentUtils {
         appointment.setAppointmentNumber(appointmentNumber);
         appointment.setCreatedDateNepali(requestDTO.getCreatedDateNepali());
         appointment.setIsFreeFollowUp(requestDTO.getIsFreeFollowUp());
+        appointment.setIsSelf(isSelf);
         parseToAppointment(patient, specialization, doctor, hospital, appointment);
         return appointment;
     }

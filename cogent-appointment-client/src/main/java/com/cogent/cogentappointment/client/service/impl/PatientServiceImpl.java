@@ -115,19 +115,20 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public List<PatientMinimalResponseDTO> searchForOthers(PatientMinSearchRequestDTO searchRequestDTO,
-                                                           Pageable pageable) {
+    public PatientResponseDTOForOthers searchForOthers(PatientMinSearchRequestDTO searchRequestDTO,
+                                                       Pageable pageable) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, PATIENT);
 
-        List<Long> childPatientIds = patientRepository.fetchChildPatientIds(searchRequestDTO);
+        List<PatientRelationInfoResponseDTO> patientRelationInfo =
+                patientRepository.fetchPatientRelationInfo(searchRequestDTO);
 
-        List<PatientMinimalResponseDTO> patientMinInfo =
-                patientRepository.fetchMinPatientInfoForOthers(childPatientIds, pageable);
+        PatientResponseDTOForOthers patientMinInfo =
+                patientRepository.fetchMinPatientInfoForOthers(patientRelationInfo, pageable);
 
-        log.info(SEARCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
+            log.info(SEARCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
         return patientMinInfo;
     }

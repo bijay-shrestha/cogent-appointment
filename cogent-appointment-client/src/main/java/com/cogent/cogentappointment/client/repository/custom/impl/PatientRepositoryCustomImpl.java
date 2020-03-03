@@ -16,9 +16,11 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.PatientQueryConstants.HOSPITAL_PATIENT_INFO_ID;
+import static com.cogent.cogentappointment.client.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.client.query.DashBoardQuery.QUERY_TO_COUNT_OVERALL_REGISTERED_PATIENTS;
 import static com.cogent.cogentappointment.client.query.PatientQuery.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
@@ -65,28 +67,45 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
     }
 
     @Override
-    public List<Long> fetchChildPatientIds(PatientMinSearchRequestDTO searchRequestDTO) {
+    public List<PatientRelationInfoResponseDTO> fetchPatientRelationInfo(
+            PatientMinSearchRequestDTO searchRequestDTO) {
 
         Query query = entityManager.createQuery(QUERY_TO_FETCH_CHILD_PATIENT_IDS)
                 .setParameter(NAME, searchRequestDTO.getName())
                 .setParameter(MOBILE_NUMBER, searchRequestDTO.getMobileNumber())
                 .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(searchRequestDTO.getDateOfBirth()));
 
-        List<Long> childPatientIds = query.getResultList();
+        List<PatientRelationInfoResponseDTO> results =
+                transformQueryToResultList(query, PatientRelationInfoResponseDTO.class);
 
-        if (childPatientIds.isEmpty()) throw new NoContentFoundException(Patient.class);
+        if (results.isEmpty()) throw new NoContentFoundException(Patient.class);
 
-        return childPatientIds;
+        return results;
     }
 
     @Override
-    public List<PatientMinimalResponseDTO> fetchMinPatientInfoForOthers(List<Long> childPatientIds,
-                                                                        Pageable pageable) {
+    public PatientResponseDTOForOthers fetchMinPatientInfoForOthers(
+            List<PatientRelationInfoResponseDTO> patientRelationInfo,
+            Pageable pageable) {
+
+        String childPatientIds = patientRelationInfo.stream()
+                .map(info -> info.getChildPatientId().toString())
+                .collect(Collectors.joining(COMMA_SEPARATED));
+
+        return PatientResponseDTOForOthers.builder()
+                .parentPatientId(patientRelationInfo.get(0).getParentPatientId())
+                .patientInfo(fetchPatientInfo(pageable, childPatientIds))
+                .build();
+    }
+
+    private List<PatientMinResponseDTOForOthers> fetchPatientInfo(Pageable pageable,
+                                                                  String childPatientIds) {
+
 
         Query query = entityManager.createQuery(QUERY_TO_FETCH_MIN_PATIENT_INFO_FOR_OTHERS(childPatientIds));
 
-        List<PatientMinimalResponseDTO> patientMinInfo =
-                transformQueryToResultList(query, PatientMinimalResponseDTO.class);
+        List<PatientMinResponseDTOForOthers> patientMinInfo =
+                transformQueryToResultList(query, PatientMinResponseDTOForOthers.class);
 
         Integer totalItems = query.getResultList().size();
 

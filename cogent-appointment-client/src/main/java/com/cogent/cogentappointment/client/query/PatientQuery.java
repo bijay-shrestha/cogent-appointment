@@ -133,7 +133,8 @@ public class PatientQuery {
     public static String QUERY_TO_SEARCH_PATIENT(PatientSearchRequestDTO searchRequestDTO) {
         return "SELECT" +
                 " hpi.id as id," +
-                " p.name as name," +                                             //[0]
+                " p.name as name," +
+                " p.dateOfBirth as dateOfBirth," +//[0]
                 " hpi.address as address," +                                     //[1]
                 " hpi.email as email," +                                         //[2]
                 " p.mobileNumber as mobileNumber," +                             //[3]
@@ -141,9 +142,12 @@ public class PatientQuery {
                 " p.eSewaId as eSewaId," +                                       //[5]
                 " hpi.status as status," +                                       //[6]
                 " hpi.hospitalNumber as hospitalNumber," +                       //[7]
-                QUERY_TO_CALCULATE_PATIENT_AGE +                                //[8]
+                " a.appointmentDate as appointmentDate," +                         //[8]
+                " DATE_FORMAT(a.appointmentTime ,'%h:%i %p') as appointmentTime," +  //[9]
+                QUERY_TO_CALCULATE_PATIENT_AGE +                                //[10]
                 " FROM Patient p" +
-                " LEFT JOIN HospitalPatientInfo hpi ON p.id=hpi.patient.id" +
+                " LEFT JOIN Appointment a ON p.id = a.patientId.id" +
+                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                 " LEFT JOIN Hospital h ON h.id=hpi.hospital.id" +
                 " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id" +
                 GET_WHERE_CLAUSE_FOR_SEARCH_PATIENT(searchRequestDTO);

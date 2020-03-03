@@ -395,8 +395,11 @@ public class AppointmentQuery {
         if (!Objects.isNull(appointmentLogSearchDTO.getSpecializationId()))
             whereClause += " AND sp.id = " + appointmentLogSearchDTO.getSpecializationId();
 
-        if (!Objects.isNull(appointmentLogSearchDTO.getPatientType()))
+        if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getPatientType()))
             whereClause += " AND hpi.isRegistered = '" + appointmentLogSearchDTO.getPatientType() + "'";
+
+        if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getAppointmentCategory()))
+            whereClause += " AND a.isSelf = '" + appointmentLogSearchDTO.getAppointmentCategory() + "'";
 
         if (!Objects.isNull(appointmentLogSearchDTO.getDoctorId()))
             whereClause += " AND d.id = " + appointmentLogSearchDTO.getDoctorId();

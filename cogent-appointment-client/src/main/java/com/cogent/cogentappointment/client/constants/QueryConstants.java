@@ -45,6 +45,8 @@ public class QueryConstants {
     public static final String HOSPITAL_ID = "hospitalId";
     public static final String HOSPITAL_CODE = "hospitalCode";
 
+    public static final String HOSPITAL_PATIENT_INFO_ID = "hospitalPatientInfoId";
+
 
     //I
     public static final String ID = "id";

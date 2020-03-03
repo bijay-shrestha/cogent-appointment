@@ -28,7 +28,7 @@ public interface PatientRepositoryCustom {
                                                                  Pageable pageable);
 
     /*admin*/
-    Long validatePatientDuplicity(PatientUpdateRequestDTO updateRequestDTO, Long hospitalId);
+    Long validatePatientDuplicity(PatientUpdateRequestDTO updateRequestDTO,Long patientId, Long hospitalId);
 
     PatientResponseDTO fetchPatientDetailsById(Long id, Long hospitalId);
 
@@ -42,4 +42,6 @@ public interface PatientRepositoryCustom {
     Patient fetchPatient(String name, String mobileNumber, Date dateOfBirth);
 
     PatientMinDetailResponseDTO fetchDetailByAppointmentId(Long appointmentId);
+
+    Patient getPatientByHospitalPatientInfoId(Long hospitalPatientInfoId,Long hospitalId);
 }

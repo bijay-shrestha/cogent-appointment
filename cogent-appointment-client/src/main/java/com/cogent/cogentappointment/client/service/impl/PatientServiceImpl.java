@@ -170,23 +170,24 @@ public class PatientServiceImpl implements PatientService {
 
         Long hospitalId = getLoggedInHospitalId();
 
-        Patient patient = fetchPatientByIdAndHospitalId(updateRequestDTO.getId(), hospitalId);
+        Patient patientToUpdate = patientRepository.getPatientByHospitalPatientInfoId(updateRequestDTO.getId(),
+                hospitalId);
 
-        Long patientCount = patientRepository.validatePatientDuplicity(updateRequestDTO, hospitalId);
+        HospitalPatientInfo hospitalPatientInfoToBeUpdated = hospitalPatientInfoRepository
+                .fetchHospitalPatientInfoByPatientId(updateRequestDTO.getId());
+
+        Long patientCount = patientRepository.validatePatientDuplicity(updateRequestDTO,patientToUpdate.getId(), hospitalId);
 
         validatePatientDuplicity(patientCount, updateRequestDTO.getName(),
                 updateRequestDTO.getMobileNumber(), updateRequestDTO.getDateOfBirth());
 
-        HospitalPatientInfo hospitalPatientInfo = hospitalPatientInfoRepository
-                .fetchHospitalPatientInfoByPatientId(updateRequestDTO.getId());
+        updatePatient(updateRequestDTO, patientToUpdate);
 
-        updatePatient(updateRequestDTO, patient);
+        saveHospitalPatientInfo(updateHospitalPatientInfo(updateRequestDTO, hospitalPatientInfoToBeUpdated));
 
-        updateHospitalPatientInfo(updateRequestDTO, hospitalPatientInfo);
-
-        PatientMetaInfo patientMetaInfo = patientMetaInfoRepository.fetchByPatientId(updateRequestDTO.getId());
-
-        updatePatientMetaInfo(hospitalPatientInfo, patientMetaInfo, updateRequestDTO);
+        savePatientMetaInfo(updatePatientMetaInfo(hospitalPatientInfoToBeUpdated,
+                patientMetaInfoRepository.fetchByPatientId(patientToUpdate.getId()),
+                updateRequestDTO));
 
         log.info(UPDATING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
     }
@@ -325,6 +326,14 @@ public class PatientServiceImpl implements PatientService {
         throw new DataDuplicationException(String.format(DUPLICATE_PATIENT_MESSAGE,
                 name, mobileNumber, utilDateToSqlDate(dateOfBirth))
         );
+    }
+
+    private void saveHospitalPatientInfo(HospitalPatientInfo hospitalPatientInfo) {
+        hospitalPatientInfoRepository.save(hospitalPatientInfo);
+    }
+
+    private void savePatientMetaInfo(PatientMetaInfo patientMetaInfo) {
+        patientMetaInfoRepository.save(patientMetaInfo);
     }
 
 }

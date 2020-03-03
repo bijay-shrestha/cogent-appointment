@@ -51,8 +51,8 @@ public class PatientQuery {
                     " WHERE " +
                     " (p.name =:name" +
                     " AND p.mobileNumber =:mobileNumber" +
-                    " AND p.dateOfBirth =:dateOfBirth" +
-                    " AND p.id !=:id)" +
+                    " AND p.dateOfBirth =:dateOfBirth)" +
+                    " AND p.id !=:id" +
                     " AND hp.hospital.id =:hospitalId" +
                     " AND hp.status != 'D'";
 
@@ -71,7 +71,8 @@ public class PatientQuery {
                     " hpi.email as email," +
                     " hpi.address as address," +
                     " hpi.isRegistered as isRegistered," +
-                    " h.id as hospitalId" +
+                    " h.id as hospitalId," +
+                    QUERY_TO_CALCULATE_PATIENT_AGE +
                     " FROM Patient p " +
                     " LEFT JOIN HospitalPatientInfo hpi On p.id=hpi.patient.id" +
                     " LEFT JOIN Hospital h ON h.id=hpi.hospital.id" +

@@ -126,7 +126,7 @@ public class PatientQuery {
                     " FROM Patient p " +
                     " LEFT JOIN HospitalPatientInfo hpi ON p.id=hpi.patient.id" +
                     " LEFT JOIN Hospital h ON h.id=hpi.hospital.id" +
-                    " WHERE p.id=:id" +
+                    " WHERE hpi.id=:hospitalPatientInfoId" +
                     " AND h.id =:hospitalId" +
                     " AND hpi.status='Y'";
 
@@ -205,6 +205,16 @@ public class PatientQuery {
                     " LEFT JOIN Hospital h ON h.id=hpi.hospital.id" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id" +
                     " WHERE a.id =:appointmentId";
+
+    public static String QUERY_TO_FETCH_PATIENT_BY_HOSPITAL_PATIENT_INFO_ID =
+            "SELECT" +
+                    " p" +
+                    " FROM" +
+                    " Patient p" +
+                    " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id=p.id" +
+                    " LEFT JOIN Hospital h ON h.id=hpi.hospital.id" +
+                    " WHERE hpi.id=:hospitalPatientInfoId" +
+                    " AND h.id=:hospitalId";
 
 
 }

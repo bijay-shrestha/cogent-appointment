@@ -27,6 +27,8 @@ public class PatientMinDetailResponseDTO implements Serializable {
 
     private Gender gender;
 
+    private Character isSelf;
+
     private Character patientType;
 
     private String registrationNumber;

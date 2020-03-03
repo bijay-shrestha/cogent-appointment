@@ -224,9 +224,10 @@ public class AppointmentQuery {
                 " p.eSewaId as eSewaId," +                                              //[10]
                 " atd.transactionNumber as transactionNumber," +                        //[11]
                 " ard.cancelledDate as cancelledDate," +                                //[12]
-                " ard.refundAmount as refundAmount," +                                   //[13]
-                " a.remarks as cancellationRemarks," +                                   //[14]
-                QUERY_TO_CALCULATE_PATIENT_AGE +
+                " ard.refundAmount as refundAmount," +                                  //[13]
+                " a.remarks as cancellationRemarks," +                                  //[14]
+                " p.mobileNumber as mobileNumber," +                                    //[15]
+                QUERY_TO_CALCULATE_PATIENT_AGE +                                        //[16]
                 " FROM Appointment a" +
                 " LEFT JOIN Patient p ON p.id = a.patientId.id" +
                 " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
@@ -296,7 +297,8 @@ public class AppointmentQuery {
                             " atd.appointmentAmount as appointmentAmount," +                            //[12]
                             " d.name as doctorName," +                                                  //[13]
                             " ard.refundAmount as refundAmount," +                                      //[14]
-                            " a.id as appointmentId" +                                                 //[15]
+                            " a.id as appointmentId," +                                                 //[15]
+                            " a.isSelf as isSelf" +                                                     //[16]
                             " FROM Appointment a" +
                             " LEFT JOIN Patient p ON a.patientId=p.id" +
                             " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +

@@ -153,6 +153,7 @@ public class PatientQuery {
                     " hpi.registrationNumber as registrationNumber," +
                     " p.eSewaId as eSewaId," +
                     " atd.transactionNumber as transactionNumber," +
+                    " a.isSelf as isSelf," +
                     QUERY_TO_CALCULATE_PATIENT_AGE +
                     " FROM Appointment a" +
                     " LEFT JOIN Patient p ON p.id=a.patientId.id" +

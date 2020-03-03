@@ -78,7 +78,7 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
     @Override
     public List<PatientResponseDTO> search(PatientSearchRequestDTO searchRequestDTO, Pageable pageable) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT(searchRequestDTO));
+        Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_PATIENT(searchRequestDTO));
 
         List<Object[]> results = query.getResultList();
 

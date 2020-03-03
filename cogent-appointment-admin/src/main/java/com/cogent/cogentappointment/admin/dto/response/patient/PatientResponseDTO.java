@@ -40,5 +40,9 @@ public class PatientResponseDTO implements Serializable {
 
     private Date dateOfBirth;
 
+    private Date appointmentDate;
+
+    private String appointmentTime;
+
     private Integer totalItems;
 }

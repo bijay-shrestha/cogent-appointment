@@ -15,6 +15,7 @@ import java.io.Serializable;
 @Builder
 public class PatientSearchResponseDTO implements Serializable {
 
+    //todo: rename as hospitalPatientInfoId
     private Long id;
 
     private String name;

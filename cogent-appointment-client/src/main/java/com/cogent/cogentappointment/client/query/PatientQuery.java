@@ -132,7 +132,7 @@ public class PatientQuery {
 
     public static String QUERY_TO_SEARCH_PATIENT(PatientSearchRequestDTO searchRequestDTO) {
         return "SELECT" +
-                " p.id as id," +
+                " hpi.id as id," +
                 " p.name as name," +                                             //[0]
                 " hpi.address as address," +                                     //[1]
                 " hpi.email as email," +                                         //[2]
@@ -189,11 +189,17 @@ public class PatientQuery {
                     " p.name as name," +                                        //[1]
                     " p.mobileNumber as mobileNumber," +                        //[2]
                     " p.gender as gender," +                                    //[3]
-                    " hpi.address as address," +                                //[4]
+                    " hpi.address as address," +
+                    " hpi.isRegistered as patientType," +
+                    " hpi.registrationNumber as registrationNumber," +
+                    " p.eSewaId as eSewaId," +
+                    " atd.transactionNumber as transactionNumber," +
                     QUERY_TO_CALCULATE_PATIENT_AGE +                            //[5]
                     " FROM Appointment a" +
                     " LEFT JOIN Patient p ON p.id=a.patientId.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
+                    " LEFT JOIN Hospital h ON h.id=hpi.hospital.id" +
+                    " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id" +
                     " WHERE a.id =:appointmentId";
 
 

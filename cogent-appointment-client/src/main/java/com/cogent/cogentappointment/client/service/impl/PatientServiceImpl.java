@@ -57,16 +57,16 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public Patient saveSelfPatient(PatientRequestByDTO requestDTO, Hospital hospital) {
+    public Patient saveSelfPatient(PatientRequestByDTO requestByPatientInfo) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, PATIENT);
 
-        Patient patient = fetchPatient(requestDTO);
+        Patient patient = fetchPatient(requestByPatientInfo);
 
         if (Objects.isNull(patient))
-            patient = savePatientForSelf(requestDTO);
+            patient = savePatientForSelf(requestByPatientInfo);
 
         log.info(SAVING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
@@ -74,8 +74,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public Patient saveOtherPatient(PatientRequestForDTO requestForPatientInfo,
-                                    Hospital hospital) {
+    public Patient saveOtherPatient(PatientRequestForDTO requestForPatientInfo) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 

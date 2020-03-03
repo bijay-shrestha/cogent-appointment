@@ -623,7 +623,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         Patient patient;
 
         if (isNewRegistration) {
-            patient = patientService.saveSelfPatient(patientRequestDTO, hospital);
+            patient = patientService.saveSelfPatient(patientRequestDTO);
             patientMetaInfoService.savePatientMetaInfo(patient);
         } else
             patient = patientService.fetchPatientById(patientId);
@@ -664,14 +664,14 @@ public class AppointmentServiceImpl implements AppointmentService {
         Patient childPatient;
 
         if (isNewRegistration) {
-            parentPatient = patientService.saveSelfPatient(requestByPatientInfo, hospital);
+            parentPatient = patientService.saveSelfPatient(requestByPatientInfo);
 
             childPatient = patientService.fetchPatient(requestForPatientInfo);
 
             if (!Objects.isNull(childPatient)) {
                 validatePatientDuplicity(parentPatient, childPatient, requestForPatientInfo);
             } else {
-                childPatient = patientService.saveOtherPatient(requestForPatientInfo, hospital);
+                childPatient = patientService.saveOtherPatient(requestForPatientInfo);
                 patientMetaInfoService.savePatientMetaInfo(childPatient);
                 patientRelationInfoService.savePatientRelationInfo(parentPatient, childPatient);
             }

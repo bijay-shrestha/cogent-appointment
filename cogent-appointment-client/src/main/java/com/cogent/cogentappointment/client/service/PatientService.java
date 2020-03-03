@@ -15,10 +15,9 @@ import java.util.List;
 public interface PatientService {
 
     /*eSewa*/
-    Patient saveSelfPatient(PatientRequestByDTO requestDTO, Hospital hospital);
+    Patient saveSelfPatient(PatientRequestByDTO requestDTO);
 
-    Patient saveOtherPatient(PatientRequestForDTO requestForPatientInfo,
-                             Hospital hospital);
+    Patient saveOtherPatient(PatientRequestForDTO requestForPatientInfo);
 
     Patient fetchPatient(PatientRequestForDTO patientRequestForDTO);
 

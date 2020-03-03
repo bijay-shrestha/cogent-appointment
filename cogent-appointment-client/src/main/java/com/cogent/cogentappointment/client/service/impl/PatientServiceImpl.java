@@ -7,6 +7,7 @@ import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.HospitalPatientInfoRepository;
 import com.cogent.cogentappointment.client.repository.PatientMetaInfoRepository;
+import com.cogent.cogentappointment.client.repository.PatientRelationInfoRepository;
 import com.cogent.cogentappointment.client.repository.PatientRepository;
 import com.cogent.cogentappointment.client.service.PatientService;
 import com.cogent.cogentappointment.client.utils.PatientMetaInfoUtils;
@@ -14,6 +15,7 @@ import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.HospitalPatientInfo;
 import com.cogent.cogentappointment.persistence.model.Patient;
 import com.cogent.cogentappointment.persistence.model.PatientMetaInfo;
+import com.cogent.cogentappointment.persistence.model.PatientRelationInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,7 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.PatientServiceMessages.DUPLICATE_PATIENT_MESSAGE;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.DELETED;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.PatientLog.*;
@@ -47,12 +50,16 @@ public class PatientServiceImpl implements PatientService {
 
     private final HospitalPatientInfoRepository hospitalPatientInfoRepository;
 
+    private final PatientRelationInfoRepository patientRelationInfoRepository;
+
     public PatientServiceImpl(PatientRepository patientRepository,
                               PatientMetaInfoRepository patientMetaInfoRepository,
-                              HospitalPatientInfoRepository hospitalPatientInfoRepository) {
+                              HospitalPatientInfoRepository hospitalPatientInfoRepository,
+                              PatientRelationInfoRepository patientRelationInfoRepository) {
         this.patientRepository = patientRepository;
         this.patientMetaInfoRepository = patientMetaInfoRepository;
         this.hospitalPatientInfoRepository = hospitalPatientInfoRepository;
+        this.patientRelationInfoRepository = patientRelationInfoRepository;
     }
 
     @Override
@@ -128,7 +135,7 @@ public class PatientServiceImpl implements PatientService {
         PatientResponseDTOForOthers patientMinInfo =
                 patientRepository.fetchMinPatientInfoForOthers(patientRelationInfo, pageable);
 
-            log.info(SEARCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
+        log.info(SEARCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
         return patientMinInfo;
     }
@@ -163,6 +170,24 @@ public class PatientServiceImpl implements PatientService {
         updateOtherPatient(requestDTO, hospitalPatientInfo);
 
         log.info(UPDATING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    @Override
+    public void deleteOtherPatient(PatientDeleteRequestDTOForOthers requestDTO) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(DELETING_PROCESS_STARTED, PATIENT);
+
+        PatientRelationInfo patientRelationInfo = patientRelationInfoRepository.fetchPatientRelationInfo(
+                requestDTO.getParentPatientId(),
+                requestDTO.getChildPatientId());
+
+        if (Objects.isNull(patientRelationInfo))
+            throw PATIENT_WITH_GIVEN_ID_NOT_FOUND.apply(requestDTO.getParentPatientId());
+
+        patientRelationInfo.setStatus(DELETED);
+
+        log.info(DELETING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override

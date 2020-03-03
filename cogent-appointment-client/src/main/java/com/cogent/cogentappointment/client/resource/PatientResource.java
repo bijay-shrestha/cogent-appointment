@@ -1,9 +1,6 @@
 package com.cogent.cogentappointment.client.resource;
 
-import com.cogent.cogentappointment.client.dto.request.patient.PatientMinSearchRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.patient.PatientSearchRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateDTOForOthers;
-import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.patient.*;
 import com.cogent.cogentappointment.client.service.PatientService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -65,6 +62,14 @@ public class PatientResource {
     @ApiOperation(UPDATE_PATIENT_INFO_OPERATION)
     public ResponseEntity<?> updateOtherPatientDetails(@Valid @RequestBody PatientUpdateDTOForOthers updateRequestDTO) {
         patientService.updateOtherPatientDetails(updateRequestDTO);
+        return ok().build();
+    }
+
+    @PutMapping(DELETE + OTHERS)
+    @ApiOperation(DELETE_PATIENT_INFO_OPERATION)
+    public ResponseEntity<?> deleteOtherPatientDetails(@Valid @RequestBody
+                                                               PatientDeleteRequestDTOForOthers requestDTOForOthers) {
+        patientService.deleteOtherPatient(requestDTOForOthers);
         return ok().build();
     }
 

@@ -64,6 +64,7 @@ public class WebResourceKeyConstants {
     }
 
     public static final String DETAIL = "/detail";
+    public static final String DELETE = "/delete";
 
     public interface DepartmentConstants {
         String BASE_DEPARTMENT = "/department";

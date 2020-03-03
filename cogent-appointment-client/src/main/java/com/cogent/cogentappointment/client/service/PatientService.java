@@ -32,6 +32,8 @@ public interface PatientService {
 
     void updateOtherPatientDetails(PatientUpdateDTOForOthers requestDTO);
 
+    void deleteOtherPatient(PatientDeleteRequestDTOForOthers requestDTO);
+
     /*admin*/
     PatientResponseDTO fetchDetailsById(Long id);
 

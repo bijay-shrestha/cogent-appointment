@@ -29,4 +29,14 @@ public class PatientMinDetailResponseDTO implements Serializable {
 
     private Character isSelf;
 
+    private String hospitalName;
+
+    private Character patientType;
+
+    private String registrationNumber;
+
+    private String eSewaId;
+
+    private String transactionNumber;
+
 }

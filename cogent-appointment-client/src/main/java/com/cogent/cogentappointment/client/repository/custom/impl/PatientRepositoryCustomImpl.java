@@ -132,15 +132,15 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
     }
 
     @Override
-    public PatientResponseDTO fetchPatientDetailsById(Long id, Long hospitalId) {
+    public PatientResponseDTO fetchPatientDetailsById(Long hospitalPatientInfoId, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_DETAILS_BY_ID)
-                .setParameter(ID, id)
+                .setParameter(HOSPITAL_PATIENT_INFO_ID, hospitalPatientInfoId)
                 .setParameter(HOSPITAL_ID, hospitalId);
 
         try {
             return transformQueryToSingleResult(query, PatientResponseDTO.class);
         } catch (NoResultException e) {
-            throw new NoContentFoundException(Patient.class, "id", id.toString());
+            throw new NoContentFoundException(Patient.class, "id", hospitalPatientInfoId.toString());
         }
     }
 
@@ -151,11 +151,11 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
         Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_PATIENT(searchRequestDTO))
                 .setParameter(HOSPITAL_ID, hospitalId);
 
-        List<PatientSearchResponseDTO> patients = transformQueryToResultList(query, PatientSearchResponseDTO.class);
-
         Integer totalItems = query.getResultList().size();
 
         addPagination.accept(pageable, query);
+
+        List<PatientSearchResponseDTO> patients = transformQueryToResultList(query, PatientSearchResponseDTO.class);
 
         if (patients.isEmpty()) throw new NoContentFoundException(Patient.class);
 
@@ -207,6 +207,15 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
         } catch (NoResultException e) {
             throw new NoContentFoundException(Patient.class, "appointmentId", appointmentId.toString());
         }
+    }
+
+    @Override
+    public Patient getPatientByHospitalPatientInfoId(Long hospitalPatientInfoId, Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_BY_HOSPITAL_PATIENT_INFO_ID)
+                .setParameter(HOSPITAL_PATIENT_INFO_ID, hospitalPatientInfoId)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        return (Patient) query.getSingleResult();
     }
 
 }

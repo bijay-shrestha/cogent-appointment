@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author smriti ON 16/01/2020
@@ -44,4 +43,6 @@ public interface PatientRepositoryCustom {
     Patient fetchPatient(String name, String mobileNumber, Date dateOfBirth);
 
     PatientMinDetailResponseDTO fetchDetailByAppointmentId(Long appointmentId);
+
+    Patient getPatientByHospitalPatientInfoId(Long hospitalPatientInfoId, Long hospitalId);
 }

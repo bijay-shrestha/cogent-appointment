@@ -2,12 +2,11 @@ package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 
 import com.cogent.cogentappointment.admin.dto.request.dashboard.DashBoardRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueStatisticsResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueTrendResponseDTO;
 import com.cogent.cogentappointment.admin.repository.custom.AppointmentTransactionDetailRepositoryCustom;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.Cacheable;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -43,7 +42,7 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
     }
 
     @Override
-    public RevenueStatisticsResponseDTO getRevenueStatistics(DashBoardRequestDTO dashBoardRequestDTO, Character filter) {
+    public RevenueTrendResponseDTO getRevenueTrend(DashBoardRequestDTO dashBoardRequestDTO, Character filter) {
 
         final String queryByFilter = getQueryByFilter(dashBoardRequestDTO.getHospitalId(), filter);
 
@@ -52,7 +51,7 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
                 .setParameter(FROM_DATE, dashBoardRequestDTO.getFromDate());
         List<Object[]> objects = query.getResultList();
 
-        RevenueStatisticsResponseDTO responseDTO = revenueStatisticsResponseDTO(objects, filter);
+        RevenueTrendResponseDTO responseDTO = revenueStatisticsResponseDTO(objects, filter);
 
         return responseDTO;
     }

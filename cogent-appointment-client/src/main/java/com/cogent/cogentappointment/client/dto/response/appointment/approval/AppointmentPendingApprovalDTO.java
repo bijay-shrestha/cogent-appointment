@@ -50,4 +50,6 @@ public class AppointmentPendingApprovalDTO implements Serializable {
     private Double appointmentAmount;
 
     private Double refundAmount;
+
+    private Character isSelf;
 }

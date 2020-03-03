@@ -297,7 +297,8 @@ public class AppointmentQuery {
                             " atd.appointmentAmount as appointmentAmount," +                            //[12]
                             " d.name as doctorName," +                                                  //[13]
                             " ard.refundAmount as refundAmount," +                                      //[14]
-                            " a.id as appointmentId" +                                                 //[15]
+                            " a.id as appointmentId," +                                                 //[15]
+                            " a.isSelf as isSelf" +                                                     //[16]
                             " FROM Appointment a" +
                             " LEFT JOIN Patient p ON a.patientId=p.id" +
                             " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +

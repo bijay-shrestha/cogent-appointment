@@ -121,6 +121,7 @@ public class AppointmentUtils {
             final int DOCTOR_NAME_INDEX = 14;
             final int REFUND_AMOUNT_INDEX = 15;
             final int APPOINTMENT_ID_INDEX = 16;
+            final int IS_SELF_INDEX = 17;
 
             Date appointmentDate = (Date) result[APPOINTMENT_DATE_INDEX];
             Date patientDob = (Date) result[PATIENT_DOB_INDEX];
@@ -131,17 +132,15 @@ public class AppointmentUtils {
             Double refundAmount = Objects.isNull(result[REFUND_AMOUNT_INDEX]) ?
                     0D : Double.parseDouble(result[REFUND_AMOUNT_INDEX].toString());
 
-            String registrationNumber = Objects.isNull(result[REGISTRATION_NUMBER_INDEX]) ?
-                    null : result[REGISTRATION_NUMBER_INDEX].toString();
-
             AppointmentPendingApprovalDTO appointmentStatusResponseDTO =
                     AppointmentPendingApprovalDTO.builder()
                             .hospitalName(result[HOSPITAL_NAME_INDEX].toString())
                             .appointmentDate(appointmentDate)
                             .appointmentNumber(result[APPOINTMENT_NUMBER_INDEX].toString())
                             .appointmentTime(result[APPOINTMENT_TIME_INDEX].toString())
-                            .esewaId(result[ESEWA_ID_INDEX].toString())
-                            .registrationNumber(registrationNumber)
+                            .esewaId(Objects.isNull(result[ESEWA_ID_INDEX]) ? null : result[ESEWA_ID_INDEX].toString())
+                            .registrationNumber(Objects.isNull(result[REGISTRATION_NUMBER_INDEX]) ?
+                                    null : result[REGISTRATION_NUMBER_INDEX].toString())
                             .patientName(result[PATIENT_NAME_INDEX].toString())
                             .patientGender((Gender) result[PATIENT_GENDER_INDEX])
                             .patientDob(patientDob)
@@ -155,6 +154,7 @@ public class AppointmentUtils {
                             .doctorName(result[DOCTOR_NAME_INDEX].toString())
                             .refundAmount(refundAmount)
                             .appointmentId(Long.parseLong(result[APPOINTMENT_ID_INDEX].toString()))
+                            .isSelf(Objects.isNull(result[IS_SELF_INDEX]) ? null : result[IS_SELF_INDEX].toString().charAt(0))
                             .build();
 
             appointmentPendingApprovalDTOS.add(appointmentStatusResponseDTO);

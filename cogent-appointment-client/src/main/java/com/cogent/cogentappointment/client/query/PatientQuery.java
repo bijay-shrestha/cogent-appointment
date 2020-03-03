@@ -199,7 +199,8 @@ public class PatientQuery {
                     " p.mobileNumber as mobileNumber," +                        //[2]
                     " p.gender as gender," +                                    //[3]
                     " hpi.address as address," +                                //[4]
-                    QUERY_TO_CALCULATE_PATIENT_AGE +                            //[5]
+                    " a.isSelf as isSelf," +                                    //[5]
+                    QUERY_TO_CALCULATE_PATIENT_AGE +                            //[6]
                     " FROM Appointment a" +
                     " LEFT JOIN Patient p ON p.id=a.patientId.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +

@@ -159,7 +159,7 @@ public class AppointmentQuery {
                             " a.appointmentNumber as appointmentNumber," +                  //[2]
                             " DATE_FORMAT(a.appointmentTime, '%h:%i %p') as appointmentTime," +          //[3]
                             " p.eSewaId as esewaId," +                                      //[4]
-                            " hpi.registrationNumber as registrationNumber," +                //[5]
+                            " hpi.registrationNumber as registrationNumber," +              //[5]
                             " p.name as patientName," +                                     //[6]
                             " p.gender as patientGender," +                                 //[7]
                             " p.dateOfBirth as patientDob," +                               //[8]
@@ -168,9 +168,10 @@ public class AppointmentQuery {
                             " sp.name as specializationName," +                             //[11]
                             " atd.transactionNumber as transactionNumber," +                //[12]
                             " atd.appointmentAmount as appointmentAmount," +                //[13]
-                            " d.name as doctorName," +                                       //[14]
-                            " ard.refundAmount as refundAmount," +                           //[15]
-                            " a.id as appointmentId" +                                        //[16]
+                            " d.name as doctorName," +                                      //[14]
+                            " ard.refundAmount as refundAmount," +                          //[15]
+                            " a.id as appointmentId," +                                     //[16]
+                            " a.isSelf as isSelf" +                                         //[17]
                             " FROM Appointment a" +
                             " LEFT JOIN Patient p ON a.patientId=p.id" +
                             " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
@@ -181,7 +182,6 @@ public class AppointmentQuery {
                             " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
                             " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id"
                             + GET_WHERE_CLAUSE_TO_SEARCH_PENDING_APPOINTMENT_DETAILS(searchRequestDTO);
-
 
     private static String GET_WHERE_CLAUSE_TO_SEARCH_PENDING_APPOINTMENT_DETAILS(
             AppointmentPendingApprovalSearchDTO pendingApprovalSearchDTO) {

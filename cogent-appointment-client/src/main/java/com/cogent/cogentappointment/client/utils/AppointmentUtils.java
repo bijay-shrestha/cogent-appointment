@@ -46,6 +46,7 @@ public class AppointmentUtils {
 
     public static Appointment parseToAppointment(AppointmentRequestDTO requestDTO,
                                                  String appointmentNumber,
+                                                 Character isSelf,
                                                  Patient patient,
                                                  Specialization specialization,
                                                  Doctor doctor,
@@ -59,6 +60,7 @@ public class AppointmentUtils {
         appointment.setAppointmentNumber(appointmentNumber);
         appointment.setCreatedDateNepali(requestDTO.getCreatedDateNepali());
         appointment.setIsFreeFollowUp(requestDTO.getIsFreeFollowUp());
+        appointment.setIsSelf(isSelf);
         parseToAppointment(patient, specialization, doctor, hospital, appointment);
         return appointment;
     }
@@ -293,6 +295,7 @@ public class AppointmentUtils {
             final int DOCTOR_NAME_INDEX = 13;
             final int REFUND_AMOUNT_INDEX = 14;
             final int APPOINTMENT_ID_INDEX = 15;
+            final int IS_SELF_INDEX = 16;
 
             Date appointmentDate = (Date) result[APPOINTMENT_DATE_INDEX];
             Date patientDob = (Date) result[PATIENT_DOB_INDEX];
@@ -326,6 +329,7 @@ public class AppointmentUtils {
                             .doctorName(result[DOCTOR_NAME_INDEX].toString())
                             .refundAmount(refundAmount)
                             .appointmentId(Long.parseLong(result[APPOINTMENT_ID_INDEX].toString()))
+                            .isSelf(Objects.isNull(result[IS_SELF_INDEX]) ? null : result[IS_SELF_INDEX].toString().charAt(0))
                             .build();
 
             appointmentPendingApprovalDTOS.add(appointmentStatusResponseDTO);

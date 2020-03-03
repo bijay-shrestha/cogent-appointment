@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.utils;
 
+import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateDTOForOthers;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateRequestDTO;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.HospitalPatientInfo;
@@ -12,6 +13,7 @@ import java.util.Objects;
 
 import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.constants.StringConstant.OR;
+import static com.cogent.cogentappointment.client.utils.GenderUtils.fetchGenderByCode;
 import static com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils.generateRandomNumber;
 import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toUpperCase;
 
@@ -34,7 +36,6 @@ public class PatientUtils {
         patient.setCogentId(generateRandomNumber(4));
         return patient;
     }
-
 
     public static void updatePatient(PatientUpdateRequestDTO requestDTO,
                                      Patient patient) {
@@ -105,5 +106,18 @@ public class PatientUtils {
         }
 
         return registrationNumber;
+    }
+
+    public static void updateOtherPatient(PatientUpdateDTOForOthers requestDTO,
+                                           HospitalPatientInfo hospitalPatientInfo) {
+
+        hospitalPatientInfo.setEmail(requestDTO.getEmail());
+        hospitalPatientInfo.setAddress(requestDTO.getAddress());
+
+        Patient patient = hospitalPatientInfo.getPatient();
+        patient.setName(toUpperCase(requestDTO.getName()));
+        patient.setMobileNumber(requestDTO.getMobileNumber());
+        patient.setDateOfBirth(requestDTO.getDateOfBirth());
+        patient.setGender(fetchGenderByCode(requestDTO.getGender()));
     }
 }

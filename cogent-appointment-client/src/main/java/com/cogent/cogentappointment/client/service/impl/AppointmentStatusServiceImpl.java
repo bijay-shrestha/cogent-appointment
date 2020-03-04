@@ -15,14 +15,17 @@ import com.cogent.cogentappointment.client.service.AppointmentStatusService;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRoster;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.client.constants.CacheConstant.CACHE_APPOINTMENT_STATUS;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.ALL;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.VACANT;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.NO;
@@ -64,14 +67,18 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
 
 
     @Override
-    public AppointmentStatusDTO fetchAppointmentStatusResponseDTO(
-            com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO requestDTO) {
+    @Cacheable(CACHE_APPOINTMENT_STATUS)
+    public AppointmentStatusDTO fetchAppointmentStatusResponseDTO(Date toDate, Date fromDate, Long specializationId,
+                                                                  Long doctorId, String status) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, APPOINTMENT_STATUS);
 
         Long hospitalId = getLoggedInHospitalId();
+
+        AppointmentStatusRequestDTO requestDTO = parseToAppointmentStatusRequestDTO(toDate, fromDate, specializationId,
+                doctorId, status);
 
         List<DoctorDutyRosterStatusResponseDTO> doctorDutyRosterStatus = fetchDoctorStatus(requestDTO, hospitalId);
 

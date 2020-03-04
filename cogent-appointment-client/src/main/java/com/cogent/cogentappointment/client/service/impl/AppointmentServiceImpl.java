@@ -314,6 +314,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @CacheEvict(value = CACHE_APPOINTMENT_STATUS, allEntries = true)
     public void rescheduleAppointment(AppointmentRescheduleRequestDTO rescheduleRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();

@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.utils;
 
+import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.DoctorTimeSlotResponseDTO;
@@ -14,6 +15,7 @@ import org.joda.time.format.DateTimeFormatter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -149,5 +151,19 @@ public class AppointmentStatusUtils {
                 .doctorInfo(doctorInfo)
                 .build();
     }
+
+    public static AppointmentStatusRequestDTO parseToAppointmentStatusRequestDTO(
+            Date toDate, Date fromDate, Long specializationId,
+            Long doctorId, String status) {
+       return AppointmentStatusRequestDTO.builder()
+                .toDate(toDate)
+                .fromDate(fromDate)
+                .doctorId(doctorId)
+                .specializationId(specializationId)
+                .status(status)
+                .build();
+
+    }
+
 
 }

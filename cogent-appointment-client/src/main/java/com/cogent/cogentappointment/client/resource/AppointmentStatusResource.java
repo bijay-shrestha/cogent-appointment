@@ -1,16 +1,18 @@
 package com.cogent.cogentappointment.client.resource;
 
-import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.service.AppointmentStatusService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
+import java.util.Date;
 
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AppointmentStatusConstant.BASE_API_VALUE;
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AppointmentStatusConstant.FETCH_APPOINTMENT_STATUS;
@@ -22,7 +24,7 @@ import static org.springframework.http.ResponseEntity.ok;
 /**
  * @author smriti ON 16/12/2019
  */
-@RequestMapping(API_V1 + BASE_APPOINTMENT )
+@RequestMapping(API_V1 + BASE_APPOINTMENT)
 @RestController
 @Api(BASE_API_VALUE)
 public class AppointmentStatusResource {
@@ -35,7 +37,16 @@ public class AppointmentStatusResource {
 
     @PutMapping(STATUS)
     @ApiOperation(FETCH_APPOINTMENT_STATUS)
-    public ResponseEntity<?> fetchAppointmentStatus(@Valid @RequestBody AppointmentStatusRequestDTO requestDTO) {
-        return ok(appointmentStatusService.fetchAppointmentStatusResponseDTO(requestDTO));
+    @ApiImplicitParams({@ApiImplicitParam(name = "toDate", value = "dd/MM/yyyy", required = true,
+            dataType = "date", paramType = "query"),
+            @ApiImplicitParam(name = "fromDate", value = "dd/MM/yyyy", required = true, dataType = "date",
+                    paramType = "query")})
+    public ResponseEntity<?> fetchAppointmentStatus(@DateTimeFormat(pattern = "dd/MM/yyyy") Date toDate,
+                                                    @DateTimeFormat(pattern = "dd/MM/yyyy") Date fromDate,
+                                                    @RequestParam("specializationId") Long specializationId,
+                                                    @RequestParam("doctorId") Long doctorId,
+                                                    @RequestParam("status") String status) {
+        return ok(appointmentStatusService.fetchAppointmentStatusResponseDTO(toDate, fromDate, specializationId,
+                doctorId, status));
     }
 }

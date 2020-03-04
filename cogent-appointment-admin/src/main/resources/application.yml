@@ -35,8 +35,8 @@ spring:
       max-request-size: 215000MB
 
   minio:
-#    url: http://10.13.184.14:9000
-    url: http://localhost:9000
+    url: http://10.13.184.14:9000
+#    url: http://localhost:9000
     bucket: cogent
     access-key: minioadmin
     secret-key: minioadmin

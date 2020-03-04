@@ -68,7 +68,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
         ForgotPasswordVerification forgotPasswordVerification = verificationRepository.findByAdminId(admin.getId());
 
-        convertToForgotPasswordVerification(
+        forgotPasswordVerification = convertToForgotPasswordVerification(
                 admin,
                 expirationTimeProperties.getForgotPassword(),
                 isNull(forgotPasswordVerification) ? new ForgotPasswordVerification() : forgotPasswordVerification);
@@ -132,6 +132,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
         if (!admin.getStatus().equals(ACTIVE))
             throw new NoContentFoundException(String.format(ADMIN_NOT_ACTIVE, username), "username/email", username);
     }
-   private Supplier<BadRequestException> RESET_CODE_HAS_EXPIRED = () ->
+
+    private Supplier<BadRequestException> RESET_CODE_HAS_EXPIRED = () ->
             new BadRequestException(RESET_CODE_EXPIRED);
 }

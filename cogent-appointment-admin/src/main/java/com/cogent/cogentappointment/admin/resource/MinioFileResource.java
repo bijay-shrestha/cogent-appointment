@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.admin.resource;
 
-import com.cogent.cogentappointment.admin.service.FileService;
 import com.cogent.cogentappointment.admin.service.MinioFileService;
 import com.jlefebure.spring.boot.minio.MinioException;
 import io.minio.messages.Item;
@@ -14,18 +13,19 @@ import java.net.URLConnection;
 import java.util.List;
 
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.FILES;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.MinioFileConstants.BASE_FILE;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.MinioFileConstants.FETCH_FILE;
 
 /**
  * @author smriti ON 12/01/2020
  */
 @RestController
-@RequestMapping(API_V1 + FILES)
-public class FileResource {
+@RequestMapping(API_V1 + BASE_FILE)
+public class MinioFileResource {
 
     private final MinioFileService minioService;
 
-    public FileResource(FileService fileService, MinioFileService minioService) {
+    public MinioFileResource(MinioFileService minioService) {
         this.minioService = minioService;
     }
 
@@ -43,7 +43,7 @@ public class FileResource {
     }
 
     //FOR SUB-DIRECTORY CASE
-    @GetMapping("/{subDirectory}/{object}")
+    @GetMapping(FETCH_FILE)
     public void getObjectWithSubDirectory(@PathVariable("subDirectory") String subDirectory,
                                           @PathVariable("object") String object,
                                           HttpServletResponse response)

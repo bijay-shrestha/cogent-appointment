@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.StringConstant.FORWARD_SLASH;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.FILES;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.MinioFileConstants.BASE_FILE;
 import static com.cogent.cogentappointment.admin.log.constants.FileLog.UPLOADING_FILE_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.admin.log.constants.FileLog.UPLOADING_FILE_PROCESS_STARTED;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
@@ -100,7 +100,7 @@ public class MinioFileServiceImpl implements MinioFileService {
             throw new IllegalStateException("The file cannot be read", e);
         }
 
-        String fileUri = minioStorageConfig.getServerlocation() + API_V1 + FILES + FORWARD_SLASH + path.toString();
+        String fileUri = minioStorageConfig.getServerlocation() + API_V1 + BASE_FILE + FORWARD_SLASH + path.toString();
 
         FileUploadResponseDTO responseDTO = FileUploadResponseDTO.builder()
                 .fileUri(fileUri)

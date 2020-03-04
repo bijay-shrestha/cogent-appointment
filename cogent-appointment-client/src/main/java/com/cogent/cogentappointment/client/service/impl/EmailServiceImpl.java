@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.client.service.impl;
 
-import com.cogent.cogentappointment.client.constants.StatusConstants;
 import com.cogent.cogentappointment.client.constants.StringConstant;
 import com.cogent.cogentappointment.client.dto.request.email.EmailRequestDTO;
 import com.cogent.cogentappointment.client.repository.EmailToSendRepository;
@@ -24,11 +23,13 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.cogent.cogentappointment.client.constants.EmailConstants.Admin.*;
 import static com.cogent.cogentappointment.client.constants.EmailConstants.ForgotPassword.RESET_CODE;
 import static com.cogent.cogentappointment.client.constants.EmailConstants.*;
 import static com.cogent.cogentappointment.client.constants.EmailTemplates.*;
+import static com.cogent.cogentappointment.client.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.SAVING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.SAVING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.client.log.constants.EmailLog.*;
@@ -68,7 +69,7 @@ public class EmailServiceImpl implements EmailService {
         updateEmailToSend(emailToSend);
     }
 
-    public EmailToSend saveEmailToSend(EmailRequestDTO emailRequestDTO) {
+    private EmailToSend saveEmailToSend(EmailRequestDTO emailRequestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, EMAIL_TO_SEND);
@@ -80,7 +81,7 @@ public class EmailServiceImpl implements EmailService {
         return emailToSend;
     }
 
-    public void send(EmailToSend emailToSend) {
+    private void send(EmailToSend emailToSend) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SENDING_EMAIL_PROCESS_STARTED);
@@ -158,7 +159,7 @@ public class EmailServiceImpl implements EmailService {
         final int USERNAME_INDEX = 0;
         final int ADMIN_CONFIRMATION_URL_INDEX = 1;
 
-        String[] paramValues = emailToSend.getParamValue().split(StringConstant.COMMA_SEPARATED);
+        String[] paramValues = emailToSend.getParamValue().split(COMMA_SEPARATED);
 
         model.put(USERNAME, paramValues[USERNAME_INDEX]);
         model.put(ADMIN_CONFIRMATION_URL, paramValues[ADMIN_CONFIRMATION_URL_INDEX]);
@@ -170,7 +171,7 @@ public class EmailServiceImpl implements EmailService {
         final int PASSWORD_INDEX = 1;
         final int REMARKS_INDEX = 2;
 
-        String[] paramValues = emailToSend.getParamValue().split(StringConstant.COMMA_SEPARATED);
+        String[] paramValues = emailToSend.getParamValue().split(COMMA_SEPARATED);
 
         model.put(USERNAME, paramValues[USERNAME_INDEX]);
         model.put(PASSWORD, paramValues[PASSWORD_INDEX]);
@@ -186,10 +187,10 @@ public class EmailServiceImpl implements EmailService {
 
         String param = emailToSend.getParamValue().replaceAll(StringConstant.BRACKET_REGEX, "");
         String[] paramValues = param.split(StringConstant.HYPHEN);
-        String[] updatedValues = paramValues[UPDATED_ADMIN_DETAILS_INDEX].split(StringConstant.COMMA_SEPARATED);
+        String[] updatedValues = paramValues[UPDATED_ADMIN_DETAILS_INDEX].split(COMMA_SEPARATED);
 
-        String[] updatedMacAddress = paramValues[HAS_MAC_BINDING_INDEX].equals(StatusConstants.YES) ?
-                paramValues[MAC_ADDRESS_INDEX].split(StringConstant.COMMA_SEPARATED)
+        String[] updatedMacAddress = Objects.equals(paramValues[HAS_MAC_BINDING_INDEX], "Y") ?
+                paramValues[MAC_ADDRESS_INDEX].split(COMMA_SEPARATED)
                 : new String[]{paramValues[MAC_ADDRESS_INDEX]};
 
         model.put(USERNAME, paramValues[USERNAME_INDEX]);
@@ -202,7 +203,7 @@ public class EmailServiceImpl implements EmailService {
         final int USERNAME_INDEX = 0;
         final int RESET_CODE_INDEX = 1;
 
-        String[] paramValues = emailToSend.getParamValue().split(StringConstant.COMMA_SEPARATED);
+        String[] paramValues = emailToSend.getParamValue().split(COMMA_SEPARATED);
         model.put(USERNAME, paramValues[USERNAME_INDEX]);
         model.put(RESET_CODE, paramValues[RESET_CODE_INDEX]);
     }

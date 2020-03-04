@@ -6,15 +6,21 @@ import com.cogent.cogentappointment.client.dto.response.dashboard.AppointmentCou
 import com.cogent.cogentappointment.client.dto.response.dashboard.RevenueStatisticsResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.RevenueTrendResponseDTO;
 
+import java.util.Date;
+
 /**
  * @author Sauravi Thapa २०/२/१०
  */
 public interface DashboardService {
-    RevenueStatisticsResponseDTO getRevenueStatistics(GenerateRevenueRequestDTO requestDTO);
+    RevenueStatisticsResponseDTO getRevenueStatistics(Date previousToDate,
+                                                      Date previousFromDate,
+                                                      Date currentToDate,
+                                                      Date currentFromDate,
+                                                      Character filterType);
 
-    AppointmentCountResponseDTO countOverallAppointments(DashBoardRequestDTO dashBoardRequestDTO);
+    AppointmentCountResponseDTO countOverallAppointments(Date toDate, Date fromDate);
 
     Long getPatientStatistics();
 
-    RevenueTrendResponseDTO getRevenueTrend(DashBoardRequestDTO dashBoardRequestDTO);
+    RevenueTrendResponseDTO getRevenueTrend(Date toDate, Date fromDate);
 }

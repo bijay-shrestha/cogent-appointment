@@ -30,6 +30,8 @@ import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.Duration;
 import org.joda.time.Minutes;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.client.constants.CacheConstant.*;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AppointmentServiceMessage.APPOINTMENT_EXISTS;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.PatientServiceMessages.DUPLICATE_PATIENT_MESSAGE;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.*;
@@ -149,6 +152,13 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @CacheEvict(value = {CACHE_OVERALL_APPOINTMENTS,
+            CACHE_REVENUE_STATISTICS,
+            CACHE_REVENUE_TREND,
+            CACHE_TODAY_APPOINTMENT_QUEUE,
+            CACHE_TODAY_APPOINTMENT_QUEUE_TIME,
+            CACHE_APPOINTMENT_STATUS
+    }, allEntries = true)
     public AppointmentSuccessResponseDTO saveAppointmentForSelf(AppointmentRequestDTOForSelf requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
@@ -205,6 +215,13 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @CacheEvict(value = {CACHE_OVERALL_APPOINTMENTS,
+            CACHE_REVENUE_STATISTICS,
+            CACHE_REVENUE_TREND,
+            CACHE_TODAY_APPOINTMENT_QUEUE,
+            CACHE_TODAY_APPOINTMENT_QUEUE_TIME,
+            CACHE_APPOINTMENT_STATUS
+    }, allEntries = true)
     public AppointmentSuccessResponseDTO saveAppointmentForOthers(AppointmentRequestDTOForOthers requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
@@ -276,6 +293,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @CacheEvict(value = CACHE_APPOINTMENT_STATUS, allEntries = true)
     public void cancelAppointment(AppointmentCancelRequestDTO cancelRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
@@ -379,6 +397,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @CacheEvict(value = {CACHE_OVERALL_REGISTERED_PATIENTS, CACHE_APPOINTMENT_STATUS}, allEntries = true)
     public void approveAppointment(Long appointmentId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -411,15 +430,15 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<AppointmentQueueDTO> fetchTodayAppointmentQueue(AppointmentQueueRequestDTO appointmentQueueRequestDTO,
+    @Cacheable(CACHE_TODAY_APPOINTMENT_QUEUE)
+    public List<AppointmentQueueDTO> fetchTodayAppointmentQueue(Long doctorId,
                                                                 Pageable pageable) {
-
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_TODAY_QUEUE);
 
         List<AppointmentQueueDTO> appointmentQueue = appointmentRepository.fetchTodayAppointmentQueue(
-                appointmentQueueRequestDTO, getLoggedInHospitalId(), pageable);
+                doctorId, getLoggedInHospitalId(), pageable);
 
         log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_TODAY_QUEUE, getDifferenceBetweenTwoTime(startTime));
 
@@ -427,16 +446,16 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @Cacheable(CACHE_TODAY_APPOINTMENT_QUEUE_TIME)
     public Map<String, List<AppointmentQueueDTO>> fetchTodayAppointmentQueueByTime(
-            AppointmentQueueRequestDTO appointmentQueueRequestDTO,
+            Long doctorId,
             Pageable pageable) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_RESCHEDULE_LOG);
 
         Map<String, List<AppointmentQueueDTO>> responseDTOS =
-                appointmentRepository.fetchTodayAppointmentQueueByTime(appointmentQueueRequestDTO,
-                        getLoggedInHospitalId(), pageable);
+                appointmentRepository.fetchTodayAppointmentQueueByTime(doctorId, getLoggedInHospitalId(), pageable);
 
         log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_RESCHEDULE_LOG, getDifferenceBetweenTwoTime(startTime));
 

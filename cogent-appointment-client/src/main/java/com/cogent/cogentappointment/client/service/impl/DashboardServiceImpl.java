@@ -10,11 +10,14 @@ import com.cogent.cogentappointment.client.repository.AppointmentTransactionDeta
 import com.cogent.cogentappointment.client.repository.PatientRepository;
 import com.cogent.cogentappointment.client.service.DashboardService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.Map;
 
+import static com.cogent.cogentappointment.client.constants.CacheConstant.*;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.client.log.constants.DashboardLog.*;
@@ -49,50 +52,56 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-//    todo:change api signature
-    public RevenueStatisticsResponseDTO getRevenueStatistics(GenerateRevenueRequestDTO requestDTO) {
+    @Cacheable(CACHE_REVENUE_STATISTICS)
+    public RevenueStatisticsResponseDTO getRevenueStatistics(Date previousToDate,
+                                                             Date previousFromDate,
+                                                             Date currentToDate,
+                                                             Date currentFromDate,
+                                                             Character filterType) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_PROCESS_STARTED, REVENUE_GENERATED);
+        log.info(FETCHING_PROCESS_STARTED, REVENUE_STATISTICS);
 
         Long hospitalId = getLoggedInHospitalId();
 
         Double currentTransaction = appointmentTransactionDetailRepository.getRevenueByDates(
-                requestDTO.getCurrentToDate(),
-                requestDTO.getCurrentFromDate(),
+                currentToDate,
+                currentFromDate,
                 hospitalId);
 
         Double previousTransaction = appointmentTransactionDetailRepository.getRevenueByDates(
-                requestDTO.getPreviousToDate(),
-                requestDTO.getPreviousFromDate(),
+                previousToDate,
+                previousFromDate,
                 hospitalId);
 
         RevenueStatisticsResponseDTO responseDTO = parseToGenerateRevenueResponseDTO(currentTransaction,
                 calculatePercenatge(currentTransaction, previousTransaction),
-                requestDTO.getFilterType());
+                filterType);
 
-        log.info(FETCHING_PROCESS_COMPLETED, REVENUE_GENERATED, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_COMPLETED, REVENUE_STATISTICS, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
     }
 
     @Override
-    public AppointmentCountResponseDTO countOverallAppointments(DashBoardRequestDTO dashBoardRequestDTO) {
+    @Cacheable(CACHE_OVERALL_APPOINTMENTS)
+    public AppointmentCountResponseDTO countOverallAppointments(Date toDate, Date fromDate) {
+
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, OVER_ALL_APPOINTMETS);
 
         Long hospitalId = getLoggedInHospitalId();
 
-        Long overAllAppointment = appointmentRepository.countOverAllAppointment(dashBoardRequestDTO, hospitalId);
+        Long overAllAppointment = appointmentRepository.countOverAllAppointment(toDate, fromDate, hospitalId);
 
-        Long newPatient = appointmentRepository.countNewPatientByHospitalId(dashBoardRequestDTO, hospitalId);
+        Long newPatient = appointmentRepository.countNewPatientByHospitalId(toDate, fromDate, hospitalId);
 
         Long registeredPatient = appointmentRepository.countRegisteredPatientByHospitalId(
-                dashBoardRequestDTO, hospitalId);
+                toDate, fromDate, hospitalId);
 
-        Character pillType = dateDifference(dashBoardRequestDTO.getToDate(),
-                dashBoardRequestDTO.getFromDate());
+        Character pillType = dateDifference(toDate,
+                fromDate);
 
         log.info(FETCHING_PROCESS_COMPLETED, OVER_ALL_APPOINTMETS, getDifferenceBetweenTwoTime(startTime));
 
@@ -100,13 +109,14 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
+    @Cacheable(CACHE_OVERALL_REGISTERED_PATIENTS)
     public Long getPatientStatistics() {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        Long hospitalId = getLoggedInHospitalId();
-
         log.info(FETCHING_PROCESS_STARTED, OVER_ALL_REGISTERED_PATIENTS);
+
+        Long hospitalId = getLoggedInHospitalId();
 
         Long resgisteredPatients = patientRepository.countOverallRegisteredPatients(hospitalId);
 
@@ -116,32 +126,34 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    public RevenueTrendResponseDTO getRevenueTrend(DashBoardRequestDTO dashBoardRequestDTO) {
+    @Cacheable(CACHE_REVENUE_TREND)
+    public RevenueTrendResponseDTO getRevenueTrend(Date toDate, Date fromDate) {
+
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_PROCESS_STARTED, REVENUE_STATISTICS);
+        log.info(FETCHING_PROCESS_STARTED, REVENUE_TREND);
 
         Long hospitalId = getLoggedInHospitalId();
 
-        Character filter = dateDifference(dashBoardRequestDTO.getToDate(),
-                dashBoardRequestDTO.getFromDate());
+        Character filter = dateDifference(toDate,
+                fromDate);
 
         RevenueTrendResponseDTO revenueTrendResponseDTO = appointmentTransactionDetailRepository
-                .getRevenueTrend(dashBoardRequestDTO, hospitalId, filter);
+                .getRevenueTrend(toDate, fromDate, hospitalId, filter);
 
         Map<String, String> map = revenueTrendResponseDTO.getData();
 
         if (!isMapContainsEveryField
-                (map, dashBoardRequestDTO.getToDate(), filter)) {
+                (map, toDate, filter)) {
             map = addRemainingFields
                     (revenueTrendResponseDTO.getData(),
-                            dashBoardRequestDTO.getFromDate(),
-                            dashBoardRequestDTO.getToDate(), filter);
+                            fromDate,
+                            toDate, filter);
         }
 
         revenueTrendResponseDTO.setData(map);
 
-        log.info(FETCHING_PROCESS_COMPLETED, REVENUE_STATISTICS, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_COMPLETED, REVENUE_TREND, getDifferenceBetweenTwoTime(startTime));
 
         return revenueTrendResponseDTO;
     }

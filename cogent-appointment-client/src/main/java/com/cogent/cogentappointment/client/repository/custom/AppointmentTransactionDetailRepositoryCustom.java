@@ -16,6 +16,6 @@ public interface AppointmentTransactionDetailRepositoryCustom {
 
     Double getRevenueByDates(Date toDate, Date fromDate, Long hospitalId);
 
-    RevenueTrendResponseDTO getRevenueTrend(DashBoardRequestDTO dashBoardRequestDTO,
+    RevenueTrendResponseDTO getRevenueTrend(Date toDate, Date fromDate,
                                             Long hospitalId, Character filter);
 }

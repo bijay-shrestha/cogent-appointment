@@ -42,14 +42,14 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
     }
 
     @Override
-    public RevenueTrendResponseDTO getRevenueTrend(DashBoardRequestDTO dashBoardRequestDTO,
+    public RevenueTrendResponseDTO getRevenueTrend(Date toDate, Date fromDate,
                                                    Long hospitalId, Character filter) {
 
         final String queryByFilter = getQueryByFilter(filter);
 
         Query query = createQuery.apply(entityManager, queryByFilter)
-                .setParameter(TO_DATE, dashBoardRequestDTO.getToDate())
-                .setParameter(FROM_DATE, dashBoardRequestDTO.getFromDate())
+                .setParameter(TO_DATE, toDate)
+                .setParameter(FROM_DATE, fromDate)
                 .setParameter(HOSPITAL_ID, hospitalId);
         List<Object[]> objects=query.getResultList();
 

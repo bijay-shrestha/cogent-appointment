@@ -1,8 +1,6 @@
 package com.cogent.cogentappointment.client.query;
 
 
-import com.cogent.cogentappointment.client.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
-
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -131,8 +129,8 @@ public class DashBoardQuery {
                     " ORDER BY" +
                     " atd.transactionDate";
 
-    public static Function<AppointmentQueueRequestDTO, String> QUERY_TO_FETCH_TODAY_APPOINTMENT_QUEUE =
-            (searchDTO) ->
+    public static Function<Long, String> QUERY_TO_FETCH_TODAY_APPOINTMENT_QUEUE =
+            (doctorId) ->
                     "SELECT" +
                             " DATE_FORMAT(a.appointmentTime,'%H:%i %p') as appointmentTime," +
                             " d.name as doctorName," +
@@ -152,9 +150,9 @@ public class DashBoardQuery {
                             " LEFT JOIN DoctorAvatar dv ON dv.doctorId.id = d.id" +
                             " LEFT JOIN Specialization s ON s.id = ds.specializationId.id" +
                             " LEFT JOIN Hospital h ON h.id = a.hospitalId.id"
-                            + GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_QUEUE(searchDTO);
+                            + GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_QUEUE(doctorId);
 
-    private static String GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_QUEUE(AppointmentQueueRequestDTO appointmentQueueRequestDTO) {
+    private static String GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_QUEUE(Long doctorId) {
 
         String whereClause = " WHERE " +
                 " s.status='Y' " +
@@ -162,8 +160,8 @@ public class DashBoardQuery {
                 " AND DATE(a.appointmentDate) = CURDATE()" +
                 " AND h.id= :hospitalId";
 
-        if (!Objects.isNull(appointmentQueueRequestDTO.getDoctorId()))
-            whereClause += " AND d.id = " + appointmentQueueRequestDTO.getDoctorId();
+        if (!Objects.isNull(doctorId))
+            whereClause += " AND d.id = " + doctorId;
 
         whereClause += " ORDER BY a.appointmentTime DESC";
 

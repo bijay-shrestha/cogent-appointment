@@ -58,11 +58,11 @@ public interface AppointmentRepositoryCustom {
 
     Long fetchBookedAppointmentCount(Date fromDate, Date toDate, Long doctorId, Long specializationId);
 
-    Long countRegisteredPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO, Long hospitalId);
+    Long countRegisteredPatientByHospitalId(Date toDate, Date fromDate, Long hospitalId);
 
-    Long countNewPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO, Long hospitalId);
+    Long countNewPatientByHospitalId(Date toDate, Date fromDate, Long hospitalId);
 
-    Long countOverAllAppointment(DashBoardRequestDTO dashBoardRequestDTO, Long hospitalId);
+    Long countOverAllAppointment(Date toDate, Date fromDate, Long hospitalId);
 
     AppointmentPendingApprovalResponseDTO searchPendingVisitApprovals(
             AppointmentPendingApprovalSearchDTO searchRequestDTO, Pageable pageable, Long hospitalId);
@@ -81,12 +81,12 @@ public interface AppointmentRepositoryCustom {
     AppointmentLogResponseDTO searchAppointmentLogs(
             AppointmentLogSearchDTO searchRequestDTO, Pageable pageable, Long hospitalId);
 
-    List<AppointmentQueueDTO> fetchTodayAppointmentQueue(AppointmentQueueRequestDTO appointmentQueueRequestDTO,
+    List<AppointmentQueueDTO> fetchTodayAppointmentQueue(Long doctorId,
                                                          Long hospitalId,
                                                          Pageable pageable);
 
     Map<String, List<AppointmentQueueDTO>> fetchTodayAppointmentQueueByTime(
-            AppointmentQueueRequestDTO appointmentQueueRequestDTO,
+            Long doctorId,
             Long hospitalId,
             Pageable pageable);
 }

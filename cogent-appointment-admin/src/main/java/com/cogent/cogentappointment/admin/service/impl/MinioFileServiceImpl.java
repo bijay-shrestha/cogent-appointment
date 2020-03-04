@@ -34,12 +34,12 @@ import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTime
  */
 @Service
 @Slf4j
-public class MinioServiceImpl implements MinioFileService {
+public class MinioFileServiceImpl implements MinioFileService {
 
     private final MinioService minioService;
     private final MinioStorageConfig minioStorageConfig;
 
-    public MinioServiceImpl(MinioService minioService, MinioStorageConfig minioStorageConfig) {
+    public MinioFileServiceImpl(MinioService minioService, MinioStorageConfig minioStorageConfig) {
         this.minioService = minioService;
         this.minioStorageConfig = minioStorageConfig;
     }

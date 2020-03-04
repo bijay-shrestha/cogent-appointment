@@ -393,28 +393,28 @@ Sizes: [
 
 
 																					<div mc:edit="body" style="text-align:left;font-family:Helvetica,Arial,sans-serif;font-size:15px;margin-bottom:0;color:#5F5F5F;line-height:135%;margin-top:30px;">Mac Address :</div>
-																					<ul style="margin-top:10px; padding:0;text-align:left;font-family:Helvetica,Arial,sans-serif;font-size:15px;margin-bottom:0;color:#5F5F5F;">
 
-																						<!--	<li style="Margin:0 0 5px; list-style:disc inside; mso-special-format:bullet;"></li> -->
-
-
-                                                                                        	 <#assign hasMacBinding>${hasMacBinding}</#assign>
-                                                                                                   <#if hasMacBinding=='Y'>
-                                                                                                         Mac Address(s): <br/>
-                                                                                                             <#list updatedMacAddress as macAddress>
-                                                                                                                 <li style="Margin:0 0 5px; list-style:none inside; mso-special-format:bullet;">  ${macAddress_index + 1}. ${macAddress} </li>
-                                                                                                                         <#if macAddress_has_next><br/></#if>
-                                                                                                              </#list>
-                                                                                                                   <#else>
-                                                                                                                        Mac Address(s):
-                                                                                                                          <#list updatedMacAddress as macAddress>
-                                                                                                                            <li style="Margin:0 0 5px; list-style:none inside; mso-special-format:bullet;">    ${macAddress} </li>
-
-                                                                                                                          </#list>
-                                                                                                     </#if>
+                                                                                        <#assign hasMacBinding>${hasMacBinding}</#assign>
+                                                                                        <#if hasMacBinding=='Y'>
+                                                                                            Mac Address(s): <br/>
+                                                                                           <#list ['a', 'b', 'c']>
+                                                                                             <ul>
+                                                                                              <#items as x>
+                                                                                                <li>${x?index}</li>
+                                                                                              </#items>
+                                                                                             </ul>
+                                                                                           </#list>
+                                                                                        <#else>
+                                                                                            Mac Address(s):
+                                                                                            <#list updatedMacAddress as macAddress>
+                                                                                                ${macAddress}
+                                                                                            </#list>
+                                                                                        </#if>
 
 
-																						</ul>
+
+
+
 																				</td>
 																			</tr>
 																		</table>

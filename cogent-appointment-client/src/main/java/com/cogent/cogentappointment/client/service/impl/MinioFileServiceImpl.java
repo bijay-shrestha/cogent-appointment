@@ -7,6 +7,7 @@ import com.jlefebure.spring.boot.minio.MinioException;
 import com.jlefebure.spring.boot.minio.MinioService;
 import io.minio.messages.Item;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.client.constants.StringConstant.FORWARD_SLASH;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.FILE;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.FILES;
 import static com.cogent.cogentappointment.client.log.constants.FileLog.UPLOADING_FILE_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.client.log.constants.FileLog.UPLOADING_FILE_PROCESS_STARTED;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
@@ -91,8 +92,9 @@ public class MinioFileServiceImpl implements MinioFileService {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(UPLOADING_FILE_PROCESS_STARTED);
+        String renamedFileName = renameFile(file.getOriginalFilename());
 
-        Path path = Paths.get(subDirectoryLocation + FORWARD_SLASH + file.getOriginalFilename());
+        Path path = Paths.get(subDirectoryLocation + FORWARD_SLASH + renamedFileName);
         log.info("The designated path is :: {}", path);
         try {
             minioService.upload(path, file.getInputStream(), file.getContentType());
@@ -103,7 +105,7 @@ public class MinioFileServiceImpl implements MinioFileService {
             throw new IllegalStateException("The file cannot be read", e);
         }
 
-        String fileUri = minioStorageConfiguration.getServerlocation() + API_V1 + FILE + FORWARD_SLASH + path.toString();
+        String fileUri = minioStorageConfiguration.getServerlocation() + API_V1 + FILES + FORWARD_SLASH + path.toString();
 
         FileUploadResponseDTO responseDTO = FileUploadResponseDTO.builder()
                 .fileUri(fileUri)
@@ -144,4 +146,12 @@ public class MinioFileServiceImpl implements MinioFileService {
 
         minioService.remove(Paths.get(object));
     }
+
+    private String renameFile(String originalFilename) {
+
+//        String fileName = FilenameUtils.getName(originalFilename);
+        String fileExtension = FilenameUtils.getExtension(originalFilename);
+        return getTimeInMillisecondsFromLocalDate().toString().concat(".").concat(fileExtension);
+    }
+
 }

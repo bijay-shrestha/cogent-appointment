@@ -89,7 +89,7 @@ public class WebResourceKeyConstants {
     //E
 
     //F
-    public static final String FILE = "/files/{subDirectoryLocation}/{filename:.+}";
+    public static final String FILES = "/files";
 
     public interface ForgotPasswordConstants {
         String VERIFY = "/verify";

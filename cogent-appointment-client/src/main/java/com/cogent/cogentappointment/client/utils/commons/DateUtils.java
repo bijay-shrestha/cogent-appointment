@@ -1,7 +1,5 @@
 package com.cogent.cogentappointment.client.utils.commons;
 
-import com.cogent.cogentappointment.client.constants.UtilityConfigConstants;
-
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -12,6 +10,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import static com.cogent.cogentappointment.client.constants.StringConstant.HYPHEN;
+import static com.cogent.cogentappointment.client.constants.UtilityConfigConstants.*;
 import static java.util.Calendar.MONTH;
 import static java.util.Calendar.YEAR;
 
@@ -79,13 +78,15 @@ public class DateUtils {
     }
 
     public static String fetchStartingFiscalYear(int year, int month) {
-        return (month < UtilityConfigConstants.APPLICATION_STARTING_FISCAL_MONTH)
-                ? (year + 1 + UtilityConfigConstants.APPLICATION_STARTING_FISCAL_DAY) : (year + UtilityConfigConstants.APPLICATION_STARTING_FISCAL_DAY);
+        return (month < APPLICATION_STARTING_FISCAL_MONTH)
+                ? (year + 1 + APPLICATION_STARTING_FISCAL_DAY)
+                : (year + APPLICATION_STARTING_FISCAL_DAY);
     }
 
     public static String fetchEndingFiscalYear(int year, int month) {
-        return (month < UtilityConfigConstants.APPLICATION_STARTING_FISCAL_MONTH)
-                ? (year + UtilityConfigConstants.APPLICATION_ENDING_FISCAL_DAY) : (year + 1 + UtilityConfigConstants.APPLICATION_ENDING_FISCAL_DAY);
+        return (month < APPLICATION_STARTING_FISCAL_MONTH)
+                ? (year + APPLICATION_ENDING_FISCAL_DAY)
+                : (year + 1 + APPLICATION_ENDING_FISCAL_DAY);
     }
 
     public static String getTimeIn12HourFormat(Date date) {

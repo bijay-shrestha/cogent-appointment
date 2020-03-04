@@ -31,6 +31,9 @@ public class QualificationAlias extends Auditable<String> implements Serializabl
     @Column(name = "status")
     private Character status;
 
+    @Column(name = "remarks")
+    private String remarks;
+
     @Override
     public String toString() {
         return "QualificationAlias{" +

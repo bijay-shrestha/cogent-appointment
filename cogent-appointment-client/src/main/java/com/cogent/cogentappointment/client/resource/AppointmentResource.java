@@ -1,8 +1,6 @@
 package com.cogent.cogentappointment.client.resource;
 
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.*;
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.cancel.AppointmentCancelRequestDTO;
@@ -22,9 +20,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AppointmentConstant.*;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.AppointmentConstants.*;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.DETAIL;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
@@ -51,10 +48,16 @@ public class AppointmentResource {
     }
 
     /*eSewa*/
-    @PostMapping
+    @PostMapping(SAVE + SELF)
     @ApiOperation(SAVE_OPERATION)
-    public ResponseEntity<?> save(@Valid @RequestBody AppointmentRequestDTO requestDTO) {
-        return created(create(API_V1 + BASE_APPOINTMENT)).body(appointmentService.save(requestDTO));
+    public ResponseEntity<?> saveAppointmentForSelf(@Valid @RequestBody AppointmentRequestDTOForSelf requestDTO) {
+        return created(create(API_V1 + BASE_APPOINTMENT)).body(appointmentService.saveAppointmentForSelf(requestDTO));
+    }
+
+    @PostMapping(SAVE + OTHERS)
+    @ApiOperation(SAVE_OPERATION)
+    public ResponseEntity<?> saveAppointmentForOthers(@Valid @RequestBody AppointmentRequestDTOForOthers requestDTO) {
+        return created(create(API_V1 + BASE_APPOINTMENT)).body(appointmentService.saveAppointmentForOthers(requestDTO));
     }
 
     /*eSewa*/

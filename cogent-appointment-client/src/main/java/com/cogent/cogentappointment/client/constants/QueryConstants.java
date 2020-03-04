@@ -6,6 +6,8 @@ package com.cogent.cogentappointment.client.constants;
 public class QueryConstants {
 
     //A
+    public static final String APPOINTMENT_ID = "appointmentId";
+
     public static final String APPOINTMENT_DATE = "appointmentDate";
     public static final String APPOINTMENT_TIME = "appointmentTime";
     public static final String API_KEY = "apiKey";
@@ -43,6 +45,8 @@ public class QueryConstants {
     public static final String HOSPITAL_ID = "hospitalId";
     public static final String HOSPITAL_CODE = "hospitalCode";
 
+    public static final String HOSPITAL_PATIENT_INFO_ID = "hospitalPatientInfoId";
+
 
     //I
     public static final String ID = "id";
@@ -63,13 +67,11 @@ public class QueryConstants {
 
     //P
     public interface PatientQueryConstants {
-        String ESEWA_ID = "eSewaId";
-        String IS_SELF = "isSelf";
-        String META_INFO = "metaInfo";
-        String STATUS = "status";
+        String PARENT_PATIENT_ID = "parentPatientId";
+        String CHILD_PATIENT_ID = "childPatientId";
+        String HOSPITAL_PATIENT_INFO_ID = "hospitalPatientInfoId";
     }
 
-    public static final String PASSWORD = "password";
     public static final String PATIENT_ID = "patientId";
 
     //Q

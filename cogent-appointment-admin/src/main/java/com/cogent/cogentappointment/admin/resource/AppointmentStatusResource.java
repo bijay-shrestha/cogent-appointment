@@ -22,7 +22,7 @@ import static org.springframework.http.ResponseEntity.ok;
 /**
  * @author smriti ON 16/12/2019
  */
-@RequestMapping(API_V1 + BASE_APPOINTMENT )
+@RequestMapping(API_V1 + BASE_APPOINTMENT)
 @RestController
 @Api(BASE_API_VALUE)
 public class AppointmentStatusResource {

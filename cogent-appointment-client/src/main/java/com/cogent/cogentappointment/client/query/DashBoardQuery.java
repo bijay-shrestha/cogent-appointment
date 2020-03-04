@@ -18,7 +18,7 @@ public class DashBoardQuery {
                     " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
                     " WHERE " +
                     " (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
-                    " AND a.status='A'" +
+                    " AND (a.status='PA' OR a.status= 'A')" +
                     " AND a.hospitalId.id=:hospitalId";
 
     public static String QUERY_TO_OVER_ALL_APPOINTMENTS =
@@ -33,21 +33,21 @@ public class DashBoardQuery {
             "SELECT" +
                     " COUNT(a.id)" +
                     " FROM Appointment a" +
-                    " LEFT JOIN HospitalPatientInfo hpi ON a.patientId.id=hpi.patientId" +
+                    " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =a.patientId.id" +
+                    " AND hpi.hospital.id = a.hospitalId.id" +
                     " WHERE hpi.isRegistered='Y'" +
                     " AND (a.appointmentDate BETWEEN :fromDate AND :toDate)" +
                     " AND a.hospitalId.id=:hospitalId";
-
 
     public static String QUERY_TO_COUNT_NEW_PATIENT_APPOINTMENT =
             "SELECT" +
                     " COUNT(a.id)" +
                     " FROM Appointment a" +
-                    " LEFT JOIN HospitalPatientInfo hpi ON a.patientId.id=hpi.patientId" +
+                    " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =a.patientId.id" +
+                    " AND hpi.hospital.id = a.hospitalId.id" +
                     " WHERE hpi.isRegistered='N'" +
                     " AND (a.appointmentDate BETWEEN :fromDate AND :toDate)" +
                     " AND  a.hospitalId.id=:hospitalId";
-
 
     public static String QUERY_TO_COUNT_OVERALL_REGISTERED_PATIENTS =
             "SELECT" +
@@ -55,7 +55,7 @@ public class DashBoardQuery {
                     " FROM HospitalPatientInfo hpi" +
                     " WHERE " +
                     " hpi.isRegistered='Y'" +
-                    " AND hpi.hospitalId=:hospitalId";
+                    " AND hpi.hospital.id=:hospitalId";
 
     public static String QUERY_TO_FETCH_REVENUE_WEEKLY =
             "SELECT" +
@@ -80,7 +80,7 @@ public class DashBoardQuery {
                     " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
                     " WHERE " +
                     " atd.transactionDate BETWEEN :fromDate AND :toDate" +
-                    " AND a.status='A'" +
+                    " AND (a.status='PA' OR a.status= 'A')" +
                     " AND a.hospitalId.id=:hospitalId" +
                     " GROUP BY atd.transactionDate" +
                     " ORDER BY atd.transactionDate";
@@ -94,7 +94,7 @@ public class DashBoardQuery {
                     " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
                     " WHERE" +
                     " atd.transactionDate BETWEEN :fromDate AND :toDate" +
-                    " AND a.status='A'" +
+                    " AND (a.status='PA' OR a.status= 'A')" +
                     " AND a.hospitalId.id=:hospitalId" +
                     " GROUP BY DATE_FORMAT(atd.transactionDate, '%b,%Y')" +
                     " ORDER BY DATE_FORMAT(atd.transactionDate, '%b,%Y')";
@@ -107,21 +107,29 @@ public class DashBoardQuery {
                     " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
                     " WHERE" +
                     " atd.transactionDate BETWEEN :fromDate AND :toDate" +
-                    " AND a.status='A'" +
+                    " AND (a.status='PA' OR a.status= 'A')" +
                     " AND a.hospitalId.id=:hospitalId" +
                     " GROUP BY atd.transactionDate" +
                     " ORDER BY atd.transactionDate";
 
     public static String QUERY_TO_FETCH_REVENUE_DAILY =
             "SELECT" +
-                    " 'DAILY'," +
+                    " DATE_FORMAT(atd.transactionDate , '%e %b,%Y') As transactionDate," +
                     " COALESCE(SUM(atd.appointmentAmount),0) as revenue" +
-                    " FROM AppointmentTransactionDetail atd" +
-                    " LEFT JOIN Appointment a On a.id=atd.appointment.id" +
-                    " LEFT JOIN Hospital h ON h.id=a.hospitalId.id" +
-                    " WHERE atd.transactionDate BETWEEN :fromDate AND :toDate" +
-                    " AND a.status='A'" +
-                    " AND a.hospitalId.id=:hospitalId";
+                    " FROM" +
+                    " AppointmentTransactionDetail atd" +
+                    " LEFT JOIN Appointment a ON" +
+                    " a.id = atd.appointment.id" +
+                    " LEFT JOIN Hospital h ON" +
+                    " h.id = a.hospitalId.id" +
+                    " WHERE" +
+                    " atd.transactionDate BETWEEN :fromDate AND :toDate" +
+                    " AND (a.status='PA' OR a.status= 'A')" +
+                    " AND a.hospitalId.id =:hospitalId" +
+                    " GROUP BY" +
+                    " atd.transactionDate" +
+                    " ORDER BY" +
+                    " atd.transactionDate";
 
     public static Function<AppointmentQueueRequestDTO, String> QUERY_TO_FETCH_TODAY_APPOINTMENT_QUEUE =
             (searchDTO) ->

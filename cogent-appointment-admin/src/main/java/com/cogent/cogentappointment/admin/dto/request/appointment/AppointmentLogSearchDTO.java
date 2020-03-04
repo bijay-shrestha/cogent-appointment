@@ -33,12 +33,12 @@ public class AppointmentLogSearchDTO implements Serializable {
 
     private Long specializationId;
 
+    /*NEW OR REGISTERED*/
     private Character patientType;
 
-    private Character patientCategory;
+    /*SELF OR OTHERS*/
+    private Character appointmentCategory;
 
     private String patientAddress;
-
-
 
 }

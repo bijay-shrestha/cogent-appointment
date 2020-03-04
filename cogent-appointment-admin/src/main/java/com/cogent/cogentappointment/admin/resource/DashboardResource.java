@@ -40,8 +40,8 @@ public class DashboardResource {
 
     @PutMapping(GENERATE_REVENUE)
     @ApiOperation(GENERATE_REVENUE_OPERATION)
-    public ResponseEntity<?> cancelAppointment(@Valid @RequestBody GenerateRevenueRequestDTO requestDTO) {
-        return ok(dashboardService.getRevenueGeneratedDetail(requestDTO));
+    public ResponseEntity<?> getRevenueStatistics(@Valid @RequestBody GenerateRevenueRequestDTO requestDTO) {
+        return ok(dashboardService.getRevenueStatistics(requestDTO));
     }
 
     @PutMapping(OVER_ALL_APPOINTMENT)
@@ -53,13 +53,13 @@ public class DashboardResource {
     @GetMapping(REGISTERED + COUNT + HOSPITAL_ID_PATH_VARIABLE_BASE)
     @ApiOperation(COUNT_REGISTERED_PATIENTS_OPERATION)
     public ResponseEntity<?> countRegisteredPatients(@PathVariable("hospitalId") Long hospitalId) {
-        return ok(dashboardService.countOverallRegisteredPatients(hospitalId));
+        return ok(dashboardService.getPatientStatistics(hospitalId));
     }
 
     @PutMapping(REVENUE_STATISTICS)
     @ApiOperation(REVENUE_STATISTICS_OPERATION)
-    public ResponseEntity<?> getRevenueStatistics(@Valid @RequestBody DashBoardRequestDTO countRequestDTO) {
-        return ok(dashboardService.getRevenueStatistic(countRequestDTO));
+    public ResponseEntity<?> getRevenueTrend(@Valid @RequestBody DashBoardRequestDTO countRequestDTO) {
+        return ok(dashboardService.getRevenueTrend(countRequestDTO));
     }
 
     @PutMapping(APPOINTMENT_QUEUE)

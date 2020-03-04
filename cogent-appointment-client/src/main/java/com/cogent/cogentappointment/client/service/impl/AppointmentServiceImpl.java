@@ -1,9 +1,6 @@
 package com.cogent.cogentappointment.client.service.impl;
 
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentSearchDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentTransactionRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.*;
 import com.cogent.cogentappointment.client.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentRejectDTO;
@@ -13,7 +10,8 @@ import com.cogent.cogentappointment.client.dto.request.appointment.refund.Appoin
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestByDTO;
+import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestForDTO;
 import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.*;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
@@ -40,9 +38,10 @@ import java.util.*;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AppointmentServiceMessage.APPOINTMENT_EXISTS;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.PatientServiceMessages.DUPLICATE_PATIENT_MESSAGE;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.*;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.APPROVED;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.REFUNDED;
-import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.*;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentReservationLog.APPOINTMENT_RESERVATION_LOG;
@@ -86,6 +85,14 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentFollowUpTrackerService appointmentFollowUpTrackerService;
 
+    private final HospitalPatientInfoService hospitalPatientInfoService;
+
+    private final PatientMetaInfoService patientMetaInfoService;
+
+    private final PatientRelationInfoService patientRelationInfoService;
+
+    private final PatientRelationInfoRepository patientRelationInfoRepository;
+
     public AppointmentServiceImpl(PatientService patientService,
                                   DoctorService doctorService,
                                   SpecializationService specializationService,
@@ -98,7 +105,11 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   AppointmentRescheduleLogRepository appointmentRescheduleLogRepository,
                                   AppointmentFollowUpLogRepository appointmentFollowUpLogRepository,
                                   AppointmentReservationLogRepository appointmentReservationLogRepository,
-                                  AppointmentFollowUpTrackerService appointmentFollowUpTrackerService) {
+                                  AppointmentFollowUpTrackerService appointmentFollowUpTrackerService,
+                                  HospitalPatientInfoService hospitalPatientInfoService,
+                                  PatientMetaInfoService patientMetaInfoService,
+                                  PatientRelationInfoService patientRelationInfoService,
+                                  PatientRelationInfoRepository patientRelationInfoRepository) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -112,6 +123,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.appointmentFollowUpLogRepository = appointmentFollowUpLogRepository;
         this.appointmentReservationLogRepository = appointmentReservationLogRepository;
         this.appointmentFollowUpTrackerService = appointmentFollowUpTrackerService;
+        this.hospitalPatientInfoService = hospitalPatientInfoService;
+        this.patientMetaInfoService = patientMetaInfoService;
+        this.patientRelationInfoService = patientRelationInfoService;
+        this.patientRelationInfoRepository = patientRelationInfoRepository;
     }
 
     @Override
@@ -125,7 +140,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         DoctorDutyRosterTimeResponseDTO doctorDutyRosterInfo = fetchDoctorDutyRosterInfo(
                 requestDTO.getAppointmentDate(), requestDTO.getDoctorId(), requestDTO.getSpecializationId());
 
-        AppointmentCheckAvailabilityResponseDTO responseDTO = fetchAvailableTimeSlots(doctorDutyRosterInfo, requestDTO);
+        AppointmentCheckAvailabilityResponseDTO responseDTO =
+                fetchAvailableTimeSlots(doctorDutyRosterInfo, requestDTO);
 
         log.info(CHECK_AVAILABILITY_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
 
@@ -133,47 +149,111 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentSuccessResponseDTO save(AppointmentRequestDTO appointmentRequestDTO) {
+    public AppointmentSuccessResponseDTO saveAppointmentForSelf(AppointmentRequestDTOForSelf requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, APPOINTMENT);
 
+        AppointmentRequestDTO appointmentInfo = requestDTO.getAppointmentInfo();
+
         Long appointmentCount = appointmentRepository.validateIfAppointmentExists(
-                appointmentRequestDTO.getAppointmentDate(),
-                appointmentRequestDTO.getAppointmentTime(),
-                appointmentRequestDTO.getDoctorId(),
-                appointmentRequestDTO.getSpecializationId()
+                appointmentInfo.getAppointmentDate(),
+                appointmentInfo.getAppointmentTime(),
+                appointmentInfo.getDoctorId(),
+                appointmentInfo.getSpecializationId()
         );
 
-        validateAppointmentExists(appointmentCount, appointmentRequestDTO.getAppointmentTime());
+        validateAppointmentExists(appointmentCount, appointmentInfo.getAppointmentTime());
 
-        Patient patient = fetchPatient(appointmentRequestDTO.getIsNewRegistration(),
-                appointmentRequestDTO.getPatientId(),
-                appointmentRequestDTO.getHospitalId(),
-                appointmentRequestDTO.getPatientInfo()
+        Hospital hospital = fetchHospital(appointmentInfo.getHospitalId());
+
+        Patient patient = fetchPatientForSelf(
+                appointmentInfo.getIsNewRegistration(),
+                appointmentInfo.getPatientId(),
+                hospital,
+                requestDTO.getPatientInfo()
         );
 
         String appointmentNumber = appointmentRepository.generateAppointmentNumber(
-                appointmentRequestDTO.getCreatedDateNepali(),
-                appointmentRequestDTO.getHospitalId()
+                appointmentInfo.getCreatedDateNepali(),
+                appointmentInfo.getHospitalId()
         );
 
         Appointment appointment = parseToAppointment(
-                appointmentRequestDTO, appointmentNumber,
+                requestDTO.getAppointmentInfo(),
+                appointmentNumber,
+                YES,
                 patient,
-                fetchSpecialization(appointmentRequestDTO.getSpecializationId()),
-                fetchDoctor(appointmentRequestDTO.getDoctorId()),
-                fetchHospital(appointmentRequestDTO.getHospitalId())
+                fetchSpecialization(appointmentInfo.getSpecializationId(), appointmentInfo.getHospitalId()),
+                fetchDoctor(appointmentInfo.getDoctorId(), appointmentInfo.getHospitalId()),
+                hospital
         );
 
         save(appointment);
 
-        saveAppointmentTransactionDetail(appointmentRequestDTO.getTransactionInfo(), appointment);
+        saveAppointmentTransactionDetail(requestDTO.getTransactionInfo(), appointment);
 
-        if (appointmentRequestDTO.getIsFreeFollowUp().equals(YES))
+        if (appointmentInfo.getIsFreeFollowUp().equals(YES))
             saveAppointmentFollowUpLog(
-                    appointmentRequestDTO.getParentAppointmentId(), appointment.getId()
+                    appointmentInfo.getParentAppointmentId(), appointment.getId()
+            );
+
+        log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
+
+        return parseToAppointmentSuccessResponseDTO(appointmentNumber);
+    }
+
+    @Override
+    public AppointmentSuccessResponseDTO saveAppointmentForOthers(AppointmentRequestDTOForOthers requestDTO) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SAVING_PROCESS_STARTED, APPOINTMENT);
+
+        AppointmentRequestDTO appointmentInfo = requestDTO.getAppointmentInfo();
+
+        Long appointmentCount = appointmentRepository.validateIfAppointmentExists(
+                appointmentInfo.getAppointmentDate(),
+                appointmentInfo.getAppointmentTime(),
+                appointmentInfo.getDoctorId(),
+                appointmentInfo.getSpecializationId()
+        );
+
+        validateAppointmentExists(appointmentCount, appointmentInfo.getAppointmentTime());
+
+        Hospital hospital = fetchHospital(appointmentInfo.getHospitalId());
+
+        Patient patient = fetchPatientForOthers(
+                appointmentInfo.getIsNewRegistration(),
+                appointmentInfo.getPatientId(),
+                hospital,
+                requestDTO.getRequestBy(),
+                requestDTO.getRequestFor()
+        );
+
+        String appointmentNumber = appointmentRepository.generateAppointmentNumber(
+                appointmentInfo.getCreatedDateNepali(),
+                appointmentInfo.getHospitalId()
+        );
+
+        Appointment appointment = parseToAppointment(
+                appointmentInfo,
+                appointmentNumber,
+                NO,
+                patient,
+                fetchSpecialization(appointmentInfo.getSpecializationId(), appointmentInfo.getHospitalId()),
+                fetchDoctor(appointmentInfo.getDoctorId(), appointmentInfo.getHospitalId()),
+                hospital
+        );
+
+        save(appointment);
+
+        saveAppointmentTransactionDetail(requestDTO.getTransactionInfo(), appointment);
+
+        if (appointmentInfo.getIsFreeFollowUp().equals(YES))
+            saveAppointmentFollowUpLog(
+                    appointmentInfo.getParentAppointmentId(), appointment.getId()
             );
 
         log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
@@ -529,21 +609,85 @@ public class AppointmentServiceImpl implements AppointmentService {
                     convert24HourTo12HourFormat(appointmentTime)));
     }
 
-    private Doctor fetchDoctor(Long doctorId) {
-        return doctorService.fetchActiveDoctorById(doctorId);
+    private Doctor fetchDoctor(Long doctorId, Long hospitalId) {
+        return doctorService.fetchActiveDoctorByIdAndHospitalId(doctorId, hospitalId);
     }
 
-    private Specialization fetchSpecialization(Long specializationId) {
-        return specializationService.fetchActiveSpecializationById(specializationId);
+    private Specialization fetchSpecialization(Long specializationId, Long hospitalId) {
+        return specializationService.fetchActiveSpecializationByIdAndHospitalId(specializationId, hospitalId);
     }
 
-    private Patient fetchPatient(Boolean isNewRegistration,
-                                 Long patientId,
-                                 Long hospitalId,
-                                 PatientRequestDTO patientRequestDTO) {
+    private Patient fetchPatientForSelf(Boolean isNewRegistration,
+                                        Long patientId,
+                                        Hospital hospital,
+                                        PatientRequestByDTO patientRequestDTO) {
 
-        return isNewRegistration ? patientService.save(patientRequestDTO, hospitalId)
-                : patientService.fetchActivePatientById(patientId);
+        Patient patient;
+
+        if (isNewRegistration) {
+            patient = patientService.saveSelfPatient(patientRequestDTO);
+            patientMetaInfoService.savePatientMetaInfo(patient);
+        } else
+            patient = patientService.fetchPatientById(patientId);
+
+        hospitalPatientInfoService.saveHospitalPatientInfoForSelf(
+                hospital, patient,
+                patientRequestDTO.getEmail(),
+                patientRequestDTO.getAddress()
+        );
+
+        return patient;
+    }
+
+    /*CASE 1: BOOK APPOINTMENT FOR SELF AND THEN FOR OTHERS
+ * CASE 2 : BOOK APPOINTMENT FOR OTHERS AND THEN FOR SELF
+ *
+ * FIRST SAVE REQUESTED BY PATIENT INFO IF IT HAS NOT BEEN SAVED (CASE 2)
+ * VALIDATE IF REQUESTED FOR PATIENT INFO EXISTS
+ * IF YES,
+ *      FETCH CORRESPONDING PATIENT RELATION INFO AND SIMPLY CHANGE STATUS AS ACTIVE IF IT IS DELETED
+ *      OTHERWISE THROW PATIENT DUPLICITY EXCEPTION
+ *      (THIS IS NECESSARY BECAUSE USER CAN DELETE 'OTHER' CARD
+ *       AND ENTER SAME INFORMATION (NAME, MOBILE NUMBER, DATE OF BIRTH) AGAIN)
+ * IF NO,
+ *      SAVE CORRESPONDING REQUESTED CHILD PATIENT DETAILS IN
+ *      'Patient', 'PatientMetaInfo' AND 'PatientRelationInfo' ENTITY
+ *      SAVE IN PATIENT RELATION INFO (IF ALREADY SAVED- CHECK STATUS AND SET AS ACTIVE IF IT IS DELETED.)
+ *
+ * SAVE IN HOSPITAL PATIENT INFO IF IT HAS NOT BEEN SAVED PREVIOUSLY IN REQUESTED HOSPITAL
+ * */
+    private Patient fetchPatientForOthers(Boolean isNewRegistration,
+                                          Long patientId,
+                                          Hospital hospital,
+                                          PatientRequestByDTO requestByPatientInfo,
+                                          PatientRequestForDTO requestForPatientInfo) {
+
+        Patient parentPatient;
+        Patient childPatient;
+
+        if (isNewRegistration) {
+            parentPatient = patientService.saveSelfPatient(requestByPatientInfo);
+
+            childPatient = patientService.fetchPatient(requestForPatientInfo);
+
+            if (!Objects.isNull(childPatient)) {
+                validatePatientDuplicity(parentPatient, childPatient, requestForPatientInfo);
+            } else {
+                childPatient = patientService.saveOtherPatient(requestForPatientInfo);
+                patientMetaInfoService.savePatientMetaInfo(childPatient);
+                patientRelationInfoService.savePatientRelationInfo(parentPatient, childPatient);
+            }
+
+        } else
+            childPatient = patientService.fetchPatientById(patientId);
+
+        hospitalPatientInfoService.saveHospitalPatientInfoForOthers(
+                hospital, childPatient,
+                requestForPatientInfo.getEmail(),
+                requestForPatientInfo.getAddress()
+        );
+
+        return childPatient;
     }
 
     private Appointment findPendingAppointmentById(Long appointmentId) {
@@ -621,13 +765,35 @@ public class AppointmentServiceImpl implements AppointmentService {
                     appointment.getPatientId()
             );
 
-            registerPatient(appointment.getPatientId().getId());
+            registerPatient(appointment.getPatientId().getId(), appointment.getHospitalId().getId());
         }
     }
 
-    private void registerPatient(Long patientId) {
-        patientService.registerPatient(patientId);
+    private void registerPatient(Long patientId, Long hospitalId) {
+        patientService.registerPatient(patientId, hospitalId);
     }
 
+    private void validatePatientDuplicity(Patient parentPatient,
+                                          Patient childPatient,
+                                          PatientRequestForDTO requestForPatientInfo) {
+
+        PatientRelationInfo patientRelationInfo =
+                patientRelationInfoRepository.fetchPatientRelationInfo(parentPatient.getId(), childPatient.getId());
+
+        if (!Objects.isNull(patientRelationInfo)) {
+
+            if (patientRelationInfo.getStatus().equals(DELETED))
+                patientRelationInfo.setStatus(ACTIVE);
+            else
+                PATIENT_DUPLICATION_EXCEPTION(requestForPatientInfo.getName(),
+                        requestForPatientInfo.getMobileNumber(), requestForPatientInfo.getDateOfBirth());
+        }
+    }
+
+    private static void PATIENT_DUPLICATION_EXCEPTION(String name, String mobileNumber, Date dateOfBirth) {
+        throw new DataDuplicationException(String.format(DUPLICATE_PATIENT_MESSAGE,
+                name, mobileNumber, utilDateToSqlDate(dateOfBirth))
+        );
+    }
 }
 

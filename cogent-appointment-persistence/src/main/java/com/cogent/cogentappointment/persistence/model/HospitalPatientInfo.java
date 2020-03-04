@@ -12,6 +12,8 @@ import java.io.Serializable;
 
 /**
  * @author smriti ON 10/02/2020
+ * THIS ENTITY IS USED TO DEFINE THE RELATIONSHIP BETWEEN PATIENT AND HOSPITAL
+ * ONE PATIENT CAN VISIT MULTIPLE HOSPITALS
  */
 @Entity
 @Table(name = "hospital_patient_info")
@@ -26,21 +28,25 @@ public class HospitalPatientInfo extends Auditable<String> implements Serializab
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "hospital_id")
-    private Long hospitalId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hospital_id")
+    private Hospital hospital;
 
-    @Column(name = "patient_id")
-    private Long patientId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "patient_id")
+    private Patient patient;
 
-    @Column(name = "is_self")
-    private Character isSelf;
-
+    /* Y - PATIENT IS REGISTERED
+    * N - PATIENT IS NOT REGISTERED
+    * PATIENT IS REGISTERED WHEN HE/SHE CHECKS IN THE HOSPITAL
+    * */
     @Column(name = "is_registered")
     private Character isRegistered;
 
     @Column(name = "hospital_number")
     private String hospitalNumber;
 
+    /*REGISTRATION NUMBER IS GENERATED WHEN HE/SHE CHECKS IN THE HOSPITAL*/
     @Column(name = "registration_number")
     private String registrationNumber;
 
@@ -50,7 +56,10 @@ public class HospitalPatientInfo extends Auditable<String> implements Serializab
     @Column(name = "address")
     private String address;
 
-    /*PATIENT STATUS*/
+    /*PATIENT STATUS
+    * Y = ACTIVE
+    * N = INACTIVE (CAN BE UPDATED BY HOSPITAL ADMIN)
+    * */
     @Column(name = "status")
     private Character status;
 
@@ -61,9 +70,8 @@ public class HospitalPatientInfo extends Auditable<String> implements Serializab
     public String toString() {
         return "HospitalPatientInfo{" +
                 "id=" + id +
-                ", hospitalId=" + hospitalId +
-                ", patientId=" + patientId +
-                ", isSelf=" + isSelf +
+                ", hospital=" + hospital.getName() +
+                ", patient=" + patient.getName() +
                 ", isRegistered=" + isRegistered +
                 ", hospitalNumber=" + hospitalNumber +
                 ", registrationNumber=" + registrationNumber +

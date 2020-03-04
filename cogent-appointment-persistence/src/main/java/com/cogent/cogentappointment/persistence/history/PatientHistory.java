@@ -32,8 +32,7 @@ public class PatientHistory implements Serializable {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "patient_id",
-            foreignKey = @ForeignKey(name = "FK_patient_history_patient"))
+    @JoinColumn(name = "patient_id", foreignKey = @ForeignKey(name = "FK_patient_history_patient"))
     private Patient patient;
 
     @Column(name = "patient_content")

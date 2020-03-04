@@ -33,5 +33,5 @@ public interface SpecializationService {
 
     List<DropDownResponseDTO> fetchSpecializationByHospitalId();
 
-    Specialization fetchActiveSpecializationById(Long specializationId);
+    Specialization fetchActiveSpecializationByIdAndHospitalId(Long specializationId, Long hospitalId);
 }

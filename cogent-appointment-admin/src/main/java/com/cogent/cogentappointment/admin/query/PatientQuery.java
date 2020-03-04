@@ -7,17 +7,53 @@ import org.springframework.util.ObjectUtils;
  * @author smriti ON 16/01/2020
  */
 public class PatientQuery {
+
+    /* AGE CALCULATION:
+        TIMESTAMPDIFF(YEAR, date_of_birth , CURDATE() ) as _year
+        TIMESTAMPDIFF(MONTH, date_of_birth, CURDATE() ) % 12 as _month
+        FLOOR( TIMESTAMPDIFF( DAY, date_of_birth ,  CURDATE()) % 30.4375 ) as _day
+    * */
+    public static String QUERY_TO_CALCULATE_PATIENT_AGE =
+            " CASE" +
+                    " WHEN" +
+                    " (((TIMESTAMPDIFF(YEAR, p.dateOfBirth, CURDATE()))<=0) AND" +
+                    " ((TIMESTAMPDIFF(MONTH, p.dateOfBirth, CURDATE()) % 12)<=0))" +
+                    " THEN" +
+                    " CONCAT((FLOOR(TIMESTAMPDIFF(DAY, p.dateOfBirth, CURDATE()) % 30.4375)), ' days')" +
+                    " WHEN" +
+                    " ((TIMESTAMPDIFF(YEAR, p.dateOfBirth ,CURDATE()))<=0)" +
+                    " THEN" +
+                    " CONCAT(((TIMESTAMPDIFF(MONTH, p.dateOfBirth, CURDATE()) % 12)), ' months')" +
+                    " ELSE" +
+                    " CONCAT(((TIMESTAMPDIFF(YEAR, p.dateOfBirth ,CURDATE()))), ' years')" +
+                    " END AS age";
+
+    public static String QUERY_TO_CALCULATE_PATIENT_AGE_NATIVE =
+            " CASE" +
+                    " WHEN" +
+                    " (((TIMESTAMPDIFF(YEAR, p.date_of_birth, CURDATE()))<=0) AND" +
+                    " ((TIMESTAMPDIFF(MONTH, p.date_of_birth, CURDATE()) % 12)<=0))" +
+                    " THEN" +
+                    " CONCAT((FLOOR(TIMESTAMPDIFF(DAY, p.date_of_birth, CURDATE()) % 30.4375)), ' days')" +
+                    " WHEN" +
+                    " ((TIMESTAMPDIFF(YEAR, p.date_of_birth ,CURDATE()))<=0)" +
+                    " THEN" +
+                    " CONCAT(((TIMESTAMPDIFF(MONTH, p.date_of_birth, CURDATE()) % 12)), ' months')" +
+                    " ELSE" +
+                    " CONCAT(((TIMESTAMPDIFF(YEAR, p.date_of_birth ,CURDATE()))), ' years')" +
+                    " END AS age";
+
     public final static String QUERY_TO_VALIDATE_UPDATED_PATIENT_DUPLICITY =
             "SELECT " +
                     " COUNT(p.id)" +
                     " FROM Patient p" +
-                    " LEFT JOIN HospitalPatientInfo hp ON hp.patientId = p.id" +
+                    " LEFT JOIN HospitalPatientInfo hp ON hp.patient.id = p.id" +
                     " WHERE " +
                     " (p.name =:name" +
                     " AND p.mobileNumber =:mobileNumber" +
-                    " AND p.dateOfBirth =:dateOfBirth" +
-                    " AND p.id !=:id)" +
-                    " AND hp.hospitalId =:hospitalId" +
+                    " AND p.dateOfBirth =:dateOfBirth)" +
+                    " AND p.id !=:id" +
+                    " AND hp.hospital.id =:hospitalId" +
                     " AND hp.status != 'D'";
 
     public static final String QUERY_TO_FETCH_PATIENT_DETAILS_BY_ID =
@@ -34,13 +70,13 @@ public class PatientQuery {
                     " hpi.hospitalNumber as hospitalNumber," +
                     " hpi.email as email," +
                     " hpi.address as address," +
-                    " hpi.isSelf as isSelf," +
                     " hpi.isRegistered as isRegistered," +
-                    " h.id as hospitalId" +
+                    " h.id as hospitalId," +
+                    QUERY_TO_CALCULATE_PATIENT_AGE +
                     " FROM Patient p " +
-                    " LEFT JOIN HospitalPatientInfo hpi On p.id=hpi.patientId" +
-                    " LEFT JOIN Hospital h ON h.id=hpi.hospitalId" +
-                    " WHERE p.id=:id" +
+                    " LEFT JOIN HospitalPatientInfo hpi On p.id=hpi.patient.id" +
+                    " LEFT JOIN Hospital h ON h.id=hpi.hospital.id" +
+                    " WHERE hpi.id=:hospitalPatientInfoId" +
                     " AND hpi.status='Y'";
 
     public static final String QUERY_TO_FETCH_LATEST_REGISTRATION_NUMBER =
@@ -52,9 +88,9 @@ public class PatientQuery {
                     " ORDER BY id DESC" +
                     " LIMIT 1";
 
-    public static String QUERY_TO_FETCH_PATIENT(PatientSearchRequestDTO searchRequestDTO) {
+    public static String QUERY_TO_SEARCH_PATIENT(PatientSearchRequestDTO searchRequestDTO) {
         return "SELECT" +
-                " p.id as id," +
+                " hpi.id as id," +
                 " p.name as name," +                                             //[0]
                 " hpi.address as address," +                                       //[1]
                 " hpi.email as email," +                                           //[2]
@@ -64,10 +100,14 @@ public class PatientQuery {
                 " hpi.status as status," +                                         //[6]
                 " p.dateOfBirth as dateOfBirth," +                               //[7]
                 " hpi.hospitalNumber as hospitalNumber," +                         //[8]
-                " h.name as hospitalName" +                                      //[9]
+                " h.name as hospitalName," +                                        //[9]
+                " a.appointmentDate as appointmentDate," +                         //[10]
+                " DATE_FORMAT(a.appointmentTime ,'%h:%i %p') as appointmentTime," +  //[11]
+                QUERY_TO_CALCULATE_PATIENT_AGE +                                    //[12]
                 " FROM Patient p" +
-                " LEFT JOIN HospitalPatientInfo hpi ON p.id=hpi.patientId" +
-                " LEFT JOIN Hospital h ON h.id=hpi.hospitalId" +
+                " LEFT JOIN Appointment a ON p.id = a.patientId.id" +
+                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
+                " LEFT JOIN Hospital h ON h.id=hpi.hospital.id" +
                 " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id" +
                 GET_WHERE_CLAUSE_FOR_SEARCH_PATIENT(searchRequestDTO);
     }
@@ -92,4 +132,33 @@ public class PatientQuery {
 
         return whereClause;
     }
+
+    public static String QUERY_TO_FETCH_PATIENT_BY_HOSPITAL_PATIENT_INFO_ID =
+            "SELECT" +
+                    " p" +
+                    " FROM" +
+                    " Patient p" +
+                    " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id=p.id" +
+                    " WHERE hpi.id=:hospitalPatientInfoId";
+
+    public static final String QUERY_TO_FETCH_PATIENT_DETAIL_BY_APPOINTMENT_ID =
+            " SELECT " +
+                    " a.appointmentNumber as appointmentNumber," +              //[0]
+                    " p.name as name," +                                        //[1]
+                    " p.mobileNumber as mobileNumber," +                        //[2]
+                    " p.gender as gender," +                                    //[3]
+                    " hpi.address as address," +
+                    " h.name as hospitalName," +
+                    " hpi.isRegistered as patientType," +
+                    " hpi.registrationNumber as registrationNumber," +
+                    " p.eSewaId as eSewaId," +
+                    " atd.transactionNumber as transactionNumber," +
+                    " a.isSelf as isSelf," +
+                    QUERY_TO_CALCULATE_PATIENT_AGE +
+                    " FROM Appointment a" +
+                    " LEFT JOIN Patient p ON p.id=a.patientId.id" +
+                    " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
+                    " LEFT JOIN Hospital h ON h.id=hpi.hospital.id" +
+                    " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id" +
+                    " WHERE a.id =:appointmentId";
 }

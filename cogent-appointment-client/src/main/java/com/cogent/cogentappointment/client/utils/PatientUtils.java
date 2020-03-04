@@ -1,22 +1,20 @@
 package com.cogent.cogentappointment.client.utils;
 
-import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateDTOForOthers;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.patient.PatientMinimalResponseDTO;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.HospitalPatientInfo;
 import com.cogent.cogentappointment.persistence.model.Patient;
 import com.cogent.cogentappointment.persistence.model.PatientMetaInfo;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Date;
 import java.util.Objects;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
-import static com.cogent.cogentappointment.client.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.constants.StringConstant.OR;
+import static com.cogent.cogentappointment.client.utils.GenderUtils.fetchGenderByCode;
+import static com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils.generateRandomNumber;
 import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toUpperCase;
 
 /**
@@ -24,43 +22,20 @@ import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toUpp
  */
 public class PatientUtils {
 
-    public static Patient parseToPatient(PatientRequestDTO requestDTO,
+    public static Patient parseToPatient(String name,
+                                         String mobileNumber,
+                                         Date dateOfBirth,
+                                         String eSewaId,
                                          Gender gender) {
         Patient patient = new Patient();
-        patient.setName(toUpperCase(requestDTO.getName()));
-        patient.setMobileNumber(requestDTO.getMobileNumber());
-        patient.setDateOfBirth(requestDTO.getDateOfBirth());
-        patient.setESewaId(requestDTO.getESewaId());
+        patient.setName(toUpperCase(name));
+        patient.setMobileNumber(mobileNumber);
+        patient.setDateOfBirth(dateOfBirth);
+        patient.setESewaId(eSewaId);
         patient.setGender(gender);
-
+        patient.setCogentId(generateRandomNumber(4));
         return patient;
     }
-
-    public static HospitalPatientInfo parseHospitalPatientInfo(PatientRequestDTO requestDTO,
-                                                               Long patientId,
-                                                               Long hospitalId) {
-        HospitalPatientInfo hospitalPatientInfo = new HospitalPatientInfo();
-        hospitalPatientInfo.setHospitalId(hospitalId);
-        hospitalPatientInfo.setPatientId(patientId);
-        hospitalPatientInfo.setIsSelf(requestDTO.getIsSelf());
-        hospitalPatientInfo.setIsRegistered(NO);
-        hospitalPatientInfo.setEmail(requestDTO.getEmail());
-        hospitalPatientInfo.setAddress(requestDTO.getAddress());
-        hospitalPatientInfo.setStatus(requestDTO.getStatus());
-        return hospitalPatientInfo;
-    }
-
-    public static PatientMetaInfo parseToPatientMetaInfo(Patient patient,
-                                                         String registrationNumber,
-                                                         Character status) {
-        PatientMetaInfo patientMetaInfo = new PatientMetaInfo();
-        patientMetaInfo.setPatient(patient);
-        patientMetaInfo.setMetaInfo(
-                patient.getName() + OR + patient.getMobileNumber() + OR + registrationNumber);
-        patientMetaInfo.setStatus(status);
-        return patientMetaInfo;
-    }
-
 
     public static void updatePatient(PatientUpdateRequestDTO requestDTO,
                                      Patient patient) {
@@ -70,7 +45,7 @@ public class PatientUtils {
         patient.setGender(requestDTO.getGender());
     }
 
-    public static void updateHospitalPatientInfo(PatientUpdateRequestDTO requestDTO,
+    public static HospitalPatientInfo updateHospitalPatientInfo(PatientUpdateRequestDTO requestDTO,
                                                  HospitalPatientInfo hospitalPatientInfo) {
 
         hospitalPatientInfo.setAddress(requestDTO.getAddress());
@@ -78,40 +53,22 @@ public class PatientUtils {
         hospitalPatientInfo.setEmail(requestDTO.getEmail());
         hospitalPatientInfo.setRemarks(requestDTO.getRemarks());
         hospitalPatientInfo.setStatus(requestDTO.getStatus());
+
+        return hospitalPatientInfo;
     }
 
-    public static List<PatientMinimalResponseDTO> parseToPatientMinimalResponseDTO(List<Object[]> results) {
-        return results.stream()
-                .map(parseToPatientMinimalResponseDTO)
-                .collect(Collectors.toList());
-    }
-
-    public static Function<Object[], PatientMinimalResponseDTO> parseToPatientMinimalResponseDTO = object -> {
-
-        final int PATIENT_ID_INDEX = 0;
-        final int NAME_INDEX = 1;
-        final int MOBILE_NUMBER_INDEX = 2;
-        final int GENDER_INDEX = 3;
-
-        //TODO: calculate age
-        return PatientMinimalResponseDTO.builder()
-                .patientId(Long.parseLong(object[PATIENT_ID_INDEX].toString()))
-                .name(object[NAME_INDEX].toString())
-                .mobileNumber(object[MOBILE_NUMBER_INDEX].toString())
-                .gender((Gender) object[GENDER_INDEX])
-                .build();
-    };
-
-    public static void updatePatientMetaInfo(HospitalPatientInfo hospitalPatientInfo,
-                                                        PatientMetaInfo patientMetaInfo,
-                                                        PatientUpdateRequestDTO updateRequestDTO) {
-        patientMetaInfo.setMetaInfo(updateRequestDTO.getName()
+    public static PatientMetaInfo updatePatientMetaInfo(HospitalPatientInfo hospitalPatientInfo,
+                                             PatientMetaInfo patientMetaInfo,
+                                             PatientUpdateRequestDTO updateRequestDTO) {
+        patientMetaInfo.setMetaInfo(toUpperCase(updateRequestDTO.getName())
                 + OR +
                 updateRequestDTO.getMobileNumber()
                 + OR +
                 hospitalPatientInfo.getRegistrationNumber());
         patientMetaInfo.setStatus(updateRequestDTO.getStatus());
         patientMetaInfo.setRemarks(updateRequestDTO.getRemarks());
+
+        return patientMetaInfo;
     }
 
     public static void registerPatientDetails(HospitalPatientInfo hospitalPatientInfo,
@@ -153,5 +110,18 @@ public class PatientUtils {
         }
 
         return registrationNumber;
+    }
+
+    public static void updateOtherPatient(PatientUpdateDTOForOthers requestDTO,
+                                           HospitalPatientInfo hospitalPatientInfo) {
+
+        hospitalPatientInfo.setEmail(requestDTO.getEmail());
+        hospitalPatientInfo.setAddress(requestDTO.getAddress());
+
+        Patient patient = hospitalPatientInfo.getPatient();
+        patient.setName(toUpperCase(requestDTO.getName()));
+        patient.setMobileNumber(requestDTO.getMobileNumber());
+        patient.setDateOfBirth(requestDTO.getDateOfBirth());
+        patient.setGender(fetchGenderByCode(requestDTO.getGender()));
     }
 }

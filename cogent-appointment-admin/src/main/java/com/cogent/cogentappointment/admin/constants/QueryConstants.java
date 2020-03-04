@@ -6,6 +6,7 @@ package com.cogent.cogentappointment.admin.constants;
 public class QueryConstants {
 
     //A
+    public static final String APPOINTMENT_ID = "appointmentId";
 
     //B
 
@@ -28,7 +29,6 @@ public class QueryConstants {
     //F
     public interface AppointmentFollowUpTrackerConstants {
         String PARENT_APPOINTMENT_ID = "parentAppointmentId";
-        String PATIENT_ID = "patientId";
     }
 
 
@@ -38,6 +38,8 @@ public class QueryConstants {
 
     //H
     public static final String HOSPITAL_ID = "hospitalId";
+
+    public static final String HOSPITAL_PATIENT_INFO_ID = "hospitalPatientInfoId";
 
 
     //I
@@ -58,10 +60,6 @@ public class QueryConstants {
     //O
 
     //P
-    public interface PatientQueryConstants {
-        String ESEWA_ID = "eSewaId";
-        String IS_SELF = "isSelf";
-    }
 
     //Q
 

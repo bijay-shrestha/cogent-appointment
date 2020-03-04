@@ -192,7 +192,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
 
                 if (!ObjectUtils.isEmpty(appointmentMatchedWithRoster)) {
 
-                      /*JOIN MATCHED APPOINTMENTS INTO COMMA SEPARATED STRING eg. 10:00-PA, 10:20-PA*/
+                    /*JOIN MATCHED APPOINTMENTS INTO COMMA SEPARATED STRING eg. 10:00-PA, 10:20-PA*/
                     String matchedAppointmentWithStatus =
                             appointmentMatchedWithRoster.stream()
                                     .map(AppointmentStatusResponseDTO::getAppointmentTimeDetails)
@@ -222,7 +222,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
             throw new NoContentFoundException(Appointment.class);
 
         /*FILTER OUT FROM DOCTOR DUTY ROSTERS SUCH THAT IT CONTAINS ONLY THOSE ROSTERS HAVING
-        * APPOINTMENT*/
+         * APPOINTMENT*/
         List<DoctorDutyRosterStatusResponseDTO> rostersWithAppointment = doctorDutyRosterStatus.stream()
                 .filter(doctorDutyRoster -> (appointments.stream()
                         .anyMatch(appointment -> hasAppointment(appointment, doctorDutyRoster)))
@@ -230,7 +230,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
                 .collect(Collectors.toList());
 
         /*ADD TO LIST ONLY IF DOCTOR DAY OFF STATUS IS 'N'
-        * AND APPOINTMENT CONDITION MATCHES*/
+         * AND APPOINTMENT CONDITION MATCHES*/
         for (DoctorDutyRosterStatusResponseDTO doctorDutyRoster : rostersWithAppointment) {
             List<DoctorTimeSlotResponseDTO> doctorTimeSlotResponseDTOS = new ArrayList<>();
 
@@ -270,7 +270,6 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
                 && (appointment.getDoctorId().equals(doctorDutyRosterStatus.getDoctorId()))
                 && (appointment.getSpecializationId().equals(doctorDutyRosterStatus.getSpecializationId()));
     }
-
 
     private static void setTimeSlotForAllAppointmentStatus
             (DoctorDutyRosterStatusResponseDTO doctorDutyRosterStatusResponseDTO,

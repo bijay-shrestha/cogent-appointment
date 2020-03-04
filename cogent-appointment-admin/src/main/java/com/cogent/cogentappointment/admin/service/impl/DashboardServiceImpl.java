@@ -4,14 +4,13 @@ package com.cogent.cogentappointment.admin.service.impl;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.DashBoardRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.GenerateRevenueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.AppointmentCountResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.dashboard.GenerateRevenueResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueStatisticsResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueTrendResponseDTO;
 import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
 import com.cogent.cogentappointment.admin.repository.AppointmentTransactionDetailRepository;
 import com.cogent.cogentappointment.admin.repository.PatientRepository;
 import com.cogent.cogentappointment.admin.service.DashboardService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -51,7 +50,7 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    public GenerateRevenueResponseDTO getRevenueGeneratedDetail(GenerateRevenueRequestDTO requestDTO) {
+    public RevenueStatisticsResponseDTO getRevenueStatistics(GenerateRevenueRequestDTO requestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, REVENUE_GENERATED);
@@ -66,7 +65,7 @@ public class DashboardServiceImpl implements DashboardService {
                 requestDTO.getPreviousFromDate(),
                 requestDTO.getHospitalId());
 
-        GenerateRevenueResponseDTO responseDTO = parseToGenerateRevenueResponseDTO(currentTransaction,
+        RevenueStatisticsResponseDTO responseDTO = parseToGenerateRevenueResponseDTO(currentTransaction,
                 calculatePercenatge(currentTransaction, previousTransaction),
                 requestDTO.getFilterType());
 
@@ -96,7 +95,7 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    public Long countOverallRegisteredPatients(Long hospitalId) {
+    public Long getPatientStatistics(Long hospitalId) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -110,7 +109,7 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    public RevenueStatisticsResponseDTO getRevenueStatistic(DashBoardRequestDTO dashBoardRequestDTO) {
+    public RevenueTrendResponseDTO getRevenueTrend(DashBoardRequestDTO dashBoardRequestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, REVENUE_STATISTICS);
@@ -118,23 +117,23 @@ public class DashboardServiceImpl implements DashboardService {
         Character filter = dateDifference(dashBoardRequestDTO.getToDate(),
                 dashBoardRequestDTO.getFromDate());
 
-        RevenueStatisticsResponseDTO revenueStatisticsResponseDTO = appointmentTransactionDetailRepository
-                .getRevenueStatistics(dashBoardRequestDTO, filter);
+        RevenueTrendResponseDTO revenueTrendResponseDTO = appointmentTransactionDetailRepository
+                .getRevenueTrend(dashBoardRequestDTO, filter);
 
-        Map<String, String> map = revenueStatisticsResponseDTO.getData();
+        Map<String, String> map = revenueTrendResponseDTO.getData();
 
         if (!isMapContainsEveryField
                 (map, dashBoardRequestDTO.getToDate(), filter)) {
             map = addRemainingFields
-                    (revenueStatisticsResponseDTO.getData(),
+                    (revenueTrendResponseDTO.getData(),
                             dashBoardRequestDTO.getFromDate(),
                             dashBoardRequestDTO.getToDate(), filter);
         }
 
-        revenueStatisticsResponseDTO.setData(map);
+        revenueTrendResponseDTO.setData(map);
 
         log.info(FETCHING_PROCESS_COMPLETED, REVENUE_STATISTICS, getDifferenceBetweenTwoTime(startTime));
 
-        return revenueStatisticsResponseDTO;
+        return revenueTrendResponseDTO;
     }
 }

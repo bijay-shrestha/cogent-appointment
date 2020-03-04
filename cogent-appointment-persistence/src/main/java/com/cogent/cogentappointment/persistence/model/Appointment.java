@@ -59,6 +59,7 @@ public class Appointment extends Auditable<String> implements Serializable {
     @Column(name = "created_date_nepali")
     private String createdDateNepali;
 
+    //todo: refactor as check in for approved
     /* PA = PENDING APPROVAL
        A= VISITED AND APPROVED
        R= REJECTED BY HOSPITAL
@@ -79,6 +80,9 @@ public class Appointment extends Auditable<String> implements Serializable {
     @Column(name = "is_free_follow_up")
     private Character isFreeFollowUp;
 
+    @Column(name = "is_self")
+    private Character isSelf;
+
     @Override
     public String toString() {
         return "Appointment{" +
@@ -96,6 +100,7 @@ public class Appointment extends Auditable<String> implements Serializable {
                 ", remarks=" + remarks +
                 ", hospitalId=" + hospitalId +
                 ", isFreeFollowUp=" + isFreeFollowUp +
+                ", isSelf=" + isSelf +
                 '}';
     }
 }

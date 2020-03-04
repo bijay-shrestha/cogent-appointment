@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.request.patient.PatientSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.patient.PatientUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.patient.PatientDetailResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.patient.PatientMinDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.patient.PatientResponseDTO;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
@@ -21,8 +22,10 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Function;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.PatientServiceMessages.DUPLICATE_PATIENT_MESSAGE;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.PatientLog.*;
 import static com.cogent.cogentappointment.admin.utils.PatientUtils.*;
@@ -51,12 +54,12 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public PatientDetailResponseDTO fetchDetailsById(Long id) {
+    public PatientDetailResponseDTO fetchDetailsById(Long hospitalPatientInfoId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, PATIENT);
 
-        PatientDetailResponseDTO responseDTO = patientRepository.fetchDetailsById(id);
+        PatientDetailResponseDTO responseDTO = patientRepository.fetchDetailsById(hospitalPatientInfoId);
 
         log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
@@ -82,21 +85,21 @@ public class PatientServiceImpl implements PatientService {
 
         log.info(UPDATING_PROCESS_STARTED, PATIENT);
 
-        Patient patientToBeUpdated = fetchPatientById(updateRequestDTO.getId());
+        Patient patientToBeUpdated = patientRepository.getPatientByHospitalPatientInfoId(updateRequestDTO.getId());
 
         HospitalPatientInfo hospitalPatientInfoToBeUpdated = hospitalPatientInfoRepository
                 .fetchHospitalPatientInfoByPatientId(updateRequestDTO.getId());
 
-        Long patientCount = patientRepository.validatePatientDuplicity(updateRequestDTO);
+        Long patientCount = patientRepository.validatePatientDuplicity(updateRequestDTO,patientToBeUpdated.getId());
 
         validatePatientDuplicity(patientCount, updateRequestDTO.getName(),
                 updateRequestDTO.getMobileNumber(), updateRequestDTO.getDateOfBirth());
 
-        save(updatePatient(updateRequestDTO, patientToBeUpdated));
+        updatePatient(updateRequestDTO, patientToBeUpdated);
 
         saveHospitalPatientInfo(updateHospitalPatientInfo(updateRequestDTO, hospitalPatientInfoToBeUpdated));
 
-        PatientMetaInfo patientMetaInfoToBeUpdated = patientMetaInfoRepository.fetchByPatientId(updateRequestDTO.getId());
+        PatientMetaInfo patientMetaInfoToBeUpdated = patientMetaInfoRepository.fetchByPatientId(patientToBeUpdated.getId());
 
         savePatientMetaInfo(updatePatientMetaInfo(hospitalPatientInfoToBeUpdated,
                 patientMetaInfoToBeUpdated,
@@ -134,29 +137,45 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public void registerPatient(Long patientId) {
+    public void registerPatient(Long patientId, Long hospitalId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(REGISTERING_PATIENT_PROCESS_STARTED);
 
-        HospitalPatientInfo hospitalPatientInfo = hospitalPatientInfoRepository.findByPatientId(patientId)
-                .orElseThrow(() -> new NoContentFoundException(Patient.class, "patientId", patientId.toString()));
+        HospitalPatientInfo hospitalPatientInfo =
+                hospitalPatientInfoRepository.findByPatientAndHospitalId(patientId, hospitalId)
+                        .orElseThrow(() -> PATIENT_WITH_GIVEN_ID_NOT_FOUND.apply(patientId));
 
-        String latestRegistrationNumber =
-                patientRepository.fetchLatestRegistrationNumber(hospitalPatientInfo.getHospitalId());
+        if (hospitalPatientInfo.getIsRegistered().equals(NO)) {
+            String latestRegistrationNumber =
+                    patientRepository.fetchLatestRegistrationNumber(hospitalPatientInfo.getHospital().getId());
 
-        registerPatientDetails(hospitalPatientInfo, latestRegistrationNumber);
+            registerPatientDetails(hospitalPatientInfo, latestRegistrationNumber);
+
+            PatientMetaInfo patientMetaInfo = patientMetaInfoRepository.fetchByPatientId(patientId);
+            updatePatientMetaInfo(patientMetaInfo, hospitalPatientInfo.getRegistrationNumber());
+        }
 
         log.info(REGISTERING_PATIENT_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
     }
 
-    private Patient fetchPatientById(Long id) {
-        return patientRepository.fetchPatientById(id).orElseThrow(() ->
-                new NoContentFoundException(Patient.class));
+    @Override
+    public PatientMinDetailResponseDTO fetchDetailByAppointmentId(Long appointmentId) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, PATIENT);
+
+        PatientMinDetailResponseDTO patientInfo = patientRepository.fetchDetailByAppointmentId(appointmentId);
+
+        log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
+
+        return patientInfo;
     }
 
-    private Patient save(Patient patient) {
-        return patientRepository.save(patient);
+    private Patient fetchPatientById(Long id) {
+        return patientRepository.fetchPatientById(id)
+                .orElseThrow(() -> PATIENT_WITH_GIVEN_ID_NOT_FOUND.apply(id));
     }
 
     private void savePatientMetaInfo(PatientMetaInfo patientMetaInfo) {
@@ -166,16 +185,18 @@ public class PatientServiceImpl implements PatientService {
     private void validatePatientDuplicity(Long patientCount, String name, String mobileNumber,
                                           Date dateOfBirth) {
 
-        if (patientCount.intValue() > 0)
-            throw new DataDuplicationException(
-                    String.format(DUPLICATE_PATIENT_MESSAGE,
-                            name,
-                            mobileNumber,
-                            utilDateToSqlDate(dateOfBirth)));
+        if (patientCount.intValue() != 0)
+            throw new DataDuplicationException(String.format(DUPLICATE_PATIENT_MESSAGE,
+                    name, mobileNumber, utilDateToSqlDate(dateOfBirth)));
     }
 
-    private HospitalPatientInfo saveHospitalPatientInfo(HospitalPatientInfo hospitalPatientInfo) {
-        return hospitalPatientInfoRepository.save(hospitalPatientInfo);
+    private void saveHospitalPatientInfo(HospitalPatientInfo hospitalPatientInfo) {
+        hospitalPatientInfoRepository.save(hospitalPatientInfo);
     }
+
+    private Function<Long, NoContentFoundException> PATIENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        throw new NoContentFoundException(Patient.class, "patientId", id.toString());
+    };
+
 }
 

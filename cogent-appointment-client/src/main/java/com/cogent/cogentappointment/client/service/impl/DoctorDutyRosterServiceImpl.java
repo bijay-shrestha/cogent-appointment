@@ -89,11 +89,13 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
         validateDoctorDutyRosterCount(requestDTO.getDoctorId(), requestDTO.getSpecializationId(),
                 requestDTO.getFromDate(), requestDTO.getToDate());
 
+        Long hospitalId = getLoggedInHospitalId();
+
         DoctorDutyRoster doctorDutyRoster = parseToDoctorDutyRoster(
                 requestDTO,
-                findDoctorById(requestDTO.getDoctorId()),
-                findSpecializationById(requestDTO.getSpecializationId()),
-                findHospitalById(getLoggedInHospitalId()));
+                findDoctorByIdAndHospitalId(requestDTO.getDoctorId(), hospitalId),
+                fetchSpecializationByIdAndHospitalId(requestDTO.getSpecializationId(), hospitalId),
+                findHospitalById(hospitalId));
 
         save(doctorDutyRoster);
 
@@ -355,13 +357,12 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
             throw new DataDuplicationException(DUPLICATION_MESSAGE);
     }
 
-
-    private Doctor findDoctorById(Long doctorId) {
-        return doctorService.fetchActiveDoctorById(doctorId);
+    private Doctor findDoctorByIdAndHospitalId(Long doctorId, Long hospitalId) {
+        return doctorService.fetchActiveDoctorByIdAndHospitalId(doctorId, hospitalId);
     }
 
-    private Specialization findSpecializationById(Long specializationId) {
-        return specializationService.fetchActiveSpecializationById(specializationId);
+    private Specialization fetchSpecializationByIdAndHospitalId(Long specializationId, Long hospitalId) {
+        return specializationService.fetchActiveSpecializationByIdAndHospitalId(specializationId, hospitalId);
     }
 
     private WeekDays findWeekDaysById(Long weekDaysId) {

@@ -1,7 +1,8 @@
 package com.cogent.cogentappointment.client.service;
 
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRequestDTOForOthers;
+import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRequestDTOForSelf;
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentPendingApprovalSearchDTO;
@@ -36,7 +37,9 @@ public interface AppointmentService {
     /*esewa*/
     AppointmentCheckAvailabilityResponseDTO checkAvailability(AppointmentCheckAvailabilityRequestDTO requestDTO);
 
-    AppointmentSuccessResponseDTO save(AppointmentRequestDTO appointmentRequestDTO);
+    AppointmentSuccessResponseDTO saveAppointmentForSelf(AppointmentRequestDTOForSelf appointmentRequestDTO);
+
+    AppointmentSuccessResponseDTO saveAppointmentForOthers(AppointmentRequestDTOForOthers appointmentRequestDTO);
 
     List<AppointmentMinResponseDTO> fetchPendingAppointments(AppointmentSearchDTO searchDTO);
 

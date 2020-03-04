@@ -10,8 +10,8 @@ public class PatientMetaInfoQuery {
                     " pmi.id as value," +
                     " pmi.metaInfo as label" +
                     " FROM PatientMetaInfo pmi" +
-                    " LEFT JOIN HospitalPatientInfo hpi ON hpi.patientId=pmi.patient.id" +
-                    " WHERE hpi.hospitalId=:hospitalId";
+                    " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id=pmi.patient.id" +
+                    " WHERE hpi.hospital.id=:hospitalId";
 
     public static final String QUERY_TO_FETCH_ACTIVE_PATIENT_META_INFO_FOR_DROP_DOWN =
             SELECT_CLAUSE_TO_FETCH_MIN_PATIENT_META_INFO +

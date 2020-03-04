@@ -102,7 +102,7 @@ public class DoctorServiceImpl implements DoctorService {
 
         saveDoctorAppointmentCharge(doctor, requestDTO.getAppointmentCharge(), requestDTO.getAppointmentFollowUpCharge());
 
-        saveDoctorSpecialization(doctor.getId(), requestDTO.getSpecializationIds());
+        saveDoctorSpecialization(doctor.getId(), requestDTO.getSpecializationIds(), hospitalId);
 
         saveDoctorQualifications(doctor.getId(), requestDTO.getQualificationIds());
 
@@ -145,7 +145,7 @@ public class DoctorServiceImpl implements DoctorService {
                 requestDTO.getDoctorInfo().getAppointmentFollowUpCharge()
         );
 
-        updateDoctorSpecialization(doctor.getId(), requestDTO.getDoctorSpecializationInfo());
+        updateDoctorSpecialization(doctor.getId(), requestDTO.getDoctorSpecializationInfo(), hospitalId);
 
         updateDoctorQualification(doctor.getId(), requestDTO.getDoctorQualificationInfo());
 
@@ -224,12 +224,12 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public Doctor fetchActiveDoctorById(Long id) {
+    public Doctor fetchActiveDoctorByIdAndHospitalId(Long id, Long hospitalId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, DOCTOR);
 
-        Doctor doctor = doctorRepository.findActiveDoctorById(id)
+        Doctor doctor = doctorRepository.fetchActiveDoctorByIdAndHospitalId(id, hospitalId)
                 .orElseThrow(() -> DOCTOR_WITH_GIVEN_ID_NOT_FOUND.apply(id));
 
         log.info(FETCHING_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
@@ -273,15 +273,17 @@ public class DoctorServiceImpl implements DoctorService {
         return hospitalService.fetchActiveHospital(hospitalId);
     }
 
-    private void findSpecializationById(Long specializationId) {
-        specializationService.fetchActiveSpecializationById(specializationId);
+    private void findSpecializationById(Long specializationId, Long hospitalId) {
+        specializationService.fetchActiveSpecializationByIdAndHospitalId(specializationId, hospitalId);
     }
 
     private void fetchQualificationById(Long qualificationId) {
         qualificationService.fetchQualificationById(qualificationId);
     }
 
-    private void saveDoctorSpecialization(Long doctorId, List<Long> specializationIds) {
+    private void saveDoctorSpecialization(Long doctorId, List<Long> specializationIds,
+                                          Long hospitalId) {
+
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, DOCTOR_SPECIALIZATION);
@@ -289,7 +291,7 @@ public class DoctorServiceImpl implements DoctorService {
         List<DoctorSpecialization> doctorSpecializations = specializationIds.stream()
                 .map(specializationId -> {
                     /*VALIDATE IF THE SPECIALIZATION IS ACTIVE*/
-                    findSpecializationById(specializationId);
+                    findSpecializationById(specializationId, hospitalId);
                     return parseToDoctorSpecialization(doctorId, specializationId);
                 }).collect(Collectors.toList());
 
@@ -350,7 +352,8 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     private void updateDoctorSpecialization(Long doctorId,
-                                            List<DoctorSpecializationUpdateDTO> specializationUpdateRequestDTO) {
+                                            List<DoctorSpecializationUpdateDTO> specializationUpdateRequestDTO,
+                                            Long hospitalId) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -359,7 +362,7 @@ public class DoctorServiceImpl implements DoctorService {
         List<DoctorSpecialization> doctorSpecializations = specializationUpdateRequestDTO.stream()
                 .map(requestDTO -> {
                     /*VALIDATE IF THE SPECIALIZATION IS ACTIVE*/
-                    findSpecializationById(requestDTO.getSpecializationId());
+                    findSpecializationById(requestDTO.getSpecializationId(), hospitalId);
 
                     return parseToUpdatedDoctorSpecialization(doctorId, requestDTO);
                 }).collect(Collectors.toList());

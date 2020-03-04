@@ -39,5 +39,7 @@ public class DoctorDutyRosterStatusResponseDTO implements Serializable {
 
     private String fileUri;
 
+    private String patientDetails;
+
     private List<DoctorTimeSlotResponseDTO> doctorTimeSlots;
 }

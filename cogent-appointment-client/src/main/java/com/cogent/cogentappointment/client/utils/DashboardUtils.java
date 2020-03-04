@@ -1,8 +1,8 @@
 package com.cogent.cogentappointment.client.utils;
 
-import com.cogent.cogentappointment.client.dto.response.dashboard.GenerateRevenueResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.dashboard.OverallRegisteredPatientsResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.RevenueStatisticsResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.dashboard.OverallRegisteredPatientsResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.dashboard.RevenueTrendResponseDTO;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -28,24 +28,24 @@ public class DashboardUtils {
         return IntStream.rangeClosed(1, numberOfDays).boxed().collect(Collectors.toList());
     }
 
-    public static GenerateRevenueResponseDTO parseToGenerateRevenueResponseDTO(Double currentTransaction,
-                                                                               Double growthPercent,
-                                                                               Character revenueType) {
-        GenerateRevenueResponseDTO generateRevenueResponseDTO = new GenerateRevenueResponseDTO();
-        generateRevenueResponseDTO.setAmount(currentTransaction);
-        generateRevenueResponseDTO.setGrowthPercent(growthPercent);
-        generateRevenueResponseDTO.setFiscalYear(getFiscalYear());
-        generateRevenueResponseDTO.setFilterType(revenueType);
-
-        return generateRevenueResponseDTO;
-    }
-
-    public static RevenueStatisticsResponseDTO revenueStatisticsResponseDTO(List<Object[]> resultList, Character filter) {
+    public static RevenueStatisticsResponseDTO parseToGenerateRevenueResponseDTO(Double currentTransaction,
+                                                                                 Double growthPercent,
+                                                                                 Character revenueType) {
         RevenueStatisticsResponseDTO revenueStatisticsResponseDTO = new RevenueStatisticsResponseDTO();
-        revenueStatisticsResponseDTO.setData(getMapFromObject(resultList));
-        revenueStatisticsResponseDTO.setFilterType(filter);
+        revenueStatisticsResponseDTO.setAmount(currentTransaction);
+        revenueStatisticsResponseDTO.setGrowthPercent(growthPercent);
+        revenueStatisticsResponseDTO.setFiscalYear(getFiscalYear());
+        revenueStatisticsResponseDTO.setFilterType(revenueType);
 
         return revenueStatisticsResponseDTO;
+    }
+
+    public static RevenueTrendResponseDTO revenueStatisticsResponseDTO(List<Object[]> resultList, Character filter) {
+        RevenueTrendResponseDTO revenueTrendResponseDTO = new RevenueTrendResponseDTO();
+        revenueTrendResponseDTO.setData(getMapFromObject(resultList));
+        revenueTrendResponseDTO.setFilterType(filter);
+
+        return revenueTrendResponseDTO;
     }
 
     public static OverallRegisteredPatientsResponseDTO parseToOverallRegisteredPatientsResponseDTO(Long registeredpatientCount,

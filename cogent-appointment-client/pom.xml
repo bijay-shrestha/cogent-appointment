@@ -104,6 +104,14 @@
             <version>3.5</version>
         </dependency>
 
+        <!--FOR FILE EXTENTIONS-->
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-io -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>1.3.2</version>
+        </dependency>
+
         <!--MODELMAPPER-->
         <dependency>
             <groupId>org.modelmapper.extensions</groupId>

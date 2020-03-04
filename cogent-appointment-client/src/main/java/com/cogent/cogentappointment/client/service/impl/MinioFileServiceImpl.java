@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.client.constants.StringConstant.FORWARD_SLASH;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.FILES;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.MinioFileConstants.BASE_FILE;
 import static com.cogent.cogentappointment.client.log.constants.FileLog.UPLOADING_FILE_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.client.log.constants.FileLog.UPLOADING_FILE_PROCESS_STARTED;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
@@ -92,6 +92,7 @@ public class MinioFileServiceImpl implements MinioFileService {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(UPLOADING_FILE_PROCESS_STARTED);
+
         String renamedFileName = renameFile(file.getOriginalFilename());
 
         Path path = Paths.get(subDirectoryLocation + FORWARD_SLASH + renamedFileName);
@@ -105,7 +106,7 @@ public class MinioFileServiceImpl implements MinioFileService {
             throw new IllegalStateException("The file cannot be read", e);
         }
 
-        String fileUri = minioStorageConfiguration.getServerlocation() + API_V1 + FILES + FORWARD_SLASH + path.toString();
+        String fileUri = minioStorageConfiguration.getServerlocation() + API_V1 + BASE_FILE + FORWARD_SLASH + path.toString();
 
         FileUploadResponseDTO responseDTO = FileUploadResponseDTO.builder()
                 .fileUri(fileUri)

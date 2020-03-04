@@ -13,7 +13,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
@@ -171,8 +174,8 @@ public class AdminUtils {
         if (!(updateRequestDTO.getMobileNumber().equalsIgnoreCase(admin.getMobileNumber())))
             params.put("Mobile Number ", updateRequestDTO.getMobileNumber());
 
-//        if (!(updateRequestDTO.getProfileId().equals(admin.getProfile().getId())))
-//            params.put("Profile ", admin.getProfile().getName());
+        if (!(updateRequestDTO.getProfileId().equals(admin.getProfileId().getId())))
+            params.put("Profile ", admin.getProfileId().getName());
 
         if (!(updateRequestDTO.getStatus().equals(admin.getStatus()))) {
             String status = "";

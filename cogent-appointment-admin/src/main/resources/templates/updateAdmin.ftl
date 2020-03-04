@@ -497,27 +497,20 @@ Sizes: [
                                                     <table align="left" border="0" cellpadding="0" cellspacing="0"
                                                            width="100%">
                                                         <tr>
-                                                            <!--
-                                                                The "invisibleIntroduction" is the text used for short preview
-                                                                of the email before the user opens it (50 characters max). Sometimes,
-                                                                you do not want to show this message depending on your design but this
-                                                                text is highly recommended.
 
-                                                                You do not have to worry if it is hidden, the next <td> will automatically
-                                                                center and apply to the width 100% and also shrink to 50% if the first <td>
-                                                                is visible.
-                                                            -->
-                                                            <td align="left" valign="middle" id="invisibleIntroduction"
+                                                            <td align="left" valign="middle"
+                                                                id="invisibleIntroduction"
                                                                 class="flexibleContainerBox"
                                                                 style="display:none !important; mso-hide:all;">
                                                                 <table border="0" cellpadding="0" cellspacing="0"
                                                                        width="100%" style="max-width:100%;">
                                                                     <tr>
                                                                         <td align="left" class="textContent">
-                                                                            <div style="font-family:Helvetica,Arial,sans-serif;font-size:13px;color:#828282;text-align:center;line-height:120%;">
-                                                                                The introduction of your message preview
-                                                                                goes here. Try to make it short.
-                                                                            </div>
+                                                                            <#--<div style="font-family:Helvetica,Arial,sans-serif;font-size:13px;color:#828282;text-align:center;line-height:120%;">-->
+                                                                                <#--The introduction of your message preview-->
+                                                                                <#--goes here. Try to make it short.-->
+                                                                            <#--</div>-->
+                                                                            &nbsp;
                                                                         </td>
                                                                     </tr>
                                                                 </table>
@@ -654,7 +647,7 @@ Sizes: [
                                                                             -->
                                                                             <h3 mc:edit="header"
                                                                                 style="color:#101010;line-height:125%;font-family:Helvetica,Arial,sans-serif;font-size:20px;font-weight:normal;margin-top:0;margin-bottom:10px;text-align:left;">
-                                                                                Dear Mr/Mrs/Miss [username]</h3>
+                                                                                Dear <b>${username}</b>,</h3>
                                                                             <div mc:edit="body"
                                                                                  style="text-align:left;font-family:Helvetica,Arial,sans-serif;font-size:15px;margin-bottom:0;color:#5F5F5F;line-height:135%;">
                                                                                 Your following details has been updated
@@ -663,51 +656,46 @@ Sizes: [
                                                                             <ul style="margin-top:20px; padding:0;text-align:left;font-family:Helvetica,Arial,sans-serif;font-size:15px;margin-bottom:0;color:#5F5F5F;">
 
 
-                                                                                <li style="Margin:0 0 5px; list-style:none inside; mso-special-format:bullet;">
-                                                                                    <span style="font-weight:bold;">Name :</span>
-                                                                                    [Item one]
-                                                                                </li>
-                                                                                <li style="Margin:0 0 5px; list-style:none inside; mso-special-format:bullet;">
-                                                                                    <span style="font-weight:bold;"> Mobile No :</span>
-                                                                                    [9876234234]
-                                                                                </li>
 
                                                                             <#list updatedData as data>
-                                                                                <li> ${data}</li>
+                                                                                <li style="Margin:0 0 5px; list-style:none inside; mso-special-format:bullet;"> ${data}</li>
                                                                             </#list>
                                                                             </ul>
 
 
-                                                                            <div mc:edit="body"
-                                                                                 style="text-align:left;font-family:Helvetica,Arial,sans-serif;font-size:15px;margin-bottom:0;color:#5F5F5F;line-height:135%;margin-top:30px;">
-                                                                                Mac Address :
-                                                                            </div>
+                                                                            <#--<div mc:edit="body"-->
+                                                                                 <#--style="text-align:left;font-family:Helvetica,Arial,sans-serif;font-size:15px;margin-bottom:0;color:#5F5F5F;line-height:135%;margin-top:30px;">-->
+                                                                                <#--Mac Address :-->
+                                                                            <#--</div>-->
 
-                                                                            <ul style="margin-top:10px; padding:0;text-align:left;font-family:Helvetica,Arial,sans-serif;font-size:15px;margin-bottom:0;color:#5F5F5F;">
-                                                                                <li style="Margin:0 0 5px; list-style:disc inside; mso-special-format:bullet;">
-                                                                                    Item one
+                                                                        <#--<ul style="margin-top:10px; padding:0;text-align:left;font-family:Helvetica,Arial,sans-serif;font-size:15px;margin-bottom:0;color:#5F5F5F;">-->
+                                                                        <#--<li style="Margin:0 0 5px; list-style:disc inside; mso-special-format:bullet;">-->
+                                                                        <#--Item one-->
+                                                                        <#--</li>-->
+                                                                        <#--<li style="Margin:0 0 5px; list-style:disc inside; mso-special-format:bullet;">-->
+                                                                        <#--Item two-->
+                                                                        <#--</li>-->
+
+                                                                        <#--</ul>-->
+
+                                                                            <ul style="margin-top:20px; padding:0;text-align:left;font-family:Helvetica,Arial,sans-serif;font-size:15px;margin-bottom:0;color:#5F5F5F;">
+
+                                                                                <li style="Margin:0 0 5px; list-style:none inside; mso-special-format:none;line-height:24px">
+                                                                                <#assign hasMacBinding>${hasMacBinding}</#assign>
+                                                                                <#if hasMacBinding=='Y'>
+                                                                                   <div style="font-weight:bold;">  Mac Address(s): </div>
+                                                                                    <#list updatedMacAddress as macAddress>
+                                                                                    ${macAddress_index + 1}
+                                                                                        . ${macAddress}<#if macAddress_has_next>
+                                                                                        <br/></#if>
+                                                                                    </#list>
+                                                                                <#else>
+                                                                                    <div style="font-weight:bold;">  Mac Address(s): </div>
+                                                                                    <#list updatedMacAddress as macAddress>
+                                                                                    ${macAddress}
+                                                                                    </#list>
+                                                                                </#if>
                                                                                 </li>
-                                                                                <li style="Margin:0 0 5px; list-style:disc inside; mso-special-format:bullet;">
-                                                                                    Item two
-                                                                                </li>
-
-                                                                            </ul>
-
-                                                                            <ul>
-                                                                            <#assign hasMacBinding>${hasMacBinding}</#assign>
-                                                                            <#if hasMacBinding=='Y'>
-                                                                                Mac Address(s): <br/>
-                                                                                <#list updatedMacAddress as macAddress>
-                                                                                ${macAddress_index + 1}
-                                                                                    . ${macAddress}<#if macAddress_has_next>
-                                                                                    <br/></#if>
-                                                                                </#list>
-                                                                            <#else>
-                                                                                Mac Address(s):
-                                                                                <#list updatedMacAddress as macAddress>
-                                                                                ${macAddress}
-                                                                                </#list>
-                                                                            </#if>
                                                                             </ul>
 
 
@@ -835,7 +823,7 @@ Sizes: [
                                                                             </div>
                                                                             <div style="text-align:center;font-family:Helvetica,Arial,sans-serif;font-size:15px;margin-bottom:0;margin-top:3px;color:#959191;line-height:135%;">
                                                                                 Email:&nbsp;<a
-                                                                                    href="mailto:name@rapidtables.com"
+                                                                                    href="mailto:info@cogenthealth.com.np"
                                                                                     style="border-radius:0;color:#959191">info@cogenthealth.com.np</a>
                                                                             </div>
                                                                         </td>

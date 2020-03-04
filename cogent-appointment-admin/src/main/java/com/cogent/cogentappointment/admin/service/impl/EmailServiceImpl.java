@@ -30,6 +30,7 @@ import java.util.Map;
 
 import static com.cogent.cogentappointment.admin.constants.EmailConstants.*;
 import static com.cogent.cogentappointment.admin.constants.EmailConstants.ForgotPassword.RESET_CODE;
+import static com.cogent.cogentappointment.admin.constants.EmailTemplates.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.SAVING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.SAVING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.admin.log.constants.EmailLog.*;
@@ -92,27 +93,27 @@ public class EmailServiceImpl implements EmailService {
             String html = "";
 
             switch (emailToSend.getTemplateName()) {
-                case EmailTemplates.ADMIN_VERIFICATION: {
+                case ADMIN_VERIFICATION: {
                     parseToAdminVerificationTemplate(emailToSend, model);
-                    html = getFreeMarkerContent(model, EmailTemplates.ADMIN_VERIFICATION_TEMPLATE, html);
+                    html = getFreeMarkerContent(model, ADMIN_VERIFICATION_TEMPLATE, html);
                     break;
                 }
 
-                case EmailTemplates.ADMIN_RESET_PASSWORD: {
+                case ADMIN_RESET_PASSWORD: {
                     parseToResetPasswordTemplate(emailToSend, model);
-                    html = getFreeMarkerContent(model, EmailTemplates.ADMIN_RESET_PASSWORD_TEMPLATE, html);
+                    html = getFreeMarkerContent(model, ADMIN_RESET_PASSWORD_TEMPLATE, html);
                     break;
                 }
 
-                case EmailTemplates.UPDATE_ADMIN: {
+                case UPDATE_ADMIN: {
                     parseToUpdateAdminTemplate(emailToSend, model);
-                    html = getFreeMarkerContent(model, EmailTemplates.UPDATE_ADMIN_TEMPLATE, html);
+                    html = getFreeMarkerContent(model, UPDATE_ADMIN_TEMPLATE, html);
                     break;
                 }
 
-                case EmailTemplates.FORGOT_PASSWORD: {
+                case FORGOT_PASSWORD: {
                     parseToForgotPasswordTemplate(emailToSend, model);
-                    html = getFreeMarkerContent(model, EmailTemplates.FORGOT_PASSWORD_TEMPLATE, html);
+                    html = getFreeMarkerContent(model, FORGOT_PASSWORD_TEMPLATE, html);
                     break;
                 }
 

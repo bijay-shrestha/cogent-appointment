@@ -184,7 +184,7 @@ public class EmailServiceImpl implements EmailService {
         final int HAS_MAC_BINDING_INDEX = 2;
         final int MAC_ADDRESS_INDEX = 3;
 
-        String param = emailToSend.getParamValue().replaceAll(BRACKET_REGEX, "");
+        String param = emailToSend.getParamValue().replaceAll(BRACKET_REGEX, SPACE);
         String[] paramValues = param.split(HYPHEN);
         String[] updatedValues = paramValues[UPDATED_ADMIN_DETAILS_INDEX].split(COMMA_SEPARATED);
 

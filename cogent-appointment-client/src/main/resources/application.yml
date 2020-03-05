@@ -24,7 +24,7 @@ spring:
     deserialization.fail-on-unknown-properties: false
 
   minio:
-    url: http://10.13.184.14:9000
+    url: http://localhost:9000
     bucket: cogent
     access-key: minioadmin
     secret-key: minioadmin

@@ -37,4 +37,6 @@ public class PatientMinDetailResponseDTO implements Serializable {
 
     private String transactionNumber;
 
+    private Double appointmentAmount;
+
 }

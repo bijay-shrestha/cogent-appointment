@@ -1,18 +1,22 @@
 package com.cogent.cogentappointment.client.resource;
 
+import com.cogent.cogentappointment.client.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.GenerateRevenueRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import com.cogent.cogentappointment.client.service.AppointmentService;
 import com.cogent.cogentappointment.client.service.DashboardService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Date;
 
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.DashboardConstant.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
@@ -49,7 +53,7 @@ public class DashboardResource {
         return ok(dashboardService.countOverallAppointments(countRequestDTO));
     }
 
-    @GetMapping(REGISTERED + COUNT )
+    @GetMapping(REGISTERED + COUNT)
     @ApiOperation(COUNT_REGISTERED_PATIENTS_OPERATION)
     public ResponseEntity<?> countRegisteredPatients() {
         return ok(dashboardService.getPatientStatistics());
@@ -77,5 +81,19 @@ public class DashboardResource {
                                                               @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ok().body(appointmentService.fetchTodayAppointmentQueueByTime(appointmentQueueRequestDTO, pageable));
+    }
+
+    @PutMapping(DOCTOR_REVENUE)
+    @ApiOperation(DOCTOR_REVENUE_OPERATION)
+    @ApiImplicitParams({@ApiImplicitParam(name = "toDate", value = "dd/MM/yyyy", required = true, dataType = "date",
+            paramType = "query"),
+            @ApiImplicitParam(name = "fromDate", value = "dd/MM/yyyy", required = true, dataType = "date",
+                    paramType = "query")})
+    public ResponseEntity<?> getDoctorRevenueList(@DateTimeFormat(pattern = "dd/MM/yyyy") Date toDate,
+                                                  @DateTimeFormat(pattern = "dd/MM/yyyy") Date fromDate,
+                                                  @RequestParam("page") int page,
+                                                  @RequestParam("size") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ok(dashboardService.getDoctorRevenueList(toDate,fromDate,pageable));
     }
 }

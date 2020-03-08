@@ -2,11 +2,7 @@ package com.cogent.cogentappointment.client.repository.custom.impl;
 
 import com.cogent.cogentappointment.client.dto.request.patient.PatientMinSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientSearchRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.patient.PatientDetailResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.patient.PatientMinimalResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.patient.PatientResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.patient.PatientSearchResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.patient.*;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.PatientRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Patient;
@@ -20,13 +16,13 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
-import static com.cogent.cogentappointment.client.constants.QueryConstants.PatientQueryConstants.IS_SELF;
+import static com.cogent.cogentappointment.client.constants.QueryConstants.PatientQueryConstants.HOSPITAL_PATIENT_INFO_ID;
+import static com.cogent.cogentappointment.client.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.client.query.DashBoardQuery.QUERY_TO_COUNT_OVERALL_REGISTERED_PATIENTS;
 import static com.cogent.cogentappointment.client.query.PatientQuery.*;
-import static com.cogent.cogentappointment.client.utils.PatientUtils.parseToPatientMinimalResponseDTO;
-import static com.cogent.cogentappointment.client.utils.commons.DateConverterUtils.calculateAge;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
@@ -42,25 +38,16 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
     private EntityManager entityManager;
 
     @Override
-    public Long validatePatientDuplicity(String name, String mobileNumber,
-                                         Date dateOfBirth, Long hospitalId) {
+    public Long validatePatientDuplicity(Long patientId,
+                                         String name,
+                                         String mobileNumber,
+                                         Date dateOfBirth) {
+
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_PATIENT_DUPLICITY)
                 .setParameter(NAME, name)
                 .setParameter(MOBILE_NUMBER, mobileNumber)
                 .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(dateOfBirth))
-                .setParameter(HOSPITAL_ID, hospitalId);
-
-        return (Long) query.getSingleResult();
-    }
-
-    @Override
-    public Long validatePatientDuplicity(PatientUpdateRequestDTO updateRequestDTO, Long hospitalId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_UPDATED_PATIENT_DUPLICITY)
-                .setParameter(NAME, updateRequestDTO.getName())
-                .setParameter(MOBILE_NUMBER, updateRequestDTO.getMobileNumber())
-                .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(updateRequestDTO.getDateOfBirth()))
-                .setParameter(ID, updateRequestDTO.getId())
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(ID, patientId);
 
         return (Long) query.getSingleResult();
     }
@@ -70,54 +57,90 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_DETAILS_FOR_SELF)
                 .setParameter(NAME, searchRequestDTO.getName())
                 .setParameter(MOBILE_NUMBER, searchRequestDTO.getMobileNumber())
-                .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(searchRequestDTO.getDateOfBirth()))
-                .setParameter(HOSPITAL_ID, searchRequestDTO.getHospitalId())
-                .setParameter(IS_SELF, searchRequestDTO.getIsSelf());
+                .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(searchRequestDTO.getDateOfBirth()));
 
         try {
-            PatientDetailResponseDTO detailResponseDTO =
-                    transformQueryToSingleResult(query, PatientDetailResponseDTO.class);
-            detailResponseDTO.setAge(calculateAge(detailResponseDTO.getDateOfBirth()));
-            return detailResponseDTO;
+            return transformQueryToSingleResult(query, PatientDetailResponseDTO.class);
         } catch (NoResultException e) {
             throw new NoContentFoundException(Patient.class, "name", searchRequestDTO.getName());
         }
     }
 
     @Override
-    public List<PatientMinimalResponseDTO> searchForOthers(PatientMinSearchRequestDTO searchRequestDTO,
-                                                           Pageable pageable) {
+    public List<PatientRelationInfoResponseDTO> fetchPatientRelationInfo(
+            PatientMinSearchRequestDTO searchRequestDTO) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_MINIMAL_PATIENT_FOR_OTHERS)
-//                .setParameter(ESEWA_ID, searchRequestDTO.getEsewaId())
-//                .setParameter(IS_SELF, searchRequestDTO.getIsSelf())
-                .setParameter(HOSPITAL_ID, searchRequestDTO.getHospitalId());
+        Query query = entityManager.createQuery(QUERY_TO_FETCH_CHILD_PATIENT_IDS)
+                .setParameter(NAME, searchRequestDTO.getName())
+                .setParameter(MOBILE_NUMBER, searchRequestDTO.getMobileNumber())
+                .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(searchRequestDTO.getDateOfBirth()));
 
-        List<Object[]> results = query.getResultList();
+        List<PatientRelationInfoResponseDTO> results =
+                transformQueryToResultList(query, PatientRelationInfoResponseDTO.class);
+
+        if (results.isEmpty()) throw new NoContentFoundException(Patient.class);
+
+        return results;
+    }
+
+    @Override
+    public PatientResponseDTOForOthers fetchMinPatientInfoForOthers(
+            List<PatientRelationInfoResponseDTO> patientRelationInfo,
+            Pageable pageable) {
+
+        String childPatientIds = patientRelationInfo.stream()
+                .map(info -> info.getChildPatientId().toString())
+                .collect(Collectors.joining(COMMA_SEPARATED));
+
+        return PatientResponseDTOForOthers.builder()
+                .parentPatientId(patientRelationInfo.get(0).getParentPatientId())
+                .patientInfo(fetchPatientInfo(pageable, childPatientIds))
+                .build();
+    }
+
+    private List<PatientMinResponseDTOForOthers> fetchPatientInfo(Pageable pageable,
+                                                                  String childPatientIds) {
+
+
+        Query query = entityManager.createQuery(QUERY_TO_FETCH_MIN_PATIENT_INFO_FOR_OTHERS(childPatientIds));
+
+        List<PatientMinResponseDTOForOthers> patientMinInfo =
+                transformQueryToResultList(query, PatientMinResponseDTOForOthers.class);
 
         Integer totalItems = query.getResultList().size();
 
         addPagination.accept(pageable, query);
 
-        if (results.isEmpty()) throw new NoContentFoundException(Patient.class);
+        if (patientMinInfo.isEmpty()) throw new NoContentFoundException(Patient.class);
 
         else {
-            List<PatientMinimalResponseDTO> responseDTOS = parseToPatientMinimalResponseDTO(results);
-            responseDTOS.get(0).setTotalItems(totalItems);
-            return responseDTOS;
+            patientMinInfo.get(0).setTotalItems(totalItems);
+            return patientMinInfo;
         }
     }
 
     @Override
-    public PatientResponseDTO fetchPatientDetailsById(Long id, Long hospitalId) {
+    public PatientDetailResponseDTO fetchMinPatientDetailsOfOthers(Long hospitalPatientInfoId) {
+        Query query = entityManager.createQuery(QUERY_TO_FETCH_MIN_PATIENT_DETAILS_FOR_OTHERS)
+                .setParameter(HOSPITAL_PATIENT_INFO_ID, hospitalPatientInfoId);
+
+        try {
+            return transformQueryToSingleResult(query, PatientDetailResponseDTO.class);
+        } catch (NoResultException e) {
+            throw new NoContentFoundException(Patient.class, "id", hospitalPatientInfoId.toString());
+        }
+    }
+
+    @Override
+    public PatientResponseDTO fetchPatientDetailsById(Long hospitalPatientInfoId, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_DETAILS_BY_ID)
-                .setParameter(ID, id)
+                .setParameter(HOSPITAL_PATIENT_INFO_ID, hospitalPatientInfoId)
                 .setParameter(HOSPITAL_ID, hospitalId);
 
         try {
             return transformQueryToSingleResult(query, PatientResponseDTO.class);
         } catch (NoResultException e) {
-            throw new NoContentFoundException(Patient.class, "id", id.toString());
+            throw new NoContentFoundException(Patient.class, "id", hospitalPatientInfoId.toString());
         }
     }
 
@@ -128,11 +151,11 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
         Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_PATIENT(searchRequestDTO))
                 .setParameter(HOSPITAL_ID, hospitalId);
 
-        List<PatientSearchResponseDTO> patients = transformQueryToResultList(query, PatientSearchResponseDTO.class);
-
         Integer totalItems = query.getResultList().size();
 
         addPagination.accept(pageable, query);
+
+        List<PatientSearchResponseDTO> patients = transformQueryToResultList(query, PatientSearchResponseDTO.class);
 
         if (patients.isEmpty()) throw new NoContentFoundException(Patient.class);
 
@@ -158,6 +181,41 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
         List results = query.getResultList();
 
         return results.isEmpty() ? null : results.get(0).toString();
+    }
+
+    @Override
+    public Patient fetchPatient(String name, String mobileNumber, Date dateOfBirth) {
+
+        try {
+            return entityManager.createQuery(QUERY_TO_FETCH_PATIENT, Patient.class)
+                    .setParameter(NAME, name)
+                    .setParameter(MOBILE_NUMBER, mobileNumber)
+                    .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(dateOfBirth))
+                    .getSingleResult();
+        } catch (NoResultException ex) {
+            return null;
+        }
+    }
+
+    @Override
+    public PatientMinDetailResponseDTO fetchDetailByAppointmentId(Long appointmentId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_DETAIL_BY_APPOINTMENT_ID)
+                .setParameter(APPOINTMENT_ID, appointmentId);
+
+        try {
+            return transformQueryToSingleResult(query, PatientMinDetailResponseDTO.class);
+        } catch (NoResultException e) {
+            throw new NoContentFoundException(Patient.class, "appointmentId", appointmentId.toString());
+        }
+    }
+
+    @Override
+    public Patient getPatientByHospitalPatientInfoId(Long hospitalPatientInfoId, Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_BY_HOSPITAL_PATIENT_INFO_ID)
+                .setParameter(HOSPITAL_PATIENT_INFO_ID, hospitalPatientInfoId)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        return (Patient) query.getSingleResult();
     }
 
 }

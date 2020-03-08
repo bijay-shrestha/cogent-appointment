@@ -39,8 +39,6 @@ public class AppointmentPendingApprovalDTO implements Serializable {
 
     private Date patientDob;
 
-    private Character isSelf;
-
     private Character isRegistered;
 
     private String mobileNumber;
@@ -54,4 +52,6 @@ public class AppointmentPendingApprovalDTO implements Serializable {
     private Double appointmentAmount;
 
     private Double refundAmount;
+
+    private Character isSelf;
 }

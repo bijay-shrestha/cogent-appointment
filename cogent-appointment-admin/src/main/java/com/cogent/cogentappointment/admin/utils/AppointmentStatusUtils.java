@@ -13,12 +13,12 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.VACANT;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.COMMA_SEPARATED;
-import static com.cogent.cogentappointment.admin.constants.StringConstant.HYPHEN;
-import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.convert12HourTo24HourFormat;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.convert24HourTo12HourFormat;
 
 /**
@@ -90,7 +90,7 @@ public class AppointmentStatusUtils {
             DoctorTimeSlotResponseDTO doctorTimeSlotResponseDTO = new DoctorTimeSlotResponseDTO();
 
             if (!Objects.isNull(matchedAppointmentWithStatus)) {
-                 /*APPOINTMENT TIME - APPOINTMENT STATUS*/
+                /*APPOINTMENT TIME - APPOINTMENT STATUS*/
                 String[] appointmentTime = matchedAppointmentWithStatus.split(COMMA_SEPARATED);
 
                 DateTime finalDateTime = dateTime;
@@ -137,6 +137,7 @@ public class AppointmentStatusUtils {
         responseDTO.setAge(appointmentStatusResponseDTO.getAge());
         responseDTO.setMobileNumber(appointmentStatusResponseDTO.getMobileNumber());
         responseDTO.setGender(appointmentStatusResponseDTO.getGender());
+        responseDTO.setAppointmentId(appointmentStatusResponseDTO.getAppointmentId());
     }
 
     public static AppointmentStatusDTO parseToAppointmentStatusDTO(
@@ -148,5 +149,4 @@ public class AppointmentStatusUtils {
                 .doctorInfo(doctorInfo)
                 .build();
     }
-
 }

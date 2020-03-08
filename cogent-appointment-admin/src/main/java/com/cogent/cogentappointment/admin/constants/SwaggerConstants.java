@@ -74,11 +74,12 @@ public class SwaggerConstants {
 
     //D
     public interface DashboardConstant {
-        String BASE_API_VALUE = "This is Dashboard Resource";
+        String BASE_API_VALUE = "This is Dashboard Resource.";
         String GENERATE_REVENUE_OPERATION = "Fetch revenue generated.";
         String OVER_ALL_APPOINTMENT_OPERATION = "Fetch over all appointments.";
-        String COUNT_REGISTERED_PATIENTS_OPERATION = "Count no. of registered patients";
-        String REVENUE_STATISTICS_OPERATION = "Revenue statistics as per the filter";
+        String COUNT_REGISTERED_PATIENTS_OPERATION = "Count no. of registered patients.";
+        String REVENUE_STATISTICS_OPERATION = "Revenue statistics as per the filter.";
+        String REVENUE_TREND_OPERATION = "Revenue Trend as per the filter.";
     }
 
     public interface DepartmentConstant {
@@ -178,6 +179,7 @@ public class SwaggerConstants {
         String UPDATE_PATIENT_INFO_OPERATION = "Update patient info";
         String SEARCH_OPERATION = "Search Patient Info";
         String FETCH_DETAILS_BY_ID = " Fetch patient(with type 'OTHERS') details by id";
+        String FETCH_PATIENT_MIN_DETAIL_BY_APPOINTMENT_ID = "Fetch min patient detail by appointment id.";
     }
 
     public interface ProfileConstant {
@@ -205,6 +207,10 @@ public class SwaggerConstants {
 
     public interface QualificationAliasConstant {
         String BASE_API_VALUE = "This is Qualification Alias Resource";
+        String SAVE_OPERATION = "Save new Qualification Alias Resource";
+        String UPDATE_OPERATION = "Update existing Qualification Alias Resource";
+        String DELETE_OPERATION = "Set Qualification Alias Resource status as 'D' when deleted";
+        String SEARCH_OPERATION = "Search Qualification Alias Resource according to given request parameters";
         String FETCH_ACTIVE_QUALIFICATION_ALIAS = "Fetch active Qualification Alias like M.D.,M.B.B.S, etc";
     }
 

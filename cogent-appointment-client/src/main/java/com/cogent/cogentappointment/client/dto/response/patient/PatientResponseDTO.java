@@ -42,8 +42,6 @@ public class PatientResponseDTO implements Serializable {
 
     private Date dateOfBirth;
 
-    private Character isSelf;
-
     private Character isRegistered;
 
 }

@@ -27,4 +27,6 @@ public class DoctorTimeSlotResponseDTO implements Serializable {
     private String gender;
 
     private String patientName;
+
+    private Long appointmentId;
 }

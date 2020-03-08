@@ -20,14 +20,14 @@ public class WebResourceKeyConstants {
 
     public interface AppointmentConstants {
         String BASE_APPOINTMENT = "/appointment";
+        String APPOINTMENT_ID_PATH_VARIABLE_BASE = "/{appointmentId}";
+        String APPOINTMENT_RESERVATION_ID_PATH_VARIABLE_BASE = "/{appointmentReservationId}";
         String CHECK_AVAILABILITY = "/checkAvailability";
         String PENDING_APPOINTMENT = "/pending-appointment";
         String CANCEL = "/cancel";
         String RESCHEDULE = "/reschedule";
         String FOLLOW_UP = "/follow-up";
-        String APPOINTMENT_ID_PATH_VARIABLE_BASE = "/{appointmentId}";
         String HISTORY = "/history";
-        String APPOINTMENT_RESERVATION_ID_PATH_VARIABLE_BASE = "/{appointmentReservationId}";
         String PENDING_APPROVAL = "/pending-approval";
         String REFUND = "/refund";
         String APPROVE = "/approve";
@@ -58,12 +58,13 @@ public class WebResourceKeyConstants {
         String REVENUE_STATISTICS = "/revenueStatistics";
         String REGISTERED = "/registeredPatients";
         String COUNT = "/count";
-        String HOSPITAL_ID_PATH_VARIABLE_BASE = "/{hospitalId}";
         String APPOINTMENT_QUEUE = "/today-appointment";
         String APPOINTMENT_QUEUE_BY_TIME = "/today-appointment-timely";
+        String REVENUE_TREND = "/revenueTrend";
     }
 
     public static final String DETAIL = "/detail";
+    public static final String DELETE = "/delete";
 
     public interface DepartmentConstants {
         String BASE_DEPARTMENT = "/department";
@@ -89,7 +90,6 @@ public class WebResourceKeyConstants {
     //E
 
     //F
-    public static final String FILES = "/files";
 
     public interface ForgotPasswordConstants {
         String VERIFY = "/verify";
@@ -122,16 +122,21 @@ public class WebResourceKeyConstants {
     public static final String MIN = "/min";
     public static final String META_INFO = "/metaInfo";
 
+    public interface MinioFileConstants {
+        String BASE_FILE = "/file";
+        String FETCH_FILE = "/{subDirectory}/{object}";
+    }
+
     //N
 
 
     //O
+    public static final String OTHERS = "/others";
 
     //P
     public interface PatientConstant {
         String BASE_PATIENT = "/patient";
-        String SELF = "/self";
-        String OTHERS = "/others";
+        String HOSPITAL_PATIENT_INFO_ID_PATH_VARIABLE_BASE = "/{hospitalPatientInfoId}";
     }
 
     public interface ProfileSetupConstants {
@@ -151,8 +156,10 @@ public class WebResourceKeyConstants {
 
 
     //S
-    public static final String SAVE = "/save";
+    public static final String SAVE = "/saveSelfPatient";
     public static final String SEARCH = "/search";
+
+    public static final String SELF = "/self";
 
     public interface SidebarConstants {
         String BASE_SIDE_BAR = "/sidebar";
@@ -169,6 +176,8 @@ public class WebResourceKeyConstants {
     //T
 
     //U
+    public static final String UPDATE = "/update";
+
     public interface UniversityConstants {
         String BASE_UNIVERSITY = "/university";
     }

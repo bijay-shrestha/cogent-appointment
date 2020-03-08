@@ -21,6 +21,7 @@ import java.util.Date;
 @Builder
 public class PatientUpdateRequestDTO implements Serializable {
 
+//    todo: rename hospitalPatientInfoId
     @NotNull
     private Long id;
 

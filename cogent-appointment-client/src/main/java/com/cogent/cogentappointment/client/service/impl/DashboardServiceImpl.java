@@ -3,8 +3,8 @@ package com.cogent.cogentappointment.client.service.impl;
 import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.GenerateRevenueRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.AppointmentCountResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.dashboard.GenerateRevenueResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.RevenueStatisticsResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.dashboard.RevenueTrendResponseDTO;
 import com.cogent.cogentappointment.client.repository.AppointmentRepository;
 import com.cogent.cogentappointment.client.repository.AppointmentTransactionDetailRepository;
 import com.cogent.cogentappointment.client.repository.PatientRepository;
@@ -49,7 +49,8 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    public GenerateRevenueResponseDTO getRevenueGeneratedDetail(GenerateRevenueRequestDTO requestDTO) {
+//    todo:change api signature
+    public RevenueStatisticsResponseDTO getRevenueStatistics(GenerateRevenueRequestDTO requestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, REVENUE_GENERATED);
@@ -66,7 +67,7 @@ public class DashboardServiceImpl implements DashboardService {
                 requestDTO.getPreviousFromDate(),
                 hospitalId);
 
-        GenerateRevenueResponseDTO responseDTO = parseToGenerateRevenueResponseDTO(currentTransaction,
+        RevenueStatisticsResponseDTO responseDTO = parseToGenerateRevenueResponseDTO(currentTransaction,
                 calculatePercenatge(currentTransaction, previousTransaction),
                 requestDTO.getFilterType());
 
@@ -99,7 +100,7 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    public Long countOverallRegisteredPatients() {
+    public Long getPatientStatistics() {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -115,7 +116,7 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    public RevenueStatisticsResponseDTO getRevenueStatistic(DashBoardRequestDTO dashBoardRequestDTO) {
+    public RevenueTrendResponseDTO getRevenueTrend(DashBoardRequestDTO dashBoardRequestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, REVENUE_STATISTICS);
@@ -125,24 +126,24 @@ public class DashboardServiceImpl implements DashboardService {
         Character filter = dateDifference(dashBoardRequestDTO.getToDate(),
                 dashBoardRequestDTO.getFromDate());
 
-        RevenueStatisticsResponseDTO revenueStatisticsResponseDTO = appointmentTransactionDetailRepository
-                .getRevenueStatistics(dashBoardRequestDTO, hospitalId, filter);
+        RevenueTrendResponseDTO revenueTrendResponseDTO = appointmentTransactionDetailRepository
+                .getRevenueTrend(dashBoardRequestDTO, hospitalId, filter);
 
-        Map<String, String> map = revenueStatisticsResponseDTO.getData();
+        Map<String, String> map = revenueTrendResponseDTO.getData();
 
         if (!isMapContainsEveryField
                 (map, dashBoardRequestDTO.getToDate(), filter)) {
             map = addRemainingFields
-                    (revenueStatisticsResponseDTO.getData(),
+                    (revenueTrendResponseDTO.getData(),
                             dashBoardRequestDTO.getFromDate(),
                             dashBoardRequestDTO.getToDate(), filter);
         }
 
-        revenueStatisticsResponseDTO.setData(map);
+        revenueTrendResponseDTO.setData(map);
 
         log.info(FETCHING_PROCESS_COMPLETED, REVENUE_STATISTICS, getDifferenceBetweenTwoTime(startTime));
 
-        return revenueStatisticsResponseDTO;
+        return revenueTrendResponseDTO;
     }
 
 }

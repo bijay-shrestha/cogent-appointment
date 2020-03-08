@@ -1,23 +1,19 @@
 package com.cogent.cogentappointment.client.dto.request.patient;
 
-import com.cogent.cogentappointment.client.constraintvalidator.Status;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @author smriti ON 16/01/2020
+ * @author smriti on 26/02/20
  */
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class PatientRequestDTO implements Serializable {
+public class PatientRequestByDTO implements Serializable {
 
     @NotNull
     @NotEmpty
@@ -33,19 +29,9 @@ public class PatientRequestDTO implements Serializable {
     @NotNull
     private Date dateOfBirth;
 
-    @Email
     private String email;
 
-    @Status
-    private Character isSelf;
-
-    @NotNull
     private String eSewaId;
 
-    @NotNull
     private String address;
-
-    @NotNull
-    @Status
-    private Character status;
 }

@@ -180,13 +180,14 @@ public class SpecializationServiceImpl implements SpecializationService {
     }
 
     @Override
-    public Specialization fetchActiveSpecializationById(Long specializationId) {
+    public Specialization fetchActiveSpecializationByIdAndHospitalId(Long specializationId,
+                                                                     Long hospitalId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, SPECIALIZATION);
 
         Specialization specialization = specializationRepository
-                .findActiveSpecializationById(specializationId)
+                .findActiveSpecializationByIdAndHospitalId(specializationId, hospitalId)
                 .orElseThrow(() -> SPECIALIZATION_WITH_GIVEN_ID_NOT_FOUND.apply(specializationId));
 
         log.info(FETCHING_PROCESS_COMPLETED, SPECIALIZATION, getDifferenceBetweenTwoTime(startTime));

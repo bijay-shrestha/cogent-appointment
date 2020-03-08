@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.admin.security.filter;
 
 import com.cogent.cogentappointment.admin.security.hmac.AuthHeader;
 import com.cogent.cogentappointment.admin.security.hmac.HMACBuilder;
+import com.cogent.cogentappointment.admin.service.impl.UserDetailsImpl;
 import com.cogent.cogentappointment.admin.service.impl.UserDetailsServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -47,13 +48,20 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
         if (authHeader != null) {
 
-            UserDetails userDetails = userDetailsService.loadUserByUsername(authHeader.getUsername());
+            final HMACBuilder signatureBuilder;
 
-            final HMACBuilder signatureBuilder = new HMACBuilder()
-                    .algorithm(authHeader.getAlgorithm())
-                    .nonce(authHeader.getNonce())
-                    .username(userDetails.getUsername())
-                    .apiKey(authHeader.getApiKey());
+            UserDetailsImpl userDetails = userDetailsService.loadUserByUsername(authHeader.getUsername());
+
+            if (userDetails.getIsCogentAdmin().equals('Y')) {
+                signatureBuilder = new HMACBuilder()
+                        .algorithm(authHeader.getAlgorithm())
+                        .nonce(authHeader.getNonce())
+                        .username(userDetails.getUsername())
+                        .apiKey(authHeader.getApiKey());
+
+            } else {
+                signatureBuilder = null;
+            }
 
             compareSignature(signatureBuilder, authHeader.getDigest());
 
@@ -77,10 +85,6 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
         if (!authHeaderMatcher.matches()) {
             return null;
         }
-
-        String a= authHeaderMatcher.group(1);
-
-
 
         return new AuthHeader(
                 authHeaderMatcher.group(1),

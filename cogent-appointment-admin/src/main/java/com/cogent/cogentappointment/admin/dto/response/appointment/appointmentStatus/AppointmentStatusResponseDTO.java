@@ -32,4 +32,6 @@ public class AppointmentStatusResponseDTO implements Serializable {
     private String gender;
 
     private String patientName;
+
+    private Long appointmentId;
 }

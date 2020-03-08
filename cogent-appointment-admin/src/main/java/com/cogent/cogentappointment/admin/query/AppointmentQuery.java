@@ -12,6 +12,8 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.VACANT;
+import static com.cogent.cogentappointment.admin.query.PatientQuery.QUERY_TO_CALCULATE_PATIENT_AGE;
+import static com.cogent.cogentappointment.admin.query.PatientQuery.QUERY_TO_CALCULATE_PATIENT_AGE_NATIVE;
 
 /**
  * @author smriti on 2019-10-22
@@ -38,41 +40,6 @@ public class AppointmentQuery {
                     " AND a.doctorId.id = :doctorId" +
                     " AND a.specializationId.id = :specializationId";
 
-    /* AGE CALCULATION:
-        TIMESTAMPDIFF(YEAR, date_of_birth , CURDATE() ) as _year
-        TIMESTAMPDIFF(MONTH, date_of_birth, CURDATE() ) % 12 as _month
-        FLOOR( TIMESTAMPDIFF( DAY, date_of_birth ,  CURDATE()) % 30.4375 ) as _day
-    * */
-    private static String QUERY_TO_CALCULATE_PATIENT_AGE =
-            " CASE" +
-                    " WHEN" +
-                    " (((TIMESTAMPDIFF(YEAR, p.dateOfBirth, CURDATE()))<=0) AND" +
-                    " ((TIMESTAMPDIFF(MONTH, p.dateOfBirth, CURDATE()) % 12)<=0))" +
-                    " THEN" +
-                    " CONCAT((FLOOR(TIMESTAMPDIFF(DAY, p.dateOfBirth, CURDATE()) % 30.4375)), ' days')" +
-                    " WHEN" +
-                    " ((TIMESTAMPDIFF(YEAR, p.dateOfBirth ,CURDATE()))<=0)" +
-                    " THEN" +
-                    " CONCAT(((TIMESTAMPDIFF(MONTH, p.dateOfBirth, CURDATE()) % 12)), ' months')" +
-                    " ELSE" +
-                    " CONCAT(((TIMESTAMPDIFF(YEAR, p.dateOfBirth ,CURDATE()))), ' years')" +
-                    " END AS age";
-
-    private static String QUERY_TO_CALCULATE_PATIENT_AGE_NATIVE =
-            " CASE" +
-                    " WHEN" +
-                    " (((TIMESTAMPDIFF(YEAR, p.date_of_birth, CURDATE()))<=0) AND" +
-                    " ((TIMESTAMPDIFF(MONTH, p.date_of_birth, CURDATE()) % 12)<=0))" +
-                    " THEN" +
-                    " CONCAT((FLOOR(TIMESTAMPDIFF(DAY, p.date_of_birth, CURDATE()) % 30.4375)), ' days')" +
-                    " WHEN" +
-                    " ((TIMESTAMPDIFF(YEAR, p.date_of_birth ,CURDATE()))<=0)" +
-                    " THEN" +
-                    " CONCAT(((TIMESTAMPDIFF(MONTH, p.date_of_birth, CURDATE()) % 12)), ' months')" +
-                    " ELSE" +
-                    " CONCAT(((TIMESTAMPDIFF(YEAR, p.date_of_birth ,CURDATE()))), ' years')" +
-                    " END AS age";
-
     public static String QUERY_TO_FETCH_REFUND_APPOINTMENTS(AppointmentRefundSearchDTO searchDTO) {
         return " SELECT" +
                 " a.id as appointmentId," +                                             //[0]
@@ -81,16 +48,17 @@ public class AppointmentQuery {
                 " a.appointmentNumber as appointmentNumber," +                          //[3]
                 " h.name as hospitalName," +                                            //[4]
                 " p.name as patientName," +                                             //[5]
-                " hp.registrationNumber as registrationNumber," +                        //[6]
+                " hpi.registrationNumber as registrationNumber," +                      //[6]
                 " p.gender as gender," +                                                //[7]
                 " d.name as doctorName," +                                              //[8]
                 " s.name as specializationName," +                                      //[9]
                 " p.eSewaId as eSewaId," +                                              //[10]
                 " atd.transactionNumber as transactionNumber," +                        //[11]
                 " ard.cancelledDate as cancelledDate," +                                //[12]
-                " ard.refundAmount as refundAmount," +                                   //[13]
-                " a.remarks as cancellationRemarks," +                                   //[14]
-                QUERY_TO_CALCULATE_PATIENT_AGE +
+                " ard.refundAmount as refundAmount," +                                  //[13]
+                " a.remarks as cancellationRemarks," +                                  //[14]
+                " p.mobileNumber as mobileNumber," +                                    //[15]
+                QUERY_TO_CALCULATE_PATIENT_AGE +                                        //[16]
                 " FROM Appointment a" +
                 " LEFT JOIN Patient p ON p.id = a.patientId.id" +
                 " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
@@ -99,7 +67,7 @@ public class AppointmentQuery {
                 " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
                 " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId.id = a.id" +
                 " LEFT JOIN PatientMetaInfo pm ON pm.patient.id = p.id" +
-                " LEFT JOIN HospitalPatientInfo hp ON hp.patientId = p.id" +
+                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                 GET_WHERE_CLAUSE_TO_FETCH_REFUND_APPOINTMENTS(searchDTO);
     }
 
@@ -123,7 +91,7 @@ public class AppointmentQuery {
             whereClause += " AND h.id=" + searchDTO.getHospitalId();
 
         if (!ObjectUtils.isEmpty(searchDTO.getPatientType()))
-            whereClause += " AND hp.isRegistered='" + searchDTO.getPatientType() + "'";
+            whereClause += " AND hpi.isRegistered='" + searchDTO.getPatientType() + "'";
 
         return whereClause + " ORDER BY a.appointmentDate DESC";
     }
@@ -138,7 +106,7 @@ public class AppointmentQuery {
                 " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
                 " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId.id = a.id" +
                 " LEFT JOIN PatientMetaInfo pm ON pm.patient.id = p.id" +
-                " LEFT JOIN HospitalPatientInfo hp ON hp.patientId = p.id" +
+                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                 GET_WHERE_CLAUSE_TO_FETCH_REFUND_APPOINTMENTS(searchDTO);
     }
 
@@ -154,7 +122,8 @@ public class AppointmentQuery {
                 " p.name as patientName," +                                                             //[5]
                 " p.gender as gender," +                                                                //[6]
                 " p.mobile_number as mobileNumber," +                                                   //[7]
-                QUERY_TO_CALCULATE_PATIENT_AGE_NATIVE +                                                 //[8]
+                QUERY_TO_CALCULATE_PATIENT_AGE_NATIVE + "," +                                           //[8]
+                " a.id as appointmentId" +                                                              //[9]
                 " FROM appointment a" +
                 " LEFT JOIN doctor d ON d.id = a.doctor_id" +
                 " LEFT JOIN specialization s ON s.id = a.specialization_id" +
@@ -190,22 +159,22 @@ public class AppointmentQuery {
                             " a.appointmentNumber as appointmentNumber," +                  //[2]
                             " DATE_FORMAT(a.appointmentTime, '%h:%i %p') as appointmentTime," +          //[3]
                             " p.eSewaId as esewaId," +                                      //[4]
-                            " hpi.registrationNumber as registrationNumber," +                //[5]
+                            " hpi.registrationNumber as registrationNumber," +              //[5]
                             " p.name as patientName," +                                     //[6]
                             " p.gender as patientGender," +                                 //[7]
                             " p.dateOfBirth as patientDob," +                               //[8]
-                            " hpi.isRegistered as isRegistered," +                            //[9]
-                            " hpi.isSelf as isSelf," +                                        //[10]
-                            " p.mobileNumber as mobileNumber," +                            //[11]
-                            " sp.name as specializationName," +                             //[12]
-                            " atd.transactionNumber as transactionNumber," +                //[13]
-                            " atd.appointmentAmount as appointmentAmount," +                //[14]
-                            " d.name as doctorName," +                                       //[15]
-                            " ard.refundAmount as refundAmount," +                           //[16]
-                            " a.id as appointmentId" +                                        //[17]
+                            " hpi.isRegistered as isRegistered," +                          //[9]
+                            " p.mobileNumber as mobileNumber," +                            //[10]
+                            " sp.name as specializationName," +                             //[11]
+                            " atd.transactionNumber as transactionNumber," +                //[12]
+                            " atd.appointmentAmount as appointmentAmount," +                //[13]
+                            " d.name as doctorName," +                                      //[14]
+                            " ard.refundAmount as refundAmount," +                          //[15]
+                            " a.id as appointmentId," +                                     //[16]
+                            " a.isSelf as isSelf" +                                         //[17]
                             " FROM Appointment a" +
                             " LEFT JOIN Patient p ON a.patientId=p.id" +
-                            " LEFT JOIN HospitalPatientInfo hpi ON hpi.patientId =p.id" +
+                            " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                             " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
                             " LEFT JOIN Specialization sp ON a.specializationId=sp.id" +
                             " LEFT JOIN Hospital h ON a.hospitalId=h.id" +
@@ -214,13 +183,11 @@ public class AppointmentQuery {
                             " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id"
                             + GET_WHERE_CLAUSE_TO_SEARCH_PENDING_APPOINTMENT_DETAILS(searchRequestDTO);
 
-
     private static String GET_WHERE_CLAUSE_TO_SEARCH_PENDING_APPOINTMENT_DETAILS(
             AppointmentPendingApprovalSearchDTO pendingApprovalSearchDTO) {
 
         String whereClause = " WHERE " +
-                " hpi.status='Y' " +
-                " AND sp.status='Y' " +
+                " sp.status='Y' " +
                 " AND a.status='PA'" +
                 " AND a.appointmentDate BETWEEN :fromDate AND :toDate";
 
@@ -238,9 +205,6 @@ public class AppointmentQuery {
 
         if (!Objects.isNull(pendingApprovalSearchDTO.getPatientType()))
             whereClause += " AND hpi.isRegistered = '" + pendingApprovalSearchDTO.getPatientType() + "'";
-
-        if (!Objects.isNull(pendingApprovalSearchDTO.getPatientCategory()))
-            whereClause += " AND hpi.isSelf = '" + pendingApprovalSearchDTO.getPatientCategory() + "'";
 
         if (!Objects.isNull(pendingApprovalSearchDTO.getDoctorId()))
             whereClause += " AND d.id = " + pendingApprovalSearchDTO.getDoctorId();
@@ -262,23 +226,21 @@ public class AppointmentQuery {
                             " p.name as patientName," +                                     //[6]
                             " p.gender as patientGender," +                                 //[7]
                             " p.dateOfBirth as patientDob," +                               //[8]
-                            " hpi.isRegistered as isRegistered," +                            //[9]
-                            " hpi.isSelf as isSelf," +                                        //[10]
-                            " p.mobileNumber as mobileNumber," +                            //[11]
-                            " sp.name as specializationName," +                             //[12]
-                            " atd.transactionNumber as transactionNumber," +                //[13]
-                            " atd.appointmentAmount as appointmentAmount," +                //[14]
-                            " d.name as doctorName," +                                       //[15]
-                            " a.status as status," +                                        //[16]
-                            " ard.refundAmount as refundAmount," +
-                            " hpi.address as patientAddress" +                            //[17]
-                            //[18]
+                            " hpi.isRegistered as isRegistered," +                          //[9]
+                            " p.mobileNumber as mobileNumber," +                            //[10]
+                            " sp.name as specializationName," +                             //[11]
+                            " atd.transactionNumber as transactionNumber," +                //[12]
+                            " atd.appointmentAmount as appointmentAmount," +                //[13]
+                            " d.name as doctorName," +                                     //[14]
+                            " a.status as status," +                                       //[15]
+                            " ard.refundAmount as refundAmount," +                         //[16]
+                            " hpi.address as patientAddress" +                             //[17]
                             " FROM Appointment a" +
-                            " LEFT JOIN Patient p ON a.patientId=p.id" +
-                            " LEFT JOIN HospitalPatientInfo hpi ON hpi.patientId =p.id" +
+                            " LEFT JOIN Patient p ON a.patientId.id=p.id" +
+                            " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                             " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
                             " LEFT JOIN Specialization sp ON a.specializationId=sp.id" +
-                            " LEFT JOIN Hospital h ON a.hospitalId=h.id" +
+                            " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
                             " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id" +
                             " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
                             " LEFT JOIN AppointmentRefundDetail ard ON a.id=ard.appointmentId"
@@ -289,11 +251,10 @@ public class AppointmentQuery {
             AppointmentLogSearchDTO appointmentLogSearchDTO) {
 
         String whereClause = " WHERE " +
-                " hpi.status='Y' " +
-                " AND sp.status='Y' " +
+                " sp.status='Y' " +
                 " AND a.appointmentDate BETWEEN :fromDate AND :toDate";
 
-        if (!Objects.isNull(appointmentLogSearchDTO.getAppointmentNumber()))
+        if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getAppointmentNumber()))
             whereClause += " AND a.appointmentNumber LIKE '%" + appointmentLogSearchDTO.getAppointmentNumber() + "%'";
 
         if (!Objects.isNull(appointmentLogSearchDTO.getStatus()) && !appointmentLogSearchDTO.getStatus().equals(""))
@@ -311,16 +272,16 @@ public class AppointmentQuery {
         if (!Objects.isNull(appointmentLogSearchDTO.getSpecializationId()))
             whereClause += " AND sp.id = " + appointmentLogSearchDTO.getSpecializationId();
 
-        if (!Objects.isNull(appointmentLogSearchDTO.getPatientType()))
+        if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getPatientType()))
             whereClause += " AND hpi.isRegistered = '" + appointmentLogSearchDTO.getPatientType() + "'";
 
-        if (!Objects.isNull(appointmentLogSearchDTO.getPatientCategory()))
-            whereClause += " AND hpi.isSelf = '" + appointmentLogSearchDTO.getPatientCategory() + "'";
+        if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getAppointmentCategory()))
+            whereClause += " AND a.isSelf = '" + appointmentLogSearchDTO.getAppointmentCategory() + "'";
 
         if (!Objects.isNull(appointmentLogSearchDTO.getDoctorId()))
             whereClause += " AND d.id = " + appointmentLogSearchDTO.getDoctorId();
 
-        whereClause += " ORDER BY a.appointmentDate DESC";
+        whereClause += " ORDER BY a.appointmentDate DESC ";
 
         return whereClause;
     }
@@ -348,7 +309,7 @@ public class AppointmentQuery {
                             " LEFT JOIN Appointment a ON a.id=arl.appointmentId.id" +
                             " LEFT JOIN Patient p ON p.id=a.patientId" +
                             " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id" +
-                            " LEFT JOIN HospitalPatientInfo hpi ON hpi.patientId=p.id" +
+                            " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                             " LEFT JOIN Hospital h ON h.id=a.hospitalId" +
                             " LEFT JOIN Specialization sp ON sp.id=a.specializationId" +
                             " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id" +
@@ -431,6 +392,4 @@ public class AppointmentQuery {
 
         return whereClause;
     }
-
-
 }

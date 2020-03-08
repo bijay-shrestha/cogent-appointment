@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.persistence.enums.Gender;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author smriti ON 18/01/2020
@@ -15,6 +16,7 @@ import java.io.Serializable;
 @Builder
 public class PatientSearchResponseDTO implements Serializable {
 
+    //todo: rename as hospitalPatientInfoId
     private Long id;
 
     private String name;
@@ -36,6 +38,12 @@ public class PatientSearchResponseDTO implements Serializable {
     private Character status;
 
     private String hospitalNumber;
+
+    private Date dateOfBirth;
+
+    private Date appointmentDate;
+
+    private String appointmentTime;
 
     private Integer totalItems;
 }

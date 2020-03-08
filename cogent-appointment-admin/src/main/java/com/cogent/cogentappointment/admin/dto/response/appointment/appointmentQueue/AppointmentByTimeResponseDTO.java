@@ -2,6 +2,8 @@ package com.cogent.cogentappointment.admin.dto.response.appointment.appointmentQ
 
 import lombok.*;
 
+import java.io.Serializable;
+
 /**
  * @author Rupak
  */
@@ -10,7 +12,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppointmentByTimeResponseDTO {
+public class AppointmentByTimeResponseDTO implements Serializable {
 
     private String appointmentTime;
 

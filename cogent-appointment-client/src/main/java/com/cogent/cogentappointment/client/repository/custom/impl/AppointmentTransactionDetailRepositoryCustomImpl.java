@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
 import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.dashboard.RevenueStatisticsResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.dashboard.RevenueTrendResponseDTO;
 import com.cogent.cogentappointment.client.repository.custom.AppointmentTransactionDetailRepositoryCustom;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,8 +42,8 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
     }
 
     @Override
-    public RevenueStatisticsResponseDTO getRevenueStatistics(DashBoardRequestDTO dashBoardRequestDTO,
-                                                             Long hospitalId,Character filter) {
+    public RevenueTrendResponseDTO getRevenueTrend(DashBoardRequestDTO dashBoardRequestDTO,
+                                                   Long hospitalId, Character filter) {
 
         final String queryByFilter = getQueryByFilter(filter);
 
@@ -53,7 +53,7 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
                 .setParameter(HOSPITAL_ID, hospitalId);
         List<Object[]> objects=query.getResultList();
 
-        RevenueStatisticsResponseDTO responseDTO=revenueStatisticsResponseDTO(objects,filter);
+        RevenueTrendResponseDTO responseDTO=revenueStatisticsResponseDTO(objects,filter);
 
         return responseDTO;
     }

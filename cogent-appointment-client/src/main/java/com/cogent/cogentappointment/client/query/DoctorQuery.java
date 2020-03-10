@@ -33,8 +33,15 @@ public class DoctorQuery {
     public static String QUERY_TO_SEARCH_DOCTOR(DoctorSearchRequestDTO searchRequestDTO) {
         return " SELECT" +
                 SELECT_CLAUSE_TO_FETCH_MINIMAL_DOCTOR + "," +
-                " tbl1.specialization_name as specializationName" +
+                " tbl1.specialization_name as specializationName," +
+                " CASE WHEN" +
+                " (da.status is null OR da.status = 'N')" +
+                " THEN null" +
+                " ELSE" +
+                " da.file_uri" +
+                " END as fileUri" +
                 " FROM doctor d" +
+                " LEFT JOIN doctor_avatar da ON da.doctor_id = d.id" +
                 " RIGHT JOIN" +
                 " (" +
                 QUERY_TO_SEARCH_DOCTOR_SPECIALIZATION.apply(searchRequestDTO) +
@@ -43,7 +50,7 @@ public class DoctorQuery {
     }
 
     private static final String SELECT_CLAUSE_TO_FETCH_MINIMAL_DOCTOR =
-            " d.id as doctorId," +                                              //[0]
+            " d.id as id," +                                              //[0]
                     " d.name as doctorName," +                                  //[1]
                     " d.mobile_number as mobileNumber," +                      //[2]
                     " d.status as status," +                                   //[3]

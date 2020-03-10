@@ -17,7 +17,7 @@ import java.math.BigInteger;
 @Data
 public class DoctorDetailResponseDTO implements Serializable {
 
-    private BigInteger doctorId;
+    private BigInteger id;
 
     private String doctorName;
 

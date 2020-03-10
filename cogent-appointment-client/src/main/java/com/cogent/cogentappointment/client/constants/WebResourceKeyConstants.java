@@ -90,7 +90,6 @@ public class WebResourceKeyConstants {
     //E
 
     //F
-    public static final String FILE = "/files/{subDirectoryLocation}/{filename:.+}";
 
     public interface ForgotPasswordConstants {
         String VERIFY = "/verify";
@@ -123,6 +122,11 @@ public class WebResourceKeyConstants {
     public static final String MIN = "/min";
     public static final String META_INFO = "/metaInfo";
 
+    public interface MinioFileConstants {
+        String BASE_FILE = "/file";
+        String FETCH_FILE = "/{subDirectory}/{object}";
+    }
+
     //N
 
 
@@ -152,7 +156,7 @@ public class WebResourceKeyConstants {
 
 
     //S
-    public static final String SAVE = "/saveSelfPatient";
+    public static final String SAVE = "/save";
     public static final String SEARCH = "/search";
 
     public static final String SELF = "/self";

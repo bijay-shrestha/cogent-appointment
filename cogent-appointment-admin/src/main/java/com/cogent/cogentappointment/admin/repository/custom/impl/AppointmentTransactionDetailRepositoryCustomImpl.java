@@ -8,7 +8,6 @@ import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueTrendRes
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.AppointmentTransactionDetailRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Doctor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -68,9 +67,9 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
     }
 
     @Override
-    public List<DoctorRevenueResponseDTO> getDoctorRevenue(DoctorRevenueRequestDTO requestDTO,
-                                                           Pageable pageable) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_GENERATE_DOCTOR_REVENEU_LIST)
+    public List<DoctorRevenueResponseDTO> getDoctorRevenueTracker(DoctorRevenueRequestDTO requestDTO,
+                                                                  Pageable pageable) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_GENERATE_DOCTOR_REVENEU_TRACKER)
                 .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()))
                 .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
                 .setParameter(HOSPITAL_ID, requestDTO.getHospitalId());

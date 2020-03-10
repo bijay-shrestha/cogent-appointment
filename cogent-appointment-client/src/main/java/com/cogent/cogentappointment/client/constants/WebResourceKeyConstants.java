@@ -62,7 +62,7 @@ public class WebResourceKeyConstants {
         String APPOINTMENT_QUEUE_BY_TIME = "/today-appointment-timely";
         String REVENUE_TREND = "/revenueTrend";
         String DOCTOR_ID_PATH_VARIABLE_BASE="/{doctorId}";
-        String DOCTOR_REVENUE="/doctorRevenue";
+        String DOCTOR_REVENUE_TRACKER ="/doctorRevenueTracker";
     }
 
     public static final String DETAIL = "/detail";

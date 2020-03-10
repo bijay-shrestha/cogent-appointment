@@ -68,13 +68,13 @@ public class DashboardResource {
     }
 
     @GetMapping(REGISTERED + COUNT)
-    @ApiOperation(COUNT_REGISTERED_PATIENTS_OPERATION)
-    public ResponseEntity<?> countRegisteredPatients() {
+    @ApiOperation(PATIENTS_STATISTICS_OPERATION)
+    public ResponseEntity<?> patientStatistics() {
         return ok(dashboardService.getPatientStatistics());
     }
 
     @PutMapping(REVENUE_TREND)
-    @ApiOperation(REVENUE_TREND)
+    @ApiOperation(REVENUE_TREND_OPERATION)
     @ApiImplicitParams({@ApiImplicitParam(name = "toDate", value = "dd/MM/yyyy", required = true, dataType = "date",
             paramType = "query"),
             @ApiImplicitParam(name = "fromDate", value = "dd/MM/yyyy", required = true, dataType = "date",
@@ -102,17 +102,17 @@ public class DashboardResource {
         return ok().body(appointmentService.fetchTodayAppointmentQueueByTime(doctorId, pageable));
     }
 
-    @PutMapping(DOCTOR_REVENUE)
-    @ApiOperation(DOCTOR_REVENUE_OPERATION)
+    @PutMapping(DOCTOR_REVENUE_TRACKER)
+    @ApiOperation(DOCTOR_REVENUE_TRACKER_OPERATION)
     @ApiImplicitParams({@ApiImplicitParam(name = "toDate", value = "dd/MM/yyyy", required = true, dataType = "date",
             paramType = "query"),
             @ApiImplicitParam(name = "fromDate", value = "dd/MM/yyyy", required = true, dataType = "date",
                     paramType = "query")})
-    public ResponseEntity<?> getDoctorRevenueTracker(@DateTimeFormat(pattern = "dd/MM/yyyy") Date toDate,
+    public ResponseEntity<?> doctorRevenueTracker(@DateTimeFormat(pattern = "dd/MM/yyyy") Date toDate,
                                                      @DateTimeFormat(pattern = "dd/MM/yyyy") Date fromDate,
                                                      @RequestParam("page") int page,
                                                      @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return ok(dashboardService.getDoctorRevenueList(toDate, fromDate, pageable));
+        return ok(dashboardService.getDoctorRevenueTracker(toDate, fromDate, pageable));
     }
 }

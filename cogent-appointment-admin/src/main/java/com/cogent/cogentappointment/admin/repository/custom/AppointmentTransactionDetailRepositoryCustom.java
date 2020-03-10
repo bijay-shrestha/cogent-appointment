@@ -23,6 +23,6 @@ public interface AppointmentTransactionDetailRepositoryCustom {
 
     RevenueTrendResponseDTO getRevenueTrend(DashBoardRequestDTO dashBoardRequestDTO, Character filter);
 
-    List<DoctorRevenueResponseDTO> getDoctorRevenue(DoctorRevenueRequestDTO requestDTO, Pageable pageable);
+    List<DoctorRevenueResponseDTO> getDoctorRevenueTracker(DoctorRevenueRequestDTO requestDTO, Pageable pageable);
 
 }

@@ -171,7 +171,7 @@ public class DashBoardQuery {
         return whereClause;
     }
 
-    public static String QUERY_TO_GENERATE_DOCTOR_REVENEU_LIST =
+    public static String QUERY_TO_GENERATE_DOCTOR_REVENEU_TRACKER =
             "SELECT" +
                     " d.id as doctorId," +
                     " d.name as doctorName," +

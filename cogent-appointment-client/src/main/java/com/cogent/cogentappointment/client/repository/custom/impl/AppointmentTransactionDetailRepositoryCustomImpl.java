@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
-import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.DoctorRevenueResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.RevenueTrendResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
@@ -68,12 +67,12 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
     }
 
     @Override
-    public List<DoctorRevenueResponseDTO> getDoctorRevenue(Date toDate,
-                                                           Date fromDate,
-                                                           Long hospitalId,
-                                                           Pageable pageable) {
+    public List<DoctorRevenueResponseDTO> getDoctorRevenueTracker(Date toDate,
+                                                                  Date fromDate,
+                                                                  Long hospitalId,
+                                                                  Pageable pageable) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_GENERATE_DOCTOR_REVENEU_LIST)
+        Query query = createQuery.apply(entityManager, QUERY_TO_GENERATE_DOCTOR_REVENEU_TRACKER)
                 .setParameter(TO_DATE, utilDateToSqlDate(toDate))
                 .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))
                 .setParameter(HOSPITAL_ID, hospitalId);

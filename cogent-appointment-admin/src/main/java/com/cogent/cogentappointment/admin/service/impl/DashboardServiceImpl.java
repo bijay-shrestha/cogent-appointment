@@ -17,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -58,7 +57,7 @@ public class DashboardServiceImpl implements DashboardService {
     public RevenueStatisticsResponseDTO getRevenueStatistics(GenerateRevenueRequestDTO requestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_PROCESS_STARTED, REVENUE_GENERATED);
+        log.info(FETCHING_PROCESS_STARTED, REVENUE_STATISTICS);
 
         Double currentTransaction = appointmentTransactionDetailRepository.getRevenueByDates(
                 requestDTO.getCurrentToDate(),
@@ -74,7 +73,7 @@ public class DashboardServiceImpl implements DashboardService {
                 calculatePercenatge(currentTransaction, previousTransaction),
                 requestDTO.getFilterType());
 
-        log.info(FETCHING_PROCESS_COMPLETED, REVENUE_GENERATED, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_COMPLETED, REVENUE_STATISTICS, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
     }
@@ -117,7 +116,7 @@ public class DashboardServiceImpl implements DashboardService {
     public RevenueTrendResponseDTO getRevenueTrend(DashBoardRequestDTO dashBoardRequestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_PROCESS_STARTED, REVENUE_STATISTICS);
+        log.info(FETCHING_PROCESS_STARTED, REVENUE_TREND);
 
         Character filter = dateDifference(dashBoardRequestDTO.getToDate(),
                 dashBoardRequestDTO.getFromDate());
@@ -137,23 +136,23 @@ public class DashboardServiceImpl implements DashboardService {
 
         revenueTrendResponseDTO.setData(map);
 
-        log.info(FETCHING_PROCESS_COMPLETED, REVENUE_STATISTICS, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_COMPLETED, REVENUE_TREND, getDifferenceBetweenTwoTime(startTime));
 
         return revenueTrendResponseDTO;
     }
 
     @Override
-    public List<DoctorRevenueResponseDTO> getDoctorRevenueList(DoctorRevenueRequestDTO requestDTO,
-                                                               Pageable pagable) {
+    public List<DoctorRevenueResponseDTO> getdoctorRevenueTracker(DoctorRevenueRequestDTO requestDTO,
+                                                                  Pageable pagable) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_PROCESS_STARTED, DOCTOR_REVENUE);
+        log.info(FETCHING_PROCESS_STARTED, DOCTOR_REVENUE_TRACKER);
 
         List<DoctorRevenueResponseDTO> doctorRevenueResponseDTO = appointmentTransactionDetailRepository
-                .getDoctorRevenue(requestDTO, pagable);
+                .getDoctorRevenueTracker(requestDTO, pagable);
 
-        log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_REVENUE, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_REVENUE_TRACKER, getDifferenceBetweenTwoTime(startTime));
 
         return doctorRevenueResponseDTO;
 

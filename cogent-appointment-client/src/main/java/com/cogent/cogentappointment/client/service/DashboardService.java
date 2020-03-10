@@ -25,5 +25,5 @@ public interface DashboardService {
 
     RevenueTrendResponseDTO getRevenueTrend(Date toDate, Date fromDate);
 
-    List<DoctorRevenueResponseDTO> getDoctorRevenueList(Date toDate, Date fromDate, Pageable pagable);
+    List<DoctorRevenueResponseDTO> getDoctorRevenueTracker(Date toDate, Date fromDate, Pageable pagable);
 }

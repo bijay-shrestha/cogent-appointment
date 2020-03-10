@@ -21,5 +21,5 @@ public interface AppointmentTransactionDetailRepositoryCustom {
     RevenueTrendResponseDTO getRevenueTrend(Date toDate, Date fromDate,
                                             Long hospitalId, Character filter);
 
-    List<DoctorRevenueResponseDTO> getDoctorRevenue(Date toDate, Date fromDate, Long hospitalId, Pageable pageable);
+    List<DoctorRevenueResponseDTO> getDoctorRevenueTracker(Date toDate, Date fromDate, Long hospitalId, Pageable pageable);
 }

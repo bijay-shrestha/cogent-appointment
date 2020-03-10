@@ -1,7 +1,5 @@
 package com.cogent.cogentappointment.client.service.impl;
 
-import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.dashboard.GenerateRevenueRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.AppointmentCountResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.DoctorRevenueResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.RevenueStatisticsResponseDTO;
@@ -163,20 +161,14 @@ public class DashboardServiceImpl implements DashboardService {
 
     @Override
     @Cacheable(CACHE_DOCTOR_REVENUE_TRACKER)
-    public List<DoctorRevenueResponseDTO> getDoctorRevenueList(Date toDate, Date fromDate, Pageable pagable) {
+    public List<DoctorRevenueResponseDTO> getDoctorRevenueTracker(Date toDate, Date fromDate, Pageable pagable) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, DOCTOR_REVENUE);
 
-        try{
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         List<DoctorRevenueResponseDTO> doctorRevenueResponseDTO = appointmentTransactionDetailRepository
-                .getDoctorRevenue(toDate, fromDate, getLoggedInHospitalId(), pagable);
+                .getDoctorRevenueTracker(toDate, fromDate, getLoggedInHospitalId(), pagable);
 
         log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_REVENUE, getDifferenceBetweenTwoTime(startTime));
 

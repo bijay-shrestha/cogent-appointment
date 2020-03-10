@@ -21,7 +21,9 @@ import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.ID;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.NAME;
+import static com.cogent.cogentappointment.admin.log.constants.QualificationLog.QUALIFICATION;
 import static com.cogent.cogentappointment.admin.query.QualificationQuery.*;
+import static com.cogent.cogentappointment.admin.utils.commons.LogUtils.logError;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
 
@@ -66,8 +68,10 @@ public class QualificationRepositoryCustomImpl implements QualificationRepositor
         List<QualificationMinimalResponseDTO> results = transformQueryToResultList(
                 query, QualificationMinimalResponseDTO.class);
 
-        if (results.isEmpty()) throw QUALIFICATION_NOT_FOUND.get();
-        else {
+        if (results.isEmpty()) {
+            logError(QUALIFICATION);
+            throw QUALIFICATION_NOT_FOUND.get();
+        } else {
             results.get(0).setTotalItems(totalItems);
             return results;
         }
@@ -80,6 +84,7 @@ public class QualificationRepositoryCustomImpl implements QualificationRepositor
         try {
             return transformQueryToSingleResult(query, QualificationResponseDTO.class);
         } catch (NoResultException e) {
+            logError(QUALIFICATION);
             throw new NoContentFoundException(Qualification.class, "id", id.toString());
         }
     }
@@ -90,8 +95,10 @@ public class QualificationRepositoryCustomImpl implements QualificationRepositor
 
         List<QualificationDropdownDTO> results = transformQueryToResultList(query, QualificationDropdownDTO.class);
 
-        if (results.isEmpty()) throw QUALIFICATION_NOT_FOUND.get();
-        else return results;
+        if (results.isEmpty()) {
+            logError(QUALIFICATION);
+            throw QUALIFICATION_NOT_FOUND.get();
+        } else return results;
     }
 
     @Override
@@ -100,8 +107,10 @@ public class QualificationRepositoryCustomImpl implements QualificationRepositor
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
-        if (results.isEmpty()) throw QUALIFICATION_NOT_FOUND.get();
-        else return results;
+        if (results.isEmpty()) {
+            logError(QUALIFICATION);
+            throw QUALIFICATION_NOT_FOUND.get();
+        } else return results;
     }
 
     private Supplier<NoContentFoundException> QUALIFICATION_NOT_FOUND = () ->

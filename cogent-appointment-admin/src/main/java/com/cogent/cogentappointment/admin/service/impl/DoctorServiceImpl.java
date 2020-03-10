@@ -395,7 +395,7 @@ public class DoctorServiceImpl implements DoctorService {
 
         DoctorAppointmentCharge doctorAppointmentCharge =
                 doctorAppointmentChargeRepository.findByDoctorId(doctorId)
-                        .orElseThrow(() -> new NoContentFoundException(DoctorAppointmentCharge.class));
+                        .orElseThrow(() ->  new NoContentFoundException(DoctorAppointmentCharge.class));
 
         parseDoctorAppointmentChargeDetails(doctorAppointmentCharge, appointmentCharge, appointmentFollowUpCharge);
 

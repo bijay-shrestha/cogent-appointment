@@ -4,6 +4,7 @@ package com.cogent.cogentappointment.admin.service.impl;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.DashBoardRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.GenerateRevenueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.AppointmentCountResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.dashboard.DoctorRevenueResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueStatisticsResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueTrendResponseDTO;
 import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
@@ -11,9 +12,12 @@ import com.cogent.cogentappointment.admin.repository.AppointmentTransactionDetai
 import com.cogent.cogentappointment.admin.repository.PatientRepository;
 import com.cogent.cogentappointment.admin.service.DashboardService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
@@ -136,4 +140,24 @@ public class DashboardServiceImpl implements DashboardService {
 
         return revenueTrendResponseDTO;
     }
+
+    @Override
+    public List<DoctorRevenueResponseDTO> getDoctorRevenueList(Date toDate,
+                                                               Date fromDate,
+                                                               Long hospitalId,
+                                                               Pageable pagable) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, DOCTOR_REVENUE);
+
+        List<DoctorRevenueResponseDTO> doctorRevenueResponseDTO = appointmentTransactionDetailRepository
+                .getDoctorRevenue(toDate, fromDate, hospitalId, pagable);
+
+        log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_REVENUE, getDifferenceBetweenTwoTime(startTime));
+
+        return doctorRevenueResponseDTO;
+
+    }
+
 }

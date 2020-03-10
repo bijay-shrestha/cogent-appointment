@@ -45,6 +45,8 @@ public class CommonLogConstant {
     //M
 
     //N
+    public static String ERROR_LOG = ":::: {} NOT FOUND ::::";
+
 
     //O
 

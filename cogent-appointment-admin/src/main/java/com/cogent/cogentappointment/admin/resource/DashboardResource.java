@@ -7,14 +7,18 @@ import com.cogent.cogentappointment.admin.dto.request.dashboard.GenerateRevenueR
 import com.cogent.cogentappointment.admin.service.AppointmentService;
 import com.cogent.cogentappointment.admin.service.DashboardService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentConstant.FETCH_APPOINTMENT_QUEUE;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.DashboardConstant.*;
@@ -78,6 +82,21 @@ public class DashboardResource {
                                                               @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ok().body(appointmentService.fetchTodayAppointmentQueueByTime(appointmentQueueRequestDTO, pageable));
+    }
+
+    @PutMapping(DOCTOR_REVENUE)
+    @ApiOperation(DOCTOR_REVENUE_OPERATION)
+    @ApiImplicitParams({@ApiImplicitParam(name = "toDate", value = "dd/MM/yyyy", required = true, dataType = "date",
+            paramType = "query"),
+            @ApiImplicitParam(name = "fromDate", value = "dd/MM/yyyy", required = true, dataType = "date",
+                    paramType = "query")})
+    public ResponseEntity<?> getDoctorRevenueList(@DateTimeFormat(pattern = "dd/MM/yyyy") Date toDate,
+                                                  @DateTimeFormat(pattern = "dd/MM/yyyy") Date fromDate,
+                                                  @RequestParam("hospitalId") Long hospitalId,
+                                                  @RequestParam("page") int page,
+                                                  @RequestParam("size") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ok(dashboardService.getDoctorRevenueList(toDate, fromDate, hospitalId, pageable));
     }
 
 }

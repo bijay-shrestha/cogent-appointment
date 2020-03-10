@@ -13,7 +13,11 @@ import javax.persistence.Query;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.APPOINTMENT;
+import static com.cogent.cogentappointment.admin.log.constants.PatientLog.PATIENT;
+import static com.cogent.cogentappointment.admin.log.constants.PatientLog.PATIENT_META_INFO;
 import static com.cogent.cogentappointment.admin.query.PatientMetaInfoQuery.*;
+import static com.cogent.cogentappointment.admin.utils.commons.LogUtils.logError;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
 
@@ -33,7 +37,10 @@ public class PatientMetaInfoRepositoryCustomImpl implements PatientMetaInfoRepos
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
-        if (results.isEmpty()) throw PATIENT_META_INFO_NOT_FOUND.get();
+        if (results.isEmpty()) {
+            logError(PATIENT_META_INFO);
+            throw PATIENT_META_INFO_NOT_FOUND.get();
+        }
         else return results;
     }
 
@@ -44,7 +51,10 @@ public class PatientMetaInfoRepositoryCustomImpl implements PatientMetaInfoRepos
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
-        if (results.isEmpty()) throw PATIENT_META_INFO_NOT_FOUND.get();
+        if (results.isEmpty()){
+            logError(PATIENT_META_INFO);
+            throw PATIENT_META_INFO_NOT_FOUND.get();
+        }
         else return results;
     }
 

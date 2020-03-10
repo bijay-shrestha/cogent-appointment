@@ -21,9 +21,12 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.admin.log.constants.ProfileLog.PROFILE;
+import static com.cogent.cogentappointment.admin.log.constants.ProfileLog.PROFILE_MENU;
 import static com.cogent.cogentappointment.admin.query.ProfileQuery.*;
 import static com.cogent.cogentappointment.admin.utils.ProfileUtils.parseToAssignedProfileMenuResponseDTO;
 import static com.cogent.cogentappointment.admin.utils.ProfileUtils.parseToProfileDetailResponseDTO;
+import static com.cogent.cogentappointment.admin.utils.commons.LogUtils.logError;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
 
@@ -68,7 +71,10 @@ public class ProfileRepositoryCustomImpl implements ProfileRepositoryCustom {
 
         List<ProfileMinimalResponseDTO> results = transformQueryToResultList(query, ProfileMinimalResponseDTO.class);
 
-        if (results.isEmpty()) throw PROFILES_NOT_FOUND.get();
+        if (results.isEmpty()){
+            logError(PROFILE);
+            throw PROFILES_NOT_FOUND.get();
+        }
         else {
             results.get(0).setTotalItems(totalItems);
             return results;
@@ -104,7 +110,10 @@ public class ProfileRepositoryCustomImpl implements ProfileRepositoryCustom {
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
-        if (results.isEmpty()) throw PROFILES_NOT_FOUND.get();
+        if (results.isEmpty()){
+            logError(PROFILE);
+            throw PROFILES_NOT_FOUND.get();
+        }
         else return results;
     }
 
@@ -115,7 +124,10 @@ public class ProfileRepositoryCustomImpl implements ProfileRepositoryCustom {
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
-        if (results.isEmpty()) throw PROFILES_NOT_FOUND.get();
+        if (results.isEmpty()){
+            logError(PROFILE);
+            throw PROFILES_NOT_FOUND.get();
+        }
         else return results;
     }
 
@@ -127,8 +139,10 @@ public class ProfileRepositoryCustomImpl implements ProfileRepositoryCustom {
 
         List<Object[]> results = query.getResultList();
 
-        if (results.isEmpty())
+        if (results.isEmpty()){
+            logError(PROFILE_MENU);
             throw new NoContentFoundException(ProfileMenu.class);
+        }
 
         return parseToAssignedProfileMenuResponseDTO(results);
     }
@@ -136,6 +150,7 @@ public class ProfileRepositoryCustomImpl implements ProfileRepositoryCustom {
     private Supplier<NoContentFoundException> PROFILES_NOT_FOUND = () -> new NoContentFoundException(Profile.class);
 
     private Function<Long, NoContentFoundException> PROFILE_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        logError(PROFILE);
         throw new NoContentFoundException(Profile.class, "id", id.toString());
     };
 }

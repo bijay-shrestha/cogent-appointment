@@ -20,7 +20,9 @@ import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.ID;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.NAME;
+import static com.cogent.cogentappointment.admin.log.constants.UniversityLog.UNIVERSITY;
 import static com.cogent.cogentappointment.admin.query.UniversityQuery.*;
+import static com.cogent.cogentappointment.admin.utils.commons.LogUtils.logError;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
 
@@ -64,8 +66,10 @@ public class UniversityRepositoryCustomImpl implements UniversityRepositoryCusto
         List<UniversityMinimalResponseDTO> results = transformQueryToResultList(
                 query, UniversityMinimalResponseDTO.class);
 
-        if (results.isEmpty()) throw UNIVERSITY_NOT_FOUND.get();
-        else {
+        if (results.isEmpty()) {
+            logError(UNIVERSITY);
+            throw UNIVERSITY_NOT_FOUND.get();
+        } else {
             results.get(0).setTotalItems(totalItems);
             return results;
         }
@@ -78,6 +82,7 @@ public class UniversityRepositoryCustomImpl implements UniversityRepositoryCusto
         try {
             return transformQueryToSingleResult(query, UniversityResponseDTO.class);
         } catch (NoResultException e) {
+            logError(UNIVERSITY);
             throw new NoContentFoundException(University.class, "id", id.toString());
         }
     }
@@ -88,8 +93,10 @@ public class UniversityRepositoryCustomImpl implements UniversityRepositoryCusto
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
-        if (results.isEmpty()) throw UNIVERSITY_NOT_FOUND.get();
-        else return results;
+        if (results.isEmpty()) {
+            logError(UNIVERSITY);
+            throw UNIVERSITY_NOT_FOUND.get();
+        } else return results;
     }
 
     private Supplier<NoContentFoundException> UNIVERSITY_NOT_FOUND = () ->

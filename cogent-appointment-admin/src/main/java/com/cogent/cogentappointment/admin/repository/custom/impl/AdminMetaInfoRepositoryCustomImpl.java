@@ -12,7 +12,9 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
 
+import static com.cogent.cogentappointment.admin.log.constants.AdminLog.ADMIN_META_INFO;
 import static com.cogent.cogentappointment.admin.query.AdminQuery.QUERY_TO_FETCH_ADMIN_META_INFO;
+import static com.cogent.cogentappointment.admin.utils.commons.LogUtils.logError;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
 
@@ -32,7 +34,10 @@ public class AdminMetaInfoRepositoryCustomImpl implements AdminMetaInfoRepositor
 
         List<AdminMetaInfoResponseDTO> list = transformQueryToResultList(query, AdminMetaInfoResponseDTO.class);
 
-        if (list.isEmpty()) throw new NoContentFoundException((AdminMetaInfo.class));
+        if (list.isEmpty()){
+            logError(ADMIN_META_INFO);
+            throw new NoContentFoundException((AdminMetaInfo.class));
+        }
 
         return list;
     }

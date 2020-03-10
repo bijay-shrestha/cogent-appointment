@@ -155,11 +155,11 @@ public class AdminQuery {
 
     public static final String QUERY_TO_FETCH_ADMIN_BY_USERNAME_OR_EMAIL =
             " SELECT a FROM Admin a" +
-                    " WHERE" +
                     " LEFT JOIN Profile p ON p.id = a.profileId" +
                     " LEFT JOIN Department d ON d.id = p.department.id" +
                     " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " (a.username=:username OR a.email =:email)" +
+                    " WHERE" +
                     " AND a.status != 'D'" +
                     " AND h.id=:hospitalId";
 

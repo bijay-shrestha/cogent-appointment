@@ -17,10 +17,12 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Date;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.ADMIN_NOT_ACTIVE;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.ForgotPasswordMessages.RESET_CODE_EXPIRED;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INVALID_VERIFICATION_TOKEN;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
 import static com.cogent.cogentappointment.admin.log.constants.AdminLog.*;
@@ -68,7 +70,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
         ForgotPasswordVerification forgotPasswordVerification = verificationRepository.findByAdminId(admin.getId());
 
-        convertToForgotPasswordVerification(
+        forgotPasswordVerification=convertToForgotPasswordVerification(
                 admin,
                 expirationTimeProperties.getForgotPassword(),
                 isNull(forgotPasswordVerification) ? new ForgotPasswordVerification() : forgotPasswordVerification);
@@ -92,6 +94,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
         log.info(VERIFY_CODE_PROCESS_STARTED);
 
         Object expirationTime = verificationRepository.findByResetCode(resetCode);
+
         validateExpirationTime(expirationTime);
 
         log.info(VERIFY_CODE_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
@@ -104,8 +107,16 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
         log.info(UPDATING_PASSWORD_PROCESS_STARTED);
 
         Admin admin = adminRepository.fetchAdminByUsernameOrEmail(requestDTO.getUsername());
-        updateAdminPassword(requestDTO, admin);
-        updateForgotPasswordVerification(admin.getId());
+
+        ForgotPasswordVerification forgotPasswordVerification = verificationRepository.findByAdminId(admin.getId());
+
+        if(forgotPasswordVerification.getResetCode().equals(requestDTO.getVerificationToken())) {
+            verify(requestDTO.getVerificationToken());
+            updateAdminPassword(requestDTO, admin);
+            updateForgotPasswordVerification(admin.getId());
+        }else{
+            throw new NoContentFoundException(INVALID_VERIFICATION_TOKEN);
+        }
 
         log.info(UPDATING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
     }

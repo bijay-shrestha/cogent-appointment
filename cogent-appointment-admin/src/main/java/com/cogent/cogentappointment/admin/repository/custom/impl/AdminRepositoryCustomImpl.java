@@ -9,6 +9,7 @@ import com.cogent.cogentappointment.admin.dto.response.admin.*;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.AdminRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Admin;
+import com.cogent.cogentappointment.persistence.model.DashboardFeature;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +23,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.*;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.ADMIN_INFO_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.query.AdminQuery.*;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
@@ -166,6 +167,8 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
 
         return transformQueryToResultList(query, AdminMacAddressInfoResponseDTO.class);
     }
+
+    private Supplier<NoContentFoundException> NO_DASHBOARD_FEATURE_FOUND = () -> new NoContentFoundException(DashboardFeature.class);
 
     private Supplier<NoContentFoundException> NO_ADMIN_FOUND = () -> new NoContentFoundException(Admin.class);
 

@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.resource;
 
 import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.dashboard.DashboardFeatureRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.GenerateRevenueRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import com.cogent.cogentappointment.client.service.AppointmentService;
@@ -77,5 +78,11 @@ public class DashboardResource {
                                                               @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ok().body(appointmentService.fetchTodayAppointmentQueueByTime(appointmentQueueRequestDTO, pageable));
+    }
+
+    @PutMapping(DYNAMIC_DASHBOARD_FEATURE)
+    @ApiOperation(FETCH_DYNAMIC_DASHBOARD_FEATURE)
+    public ResponseEntity<?> fetchDashboardEntityByAdmin(@RequestBody DashboardFeatureRequestDTO dashboardFeatureRequestDTO) {
+        return ok(dashboardService.getDashboardEntityByAdmin(dashboardFeatureRequestDTO));
     }
 }

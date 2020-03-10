@@ -2,9 +2,9 @@ server:
   port: 9090
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/cogent-test
-    username: newuser
-    password: password
+    url: jdbc:mysql://localhost:3306/demo
+    username: root
+    password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:

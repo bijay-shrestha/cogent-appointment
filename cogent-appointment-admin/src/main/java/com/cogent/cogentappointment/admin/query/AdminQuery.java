@@ -201,4 +201,5 @@ public class AdminQuery {
                     " a.username =:username" +
                     " AND a.status = 'Y'" +
                     " AND h.isCogentAdmin='Y'";
+
 }

@@ -4,13 +4,16 @@ import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.request.admin.AdminInfoRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.admin.AdminSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.admin.AdminUpdateRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.dashboard.DashboardFeatureRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.admin.AdminDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.admin.AdminLoggedInInfoResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.admin.AdminMacAddressInfoResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.admin.AdminMinimalResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.dashboard.DashboardFeatureResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.AdminRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Admin;
+import com.cogent.cogentappointment.persistence.model.DashboardFeature;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +32,7 @@ import static com.cogent.cogentappointment.client.constants.ErrorMessageConstant
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.query.AdminQuery.*;
+import static com.cogent.cogentappointment.client.query.DashBoardQuery.QUERY_TO_FETCH_DASHBOARD_FEATURES;
 import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
 
@@ -147,6 +151,18 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         }
     }
 
+    @Override
+    public List<DashboardFeatureResponseDTO> fetchDashboardEntityByAdmin(DashboardFeatureRequestDTO dashboardFeatureRequestDTO) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DASHBOARD_FEATURES(dashboardFeatureRequestDTO));
+
+        List<DashboardFeatureResponseDTO> result = transformQueryToResultList(query, DashboardFeatureResponseDTO.class);
+
+        if (ObjectUtils.isEmpty(result)) throw NO_DASHBOARD_FEATURE_FOUND.get();
+        else {
+            return result;
+        }
+    }
+
     private AdminDetailResponseDTO fetchAdminDetailResponseDTO(Long id, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ADMIN_DETAIL)
                 .setParameter(ID, id)
@@ -166,6 +182,8 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
 
         return transformQueryToResultList(query, AdminMacAddressInfoResponseDTO.class);
     }
+
+    private Supplier<NoContentFoundException> NO_DASHBOARD_FEATURE_FOUND = () -> new NoContentFoundException(DashboardFeature.class);
 
     private Supplier<NoContentFoundException> NO_ADMIN_FOUND = () -> new NoContentFoundException(Admin.class);
 

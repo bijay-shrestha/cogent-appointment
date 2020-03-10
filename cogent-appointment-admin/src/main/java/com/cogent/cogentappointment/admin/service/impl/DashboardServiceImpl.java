@@ -6,6 +6,7 @@ import com.cogent.cogentappointment.admin.dto.request.dashboard.GenerateRevenueR
 import com.cogent.cogentappointment.admin.dto.response.dashboard.AppointmentCountResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueStatisticsResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueTrendResponseDTO;
+import com.cogent.cogentappointment.admin.repository.AdminRepository;
 import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
 import com.cogent.cogentappointment.admin.repository.AppointmentTransactionDetailRepository;
 import com.cogent.cogentappointment.admin.repository.PatientRepository;
@@ -40,12 +41,15 @@ public class DashboardServiceImpl implements DashboardService {
 
     private final AppointmentRepository appointmentRepository;
 
+    private final AdminRepository adminRepository;
+
     private final PatientRepository patientRepository;
 
     public DashboardServiceImpl(AppointmentTransactionDetailRepository appointmentTransactionDetailRepository,
-                                AppointmentRepository appointmentRepository, PatientRepository patientRepository) {
+                                AppointmentRepository appointmentRepository, AdminRepository adminRepository, PatientRepository patientRepository) {
         this.appointmentTransactionDetailRepository = appointmentTransactionDetailRepository;
         this.appointmentRepository = appointmentRepository;
+        this.adminRepository = adminRepository;
         this.patientRepository = patientRepository;
     }
 

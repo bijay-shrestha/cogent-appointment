@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.client.query;
 
 
 import com.cogent.cogentappointment.client.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.dashboard.DashboardFeatureRequestDTO;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -168,5 +169,21 @@ public class DashBoardQuery {
         whereClause += " ORDER BY a.appointmentTime DESC";
 
         return whereClause;
+    }
+
+    public static final String QUERY_TO_FETCH_DASHBOARD_FEATURES(DashboardFeatureRequestDTO dashboardFeatureRequestDTO) {
+
+        return " SELECT" +
+                " df.name as name," +
+                " df.code as code," +
+                " df.status as status" +
+                " FROM DashboardFeature df" +
+                "  LEFT JOIN AdminDashboardFeature adf ON adf.dashboardFeatureId.id =df.id" +
+                " LEFT JOIN Admin a ON a.id=adf.adminId.id" +
+                " LEFT JOIN Profile p ON p.id=a.profileId.id" +
+                " LEFT JOIN Department d ON d.id=p.department.id" +
+                " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
+                " WHERE a.id=" + dashboardFeatureRequestDTO.getAdminId()+
+                " AND h.id=" + dashboardFeatureRequestDTO.getHospitalId();
     }
 }

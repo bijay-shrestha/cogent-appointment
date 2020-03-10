@@ -71,10 +71,10 @@ public class SwaggerConstants {
         String FETCH_ACTIVE_COUNTRY = "Fetch active country for dropdown.";
     }
 
-
     //D
     public interface DashboardConstant {
         String BASE_API_VALUE = "This is Dashboard Resource.";
+
         String GENERATE_REVENUE_OPERATION = "Fetch revenue generated.";
         String OVER_ALL_APPOINTMENT_OPERATION = "Fetch over all appointments.";
         String COUNT_REGISTERED_PATIENTS_OPERATION = "Count no. of registered patients.";

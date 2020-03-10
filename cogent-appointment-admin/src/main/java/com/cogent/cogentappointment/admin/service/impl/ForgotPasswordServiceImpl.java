@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Date;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.ADMIN_NOT_ACTIVE;
@@ -93,6 +94,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
         log.info(VERIFY_CODE_PROCESS_STARTED);
 
         Object expirationTime = verificationRepository.findByResetCode(resetCode);
+
         validateExpirationTime(expirationTime);
 
         log.info(VERIFY_CODE_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
@@ -109,7 +111,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
         ForgotPasswordVerification forgotPasswordVerification = verificationRepository.findByAdminId(admin.getId());
 
         if(forgotPasswordVerification.getResetCode().equals(requestDTO.getVerificationToken())) {
-            validateExpirationTime(forgotPasswordVerification.getResetCode());
+            verify(requestDTO.getVerificationToken());
             updateAdminPassword(requestDTO, admin);
             updateForgotPasswordVerification(admin.getId());
         }else{

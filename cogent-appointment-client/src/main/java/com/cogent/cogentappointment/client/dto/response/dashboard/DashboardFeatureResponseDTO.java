@@ -12,6 +12,8 @@ import java.io.Serializable;
 @Setter
 public class DashboardFeatureResponseDTO implements Serializable {
 
+    private Long id;
+
     private String code;
 
     private String name;

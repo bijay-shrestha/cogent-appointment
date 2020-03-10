@@ -171,9 +171,10 @@ public class DashBoardQuery {
         return whereClause;
     }
 
-    public static final String QUERY_TO_FETCH_DASHBOARD_FEATURES(DashboardFeatureRequestDTO dashboardFeatureRequestDTO) {
+    public static final String QUERY_TO_FETCH_DASHBOARD_FEATURES(Long adminId,Long hospitalId) {
 
         return " SELECT" +
+                " df.id as id,"+
                 " df.name as name," +
                 " df.code as code," +
                 " df.status as status" +
@@ -183,7 +184,7 @@ public class DashBoardQuery {
                 " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                 " LEFT JOIN Department d ON d.id=p.department.id" +
                 " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
-                " WHERE a.id=" + dashboardFeatureRequestDTO.getAdminId()+
-                " AND h.id=" + dashboardFeatureRequestDTO.getHospitalId();
+                " WHERE a.id=" + adminId+
+                " AND h.id=" + hospitalId;
     }
 }

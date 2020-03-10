@@ -4,7 +4,6 @@ import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.request.admin.AdminInfoRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.admin.AdminSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.admin.AdminUpdateRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.dashboard.DashboardFeatureRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.admin.AdminDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.admin.AdminLoggedInInfoResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.admin.AdminMacAddressInfoResponseDTO;
@@ -152,8 +151,8 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     }
 
     @Override
-    public List<DashboardFeatureResponseDTO> fetchDashboardEntityByAdmin(DashboardFeatureRequestDTO dashboardFeatureRequestDTO) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DASHBOARD_FEATURES(dashboardFeatureRequestDTO));
+    public List<DashboardFeatureResponseDTO> fetchDashboardFeaturesByAdmin(Long adminId, Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DASHBOARD_FEATURES(adminId, hospitalId));
 
         List<DashboardFeatureResponseDTO> result = transformQueryToResultList(query, DashboardFeatureResponseDTO.class);
 

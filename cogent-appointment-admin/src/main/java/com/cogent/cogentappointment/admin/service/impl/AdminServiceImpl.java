@@ -10,7 +10,10 @@ import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.exception.OperationUnsuccessfulException;
 import com.cogent.cogentappointment.admin.repository.*;
-import com.cogent.cogentappointment.admin.service.*;
+import com.cogent.cogentappointment.admin.service.AdminService;
+import com.cogent.cogentappointment.admin.service.EmailService;
+import com.cogent.cogentappointment.admin.service.MinioFileService;
+import com.cogent.cogentappointment.admin.service.ProfileService;
 import com.cogent.cogentappointment.admin.validator.LoginValidator;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
@@ -34,12 +37,13 @@ import java.util.stream.Collectors;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.*;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
-import static com.cogent.cogentappointment.admin.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.AdminLog.*;
 import static com.cogent.cogentappointment.admin.utils.AdminUtils.*;
 import static com.cogent.cogentappointment.admin.utils.GenderUtils.fetchGenderByCode;
+import static com.cogent.cogentappointment.admin.utils.commons.DashboardFeatureUtils.parseToDashboardFeature;
+import static com.cogent.cogentappointment.admin.utils.commons.DashboardFeatureUtils.parseToAdminDashboardFeature;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static java.lang.reflect.Array.get;
@@ -62,6 +66,10 @@ public class AdminServiceImpl implements AdminService {
 
     private final AdminAvatarRepository adminAvatarRepository;
 
+    private final DashboardFeatureRepository dashboardFeatureRepository;
+
+    private final AdminDashboardFeatureRepository adminDashboardFeatureRepository;
+
     private final AdminConfirmationTokenRepository confirmationTokenRepository;
 
     private final MinioFileService minioFileService;
@@ -75,7 +83,7 @@ public class AdminServiceImpl implements AdminService {
                             AdminMacAddressInfoRepository adminMacAddressInfoRepository,
                             AdminMetaInfoRepository adminMetaInfoRepository,
                             AdminAvatarRepository adminAvatarRepository,
-                            AdminConfirmationTokenRepository confirmationTokenRepository,
+                            DashboardFeatureRepository dashboardFeatureRepository, AdminDashboardFeatureRepository adminDashboardFeatureRepository, AdminConfirmationTokenRepository confirmationTokenRepository,
                             MinioFileService minioFileService, EmailService emailService,
                             ProfileService profileService) {
         this.validator = validator;
@@ -83,6 +91,8 @@ public class AdminServiceImpl implements AdminService {
         this.adminMacAddressInfoRepository = adminMacAddressInfoRepository;
         this.adminMetaInfoRepository = adminMetaInfoRepository;
         this.adminAvatarRepository = adminAvatarRepository;
+        this.dashboardFeatureRepository = dashboardFeatureRepository;
+        this.adminDashboardFeatureRepository = adminDashboardFeatureRepository;
         this.confirmationTokenRepository = confirmationTokenRepository;
         this.minioFileService = minioFileService;
         this.emailService = emailService;
@@ -114,6 +124,8 @@ public class AdminServiceImpl implements AdminService {
         saveMacAddressInfo(admin, adminRequestDTO.getMacAddressInfo());
 
         saveAdminMetaInfo(admin);
+
+        adminDashboardFeatureRepository.saveAll(parseToAdminDashboardFeature(adminRequestDTO.getAdminDashboardRequestDTOS(),admin));
 
         AdminConfirmationToken adminConfirmationToken =
                 saveAdminConfirmationToken(parseInAdminConfirmationToken(admin));

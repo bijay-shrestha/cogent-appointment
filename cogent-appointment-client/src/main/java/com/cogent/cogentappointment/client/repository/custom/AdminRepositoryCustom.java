@@ -39,6 +39,6 @@ public interface AdminRepositoryCustom {
 
     AdminLoggedInInfoResponseDTO fetchLoggedInAdminInfo(AdminInfoRequestDTO requestDTO, Long hospitalId);
 
-    List<DashboardFeatureResponseDTO> fetchDashboardEntityByAdmin(DashboardFeatureRequestDTO dashboardFeatureRequestDTO);
+    List<DashboardFeatureResponseDTO> fetchDashboardFeaturesByAdmin(Long adminId,Long hospitalId);
 }
 

@@ -53,7 +53,7 @@ public class WebResourceKeyConstants {
     //D
     public interface DashboardConstants {
         String BASE_DASHBOARD = "/dashboard";
-        String DYNAMIC_DASHBOARD_FEATURE = "/dynamic-feature";
+        String DYNAMIC_DASHBOARD_FEATURE = "/features";
         String GENERATE_REVENUE = "/revenueGenerated";
         String OVER_ALL_APPOINTMENT = "/overAllAppointments";
         String REVENUE_STATISTICS = "/revenueStatistics";

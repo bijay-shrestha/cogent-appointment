@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.dashboard.DashboardFeatureRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.GenerateRevenueRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.AppointmentCountResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.DashboardFeatureResponseDTO;
@@ -154,13 +153,15 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    public List<DashboardFeatureResponseDTO> getDashboardEntityByAdmin(DashboardFeatureRequestDTO dashboardFeatureRequestDTO) {
+    public List<DashboardFeatureResponseDTO> getDashboardFeaturesByAdmin(Long adminId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, DYNAMIC_DASHBOARD_FEATURE);
 
+        Long hospitalId = getLoggedInHospitalId();
+
         List<DashboardFeatureResponseDTO> responseDTOS =
-                adminRepository.fetchDashboardEntityByAdmin(dashboardFeatureRequestDTO);
+                adminRepository.fetchDashboardFeaturesByAdmin(adminId, hospitalId);
 
         log.info(FETCHING_PROCESS_COMPLETED, DYNAMIC_DASHBOARD_FEATURE, getDifferenceBetweenTwoTime(startTime));
 

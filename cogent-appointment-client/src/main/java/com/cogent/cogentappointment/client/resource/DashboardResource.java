@@ -80,9 +80,9 @@ public class DashboardResource {
         return ok().body(appointmentService.fetchTodayAppointmentQueueByTime(appointmentQueueRequestDTO, pageable));
     }
 
-    @PutMapping(DYNAMIC_DASHBOARD_FEATURE)
+    @PutMapping(DYNAMIC_DASHBOARD_FEATURE+ADMIN_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_DYNAMIC_DASHBOARD_FEATURE)
-    public ResponseEntity<?> fetchDashboardEntityByAdmin(@RequestBody DashboardFeatureRequestDTO dashboardFeatureRequestDTO) {
-        return ok(dashboardService.getDashboardEntityByAdmin(dashboardFeatureRequestDTO));
+    public ResponseEntity<?> fetchDashboardEntityByAdmin(@PathVariable("adminId") Long adminId) {
+        return ok(dashboardService.getDashboardFeaturesByAdmin(adminId));
     }
 }

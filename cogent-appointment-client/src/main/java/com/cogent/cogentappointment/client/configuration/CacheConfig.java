@@ -23,6 +23,7 @@ public class CacheConfig {
                 CACHE_REVENUE_TREND,
                 CACHE_TODAY_APPOINTMENT_QUEUE,
                 CACHE_TODAY_APPOINTMENT_QUEUE_TIME,
-                CACHE_APPOINTMENT_STATUS);
+                CACHE_APPOINTMENT_STATUS,
+                CACHE_DOCTOR_REVENUE_TRACKER);
     }
 }

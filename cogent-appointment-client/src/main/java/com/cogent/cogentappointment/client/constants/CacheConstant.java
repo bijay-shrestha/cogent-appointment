@@ -8,4 +8,5 @@ public class CacheConstant {
     public static final String CACHE_TODAY_APPOINTMENT_QUEUE = "todayAppointmentQueue";
     public static final String CACHE_TODAY_APPOINTMENT_QUEUE_TIME = "todayAppointmentQueueByTime";
     public static final String CACHE_APPOINTMENT_STATUS = "appointmentStatus";
+    public static final String CACHE_DOCTOR_REVENUE_TRACKER = "doctorReveneuTracker";
 }

@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.dto.request.appointment.*;
-import com.cogent.cogentappointment.client.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.cancel.AppointmentCancelRequestDTO;
@@ -157,7 +156,8 @@ public class AppointmentServiceImpl implements AppointmentService {
             CACHE_REVENUE_TREND,
             CACHE_TODAY_APPOINTMENT_QUEUE,
             CACHE_TODAY_APPOINTMENT_QUEUE_TIME,
-            CACHE_APPOINTMENT_STATUS
+            CACHE_APPOINTMENT_STATUS,
+            CACHE_DOCTOR_REVENUE_TRACKER
     }, allEntries = true)
     public AppointmentSuccessResponseDTO saveAppointmentForSelf(AppointmentRequestDTOForSelf requestDTO) {
 
@@ -220,7 +220,8 @@ public class AppointmentServiceImpl implements AppointmentService {
             CACHE_REVENUE_TREND,
             CACHE_TODAY_APPOINTMENT_QUEUE,
             CACHE_TODAY_APPOINTMENT_QUEUE_TIME,
-            CACHE_APPOINTMENT_STATUS
+            CACHE_APPOINTMENT_STATUS,
+            CACHE_DOCTOR_REVENUE_TRACKER
     }, allEntries = true)
     public AppointmentSuccessResponseDTO saveAppointmentForOthers(AppointmentRequestDTOForOthers requestDTO) {
 
@@ -293,7 +294,14 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    @CacheEvict(value = CACHE_APPOINTMENT_STATUS, allEntries = true)
+    @CacheEvict(value = {CACHE_OVERALL_APPOINTMENTS,
+            CACHE_REVENUE_STATISTICS,
+            CACHE_REVENUE_TREND,
+            CACHE_TODAY_APPOINTMENT_QUEUE,
+            CACHE_TODAY_APPOINTMENT_QUEUE_TIME,
+            CACHE_APPOINTMENT_STATUS,
+            CACHE_DOCTOR_REVENUE_TRACKER
+    }, allEntries = true)
     public void cancelAppointment(AppointmentCancelRequestDTO cancelRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
@@ -314,7 +322,14 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    @CacheEvict(value = CACHE_APPOINTMENT_STATUS, allEntries = true)
+    @CacheEvict(value = {CACHE_OVERALL_APPOINTMENTS,
+            CACHE_REVENUE_STATISTICS,
+            CACHE_REVENUE_TREND,
+            CACHE_TODAY_APPOINTMENT_QUEUE,
+            CACHE_TODAY_APPOINTMENT_QUEUE_TIME,
+            CACHE_APPOINTMENT_STATUS,
+            CACHE_DOCTOR_REVENUE_TRACKER
+    }, allEntries = true)
     public void rescheduleAppointment(AppointmentRescheduleRequestDTO rescheduleRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
@@ -367,6 +382,14 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @CacheEvict(value = {CACHE_OVERALL_APPOINTMENTS,
+            CACHE_REVENUE_STATISTICS,
+            CACHE_REVENUE_TREND,
+            CACHE_TODAY_APPOINTMENT_QUEUE,
+            CACHE_TODAY_APPOINTMENT_QUEUE_TIME,
+            CACHE_APPOINTMENT_STATUS,
+            CACHE_DOCTOR_REVENUE_TRACKER
+    }, allEntries = true)
     public void cancelRegistration(Long appointmentReservationId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -398,7 +421,14 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    @CacheEvict(value = {CACHE_OVERALL_REGISTERED_PATIENTS, CACHE_APPOINTMENT_STATUS}, allEntries = true)
+    @CacheEvict(value = {CACHE_OVERALL_APPOINTMENTS,
+            CACHE_REVENUE_STATISTICS,
+            CACHE_REVENUE_TREND,
+            CACHE_TODAY_APPOINTMENT_QUEUE,
+            CACHE_TODAY_APPOINTMENT_QUEUE_TIME,
+            CACHE_APPOINTMENT_STATUS,
+            CACHE_DOCTOR_REVENUE_TRACKER
+    }, allEntries = true)
     public void approveAppointment(Long appointmentId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -416,6 +446,14 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    @CacheEvict(value = {CACHE_OVERALL_APPOINTMENTS,
+            CACHE_REVENUE_STATISTICS,
+            CACHE_REVENUE_TREND,
+            CACHE_TODAY_APPOINTMENT_QUEUE,
+            CACHE_TODAY_APPOINTMENT_QUEUE_TIME,
+            CACHE_APPOINTMENT_STATUS,
+            CACHE_DOCTOR_REVENUE_TRACKER
+    }, allEntries = true)
     public void rejectAppointment(AppointmentRejectDTO rejectDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 

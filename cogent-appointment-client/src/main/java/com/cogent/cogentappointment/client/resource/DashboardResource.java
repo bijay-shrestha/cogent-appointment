@@ -1,7 +1,5 @@
 package com.cogent.cogentappointment.client.resource;
 
-import com.cogent.cogentappointment.client.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
 import com.cogent.cogentappointment.client.service.AppointmentService;
 import com.cogent.cogentappointment.client.service.DashboardService;
 import io.swagger.annotations.Api;
@@ -14,7 +12,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.Date;
 
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.DashboardConstant.*;
@@ -40,8 +37,8 @@ public class DashboardResource {
         this.appointmentService = appointmentService;
     }
 
-    @PutMapping(GENERATE_REVENUE)
-    @ApiOperation(GENERATE_REVENUE_OPERATION)
+    @PutMapping(REVENUE_STATISTICS)
+    @ApiOperation(REVENUE_STATISTICS_OPERATION)
     @ApiImplicitParams({@ApiImplicitParam(name = "currentToDate", value = "dd/MM/yyyy", required = true,
             dataType = "date", paramType = "query"),
             @ApiImplicitParam(name = "currentFromDate", value = "dd/MM/yyyy", required = true, dataType = "date",
@@ -76,13 +73,13 @@ public class DashboardResource {
         return ok(dashboardService.getPatientStatistics());
     }
 
-    @PutMapping(REVENUE_STATISTICS)
-    @ApiOperation(REVENUE_STATISTICS_OPERATION)
+    @PutMapping(REVENUE_TREND)
+    @ApiOperation(REVENUE_TREND)
     @ApiImplicitParams({@ApiImplicitParam(name = "toDate", value = "dd/MM/yyyy", required = true, dataType = "date",
             paramType = "query"),
             @ApiImplicitParam(name = "fromDate", value = "dd/MM/yyyy", required = true, dataType = "date",
                     paramType = "query")})
-    public ResponseEntity<?> getRevenueTrend(@DateTimeFormat(pattern = "dd/MM/yyyy") Date toDate,
+    public ResponseEntity<?> revenueTrend(@DateTimeFormat(pattern = "dd/MM/yyyy") Date toDate,
                                              @DateTimeFormat(pattern = "dd/MM/yyyy") Date fromDate) {
         return ok(dashboardService.getRevenueTrend(toDate, fromDate));
     }
@@ -103,5 +100,19 @@ public class DashboardResource {
                                                          @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ok().body(appointmentService.fetchTodayAppointmentQueueByTime(doctorId, pageable));
+    }
+
+    @PutMapping(DOCTOR_REVENUE)
+    @ApiOperation(DOCTOR_REVENUE_OPERATION)
+    @ApiImplicitParams({@ApiImplicitParam(name = "toDate", value = "dd/MM/yyyy", required = true, dataType = "date",
+            paramType = "query"),
+            @ApiImplicitParam(name = "fromDate", value = "dd/MM/yyyy", required = true, dataType = "date",
+                    paramType = "query")})
+    public ResponseEntity<?> getDoctorRevenueTracker(@DateTimeFormat(pattern = "dd/MM/yyyy") Date toDate,
+                                                     @DateTimeFormat(pattern = "dd/MM/yyyy") Date fromDate,
+                                                     @RequestParam("page") int page,
+                                                     @RequestParam("size") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ok(dashboardService.getDoctorRevenueList(toDate, fromDate, pageable));
     }
 }

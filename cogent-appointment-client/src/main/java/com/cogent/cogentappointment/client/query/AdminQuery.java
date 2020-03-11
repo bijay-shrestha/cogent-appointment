@@ -161,7 +161,7 @@ public class AdminQuery {
                     " (a.username=:username OR a.email =:email)" +
                     " WHERE" +
                     " AND a.status != 'D'" +
-                    " AND h.id=:hospitalId";
+                    " AND h.code=:hospitalCode";
 
     public static final String QUERY_TO_FETCH_ADMIN_INFO =
             " SELECT" +

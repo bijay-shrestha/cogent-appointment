@@ -4,7 +4,6 @@ import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.request.admin.AdminInfoRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.admin.AdminSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.admin.AdminUpdateRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.dashboard.DashboardFeatureRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.admin.AdminDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.admin.AdminLoggedInInfoResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.admin.AdminMinimalResponseDTO;

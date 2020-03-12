@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.Validator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -42,7 +43,6 @@ import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.AdminLog.*;
 import static com.cogent.cogentappointment.admin.utils.AdminUtils.*;
 import static com.cogent.cogentappointment.admin.utils.GenderUtils.fetchGenderByCode;
-import static com.cogent.cogentappointment.admin.utils.commons.DashboardFeatureUtils.parseToDashboardFeature;
 import static com.cogent.cogentappointment.admin.utils.commons.DashboardFeatureUtils.parseToAdminDashboardFeature;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
@@ -125,7 +125,9 @@ public class AdminServiceImpl implements AdminService {
 
         saveAdminMetaInfo(admin);
 
-        adminDashboardFeatureRepository.saveAll(parseToAdminDashboardFeature(adminRequestDTO.getAdminDashboardRequestDTOS(),admin));
+        List<DashboardFeature> dashboardFeatureList = findActiveDashboardFeatures(adminRequestDTO.getAdminDashboardRequestDTOS());
+
+        adminDashboardFeatureRepository.saveAll(parseToAdminDashboardFeature(dashboardFeatureList, admin));
 
         AdminConfirmationToken adminConfirmationToken =
                 saveAdminConfirmationToken(parseInAdminConfirmationToken(admin));
@@ -136,6 +138,22 @@ public class AdminServiceImpl implements AdminService {
         sendEmail(emailRequestDTO);
 
         log.info(SAVING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    private List<DashboardFeature> findActiveDashboardFeatures(List<AdminDashboardRequestDTO> adminDashboardRequestDTOS) {
+
+        List<DashboardFeature> dashboardFeatureList = new ArrayList<>();
+        adminDashboardRequestDTOS.forEach(result -> {
+
+            DashboardFeature dashboardFeature = dashboardFeatureRepository.findActiveDashboardFeatureById(result.getId())
+                    .orElseThrow(() -> ADMIN_WITH_GIVEN_ID_NOT_FOUND.apply(result.getId()));
+
+            dashboardFeatureList.add(dashboardFeature);
+
+        });
+
+        return dashboardFeatureList;
+
     }
 
     @Override
@@ -258,11 +276,27 @@ public class AdminServiceImpl implements AdminService {
 
         updateMacAddressInfo(updateRequestDTO.getMacAddressUpdateInfo(), admin);
 
+        List<AdminDashboardFeature> adminDashboardFeatureList = findAdminDashboardFeatureBydashboardFeatureId(updateRequestDTO.getAdminDashboardRequestDTOS(), admin);
+
         updateAdminMetaInfo(admin);
 
         sendEmail(emailRequestDTO);
 
         log.info(UPDATING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    private List<AdminDashboardFeature> findAdminDashboardFeatureBydashboardFeatureId(List<AdminDashboardRequestDTO> adminDashboardRequestDTOS, Admin admin) {
+
+        List<AdminDashboardFeature> adminDashboardFeatureList = new ArrayList<>();
+        adminDashboardRequestDTOS.forEach(result -> {
+
+            AdminDashboardFeature adminDashboardFeature = adminDashboardFeatureRepository.findAdminDashboardFeatureBydashboardFeatureId(admin.getId())
+                    .orElseThrow(() -> new NoContentFoundException(AdminDashboardFeature.class));
+            adminDashboardFeatureList.add(adminDashboardFeature);
+
+        });
+
+        return adminDashboardFeatureList;
     }
 
     @Override

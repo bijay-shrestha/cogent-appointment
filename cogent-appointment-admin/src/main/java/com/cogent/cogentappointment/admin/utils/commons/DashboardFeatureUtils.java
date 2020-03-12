@@ -13,20 +13,34 @@ import java.util.List;
  */
 public class DashboardFeatureUtils {
 
-    public static List<AdminDashboardFeature> parseToAdminDashboardFeature(List<AdminDashboardRequestDTO> requestDTOList, Admin admin) {
+    public static List<AdminDashboardFeature> parseToAdminDashboardFeature(List<DashboardFeature> dashboardFeatureList, Admin admin) {
 
         List<AdminDashboardFeature> adminDashboardFeatureList = new ArrayList<>();
-        requestDTOList.forEach(dashboardFeature -> {
-
+        dashboardFeatureList.forEach(dashboardFeature -> {
             AdminDashboardFeature adminDashboardFeature = new AdminDashboardFeature();
             adminDashboardFeature.setAdminId(admin);
-            adminDashboardFeature.setDashboardFeatureId(dashboardFeature.getId());
+            adminDashboardFeature.setDashboardFeatureId(dashboardFeature);
             adminDashboardFeature.setStatus('Y');
-
             adminDashboardFeatureList.add(adminDashboardFeature);
 
         });
 
         return adminDashboardFeatureList;
     }
+
+    public static List<AdminDashboardFeature> parseToUpdatedAdminDashboardFeature(List<DashboardFeature> dashboardFeatureList, Admin admin) {
+
+        List<AdminDashboardFeature> adminDashboardFeatureList = new ArrayList<>();
+        dashboardFeatureList.forEach(dashboardFeature -> {
+            AdminDashboardFeature adminDashboardFeature = new AdminDashboardFeature();
+            adminDashboardFeature.setAdminId(admin);
+            adminDashboardFeature.setDashboardFeatureId(dashboardFeature);
+            adminDashboardFeature.setStatus('Y');
+            adminDashboardFeatureList.add(adminDashboardFeature);
+
+        });
+
+        return adminDashboardFeatureList;
+    }
+
 }

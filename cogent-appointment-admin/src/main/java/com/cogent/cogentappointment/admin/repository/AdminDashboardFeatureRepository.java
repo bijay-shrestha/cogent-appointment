@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.admin.repository;
 
 import com.cogent.cogentappointment.persistence.model.AdminDashboardFeature;
-import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

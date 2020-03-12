@@ -91,6 +91,8 @@ public class ErrorMessageConstants {
     public static final String INVALID_USERNAME_OR_HOSPITAL_CODE = "Invalid username or hospitalcode";
     public static final String INVALID_PASSWORD = "Invalid password";
 
+    public static final String INVALID_VERIFICATION_TOKEN = "Invalid verification token";
+
     //J
 
     //K

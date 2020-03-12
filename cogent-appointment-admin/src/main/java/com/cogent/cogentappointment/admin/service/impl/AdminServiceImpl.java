@@ -276,7 +276,7 @@ public class AdminServiceImpl implements AdminService {
 
         updateMacAddressInfo(updateRequestDTO.getMacAddressUpdateInfo(), admin);
 
-        List<AdminDashboardFeature> adminDashboardFeatureList = findAdminDashboardFeatureBydashboardFeatureId(updateRequestDTO.getAdminDashboardRequestDTOS(), admin);
+        updateAdminDashboardFeature(updateRequestDTO.getAdminDashboardRequestDTOS(), admin);
 
         updateAdminMetaInfo(admin);
 
@@ -285,13 +285,15 @@ public class AdminServiceImpl implements AdminService {
         log.info(UPDATING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
     }
 
-    private List<AdminDashboardFeature> findAdminDashboardFeatureBydashboardFeatureId(List<AdminDashboardRequestDTO> adminDashboardRequestDTOS, Admin admin) {
+    private List<AdminDashboardFeature> updateAdminDashboardFeature(List<AdminDashboardRequestDTO> adminDashboardRequestDTOS, Admin admin) {
 
         List<AdminDashboardFeature> adminDashboardFeatureList = new ArrayList<>();
         adminDashboardRequestDTOS.forEach(result -> {
 
-            AdminDashboardFeature adminDashboardFeature = adminDashboardFeatureRepository.findAdminDashboardFeatureBydashboardFeatureId(admin.getId())
+            AdminDashboardFeature adminDashboardFeature = adminDashboardFeatureRepository.findAdminDashboardFeatureBydashboardFeatureId(result.getId(),admin.getId())
                     .orElseThrow(() -> new NoContentFoundException(AdminDashboardFeature.class));
+
+            adminDashboardFeature.setStatus(result.getStatus());
             adminDashboardFeatureList.add(adminDashboardFeature);
 
         });

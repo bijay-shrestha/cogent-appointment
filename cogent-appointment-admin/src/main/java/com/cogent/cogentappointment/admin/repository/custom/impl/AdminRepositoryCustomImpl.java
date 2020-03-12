@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.constants.ErrorMessageConstants;
+import com.cogent.cogentappointment.admin.constants.QueryConstants;
 import com.cogent.cogentappointment.admin.constants.StatusConstants;
 import com.cogent.cogentappointment.admin.dto.request.admin.AdminInfoRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.AdminSearchRequestDTO;
@@ -9,6 +10,7 @@ import com.cogent.cogentappointment.admin.dto.response.admin.*;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.AdminRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Admin;
+import com.cogent.cogentappointment.persistence.model.AdminDashboardFeature;
 import com.cogent.cogentappointment.persistence.model.DashboardFeature;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

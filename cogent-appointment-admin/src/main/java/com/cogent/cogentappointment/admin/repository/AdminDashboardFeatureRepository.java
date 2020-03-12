@@ -15,6 +15,6 @@ import java.util.Optional;
 @Repository
 public interface AdminDashboardFeatureRepository extends JpaRepository<AdminDashboardFeature,Long> {
 
-    @Query("SELECT adf FROM AdminDashboardFeature adf WHERE adf.dashboardFeatureId.id = :id AND adf.status!='D'")
-    Optional<AdminDashboardFeature> findAdminDashboardFeatureBydashboardFeatureId(@Param("id") Long id);
+    @Query("SELECT adf FROM AdminDashboardFeature adf WHERE adf.dashboardFeatureId.id =:id AND adf.adminId.id=:adminid AND adf.status!='D'")
+    Optional<AdminDashboardFeature> findAdminDashboardFeatureBydashboardFeatureId(@Param("id") Long dashboardFeatureId,@Param("adminid")Long adminId);
 }

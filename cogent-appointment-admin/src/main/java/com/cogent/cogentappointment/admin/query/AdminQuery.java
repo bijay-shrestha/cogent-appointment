@@ -202,4 +202,6 @@ public class AdminQuery {
                     " AND a.status = 'Y'" +
                     " AND h.isCogentAdmin='Y'";
 
+
+
 }

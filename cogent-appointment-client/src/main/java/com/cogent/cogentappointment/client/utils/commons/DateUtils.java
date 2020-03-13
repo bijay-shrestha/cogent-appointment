@@ -1,13 +1,14 @@
 package com.cogent.cogentappointment.client.utils.commons;
 
+import lombok.SneakyThrows;
+
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
 
 import static com.cogent.cogentappointment.client.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.client.constants.UtilityConfigConstants.*;
@@ -64,6 +65,7 @@ public class DateUtils {
     public static Date convertStringToDate(String date) throws ParseException {
         return new SimpleDateFormat("yyyy-MM-dd").parse(date);
     }
+
 
     public static int getYearFromNepaliDate(String nepaliDate) {
         return Integer.parseInt(nepaliDate.split(HYPHEN)[0]);
@@ -152,6 +154,23 @@ public class DateUtils {
         } else {
             return false;
         }
+    }
+
+    public static List<Date> getDatesBetween(
+            Date startDate, Date endDate) {
+        List<Date> datesInRange = new ArrayList<>();
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(startDate);
+
+        Calendar endCalendar = new GregorianCalendar();
+        endCalendar.setTime(endDate);
+
+        while (calendar.before(endCalendar)) {
+            Date result = calendar.getTime();
+            datesInRange.add(result);
+            calendar.add(Calendar.DATE, 1);
+        }
+        return datesInRange;
     }
 
 }

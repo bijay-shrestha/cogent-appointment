@@ -35,6 +35,7 @@ public class WebResourceKeyConstants {
         String STATUS = "/status";
         String LOG = "/log";
         String RESCHEDULE_LOG = "/reschedule-log";
+        String DATES = "/dates";
     }
 
     //B
@@ -88,6 +89,14 @@ public class WebResourceKeyConstants {
 
 
     //E
+    public interface EsewaConstants {
+        String BASE_ESEWA = "/eSewa";
+        String AVATAR = "/avatar";
+        String ADMIN_META_INFO = "/metaInfo";
+        String CHANGE_PASSWORD = "/changePassword";
+        String RESET_PASSWORD = "/resetPassword";
+        String VERIFY = "/verify";
+    }
 
     //F
 

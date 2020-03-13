@@ -47,10 +47,7 @@ public class EsewaServiceImpl implements EsewaService {
         List<Date> dates = getDatesBetween(doctorDutyRosterAppointmentDate.getFromDate(),
                 doctorDutyRosterAppointmentDate.getToDate());
 
-        System.out.println(dates);
-
-        matachAndListDates(requestDTO,dates,weekDaysDutyRosterAppointmentDate);
-        return null;
+        return matachAndListDates(requestDTO,dates,weekDaysDutyRosterAppointmentDate);
     }
 
     private AppointmentDatesResponseDTO matachAndListDates(AppointmentDatesRequestDTO requestDTO,

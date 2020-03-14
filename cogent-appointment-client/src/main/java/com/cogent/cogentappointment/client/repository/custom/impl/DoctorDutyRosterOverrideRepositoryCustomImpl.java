@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.Date;
@@ -24,9 +25,7 @@ import static com.cogent.cogentappointment.client.query.DoctorDutyRosterOverride
 import static com.cogent.cogentappointment.client.query.EsewaQuery.QUERY_TO_FETCH_DUTY_ROSTER_OVERRIDE_BY_DUTY_ROSTER_ID;
 import static com.cogent.cogentappointment.client.utils.DoctorDutyRosterOverrideUtils.parseQueryResultToDoctorDutyRosterStatusResponseDTO;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
-import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
-import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.transformQueryToResultList;
-import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.transformQueryToSingleResult;
+import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
 
 @Repository
 @Transactional(readOnly = true)
@@ -120,10 +119,11 @@ public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyR
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DUTY_ROSTER_OVERRIDE_BY_DUTY_ROSTER_ID)
                 .setParameter(DOCTOR_DUTY_ROSTER_ID, doctorDutyRosterId);
 
-        DoctorDutyRosterOverrideAppointmentDate responseDTOList = transformQueryToSingleResult(query,
-                DoctorDutyRosterOverrideAppointmentDate.class);
-
-        return responseDTOList;
+        try {
+            return transformQueryToSingleResult(query, DoctorDutyRosterOverrideAppointmentDate.class);
+        } catch (NoResultException e) {
+            throw new NoContentFoundException("Not Found");
+        }
     }
 
     private Supplier<NoContentFoundException> DOCTOR_DUTY_ROSTER_OVERRIDE_NOT_FOUND = () ->

@@ -17,11 +17,11 @@ public class EsewaQuery {
             "SELECT" +
                     " ddro.toDate as toDate," +
                     " ddro.fromDate as fromDate," +
-                    " ddro.startTime as startTime," +
-                    " ddro.endTime as endTime," +
+                    " DATE_FORMAT(ddro.startTime ,'%H:%i') as startTime,"+
+                    " DATE_FORMAT(ddro.endTime ,'%H:%i') as endTime,"+
                     " ddro.dayOffStatus as dayOff" +
                     " FROM DoctorDutyRosterOverride ddro" +
-                    " WHERE ddro.doctorDutyRosterId=:doctorDutyRosterId" +
+                    " WHERE ddro.doctorDutyRosterId.id=:doctorDutyRosterId" +
                     " AND ddro.status='Y'";
 
     public static final String QUERY_TO_FETCH_WEEKDAYS_DUTY_ROSTER_BY_DUTY_ROSTER_ID=
@@ -34,5 +34,6 @@ public class EsewaQuery {
                     " LEFT JOIN DoctorWeekDaysDutyRoster dwdr ON dwdr.doctorDutyRosterId.id =ddr.id" +
                     " LEFT JOIN WeekDays wd ON wd.id=dwdr.weekDaysId.id" +
                     " WHERE ddr.id=:doctorDutyRosterId" +
-                    " AND ddr.status='Y'";
+                    " AND ddr.status='Y'" +
+                    " AND dwdr.dayOffStatus='N'";
 }

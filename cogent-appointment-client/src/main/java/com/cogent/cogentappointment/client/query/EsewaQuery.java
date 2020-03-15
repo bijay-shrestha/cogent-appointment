@@ -41,7 +41,7 @@ public class EsewaQuery {
                     " AND ddr.status='Y'" +
                     " AND dwdr.dayOffStatus='N'";
 
-    /*FETCH DOCTOR AVAILABLE STATUS*/
+    /*FETCH DOCTOR AVAILABLE STATUS FROM DOCTOR DUTY ROSTER OVERRIDE*/
     public static String QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_STATUS(AppointmentDetailRequestDTO requestDTO) {
 
         String query = "SELECT" +
@@ -51,18 +51,61 @@ public class EsewaQuery {
                 "   'Y'" +
                 " ELSE" +
                 "   'N'" +
-                " END AS status" +
+                " END AS status," +
+                " CASE WHEN" +
+                "   COUNT(ddro.id)>0" +
+                " THEN" +
+                "   CONCAT(d.name, 'is available for the day')" +
+                " ELSE" +
+                "   CONCAT(d.name, 'is not available for the day')" +
+                " END AS message" +
                 " FROM DoctorDutyRoster ddr" +
                 " LEFT JOIN DoctorDutyRosterOverride ddro ON ddr.id = ddro.doctorDutyRosterId.id" +
+                " LEFT JOIN Doctor d ON d.id = ddr.doctorId.id" +
                 " WHERE" +
                 " ddr.status = 'Y'" +
                 " AND ddro.status = 'Y'" +
                 " AND ddro.dayOffStatus = 'N'" +
                 " AND ddr.hospitalId.id =:hospitalId" +
-                " AND :date BETWEEN ddro.fromDate AND ddro.toDate";
+                " AND (:date BETWEEN ddro.fromDate AND ddro.toDate)";
 
         if (!Objects.isNull(requestDTO.getDoctorId()))
-            query += " AND ddr.doctorId.id =:doctorId";
+            query += " AND d.id =:doctorId";
+
+        if (!Objects.isNull(requestDTO.getSpecializationId()))
+            query += " AND ddr.specializationId.id =:specializationId";
+
+        return query;
+    }
+
+    /*FETCH DOCTOR AVAILABLE STATUS FROM DOCTOR DUTY ROSTER*/
+    public static String QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_STATUS(AppointmentDetailRequestDTO requestDTO) {
+        String query = "SELECT" +
+                " CASE WHEN" +
+                "   COUNT(dw.id)>0" +
+                " THEN" +
+                "   'Y'" +
+                " ELSE" +
+                "   'N'" +
+                " END AS status," +
+                " CASE WHEN" +
+                "   COUNT(dw.id)>0" +
+                " THEN" +
+                "   CONCAT(d.name, 'is available for the day')" +
+                " ELSE" +
+                "   CONCAT(d.name, 'is not available for the day')" +
+                " END AS message" +
+                " FROM DoctorDutyRoster ddr" +
+                " LEFT JOIN DoctorWeekDaysDutyRoster dw ON dw.doctorDutyRosterId.id = ddr.id" +
+                " LEFT JOIN Doctor d ON d.id = ddr.doctorId.id" +
+                " WHERE" +
+                " ddr.status = 'Y'" +
+                " AND dw.dayOffStatus = 'N'" +
+                " AND ddr.hospitalId.id =:hospitalId" +
+                " AND :date BETWEEN ddr.fromDate AND ddr.toDate";
+
+        if (!Objects.isNull(requestDTO.getDoctorId()))
+            query += " AND d.id =:doctorId";
 
         if (!Objects.isNull(requestDTO.getSpecializationId()))
             query += " AND ddr.specializationId.id =:specializationId";

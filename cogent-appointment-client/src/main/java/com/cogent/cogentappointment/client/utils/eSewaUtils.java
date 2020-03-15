@@ -9,9 +9,7 @@ public class eSewaUtils {
 
     public static DoctorAvailabilityStatusResponseDTO parseToDoctorAvailabilityStatusResponseDTO(Character status) {
 
-        return DoctorAvailabilityStatusResponseDTO.builder()
-                .status(status)
-                .build();
+     return null;
 
     }
 }

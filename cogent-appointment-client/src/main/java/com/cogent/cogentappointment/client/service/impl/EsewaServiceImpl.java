@@ -17,9 +17,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
-import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDatesBetween;
-import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
+import static com.cogent.cogentappointment.client.log.constants.eSewaLog.DOCTOR_AVAILABLE_STATUS;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 
 @Service
 @Transactional
@@ -67,12 +68,21 @@ public class EsewaServiceImpl implements EsewaService {
     @Override
     public DoctorAvailabilityStatusResponseDTO fetchDoctorAvailableStatus(AppointmentDetailRequestDTO requestDTO) {
 
-        Character doctorAvailableStatus = dutyRosterOverrideRepository.fetchDoctorDutyRosterStatus(requestDTO);
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        if (doctorAvailableStatus.equals(YES))
-            return null;
+        log.info(FETCHING_PROCESS_STARTED, DOCTOR_AVAILABLE_STATUS);
 
-        return null;
+        DoctorAvailabilityStatusResponseDTO doctorAvailableStatus =
+                dutyRosterOverrideRepository.fetchDoctorDutyRosterOverrideStatus(requestDTO);
+
+        DoctorAvailabilityStatusResponseDTO responseDTO =
+                doctorAvailableStatus.getStatus().equals("Y")
+                        ? doctorAvailableStatus
+                        : dutyRosterRepository.fetchDoctorDutyRosterStatus(requestDTO);
+
+        log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_AVAILABLE_STATUS, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTO;
     }
 
     private List<AvaliableDatesResponseDTO> getDutyRosterOverrideDates(

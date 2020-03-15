@@ -149,6 +149,7 @@ public class SwaggerConstants {
     //E
     public interface EsewaConstant {
         String BASE_API_VALUE = "This is eSewa Resource";
+        String FETCH_DOCTOR_AVAILABLE_STATUS_OPERATION = "Return message if the doctor is available on the date";
 
     }
 

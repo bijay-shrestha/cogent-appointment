@@ -14,7 +14,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class DoctorAvailabilityStatusResponseDTO implements Serializable {
 
-    private Character status;
+    private String status;
 
     private String message;
 }

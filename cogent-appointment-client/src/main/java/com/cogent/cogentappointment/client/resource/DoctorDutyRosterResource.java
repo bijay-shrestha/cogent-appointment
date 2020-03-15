@@ -109,9 +109,9 @@ public class DoctorDutyRosterResource {
 //
 //    @PutMapping(DOCTOR_DUTY_ROSTER_STATUS)
 //    @ApiOperation(FETCH_DOCTOR_DUTY_ROSTER_STATUS_OPERATION)
-//    public List<DoctorDutyRosterStatusResponseDTO> fetchDoctorDutyRosterStatus(
+//    public List<DoctorDutyRosterStatusResponseDTO> fetchDoctorDutyRosterOverrideStatus(
 //            @RequestBody DoctorDutyRosterStatusRequestDTO searchRequestDTO) {
-//        return doctorDutyRosterService.fetchDoctorDutyRosterStatus(searchRequestDTO);
+//        return doctorDutyRosterService.fetchDoctorDutyRosterOverrideStatus(searchRequestDTO);
 //    }
 }
 

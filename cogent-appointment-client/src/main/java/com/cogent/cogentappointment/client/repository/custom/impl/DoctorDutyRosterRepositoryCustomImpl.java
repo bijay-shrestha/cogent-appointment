@@ -4,10 +4,13 @@ import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentDa
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.DoctorDutyRosterSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.DoctorExistingDutyRosterRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.eSewa.AppointmentDetailRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appoinmentDateAndTime.DoctorDutyRosterAppointmentDate;
 import com.cogent.cogentappointment.client.dto.response.appointment.appoinmentDateAndTime.DoctorWeekDaysDutyRosterAppointmentDate;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.*;
+import com.cogent.cogentappointment.client.dto.response.eSewa.DoctorAvailabilityStatusResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
+import com.cogent.cogentappointment.client.query.EsewaQuery;
 import com.cogent.cogentappointment.client.repository.custom.DoctorDutyRosterRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRoster;
 import org.springframework.data.domain.Pageable;
@@ -194,6 +197,22 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
                 DoctorWeekDaysDutyRosterAppointmentDate.class);
 
         return responseDTOList;
+    }
+
+    @Override
+    public DoctorAvailabilityStatusResponseDTO fetchDoctorDutyRosterStatus(AppointmentDetailRequestDTO requestDTO) {
+        Query query = createQuery.apply(entityManager,
+                EsewaQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_STATUS(requestDTO))
+                .setParameter(DATE, utilDateToSqlDate(requestDTO.getDate()))
+                .setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
+
+        if (!Objects.isNull(requestDTO.getDoctorId()))
+            query.setParameter(DOCTOR_ID, requestDTO.getDoctorId());
+
+        if (!Objects.isNull(requestDTO.getSpecializationId()))
+            query.setParameter(SPECIALIZATION_ID, requestDTO.getSpecializationId());
+
+        return transformQueryToSingleResult(query, DoctorAvailabilityStatusResponseDTO.class);
     }
 
     private DoctorDutyRosterResponseDTO fetchDoctorDutyRosterDetails(Long doctorDutyRosterId, Long hospitalId) {

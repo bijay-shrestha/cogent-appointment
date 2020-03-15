@@ -156,7 +156,7 @@ public class DateUtils {
         }
     }
 
-    public static List<Date> getDatesBetween(
+    public static List<Date> getDates(
             Date startDate, Date endDate) {
         List<Date> datesInRange = new ArrayList<>();
         Calendar calendar = new GregorianCalendar();
@@ -165,7 +165,7 @@ public class DateUtils {
         Calendar endCalendar = new GregorianCalendar();
         endCalendar.setTime(endDate);
 
-        while (calendar.before(endCalendar)) {
+        while (!calendar.after(endCalendar) && !calendar.before(new Date())) {
             Date result = calendar.getTime();
             datesInRange.add(result);
             calendar.add(Calendar.DATE, 1);

@@ -3,7 +3,10 @@ package com.cogent.cogentappointment.client.service.impl;
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentDatesRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.eSewa.AppointmentDetailRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appoinmentDateAndTime.*;
+import com.cogent.cogentappointment.client.dto.response.eSewa.AvaliableDateByDoctorIdResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.eSewa.DoctorAvailabilityStatusResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.eSewa.DoctorDutyRosterAppointmentDateAndSpecilizationDTO;
+import com.cogent.cogentappointment.client.dto.response.eSewa.DutyRosterOverrideAppointmentDate;
 import com.cogent.cogentappointment.client.repository.DoctorDutyRosterOverrideRepository;
 import com.cogent.cogentappointment.client.repository.DoctorDutyRosterRepository;
 import com.cogent.cogentappointment.client.service.EsewaService;
@@ -12,15 +15,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
+import static com.cogent.cogentappointment.client.log.constants.eSewaLog.DOCTOR_AVAILABLE_DATES;
+import static com.cogent.cogentappointment.client.log.constants.eSewaLog.DOCTOR_AVAILABLE_DATES_AND_TIME;
 import static com.cogent.cogentappointment.client.log.constants.eSewaLog.DOCTOR_AVAILABLE_STATUS;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
+import static com.cogent.cogentappointment.client.utils.eSewaUtils.*;
 
 @Service
 @Transactional
@@ -38,36 +42,38 @@ public class EsewaServiceImpl implements EsewaService {
     }
 
     @Override
-    public AppointmentDatesResponseDTO doctorAvailableTime(AppointmentDatesRequestDTO requestDTO) {
-        DoctorDutyRosterAppointmentDate doctorDutyRosterAppointmentDate = dutyRosterRepository
+    public AppointmentDatesResponseDTO fetchDoctorAvailableDatesAndTime(AppointmentDatesRequestDTO requestDTO) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, DOCTOR_AVAILABLE_DATES_AND_TIME);
+
+        List<AvaliableDatesResponseDTO> apoointmentDateAndTime = new ArrayList<>();
+
+        List<DoctorDutyRosterAppointmentDate> doctorDutyRosterAppointmentDates = dutyRosterRepository
                 .getDutyRosterByDoctorAndSpecializationId(requestDTO);
 
-        List<DoctorWeekDaysDutyRosterAppointmentDate> weekDaysDutyRosterAppointmentDate = dutyRosterRepository
-                .getWeekDaysDutyRosterByDutyRosterId(doctorDutyRosterAppointmentDate.getId());
+        for (DoctorDutyRosterAppointmentDate doctorDutyRosterAppointmentDate : doctorDutyRosterAppointmentDates) {
 
-        List<Date> dates = getDatesBetween(doctorDutyRosterAppointmentDate.getFromDate(),
-                doctorDutyRosterAppointmentDate.getToDate());
+            List<DoctorWeekDaysDutyRosterAppointmentDate> weekDaysDutyRosterAppointmentDate =
+                    getWeekdaysTimeByRosterId(doctorDutyRosterAppointmentDate.getId());
 
-        List<AvaliableDatesResponseDTO> appointmentDatesResponseDTO =
-                getDutyRosterDateAndTime(dates, weekDaysDutyRosterAppointmentDate);
+            List<Date> dates = getDates(doctorDutyRosterAppointmentDate.getFromDate(),
+                    doctorDutyRosterAppointmentDate.getToDate());
 
-        if (doctorDutyRosterAppointmentDate.getHasOverride().equals('Y')) {
+            List<AvaliableDatesResponseDTO> appointmentDatesResponseDTO =
+                    getDutyRosterDatesAndTime(dates, weekDaysDutyRosterAppointmentDate);
 
-            List<AvaliableDatesResponseDTO> avaliableDatesResponseDTOS =
-                    getDutyRosterOverrideDates(doctorDutyRosterAppointmentDate);
-
-            AppointmentDatesResponseDTO datesResponseDTO = merge(requestDTO, appointmentDatesResponseDTO,
-                    avaliableDatesResponseDTOS);
-
-            return datesResponseDTO;
+            checkIfOverrideExists(doctorDutyRosterAppointmentDate, appointmentDatesResponseDTO, apoointmentDateAndTime);
         }
-        return merge(requestDTO, appointmentDatesResponseDTO, null);
+
+        log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_AVAILABLE_DATES_AND_TIME, getDifferenceBetweenTwoTime(startTime));
+
+        return getFinalResponse(requestDTO, apoointmentDateAndTime);
     }
 
-    /*RETURN MESSAGE IF DOCTOR IS AVAILABLE ON DATE*/
     @Override
     public DoctorAvailabilityStatusResponseDTO fetchDoctorAvailableStatus(AppointmentDetailRequestDTO requestDTO) {
-
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, DOCTOR_AVAILABLE_STATUS);
@@ -85,80 +91,129 @@ public class EsewaServiceImpl implements EsewaService {
         return responseDTO;
     }
 
-    private List<AvaliableDatesResponseDTO> getDutyRosterOverrideDates(
+    @Override
+    public List<AvaliableDateByDoctorIdResponseDTO> fetchDoctorAvailableDates(Long doctorId) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, DOCTOR_AVAILABLE_DATES);
+
+        List<AvaliableDateByDoctorIdResponseDTO> responseDTOList=new ArrayList<>();
+
+        List<DoctorDutyRosterAppointmentDateAndSpecilizationDTO> appointmentDateAndSpecilizations=dutyRosterRepository
+                .getAvaliableDatesAndSpecilizationByDoctorId(doctorId);
+
+        appointmentDateAndSpecilizations.forEach(DateAndSpecilization -> {
+
+            AvaliableDateByDoctorIdResponseDTO responseDTO=new AvaliableDateByDoctorIdResponseDTO();
+
+            List<Date> availableDates= getDates(DateAndSpecilization.getFromDate(), DateAndSpecilization.getToDate());
+
+            responseDTO.setSpecializationId(DateAndSpecilization.getSpecilizationId());
+
+            responseDTO.setSpecilaizationName(DateAndSpecilization.getSpecilizationName());
+
+            if (DateAndSpecilization.getHasOverride().equals('Y')){
+
+                List<DutyRosterOverrideAppointmentDate> dateList=dutyRosterOverrideRepository
+                        .fetchDayOffRosterOverridebyRosterId(DateAndSpecilization.getId());
+
+                    dateList.forEach(date->{
+
+                        List<Date> dayOffDates = getDates(date.getFromDate(), date.getToDate());
+
+                        responseDTO.setAvaliableDates(mergeRosterAndRosterOverrideDates(availableDates,dayOffDates));
+
+                        responseDTOList.add(responseDTO);
+                    });
+            }else {
+                responseDTO.setAvaliableDates(availableDates);
+
+                responseDTOList.add(responseDTO);
+            }
+        });
+
+        log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_AVAILABLE_DATES, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOList;
+    }
+
+    private List<AvaliableDatesResponseDTO> getOverrideDatesAndTime(
             DoctorDutyRosterAppointmentDate doctorDutyRosterAppointmentDate) {
 
-        List<DoctorDutyRosterOverrideAppointmentDate> appointmentDatesAndTime = dutyRosterOverrideRepository
-                .getRosterOverrideByRosterId(doctorDutyRosterAppointmentDate.getId());
         final List<Date> dates = new ArrayList<>();
+
         List<AvaliableDatesResponseDTO> avaliableDates = new ArrayList<>();
 
+        List<DoctorDutyRosterOverrideAppointmentDate> appointmentDatesAndTime =
+                getDateAndTimeFromOverrideByRosterId(doctorDutyRosterAppointmentDate.getId());
+
         appointmentDatesAndTime.forEach(appointmentDate -> {
-            if (!appointmentDate.getFromDate().equals(appointmentDate.getToDate())) {
-                dates.addAll(getDatesBetween(appointmentDate.getFromDate(),
-                        appointmentDate.getToDate()));
-            } else {
-                dates.add(appointmentDate.getFromDate());
-            }
+
+            getAllOverrideDates(appointmentDate, dates);
+
             for (Date date : dates) {
+
                 AvaliableDatesResponseDTO datesResponseDTO = new AvaliableDatesResponseDTO();
+
                 datesResponseDTO.setDate(utilDateToSqlDate(date));
-                datesResponseDTO.setDoctorAvailableTime(
-                        appointmentDate.getStartTime() +
-                                "-" +
-                                appointmentDate.getEndTime());
-                avaliableDates.add(datesResponseDTO);
+
+                checkIfDayOff(appointmentDate, datesResponseDTO, avaliableDates);
             }
         });
         return avaliableDates;
     }
 
-    private List<AvaliableDatesResponseDTO> getDutyRosterDateAndTime(List<Date> dates,
-                                                                     List<DoctorWeekDaysDutyRosterAppointmentDate>
-                                                                             weekDaysDutyRosterAppointmentDate) {
+    private List<AvaliableDatesResponseDTO> getDutyRosterDatesAndTime(List<Date> dates,
+                                                                      List<DoctorWeekDaysDutyRosterAppointmentDate>
+                                                                              weekDaysDutyRosterAppointmentDate) {
 
         List<AvaliableDatesResponseDTO> avaliableDates = new ArrayList<>();
 
         for (Date date : dates) {
+
             AvaliableDatesResponseDTO datesResponseDTO = new AvaliableDatesResponseDTO();
+
             weekDaysDutyRosterAppointmentDate.forEach(weekdays -> {
-                if (date.toString().substring(0, 3).toUpperCase().equals(weekdays.getWeekDay())) {
-                    datesResponseDTO.setDate(utilDateToSqlDate(date));
-                    datesResponseDTO.setDoctorAvailableTime(weekdays.getStartTime() + "-" + weekdays.getEndTime());
-                    avaliableDates.add(datesResponseDTO);
-                }
+
+                getAllDutyRosterDatesAndTime(date, weekdays, datesResponseDTO, avaliableDates);
+
             });
         }
         return avaliableDates;
     }
 
-    private AppointmentDatesResponseDTO merge(AppointmentDatesRequestDTO requestDTO,
-                                              List<AvaliableDatesResponseDTO> avaliableRosterDates,
-                                              List<AvaliableDatesResponseDTO> avaliableRosterOverrideDates) {
-        AppointmentDatesResponseDTO appointmentDatesResponseDTO = new AppointmentDatesResponseDTO();
-        List<AvaliableDatesResponseDTO> finalDateAndTimeResponse = new ArrayList<>();
-        appointmentDatesResponseDTO.setDoctorId(requestDTO.getDoctorId());
-        appointmentDatesResponseDTO.setSpecializationId(requestDTO.getSpecializationId());
-        if (avaliableRosterOverrideDates != null && !avaliableRosterOverrideDates.isEmpty()) {
-            List<AvaliableDatesResponseDTO> unmatched = avaliableRosterDates.stream()
-                    .filter(dates -> avaliableRosterOverrideDates.stream()
-                            .filter(overrideDate -> overrideDate.getDate().equals(dates.getDate()))
-                            .count() < 1)
-                    .collect(Collectors.toList());
-            finalDateAndTimeResponse.addAll(unmatched);
-            List<AvaliableDatesResponseDTO> matched = avaliableRosterOverrideDates.stream()
-                    .filter(overrideDates -> avaliableRosterOverrideDates.stream()
-                            .filter(dates -> overrideDates.getDate().equals(dates.getDate())
-                                    && !overrideDates.getDoctorAvailableTime().equals("12:00-12:00"))
-                            .count() > 0)
-                    .collect(Collectors.toList());
-            finalDateAndTimeResponse.addAll(matched);
-            finalDateAndTimeResponse.sort(Comparator.comparing(AvaliableDatesResponseDTO::getDate));
-            appointmentDatesResponseDTO.setDates(finalDateAndTimeResponse);
-        } else {
-            appointmentDatesResponseDTO.setDates(avaliableRosterDates);
-        }
-        return appointmentDatesResponseDTO;
+    private List<DoctorDutyRosterOverrideAppointmentDate> getDateAndTimeFromOverrideByRosterId(Long rosterId) {
+        return dutyRosterOverrideRepository
+                .getRosterOverrideByRosterId(rosterId);
     }
+
+    private List<DoctorWeekDaysDutyRosterAppointmentDate> getWeekdaysTimeByRosterId(Long dutyRosterId) {
+        return dutyRosterRepository
+                .getWeekDaysDutyRosterByDutyRosterId(dutyRosterId);
+    }
+
+    private void checkIfOverrideExists(DoctorDutyRosterAppointmentDate doctorDutyRosterAppointmentDate,
+                                       List<AvaliableDatesResponseDTO> appointmentDatesResponseDTO,
+                                       List<AvaliableDatesResponseDTO> apoointmentDateAndTime) {
+        if (doctorDutyRosterAppointmentDate.getHasOverride().equals('Y')) {
+
+            List<AvaliableDatesResponseDTO> avaliableDatesResponseDTOS =
+                    getOverrideDatesAndTime(doctorDutyRosterAppointmentDate);
+
+            List<AvaliableDatesResponseDTO> datesResponseDTO = mergeRosterAndRosterOverrideDatesAndTime(
+                    appointmentDatesResponseDTO,
+                    avaliableDatesResponseDTOS);
+
+            getAllDateAndTime(apoointmentDateAndTime, datesResponseDTO);
+
+        } else {
+
+            getAllDateAndTime(apoointmentDateAndTime, appointmentDatesResponseDTO);
+
+        }
+    }
+
 }
+
 

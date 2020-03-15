@@ -7,6 +7,7 @@ import com.cogent.cogentappointment.client.dto.response.appointment.appoinmentDa
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.eSewa.DoctorAvailabilityStatusResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.eSewa.DutyRosterOverrideAppointmentDate;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.query.EsewaQuery;
 import com.cogent.cogentappointment.client.repository.custom.DoctorDutyRosterOverrideRepositoryCustom;
@@ -144,6 +145,16 @@ public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyR
             query.setParameter(SPECIALIZATION_ID, requestDTO.getSpecializationId());
 
         return transformQueryToSingleResult(query, DoctorAvailabilityStatusResponseDTO.class);
+    }
+
+    @Override
+    public List<DutyRosterOverrideAppointmentDate> fetchDayOffRosterOverridebyRosterId(Long doctorDutyRosterId) {
+        Query query = createQuery.apply(entityManager,
+                EsewaQuery.QUERY_TO_FETCH_DAY_OFF_ROSTER_OVERRIDE_DATES)
+                .setParameter(DOCTOR_DUTY_ROSTER_ID, doctorDutyRosterId);
+
+        return transformQueryToResultList(query,DutyRosterOverrideAppointmentDate.class);
+
     }
 
     private Supplier<NoContentFoundException> DOCTOR_DUTY_ROSTER_OVERRIDE_NOT_FOUND = () ->

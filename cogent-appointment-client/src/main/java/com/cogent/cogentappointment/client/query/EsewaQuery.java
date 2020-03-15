@@ -113,5 +113,25 @@ public class EsewaQuery {
         return query;
     }
 
+    public static String QUERY_TO_FETCH_DOCTOR_AVALIABLE_DATES_WITH_SPECILIZATION=
+            "SELECT" +
+                    " ddr.id as id," +
+                    " ddr.fromDate as fromDate," +
+                    " ddr.toDate as toDate," +
+                    " ddr.hasOverrideDutyRoster as hasOverRide," +
+                    " s.id as specializationId," +
+                    " s.name as specializationName" +
+                    " FROM DoctorDutyRoster ddr" +
+                    " LEFT JOIN Specialization s ON s.id=ddr.specializationId.id" +
+                    " WHERE ddr.doctorId.id=:doctorId" +
+                    " AND ddr.status='Y'";
 
+    public static String QUERY_TO_FETCH_DAY_OFF_ROSTER_OVERRIDE_DATES=
+            "SELECT" +
+                    " ddro.fromDate as fromDate," +
+                    " ddro.toDate as toDate" +
+                    " FROM DoctorDutyRosterOverride ddro" +
+                    " WHERE ddro.doctorDutyRosterId.id=:rosterId" +
+                    " AND ddro.dayOffStatus='Y'" +
+                    " AND ddro.status='Y'";
 }

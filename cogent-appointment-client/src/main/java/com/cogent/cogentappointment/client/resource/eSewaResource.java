@@ -23,7 +23,7 @@ public class eSewaResource {
     }
 
     @PutMapping("/vacantAppointmentDates")
-    public ResponseEntity<?> fetchAppointmentLog(@RequestBody AppointmentDatesRequestDTO requestDTO) {
+    public ResponseEntity<?> doctorAvailableTime(@RequestBody AppointmentDatesRequestDTO requestDTO) {
         return ok(esewaService.doctorAvailableTime(requestDTO));
     }
 

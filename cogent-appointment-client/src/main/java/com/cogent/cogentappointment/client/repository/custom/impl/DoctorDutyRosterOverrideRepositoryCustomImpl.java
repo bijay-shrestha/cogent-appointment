@@ -134,7 +134,7 @@ public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyR
 
         Query query = createQuery.apply(entityManager,
                 EsewaQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_STATUS(requestDTO))
-                .setParameter(DATE, utilDateToSqlDate(requestDTO.getDate()))
+                .setParameter(DATE, requestDTO.getDate())
                 .setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
 
         if (!Objects.isNull(requestDTO.getDoctorId()))

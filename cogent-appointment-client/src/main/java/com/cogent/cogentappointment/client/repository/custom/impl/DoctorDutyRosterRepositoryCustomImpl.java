@@ -201,10 +201,13 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
 
     @Override
     public DoctorAvailabilityStatusResponseDTO fetchDoctorDutyRosterStatus(AppointmentDetailRequestDTO requestDTO) {
+        Date sqlDate = utilDateToSqlDate(requestDTO.getDate());
+
         Query query = createQuery.apply(entityManager,
                 EsewaQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_STATUS(requestDTO))
-                .setParameter(DATE, utilDateToSqlDate(requestDTO.getDate()))
-                .setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
+                .setParameter(DATE, utilDateToSqlDate(sqlDate))
+                .setParameter(HOSPITAL_ID, requestDTO.getHospitalId())
+                .setParameter(CODE, getDayCodeFromDate(sqlDate));
 
         if (!Objects.isNull(requestDTO.getDoctorId()))
             query.setParameter(DOCTOR_ID, requestDTO.getDoctorId());

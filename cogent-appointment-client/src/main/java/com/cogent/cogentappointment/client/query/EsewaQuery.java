@@ -55,9 +55,9 @@ public class EsewaQuery {
                 " CASE WHEN" +
                 "   COUNT(ddro.id)>0" +
                 " THEN" +
-                "   CONCAT(d.name, 'is available for the day')" +
+                "   CONCAT(d.name, ' is available for the day')" +
                 " ELSE" +
-                "   CONCAT(d.name, 'is not available for the day')" +
+                "   CONCAT(d.name, ' is not available for the day')" +
                 " END AS message" +
                 " FROM DoctorDutyRoster ddr" +
                 " LEFT JOIN DoctorDutyRosterOverride ddro ON ddr.id = ddro.doctorDutyRosterId.id" +
@@ -91,16 +91,18 @@ public class EsewaQuery {
                 " CASE WHEN" +
                 "   COUNT(dw.id)>0" +
                 " THEN" +
-                "   CONCAT(d.name, 'is available for the day')" +
+                "   CONCAT(d.name, ' is available for the day')" +
                 " ELSE" +
-                "   CONCAT(d.name, 'is not available for the day')" +
+                "   CONCAT(d.name, ' is not available for the day')" +
                 " END AS message" +
                 " FROM DoctorDutyRoster ddr" +
                 " LEFT JOIN DoctorWeekDaysDutyRoster dw ON dw.doctorDutyRosterId.id = ddr.id" +
                 " LEFT JOIN Doctor d ON d.id = ddr.doctorId.id" +
+                " LEFT JOIN WeekDays w ON w.id = dw.weekDaysId.id" +
                 " WHERE" +
                 " ddr.status = 'Y'" +
                 " AND dw.dayOffStatus = 'N'" +
+                " AND w.code = :code" +
                 " AND ddr.hospitalId.id =:hospitalId" +
                 " AND :date BETWEEN ddr.fromDate AND ddr.toDate";
 

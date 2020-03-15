@@ -44,15 +44,18 @@ public class EsewaServiceImpl implements EsewaService {
         List<Date> dates = getDatesBetween(doctorDutyRosterAppointmentDate.getFromDate(),
                 doctorDutyRosterAppointmentDate.getToDate());
 
-        System.out.println(dates);
-
         List<AvaliableDatesResponseDTO> appointmentDatesResponseDTO =
                 getDutyRosterDateAndTime(dates, weekDaysDutyRosterAppointmentDate);
 
         if (doctorDutyRosterAppointmentDate.getHasOverride().equals('Y')) {
+
             List<AvaliableDatesResponseDTO> avaliableDatesResponseDTOS =
                     getDutyRosterOverrideDates(doctorDutyRosterAppointmentDate);
-            return merge(requestDTO, appointmentDatesResponseDTO, avaliableDatesResponseDTOS);
+
+            AppointmentDatesResponseDTO datesResponseDTO = merge(requestDTO, appointmentDatesResponseDTO,
+                    avaliableDatesResponseDTOS);
+
+            return datesResponseDTO;
         }
         return merge(requestDTO, appointmentDatesResponseDTO, null);
     }
@@ -60,32 +63,34 @@ public class EsewaServiceImpl implements EsewaService {
     private List<AvaliableDatesResponseDTO> getDutyRosterOverrideDates(
             DoctorDutyRosterAppointmentDate doctorDutyRosterAppointmentDate) {
 
-        DoctorDutyRosterOverrideAppointmentDate appointmentDatesAndTime = dutyRosterOverrideRepository
+        List<DoctorDutyRosterOverrideAppointmentDate> appointmentDatesAndTime = dutyRosterOverrideRepository
                 .getRosterOverrideByRosterId(doctorDutyRosterAppointmentDate.getId());
-        List<Date> dates = new ArrayList<>();
+        final List<Date> dates = new ArrayList<>();
         List<AvaliableDatesResponseDTO> avaliableDates = new ArrayList<>();
 
-        if (!appointmentDatesAndTime.getFromDate().equals(appointmentDatesAndTime.getToDate())) {
-            dates = getDatesBetween(appointmentDatesAndTime.getFromDate(),
-                    appointmentDatesAndTime.getToDate());
-        } else {
-            dates.add(appointmentDatesAndTime.getFromDate());
-        }
-
-        for (Date date : dates) {
-            AvaliableDatesResponseDTO datesResponseDTO = new AvaliableDatesResponseDTO();
-            datesResponseDTO.setDate(utilDateToSqlDate(date));
-            datesResponseDTO.setDoctorAvailableTime(
-                    appointmentDatesAndTime.getStartTime() +
-                            "-" +
-                            appointmentDatesAndTime.getEndTime());
-            avaliableDates.add(datesResponseDTO);
-        }
+        appointmentDatesAndTime.forEach(appointmentDate -> {
+            if (!appointmentDate.getFromDate().equals(appointmentDate.getToDate())) {
+                dates.addAll(getDatesBetween(appointmentDate.getFromDate(),
+                        appointmentDate.getToDate()));
+            } else {
+                dates.add(appointmentDate.getFromDate());
+            }
+            for (Date date : dates) {
+                AvaliableDatesResponseDTO datesResponseDTO = new AvaliableDatesResponseDTO();
+                datesResponseDTO.setDate(utilDateToSqlDate(date));
+                datesResponseDTO.setDoctorAvailableTime(
+                        appointmentDate.getStartTime() +
+                                "-" +
+                                appointmentDate.getEndTime());
+                avaliableDates.add(datesResponseDTO);
+            }
+        });
         return avaliableDates;
     }
 
     private List<AvaliableDatesResponseDTO> getDutyRosterDateAndTime(List<Date> dates,
-                                                                     List<DoctorWeekDaysDutyRosterAppointmentDate> weekDaysDutyRosterAppointmentDate) {
+                                                                     List<DoctorWeekDaysDutyRosterAppointmentDate>
+                                                                             weekDaysDutyRosterAppointmentDate) {
 
         List<AvaliableDatesResponseDTO> avaliableDates = new ArrayList<>();
 
@@ -106,17 +111,25 @@ public class EsewaServiceImpl implements EsewaService {
                                               List<AvaliableDatesResponseDTO> avaliableRosterDates,
                                               List<AvaliableDatesResponseDTO> avaliableRosterOverrideDates) {
         AppointmentDatesResponseDTO appointmentDatesResponseDTO = new AppointmentDatesResponseDTO();
+        List<AvaliableDatesResponseDTO> finalDateAndTimeResponse = new ArrayList<>();
         appointmentDatesResponseDTO.setDoctorId(requestDTO.getDoctorId());
         appointmentDatesResponseDTO.setSpecializationId(requestDTO.getSpecializationId());
-        if (avaliableRosterOverrideDates.size() != 0) {
-            List<AvaliableDatesResponseDTO> unmatchDates = avaliableRosterDates.stream()
+        if (avaliableRosterOverrideDates != null && !avaliableRosterOverrideDates.isEmpty()) {
+            List<AvaliableDatesResponseDTO> unmatched = avaliableRosterDates.stream()
                     .filter(dates -> avaliableRosterOverrideDates.stream()
                             .filter(overrideDate -> overrideDate.getDate().equals(dates.getDate()))
                             .count() < 1)
                     .collect(Collectors.toList());
-            avaliableRosterOverrideDates.addAll(unmatchDates);
-            avaliableRosterOverrideDates.sort(Comparator.comparing(AvaliableDatesResponseDTO::getDate));
-            appointmentDatesResponseDTO.setDates(avaliableRosterOverrideDates);
+            finalDateAndTimeResponse.addAll(unmatched);
+            List<AvaliableDatesResponseDTO> matched = avaliableRosterOverrideDates.stream()
+                    .filter(overrideDates -> avaliableRosterOverrideDates.stream()
+                            .filter(dates -> overrideDates.getDate().equals(dates.getDate())
+                                    && !overrideDates.getDoctorAvailableTime().equals("12:00-12:00"))
+                            .count() > 0)
+                    .collect(Collectors.toList());
+            finalDateAndTimeResponse.addAll(matched);
+            finalDateAndTimeResponse.sort(Comparator.comparing(AvaliableDatesResponseDTO::getDate));
+            appointmentDatesResponseDTO.setDates(finalDateAndTimeResponse);
         } else {
             appointmentDatesResponseDTO.setDates(avaliableRosterDates);
         }

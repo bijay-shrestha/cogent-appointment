@@ -31,6 +31,6 @@ public interface DoctorDutyRosterOverrideRepositoryCustom {
     List<DoctorDutyRosterStatusResponseDTO> fetchDoctorDutyRosterOverrideStatus
             (AppointmentStatusRequestDTO requestDTO, Long hospitalId);
 
-    DoctorDutyRosterOverrideAppointmentDate getRosterOverrideByRosterId(Long doctorDutyRosterId);
+    List<DoctorDutyRosterOverrideAppointmentDate> getRosterOverrideByRosterId(Long doctorDutyRosterId);
 
 }

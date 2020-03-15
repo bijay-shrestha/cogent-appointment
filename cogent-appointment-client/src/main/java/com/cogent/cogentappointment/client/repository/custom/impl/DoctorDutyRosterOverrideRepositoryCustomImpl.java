@@ -115,12 +115,12 @@ public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyR
     }
 
     @Override
-    public DoctorDutyRosterOverrideAppointmentDate getRosterOverrideByRosterId(Long doctorDutyRosterId) {
+    public List<DoctorDutyRosterOverrideAppointmentDate> getRosterOverrideByRosterId(Long doctorDutyRosterId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DUTY_ROSTER_OVERRIDE_BY_DUTY_ROSTER_ID)
                 .setParameter(DOCTOR_DUTY_ROSTER_ID, doctorDutyRosterId);
 
         try {
-            return transformQueryToSingleResult(query, DoctorDutyRosterOverrideAppointmentDate.class);
+            return transformQueryToResultList(query, DoctorDutyRosterOverrideAppointmentDate.class);
         } catch (NoResultException e) {
             throw new NoContentFoundException("Not Found");
         }

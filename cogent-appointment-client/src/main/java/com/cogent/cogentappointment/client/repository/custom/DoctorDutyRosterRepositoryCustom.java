@@ -48,4 +48,6 @@ public interface DoctorDutyRosterRepositoryCustom {
     DoctorDutyRosterAppointmentDate getDutyRosterByDoctorAndSpecializationId(AppointmentDatesRequestDTO requestDTO);
 
     List<DoctorWeekDaysDutyRosterAppointmentDate> getWeekDaysDutyRosterByDutyRosterId(Long doctorDutyRosterId);
+
+
 }

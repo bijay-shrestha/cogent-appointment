@@ -1,7 +1,9 @@
 package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentDatesRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.eSewa.AppointmentDetailRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appoinmentDateAndTime.*;
+import com.cogent.cogentappointment.client.dto.response.eSewa.DoctorAvailabilityStatusResponseDTO;
 import com.cogent.cogentappointment.client.repository.DoctorDutyRosterOverrideRepository;
 import com.cogent.cogentappointment.client.repository.DoctorDutyRosterRepository;
 import com.cogent.cogentappointment.client.service.EsewaService;
@@ -15,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDatesBetween;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 
@@ -58,6 +61,18 @@ public class EsewaServiceImpl implements EsewaService {
             return datesResponseDTO;
         }
         return merge(requestDTO, appointmentDatesResponseDTO, null);
+    }
+
+    /*RETURN MESSAGE IF DOCTOR IS AVAILABLE ON DATE*/
+    @Override
+    public DoctorAvailabilityStatusResponseDTO fetchDoctorAvailableStatus(AppointmentDetailRequestDTO requestDTO) {
+
+        Character doctorAvailableStatus = dutyRosterOverrideRepository.fetchDoctorDutyRosterStatus(requestDTO);
+
+        if (doctorAvailableStatus.equals(YES))
+            return null;
+
+        return null;
     }
 
     private List<AvaliableDatesResponseDTO> getDutyRosterOverrideDates(

@@ -3,7 +3,6 @@ package com.cogent.cogentappointment.client.dto.request.appointment;
 import lombok.*;
 
 import java.io.Serializable;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -12,7 +11,7 @@ import java.util.Date;
 @Builder
 public class AppointmentDatesRequestDTO implements Serializable {
 
-    private Long DoctorId;
+    private Long doctorId;
 
     private Long specializationId;
 }

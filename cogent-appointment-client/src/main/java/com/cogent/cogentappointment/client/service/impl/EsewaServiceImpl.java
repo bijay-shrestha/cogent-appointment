@@ -96,38 +96,37 @@ public class EsewaServiceImpl implements EsewaService {
 
         log.info(FETCHING_PROCESS_STARTED, DOCTOR_AVAILABLE_DATES);
 
-        List<AvaliableDateByDoctorIdResponseDTO> responseDTOList=new ArrayList<>();
+        List<AvaliableDateByDoctorIdResponseDTO> responseDTOList = new ArrayList<>();
 
-        List<DoctorDutyRosterAppointmentDateAndSpecilizationDTO> appointmentDateAndSpecilizations=dutyRosterRepository
+        List<DoctorDutyRosterAppointmentDateAndSpecilizationDTO> appointmentDateAndSpecilizations = dutyRosterRepository
                 .getAvaliableDatesAndSpecilizationByDoctorId(doctorId);
 
         appointmentDateAndSpecilizations.forEach(dateAndSpecilization -> {
 
-            AvaliableDateByDoctorIdResponseDTO responseDTO=new AvaliableDateByDoctorIdResponseDTO();
+            AvaliableDateByDoctorIdResponseDTO responseDTO = new AvaliableDateByDoctorIdResponseDTO();
 
-            List<Date> availableDates= utilDateListToSqlDateList(getDates(dateAndSpecilization.getFromDate(),
+            List<Date> availableDates = utilDateListToSqlDateList(getDates(dateAndSpecilization.getFromDate(),
                     dateAndSpecilization.getToDate()));
 
-            responseDTO.setSpecializationId(dateAndSpecilization.getSpecializationId());
+            if (availableDates.size() != 0) {
 
-            responseDTO.setSpecilaizationName(dateAndSpecilization.getSpecializationName());
+                responseDTO.setSpecializationId(dateAndSpecilization.getSpecializationId());
 
-            if (dateAndSpecilization.getHasOverride().equals('Y')){
+                responseDTO.setSpecilaizationName(dateAndSpecilization.getSpecializationName());
 
-                List<DutyRosterOverrideAppointmentDate> dateList=dutyRosterOverrideRepository
-                        .fetchDayOffRosterOverridebyRosterId(dateAndSpecilization.getId());
+                if ( dateAndSpecilization.getHasOverride().equals('Y')) {
+                    List<DutyRosterOverrideAppointmentDate> dateList = dutyRosterOverrideRepository
+                            .fetchDayOffRosterOverridebyRosterId(dateAndSpecilization.getId());
 
-                    dateList.forEach(date->{
+                    dateList.forEach(date -> {
 
                         List<Date> dayOffDates = utilDateListToSqlDateList(getDates(date.getFromDate(), date.getToDate()));
 
-                        responseDTO.setAvaliableDates(mergeRosterAndRosterOverrideDates(availableDates,dayOffDates));
-
-                        responseDTOList.add(responseDTO);
+                        responseDTO.setAvaliableDates(mergeRosterAndRosterOverrideDates(availableDates, dayOffDates));
                     });
-            }else {
-                responseDTO.setAvaliableDates(availableDates);
-
+                } else {
+                    responseDTO.setAvaliableDates(availableDates);
+                }
                 responseDTOList.add(responseDTO);
             }
         });

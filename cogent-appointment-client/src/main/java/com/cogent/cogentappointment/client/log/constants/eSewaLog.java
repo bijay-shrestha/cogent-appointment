@@ -11,4 +11,7 @@ public class eSewaLog {
 
     public final static String DOCTOR_AVAILABLE_DATES = "DOCTOR AVAILABLE DATES";
 
+    public final static String AVAILABLE_DOCTOR_LIST = "AVAILABLE DOCTOR WITH SPECIALIZATION";
+
+
 }

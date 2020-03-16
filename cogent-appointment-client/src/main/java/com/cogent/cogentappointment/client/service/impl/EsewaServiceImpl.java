@@ -3,10 +3,7 @@ package com.cogent.cogentappointment.client.service.impl;
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentDatesRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.eSewa.AppointmentDetailRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appoinmentDateAndTime.*;
-import com.cogent.cogentappointment.client.dto.response.eSewa.AvaliableDateByDoctorIdResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.eSewa.DoctorAvailabilityStatusResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.eSewa.DoctorDutyRosterAppointmentDateAndSpecilizationDTO;
-import com.cogent.cogentappointment.client.dto.response.eSewa.DutyRosterOverrideAppointmentDate;
+import com.cogent.cogentappointment.client.dto.response.eSewa.*;
 import com.cogent.cogentappointment.client.repository.DoctorDutyRosterOverrideRepository;
 import com.cogent.cogentappointment.client.repository.DoctorDutyRosterRepository;
 import com.cogent.cogentappointment.client.service.EsewaService;
@@ -70,8 +67,10 @@ public class EsewaServiceImpl implements EsewaService {
         return getFinalResponse(requestDTO, appointmentDateAndTime);
     }
 
+    /*RETURN MESSAGE IF DOCTOR IS AVAILABLE ON DATE*/
     @Override
     public DoctorAvailabilityStatusResponseDTO fetchDoctorAvailableStatus(AppointmentDetailRequestDTO requestDTO) {
+
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, DOCTOR_AVAILABLE_STATUS);
@@ -114,7 +113,7 @@ public class EsewaServiceImpl implements EsewaService {
 
                 responseDTO.setSpecilaizationName(dateAndSpecilization.getSpecializationName());
 
-                if ( dateAndSpecilization.getHasOverride().equals('Y')) {
+                if (dateAndSpecilization.getHasOverride().equals('Y')) {
                     List<DutyRosterOverrideAppointmentDate> dateList = dutyRosterOverrideRepository
                             .fetchDayOffRosterOverridebyRosterId(dateAndSpecilization.getId());
 
@@ -134,6 +133,17 @@ public class EsewaServiceImpl implements EsewaService {
         log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_AVAILABLE_DATES, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOList;
+    }
+
+    @Override
+    public AvailableDoctorResponseDTO fetchAvailableDoctorWithSpecialization(AppointmentDetailRequestDTO requestDTO) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, AVAILABLE_DOCTOR_LIST);
+
+        log.info(FETCHING_PROCESS_COMPLETED, AVAILABLE_DOCTOR_LIST, getDifferenceBetweenTwoTime(startTime));
+
+        return null;
     }
 
     private List<AvailableDatesResponseDTO> getOverrideDatesAndTime(

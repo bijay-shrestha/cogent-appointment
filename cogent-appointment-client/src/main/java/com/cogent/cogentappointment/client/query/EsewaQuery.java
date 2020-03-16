@@ -154,4 +154,19 @@ public class EsewaQuery {
                     " WHERE ddro.doctorDutyRosterId.id=:doctorDutyRosterId" +
                     " AND ddro.dayOffStatus='Y'" +
                     " AND ddro.status='Y'";
+
+    public static final String QUERY_TO_FETCH_DUTY_ROSTER_OVERRIDE_BY_DOCTOR_AND_SPECIALIZATION_ID =
+            "SELECT" +
+                    " ddro.toDate as toDate," +
+                    " ddro.fromDate as fromDate," +
+                    " DATE_FORMAT(ddro.startTime ,'%H:%i') as startTime," +
+                    " DATE_FORMAT(ddro.endTime ,'%H:%i') as endTime," +
+                    " ddro.dayOffStatus as dayOff" +
+                    " FROM DoctorDutyRosterOverride ddro" +
+                    " LEFT JOIN DoctorDutyRoster ddr ON ddr.id=ddro.doctorDutyRosterId.id" +
+                    " WHERE " +
+                    " ddr.doctorId.id=:doctorId" +
+                    " AND ddr.specializationId.id=:specializationId" +
+                    " AND ddro.dayOffStatus='Y'" +
+                    " AND ddro.status='Y'";
 }

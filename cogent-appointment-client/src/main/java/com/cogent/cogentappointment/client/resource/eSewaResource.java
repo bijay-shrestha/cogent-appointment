@@ -39,7 +39,13 @@ public class eSewaResource {
     @GetMapping(AVAILABLE_DOCTOR_DATES + DOCTOR_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_AVAILABLE_DOCTOR_DATES)
     public ResponseEntity<?> avaliableDoctorDates(@PathVariable("doctorId") Long doctorId) {
-        return ok(esewaService.fetchDoctorAvailableDates(doctorId));
+        return ok(esewaService.fetchDoctorAvailableDatesWithSpecialization(doctorId));
+    }
+
+    @PutMapping(AVAILABLE_DATES )
+    @ApiOperation(FETCH_AVAILABLE_DATES)
+    public ResponseEntity<?> avaliableDates(@RequestBody AppointmentDatesRequestDTO requestDTO) {
+        return ok(esewaService.fetchAvailableDates(requestDTO));
     }
 
 

@@ -37,6 +37,9 @@ public interface DoctorDutyRosterOverrideRepositoryCustom {
 
     List<DoctorDutyRosterOverrideAppointmentDate> getRosterOverrideByRosterId(Long doctorDutyRosterId);
 
+    List<DoctorDutyRosterOverrideAppointmentDate> getRosterOverrideByDoctorAndSpecializationId(Long doctorId,
+                                                                                               Long specializationId);
+
     DoctorAvailabilityStatusResponseDTO fetchDoctorDutyRosterOverrideStatus(AppointmentDetailRequestDTO requestDTO);
 
     List<DutyRosterOverrideAppointmentDate> fetchDayOffRosterOverridebyRosterId(Long rosterId);

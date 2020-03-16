@@ -155,6 +155,8 @@ public class SwaggerConstants {
 
         String FETCH_AVAILABLE_DOCTOR_DATES = "Returns all the avaliable appointment dates by doctorId";
 
+        String FETCH_AVAILABLE_DATES = "Returns all the avaliable appointment dates by doctorId and specializationId";
+
     }
 
 

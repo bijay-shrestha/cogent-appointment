@@ -4,7 +4,6 @@ import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDut
 import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDutyRosterOverrideUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorRosterOverrideUpdateResponseDTO;
-import com.cogent.cogentappointment.admin.utils.commons.StringUtil;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRoster;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRosterOverride;
 
@@ -18,7 +17,6 @@ import java.util.stream.Stream;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.convertDateToLocalDate;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.isLocalDateBetweenInclusive;
-import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.convertToNormalCase;
 
 /**
  * @author smriti ON 16/12/2019
@@ -35,7 +33,7 @@ public class DoctorDutyRosterOverrideUtils {
         doctorDutyRosterOverride.setToDate(requestDTO.getToDate());
         doctorDutyRosterOverride.setDayOffStatus(requestDTO.getDayOffStatus());
         doctorDutyRosterOverride.setStatus(requestDTO.getStatus());
-        doctorDutyRosterOverride.setRemarks(convertToNormalCase(requestDTO.getRemarks()));
+        doctorDutyRosterOverride.setRemarks(requestDTO.getRemarks());
         doctorDutyRosterOverride.setDoctorDutyRosterId(doctorDutyRoster);
         doctorDutyRosterOverride.setStartTime(requestDTO.getStartTime());
         doctorDutyRosterOverride.setEndTime(requestDTO.getEndTime());
@@ -53,7 +51,7 @@ public class DoctorDutyRosterOverrideUtils {
         doctorDutyRosterOverride.setEndTime(updateRequestDTO.getEndTime());
         doctorDutyRosterOverride.setDayOffStatus(updateRequestDTO.getDayOffStatus());
         doctorDutyRosterOverride.setStatus(updateRequestDTO.getStatus());
-        doctorDutyRosterOverride.setRemarks(convertToNormalCase(updateRequestDTO.getRemarks()));
+        doctorDutyRosterOverride.setRemarks(updateRequestDTO.getRemarks());
         return doctorDutyRosterOverride;
     }
 

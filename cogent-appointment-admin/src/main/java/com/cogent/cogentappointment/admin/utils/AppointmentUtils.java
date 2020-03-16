@@ -13,11 +13,9 @@ import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentSt
 import com.cogent.cogentappointment.admin.dto.response.dashboard.AppointmentCountResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogDTO;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
-import com.cogent.cogentappointment.admin.utils.commons.StringUtil;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
-import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -136,7 +134,7 @@ public class AppointmentUtils {
 
             AppointmentPendingApprovalDTO appointmentStatusResponseDTO =
                     AppointmentPendingApprovalDTO.builder()
-                            .hospitalName(StringUtil.convertToNormalCase(result[HOSPITAL_NAME_INDEX].toString()))
+                            .hospitalName(result[HOSPITAL_NAME_INDEX].toString())
                             .appointmentDate(appointmentDate)
                             .appointmentNumber(result[APPOINTMENT_NUMBER_INDEX].toString())
                             .appointmentTime(result[APPOINTMENT_TIME_INDEX].toString())

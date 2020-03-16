@@ -62,7 +62,7 @@ public class AdminUtils {
         admin.setMobileNumber(adminRequestDTO.getMobileNumber());
         admin.setStatus(adminRequestDTO.getStatus());
         admin.setHasMacBinding(adminRequestDTO.getHasMacBinding());
-        admin.setRemarks(convertToNormalCase(adminRequestDTO.getRemarks()));
+        admin.setRemarks(adminRequestDTO.getRemarks());
 
         parseAdminDetails(gender, profile, admin);
         /*MODIFIED DATE AND MODIFIED BY*/

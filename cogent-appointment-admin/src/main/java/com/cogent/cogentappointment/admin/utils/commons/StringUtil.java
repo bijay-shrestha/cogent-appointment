@@ -19,10 +19,7 @@ public class StringUtil {
     public static String convertToNormalCase(String text) {
 
         final char[] delimiters = {' ', '_'};
-
-        String normalCase = WordUtils.capitalizeFully(text, delimiters);
-        return normalCase;
-
+        return WordUtils.capitalizeFully(text, delimiters);
     }
 
     public static String toUpperCase(String name) {

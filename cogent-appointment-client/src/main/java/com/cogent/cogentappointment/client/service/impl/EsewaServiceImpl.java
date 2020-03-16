@@ -87,11 +87,15 @@ public class EsewaServiceImpl implements EsewaService {
         return responseDTO;
     }
 
+    /*ALL AVAILABLE DOCTORS AND THEIR SPECIALIZATION ON THE CHOSEN DATE*/
     @Override
     public AvailableDoctorResponseDTO fetchAvailableDoctorWithSpecialization(AppointmentDetailRequestDTO requestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, AVAILABLE_DOCTOR_LIST);
+
+        List<AvailableDoctorResponseDTO> availableDoctorFromDDROverride=
+                dutyRosterOverrideRepository.fetchAvailableDoctor(requestDTO);
 
         log.info(FETCHING_PROCESS_COMPLETED, AVAILABLE_DOCTOR_LIST, getDifferenceBetweenTwoTime(startTime));
 

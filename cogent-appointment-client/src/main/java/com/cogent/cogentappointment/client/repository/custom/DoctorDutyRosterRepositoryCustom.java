@@ -8,6 +8,7 @@ import com.cogent.cogentappointment.client.dto.request.eSewa.AppointmentDetailRe
 import com.cogent.cogentappointment.client.dto.response.appointment.appoinmentDateAndTime.DoctorDutyRosterAppointmentDate;
 import com.cogent.cogentappointment.client.dto.response.appointment.appoinmentDateAndTime.DoctorWeekDaysDutyRosterAppointmentDate;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.*;
+import com.cogent.cogentappointment.client.dto.response.eSewa.AvailableDoctorResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.eSewa.DoctorAvailabilityStatusResponseDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
@@ -52,6 +53,8 @@ public interface DoctorDutyRosterRepositoryCustom {
     List<DoctorWeekDaysDutyRosterAppointmentDate> getWeekDaysDutyRosterByDutyRosterId(Long doctorDutyRosterId);
 
     DoctorAvailabilityStatusResponseDTO fetchDoctorDutyRosterStatus(AppointmentDetailRequestDTO requestDTO);
+
+    List<AvailableDoctorResponseDTO> fetchAvailableDoctor(AppointmentDetailRequestDTO requestDTO);
 
 
 }

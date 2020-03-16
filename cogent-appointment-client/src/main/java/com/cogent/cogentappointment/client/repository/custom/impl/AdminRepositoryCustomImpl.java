@@ -120,12 +120,12 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
 
 
     @Override
-    public Admin fetchAdminByUsernameOrEmail(String username, Long hospitalId) {
+    public Admin fetchAdminByUsernameOrEmail(String username, String hospitalCode) {
         try {
             return entityManager.createQuery(QUERY_TO_FETCH_ADMIN_BY_USERNAME_OR_EMAIL, Admin.class)
                     .setParameter(USERNAME, username)
                     .setParameter(EMAIL, username)
-                    .setParameter(HOSPITAL_ID, hospitalId)
+                    .setParameter(HOSPITAL_CODE, hospitalCode)
                     .getSingleResult();
         } catch (NoResultException ex) {
             throw ADMIN_NOT_FOUND.apply(username);

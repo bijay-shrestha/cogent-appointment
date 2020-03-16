@@ -31,6 +31,7 @@ import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.DoctorDutyRosterServiceMessages.DUPLICATION_MESSAGE;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INVALID_DATE_DEBUG_MESSAGE;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INVALID_DATE_MESSAGE;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.DoctorDutyRosterLog.*;
 import static com.cogent.cogentappointment.admin.utils.DoctorDutyRosterOverrideUtils.*;
@@ -386,7 +387,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
     private void saveDoctorRosterOverride(DoctorDutyRoster doctorDutyRoster,
                                           List<DoctorDutyRosterOverrideRequestDTO> overrideRequestDTOS) {
 
-        if (doctorDutyRoster.getHasOverrideDutyRoster().equals(StatusConstants.YES)) {
+        if (doctorDutyRoster.getHasOverrideDutyRoster().equals(YES)) {
 
             Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -472,7 +473,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
     }
 
     private void updateDoctorDutyRosterOverrideStatus(DoctorDutyRoster doctorDutyRoster) {
-        if (doctorDutyRoster.getHasOverrideDutyRoster().equals(StatusConstants.NO))
+        if (doctorDutyRoster.getHasOverrideDutyRoster().equals(NO))
             updateDutyRosterOverrideStatus(
                     doctorDutyRosterOverrideRepository.fetchByDoctorRosterId(doctorDutyRoster.getId()));
     }

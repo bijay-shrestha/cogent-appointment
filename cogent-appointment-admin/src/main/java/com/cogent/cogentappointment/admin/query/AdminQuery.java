@@ -178,7 +178,8 @@ public class AdminQuery {
                     " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
                     " WHERE " +
                     " (a.username=:username OR a.email =:email)" +
-                    " AND a.status='Y'";
+                    " AND a.status='Y'" +
+                    " AND h.isCogentAdmin='Y'";
 
     public static final String QUERY_TO_FETCH_ADMIN_META_INFO =
             " SELECT a.id as adminMetaInfoId," +                   //[0]

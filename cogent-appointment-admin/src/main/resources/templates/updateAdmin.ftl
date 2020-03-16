@@ -506,10 +506,10 @@ Sizes: [
                                                                        width="100%" style="max-width:100%;">
                                                                     <tr>
                                                                         <td align="left" class="textContent">
-                                                                            <#--<div style="font-family:Helvetica,Arial,sans-serif;font-size:13px;color:#828282;text-align:center;line-height:120%;">-->
-                                                                                <#--The introduction of your message preview-->
-                                                                                <#--goes here. Try to make it short.-->
-                                                                            <#--</div>-->
+                                                                        <#--<div style="font-family:Helvetica,Arial,sans-serif;font-size:13px;color:#828282;text-align:center;line-height:120%;">-->
+                                                                        <#--The introduction of your message preview-->
+                                                                        <#--goes here. Try to make it short.-->
+                                                                        <#--</div>-->
                                                                             &nbsp;
                                                                         </td>
                                                                     </tr>
@@ -662,35 +662,23 @@ Sizes: [
                                                                             </#list>
                                                                             </ul>
 
-
-                                                                            <#--<div mc:edit="body"-->
-                                                                                 <#--style="text-align:left;font-family:Helvetica,Arial,sans-serif;font-size:15px;margin-bottom:0;color:#5F5F5F;line-height:135%;margin-top:30px;">-->
-                                                                                <#--Mac Address :-->
-                                                                            <#--</div>-->
-
-                                                                        <#--<ul style="margin-top:10px; padding:0;text-align:left;font-family:Helvetica,Arial,sans-serif;font-size:15px;margin-bottom:0;color:#5F5F5F;">-->
-                                                                        <#--<li style="Margin:0 0 5px; list-style:disc inside; mso-special-format:bullet;">-->
-                                                                        <#--Item one-->
-                                                                        <#--</li>-->
-                                                                        <#--<li style="Margin:0 0 5px; list-style:disc inside; mso-special-format:bullet;">-->
-                                                                        <#--Item two-->
-                                                                        <#--</li>-->
-
-                                                                        <#--</ul>-->
-
                                                                             <ul style="margin-top:20px; padding:0;text-align:left;font-family:Helvetica,Arial,sans-serif;font-size:15px;margin-bottom:0;color:#5F5F5F;">
 
                                                                                 <li style="Margin:0 0 5px; list-style:none inside; mso-special-format:none;line-height:24px">
                                                                                 <#assign hasMacBinding>${hasMacBinding}</#assign>
                                                                                 <#if hasMacBinding=='Y'>
-                                                                                   <div style="font-weight:bold;">  Mac Address(s): </div>
+                                                                                    <div style="font-weight:bold;"> Mac
+                                                                                        Address(s):
+                                                                                    </div>
                                                                                     <#list updatedMacAddress as macAddress>
                                                                                     ${macAddress_index + 1}
                                                                                         . ${macAddress}<#if macAddress_has_next>
                                                                                         <br/></#if>
                                                                                     </#list>
                                                                                 <#else>
-                                                                                    <div style="font-weight:bold;">  Mac Address(s): </div>
+                                                                                    <div style="font-weight:bold;"> Mac
+                                                                                        Address(s):
+                                                                                    </div>
                                                                                     <#list updatedMacAddress as macAddress>
                                                                                     ${macAddress}
                                                                                     </#list>

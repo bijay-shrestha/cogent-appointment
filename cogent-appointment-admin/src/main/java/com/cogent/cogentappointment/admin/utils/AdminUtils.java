@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.admin.utils;
 
-import com.cogent.cogentappointment.admin.constants.StatusConstants;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.*;
 import com.cogent.cogentappointment.admin.dto.request.email.EmailRequestDTO;
@@ -13,7 +12,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +20,8 @@ import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.EmailConstants.*;
 import static com.cogent.cogentappointment.admin.constants.EmailTemplates.*;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.*;
 import static com.cogent.cogentappointment.admin.utils.commons.NumberFormatterUtils.generateRandomToken;
 
@@ -40,7 +40,7 @@ public class AdminUtils {
         admin.setMobileNumber(adminRequestDTO.getMobileNumber());
         admin.setStatus(adminRequestDTO.getStatus());
         admin.setHasMacBinding(adminRequestDTO.getHasMacBinding());
-        admin.setIsFirstLogin(StatusConstants.YES);
+        admin.setIsFirstLogin(YES);
 
         parseAdminDetails(gender, profile, admin);
         return admin;
@@ -67,12 +67,11 @@ public class AdminUtils {
         /*MODIFIED DATE AND MODIFIED BY*/
     }
 
-
     public static AdminMacAddressInfo convertToMACAddressInfo(String macAddress, Admin admin) {
 
         AdminMacAddressInfo macAddressInfo = new AdminMacAddressInfo();
         macAddressInfo.setMacAddress(macAddress);
-        macAddressInfo.setStatus(StatusConstants.ACTIVE);
+        macAddressInfo.setStatus(ACTIVE);
         macAddressInfo.setAdmin(admin);
         return macAddressInfo;
     }
@@ -92,7 +91,7 @@ public class AdminUtils {
     public static AdminConfirmationToken parseInAdminConfirmationToken(Admin admin) {
         AdminConfirmationToken confirmationToken = new AdminConfirmationToken();
         confirmationToken.setAdmin(admin);
-        confirmationToken.setStatus(StatusConstants.ACTIVE);
+        confirmationToken.setStatus(ACTIVE);
         confirmationToken.setConfirmationToken(generateRandomToken());
 
         return confirmationToken;
@@ -128,7 +127,7 @@ public class AdminUtils {
         adminAvatar.setFileSize(fileUploadResponseDTO.getFileSize());
         adminAvatar.setFileUri(fileUploadResponseDTO.getFileUri());
         adminAvatar.setFileType(fileUploadResponseDTO.getFileType());
-        adminAvatar.setStatus(StatusConstants.ACTIVE);
+        adminAvatar.setStatus(ACTIVE);
     }
 
     public static void convertAdminToDeleted(Admin admin, DeleteRequestDTO deleteRequestDTO) {
@@ -203,26 +202,18 @@ public class AdminUtils {
 
         List<String> macAddress = updateRequestDTO.getMacAddressUpdateInfo()
                 .stream()
-                .filter(requestDTO -> requestDTO.getStatus().equals(StatusConstants.ACTIVE))
+                .filter(requestDTO -> requestDTO.getStatus().equals(ACTIVE))
                 .map(AdminMacAddressInfoUpdateRequestDTO::getMacAddress)
                 .collect(Collectors.toList());
 
-        String result = StringUtils.join(macAddress, COMMA_SEPARATED);
-        String[] elements = result.split(",");
-        List<String> macList = Arrays.asList(elements);
-
-        System.out.println("-------" + macList);
-
-        return (updateRequestDTO.getHasMacBinding().equals(StatusConstants.ACTIVE))
-                ? result : "N/A";
+        return (updateRequestDTO.getHasMacBinding().equals(ACTIVE))
+                ? StringUtils.join(macAddress, COMMA_SEPARATED) : "N/A";
     }
 
     public static EmailRequestDTO parseToEmailRequestDTO(String username,
                                                          AdminUpdateRequestDTO updateRequestDTO,
                                                          String paramValues,
                                                          String updatedMacAddress) {
-
-        System.out.println("~~~~~~" + updatedMacAddress);
         return EmailRequestDTO.builder()
                 .receiverEmailAddress(updateRequestDTO.getEmail())
                 .subject(SUBJECT_FOR_UPDATE_ADMIN)

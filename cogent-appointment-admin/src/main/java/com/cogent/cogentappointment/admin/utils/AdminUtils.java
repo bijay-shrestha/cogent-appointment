@@ -24,6 +24,7 @@ import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIV
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.*;
 import static com.cogent.cogentappointment.admin.utils.commons.NumberFormatterUtils.generateRandomToken;
+import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.convertToNormalCase;
 
 /**
  * @author smriti on 2019-08-11
@@ -35,7 +36,7 @@ public class AdminUtils {
                                           Profile profile) {
         Admin admin = new Admin();
         admin.setUsername(adminRequestDTO.getUsername());
-        admin.setFullName(StringUtil.toUpperCase(adminRequestDTO.getFullName()));
+        admin.setFullName(convertToNormalCase(adminRequestDTO.getFullName()));
         admin.setEmail(adminRequestDTO.getEmail());
         admin.setMobileNumber(adminRequestDTO.getMobileNumber());
         admin.setStatus(adminRequestDTO.getStatus());
@@ -57,7 +58,7 @@ public class AdminUtils {
                                                            Profile profile) {
 
         admin.setEmail(adminRequestDTO.getEmail());
-        admin.setFullName(StringUtil.toUpperCase(adminRequestDTO.getFullName()));
+        admin.setFullName(convertToNormalCase(adminRequestDTO.getFullName()));
         admin.setMobileNumber(adminRequestDTO.getMobileNumber());
         admin.setStatus(adminRequestDTO.getStatus());
         admin.setHasMacBinding(adminRequestDTO.getHasMacBinding());
@@ -165,7 +166,7 @@ public class AdminUtils {
         Map<String, String> params = new HashMap<>();
 
         if (!(updateRequestDTO.getFullName().equalsIgnoreCase(admin.getFullName())))
-            params.put("Full Name ", updateRequestDTO.getFullName());
+            params.put("Full Name ", convertToNormalCase(updateRequestDTO.getFullName()));
 
         if (!(updateRequestDTO.getEmail().equalsIgnoreCase(admin.getEmail())))
             params.put("Email Address ", updateRequestDTO.getEmail());

@@ -28,6 +28,7 @@ import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toUpp
  */
 public class DoctorUtils {
 
+
     public static Doctor parseDTOToDoctor(DoctorRequestDTO requestDTO,
                                           Gender gender,
                                           Hospital hospital) {

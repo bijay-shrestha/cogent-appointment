@@ -14,6 +14,10 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AllAvaliableDatesResponseDTO implements Serializable {
+public class AvailableDateByDoctorIdResponseDTO implements Serializable {
+    private Long specializationId;
+
+    private String SpecilaizationName;
+
     private List<Date> avaliableDates;
 }

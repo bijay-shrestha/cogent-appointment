@@ -11,11 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.cogent.cogentappointment.client.constants.SwaggerConstants.EsewaConstant.BASE_API_VALUE;
-import static com.cogent.cogentappointment.client.constants.SwaggerConstants.EsewaConstant.FETCH_DOCTOR_AVAILABLE_STATUS_OPERATION;
+import static com.cogent.cogentappointment.client.constants.SwaggerConstants.EsewaConstant.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.EsewaConstants.BASE_ESEWA;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.EsewaConstants.FETCH_DOCTOR_AVAILABLE_STATUS;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.EsewaConstants.*;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
@@ -38,6 +36,12 @@ public class esewaResource {
     @ApiOperation(FETCH_DOCTOR_AVAILABLE_STATUS_OPERATION)
     public ResponseEntity<?> fetchDoctorAvailableStatus(@RequestBody AppointmentDetailRequestDTO requestDTO) {
         return ok(esewaService.fetchDoctorAvailableStatus(requestDTO));
+    }
+
+    @PutMapping(FETCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION)
+    @ApiOperation(FETCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION_OPERATION)
+    public ResponseEntity<?> fetchAvailableDoctorWithSpecialization(@RequestBody AppointmentDetailRequestDTO requestDTO) {
+        return ok(esewaService.fetchAvailableDoctorWithSpecialization(requestDTO));
     }
 
 

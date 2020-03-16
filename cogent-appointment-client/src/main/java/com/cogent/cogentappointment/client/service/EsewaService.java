@@ -6,13 +6,15 @@ import com.cogent.cogentappointment.client.dto.response.appointment.appoinmentDa
 import com.cogent.cogentappointment.client.dto.response.eSewa.AvailableDoctorResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.eSewa.DoctorAvailabilityStatusResponseDTO;
 
+import java.util.List;
+
 public interface EsewaService {
 
     AppointmentDatesResponseDTO doctorAvailableTime(AppointmentDatesRequestDTO requestDTO);
 
     DoctorAvailabilityStatusResponseDTO fetchDoctorAvailableStatus(AppointmentDetailRequestDTO requestDTO);
 
-    AvailableDoctorResponseDTO fetchAvailableDoctorWithSpecialization(AppointmentDetailRequestDTO requestDTO);
+    List<AvailableDoctorResponseDTO> fetchAvailableDoctorWithSpecialization(AppointmentDetailRequestDTO requestDTO);
 
 
 }

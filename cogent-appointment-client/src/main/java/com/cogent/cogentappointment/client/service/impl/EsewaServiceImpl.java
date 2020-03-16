@@ -5,17 +5,21 @@ import com.cogent.cogentappointment.client.dto.request.eSewa.AppointmentDetailRe
 import com.cogent.cogentappointment.client.dto.response.appointment.appoinmentDateAndTime.*;
 import com.cogent.cogentappointment.client.dto.response.eSewa.AvailableDoctorResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.eSewa.DoctorAvailabilityStatusResponseDTO;
+import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.DoctorDutyRosterOverrideRepository;
 import com.cogent.cogentappointment.client.repository.DoctorDutyRosterRepository;
 import com.cogent.cogentappointment.client.service.EsewaService;
+import com.cogent.cogentappointment.persistence.model.Doctor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
@@ -23,6 +27,7 @@ import static com.cogent.cogentappointment.client.log.CommonLogConstant.FETCHING
 import static com.cogent.cogentappointment.client.log.constants.eSewaLog.AVAILABLE_DOCTOR_LIST;
 import static com.cogent.cogentappointment.client.log.constants.eSewaLog.DOCTOR_AVAILABLE_STATUS;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
+import static com.cogent.cogentappointment.client.utils.eSewaUtils.mergeOverrideAndActualDoctorList;
 
 @Service
 @Transactional
@@ -89,17 +94,28 @@ public class EsewaServiceImpl implements EsewaService {
 
     /*ALL AVAILABLE DOCTORS AND THEIR SPECIALIZATION ON THE CHOSEN DATE*/
     @Override
-    public AvailableDoctorResponseDTO fetchAvailableDoctorWithSpecialization(AppointmentDetailRequestDTO requestDTO) {
+    public List<AvailableDoctorResponseDTO> fetchAvailableDoctorWithSpecialization(AppointmentDetailRequestDTO requestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, AVAILABLE_DOCTOR_LIST);
 
-        List<AvailableDoctorResponseDTO> availableDoctorFromDDROverride=
+        validateIfRequestedDateIsBeforeCurrentDate(requestDTO.getDate());
+
+        List<AvailableDoctorResponseDTO> availableDoctorFromDDROverride =
                 dutyRosterOverrideRepository.fetchAvailableDoctor(requestDTO);
+
+        List<AvailableDoctorResponseDTO> availableDoctorFromDDR =
+                dutyRosterRepository.fetchAvailableDoctor(requestDTO);
+
+        List<AvailableDoctorResponseDTO> mergedList =
+                mergeOverrideAndActualDoctorList(availableDoctorFromDDROverride, availableDoctorFromDDR);
+
+        if (ObjectUtils.isEmpty(mergedList))
+            throw DOCTORS_NOT_AVAILABLE.get();
 
         log.info(FETCHING_PROCESS_COMPLETED, AVAILABLE_DOCTOR_LIST, getDifferenceBetweenTwoTime(startTime));
 
-        return null;
+        return mergedList;
     }
 
     private List<AvaliableDatesResponseDTO> getDutyRosterOverrideDates(
@@ -177,5 +193,13 @@ public class EsewaServiceImpl implements EsewaService {
         }
         return appointmentDatesResponseDTO;
     }
-}
 
+    private void validateIfRequestedDateIsBeforeCurrentDate(Date requestedDate) {
+        boolean isRequestedDateBeforeCurrentDate = isFirstDateGreater(new Date(), requestedDate);
+
+        if (isRequestedDateBeforeCurrentDate)
+            throw DOCTORS_NOT_AVAILABLE.get();
+    }
+
+    private Supplier<NoContentFoundException> DOCTORS_NOT_AVAILABLE = () -> new NoContentFoundException(Doctor.class);
+}

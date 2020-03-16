@@ -33,9 +33,7 @@ import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.query.DoctorDutyRosterOverrideQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_DETAILS;
 import static com.cogent.cogentappointment.client.query.DoctorDutyRosterQuery.*;
-import static com.cogent.cogentappointment.client.query.EsewaQuery.QUERY_TO_FETCH_AVAILABLE_DOCTORS_FROM_DDR_OVERRIDE;
-import static com.cogent.cogentappointment.client.query.EsewaQuery.QUERY_TO_FETCH_DUTY_ROSTER_BY_DOCTOR_AND_SPECIALIZATION_ID;
-import static com.cogent.cogentappointment.client.query.EsewaQuery.QUERY_TO_FETCH_WEEKDAYS_DUTY_ROSTER_BY_DUTY_ROSTER_ID;
+import static com.cogent.cogentappointment.client.query.EsewaQuery.*;
 import static com.cogent.cogentappointment.client.utils.DoctorDutyRosterUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDayCodeFromDate;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
@@ -206,7 +204,7 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
         Date sqlDate = utilDateToSqlDate(requestDTO.getDate());
 
         Query query = createQuery.apply(entityManager,
-                EsewaQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_STATUS(requestDTO))
+                QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_STATUS(requestDTO))
                 .setParameter(DATE, utilDateToSqlDate(sqlDate))
                 .setParameter(HOSPITAL_ID, requestDTO.getHospitalId())
                 .setParameter(CODE, getDayCodeFromDate(sqlDate));
@@ -222,9 +220,15 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
 
     @Override
     public List<AvailableDoctorResponseDTO> fetchAvailableDoctor(AppointmentDetailRequestDTO requestDTO) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_AVAILABLE_DOCTORS_FROM_DDR_OVERRIDE)
-                .setParameter(DATE, requestDTO.getDate())
-                .setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
+        Date sqlDate = utilDateToSqlDate(requestDTO.getDate());
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_AVAILABLE_DOCTORS_FROM_DDR(requestDTO))
+                .setParameter(DATE, utilDateToSqlDate(sqlDate))
+                .setParameter(HOSPITAL_ID, requestDTO.getHospitalId())
+                .setParameter(CODE, getDayCodeFromDate(sqlDate));
+
+        if (!Objects.isNull(requestDTO.getSpecializationId()))
+            query.setParameter(SPECIALIZATION_ID, requestDTO.getSpecializationId());
 
         return transformQueryToResultList(query, AvailableDoctorResponseDTO.class);
     }

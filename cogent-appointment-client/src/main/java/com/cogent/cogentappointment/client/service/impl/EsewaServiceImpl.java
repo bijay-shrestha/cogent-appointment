@@ -20,9 +20,7 @@ import java.util.List;
 
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
-import static com.cogent.cogentappointment.client.log.constants.eSewaLog.DOCTOR_AVAILABLE_DATES;
-import static com.cogent.cogentappointment.client.log.constants.eSewaLog.DOCTOR_AVAILABLE_DATES_AND_TIME;
-import static com.cogent.cogentappointment.client.log.constants.eSewaLog.DOCTOR_AVAILABLE_STATUS;
+import static com.cogent.cogentappointment.client.log.constants.eSewaLog.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.client.utils.eSewaUtils.*;
 
@@ -48,7 +46,7 @@ public class EsewaServiceImpl implements EsewaService {
 
         log.info(FETCHING_PROCESS_STARTED, DOCTOR_AVAILABLE_DATES_AND_TIME);
 
-        List<AvaliableDatesResponseDTO> apoointmentDateAndTime = new ArrayList<>();
+        List<AvailableDatesResponseDTO> appointmentDateAndTime = new ArrayList<>();
 
         List<DoctorDutyRosterAppointmentDate> doctorDutyRosterAppointmentDates = dutyRosterRepository
                 .getDutyRosterByDoctorAndSpecializationId(requestDTO);
@@ -61,15 +59,15 @@ public class EsewaServiceImpl implements EsewaService {
             List<Date> dates = getDates(doctorDutyRosterAppointmentDate.getFromDate(),
                     doctorDutyRosterAppointmentDate.getToDate());
 
-            List<AvaliableDatesResponseDTO> appointmentDatesResponseDTO =
+            List<AvailableDatesResponseDTO> appointmentDatesResponseDTO =
                     getDutyRosterDatesAndTime(dates, weekDaysDutyRosterAppointmentDate);
 
-            checkIfOverrideExists(doctorDutyRosterAppointmentDate, appointmentDatesResponseDTO, apoointmentDateAndTime);
+            checkIfOverrideExists(doctorDutyRosterAppointmentDate, appointmentDatesResponseDTO, appointmentDateAndTime);
         }
 
         log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_AVAILABLE_DATES_AND_TIME, getDifferenceBetweenTwoTime(startTime));
 
-        return getFinalResponse(requestDTO, apoointmentDateAndTime);
+        return getFinalResponse(requestDTO, appointmentDateAndTime);
     }
 
     @Override
@@ -103,24 +101,25 @@ public class EsewaServiceImpl implements EsewaService {
         List<DoctorDutyRosterAppointmentDateAndSpecilizationDTO> appointmentDateAndSpecilizations=dutyRosterRepository
                 .getAvaliableDatesAndSpecilizationByDoctorId(doctorId);
 
-        appointmentDateAndSpecilizations.forEach(DateAndSpecilization -> {
+        appointmentDateAndSpecilizations.forEach(dateAndSpecilization -> {
 
             AvaliableDateByDoctorIdResponseDTO responseDTO=new AvaliableDateByDoctorIdResponseDTO();
 
-            List<Date> availableDates= getDates(DateAndSpecilization.getFromDate(), DateAndSpecilization.getToDate());
+            List<Date> availableDates= utilDateListToSqlDateList(getDates(dateAndSpecilization.getFromDate(),
+                    dateAndSpecilization.getToDate()));
 
-            responseDTO.setSpecializationId(DateAndSpecilization.getSpecilizationId());
+            responseDTO.setSpecializationId(dateAndSpecilization.getSpecializationId());
 
-            responseDTO.setSpecilaizationName(DateAndSpecilization.getSpecilizationName());
+            responseDTO.setSpecilaizationName(dateAndSpecilization.getSpecializationName());
 
-            if (DateAndSpecilization.getHasOverride().equals('Y')){
+            if (dateAndSpecilization.getHasOverride().equals('Y')){
 
                 List<DutyRosterOverrideAppointmentDate> dateList=dutyRosterOverrideRepository
-                        .fetchDayOffRosterOverridebyRosterId(DateAndSpecilization.getId());
+                        .fetchDayOffRosterOverridebyRosterId(dateAndSpecilization.getId());
 
                     dateList.forEach(date->{
 
-                        List<Date> dayOffDates = getDates(date.getFromDate(), date.getToDate());
+                        List<Date> dayOffDates = utilDateListToSqlDateList(getDates(date.getFromDate(), date.getToDate()));
 
                         responseDTO.setAvaliableDates(mergeRosterAndRosterOverrideDates(availableDates,dayOffDates));
 
@@ -138,12 +137,12 @@ public class EsewaServiceImpl implements EsewaService {
         return responseDTOList;
     }
 
-    private List<AvaliableDatesResponseDTO> getOverrideDatesAndTime(
+    private List<AvailableDatesResponseDTO> getOverrideDatesAndTime(
             DoctorDutyRosterAppointmentDate doctorDutyRosterAppointmentDate) {
 
         final List<Date> dates = new ArrayList<>();
 
-        List<AvaliableDatesResponseDTO> avaliableDates = new ArrayList<>();
+        List<AvailableDatesResponseDTO> avaliableDates = new ArrayList<>();
 
         List<DoctorDutyRosterOverrideAppointmentDate> appointmentDatesAndTime =
                 getDateAndTimeFromOverrideByRosterId(doctorDutyRosterAppointmentDate.getId());
@@ -154,7 +153,7 @@ public class EsewaServiceImpl implements EsewaService {
 
             for (Date date : dates) {
 
-                AvaliableDatesResponseDTO datesResponseDTO = new AvaliableDatesResponseDTO();
+                AvailableDatesResponseDTO datesResponseDTO = new AvailableDatesResponseDTO();
 
                 datesResponseDTO.setDate(utilDateToSqlDate(date));
 
@@ -164,23 +163,23 @@ public class EsewaServiceImpl implements EsewaService {
         return avaliableDates;
     }
 
-    private List<AvaliableDatesResponseDTO> getDutyRosterDatesAndTime(List<Date> dates,
+    private List<AvailableDatesResponseDTO> getDutyRosterDatesAndTime(List<Date> dates,
                                                                       List<DoctorWeekDaysDutyRosterAppointmentDate>
                                                                               weekDaysDutyRosterAppointmentDate) {
 
-        List<AvaliableDatesResponseDTO> avaliableDates = new ArrayList<>();
+        List<AvailableDatesResponseDTO> availableDates = new ArrayList<>();
 
         for (Date date : dates) {
 
-            AvaliableDatesResponseDTO datesResponseDTO = new AvaliableDatesResponseDTO();
+            AvailableDatesResponseDTO datesResponseDTO = new AvailableDatesResponseDTO();
 
             weekDaysDutyRosterAppointmentDate.forEach(weekdays -> {
 
-                getAllDutyRosterDatesAndTime(date, weekdays, datesResponseDTO, avaliableDates);
+                getAllDutyRosterDatesAndTime(date, weekdays, datesResponseDTO, availableDates);
 
             });
         }
-        return avaliableDates;
+        return availableDates;
     }
 
     private List<DoctorDutyRosterOverrideAppointmentDate> getDateAndTimeFromOverrideByRosterId(Long rosterId) {
@@ -189,21 +188,20 @@ public class EsewaServiceImpl implements EsewaService {
     }
 
     private List<DoctorWeekDaysDutyRosterAppointmentDate> getWeekdaysTimeByRosterId(Long dutyRosterId) {
-        return dutyRosterRepository
-                .getWeekDaysDutyRosterByDutyRosterId(dutyRosterId);
+        return dutyRosterRepository.getWeekDaysDutyRosterByDutyRosterId(dutyRosterId);
     }
 
     private void checkIfOverrideExists(DoctorDutyRosterAppointmentDate doctorDutyRosterAppointmentDate,
-                                       List<AvaliableDatesResponseDTO> appointmentDatesResponseDTO,
-                                       List<AvaliableDatesResponseDTO> apoointmentDateAndTime) {
+                                       List<AvailableDatesResponseDTO> appointmentDatesResponseDTO,
+                                       List<AvailableDatesResponseDTO> apoointmentDateAndTime) {
         if (doctorDutyRosterAppointmentDate.getHasOverride().equals('Y')) {
 
-            List<AvaliableDatesResponseDTO> avaliableDatesResponseDTOS =
+            List<AvailableDatesResponseDTO> availableDatesResponseDTOS =
                     getOverrideDatesAndTime(doctorDutyRosterAppointmentDate);
 
-            List<AvaliableDatesResponseDTO> datesResponseDTO = mergeRosterAndRosterOverrideDatesAndTime(
+            List<AvailableDatesResponseDTO> datesResponseDTO = mergeRosterAndRosterOverrideDatesAndTime(
                     appointmentDatesResponseDTO,
-                    avaliableDatesResponseDTOS);
+                    availableDatesResponseDTOS);
 
             getAllDateAndTime(apoointmentDateAndTime, datesResponseDTO);
 

@@ -20,7 +20,7 @@ public class DoctorDutyRosterAppointmentDateAndSpecilizationDTO implements Seria
 
     private Date toDate;
 
-    private Long specilizationId;
+    private Long specializationId;
 
-    private String specilizationName;
+    private String specializationName;
 }

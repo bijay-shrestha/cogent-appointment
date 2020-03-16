@@ -14,7 +14,7 @@ public class EsewaQuery {
                     " ddr.toDate as toDate" +
                     " FROM DoctorDutyRoster ddr" +
                     " Where ddr.doctorId.id=:doctorId" +
-                    " AND  ddr.specializationId.id=:specializationId" +
+                    " AND ddr.specializationId.id=:specializationId" +
                     " AND ddr.status='Y'";
 
     public static final String QUERY_TO_FETCH_DUTY_ROSTER_OVERRIDE_BY_DUTY_ROSTER_ID =
@@ -118,7 +118,7 @@ public class EsewaQuery {
                     " ddr.id as id," +
                     " ddr.fromDate as fromDate," +
                     " ddr.toDate as toDate," +
-                    " ddr.hasOverrideDutyRoster as hasOverRide," +
+                    " ddr.hasOverrideDutyRoster as hasOverride," +
                     " s.id as specializationId," +
                     " s.name as specializationName" +
                     " FROM DoctorDutyRoster ddr" +
@@ -131,7 +131,7 @@ public class EsewaQuery {
                     " ddro.fromDate as fromDate," +
                     " ddro.toDate as toDate" +
                     " FROM DoctorDutyRosterOverride ddro" +
-                    " WHERE ddro.doctorDutyRosterId.id=:rosterId" +
+                    " WHERE ddro.doctorDutyRosterId.id=:doctorDutyRosterId" +
                     " AND ddro.dayOffStatus='Y'" +
                     " AND ddro.status='Y'";
 }

@@ -179,7 +179,9 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
     }
 
     @Override
-    public List<DoctorDutyRosterAppointmentDate> getDutyRosterByDoctorAndSpecializationId(AppointmentDatesRequestDTO requestDTO) {
+    public List<DoctorDutyRosterAppointmentDate> getDutyRosterByDoctorAndSpecializationId
+            (AppointmentDatesRequestDTO requestDTO) {
+
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DUTY_ROSTER_BY_DOCTOR_AND_SPECIALIZATION_ID)
                 .setParameter(DOCTOR_ID, requestDTO.getDoctorId())
                 .setParameter(SPECIALIZATION_ID, requestDTO.getSpecializationId());

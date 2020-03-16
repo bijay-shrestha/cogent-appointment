@@ -47,6 +47,7 @@ public class SwaggerConstants {
         String REJECT_APPOINTMENT = "Reject Appointment and set status as 'R'.";
         String FETCH_APPOINTMENT_LOG = "Fetch Appointment Log";
         String FETCH_APPOINTMENT_RESCHEDULE_LOG = "Fetch Appointment Reschedule Log";
+        String FETCH_VACANT_APPOINTMENT_DATES = "Fetch Appointment vacant dates by doctorId and SpeciliazationId ";
         String DETAILS_APPROVAL_VISIT_OPERATION = "Fetch appointment visit approval details by its id";
     }
 
@@ -146,6 +147,14 @@ public class SwaggerConstants {
 
 
     //E
+    public interface EsewaConstant {
+        String BASE_API_VALUE = "This is eSewa Resource";
+        String FETCH_DOCTOR_AVAILABLE_STATUS_OPERATION = "Return message if the doctor is available on the date" +
+                " (Case V/Case VIII)";
+        String FETCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION_OPERATION = "Fetch all available doctors and " +
+                "their specialization on the choosen date (Case II/Case IV)";
+
+    }
 
 
     //F

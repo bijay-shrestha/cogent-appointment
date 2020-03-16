@@ -15,6 +15,7 @@ import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.constants.StringConstant.OR;
 import static com.cogent.cogentappointment.client.utils.GenderUtils.fetchGenderByCode;
 import static com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils.generateRandomNumber;
+import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toNormalCase;
 import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toUpperCase;
 
 /**
@@ -28,7 +29,7 @@ public class PatientUtils {
                                          String eSewaId,
                                          Gender gender) {
         Patient patient = new Patient();
-        patient.setName(toUpperCase(name));
+        patient.setName(toNormalCase(name));
         patient.setMobileNumber(mobileNumber);
         patient.setDateOfBirth(dateOfBirth);
         patient.setESewaId(eSewaId);
@@ -39,7 +40,7 @@ public class PatientUtils {
 
     public static void updatePatient(PatientUpdateRequestDTO requestDTO,
                                      Patient patient) {
-        patient.setName(toUpperCase(requestDTO.getName()));
+        patient.setName(toNormalCase(requestDTO.getName()));
         patient.setDateOfBirth(requestDTO.getDateOfBirth());
         patient.setMobileNumber(requestDTO.getMobileNumber());
         patient.setGender(requestDTO.getGender());

@@ -22,6 +22,7 @@ import java.util.stream.IntStream;
 
 import static com.cogent.cogentappointment.admin.utils.commons.NumberFormatterUtils.formatDoubleTo2DecimalPlaces;
 import static com.cogent.cogentappointment.admin.utils.commons.NumberFormatterUtils.generateRandomNumber;
+import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.convertToNormalCase;
 
 /**
  * @author smriti on 2019-09-29
@@ -32,7 +33,7 @@ public class DoctorUtils {
                                           Gender gender,
                                           Hospital hospital) {
         Doctor doctor = new Doctor();
-        doctor.setName(StringUtil.toUpperCase(requestDTO.getName()));
+        doctor.setName(convertToNormalCase(requestDTO.getName()));
         doctor.setCode(generateRandomNumber(3));
         doctor.setMobileNumber(requestDTO.getMobileNumber());
         doctor.setEmail(requestDTO.getEmail());
@@ -113,7 +114,7 @@ public class DoctorUtils {
                                               Gender gender,
                                               Hospital hospital) {
 
-        doctor.setName(StringUtil.toUpperCase(requestDTO.getName()));
+        doctor.setName(convertToNormalCase(requestDTO.getName()));
         doctor.setMobileNumber(requestDTO.getMobileNumber());
         doctor.setEmail(requestDTO.getEmail());
         doctor.setNmcNumber(requestDTO.getNmcNumber());

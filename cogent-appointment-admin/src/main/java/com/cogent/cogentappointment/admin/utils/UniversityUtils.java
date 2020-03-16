@@ -6,6 +6,7 @@ import com.cogent.cogentappointment.admin.dto.request.university.UniversityUpdat
 import com.cogent.cogentappointment.persistence.model.Country;
 import com.cogent.cogentappointment.persistence.model.University;
 
+import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.convertToNormalCase;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.toUpperCase;
 
 /**
@@ -17,7 +18,7 @@ public class UniversityUtils {
                                                Country country) {
 
         University university = new University();
-        university.setName(toUpperCase(requestDTO.getName()));
+        university.setName(convertToNormalCase(requestDTO.getName()));
         university.setAddress(requestDTO.getAddress());
         university.setStatus(requestDTO.getStatus());
         university.setCountry(country);
@@ -27,7 +28,7 @@ public class UniversityUtils {
     public static void parseToUpdatedUniversity(UniversityUpdateRequestDTO requestDTO,
                                                 Country country,
                                                 University university) {
-        university.setName(toUpperCase(requestDTO.getName()));
+        university.setName(convertToNormalCase(requestDTO.getName()));
         university.setAddress(requestDTO.getAddress());
         university.setStatus(requestDTO.getStatus());
         university.setRemarks(requestDTO.getRemarks());

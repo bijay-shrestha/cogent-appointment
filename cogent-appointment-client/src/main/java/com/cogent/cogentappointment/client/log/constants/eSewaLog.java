@@ -7,4 +7,7 @@ public class eSewaLog {
 
     public final static String DOCTOR_AVAILABLE_STATUS = "DOCTOR AVAILABLE STATUS";
 
+    public final static String AVAILABLE_DOCTOR_LIST = "AVAILABLE DOCTOR WITH SPECIALIZATION";
+
+
 }

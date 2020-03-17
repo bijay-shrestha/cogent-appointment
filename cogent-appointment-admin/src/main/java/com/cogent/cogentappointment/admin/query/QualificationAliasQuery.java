@@ -40,12 +40,10 @@ public class QualificationAliasQuery {
     private static String GET_WHERE_CLAUSE_FOR_SEARCHING_QUALIFICATION_ALIAS
             (QualificationAliasSearchRequestDTO searchRequestDTO) {
 
-//        String whereClause = " WHERE qa.status!='D'";
-
-        String whereClause = "";
+        String whereClause = " WHERE qa.status!='D'";
 
         if (!Objects.isNull(searchRequestDTO.getQualificationAliasId()))
-            whereClause += " WHERE qa.id = " + searchRequestDTO.getQualificationAliasId();
+            whereClause += " AND qa.id = " + searchRequestDTO.getQualificationAliasId();
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
             whereClause += " AND qa.status = '" + searchRequestDTO.getStatus()+"'";

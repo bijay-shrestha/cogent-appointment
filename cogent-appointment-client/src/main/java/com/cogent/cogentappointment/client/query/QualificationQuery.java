@@ -15,7 +15,8 @@ public class QualificationQuery {
                     " FROM Qualification q" +
                     " WHERE" +
                     " q.status !='D'" +
-                    " AND q.name=:name";
+                    " AND q.name=:name" +
+                    " AND q.hospital.id =:hospitalId";
 
     public static final String QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE =
             " SELECT COUNT(q.id)" +
@@ -23,7 +24,9 @@ public class QualificationQuery {
                     " WHERE" +
                     " q.status !='D'" +
                     " AND q.id!=:id" +
-                    " AND q.name=:name";
+                    " AND q.name=:name" +
+                    " AND q.hospital.id =:hospitalId";
+
 
     private static final String SELECT_CLAUSE_TO_FETCH_MINIMAL_QUALIFICATION =
             "SELECT q.id as id," +                                               //[0]

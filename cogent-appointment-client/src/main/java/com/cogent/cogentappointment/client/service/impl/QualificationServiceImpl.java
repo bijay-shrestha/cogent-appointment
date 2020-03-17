@@ -11,9 +11,11 @@ import com.cogent.cogentappointment.client.dto.response.qualification.Qualificat
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.QualificationRepository;
+import com.cogent.cogentappointment.client.service.HospitalService;
 import com.cogent.cogentappointment.client.service.QualificationAliasService;
 import com.cogent.cogentappointment.client.service.QualificationService;
 import com.cogent.cogentappointment.client.service.UniversityService;
+import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.Qualification;
 import com.cogent.cogentappointment.persistence.model.QualificationAlias;
 import com.cogent.cogentappointment.persistence.model.University;
@@ -30,6 +32,7 @@ import static com.cogent.cogentappointment.client.log.constants.QualificationLog
 import static com.cogent.cogentappointment.client.utils.QualificationUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 
 /**
  * @author smriti on 11/11/2019
@@ -41,18 +44,20 @@ public class QualificationServiceImpl implements QualificationService {
 
     private final QualificationRepository qualificationRepository;
 
-
     private final QualificationAliasService qualificationAliasService;
 
     private final UniversityService universityService;
 
+    private final HospitalService hospitalService;
 
     public QualificationServiceImpl(QualificationRepository qualificationRepository,
                                     QualificationAliasService qualificationAliasService,
-                                    UniversityService universityService) {
+                                    UniversityService universityService,
+                                    HospitalService hospitalService) {
         this.qualificationRepository = qualificationRepository;
         this.qualificationAliasService = qualificationAliasService;
         this.universityService = universityService;
+        this.hospitalService = hospitalService;
     }
 
     @Override
@@ -61,11 +66,22 @@ public class QualificationServiceImpl implements QualificationService {
 
         log.info(SAVING_PROCESS_STARTED, QUALIFICATION);
 
+        Long hospitalId = getLoggedInHospitalId();
+
         QualificationAlias qualificationAlias = fetchQualificationAlias(requestDTO.getQualificationAliasId());
 
         University university = fetchUniversity(requestDTO.getUniversityId());
 
-        save(parseToQualification(requestDTO, university, qualificationAlias));
+        Hospital hospital = fetchHospital(hospitalId);
+
+        Long count = qualificationRepository.validateDuplicity(
+                requestDTO.getName(),
+                hospitalId
+        );
+
+        validateName(count, requestDTO.getName());
+
+        save(parseToQualification(requestDTO, university, qualificationAlias, hospital));
 
         log.info(SAVING_PROCESS_COMPLETED, QUALIFICATION, getDifferenceBetweenTwoTime(startTime));
     }
@@ -78,7 +94,12 @@ public class QualificationServiceImpl implements QualificationService {
 
         Qualification qualification = findQualificationById(requestDTO.getId());
 
-        Long count = qualificationRepository.validateDuplicity(requestDTO.getId(), requestDTO.getName());
+        Long hospitalId = getLoggedInHospitalId();
+
+        Long count = qualificationRepository.validateDuplicity(
+                requestDTO.getId(),
+                requestDTO.getName(),
+                hospitalId);
 
         validateName(count, requestDTO.getName());
 
@@ -86,7 +107,9 @@ public class QualificationServiceImpl implements QualificationService {
 
         University university = fetchUniversity(requestDTO.getUniversityId());
 
-        parseToUpdatedQualification(requestDTO, qualificationAlias, university, qualification);
+        Hospital hospital = fetchHospital(hospitalId);
+
+        parseToUpdatedQualification(requestDTO, qualificationAlias, university, qualification, hospital);
 
         log.info(UPDATING_PROCESS_COMPLETED, QUALIFICATION, getDifferenceBetweenTwoTime(startTime));
     }
@@ -189,6 +212,10 @@ public class QualificationServiceImpl implements QualificationService {
 
     private University fetchUniversity(Long universityId) {
         return universityService.fetchUniversityById(universityId);
+    }
+
+    private Hospital fetchHospital(Long hospitalId) {
+        return hospitalService.fetchActiveHospital(hospitalId);
     }
 
     private void save(Qualification qualification) {

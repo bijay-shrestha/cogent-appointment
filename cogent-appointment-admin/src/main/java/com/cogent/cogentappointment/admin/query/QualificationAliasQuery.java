@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.query;
 
 import com.cogent.cogentappointment.admin.dto.request.qualificationAlias.QualificationAliasSearchRequestDTO;
+import org.springframework.util.ObjectUtils;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -24,7 +25,7 @@ public class QualificationAliasQuery {
                     " FROM QualificationAlias qa" +
                     " WHERE qa.status = 'Y'";
 
-    private static  String SELECT_CLAUSE_TO_FETCH_MINIMAL_QUALIFICATION_ALIAS =
+    private static String SELECT_CLAUSE_TO_FETCH_MINIMAL_QUALIFICATION_ALIAS =
             "SELECT qa.id as id," +                                                //[0]
                     " qa.name as name," +                                          //[1]
                     " qa.status as status" +                                       //[2]
@@ -39,10 +40,15 @@ public class QualificationAliasQuery {
     private static String GET_WHERE_CLAUSE_FOR_SEARCHING_QUALIFICATION_ALIAS
             (QualificationAliasSearchRequestDTO searchRequestDTO) {
 
-        String whereClause = " WHERE qa.status!='D'";
+//        String whereClause = " WHERE qa.status!='D'";
+
+        String whereClause = "";
 
         if (!Objects.isNull(searchRequestDTO.getQualificationAliasId()))
-            whereClause += " AND qa.id = " + searchRequestDTO.getQualificationAliasId();
+            whereClause += " WHERE qa.id = " + searchRequestDTO.getQualificationAliasId();
+
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
+            whereClause += " AND qa.status = '" + searchRequestDTO.getStatus()+"'";
 
         return whereClause;
     }

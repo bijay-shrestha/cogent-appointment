@@ -36,6 +36,7 @@ public class EsewaServiceImpl implements EsewaService {
         this.dutyRosterOverrideRepository = dutyRosterOverrideRepository;
     }
 
+    /*RETURNS ALL THE AVAILABLE APPOINTMENT DATES AND TIME BY DOCTORID and SPECIALIZATIONID*/
     @Override
     public AppointmentDatesResponseDTO fetchAvailableDatesAndTime(AppointmentDatesRequestDTO requestDTO) {
 
@@ -88,6 +89,7 @@ public class EsewaServiceImpl implements EsewaService {
         return responseDTO;
     }
 
+    /*RETURNS ALL THE AVAILABLE APPOINTMENT DATES WITH SPECIALIZATION ID AND NAME BY DOCTORID*/
     @Override
     public List<AvailableDateByDoctorIdResponseDTO> fetchAvailableDatesWithSpecialization(Long doctorId) {
 
@@ -135,6 +137,7 @@ public class EsewaServiceImpl implements EsewaService {
         return responseDTOList;
     }
 
+    /*RETURNS ALL THE AVAILABLE APPOINTMENT DATES WITH DOCTOR ID AND NAME BY SPECIALIZATIONID*/
     @Override
     public List<AvailableDateBySpecializationIdResponseDTO> fetchAvailableDatesWithDoctor(Long specializationId) {
 
@@ -194,6 +197,7 @@ public class EsewaServiceImpl implements EsewaService {
         return null;
     }
 
+    /*RETURNS ALL THE AVAILABLE APPOINTMENT DATES  BY DOCTORID AND SPECIALIZATIONID*/
     @Override
     public AllAvailableDatesResponseDTO fetchAvailableDates(AppointmentDatesRequestDTO requestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
@@ -283,12 +287,6 @@ public class EsewaServiceImpl implements EsewaService {
     private List<DoctorDutyRosterOverrideAppointmentDate> getDateAndTimeFromOverrideByRosterId(Long rosterId) {
         return dutyRosterOverrideRepository
                 .getRosterOverrideByRosterId(rosterId);
-    }
-
-    private List<DoctorDutyRosterOverrideAppointmentDate>
-    getDateAndTimeFromOverrideByDoctorAndSpecializationId(Long doctorId, Long specializationId) {
-        return dutyRosterOverrideRepository
-                .getRosterOverrideByDoctorAndSpecializationId(doctorId, specializationId);
     }
 
     private List<DoctorWeekDaysDutyRosterAppointmentDate> getWeekdaysTimeByRosterId(Long dutyRosterId) {

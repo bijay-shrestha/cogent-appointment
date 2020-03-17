@@ -226,6 +226,10 @@ public class SwaggerConstants {
 
     public interface QualificationAliasConstant {
         String BASE_API_VALUE = "This is Qualification Alias Resource";
+        String SAVE_OPERATION = "Save new Qualification Alias Resource";
+        String UPDATE_OPERATION = "Update existing Qualification Alias Resource";
+        String DELETE_OPERATION = "Set Qualification Alias Resource status as 'D' when deleted";
+        String SEARCH_OPERATION = "Search Qualification Alias Resource according to given request parameters";
         String FETCH_ACTIVE_QUALIFICATION_ALIAS = "Fetch active Qualification Alias like M.D.,M.B.B.S, etc";
     }
 

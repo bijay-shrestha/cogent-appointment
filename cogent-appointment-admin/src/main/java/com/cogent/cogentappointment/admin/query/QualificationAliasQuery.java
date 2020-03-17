@@ -18,6 +18,14 @@ public class QualificationAliasQuery {
                     " qa.status !='D'" +
                     " AND qa.name=:name";
 
+    public static final String QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE =
+            " SELECT COUNT(qa.id)" +
+                    " FROM QualificationAlias qa" +
+                    " WHERE" +
+                    " qa.status !='D'" +
+                    " AND qa.id!=:id" +
+                    " AND qa.name=:name";
+
     public static final String QUERY_TO_FETCH_ACTIVE_QUALIFICATION_ALIAS =
             "SELECT" +
                     " qa.id as value," +

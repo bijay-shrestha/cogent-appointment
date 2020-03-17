@@ -9,16 +9,16 @@ import java.util.List;
 
 public interface EsewaService {
 
-    AppointmentDatesResponseDTO fetchDoctorAvailableDatesAndTime(AppointmentDatesRequestDTO requestDTO);
+    AppointmentDatesResponseDTO fetchAvailableDatesAndTime(AppointmentDatesRequestDTO requestDTO);
 
     DoctorAvailabilityStatusResponseDTO fetchDoctorAvailableStatus(AppointmentDetailRequestDTO requestDTO);
 
-    List<AvailableDateByDoctorIdResponseDTO> fetchDoctorAvailableDatesWithSpecialization(Long doctorId);
+    List<AvailableDateByDoctorIdResponseDTO> fetchAvailableDatesWithSpecialization(Long doctorId);
 
     AvailableDoctorResponseDTO fetchAvailableDoctorWithSpecialization(AppointmentDetailRequestDTO requestDTO);
 
     AllAvailableDatesResponseDTO fetchAvailableDates(AppointmentDatesRequestDTO requestDTO);
 
-    List<AvailableDateBySpecializationIdResponseDTO> fetchDoctorAvailableDatesWithDoctor(Long specializationId);
+    List<AvailableDateBySpecializationIdResponseDTO> fetchAvailableDatesWithDoctor(Long specializationId);
 
 }

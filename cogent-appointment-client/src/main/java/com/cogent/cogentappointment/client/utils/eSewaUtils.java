@@ -42,6 +42,12 @@ public class eSewaUtils {
 
     }
 
+    public static void getAllDate(List<Date> finalList,
+                                         List<Date> availableDatesResponseDTOS) {
+        finalList.addAll(availableDatesResponseDTOS);
+
+    }
+
     public static List<AvailableDatesResponseDTO> mergeRosterAndRosterOverrideDatesAndTime(
             List<AvailableDatesResponseDTO> avaliableRosterDates,
             List<AvailableDatesResponseDTO> avaliableRosterOverrideDates) {

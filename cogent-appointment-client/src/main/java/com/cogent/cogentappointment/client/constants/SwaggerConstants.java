@@ -150,7 +150,7 @@ public class SwaggerConstants {
     public interface EsewaConstant {
         String BASE_API_VALUE = "This is eSewa Resource";
         String FETCH_DOCTOR_AVAILABLE_STATUS_OPERATION = "Return message if the doctor is available on the date";
-        String FETCH_AVAILABLE_APPOINTMENT_DATES = "Returns all the avaliable appointment dates by doctorId and" +
+        String FETCH_AVAILABLE_APPOINTMENT_DATES = "Returns all the avaliable appointment dates and time by doctorId and" +
                 " specializationId";
 
         String FETCH_AVAILABLE_DOCTOR_DATES = "Returns all the avaliable appointment dates by doctorId";

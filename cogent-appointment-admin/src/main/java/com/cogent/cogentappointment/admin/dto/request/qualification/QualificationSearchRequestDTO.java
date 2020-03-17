@@ -22,5 +22,7 @@ public class QualificationSearchRequestDTO implements Serializable {
 
     private Long qualificationAliasId;
 
+    private Long hospitalId;
+
     private Character status;
 }

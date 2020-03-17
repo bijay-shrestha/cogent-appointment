@@ -93,7 +93,9 @@ public class WebResourceKeyConstants {
         String APPOINTMENT_AVAILABLE_DATES = "/appointmentAvailableDates";
         String AVAILABLE_DOCTOR_DATES = "/appointmentDoctorDates";
         String DOCTOR_ID_PATH_VARIABLE_BASE = "/{doctorId}";
+        String SPECIALIZATION_ID_PATH_VARIABLE_BASE = "/{specializationId}";
         String AVAILABLE_DATES = "/availableDates";
+        String AVAILABLE_SPECIALIZATION_DATES = "/appointmentSpecializationDates";
 
     }
 

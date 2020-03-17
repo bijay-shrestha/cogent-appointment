@@ -10,7 +10,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class DoctorDutyRosterAppointmentDateAndSpecilizationDTO implements Serializable {
+public class DutyRosterAppointmentDateAndDoctorDTO implements Serializable {
 
     private Long id;
 
@@ -20,7 +20,7 @@ public class DoctorDutyRosterAppointmentDateAndSpecilizationDTO implements Seria
 
     private Date toDate;
 
-    private Long specializationId;
+    private Long doctorId;
 
-    private String specializationName;
+    private String doctorName;
 }

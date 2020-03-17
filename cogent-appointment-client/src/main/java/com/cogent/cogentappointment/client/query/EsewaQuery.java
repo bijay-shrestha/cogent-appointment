@@ -146,6 +146,19 @@ public class EsewaQuery {
                     " WHERE ddr.doctorId.id=:doctorId" +
                     " AND ddr.status='Y'";
 
+    public static String QUERY_TO_FETCH_DOCTOR_AVALIABLE_DATES_WITH_DOCTOR =
+            "SELECT" +
+                    " ddr.id as id," +
+                    " ddr.fromDate as fromDate," +
+                    " ddr.toDate as toDate," +
+                    " ddr.hasOverrideDutyRoster as hasOverride," +
+                    " d.id as doctorId," +
+                    " d.name as doctorName" +
+                    " FROM DoctorDutyRoster ddr" +
+                    " LEFT JOIN Doctor d ON d.id=ddr.doctorId.id" +
+                    " WHERE ddr.specializationId.id=:specializationId" +
+                    " AND ddr.status='Y'";
+
     public static String QUERY_TO_FETCH_DAY_OFF_ROSTER_OVERRIDE_DATES =
             "SELECT" +
                     " ddro.fromDate as fromDate," +

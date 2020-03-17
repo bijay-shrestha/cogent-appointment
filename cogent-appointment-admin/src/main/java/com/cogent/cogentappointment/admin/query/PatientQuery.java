@@ -96,7 +96,8 @@ public class PatientQuery {
                 " hpi.email as email," +                                           //[2]
                 " p.mobileNumber as mobileNumber," +                             //[3]
                 " hpi.registrationNumber as registrationNumber," +                 //[4]
-                " p.eSewaId as eSewaId," +                                       //[5]
+                " p.eSewaId as eSewaId," +
+                " p.gender as gender," +
                 " hpi.status as status," +                                         //[6]
                 " p.dateOfBirth as dateOfBirth," +                               //[7]
                 " hpi.hospitalNumber as hospitalNumber," +                         //[8]

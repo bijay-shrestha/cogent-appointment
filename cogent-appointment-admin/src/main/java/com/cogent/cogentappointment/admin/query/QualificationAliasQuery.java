@@ -44,6 +44,9 @@ public class QualificationAliasQuery {
         if (!Objects.isNull(searchRequestDTO.getQualificationAliasId()))
             whereClause += " AND qa.id = " + searchRequestDTO.getQualificationAliasId();
 
+
+
+
         return whereClause;
     }
 

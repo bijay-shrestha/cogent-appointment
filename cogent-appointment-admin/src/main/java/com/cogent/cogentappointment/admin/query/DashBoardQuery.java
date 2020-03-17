@@ -153,12 +153,12 @@ public class DashBoardQuery {
                 " atd.transactionDate";
     }
 
-    public static String QUERY_TO_GENERATE_DOCTOR_REVENEU_LIST =
+    public static String QUERY_TO_GENERATE_DOCTOR_REVENUE_LIST =
             "SELECT" +
                     " d.id as doctorId," +
                     " d.name as doctorName," +
                     " da.fileUri as fileUri," +
-                    " s.name as speciliazation," +
+                    " s.name as specialization," +
                     " COUNT(d.id) as totalAppointmentCount," +
                     " COALESCE(SUM(atd.appointmentAmount),0) as revenueAmount" +
                     " FROM Appointment a" +
@@ -168,6 +168,8 @@ public class DashBoardQuery {
                     " LEFT JOIN Specialization s ON s.id=a.specializationId.id" +
                     " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
                     " WHERE h.id=:hospitalId" +
+                    " AND s.id=:specializationId"+
+                    " AND d.id=:doctorId"+
                     " AND atd.transactionDate BETWEEN :fromDate AND :toDate" +
                     " GROUP BY d.id,da.id,s.id " +
                     " ORDER BY SUM(atd.appointmentAmount) DESC ";

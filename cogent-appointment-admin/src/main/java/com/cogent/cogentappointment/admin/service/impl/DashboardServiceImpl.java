@@ -4,7 +4,7 @@ package com.cogent.cogentappointment.admin.service.impl;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.DashBoardRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.GenerateRevenueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.AppointmentCountResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.dashboard.DoctorRevenueResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.dashboard.DoctorRevenueResponseListDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueStatisticsResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueTrendResponseDTO;
 import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
@@ -142,21 +141,23 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    public List<DoctorRevenueResponseDTO> getDoctorRevenueList(Date toDate,
-                                                               Date fromDate,
-                                                               Long hospitalId,
-                                                               Pageable pagable) {
+    public DoctorRevenueResponseListDTO getDoctorRevenueList(Date toDate,
+                                                             Date fromDate,
+                                                             Long doctorId,
+                                                             Long hospitalId,
+                                                             Long specializationId,
+                                                             Pageable pagable) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, DOCTOR_REVENUE);
 
-        List<DoctorRevenueResponseDTO> doctorRevenueResponseDTO = appointmentTransactionDetailRepository
-                .getDoctorRevenue(toDate, fromDate, hospitalId, pagable);
+        DoctorRevenueResponseListDTO doctorRevenueResponseListDTO = appointmentTransactionDetailRepository
+                .getDoctorRevenue(toDate, fromDate, doctorId, hospitalId, specializationId, pagable);
 
         log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_REVENUE, getDifferenceBetweenTwoTime(startTime));
 
-        return doctorRevenueResponseDTO;
+        return doctorRevenueResponseListDTO;
 
     }
 

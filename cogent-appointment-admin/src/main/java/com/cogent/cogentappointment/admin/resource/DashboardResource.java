@@ -84,7 +84,7 @@ public class DashboardResource {
         return ok().body(appointmentService.fetchTodayAppointmentQueueByTime(appointmentQueueRequestDTO, pageable));
     }
 
-    @PutMapping(DOCTOR_REVENUE)
+    @GetMapping(DOCTOR_REVENUE)
     @ApiOperation(DOCTOR_REVENUE_OPERATION)
     @ApiImplicitParams({@ApiImplicitParam(name = "toDate", value = "dd/MM/yyyy", required = true, dataType = "date",
             paramType = "query"),
@@ -92,11 +92,13 @@ public class DashboardResource {
                     paramType = "query")})
     public ResponseEntity<?> getDoctorRevenueList(@DateTimeFormat(pattern = "dd/MM/yyyy") Date toDate,
                                                   @DateTimeFormat(pattern = "dd/MM/yyyy") Date fromDate,
+                                                  @RequestParam("doctorId") Long doctorId,
                                                   @RequestParam("hospitalId") Long hospitalId,
+                                                  @RequestParam("specializationId") Long specializationId,
                                                   @RequestParam("page") int page,
                                                   @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return ok(dashboardService.getDoctorRevenueList(toDate, fromDate, hospitalId, pageable));
+        return ok(dashboardService.getDoctorRevenueList(toDate, fromDate, doctorId, hospitalId, specializationId, pageable));
     }
 
 }

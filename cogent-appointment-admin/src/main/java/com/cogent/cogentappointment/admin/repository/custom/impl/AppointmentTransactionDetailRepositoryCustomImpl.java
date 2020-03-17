@@ -2,10 +2,11 @@ package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 
 import com.cogent.cogentappointment.admin.dto.request.dashboard.DashBoardRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.dashboard.DoctorRevenueResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.dashboard.DoctorRevenueResponseListDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueTrendResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.AppointmentTransactionDetailRepositoryCustom;
+import com.cogent.cogentappointment.admin.utils.DoctorUtils;
 import com.cogent.cogentappointment.persistence.model.Doctor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +28,6 @@ import static com.cogent.cogentappointment.admin.utils.DashboardUtils.revenueSta
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
-import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
 
 
 /**
@@ -67,29 +67,33 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
     }
 
     @Override
-    public List<DoctorRevenueResponseDTO> getDoctorRevenue(Date toDate,
-                                                           Date fromDate,
-                                                           Long hospitalId,
-                                                           Pageable pageable) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_GENERATE_DOCTOR_REVENEU_LIST)
+    public DoctorRevenueResponseListDTO getDoctorRevenue(Date toDate,
+                                                         Date fromDate,
+                                                         Long doctorId,
+                                                         Long hospitalId,
+                                                         Long specializationId,
+                                                         Pageable pageable) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_GENERATE_DOCTOR_REVENUE_LIST)
                 .setParameter(TO_DATE, utilDateToSqlDate(toDate))
                 .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(HOSPITAL_ID, hospitalId)
+                .setParameter(DOCTOR_ID, doctorId)
+                .setParameter(SPECIALIZATION_ID, specializationId);
 
         int totalItems = query.getResultList().size();
 
         addPagination.accept(pageable, query);
 
-        List<DoctorRevenueResponseDTO> list = transformQueryToResultList(query, DoctorRevenueResponseDTO.class);
+        List<Object[]> objects = query.getResultList();
 
-        if (list.isEmpty()){
+        DoctorRevenueResponseListDTO responseListDTO = DoctorUtils.parseTodoctorRevenueResponseListDTO(objects);
+
+        if (responseListDTO.getDoctorRevenueResponseDTOList().isEmpty()) {
             log.error("Doctor Not Found");
             throw DOCTOR_NOT_FOUND.get();
         }
-        else {
-            list.get(0).setTotalItems(totalItems);
-            return list;
-        }
+
+        return responseListDTO;
     }
 
     private String getQueryByFilter(Long hospitalId, Character filter) {

@@ -4,14 +4,13 @@ package com.cogent.cogentappointment.admin.service;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.DashBoardRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.GenerateRevenueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.AppointmentCountResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.dashboard.DoctorRevenueResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.dashboard.DoctorRevenueResponseListDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueStatisticsResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueTrendResponseDTO;
 import org.springframework.data.domain.Pageable;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
-import java.util.List;
 
 /**
  * @author Sauravi Thapa २०/२/१०
@@ -25,6 +24,8 @@ public interface DashboardService {
 
     RevenueTrendResponseDTO getRevenueTrend(DashBoardRequestDTO dashBoardRequestDTO);
 
-    List<DoctorRevenueResponseDTO> getDoctorRevenueList(Date toDate, Date fromDate, Long hospitalId, Pageable pagable);
+    DoctorRevenueResponseListDTO getDoctorRevenueList(Date toDate, Date fromDate, Long hospitalId,
+                                                      Long doctorId,
+                                                      Long specializationId, Pageable pagable);
 
 }

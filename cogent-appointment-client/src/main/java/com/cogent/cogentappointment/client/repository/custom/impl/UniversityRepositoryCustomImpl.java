@@ -18,8 +18,7 @@ import javax.persistence.Query;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.client.constants.QueryConstants.ID;
-import static com.cogent.cogentappointment.client.constants.QueryConstants.NAME;
+import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.query.UniversityQuery.*;
 import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
@@ -35,28 +34,31 @@ public class UniversityRepositoryCustomImpl implements UniversityRepositoryCusto
     private EntityManager entityManager;
 
     @Override
-    public Long validateDuplicity(String name) {
+    public Long validateDuplicity(String name, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY)
-                .setParameter(NAME, name);
+                .setParameter(NAME, name)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Long) query.getSingleResult();
     }
 
     @Override
-    public Long validateDuplicity(Long id, String name) {
+    public Long validateDuplicity(Long id, String name, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE)
                 .setParameter(ID, id)
-                .setParameter(NAME, name);
+                .setParameter(NAME, name)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Long) query.getSingleResult();
     }
-
 
     @Override
     public List<UniversityMinimalResponseDTO> search(UniversitySearchRequestDTO searchRequestDTO,
+                                                     Long hospitalId,
                                                      Pageable pageable) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_UNIVERSITY.apply(searchRequestDTO));
+        Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_UNIVERSITY.apply(searchRequestDTO))
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         int totalItems = query.getResultList().size();
 
@@ -73,9 +75,11 @@ public class UniversityRepositoryCustomImpl implements UniversityRepositoryCusto
     }
 
     @Override
-    public UniversityResponseDTO fetchDetailsById(Long id) {
+    public UniversityResponseDTO fetchDetailsById(Long id, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_UNIVERSITY_DETAILS)
-                .setParameter(ID, id);
+                .setParameter(ID, id)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
         try {
             return transformQueryToSingleResult(query, UniversityResponseDTO.class);
         } catch (NoResultException e) {
@@ -84,8 +88,9 @@ public class UniversityRepositoryCustomImpl implements UniversityRepositoryCusto
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchActiveUniversity() {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_UNIVERSITY);
+    public List<DropDownResponseDTO> fetchActiveMinUniversity(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_UNIVERSITY)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 

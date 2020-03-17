@@ -70,7 +70,7 @@ public class QualificationServiceImpl implements QualificationService {
 
         QualificationAlias qualificationAlias = fetchQualificationAlias(requestDTO.getQualificationAliasId());
 
-        University university = fetchUniversity(requestDTO.getUniversityId());
+        University university = fetchUniversity(requestDTO.getUniversityId(), hospitalId);
 
         Hospital hospital = fetchHospital(hospitalId);
 
@@ -92,9 +92,15 @@ public class QualificationServiceImpl implements QualificationService {
 
         log.info(UPDATING_PROCESS_STARTED, QUALIFICATION);
 
+        Long hospitalId = getLoggedInHospitalId();
+
         Qualification qualification = findQualificationById(requestDTO.getId());
 
-        Long hospitalId = getLoggedInHospitalId();
+        QualificationAlias qualificationAlias = fetchQualificationAlias(requestDTO.getQualificationAliasId());
+
+        University university = fetchUniversity(requestDTO.getUniversityId(), hospitalId);
+
+        Hospital hospital = fetchHospital(hospitalId);
 
         Long count = qualificationRepository.validateDuplicity(
                 requestDTO.getId(),
@@ -102,12 +108,6 @@ public class QualificationServiceImpl implements QualificationService {
                 hospitalId);
 
         validateName(count, requestDTO.getName());
-
-        QualificationAlias qualificationAlias = fetchQualificationAlias(requestDTO.getQualificationAliasId());
-
-        University university = fetchUniversity(requestDTO.getUniversityId());
-
-        Hospital hospital = fetchHospital(hospitalId);
 
         parseToUpdatedQualification(requestDTO, qualificationAlias, university, qualification, hospital);
 
@@ -210,8 +210,8 @@ public class QualificationServiceImpl implements QualificationService {
                 .orElseThrow(() -> new NoContentFoundException(Qualification.class, "id", id.toString()));
     }
 
-    private University fetchUniversity(Long universityId) {
-        return universityService.fetchUniversityById(universityId);
+    private University fetchUniversity(Long universityId, Long hospitalId) {
+        return universityService.fetchUniversityByIdAndHospitalId(universityId, hospitalId);
     }
 
     private Hospital fetchHospital(Long hospitalId) {

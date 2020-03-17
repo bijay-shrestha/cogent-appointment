@@ -82,8 +82,8 @@ public class UniversityQuery {
 
     public static final String QUERY_TO_FETCH_ACTIVE_UNIVERSITY =
             "SELECT" +
-                    " u.id as value," +
-                    " u.name as label" +
+                    " u.id as value," +                 //[0]
+                    " u.name as label" +                //[1]
                     " FROM University u" +
                     " WHERE u.status = 'Y'";
 }

@@ -112,7 +112,6 @@ public class UniversityServiceImpl implements UniversityService {
     @Override
     public List<UniversityMinimalResponseDTO> search(UniversitySearchRequestDTO searchRequestDTO,
                                                      Pageable pageable) {
-
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, UNIVERSITY);

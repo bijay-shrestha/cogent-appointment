@@ -271,8 +271,10 @@ public class DoctorUtils {
         });
 
         doctorRevenueResponseListDTO.setDoctorRevenueResponseDTOList(doctorRevenueResponseDTOS);
+        doctorRevenueResponseListDTO.setTotalItems(doctorRevenueResponseDTOS.size());
+
         doctorRevenueResponseListDTO.setTotalRevenueAmount(totalRefundAmount.get());
-        doctorRevenueResponseListDTO.setTotalAppointmentCount(totalAppointmentCount.get());
+        doctorRevenueResponseListDTO.setOverallAppointmentCount(totalAppointmentCount.get());
 
         return doctorRevenueResponseListDTO;
     }

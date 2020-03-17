@@ -1,10 +1,12 @@
 package com.cogent.cogentappointment.client.resource;
 
+import com.cogent.cogentappointment.client.dto.request.DoctorRevenueRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.GenerateRevenueRequestDTO;
 import com.cogent.cogentappointment.client.service.AppointmentService;
 import com.cogent.cogentappointment.client.service.DashboardService;
+import com.cogent.cogentappointment.client.utils.DoctorRevenueUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -21,6 +23,7 @@ import java.util.Date;
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.DashboardConstant.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.DashboardConstants.*;
+import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -83,7 +86,7 @@ public class DashboardResource {
         return ok().body(appointmentService.fetchTodayAppointmentQueueByTime(appointmentQueueRequestDTO, pageable));
     }
 
-    @PutMapping(DOCTOR_REVENUE)
+    @GetMapping(DOCTOR_REVENUE)
     @ApiOperation(DOCTOR_REVENUE_OPERATION)
     @ApiImplicitParams({@ApiImplicitParam(name = "toDate", value = "dd/MM/yyyy", required = true, dataType = "date",
             paramType = "query"),
@@ -91,9 +94,13 @@ public class DashboardResource {
                     paramType = "query")})
     public ResponseEntity<?> getDoctorRevenueList(@DateTimeFormat(pattern = "dd/MM/yyyy") Date toDate,
                                                   @DateTimeFormat(pattern = "dd/MM/yyyy") Date fromDate,
+                                                  @RequestParam("doctorId") Long doctorId,
+                                                  @RequestParam("specializationId") Long specializationId,
                                                   @RequestParam("page") int page,
                                                   @RequestParam("size") int size) {
+
+        DoctorRevenueRequestDTO doctorRevenueRequestDTO = DoctorRevenueUtils.convertToDoctorRevenueRequestDTO(doctorId, getLoggedInHospitalId(), specializationId);
         Pageable pageable = PageRequest.of(page, size);
-        return ok(dashboardService.getDoctorRevenueList(toDate,fromDate,pageable));
+        return ok(dashboardService.getDoctorRevenueList(toDate,fromDate,doctorRevenueRequestDTO,pageable));
     }
 }

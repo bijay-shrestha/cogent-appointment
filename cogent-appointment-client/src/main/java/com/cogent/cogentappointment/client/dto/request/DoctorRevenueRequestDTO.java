@@ -1,6 +1,8 @@
-package com.cogent.cogentappointment.admin.dto.request.dashboard;
+package com.cogent.cogentappointment.client.dto.request;
 
 import lombok.*;
+
+import java.io.Serializable;
 
 /**
  * @author Rupak
@@ -10,7 +12,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DoctorRevenueRequestDTO {
+public class DoctorRevenueRequestDTO implements Serializable {
 
     private Long doctorId;
 

@@ -3,9 +3,11 @@ package com.cogent.cogentappointment.admin.resource;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.DashBoardRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.dashboard.DoctorRevenueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.GenerateRevenueRequestDTO;
 import com.cogent.cogentappointment.admin.service.AppointmentService;
 import com.cogent.cogentappointment.admin.service.DashboardService;
+import com.cogent.cogentappointment.admin.utils.DoctorRevenueUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -97,8 +99,10 @@ public class DashboardResource {
                                                   @RequestParam("specializationId") Long specializationId,
                                                   @RequestParam("page") int page,
                                                   @RequestParam("size") int size) {
+
+        DoctorRevenueRequestDTO doctorRevenueRequestDTO = DoctorRevenueUtils.convertToDoctorRevenueRequestDTO(doctorId, hospitalId, specializationId);
         Pageable pageable = PageRequest.of(page, size);
-        return ok(dashboardService.getDoctorRevenueList(toDate, fromDate, doctorId, hospitalId, specializationId, pageable));
+        return ok(dashboardService.getDoctorRevenueList(toDate, fromDate, doctorRevenueRequestDTO, pageable));
     }
 
 }

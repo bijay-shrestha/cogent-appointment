@@ -1,10 +1,15 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
+import com.cogent.cogentappointment.client.dto.request.DoctorRevenueRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.DoctorRevenueResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.dashboard.DoctorRevenueResponseListDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.RevenueTrendResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.AppointmentTransactionDetailRepositoryCustom;
+import com.cogent.cogentappointment.client.utils.DoctorRevenueUtils;
+import com.cogent.cogentappointment.client.utils.DoctorUtils;
+import com.cogent.cogentappointment.persistence.model.AppointmentTransactionDetail;
 import com.cogent.cogentappointment.persistence.model.Doctor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -67,28 +72,29 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
     }
 
     @Override
-    public List<DoctorRevenueResponseDTO> getDoctorRevenue(Date toDate,
+    public DoctorRevenueResponseListDTO getDoctorRevenue(Date toDate,
                                                            Date fromDate,
-                                                           Long hospitalId,
+                                                           DoctorRevenueRequestDTO requestDTO,
                                                            Pageable pageable) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_GENERATE_DOCTOR_REVENEU_LIST)
+        Query query = createQuery.apply(entityManager, QUERY_TO_GENERATE_DOCTOR_REVENUE_LIST(requestDTO))
                 .setParameter(TO_DATE, utilDateToSqlDate(toDate))
                 .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
 
         int totalItems = query.getResultList().size();
 
         addPagination.accept(pageable, query);
 
-        List<DoctorRevenueResponseDTO> list = transformQueryToResultList(query, DoctorRevenueResponseDTO.class);
+        List<Object[]> objects = query.getResultList();
 
-        if (list.isEmpty())
-            throw DOCTOR_NOT_FOUND.get();
-        else {
-            list.get(0).setTotalItems(totalItems);
-            return list;
+        DoctorRevenueResponseListDTO responseListDTO = DoctorUtils.parseTodoctorRevenueResponseListDTO(objects);
+
+        if (responseListDTO.getDoctorRevenueResponseDTOList().isEmpty()) {
+            throw DOCTOR_REVENUE_NOT_FOUND.get();
         }
+
+        return responseListDTO;
     }
 
 
@@ -104,4 +110,7 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
 
     private Supplier<NoContentFoundException> DOCTOR_NOT_FOUND = () ->
             new NoContentFoundException(Doctor.class);
+
+    private Supplier<NoContentFoundException> DOCTOR_REVENUE_NOT_FOUND = () ->
+            new NoContentFoundException(AppointmentTransactionDetail.class);
 }

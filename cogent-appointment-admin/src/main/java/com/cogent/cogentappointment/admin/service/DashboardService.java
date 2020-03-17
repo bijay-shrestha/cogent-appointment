@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.admin.service;
 
 
 import com.cogent.cogentappointment.admin.dto.request.dashboard.DashBoardRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.dashboard.DoctorRevenueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.GenerateRevenueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.AppointmentCountResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.DoctorRevenueResponseListDTO;
@@ -24,8 +25,6 @@ public interface DashboardService {
 
     RevenueTrendResponseDTO getRevenueTrend(DashBoardRequestDTO dashBoardRequestDTO);
 
-    DoctorRevenueResponseListDTO getDoctorRevenueList(Date toDate, Date fromDate, Long hospitalId,
-                                                      Long doctorId,
-                                                      Long specializationId, Pageable pagable);
+    DoctorRevenueResponseListDTO getDoctorRevenueList(Date toDate, Date fromDate, DoctorRevenueRequestDTO doctorRevenueRequestDTO, Pageable pagable);
 
 }

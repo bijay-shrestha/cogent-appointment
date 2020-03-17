@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.admin.service.impl;
 
 
 import com.cogent.cogentappointment.admin.dto.request.dashboard.DashBoardRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.dashboard.DoctorRevenueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.GenerateRevenueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.AppointmentCountResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.DoctorRevenueResponseListDTO;
@@ -143,9 +144,7 @@ public class DashboardServiceImpl implements DashboardService {
     @Override
     public DoctorRevenueResponseListDTO getDoctorRevenueList(Date toDate,
                                                              Date fromDate,
-                                                             Long doctorId,
-                                                             Long hospitalId,
-                                                             Long specializationId,
+                                                             DoctorRevenueRequestDTO doctorRevenueRequestDTO,
                                                              Pageable pagable) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
@@ -153,7 +152,7 @@ public class DashboardServiceImpl implements DashboardService {
         log.info(FETCHING_PROCESS_STARTED, DOCTOR_REVENUE);
 
         DoctorRevenueResponseListDTO doctorRevenueResponseListDTO = appointmentTransactionDetailRepository
-                .getDoctorRevenue(toDate, fromDate, doctorId, hospitalId, specializationId, pagable);
+                .getDoctorRevenue(toDate, fromDate, doctorRevenueRequestDTO, pagable);
 
         log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_REVENUE, getDifferenceBetweenTwoTime(startTime));
 

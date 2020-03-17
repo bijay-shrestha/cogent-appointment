@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.admin.repository.custom;
 
 
 import com.cogent.cogentappointment.admin.dto.request.dashboard.DashBoardRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.dashboard.DoctorRevenueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.DoctorRevenueResponseListDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueTrendResponseDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -21,6 +22,6 @@ public interface AppointmentTransactionDetailRepositoryCustom {
 
     RevenueTrendResponseDTO getRevenueTrend(DashBoardRequestDTO dashBoardRequestDTO, Character filter);
 
-    DoctorRevenueResponseListDTO getDoctorRevenue(Date toDate, Date fromDate, Long doctorId, Long hospitalId, Long specializationId, Pageable pageable);
+    DoctorRevenueResponseListDTO getDoctorRevenue(Date toDate, Date fromDate, DoctorRevenueRequestDTO doctorRevenueRequestDTO, Pageable pageable);
 
 }

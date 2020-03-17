@@ -17,7 +17,7 @@ public class DoctorRevenueResponseDTO implements Serializable {
 
     private String fileUri;
 
-    private String speciliazation;
+    private String specialization;
 
     private Long totalAppointmentCount;
 

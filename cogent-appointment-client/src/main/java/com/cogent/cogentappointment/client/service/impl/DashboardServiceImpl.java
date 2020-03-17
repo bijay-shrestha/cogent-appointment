@@ -1,11 +1,9 @@
 package com.cogent.cogentappointment.client.service.impl;
 
+import com.cogent.cogentappointment.client.dto.request.DoctorRevenueRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.GenerateRevenueRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.dashboard.AppointmentCountResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.dashboard.DoctorRevenueResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.dashboard.RevenueStatisticsResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.dashboard.RevenueTrendResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.dashboard.*;
 import com.cogent.cogentappointment.client.repository.AppointmentRepository;
 import com.cogent.cogentappointment.client.repository.AppointmentTransactionDetailRepository;
 import com.cogent.cogentappointment.client.repository.PatientRepository;
@@ -151,17 +149,17 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    public List<DoctorRevenueResponseDTO> getDoctorRevenueList(Date toDate, Date fromDate, Pageable pagable) {
+    public DoctorRevenueResponseListDTO getDoctorRevenueList(Date toDate, Date fromDate, DoctorRevenueRequestDTO doctorRevenueRequestDTO, Pageable pagable) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, DOCTOR_REVENUE);
 
-        List<DoctorRevenueResponseDTO> doctorRevenueResponseDTO = appointmentTransactionDetailRepository
-                .getDoctorRevenue(toDate, fromDate, getLoggedInHospitalId(), pagable);
+        DoctorRevenueResponseListDTO revenueResponseDTOList = appointmentTransactionDetailRepository
+                .getDoctorRevenue(toDate, fromDate,doctorRevenueRequestDTO, pagable);
 
         log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_REVENUE, getDifferenceBetweenTwoTime(startTime));
 
-        return doctorRevenueResponseDTO;
+        return revenueResponseDTOList;
 
     }
 

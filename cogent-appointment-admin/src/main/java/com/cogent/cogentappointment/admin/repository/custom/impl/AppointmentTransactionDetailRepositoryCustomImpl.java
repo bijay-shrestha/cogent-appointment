@@ -2,11 +2,13 @@ package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 
 import com.cogent.cogentappointment.admin.dto.request.dashboard.DashBoardRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.dashboard.DoctorRevenueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.DoctorRevenueResponseListDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueTrendResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.AppointmentTransactionDetailRepositoryCustom;
 import com.cogent.cogentappointment.admin.utils.DoctorUtils;
+import com.cogent.cogentappointment.persistence.model.AppointmentTransactionDetail;
 import com.cogent.cogentappointment.persistence.model.Doctor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +27,7 @@ import java.util.function.Supplier;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.query.DashBoardQuery.*;
 import static com.cogent.cogentappointment.admin.utils.DashboardUtils.revenueStatisticsResponseDTO;
+import static com.cogent.cogentappointment.admin.utils.DoctorUtils.parseTodoctorRevenueResponseListDTO;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
@@ -69,16 +72,12 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
     @Override
     public DoctorRevenueResponseListDTO getDoctorRevenue(Date toDate,
                                                          Date fromDate,
-                                                         Long doctorId,
-                                                         Long hospitalId,
-                                                         Long specializationId,
+                                                         DoctorRevenueRequestDTO requestDTO,
                                                          Pageable pageable) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_GENERATE_DOCTOR_REVENUE_LIST)
+        Query query = createQuery.apply(entityManager, QUERY_TO_GENERATE_DOCTOR_REVENUE_LIST(requestDTO))
                 .setParameter(TO_DATE, utilDateToSqlDate(toDate))
                 .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))
-                .setParameter(HOSPITAL_ID, hospitalId)
-                .setParameter(DOCTOR_ID, doctorId)
-                .setParameter(SPECIALIZATION_ID, specializationId);
+                .setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
 
         int totalItems = query.getResultList().size();
 
@@ -86,11 +85,11 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
 
         List<Object[]> objects = query.getResultList();
 
-        DoctorRevenueResponseListDTO responseListDTO = DoctorUtils.parseTodoctorRevenueResponseListDTO(objects);
+        DoctorRevenueResponseListDTO responseListDTO = parseTodoctorRevenueResponseListDTO(objects);
 
         if (responseListDTO.getDoctorRevenueResponseDTOList().isEmpty()) {
-            log.error("Doctor Not Found");
-            throw DOCTOR_NOT_FOUND.get();
+            log.error("Doctor Revenue List Not Found");
+            throw DOCTOR_REVENUE_NOT_FOUND.get();
         }
 
         return responseListDTO;
@@ -108,4 +107,7 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
 
     private Supplier<NoContentFoundException> DOCTOR_NOT_FOUND = () ->
             new NoContentFoundException(Doctor.class);
+
+    private Supplier<NoContentFoundException> DOCTOR_REVENUE_NOT_FOUND = () ->
+            new NoContentFoundException(AppointmentTransactionDetail.class);
 }

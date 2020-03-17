@@ -20,5 +20,7 @@ public class UniversitySearchRequestDTO implements Serializable {
 
     private Long countryId;
 
+    private Long hospitalId;
+
     private Character status;
 }

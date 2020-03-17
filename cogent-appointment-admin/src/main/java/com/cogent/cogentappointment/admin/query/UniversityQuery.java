@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.admin.query;
 import com.cogent.cogentappointment.admin.dto.request.university.UniversitySearchRequestDTO;
 import org.springframework.util.ObjectUtils;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -15,7 +16,8 @@ public class UniversityQuery {
                     " FROM University u" +
                     " WHERE" +
                     " u.status !='D'" +
-                    " AND u.name=:name";
+                    " AND u.name=:name" +
+                    " AND u.hospital.id =:hospitalId";
 
     public static final String QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE =
             " SELECT COUNT(u.id)" +
@@ -23,7 +25,8 @@ public class UniversityQuery {
                     " WHERE" +
                     " u.status!='D'" +
                     " AND u.id!=:id" +
-                    " AND u.name=:name";
+                    " AND u.name=:name" +
+                    " AND u.hospital.id =:hospitalId";
 
     private static final String SELECT_CLAUSE_TO_FETCH_MINIMAL_UNIVERSITY =
             "SELECT u.id as id," +                                                //[0]
@@ -32,7 +35,8 @@ public class UniversityQuery {
                     " c.name as countryName," +                                   //[3]
                     " c.status as status" +                                       //[4]
                     " FROM University u " +
-                    " LEFT JOIN Country c ON c.id = u.country.id";
+                    " LEFT JOIN Country c ON c.id = u.country.id" +
+                    " LEFT JOIN Hospital h ON h.id = u.hospital.id";
 
     public static Function<UniversitySearchRequestDTO, String> QUERY_TO_SEARCH_UNIVERSITY =
             (searchRequestDTO -> (
@@ -45,11 +49,14 @@ public class UniversityQuery {
 
         String whereClause = " WHERE u.status!='D'";
 
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getUniversityId()))
+        if (!Objects.isNull(searchRequestDTO.getUniversityId()))
             whereClause += " AND u.id = " + searchRequestDTO.getUniversityId();
 
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getCountryId()))
+        if (!Objects.isNull(searchRequestDTO.getCountryId()))
             whereClause += " AND c.id=" + searchRequestDTO.getCountryId();
+
+        if (!Objects.isNull(searchRequestDTO.getHospitalId()))
+            whereClause += " AND h.id=" + searchRequestDTO.getHospitalId();
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
             whereClause += " AND u.status='" + searchRequestDTO.getStatus() + "'";
@@ -64,9 +71,12 @@ public class UniversityQuery {
                     " u.status as status," +                                      //[2]
                     " u.remarks as remarks," +                                    //[3]
                     " c.name as countryName," +                                   //[4]
-                    " c.id as countryId" +                                        //[5]
+                    " c.id as countryId," +                                       //[5]
+                    " h.id as hospitalId," +                                      //[6]
+                    " h.name as hospitalName" +                                   //[7]
                     " FROM University u " +
                     " LEFT JOIN Country c ON c.id = u.country.id" +
+                    " LEFT JOIN Hospital h ON h.id = u.hospital.id" +
                     " WHERE u.status != 'D'" +
                     " AND u.id =:id";
 

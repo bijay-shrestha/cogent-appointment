@@ -23,12 +23,13 @@ public interface QualificationRepositoryCustom {
     Long validateDuplicity(Long id, String name, Long hospitalId);
 
     List<QualificationMinimalResponseDTO> search(QualificationSearchRequestDTO searchRequestDTO,
+                                                 Long hospitalId,
                                                  Pageable pageable);
 
-    QualificationResponseDTO fetchDetailsById(Long id);
+    QualificationResponseDTO fetchDetailsById(Long id, Long hospitalId);
 
-    List<QualificationDropdownDTO> fetchActiveQualificationForDropDown();
+    List<QualificationDropdownDTO> fetchActiveQualificationForDropDown(Long hospitalId);
 
-    List<DropDownResponseDTO> fetchMinQualification();
+    List<DropDownResponseDTO> fetchMinQualification(Long hospitalId);
 
 }

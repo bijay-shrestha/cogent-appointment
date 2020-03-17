@@ -94,7 +94,7 @@ public class QualificationServiceImpl implements QualificationService {
 
         Long hospitalId = getLoggedInHospitalId();
 
-        Qualification qualification = findQualificationById(requestDTO.getId());
+        Qualification qualification = findQualificationByIdAndHospitalId(requestDTO.getId(), hospitalId);
 
         QualificationAlias qualificationAlias = fetchQualificationAlias(requestDTO.getQualificationAliasId());
 
@@ -120,7 +120,9 @@ public class QualificationServiceImpl implements QualificationService {
 
         log.info(DELETING_PROCESS_STARTED, QUALIFICATION);
 
-        Qualification qualification = findQualificationById(deleteRequestDTO.getId());
+        Qualification qualification = findQualificationByIdAndHospitalId(
+                deleteRequestDTO.getId(), getLoggedInHospitalId()
+        );
 
         parseToDeletedQualification(qualification, deleteRequestDTO);
 
@@ -130,12 +132,15 @@ public class QualificationServiceImpl implements QualificationService {
     @Override
     public List<QualificationMinimalResponseDTO> search(QualificationSearchRequestDTO searchRequestDTO,
                                                         Pageable pageable) {
+
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, QUALIFICATION);
 
+        Long hospitalId = getLoggedInHospitalId();
+
         List<QualificationMinimalResponseDTO> responseDTOS =
-                qualificationRepository.search(searchRequestDTO, pageable);
+                qualificationRepository.search(searchRequestDTO, hospitalId, pageable);
 
         log.info(SEARCHING_PROCESS_COMPLETED, QUALIFICATION, getDifferenceBetweenTwoTime(startTime));
 
@@ -148,7 +153,7 @@ public class QualificationServiceImpl implements QualificationService {
 
         log.info(FETCHING_DETAIL_PROCESS_STARTED, QUALIFICATION);
 
-        QualificationResponseDTO responseDTO = qualificationRepository.fetchDetailsById(id);
+        QualificationResponseDTO responseDTO = qualificationRepository.fetchDetailsById(id, getLoggedInHospitalId());
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, QUALIFICATION, getDifferenceBetweenTwoTime(startTime));
 
@@ -161,7 +166,8 @@ public class QualificationServiceImpl implements QualificationService {
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, QUALIFICATION);
 
-        List<QualificationDropdownDTO> responseDTOS = qualificationRepository.fetchActiveQualificationForDropDown();
+        List<QualificationDropdownDTO> responseDTOS =
+                qualificationRepository.fetchActiveQualificationForDropDown(getLoggedInHospitalId());
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, QUALIFICATION, getDifferenceBetweenTwoTime(startTime));
 
@@ -169,13 +175,16 @@ public class QualificationServiceImpl implements QualificationService {
     }
 
     @Override
-    public Qualification fetchQualificationById(Long id) {
+    public Qualification fetchActiveQualificationById(Long id) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, QUALIFICATION);
 
-        Qualification qualification = qualificationRepository.fetchActiveQualificationById(id)
-                .orElseThrow(() -> new NoContentFoundException(Qualification.class, "id", id.toString()));
+        Long hospitalId = getLoggedInHospitalId();
+
+        Qualification qualification =
+                qualificationRepository.fetchActiveQualificationByIdAndHospitalId(id, hospitalId)
+                        .orElseThrow(() -> new NoContentFoundException(Qualification.class, "id", id.toString()));
 
         log.info(FETCHING_PROCESS_COMPLETED, QUALIFICATION, getDifferenceBetweenTwoTime(startTime));
 
@@ -188,7 +197,7 @@ public class QualificationServiceImpl implements QualificationService {
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, QUALIFICATION);
 
-        List<DropDownResponseDTO> responseDTOS = qualificationRepository.fetchMinQualification();
+        List<DropDownResponseDTO> responseDTOS = qualificationRepository.fetchMinQualification(getLoggedInHospitalId());
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, QUALIFICATION, getDifferenceBetweenTwoTime(startTime));
 
@@ -205,13 +214,13 @@ public class QualificationServiceImpl implements QualificationService {
         return qualificationAliasService.fetchQualificationAliasById(id);
     }
 
-    private Qualification findQualificationById(Long id) {
-        return qualificationRepository.findQualificationById(id)
+    private Qualification findQualificationByIdAndHospitalId(Long id, Long hospitalId) {
+        return qualificationRepository.findQualificationByIdAndHospitalId(id, hospitalId)
                 .orElseThrow(() -> new NoContentFoundException(Qualification.class, "id", id.toString()));
     }
 
     private University fetchUniversity(Long universityId, Long hospitalId) {
-        return universityService.fetchUniversityByIdAndHospitalId(universityId, hospitalId);
+        return universityService.findActiveUniversityByIdAndHospitalId(universityId, hospitalId);
     }
 
     private Hospital fetchHospital(Long hospitalId) {

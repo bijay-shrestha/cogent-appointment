@@ -163,20 +163,6 @@ public class UniversityServiceImpl implements UniversityService {
     }
 
     @Override
-    public University fetchUniversityByIdAndHospitalId(Long id, Long hospitalId) {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(FETCHING_PROCESS_STARTED, UNIVERSITY);
-
-        University university = universityRepository.fetchUniversityByIdAndHospitalId(id, hospitalId)
-                .orElseThrow(() -> new NoContentFoundException(University.class, "id", id.toString()));
-
-        log.info(FETCHING_PROCESS_COMPLETED, UNIVERSITY, getDifferenceBetweenTwoTime(startTime));
-
-        return university;
-    }
-
-    @Override
     public University findActiveUniversityByIdAndHospitalId(Long id, Long hospitalId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 

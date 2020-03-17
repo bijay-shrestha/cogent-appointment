@@ -31,7 +31,7 @@ public interface QualificationService {
 
     List<QualificationDropdownDTO> fetchActiveQualificationForDropDown();
 
-    Qualification fetchQualificationById(Long id);
+    Qualification fetchActiveQualificationById(Long id);
 
     List<DropDownResponseDTO> fetchMinQualification();
 }

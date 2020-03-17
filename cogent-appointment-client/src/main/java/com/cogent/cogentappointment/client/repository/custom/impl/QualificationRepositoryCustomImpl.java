@@ -8,7 +8,6 @@ import com.cogent.cogentappointment.client.dto.response.qualification.Qualificat
 import com.cogent.cogentappointment.client.dto.response.qualification.QualificationResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.QualificationRepositoryCustom;
-import com.cogent.cogentappointment.client.utils.commons.PageableUtils;
 import com.cogent.cogentappointment.persistence.model.Qualification;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -23,6 +22,7 @@ import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.query.QualificationQuery.*;
+import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
 
 
@@ -57,13 +57,15 @@ public class QualificationRepositoryCustomImpl implements QualificationRepositor
 
     @Override
     public List<QualificationMinimalResponseDTO> search(QualificationSearchRequestDTO searchRequestDTO,
+                                                        Long hospitalId,
                                                         Pageable pageable) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_QUALIFICATION.apply(searchRequestDTO));
+        Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_QUALIFICATION.apply(searchRequestDTO))
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         int totalItems = query.getResultList().size();
 
-        PageableUtils.addPagination.accept(pageable, query);
+        addPagination.accept(pageable, query);
 
         List<QualificationMinimalResponseDTO> results = transformQueryToResultList(
                 query, QualificationMinimalResponseDTO.class);
@@ -76,9 +78,12 @@ public class QualificationRepositoryCustomImpl implements QualificationRepositor
     }
 
     @Override
-    public QualificationResponseDTO fetchDetailsById(Long id) {
+    public QualificationResponseDTO fetchDetailsById(Long id, Long hospitalId) {
+
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_QUALIFICATION_DETAILS)
-                .setParameter(QueryConstants.ID, id);
+                .setParameter(QueryConstants.ID, id)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
         try {
             return transformQueryToSingleResult(query, QualificationResponseDTO.class);
         } catch (NoResultException e) {
@@ -87,8 +92,9 @@ public class QualificationRepositoryCustomImpl implements QualificationRepositor
     }
 
     @Override
-    public List<QualificationDropdownDTO> fetchActiveQualificationForDropDown() {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_QUALIFICATION_FOR_DROPDOWN);
+    public List<QualificationDropdownDTO> fetchActiveQualificationForDropDown(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_QUALIFICATION_FOR_DROPDOWN)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         List<QualificationDropdownDTO> results = transformQueryToResultList(query, QualificationDropdownDTO.class);
 
@@ -97,8 +103,9 @@ public class QualificationRepositoryCustomImpl implements QualificationRepositor
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchMinQualification() {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_MIN_QUALIFICATION);
+    public List<DropDownResponseDTO> fetchMinQualification(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_MIN_QUALIFICATION)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 

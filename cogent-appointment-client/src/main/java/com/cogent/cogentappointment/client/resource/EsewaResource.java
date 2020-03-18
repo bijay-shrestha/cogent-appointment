@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.EsewaConstant.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.DOCTOR_ID_PATH_VARIABLE_BASE;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.EsewaConstants.*;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.SPECIALIZATION_ID_PATH_VARIABLE_BASE;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
@@ -24,10 +26,10 @@ public class EsewaResource {
         this.esewaService = esewaService;
     }
 
-    @PutMapping(APPOINTMENT_AVAILABLE_DATES)
+    @PutMapping(AVAILABLE_APPOINTMENT_DATES_AND_TIME)
     @ApiOperation(FETCH_AVAILABLE_APPOINTMENT_DATES)
-    public ResponseEntity<?> doctorAvailableTime(@RequestBody AppointmentDatesRequestDTO requestDTO) {
-        return ok(esewaService.fetchDoctorAvailableDatesAndTime(requestDTO));
+    public ResponseEntity<?> fetchAvailableDatesAndTime(@RequestBody AppointmentDatesRequestDTO requestDTO) {
+        return ok(esewaService.fetchAvailableDatesAndTime(requestDTO));
     }
 
     @PutMapping(FETCH_DOCTOR_AVAILABLE_STATUS)
@@ -36,10 +38,22 @@ public class EsewaResource {
         return ok(esewaService.fetchDoctorAvailableStatus(requestDTO));
     }
 
-    @GetMapping(AVAILABLE_DOCTOR_DATES + DOCTOR_ID_PATH_VARIABLE_BASE)
-    @ApiOperation(FETCH_DOCTOR_AVAILABLE_STATUS_OPERATION)
-    public ResponseEntity<?> avaliableDoctorDates(@PathVariable("doctorId") Long doctorId) {
-        return ok(esewaService.fetchDoctorAvailableDates(doctorId));
+    @GetMapping(DOCTOR_AVAILABLE_DATES + DOCTOR_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_AVAILABLE_DOCTOR_DATES)
+    public ResponseEntity<?> fetchAvailableDatesWithSpecialization(@PathVariable("doctorId") Long doctorId) {
+        return ok(esewaService.fetchAvailableDatesWithSpecialization(doctorId));
+    }
+
+    @GetMapping(SPECIALIZATION_AVAILABLE_DATES + SPECIALIZATION_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_AVAILABLE_SPECIALIZATION_DATES)
+    public ResponseEntity<?> fetchAvailableDatesWithDoctor(@PathVariable("specializationId") Long specializationId) {
+        return ok(esewaService.fetchAvailableDatesWithDoctor(specializationId));
+    }
+
+    @PutMapping(DOCTOR_WITH_SPECIALIZATION_AVAILABLE_DATES)
+    @ApiOperation(FETCH_AVAILABLE_DATES)
+    public ResponseEntity<?> fetchAvailableDates(@RequestBody AppointmentDatesRequestDTO requestDTO) {
+        return ok(esewaService.fetchAvailableDates(requestDTO));
     }
 
 

@@ -1,7 +1,5 @@
 package com.cogent.cogentappointment.client.utils.commons;
 
-import lombok.SneakyThrows;
-
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -36,6 +34,21 @@ public class DateUtils {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static List<Date> utilDateListToSqlDateList(List<Date> uDates) {
+        List<Date> resultDates = new ArrayList<>();
+        uDates.forEach(uDate -> {
+            try {
+                DateFormat sqlDateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+                Date date = java.sql.Date.valueOf(sqlDateFormatter.format(uDate));
+                resultDates.add(date);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        return resultDates;
+
     }
 
     public static Date addDays(Date oldDate, int days) {
@@ -156,18 +169,21 @@ public class DateUtils {
         }
     }
 
-    public static List<Date> getDatesBetween(
+    public static List<Date> getDates(
             Date startDate, Date endDate) {
         List<Date> datesInRange = new ArrayList<>();
+        Date today = new Date();
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(startDate);
 
         Calendar endCalendar = new GregorianCalendar();
         endCalendar.setTime(endDate);
 
-        while (calendar.before(endCalendar)) {
+        while (!calendar.after(endCalendar)) {
             Date result = calendar.getTime();
-            datesInRange.add(result);
+            if (!result.before(today)) {
+                datesInRange.add(result);
+            }
             calendar.add(Calendar.DATE, 1);
         }
         return datesInRange;

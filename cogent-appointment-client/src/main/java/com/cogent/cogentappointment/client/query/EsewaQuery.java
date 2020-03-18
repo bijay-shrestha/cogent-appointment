@@ -14,7 +14,7 @@ public class EsewaQuery {
                     " ddr.toDate as toDate" +
                     " FROM DoctorDutyRoster ddr" +
                     " Where ddr.doctorId.id=:doctorId" +
-                    " AND  ddr.specializationId.id=:specializationId" +
+                    " AND ddr.specializationId.id=:specializationId" +
                     " AND ddr.status='Y'";
 
     public static final String QUERY_TO_FETCH_DUTY_ROSTER_OVERRIDE_BY_DUTY_ROSTER_ID =
@@ -26,7 +26,8 @@ public class EsewaQuery {
                     " ddro.dayOffStatus as dayOff" +
                     " FROM DoctorDutyRosterOverride ddro" +
                     " WHERE ddro.doctorDutyRosterId.id=:doctorDutyRosterId" +
-                    " AND ddro.status='Y'";
+                    " AND ddro.status='Y'" +
+                    " AND ddro.dayOffStatus='Y'";
 
     public static final String QUERY_TO_FETCH_WEEKDAYS_DUTY_ROSTER_BY_DUTY_ROSTER_ID =
             "SELECT" +
@@ -115,7 +116,7 @@ public class EsewaQuery {
         return query;
     }
 
-    /*FETCH AVAILABLE DOCTORS AND THEIR SPECIALIZATION ON THE CHOSEN DATE FROM DDR OVERRIDE*/
+    /*FETCH AVAILABLE DOCTORS AND THEIR SPECIALIZATION ON THE CHOSEN DATE*/
     public static String QUERY_TO_FETCH_AVAILABLE_DOCTORS_FROM_DDR_OVERRIDE(AppointmentDetailRequestDTO requestDTO) {
 
         String query = "SELECT" +
@@ -139,6 +140,19 @@ public class EsewaQuery {
 
         return query;
     }
+
+    public static String QUERY_TO_FETCH_DOCTOR_AVALIABLE_DATES_WITH_SPECILIZATION =
+            "SELECT" +
+                    " ddr.id as id," +
+                    " ddr.fromDate as fromDate," +
+                    " ddr.toDate as toDate," +
+                    " ddr.hasOverrideDutyRoster as hasOverride," +
+                    " s.id as specializationId," +
+                    " s.name as specializationName" +
+                    " FROM DoctorDutyRoster ddr" +
+                    " LEFT JOIN Specialization s ON s.id=ddr.specializationId.id" +
+                    " WHERE ddr.doctorId.id=:doctorId" +
+                    " AND ddr.status='Y'";
 
     /*FETCH AVAILABLE DOCTORS AND THEIR SPECIALIZATION ON THE CHOSEN DATE FROM DDR*/
     public static String QUERY_TO_FETCH_AVAILABLE_DOCTORS_FROM_DDR(AppointmentDetailRequestDTO requestDTO) {
@@ -165,4 +179,41 @@ public class EsewaQuery {
 
         return query;
     }
+
+    public static String QUERY_TO_FETCH_DOCTOR_AVALIABLE_DATES_WITH_DOCTOR =
+            "SELECT" +
+                    " ddr.id as id," +
+                    " ddr.fromDate as fromDate," +
+                    " ddr.toDate as toDate," +
+                    " ddr.hasOverrideDutyRoster as hasOverride," +
+                    " d.id as doctorId," +
+                    " d.name as doctorName" +
+                    " FROM DoctorDutyRoster ddr" +
+                    " LEFT JOIN Doctor d ON d.id=ddr.doctorId.id" +
+                    " WHERE ddr.specializationId.id=:specializationId" +
+                    " AND ddr.status='Y'";
+
+    public static String QUERY_TO_FETCH_DAY_OFF_ROSTER_OVERRIDE_DATES =
+            "SELECT" +
+                    " ddro.fromDate as fromDate," +
+                    " ddro.toDate as toDate" +
+                    " FROM DoctorDutyRosterOverride ddro" +
+                    " WHERE ddro.doctorDutyRosterId.id=:doctorDutyRosterId" +
+                    " AND ddro.dayOffStatus='Y'" +
+                    " AND ddro.status='Y'";
+
+    public static final String QUERY_TO_FETCH_DUTY_ROSTER_OVERRIDE_BY_DOCTOR_AND_SPECIALIZATION_ID =
+            "SELECT" +
+                    " ddro.toDate as toDate," +
+                    " ddro.fromDate as fromDate," +
+                    " DATE_FORMAT(ddro.startTime ,'%H:%i') as startTime," +
+                    " DATE_FORMAT(ddro.endTime ,'%H:%i') as endTime," +
+                    " ddro.dayOffStatus as dayOff" +
+                    " FROM DoctorDutyRosterOverride ddro" +
+                    " LEFT JOIN DoctorDutyRoster ddr ON ddr.id=ddro.doctorDutyRosterId.id" +
+                    " WHERE " +
+                    " ddr.doctorId.id=:doctorId" +
+                    " AND ddr.specializationId.id=:specializationId" +
+                    " AND ddro.dayOffStatus='Y'" +
+                    " AND ddro.status='Y'";
 }

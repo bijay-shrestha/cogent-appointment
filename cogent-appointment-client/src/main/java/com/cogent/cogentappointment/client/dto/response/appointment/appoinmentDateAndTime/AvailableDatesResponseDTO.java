@@ -10,7 +10,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AvaliableDatesResponseDTO implements Serializable {
+public class AvailableDatesResponseDTO implements Serializable {
 
     private Date date;
 

@@ -75,8 +75,9 @@ public class WebResourceKeyConstants {
         String BASE_DOCTOR = "/doctor";
         String DOCTOR_WISE = "/doctor-wise";
         String UPDATE_DETAILS = "/updateDetails";
-        String DOCTOR_ID_PATH_VARIABLE_BASE = "/{doctorId}";
     }
+
+    public static final String DOCTOR_ID_PATH_VARIABLE_BASE = "/{doctorId}";
 
     public interface DoctorDutyRosterConstants {
         String BASE_DOCTOR_DUTY_ROSTER = "/doctorDutyRoster";
@@ -90,6 +91,10 @@ public class WebResourceKeyConstants {
     public interface EsewaConstants {
         String BASE_ESEWA = "/eSewa";
         String FETCH_DOCTOR_AVAILABLE_STATUS = "/doctor-available-status";
+        String AVAILABLE_APPOINTMENT_DATES_AND_TIME = "/availableAppointmentDatesAndTime";
+        String DOCTOR_AVAILABLE_DATES = "/doctorAvailableDates";
+        String SPECIALIZATION_AVAILABLE_DATES = "/specializationAvailableDates";
+        String DOCTOR_WITH_SPECIALIZATION_AVAILABLE_DATES = "/doctorWithSpecializationAvailableDates";
         String FETCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION = "/available-doctors-with-specialization";
 
     }

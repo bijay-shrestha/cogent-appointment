@@ -8,6 +8,7 @@ import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorD
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.eSewa.AvailableDoctorResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.eSewa.DoctorAvailabilityStatusResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.eSewa.DutyRosterOverrideAppointmentDate;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRosterOverride;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -36,7 +37,12 @@ public interface DoctorDutyRosterOverrideRepositoryCustom {
 
     List<DoctorDutyRosterOverrideAppointmentDate> getRosterOverrideByRosterId(Long doctorDutyRosterId);
 
+    List<DoctorDutyRosterOverrideAppointmentDate> getRosterOverrideByDoctorAndSpecializationId(Long doctorId,
+                                                                                               Long specializationId);
+
     DoctorAvailabilityStatusResponseDTO fetchDoctorDutyRosterOverrideStatus(AppointmentDetailRequestDTO requestDTO);
+
+    List<DutyRosterOverrideAppointmentDate> fetchDayOffRosterOverridebyRosterId(Long rosterId);
 
     List<AvailableDoctorResponseDTO> fetchAvailableDoctor(AppointmentDetailRequestDTO requestDTO);
 

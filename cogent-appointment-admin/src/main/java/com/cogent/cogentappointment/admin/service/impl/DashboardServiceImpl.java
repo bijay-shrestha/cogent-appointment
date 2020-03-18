@@ -145,19 +145,18 @@ public class DashboardServiceImpl implements DashboardService {
     public DoctorRevenueResponseListDTO getDoctorRevenueList(Date toDate,
                                                              Date fromDate,
                                                              DoctorRevenueRequestDTO doctorRevenueRequestDTO,
-                                                             Pageable pagable) {
+                                                             Pageable pageable) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, DOCTOR_REVENUE);
 
         DoctorRevenueResponseListDTO doctorRevenueResponseListDTO = appointmentTransactionDetailRepository
-                .getDoctorRevenue(toDate, fromDate, doctorRevenueRequestDTO, pagable);
+                .getDoctorRevenue(toDate, fromDate, doctorRevenueRequestDTO, pageable);
 
         log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_REVENUE, getDifferenceBetweenTwoTime(startTime));
 
         return doctorRevenueResponseListDTO;
-
     }
 
 }

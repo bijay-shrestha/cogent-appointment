@@ -7,25 +7,23 @@ import com.cogent.cogentappointment.admin.dto.request.dashboard.DoctorRevenueReq
 import com.cogent.cogentappointment.admin.dto.request.dashboard.GenerateRevenueRequestDTO;
 import com.cogent.cogentappointment.admin.service.AppointmentService;
 import com.cogent.cogentappointment.admin.service.DashboardService;
-import com.cogent.cogentappointment.admin.utils.DoctorRevenueUtils;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.NoSuchAlgorithmException;
-import java.util.Date;
+import java.text.ParseException;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentConstant.FETCH_APPOINTMENT_QUEUE;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.DashboardConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.DashboardConstants.*;
+import static com.cogent.cogentappointment.admin.utils.DoctorRevenueUtils.convertToDoctorRevenueRequestDTO;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.convertStringToDate;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -88,21 +86,23 @@ public class DashboardResource {
 
     @GetMapping(DOCTOR_REVENUE)
     @ApiOperation(DOCTOR_REVENUE_OPERATION)
-    @ApiImplicitParams({@ApiImplicitParam(name = "toDate", value = "dd/MM/yyyy", required = true, dataType = "date",
-            paramType = "query"),
-            @ApiImplicitParam(name = "fromDate", value = "dd/MM/yyyy", required = true, dataType = "date",
-                    paramType = "query")})
-    public ResponseEntity<?> getDoctorRevenueList(@DateTimeFormat(pattern = "dd/MM/yyyy") Date toDate,
-                                                  @DateTimeFormat(pattern = "dd/MM/yyyy") Date fromDate,
+//    @ApiImplicitParams({@ApiImplicitParam(name = "toDate", value = "dd/MM/yyyy", required = true, dataType = "date",
+//            paramType = "query"),
+//            @ApiImplicitParam(name = "fromDate", value = "dd/MM/yyyy", required = true, dataType = "date",
+//                    paramType = "query")})
+    public ResponseEntity<?> getDoctorRevenueList(@RequestParam("toDate") String toDate,
+                                                  @RequestParam("fromDate") String fromDate,
                                                   @RequestParam("doctorId") Long doctorId,
                                                   @RequestParam("hospitalId") Long hospitalId,
                                                   @RequestParam("specializationId") Long specializationId,
                                                   @RequestParam("page") int page,
-                                                  @RequestParam("size") int size) {
+                                                  @RequestParam("size") int size) throws ParseException {
 
-        DoctorRevenueRequestDTO doctorRevenueRequestDTO = DoctorRevenueUtils.convertToDoctorRevenueRequestDTO(doctorId, hospitalId, specializationId);
+        DoctorRevenueRequestDTO doctorRevenueRequestDTO =
+                convertToDoctorRevenueRequestDTO(doctorId, hospitalId, specializationId);
         Pageable pageable = PageRequest.of(page, size);
-        return ok(dashboardService.getDoctorRevenueList(toDate, fromDate, doctorRevenueRequestDTO, pageable));
+        return ok(dashboardService.getDoctorRevenueList(convertStringToDate(toDate),
+                convertStringToDate(fromDate), doctorRevenueRequestDTO, pageable));
     }
 
 }

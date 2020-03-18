@@ -226,6 +226,9 @@ public class EsewaServiceImpl implements EsewaService {
                     if (dayOffDates.size() != 0) {
                         getAllDate(avaliableDates, mergeRosterAndRosterOverrideDates(availableRosterDates, dayOffDates));
                     }
+                    else {
+                        getAllDate(avaliableDates, availableRosterDates);
+                    }
                 });
             } else {
                 getAllDate(avaliableDates, availableRosterDates);

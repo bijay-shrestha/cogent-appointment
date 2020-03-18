@@ -26,7 +26,8 @@ public class EsewaQuery {
                     " ddro.dayOffStatus as dayOff" +
                     " FROM DoctorDutyRosterOverride ddro" +
                     " WHERE ddro.doctorDutyRosterId.id=:doctorDutyRosterId" +
-                    " AND ddro.status='Y'";
+                    " AND ddro.status='Y'"+
+                    " AND ddro.dayOffStatus='Y'";
 
     public static final String QUERY_TO_FETCH_WEEKDAYS_DUTY_ROSTER_BY_DUTY_ROSTER_ID =
             "SELECT" +

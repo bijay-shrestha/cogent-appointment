@@ -54,12 +54,12 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public PatientDetailResponseDTO fetchDetailsById(Long id) {
+    public PatientDetailResponseDTO fetchDetailsById(Long hospitalPatientInfoId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, PATIENT);
 
-        PatientDetailResponseDTO responseDTO = patientRepository.fetchDetailsById(id);
+        PatientDetailResponseDTO responseDTO = patientRepository.fetchDetailsById(hospitalPatientInfoId);
 
         log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
@@ -85,12 +85,12 @@ public class PatientServiceImpl implements PatientService {
 
         log.info(UPDATING_PROCESS_STARTED, PATIENT);
 
-        Patient patientToBeUpdated = fetchPatientById(updateRequestDTO.getId());
+        Patient patientToBeUpdated = patientRepository.getPatientByHospitalPatientInfoId(updateRequestDTO.getId());
 
         HospitalPatientInfo hospitalPatientInfoToBeUpdated = hospitalPatientInfoRepository
                 .fetchHospitalPatientInfoByPatientId(updateRequestDTO.getId());
 
-        Long patientCount = patientRepository.validatePatientDuplicity(updateRequestDTO);
+        Long patientCount = patientRepository.validatePatientDuplicity(updateRequestDTO,patientToBeUpdated.getId());
 
         validatePatientDuplicity(patientCount, updateRequestDTO.getName(),
                 updateRequestDTO.getMobileNumber(), updateRequestDTO.getDateOfBirth());
@@ -99,7 +99,7 @@ public class PatientServiceImpl implements PatientService {
 
         saveHospitalPatientInfo(updateHospitalPatientInfo(updateRequestDTO, hospitalPatientInfoToBeUpdated));
 
-        PatientMetaInfo patientMetaInfoToBeUpdated = patientMetaInfoRepository.fetchByPatientId(updateRequestDTO.getId());
+        PatientMetaInfo patientMetaInfoToBeUpdated = patientMetaInfoRepository.fetchByPatientId(patientToBeUpdated.getId());
 
         savePatientMetaInfo(updatePatientMetaInfo(hospitalPatientInfoToBeUpdated,
                 patientMetaInfoToBeUpdated,
@@ -151,6 +151,9 @@ public class PatientServiceImpl implements PatientService {
                     patientRepository.fetchLatestRegistrationNumber(hospitalPatientInfo.getHospital().getId());
 
             registerPatientDetails(hospitalPatientInfo, latestRegistrationNumber);
+
+            PatientMetaInfo patientMetaInfo = patientMetaInfoRepository.fetchByPatientId(patientId);
+            updatePatientMetaInfo(patientMetaInfo, hospitalPatientInfo.getRegistrationNumber());
         }
 
         log.info(REGISTERING_PATIENT_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
@@ -182,15 +185,14 @@ public class PatientServiceImpl implements PatientService {
     private void validatePatientDuplicity(Long patientCount, String name, String mobileNumber,
                                           Date dateOfBirth) {
 
-        if (patientCount.intValue() > 0)
+        if (patientCount.intValue() != 0)
             throw new DataDuplicationException(String.format(DUPLICATE_PATIENT_MESSAGE,
                     name, mobileNumber, utilDateToSqlDate(dateOfBirth)));
     }
 
-    private HospitalPatientInfo saveHospitalPatientInfo(HospitalPatientInfo hospitalPatientInfo) {
-        return hospitalPatientInfoRepository.save(hospitalPatientInfo);
+    private void saveHospitalPatientInfo(HospitalPatientInfo hospitalPatientInfo) {
+        hospitalPatientInfoRepository.save(hospitalPatientInfo);
     }
-
 
     private Function<Long, NoContentFoundException> PATIENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         throw new NoContentFoundException(Patient.class, "patientId", id.toString());

@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.dto.response.patient;
 
+import com.cogent.cogentappointment.persistence.enums.Gender;
 import lombok.*;
 
 import java.io.Serializable;
@@ -15,6 +16,7 @@ import java.util.Date;
 @Builder
 public class PatientResponseDTO implements Serializable {
 
+    //todo: rename as hospitalPatientInfoId
     private Long id;
 
     private String name;
@@ -29,6 +31,8 @@ public class PatientResponseDTO implements Serializable {
 
     private String eSewaId;
 
+    private Gender gender;
+
     private String age;
 
     private Character status;
@@ -38,6 +42,10 @@ public class PatientResponseDTO implements Serializable {
     private String hospitalName;
 
     private Date dateOfBirth;
+
+    private Date appointmentDate;
+
+    private String appointmentTime;
 
     private Integer totalItems;
 }

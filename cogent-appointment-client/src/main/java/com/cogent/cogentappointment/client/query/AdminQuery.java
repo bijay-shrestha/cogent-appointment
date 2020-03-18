@@ -1,11 +1,10 @@
 package com.cogent.cogentappointment.client.query;
 
 import com.cogent.cogentappointment.client.dto.request.admin.AdminSearchRequestDTO;
-import com.cogent.cogentappointment.client.utils.GenderUtils;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import org.springframework.util.ObjectUtils;
 
-import static com.cogent.cogentappointment.client.utils.GenderUtils.*;
+import static com.cogent.cogentappointment.client.utils.GenderUtils.fetchGenderByCode;
 
 /**
  * @author smriti on 2019-08-05
@@ -155,13 +154,13 @@ public class AdminQuery {
 
     public static final String QUERY_TO_FETCH_ADMIN_BY_USERNAME_OR_EMAIL =
             " SELECT a FROM Admin a" +
-                    " WHERE" +
                     " LEFT JOIN Profile p ON p.id = a.profileId" +
                     " LEFT JOIN Department d ON d.id = p.department.id" +
                     " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
+                    " WHERE" +
                     " (a.username=:username OR a.email =:email)" +
                     " AND a.status != 'D'" +
-                    " AND h.id=:hospitalId";
+                    " AND h.code=:hospitalCode";
 
     public static final String QUERY_TO_FETCH_ADMIN_INFO =
             " SELECT" +
@@ -175,7 +174,8 @@ public class AdminQuery {
                     " p.id as profileId," +                                                //[3]
                     " p.name as profileName," +                                            //[4]
                     " d.id as departmentId," +                                             //[5]
-                    " d.name as departmentName" +                                          //[6]
+                    " d.name as departmentName," +
+                    " h.name as hospitalName" +                                          //[6]
                     " FROM Admin a" +
                     " LEFT JOIN AdminAvatar av ON av.admin.id=a.id" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +

@@ -13,7 +13,7 @@ public class DepartmentQuery {
     public static final String QUERY_TO_VALIDATE_DUPLICITY =
             " SELECT d.name," +
                     " d.code" +
-                    " FROM  Department d" +
+                    " FROM Department d" +
                     " LEFT JOIN Hospital  h ON h.id = d.hospital.id" +
                     " WHERE" +
                     " d.status !='D'" +

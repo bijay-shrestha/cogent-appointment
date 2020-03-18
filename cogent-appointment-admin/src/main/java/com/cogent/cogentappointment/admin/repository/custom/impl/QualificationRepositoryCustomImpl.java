@@ -19,12 +19,12 @@ import javax.persistence.Query;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.admin.constants.QueryConstants.HOSPITAL_ID;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.ID;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.NAME;
 import static com.cogent.cogentappointment.admin.query.QualificationQuery.*;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
-
 
 /**
  * @author smriti on 11/11/2019
@@ -37,18 +37,20 @@ public class QualificationRepositoryCustomImpl implements QualificationRepositor
     private EntityManager entityManager;
 
     @Override
-    public Long validateDuplicity(String name) {
+    public Long validateDuplicity(String name, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY)
-                .setParameter(NAME, name);
+                .setParameter(NAME, name)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Long) query.getSingleResult();
     }
 
     @Override
-    public Long validateDuplicity(Long id, String name) {
+    public Long validateDuplicity(Long id, String name, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE)
                 .setParameter(ID, id)
-                .setParameter(NAME, name);
+                .setParameter(NAME, name)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Long) query.getSingleResult();
     }

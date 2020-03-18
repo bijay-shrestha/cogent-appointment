@@ -2,6 +2,8 @@ package com.cogent.cogentappointment.client.dto.response.qualificationAlias;
 
 import lombok.*;
 
+import java.io.Serializable;
+
 /**
  * @author Rupak
  */
@@ -10,7 +12,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class QualificationAliasMinimalResponseDTO {
+public class QualificationAliasMinimalResponseDTO implements Serializable {
 
     private Long id;
 

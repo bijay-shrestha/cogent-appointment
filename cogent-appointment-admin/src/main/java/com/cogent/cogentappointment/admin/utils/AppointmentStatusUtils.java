@@ -137,6 +137,7 @@ public class AppointmentStatusUtils {
         responseDTO.setAge(appointmentStatusResponseDTO.getAge());
         responseDTO.setMobileNumber(appointmentStatusResponseDTO.getMobileNumber());
         responseDTO.setGender(appointmentStatusResponseDTO.getGender());
+        responseDTO.setAppointmentId(appointmentStatusResponseDTO.getAppointmentId());
     }
 
     public static AppointmentStatusDTO parseToAppointmentStatusDTO(

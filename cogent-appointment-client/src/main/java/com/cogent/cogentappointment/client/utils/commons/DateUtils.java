@@ -6,8 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
 
 import static com.cogent.cogentappointment.client.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.client.constants.UtilityConfigConstants.*;
@@ -37,6 +36,21 @@ public class DateUtils {
         }
     }
 
+    public static List<Date> utilDateListToSqlDateList(List<Date> uDates) {
+        List<Date> resultDates = new ArrayList<>();
+        uDates.forEach(uDate -> {
+            try {
+                DateFormat sqlDateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+                Date date = java.sql.Date.valueOf(sqlDateFormatter.format(uDate));
+                resultDates.add(date);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        return resultDates;
+
+    }
+
     public static Date addDays(Date oldDate, int days) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(oldDate);
@@ -64,6 +78,7 @@ public class DateUtils {
     public static Date convertStringToDate(String date) throws ParseException {
         return new SimpleDateFormat("yyyy-MM-dd").parse(date);
     }
+
 
     public static int getYearFromNepaliDate(String nepaliDate) {
         return Integer.parseInt(nepaliDate.split(HYPHEN)[0]);
@@ -154,4 +169,23 @@ public class DateUtils {
         }
     }
 
+    public static List<Date> getDates(
+            Date startDate, Date endDate) {
+        List<Date> datesInRange = new ArrayList<>();
+        Date today = new Date();
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(startDate);
+
+        Calendar endCalendar = new GregorianCalendar();
+        endCalendar.setTime(endDate);
+
+        while (!calendar.after(endCalendar)) {
+            Date result = calendar.getTime();
+            if (!result.before(today)) {
+                datesInRange.add(result);
+            }
+            calendar.add(Calendar.DATE, 1);
+        }
+        return datesInRange;
+    }
 }

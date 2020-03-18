@@ -13,7 +13,9 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PatientMinimalResponseDTO implements Serializable {
+public class PatientMinResponseDTOForOthers implements Serializable {
+
+    private Long hospitalPatientInfoId;
 
     private Long patientId;
 
@@ -26,6 +28,8 @@ public class PatientMinimalResponseDTO implements Serializable {
     private String age;
 
     private String registrationNumber;
+
+    private Gender gender;
 
     private Integer totalItems;
 }

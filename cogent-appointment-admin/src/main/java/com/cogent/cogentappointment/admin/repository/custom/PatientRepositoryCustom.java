@@ -5,6 +5,7 @@ import com.cogent.cogentappointment.admin.dto.request.patient.PatientUpdateReque
 import com.cogent.cogentappointment.admin.dto.response.patient.PatientDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.patient.PatientMinDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.patient.PatientResponseDTO;
+import com.cogent.cogentappointment.persistence.model.Patient;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -17,15 +18,17 @@ import java.util.List;
 @Repository
 @Qualifier("patientRepositoryCustom")
 public interface PatientRepositoryCustom {
-    Long validatePatientDuplicity(PatientUpdateRequestDTO patientUpdateRequestDTO);
+    Long validatePatientDuplicity(PatientUpdateRequestDTO patientUpdateRequestDTO,Long patientId);
 
-    PatientDetailResponseDTO fetchDetailsById(Long id);
+    PatientDetailResponseDTO fetchDetailsById(Long hospitalPatientInfoId);
 
     List<PatientResponseDTO> search(PatientSearchRequestDTO searchRequestDTO, Pageable pageable);
 
     String fetchLatestRegistrationNumber(Long hospitalId);
 
     Long countOverallRegisteredPatients(Long HospitalId);
+
+    Patient getPatientByHospitalPatientInfoId(Long hospitalPatientInfoId);
 
     PatientMinDetailResponseDTO fetchDetailByAppointmentId(Long appointmentId);
 }

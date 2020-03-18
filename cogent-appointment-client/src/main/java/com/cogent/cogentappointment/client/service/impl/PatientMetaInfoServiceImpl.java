@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.SAVING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.SAVING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.client.log.constants.PatientLog.PATIENT_META_INFO;
@@ -35,15 +37,19 @@ public class PatientMetaInfoServiceImpl implements PatientMetaInfoService {
 
         log.info(SAVING_PROCESS_STARTED, PATIENT_META_INFO);
 
-        PatientMetaInfo patientMetaInfo = parseToPatientMetaInfo(patient);
+        PatientMetaInfo patientMetaInfo = fetchPatientMetaInfo(patient.getId());
 
-        savePatientMetaInfo(patientMetaInfo);
+        if (Objects.isNull(patientMetaInfo))
+            savePatientMetaInfo(parseToPatientMetaInfo(patient));
 
         log.info(SAVING_PROCESS_COMPLETED, PATIENT_META_INFO, getDifferenceBetweenTwoTime(startTime));
-
     }
 
     private void savePatientMetaInfo(PatientMetaInfo patientMetaInfo) {
         patientMetaInfoRepository.save(patientMetaInfo);
+    }
+
+    private PatientMetaInfo fetchPatientMetaInfo(Long patientId) {
+        return patientMetaInfoRepository.fetchByPatientId(patientId);
     }
 }

@@ -20,4 +20,10 @@ public class PatientMetaInfoUtils {
         return patientMetaInfo;
     }
 
+    public static void updatePatientMetaInfo(PatientMetaInfo patientMetaInfo,
+                                             String registrationNumber) {
+
+        String metaInfo = patientMetaInfo.getMetaInfo();
+        patientMetaInfo.setMetaInfo(metaInfo + OR + registrationNumber);
+    }
 }

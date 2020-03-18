@@ -1,13 +1,10 @@
 package com.cogent.cogentappointment.admin.resource;
 
-import com.cogent.cogentappointment.admin.constants.SwaggerConstants;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.qualification.QualificationUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.qualificationAlias.QualificationAliasRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.qualificationAlias.QualificationAliasSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.qualificationAlias.QualificationAliasUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.service.QualificationAliasService;
-import com.cogent.cogentappointment.persistence.model.QualificationAlias;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.PageRequest;
@@ -17,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.*;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.QualificationAliasConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.QualificationAliasConstants.BASE_QUALIFICATION_ALIAS;

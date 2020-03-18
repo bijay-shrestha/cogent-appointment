@@ -47,6 +47,7 @@ public class SwaggerConstants {
         String REJECT_APPOINTMENT = "Reject Appointment and set status as 'R'.";
         String FETCH_APPOINTMENT_LOG = "Fetch Appointment Log";
         String FETCH_APPOINTMENT_RESCHEDULE_LOG = "Fetch Appointment Reschedule Log";
+        String FETCH_VACANT_APPOINTMENT_DATES = "Fetch Appointment vacant dates by doctorId and SpeciliazationId ";
         String DETAILS_APPROVAL_VISIT_OPERATION = "Fetch appointment visit approval details by its id";
     }
 
@@ -92,10 +93,10 @@ public class SwaggerConstants {
         String BASE_API_VALUE = "This is Dashboard Resource";
         String GENERATE_REVENUE_OPERATION = "Fetch revenue generated.";
         String OVER_ALL_APPOINTMENT_OPERATION = "Fetch over all appointments.";
-        String COUNT_REGISTERED_PATIENTS_OPERATION = "Count no. of registered patients";
-        String REVENUE_STATISTICS_OPERATION = "Revenue statistics as per the filter";
-        String FETCH_APPOINTMENT_LOG = "Fetch Appointment Log";
-        String FETCH_APPOINTMENT_QUEUE = "Fetch Appointment Queue of Today for Dashboard";
+        String COUNT_REGISTERED_PATIENTS_OPERATION = "Count no. of registered patients.";
+        String REVENUE_STATISTICS_OPERATION = "Revenue statistics as per the filter.";
+        String REVENUE_TREND_OPERATION = "Revenue Trend as per the filter.";
+        String FETCH_APPOINTMENT_QUEUE = "Fetch Appointment Queue of Today for Dashboard.";
     }
 
     public interface DepartmentConstant {
@@ -146,6 +147,19 @@ public class SwaggerConstants {
 
 
     //E
+    public interface EsewaConstant {
+        String BASE_API_VALUE = "This is eSewa Resource";
+        String FETCH_AVAILABLE_APPOINTMENT_DATES = "Returns all the avaliable appointment dates and time by doctorId and" +
+                " specializationId";
+        String FETCH_AVAILABLE_DOCTOR_DATES = "Returns all the avaliable appointment dates by doctorId";
+        String FETCH_AVAILABLE_SPECIALIZATION_DATES = "Returns all the avaliable appointment dates by specializationId";
+        String FETCH_AVAILABLE_DATES = "Returns all the avaliable appointment dates by doctorId and specializationId";
+        String FETCH_DOCTOR_AVAILABLE_STATUS_OPERATION = "Return message if the doctor is available on the date" +
+                " (Case V/Case VIII)";
+        String FETCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION_OPERATION = "Fetch all available doctors and " +
+                "their specialization on the choosen date (Case II/Case IV)";
+
+    }
 
 
     //F
@@ -192,11 +206,13 @@ public class SwaggerConstants {
                 "(id and metaInfo) for dropdown";
         String SEARCH_PATIENT_WITH_SELF_TYPE_OPERATION = "Search patient info according to given " +
                 "request parameters (name, mobile number, dob)";
-        String SEARCH_PATIENT_WITH_OTHERS_TYPE_OPERATION = "Fetch list of minimal patient info according to given " +
-                "request parameters (name, mobile number, dob)";
-        String UPDATE_PATIENT_INFO_OPERATION = "Update patient info";
+        String SEARCH_PATIENT_WITH_OTHERS_TYPE_OPERATION = "Fetch list of other child patients for" +
+                " selected name, mobile number and dob.";
+        String FETCH_DETAILS_OF_OTHERS = " Fetch patient details by hospital patient info id";
+        String UPDATE_PATIENT_INFO_OPERATION = "Update patient info (others)";
+        String DELETE_PATIENT_INFO_OPERATION = "Delete patient info (others)";
         String SEARCH_OPERATION = "Search Patient Info";
-        String FETCH_DETAILS_BY_ID = " Fetch patient(with type 'OTHERS') details by id";
+        String FETCH_DETAILS_BY_ID = " Fetch patient details by id";
         String FETCH_PATIENT_MIN_DETAIL_BY_APPOINTMENT_ID = "Fetch min patient detail by appointment id.";
 
     }

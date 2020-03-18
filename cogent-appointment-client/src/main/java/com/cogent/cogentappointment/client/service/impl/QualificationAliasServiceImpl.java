@@ -86,7 +86,6 @@ public class QualificationAliasServiceImpl implements QualificationAliasService 
         parseToDeletedQualification(qualification, deleteRequestDTO);
 
         log.info(DELETING_PROCESS_COMPLETED, QUALIFICATION_ALIAS, getDifferenceBetweenTwoTime(startTime));
-
     }
 
     @Override
@@ -117,8 +116,19 @@ public class QualificationAliasServiceImpl implements QualificationAliasService 
     }
 
     @Override
-    public List<QualificationAliasMinimalResponseDTO> search(QualificationAliasSearchRequestDTO searchRequestDTO, Pageable pageable) {
-        return null;
+    public List<QualificationAliasMinimalResponseDTO> search(QualificationAliasSearchRequestDTO searchRequestDTO,
+                                                             Pageable pageable) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SEARCHING_PROCESS_STARTED, QUALIFICATION_ALIAS);
+
+        List<QualificationAliasMinimalResponseDTO> responseDTOS =
+                qualificationAliasRepository.search(searchRequestDTO, pageable);
+
+        log.info(SEARCHING_PROCESS_COMPLETED, QUALIFICATION_ALIAS, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
     }
 
     private void validateName(Long qualificationCount, String name) {

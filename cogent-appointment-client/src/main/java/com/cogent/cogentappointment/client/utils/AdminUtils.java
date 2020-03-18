@@ -22,7 +22,7 @@ import static com.cogent.cogentappointment.client.constants.StatusConstants.ACTI
 import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.constants.StringConstant.*;
 import static com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils.generateRandomToken;
-import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toUpperCase;
+import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toNormalCase;
 
 /**
  * @author smriti on 2019-08-11
@@ -34,7 +34,7 @@ public class AdminUtils {
                                           Profile profile) {
         Admin admin = new Admin();
         admin.setUsername(adminRequestDTO.getUsername());
-        admin.setFullName(toUpperCase(adminRequestDTO.getFullName()));
+        admin.setFullName(toNormalCase(adminRequestDTO.getFullName()));
         admin.setEmail(adminRequestDTO.getEmail());
         admin.setMobileNumber(adminRequestDTO.getMobileNumber());
         admin.setStatus(adminRequestDTO.getStatus());
@@ -56,7 +56,7 @@ public class AdminUtils {
                                                            Profile profile) {
 
         admin.setEmail(adminRequestDTO.getEmail());
-        admin.setFullName(toUpperCase(adminRequestDTO.getFullName()));
+        admin.setFullName(toNormalCase(adminRequestDTO.getFullName()));
         admin.setMobileNumber(adminRequestDTO.getMobileNumber());
         admin.setStatus(adminRequestDTO.getStatus());
         admin.setHasMacBinding(adminRequestDTO.getHasMacBinding());
@@ -163,7 +163,7 @@ public class AdminUtils {
         Map<String, String> params = new HashMap<>();
 
         if (!(updateRequestDTO.getFullName().equalsIgnoreCase(admin.getFullName())))
-            params.put("Full Name ", updateRequestDTO.getFullName());
+            params.put("Full Name ", toNormalCase(updateRequestDTO.getFullName()));
 
         if (!(updateRequestDTO.getEmail().equalsIgnoreCase(admin.getEmail())))
             params.put("Email Address ", updateRequestDTO.getEmail());

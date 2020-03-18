@@ -178,11 +178,28 @@ public class AdminQuery {
                     " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
                     " WHERE " +
                     " (a.username=:username OR a.email =:email)" +
-                    " AND a.status='Y'";
+                    " AND a.status='Y'" +
+                    " AND h.isCogentAdmin='Y'";
 
     public static final String QUERY_TO_FETCH_ADMIN_META_INFO =
             " SELECT a.id as adminMetaInfoId," +                   //[0]
                     " a.metaInfo as metaInfo" +                   //[1]
                     " FROM AdminMetaInfo a" +
                     " WHERE a.admin.status !='D'";
+
+    public static final String QUERY_TO_GET_LOGGED_ADMIN_INFO =
+            "SELECT" +
+                    " a.id as id ," +
+                    " a.username as username," +
+                    " a.password as password," +
+                    " h.isCogentAdmin as isCogentAdmin" +
+                    " FROM " +
+                    " Admin a" +
+                    " LEFT JOIN Profile p ON p.id=a.profileId.id" +
+                    " LEFT JOIN Department d ON d.id=p.department.id" +
+                    " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
+                    " WHERE" +
+                    " a.username =:username" +
+                    " AND a.status = 'Y'" +
+                    " AND h.isCogentAdmin='Y'";
 }

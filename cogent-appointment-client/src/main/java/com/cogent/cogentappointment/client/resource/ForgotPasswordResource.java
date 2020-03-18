@@ -30,10 +30,11 @@ public class ForgotPasswordResource {
         this.forgotPasswordService = forgotPasswordService;
     }
 
-    @PostMapping(FORGOT)
+    @GetMapping(FORGOT)
     @ApiOperation(FORGOT_PASSWORD_OPERATION)
-    public ResponseEntity<?> forgotPassword(@RequestParam(name = "username") String username) {
-        forgotPasswordService.forgotPassword(username);
+    public ResponseEntity<?> forgotPassword(@RequestParam(name = "username") String username,
+                                            @RequestParam(name = "hospitalCode") String hospitalCode) {
+        forgotPasswordService.forgotPassword(username,hospitalCode);
         return ok().build();
     }
 

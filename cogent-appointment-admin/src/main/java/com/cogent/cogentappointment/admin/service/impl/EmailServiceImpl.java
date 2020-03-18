@@ -27,9 +27,13 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
-import static com.cogent.cogentappointment.admin.constants.EmailConstants.*;
+import static com.cogent.cogentappointment.admin.constants.EmailConstants.Admin.*;
 import static com.cogent.cogentappointment.admin.constants.EmailConstants.ForgotPassword.RESET_CODE;
+import static com.cogent.cogentappointment.admin.constants.EmailConstants.*;
+import static com.cogent.cogentappointment.admin.constants.EmailTemplates.*;
+import static com.cogent.cogentappointment.admin.constants.StringConstant.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.SAVING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.SAVING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.admin.log.constants.EmailLog.*;
@@ -92,27 +96,27 @@ public class EmailServiceImpl implements EmailService {
             String html = "";
 
             switch (emailToSend.getTemplateName()) {
-                case EmailTemplates.ADMIN_VERIFICATION: {
+                case ADMIN_VERIFICATION: {
                     parseToAdminVerificationTemplate(emailToSend, model);
-                    html = getFreeMarkerContent(model, EmailTemplates.ADMIN_VERIFICATION_TEMPLATE, html);
+                    html = getFreeMarkerContent(model, ADMIN_VERIFICATION_TEMPLATE, html);
                     break;
                 }
 
-                case EmailTemplates.ADMIN_RESET_PASSWORD: {
+                case ADMIN_RESET_PASSWORD: {
                     parseToResetPasswordTemplate(emailToSend, model);
-                    html = getFreeMarkerContent(model, EmailTemplates.ADMIN_RESET_PASSWORD_TEMPLATE, html);
+                    html = getFreeMarkerContent(model, ADMIN_RESET_PASSWORD_TEMPLATE, html);
                     break;
                 }
 
-                case EmailTemplates.UPDATE_ADMIN: {
+                case UPDATE_ADMIN: {
                     parseToUpdateAdminTemplate(emailToSend, model);
-                    html = getFreeMarkerContent(model, EmailTemplates.UPDATE_ADMIN_TEMPLATE, html);
+                    html = getFreeMarkerContent(model, UPDATE_ADMIN_TEMPLATE, html);
                     break;
                 }
 
-                case EmailTemplates.FORGOT_PASSWORD: {
+                case FORGOT_PASSWORD: {
                     parseToForgotPasswordTemplate(emailToSend, model);
-                    html = getFreeMarkerContent(model, EmailTemplates.FORGOT_PASSWORD_TEMPLATE, html);
+                    html = getFreeMarkerContent(model, FORGOT_PASSWORD_TEMPLATE, html);
                     break;
                 }
 
@@ -157,10 +161,10 @@ public class EmailServiceImpl implements EmailService {
         final int USERNAME_INDEX = 0;
         final int ADMIN_CONFIRMATION_URL_INDEX = 1;
 
-        String[] paramValues = emailToSend.getParamValue().split(StringConstant.COMMA_SEPARATED);
+        String[] paramValues = emailToSend.getParamValue().split(COMMA_SEPARATED);
 
         model.put(USERNAME, paramValues[USERNAME_INDEX]);
-        model.put(Admin.ADMIN_CONFIRMATION_URL, paramValues[ADMIN_CONFIRMATION_URL_INDEX]);
+        model.put(ADMIN_CONFIRMATION_URL, paramValues[ADMIN_CONFIRMATION_URL_INDEX]);
     }
 
     private void parseToResetPasswordTemplate(EmailToSend emailToSend,
@@ -169,11 +173,11 @@ public class EmailServiceImpl implements EmailService {
         final int PASSWORD_INDEX = 1;
         final int REMARKS_INDEX = 2;
 
-        String[] paramValues = emailToSend.getParamValue().split(StringConstant.COMMA_SEPARATED);
+        String[] paramValues = emailToSend.getParamValue().split(COMMA_SEPARATED);
 
         model.put(USERNAME, paramValues[USERNAME_INDEX]);
-        model.put(Admin.PASSWORD, paramValues[PASSWORD_INDEX]);
-        model.put(Admin.REMARKS, paramValues[REMARKS_INDEX]);
+        model.put(PASSWORD, paramValues[PASSWORD_INDEX]);
+        model.put(REMARKS, paramValues[REMARKS_INDEX]);
     }
 
     private void parseToUpdateAdminTemplate(EmailToSend emailToSend,
@@ -183,25 +187,25 @@ public class EmailServiceImpl implements EmailService {
         final int HAS_MAC_BINDING_INDEX = 2;
         final int MAC_ADDRESS_INDEX = 3;
 
-        String param = emailToSend.getParamValue().replaceAll(StringConstant.BRACKET_REGEX, "");
-        String[] paramValues = param.split(StringConstant.HYPHEN);
-        String[] updatedValues = paramValues[UPDATED_ADMIN_DETAILS_INDEX].split(StringConstant.COMMA_SEPARATED);
+        String param = emailToSend.getParamValue().replaceAll(BRACKET_REGEX, SPACE);
+        String[] paramValues = param.split(HYPHEN);
+        String[] updatedValues = paramValues[UPDATED_ADMIN_DETAILS_INDEX].split(COMMA_SEPARATED);
 
-        String[] updatedMacAddress = paramValues[HAS_MAC_BINDING_INDEX].equals(StatusConstants.YES) ?
-                paramValues[MAC_ADDRESS_INDEX].split(StringConstant.COMMA_SEPARATED)
+        String[] updatedMacAddress = Objects.equals(paramValues[HAS_MAC_BINDING_INDEX], "Y") ?
+                paramValues[MAC_ADDRESS_INDEX].split(COMMA_SEPARATED)
                 : new String[]{paramValues[MAC_ADDRESS_INDEX]};
 
         model.put(USERNAME, paramValues[USERNAME_INDEX]);
-        model.put(Admin.UPDATED_DATA, Arrays.asList(updatedValues));
-        model.put(Admin.HAS_MAC_BINDING, paramValues[HAS_MAC_BINDING_INDEX]);
-        model.put(Admin.UPDATED_MAC_ADDRESS, Arrays.asList(updatedMacAddress));
+        model.put(UPDATED_DATA, Arrays.asList(updatedValues));
+        model.put(HAS_MAC_BINDING, paramValues[HAS_MAC_BINDING_INDEX]);
+        model.put(UPDATED_MAC_ADDRESS, Arrays.asList(updatedMacAddress));
     }
 
     private void parseToForgotPasswordTemplate(EmailToSend emailToSend, Map<String, Object> model) {
         final int USERNAME_INDEX = 0;
         final int RESET_CODE_INDEX = 1;
 
-        String[] paramValues = emailToSend.getParamValue().split(StringConstant.COMMA_SEPARATED);
+        String[] paramValues = emailToSend.getParamValue().split(COMMA_SEPARATED);
         model.put(USERNAME, paramValues[USERNAME_INDEX]);
         model.put(RESET_CODE, paramValues[RESET_CODE_INDEX]);
     }

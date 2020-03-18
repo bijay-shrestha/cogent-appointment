@@ -63,7 +63,7 @@ public class QualificationAliasServiceImpl implements QualificationAliasService 
 
         log.info(UPDATING_PROCESS_STARTED, QUALIFICATION_ALIAS);
 
-        QualificationAlias qualificationAliasToBeUpdated=fetchQualificationAliasById(requestDTO.getId());
+        QualificationAlias qualificationAliasToBeUpdated = fetchQualificationAliasById(requestDTO.getId());
 
         Long count = qualificationAliasRepository.validateDuplicity(requestDTO.getId(), requestDTO.getName());
 
@@ -129,7 +129,6 @@ public class QualificationAliasServiceImpl implements QualificationAliasService 
 
         return responseDTOS;
     }
-
 
     private void validateName(Long qualificationCount, String name) {
         if (qualificationCount.intValue() > 0)

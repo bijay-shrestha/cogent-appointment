@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.client.query;
 import com.cogent.cogentappointment.client.dto.request.university.UniversitySearchRequestDTO;
 import org.springframework.util.ObjectUtils;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -15,7 +16,8 @@ public class UniversityQuery {
                     " FROM University u" +
                     " WHERE" +
                     " u.status !='D'" +
-                    " AND u.name=:name";
+                    " AND u.name=:name" +
+                    " AND u.hospital.id =:hospitalId";
 
     public static final String QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE =
             " SELECT COUNT(u.id)" +
@@ -23,7 +25,8 @@ public class UniversityQuery {
                     " WHERE" +
                     " u.status!='D'" +
                     " AND u.id!=:id" +
-                    " AND u.name=:name";
+                    " AND u.name=:name" +
+                    " AND u.hospital.id =:hospitalId";
 
     private static final String SELECT_CLAUSE_TO_FETCH_MINIMAL_UNIVERSITY =
             "SELECT u.id as id," +                                                //[0]
@@ -43,12 +46,12 @@ public class UniversityQuery {
     private static String GET_WHERE_CLAUSE_FOR_SEARCHING_UNIVERSITY
             (UniversitySearchRequestDTO searchRequestDTO) {
 
-        String whereClause = " WHERE u.status!='D'";
+        String whereClause = " WHERE u.status!='D' AND u.hospital.id=:hospitalId";
 
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getUniversityId()))
+        if (!Objects.isNull(searchRequestDTO.getUniversityId()))
             whereClause += " AND u.id = " + searchRequestDTO.getUniversityId();
 
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getCountryId()))
+        if (!Objects.isNull(searchRequestDTO.getCountryId()))
             whereClause += " AND c.id=" + searchRequestDTO.getCountryId();
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
@@ -68,12 +71,14 @@ public class UniversityQuery {
                     " FROM University u " +
                     " LEFT JOIN Country c ON c.id = u.country.id" +
                     " WHERE u.status != 'D'" +
-                    " AND u.id =:id";
+                    " AND u.id =:id" +
+                    " AND u.hospital.id=:hospitalId";
 
     public static final String QUERY_TO_FETCH_ACTIVE_UNIVERSITY =
             "SELECT" +
-                    " u.id as value," +
-                    " u.name as label" +
+                    " u.id as value," +                         //[0]
+                    " u.name as label" +                        //[1]
                     " FROM University u" +
-                    " WHERE u.status = 'Y'";
+                    " WHERE u.status = 'Y'" +
+                    " AND u.hospital.id=:hospitalId";
 }

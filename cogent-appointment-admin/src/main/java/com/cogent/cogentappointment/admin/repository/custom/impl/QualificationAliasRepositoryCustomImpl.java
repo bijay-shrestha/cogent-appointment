@@ -82,6 +82,6 @@ public class QualificationAliasRepositoryCustomImpl implements QualificationAlia
     }
 
     private Supplier<NoContentFoundException> QUALIFICATION_ALIAS_NOT_FOUND = () ->
-            new NoContentFoundException(Qualification.class);
+            new NoContentFoundException(QualificationAlias.class);
 
 }

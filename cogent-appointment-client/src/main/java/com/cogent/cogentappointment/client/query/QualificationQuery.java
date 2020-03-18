@@ -15,7 +15,8 @@ public class QualificationQuery {
                     " FROM Qualification q" +
                     " WHERE" +
                     " q.status !='D'" +
-                    " AND q.name=:name";
+                    " AND q.name=:name" +
+                    " AND q.hospital.id =:hospitalId";
 
     public static final String QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE =
             " SELECT COUNT(q.id)" +
@@ -23,7 +24,8 @@ public class QualificationQuery {
                     " WHERE" +
                     " q.status !='D'" +
                     " AND q.id!=:id" +
-                    " AND q.name=:name";
+                    " AND q.name=:name" +
+                    " AND q.hospital.id =:hospitalId";
 
     private static final String SELECT_CLAUSE_TO_FETCH_MINIMAL_QUALIFICATION =
             "SELECT q.id as id," +                                               //[0]
@@ -42,7 +44,7 @@ public class QualificationQuery {
     private static String GET_WHERE_CLAUSE_FOR_SEARCHING_QUALIFICATION
             (QualificationSearchRequestDTO searchRequestDTO) {
 
-        String whereClause = " WHERE q.status!='D'";
+        String whereClause = " WHERE q.status!='D' AND q.hospital.id = :hospitalId";
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getName()))
             whereClause += " AND q.name LIKE '%" + searchRequestDTO.getName() + "%'";
@@ -56,26 +58,29 @@ public class QualificationQuery {
     public static final String QUERY_TO_FETCH_QUALIFICATION_DETAILS =
             "SELECT" +
                     " q.name as name," +                                        //[0]
-                    " q.university.name as university," +                            //[1]
-                    " q.qualificationAlias.id as qualificationAliasId," +       //[4]
-                    " q.qualificationAlias.name as qualificationAliasName," +    //[5]
-                    " q.status as status," +                                    //[6]
-                    " q.remarks as remarks" +                                   //[7]
+                    " q.university.name as university," +                       //[1]
+                    " q.qualificationAlias.id as qualificationAliasId," +       //[2]
+                    " q.qualificationAlias.name as qualificationAliasName," +   //[3]
+                    " q.status as status," +                                    //[4]
+                    " q.remarks as remarks" +                                   //[5]
                     " FROM Qualification q " +
                     " WHERE q.status != 'D'" +
-                    " AND q.id =:id";
+                    " AND q.id =:id" +
+                    " AND q.hospital.id = :hospitalId";
 
     public static final String QUERY_TO_FETCH_ACTIVE_QUALIFICATION_FOR_DROPDOWN =
-            "SELECT q.id as id," +                                               //[0]
-                    " q.name as name," +                                        //[1]
-                    " q.university.name as university," +                             //[2]
-                    " q.qualificationAlias.name as qualificationAliasName" +   //[4]
+            "SELECT q.id as id," +                                                  //[0]
+                    " q.name as name," +                                            //[1]
+                    " q.university.name as university," +                           //[2]
+                    " q.qualificationAlias.name as qualificationAliasName" +        //[3]
                     " FROM Qualification q " +
-                    " WHERE q.status = 'Y'";
+                    " WHERE q.status = 'Y'" +
+                    " AND q.hospital.id =:hospitalId";
 
     public static final String QUERY_TO_FETCH_MIN_QUALIFICATION =
             "SELECT q.id as value," +                                           //[0]
                     " q.name as label" +                                        //[1]
                     " FROM Qualification q " +
-                    " WHERE q.status != 'D'";
+                    " WHERE q.status != 'D'" +
+                    " AND q.hospital.id =:hospitalId";
 }

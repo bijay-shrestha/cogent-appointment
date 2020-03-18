@@ -48,20 +48,25 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
         final AuthHeader eSewaAuthHeader = getAuthHeaderForeSewa(request);
 
         if (authHeader != null) {
+            final HMACBuilder signatureBuilder;
 
             AdminMinDetails adminMinDetails = hmacApiInfoRepository.getAdminDetailForAuthentication(
                     authHeader.getUsername(),
                     authHeader.getCompanyCode(),
                     authHeader.getApiKey());
 
-            final HMACBuilder signatureBuilder = new HMACBuilder()
-                    .algorithm(authHeader.getAlgorithm())
-                    .nonce(authHeader.getNonce())
-                    .username(adminMinDetails.getUsername())
-                    .hospitalId(Math.toIntExact(adminMinDetails.getHospitalId()))
-                    .hospitalCode(adminMinDetails.getHospitalCode())
-                    .apiKey(adminMinDetails.getApiKey())
-                    .apiSecret(adminMinDetails.getApiSecret());
+            if (adminMinDetails.getIsCogentAdmin().equals('N')) {
+                signatureBuilder = new HMACBuilder()
+                        .algorithm(authHeader.getAlgorithm())
+                        .nonce(authHeader.getNonce())
+                        .username(adminMinDetails.getUsername())
+                        .hospitalId(Math.toIntExact(adminMinDetails.getHospitalId()))
+                        .hospitalCode(adminMinDetails.getHospitalCode())
+                        .apiKey(adminMinDetails.getApiKey())
+                        .apiSecret(adminMinDetails.getApiSecret());
+            } else {
+                signatureBuilder = null;
+            }
 
             compareSignature(signatureBuilder, authHeader.getDigest());
 

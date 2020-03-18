@@ -10,18 +10,15 @@ import java.util.Objects;
  */
 public class PatientQuery {
 
-    public final static String QUERY_TO_VALIDATE_UPDATED_PATIENT_DUPLICITY =
+    public final static String QUERY_TO_VALIDATE_PATIENT_DUPLICITY =
             "SELECT " +
                     " COUNT(p.id)" +
                     " FROM Patient p" +
-                    " LEFT JOIN HospitalPatientInfo hp ON hp.patient.id = p.id" +
                     " WHERE " +
                     " (p.name =:name" +
                     " AND p.mobileNumber =:mobileNumber" +
                     " AND p.dateOfBirth =:dateOfBirth" +
-                    " AND p.id !=:id)" +
-                    " AND hp.hospital.id =:hospitalId" +
-                    " AND hp.status != 'D'";
+                    " AND p.id !=:id)";
 
     /* AGE CALCULATION:
     TIMESTAMPDIFF(YEAR, date_of_birth , CURDATE() ) as _year
@@ -58,19 +55,16 @@ public class PatientQuery {
                     " CONCAT(((TIMESTAMPDIFF(YEAR, p.date_of_birth ,CURDATE()))), ' years')" +
                     " END AS age";
 
-    /*FOR SELF*/
     private static final String SELECT_CLAUSE_TO_FETCH_PATIENT_DETAILS =
             " SELECT p.id as patientId," +                                  //[0]
                     " p.name as name," +                                    //[1]
                     " p.mobileNumber as mobileNumber," +                    //[2]
                     " p.gender as gender," +                                //[3]
                     " p.dateOfBirth as dateOfBirth," +                      //[4]
-                    " hp.address as address," +                             //[5]
-                    " hp.email as email," +                                 //[6]
-                    " hp.registrationNumber as registrationNumber," +        //[7]
-                    QUERY_TO_CALCULATE_PATIENT_AGE +
-                    " FROM Patient p" +
-                    " LEFT JOIN HospitalPatientInfo hp ON hp.patient.id = p.id";
+                    " hpi.address as address," +                             //[5]
+                    " hpi.email as email," +                                 //[6]
+                    " hpi.registrationNumber as registrationNumber," +        //[7]
+                    QUERY_TO_CALCULATE_PATIENT_AGE;
 
     private static final String GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS =
             " WHERE p.name=:name" +
@@ -79,13 +73,42 @@ public class PatientQuery {
 
     /*FOR SELF*/
     public static final String QUERY_TO_FETCH_PATIENT_DETAILS_FOR_SELF =
-            SELECT_CLAUSE_TO_FETCH_PATIENT_DETAILS + GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS;
+            SELECT_CLAUSE_TO_FETCH_PATIENT_DETAILS +
+                    " FROM Patient p" +
+                    " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = p.id"
+                    + GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS;
 
+    /*FOR OTHERS*/
     public static final String QUERY_TO_FETCH_CHILD_PATIENT_IDS =
-            " SELECT p.childPatientId" +
+            " SELECT " +
+                    " pm.parentPatientId.id as parentPatientId," +                 //[0]
+                    " pm.childPatientId.id as childPatientId" +                   //[1]
                     " FROM Patient p" +
                     " LEFT JOIN PatientRelationInfo pm ON pm.parentPatientId.id= p.id" +
-                    GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS;
+                    GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS +
+                    " AND pm.status = 'Y'";
+
+    public static String QUERY_TO_FETCH_MIN_PATIENT_INFO_FOR_OTHERS(String childPatientIds) {
+
+        return " SELECT" +
+                " hpi.id as hospitalPatientInfoId," +                    //[0]
+                " p.id as patientId," +                                 //[1]
+                " p.name as name," +                                    //[2]
+                " p.mobileNumber as mobileNumber," +                    //[3]
+                " p.gender as gender," +                                //[4]
+                " hpi.address as address," +                            //[5]
+                " hpi.registrationNumber as registrationNumber," +      //[6]
+                QUERY_TO_CALCULATE_PATIENT_AGE +                        //[7]
+                " FROM Patient p" +
+                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = p.id" +
+                " WHERE p.id IN (" + childPatientIds + ")";
+    }
+
+    public static String QUERY_TO_FETCH_MIN_PATIENT_DETAILS_FOR_OTHERS =
+            SELECT_CLAUSE_TO_FETCH_PATIENT_DETAILS +
+                    " FROM HospitalPatientInfo hpi " +
+                    " LEFT JOIN Patient p ON p.id = hpi.patient.id" +
+                    " WHERE hpi.id =:hospitalPatientInfoId";
 
     public static final String QUERY_TO_FETCH_PATIENT_DETAILS_BY_ID =
             "SELECT" +
@@ -105,24 +128,29 @@ public class PatientQuery {
                     " FROM Patient p " +
                     " LEFT JOIN HospitalPatientInfo hpi ON p.id=hpi.patient.id" +
                     " LEFT JOIN Hospital h ON h.id=hpi.hospital.id" +
-                    " WHERE p.id=:id" +
+                    " WHERE hpi.id=:hospitalPatientInfoId" +
                     " AND h.id =:hospitalId" +
                     " AND hpi.status='Y'";
 
     public static String QUERY_TO_SEARCH_PATIENT(PatientSearchRequestDTO searchRequestDTO) {
         return "SELECT" +
-                " p.id as id," +
-                " p.name as name," +                                             //[0]
-                " hpi.address as address," +                                     //[1]
-                " hpi.email as email," +                                         //[2]
-                " p.mobileNumber as mobileNumber," +                             //[3]
-                " hpi.registrationNumber as registrationNumber," +               //[4]
-                " p.eSewaId as eSewaId," +                                       //[5]
-                " hpi.status as status" +                                       //[6]
-                " hpi.hospitalNumber as hospitalNumber," +                       //[7]
-                QUERY_TO_CALCULATE_PATIENT_AGE +                                //[8]
+                " hpi.id as id," +                                               //[0]
+                " p.name as name," +                                             //[1]
+                " p.dateOfBirth as dateOfBirth," +                               //[2]
+                " hpi.address as address," +                                     //[3]
+                " hpi.email as email," +                                         //[4]
+                " p.mobileNumber as mobileNumber," +                             //[5]
+                " hpi.registrationNumber as registrationNumber," +               //[6]
+                " p.eSewaId as eSewaId," +
+                " p.gender as gender," +                                       //[7]
+                " hpi.status as status," +                                       //[8]
+                " hpi.hospitalNumber as hospitalNumber," +                       //[9]
+                " a.appointmentDate as appointmentDate," +                         //[10]
+                " DATE_FORMAT(a.appointmentTime ,'%h:%i %p') as appointmentTime," +  //[11]
+                QUERY_TO_CALCULATE_PATIENT_AGE +                                //[12]
                 " FROM Patient p" +
-                " LEFT JOIN HospitalPatientInfo hpi ON p.id=hpi.patient.id" +
+                " LEFT JOIN Appointment a ON p.id = a.patientId.id" +
+                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                 " LEFT JOIN Hospital h ON h.id=hpi.hospital.id" +
                 " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id" +
                 GET_WHERE_CLAUSE_FOR_SEARCH_PATIENT(searchRequestDTO);
@@ -138,8 +166,8 @@ public class PatientQuery {
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
             whereClause += " AND hpi.status='" + searchRequestDTO.getStatus() + "'";
 
-        if (!Objects.isNull(searchRequestDTO.getPatientMetaInfo()))
-            whereClause += " AND pmi.id=" + searchRequestDTO.getPatientMetaInfo();
+        if (!Objects.isNull(searchRequestDTO.getPatientMetaInfoId()))
+            whereClause += " AND pmi.id=" + searchRequestDTO.getPatientMetaInfoId();
 
         whereClause += " ORDER BY p.id DESC";
 
@@ -155,7 +183,6 @@ public class PatientQuery {
                     " ORDER BY id DESC" +
                     " LIMIT 1";
 
-
     public static final String QUERY_TO_FETCH_PATIENT =
             " SELECT p FROM Patient p" +
                     " WHERE " +
@@ -170,10 +197,29 @@ public class PatientQuery {
                     " p.mobileNumber as mobileNumber," +                        //[2]
                     " p.gender as gender," +                                    //[3]
                     " hpi.address as address," +                                //[4]
-                    QUERY_TO_CALCULATE_PATIENT_AGE +                            //[5]
+                    " hpi.isRegistered as patientType," +                       //[5]
+                    " hpi.registrationNumber as registrationNumber," +          //[6]
+                    " p.eSewaId as eSewaId," +                                  //[7]
+                    " atd.transactionNumber as transactionNumber," +            //[8]
+                    " a.isSelf as isSelf," +                                    //[9]
+                    " atd.appointmentAmount as appointmentAmount," +            //[10]
+                    QUERY_TO_CALCULATE_PATIENT_AGE +                            //[11]
                     " FROM Appointment a" +
                     " LEFT JOIN Patient p ON p.id=a.patientId.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
+                    " LEFT JOIN Hospital h ON h.id=hpi.hospital.id" +
+                    " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id" +
                     " WHERE a.id =:appointmentId";
+
+    public static String QUERY_TO_FETCH_PATIENT_BY_HOSPITAL_PATIENT_INFO_ID =
+            "SELECT" +
+                    " p" +
+                    " FROM" +
+                    " Patient p" +
+                    " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id=p.id" +
+                    " LEFT JOIN Hospital h ON h.id=hpi.hospital.id" +
+                    " WHERE hpi.id=:hospitalPatientInfoId" +
+                    " AND h.id=:hospitalId";
+
 
 }

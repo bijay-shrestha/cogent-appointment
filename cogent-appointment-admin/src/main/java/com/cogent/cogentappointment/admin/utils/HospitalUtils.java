@@ -21,6 +21,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
+import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.toUpperCase;
 
 /**
  * @author smriti ON 12/01/2020
@@ -29,8 +30,8 @@ public class HospitalUtils {
 
     public static Hospital convertDTOToHospital(HospitalRequestDTO hospitalRequestDTO) {
         Hospital hospital = new Hospital();
-        hospital.setName(StringUtil.toUpperCase(hospitalRequestDTO.getName()));
-        hospital.setCode(StringUtil.toUpperCase(hospitalRequestDTO.getHospitalCode()));
+        hospital.setName(StringUtil.convertToNormalCase(hospitalRequestDTO.getName()));
+        hospital.setCode(toUpperCase(hospitalRequestDTO.getHospitalCode()));
         hospital.setAddress(hospitalRequestDTO.getAddress());
         hospital.setPanNumber(hospitalRequestDTO.getPanNumber());
         hospital.setStatus(hospitalRequestDTO.getStatus());
@@ -83,11 +84,11 @@ public class HospitalUtils {
     public static void parseToUpdatedHospital(HospitalUpdateRequestDTO updateRequestDTO,
                                               Hospital hospital) {
 
-        hospital.setName(StringUtil.toUpperCase(updateRequestDTO.getName()));
+        hospital.setName(StringUtil.convertToNormalCase(updateRequestDTO.getName()));
         hospital.setAddress(updateRequestDTO.getAddress());
         hospital.setPanNumber(updateRequestDTO.getPanNumber());
         hospital.setStatus(updateRequestDTO.getStatus());
-        hospital.setRemarks(updateRequestDTO.getRemarks());
+        hospital.setRemarks(StringUtil.convertToNormalCase(updateRequestDTO.getRemarks()));
         hospital.setIsCogentAdmin(updateRequestDTO.getIsHospital());
         hospital.setRefundPercentage(updateRequestDTO.getRefundPercentage());
         hospital.setNumberOfAdmins(updateRequestDTO.getNumberOfAdmins());

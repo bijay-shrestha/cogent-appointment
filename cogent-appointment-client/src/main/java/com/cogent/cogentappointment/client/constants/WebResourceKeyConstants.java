@@ -58,12 +58,13 @@ public class WebResourceKeyConstants {
         String REVENUE_STATISTICS = "/revenueStatistics";
         String REGISTERED = "/registeredPatients";
         String COUNT = "/count";
-        String HOSPITAL_ID_PATH_VARIABLE_BASE = "/{hospitalId}";
         String APPOINTMENT_QUEUE = "/today-appointment";
         String APPOINTMENT_QUEUE_BY_TIME = "/today-appointment-timely";
+        String REVENUE_TREND = "/revenueTrend";
     }
 
     public static final String DETAIL = "/detail";
+    public static final String DELETE = "/delete";
 
     public interface DepartmentConstants {
         String BASE_DEPARTMENT = "/department";
@@ -74,22 +75,31 @@ public class WebResourceKeyConstants {
         String BASE_DOCTOR = "/doctor";
         String DOCTOR_WISE = "/doctor-wise";
         String UPDATE_DETAILS = "/updateDetails";
-        String DOCTOR_ID_PATH_VARIABLE_BASE = "/{doctorId}";
     }
+
+    public static final String DOCTOR_ID_PATH_VARIABLE_BASE = "/{doctorId}";
 
     public interface DoctorDutyRosterConstants {
         String BASE_DOCTOR_DUTY_ROSTER = "/doctorDutyRoster";
         String DOCTOR_DUTY_ROSTER_OVERRIDE = "/doctorDutyRosterOverride";
         String EXISTING = "/existing";
         String REVERT_DOCTOR_DUTY_ROSTER_OVERRIDE = "/revert";
-        String DOCTOR_DUTY_ROSTER_STATUS = "/doctorDutyRosterStatus";
     }
 
 
     //E
+    public interface EsewaConstants {
+        String BASE_ESEWA = "/eSewa";
+        String FETCH_DOCTOR_AVAILABLE_STATUS = "/doctor-available-status";
+        String AVAILABLE_APPOINTMENT_DATES_AND_TIME = "/availableAppointmentDatesAndTime";
+        String DOCTOR_AVAILABLE_DATES = "/doctorAvailableDates";
+        String SPECIALIZATION_AVAILABLE_DATES = "/specializationAvailableDates";
+        String DOCTOR_WITH_SPECIALIZATION_AVAILABLE_DATES = "/doctorWithSpecializationAvailableDates";
+        String FETCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION = "/available-doctors-with-specialization";
+
+    }
 
     //F
-    public static final String FILE = "/files/{subDirectoryLocation}/{filename:.+}";
 
     public interface ForgotPasswordConstants {
         String VERIFY = "/verify";
@@ -122,6 +132,11 @@ public class WebResourceKeyConstants {
     public static final String MIN = "/min";
     public static final String META_INFO = "/metaInfo";
 
+    public interface MinioFileConstants {
+        String BASE_FILE = "/file";
+        String FETCH_FILE = "/{subDirectory}/{object}";
+    }
+
     //N
 
 
@@ -131,6 +146,7 @@ public class WebResourceKeyConstants {
     //P
     public interface PatientConstant {
         String BASE_PATIENT = "/patient";
+        String HOSPITAL_PATIENT_INFO_ID_PATH_VARIABLE_BASE = "/{hospitalPatientInfoId}";
     }
 
     public interface ProfileSetupConstants {
@@ -150,7 +166,7 @@ public class WebResourceKeyConstants {
 
 
     //S
-    public static final String SAVE = "/saveSelfPatient";
+    public static final String SAVE = "/save";
     public static final String SEARCH = "/search";
 
     public static final String SELF = "/self";
@@ -170,6 +186,8 @@ public class WebResourceKeyConstants {
     //T
 
     //U
+    public static final String UPDATE = "/update";
+
     public interface UniversityConstants {
         String BASE_UNIVERSITY = "/university";
     }

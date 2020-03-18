@@ -10,6 +10,7 @@ import java.util.Objects;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.OR;
+import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.convertToNormalCase;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.toUpperCase;
 
 /**
@@ -18,7 +19,7 @@ import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.toUppe
 public class PatientUtils {
     public static Patient updatePatient(PatientUpdateRequestDTO requestDTO,
                                         Patient patient) {
-        patient.setName(toUpperCase(requestDTO.getName()));
+        patient.setName(convertToNormalCase(requestDTO.getName()));
         patient.setDateOfBirth(requestDTO.getDateOfBirth());
         patient.setMobileNumber(requestDTO.getMobileNumber());
         patient.setGender(requestDTO.getGender());
@@ -42,7 +43,7 @@ public class PatientUtils {
     public static PatientMetaInfo updatePatientMetaInfo(HospitalPatientInfo hospitalPatientInfo,
                                                         PatientMetaInfo patientMetaInfo,
                                                         PatientUpdateRequestDTO updateRequestDTO) {
-        patientMetaInfo.setMetaInfo(updateRequestDTO.getName()
+        patientMetaInfo.setMetaInfo(toUpperCase(updateRequestDTO.getName())
                 + OR +
                 updateRequestDTO.getMobileNumber()
                 + OR +
@@ -92,6 +93,13 @@ public class PatientUtils {
         }
 
         return registrationNumber;
+    }
+
+    public static void updatePatientMetaInfo(PatientMetaInfo patientMetaInfo,
+                                             String registrationNumber) {
+
+        String metaInfo = patientMetaInfo.getMetaInfo();
+        patientMetaInfo.setMetaInfo(metaInfo + OR + registrationNumber);
     }
 
 }

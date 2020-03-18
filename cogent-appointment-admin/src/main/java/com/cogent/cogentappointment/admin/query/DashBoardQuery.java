@@ -14,7 +14,7 @@ public class DashBoardQuery {
 
     private static String CLAUSE_TO_FIND_BY_HOSPITAL_ID_FOR_OVERALL_PATIENT(Long hospitalId) {
         if (hospitalId > 0) {
-            return " AND hpi.hospitalId=" + hospitalId;
+            return " AND hpi.hospital.id=" + hospitalId;
         }
         return "";
     }
@@ -26,9 +26,10 @@ public class DashBoardQuery {
                 " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
                 " WHERE " +
                 " (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
-                " AND a.status='A'" +
+                " AND (a.status='PA' OR a.status = 'A')" +
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId);
     }
+
 
     public static String QUERY_TO_OVER_ALL_APPOINTMENTS(Long hospitalId) {
         return "SELECT" +
@@ -38,6 +39,7 @@ public class DashBoardQuery {
                 " (a.appointmentDate BETWEEN :fromDate AND :toDate)" +
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId);
     }
+
 
     public static String QUERY_TO_COUNT_REGISTERED_APPOINTMENT(Long hospitalId) {
         return "SELECT" +
@@ -72,6 +74,8 @@ public class DashBoardQuery {
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID_FOR_OVERALL_PATIENT(hospitalId);
     }
 
+    ;
+
     public static String QUERY_TO_FETCH_REVENUE_WEEKLY(Long hospitalId) {
         return "SELECT" +
                 "  CASE" +
@@ -95,7 +99,7 @@ public class DashBoardQuery {
                 " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
                 " WHERE " +
                 " atd.transactionDate BETWEEN :fromDate AND :toDate" +
-                " AND a.status='A'" +
+                " AND (a.status='PA' OR a.status = 'A')" +
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId) +
                 " GROUP BY atd.transactionDate" +
                 " ORDER BY atd.transactionDate";
@@ -109,7 +113,7 @@ public class DashBoardQuery {
                 " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
                 " WHERE" +
                 " atd.transactionDate BETWEEN :fromDate AND :toDate" +
-                " AND a.status='A'" +
+                " AND (a.status='PA' OR a.status = 'A')" +
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId) +
                 " GROUP BY DATE_FORMAT(atd.transactionDate, '%b,%Y')" +
                 " ORDER BY DATE_FORMAT(atd.transactionDate, '%b,%Y')";
@@ -123,7 +127,7 @@ public class DashBoardQuery {
                 " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
                 " WHERE" +
                 " atd.transactionDate BETWEEN :fromDate AND :toDate" +
-                " AND a.status='A'" +
+                " AND (a.status='PA' OR a.status = 'A')" +
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId) +
                 " GROUP BY atd.transactionDate" +
                 " ORDER BY atd.transactionDate";
@@ -131,14 +135,22 @@ public class DashBoardQuery {
 
     public static String QUERY_TO_FETCH_REVENUE_DAILY(Long hospitalId) {
         return "SELECT" +
-                " 'DAILY'," +
+                " DATE_FORMAT(atd.transactionDate , '%e %b,%Y') As transactionDate," +
                 " COALESCE(SUM(atd.appointmentAmount),0) as revenue" +
-                " FROM AppointmentTransactionDetail atd" +
-                " LEFT JOIN Appointment a On a.id=atd.appointment.id" +
-                " LEFT JOIN Hospital h ON h.id=a.hospitalId.id" +
-                " WHERE atd.transactionDate BETWEEN :fromDate AND :toDate" +
-                " AND a.status='A'" +
-                CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId);
+                " FROM" +
+                " AppointmentTransactionDetail atd" +
+                " LEFT JOIN Appointment a ON" +
+                " a.id = atd.appointment.id" +
+                " LEFT JOIN Hospital h ON" +
+                " h.id = a.hospitalId.id" +
+                " WHERE" +
+                " atd.transactionDate BETWEEN :fromDate AND :toDate" +
+                " AND (a.status='PA' OR a.status= 'A')" +
+                CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId) +
+                " GROUP BY" +
+                " atd.transactionDate" +
+                " ORDER BY" +
+                " atd.transactionDate";
     }
 
 }

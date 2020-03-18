@@ -23,6 +23,7 @@ public class QueryConstants {
     //D
 
     public static final String DOCTOR_ID = "doctorId";
+    public static final String DOCTOR_DUTY_ROSTER_ID = "doctorDutyRosterId";
     public static final String DATE = "date";
     public static final String DATE_OF_BIRTH = "dateOfBirth";
 
@@ -44,6 +45,8 @@ public class QueryConstants {
     //H
     public static final String HOSPITAL_ID = "hospitalId";
     public static final String HOSPITAL_CODE = "hospitalCode";
+
+    public static final String HOSPITAL_PATIENT_INFO_ID = "hospitalPatientInfoId";
 
 
     //I
@@ -67,6 +70,7 @@ public class QueryConstants {
     public interface PatientQueryConstants {
         String PARENT_PATIENT_ID = "parentPatientId";
         String CHILD_PATIENT_ID = "childPatientId";
+        String HOSPITAL_PATIENT_INFO_ID = "hospitalPatientInfoId";
     }
 
     public static final String PATIENT_ID = "patientId";

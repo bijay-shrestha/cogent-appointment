@@ -28,8 +28,7 @@ public interface UniversityService {
 
     UniversityResponseDTO fetchDetailsById(Long id);
 
+    List<DropDownResponseDTO> fetchActiveMinUniversity();
 
-    List<DropDownResponseDTO> fetchActiveUniversity();
-
-    University fetchUniversityById(Long id);
+    University findActiveUniversityByIdAndHospitalId(Long id, Long hospitalId);
 }

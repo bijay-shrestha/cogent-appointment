@@ -2,6 +2,9 @@ package com.cogent.cogentappointment.admin.dto.request.dashboard;
 
 import lombok.*;
 
+import java.io.Serializable;
+import java.util.Date;
+
 /**
  * @author Rupak
  */
@@ -10,11 +13,15 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DoctorRevenueRequestDTO {
+public class DoctorRevenueRequestDTO implements Serializable {
 
     private Long doctorId;
 
     private Long hospitalId;
 
     private Long specializationId;
+
+    private Date fromDate;
+
+    private Date toDate;
 }

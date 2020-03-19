@@ -52,7 +52,9 @@ public interface DoctorDutyRosterRepositoryCustom {
 
     List<DoctorDutyRosterAppointmentDate> getDutyRosterByDoctorAndSpecializationId(AppointmentDatesRequestDTO requestDTO);
 
-    List<DoctorWeekDaysDutyRosterAppointmentDate> getWeekDaysDutyRosterByDutyRosterId(Long doctorDutyRosterId);
+    List<DoctorWeekDaysDutyRosterAppointmentDate> getWeekDaysDutyRosterDataByDutyRosterId(Long doctorDutyRosterId);
+
+    List<String> getWeekDaysDutyRosterByDutyRosterId(Long doctorDutyRosterId);
 
     DoctorAvailabilityStatusResponseDTO fetchDoctorDutyRosterStatus(AppointmentDetailRequestDTO requestDTO);
 

@@ -106,8 +106,12 @@ public class EsewaServiceImpl implements EsewaService {
 
             AvailableDateByDoctorIdResponseDTO responseDTO = new AvailableDateByDoctorIdResponseDTO();
 
-            List<Date> availableDates = utilDateListToSqlDateList(getDates(dateAndSpecilization.getFromDate(),
-                    dateAndSpecilization.getToDate()));
+            List<String> weekDays=getWeekdays(dateAndSpecilization.getId());
+
+            List<Date> rosterDates = getDates(dateAndSpecilization.getFromDate(),
+                    dateAndSpecilization.getToDate());
+
+            List<Date> availableDates=getDutyRosterDates(rosterDates,weekDays);
 
             if (availableDates.size() != 0) {
 
@@ -116,13 +120,14 @@ public class EsewaServiceImpl implements EsewaService {
                 responseDTO.setSpecilaizationName(dateAndSpecilization.getSpecializationName());
 
                 if (dateAndSpecilization.getHasOverride().equals('Y')) {
+
                     List<DutyRosterOverrideAppointmentDate> dateList = dutyRosterOverrideRepository
                             .fetchDayOffRosterOverridebyRosterId(dateAndSpecilization.getId());
 
                     dateList.forEach(date -> {
 
-                        List<Date> dayOffDates = utilDateListToSqlDateList(getDates(date.getFromDate(), date.getToDate()));
-
+                        List<Date> dayOffDates = getDatesBetween(date.getFromDate(), date.getToDate());
+//                        List<Date> test=mergeRosterAndRosterOverrideDates(availableDates, dayOffDates);
                         responseDTO.setAvaliableDates(mergeRosterAndRosterOverrideDates(availableDates, dayOffDates));
                     });
                 } else {
@@ -154,8 +159,12 @@ public class EsewaServiceImpl implements EsewaService {
 
             AvailableDateBySpecializationIdResponseDTO responseDTO = new AvailableDateBySpecializationIdResponseDTO();
 
-            List<Date> availableDates = utilDateListToSqlDateList(getDates(dateAndSpecilization.getFromDate(),
-                    dateAndSpecilization.getToDate()));
+            List<String> weekDays=getWeekdays(dateAndSpecilization.getId());
+
+            List<Date> rosterDates = getDates(dateAndSpecilization.getFromDate(),
+                    dateAndSpecilization.getToDate());
+
+            List<Date> availableDates=getDutyRosterDates(rosterDates,weekDays);
 
             if (availableDates.size() != 0) {
 
@@ -169,7 +178,7 @@ public class EsewaServiceImpl implements EsewaService {
 
                     dateList.forEach(date -> {
 
-                        List<Date> dayOffDates = utilDateListToSqlDateList(getDates(date.getFromDate(), date.getToDate()));
+                        List<Date> dayOffDates = getDatesBetween(date.getFromDate(), date.getToDate());
 
                         responseDTO.setAvaliableDates(mergeRosterAndRosterOverrideDates(availableDates, dayOffDates));
                     });
@@ -213,8 +222,12 @@ public class EsewaServiceImpl implements EsewaService {
 
         doctorDutyRosterAppointmentDates.forEach(doctorDutyRosterAppointmentDate -> {
 
-            List<Date> availableRosterDates = utilDateListToSqlDateList(getDates(doctorDutyRosterAppointmentDate.getFromDate(),
-                    doctorDutyRosterAppointmentDate.getToDate()));
+            List<String> weekDays=getWeekdays(doctorDutyRosterAppointmentDate.getId());
+
+            List<Date> rosterDates = getDates(doctorDutyRosterAppointmentDate.getFromDate(),
+                    doctorDutyRosterAppointmentDate.getToDate());
+
+            List<Date> availableDates=getDutyRosterDates(rosterDates,weekDays);
 
             if (doctorDutyRosterAppointmentDate.getHasOverride().equals('Y')) {
 
@@ -222,16 +235,15 @@ public class EsewaServiceImpl implements EsewaService {
                         getDateAndTimeFromOverrideByRosterId(doctorDutyRosterAppointmentDate.getId());
 
                 overrideAppointmentDates.forEach(date -> {
-                    List<Date> dayOffDates = utilDateListToSqlDateList(getDates(date.getFromDate(), date.getToDate()));
+                    List<Date> dayOffDates = getDatesBetween(date.getFromDate(), date.getToDate());
                     if (dayOffDates.size() != 0) {
-                        getAllDate(avaliableDates, mergeRosterAndRosterOverrideDates(availableRosterDates, dayOffDates));
-                    }
-                    else {
-                        getAllDate(avaliableDates, availableRosterDates);
+                        getAllDate(avaliableDates, mergeRosterAndRosterOverrideDates(availableDates, dayOffDates));
+                    } else {
+                        getAllDate(avaliableDates, availableDates);
                     }
                 });
             } else {
-                getAllDate(avaliableDates, availableRosterDates);
+                getAllDate(avaliableDates, availableDates);
             }
         });
         responseDTO.setAvaliableDates(avaliableDates);
@@ -288,17 +300,21 @@ public class EsewaServiceImpl implements EsewaService {
     }
 
     private List<DoctorDutyRosterOverrideAppointmentDate> getDateAndTimeFromOverrideByRosterId(Long rosterId) {
-        return dutyRosterOverrideRepository
-                .getRosterOverrideByRosterId(rosterId);
+        return dutyRosterOverrideRepository.getRosterOverrideByRosterId(rosterId);
     }
 
     private List<DoctorWeekDaysDutyRosterAppointmentDate> getWeekdaysTimeByRosterId(Long dutyRosterId) {
+        return dutyRosterRepository.getWeekDaysDutyRosterDataByDutyRosterId(dutyRosterId);
+    }
+
+    private List<String> getWeekdays(Long dutyRosterId) {
         return dutyRosterRepository.getWeekDaysDutyRosterByDutyRosterId(dutyRosterId);
     }
 
     private void checkIfOverrideExists(DoctorDutyRosterAppointmentDate doctorDutyRosterAppointmentDate,
                                        List<AvailableDatesResponseDTO> appointmentDatesResponseDTO,
                                        List<AvailableDatesResponseDTO> apoointmentDateAndTime) {
+
         if (doctorDutyRosterAppointmentDate.getHasOverride().equals('Y')) {
 
             List<AvailableDatesResponseDTO> availableDatesResponseDTOS =
@@ -315,6 +331,27 @@ public class EsewaServiceImpl implements EsewaService {
             getAllDateAndTime(apoointmentDateAndTime, appointmentDatesResponseDTO);
 
         }
+    }
+
+    private List<Date> getDatesBetween(Date fromDate, Date toDate) {
+        return utilDateListToSqlDateList(getDates(fromDate,
+                toDate));
+    }
+
+    private List<Date> getDutyRosterDates(List<Date> dates,
+                                          List<String> weekDays) {
+
+      List<Date> availableDates=new ArrayList<>();
+
+        for (Date date : dates) {
+
+            weekDays.forEach(weekdays -> {
+
+                getAllDutyRosterDates(date,weekdays,availableDates);
+
+            });
+        }
+        return availableDates;
     }
 
 }

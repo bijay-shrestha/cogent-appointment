@@ -43,7 +43,7 @@ public class eSewaUtils {
     }
 
     public static void getAllDate(List<Date> finalList,
-                                         List<Date> availableDatesResponseDTOS) {
+                                  List<Date> availableDatesResponseDTOS) {
         finalList.addAll(availableDatesResponseDTOS);
 
     }
@@ -107,7 +107,7 @@ public class eSewaUtils {
             List<Date> avaliableRosterDates,
             List<Date> avaliableRosterOverrideDates) {
 
-        List<Date> unmatched=new ArrayList<>();
+        List<Date> unmatched = new ArrayList<>();
         if (avaliableRosterOverrideDates != null && !avaliableRosterOverrideDates.isEmpty()) {
             unmatched = avaliableRosterDates.stream()
                     .filter(dates -> avaliableRosterOverrideDates.stream()
@@ -119,5 +119,13 @@ public class eSewaUtils {
             return avaliableRosterDates;
         }
         return unmatched;
+    }
+
+    public static void getAllDutyRosterDates(Date date,
+                                             String weekName,
+                                             List<Date> dates) {
+        if (date.toString().substring(0, 3).toUpperCase().equals(weekName)) {
+            dates.add(utilDateToSqlDate(date));
+        }
     }
 }

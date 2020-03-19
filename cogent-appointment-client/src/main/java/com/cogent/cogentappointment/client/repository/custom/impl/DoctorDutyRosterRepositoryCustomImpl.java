@@ -189,14 +189,22 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
     }
 
     @Override
-    public List<DoctorWeekDaysDutyRosterAppointmentDate> getWeekDaysDutyRosterByDutyRosterId(Long doctorDutyRosterId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_WEEKDAYS_DUTY_ROSTER_BY_DUTY_ROSTER_ID)
+    public List<DoctorWeekDaysDutyRosterAppointmentDate> getWeekDaysDutyRosterDataByDutyRosterId(Long doctorDutyRosterId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_WEEKDAYS_DUTY_ROSTER_DATA_BY_DUTY_ROSTER_ID)
                 .setParameter(DOCTOR_DUTY_ROSTER_ID, doctorDutyRosterId);
 
         List<DoctorWeekDaysDutyRosterAppointmentDate> responseDTOList = transformQueryToResultList(query,
                 DoctorWeekDaysDutyRosterAppointmentDate.class);
 
         return responseDTOList;
+    }
+
+    @Override
+    public List<String> getWeekDaysDutyRosterByDutyRosterId(Long doctorDutyRosterId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_WEEKDAYS_DUTY_ROSTER_BY_DUTY_ROSTER_ID)
+                .setParameter(DOCTOR_DUTY_ROSTER_ID, doctorDutyRosterId);
+
+        return query.getResultList();
     }
 
     @Override

@@ -125,10 +125,31 @@ public class eSewaUtils {
                             .filter(overrideDate -> overrideDate.equals(dates))
                             .count() < 1)
                     .collect(Collectors.toList());
-            unmatched.sort(Comparator.comparing(Date::getDate));
         } else {
             return avaliableRosterDates;
         }
         return unmatched;
+    }
+
+    public static void getAllDutyRosterDates(Date date,
+                                             String weekName,
+                                             List<Date> dates) {
+        if (date.toString().substring(0, 3).toUpperCase().equals(weekName)) {
+            dates.add(utilDateToSqlDate(date));
+        }
+    }
+
+    public static List<Date> getDutyRosterDates(List<Date> dates,
+                                                List<String> weekDays) {
+        List<Date> availableDates=new ArrayList<>();
+
+        for (Date date : dates) {
+
+            weekDays.forEach(weekdays -> {
+
+                getAllDutyRosterDates(date,weekdays,availableDates);
+            });
+        }
+        return availableDates;
     }
 }

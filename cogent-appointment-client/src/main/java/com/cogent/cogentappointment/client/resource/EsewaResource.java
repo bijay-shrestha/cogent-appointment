@@ -9,9 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.EsewaConstant.*;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.DOCTOR_ID_PATH_VARIABLE_BASE;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.EsewaConstants.*;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.SpecializationConstants.SPECIALIZATION_ID_PATH_VARIABLE_BASE;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.SPECIALIZATION_ID_PATH_VARIABLE_BASE;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController

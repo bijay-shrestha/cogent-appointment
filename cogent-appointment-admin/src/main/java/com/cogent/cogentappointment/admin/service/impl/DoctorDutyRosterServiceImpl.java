@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
-import com.cogent.cogentappointment.admin.constants.StatusConstants;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.*;
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentBookedDateResponseDTO;
@@ -26,12 +25,11 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.DoctorDutyRosterServiceMessages.APPOINTMENT_EXISTS_MESSAGE;
-import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.DoctorDutyRosterServiceMessages.BAD_REQUEST_MESSAGE;
-import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.DoctorDutyRosterServiceMessages.DUPLICATION_MESSAGE;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.DoctorDutyRosterServiceMessages.*;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INVALID_DATE_DEBUG_MESSAGE;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INVALID_DATE_MESSAGE;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.*;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.NO;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.DoctorDutyRosterLog.*;
 import static com.cogent.cogentappointment.admin.utils.DoctorDutyRosterOverrideUtils.*;

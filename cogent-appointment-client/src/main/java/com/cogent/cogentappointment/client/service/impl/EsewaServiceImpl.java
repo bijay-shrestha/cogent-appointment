@@ -8,6 +8,7 @@ import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.DoctorDutyRosterOverrideRepository;
 import com.cogent.cogentappointment.client.repository.DoctorDutyRosterRepository;
 import com.cogent.cogentappointment.client.service.EsewaService;
+import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.Doctor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -157,7 +158,6 @@ public class EsewaServiceImpl implements EsewaService {
                     dateList.forEach(date -> {
 
                         List<Date> dayOffDates = getDatesBetween(date.getFromDate(), date.getToDate());
-//                        List<Date> test=mergeRosterAndRosterOverrideDates(availableDates, dayOffDates);
                         responseDTO.setAvaliableDates(mergeRosterAndRosterOverrideDates(availableDates, dayOffDates));
                     });
                 } else {
@@ -166,6 +166,9 @@ public class EsewaServiceImpl implements EsewaService {
                 responseDTOList.add(responseDTO);
             }
         });
+
+        if (ObjectUtils.isEmpty(responseDTOList))
+            throw APPOINTMENT_NOT_AVAILABLE.get();
 
         log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_AVAILABLE_DATES, getDifferenceBetweenTwoTime(startTime));
 
@@ -219,8 +222,10 @@ public class EsewaServiceImpl implements EsewaService {
             }
         });
 
-        log.info(FETCHING_PROCESS_COMPLETED, SPECIALIZATION_AVAILABLE_DATES, getDifferenceBetweenTwoTime(startTime));
+        if (ObjectUtils.isEmpty(responseDTOList))
+            throw APPOINTMENT_NOT_AVAILABLE.get();
 
+        log.info(FETCHING_PROCESS_COMPLETED, SPECIALIZATION_AVAILABLE_DATES, getDifferenceBetweenTwoTime(startTime));
         return responseDTOList;
     }
 
@@ -265,6 +270,9 @@ public class EsewaServiceImpl implements EsewaService {
             }
         });
         responseDTO.setAvaliableDates(avaliableDates);
+
+        if (ObjectUtils.isEmpty(responseDTO.getAvaliableDates()))
+            throw APPOINTMENT_NOT_AVAILABLE.get();
 
         log.info(FETCHING_PROCESS_COMPLETED, AVAILABLE_DATES_LIST, getDifferenceBetweenTwoTime(startTime));
 
@@ -358,6 +366,8 @@ public class EsewaServiceImpl implements EsewaService {
     }
 
     private Supplier<NoContentFoundException> DOCTORS_NOT_AVAILABLE = () -> new NoContentFoundException(Doctor.class);
+
+    private Supplier<NoContentFoundException> APPOINTMENT_NOT_AVAILABLE = () -> new NoContentFoundException(Appointment.class);
 
     private List<Date> getDatesBetween(Date fromDate, Date toDate) {
         return utilDateListToSqlDateList(getDates(fromDate,

@@ -42,6 +42,7 @@ public class EsewaQuery {
                     " AND ddr.status='Y'" +
                     " AND dwdr.dayOffStatus='N'";
 
+    /*SMRITI*/
     /*FETCH DOCTOR AVAILABLE STATUS FROM DOCTOR DUTY ROSTER OVERRIDE*/
     public static String QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_STATUS(AppointmentDetailRequestDTO requestDTO) {
 
@@ -79,6 +80,7 @@ public class EsewaQuery {
         return query;
     }
 
+    /*SMRITI*/
     /*FETCH DOCTOR AVAILABLE STATUS FROM DOCTOR DUTY ROSTER*/
     public static String QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_STATUS(AppointmentDetailRequestDTO requestDTO) {
         String query = "SELECT" +
@@ -116,6 +118,7 @@ public class EsewaQuery {
         return query;
     }
 
+    /*SMRITI*/
     /*FETCH AVAILABLE DOCTORS AND THEIR SPECIALIZATION ON THE CHOSEN DATE*/
     public static String QUERY_TO_FETCH_AVAILABLE_DOCTORS_FROM_DDR_OVERRIDE(AppointmentDetailRequestDTO requestDTO) {
 
@@ -141,19 +144,7 @@ public class EsewaQuery {
         return query;
     }
 
-    public static String QUERY_TO_FETCH_DOCTOR_AVALIABLE_DATES_WITH_SPECILIZATION =
-            "SELECT" +
-                    " ddr.id as id," +
-                    " ddr.fromDate as fromDate," +
-                    " ddr.toDate as toDate," +
-                    " ddr.hasOverrideDutyRoster as hasOverride," +
-                    " s.id as specializationId," +
-                    " s.name as specializationName" +
-                    " FROM DoctorDutyRoster ddr" +
-                    " LEFT JOIN Specialization s ON s.id=ddr.specializationId.id" +
-                    " WHERE ddr.doctorId.id=:doctorId" +
-                    " AND ddr.status='Y'";
-
+    /*SMRITI*/
     /*FETCH AVAILABLE DOCTORS AND THEIR SPECIALIZATION ON THE CHOSEN DATE FROM DDR*/
     public static String QUERY_TO_FETCH_AVAILABLE_DOCTORS_FROM_DDR(AppointmentDetailRequestDTO requestDTO) {
 
@@ -179,6 +170,19 @@ public class EsewaQuery {
 
         return query;
     }
+
+    public static String QUERY_TO_FETCH_DOCTOR_AVALIABLE_DATES_WITH_SPECILIZATION =
+            "SELECT" +
+                    " ddr.id as id," +
+                    " ddr.fromDate as fromDate," +
+                    " ddr.toDate as toDate," +
+                    " ddr.hasOverrideDutyRoster as hasOverride," +
+                    " s.id as specializationId," +
+                    " s.name as specializationName" +
+                    " FROM DoctorDutyRoster ddr" +
+                    " LEFT JOIN Specialization s ON s.id=ddr.specializationId.id" +
+                    " WHERE ddr.doctorId.id=:doctorId" +
+                    " AND ddr.status='Y'";
 
     public static String QUERY_TO_FETCH_DOCTOR_AVALIABLE_DATES_WITH_DOCTOR =
             "SELECT" +

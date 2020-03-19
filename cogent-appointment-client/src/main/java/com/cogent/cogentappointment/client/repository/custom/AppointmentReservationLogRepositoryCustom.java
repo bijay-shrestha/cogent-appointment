@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.client.repository.custom;
 
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -10,4 +11,9 @@ import java.util.List;
 public interface AppointmentReservationLogRepositoryCustom {
 
     List<String> fetchBookedAppointmentReservations(AppointmentCheckAvailabilityRequestDTO requestDTO);
+
+    Long validateIfAppointmentReservationExists(Date appointmentDate,
+                                                String appointmentTime,
+                                                Long doctorId,
+                                                Long specializationId);
 }

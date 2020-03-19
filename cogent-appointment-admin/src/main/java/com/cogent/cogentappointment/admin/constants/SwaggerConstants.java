@@ -74,7 +74,7 @@ public class SwaggerConstants {
     //D
     public interface DashboardConstant {
         String BASE_API_VALUE = "This is Dashboard Resource.";
-
+        String FETCH_DYNAMIC_DASHBOARD_FEATURE=" Fetch Dynamic Dashboard feature";
         String GENERATE_REVENUE_OPERATION = "Fetch revenue generated.";
         String OVER_ALL_APPOINTMENT_OPERATION = "Fetch over all appointments.";
         String COUNT_REGISTERED_PATIENTS_OPERATION = "Count no. of registered patients.";

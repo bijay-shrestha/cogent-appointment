@@ -38,7 +38,7 @@ public class DashboardFeature extends Auditable<String> implements Serializable 
 
     @Override
     public String toString() {
-        return "Admin{" +
+        return "DashboardFeature{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", code='" + code + '\'' +

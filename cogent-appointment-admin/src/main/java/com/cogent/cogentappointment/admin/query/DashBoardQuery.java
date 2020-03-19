@@ -153,10 +153,10 @@ public class DashBoardQuery {
                 " atd.transactionDate";
     }
 
-    public static final String QUERY_TO_FETCH_DASHBOARD_FEATURES(Long adminId,Long hospitalId) {
+    public static final String QUERY_TO_FETCH_DASHBOARD_FEATURES(Long adminId) {
 
         return " SELECT" +
-                " df.id as id,"+
+                " df.id as id," +
                 " df.name as name," +
                 " df.code as code," +
                 " df.status as status" +
@@ -166,8 +166,19 @@ public class DashBoardQuery {
                 " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                 " LEFT JOIN Department d ON d.id=p.department.id" +
                 " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
-                " WHERE a.id=" + adminId+
-                " AND h.id=" + hospitalId;
+                " WHERE a.id=" + adminId +
+                " AND df.status='Y'";
     }
+
+    public static final String QUERY_TO_VALIDATE_DASHBOARD_FEATURE_COUNT(String ids) {
+
+        return " SELECT " +
+                " df " +                   //[0]
+                " FROM DashboardFeature df" +
+                " WHERE df.status ='Y'" +
+                " AND df.id IN '" + ids + "'";
+
+    }
+
 
 }

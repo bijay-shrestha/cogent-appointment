@@ -7,6 +7,7 @@ import com.cogent.cogentappointment.admin.dto.request.admin.AdminInfoRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.AdminSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.AdminUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.admin.*;
+import com.cogent.cogentappointment.admin.dto.response.dashboard.DashboardFeatureResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.AdminRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Admin;
@@ -28,6 +29,7 @@ import java.util.function.Supplier;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.ADMIN_INFO_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.query.AdminQuery.*;
+import static com.cogent.cogentappointment.admin.query.DashBoardQuery.QUERY_TO_FETCH_DASHBOARD_FEATURES;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
 
@@ -148,6 +150,18 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
             return transformQueryToSingleResult(query, LoggedInAdminDTO.class);
         } catch (NoResultException e) {
             throw ADMIN_NOT_FOUND.apply(username);
+        }
+    }
+
+    @Override
+    public List<DashboardFeatureResponseDTO> fetchDashboardFeaturesByAdmin(Long adminId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DASHBOARD_FEATURES(adminId));
+
+        List<DashboardFeatureResponseDTO> result = transformQueryToResultList(query, DashboardFeatureResponseDTO.class);
+
+        if (ObjectUtils.isEmpty(result)) throw NO_DASHBOARD_FEATURE_FOUND.get();
+        else {
+            return result;
         }
     }
 

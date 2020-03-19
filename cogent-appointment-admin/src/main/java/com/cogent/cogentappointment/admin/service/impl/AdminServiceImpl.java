@@ -126,7 +126,6 @@ public class AdminServiceImpl implements AdminService {
         saveAdminMetaInfo(admin);
 
         List<DashboardFeature> dashboardFeatureList = findActiveDashboardFeatures(adminRequestDTO.getAdminDashboardRequestDTOS());
-
         adminDashboardFeatureRepository.saveAll(parseToAdminDashboardFeature(dashboardFeatureList, admin));
 
         AdminConfirmationToken adminConfirmationToken =
@@ -142,18 +141,24 @@ public class AdminServiceImpl implements AdminService {
 
     private List<DashboardFeature> findActiveDashboardFeatures(List<AdminDashboardRequestDTO> adminDashboardRequestDTOS) {
 
-        List<DashboardFeature> dashboardFeatureList = new ArrayList<>();
-        adminDashboardRequestDTOS.forEach(result -> {
+        String ids = adminDashboardRequestDTOS.stream()
+                .map(request -> request.getId().toString())
+                .collect(Collectors.joining(","));
 
-            DashboardFeature dashboardFeature = dashboardFeatureRepository.findActiveDashboardFeatureById(result.getId())
-                    .orElseThrow(() -> ADMIN_WITH_GIVEN_ID_NOT_FOUND.apply(result.getId()));
+        List<DashboardFeature> dashboardFeatureList = validateDashboardFeature(ids);
+        int requestCount = adminDashboardRequestDTOS.size();
 
-            dashboardFeatureList.add(dashboardFeature);
+        if ((dashboardFeatureList.size()) == requestCount) {
+            throw new NoContentFoundException("No Dashboard Feature Found with given ids...");
 
-        });
+        }
 
         return dashboardFeatureList;
 
+    }
+
+    private List<DashboardFeature> validateDashboardFeature(String ids) {
+        return dashboardFeatureRepository.validateDashboardFeatureCount(ids);
     }
 
     @Override
@@ -290,7 +295,7 @@ public class AdminServiceImpl implements AdminService {
         List<AdminDashboardFeature> adminDashboardFeatureList = new ArrayList<>();
         adminDashboardRequestDTOS.forEach(result -> {
 
-            AdminDashboardFeature adminDashboardFeature = adminDashboardFeatureRepository.findAdminDashboardFeatureBydashboardFeatureId(result.getId(),admin.getId())
+            AdminDashboardFeature adminDashboardFeature = adminDashboardFeatureRepository.findAdminDashboardFeatureBydashboardFeatureId(result.getId(), admin.getId())
                     .orElseThrow(() -> new NoContentFoundException(AdminDashboardFeature.class));
 
             adminDashboardFeature.setStatus(result.getStatus());

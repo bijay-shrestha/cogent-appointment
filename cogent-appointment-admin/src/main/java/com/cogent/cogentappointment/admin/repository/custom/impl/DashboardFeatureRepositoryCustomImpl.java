@@ -5,6 +5,7 @@ import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.query.DashBoardQuery;
 import com.cogent.cogentappointment.admin.repository.DashboardFeatureRepository;
 import com.cogent.cogentappointment.admin.repository.custom.AdminDashboardRepositoryCustom;
+import com.cogent.cogentappointment.admin.repository.custom.DashboardFeatureRepositoryCustom;
 import com.cogent.cogentappointment.admin.utils.commons.DashboardFeatureUtils;
 import com.cogent.cogentappointment.persistence.model.DashboardFeature;
 import org.springframework.util.ObjectUtils;
@@ -15,21 +16,24 @@ import javax.persistence.Query;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.admin.constants.QueryConstants.HOSPITAL_ID;
+import static com.cogent.cogentappointment.admin.query.AdminQuery.QUERY_TO_VALIDATE_ADMIN_COUNT;
 import static com.cogent.cogentappointment.admin.query.DashBoardQuery.QUERY_TO_FETCH_DASHBOARD_FEATURES;
+import static com.cogent.cogentappointment.admin.query.DashBoardQuery.QUERY_TO_VALIDATE_DASHBOARD_FEATURE_COUNT;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
 
 /**
  * @author Rupak
  */
-public class DashboardFeatureRepositoryCustomImpl implements AdminDashboardRepositoryCustom {
+public class DashboardFeatureRepositoryCustomImpl implements AdminDashboardRepositoryCustom, DashboardFeatureRepositoryCustom {
 
     @PersistenceContext
     private EntityManager entityManager;
 
     @Override
     public List<DashboardFeatureResponseDTO> fetchActiveDashboardFeatureByAdmin(Long adminId, Long hospitalId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DASHBOARD_FEATURES(adminId, hospitalId));
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DASHBOARD_FEATURES(adminId));
 
         List<DashboardFeatureResponseDTO> result = transformQueryToResultList(query, DashboardFeatureResponseDTO.class);
 
@@ -41,4 +45,10 @@ public class DashboardFeatureRepositoryCustomImpl implements AdminDashboardRepos
 
     private Supplier<NoContentFoundException> NO_DASHBOARD_FEATURE_FOUND = () -> new NoContentFoundException(DashboardFeature.class);
 
+    @Override
+    public List<DashboardFeature> validateDashboardFeatureCount(String ids) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DASHBOARD_FEATURE_COUNT(ids));
+
+        return query.getResultList();
+    }
 }

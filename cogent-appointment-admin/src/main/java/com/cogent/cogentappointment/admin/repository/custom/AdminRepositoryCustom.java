@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.admin.dto.request.admin.AdminInfoRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.AdminSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.AdminUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.admin.*;
+import com.cogent.cogentappointment.admin.dto.response.dashboard.DashboardFeatureResponseDTO;
 import com.cogent.cogentappointment.persistence.model.Admin;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
@@ -36,5 +37,7 @@ public interface AdminRepositoryCustom {
     AdminLoggedInInfoResponseDTO fetchLoggedInAdminInfo(AdminInfoRequestDTO requestDTO);
 
     LoggedInAdminDTO getLoggedInAdmin(String username);
+
+    List<DashboardFeatureResponseDTO> fetchDashboardFeaturesByAdmin(Long adminId);
 }
 

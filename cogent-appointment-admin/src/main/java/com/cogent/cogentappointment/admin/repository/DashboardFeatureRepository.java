@@ -1,5 +1,7 @@
 package com.cogent.cogentappointment.admin.repository;
 
+import com.cogent.cogentappointment.admin.repository.custom.AdminRepositoryCustom;
+import com.cogent.cogentappointment.admin.repository.custom.DashboardFeatureRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.AdminMetaInfo;
 import com.cogent.cogentappointment.persistence.model.DashboardFeature;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,8 +15,8 @@ import java.util.Optional;
  * @author Rupak
  */
 @Repository
-public interface DashboardFeatureRepository extends JpaRepository<DashboardFeature,Long> {
+public interface DashboardFeatureRepository extends JpaRepository<DashboardFeature,Long>, DashboardFeatureRepositoryCustom {
 
-    @Query("SELECT df FROM DashboardFeature df WHERE df.id = :id AND df.status!='D'")
+    @Query("SELECT df FROM DashboardFeature df WHERE df.id = :id AND df.status='Y'")
     Optional<DashboardFeature> findActiveDashboardFeatureById(@Param("id") Long id);
 }

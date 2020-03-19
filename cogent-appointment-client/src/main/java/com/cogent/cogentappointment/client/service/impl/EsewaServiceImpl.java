@@ -337,23 +337,6 @@ public class EsewaServiceImpl implements EsewaService {
         return utilDateListToSqlDateList(getDates(fromDate,
                 toDate));
     }
-
-    private List<Date> getDutyRosterDates(List<Date> dates,
-                                          List<String> weekDays) {
-
-      List<Date> availableDates=new ArrayList<>();
-
-        for (Date date : dates) {
-
-            weekDays.forEach(weekdays -> {
-
-                getAllDutyRosterDates(date,weekdays,availableDates);
-
-            });
-        }
-        return availableDates;
-    }
-
 }
 
 

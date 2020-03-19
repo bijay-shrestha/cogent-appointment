@@ -125,7 +125,6 @@ public class eSewaUtils {
                             .filter(overrideDate -> overrideDate.equals(dates))
                             .count() < 1)
                     .collect(Collectors.toList());
-            unmatched.sort(Comparator.comparing(Date::getDate));
         } else {
             return avaliableRosterDates;
         }
@@ -149,7 +148,6 @@ public class eSewaUtils {
             weekDays.forEach(weekdays -> {
 
                 getAllDutyRosterDates(date,weekdays,availableDates);
-
             });
         }
         return availableDates;

@@ -115,9 +115,14 @@ public class EsewaServiceImpl implements EsewaService {
             checkIfOverrideExists(doctorDutyRosterAppointmentDate, appointmentDatesResponseDTO, appointmentDateAndTime);
         }
 
+        AppointmentDatesResponseDTO responseDTO=getFinalResponse(requestDTO, appointmentDateAndTime);
+
+        if (ObjectUtils.isEmpty(responseDTO.getDates()))
+            throw APPOINTMENT_NOT_AVAILABLE.get();
+
         log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_AVAILABLE_DATES_AND_TIME, getDifferenceBetweenTwoTime(startTime));
 
-        return getFinalResponse(requestDTO, appointmentDateAndTime);
+        return responseDTO;
     }
 
     /*RETURNS ALL THE AVAILABLE APPOINTMENT DATES WITH SPECIALIZATION ID AND NAME BY DOCTORID*/

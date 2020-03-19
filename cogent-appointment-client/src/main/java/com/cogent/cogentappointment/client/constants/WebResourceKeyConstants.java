@@ -50,6 +50,11 @@ public class WebResourceKeyConstants {
         String DOCTOR_SPECIALIZATION = "/doctor-specialization";
     }
 
+    public interface CompanyConstants {
+        String BASE_COMPANY = "/company";
+    }
+
+
     //D
     public interface DashboardConstants {
         String BASE_DASHBOARD = "/dashboard";

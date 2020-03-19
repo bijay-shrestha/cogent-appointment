@@ -18,11 +18,11 @@ import static org.springframework.http.ResponseEntity.ok;
 @RestController
 @RequestMapping(value = API_V1 + BASE_ESEWA)
 @Api(BASE_API_VALUE)
-public class eSewaResource {
+public class EsewaResource {
 
     private final EsewaService esewaService;
 
-    public eSewaResource(EsewaService esewaService) {
+    public EsewaResource(EsewaService esewaService) {
         this.esewaService = esewaService;
     }
 

@@ -11,12 +11,12 @@ public class DashBoardQuery {
 
     public static String QUERY_TO_GET_REVENUE_BY_DATE =
             "SELECT" +
-                    " SUM(atd.appointmentAmount)" +
+                    " COALESCE(SUM(atd.appointmentAmount),0)" +
                     " FROM AppointmentTransactionDetail atd" +
                     " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
                     " WHERE " +
                     " (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
-                    " AND (a.status='PA' OR a.status= 'A')" +
+                    " AND (a.status='PA' OR a.status= 'A' OR a.status='RE')" +
                     " AND a.hospitalId.id=:hospitalId";
 
     public static String QUERY_TO_OVER_ALL_APPOINTMENTS =
@@ -190,4 +190,17 @@ public class DashBoardQuery {
                     " AND (a.status='PA' OR a.status= 'A')" +
                     " GROUP BY d.id,da.id,s.id " +
                     " ORDER BY SUM(atd.appointmentAmount) DESC ";
+
+    public static String QUERY_TO_GET_REFUND_BY_DATE =
+            "SELECT" +
+                    " COALESCE(SUM(ard.refundAmount ),0) as refundAmount" +
+                    " FROM" +
+                    " AppointmentRefundDetail ard" +
+                    " LEFT JOIN Appointment a ON a.id=ard.appointmentId.id" +
+                    " LEFT JOIN Hospital h ON h.id=a.hospitalId.id" +
+                    " WHERE" +
+                    " ard.refundedDate BETWEEN :fromDate AND :toDate" +
+                    " AND ard.status='A'" +
+                    " AND h.id=:hospitalId";
+
 }

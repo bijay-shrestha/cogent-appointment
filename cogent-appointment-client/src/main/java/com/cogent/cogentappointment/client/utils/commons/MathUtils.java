@@ -15,5 +15,10 @@ public class MathUtils {
         return formatDoubleTo2DecimalPlaces((current - previous)/previous * 100 );
     }
 
+    public static Double calculateTotalTransactionAmount(Double currentTransaction, Double refund) {
+
+        return formatDoubleTo2DecimalPlaces(currentTransaction-refund);
+    }
+
 
 }

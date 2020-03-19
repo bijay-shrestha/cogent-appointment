@@ -535,6 +535,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         refundAppointmentDetail.setStatus(APPROVED);
 
+        refundAppointmentDetail.setRefundedDate(new Date());
+
         log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT_REFUND, getDifferenceBetweenTwoTime(startTime));
     }
 

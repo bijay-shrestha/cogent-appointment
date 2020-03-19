@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.client.dto.response.dashboard.AppointmentCou
 import com.cogent.cogentappointment.client.dto.response.dashboard.DoctorRevenueResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.RevenueStatisticsResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.RevenueTrendResponseDTO;
+import com.cogent.cogentappointment.client.repository.AppointmentRefundDetailRepository;
 import com.cogent.cogentappointment.client.repository.AppointmentRepository;
 import com.cogent.cogentappointment.client.repository.AppointmentTransactionDetailRepository;
 import com.cogent.cogentappointment.client.repository.PatientRepository;
@@ -28,6 +29,7 @@ import static com.cogent.cogentappointment.client.utils.commons.DateConverterUti
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static com.cogent.cogentappointment.client.utils.commons.MathUtils.calculatePercenatge;
+import static com.cogent.cogentappointment.client.utils.commons.MathUtils.calculateTotalTransactionAmount;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 
 /**
@@ -41,13 +43,17 @@ public class DashboardServiceImpl implements DashboardService {
 
     private AppointmentTransactionDetailRepository appointmentTransactionDetailRepository;
 
+    private final AppointmentRefundDetailRepository appointmentRefundDetailRepository;
+
     private final AppointmentRepository appointmentRepository;
 
     private final PatientRepository patientRepository;
 
     public DashboardServiceImpl(AppointmentTransactionDetailRepository appointmentTransactionDetailRepository,
+                                AppointmentRefundDetailRepository appointmentRefundDetailRepository,
                                 AppointmentRepository appointmentRepository, PatientRepository patientRepository) {
         this.appointmentTransactionDetailRepository = appointmentTransactionDetailRepository;
+        this.appointmentRefundDetailRepository = appointmentRefundDetailRepository;
         this.appointmentRepository = appointmentRepository;
         this.patientRepository = patientRepository;
     }
@@ -70,13 +76,23 @@ public class DashboardServiceImpl implements DashboardService {
                 currentFromDate,
                 hospitalId);
 
+        Double currentRefundedAmount = appointmentRefundDetailRepository.getRefundByDates(currentToDate,
+                currentFromDate,
+                hospitalId);
+
         Double previousTransaction = appointmentTransactionDetailRepository.getRevenueByDates(
                 previousToDate,
                 previousFromDate,
                 hospitalId);
 
-        RevenueStatisticsResponseDTO responseDTO = parseToGenerateRevenueResponseDTO(currentTransaction,
-                calculatePercenatge(currentTransaction, previousTransaction),
+        Double previousRefundedAmount = appointmentRefundDetailRepository.getRefundByDates(previousToDate,
+                previousFromDate,
+                hospitalId);
+
+        RevenueStatisticsResponseDTO responseDTO = parseToGenerateRevenueResponseDTO(
+                calculateTotalTransactionAmount(currentTransaction, currentRefundedAmount),
+                calculatePercenatge(calculateTotalTransactionAmount(currentTransaction, currentRefundedAmount),
+                        calculateTotalTransactionAmount(previousTransaction, previousRefundedAmount)),
                 filterType);
 
         log.info(FETCHING_PROCESS_COMPLETED, REVENUE_STATISTICS, getDifferenceBetweenTwoTime(startTime));

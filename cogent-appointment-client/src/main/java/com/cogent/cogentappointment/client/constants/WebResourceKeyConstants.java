@@ -179,8 +179,9 @@ public class WebResourceKeyConstants {
     public interface SpecializationConstants {
         String BASE_SPECIALIZATION = "/specialization";
         String SPECIALIZATION_WISE = "/specialization-wise";
-        String SPECIALIZATION_ID_PATH_VARIABLE_BASE = "/{specializationId}";
     }
+
+    public static final String SPECIALIZATION_ID_PATH_VARIABLE_BASE = "/{specializationId}";
 
 
     //T

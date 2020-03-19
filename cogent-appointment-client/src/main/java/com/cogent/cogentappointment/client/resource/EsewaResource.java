@@ -9,8 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.EsewaConstant.*;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.DOCTOR_ID_PATH_VARIABLE_BASE;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.EsewaConstants.*;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.SPECIALIZATION_ID_PATH_VARIABLE_BASE;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
@@ -53,4 +55,12 @@ public class EsewaResource {
     public ResponseEntity<?> fetchAvailableDates(@RequestBody AppointmentDatesRequestDTO requestDTO) {
         return ok(esewaService.fetchAvailableDates(requestDTO));
     }
+
+    @PutMapping(FETCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION)
+    @ApiOperation(FETCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION_OPERATION)
+    public ResponseEntity<?> fetchAvailableDoctorWithSpecialization(@RequestBody AppointmentDetailRequestDTO requestDTO) {
+        return ok(esewaService.fetchAvailableDoctorWithSpecialization(requestDTO));
+    }
+
+
 }

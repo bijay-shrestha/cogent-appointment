@@ -56,8 +56,8 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
         final String queryByFilter = getQueryByFilter(filter);
 
         Query query = createQuery.apply(entityManager, queryByFilter)
-                .setParameter(TO_DATE, toDate)
-                .setParameter(FROM_DATE, fromDate)
+                .setParameter(TO_DATE, utilDateToSqlDate(toDate))
+                .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))
                 .setParameter(HOSPITAL_ID, hospitalId);
         List<Object[]> objects=query.getResultList();
 

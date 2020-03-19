@@ -76,12 +76,14 @@ public class DashBoardQuery {
                     "  WHEN DAYOFWEEK(atd.transactionDate) = 7" +
                     "    THEN CONCAT('SAT,',DATE_FORMAT(atd.transactionDate, '%b %e'))" +
                     "  END AS day," +
-                    "  COALESCE(SUM(atd.appointmentAmount),0) AS revenue" +
+                    " (SUM(atd.appointmentAmount ) - COALESCE(SUM(ard.refundAmount ),0)) AS revenue" +
                     " FROM AppointmentTransactionDetail atd" +
                     " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
+                    " LEFT JOIN AppointmentRefundDetail ard ON a.id=ard.appointmentId.id " +
+                    " AND (ard.refundedDate BETWEEN :fromDate AND :toDate) AND ard.status='A'" +
                     " WHERE " +
                     " atd.transactionDate BETWEEN :fromDate AND :toDate" +
-                    " AND (a.status='PA' OR a.status= 'A')" +
+                    " AND (a.status='PA' OR a.status= 'A' OR a.status= 'RE')" +
                     " AND a.hospitalId.id=:hospitalId" +
                     " GROUP BY atd.transactionDate" +
                     " ORDER BY atd.transactionDate";
@@ -90,12 +92,14 @@ public class DashBoardQuery {
     public static String QUERY_TO_FETCH_REVENUE_YEARLY =
             " SELECT" +
                     " DATE_FORMAT(atd.transactionDate, '%b,%Y')," +
-                    " COALESCE(SUM(atd.appointmentAmount),0) AS revenue" +
+                    " (SUM(atd.appointmentAmount ) - COALESCE(SUM(ard.refundAmount ),0)) AS revenue" +
                     " FROM AppointmentTransactionDetail atd" +
                     " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
+                    " LEFT JOIN AppointmentRefundDetail ard ON a.id=ard.appointmentId.id " +
+                    " AND (ard.refundedDate BETWEEN :fromDate AND :toDate) AND ard.status='A'" +
                     " WHERE" +
                     " atd.transactionDate BETWEEN :fromDate AND :toDate" +
-                    " AND (a.status='PA' OR a.status= 'A')" +
+                    " AND (a.status='PA' OR a.status= 'A' OR a.status= 'RE')" +
                     " AND a.hospitalId.id=:hospitalId" +
                     " GROUP BY DATE_FORMAT(atd.transactionDate, '%b,%Y')" +
                     " ORDER BY DATE_FORMAT(atd.transactionDate, '%b,%Y')";
@@ -103,12 +107,14 @@ public class DashBoardQuery {
     public static String QUERY_TO_FETCH_REVENUE_MONTHLY =
             "SELECT" +
                     " DATE_FORMAT(atd.transactionDate , '%e %b') As transactionDate," +
-                    " COALESCE(SUM(atd.appointmentAmount),0) AS revenue" +
+                    " (SUM(atd.appointmentAmount ) - COALESCE(SUM(ard.refundAmount ),0)) AS revenue" +
                     " FROM AppointmentTransactionDetail atd" +
                     " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
+                    " LEFT JOIN AppointmentRefundDetail ard ON a.id=ard.appointmentId.id " +
+                    " AND (ard.refundedDate BETWEEN :fromDate AND :toDate) AND ard.status='A'" +
                     " WHERE" +
                     " atd.transactionDate BETWEEN :fromDate AND :toDate" +
-                    " AND (a.status='PA' OR a.status= 'A')" +
+                    " AND (a.status='PA' OR a.status= 'A' OR a.status= 'RE')" +
                     " AND a.hospitalId.id=:hospitalId" +
                     " GROUP BY atd.transactionDate" +
                     " ORDER BY atd.transactionDate";
@@ -116,16 +122,18 @@ public class DashBoardQuery {
     public static String QUERY_TO_FETCH_REVENUE_DAILY =
             "SELECT" +
                     " DATE_FORMAT(atd.transactionDate , '%e %b,%Y') As transactionDate," +
-                    " COALESCE(SUM(atd.appointmentAmount),0) as revenue" +
+                    " (SUM(atd.appointmentAmount )- COALESCE(SUM(ard.refundAmount ),0)) as revenue" +
                     " FROM" +
                     " AppointmentTransactionDetail atd" +
                     " LEFT JOIN Appointment a ON" +
                     " a.id = atd.appointment.id" +
                     " LEFT JOIN Hospital h ON" +
                     " h.id = a.hospitalId.id" +
+                    " LEFT JOIN AppointmentRefundDetail ard ON a.id=ard.appointmentId.id " +
+                    " AND (ard.refundedDate BETWEEN :fromDate AND :toDate) AND ard.status='A'" +
                     " WHERE" +
                     " atd.transactionDate BETWEEN :fromDate AND :toDate" +
-                    " AND (a.status='PA' OR a.status= 'A')" +
+                    " AND (a.status='PA' OR a.status= 'A' OR a.status= 'RE')" +
                     " AND a.hospitalId.id =:hospitalId" +
                     " GROUP BY" +
                     " atd.transactionDate" +

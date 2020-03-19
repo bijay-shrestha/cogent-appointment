@@ -35,11 +35,15 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     public String loginUser(LoginRequestDTO requestDTO) {
         AdminMinDetails adminMinDetails = hmacApiInfoRepository.verifyLoggedInAdmin(requestDTO.getUsername(),
                 requestDTO.getHospitalCode());
-        if (BCrypt.checkpw(requestDTO.getPassword(), adminMinDetails.getPassword())) {
-            return hmacUtils.getAuthToken(adminMinDetails);
+        if (adminMinDetails.getIsCogentAdmin().equals('N')) {
+            if (BCrypt.checkpw(requestDTO.getPassword(), adminMinDetails.getPassword())) {
+                return hmacUtils.getAuthToken(adminMinDetails);
+            } else {
+                throw new NoContentFoundException(INVALID_PASSWORD);
+            }
+        } else {
+            throw new NoContentFoundException("ONLY FOR HOSPITAL ADMINS");
         }
-        throw new NoContentFoundException(INVALID_PASSWORD);
-
     }
 
     @Override

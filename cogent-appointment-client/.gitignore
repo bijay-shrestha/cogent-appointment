@@ -34,3 +34,8 @@ build/
 *.log
 **/*.log
 
+###yml file
+*.yml
+**/*.yml
+
+

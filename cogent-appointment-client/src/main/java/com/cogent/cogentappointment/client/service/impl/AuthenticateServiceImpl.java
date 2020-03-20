@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.CANNOT_ACCESS_CLIENT_MODULE;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.INVALID_PASSWORD;
 
 /**
@@ -41,9 +42,8 @@ public class AuthenticateServiceImpl implements AuthenticateService {
             } else {
                 throw new NoContentFoundException(INVALID_PASSWORD);
             }
-        } else {
-            throw new NoContentFoundException("ONLY FOR HOSPITAL ADMINS");
-        }
+        } else
+            throw new NoContentFoundException(CANNOT_ACCESS_CLIENT_MODULE);
     }
 
     @Override

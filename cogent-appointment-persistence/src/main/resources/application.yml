@@ -6,8 +6,8 @@ spring:
     name: persistence
   datasource:
     url: jdbc:mysql://localhost:3306/cogent-admin
-    username: cogent
-    password: cogent
+    username: sauravi
+    password: Test@123##
     driver-class-name: com.mysql.cj.jdbc.Driver
 
     jpa:

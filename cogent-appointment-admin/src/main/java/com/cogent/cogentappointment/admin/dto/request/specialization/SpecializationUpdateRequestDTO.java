@@ -34,9 +34,5 @@ public class SpecializationUpdateRequestDTO implements Serializable {
     private String remarks;
 
     @NotNull
-    @NotEmpty
-    private String code;
-
-    @NotNull
     private Long hospitalId;
 }

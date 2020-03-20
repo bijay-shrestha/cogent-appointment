@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.client.constants.StringConstant.COMMA_SEPARATED;
+
 public class DoctorDutyRosterOverrideQuery {
 
     public static final String VALIDATE_DOCTOR_DUTY_ROSTER_OVERRIDE_COUNT =
@@ -97,7 +99,7 @@ public class DoctorDutyRosterOverrideQuery {
 
         String overrideIds = overrideUpdateRequestDTOS.stream()
                 .map(request -> request.getDoctorDutyRosterOverrideId().toString())
-                .collect(Collectors.joining(","));
+                .collect(Collectors.joining(COMMA_SEPARATED));
 
         return " SELECT d FROM DoctorDutyRosterOverride d" +
                 " WHERE d.id IN (" + overrideIds + ")";

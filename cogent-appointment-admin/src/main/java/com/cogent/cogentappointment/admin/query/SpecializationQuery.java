@@ -11,20 +11,26 @@ import java.util.function.Function;
 public class SpecializationQuery {
 
     public static final String QUERY_TO_VALIDATE_SPECIALIZATION =
-            "SELECT COUNT(s.id)" +
+            "SELECT" +
+                    " s.name," +                                                     //[0]
+                    " s.code" +                                                     //[1]
                     " FROM Specialization s" +
                     " LEFT JOIN Hospital h ON h.id = s.hospital.id" +
-                    " WHERE s.name =:name" +
+                    " WHERE" +
+                    " (s.name =:name OR s.code =:code)" +
                     " AND s.status != 'D'" +
+                    " AND h.status !='D'" +
                     " AND h.id=:hospitalId";
 
     public static final String QUERY_TO_VALIDATE_SPECIALIZATION_FOR_UPDATE =
             "SELECT" +
-                    " COUNT(s.id)" +
+                    " s.name," +                                                     //[0]
+                    " s.code" +                                                     //[1]
                     " FROM Specialization s" +
                     " LEFT JOIN Hospital h ON h.id = s.hospital.id" +
-                    " WHERE s.id!= :id" +
-                    " AND s.name =:name" +
+                    " WHERE" +
+                    " s.id!= :id" +
+                    " AND (s.name =:name OR s.code =:code)" +
                     " AND s.status != 'D'" +
                     " AND h.id=:hospitalId";
 
@@ -67,7 +73,7 @@ public class SpecializationQuery {
         String whereClause = " WHERE s.status!='D'";
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getHospitalId()))
-            whereClause += " AND s.hospital.id=" + searchRequestDTO.getHospitalId() ;
+            whereClause += " AND s.hospital.id=" + searchRequestDTO.getHospitalId();
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
             whereClause += " AND s.status='" + searchRequestDTO.getStatus() + "'";

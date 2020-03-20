@@ -127,7 +127,7 @@ public class ErrorMessageConstants {
 
 
     //U
-    public static final String UNAUTHORISED = "Unauthorised";
+    public static final String INVALID_PASSWORD = "Invalid Password.";
 
     //V
 

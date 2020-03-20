@@ -7,12 +7,11 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.UNAUTHORISED;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INVALID_PASSWORD;
 
 /**
  * @author Sauravi Thapa २०/१/२०
@@ -26,7 +25,7 @@ public class AuthEntryPointHmac implements AuthenticationEntryPoint {
                          AuthenticationException authException) throws IOException {
         LoginErrorResponse loginResponse = LoginErrorResponse.builder()
                 .status(401)
-                .errorMessage(UNAUTHORISED)
+                .errorMessage(INVALID_PASSWORD)
                 .build();
 
         String json = null;

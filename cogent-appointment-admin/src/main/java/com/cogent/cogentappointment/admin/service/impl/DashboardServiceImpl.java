@@ -157,4 +157,18 @@ public class DashboardServiceImpl implements DashboardService {
 
         return responseDTOS;
     }
+
+    @Override
+    public List<DashboardFeatureResponseDTO> fetchAllDashboardFeature() {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, DYNAMIC_DASHBOARD_FEATURE);
+
+        List<DashboardFeatureResponseDTO> responseDTOS =
+                adminRepository.fetchOverAllDashboardFeature();
+
+        log.info(FETCHING_PROCESS_COMPLETED, DYNAMIC_DASHBOARD_FEATURE, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
 }

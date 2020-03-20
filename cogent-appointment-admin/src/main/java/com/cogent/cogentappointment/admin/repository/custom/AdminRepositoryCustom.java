@@ -39,5 +39,7 @@ public interface AdminRepositoryCustom {
     LoggedInAdminDTO getLoggedInAdmin(String username);
 
     List<DashboardFeatureResponseDTO> fetchDashboardFeaturesByAdmin(Long adminId);
+
+    List<DashboardFeatureResponseDTO> fetchOverAllDashboardFeature();
 }
 

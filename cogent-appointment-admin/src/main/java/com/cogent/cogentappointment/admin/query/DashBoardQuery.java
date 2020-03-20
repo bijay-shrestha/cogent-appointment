@@ -170,6 +170,20 @@ public class DashBoardQuery {
                 " AND df.status='Y'";
     }
 
+    public static final String QUERY_TO_FETCH_DASHBOARD_FEATURES =
+            " SELECT" +
+                    " df.id as id," +
+                    " df.name as name," +
+                    " df.code as code," +
+                    " df.status as status" +
+                    " FROM DashboardFeature df" +
+                    "  LEFT JOIN AdminDashboardFeature adf ON adf.dashboardFeatureId.id =df.id" +
+                    " LEFT JOIN Admin a ON a.id=adf.adminId.id" +
+                    " LEFT JOIN Profile p ON p.id=a.profileId.id" +
+                    " LEFT JOIN Department d ON d.id=p.department.id" +
+                    " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
+                    " WHERE df.status='Y'";
+
     public static final String QUERY_TO_VALIDATE_DASHBOARD_FEATURE_COUNT(String ids) {
 
         return " SELECT " +

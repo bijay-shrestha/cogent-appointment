@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.constants.ErrorMessageConstants;
-import com.cogent.cogentappointment.admin.constants.QueryConstants;
 import com.cogent.cogentappointment.admin.constants.StatusConstants;
 import com.cogent.cogentappointment.admin.dto.request.admin.AdminInfoRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.AdminSearchRequestDTO;
@@ -9,9 +8,9 @@ import com.cogent.cogentappointment.admin.dto.request.admin.AdminUpdateRequestDT
 import com.cogent.cogentappointment.admin.dto.response.admin.*;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.DashboardFeatureResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
+import com.cogent.cogentappointment.admin.query.DashBoardQuery;
 import com.cogent.cogentappointment.admin.repository.custom.AdminRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Admin;
-import com.cogent.cogentappointment.persistence.model.AdminDashboardFeature;
 import com.cogent.cogentappointment.persistence.model.DashboardFeature;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -156,6 +155,18 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     @Override
     public List<DashboardFeatureResponseDTO> fetchDashboardFeaturesByAdmin(Long adminId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DASHBOARD_FEATURES(adminId));
+
+        List<DashboardFeatureResponseDTO> result = transformQueryToResultList(query, DashboardFeatureResponseDTO.class);
+
+        if (ObjectUtils.isEmpty(result)) throw NO_DASHBOARD_FEATURE_FOUND.get();
+        else {
+            return result;
+        }
+    }
+
+    @Override
+    public List<DashboardFeatureResponseDTO> fetchOverAllDashboardFeature() {
+        Query query = createQuery.apply(entityManager, DashBoardQuery.QUERY_TO_FETCH_DASHBOARD_FEATURES);
 
         List<DashboardFeatureResponseDTO> result = transformQueryToResultList(query, DashboardFeatureResponseDTO.class);
 

@@ -46,7 +46,10 @@ public class ErrorMessageConstants {
 
     //C
     public final static String CANNOT_CREATE_SIGNATURE = "Cannot create signature: ";
+
     public static final String CODE_DUPLICATION_MESSAGE = "%s already exists with code '%s'";
+
+    public static final String CANNOT_ACCESS_CLIENT_MODULE = "SORRY!!! YOU CANNOT ACCESS CLIENT MODULE";
 
     //D
     public interface DoctorDutyRosterServiceMessages {

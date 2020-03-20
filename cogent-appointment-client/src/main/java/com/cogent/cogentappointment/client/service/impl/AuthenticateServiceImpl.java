@@ -36,7 +36,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     public String loginUser(LoginRequestDTO requestDTO) {
         AdminMinDetails adminMinDetails = hmacApiInfoRepository.verifyLoggedInAdmin(requestDTO.getUsername(),
                 requestDTO.getHospitalCode());
-        if (adminMinDetails.getIsCogentAdmin().equals('N')) {
+        if (adminMinDetails.getIsCompany().equals('N')) {
             if (BCrypt.checkpw(requestDTO.getPassword(), adminMinDetails.getPassword())) {
                 return hmacUtils.getAuthToken(adminMinDetails);
             } else {

@@ -20,16 +20,16 @@ public class UserDetailsImpl implements UserDetails {
 
     private String username;
 
-    private Character isCogentAdmin;
+    private Character isCompany;
 
     @JsonIgnore
     private String password;
 
 
-    public UserDetailsImpl(Long id, String username, Character isCogentAdmin, String password) {
+    public UserDetailsImpl(Long id, String username, Character isCompany, String password) {
         this.id = id;
         this.username = username;
-        this.isCogentAdmin = isCogentAdmin;
+        this.isCompany = isCompany;
         this.password = password;
     }
 
@@ -37,7 +37,7 @@ public class UserDetailsImpl implements UserDetails {
         return new UserDetailsImpl(
                 admin.getId(),
                 admin.getUsername(),
-                admin.getIsCogentAdmin(),
+                admin.getIsCompany(),
                 admin.getPassword());
     }
 

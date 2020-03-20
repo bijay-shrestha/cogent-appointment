@@ -170,7 +170,7 @@ public class AdminQuery {
                     " d.name as departmentName," +                                          //[6]
                     " h.id as hospitalId," +                                                //[7]
                     " h.name as hospitalName," +                                             //[8]
-                    " h.isCogentAdmin as isCogentAdmin" +                                   //[9]
+                    " h.isCompany as isCompany" +                                   //[9]
                     " FROM Admin a" +
                     " LEFT JOIN AdminAvatar av ON av.admin.id=a.id" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
@@ -179,7 +179,7 @@ public class AdminQuery {
                     " WHERE " +
                     " (a.username=:username OR a.email =:email)" +
                     " AND a.status='Y'" +
-                    " AND h.isCogentAdmin='Y'";
+                    " AND h.isCompany='Y'";
 
     public static final String QUERY_TO_FETCH_ADMIN_META_INFO =
             " SELECT a.id as adminMetaInfoId," +                   //[0]
@@ -192,7 +192,7 @@ public class AdminQuery {
                     " a.id as id ," +
                     " a.username as username," +
                     " a.password as password," +
-                    " h.isCogentAdmin as isCogentAdmin" +
+                    " h.isCompany as isCompany" +
                     " FROM " +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
@@ -201,5 +201,5 @@ public class AdminQuery {
                     " WHERE" +
                     " a.username =:username" +
                     " AND a.status = 'Y'" +
-                    " AND h.isCogentAdmin='Y'";
+                    " AND h.isCompany='Y'";
 }

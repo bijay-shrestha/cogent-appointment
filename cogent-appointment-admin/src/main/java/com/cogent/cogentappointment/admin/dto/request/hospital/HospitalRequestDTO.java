@@ -42,7 +42,7 @@ public class HospitalRequestDTO implements Serializable {
 
     @NotNull
     @Status
-    private Character isCogentAdmin;
+    private Character isCompany;
 
     @NotNull
     private Double refundPercentage;

@@ -33,7 +33,7 @@ public class HospitalResponseDTO implements Serializable {
 
     private Integer numberOfAdmins;
 
-    private Character isCogentAdmin;
+    private Character isCompany;
 
     private List<HospitalContactNumberResponseDTO> contactNumberResponseDTOS;
 

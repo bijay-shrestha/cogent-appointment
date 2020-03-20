@@ -35,7 +35,7 @@ public class HospitalUtils {
         hospital.setAddress(hospitalRequestDTO.getAddress());
         hospital.setPanNumber(hospitalRequestDTO.getPanNumber());
         hospital.setStatus(hospitalRequestDTO.getStatus());
-        hospital.setIsCogentAdmin(hospitalRequestDTO.getIsCogentAdmin());
+        hospital.setIsCompany(hospitalRequestDTO.getIsCompany());
         hospital.setRefundPercentage(hospitalRequestDTO.getRefundPercentage());
         hospital.setNumberOfAdmins(hospitalRequestDTO.getNumberOfAdmins());
         hospital.setNumberOfFreeFollowUps(hospitalRequestDTO.getNumberOfFreeFollowUps());
@@ -89,7 +89,7 @@ public class HospitalUtils {
         hospital.setPanNumber(updateRequestDTO.getPanNumber());
         hospital.setStatus(updateRequestDTO.getStatus());
         hospital.setRemarks(StringUtil.convertToNormalCase(updateRequestDTO.getRemarks()));
-        hospital.setIsCogentAdmin(updateRequestDTO.getIsHospital());
+        hospital.setIsCompany(updateRequestDTO.getIsHospital());
         hospital.setRefundPercentage(updateRequestDTO.getRefundPercentage());
         hospital.setNumberOfAdmins(updateRequestDTO.getNumberOfAdmins());
         hospital.setNumberOfFreeFollowUps(updateRequestDTO.getNumberOfFreeFollowUps());
@@ -156,7 +156,7 @@ public class HospitalUtils {
                         Integer.parseInt(results[NUMBER_OF_ADMINS_INDEX].toString()))
                 .numberOfFreeFollowUps(Integer.parseInt(results[NUMBER_OF_FREE_FOLLOWUPS_INDEX].toString()))
                 .followUpIntervalDays(Integer.parseInt(results[FOLLOW_UP_INTERVAL_DAYS_INDEX].toString()))
-                .isCogentAdmin(results[IS_COGENT_ADMIN_INDEX].toString().charAt(0))
+                .isCompany(results[IS_COGENT_ADMIN_INDEX].toString().charAt(0))
                 .build();
     }
 

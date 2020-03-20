@@ -39,7 +39,7 @@ public class HmacApiInfoQuery {
                     " a.password as password," +
                     " h.code as hospitalCode," +
                     " h.id as hospitalId," +
-                    " h.isCogentAdmin as isCogentAdmin," +
+                    " h.isCompany as isCompany," +
                     " hai.apiKey as apiKey," +
                     " hai.apiSecret as apiSecret" +
                     " FROM HmacApiInfo hai" +
@@ -60,7 +60,7 @@ public class HmacApiInfoQuery {
                     " a.username as username," +
                     " a.email as email," +
                     " h.code as hospitalCode," +
-                    " h.isCogentAdmin as isCogentAdmin," +
+                    " h.isCompany as isCompany," +
                     " h.id as hospitalId," +
                     " hai.apiKey as apiKey," +
                     " hai.apiSecret as apiSecret" +

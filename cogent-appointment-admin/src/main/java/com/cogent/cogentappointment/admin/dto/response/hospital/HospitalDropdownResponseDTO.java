@@ -17,5 +17,5 @@ public class HospitalDropdownResponseDTO implements Serializable {
 
     private String label;
 
-    private Character isCogentAdmin;
+    private Character isCompany;
 }

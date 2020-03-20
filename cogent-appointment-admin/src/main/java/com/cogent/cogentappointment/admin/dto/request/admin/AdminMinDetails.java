@@ -25,7 +25,7 @@ public class AdminMinDetails implements Serializable {
 
     private Long hospitalId;
 
-    private Character isCogentAdmin;
+    private Character isCompany;
 
     private String password;
 

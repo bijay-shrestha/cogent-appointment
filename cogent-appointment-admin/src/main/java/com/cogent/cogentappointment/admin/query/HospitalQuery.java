@@ -34,7 +34,7 @@ public class HospitalQuery {
             " SELECT" +
                     " h.id as value," +                     //[0]
                     " h.name as label," +
-                    " h.isCogentAdmin as isCogentAdmin" +                    //[1]
+                    " h.isCompany as isCompany" +                    //[1]
                     " FROM" +
                     " Hospital h" +
                     " WHERE h.status ='Y'";
@@ -103,7 +103,7 @@ public class HospitalQuery {
                     " h.number_of_admins as numberOfAdmins," +                   //[11]
                     " h.number_of_free_follow_ups as numberOfFreeFollowUps," +   //[12]
                     " h.follow_up_interval_days as followUpIntervalDays," +       //[13]
-                    " h.is_cogent_admin as isCogentAdmin"+                      //[14]
+                    " h.is_company as isCompany"+                      //[14]
                     " FROM" +
                     " hospital h" +
                     " LEFT JOIN hospital_logo hl ON h.id =hl.hospital_id " +

@@ -21,6 +21,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
+import static com.cogent.cogentappointment.admin.constants.StringConstant.N;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.toUpperCase;
 
 /**
@@ -35,7 +36,7 @@ public class HospitalUtils {
         hospital.setAddress(hospitalRequestDTO.getAddress());
         hospital.setPanNumber(hospitalRequestDTO.getPanNumber());
         hospital.setStatus(hospitalRequestDTO.getStatus());
-        hospital.setIsCompany(hospitalRequestDTO.getIsCompany());
+        hospital.setIsCompany(N);
         hospital.setRefundPercentage(hospitalRequestDTO.getRefundPercentage());
         hospital.setNumberOfAdmins(hospitalRequestDTO.getNumberOfAdmins());
         hospital.setNumberOfFreeFollowUps(hospitalRequestDTO.getNumberOfFreeFollowUps());

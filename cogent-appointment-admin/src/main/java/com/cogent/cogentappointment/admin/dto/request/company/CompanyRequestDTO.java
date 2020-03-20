@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.dto.request.hospital;
+package com.cogent.cogentappointment.admin.dto.request.company;
 
 import com.cogent.cogentappointment.admin.constraintvalidator.SpecialCharacters;
 import com.cogent.cogentappointment.admin.constraintvalidator.Status;
@@ -17,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class HospitalRequestDTO implements Serializable {
+public class CompanyRequestDTO implements Serializable {
 
     @NotNull
     @NotEmpty

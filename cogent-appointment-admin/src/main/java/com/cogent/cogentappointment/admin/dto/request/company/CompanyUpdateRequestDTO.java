@@ -1,7 +1,8 @@
-package com.cogent.cogentappointment.admin.dto.request.hospital;
+package com.cogent.cogentappointment.admin.dto.request.company;
 
 import com.cogent.cogentappointment.admin.constraintvalidator.SpecialCharacters;
 import com.cogent.cogentappointment.admin.constraintvalidator.Status;
+import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalContactNumberUpdateRequestDTO;
 import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
@@ -9,15 +10,15 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
-/**
- * @author smriti ON 12/01/2020
- */
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class HospitalRequestDTO implements Serializable {
+public class CompanyUpdateRequestDTO implements Serializable {
+
+    @NotNull
+    private Long id;
 
     @NotNull
     @NotEmpty
@@ -36,9 +37,16 @@ public class HospitalRequestDTO implements Serializable {
     @SpecialCharacters
     private String panNumber;
 
-    @NotNull
     @Status
     private Character status;
+
+    @NotNull
+    @NotEmpty
+    private String remarks;
+
+    @NotNull
+    @Status
+    private Character isHospital;
 
     @NotNull
     private Double refundPercentage;
@@ -46,11 +54,10 @@ public class HospitalRequestDTO implements Serializable {
     @NotNull
     private Integer numberOfAdmins;
 
-    @NotEmpty
-    private List<String> contactNumber;
-
     private Integer numberOfFreeFollowUps;
 
     private Integer followUpIntervalDays;
-}
 
+    @NotEmpty
+    private List<HospitalContactNumberUpdateRequestDTO> contactNumberUpdateRequestDTOS;
+}

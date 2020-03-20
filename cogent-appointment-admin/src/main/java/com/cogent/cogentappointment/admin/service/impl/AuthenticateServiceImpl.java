@@ -32,11 +32,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     public String loginUser(LoginRequestDTO requestDTO) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(requestDTO.getUsername(), requestDTO.getPassword()));
-        UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
-        if (userPrincipal.getIsCogentAdmin().equals('Y')) {
             return hmacUtils.getAuthToken(authentication);
-        }else{
-            throw new NoContentFoundException("SORRY!!! YOU CANNOT ACCESS ADMIN MODULE");
-        }
+
     }
 }

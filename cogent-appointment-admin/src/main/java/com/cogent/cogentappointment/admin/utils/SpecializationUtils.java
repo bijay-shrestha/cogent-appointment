@@ -31,7 +31,6 @@ public class SpecializationUtils {
         specialization.setName(convertToNormalCase(updateRequestDTO.getName()));
         specialization.setStatus(updateRequestDTO.getStatus());
         specialization.setRemarks(updateRequestDTO.getRemarks());
-        specialization.setCode(toUpperCase(updateRequestDTO.getCode()));
         specialization.setHospital(hospital);
     }
 

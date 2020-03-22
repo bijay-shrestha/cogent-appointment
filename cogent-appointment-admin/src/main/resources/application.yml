@@ -2,10 +2,10 @@ server:
   port: 9090
 spring:
   datasource:
-   url: jdbc:mysql://10.13.194.238:3308/cogent-appointment-dev
-   username: fonebank
-   password: fonebank
-   driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/cogent-admin
+    username: cogent
+    password: cogent
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     properties:
@@ -34,8 +34,9 @@ spring:
       max-file-size: 20000MB
       max-request-size: 215000MB
 
-   minio:
-      url: http://uat-presigned.cogenthealth.com.np
-      bucket: cogent-appointment-dev
-      access-key: cogent-appointment
-      secret-key: cogentappointment@123
+  minio:
+#    url: http://10.13.184.14:9000
+    url: http://localhost:9000
+    bucket: cogent
+    access-key: minioadmin
+    secret-key: minioadmin

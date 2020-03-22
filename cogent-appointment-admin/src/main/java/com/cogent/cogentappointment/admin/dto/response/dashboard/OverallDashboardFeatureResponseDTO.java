@@ -10,7 +10,7 @@ import java.io.Serializable;
  */
 @Getter
 @Setter
-public class DashboardFeatureResponseDTO implements Serializable {
+public class OverallDashboardFeatureResponseDTO implements Serializable {
 
     private Long id;
 

@@ -174,8 +174,7 @@ public class DashBoardQuery {
             " SELECT" +
                     " df.id as id," +
                     " df.name as name," +
-                    " df.code as code," +
-                    " df.status as status" +
+                    " df.code as code" +
                     " FROM DashboardFeature df" +
                     "  LEFT JOIN AdminDashboardFeature adf ON adf.dashboardFeatureId.id =df.id" +
                     " LEFT JOIN Admin a ON a.id=adf.adminId.id" +

@@ -43,6 +43,11 @@ public class WebResourceKeyConstants {
         String BASE_COUNTRY = "/country";
     }
 
+    public interface CompanyConstants {
+        String BASE_COMPANY = "/company";
+    }
+
+
     //D
     public interface DashboardConstants {
         String BASE_DASHBOARD = "/dashboard";

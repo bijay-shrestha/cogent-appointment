@@ -86,9 +86,6 @@ public class SwaggerConstants {
         String FETCH_DOCTOR_SPECIALIZATION_INFO = "Fetch doctor and specialization combined info";
     }
 
-    public interface CompanyConstant {
-        String BASE_API_VALUE = "This is Common Resource";
-    }
 
 
     //D

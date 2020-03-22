@@ -19,7 +19,7 @@ public class CompanyMinimalResponseDTO implements Serializable {
 
     private String name;
 
-    private String hospitalCode;
+    private String companyCode;
 
     private String address;
 

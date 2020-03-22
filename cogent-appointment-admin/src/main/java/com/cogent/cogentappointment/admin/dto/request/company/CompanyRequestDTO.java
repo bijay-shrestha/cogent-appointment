@@ -24,7 +24,7 @@ public class CompanyRequestDTO implements Serializable {
     @SpecialCharacters
     private String name;
 
-    private String hospitalCode;
+    private String companyCode;
 
     @NotNull
     @NotEmpty
@@ -40,17 +40,7 @@ public class CompanyRequestDTO implements Serializable {
     @Status
     private Character status;
 
-    @NotNull
-    private Double refundPercentage;
-
-    @NotNull
-    private Integer numberOfAdmins;
-
     @NotEmpty
     private List<String> contactNumber;
-
-    private Integer numberOfFreeFollowUps;
-
-    private Integer followUpIntervalDays;
 }
 

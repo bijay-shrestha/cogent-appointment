@@ -1,7 +1,11 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.constants.QueryConstants;
+import com.cogent.cogentappointment.admin.dto.request.company.CompanySearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.company.CompanyDropdownResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.company.CompanyMinimalResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.company.CompanyResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalDropdownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalResponseDTO;
@@ -22,7 +26,12 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.HOSPITAL_ID;
+import static com.cogent.cogentappointment.admin.constants.QueryConstants.ID;
+import static com.cogent.cogentappointment.admin.query.CompanyQuery.QUERY_TO_FETCH_COMPANY_DETAILS;
+import static com.cogent.cogentappointment.admin.query.CompanyQuery.QUERY_TO_FETCH_COMPANY_FOR_DROPDOWN;
+import static com.cogent.cogentappointment.admin.query.CompanyQuery.QUERY_TO_SEARCH_COMPANY;
 import static com.cogent.cogentappointment.admin.query.HospitalQuery.*;
+import static com.cogent.cogentappointment.admin.utils.CompanyUtils.parseToCompanyResponseDTO;
 import static com.cogent.cogentappointment.admin.utils.HospitalUtils.parseToHospitalResponseDTO;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
 
@@ -49,7 +58,7 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
     @Override
     public List<Object[]> validateHospitalDuplicityForUpdate(Long id, String name, String code) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE)
-                .setParameter(QueryConstants.ID, id)
+                .setParameter(ID, id)
                 .setParameter(QueryConstants.NAME, name)
                 .setParameter(QueryConstants.CODE, code);
 
@@ -73,15 +82,43 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
     }
 
     @Override
+    public List<CompanyMinimalResponseDTO> searchCompany(CompanySearchRequestDTO searchRequestDTO, Pageable pageable) {
+        Query query = createNativeQuery.apply(entityManager, QUERY_TO_SEARCH_COMPANY(searchRequestDTO));
+
+        int totalItems = query.getResultList().size();
+
+        PageableUtils.addPagination.accept(pageable, query);
+
+        List<CompanyMinimalResponseDTO> results = transformNativeQueryToResultList(query, CompanyMinimalResponseDTO.class);
+
+        if (results.isEmpty()) throw HOSPITAL_NOT_FOUND.get();
+
+        results.get(0).setTotalItems(totalItems);
+        return results;
+    }
+
+    @Override
     public HospitalResponseDTO fetchDetailsById(Long id) {
         Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_DETAILS)
-                .setParameter(QueryConstants.ID, id);
+                .setParameter(ID, id);
 
         List<Object[]> results = query.getResultList();
 
         if (results.isEmpty()) throw HOSPITAL_WITH_GIVEN_ID_NOT_FOUND.apply(id);
 
         return parseToHospitalResponseDTO(results.get(0));
+    }
+
+    @Override
+    public CompanyResponseDTO fetchCompanyDetailsById(Long id) {
+        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_COMPANY_DETAILS)
+                .setParameter(ID, id);
+
+        List<Object[]> results = query.getResultList();
+
+        if (results.isEmpty()) throw HOSPITAL_WITH_GIVEN_ID_NOT_FOUND.apply(id);
+
+        return parseToCompanyResponseDTO(results.get(0));
     }
 
     @Override
@@ -110,10 +147,20 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
         else return results;
     }
 
+    @Override
+    public List<CompanyDropdownResponseDTO> fetchActiveCompanyForDropDown() {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_COMPANY_FOR_DROPDOWN);
+
+        List<CompanyDropdownResponseDTO> results = transformQueryToResultList(query, CompanyDropdownResponseDTO.class);
+
+        if (results.isEmpty()) throw HOSPITAL_NOT_FOUND.get();
+        else return results;
+    }
+
     private Supplier<NoContentFoundException> HOSPITAL_NOT_FOUND = () -> new NoContentFoundException(Hospital.class);
 
     private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        log.error("Hospital with id : {} not found", id);
+        log.error("Company with id : {} not found", id);
         throw new NoContentFoundException(Hospital.class, "id", id.toString());
     };
 }

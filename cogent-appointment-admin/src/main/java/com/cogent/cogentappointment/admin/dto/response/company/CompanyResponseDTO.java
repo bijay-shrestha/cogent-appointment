@@ -17,7 +17,7 @@ public class CompanyResponseDTO implements Serializable {
 
     private String name;
 
-    private String hospitalCode;
+    private String companyCode;
 
     private Character status;
 
@@ -25,21 +25,11 @@ public class CompanyResponseDTO implements Serializable {
 
     private String panNumber;
 
-    private String hospitalLogo;
-
-    private String hospitalBanner;
+    private String companyLogo;
 
     private String remarks;
-
-    private Double refundPercentage;
-
-    private Integer numberOfAdmins;
 
     private Character isCompany;
 
     private List<HospitalContactNumberResponseDTO> contactNumberResponseDTOS;
-
-    private Integer numberOfFreeFollowUps;
-
-    private Integer followUpIntervalDays;
 }

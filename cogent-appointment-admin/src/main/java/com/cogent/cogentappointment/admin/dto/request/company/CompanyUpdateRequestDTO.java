@@ -25,7 +25,7 @@ public class CompanyUpdateRequestDTO implements Serializable {
     @SpecialCharacters
     private String name;
 
-    private String hospitalCode;
+    private String companyCode;
 
     @NotNull
     @NotEmpty
@@ -44,20 +44,6 @@ public class CompanyUpdateRequestDTO implements Serializable {
     @NotEmpty
     private String remarks;
 
-    @NotNull
-    @Status
-    private Character isHospital;
-
-    @NotNull
-    private Double refundPercentage;
-
-    @NotNull
-    private Integer numberOfAdmins;
-
-    private Integer numberOfFreeFollowUps;
-
-    private Integer followUpIntervalDays;
-
     @NotEmpty
-    private List<HospitalContactNumberUpdateRequestDTO> contactNumberUpdateRequestDTOS;
+    private List<CompanyContactNumberUpdateRequestDTO> contactNumberUpdateRequestDTOS;
 }

@@ -1,6 +1,10 @@
 package com.cogent.cogentappointment.admin.repository.custom;
 
+import com.cogent.cogentappointment.admin.dto.request.company.CompanySearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.company.CompanyDropdownResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.company.CompanyMinimalResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.company.CompanyResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalDropdownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalResponseDTO;
@@ -23,9 +27,15 @@ public interface HospitalRepositoryCustom {
 
     List<HospitalMinimalResponseDTO> search(HospitalSearchRequestDTO searchRequestDTO, Pageable pageable);
 
+    List<CompanyMinimalResponseDTO> searchCompany(CompanySearchRequestDTO searchRequestDTO, Pageable pageable);
+
     List<HospitalDropdownResponseDTO> fetchActiveHospitalForDropDown();
 
+    List<CompanyDropdownResponseDTO> fetchActiveCompanyForDropDown();
+
     HospitalResponseDTO fetchDetailsById(Long id);
+
+    CompanyResponseDTO fetchCompanyDetailsById(Long id);
 
     Integer fetchHospitalFollowUpCount(Long hospitalId);
 

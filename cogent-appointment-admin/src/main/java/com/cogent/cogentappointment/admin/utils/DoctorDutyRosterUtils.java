@@ -9,7 +9,6 @@ import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorWee
 import com.cogent.cogentappointment.admin.dto.response.appointment.AppointmentBookedDateResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.*;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
-import com.cogent.cogentappointment.admin.utils.commons.StringUtil;
 import com.cogent.cogentappointment.persistence.model.*;
 
 import java.time.LocalDate;

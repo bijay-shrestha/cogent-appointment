@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.admin.dto.request.admin;
 
 import com.cogent.cogentappointment.admin.constraintvalidator.Status;
-import com.cogent.cogentappointment.admin.dto.request.dashboard.DashBoardRequestDTO;
 import lombok.*;
 
 import javax.validation.constraints.Email;
@@ -9,6 +8,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
+
 /**
  * @author smriti on 6/25/19
  */

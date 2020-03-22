@@ -13,6 +13,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>cogent-appointment-client</name>
     <description>Demo project for Spring Boot</description>
+    <packaging>war</packaging>
 
     <properties>
         <java.version>1.8</java.version>
@@ -135,7 +136,6 @@
             <groupId>com.cogent.cogentappointment.persistence</groupId>
             <artifactId>cogent-appointment-persistence</artifactId>
             <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
 
         <dependency>

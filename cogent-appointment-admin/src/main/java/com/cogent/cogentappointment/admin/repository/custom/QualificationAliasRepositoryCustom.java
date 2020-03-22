@@ -20,6 +20,8 @@ public interface QualificationAliasRepositoryCustom {
 
     Long validateDuplicity(String name);
 
+    Long validateDuplicity(Long id, String name);
+
     List<QualificationAliasMinimalResponseDTO> search(QualificationAliasSearchRequestDTO searchRequestDTO,
                                                       Pageable pageable);
 }

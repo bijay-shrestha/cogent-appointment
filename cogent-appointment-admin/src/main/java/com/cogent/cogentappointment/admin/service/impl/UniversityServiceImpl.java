@@ -11,8 +11,10 @@ import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.UniversityRepository;
 import com.cogent.cogentappointment.admin.service.CountryService;
+import com.cogent.cogentappointment.admin.service.HospitalService;
 import com.cogent.cogentappointment.admin.service.UniversityService;
 import com.cogent.cogentappointment.persistence.model.Country;
+import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.University;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -40,10 +42,14 @@ public class UniversityServiceImpl implements UniversityService {
 
     private final CountryService countryService;
 
+    private final HospitalService hospitalService;
+
     public UniversityServiceImpl(UniversityRepository universityRepository,
-                                 CountryService countryService) {
+                                 CountryService countryService,
+                                 HospitalService hospitalService) {
         this.universityRepository = universityRepository;
         this.countryService = countryService;
+        this.hospitalService = hospitalService;
     }
 
     @Override
@@ -52,13 +58,17 @@ public class UniversityServiceImpl implements UniversityService {
 
         log.info(SAVING_PROCESS_STARTED, UNIVERSITY);
 
-        Long university = universityRepository.validateDuplicity(requestDTO.getName());
+        Country country = fetchCountry(requestDTO.getCountryId());
+
+        Hospital hospital = fetchHospital(requestDTO.getHospitalId());
+
+        Long university = universityRepository.validateDuplicity(
+                requestDTO.getName(), requestDTO.getHospitalId()
+        );
 
         validateName(university, requestDTO.getName());
 
-        Country country = fetchCountry(requestDTO.getCountryId());
-
-        save(parseToUniversity(requestDTO, country));
+        save(parseToUniversity(requestDTO, country, hospital));
 
         log.info(SAVING_PROCESS_COMPLETED, UNIVERSITY, getDifferenceBetweenTwoTime(startTime));
     }
@@ -71,13 +81,17 @@ public class UniversityServiceImpl implements UniversityService {
 
         University university = findUniversityById(requestDTO.getId());
 
-        Long count = universityRepository.validateDuplicity(requestDTO.getId(), requestDTO.getName());
+        Long count = universityRepository.validateDuplicity(
+                requestDTO.getId(), requestDTO.getName(), requestDTO.getHospitalId()
+        );
 
         validateName(count, requestDTO.getName());
 
         Country country = fetchCountry(requestDTO.getCountryId());
 
-        parseToUpdatedUniversity(requestDTO, country, university);
+        Hospital hospital = fetchHospital(requestDTO.getHospitalId());
+
+        parseToUpdatedUniversity(requestDTO, country, hospital, university);
 
         log.info(UPDATING_PROCESS_COMPLETED, UNIVERSITY, getDifferenceBetweenTwoTime(startTime));
     }
@@ -167,6 +181,10 @@ public class UniversityServiceImpl implements UniversityService {
     private University findUniversityById(Long id) {
         return universityRepository.findUniversityById(id)
                 .orElseThrow(() -> new NoContentFoundException(University.class, "id", id.toString()));
+    }
+
+    private Hospital fetchHospital(Long hospitalId) {
+        return hospitalService.fetchActiveHospital(hospitalId);
     }
 
 

@@ -17,13 +17,15 @@ import java.util.List;
 @Qualifier("universityRepositoryCustom")
 public interface UniversityRepositoryCustom {
 
-    Long validateDuplicity(String name);
+    Long validateDuplicity(String name, Long hospitalId);
 
-    Long validateDuplicity(Long id, String name);
+    Long validateDuplicity(Long id, String name, Long hospitalId);
 
-    List<UniversityMinimalResponseDTO> search(UniversitySearchRequestDTO searchRequestDTO, Pageable pageable);
+    List<UniversityMinimalResponseDTO> search(UniversitySearchRequestDTO searchRequestDTO,
+                                              Long hospitalId,
+                                              Pageable pageable);
 
-    UniversityResponseDTO fetchDetailsById(Long id);
+    UniversityResponseDTO fetchDetailsById(Long id, Long hospitalId);
 
-    List<DropDownResponseDTO> fetchActiveUniversity();
+    List<DropDownResponseDTO> fetchActiveMinUniversity(Long hospitalId);
 }

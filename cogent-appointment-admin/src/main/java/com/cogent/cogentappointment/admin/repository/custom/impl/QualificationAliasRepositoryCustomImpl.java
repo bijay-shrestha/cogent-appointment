@@ -2,10 +2,8 @@ package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.request.qualificationAlias.QualificationAliasSearchRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.qualification.QualificationMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.qualificationAlias.QualificationAliasMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.query.QualificationAliasQuery;
 import com.cogent.cogentappointment.admin.repository.custom.QualificationAliasRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Qualification;
 import com.cogent.cogentappointment.persistence.model.QualificationAlias;
@@ -19,6 +17,7 @@ import javax.persistence.Query;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.admin.constants.QueryConstants.ID;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.NAME;
 import static com.cogent.cogentappointment.admin.query.QualificationAliasQuery.*;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
@@ -49,6 +48,15 @@ public class QualificationAliasRepositoryCustomImpl implements QualificationAlia
     public Long validateDuplicity(String name) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY)
                 .setParameter(NAME, name);
+
+        return (Long) query.getSingleResult();
+    }
+
+    @Override
+    public Long validateDuplicity(Long id, String name) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE)
+                .setParameter(NAME, name)
+                .setParameter(ID, id);
 
         return (Long) query.getSingleResult();
     }

@@ -149,6 +149,11 @@ public class SwaggerConstants {
     //E
     public interface EsewaConstant {
         String BASE_API_VALUE = "This is eSewa Resource";
+        String FETCH_AVAILABLE_APPOINTMENT_DATES = "Returns all the avaliable appointment dates and time by doctorId and" +
+                " specializationId";
+        String FETCH_AVAILABLE_DOCTOR_DATES = "Returns all the avaliable appointment dates by doctorId";
+        String FETCH_AVAILABLE_SPECIALIZATION_DATES = "Returns all the avaliable appointment dates by specializationId";
+        String FETCH_AVAILABLE_DATES = "Returns all the avaliable appointment dates by doctorId and specializationId";
         String FETCH_DOCTOR_AVAILABLE_STATUS_OPERATION = "Return message if the doctor is available on the date" +
                 " (Case V/Case VIII)";
         String FETCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION_OPERATION = "Fetch all available doctors and " +
@@ -237,6 +242,10 @@ public class SwaggerConstants {
 
     public interface QualificationAliasConstant {
         String BASE_API_VALUE = "This is Qualification Alias Resource";
+        String SAVE_OPERATION = "Save new Qualification Alias Resource";
+        String UPDATE_OPERATION = "Update existing Qualification Alias Resource";
+        String DELETE_OPERATION = "Set Qualification Alias Resource status as 'D' when deleted";
+        String SEARCH_OPERATION = "Search Qualification Alias Resource according to given request parameters";
         String FETCH_ACTIVE_QUALIFICATION_ALIAS = "Fetch active Qualification Alias like M.D.,M.B.B.S, etc";
     }
 

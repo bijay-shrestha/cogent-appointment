@@ -278,7 +278,7 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     private void fetchQualificationById(Long qualificationId) {
-        qualificationService.fetchQualificationById(qualificationId);
+        qualificationService.fetchActiveQualificationById(qualificationId);
     }
 
     private void saveDoctorSpecialization(Long doctorId, List<Long> specializationIds,

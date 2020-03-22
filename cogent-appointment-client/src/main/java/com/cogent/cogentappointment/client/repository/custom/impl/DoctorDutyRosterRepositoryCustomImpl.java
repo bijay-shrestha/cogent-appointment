@@ -10,8 +10,9 @@ import com.cogent.cogentappointment.client.dto.response.appointment.appoinmentDa
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.*;
 import com.cogent.cogentappointment.client.dto.response.eSewa.AvailableDoctorResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.eSewa.DoctorAvailabilityStatusResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.eSewa.DutyRosterAppointmentDateAndDoctorDTO;
+import com.cogent.cogentappointment.client.dto.response.eSewa.DutyRosterAppointmentDateAndSpecilizationDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.query.EsewaQuery;
 import com.cogent.cogentappointment.client.repository.custom.DoctorDutyRosterRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRoster;
 import org.springframework.data.domain.Pageable;
@@ -33,7 +34,9 @@ import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.query.DoctorDutyRosterOverrideQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_DETAILS;
 import static com.cogent.cogentappointment.client.query.DoctorDutyRosterQuery.*;
+import static com.cogent.cogentappointment.client.query.DoctorDutyRosterQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_STATUS;
 import static com.cogent.cogentappointment.client.query.EsewaQuery.*;
+import static com.cogent.cogentappointment.client.query.EsewaQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_STATUS;
 import static com.cogent.cogentappointment.client.utils.DoctorDutyRosterUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDayCodeFromDate;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
@@ -177,26 +180,33 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
     }
 
     @Override
-    public DoctorDutyRosterAppointmentDate getDutyRosterByDoctorAndSpecializationId(AppointmentDatesRequestDTO requestDTO) {
+    public List<DoctorDutyRosterAppointmentDate> getDutyRosterByDoctorAndSpecializationId
+            (AppointmentDatesRequestDTO requestDTO) {
+
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DUTY_ROSTER_BY_DOCTOR_AND_SPECIALIZATION_ID)
                 .setParameter(DOCTOR_ID, requestDTO.getDoctorId())
                 .setParameter(SPECIALIZATION_ID, requestDTO.getSpecializationId());
 
-        DoctorDutyRosterAppointmentDate responseDTOList = transformQueryToSingleResult(query,
-                DoctorDutyRosterAppointmentDate.class);
-
-        return responseDTOList;
+        return transformQueryToResultList(query, DoctorDutyRosterAppointmentDate.class);
     }
 
     @Override
-    public List<DoctorWeekDaysDutyRosterAppointmentDate> getWeekDaysDutyRosterByDutyRosterId(Long doctorDutyRosterId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_WEEKDAYS_DUTY_ROSTER_BY_DUTY_ROSTER_ID)
+    public List<DoctorWeekDaysDutyRosterAppointmentDate> getWeekDaysDutyRosterDataByDutyRosterId(Long doctorDutyRosterId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_WEEKDAYS_DUTY_ROSTER_DATA_BY_DUTY_ROSTER_ID)
                 .setParameter(DOCTOR_DUTY_ROSTER_ID, doctorDutyRosterId);
 
         List<DoctorWeekDaysDutyRosterAppointmentDate> responseDTOList = transformQueryToResultList(query,
                 DoctorWeekDaysDutyRosterAppointmentDate.class);
 
         return responseDTOList;
+    }
+
+    @Override
+    public List<String> getWeekDaysDutyRosterByDutyRosterId(Long doctorDutyRosterId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_WEEKDAYS_DUTY_ROSTER_BY_DUTY_ROSTER_ID)
+                .setParameter(DOCTOR_DUTY_ROSTER_ID, doctorDutyRosterId);
+
+        return query.getResultList();
     }
 
     @Override
@@ -231,6 +241,24 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
             query.setParameter(SPECIALIZATION_ID, requestDTO.getSpecializationId());
 
         return transformQueryToResultList(query, AvailableDoctorResponseDTO.class);
+    }
+
+    @Override
+    public List<DutyRosterAppointmentDateAndSpecilizationDTO> getAvaliableDatesAndSpecilizationByDoctorId(
+            Long doctorId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_AVALIABLE_DATES_WITH_SPECILIZATION)
+                .setParameter(DOCTOR_ID, doctorId);
+
+        return transformQueryToResultList(query, DutyRosterAppointmentDateAndSpecilizationDTO.class);
+    }
+
+    @Override
+    public List<DutyRosterAppointmentDateAndDoctorDTO> getAvaliableDatesAndDoctorBySpecilizationId(Long specilizationId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_AVALIABLE_DATES_WITH_DOCTOR)
+                .setParameter(SPECIALIZATION_ID, specilizationId);
+
+        return transformQueryToResultList(query, DutyRosterAppointmentDateAndDoctorDTO.class);
     }
 
     private DoctorDutyRosterResponseDTO fetchDoctorDutyRosterDetails(Long doctorDutyRosterId, Long hospitalId) {

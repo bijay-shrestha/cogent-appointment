@@ -1,9 +1,9 @@
 package com.cogent.cogentappointment.admin.repository.custom;
 
+import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
+import com.cogent.cogentappointment.admin.dto.request.specialization.SpecializationSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.specialization.SpecializationMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.specialization.SpecializationResponseDTO;
-import com.cogent.cogentappointment.admin.dto.request.specialization.SpecializationSearchRequestDTO;
-import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -17,9 +17,9 @@ import java.util.List;
 @Qualifier("specializationRepositoryCustom")
 public interface SpecializationRepositoryCustom {
 
-    Long validateDuplicity(String name, Long hospitalId);
+    List<Object[]> validateDuplicity(String name, String code, Long hospitalId);
 
-    Long validateDuplicity(Long id, String name, Long hospitalId);
+    List<Object[]> validateDuplicity(Long id, String name, String code, Long hospitalId);
 
     List<SpecializationMinimalResponseDTO> search(SpecializationSearchRequestDTO searchRequestDTO,
                                                   Pageable pageable);

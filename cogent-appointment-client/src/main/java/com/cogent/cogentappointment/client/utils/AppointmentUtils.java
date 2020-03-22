@@ -65,7 +65,7 @@ public class AppointmentUtils {
         return appointment;
     }
 
-    private static Date parseAppointmentTime(Date appointmentDate, String appointmentTime) {
+    public static Date parseAppointmentTime(Date appointmentDate, String appointmentTime) {
         return datePlusTime(utilDateToSqlDate(appointmentDate), Objects.requireNonNull(parseTime(appointmentTime)));
     }
 

@@ -8,7 +8,9 @@ import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorD
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.eSewa.AvailableDoctorResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.eSewa.DoctorAvailabilityStatusResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.eSewa.DutyRosterOverrideAppointmentDate;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
+import com.cogent.cogentappointment.client.query.EsewaQuery;
 import com.cogent.cogentappointment.client.repository.custom.DoctorDutyRosterOverrideRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRosterOverride;
 import org.springframework.stereotype.Repository;
@@ -132,6 +134,20 @@ public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyR
     }
 
     @Override
+    public List<DoctorDutyRosterOverrideAppointmentDate> getRosterOverrideByDoctorAndSpecializationId(Long doctorId,
+                                                                                                      Long specializationId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DUTY_ROSTER_OVERRIDE_BY_DOCTOR_AND_SPECIALIZATION_ID)
+                .setParameter(DOCTOR_ID, doctorId)
+                .setParameter(SPECIALIZATION_ID, specializationId);
+
+        try {
+            return transformQueryToResultList(query, DoctorDutyRosterOverrideAppointmentDate.class);
+        } catch (NoResultException e) {
+            throw new NoContentFoundException("Not Found");
+        }
+    }
+
+    @Override
     public DoctorAvailabilityStatusResponseDTO fetchDoctorDutyRosterOverrideStatus(AppointmentDetailRequestDTO requestDTO) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_STATUS(requestDTO))
@@ -158,6 +174,15 @@ public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyR
             query.setParameter(SPECIALIZATION_ID, requestDTO.getSpecializationId());
 
         return transformQueryToResultList(query, AvailableDoctorResponseDTO.class);
+    }
+
+    @Override
+    public List<DutyRosterOverrideAppointmentDate> fetchDayOffRosterOverridebyRosterId(Long doctorDutyRosterId) {
+        Query query = createQuery.apply(entityManager,
+                EsewaQuery.QUERY_TO_FETCH_DAY_OFF_ROSTER_OVERRIDE_DATES)
+                .setParameter(DOCTOR_DUTY_ROSTER_ID, doctorDutyRosterId);
+
+        return transformQueryToResultList(query, DutyRosterOverrideAppointmentDate.class);
     }
 
     private Supplier<NoContentFoundException> DOCTOR_DUTY_ROSTER_OVERRIDE_NOT_FOUND = () ->

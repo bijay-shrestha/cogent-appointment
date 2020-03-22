@@ -28,6 +28,7 @@ import static com.cogent.cogentappointment.client.log.constants.SpecializationLo
 import static com.cogent.cogentappointment.client.utils.SpecializationUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.client.utils.commons.NameAndCodeValidationUtils.validateDuplicity;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 
 /**
@@ -56,10 +57,13 @@ public class SpecializationServiceImpl implements SpecializationService {
 
         Long hospitalId = getLoggedInHospitalId();
 
-        Long specializationCount =
-                specializationRepository.validateDuplicity(requestDTO.getName(), hospitalId);
+        List<Object[]> specializations = specializationRepository.validateDuplicity(
+                requestDTO.getName(),
+                requestDTO.getCode(),
+                hospitalId);
 
-        validateName(specializationCount, requestDTO.getName());
+        validateDuplicity(specializations, requestDTO.getName(), requestDTO.getCode(),
+                Specialization.class.getSimpleName());
 
         Specialization specialization = save(parseToSpecialization(requestDTO, findHospitalById(hospitalId)));
 
@@ -79,10 +83,15 @@ public class SpecializationServiceImpl implements SpecializationService {
 
         Specialization specialization = findBySpecializationByIdAndHospitalId(requestDTO.getId(), hospitalId);
 
-        Long specializationCount = specializationRepository.validateDuplicity(
-                requestDTO.getId(), requestDTO.getName(), hospitalId);
+        List<Object[]> specializations = specializationRepository.validateDuplicity(
+                requestDTO.getId(),
+                requestDTO.getName(),
+                specialization.getCode(),
+                hospitalId
+        );
 
-        validateName(specializationCount, requestDTO.getName());
+        validateDuplicity(specializations, requestDTO.getName(), specialization.getCode(),
+                Specialization.class.getSimpleName());
 
         parseToUpdatedSpecialization(requestDTO, specialization);
 

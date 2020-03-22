@@ -246,13 +246,13 @@ Sizes: [
 																	-->
 																	<td align="left" valign="middle" id="invisibleIntroduction" class="flexibleContainerBox" style="display:none !important; mso-hide:all;">
 																		<table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:100%;">
-																			<tr>
-																				<td align="left" class="textContent">
-																					<div style="font-family:Helvetica,Arial,sans-serif;font-size:13px;color:#828282;text-align:center;line-height:120%;">
-																						The introduction of your message preview goes here. Try to make it short.
-																					</div>
-																				</td>
-																			</tr>
+																			<#--<tr>-->
+																				<#--<td align="left" class="textContent">-->
+																					<#--<div style="font-family:Helvetica,Arial,sans-serif;font-size:13px;color:#828282;text-align:center;line-height:120%;">-->
+																						<#--The introduction of your message preview goes here. Try to make it short.-->
+																					<#--</div>-->
+																				<#--</td>-->
+																			<#--</tr>-->
 																		</table>
 																	</td>
 																	<td align="right" valign="middle" class="flexibleContainerBox">
@@ -260,9 +260,9 @@ Sizes: [
 																			<tr>
 																				<td align="left" class="textContent">
 																					<!-- CONTENT // -->
-																					<div style="font-family:Helvetica,Arial,sans-serif;font-size:13px;color:#828282;text-align:center;line-height:120%;">
-																						If you can't see this message, <a href="#" target="_blank" style="text-decoration:none;border-bottom:1px solid #828282;color:#828282;"><span style="color:#828282;">view&nbsp;it&nbsp;in&nbsp;your&nbsp;browser</span></a>.
-																					</div>
+																					<#--<div style="font-family:Helvetica,Arial,sans-serif;font-size:13px;color:#828282;text-align:center;line-height:120%;">-->
+																						<#--If you can't see this message, <a href="#" target="_blank" style="text-decoration:none;border-bottom:1px solid #828282;color:#828282;"><span style="color:#828282;">view&nbsp;it&nbsp;in&nbsp;your&nbsp;browser</span></a>.-->
+																					<#--</div>-->
 																				</td>
 																			</tr>
 																		</table>

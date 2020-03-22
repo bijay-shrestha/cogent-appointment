@@ -16,7 +16,6 @@ import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.SpecializationConstant.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.DoctorConstants.DOCTOR_ID_PATH_VARIABLE_BASE;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.DoctorConstants.DOCTOR_WISE;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.HospitalConstants.HOSPITAL_WISE;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.SpecializationConstants.BASE_SPECIALIZATION;

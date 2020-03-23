@@ -293,8 +293,8 @@ public class AdminServiceImpl implements AdminService {
         adminDashboardRequestDTOS.forEach(result -> {
 
 
-            AdminDashboardFeature adminDashboardFeature = adminDashboardFeatureRepository.findAdminDashboardFeatureBydashboardFeatureId(result.getId(), admin.getId())
-                    .orElseThrow(() -> new NoContentFoundException(AdminDashboardFeature.class));
+            AdminDashboardFeature adminDashboardFeature = adminDashboardFeatureRepository.findAdminDashboardFeatureBydashboardFeatureId(result.getId(), admin.getId()).get();
+//                    .orElseThrow(() -> new NoContentFoundException(AdminDashboardFeature.class));
             //                    .orElse(
 //                           saveAdminDashboardFeature(result.getId(),admin));
 //                    .orElseThrow(() -> new NoContentFoundException(AdminDashboardFeature.class));

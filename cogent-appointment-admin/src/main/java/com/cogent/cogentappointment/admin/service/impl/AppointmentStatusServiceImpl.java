@@ -263,7 +263,11 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
                     .stream()
                     .filter(appointment -> hasAppointment(appointment, doctorDutyRoster))
                     .forEach(appointment -> {
+
+                        doctorDutyRoster.setWeekDayName(appointment.getDate().getDayOfWeek().toString());
+
                         boolean isDateBefore = convertLocalDateToDate(appointment.getDate()).before(new Date());
+
                         if (isDateBefore) {
                             parseAppointmentDetails(doctorDutyRoster, appointment, doctorTimeSlotResponseDTOS);
                         } else {
@@ -278,7 +282,6 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
 
     private boolean hasAppointment(AppointmentStatusResponseDTO appointment,
                                    DoctorDutyRosterStatusResponseDTO doctorDutyRosterStatus) {
-
 
         return appointment.getDate().equals(doctorDutyRosterStatus.getDate())
                 && (appointment.getDoctorId().equals(doctorDutyRosterStatus.getDoctorId()))

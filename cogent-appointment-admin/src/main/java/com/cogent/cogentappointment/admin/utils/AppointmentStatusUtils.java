@@ -7,7 +7,6 @@ import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorDropdownDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
-import org.joda.time.LocalDate;
 import org.joda.time.Minutes;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -134,15 +133,9 @@ public class AppointmentStatusUtils {
                                                             java.time.LocalDate availableDate,
                                                             String status) {
 
-        Date availableDateTime = parseAppointmentTime(convertLocalDateToDate(availableDate), FORMAT.print(dateTime));
-
-        Date currentDate = new Date();
-
-        boolean isRequestedBeforeCurrentDateTime = availableDateTime.before(currentDate);
-
         responseDTO.setAppointmentTime(convert24HourTo12HourFormat(FORMAT.print(dateTime)));
 
-        responseDTO.setHasTimePassed(isRequestedBeforeCurrentDateTime);
+        responseDTO.setHasTimePassed(hasTimeHasPassed(availableDate, FORMAT.print(dateTime)));
 
         responseDTO.setStatus(status);
     }
@@ -169,7 +162,6 @@ public class AppointmentStatusUtils {
 
             responseDTO.setAppointmentTime(convert24HourTo12HourFormat(appointmentTime));
             responseDTO.setStatus(timeAndStatus[1]);
-
             responseDTO.setAppointmentNumber(appointmentStatusResponseDTO.getAppointmentNumber());
             responseDTO.setPatientName(appointmentStatusResponseDTO.getPatientName());
             responseDTO.setAge(appointmentStatusResponseDTO.getAge());

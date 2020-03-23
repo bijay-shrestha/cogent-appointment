@@ -37,7 +37,8 @@ public class HospitalQuery {
                     " h.isCompany as isCompany" +                    //[1]
                     " FROM" +
                     " Hospital h" +
-                    " WHERE h.status ='Y'";
+                    " WHERE h.status ='Y'" +
+                    " AND h.isCompany='N'";
 
     public static String QUERY_TO_SEARCH_HOSPITAL(HospitalSearchRequestDTO searchRequestDTO) {
         return "SELECT" +
@@ -61,7 +62,7 @@ public class HospitalQuery {
 
     private static Function<HospitalSearchRequestDTO, String> GET_WHERE_CLAUSE_FOR_SEARCHING_HOSPITAL =
             (searchRequestDTO) -> {
-                String whereClause = " WHERE h.status!='D'";
+                String whereClause = " WHERE h.status!='D' AND h.is_company='N'";
 
                 if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
                     whereClause += " AND h.status='" + searchRequestDTO.getStatus() + "'";
@@ -103,7 +104,8 @@ public class HospitalQuery {
                     " h.number_of_admins as numberOfAdmins," +                   //[11]
                     " h.number_of_free_follow_ups as numberOfFreeFollowUps," +   //[12]
                     " h.follow_up_interval_days as followUpIntervalDays," +       //[13]
-                    " h.is_company as isCompany"+                      //[14]
+                    " h.is_company as isCompany," +                                 //[14]
+                    " h.alias as alias"+                                            //[15]
                     " FROM" +
                     " hospital h" +
                     " LEFT JOIN hospital_logo hl ON h.id =hl.hospital_id " +
@@ -117,7 +119,8 @@ public class HospitalQuery {
                     " GROUP by hc.hospital_id" +
                     " )tbl1 ON tbl1.hospitalId = h.id" +
                     " WHERE h.id =:id" +
-                    " AND h.status !='D'";
+                    " AND h.status !='D'" +
+                    " AND h.is_company='N'";
 
     public static final String QUERY_TO_FETCH_HOSPITAL_FREE_FOLLOW_UP_COUNT =
             " SELECT h.numberOfFreeFollowUps as numberOfFreeFollowUps" +

@@ -40,4 +40,6 @@ public class HospitalResponseDTO implements Serializable {
     private Integer numberOfFreeFollowUps;
 
     private Integer followUpIntervalDays;
+
+    private String alias;
 }

@@ -90,7 +90,8 @@ public class CompanyQuery {
                     " )tbl1 ON tbl1.hospitalId = h.id" +
                     " WHERE h.id =:id" +
                     " AND h.is_company='Y'" +
-                    " AND h.status !='D'";
+                    " AND h.status !='D'" +
+                    " AND h.is_company='Y'";
 
 
 }

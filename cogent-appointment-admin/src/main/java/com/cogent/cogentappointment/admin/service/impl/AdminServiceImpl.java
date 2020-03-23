@@ -308,8 +308,12 @@ public class AdminServiceImpl implements AdminService {
                 saveAdminDashboardFeature(result.getId(), admin);
             }
 
-            adminDashboardFeature.setStatus(result.getStatus());
-            adminDashboardFeatureList.add(adminDashboardFeature);
+            if (adminDashboardFeature != null) {
+                adminDashboardFeature.setStatus(result.getStatus());
+                adminDashboardFeatureList.add(adminDashboardFeature);
+
+            }
+
 
         });
 

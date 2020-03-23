@@ -96,6 +96,7 @@ public class HospitalUtils {
         hospital.setNumberOfAdmins(updateRequestDTO.getNumberOfAdmins());
         hospital.setNumberOfFreeFollowUps(updateRequestDTO.getNumberOfFreeFollowUps());
         hospital.setFollowUpIntervalDays(updateRequestDTO.getFollowUpIntervalDays());
+        hospital.setAlias(updateRequestDTO.getAlias());
     }
 
     public static HospitalContactNumber parseToUpdatedHospitalContactNumber(

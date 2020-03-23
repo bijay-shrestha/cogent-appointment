@@ -86,7 +86,7 @@ public class DashboardResource {
         return ok(dashboardService.getDashboardFeaturesByAdmin(adminId));
     }
 
-    @PutMapping(DYNAMIC_DASHBOARD_FEATURE)
+    @GetMapping(DYNAMIC_DASHBOARD_FEATURE)
     @ApiOperation(FETCH_DYNAMIC_DASHBOARD_FEATURE)
     public ResponseEntity<?> fetchAllDashboardFeature() {
         return ok(dashboardService.fetchAllDashboardFeature());

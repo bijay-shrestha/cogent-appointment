@@ -27,7 +27,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.Validator;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -287,26 +290,23 @@ public class AdminServiceImpl implements AdminService {
         log.info(UPDATING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
     }
 
-    private List<AdminDashboardFeature> updateAdminDashboardFeature(List<AdminDashboardRequestDTO> adminDashboardRequestDTOS, Admin admin) {
+    private void updateAdminDashboardFeature(List<AdminDashboardRequestDTO> adminDashboardRequestDTOS, Admin admin) {
 
         List<AdminDashboardFeature> adminDashboardFeatureList = new ArrayList<>();
         adminDashboardRequestDTOS.forEach(result -> {
 
 
-            AdminDashboardFeature adminDashboardFeature = null;
-            try {
-                adminDashboardFeature = adminDashboardFeatureRepository.findAdminDashboardFeatureBydashboardFeatureId(result.getId(), admin.getId()).get();
+            AdminDashboardFeature adminDashboardFeature = adminDashboardFeatureRepository.findAdminDashboardFeatureBydashboardFeatureId(result.getId(), admin.getId()).get();
 //
 //                    .orElseThrow(() -> new NoContentFoundException(AdminDashboardFeature.class));
-                //                    .orElse(
+            //                    .orElse(
 //                           saveAdminDashboardFeature(result.getId(),admin));
 //                    .orElseThrow(() -> new NoContentFoundException(AdminDashboardFeature.class));
 
 
-            } catch (Exception e) {
+            if (adminDashboardFeature == null) {
                 saveAdminDashboardFeature(result.getId(), admin);
             }
-
 
             adminDashboardFeature.setStatus(result.getStatus());
             adminDashboardFeatureList.add(adminDashboardFeature);
@@ -314,7 +314,7 @@ public class AdminServiceImpl implements AdminService {
 
         });
 
-        return adminDashboardFeatureList;
+//        return adminDashboardFeatureList;
     }
 
     public void saveAdminDashboardFeature(Long id, Admin admin) {

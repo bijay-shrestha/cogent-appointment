@@ -41,6 +41,7 @@ public class HospitalUtils {
         hospital.setNumberOfAdmins(hospitalRequestDTO.getNumberOfAdmins());
         hospital.setNumberOfFreeFollowUps(hospitalRequestDTO.getNumberOfFreeFollowUps());
         hospital.setFollowUpIntervalDays(hospitalRequestDTO.getFollowUpIntervalDays());
+        hospital.setAlias(hospitalRequestDTO.getAlias());
         return hospital;
     }
 

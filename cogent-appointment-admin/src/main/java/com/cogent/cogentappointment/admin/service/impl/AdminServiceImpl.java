@@ -27,9 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.Validator;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -294,15 +292,35 @@ public class AdminServiceImpl implements AdminService {
         List<AdminDashboardFeature> adminDashboardFeatureList = new ArrayList<>();
         adminDashboardRequestDTOS.forEach(result -> {
 
+
             AdminDashboardFeature adminDashboardFeature = adminDashboardFeatureRepository.findAdminDashboardFeatureBydashboardFeatureId(result.getId(), admin.getId())
                     .orElseThrow(() -> new NoContentFoundException(AdminDashboardFeature.class));
+            //                    .orElse(
+//                           saveAdminDashboardFeature(result.getId(),admin));
+//                    .orElseThrow(() -> new NoContentFoundException(AdminDashboardFeature.class));
+
+            if (adminDashboardFeature == null) {
+                saveAdminDashboardFeature(result.getId(), admin);
+            }
+
 
             adminDashboardFeature.setStatus(result.getStatus());
             adminDashboardFeatureList.add(adminDashboardFeature);
 
+
         });
 
         return adminDashboardFeatureList;
+    }
+
+    public void saveAdminDashboardFeature(Long id, Admin admin) {
+
+        DashboardFeature dashboardFeature = dashboardFeatureRepository.findActiveDashboardFeatureById(id)
+                .orElseThrow(() -> new NoContentFoundException(DashboardFeature.class));
+
+        List<DashboardFeature> dashboardFeatureList = Arrays.asList(dashboardFeature);
+        adminDashboardFeatureRepository.saveAll(parseToAdminDashboardFeature(dashboardFeatureList, admin));
+
     }
 
     @Override

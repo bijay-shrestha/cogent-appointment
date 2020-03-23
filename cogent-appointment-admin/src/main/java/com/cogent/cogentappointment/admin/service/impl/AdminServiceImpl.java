@@ -303,7 +303,7 @@ public class AdminServiceImpl implements AdminService {
 //                    .orElseThrow(() -> new NoContentFoundException(AdminDashboardFeature.class));
 
 
-            } catch (NoContentFoundException | NoSuchElementException e) {
+            } catch (Exception e) {
                 saveAdminDashboardFeature(result.getId(), admin);
             }
 

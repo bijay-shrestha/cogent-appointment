@@ -27,7 +27,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.Validator;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -293,13 +296,17 @@ public class AdminServiceImpl implements AdminService {
         adminDashboardRequestDTOS.forEach(result -> {
 
 
-            AdminDashboardFeature adminDashboardFeature = adminDashboardFeatureRepository.findAdminDashboardFeatureBydashboardFeatureId(result.getId(), admin.getId()).get();
+            AdminDashboardFeature adminDashboardFeature = null;
+            try {
+                adminDashboardFeature = adminDashboardFeatureRepository.findAdminDashboardFeatureBydashboardFeatureId(result.getId(), admin.getId()).get();
+//
 //                    .orElseThrow(() -> new NoContentFoundException(AdminDashboardFeature.class));
-            //                    .orElse(
+                //                    .orElse(
 //                           saveAdminDashboardFeature(result.getId(),admin));
 //                    .orElseThrow(() -> new NoContentFoundException(AdminDashboardFeature.class));
 
-            if (adminDashboardFeature == null) {
+
+            } catch (NoContentFoundException e) {
                 saveAdminDashboardFeature(result.getId(), admin);
             }
 

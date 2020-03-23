@@ -27,7 +27,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.Validator;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -292,12 +291,10 @@ public class AdminServiceImpl implements AdminService {
 
     private void updateAdminDashboardFeature(List<AdminDashboardRequestDTO> adminDashboardRequestDTOS, Admin admin) {
 
-        List<AdminDashboardFeature> adminDashboardFeatureList = new ArrayList<>();
         adminDashboardRequestDTOS.forEach(result -> {
 
+            AdminDashboardFeature adminDashboardFeature = adminDashboardFeatureRepository.findAdminDashboardFeatureBydashboardFeatureId(result.getId(), admin.getId());
 
-            AdminDashboardFeature adminDashboardFeature = adminDashboardFeatureRepository.findAdminDashboardFeatureBydashboardFeatureId(result.getId(), admin.getId()).get();
-//
 //                    .orElseThrow(() -> new NoContentFoundException(AdminDashboardFeature.class));
             //                    .orElse(
 //                           saveAdminDashboardFeature(result.getId(),admin));
@@ -309,12 +306,8 @@ public class AdminServiceImpl implements AdminService {
             }
 
             adminDashboardFeature.setStatus(result.getStatus());
-            adminDashboardFeatureList.add(adminDashboardFeature);
-
-
         });
 
-//        return adminDashboardFeatureList;
     }
 
     public void saveAdminDashboardFeature(Long id, Admin admin) {

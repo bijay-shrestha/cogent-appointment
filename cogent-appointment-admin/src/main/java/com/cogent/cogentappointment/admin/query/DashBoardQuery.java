@@ -183,7 +183,7 @@ public class DashBoardQuery {
                 " df " +                   //[0]
                 " FROM DashboardFeature df" +
                 " WHERE df.status ='Y'" +
-                " AND df.id IN '" + ids + "'";
+                " AND df.id IN (" + ids + ")";
 
     }
 

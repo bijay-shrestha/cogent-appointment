@@ -28,7 +28,6 @@ import static com.cogent.cogentappointment.admin.constants.StatusConstants.Appoi
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.VACANT;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.COMMA_SEPARATED;
-import static com.cogent.cogentappointment.admin.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.APPOINTMENT_STATUS;
@@ -141,6 +140,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
 
             List<DoctorTimeSlotResponseDTO> doctorTimeSlots = new ArrayList<>();
 
+
             if (doctorDutyRosterStatusResponseDTO.getDayOffStatus().equals(NO)) {
 
                 List<AppointmentStatusResponseDTO> appointmentMatchedWithRoster =
@@ -161,31 +161,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
                                                List<DoctorTimeSlotResponseDTO> doctorTimeSlots) {
 
         for (AppointmentStatusResponseDTO appointment : appointmentMatchedWithRoster) {
-
-            DoctorTimeSlotResponseDTO responseDTO = new DoctorTimeSlotResponseDTO();
-//            responseDTO.setAppointmentNumber(appointment.getAppointmentNumber());
-            String[] appointmentTimeDetails = appointment.getAppointmentTimeDetails().split(COMMA_SEPARATED);
-
-            for (String appointmentTimeAndStatus : appointmentTimeDetails) {
-                String[] timeAndStatus = appointmentTimeAndStatus.split(HYPHEN);
-
-                responseDTO.setAppointmentTime(convert24HourTo12HourFormat(timeAndStatus[0]));
-                responseDTO.setStatus(timeAndStatus[1]);
-
-                String time = timeAndStatus[0];
-
-                Date availableDateTime = parseAppointmentTime(convertLocalDateToDate(appointment.getDate()), time);
-
-                Date currentDate = new Date();
-
-                boolean isRequestedBeforeCurrentDateTime = availableDateTime.before(currentDate);
-
-                responseDTO.setHasTimePassed(isRequestedBeforeCurrentDateTime);
-
-//                parseAppointmentDetails(responseDTO, appointment);
-            }
-
-            doctorTimeSlots.add(responseDTO);
+            parseAppointmentDetails(appointment, doctorTimeSlots);
         }
     }
 
@@ -258,11 +234,13 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
                         boolean isDateBefore = convertLocalDateToDate(appointment.getDate()).before(new Date());
 
                         if (isDateBefore) {
-                            parseAppointmentDetails(doctorDutyRoster, appointment, doctorTimeSlotResponseDTOS);
+                            parseAppointmentDetails(appointment, doctorTimeSlotResponseDTOS);
                         } else {
                             if (doctorDutyRoster.getDayOffStatus().equals(NO))
-                                parseAppointmentDetails(doctorDutyRoster, appointment, doctorTimeSlotResponseDTOS);
+                                parseAppointmentDetails(appointment, doctorTimeSlotResponseDTOS);
                         }
+
+                        doctorDutyRoster.setDoctorTimeSlots(doctorTimeSlotResponseDTOS);
                     });
         });
 

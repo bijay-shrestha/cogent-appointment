@@ -134,19 +134,16 @@ public class AppointmentStatusUtils {
                                                             String status) {
 
         responseDTO.setAppointmentTime(convert24HourTo12HourFormat(FORMAT.print(dateTime)));
-
         responseDTO.setHasTimePassed(hasTimeHasPassed(availableDate, FORMAT.print(dateTime)));
-
         responseDTO.setStatus(status);
     }
 
-    public static Date parseAppointmentTime(Date availableDate, String availableTime) {
+    private static Date parseAppointmentTime(Date availableDate, String availableTime) {
         return datePlusTime(utilDateToSqlDate(availableDate), Objects.requireNonNull(parseTime(availableTime)));
     }
 
     public static void parseAppointmentDetails
-            (DoctorDutyRosterStatusResponseDTO doctorDutyRosterStatusResponseDTO,
-             AppointmentStatusResponseDTO appointmentStatusResponseDTO,
+            (AppointmentStatusResponseDTO appointmentStatusResponseDTO,
              List<DoctorTimeSlotResponseDTO> doctorTimeSlotResponseDTOS) {
 
         DoctorTimeSlotResponseDTO responseDTO = new DoctorTimeSlotResponseDTO();
@@ -172,7 +169,6 @@ public class AppointmentStatusUtils {
         }
 
         doctorTimeSlotResponseDTOS.add(responseDTO);
-        doctorDutyRosterStatusResponseDTO.setDoctorTimeSlots(doctorTimeSlotResponseDTOS);
     }
 
     private static boolean hasTimeHasPassed(java.time.LocalDate date,

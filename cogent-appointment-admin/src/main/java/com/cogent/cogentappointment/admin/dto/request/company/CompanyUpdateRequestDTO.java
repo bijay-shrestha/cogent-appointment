@@ -46,4 +46,8 @@ public class CompanyUpdateRequestDTO implements Serializable {
 
     @NotEmpty
     private List<CompanyContactNumberUpdateRequestDTO> contactNumberUpdateRequestDTOS;
+
+    @NotNull
+    @NotEmpty
+    private String alias;
 }

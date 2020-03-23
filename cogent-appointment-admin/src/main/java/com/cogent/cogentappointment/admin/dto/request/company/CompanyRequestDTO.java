@@ -42,5 +42,9 @@ public class CompanyRequestDTO implements Serializable {
 
     @NotEmpty
     private List<String> contactNumber;
+
+    @NotNull
+    @NotEmpty
+    private String alias;
 }
 

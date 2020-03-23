@@ -177,14 +177,27 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public CompanyResponseDTO fetchDetailsById(Long hospitalId) {
+    public CompanyResponseDTO fetchDetailsById(Long companyId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_DETAIL_PROCESS_STARTED, COMPANY);
 
-        CompanyResponseDTO responseDTO = hospitalRepository.fetchCompanyDetailsById(hospitalId);
+        CompanyResponseDTO responseDTO = hospitalRepository.fetchCompanyDetailsById(companyId);
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, COMPANY, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTO;
+    }
+
+    @Override
+    public String fetchAliasById(Long companyId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_ALIAS_PROCESS_STARTED, HOSPITAL);
+
+        String responseDTO = hospitalRepository.getAliasById(companyId);
+
+        log.info(FETCHING_ALIAS_PROCESS_STARTED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
     }

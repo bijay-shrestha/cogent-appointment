@@ -32,4 +32,6 @@ public class CompanyResponseDTO implements Serializable {
     private Character isCompany;
 
     private List<HospitalContactNumberResponseDTO> contactNumberResponseDTOS;
+
+    private String alias;
 }

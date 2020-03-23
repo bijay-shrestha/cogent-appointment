@@ -40,6 +40,7 @@ public class CompanyUtils {
         hospital.setPanNumber(hospitalRequestDTO.getPanNumber());
         hospital.setStatus(hospitalRequestDTO.getStatus());
         hospital.setIsCompany(Y);
+        hospital.setAlias(hospitalRequestDTO.getAlias());
         return hospital;
     }
 
@@ -74,6 +75,7 @@ public class CompanyUtils {
         company.setStatus(updateRequestDTO.getStatus());
         company.setRemarks(StringUtil.convertToNormalCase(updateRequestDTO.getRemarks()));
         company.setIsCompany(company.getIsCompany());
+        company.setAlias(updateRequestDTO.getAlias());
     }
 
     public static HospitalContactNumber parseToUpdatedCompanyContactNumber(
@@ -112,6 +114,7 @@ public class CompanyUtils {
         final int COMPANY_CODE_INDEX = 7;
         final int CONTACT_DETAILS_INDEX = 8;
         final int IS_COGENT_ADMIN_INDEX = 9;
+        final int ALIAS_INDEX=10;
 
 
         return CompanyResponseDTO.builder()
@@ -126,6 +129,7 @@ public class CompanyUtils {
 //                .contactNumberResponseDTOS(Objects.isNull(results[CONTACT_DETAILS_INDEX]) ?
 //                        new ArrayList<>() : parseToCompanyContactNumberResponseDTOS(results))
                 .isCompany(results[IS_COGENT_ADMIN_INDEX].toString().charAt(0))
+                .alias(results[ALIAS_INDEX].toString())
                 .build();
     }
 

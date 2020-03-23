@@ -65,7 +65,7 @@ public class CompanyQuery {
                     " h.status as status," +                                    //[2]
                     " h.address as address," +                                  //[3]
                     " h.pan_number as panNumber," +                             //[4]
-                    " h.remarks as remarks," +                                   //[5]
+                    " h.remarks as remarks," +                                  //[5]
                     " CASE WHEN" +
                     " (hl.status IS NULL OR hl.status = 'N')" +
                     " THEN null" +
@@ -74,7 +74,8 @@ public class CompanyQuery {
                     " END as companyLogo," +                                //[6]
                     " h.code as companyCode," +                                //[7]
                     " tbl1.contact_details as contact_details," +               //[8]
-                    " h.is_company as isCompany"+                      //[9]
+                    " h.is_company as isCompany," +                             //[9]
+                    " h.alias as alias"+                                       //10]
                     " FROM" +
                     " hospital h" +
                     " LEFT JOIN hospital_logo hl ON h.id =hl.hospital_id " +

@@ -29,6 +29,8 @@ public interface CompanyService {
 
     List<CompanyDropdownResponseDTO> fetchCompanyForDropDown();
 
-    CompanyResponseDTO fetchDetailsById(Long hospitalId);
+    CompanyResponseDTO fetchDetailsById(Long companyId);
+
+     String fetchAliasById(Long companyId);
 
 }

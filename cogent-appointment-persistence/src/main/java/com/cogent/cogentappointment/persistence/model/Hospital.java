@@ -61,6 +61,9 @@ public class Hospital extends Auditable<String> implements Serializable {
     @Column(name = "remarks")
     private String remarks;
 
+    @Column(name = "alias")
+    private String alias;
+
     @Override
     public String toString() {
         return "Hospital{" +

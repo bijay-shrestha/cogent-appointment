@@ -266,6 +266,6 @@ public class CompanyServiceImpl implements CompanyService {
 
     private Function<Long, NoContentFoundException> COMPANY_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         log.error("Company with id : {} not found", id);
-        throw new NoContentFoundException(Hospital.class, "id", id.toString());
+        throw new NoContentFoundException("Company Doesn't Exists");
     };
 }

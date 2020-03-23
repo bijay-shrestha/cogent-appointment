@@ -52,5 +52,7 @@ public class HospitalRequestDTO implements Serializable {
     private Integer numberOfFreeFollowUps;
 
     private Integer followUpIntervalDays;
+
+
 }
 

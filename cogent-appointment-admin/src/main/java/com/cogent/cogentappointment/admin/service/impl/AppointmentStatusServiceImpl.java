@@ -85,6 +85,12 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
         return appointmentStatusDTO;
     }
 
+    /*IN CASE OF PAST DATE ->
+    * IF THERE ANY APPOINTMENTS, THEN SHOW AVAILABLE TIME SLOTS IRRESPECTIVE OF DAY OFF STATUS
+    * BUT THERE ARE NO APPOINTMENT, THEN SHOW AVAILABLE TIME SLOTS ONLY IF DAY OFF STATUS = 'N'
+    *
+    * IN CASE OF FUTURE DATE ->
+    * SHOW AVAILABLE TIME SLOTS ONLY IF DAY OFF STATUS = 'N'*/
     private List<DoctorDutyRosterStatusResponseDTO> setDoctorTimeSlot(String status,
                                                                       List<DoctorDutyRosterStatusResponseDTO> doctorDutyRosterStatus,
                                                                       List<AppointmentStatusResponseDTO> appointmentStatusResponseDTOS) {

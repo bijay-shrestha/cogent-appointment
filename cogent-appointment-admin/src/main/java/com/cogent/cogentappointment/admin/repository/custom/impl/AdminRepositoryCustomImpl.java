@@ -1,11 +1,17 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.constants.ErrorMessageConstants;
-import com.cogent.cogentappointment.admin.constants.StatusConstants;
+import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
+import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminInfoRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.AdminInfoRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.AdminSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.AdminUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.admin.*;
+import com.cogent.cogentappointment.admin.dto.response.company.CompanyMinimalResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminDetailResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminLoggedInInfoResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.AdminRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Admin;
@@ -24,7 +30,15 @@ import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.*;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.query.AdminQuery.*;
+import static com.cogent.cogentappointment.admin.query.AdminQuery.QUERY_FO_FETCH_MAC_ADDRESS_INFO;
+import static com.cogent.cogentappointment.admin.query.AdminQuery.QUERY_TO_FETCH_ADMIN_BY_USERNAME_OR_EMAIL;
+import static com.cogent.cogentappointment.admin.query.AdminQuery.QUERY_TO_FETCH_ADMIN_INFO;
+import static com.cogent.cogentappointment.admin.query.AdminQuery.QUERY_TO_FIND_ADMIN_FOR_VALIDATION;
+import static com.cogent.cogentappointment.admin.query.AdminQuery.QUERY_TO_GET_LOGGED_ADMIN_INFO;
+import static com.cogent.cogentappointment.admin.query.AdminQuery.QUERY_TO_VALIDATE_ADMIN_COUNT;
+import static com.cogent.cogentappointment.admin.query.CompanyAdminQuery.*;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
 
@@ -73,6 +87,17 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     }
 
     @Override
+    public List<Object[]> validateCompanyAdminDuplicity(CompanyAdminUpdateRequestDTO updateRequestDTO) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FIND_COMPANY_ADMIN_EXCEPT_CURRENT_COMPANY_ADMIN)
+                .setParameter(ID, updateRequestDTO.getId())
+                .setParameter(EMAIL, updateRequestDTO.getEmail())
+                .setParameter(MOBILE_NUMBER, updateRequestDTO.getMobileNumber())
+                .setParameter(COMPANY_ID, updateRequestDTO.getCompanyId());
+
+        return query.getResultList();
+    }
+
+    @Override
     public List<AdminDropdownDTO> fetchActiveAdminsForDropDown() {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_ADMIN_FOR_DROPDOWN);
@@ -104,7 +129,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     public AdminDetailResponseDTO fetchDetailsById(Long id) {
         AdminDetailResponseDTO detailResponseDTO = fetchAdminDetailResponseDTO(id);
 
-        if (detailResponseDTO.getHasMacBinding().equals(StatusConstants.YES))
+        if (detailResponseDTO.getHasMacBinding().equals(YES))
             detailResponseDTO.setAdminMacAddressInfo(getMacAddressInfo(id));
 
         return detailResponseDTO;
@@ -148,6 +173,57 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         }
     }
 
+    @Override
+    public List<DropDownResponseDTO> fetchActiveCompanyAdminsForDropDown() {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_COMPANY_ADMIN_FOR_DROPDOWN);
+
+        List<DropDownResponseDTO> list = transformQueryToResultList(query, DropDownResponseDTO.class);
+
+        if (list.isEmpty()) throw NO_ADMIN_FOUND.get();
+        else return list;
+    }
+
+    @Override
+    public List<CompanyMinimalResponseDTO> searchCompanyAdmin(CompanyAdminSearchRequestDTO searchRequestDTO,
+                                                              Pageable pageable) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_COMPANY_ADMIN(searchRequestDTO));
+
+        int totalItems = query.getResultList().size();
+
+        addPagination.accept(pageable, query);
+
+        List<CompanyMinimalResponseDTO> result = transformQueryToResultList(query, CompanyMinimalResponseDTO.class);
+
+        if (ObjectUtils.isEmpty(result)) throw NO_ADMIN_FOUND.get();
+        else {
+            result.get(0).setTotalItems(totalItems);
+            return result;
+        }
+    }
+
+    @Override
+    public CompanyAdminDetailResponseDTO fetchCompanyAdminDetailsById(Long id) {
+        CompanyAdminDetailResponseDTO detailResponseDTO = fetchCompanyAdminDetailResponseDTO(id);
+
+        if (detailResponseDTO.getHasMacBinding().equals(YES))
+            detailResponseDTO.setAdminMacAddressInfo(getMacAddressInfo(id));
+
+        return detailResponseDTO;
+    }
+
+    @Override
+    public CompanyAdminLoggedInInfoResponseDTO fetchLoggedInCompanyAdminInfo(CompanyAdminInfoRequestDTO requestDTO) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_COMPANY_ADMIN_INFO)
+                .setParameter(USERNAME, requestDTO.getUsername())
+                .setParameter(EMAIL, requestDTO.getUsername());
+
+        try {
+            return transformQueryToSingleResult(query, CompanyAdminLoggedInInfoResponseDTO.class);
+        } catch (NoResultException e) {
+            throw new NoContentFoundException(ADMIN_INFO_NOT_FOUND);
+        }
+    }
+
     public AdminDetailResponseDTO fetchAdminDetailResponseDTO(Long id) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ADMIN_DETAIL)
                 .setParameter(ID, id);
@@ -158,6 +234,18 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
             throw ADMIN_WITH_GIVEN_ID_NOT_FOUND.apply(id);
 
         return transformQueryToResultList(query, AdminDetailResponseDTO.class).get(0);
+    }
+
+    public CompanyAdminDetailResponseDTO fetchCompanyAdminDetailResponseDTO(Long id) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_COMPANY_ADMIN_DETAIL)
+                .setParameter(ID, id);
+
+        List<Object[]> results = query.getResultList();
+
+        if (results.isEmpty())
+            throw ADMIN_WITH_GIVEN_ID_NOT_FOUND.apply(id);
+
+        return transformQueryToResultList(query, CompanyAdminDetailResponseDTO.class).get(0);
     }
 
     public List<AdminMacAddressInfoResponseDTO> getMacAddressInfo(Long id) {

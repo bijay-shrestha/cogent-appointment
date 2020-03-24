@@ -66,6 +66,29 @@ public class SwaggerConstants {
     //B
 
     //C
+    public interface CompanyAdminConstant {
+        String BASE_API_VALUE = "This is Company Admin Resource";
+        String SAVE_OPERATION = "Save new company admin";
+        String UPDATE_OPERATION = "Update existing company admin details";
+        String DELETE_OPERATION = "Set company admin status as 'D' with specific remarks";
+        String SEARCH_OPERATION = "Search company admin according to given request parameters";
+        String DETAILS_OPERATION = "Fetch company admin details by its id";
+        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal company admin details (id and name) for dropdown";
+        String CHANGE_PASSWORD_OPERATION = "Validate the requested password with original and update it accordingly" +
+                " (Change password).";
+        String RESET_PASSWORD_OPERATION = "Reset password of any company admin. " +
+                "This can be done only by those admin who has privilege to do so";
+        String UPDATE_AVATAR_OPERATION = "Update company admin avatar and if the file size is empty " +
+                "then change the isDefaultImage status as 'Y' else update accordingly.";
+        String VERIFY_ADMIN = "Verify if the confirmation token sent in email (after successful save) is valid" +
+                " and company admin has not been registered.";
+        String SAVE_PASSWORD_OPERATION = "Save company admin password";
+        String FETCH_LOGGED_IN_ADMIN_INFO = "Fetch logged in company admin information." +
+                " Used to show in top-bar and to validate if the company admin updates its own profile";
+        String FETCH_ADMIN_META_INFO = "Fetch active company admin meta info for dropdown";
+    }
+
+
     public interface CountryConstant {
         String BASE_API_VALUE = "This is Country Resource.";
         String FETCH_ACTIVE_COUNTRY = "Fetch active country for dropdown.";

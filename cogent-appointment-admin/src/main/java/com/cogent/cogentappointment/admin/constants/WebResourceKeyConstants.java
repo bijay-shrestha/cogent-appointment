@@ -47,6 +47,15 @@ public class WebResourceKeyConstants {
         String BASE_COMPANY = "/company";
     }
 
+    public interface CompanyAdminConstants {
+        String BASE_COMPANY_ADMIN = "/CompanyAdmin";
+        String AVATAR = "/avatar";
+        String COMPANY_ADMIN_META_INFO = "/metaInfo";
+        String CHANGE_PASSWORD = "/changePassword";
+        String RESET_PASSWORD = "/resetPassword";
+        String INFO = "/info";
+        String VERIFY = "/verify";
+    }
 
     //D
     public interface DashboardConstants {

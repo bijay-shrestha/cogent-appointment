@@ -35,9 +35,16 @@ public class Profile extends Auditable<String> implements Serializable {
     @Column(name = "status")
     private Character status;
 
+    @Column(name = "is_company_profile")
+    private Character isCompanyProfile;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id")
     private Department department;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id")
+    private Hospital company;
 
     @Column(name = "remarks")
     private String remarks;
@@ -49,7 +56,9 @@ public class Profile extends Auditable<String> implements Serializable {
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + status +
+                ", isCompanyProfile=" + isCompanyProfile +
                 ", department=" + department.getName() +
+                ", company=" + company.getName() +
                 ", remarks='" + remarks + '\'' +
                 '}';
     }

@@ -48,7 +48,7 @@ public class HmacApiInfoQuery {
                     " LEFT JOIN Profile p ON p.department.id=d.id" +
                     " LEFT JOIN Admin a ON a.profileId.id=p.id" +
                     " WHERE" +
-                    " a.username=:username" +
+                    " (a.username =:username OR a.mobileNumber=:username OR a.email=:username)" +
                     " AND" +
                     " a.status='Y'" +
                     " AND" +

@@ -140,6 +140,7 @@ public class CompanyAdminUtils {
     }
 
     public static EmailRequestDTO convertCompanyAdminRequestToEmailRequestDTO(CompanyAdminRequestDTO adminRequestDTO,
+                                                                       Admin admin,
                                                                        String confirmationToken,
                                                                        HttpServletRequest httpServletRequest) {
 
@@ -152,7 +153,7 @@ public class CompanyAdminUtils {
                 .receiverEmailAddress(adminRequestDTO.getEmail())
                 .subject(SUBJECT_FOR_ADMIN_VERIFICATION)
                 .templateName(ADMIN_VERIFICATION)
-                .paramValue(adminRequestDTO.getUsername() + COMMA_SEPARATED + confirmationUrl)
+                .paramValue(admin.getUsername() + COMMA_SEPARATED + confirmationUrl)
                 .build();
     }
 

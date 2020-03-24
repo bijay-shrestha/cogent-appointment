@@ -30,6 +30,8 @@ public interface AdminRepositoryCustom {
     List<Object[]> validateDuplicity(String username, String email, String mobileNumber,
                                      Long hospitalId);
 
+    List<Object[]> validateDuplicityForCompanyAdmin(String email, String mobileNumber);
+
     List<AdminDropdownDTO> fetchActiveAdminsForDropDown();
 
     List<AdminMinimalResponseDTO> search(AdminSearchRequestDTO searchRequestDTO, Pageable pageable);

@@ -200,10 +200,9 @@ public class AdminQuery {
                     " FROM " +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
-                    " LEFT JOIN Department d ON d.id=p.department.id" +
-                    " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
+                    " LEFT JOIN Hospital h ON h.id=p.company.id" +
                     " WHERE" +
-                    " a.username =:username" +
+                    " (a.username =:username OR a.mobileNumber=:username OR a.email=:username)" +
                     " AND a.status = 'Y'" +
-                    " AND h.isCompany='N'";
+                    " AND h.isCompany='Y'";
 }

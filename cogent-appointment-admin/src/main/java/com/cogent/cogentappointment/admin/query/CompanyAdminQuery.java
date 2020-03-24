@@ -11,33 +11,21 @@ import org.springframework.util.ObjectUtils;
  */
 public class CompanyAdminQuery {
 
-    public static final String QUERY_TO_FIND_ADMIN_FOR_VALIDATION =
+    public static final String QUERY_TO_FIND_COMPANY_ADMIN_FOR_VALIDATION =
             "SELECT " +
-                    " a.username," +                            //[0]
-                    " a.email," +                               //[1]
-                    " a.mobileNumber" +                        //[2]
+                    " a.email," +                               //[0]
+                    " a.mobileNumber" +                        //[1]
                     " FROM" +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id = a.profileId" +
-                    " LEFT JOIN Department d ON d.id = p.department.id" +
-                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
+                    " LEFT JOIN Hospital h ON h.id = p.company.id" +
                     " WHERE" +
                     " a.status != 'D'" +
                     " AND h.status!='D'" +
                     " AND" +
-                    " (a.username =:username OR a.email =:email OR a.mobileNumber = :mobileNumber)" +
-                    " AND h.id=:hospitalId";
+                    " (a.email =:email OR a.mobileNumber = :mobileNumber)" +
+                    " AND h.isCompany='Y'";
 
-    public static final String QUERY_TO_VALIDATE_ADMIN_COUNT =
-            " SELECT " +
-                    " COUNT(a.id)," +                   //[0]
-                    " h.numberOfAdmins" +               //[1]
-                    " FROM Admin a" +
-                    " LEFT JOIN Profile p ON p.id = a.profileId" +
-                    " LEFT JOIN Department d ON d.id = p.department.id" +
-                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
-                    " WHERE h.id = :hospitalId" +
-                    " AND a.status !='D'";
 
     public static final String QUERY_TO_FIND_COMPANY_ADMIN_EXCEPT_CURRENT_COMPANY_ADMIN =
             "SELECT " +
@@ -50,7 +38,7 @@ public class CompanyAdminQuery {
                     " WHERE" +
                     " a.status != 'D'" +
                     " AND h.status!='D'" +
-                    " AND h.isCompanyProfile='Y'" +
+                    " AND h.isCompany='Y'" +
                     " AND a.id !=:id" +
                     " AND" +
                     " (a.email =:email OR a.mobileNumber = :mobileNumber)" +

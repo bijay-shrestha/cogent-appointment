@@ -110,10 +110,10 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         validateConstraintViolation(validator.validate(adminRequestDTO));
 
-        List<Object[]> admins = adminRepository.validateDuplicity(adminRequestDTO.getUsername(),
-                adminRequestDTO.getEmail(), adminRequestDTO.getMobileNumber(), adminRequestDTO.getCompanyId());
+        List<Object[]> admins = adminRepository.validateDuplicityForCompanyAdmin(adminRequestDTO.getEmail(),
+                adminRequestDTO.getMobileNumber());
 
-        validateAdminDuplicity(admins, adminRequestDTO.getUsername(), adminRequestDTO.getEmail(),
+        validateCompanyAdminDuplicity(admins, adminRequestDTO.getEmail(),
                 adminRequestDTO.getMobileNumber());
 
         Admin admin = save(adminRequestDTO);
@@ -127,7 +127,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         AdminConfirmationToken adminConfirmationToken =
                 saveAdminConfirmationToken(parseInAdminConfirmationToken(admin));
 
-        EmailRequestDTO emailRequestDTO = convertCompanyAdminRequestToEmailRequestDTO(adminRequestDTO,
+        EmailRequestDTO emailRequestDTO = convertCompanyAdminRequestToEmailRequestDTO(adminRequestDTO,admin,
                 adminConfirmationToken.getConfirmationToken(), httpServletRequest);
 
         sendEmail(emailRequestDTO);
@@ -244,7 +244,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         List<Object[]> admins = adminRepository.validateCompanyAdminDuplicity(updateRequestDTO);
 
-        validateAdminDuplicity(admins, updateRequestDTO.getEmail(),
+        validateCompanyAdminDuplicity(admins, updateRequestDTO.getEmail(),
                 updateRequestDTO.getMobileNumber());
 
         EmailRequestDTO emailRequestDTO = parseUpdatedInfo(updateRequestDTO, admin);
@@ -326,22 +326,19 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         if (status.equals(INACTIVE)) throw ADMIN_ALREADY_REGISTERED.get();
     }
 
-    private void validateAdminDuplicity(List<Object[]> adminList, String requestUsername, String requestEmail,
+    private void validateCompanyAdminDuplicity(List<Object[]> adminList, String requestEmail,
                                         String requestMobileNumber) {
 
-        final int USERNAME = 0;
-        final int EMAIL = 1;
-        final int MOBILE_NUMBER = 2;
+        final int EMAIL = 0;
+        final int MOBILE_NUMBER = 1;
 
         adminList.forEach(admin -> {
-            boolean isUsernameExists = requestUsername.equalsIgnoreCase((String) get(admin, USERNAME));
             boolean isEmailExists = requestEmail.equalsIgnoreCase((String) get(admin, EMAIL));
             boolean isMobileNumberExists = requestMobileNumber.equalsIgnoreCase((String) get(admin, MOBILE_NUMBER));
 
-            if (isUsernameExists && isEmailExists && isMobileNumberExists)
+            if (isEmailExists && isMobileNumberExists)
                 throw ADMIN_DUPLICATION.get();
 
-            validateUsername(isUsernameExists, requestUsername);
             validateEmail(isEmailExists, requestEmail);
             validateMobileNumber(isMobileNumberExists, requestMobileNumber);
         });
@@ -448,24 +445,6 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
     private Admin findByUsername(String username) {
         return adminRepository.findAdminByUsername(username)
                 .orElseThrow(() -> new NoContentFoundException(Admin.class));
-    }
-
-    private void validateAdminDuplicity(List<Object[]> adminList, String requestEmail,
-                                        String requestMobileNumber) {
-
-        final int EMAIL = 0;
-        final int MOBILE_NUMBER = 1;
-
-        adminList.forEach(admin -> {
-            boolean isEmailExists = requestEmail.equalsIgnoreCase((String) get(admin, EMAIL));
-            boolean isMobileNumberExists = requestMobileNumber.equalsIgnoreCase((String) get(admin, MOBILE_NUMBER));
-
-            if (isEmailExists && isMobileNumberExists)
-                throw ADMIN_DUPLICATION.get();
-
-            validateEmail(isEmailExists, requestEmail);
-            validateMobileNumber(isMobileNumberExists, requestMobileNumber);
-        });
     }
 
     private void updateAvatar(Admin admin, MultipartFile files) {

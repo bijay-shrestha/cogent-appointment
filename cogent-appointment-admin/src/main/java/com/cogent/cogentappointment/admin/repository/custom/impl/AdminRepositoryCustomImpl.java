@@ -76,6 +76,15 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     }
 
     @Override
+    public List<Object[]> validateDuplicityForCompanyAdmin(String email, String mobileNumber) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FIND_COMPANY_ADMIN_FOR_VALIDATION)
+                .setParameter(EMAIL, email)
+                .setParameter(MOBILE_NUMBER, mobileNumber);
+
+        return query.getResultList();
+    }
+
+    @Override
     public List<Object[]> validateDuplicity(AdminUpdateRequestDTO updateRequestDTO) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FIND_ADMIN_EXCEPT_CURRENT_ADMIN)
                 .setParameter(ID, updateRequestDTO.getId())

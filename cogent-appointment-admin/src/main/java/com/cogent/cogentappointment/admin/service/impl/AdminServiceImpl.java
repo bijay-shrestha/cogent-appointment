@@ -292,17 +292,10 @@ public class AdminServiceImpl implements AdminService {
 
     private void updateAdminDashboardFeature(List<AdminDashboardRequestDTO> adminDashboardRequestDTOS, Admin admin) {
 
-
         List<AdminDashboardFeature> adminDashboardFeatureList = new ArrayList<>();
         adminDashboardRequestDTOS.forEach(result -> {
 
             AdminDashboardFeature adminDashboardFeature = adminDashboardFeatureRepository.findAdminDashboardFeatureBydashboardFeatureId(result.getId(), admin.getId());
-
-//                    .orElseThrow(() -> new NoContentFoundException(AdminDashboardFeature.class));
-            //                    .orElse(
-//                           saveAdminDashboardFeature(result.getId(),admin));
-//                    .orElseThrow(() -> new NoContentFoundException(AdminDashboardFeature.class));
-
 
             if (adminDashboardFeature == null) {
                 saveAdminDashboardFeature(result.getId(), admin);
@@ -311,9 +304,7 @@ public class AdminServiceImpl implements AdminService {
             if (adminDashboardFeature != null) {
                 adminDashboardFeature.setStatus(result.getStatus());
                 adminDashboardFeatureList.add(adminDashboardFeature);
-
             }
-
 
         });
 

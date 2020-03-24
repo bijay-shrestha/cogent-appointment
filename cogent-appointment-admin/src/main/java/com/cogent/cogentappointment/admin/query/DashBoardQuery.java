@@ -153,13 +153,16 @@ public class DashBoardQuery {
                 " atd.transactionDate";
     }
 
+    public static final String QUERY_TO_SELECT_DASHBOARD_FEATURES =
+            " SELECT" +
+                    " df.id as id," +
+                    " df.name as name," +
+                    " df.code as code" +
+                    " FROM DashboardFeature df";
+
     public static final String QUERY_TO_FETCH_DASHBOARD_FEATURES(Long adminId) {
 
-        return " SELECT" +
-                " df.id as id," +
-                " df.name as name," +
-                " df.code as code" +
-                " FROM DashboardFeature df" +
+        return QUERY_TO_SELECT_DASHBOARD_FEATURES +
                 "  LEFT JOIN AdminDashboardFeature adf ON adf.dashboardFeatureId.id =df.id" +
                 " LEFT JOIN Admin a ON a.id=adf.adminId.id" +
                 " LEFT JOIN Profile p ON p.id=a.profileId.id" +
@@ -170,11 +173,7 @@ public class DashBoardQuery {
     }
 
     public static final String QUERY_TO_FETCH_DASHBOARD_FEATURES =
-            " SELECT" +
-                    " df.id as id," +
-                    " df.name as name," +
-                    " df.code as code" +
-                    " FROM DashboardFeature df" +
+            QUERY_TO_SELECT_DASHBOARD_FEATURES +
                     " WHERE df.status='Y'";
 
     public static final String QUERY_TO_VALIDATE_DASHBOARD_FEATURE_COUNT(String ids) {

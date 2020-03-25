@@ -9,9 +9,9 @@ import com.cogent.cogentappointment.admin.dto.request.admin.AdminInfoRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.AdminSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.AdminUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.admin.*;
-import com.cogent.cogentappointment.admin.dto.response.company.CompanyMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminLoggedInInfoResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.AdminRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Admin;
@@ -28,16 +28,13 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.*;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.ADMIN_INFO_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
-import static com.cogent.cogentappointment.admin.query.AdminQuery.*;
 import static com.cogent.cogentappointment.admin.query.AdminQuery.QUERY_FO_FETCH_MAC_ADDRESS_INFO;
+import static com.cogent.cogentappointment.admin.query.AdminQuery.*;
 import static com.cogent.cogentappointment.admin.query.AdminQuery.QUERY_TO_FETCH_ADMIN_BY_USERNAME_OR_EMAIL;
-import static com.cogent.cogentappointment.admin.query.AdminQuery.QUERY_TO_FETCH_ADMIN_INFO;
-import static com.cogent.cogentappointment.admin.query.AdminQuery.QUERY_TO_FIND_ADMIN_FOR_VALIDATION;
 import static com.cogent.cogentappointment.admin.query.AdminQuery.QUERY_TO_GET_LOGGED_ADMIN_INFO;
-import static com.cogent.cogentappointment.admin.query.AdminQuery.QUERY_TO_VALIDATE_ADMIN_COUNT;
 import static com.cogent.cogentappointment.admin.query.CompanyAdminQuery.*;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
@@ -193,15 +190,15 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     }
 
     @Override
-    public List<CompanyMinimalResponseDTO> searchCompanyAdmin(CompanyAdminSearchRequestDTO searchRequestDTO,
-                                                              Pageable pageable) {
+    public List<CompanyAdminMinimalResponseDTO> searchCompanyAdmin(CompanyAdminSearchRequestDTO searchRequestDTO,
+                                                                   Pageable pageable) {
         Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_COMPANY_ADMIN(searchRequestDTO));
 
         int totalItems = query.getResultList().size();
 
         addPagination.accept(pageable, query);
 
-        List<CompanyMinimalResponseDTO> result = transformQueryToResultList(query, CompanyMinimalResponseDTO.class);
+        List<CompanyAdminMinimalResponseDTO> result = transformQueryToResultList(query, CompanyAdminMinimalResponseDTO.class);
 
         if (ObjectUtils.isEmpty(result)) throw NO_ADMIN_FOUND.get();
         else {

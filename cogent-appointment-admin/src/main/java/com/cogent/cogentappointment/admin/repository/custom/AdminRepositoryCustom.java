@@ -11,6 +11,7 @@ import com.cogent.cogentappointment.admin.dto.response.admin.*;
 import com.cogent.cogentappointment.admin.dto.response.company.CompanyMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminLoggedInInfoResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminMinimalResponseDTO;
 import com.cogent.cogentappointment.persistence.model.Admin;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
@@ -50,8 +51,8 @@ public interface AdminRepositoryCustom {
 
     List<DropDownResponseDTO> fetchActiveCompanyAdminsForDropDown();
 
-    List<CompanyMinimalResponseDTO> searchCompanyAdmin(CompanyAdminSearchRequestDTO searchRequestDTO,
-                                                       Pageable pageable);
+    List<CompanyAdminMinimalResponseDTO> searchCompanyAdmin(CompanyAdminSearchRequestDTO searchRequestDTO,
+                                                            Pageable pageable);
 
     CompanyAdminDetailResponseDTO fetchCompanyAdminDetailsById(Long id);
 

@@ -16,9 +16,7 @@ public class CompanyAdminSearchRequestDTO implements Serializable {
 
     private Long adminMetaInfoId;
 
-    private Long hospitalId;
-
-    private Long departmentId;
+    private Long companyId;
 
     private Long profileId;
 

@@ -10,6 +10,29 @@ import java.util.function.Function;
  */
 public class CompanyQuery {
 
+
+    public static final String QUERY_TO_VALIDATE_COMPANY_DUPLICITY =
+            "SELECT " +
+                    " h.name," +                        //[0]
+                    " h.code" +                         //[1]
+                    " FROM Hospital h" +
+                    " WHERE " +
+                    " (h.name =:name OR h.code =:code)" +
+                    " AND h.status != 'D'" +
+                    " AND h.isCompany='Y'";
+
+    public static final String QUERY_TO_VALIDATE_COMPANY_DUPLICITY_FOR_UPDATE =
+            "SELECT " +
+                    " h.name," +                        //[0]
+                    " h.code" +                         //[1]
+                    " FROM Hospital h" +
+                    " WHERE " +
+                    " h.id!=:id" +
+                    " AND" +
+                    " (h.name =:name OR h.code =:code)" +
+                    " AND h.status != 'D'"+
+                    " AND h.isCompany='Y'";
+
     public static final String QUERY_TO_FETCH_COMPANY_FOR_DROPDOWN =
             " SELECT" +
                     " h.id as value," +                     //[0]

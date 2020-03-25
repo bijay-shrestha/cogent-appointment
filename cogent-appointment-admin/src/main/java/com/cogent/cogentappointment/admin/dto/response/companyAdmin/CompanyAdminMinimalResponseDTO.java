@@ -14,7 +14,7 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CompanyMinimalResponseDTO implements Serializable {
+public class CompanyAdminMinimalResponseDTO implements Serializable {
 
     private Long id;
 

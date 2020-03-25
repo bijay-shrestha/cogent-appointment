@@ -87,7 +87,7 @@ public class CompanyServiceImpl implements CompanyService {
 
         validateConstraintViolation(validator.validate(requestDTO));
 
-        List<Object[]> companies = hospitalRepository.validateHospitalDuplicity(
+        List<Object[]> companies = hospitalRepository.validateCompanyDuplicity(
                 requestDTO.getName(), requestDTO.getCompanyCode());
 
         validateDuplicity(companies, requestDTO.getName(), requestDTO.getCompanyCode(),
@@ -113,7 +113,7 @@ public class CompanyServiceImpl implements CompanyService {
 
         Hospital company = findById(updateRequestDTO.getId());
 
-        List<Object[]> hospitals = hospitalRepository.validateHospitalDuplicityForUpdate(
+        List<Object[]> hospitals = hospitalRepository.validateCompanyDuplicityForUpdate(
                 updateRequestDTO.getId(), updateRequestDTO.getName(), updateRequestDTO.getCompanyCode());
 
         validateDuplicity(hospitals, updateRequestDTO.getName(),

@@ -23,7 +23,11 @@ public interface HospitalRepositoryCustom {
 
     List<Object[]> validateHospitalDuplicity(String name, String code);
 
+    List<Object[]> validateCompanyDuplicity(String name, String code);
+
     List<Object[]> validateHospitalDuplicityForUpdate(Long id, String name, String code);
+
+    List<Object[]> validateCompanyDuplicityForUpdate(Long id, String name, String code);
 
     List<HospitalMinimalResponseDTO> search(HospitalSearchRequestDTO searchRequestDTO, Pageable pageable);
 

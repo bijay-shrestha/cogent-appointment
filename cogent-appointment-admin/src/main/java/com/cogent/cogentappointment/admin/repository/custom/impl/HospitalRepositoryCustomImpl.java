@@ -27,9 +27,7 @@ import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.HOSPITAL_ID;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.ID;
-import static com.cogent.cogentappointment.admin.query.CompanyQuery.QUERY_TO_FETCH_COMPANY_DETAILS;
-import static com.cogent.cogentappointment.admin.query.CompanyQuery.QUERY_TO_FETCH_COMPANY_FOR_DROPDOWN;
-import static com.cogent.cogentappointment.admin.query.CompanyQuery.QUERY_TO_SEARCH_COMPANY;
+import static com.cogent.cogentappointment.admin.query.CompanyQuery.*;
 import static com.cogent.cogentappointment.admin.query.HospitalQuery.*;
 import static com.cogent.cogentappointment.admin.utils.CompanyUtils.parseToCompanyResponseDTO;
 import static com.cogent.cogentappointment.admin.utils.HospitalUtils.parseToHospitalResponseDTO;
@@ -56,8 +54,28 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
     }
 
     @Override
+    public List<Object[]> validateCompanyDuplicity(String name, String code) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_COMPANY_DUPLICITY)
+                .setParameter(QueryConstants.NAME, name)
+                .setParameter(QueryConstants.CODE, code);
+
+        return query.getResultList();
+    }
+
+    @Override
     public List<Object[]> validateHospitalDuplicityForUpdate(Long id, String name, String code) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE)
+                .setParameter(ID, id)
+                .setParameter(QueryConstants.NAME, name)
+                .setParameter(QueryConstants.CODE, code);
+
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Object[]> validateCompanyDuplicityForUpdate(Long id, String name, String code) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_COMPANY_DUPLICITY_FOR_UPDATE)
                 .setParameter(ID, id)
                 .setParameter(QueryConstants.NAME, name)
                 .setParameter(QueryConstants.CODE, code);
@@ -117,7 +135,7 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
         List<Object[]> results = query.getResultList();
 
         if (results.isEmpty()) throw HOSPITAL_WITH_GIVEN_ID_NOT_FOUND.apply(id);
-
+//todo:contact
         return parseToCompanyResponseDTO(results.get(0));
     }
 

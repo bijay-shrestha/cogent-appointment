@@ -8,10 +8,12 @@ import com.cogent.cogentappointment.admin.dto.request.admin.*;
 import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.email.EmailRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.admin.AdminMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.company.CompanyMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminLoggedInInfoResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminMetaInfoResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
@@ -149,12 +151,12 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
     }
 
     @Override
-    public List<CompanyMinimalResponseDTO> search(CompanyAdminSearchRequestDTO searchRequestDTO, Pageable pageable) {
+    public List<CompanyAdminMinimalResponseDTO> search(CompanyAdminSearchRequestDTO searchRequestDTO, Pageable pageable) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, ADMIN);
 
-        List<CompanyMinimalResponseDTO> responseDTOS = adminRepository.searchCompanyAdmin(searchRequestDTO,
+        List<CompanyAdminMinimalResponseDTO> responseDTOS = adminRepository.searchCompanyAdmin(searchRequestDTO,
                 pageable);
 
         log.info(SEARCHING_PROCESS_STARTED, ADMIN, getDifferenceBetweenTwoTime(startTime));
@@ -254,6 +256,8 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         if (updateRequestDTO.getIsAvatarUpdate().equals(YES))
             updateAvatar(admin, files);
 
+//        todo:mac cannot be saved
+        if(updateRequestDTO.getHasMacBinding().equals(YES))
         updateMacAddressInfo(updateRequestDTO.getMacAddressUpdateInfo(), admin);
 
         updateAdminMetaInfo(admin);

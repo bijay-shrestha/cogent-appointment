@@ -56,6 +56,7 @@ public class CompanyAdminUtils {
                                                                   Profile profile) {
 
         admin.setEmail(updateRequestDTO.getEmail());
+        admin.setUsername(getUsername(admin.getEmail()));
         admin.setFullName(convertToNormalCase(updateRequestDTO.getFullName()));
         admin.setMobileNumber(updateRequestDTO.getMobileNumber());
         admin.setStatus(updateRequestDTO.getStatus());

@@ -113,7 +113,7 @@ public class CompanyUtils {
         final int COMPANY_LOGO_INDEX = 6;
         final int COMPANY_CODE_INDEX = 7;
         final int CONTACT_DETAILS_INDEX = 8;
-        final int IS_COGENT_ADMIN_INDEX = 9;
+        final int IS_COMPANY_INDEX = 9;
         final int ALIAS_INDEX=10;
 
 
@@ -128,7 +128,7 @@ public class CompanyUtils {
                 .companyCode(results[COMPANY_CODE_INDEX].toString())
 //                .contactNumberResponseDTOS(Objects.isNull(results[CONTACT_DETAILS_INDEX]) ?
 //                        new ArrayList<>() : parseToCompanyContactNumberResponseDTOS(results))
-                .isCompany(results[IS_COGENT_ADMIN_INDEX].toString().charAt(0))
+                .isCompany(results[IS_COMPANY_INDEX].toString().charAt(0))
                 .alias(results[ALIAS_INDEX].toString())
                 .build();
     }

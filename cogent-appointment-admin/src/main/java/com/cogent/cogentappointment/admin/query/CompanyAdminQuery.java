@@ -52,7 +52,8 @@ public class CompanyAdminQuery {
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                     " WHERE a.status ='Y'" +
-                    " AND p.isCompanyProfile='Y'";
+                    " AND p.isCompanyProfile='Y'" +
+                    " AND p.status='Y'";
 
     public static String QUERY_TO_SEARCH_COMPANY_ADMIN(CompanyAdminSearchRequestDTO searchRequestDTO) {
 
@@ -86,7 +87,7 @@ public class CompanyAdminQuery {
                     " END as fileUri";                                           //[9]
 
     private static final String GET_WHERE_CLAUSE_TO_FETCH_ADMIN =
-            " WHERE a.status != 'D' AND h.status !='D' AND p.status !='D' AND p.isCompanyProfile='Y'";
+            " WHERE a.status != 'D' AND h.status !='D' AND p.status !='D' AND h.isCompany='Y'";
 
     private static String GET_WHERE_CLAUSE_FOR_SEARCH_COMAPNY_ADMIN(CompanyAdminSearchRequestDTO searchRequestDTO) {
         String whereClause = GET_WHERE_CLAUSE_TO_FETCH_ADMIN;
@@ -100,8 +101,8 @@ public class CompanyAdminQuery {
         if (!ObjectUtils.isEmpty(searchRequestDTO.getProfileId()))
             whereClause += " AND p.id=" + searchRequestDTO.getProfileId();
 
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getHospitalId()))
-            whereClause += " AND h.id=" + searchRequestDTO.getHospitalId();
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getCompanyId()))
+            whereClause += " AND h.id=" + searchRequestDTO.getCompanyId();
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getGenderCode())) {
             Gender gender = GenderUtils.fetchGenderByCode(searchRequestDTO.getGenderCode());
@@ -158,7 +159,7 @@ public class CompanyAdminQuery {
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                     " LEFT JOIN Hospital h ON h.id=p.company.id" +
                     " WHERE " +
-                    " (a.username=:username OR a.email =:email)" +
+                    " (a.username=:username OR a.email =:email OR a.mobileNumber=:username)" +
                     " AND a.status='Y'" +
                     " AND h.isCompany='Y'";
 
@@ -167,9 +168,9 @@ public class CompanyAdminQuery {
                     " ami.metaInfo as metaInfo" +                   //[1]
                     " FROM AdminMetaInfo ami" +
                     " LEFT JOIN Admin a ON a.id=ami.admin.id" +
-                    " LEFT JOI Profile ON p.id=a.profileId.id" +
+                    " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                     " WHERE a.status !='D'" +
-                    " AND p.isCompanyprofile='Y'";
+                    " AND p.isCompanyProfile='Y'";
 
     public static final String QUERY_TO_GET_LOGGED_ADMIN_INFO =
             "SELECT" +

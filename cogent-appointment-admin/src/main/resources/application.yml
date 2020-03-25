@@ -38,6 +38,6 @@ spring:
 
   minio:
     url: http://uat-presigned.cogenthealth.com.np
-    bucket: cogent-appointment-bijay
+    bucket: cogent-appointment
     access-key: cogent-appointment
     secret-key: cogentappointment@123

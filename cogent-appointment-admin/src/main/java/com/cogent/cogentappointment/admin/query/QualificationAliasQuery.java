@@ -48,7 +48,7 @@ public class QualificationAliasQuery {
     private static String GET_WHERE_CLAUSE_FOR_SEARCHING_QUALIFICATION_ALIAS
             (QualificationAliasSearchRequestDTO searchRequestDTO) {
 
-        String whereClause = " WHERE ";
+        String whereClause = " WHERE qa.status!='D'";
 
         if (!Objects.isNull(searchRequestDTO.getQualificationAliasId()))
             whereClause += " qa.id = " + searchRequestDTO.getQualificationAliasId();

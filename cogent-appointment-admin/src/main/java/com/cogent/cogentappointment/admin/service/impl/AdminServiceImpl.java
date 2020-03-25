@@ -149,7 +149,7 @@ public class AdminServiceImpl implements AdminService {
         List<DashboardFeature> dashboardFeatureList = validateDashboardFeature(ids);
         int requestCount = adminDashboardRequestDTOS.size();
 
-        if ((dashboardFeatureList.size()) == requestCount) {
+        if ((dashboardFeatureList.size()) != requestCount) {
             throw new NoContentFoundException(DashboardFeature.class);
         }
 
@@ -285,7 +285,7 @@ public class AdminServiceImpl implements AdminService {
 
         updateAdminMetaInfo(admin);
 
-        sendEmail(emailRequestDTO);
+//        sendEmail(emailRequestDTO);
 
         log.info(UPDATING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
     }

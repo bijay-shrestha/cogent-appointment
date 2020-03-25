@@ -161,7 +161,7 @@ public class DashBoardQuery {
                     " FROM DashboardFeature df";
 
     public static final String QUERY_TO_FETCH_DASHBOARD_FEATURES(Long adminId) {
-
+        
         return QUERY_TO_SELECT_DASHBOARD_FEATURES +
                 "  LEFT JOIN AdminDashboardFeature adf ON adf.dashboardFeatureId.id =df.id" +
                 " LEFT JOIN Admin a ON a.id=adf.adminId.id" +
@@ -169,7 +169,7 @@ public class DashBoardQuery {
                 " LEFT JOIN Department d ON d.id=p.department.id" +
                 " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
                 " WHERE a.id=" + adminId +
-                " AND df.status='Y'";
+                " AND adf.status='Y'";
     }
 
     public static final String QUERY_TO_FETCH_DASHBOARD_FEATURES =

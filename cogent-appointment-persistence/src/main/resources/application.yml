@@ -5,9 +5,9 @@ spring:
   application:
     name: persistence
   datasource:
-    url: jdbc:mysql://10.13.194.238:3308/cogent-appointment-uat?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
-    password: fonebank
+    url: jdbc:mysql://10.13.194.238:3308/cogent-appointment-dev?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
     username: fonebank
+    password: fonebank
     driver-class-name: com.mysql.cj.jdbc.Driver
 
     jpa:

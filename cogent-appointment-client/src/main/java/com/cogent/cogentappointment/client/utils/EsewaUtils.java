@@ -5,7 +5,7 @@ import com.cogent.cogentappointment.client.dto.response.appointment.appoinmentDa
 import com.cogent.cogentappointment.client.dto.response.appointment.appoinmentDateAndTime.AvailableDatesResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appoinmentDateAndTime.DoctorDutyRosterOverrideAppointmentDate;
 import com.cogent.cogentappointment.client.dto.response.appointment.appoinmentDateAndTime.DoctorWeekDaysDutyRosterAppointmentDate;
-import com.cogent.cogentappointment.client.dto.response.eSewa.AvailableDoctorWithSpecialization;
+import com.cogent.cogentappointment.client.dto.response.eSewa.*;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -21,7 +21,7 @@ import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDa
 /**
  * @author smriti on 15/03/20
  */
-public class eSewaUtils {
+public class EsewaUtils {
 
     public static List<AvailableDoctorWithSpecialization> mergeOverrideAndActualDoctorList(
             List<AvailableDoctorWithSpecialization> overrideList,
@@ -133,25 +133,43 @@ public class eSewaUtils {
         return unmatched;
     }
 
-    public static void getAllDutyRosterDates(Date date,
-                                             String weekName,
-                                             List<Date> dates) {
-        if (date.toString().substring(0, 3).toUpperCase().equals(weekName)) {
-            dates.add(utilDateToSqlDate(date));
-        }
-    }
-
     public static List<Date> getDutyRosterDates(List<Date> dates,
                                                 List<String> weekDays) {
         List<Date> availableDates=new ArrayList<>();
-
         for (Date date : dates) {
-
             weekDays.forEach(weekdays -> {
-
-                getAllDutyRosterDates(date,weekdays,availableDates);
+                if (date.toString().substring(0, 3).toUpperCase().equals(weekdays)) {
+                    availableDates.add(utilDateToSqlDate(date));
+                }
             });
         }
         return availableDates;
+    }
+
+    public static AvailableDoctorWithSpecializationResponseDTO getAvailableDoctorWithSpecializationResponseDTO(
+            List<AvailableDoctorWithSpecialization> mergedList){
+
+        return AvailableDoctorWithSpecializationResponseDTO.builder()
+                .availableDoctorWithSpecializations(mergedList)
+                .status(OK)
+                .build();
+    }
+
+    public static AvailableDatesWithSpecializationResponseDTO getAvailableDatesWithSpecializationResponseDTO(
+            List<AvailableDatesWithSpecialization> responseDTOList){
+
+        return AvailableDatesWithSpecializationResponseDTO.builder()
+                .availableDatesWithSpecialization(responseDTOList)
+                .status(OK)
+                .build();
+    }
+
+    public static AvailableDatesWithDoctorResponseDTO getAvailableDatesWithDoctorResponseDTO(
+            List<AvailableDatesWithDoctor> responseDTOList){
+
+        return AvailableDatesWithDoctorResponseDTO.builder()
+                .availableDatesWithDoctor(responseDTOList)
+                .status(OK)
+                .build();
     }
 }

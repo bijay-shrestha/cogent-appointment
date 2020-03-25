@@ -25,7 +25,7 @@ import static com.cogent.cogentappointment.client.log.CommonLogConstant.FETCHING
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.client.log.constants.eSewaLog.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
-import static com.cogent.cogentappointment.client.utils.eSewaUtils.*;
+import static com.cogent.cogentappointment.client.utils.EsewaUtils.*;
 
 @Service
 @Transactional
@@ -90,10 +90,7 @@ public class EsewaServiceImpl implements EsewaService {
 
         log.info(FETCHING_PROCESS_COMPLETED, AVAILABLE_DOCTOR_LIST, getDifferenceBetweenTwoTime(startTime));
 
-        return AvailableDoctorWithSpecializationResponseDTO.builder()
-                .availableDoctorWithSpecializations(mergedList)
-                .status(OK)
-                .build();
+        return getAvailableDoctorWithSpecializationResponseDTO(mergedList);
     }
 
     /*RETURNS ALL THE AVAILABLE APPOINTMENT DATES AND TIME BY DOCTORID and SPECIALIZATIONID*/
@@ -185,10 +182,7 @@ public class EsewaServiceImpl implements EsewaService {
 
         log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_AVAILABLE_DATES, getDifferenceBetweenTwoTime(startTime));
 
-        return AvailableDatesWithSpecializationResponseDTO.builder()
-                .availableDatesWithSpecialization(responseDTOList)
-                .status(OK)
-                .build();
+        return getAvailableDatesWithSpecializationResponseDTO(responseDTOList);
     }
 
     /*RETURNS ALL THE AVAILABLE APPOINTMENT DATES WITH DOCTOR ID AND NAME BY SPECIALIZATIONID*/
@@ -243,10 +237,7 @@ public class EsewaServiceImpl implements EsewaService {
 
         log.info(FETCHING_PROCESS_COMPLETED, SPECIALIZATION_AVAILABLE_DATES, getDifferenceBetweenTwoTime(startTime));
 
-        return AvailableDatesWithDoctorResponseDTO.builder()
-                .availableDatesWithDoctor(responseDTOList)
-                .status(OK)
-                .build();
+        return getAvailableDatesWithDoctorResponseDTO(responseDTOList);
     }
 
     /*RETURNS ALL THE AVAILABLE APPOINTMENT DATES  BY DOCTORID AND SPECIALIZATIONID*/

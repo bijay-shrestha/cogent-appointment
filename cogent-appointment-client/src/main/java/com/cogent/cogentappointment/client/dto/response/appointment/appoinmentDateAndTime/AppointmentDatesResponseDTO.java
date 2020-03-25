@@ -17,4 +17,6 @@ public class AppointmentDatesResponseDTO implements Serializable {
     private Long specializationId;
 
     private List<AvailableDatesResponseDTO> dates;
+
+    private int status;
 }

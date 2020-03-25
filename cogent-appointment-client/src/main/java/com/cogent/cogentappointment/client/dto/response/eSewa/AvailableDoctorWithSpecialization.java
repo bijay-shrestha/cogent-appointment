@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AvailableDoctorResponseDTO implements Serializable {
+public class AvailableDoctorWithSpecialization implements Serializable {
 
     private Long doctorId;
 

@@ -8,7 +8,7 @@ import com.cogent.cogentappointment.client.dto.request.eSewa.AppointmentDetailRe
 import com.cogent.cogentappointment.client.dto.response.appointment.appoinmentDateAndTime.DoctorDutyRosterAppointmentDate;
 import com.cogent.cogentappointment.client.dto.response.appointment.appoinmentDateAndTime.DoctorWeekDaysDutyRosterAppointmentDate;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.*;
-import com.cogent.cogentappointment.client.dto.response.eSewa.AvailableDoctorResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.eSewa.AvailableDoctorWithSpecialization;
 import com.cogent.cogentappointment.client.dto.response.eSewa.DoctorAvailabilityStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.eSewa.DutyRosterAppointmentDateAndDoctorDTO;
 import com.cogent.cogentappointment.client.dto.response.eSewa.DutyRosterAppointmentDateAndSpecilizationDTO;
@@ -229,7 +229,7 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
     }
 
     @Override
-    public List<AvailableDoctorResponseDTO> fetchAvailableDoctor(AppointmentDetailRequestDTO requestDTO) {
+    public List<AvailableDoctorWithSpecialization> fetchAvailableDoctor(AppointmentDetailRequestDTO requestDTO) {
         Date sqlDate = utilDateToSqlDate(requestDTO.getDate());
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_AVAILABLE_DOCTORS_FROM_DDR(requestDTO))
@@ -240,7 +240,7 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
         if (!Objects.isNull(requestDTO.getSpecializationId()))
             query.setParameter(SPECIALIZATION_ID, requestDTO.getSpecializationId());
 
-        return transformQueryToResultList(query, AvailableDoctorResponseDTO.class);
+        return transformQueryToResultList(query, AvailableDoctorWithSpecialization.class);
     }
 
     @Override

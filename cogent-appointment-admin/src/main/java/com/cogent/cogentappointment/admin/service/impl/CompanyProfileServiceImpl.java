@@ -4,8 +4,8 @@ import com.cogent.cogentappointment.admin.constants.ErrorMessageConstants;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.request.companyProfile.CompanyProfileRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.companyProfile.CompanyProfileSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.companyProfile.CompanyProfileUpdateRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.profile.ProfileSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.profile.ProfileDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.profile.ProfileMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
@@ -26,7 +26,8 @@ import java.util.function.Function;
 
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.CompanyProfileLog.COMPANY_PROFILE;
-import static com.cogent.cogentappointment.admin.utils.CompanyProfileUtils.convertDTOToProfile;
+import static com.cogent.cogentappointment.admin.utils.CompanyProfileUtils.convertDTOToCompanyProfile;
+import static com.cogent.cogentappointment.admin.utils.CompanyProfileUtils.convertToUpdatedCompanyProfile;
 import static com.cogent.cogentappointment.admin.utils.ProfileMenuUtils.convertToProfileMenu;
 import static com.cogent.cogentappointment.admin.utils.ProfileMenuUtils.convertToUpdatedProfileMenu;
 import static com.cogent.cogentappointment.admin.utils.ProfileUtils.convertProfileToDeleted;
@@ -57,16 +58,16 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
 
         log.info(SAVING_PROCESS_STARTED, COMPANY_PROFILE);
 
-        Long profileCount = companyProfileRepository.validateDuplicity(
-                requestDTO.getCompanyProfileDTO().getName(),
-                requestDTO.getCompanyProfileDTO().getCompanyId()
+        Long companyProfileCount = companyProfileRepository.validateDuplicity(
+                requestDTO.getCompanyProfileInfo().getName(),
+                requestDTO.getCompanyProfileInfo().getCompanyId()
         );
 
-        validateName(profileCount, requestDTO.getCompanyProfileDTO().getName());
+        validateName(companyProfileCount, requestDTO.getCompanyProfileInfo().getName());
 
-        Profile savedProfile = save(convertDTOToProfile(requestDTO.getCompanyProfileDTO()));
+        Profile savedProfile = save(convertDTOToCompanyProfile(requestDTO.getCompanyProfileInfo()));
 
-        saveProfileMenu(convertToProfileMenu(savedProfile, requestDTO.getProfileMenuRequestDTO()));
+        saveProfileMenu(convertToProfileMenu(savedProfile, requestDTO.getProfileMenuInfo()));
 
         log.info(SAVING_PROCESS_COMPLETED, COMPANY_PROFILE, getDifferenceBetweenTwoTime(startTime));
     }
@@ -77,31 +78,20 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
 
         log.info(UPDATING_PROCESS_STARTED, COMPANY_PROFILE);
 
-        Profile profile = findById(requestDTO.getProfileDTO().getId());
+        Profile profile = findById(requestDTO.getCompanyProfileInfo().getId());
 
-        Long profileCount = companyProfileRepository.validateDuplicityForUpdate(
-                requestDTO.getProfileDTO().getId(),
-                requestDTO.getProfileDTO().getName(),
-                requestDTO.getProfileDTO().getCompanyId());
+        Long companyProfileCount = companyProfileRepository.validateDuplicityForUpdate(
+                requestDTO.getCompanyProfileInfo().getId(),
+                requestDTO.getCompanyProfileInfo().getName(),
+                requestDTO.getCompanyProfileInfo().getCompanyId());
 
-        validateName(profileCount, requestDTO.getProfileDTO().getName());
+        validateName(companyProfileCount, requestDTO.getCompanyProfileInfo().getName());
 
-//        save(convertToUpdatedProfile(requestDTO.getProfileDTO(), profile));
+        convertToUpdatedCompanyProfile(requestDTO.getCompanyProfileInfo(), profile);
 
-        saveProfileMenu(convertToUpdatedProfileMenu(profile, requestDTO.getProfileMenuRequestDTO()));
+        saveProfileMenu(convertToUpdatedProfileMenu(profile, requestDTO.getProfileMenuInfo()));
 
         log.info(UPDATING_PROCESS_COMPLETED, COMPANY_PROFILE, getDifferenceBetweenTwoTime(startTime));
-    }
-
-    private Profile findById(Long profileId) {
-        return companyProfileRepository.findProfileById(profileId)
-                .orElseThrow(() -> PROFILE_WITH_GIVEN_ID_NOT_FOUND.apply(profileId));
-    }
-
-    private void validateName(Long profileCount, String name) {
-        if (profileCount.intValue() > 0)
-            throw new DataDuplicationException(
-                    String.format(ErrorMessageConstants.NAME_DUPLICATION_MESSAGE, Profile.class.getSimpleName(), name));
     }
 
     @Override
@@ -118,13 +108,14 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
     }
 
     @Override
-    public List<ProfileMinimalResponseDTO> search(ProfileSearchRequestDTO searchRequestDTO, Pageable pageable) {
+    public List<ProfileMinimalResponseDTO> search(CompanyProfileSearchRequestDTO searchRequestDTO,
+                                                  Pageable pageable) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, ProfileLog.PROFILE);
 
-//        List<ProfileMinimalResponseDTO> responseDTOS = profileRepository.search(searchRequestDTO, pageable);
+        List<ProfileMinimalResponseDTO> responseDTOS = companyProfileRepository.search(searchRequestDTO, pageable);
 
         log.info(SEARCHING_PROCESS_COMPLETED, ProfileLog.PROFILE, getDifferenceBetweenTwoTime(startTime));
 
@@ -166,8 +157,19 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
         return null;
     }
 
+    private void validateName(Long profileCount, String name) {
+        if (profileCount.intValue() > 0)
+            throw new DataDuplicationException(
+                    String.format(ErrorMessageConstants.NAME_DUPLICATION_MESSAGE, Profile.class.getSimpleName(), name));
+    }
+
     public Profile save(Profile profile) {
         return companyProfileRepository.save(profile);
+    }
+
+    private Profile findById(Long profileId) {
+        return companyProfileRepository.findCompanyProfileById(profileId)
+                .orElseThrow(() -> PROFILE_WITH_GIVEN_ID_NOT_FOUND.apply(profileId));
     }
 
     private Function<Long, NoContentFoundException> PROFILE_WITH_GIVEN_ID_NOT_FOUND = (id) -> {

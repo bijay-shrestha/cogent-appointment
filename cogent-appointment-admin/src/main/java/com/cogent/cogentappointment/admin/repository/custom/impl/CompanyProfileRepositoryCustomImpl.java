@@ -1,10 +1,10 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
-import com.cogent.cogentappointment.admin.dto.request.profile.ProfileSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.companyProfile.CompanyProfileSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.companyProfile.CompanyProfileMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.profile.ProfileDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.profile.ProfileMenuResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.profile.ProfileMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.profile.ProfileResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.CompanyProfileRepositoryCustom;
@@ -57,18 +57,18 @@ public class CompanyProfileRepositoryCustomImpl implements CompanyProfileReposit
     }
 
     @Override
-    public List<ProfileMinimalResponseDTO> search(ProfileSearchRequestDTO searchRequestDTO,
-                                                  Pageable pageable) {
+    public List<CompanyProfileMinimalResponseDTO> search(CompanyProfileSearchRequestDTO searchRequestDTO,
+                                                         Pageable pageable) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_PROFILE.apply(searchRequestDTO));
+        Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_COMPANY_PROFILE.apply(searchRequestDTO));
 
         int totalItems = query.getResultList().size();
 
         addPagination.accept(pageable, query);
 
-        List<ProfileMinimalResponseDTO> results = transformQueryToResultList(query, ProfileMinimalResponseDTO.class);
+        List<CompanyProfileMinimalResponseDTO> results = transformQueryToResultList(query, CompanyProfileMinimalResponseDTO.class);
 
-        if (results.isEmpty()) throw PROFILES_NOT_FOUND.get();
+        if (results.isEmpty()) throw COMPANY_PROFILES_NOT_FOUND.get();
         else {
             results.get(0).setTotalItems(totalItems);
             return results;
@@ -104,11 +104,11 @@ public class CompanyProfileRepositoryCustomImpl implements CompanyProfileReposit
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
-        if (results.isEmpty()) throw PROFILES_NOT_FOUND.get();
+        if (results.isEmpty()) throw COMPANY_PROFILES_NOT_FOUND.get();
         else return results;
     }
 
-    private Supplier<NoContentFoundException> PROFILES_NOT_FOUND = () -> new NoContentFoundException(Profile.class);
+    private Supplier<NoContentFoundException> COMPANY_PROFILES_NOT_FOUND = () -> new NoContentFoundException(Profile.class);
 
     private Function<Long, NoContentFoundException> PROFILE_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         throw new NoContentFoundException(Profile.class, "id", id.toString());

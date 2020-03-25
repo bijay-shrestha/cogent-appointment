@@ -3,11 +3,8 @@ package com.cogent.cogentappointment.admin.service;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.request.companyProfile.CompanyProfileRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.companyProfile.CompanyProfileSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.companyProfile.CompanyProfileUpdateRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.profile.ProfileMenuSearchRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.profile.ProfileSearchRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.profile.ProfileUpdateRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.profile.AssignedProfileResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.profile.ProfileDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.profile.ProfileMinimalResponseDTO;
 import com.cogent.cogentappointment.persistence.model.Profile;
@@ -26,7 +23,8 @@ public interface CompanyProfileService {
 
     void delete(DeleteRequestDTO deleteRequestDTO);
 
-    List<ProfileMinimalResponseDTO> search(ProfileSearchRequestDTO searchRequestDTO, Pageable pageable);
+    List<ProfileMinimalResponseDTO> search(CompanyProfileSearchRequestDTO searchRequestDTO,
+                                           Pageable pageable);
 
     ProfileDetailResponseDTO fetchDetailsById(Long id);
 

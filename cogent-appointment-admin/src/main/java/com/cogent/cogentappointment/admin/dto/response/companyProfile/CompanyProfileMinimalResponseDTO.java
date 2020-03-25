@@ -1,8 +1,9 @@
-package com.cogent.cogentappointment.admin.dto.response.profile;
+package com.cogent.cogentappointment.admin.dto.response.companyProfile;
 
 import lombok.*;
 
 import java.io.Serializable;
+
 /**
  * @author smriti on 7/10/19
  */
@@ -11,7 +12,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ProfileMinimalResponseDTO implements Serializable {
+public class CompanyProfileMinimalResponseDTO implements Serializable {
 
     private Long id;
 
@@ -19,9 +20,7 @@ public class ProfileMinimalResponseDTO implements Serializable {
 
     private Character status;
 
-    private String departmentName;
-
-    private String hospitalName;
+    private String companyName;
 
     private Integer totalItems;
 }

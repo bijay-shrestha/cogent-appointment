@@ -15,10 +15,10 @@ import java.util.List;
 @Setter
 public class CompanyProfileRequestDTO implements Serializable {
 
-    private CompanyProfileDTO companyProfileDTO;
+    private CompanyProfileDTO companyProfileInfo;
 
     @Valid
-    private List<ProfileMenuRequestDTO> profileMenuRequestDTO;
+    private List<ProfileMenuRequestDTO> profileMenuInfo;
 }
 
 

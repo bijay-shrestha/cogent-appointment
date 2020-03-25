@@ -26,7 +26,7 @@ import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.conver
  */
 public class CompanyProfileUtils {
 
-    public static Profile convertDTOToProfile(CompanyProfileDTO profileDTO) {
+    public static Profile convertDTOToCompanyProfile(CompanyProfileDTO profileDTO) {
         Profile profile = new Profile();
         profile.setName(convertToNormalCase(profileDTO.getName()));
         profile.setDescription(profileDTO.getDescription());
@@ -35,8 +35,8 @@ public class CompanyProfileUtils {
         return profile;
     }
 
-    public static Profile convertToUpdatedProfile(CompanyProfileUpdateDTO profileDTO,
-                                                  Profile profile) {
+    public static Profile convertToUpdatedCompanyProfile(CompanyProfileUpdateDTO profileDTO,
+                                                         Profile profile) {
         profile.setName(convertToNormalCase(profileDTO.getName()));
         profile.setDescription(profileDTO.getDescription());
         profile.setStatus(profileDTO.getStatus());

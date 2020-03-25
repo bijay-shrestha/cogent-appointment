@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.admin.query;
 
-import com.cogent.cogentappointment.admin.dto.request.profile.ProfileSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.companyProfile.CompanyProfileSearchRequestDTO;
 import org.springframework.util.ObjectUtils;
 
 import java.util.function.Function;
@@ -34,7 +34,7 @@ public class CompanyProfileQuery {
                     " AND h.status != 'D'" +
                     " AND p.status != 'D'";
 
-    private static Function<ProfileSearchRequestDTO, String> GET_WHERE_CLAUSE_FOR_SEARCH_PROFILE =
+    private static Function<CompanyProfileSearchRequestDTO, String> GET_WHERE_CLAUSE_FOR_SEARCH_PROFILE =
             (searchRequestDTO) -> {
                 String whereClause = " WHERE p.status!='D' AND h.status!='D'";
 
@@ -44,28 +44,24 @@ public class CompanyProfileQuery {
                 if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
                     whereClause += " AND p.status='" + searchRequestDTO.getStatus() + "'";
 
-                if (!ObjectUtils.isEmpty(searchRequestDTO.getDepartmentId()))
-                    whereClause += " AND d.id=" + searchRequestDTO.getDepartmentId();
-
-                if (!ObjectUtils.isEmpty(searchRequestDTO.getHospitalId()))
-                    whereClause += " AND h.id=" + searchRequestDTO.getHospitalId();
+                if (!ObjectUtils.isEmpty(searchRequestDTO.getCompanyId()))
+                    whereClause += " AND h.id=" + searchRequestDTO.getCompanyId();
 
                 whereClause += " ORDER BY p.id DESC";
 
                 return whereClause;
             };
 
-    public static Function<ProfileSearchRequestDTO, String> QUERY_TO_SEARCH_PROFILE = (searchRequestDTO) -> {
+    public static Function<CompanyProfileSearchRequestDTO, String> QUERY_TO_SEARCH_COMPANY_PROFILE
+            = (searchRequestDTO) -> {
         return " SELECT" +
                 " p.id as id," +                                             //[0]
                 " p.name as name," +                                        //[1]
                 " p.status as status," +                                    //[2]
-                " d.name as departmentName," +                               //[3]
                 " h.name as hospitalName" +
                 " FROM" +
                 " Profile p" +
-                " LEFT JOIN Department d ON d.id = p.department.id" +
-                " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
+                " LEFT JOIN Hospital h ON h.id = p.company.id" +
                 GET_WHERE_CLAUSE_FOR_SEARCH_PROFILE.apply(searchRequestDTO);
     };
 

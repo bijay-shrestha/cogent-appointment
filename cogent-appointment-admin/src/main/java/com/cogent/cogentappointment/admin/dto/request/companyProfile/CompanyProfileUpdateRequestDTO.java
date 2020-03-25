@@ -17,8 +17,8 @@ import java.util.List;
 public class CompanyProfileUpdateRequestDTO implements Serializable {
 
     @NotNull
-    private CompanyProfileUpdateDTO profileDTO;
+    private CompanyProfileUpdateDTO companyProfileInfo;
 
     @NotEmpty
-    private List<ProfileMenuUpdateRequestDTO> profileMenuRequestDTO;
+    private List<ProfileMenuUpdateRequestDTO> profileMenuInfo;
 }

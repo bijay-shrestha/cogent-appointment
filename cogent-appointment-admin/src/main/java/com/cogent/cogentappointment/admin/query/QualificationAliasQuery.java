@@ -51,7 +51,7 @@ public class QualificationAliasQuery {
         String whereClause = " WHERE qa.status!='D'";
 
         if (!Objects.isNull(searchRequestDTO.getQualificationAliasId()))
-            whereClause += " qa.id = " + searchRequestDTO.getQualificationAliasId();
+            whereClause += " AND qa.id = " + searchRequestDTO.getQualificationAliasId();
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
             whereClause += " AND qa.status = '" + searchRequestDTO.getStatus() + "'";

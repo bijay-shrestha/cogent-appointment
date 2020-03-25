@@ -249,7 +249,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<AppointmentMinResponseDTO> fetchPendingAppointments(AppointmentSearchDTO searchDTO) {
+    public AppointmentMinResponseWithStatusDTO fetchPendingAppointments(AppointmentSearchDTO searchDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, PENDING_APPOINTMENTS);
@@ -259,11 +259,11 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         log.info(FETCHING_PROCESS_COMPLETED, PENDING_APPOINTMENTS, getDifferenceBetweenTwoTime(startTime));
 
-        return pendingAppointments;
+        return parseToAppointmentMinResponseWithStatusDTO(pendingAppointments);
     }
 
     @Override
-    public void cancelAppointment(AppointmentCancelRequestDTO cancelRequestDTO) {
+    public StatusResponseDTO cancelAppointment(AppointmentCancelRequestDTO cancelRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -280,10 +280,12 @@ public class AppointmentServiceImpl implements AppointmentService {
         );
 
         log.info(CANCELLING_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
+
+        return parseToStatusResponseDTO();
     }
 
     @Override
-    public void rescheduleAppointment(AppointmentRescheduleRequestDTO rescheduleRequestDTO) {
+    public StatusResponseDTO rescheduleAppointment(AppointmentRescheduleRequestDTO rescheduleRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -304,6 +306,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         parseToRescheduleAppointment(appointment, rescheduleRequestDTO);
 
         log.info(RESCHEDULE_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
+
+        return parseToStatusResponseDTO();
     }
 
     @Override
@@ -321,7 +325,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<AppointmentMinResponseDTO> fetchAppointmentHistory(AppointmentSearchDTO searchDTO) {
+    public AppointmentMinResponseWithStatusDTO fetchAppointmentHistory(AppointmentSearchDTO searchDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, APPOINTMENT);
@@ -331,11 +335,11 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         log.info(FETCHING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
 
-        return appointmentHistory;
+        return parseToAppointmentMinResponseWithStatusDTO(appointmentHistory);
     }
 
     @Override
-    public void cancelRegistration(Long appointmentReservationId) {
+    public StatusResponseDTO cancelRegistration(Long appointmentReservationId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(DELETING_PROCESS_STARTED, APPOINTMENT_RESERVATION_LOG);
@@ -347,6 +351,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointmentReservationLogRepository.delete(appointmentReservationLog);
 
         log.info(DELETING_PROCESS_COMPLETED, APPOINTMENT_RESERVATION_LOG, getDifferenceBetweenTwoTime(startTime));
+
+        return parseToStatusResponseDTO();
     }
 
     @Override

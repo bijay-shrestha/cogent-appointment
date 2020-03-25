@@ -57,6 +57,7 @@ public class AppointmentResource {
         return created(create(API_V1 + BASE_APPOINTMENT)).body(appointmentService.saveAppointmentForSelf(requestDTO));
     }
 
+    /*eSewa*/
     @PostMapping(OTHERS)
     @ApiOperation(SAVE_OPERATION)
     public ResponseEntity<?> saveAppointmentForOthers(@Valid @RequestBody AppointmentRequestDTOForOthers requestDTO) {
@@ -74,16 +75,14 @@ public class AppointmentResource {
     @PutMapping(CANCEL)
     @ApiOperation(CANCEL_APPOINTMENT_OPERATION)
     public ResponseEntity<?> cancelAppointment(@Valid @RequestBody AppointmentCancelRequestDTO cancelRequestDTO) {
-        appointmentService.cancelAppointment(cancelRequestDTO);
-        return ok().build();
+        return ok(appointmentService.cancelAppointment(cancelRequestDTO));
     }
 
     /*eSewa*/
     @PutMapping(RESCHEDULE)
     @ApiOperation(RESCHEDULE_OPERATION)
     public ResponseEntity<?> rescheduleAppointment(@Valid @RequestBody AppointmentRescheduleRequestDTO requestDTO) {
-        appointmentService.rescheduleAppointment(requestDTO);
-        return ok().build();
+        return ok(appointmentService.rescheduleAppointment(requestDTO));
     }
 
     /*eSewa*/
@@ -103,8 +102,7 @@ public class AppointmentResource {
     @GetMapping(CANCEL + APPOINTMENT_RESERVATION_ID_PATH_VARIABLE_BASE)
     @ApiOperation(CANCEL_REGISTRATION_OPERATION)
     public ResponseEntity<?> cancelRegistration(@PathVariable("appointmentReservationId") Long appointmentReservationId) {
-        appointmentService.cancelRegistration(appointmentReservationId);
-        return ok().build();
+        return ok(appointmentService.cancelRegistration(appointmentReservationId));
     }
 
     @PutMapping(PENDING_APPROVAL)

@@ -47,6 +47,10 @@ public class WebResourceKeyConstants {
         String BASE_COMPANY = "/company";
     }
 
+    public interface CompanyProfileConstants {
+        String BASE_COMPANY_PROFILE = "/company-profile";
+    }
+
 
     //D
     public interface DashboardConstants {

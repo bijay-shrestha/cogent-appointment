@@ -134,7 +134,7 @@ public class AdminServiceImpl implements AdminService {
         EmailRequestDTO emailRequestDTO = convertAdminRequestToEmailRequestDTO(adminRequestDTO,
                 adminConfirmationToken.getConfirmationToken(), httpServletRequest);
 
-//        sendEmail(emailRequestDTO);
+        sendEmail(emailRequestDTO);
 
         log.info(SAVING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
     }
@@ -293,7 +293,7 @@ public class AdminServiceImpl implements AdminService {
 
         updateAdminMetaInfo(admin);
 
-//        sendEmail(emailRequestDTO);
+        sendEmail(emailRequestDTO);
 
         log.info(UPDATING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
     }

@@ -78,7 +78,8 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <scope>runtime</scope>
+            <!--<scope>runtime</scope>-->
+            <version>6.0.3</version>
         </dependency>
 
         <!--LOMBOK-->

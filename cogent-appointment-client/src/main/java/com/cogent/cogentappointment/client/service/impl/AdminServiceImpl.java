@@ -44,6 +44,7 @@ import static com.cogent.cogentappointment.client.exception.utils.ValidationUtil
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.AdminLog.*;
 import static com.cogent.cogentappointment.client.utils.AdminUtils.*;
+import static com.cogent.cogentappointment.client.utils.DashboardFeatureUtils.parseToAdminDashboardFeature;
 import static com.cogent.cogentappointment.client.utils.GenderUtils.fetchGenderByCode;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
@@ -70,6 +71,10 @@ public class AdminServiceImpl implements AdminService {
 
     private final AdminConfirmationTokenRepository confirmationTokenRepository;
 
+    private final DashboardFeatureRepository dashboardFeatureRepository;
+
+    private final AdminDashboardFeatureRepository adminDashboardFeatureRepository;
+
     private final MinioFileService minioFileService;
 
     private final EmailService emailService;
@@ -82,6 +87,8 @@ public class AdminServiceImpl implements AdminService {
                             AdminMetaInfoRepository adminMetaInfoRepository,
                             AdminAvatarRepository adminAvatarRepository,
                             AdminConfirmationTokenRepository confirmationTokenRepository,
+                            DashboardFeatureRepository dashboardFeatureRepository,
+                            AdminDashboardFeatureRepository adminDashboardFeatureRepository,
                             MinioFileService minioFileService,
                             EmailService emailService,
                             ProfileService profileService) {
@@ -91,6 +98,8 @@ public class AdminServiceImpl implements AdminService {
         this.adminMetaInfoRepository = adminMetaInfoRepository;
         this.adminAvatarRepository = adminAvatarRepository;
         this.confirmationTokenRepository = confirmationTokenRepository;
+        this.dashboardFeatureRepository = dashboardFeatureRepository;
+        this.adminDashboardFeatureRepository = adminDashboardFeatureRepository;
         this.minioFileService = minioFileService;
         this.emailService = emailService;
         this.profileService = profileService;
@@ -122,6 +131,8 @@ public class AdminServiceImpl implements AdminService {
         saveMacAddressInfo(admin, adminRequestDTO.getMacAddressInfo());
 
         saveAdminMetaInfo(admin);
+
+        saveAllAdminDashboardFeature(adminRequestDTO.getAdminDashboardRequestDTOS(), admin);
 
         AdminConfirmationToken adminConfirmationToken =
                 saveAdminConfirmationToken(parseInAdminConfirmationToken(admin));
@@ -321,6 +332,40 @@ public class AdminServiceImpl implements AdminService {
 
         return metaInfoResponseDTOS;
     }
+
+
+
+
+    private void saveAllAdminDashboardFeature(List<AdminDashboardRequestDTO> dashboardRequestDTOList, Admin admin) {
+
+        if (dashboardRequestDTOList.size() > 0) {
+            List<DashboardFeature> dashboardFeatureList = findActiveDashboardFeatures(dashboardRequestDTOList);
+            adminDashboardFeatureRepository.saveAll(parseToAdminDashboardFeature(dashboardFeatureList, admin));
+        }
+
+    }
+
+    private List<DashboardFeature> findActiveDashboardFeatures(List<AdminDashboardRequestDTO> adminDashboardRequestDTOS) {
+
+        String ids = adminDashboardRequestDTOS.stream()
+                .map(request -> request.getId().toString())
+                .collect(Collectors.joining(","));
+
+        List<DashboardFeature> dashboardFeatureList = validateDashboardFeature(ids);
+        int requestCount = adminDashboardRequestDTOS.size();
+
+        if ((dashboardFeatureList.size()) != requestCount) {
+            throw new NoContentFoundException(DashboardFeature.class);
+        }
+
+        return dashboardFeatureList;
+
+    }
+
+    private List<DashboardFeature> validateDashboardFeature(String ids) {
+        return dashboardFeatureRepository.validateDashboardFeatureCount(ids);
+    }
+
 
     private void validateStatus(Object status) {
         if (status.equals(INACTIVE)) throw ADMIN_ALREADY_REGISTERED.get();

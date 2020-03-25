@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.utils.commons;
+package com.cogent.cogentappointment.admin.utils;
 
 import com.cogent.cogentappointment.admin.dto.request.admin.AdminDashboardRequestDTO;
 import com.cogent.cogentappointment.persistence.model.Admin;

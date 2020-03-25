@@ -1,10 +1,12 @@
-package com.cogent.cogentappointment.admin.repository.custom.impl;
+package com.cogent.cogentappointment.client.repository.custom.impl;
 
-import com.cogent.cogentappointment.admin.dto.response.dashboard.DashboardFeatureResponseDTO;
-import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.repository.custom.AdminDashboardRepositoryCustom;
-import com.cogent.cogentappointment.admin.repository.custom.DashboardFeatureRepositoryCustom;
+import com.cogent.cogentappointment.client.dto.response.dashboard.DashboardFeatureResponseDTO;
+import com.cogent.cogentappointment.client.exception.NoContentFoundException;
+import com.cogent.cogentappointment.client.repository.custom.AdminDashboardRepositoryCustom;
+import com.cogent.cogentappointment.client.repository.custom.DashboardFeatureRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.DashboardFeature;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import javax.persistence.EntityManager;
@@ -13,14 +15,16 @@ import javax.persistence.Query;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.admin.query.DashBoardQuery.QUERY_TO_FETCH_DASHBOARD_FEATURES;
-import static com.cogent.cogentappointment.admin.query.DashBoardQuery.QUERY_TO_VALIDATE_DASHBOARD_FEATURE_COUNT;
-import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
-import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
+import static com.cogent.cogentappointment.client.query.DashBoardQuery.QUERY_TO_FETCH_DASHBOARD_FEATURES;
+import static com.cogent.cogentappointment.client.query.DashBoardQuery.QUERY_TO_VALIDATE_DASHBOARD_FEATURE_COUNT;
+import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
+import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.transformQueryToResultList;
 
 /**
  * @author Rupak
  */
+@Repository
+@Transactional(readOnly = true)
 public class DashboardFeatureRepositoryCustomImpl implements AdminDashboardRepositoryCustom, DashboardFeatureRepositoryCustom {
 
     @PersistenceContext

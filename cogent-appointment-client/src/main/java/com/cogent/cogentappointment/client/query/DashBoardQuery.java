@@ -170,21 +170,37 @@ public class DashBoardQuery {
         return whereClause;
     }
 
-    public static final String QUERY_TO_FETCH_DASHBOARD_FEATURES(Long adminId, Long hospitalId) {
+    public static final String QUERY_TO_SELECT_DASHBOARD_FEATURES =
+            " SELECT" +
+                    " df.id as id," +
+                    " df.name as name," +
+                    " df.code as code" +
+                    " FROM DashboardFeature df";
 
-        return " SELECT" +
-                " df.id as id," +
-                " df.name as name," +
-                " df.code as code," +
-                " df.status as status" +
-                " FROM DashboardFeature df" +
+    public static final String QUERY_TO_FETCH_DASHBOARD_FEATURES(Long adminId) {
+
+        return QUERY_TO_SELECT_DASHBOARD_FEATURES +
                 "  LEFT JOIN AdminDashboardFeature adf ON adf.dashboardFeatureId.id =df.id" +
                 " LEFT JOIN Admin a ON a.id=adf.adminId.id" +
                 " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                 " LEFT JOIN Department d ON d.id=p.department.id" +
                 " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
                 " WHERE a.id=" + adminId +
-                " AND h.id=" + hospitalId +
-                " AND df.status='Y'";
+                " AND adf.status='Y'";
     }
+
+    public static final String QUERY_TO_FETCH_DASHBOARD_FEATURES =
+            QUERY_TO_SELECT_DASHBOARD_FEATURES +
+                    " WHERE df.status='Y'";
+
+    public static final String QUERY_TO_VALIDATE_DASHBOARD_FEATURE_COUNT(String ids) {
+
+        return " SELECT " +
+                " df " +                   //[0]
+                " FROM DashboardFeature df" +
+                " WHERE df.status ='Y'" +
+                " AND df.id IN (" + ids + ")";
+
+    }
+
 }

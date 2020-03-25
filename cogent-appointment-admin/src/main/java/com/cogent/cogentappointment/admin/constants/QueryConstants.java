@@ -13,7 +13,10 @@ public class QueryConstants {
 
     //C
     public static final String CODE = "code";
+
     public static final String CONFIRMATION_TOKEN = "confirmationToken";
+
+    public static final String COMPANY_ID = "companyId";
 
 
     //D

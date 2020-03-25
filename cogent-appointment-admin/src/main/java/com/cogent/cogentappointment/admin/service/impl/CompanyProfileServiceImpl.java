@@ -3,21 +3,17 @@ package com.cogent.cogentappointment.admin.service.impl;
 import com.cogent.cogentappointment.admin.constants.ErrorMessageConstants;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
-import com.cogent.cogentappointment.admin.dto.request.profile.ProfileMenuSearchRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.profile.ProfileRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.companyProfile.CompanyProfileRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.companyProfile.CompanyProfileUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.profile.ProfileSearchRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.profile.ProfileUpdateRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.profile.AssignedProfileResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.profile.ProfileDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.profile.ProfileMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.log.constants.ProfileLog;
-import com.cogent.cogentappointment.admin.repository.DepartmentRepository;
+import com.cogent.cogentappointment.admin.repository.CompanyProfileRepository;
 import com.cogent.cogentappointment.admin.repository.ProfileMenuRepository;
-import com.cogent.cogentappointment.admin.repository.ProfileRepository;
-import com.cogent.cogentappointment.admin.service.ProfileService;
-import com.cogent.cogentappointment.persistence.model.Department;
+import com.cogent.cogentappointment.admin.service.CompanyProfileService;
 import com.cogent.cogentappointment.persistence.model.Profile;
 import com.cogent.cogentappointment.persistence.model.ProfileMenu;
 import lombok.extern.slf4j.Slf4j;
@@ -29,9 +25,11 @@ import java.util.List;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
+import static com.cogent.cogentappointment.admin.log.constants.CompanyProfileLog.COMPANY_PROFILE;
+import static com.cogent.cogentappointment.admin.utils.CompanyProfileUtils.convertDTOToProfile;
 import static com.cogent.cogentappointment.admin.utils.ProfileMenuUtils.convertToProfileMenu;
 import static com.cogent.cogentappointment.admin.utils.ProfileMenuUtils.convertToUpdatedProfileMenu;
-import static com.cogent.cogentappointment.admin.utils.ProfileUtils.*;
+import static com.cogent.cogentappointment.admin.utils.ProfileUtils.convertProfileToDeleted;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
@@ -41,76 +39,62 @@ import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTime
 @Service
 @Transactional
 @Slf4j
-public class CompanyProfileServiceImpl implements ProfileService {
+public class CompanyProfileServiceImpl implements CompanyProfileService {
 
-    private final ProfileRepository profileRepository;
+    private final CompanyProfileRepository companyProfileRepository;
 
     private final ProfileMenuRepository profileMenuRepository;
 
-    private final DepartmentRepository departmentRepository;
-
-    public CompanyProfileServiceImpl(ProfileRepository profileRepository,
-                                     ProfileMenuRepository profileMenuRepository,
-                                     DepartmentRepository departmentRepository) {
-        this.profileRepository = profileRepository;
+    public CompanyProfileServiceImpl(CompanyProfileRepository companyProfileRepository,
+                                     ProfileMenuRepository profileMenuRepository) {
+        this.companyProfileRepository = companyProfileRepository;
         this.profileMenuRepository = profileMenuRepository;
-        this.departmentRepository = departmentRepository;
     }
 
     @Override
-    public void save(ProfileRequestDTO profileRequestDTO) {
+    public void save(CompanyProfileRequestDTO requestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(SAVING_PROCESS_STARTED, ProfileLog.PROFILE);
+        log.info(SAVING_PROCESS_STARTED, COMPANY_PROFILE);
 
-        Long profileCount = profileRepository.validateDuplicity(profileRequestDTO.getProfileDTO().getName(),
-                profileRequestDTO.getProfileDTO().getHospitalId());
+        Long profileCount = companyProfileRepository.validateDuplicity(
+                requestDTO.getCompanyProfileDTO().getName(),
+                requestDTO.getCompanyProfileDTO().getCompanyId()
+        );
 
-        validateName(profileCount, profileRequestDTO.getProfileDTO().getName());
+        validateName(profileCount, requestDTO.getCompanyProfileDTO().getName());
 
-        Department department = findDepartmentById(profileRequestDTO.getProfileDTO().getDepartmentId());
+        Profile savedProfile = save(convertDTOToProfile(requestDTO.getCompanyProfileDTO()));
 
-        Profile savedProfile = save(convertDTOToProfile(profileRequestDTO.getProfileDTO(), department));
+        saveProfileMenu(convertToProfileMenu(savedProfile, requestDTO.getProfileMenuRequestDTO()));
 
-        saveProfileMenu(convertToProfileMenu(savedProfile, profileRequestDTO.getProfileMenuRequestDTO()));
-
-        log.info(SAVING_PROCESS_COMPLETED, ProfileLog.PROFILE, getDifferenceBetweenTwoTime(startTime));
-    }
-
-    public Profile save(Profile profile) {
-        return profileRepository.save(profile);
-    }
-
-    public void saveProfileMenu(List<ProfileMenu> profileMenus) {
-        profileMenuRepository.saveAll(profileMenus);
+        log.info(SAVING_PROCESS_COMPLETED, COMPANY_PROFILE, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
-    public void update(ProfileUpdateRequestDTO requestDTO) {
+    public void update(CompanyProfileUpdateRequestDTO requestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(UPDATING_PROCESS_STARTED, ProfileLog.PROFILE);
+        log.info(UPDATING_PROCESS_STARTED, COMPANY_PROFILE);
 
         Profile profile = findById(requestDTO.getProfileDTO().getId());
 
-        Long profileCount = profileRepository.validateDuplicityForUpdate(
+        Long profileCount = companyProfileRepository.validateDuplicityForUpdate(
                 requestDTO.getProfileDTO().getId(),
                 requestDTO.getProfileDTO().getName(),
-                requestDTO.getProfileDTO().getHospitalId());
+                requestDTO.getProfileDTO().getCompanyId());
 
         validateName(profileCount, requestDTO.getProfileDTO().getName());
 
-        Department department = findDepartmentById(requestDTO.getProfileDTO().getDepartmentId());
-
-        save(convertToUpdatedProfile(requestDTO.getProfileDTO(), department, profile));
+//        save(convertToUpdatedProfile(requestDTO.getProfileDTO(), profile));
 
         saveProfileMenu(convertToUpdatedProfileMenu(profile, requestDTO.getProfileMenuRequestDTO()));
 
-        log.info(UPDATING_PROCESS_COMPLETED, ProfileLog.PROFILE, getDifferenceBetweenTwoTime(startTime));
+        log.info(UPDATING_PROCESS_COMPLETED, COMPANY_PROFILE, getDifferenceBetweenTwoTime(startTime));
     }
 
-    public Profile findById(Long profileId) {
-        return profileRepository.findProfileById(profileId)
+    private Profile findById(Long profileId) {
+        return companyProfileRepository.findProfileById(profileId)
                 .orElseThrow(() -> PROFILE_WITH_GIVEN_ID_NOT_FOUND.apply(profileId));
     }
 
@@ -140,11 +124,11 @@ public class CompanyProfileServiceImpl implements ProfileService {
 
         log.info(SEARCHING_PROCESS_STARTED, ProfileLog.PROFILE);
 
-        List<ProfileMinimalResponseDTO> responseDTOS = profileRepository.search(searchRequestDTO, pageable);
+//        List<ProfileMinimalResponseDTO> responseDTOS = profileRepository.search(searchRequestDTO, pageable);
 
         log.info(SEARCHING_PROCESS_COMPLETED, ProfileLog.PROFILE, getDifferenceBetweenTwoTime(startTime));
 
-        return responseDTOS;
+        return null;
     }
 
     @Override
@@ -153,7 +137,7 @@ public class CompanyProfileServiceImpl implements ProfileService {
 
         log.info(FETCHING_DETAIL_PROCESS_STARTED, ProfileLog.PROFILE);
 
-        ProfileDetailResponseDTO detailResponseDTO = profileRepository.fetchDetailsById(id);
+        ProfileDetailResponseDTO detailResponseDTO = companyProfileRepository.fetchDetailsById(id);
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, ProfileLog.PROFILE, getDifferenceBetweenTwoTime(startTime));
 
@@ -167,54 +151,31 @@ public class CompanyProfileServiceImpl implements ProfileService {
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, ProfileLog.PROFILE);
 
-        List<DropDownResponseDTO> responseDTOS = profileRepository.fetchActiveProfilesForDropDown();
+//        List<DropDownResponseDTO> responseDTOS = profileRepository.fetchActiveProfilesForDropDown();
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, ProfileLog.PROFILE, getDifferenceBetweenTwoTime(startTime));
 
-        return responseDTOS;
+        return null;
     }
 
     @Override
     public Profile fetchActiveProfileById(Long id) {
-        return profileRepository.findActiveProfileById(id)
-                .orElseThrow(() -> PROFILE_WITH_GIVEN_ID_NOT_FOUND.apply(id));
+//        return companyProfileRepository.findActiveProfileById(id)
+//                .orElseThrow(() -> PROFILE_WITH_GIVEN_ID_NOT_FOUND.apply(id));
+
+        return null;
     }
 
-    @Override
-    public List<DropDownResponseDTO> fetchProfileByDepartmentId(Long departmentId) {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, ProfileLog.PROFILE);
-
-        List<DropDownResponseDTO> responseDTOS = profileRepository.fetchProfileByDepartmentId(departmentId);
-
-        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, ProfileLog.PROFILE, getDifferenceBetweenTwoTime(startTime));
-
-        return responseDTOS;
-    }
-
-    @Override
-    public AssignedProfileResponseDTO fetchAssignedProfileResponseDto(ProfileMenuSearchRequestDTO searchRequestDTO) {
-
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(FETCHING_PROCESS_STARTED, ProfileLog.PROFILE);
-
-        AssignedProfileResponseDTO responseDTO =
-                profileRepository.fetchAssignedProfileResponseDto(searchRequestDTO);
-
-        log.info(FETCHING_PROCESS_COMPLETED, ProfileLog.PROFILE, getDifferenceBetweenTwoTime(startTime));
-
-        return responseDTO;
+    public Profile save(Profile profile) {
+        return companyProfileRepository.save(profile);
     }
 
     private Function<Long, NoContentFoundException> PROFILE_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         throw new NoContentFoundException(Profile.class, "id", id.toString());
     };
 
-    public Department findDepartmentById(Long id) {
-        return departmentRepository.findActiveDepartmentById(id)
-                .orElseThrow(() -> new NoContentFoundException(Department.class, "id", id.toString()));
+    private void saveProfileMenu(List<ProfileMenu> profileMenus) {
+        profileMenuRepository.saveAll(profileMenus);
     }
 }
 

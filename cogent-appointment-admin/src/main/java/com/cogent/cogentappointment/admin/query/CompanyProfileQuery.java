@@ -7,6 +7,7 @@ import java.util.function.Function;
 
 /**
  * @author smriti on 7/9/19
+ * NOTE : HOSPITAL IS COMPANY FOR COMPANY PROFILE SETUP
  */
 public class CompanyProfileQuery {
 
@@ -14,10 +15,10 @@ public class CompanyProfileQuery {
             "SELECT " +
                     " COUNT(p.id)" +                        //[0]
                     " FROM Profile p" +
-                    " LEFT JOIN Department d ON d.id = p.department.id" +
-                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
+                    " LEFT JOIN Hospital h ON h.id = p.company.id" +
                     " WHERE " +
-                    " p.name =:name AND h.id =:hospitalId" +
+                    " p.name =:name AND h.id =:companyId" +
+                    " AND h.isCompanyProfile= 'Y'" +
                     " AND h.status != 'D'" +
                     " AND p.status != 'D'";
 
@@ -25,11 +26,11 @@ public class CompanyProfileQuery {
             "SELECT " +
                     " COUNT(p.id)" +                        //[0]
                     " FROM Profile p" +
-                    " LEFT JOIN Department d ON d.id = p.department.id" +
-                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
+                    " LEFT JOIN Hospital h ON h.id = p.company.id" +
                     " WHERE " +
                     " p.id!= :id" +
-                    " AND p.name =:name AND h.id =:hospitalId" +
+                    " AND p.name =:name AND h.id =:companyId" +
+                    " AND h.isCompanyProfile= 'Y'" +
                     " AND h.status != 'D'" +
                     " AND p.status != 'D'";
 

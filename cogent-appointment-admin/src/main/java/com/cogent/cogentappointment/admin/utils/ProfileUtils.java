@@ -5,7 +5,6 @@ import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.profile.ProfileDTO;
 import com.cogent.cogentappointment.admin.dto.request.profile.ProfileUpdateDTO;
 import com.cogent.cogentappointment.admin.dto.response.profile.*;
-import com.cogent.cogentappointment.admin.utils.commons.StringUtil;
 import com.cogent.cogentappointment.persistence.model.Department;
 import com.cogent.cogentappointment.persistence.model.Profile;
 
@@ -17,6 +16,7 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.convertToNormalCase;
 
 /**
@@ -31,6 +31,7 @@ public class ProfileUtils {
         profile.setDescription(profileDTO.getDescription());
         profile.setStatus(profileDTO.getStatus());
         profile.setDepartment(department);
+        profile.setIsCompanyProfile(NO);
         return profile;
     }
 

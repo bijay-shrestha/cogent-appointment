@@ -2,8 +2,9 @@ package com.cogent.cogentappointment.admin.service;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
+import com.cogent.cogentappointment.admin.dto.request.companyProfile.CompanyProfileRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.companyProfile.CompanyProfileUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.profile.ProfileMenuSearchRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.profile.ProfileRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.profile.ProfileSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.profile.ProfileUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.profile.AssignedProfileResponseDTO;
@@ -19,9 +20,9 @@ import java.util.List;
  */
 public interface CompanyProfileService {
 
-    void save(ProfileRequestDTO requestDTO);
+    void save(CompanyProfileRequestDTO requestDTO);
 
-    void update(ProfileUpdateRequestDTO requestDTO);
+    void update(CompanyProfileUpdateRequestDTO requestDTO);
 
     void delete(DeleteRequestDTO deleteRequestDTO);
 
@@ -32,8 +33,4 @@ public interface CompanyProfileService {
     List<DropDownResponseDTO> fetchActiveProfilesForDropdown();
 
     Profile fetchActiveProfileById(Long id);
-
-    List<DropDownResponseDTO> fetchProfileByDepartmentId(Long departmentId);
-
-    AssignedProfileResponseDTO fetchAssignedProfileResponseDto(ProfileMenuSearchRequestDTO profileMenuSearchRequestDTO);
 }

@@ -2,6 +2,8 @@ package com.cogent.cogentappointment.admin.utils;
 
 import com.cogent.cogentappointment.admin.constants.StringConstant;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.companyProfile.CompanyProfileDTO;
+import com.cogent.cogentappointment.admin.dto.request.companyProfile.CompanyProfileUpdateDTO;
 import com.cogent.cogentappointment.admin.dto.request.profile.ProfileDTO;
 import com.cogent.cogentappointment.admin.dto.request.profile.ProfileUpdateDTO;
 import com.cogent.cogentappointment.admin.dto.response.profile.*;
@@ -16,6 +18,7 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.convertToNormalCase;
 
 /**
@@ -23,23 +26,20 @@ import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.conver
  */
 public class CompanyProfileUtils {
 
-    public static Profile convertDTOToProfile(ProfileDTO profileDTO,
-                                              Department department) {
+    public static Profile convertDTOToProfile(CompanyProfileDTO profileDTO) {
         Profile profile = new Profile();
         profile.setName(convertToNormalCase(profileDTO.getName()));
         profile.setDescription(profileDTO.getDescription());
         profile.setStatus(profileDTO.getStatus());
-        profile.setDepartment(department);
+        profile.setIsCompanyProfile(YES);
         return profile;
     }
 
-    public static Profile convertToUpdatedProfile(ProfileUpdateDTO profileDTO,
-                                                  Department department,
+    public static Profile convertToUpdatedProfile(CompanyProfileUpdateDTO profileDTO,
                                                   Profile profile) {
         profile.setName(convertToNormalCase(profileDTO.getName()));
         profile.setDescription(profileDTO.getDescription());
         profile.setStatus(profileDTO.getStatus());
-        profile.setDepartment(department);
         profile.setRemarks(profileDTO.getRemarks());
         return profile;
     }

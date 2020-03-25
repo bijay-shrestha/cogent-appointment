@@ -19,7 +19,8 @@ public class ProfileQuery {
                     " WHERE " +
                     " p.name =:name AND h.id =:hospitalId" +
                     " AND h.status != 'D'" +
-                    " AND p.status != 'D'";
+                    " AND p.status != 'D'" +
+                    " AND h.isCompanyProfile= 'N'";
 
     public static final String QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE =
             "SELECT " +
@@ -31,11 +32,12 @@ public class ProfileQuery {
                     " p.id!= :id" +
                     " AND p.name =:name AND h.id =:hospitalId" +
                     " AND h.status != 'D'" +
-                    " AND p.status != 'D'";
+                    " AND p.status != 'D'" +
+                    " AND h.isCompanyProfile= 'N'";
 
     private static Function<ProfileSearchRequestDTO, String> GET_WHERE_CLAUSE_FOR_SEARCH_PROFILE =
             (searchRequestDTO) -> {
-                String whereClause = " WHERE p.status!='D' AND h.status!='D'";
+                String whereClause = " WHERE p.status!='D' AND h.status!='D' AND h.isCompanyProfile= 'N'";
 
                 if (!ObjectUtils.isEmpty(searchRequestDTO.getName()))
                     whereClause += " AND p.name LIKE '%" + searchRequestDTO.getName() + "%'";
@@ -85,7 +87,8 @@ public class ProfileQuery {
                     " WHERE" +
                     " p.id=:id" +
                     " AND p.status!='D'" +
-                    " AND h.status!='D'";
+                    " AND h.status!='D'" +
+                    " AND h.isCompanyProfile= 'N'";
 
     public static final String QUERY_TO_FETCH_PROFILE_MENU_DETAILS =
             " SELECT" +
@@ -102,7 +105,7 @@ public class ProfileQuery {
                     " AND pm.status='Y'";
 
     public static final String QUERY_TO_FETCH_ACTIVE_PROFILES_FOR_DROPDOWN =
-            " SELECT id as value, name as label FROM Profile WHERE status ='Y'";
+            " SELECT id as value, name as label FROM Profile WHERE status ='Y' AND h.isCompanyProfile= 'N'";
 
     public static final String QUERY_TO_FETCH_PROFILE_BY_DEPARTMENT_ID =
             " SELECT p.id as value," +
@@ -111,7 +114,8 @@ public class ProfileQuery {
                     " LEFT JOIN Department d ON d.id = p.department.id" +
                     " WHERE p.status ='Y'" +
                     " AND d.status ='Y'" +
-                    " AND d.id =:id";
+                    " AND d.id =:id" +
+                    " AND h.isCompanyProfile= 'N'";
 
     public static final String QUERY_TO_FETCH_ASSIGNED_PROFILE_RESPONSE =
             "SELECT" +

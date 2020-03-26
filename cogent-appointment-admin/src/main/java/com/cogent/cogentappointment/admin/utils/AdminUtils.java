@@ -4,7 +4,6 @@ import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.*;
 import com.cogent.cogentappointment.admin.dto.request.email.EmailRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
-import com.cogent.cogentappointment.admin.utils.commons.StringUtil;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.Admin;
 import com.cogent.cogentappointment.persistence.model.*;
@@ -24,6 +23,7 @@ import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIV
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.*;
 import static com.cogent.cogentappointment.admin.utils.commons.NumberFormatterUtils.generateRandomToken;
+import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.toUpperCase;
 
 /**
  * @author smriti on 2019-08-11
@@ -35,7 +35,7 @@ public class AdminUtils {
                                           Profile profile) {
         Admin admin = new Admin();
         admin.setUsername(adminRequestDTO.getUsername());
-        admin.setFullName(StringUtil.toUpperCase(adminRequestDTO.getFullName()));
+        admin.setFullName(toUpperCase(adminRequestDTO.getFullName()));
         admin.setEmail(adminRequestDTO.getEmail());
         admin.setMobileNumber(adminRequestDTO.getMobileNumber());
         admin.setStatus(adminRequestDTO.getStatus());
@@ -57,7 +57,7 @@ public class AdminUtils {
                                                            Profile profile) {
 
         admin.setEmail(adminRequestDTO.getEmail());
-        admin.setFullName(StringUtil.toUpperCase(adminRequestDTO.getFullName()));
+        admin.setFullName(toUpperCase(adminRequestDTO.getFullName()));
         admin.setMobileNumber(adminRequestDTO.getMobileNumber());
         admin.setStatus(adminRequestDTO.getStatus());
         admin.setHasMacBinding(adminRequestDTO.getHasMacBinding());

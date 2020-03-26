@@ -142,7 +142,6 @@ public class HospitalUtils {
         final int IS_COGENT_ADMIN_INDEX =14;
         final int ALIAS_INDEX =15;
 
-
         return HospitalResponseDTO.builder()
                 .id(Long.parseLong(results[HOSPITAL_ID_INDEX].toString()))
                 .name(results[NAME_INDEX].toString())
@@ -161,7 +160,7 @@ public class HospitalUtils {
                 .numberOfFreeFollowUps(Integer.parseInt(results[NUMBER_OF_FREE_FOLLOWUPS_INDEX].toString()))
                 .followUpIntervalDays(Integer.parseInt(results[FOLLOW_UP_INTERVAL_DAYS_INDEX].toString()))
                 .isCompany(results[IS_COGENT_ADMIN_INDEX].toString().charAt(0))
-                .alias(results[ALIAS_INDEX].toString())
+                .alias(Objects.isNull(results[ALIAS_INDEX])? null: results[ALIAS_INDEX].toString())
                 .build();
     }
 

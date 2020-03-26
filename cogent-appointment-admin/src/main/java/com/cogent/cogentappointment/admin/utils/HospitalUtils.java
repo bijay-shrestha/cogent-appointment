@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.N;
+import static com.cogent.cogentappointment.admin.utils.commons.SecurityContextUtils.getLoggedInCompanyId;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.toUpperCase;
 
 /**
@@ -42,6 +43,7 @@ public class HospitalUtils {
         hospital.setNumberOfFreeFollowUps(hospitalRequestDTO.getNumberOfFreeFollowUps());
         hospital.setFollowUpIntervalDays(hospitalRequestDTO.getFollowUpIntervalDays());
         hospital.setAlias(hospitalRequestDTO.getAlias());
+        hospital.setCompanyId(getLoggedInCompanyId());
         return hospital;
     }
 

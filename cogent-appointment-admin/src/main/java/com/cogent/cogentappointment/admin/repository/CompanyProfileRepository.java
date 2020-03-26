@@ -17,10 +17,4 @@ public interface CompanyProfileRepository extends JpaRepository<Profile, Long>, 
 
     @Query("SELECT p FROM Profile p WHERE p.status!='D' AND p.id = :id AND p.isCompanyProfile = 'Y'")
     Optional<Profile> findCompanyProfileById(@Param("id") Long id);
-
-//    @Query("SELECT p FROM Profile p WHERE p.status!='D' AND p.department.id = :id")
-//    Profile findProfileByDepartmentId(@Param("id") Long id);
-//
-//    @Query("SELECT p FROM Profile p WHERE p.status='Y' AND p.id = :id")
-//    Optional<Profile> findActiveProfileById(@Param("id") Long id);
 }

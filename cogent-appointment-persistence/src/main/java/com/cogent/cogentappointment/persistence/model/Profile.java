@@ -46,9 +46,9 @@ public class Profile extends Auditable<String> implements Serializable {
     @JoinColumn(name = "department_id")
     private Department department;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
-    private Hospital company;
+//    @OneToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "company_id")
+//    private Hospital company;
 
     @Column(name = "remarks")
     private String remarks;
@@ -59,10 +59,10 @@ public class Profile extends Auditable<String> implements Serializable {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", status=" + status +
-                ", isCompanyProfile=" + isCompanyProfile +
-                ", department=" + department.getName() +
-                ", company=" + company.getName() +
+                ", status='" + status +'\'' +
+                ", isCompanyProfile='" + isCompanyProfile +'\'' +
+                ", department='" + department.getName() +'\'' +
+//                ", company='" + company.getName() +'\'' +
                 ", remarks='" + remarks + '\'' +
                 '}';
     }

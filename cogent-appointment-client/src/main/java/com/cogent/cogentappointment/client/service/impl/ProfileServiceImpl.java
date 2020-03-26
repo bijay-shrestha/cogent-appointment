@@ -100,7 +100,10 @@ public class ProfileServiceImpl implements ProfileService {
 
         validateName(profileCount, requestDTO.getProfileDTO().getName());
 
-        Department department = findDepartmentByIdAndHospitalId(requestDTO.getProfileDTO().getDepartmentId(), hospitalId);
+        Department department = findDepartmentByIdAndHospitalId(
+                requestDTO.getProfileDTO().getDepartmentId(),
+                hospitalId
+        );
 
         convertToUpdatedProfile(requestDTO.getProfileDTO(), department, profile);
 
@@ -123,7 +126,8 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public List<ProfileMinimalResponseDTO> search(ProfileSearchRequestDTO searchRequestDTO, Pageable pageable) {
+    public List<ProfileMinimalResponseDTO> search(ProfileSearchRequestDTO searchRequestDTO,
+                                                  Pageable pageable) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -131,7 +135,8 @@ public class ProfileServiceImpl implements ProfileService {
 
         Long hospitalId = getLoggedInHospitalId();
 
-        List<ProfileMinimalResponseDTO> responseDTOS = profileRepository.search(searchRequestDTO, hospitalId, pageable);
+        List<ProfileMinimalResponseDTO> responseDTOS =
+                profileRepository.search(searchRequestDTO, hospitalId, pageable);
 
         log.info(SEARCHING_PROCESS_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
 
@@ -199,7 +204,6 @@ public class ProfileServiceImpl implements ProfileService {
 
         return responseDTO;
     }
-
 
     private void validateName(Long profileCount, String name) {
         if (profileCount.intValue() > 0)

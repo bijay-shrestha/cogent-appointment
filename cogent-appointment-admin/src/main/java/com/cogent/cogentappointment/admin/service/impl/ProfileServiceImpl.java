@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
-import com.cogent.cogentappointment.admin.constants.ErrorMessageConstants;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.request.profile.ProfileMenuSearchRequestDTO;
@@ -27,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NAME_DUPLICATION_MESSAGE;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.ProfileLog.PROFILE;
 import static com.cogent.cogentappointment.admin.utils.ProfileMenuUtils.convertToProfileMenu;
@@ -78,14 +78,6 @@ public class ProfileServiceImpl implements ProfileService {
         log.info(SAVING_PROCESS_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
     }
 
-    public Profile save(Profile profile) {
-        return profileRepository.save(profile);
-    }
-
-    public void saveProfileMenu(List<ProfileMenu> profileMenus) {
-        profileMenuRepository.saveAll(profileMenus);
-    }
-
     @Override
     public void update(ProfileUpdateRequestDTO requestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
@@ -108,17 +100,6 @@ public class ProfileServiceImpl implements ProfileService {
         saveProfileMenu(convertToUpdatedProfileMenu(profile, requestDTO.getProfileMenuRequestDTO()));
 
         log.info(UPDATING_PROCESS_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
-    }
-
-    public Profile findById(Long profileId) {
-        return profileRepository.findProfileById(profileId)
-                .orElseThrow(() -> PROFILE_WITH_GIVEN_ID_NOT_FOUND.apply(profileId));
-    }
-
-    private void validateName(Long profileCount, String name) {
-        if (profileCount.intValue() > 0)
-            throw new DataDuplicationException(
-                    String.format(ErrorMessageConstants.NAME_DUPLICATION_MESSAGE, Profile.class.getSimpleName(), name));
     }
 
     @Override
@@ -207,6 +188,25 @@ public class ProfileServiceImpl implements ProfileService {
         log.info(FETCHING_PROCESS_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
+    }
+
+    private Profile save(Profile profile) {
+        return profileRepository.save(profile);
+    }
+
+    private void saveProfileMenu(List<ProfileMenu> profileMenus) {
+        profileMenuRepository.saveAll(profileMenus);
+    }
+
+    private Profile findById(Long profileId) {
+        return profileRepository.findProfileById(profileId)
+                .orElseThrow(() -> PROFILE_WITH_GIVEN_ID_NOT_FOUND.apply(profileId));
+    }
+
+    private void validateName(Long profileCount, String name) {
+        if (profileCount.intValue() > 0)
+            throw new DataDuplicationException(
+                    String.format(NAME_DUPLICATION_MESSAGE, Profile.class.getSimpleName(), name));
     }
 
     private Function<Long, NoContentFoundException> PROFILE_WITH_GIVEN_ID_NOT_FOUND = (id) -> {

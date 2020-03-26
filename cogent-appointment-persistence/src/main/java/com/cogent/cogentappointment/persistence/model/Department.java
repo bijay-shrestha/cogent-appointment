@@ -46,8 +46,8 @@ public class Department extends Auditable<String> implements Serializable {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", code='" + code + '\'' +
-                ", hospital=" + hospital.getName() +
-                ", status=" + status +
+                ", hospital='" + hospital.getName() + '\'' +
+                ", status='" + status + '\'' +
                 ", remarks='" + remarks + '\'' +
                 '}';
     }

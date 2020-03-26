@@ -2,10 +2,10 @@ package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.request.companyProfile.CompanyProfileSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.companyProfile.CompanyProfileDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.companyProfile.CompanyProfileMinimalResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.profile.ProfileDetailResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.companyProfile.CompanyProfileResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.profile.ProfileMenuResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.profile.ProfileResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.CompanyProfileRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Profile;
@@ -23,7 +23,7 @@ import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.query.CompanyProfileQuery.*;
-import static com.cogent.cogentappointment.admin.utils.ProfileUtils.parseToProfileDetailResponseDTO;
+import static com.cogent.cogentappointment.admin.utils.CompanyProfileUtils.parseToCompanyProfileDetailResponseDTO;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
 
@@ -66,7 +66,8 @@ public class CompanyProfileRepositoryCustomImpl implements CompanyProfileReposit
 
         addPagination.accept(pageable, query);
 
-        List<CompanyProfileMinimalResponseDTO> results = transformQueryToResultList(query, CompanyProfileMinimalResponseDTO.class);
+        List<CompanyProfileMinimalResponseDTO> results =
+                transformQueryToResultList(query, CompanyProfileMinimalResponseDTO.class);
 
         if (results.isEmpty()) throw COMPANY_PROFILES_NOT_FOUND.get();
         else {
@@ -76,31 +77,31 @@ public class CompanyProfileRepositoryCustomImpl implements CompanyProfileReposit
     }
 
     @Override
-    public ProfileDetailResponseDTO fetchDetailsById(Long id) {
-        return parseToProfileDetailResponseDTO(getProfileResponseDTO(id), getProfileMenuResponseDTO(id));
+    public CompanyProfileDetailResponseDTO fetchDetailsById(Long id) {
+        return parseToCompanyProfileDetailResponseDTO(getCompanyProfileDetail(id), getProfileMenuDetail(id));
     }
 
-    private ProfileResponseDTO getProfileResponseDTO(Long id) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PROFILE_DETAILS)
+    private CompanyProfileResponseDTO getCompanyProfileDetail(Long id) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_COMPANY_PROFILE_DETAILS)
                 .setParameter(ID, id);
 
         try {
-            return transformQueryToSingleResult(query, ProfileResponseDTO.class);
+            return transformQueryToSingleResult(query, CompanyProfileResponseDTO.class);
         } catch (NoResultException e) {
-            throw PROFILE_WITH_GIVEN_ID_NOT_FOUND.apply(id);
+            throw COMPANY_PROFILE_WITH_GIVEN_ID_NOT_FOUND.apply(id);
         }
     }
 
-    private List<ProfileMenuResponseDTO> getProfileMenuResponseDTO(Long id) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PROFILE_MENU_DETAILS)
+    private List<ProfileMenuResponseDTO> getProfileMenuDetail(Long id) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_COMPANY_PROFILE_MENU_DETAILS)
                 .setParameter(ID, id);
 
         return transformQueryToResultList(query, ProfileMenuResponseDTO.class);
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchActiveCompanyProfileForDropDown() {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_PROFILES_FOR_DROPDOWN);
+    public List<DropDownResponseDTO> fetchMinActiveCompanyProfile() {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_COMPANY_PROFILES_FOR_DROPDOWN);
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
@@ -108,9 +109,10 @@ public class CompanyProfileRepositoryCustomImpl implements CompanyProfileReposit
         else return results;
     }
 
-    private Supplier<NoContentFoundException> COMPANY_PROFILES_NOT_FOUND = () -> new NoContentFoundException(Profile.class);
+    private Supplier<NoContentFoundException> COMPANY_PROFILES_NOT_FOUND =
+            () -> new NoContentFoundException(Profile.class);
 
-    private Function<Long, NoContentFoundException> PROFILE_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+    private Function<Long, NoContentFoundException> COMPANY_PROFILE_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         throw new NoContentFoundException(Profile.class, "id", id.toString());
     };
 }

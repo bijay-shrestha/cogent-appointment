@@ -1,22 +1,17 @@
 package com.cogent.cogentappointment.admin.utils;
 
-import com.cogent.cogentappointment.admin.constants.StringConstant;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.companyProfile.CompanyProfileDTO;
 import com.cogent.cogentappointment.admin.dto.request.companyProfile.CompanyProfileUpdateDTO;
-import com.cogent.cogentappointment.admin.dto.request.profile.ProfileDTO;
-import com.cogent.cogentappointment.admin.dto.request.profile.ProfileUpdateDTO;
-import com.cogent.cogentappointment.admin.dto.response.profile.*;
-import com.cogent.cogentappointment.persistence.model.Department;
+import com.cogent.cogentappointment.admin.dto.response.companyProfile.CompanyProfileDetailResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.companyProfile.CompanyProfileResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.profile.ProfileMenuResponseDTO;
 import com.cogent.cogentappointment.persistence.model.Profile;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.convertToNormalCase;
@@ -35,91 +30,32 @@ public class CompanyProfileUtils {
         return profile;
     }
 
-    public static Profile convertToUpdatedCompanyProfile(CompanyProfileUpdateDTO profileDTO,
-                                                         Profile profile) {
+    public static void convertToUpdatedCompanyProfile(CompanyProfileUpdateDTO profileDTO,
+                                                      Profile profile) {
         profile.setName(convertToNormalCase(profileDTO.getName()));
         profile.setDescription(profileDTO.getDescription());
         profile.setStatus(profileDTO.getStatus());
         profile.setRemarks(profileDTO.getRemarks());
-        return profile;
     }
 
-    public static ProfileDetailResponseDTO parseToProfileDetailResponseDTO(
-            ProfileResponseDTO profileResponseDTO,
+    public static CompanyProfileDetailResponseDTO parseToCompanyProfileDetailResponseDTO(
+            CompanyProfileResponseDTO companyProfileInfo,
             List<ProfileMenuResponseDTO> profileMenuResponseDTOS) {
 
         Map<Long, List<ProfileMenuResponseDTO>> groupByParentId = new TreeMap<>(
                 profileMenuResponseDTOS.stream()
                         .collect(Collectors.groupingBy(ProfileMenuResponseDTO::getParentId)));
 
-        return ProfileDetailResponseDTO.builder()
-                .profileResponseDTO(profileResponseDTO)
-                .profileMenuResponseDTOS(groupByParentId)
+        return CompanyProfileDetailResponseDTO.builder()
+                .companyProfileInfo(companyProfileInfo)
+                .companyProfileMenuInfo(groupByParentId)
                 .build();
     }
 
-    public static BiFunction<Profile, DeleteRequestDTO, Profile> convertProfileToDeleted =
-            (profile, deleteRequestDTO) -> {
-                profile.setStatus(deleteRequestDTO.getStatus());
-                profile.setRemarks(deleteRequestDTO.getRemarks());
-                return profile;
-            };
+    public static void convertCompanyProfileToDeleted(Profile profile,
+                                                      DeleteRequestDTO requestDTO) {
 
-    public static AssignedProfileResponseDTO parseToAssignedProfileMenuResponseDTO(List<Object[]> results) {
-
-        List<ChildMenusResponseDTO> childMenusResponseDTOS = parseToChildMenusResponseDTOS(results);
-
-        List<AssignedRolesResponseDTO> assignedRolesResponseDTOS =
-                parseToAssignedRolesResponseDTOS(childMenusResponseDTOS);
-
-        return AssignedProfileResponseDTO.builder()
-                .assignedRolesResponseDTOS(assignedRolesResponseDTOS)
-                .build();
+        profile.setStatus(requestDTO.getStatus());
+        profile.setRemarks(requestDTO.getRemarks());
     }
-
-    private static List<ChildMenusResponseDTO> parseToChildMenusResponseDTOS(List<Object[]> results) {
-
-        final int PARENT_ID_INDEX = 0;
-        final int USER_MENU_ID_INDEX = 1;
-        final int ROLE_ID_INDEX = 2;
-
-        List<ChildMenusResponseDTO> childMenusResponseDTOS = new ArrayList<>();
-
-        results.forEach(result -> {
-            List<Long> roleIds = Stream.of(result[ROLE_ID_INDEX].toString()
-                    .split(StringConstant.COMMA_SEPARATED))
-                    .map(Long::parseLong)
-                    .collect(Collectors.toList());
-
-            ChildMenusResponseDTO responseDTO = ChildMenusResponseDTO.builder()
-                    .parentId(Long.parseLong(result[PARENT_ID_INDEX].toString()))
-                    .userMenuId(Long.parseLong(result[USER_MENU_ID_INDEX].toString()))
-                    .roleId(roleIds)
-                    .build();
-
-            childMenusResponseDTOS.add(responseDTO);
-        });
-
-        return childMenusResponseDTOS;
-    }
-
-    private static List<AssignedRolesResponseDTO> parseToAssignedRolesResponseDTOS
-            (List<ChildMenusResponseDTO> childMenusResponseDTOS) {
-
-        Map<Long, List<ChildMenusResponseDTO>> groupByParentIdMap =
-                childMenusResponseDTOS.stream().collect(Collectors.groupingBy(ChildMenusResponseDTO::getParentId));
-
-        return groupByParentIdMap.entrySet()
-                .stream()
-                .map(map -> new AssignedRolesResponseDTO(map.getKey(), map.getValue()))
-                .collect(Collectors.toList());
-    }
-
-//    private static AssignedProfileResponseDTO parseToAssignedProfileMenuResponseDTO
-//            (List<AssignedRolesResponseDTO> assignedRolesResponseDTOS) {
-//
-//        return AssignedProfileResponseDTO.builder()
-//                .assignedRolesResponseDTOS(assignedRolesResponseDTOS)
-//                .build();
-//    }
 }

@@ -5,8 +5,9 @@ import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.request.companyProfile.CompanyProfileRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.companyProfile.CompanyProfileSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.companyProfile.CompanyProfileUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.companyProfile.CompanyProfileDetailResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.companyProfile.CompanyProfileMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.profile.ProfileDetailResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.profile.ProfileMinimalResponseDTO;
 import com.cogent.cogentappointment.persistence.model.Profile;
 import org.springframework.data.domain.Pageable;
 
@@ -23,12 +24,10 @@ public interface CompanyProfileService {
 
     void delete(DeleteRequestDTO deleteRequestDTO);
 
-    List<ProfileMinimalResponseDTO> search(CompanyProfileSearchRequestDTO searchRequestDTO,
-                                           Pageable pageable);
+    List<CompanyProfileMinimalResponseDTO> search(CompanyProfileSearchRequestDTO searchRequestDTO,
+                                                  Pageable pageable);
 
-    ProfileDetailResponseDTO fetchDetailsById(Long id);
+    CompanyProfileDetailResponseDTO fetchDetailsById(Long id);
 
-    List<DropDownResponseDTO> fetchActiveProfilesForDropdown();
-
-    Profile fetchActiveProfileById(Long id);
+    List<DropDownResponseDTO> fetchMinActiveCompanyProfile();
 }

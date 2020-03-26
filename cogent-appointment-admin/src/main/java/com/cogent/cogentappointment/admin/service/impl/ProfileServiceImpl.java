@@ -9,6 +9,7 @@ import com.cogent.cogentappointment.admin.dto.request.profile.ProfileUpdateReque
 import com.cogent.cogentappointment.admin.dto.response.profile.AssignedProfileResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.profile.ProfileDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.profile.ProfileMinimalResponseDTO;
+import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.DepartmentRepository;
@@ -27,6 +28,8 @@ import java.util.List;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NAME_DUPLICATION_MESSAGE;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.ProfileServiceMessages.INVALID_DELETE_REQUEST;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.ProfileLog.PROFILE;
 import static com.cogent.cogentappointment.admin.utils.ProfileMenuUtils.convertToProfileMenu;
@@ -109,6 +112,9 @@ public class ProfileServiceImpl implements ProfileService {
         log.info(DELETING_PROCESS_STARTED, PROFILE);
 
         Profile profile = findById(deleteRequestDTO.getId());
+
+        if (profile.getIsSuperAdminProfile().equals(YES))
+            throw new BadRequestException(INVALID_DELETE_REQUEST);
 
         save(convertProfileToDeleted.apply(profile, deleteRequestDTO));
 

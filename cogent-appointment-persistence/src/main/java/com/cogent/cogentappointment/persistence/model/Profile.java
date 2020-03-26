@@ -12,7 +12,7 @@ import java.io.Serializable;
 
 /**
  * @author smriti on 7/2/19
- * <p>
+ *
  * THIS ENTITY IS USED TO SAVE BOTH HOSPITAL/CLIENT PROFILE AND COMPANY PROFILE
  * IN CASE OF COMPANY PROFILE -> isCompanyProfile = 'Y' AND HOSPITAL IS NOT NULL AND DEPARTMENT IS NULL
  * ELSE isCompanyProfile ='N' AND DEPARTMENT IS NOT NULL AND HOSPITAL IS NULL
@@ -39,8 +39,16 @@ public class Profile extends Auditable<String> implements Serializable {
     @Column(name = "status")
     private Character status;
 
+    /*Y-> COMPANY PROFILE
+    * N-> HOSPITAL OR CLIENT PROFILE*/
     @Column(name = "is_company_profile")
     private Character isCompanyProfile;
+
+    /*NOTE THAT THIS FLAG IS 'Y' FOR DEFAULT PROFILE SAVED IN DATABASE MANUALLY
+      WHICH CANNOT BE UPDATED. ALSO, ADMIN WHO HAS THIS PROFILE CANNOT BE DELETED
+      */
+    @Column(name = "is_super_admin_profile", updatable = false)
+    private Character isSuperAdminProfile;
 
     /*THIS IS HOSPITAL RELATION FOR HOSPITAL/CLIENT PROFILE*/
     @OneToOne(fetch = FetchType.LAZY)

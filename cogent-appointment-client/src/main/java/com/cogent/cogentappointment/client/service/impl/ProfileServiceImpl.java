@@ -9,6 +9,7 @@ import com.cogent.cogentappointment.client.dto.request.profile.ProfileUpdateRequ
 import com.cogent.cogentappointment.client.dto.response.profile.AssignedProfileResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.profile.ProfileDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.profile.ProfileMinimalResponseDTO;
+import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.DepartmentRepository;
@@ -27,6 +28,8 @@ import java.util.List;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.NAME_DUPLICATION_MESSAGE;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.ProfileServiceMessages.INVALID_DELETE_REQUEST;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.ProfileLog.PROFILE;
 import static com.cogent.cogentappointment.client.utils.ProfileMenuUtils.convertToProfileMenu;
@@ -119,6 +122,9 @@ public class ProfileServiceImpl implements ProfileService {
         log.info(DELETING_PROCESS_STARTED, PROFILE);
 
         Profile profile = findByIdAndHospitalId(deleteRequestDTO.getId(), getLoggedInHospitalId());
+
+        if (profile.getIsSuperAdminProfile().equals(YES))
+            throw new BadRequestException(INVALID_DELETE_REQUEST);
 
         convertProfileToDeleted.apply(profile, deleteRequestDTO);
 

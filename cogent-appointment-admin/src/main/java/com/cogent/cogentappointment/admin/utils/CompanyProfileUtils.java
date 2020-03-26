@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.convertToNormalCase;
 
@@ -24,18 +25,21 @@ public class CompanyProfileUtils {
 
     public static Profile convertDTOToCompanyProfile(CompanyProfileDTO profileDTO,
                                                      Hospital company) {
+
         Profile profile = new Profile();
         profile.setName(convertToNormalCase(profileDTO.getName()));
         profile.setDescription(profileDTO.getDescription());
         profile.setStatus(profileDTO.getStatus());
         profile.setCompany(company);
         profile.setIsCompanyProfile(YES);
+        profile.setIsSuperAdminProfile(NO);
         return profile;
     }
 
     public static void convertToUpdatedCompanyProfile(CompanyProfileUpdateDTO profileDTO,
                                                       Profile profile,
                                                       Hospital company) {
+
         profile.setName(convertToNormalCase(profileDTO.getName()));
         profile.setDescription(profileDTO.getDescription());
         profile.setCompany(company);

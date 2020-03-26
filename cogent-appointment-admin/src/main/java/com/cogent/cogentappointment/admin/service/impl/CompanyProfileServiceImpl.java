@@ -7,6 +7,7 @@ import com.cogent.cogentappointment.admin.dto.request.companyProfile.CompanyProf
 import com.cogent.cogentappointment.admin.dto.request.companyProfile.CompanyProfileUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.companyProfile.CompanyProfileDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.companyProfile.CompanyProfileMinimalResponseDTO;
+import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.CompanyProfileRepository;
@@ -25,6 +26,8 @@ import java.util.List;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NAME_DUPLICATION_MESSAGE;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.ProfileServiceMessages.INVALID_DELETE_REQUEST;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.CompanyProfileLog.COMPANY_PROFILE;
 import static com.cogent.cogentappointment.admin.utils.CompanyProfileUtils.*;
@@ -109,6 +112,9 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
         log.info(DELETING_PROCESS_STARTED, COMPANY_PROFILE);
 
         Profile companyProfile = findById(deleteRequestDTO.getId());
+
+        if (companyProfile.getIsSuperAdminProfile().equals(YES))
+            throw new BadRequestException(INVALID_DELETE_REQUEST);
 
         convertCompanyProfileToDeleted(companyProfile, deleteRequestDTO);
 

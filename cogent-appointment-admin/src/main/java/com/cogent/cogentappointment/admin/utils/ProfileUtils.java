@@ -32,6 +32,7 @@ public class ProfileUtils {
         profile.setStatus(profileDTO.getStatus());
         profile.setDepartment(department);
         profile.setIsCompanyProfile(NO);
+        profile.setIsSuperAdminProfile(NO);
         return profile;
     }
 

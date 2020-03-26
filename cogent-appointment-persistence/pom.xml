@@ -8,7 +8,7 @@
         <version>2.2.4.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.cogent.cogentappointment.persistence</groupId>
+    <groupId>com.cogent</groupId>
     <artifactId>cogent-appointment-persistence</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>cogent-appointment-persistence</name>
@@ -56,12 +56,15 @@
         </dependencies>
     </dependencyManagement>
     <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
+        <!--<plugins>-->
+            <!--<plugin>-->
+                <!--<groupId>org.springframework.boot</groupId>-->
+                <!--<artifactId>spring-boot-maven-plugin</artifactId>-->
+                <!--<configuration>-->
+                    <!--<classifier>exec</classifier>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
+        <!--</plugins>-->
     </build>
 
 </project>

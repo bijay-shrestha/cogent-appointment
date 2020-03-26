@@ -24,6 +24,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
+import static com.cogent.cogentappointment.admin.constants.StringConstant.*;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.Y;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.toUpperCase;
 
@@ -116,7 +117,6 @@ public class CompanyUtils {
         final int IS_COGENT_ADMIN_INDEX = 9;
         final int ALIAS_INDEX=10;
 
-
         return CompanyResponseDTO.builder()
                 .id(Long.parseLong(results[COMPANY_ID_INDEX].toString()))
                 .name(results[NAME_INDEX].toString())
@@ -126,8 +126,8 @@ public class CompanyUtils {
                 .remarks(Objects.isNull(results[REMARKS_INDEX]) ? null : results[REMARKS_INDEX].toString())
                 .companyLogo(Objects.isNull(results[COMPANY_LOGO_INDEX]) ? null : results[COMPANY_LOGO_INDEX].toString())
                 .companyCode(results[COMPANY_CODE_INDEX].toString())
-//                .contactNumberResponseDTOS(Objects.isNull(results[CONTACT_DETAILS_INDEX]) ?
-//                        new ArrayList<>() : parseToCompanyContactNumberResponseDTOS(results))
+                .contactNumberResponseDTOS(Objects.isNull(results[CONTACT_DETAILS_INDEX]) ?
+                        new ArrayList<>() : parseToCompanyContactNumberResponseDTOS(results))
                 .isCompany(results[IS_COGENT_ADMIN_INDEX].toString().charAt(0))
                 .alias(results[ALIAS_INDEX].toString())
                 .build();
@@ -137,10 +137,10 @@ public class CompanyUtils {
 
         final int CONTACT_DETAILS_INDEX = 9;
 
-        String[] contactWithIdAndNumber = results[CONTACT_DETAILS_INDEX].toString().split(StringConstant.COMMA_SEPARATED);
+        String[] contactWithIdAndNumber = results[CONTACT_DETAILS_INDEX].toString().split(COMMA_SEPARATED);
 
         return Arrays.stream(contactWithIdAndNumber)
-                .map(contact -> contact.split(StringConstant.HYPHEN))
+                .map(contact -> contact.split(HYPHEN))
                 .map(contactDetails -> HospitalContactNumberResponseDTO.builder()
                         .hospitalContactNumberId(Long.parseLong(contactDetails[0]))
                         .contactNumber(contactDetails[1])

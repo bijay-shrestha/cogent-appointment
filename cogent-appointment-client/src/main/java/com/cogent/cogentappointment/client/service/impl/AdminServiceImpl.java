@@ -30,6 +30,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.Validator;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -267,6 +269,8 @@ public class AdminServiceImpl implements AdminService {
 
         updateMacAddressInfo(updateRequestDTO.getMacAddressUpdateInfo(), admin);
 
+        updateAdminDashboardFeature(updateRequestDTO.getAdminDashboardRequestDTOS(), admin);
+
         updateAdminMetaInfo(admin);
 
         sendEmail(emailRequestDTO);
@@ -331,6 +335,38 @@ public class AdminServiceImpl implements AdminService {
         log.info(FETCHING_PROCESS_COMPLETED, ADMIN_META_INFO, getDifferenceBetweenTwoTime(startTime));
 
         return metaInfoResponseDTOS;
+    }
+
+    private void updateAdminDashboardFeature(List<AdminDashboardRequestDTO> adminDashboardRequestDTOS, Admin admin) {
+
+        List<AdminDashboardFeature> adminDashboardFeatureList = new ArrayList<>();
+        adminDashboardRequestDTOS.forEach(result -> {
+
+            AdminDashboardFeature adminDashboardFeature = adminDashboardFeatureRepository.findAdminDashboardFeatureBydashboardFeatureId(result.getId(), admin.getId());
+
+            if (adminDashboardFeature == null) {
+                saveAdminDashboardFeature(result.getId(), admin);
+            }
+
+            if (adminDashboardFeature != null) {
+                adminDashboardFeature.setStatus(result.getStatus());
+                adminDashboardFeatureList.add(adminDashboardFeature);
+            }
+
+        });
+
+        adminDashboardFeatureRepository.saveAll(adminDashboardFeatureList);
+
+    }
+
+    public void saveAdminDashboardFeature(Long id, Admin admin) {
+
+        DashboardFeature dashboardFeature = dashboardFeatureRepository.findActiveDashboardFeatureById(id)
+                .orElseThrow(() -> new NoContentFoundException(DashboardFeature.class));
+
+        List<DashboardFeature> dashboardFeatureList = Arrays.asList(dashboardFeature);
+        adminDashboardFeatureRepository.saveAll(parseToAdminDashboardFeature(dashboardFeatureList, admin));
+
     }
 
 

@@ -5,6 +5,7 @@ import lombok.Getter;
 
 import static com.cogent.cogentappointment.admin.exception.utils.ExceptionUtils.generateMessage;
 import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 /**
  * @author smriti on 7/2/19
@@ -19,7 +20,7 @@ public class UnauthorisedException extends RuntimeException {
         exception = ExceptionResponse.builder()
                 .errorMessage(ExceptionUtils.generateMessage(clazz))
                 .debugMessage(debugMessage)
-                .status(CONFLICT)
+                .status(UNAUTHORIZED)
                 .timeStamp(ExceptionUtils.getLocalDateTime())
                 .build();
 

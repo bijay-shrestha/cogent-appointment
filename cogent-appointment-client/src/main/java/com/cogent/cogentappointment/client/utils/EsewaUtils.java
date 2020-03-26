@@ -5,7 +5,7 @@ import com.cogent.cogentappointment.client.dto.response.appointment.appoinmentDa
 import com.cogent.cogentappointment.client.dto.response.appointment.appoinmentDateAndTime.AvailableDatesResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appoinmentDateAndTime.DoctorDutyRosterOverrideAppointmentDate;
 import com.cogent.cogentappointment.client.dto.response.appointment.appoinmentDateAndTime.DoctorWeekDaysDutyRosterAppointmentDate;
-import com.cogent.cogentappointment.client.dto.response.eSewa.AvailableDoctorResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.eSewa.*;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.client.constants.EsewaStatusConstants.OK;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDates;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 
@@ -20,13 +21,13 @@ import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDa
 /**
  * @author smriti on 15/03/20
  */
-public class eSewaUtils {
+public class EsewaUtils {
 
-    public static List<AvailableDoctorResponseDTO> mergeOverrideAndActualDoctorList(
-            List<AvailableDoctorResponseDTO> overrideList,
-            List<AvailableDoctorResponseDTO> actualList) {
+    public static List<AvailableDoctorWithSpecialization> mergeOverrideAndActualDoctorList(
+            List<AvailableDoctorWithSpecialization> overrideList,
+            List<AvailableDoctorWithSpecialization> actualList) {
 
-        List<AvailableDoctorResponseDTO> unmatchedList = actualList.stream()
+        List<AvailableDoctorWithSpecialization> unmatchedList = actualList.stream()
                 .filter(actual -> (overrideList.stream()
                         .filter(override -> (override.getDoctorId().equals(actual.getDoctorId()))
                                 && (override.getSpecializationId().equals(actual.getSpecializationId()))
@@ -45,6 +46,7 @@ public class eSewaUtils {
         appointmentDatesResponseDTO.setDoctorId(requestDTO.getDoctorId());
         appointmentDatesResponseDTO.setSpecializationId(requestDTO.getSpecializationId());
         appointmentDatesResponseDTO.setDates(finalAvaliableDateAndTime);
+        appointmentDatesResponseDTO.setStatus(OK);
 
         return appointmentDatesResponseDTO;
     }
@@ -131,25 +133,43 @@ public class eSewaUtils {
         return unmatched;
     }
 
-    public static void getAllDutyRosterDates(Date date,
-                                             String weekName,
-                                             List<Date> dates) {
-        if (date.toString().substring(0, 3).toUpperCase().equals(weekName)) {
-            dates.add(utilDateToSqlDate(date));
-        }
-    }
-
     public static List<Date> getDutyRosterDates(List<Date> dates,
                                                 List<String> weekDays) {
         List<Date> availableDates=new ArrayList<>();
-
         for (Date date : dates) {
-
             weekDays.forEach(weekdays -> {
-
-                getAllDutyRosterDates(date,weekdays,availableDates);
+                if (date.toString().substring(0, 3).toUpperCase().equals(weekdays)) {
+                    availableDates.add(utilDateToSqlDate(date));
+                }
             });
         }
         return availableDates;
+    }
+
+    public static AvailableDoctorWithSpecializationResponseDTO getAvailableDoctorWithSpecializationResponseDTO(
+            List<AvailableDoctorWithSpecialization> mergedList){
+
+        return AvailableDoctorWithSpecializationResponseDTO.builder()
+                .availableDoctorWithSpecializations(mergedList)
+                .status(OK)
+                .build();
+    }
+
+    public static AvailableDatesWithSpecializationResponseDTO getAvailableDatesWithSpecializationResponseDTO(
+            List<AvailableDatesWithSpecialization> responseDTOList){
+
+        return AvailableDatesWithSpecializationResponseDTO.builder()
+                .availableDatesWithSpecialization(responseDTOList)
+                .status(OK)
+                .build();
+    }
+
+    public static AvailableDatesWithDoctorResponseDTO getAvailableDatesWithDoctorResponseDTO(
+            List<AvailableDatesWithDoctor> responseDTOList){
+
+        return AvailableDatesWithDoctorResponseDTO.builder()
+                .availableDatesWithDoctor(responseDTOList)
+                .status(OK)
+                .build();
     }
 }

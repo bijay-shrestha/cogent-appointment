@@ -39,6 +39,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.client.constants.EsewaStatusConstants.OK;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.query.AppointmentQuery.*;
 import static com.cogent.cogentappointment.client.query.DashBoardQuery.*;
@@ -195,6 +196,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                 transformQueryToResultList(query, AppointmentDetailResponseDTO.class);
 
         if (appointmentDetails.isEmpty()) throw APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId);
+
+        appointmentDetails.get(0).setStatus(OK);
 
         return appointmentDetails.get(0);
     }

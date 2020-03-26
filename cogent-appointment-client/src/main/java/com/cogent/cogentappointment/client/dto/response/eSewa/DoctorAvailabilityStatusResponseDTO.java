@@ -17,4 +17,6 @@ public class DoctorAvailabilityStatusResponseDTO implements Serializable {
     private String status;
 
     private String message;
+
+    private int successStatus;
 }

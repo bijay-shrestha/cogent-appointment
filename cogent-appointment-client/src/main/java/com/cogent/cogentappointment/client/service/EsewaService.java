@@ -13,12 +13,12 @@ public interface EsewaService {
 
     DoctorAvailabilityStatusResponseDTO fetchDoctorAvailableStatus(AppointmentDetailRequestDTO requestDTO);
 
-    List<AvailableDoctorResponseDTO> fetchAvailableDoctorWithSpecialization(AppointmentDetailRequestDTO requestDTO);
+    AvailableDoctorWithSpecializationResponseDTO fetchAvailableDoctorWithSpecialization(AppointmentDetailRequestDTO requestDTO);
 
-    List<AvailableDateByDoctorIdResponseDTO> fetchAvailableDatesWithSpecialization(Long doctorId);
+    AvailableDatesWithSpecializationResponseDTO fetchAvailableDatesWithSpecialization(Long doctorId);
 
     AllAvailableDatesResponseDTO fetchAvailableDates(AppointmentDatesRequestDTO requestDTO);
 
-    List<AvailableDateBySpecializationIdResponseDTO> fetchAvailableDatesWithDoctor(Long specializationId);
+    AvailableDatesWithDoctorResponseDTO fetchAvailableDatesWithDoctor(Long specializationId);
 
 }

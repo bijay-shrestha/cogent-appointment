@@ -4,9 +4,7 @@ import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRe
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedTimeResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentCheckAvailabilityResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentSuccessResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.*;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueSearchByTimeDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentTimeDTO;
@@ -30,6 +28,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.client.constants.EsewaStatusConstants.OK;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.*;
 import static com.cogent.cogentappointment.client.constants.StringConstant.HYPHEN;
@@ -86,6 +85,7 @@ public class AppointmentUtils {
         return AppointmentSuccessResponseDTO.builder()
                 .appointmentNumber(appointmentNumber)
                 .appointmentTransactionStatus(ACTIVE)
+                .status(OK)
                 .build();
     }
 
@@ -143,6 +143,7 @@ public class AppointmentUtils {
                 .queryDate(queryDate)
                 .doctorAvailableTime(startTime + HYPHEN + endTime)
                 .availableTimeSlots(availableTimeSlots)
+                .status(OK)
                 .build();
     }
 
@@ -502,6 +503,22 @@ public class AppointmentUtils {
 
         return groupByPriceMap;
 
+    }
+
+    public static StatusResponseDTO parseToStatusResponseDTO() {
+
+        return StatusResponseDTO.builder()
+                .status(OK)
+                .build();
+    }
+
+    public static AppointmentMinResponseWithStatusDTO parseToAppointmentMinResponseWithStatusDTO(
+            List<AppointmentMinResponseDTO> minResponseDTOList) {
+
+        return AppointmentMinResponseWithStatusDTO.builder()
+                .appointmentMinResponseDTOS(minResponseDTOList)
+                .status(OK)
+                .build();
     }
 
 

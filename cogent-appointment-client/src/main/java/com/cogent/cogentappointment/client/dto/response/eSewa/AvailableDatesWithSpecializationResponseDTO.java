@@ -3,7 +3,6 @@ package com.cogent.cogentappointment.client.dto.response.eSewa;
 import lombok.*;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -14,10 +13,8 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AvailableDateByDoctorIdResponseDTO implements Serializable {
-    private Long specializationId;
+public class AvailableDatesWithSpecializationResponseDTO implements Serializable {
+    private List<AvailableDatesWithSpecialization> availableDatesWithSpecialization;
 
-    private String SpecilaizationName;
-
-    private List<Date> avaliableDates;
+    private int status;
 }

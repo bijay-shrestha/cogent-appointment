@@ -189,15 +189,19 @@ public class AdminQuery {
 
     public static final String QUERY_TO_GET_LOGGED_ADMIN_INFO =
             "SELECT" +
-                    " a.id as id ," +
+                    " a.id as id," +
                     " a.username as username," +
                     " a.password as password," +
-                    " h.isCompany as isCompany" +
+                    " h.isCompany as isCompany," +
+                    " h.code as companyCode," +
+                    " h.id as companyId," +
+                    " hai.apiKey as apiKey," +
+                    " hai.apiSecret as apiSecret" +
                     " FROM " +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
-                    " LEFT JOIN Department d ON d.id=p.department.id" +
-                    " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
+                    " LEFT JOIN Hospital h ON h.id=p.company.id" +
+                    " LEFT JOIN HmacApiInfo hai ON hai.hospital.id=h.id" +
                     " WHERE" +
                     " (a.username =:username OR a.mobileNumber=:username OR a.email=:username)" +
                     " AND a.status = 'Y'" +

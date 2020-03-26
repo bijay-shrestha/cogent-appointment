@@ -25,12 +25,30 @@ public class UserDetailsImpl implements UserDetails {
     @JsonIgnore
     private String password;
 
+    private String companyCode;
 
-    public UserDetailsImpl(Long id, String username, Character isCompany, String password) {
+    private Long companyId;
+
+    private String apiKey;
+
+    private String apiSecret;
+
+
+    public UserDetailsImpl(Long id, String username,
+                           Character isCompany,
+                           String password,
+                           String companyCode,
+                           Long companyId,
+                           String apiKey,
+                           String apiSecret) {
         this.id = id;
         this.username = username;
         this.isCompany = isCompany;
         this.password = password;
+        this.companyCode = companyCode;
+        this.companyId = companyId;
+        this.apiKey = apiKey;
+        this.apiSecret = apiSecret;
     }
 
     public static UserDetailsImpl build(LoggedInAdminDTO admin) {
@@ -38,7 +56,11 @@ public class UserDetailsImpl implements UserDetails {
                 admin.getId(),
                 admin.getUsername(),
                 admin.getIsCompany(),
-                admin.getPassword());
+                admin.getPassword(),
+                admin.getCompanyCode(),
+                admin.getCompanyId(),
+                admin.getApiKey(),
+                admin.getApiSecret());
     }
 
     @Override

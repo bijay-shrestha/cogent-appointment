@@ -1,5 +1,7 @@
 package com.cogent.cogentappointment.admin.query;
 
+import java.util.Objects;
+
 /**
  * @author Sauravi Thapa २०/२/१०
  */
@@ -151,6 +153,28 @@ public class DashBoardQuery {
                 " atd.transactionDate" +
                 " ORDER BY" +
                 " atd.transactionDate";
+    }
+
+    public static String QUERY_TO_FETCH_REFUND_AMOUNT(Long doctorId, Long specializationId, Long hospitalId){
+        String query=  "SELECT" +
+                " COALESCE(SUM(ard.refundAmount ),0) as totalRefundedAmount" +
+                " FROM" +
+                " AppointmentRefundDetail ard" +
+                " LEFT JOIN Appointment a ON a.id=ard.appointmentId.id" +
+                " WHERE" +
+                " ard.status = 'A'" +
+                " AND ard.refundedDate BETWEEN :fromDate AND :toDate";
+
+        if (!Objects.isNull(hospitalId))
+            query += " AND a.hospitalId.id = " + hospitalId;
+
+        if (!Objects.isNull(doctorId))
+            query += " AND a.doctorId.id = " + doctorId;
+
+        if (!Objects.isNull(specializationId))
+            query += " AND a.specializationId.id = " + specializationId;
+
+        return query;
     }
 
 }

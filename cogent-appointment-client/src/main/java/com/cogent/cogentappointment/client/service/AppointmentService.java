@@ -13,6 +13,7 @@ import com.cogent.cogentappointment.client.dto.request.appointment.refund.Appoin
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.dashboard.RefundAmountRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.*;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
@@ -82,6 +83,4 @@ public interface AppointmentService {
 
     Map<String, List<AppointmentQueueDTO>> fetchTodayAppointmentQueueByTime(
             AppointmentQueueRequestDTO appointmentQueueRequestDTO, Pageable pageable);
-
-
 }

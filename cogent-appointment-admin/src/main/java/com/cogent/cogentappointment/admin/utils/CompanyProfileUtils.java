@@ -6,6 +6,7 @@ import com.cogent.cogentappointment.admin.dto.request.companyProfile.CompanyProf
 import com.cogent.cogentappointment.admin.dto.response.companyProfile.CompanyProfileDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.companyProfile.CompanyProfileResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.profile.ProfileMenuResponseDTO;
+import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.Profile;
 
 import java.util.List;
@@ -21,19 +22,23 @@ import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.conver
  */
 public class CompanyProfileUtils {
 
-    public static Profile convertDTOToCompanyProfile(CompanyProfileDTO profileDTO) {
+    public static Profile convertDTOToCompanyProfile(CompanyProfileDTO profileDTO,
+                                                     Hospital company) {
         Profile profile = new Profile();
         profile.setName(convertToNormalCase(profileDTO.getName()));
         profile.setDescription(profileDTO.getDescription());
         profile.setStatus(profileDTO.getStatus());
+        profile.setCompany(company);
         profile.setIsCompanyProfile(YES);
         return profile;
     }
 
     public static void convertToUpdatedCompanyProfile(CompanyProfileUpdateDTO profileDTO,
-                                                      Profile profile) {
+                                                      Profile profile,
+                                                      Hospital company) {
         profile.setName(convertToNormalCase(profileDTO.getName()));
         profile.setDescription(profileDTO.getDescription());
+        profile.setCompany(company);
         profile.setStatus(profileDTO.getStatus());
         profile.setRemarks(profileDTO.getRemarks());
     }

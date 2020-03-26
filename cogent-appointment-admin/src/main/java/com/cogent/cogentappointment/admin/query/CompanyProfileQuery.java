@@ -17,7 +17,8 @@ public class CompanyProfileQuery {
                     " FROM Profile p" +
                     " LEFT JOIN Hospital h ON h.id = p.company.id" +
                     " WHERE " +
-                    " p.name =:name AND h.id =:companyId" +
+                    " p.name =:name" +
+                    " AND h.id =:companyId" +
                     " AND p.isCompanyProfile= 'Y'" +
                     " AND h.status != 'D'" +
                     " AND p.status != 'D'";

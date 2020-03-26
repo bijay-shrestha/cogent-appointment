@@ -12,7 +12,7 @@ import java.io.Serializable;
 
 /**
  * @author smriti on 7/2/19
- *
+ * <p>
  * THIS ENTITY IS USED TO SAVE BOTH HOSPITAL/CLIENT PROFILE AND COMPANY PROFILE
  * IN CASE OF COMPANY PROFILE -> isCompanyProfile = 'Y' AND HOSPITAL IS NOT NULL AND DEPARTMENT IS NULL
  * ELSE isCompanyProfile ='N' AND DEPARTMENT IS NOT NULL AND HOSPITAL IS NULL
@@ -42,27 +42,28 @@ public class Profile extends Auditable<String> implements Serializable {
     @Column(name = "is_company_profile")
     private Character isCompanyProfile;
 
+    /*THIS IS HOSPITAL RELATION FOR HOSPITAL/CLIENT PROFILE*/
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "department_id")
+    @JoinColumn(name = "department_id", nullable = true)
     private Department department;
 
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "company_id")
-//    private Hospital company;
+    /*THIS IS COMPANY FOR COMPANY PROFILE*/
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id")
+    private Hospital company;
 
     @Column(name = "remarks")
     private String remarks;
 
+    /*DEPARTMENT/HOSPITAL NOT ADDED SINCE ONE OR THE OTHER IS NULL*/
     @Override
     public String toString() {
         return "Profile{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", status='" + status +'\'' +
-                ", isCompanyProfile='" + isCompanyProfile +'\'' +
-                ", department='" + department.getName() +'\'' +
-//                ", company='" + company.getName() +'\'' +
+                ", status='" + status + '\'' +
+                ", isCompanyProfile='" + isCompanyProfile + '\'' +
                 ", remarks='" + remarks + '\'' +
                 '}';
     }

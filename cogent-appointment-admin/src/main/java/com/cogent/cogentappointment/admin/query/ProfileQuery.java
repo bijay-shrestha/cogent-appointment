@@ -37,7 +37,11 @@ public class ProfileQuery {
 
     private static Function<ProfileSearchRequestDTO, String> GET_WHERE_CLAUSE_FOR_SEARCH_PROFILE =
             (searchRequestDTO) -> {
-                String whereClause = " WHERE p.status!='D' AND h.status!='D' AND p.isCompanyProfile= 'N'";
+                String whereClause = " WHERE" +
+                        " p.status!='D'" +
+                        " AND h.status!='D'" +
+                        " AND p.isCompanyProfile= 'N'" +
+                        " AND h.isCompany = 'N'";
 
                 if (!ObjectUtils.isEmpty(searchRequestDTO.getName()))
                     whereClause += " AND p.name LIKE '%" + searchRequestDTO.getName() + "%'";

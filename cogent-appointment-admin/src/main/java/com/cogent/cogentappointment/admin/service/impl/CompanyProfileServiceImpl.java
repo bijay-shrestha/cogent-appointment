@@ -12,6 +12,8 @@ import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.CompanyProfileRepository;
 import com.cogent.cogentappointment.admin.repository.ProfileMenuRepository;
 import com.cogent.cogentappointment.admin.service.CompanyProfileService;
+import com.cogent.cogentappointment.admin.service.CompanyService;
+import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.Profile;
 import com.cogent.cogentappointment.persistence.model.ProfileMenu;
 import lombok.extern.slf4j.Slf4j;
@@ -43,10 +45,14 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
 
     private final ProfileMenuRepository profileMenuRepository;
 
+    private final CompanyService companyService;
+
     public CompanyProfileServiceImpl(CompanyProfileRepository companyProfileRepository,
-                                     ProfileMenuRepository profileMenuRepository) {
+                                     ProfileMenuRepository profileMenuRepository,
+                                     CompanyService companyService) {
         this.companyProfileRepository = companyProfileRepository;
         this.profileMenuRepository = profileMenuRepository;
+        this.companyService = companyService;
     }
 
     @Override
@@ -62,7 +68,10 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
 
         validateName(companyProfileCount, requestDTO.getCompanyProfileInfo().getName());
 
-        Profile savedCompanyProfile = save(convertDTOToCompanyProfile(requestDTO.getCompanyProfileInfo()));
+        Hospital company = findCompanyById(requestDTO.getCompanyProfileInfo().getCompanyId());
+
+        Profile savedCompanyProfile = save(
+                convertDTOToCompanyProfile(requestDTO.getCompanyProfileInfo(), company));
 
         saveProfileMenu(convertToProfileMenu(savedCompanyProfile, requestDTO.getProfileMenuInfo()));
 
@@ -84,7 +93,9 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
 
         validateName(companyProfileCount, requestDTO.getCompanyProfileInfo().getName());
 
-        convertToUpdatedCompanyProfile(requestDTO.getCompanyProfileInfo(), companyProfile);
+        Hospital company = findCompanyById(requestDTO.getCompanyProfileInfo().getCompanyId());
+
+        convertToUpdatedCompanyProfile(requestDTO.getCompanyProfileInfo(), companyProfile, company);
 
         saveProfileMenu(convertToUpdatedProfileMenu(companyProfile, requestDTO.getProfileMenuInfo()));
 
@@ -161,6 +172,10 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
     private Profile findById(Long companyProfileId) {
         return companyProfileRepository.findCompanyProfileById(companyProfileId)
                 .orElseThrow(() -> COMPANY_PROFILE_WITH_GIVEN_ID_NOT_FOUND.apply(companyProfileId));
+    }
+
+    private Hospital findCompanyById(Long companyId) {
+        return companyService.findActiveCompanyById(companyId);
     }
 
     private Function<Long, NoContentFoundException> COMPANY_PROFILE_WITH_GIVEN_ID_NOT_FOUND = (id) -> {

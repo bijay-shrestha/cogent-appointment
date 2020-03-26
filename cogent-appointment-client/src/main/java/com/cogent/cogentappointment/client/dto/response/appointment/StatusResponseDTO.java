@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.client.dto.response.appointment;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.http.HttpStatus;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -15,5 +16,7 @@ import java.util.Date;
 @Builder
 public class StatusResponseDTO implements Serializable {
 
-    private int status;
+    private int responseCode;
+
+    private HttpStatus responseStatus;
 }

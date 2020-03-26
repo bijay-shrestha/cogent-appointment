@@ -19,7 +19,8 @@ public class InternalServerErrorException extends RuntimeException {
         exception = ExceptionResponse.builder()
                 .errorMessage(generateMessage(clazz))
                 .debugMessage(debugMessage)
-                .status(INTERNAL_SERVER_ERROR)
+                .responseStatus(INTERNAL_SERVER_ERROR)
+                .responseCode(INTERNAL_SERVER_ERROR.value())
                 .timeStamp(getLocalDateTime())
                 .build();
 

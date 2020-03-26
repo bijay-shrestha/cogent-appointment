@@ -44,7 +44,7 @@ public interface AppointmentService {
 
     StatusResponseDTO rescheduleAppointment(AppointmentRescheduleRequestDTO rescheduleRequestDTO);
 
-    AppointmentDetailResponseDTO fetchAppointmentDetails(Long appointmentId);
+    AppointmentDetailResponseWithStatusDTO fetchAppointmentDetails(Long appointmentId);
 
     AppointmentMinResponseWithStatusDTO fetchAppointmentHistory(AppointmentSearchDTO searchDTO);
 

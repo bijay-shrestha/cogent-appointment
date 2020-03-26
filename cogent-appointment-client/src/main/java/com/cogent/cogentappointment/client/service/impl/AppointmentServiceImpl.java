@@ -311,7 +311,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentDetailResponseDTO fetchAppointmentDetails(Long appointmentId) {
+    public AppointmentDetailResponseWithStatusDTO fetchAppointmentDetails(Long appointmentId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_DETAIL_PROCESS_STARTED, APPOINTMENT);
@@ -321,7 +321,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
 
-        return appointmentDetails;
+        return parseToAppointmentDetailResponseWithStatusDTO(appointmentDetails);
     }
 
     @Override

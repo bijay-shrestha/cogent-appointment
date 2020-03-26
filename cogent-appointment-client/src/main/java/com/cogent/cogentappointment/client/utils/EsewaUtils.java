@@ -13,9 +13,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.cogent.cogentappointment.client.constants.EsewaStatusConstants.OK;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDates;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
+import static org.springframework.http.HttpStatus.OK;
 
 
 /**
@@ -46,7 +46,8 @@ public class EsewaUtils {
         appointmentDatesResponseDTO.setDoctorId(requestDTO.getDoctorId());
         appointmentDatesResponseDTO.setSpecializationId(requestDTO.getSpecializationId());
         appointmentDatesResponseDTO.setDates(finalAvaliableDateAndTime);
-        appointmentDatesResponseDTO.setStatus(OK);
+        appointmentDatesResponseDTO.setResponseCode(OK.value());
+        appointmentDatesResponseDTO.setResponseStatus(OK);
 
         return appointmentDatesResponseDTO;
     }
@@ -151,7 +152,8 @@ public class EsewaUtils {
 
         return AvailableDoctorWithSpecializationResponseDTO.builder()
                 .availableDoctorWithSpecializations(mergedList)
-                .status(OK)
+                .responseCode(OK.value())
+                .responseStatus(OK)
                 .build();
     }
 
@@ -160,7 +162,8 @@ public class EsewaUtils {
 
         return AvailableDatesWithSpecializationResponseDTO.builder()
                 .availableDatesWithSpecialization(responseDTOList)
-                .status(OK)
+                .responseCode(OK.value())
+                .responseStatus(OK)
                 .build();
     }
 
@@ -169,7 +172,8 @@ public class EsewaUtils {
 
         return AvailableDatesWithDoctorResponseDTO.builder()
                 .availableDatesWithDoctor(responseDTOList)
-                .status(OK)
+                .responseCode(OK.value())
+                .responseStatus(OK)
                 .build();
     }
 }

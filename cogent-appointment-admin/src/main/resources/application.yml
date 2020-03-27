@@ -1,4 +1,4 @@
-server:
+gserver:
   port: 9090
 spring:
   datasource:

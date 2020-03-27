@@ -30,7 +30,7 @@ public class CompanyQuery {
                     " h.id!=:id" +
                     " AND" +
                     " (h.name =:name OR h.code =:code)" +
-                    " AND h.status != 'D'"+
+                    " AND h.status != 'D'" +
                     " AND h.isCompany='Y'";
 
     public static final String QUERY_TO_FETCH_COMPANY_FOR_DROPDOWN =
@@ -41,7 +41,8 @@ public class CompanyQuery {
                     " FROM" +
                     " Hospital h" +
                     " WHERE h.status ='Y'" +
-                    " AND h.isCompany='Y'";
+                    " AND h.isCompany='Y'" +
+                    " ORDER by h.id  DESC  ";
 
     public static String QUERY_TO_SEARCH_COMPANY(CompanySearchRequestDTO searchRequestDTO) {
         return "SELECT" +
@@ -98,7 +99,7 @@ public class CompanyQuery {
                     " h.code as companyCode," +                                //[7]
                     " tbl1.contact_details as contact_details," +               //[8]
                     " h.is_company as isCompany," +                             //[9]
-                    " h.alias as alias"+                                       //10]
+                    " h.alias as alias" +                                       //10]
                     " FROM" +
                     " hospital h" +
                     " LEFT JOIN hospital_logo hl ON h.id =hl.hospital_id " +

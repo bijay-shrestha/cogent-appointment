@@ -34,7 +34,6 @@ import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.query.AdminQuery.QUERY_FO_FETCH_MAC_ADDRESS_INFO;
 import static com.cogent.cogentappointment.admin.query.AdminQuery.*;
 import static com.cogent.cogentappointment.admin.query.AdminQuery.QUERY_TO_FETCH_ADMIN_BY_USERNAME_OR_EMAIL;
-import static com.cogent.cogentappointment.admin.query.AdminQuery.QUERY_TO_GET_LOGGED_ADMIN_INFO;
 import static com.cogent.cogentappointment.admin.query.CompanyAdminQuery.*;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
@@ -169,7 +168,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
 
     @Override
     public LoggedInAdminDTO getLoggedInAdmin(String username) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_GET_LOGGED_ADMIN_INFO)
+        Query query = createQuery.apply(entityManager, QUERY_TO_GET_LOGGED_COMPANY_ADMIN_INFO)
                 .setParameter(USERNAME, username);
 
         try {

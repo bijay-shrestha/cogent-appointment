@@ -128,7 +128,7 @@ public class CompanyUtils {
                 .companyCode(results[COMPANY_CODE_INDEX].toString())
                 .contactNumberResponseDTOS(Objects.isNull(results[CONTACT_DETAILS_INDEX]) ?
                         new ArrayList<>() : parseToCompanyContactNumberResponseDTOS(results))
-                .isCompany(results[IS_COGENT_ADMIN_INDEX].toString().charAt(0))
+                .isCompany(results[IS_COMPANY_INDEX].toString().charAt(0))
                 .alias(results[ALIAS_INDEX].toString())
                 .build();
     }

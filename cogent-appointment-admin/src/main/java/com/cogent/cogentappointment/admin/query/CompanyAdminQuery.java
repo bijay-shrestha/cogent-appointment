@@ -53,7 +53,9 @@ public class CompanyAdminQuery {
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                     " WHERE a.status ='Y'" +
                     " AND p.isCompanyProfile='Y'" +
-                    " AND p.status='Y'";
+                    " AND p.status='Y'" +
+                    " ORDER by a.id  DESC  ";
+
 
     public static String QUERY_TO_SEARCH_COMPANY_ADMIN(CompanyAdminSearchRequestDTO searchRequestDTO) {
 
@@ -172,7 +174,7 @@ public class CompanyAdminQuery {
                     " WHERE a.status !='D'" +
                     " AND p.isCompanyProfile='Y'";
 
-    public static final String QUERY_TO_GET_LOGGED_ADMIN_INFO =
+    public static final String QUERY_TO_GET_LOGGED_COMPANY_ADMIN_INFO =
             "SELECT" +
                     " a.id as id ," +
                     " a.username as username," +
@@ -181,10 +183,9 @@ public class CompanyAdminQuery {
                     " FROM " +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
-                    " LEFT JOIN Department d ON d.id=p.department.id" +
-                    " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
+                    " LEFT JOIN Hospital h ON h.id=p.company.id" +
                     " WHERE" +
-                    " a.username =:username" +
+                    " (a.username =:username OR a.mobileNumber=:username OR a.email=:username)" +
                     " AND a.status = 'Y'" +
                     " AND h.isCompany='Y'";
 }

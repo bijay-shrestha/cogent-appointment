@@ -190,19 +190,4 @@ public class AdminQuery {
                     " LEFT JOIN Profile ON p.id=a.profileId.id" +
                     " WHERE a.status !='D'" +
                     " AND p.isCompanyprofile='N'";
-
-    public static final String QUERY_TO_GET_LOGGED_ADMIN_INFO =
-            "SELECT" +
-                    " a.id as id ," +
-                    " a.username as username," +
-                    " a.password as password," +
-                    " h.isCompany as isCompany" +
-                    " FROM " +
-                    " Admin a" +
-                    " LEFT JOIN Profile p ON p.id=a.profileId.id" +
-                    " LEFT JOIN Hospital h ON h.id=p.company.id" +
-                    " WHERE" +
-                    " (a.username =:username OR a.mobileNumber=:username OR a.email=:username)" +
-                    " AND a.status = 'Y'" +
-                    " AND h.isCompany='Y'";
 }

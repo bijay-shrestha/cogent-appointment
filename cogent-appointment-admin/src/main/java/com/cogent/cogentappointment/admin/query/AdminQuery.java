@@ -190,27 +190,4 @@ public class AdminQuery {
                     " LEFT JOIN Profile ON p.id=a.profileId.id" +
                     " WHERE a.status !='D'" +
                     " AND p.isCompanyprofile='N'";
-<<<<<<< HEAD
-=======
-
-    public static final String QUERY_TO_GET_LOGGED_ADMIN_INFO =
-            "SELECT" +
-                    " a.id as id," +
-                    " a.username as username," +
-                    " a.password as password," +
-                    " h.isCompany as isCompany," +
-                    " h.code as companyCode," +
-                    " h.id as companyId," +
-                    " hai.apiKey as apiKey," +
-                    " hai.apiSecret as apiSecret" +
-                    " FROM " +
-                    " Admin a" +
-                    " LEFT JOIN Profile p ON p.id=a.profileId.id" +
-                    " LEFT JOIN Hospital h ON h.id=p.company.id" +
-                    " LEFT JOIN HmacApiInfo hai ON hai.hospital.id=h.id" +
-                    " WHERE" +
-                    " (a.username =:username OR a.mobileNumber=:username OR a.email=:username)" +
-                    " AND a.status = 'Y'" +
-                    " AND h.isCompany='Y'";
->>>>>>> 575af6fad305579dcafd6f5ada3f65ecb23a71d3
 }

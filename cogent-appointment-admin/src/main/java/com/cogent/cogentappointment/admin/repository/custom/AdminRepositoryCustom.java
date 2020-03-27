@@ -1,9 +1,17 @@
 package com.cogent.cogentappointment.admin.repository.custom;
 
+import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
+import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminInfoRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.AdminInfoRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.AdminSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.AdminUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.admin.*;
+import com.cogent.cogentappointment.admin.dto.response.company.CompanyMinimalResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminDetailResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminLoggedInInfoResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminMinimalResponseDTO;
 import com.cogent.cogentappointment.persistence.model.Admin;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +31,8 @@ public interface AdminRepositoryCustom {
     List<Object[]> validateDuplicity(String username, String email, String mobileNumber,
                                      Long hospitalId);
 
+    List<Object[]> validateDuplicityForCompanyAdmin(String email, String mobileNumber);
+
     List<AdminDropdownDTO> fetchActiveAdminsForDropDown();
 
     List<AdminMinimalResponseDTO> search(AdminSearchRequestDTO searchRequestDTO, Pageable pageable);
@@ -31,10 +41,21 @@ public interface AdminRepositoryCustom {
 
     List<Object[]> validateDuplicity(AdminUpdateRequestDTO updateRequestDTO);
 
+    List<Object[]> validateCompanyAdminDuplicity(CompanyAdminUpdateRequestDTO updateRequestDTO);
+
     Admin fetchAdminByUsernameOrEmail(String username);
 
     AdminLoggedInInfoResponseDTO fetchLoggedInAdminInfo(AdminInfoRequestDTO requestDTO);
 
     LoggedInAdminDTO getLoggedInAdmin(String username);
+
+    List<DropDownResponseDTO> fetchActiveCompanyAdminsForDropDown();
+
+    List<CompanyAdminMinimalResponseDTO> searchCompanyAdmin(CompanyAdminSearchRequestDTO searchRequestDTO,
+                                                            Pageable pageable);
+
+    CompanyAdminDetailResponseDTO fetchCompanyAdminDetailsById(Long id);
+
+    CompanyAdminLoggedInInfoResponseDTO fetchLoggedInCompanyAdminInfo(CompanyAdminInfoRequestDTO requestDTO);
 }
 

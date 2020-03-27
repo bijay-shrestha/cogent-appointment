@@ -114,7 +114,7 @@ public class CompanyUtils {
         final int COMPANY_LOGO_INDEX = 6;
         final int COMPANY_CODE_INDEX = 7;
         final int CONTACT_DETAILS_INDEX = 8;
-        final int IS_COGENT_ADMIN_INDEX = 9;
+        final int IS_COMPANY_INDEX = 9;
         final int ALIAS_INDEX=10;
 
         return CompanyResponseDTO.builder()
@@ -135,7 +135,7 @@ public class CompanyUtils {
 
     private static List<HospitalContactNumberResponseDTO> parseToCompanyContactNumberResponseDTOS(Object[] results) {
 
-        final int CONTACT_DETAILS_INDEX = 9;
+        final int CONTACT_DETAILS_INDEX = 8;
 
         String[] contactWithIdAndNumber = results[CONTACT_DETAILS_INDEX].toString().split(COMMA_SEPARATED);
 

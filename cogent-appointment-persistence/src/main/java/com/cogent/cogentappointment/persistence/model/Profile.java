@@ -12,7 +12,7 @@ import java.io.Serializable;
 
 /**
  * @author smriti on 7/2/19
- *
+ * <p>
  * THIS ENTITY IS USED TO SAVE BOTH HOSPITAL/CLIENT PROFILE AND COMPANY PROFILE
  * IN CASE OF COMPANY PROFILE -> isCompanyProfile = 'Y' AND HOSPITAL IS NOT NULL AND DEPARTMENT IS NULL
  * ELSE isCompanyProfile ='N' AND DEPARTMENT IS NOT NULL AND HOSPITAL IS NULL
@@ -52,7 +52,7 @@ public class Profile extends Auditable<String> implements Serializable {
 
     /*THIS IS HOSPITAL RELATION FOR HOSPITAL/CLIENT PROFILE*/
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "department_id", nullable = true)
+    @JoinColumn(name = "department_id")
     private Department department;
 
     /*THIS IS COMPANY FOR COMPANY PROFILE*/

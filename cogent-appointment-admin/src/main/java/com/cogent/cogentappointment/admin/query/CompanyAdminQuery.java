@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.query;
 
+import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.AdminSearchRequestDTO;
 import com.cogent.cogentappointment.admin.utils.GenderUtils;
 import com.cogent.cogentappointment.persistence.enums.Gender;
@@ -8,75 +9,65 @@ import org.springframework.util.ObjectUtils;
 /**
  * @author smriti on 2019-08-05
  */
-public class AdminQuery {
+public class CompanyAdminQuery {
 
-    public static final String QUERY_TO_FIND_ADMIN_FOR_VALIDATION =
-            "SELECT " +
-                    " a.username," +                            //[0]
-                    " a.email," +                               //[1]
-                    " a.mobileNumber" +                        //[2]
-                    " FROM" +
-                    " Admin a" +
-                    " LEFT JOIN Profile p ON p.id = a.profileId" +
-                    " LEFT JOIN Department d ON d.id = p.department.id" +
-                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
-                    " WHERE" +
-                    " a.status != 'D'" +
-                    " AND h.status!='D'" +
-                    " AND" +
-                    " (a.username =:username OR a.email =:email OR a.mobileNumber = :mobileNumber)" +
-                    " AND h.id=:hospitalId";
-
-    public static final String QUERY_TO_VALIDATE_ADMIN_COUNT =
-            " SELECT " +
-                    " COUNT(a.id)," +                   //[0]
-                    " h.numberOfAdmins" +               //[1]
-                    " FROM Admin a" +
-                    " LEFT JOIN Profile p ON p.id = a.profileId" +
-                    " LEFT JOIN Department d ON d.id = p.department.id" +
-                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
-                    " WHERE h.id = :hospitalId" +
-                    " AND a.status !='D'";
-
-    public static final String QUERY_TO_FIND_ADMIN_EXCEPT_CURRENT_ADMIN =
+    public static final String QUERY_TO_FIND_COMPANY_ADMIN_FOR_VALIDATION =
             "SELECT " +
                     " a.email," +                               //[0]
                     " a.mobileNumber" +                        //[1]
                     " FROM" +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id = a.profileId" +
-                    " LEFT JOIN Department d ON d.id = p.department.id" +
-                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
+                    " LEFT JOIN Hospital h ON h.id = p.company.id" +
                     " WHERE" +
                     " a.status != 'D'" +
                     " AND h.status!='D'" +
+                    " AND" +
+                    " (a.email =:email OR a.mobileNumber = :mobileNumber)" +
+                    " AND h.isCompany='Y'";
+
+
+    public static final String QUERY_TO_FIND_COMPANY_ADMIN_EXCEPT_CURRENT_COMPANY_ADMIN =
+            "SELECT " +
+                    " a.email," +                               //[0]
+                    " a.mobileNumber" +                        //[1]
+                    " FROM" +
+                    " Admin a" +
+                    " LEFT JOIN Profile p ON p.id = a.profileId.id" +
+                    " LEFT JOIN Hospital h ON h.id = p.company.id" +
+                    " WHERE" +
+                    " a.status != 'D'" +
+                    " AND h.status!='D'" +
+                    " AND h.isCompany='Y'" +
                     " AND a.id !=:id" +
                     " AND" +
                     " (a.email =:email OR a.mobileNumber = :mobileNumber)" +
-                    " AND h.id=:hospitalId";
+                    " AND h.id=:companyId";
 
-    public static final String QUERY_TO_FETCH_ACTIVE_ADMIN_FOR_DROPDOWN =
+    public static final String QUERY_TO_FETCH_ACTIVE_COMPANY_ADMIN_FOR_DROPDOWN =
             " SELECT" +
-                    " id as value," +                     //[0]
-                    " username as label" +               //[1]
+                    " a.id as value," +                     //[0]
+                    " a.username as label" +               //[1]
                     " FROM" +
-                    " Admin" +
-                    " WHERE status ='Y'";
+                    " Admin a" +
+                    " LEFT JOIN Profile p ON p.id=a.profileId.id" +
+                    " WHERE a.status ='Y'" +
+                    " AND p.isCompanyProfile='Y'" +
+                    " AND p.status='Y'";
 
-    public static String QUERY_TO_SEARCH_ADMIN(AdminSearchRequestDTO searchRequestDTO) {
+    public static String QUERY_TO_SEARCH_COMPANY_ADMIN(CompanyAdminSearchRequestDTO searchRequestDTO) {
 
-        return SELECT_CLAUSE_TO_FETCH_ADMIN +
+        return SELECT_CLAUSE_TO_FETCH_COMPANY_ADMIN +
                 " FROM" +
                 " Admin a" +
                 " LEFT JOIN AdminMetaInfo ami ON a.id = ami.admin.id" +
                 " LEFT JOIN Profile p ON p.id = a.profileId.id" +
                 " LEFT JOIN AdminAvatar av ON a.id = av.admin.id" +
-                " LEFT JOIN Department d ON d.id = p.department.id" +
-                " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
-                GET_WHERE_CLAUSE_FOR_SEARCH_ADMIN(searchRequestDTO);
+                " LEFT JOIN Hospital h ON h.id = p.company.id" +
+                GET_WHERE_CLAUSE_FOR_SEARCH_COMAPNY_ADMIN(searchRequestDTO);
     }
 
-    private static final String SELECT_CLAUSE_TO_FETCH_ADMIN =
+    private static final String SELECT_CLAUSE_TO_FETCH_COMPANY_ADMIN =
             " SELECT" +
                     " a.id as id," +                                            //[0]
                     " a.fullName as fullName," +                                //[1]
@@ -96,9 +87,9 @@ public class AdminQuery {
                     " END as fileUri";                                           //[9]
 
     private static final String GET_WHERE_CLAUSE_TO_FETCH_ADMIN =
-            " WHERE a.status != 'D' AND h.status !='D' AND p.status !='D' AND d.status != 'D'";
+            " WHERE a.status != 'D' AND h.status !='D' AND p.status !='D' AND h.isCompany='Y'";
 
-    private static String GET_WHERE_CLAUSE_FOR_SEARCH_ADMIN(AdminSearchRequestDTO searchRequestDTO) {
+    private static String GET_WHERE_CLAUSE_FOR_SEARCH_COMAPNY_ADMIN(CompanyAdminSearchRequestDTO searchRequestDTO) {
         String whereClause = GET_WHERE_CLAUSE_TO_FETCH_ADMIN;
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getAdminMetaInfoId()))
@@ -107,18 +98,15 @@ public class AdminQuery {
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
             whereClause += " AND a.status='" + searchRequestDTO.getStatus() + "'";
 
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getDepartmentId()))
-            whereClause += " AND d.id=" + searchRequestDTO.getDepartmentId();
-
         if (!ObjectUtils.isEmpty(searchRequestDTO.getProfileId()))
             whereClause += " AND p.id=" + searchRequestDTO.getProfileId();
 
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getHospitalId()))
-            whereClause += " AND h.id=" + searchRequestDTO.getHospitalId();
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getCompanyId()))
+            whereClause += " AND h.id=" + searchRequestDTO.getCompanyId();
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getGenderCode())) {
             Gender gender = GenderUtils.fetchGenderByCode(searchRequestDTO.getGenderCode());
-            whereClause += " AND a.gender LIKE '%" + gender + "%'";
+            whereClause += " AND a.gender ='" + gender + "'";
         }
 
         whereClause += " ORDER BY a.id DESC";
@@ -126,19 +114,16 @@ public class AdminQuery {
         return whereClause;
     }
 
-    public static final String QUERY_TO_FETCH_ADMIN_DETAIL =
-            SELECT_CLAUSE_TO_FETCH_ADMIN + "," +
+    public static final String QUERY_TO_FETCH_COMPANY_ADMIN_DETAIL =
+            SELECT_CLAUSE_TO_FETCH_COMPANY_ADMIN + "," +
                     " a.remarks as remarks," +                                      //[10]
                     " h.id as hospitalId," +                                        //[11]
-                    " p.id as profileId," +                                         //[12]
-                    " d.id as departmentId," +
-                    " d.name as departmentName" +
+                    " p.id as profileId" +                                         //[12]
                     " FROM" +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id = a.profileId.id" +
                     " LEFT JOIN AdminAvatar av ON a.id = av.admin.id" +
-                    " LEFT JOIN Department d ON d.id = p.department.id" +
-                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
+                    " LEFT JOIN Hospital h ON h.id = p.company.id" +
                     GET_WHERE_CLAUSE_TO_FETCH_ADMIN +
                     " AND a.id = :id";
 
@@ -156,7 +141,7 @@ public class AdminQuery {
                     " (a.username=:username OR a.email =:email)" +
                     " AND a.status != 'D'";
 
-    public static final String QUERY_TO_FETCH_ADMIN_INFO =
+    public static final String QUERY_TO_FETCH_COMPANY_ADMIN_INFO =
             " SELECT" +
                     " a.id as adminId," +                                                   //[0]
                     " a.username as username," +                                            //[1]
@@ -166,30 +151,26 @@ public class AdminQuery {
                     "    ELSE av.fileUri END as fileUri," +                                //[2]
                     " p.id as profileId," +                                                 //[3]
                     " p.name as profileName," +                                             //[4]
-                    " d.id as departmentId," +                                              //[5]
-                    " d.name as departmentName," +                                          //[6]
-                    " h.id as hospitalId," +                                                //[7]
-                    " h.name as hospitalName," +                                             //[8]
-                    " h.isCompany as isCompany" +                                   //[9]
+                    " h.id as hospitalId," +                                                //[5]
+                    " h.name as hospitalName," +                                             //[6]
+                    " h.isCompany as isCompany" +                                            //[7]
                     " FROM Admin a" +
                     " LEFT JOIN AdminAvatar av ON av.admin.id=a.id" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
-                    " LEFT JOIN Department d ON d.id=p.department.id" +
-                    " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
+                    " LEFT JOIN Hospital h ON h.id=p.company.id" +
                     " WHERE " +
                     " (a.username=:username OR a.email =:email OR a.mobileNumber=:username)" +
                     " AND a.status='Y'" +
-                    " AND h.isCompany='N'";
+                    " AND h.isCompany='Y'";
 
-    public static final String QUERY_TO_FETCH_ADMIN_META_INFO =
-            " SELECT" +
-                    " ami.id as adminMetaInfoId," +                   //[0]
+    public static final String QUERY_TO_FETCH_COMPANY_ADMIN_META_INFO =
+            " SELECT ami.id as adminMetaInfoId," +                   //[0]
                     " ami.metaInfo as metaInfo" +                   //[1]
                     " FROM AdminMetaInfo ami" +
                     " LEFT JOIN Admin a ON a.id=ami.admin.id" +
-                    " LEFT JOIN Profile ON p.id=a.profileId.id" +
+                    " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                     " WHERE a.status !='D'" +
-                    " AND p.isCompanyprofile='N'";
+                    " AND p.isCompanyProfile='Y'";
 
     public static final String QUERY_TO_GET_LOGGED_ADMIN_INFO =
             "SELECT" +
@@ -200,9 +181,10 @@ public class AdminQuery {
                     " FROM " +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
-                    " LEFT JOIN Hospital h ON h.id=p.company.id" +
+                    " LEFT JOIN Department d ON d.id=p.department.id" +
+                    " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
                     " WHERE" +
-                    " (a.username =:username OR a.mobileNumber=:username OR a.email=:username)" +
+                    " a.username =:username" +
                     " AND a.status = 'Y'" +
                     " AND h.isCompany='Y'";
 }

@@ -72,7 +72,7 @@ public class SwaggerConstants {
     }
 
     public interface CompanyConstant {
-        String BASE_API_VALUE = "This is Common Resource";
+        String BASE_API_VALUE = "This is Company Resource";
         String SAVE_OPERATION = "Save new company";
         String UPDATE_OPERATION = "Update existing company";
         String DELETE_OPERATION = "Set company status as 'D' when deleted with remarks";
@@ -81,6 +81,15 @@ public class SwaggerConstants {
         String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal company details (id and name) for dropdown";
     }
 
+    public interface CompanyProfileConstant {
+        String BASE_API_VALUE = "This is Company Profile Resource";
+        String SAVE_OPERATION = "Save new Company Profile";
+        String UPDATE_OPERATION = "Update existing Company Profile";
+        String DELETE_OPERATION = "Set company profile status as 'D' when deleted with remarks";
+        String SEARCH_OPERATION = "Search company profile according to given request parameters";
+        String DETAILS_OPERATION = "Fetch company profile details by id";
+        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal company profile details (id and name) for dropdown";
+    }
 
     //D
     public interface DashboardConstant {

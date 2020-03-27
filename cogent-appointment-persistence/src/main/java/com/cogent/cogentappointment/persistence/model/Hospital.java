@@ -12,6 +12,9 @@ import java.io.Serializable;
 
 /**
  * @author Sauravi Thapa २०/२/३
+ * THIS ENTITY IS USED TO SAVE BOTH HOSPITAL/CLIENT AND COMPANY
+ * IN CASE OF COMPANY - isCompany = 'Y' ELSE isCompany = 'N'
+ * REFUND PERCENTAGE AND FOLLOW UP DETAILS DO NOT NEED TO BE SAVED IN CASE OF COMPANY
  */
 @Table(name = "hospital")
 @Entity

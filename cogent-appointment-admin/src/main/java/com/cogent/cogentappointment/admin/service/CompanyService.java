@@ -7,7 +7,6 @@ import com.cogent.cogentappointment.admin.dto.request.company.CompanyUpdateReque
 import com.cogent.cogentappointment.admin.dto.response.company.CompanyDropdownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.company.CompanyMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.company.CompanyResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalDropdownResponseDTO;
 import com.cogent.cogentappointment.persistence.model.Hospital;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,6 +30,8 @@ public interface CompanyService {
 
     CompanyResponseDTO fetchDetailsById(Long companyId);
 
-     String fetchAliasById(Long companyId);
+    String fetchAliasById(Long companyId);
+
+    Hospital findActiveCompanyById(Long companyById);
 
 }

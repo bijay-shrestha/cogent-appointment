@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
+import com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.*;
 import com.cogent.cogentappointment.admin.dto.request.email.EmailRequestDTO;
@@ -10,7 +11,10 @@ import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.exception.OperationUnsuccessfulException;
 import com.cogent.cogentappointment.admin.repository.*;
-import com.cogent.cogentappointment.admin.service.*;
+import com.cogent.cogentappointment.admin.service.AdminService;
+import com.cogent.cogentappointment.admin.service.EmailService;
+import com.cogent.cogentappointment.admin.service.MinioFileService;
+import com.cogent.cogentappointment.admin.service.ProfileService;
 import com.cogent.cogentappointment.admin.validator.LoginValidator;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
@@ -34,7 +38,6 @@ import java.util.stream.Collectors;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.*;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
-import static com.cogent.cogentappointment.admin.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.AdminLog.*;
@@ -172,6 +175,9 @@ public class AdminServiceImpl implements AdminService {
         log.info(DELETING_PROCESS_STARTED, ADMIN);
 
         Admin admin = findById(deleteRequestDTO.getId());
+
+        if (admin.getProfileId().getIsSuperAdminProfile().equals(YES))
+            throw new BadRequestException(INVALID_DELETE_REQUEST);
 
         convertAdminToDeleted(admin, deleteRequestDTO);
 

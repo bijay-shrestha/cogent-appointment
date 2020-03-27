@@ -337,40 +337,36 @@ public class AdminServiceImpl implements AdminService {
         return metaInfoResponseDTOS;
     }
 
-    private void updateAdminDashboardFeature(List<AdminDashboardRequestDTO> adminDashboardRequestDTOS, Admin admin) {
+    private void updateAdminDashboardFeature(List<AdminDashboardRequestDTO> adminDashboardRequestDTOS,
+                                             Admin admin) {
 
         List<AdminDashboardFeature> adminDashboardFeatureList = new ArrayList<>();
         adminDashboardRequestDTOS.forEach(result -> {
 
-            AdminDashboardFeature adminDashboardFeature = adminDashboardFeatureRepository.findAdminDashboardFeatureBydashboardFeatureId(result.getId(), admin.getId());
+            AdminDashboardFeature adminDashboardFeature =
+                    adminDashboardFeatureRepository.findAdminDashboardFeatureBydashboardFeatureId(
+                            result.getId(), admin.getId());
 
-            if (adminDashboardFeature == null) {
+            if (adminDashboardFeature == null)
                 saveAdminDashboardFeature(result.getId(), admin);
-            }
 
             if (adminDashboardFeature != null) {
                 adminDashboardFeature.setStatus(result.getStatus());
                 adminDashboardFeatureList.add(adminDashboardFeature);
             }
-
         });
 
         adminDashboardFeatureRepository.saveAll(adminDashboardFeatureList);
-
     }
 
-    public void saveAdminDashboardFeature(Long id, Admin admin) {
+    private void saveAdminDashboardFeature(Long id, Admin admin) {
 
         DashboardFeature dashboardFeature = dashboardFeatureRepository.findActiveDashboardFeatureById(id)
                 .orElseThrow(() -> new NoContentFoundException(DashboardFeature.class));
 
         List<DashboardFeature> dashboardFeatureList = Arrays.asList(dashboardFeature);
         adminDashboardFeatureRepository.saveAll(parseToAdminDashboardFeature(dashboardFeatureList, admin));
-
     }
-
-
-
 
     private void saveAllAdminDashboardFeature(List<AdminDashboardRequestDTO> dashboardRequestDTOList, Admin admin) {
 
@@ -378,9 +374,10 @@ public class AdminServiceImpl implements AdminService {
             List<DashboardFeature> dashboardFeatureList = findActiveDashboardFeatures(dashboardRequestDTOList);
             adminDashboardFeatureRepository.saveAll(parseToAdminDashboardFeature(dashboardFeatureList, admin));
         }
-
     }
 
+    /*FETCH ALL ACTIVE DASHBOARD FEATURE BASED ON THE IDS IN REQUEST
+     AND IF RESULT SIZE IS NOT EQUAL TO REQUEST SIZE THEN ANY OF THE REQUESTED ID IS INVALID AND THROW EXCEPTION*/
     private List<DashboardFeature> findActiveDashboardFeatures(List<AdminDashboardRequestDTO> adminDashboardRequestDTOS) {
 
         String ids = adminDashboardRequestDTOS.stream()
@@ -390,18 +387,15 @@ public class AdminServiceImpl implements AdminService {
         List<DashboardFeature> dashboardFeatureList = validateDashboardFeature(ids);
         int requestCount = adminDashboardRequestDTOS.size();
 
-        if ((dashboardFeatureList.size()) != requestCount) {
+        if ((dashboardFeatureList.size()) != requestCount)
             throw new NoContentFoundException(DashboardFeature.class);
-        }
 
         return dashboardFeatureList;
-
     }
 
     private List<DashboardFeature> validateDashboardFeature(String ids) {
         return dashboardFeatureRepository.validateDashboardFeatureCount(ids);
     }
-
 
     private void validateStatus(Object status) {
         if (status.equals(INACTIVE)) throw ADMIN_ALREADY_REGISTERED.get();

@@ -15,7 +15,9 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 public class ExceptionResponse {
-    private final HttpStatus status;
+    private final HttpStatus responseStatus;
+
+    private final int responseCode;
 
     private final String errorMessage;
 
@@ -23,4 +25,6 @@ public class ExceptionResponse {
     private final LocalDateTime timeStamp;
 
     private final String debugMessage;
+
+
 }

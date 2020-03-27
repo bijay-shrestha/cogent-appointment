@@ -52,7 +52,7 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
             AdminMinDetails adminMinDetails = hmacApiInfoRepository.getAdminDetailForAuthentication(
                     authHeader.getUsername(),
-                    authHeader.getCompanyCode(),
+                    authHeader.getHospitalCode(),
                     authHeader.getApiKey());
 
             if (adminMinDetails.getIsCompany().equals('N')) {
@@ -60,9 +60,9 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
                         .algorithm(authHeader.getAlgorithm())
                         .nonce(authHeader.getNonce())
                         .username(adminMinDetails.getUsername())
-                        .hospitalId(Math.toIntExact(adminMinDetails.getHospitalId()))
-                        .hospitalCode(adminMinDetails.getHospitalCode())
-                        .apiKey(adminMinDetails.getApiKey())
+                        .hospitalId(Math.toIntExact(authHeader.getHospitalId()))
+                        .hospitalCode(authHeader.getHospitalCode())
+                        .apiKey(authHeader.getApiKey())
                         .apiSecret(adminMinDetails.getApiSecret());
             } else {
                 signatureBuilder = null;
@@ -77,14 +77,14 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
         if (authHeader == null && eSewaAuthHeader != null) {
 
             ThirdPartyDetail thirdPartyDetail = hmacApiInfoRepository.getDetailForAuthentication(
-                    eSewaAuthHeader.getCompanyCode(),
+                    eSewaAuthHeader.getHospitalCode(),
                     eSewaAuthHeader.getApiKey());
 
             final HMACBuilder signatureBuilder = new HMACBuilder()
                     .algorithm(eSewaAuthHeader.getAlgorithm())
                     .nonce(eSewaAuthHeader.getNonce())
-                    .hospitalCode(thirdPartyDetail.getHospitalCode())
-                    .apiKey(thirdPartyDetail.getApiKey())
+                    .hospitalCode(eSewaAuthHeader.getHospitalCode())
+                    .apiKey(eSewaAuthHeader.getApiKey())
                     .apiSecret(thirdPartyDetail.getApiSecret());
 
             compareSignature(signatureBuilder, eSewaAuthHeader.getDigest());

@@ -47,14 +47,21 @@ public class AppointmentRefundDetail extends Auditable<String> implements Serial
     @Column(name = "cancelled_date")
     private Date cancelledDate;
 
+    @Temporal(TemporalType.DATE)
+    @Column(name = "refunded_date")
+    private Date refundedDate;
+
     @Override
     public String toString() {
-        return "Appointment{" +
+        return "AppointmentRefundDetail{" +
                 "id=" + id +
                 ", appointmentId=" + appointmentId.getAppointmentNumber() +
                 ", refundAmount=" + refundAmount +
-                ", remarks=" + remarks +
-                ", status=" + status +
+                ", remarks='" + remarks + '\'' +
+                ", status='" + status + '\'' +
+                ", cancelledDate=" + cancelledDate +
+                ", refundedDate=" + refundedDate +
                 '}';
     }
+
 }

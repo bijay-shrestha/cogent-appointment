@@ -13,7 +13,9 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
 
+import static com.cogent.cogentappointment.admin.log.constants.WeekDaysLog.WEEK_DAYS;
 import static com.cogent.cogentappointment.admin.query.WeekDaysQuery.QUERY_TO_FETCH_ACTIVE_WEEK_DAYS;
+import static com.cogent.cogentappointment.admin.utils.commons.LogUtils.logError;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
 
@@ -32,7 +34,10 @@ public class WeekDaysRepositoryCustomImpl implements WeekDaysRepositoryCustom {
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
-        if (results.isEmpty()) throw new NoContentFoundException(WeekDays.class);
+        if (results.isEmpty()){
+            logError(WEEK_DAYS);
+            throw new NoContentFoundException(WeekDays.class);
+        }
         else return results;
     }
 
@@ -42,7 +47,10 @@ public class WeekDaysRepositoryCustomImpl implements WeekDaysRepositoryCustom {
 
         List<WeekDaysResponseDTO> results = transformQueryToResultList(query, WeekDaysResponseDTO.class);
 
-        if (results.isEmpty()) throw new NoContentFoundException(WeekDays.class);
+        if (results.isEmpty()){
+            logError(WEEK_DAYS);
+            throw new NoContentFoundException(WeekDays.class);
+        }
         else return results;
     }
 }

@@ -84,7 +84,7 @@ public class HMACBuilder {
             digest.update(DELIMITER);
             digest.update((username != null) ? username.getBytes(StandardCharsets.UTF_8) : null);
             digest.update(DELIMITER);
-            digest.update(ByteBuffer.allocateDirect((hospitalId != null) ? hospitalId: null));
+            digest.update(ByteBuffer.allocateDirect(((hospitalId != null) ? hospitalId: null)));
             digest.update(DELIMITER);
             digest.update((hospitalCode != null) ? hospitalCode.getBytes(StandardCharsets.UTF_8) : null);
             digest.update(DELIMITER);

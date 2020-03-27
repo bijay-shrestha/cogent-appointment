@@ -2,18 +2,24 @@ package com.cogent.cogentappointment.admin.service.impl;
 
 
 import com.cogent.cogentappointment.admin.dto.request.dashboard.DashBoardRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.dashboard.DoctorRevenueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.GenerateRevenueRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.dashboard.RefundAmountRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.AppointmentCountResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.dashboard.DoctorRevenueResponseListDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueStatisticsResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueTrendResponseDTO;
+import com.cogent.cogentappointment.admin.repository.AppointmentRefundDetailRepository;
 import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
 import com.cogent.cogentappointment.admin.repository.AppointmentTransactionDetailRepository;
 import com.cogent.cogentappointment.admin.repository.PatientRepository;
 import com.cogent.cogentappointment.admin.service.DashboardService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.Map;
 
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
@@ -42,11 +48,15 @@ public class DashboardServiceImpl implements DashboardService {
 
     private final PatientRepository patientRepository;
 
+    private final AppointmentRefundDetailRepository appointmentRefundDetailRepository;
+
     public DashboardServiceImpl(AppointmentTransactionDetailRepository appointmentTransactionDetailRepository,
-                                AppointmentRepository appointmentRepository, PatientRepository patientRepository) {
+                                AppointmentRepository appointmentRepository, PatientRepository patientRepository,
+                                AppointmentRefundDetailRepository appointmentRefundDetailRepository) {
         this.appointmentTransactionDetailRepository = appointmentTransactionDetailRepository;
         this.appointmentRepository = appointmentRepository;
         this.patientRepository = patientRepository;
+        this.appointmentRefundDetailRepository = appointmentRefundDetailRepository;
     }
 
     @Override
@@ -136,4 +146,37 @@ public class DashboardServiceImpl implements DashboardService {
 
         return revenueTrendResponseDTO;
     }
+
+    @Override
+    public Double calculateTotalRefundedAmount(RefundAmountRequestDTO refundAmountRequestDTO) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, TOTAL_REFUNDED_AMOUNT);
+
+        Double totalRefundedAmount = appointmentRefundDetailRepository.getTotalRefundedAmount(refundAmountRequestDTO);
+
+        log.info(FETCHING_PROCESS_COMPLETED, TOTAL_REFUNDED_AMOUNT, getDifferenceBetweenTwoTime(startTime));
+
+        return totalRefundedAmount;
+    }
+
+    @Override
+    public DoctorRevenueResponseListDTO getDoctorRevenueList(Date toDate,
+                                                             Date fromDate,
+                                                             DoctorRevenueRequestDTO doctorRevenueRequestDTO,
+                                                             Pageable pageable) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, DOCTOR_REVENUE);
+
+        DoctorRevenueResponseListDTO doctorRevenueResponseListDTO = appointmentTransactionDetailRepository
+                .getDoctorRevenue(toDate, fromDate, doctorRevenueRequestDTO, pageable);
+
+        log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_REVENUE, getDifferenceBetweenTwoTime(startTime));
+
+        return doctorRevenueResponseListDTO;
+    }
+
 }

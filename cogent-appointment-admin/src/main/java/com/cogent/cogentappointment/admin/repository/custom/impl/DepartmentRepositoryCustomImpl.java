@@ -21,7 +21,10 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.admin.log.constants.DepartmentLog.DEPARTMENT;
+import static com.cogent.cogentappointment.admin.log.constants.DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER_OVERRIDE;
 import static com.cogent.cogentappointment.admin.query.DepartmentQuery.*;
+import static com.cogent.cogentappointment.admin.utils.commons.LogUtils.logError;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
 
@@ -70,8 +73,10 @@ public class DepartmentRepositoryCustomImpl implements DepartmentRepositoryCusto
         List<DepartmentMinimalResponseDTO> minimalResponseDTOS = transformQueryToResultList(query,
                 DepartmentMinimalResponseDTO.class);
 
-        if (minimalResponseDTOS.isEmpty()) throw new NoContentFoundException(Department.class);
-        else {
+        if (minimalResponseDTOS.isEmpty()) {
+            logError(DEPARTMENT);
+            throw new NoContentFoundException(Department.class);
+        } else {
             minimalResponseDTOS.get(0).setTotalItems(totalItems);
             return minimalResponseDTOS;
         }
@@ -86,6 +91,7 @@ public class DepartmentRepositoryCustomImpl implements DepartmentRepositoryCusto
         try {
             return transformQueryToSingleResult(query, DepartmentResponseDTO.class);
         } catch (NoResultException e) {
+            logError(DEPARTMENT);
             throw new NoContentFoundException(Department.class, "id", id.toString());
         }
     }

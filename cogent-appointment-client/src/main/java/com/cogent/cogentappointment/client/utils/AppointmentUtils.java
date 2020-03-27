@@ -22,19 +22,21 @@ import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.springframework.http.HttpStatus;
 
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-import static com.cogent.cogentappointment.client.constants.EsewaStatusConstants.OK;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.*;
 import static com.cogent.cogentappointment.client.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.client.utils.commons.DateConverterUtils.calculateAge;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils.generateRandomNumber;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 /**
  * @author smriti on 2019-10-24
@@ -85,7 +87,8 @@ public class AppointmentUtils {
         return AppointmentSuccessResponseDTO.builder()
                 .appointmentNumber(appointmentNumber)
                 .appointmentTransactionStatus(ACTIVE)
-                .status(OK)
+                .responseStatus(CREATED)
+                .responseCode(CREATED.value())
                 .build();
     }
 
@@ -143,7 +146,8 @@ public class AppointmentUtils {
                 .queryDate(queryDate)
                 .doctorAvailableTime(startTime + HYPHEN + endTime)
                 .availableTimeSlots(availableTimeSlots)
-                .status(OK)
+                .responseStatus(OK)
+                .responseCode(OK.value())
                 .build();
     }
 
@@ -508,7 +512,8 @@ public class AppointmentUtils {
     public static StatusResponseDTO parseToStatusResponseDTO() {
 
         return StatusResponseDTO.builder()
-                .status(OK)
+                .responseCode(OK.value())
+                .responseStatus(OK)
                 .build();
     }
 
@@ -517,7 +522,18 @@ public class AppointmentUtils {
 
         return AppointmentMinResponseWithStatusDTO.builder()
                 .appointmentMinResponseDTOS(minResponseDTOList)
-                .status(OK)
+                .responseStatus(OK)
+                .responseCode(OK.value())
+                .build();
+    }
+
+    public static AppointmentDetailResponseWithStatusDTO parseToAppointmentDetailResponseWithStatusDTO(
+            AppointmentDetailResponseDTO responseDTO) {
+
+        return AppointmentDetailResponseWithStatusDTO.builder()
+                .appointmentDetailResponseDTO(responseDTO)
+                .responseStatus(OK)
+                .responseCode(OK.value())
                 .build();
     }
 

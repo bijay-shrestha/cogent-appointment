@@ -20,7 +20,9 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.admin.log.constants.SpecializationLog.SPECIALIZATION;
 import static com.cogent.cogentappointment.admin.query.SpecializationQuery.*;
+import static com.cogent.cogentappointment.admin.utils.commons.LogUtils.logError;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
 
@@ -68,7 +70,10 @@ public class SpecializationRepositoryCustomImpl implements SpecializationReposit
         List<SpecializationMinimalResponseDTO> results = transformQueryToResultList(
                 query, SpecializationMinimalResponseDTO.class);
 
-        if (results.isEmpty()) throw SPECIALIZATION_NOT_FOUND.get();
+        if (results.isEmpty()){
+            logError(SPECIALIZATION);
+            throw SPECIALIZATION_NOT_FOUND.get();
+        }
         else {
             results.get(0).setTotalItems(totalItems);
             return results;
@@ -81,7 +86,10 @@ public class SpecializationRepositoryCustomImpl implements SpecializationReposit
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
-        if (results.isEmpty()) throw SPECIALIZATION_NOT_FOUND.get();
+        if (results.isEmpty()){
+            logError(SPECIALIZATION);
+            throw SPECIALIZATION_NOT_FOUND.get();
+        }
         else return results;
     }
 
@@ -103,7 +111,10 @@ public class SpecializationRepositoryCustomImpl implements SpecializationReposit
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
-        if (results.isEmpty()) throw SPECIALIZATION_NOT_FOUND.get();
+        if (results.isEmpty()){
+            logError(SPECIALIZATION);
+            throw SPECIALIZATION_NOT_FOUND.get();
+        }
         else return results;
     }
 
@@ -114,11 +125,15 @@ public class SpecializationRepositoryCustomImpl implements SpecializationReposit
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
-        if (results.isEmpty()) throw SPECIALIZATION_NOT_FOUND.get();
+        if (results.isEmpty()){
+            logError(SPECIALIZATION);
+            throw SPECIALIZATION_NOT_FOUND.get();
+        }
         else return results;
     }
 
     private Function<Long, NoContentFoundException> SPECIALIZATION_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        logError(SPECIALIZATION);
         throw new NoContentFoundException(Specialization.class, "id", id.toString());
     };
 

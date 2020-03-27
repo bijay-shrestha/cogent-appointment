@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.security.hmac;
 
+import com.cogent.cogentappointment.admin.service.impl.UserDetailsImpl;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -15,27 +16,40 @@ import static com.cogent.cogentappointment.admin.utils.HMACKeyGenerator.generate
 public class HMACUtils {
 
     public String getAuthToken(Authentication authentication) {
-        UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
+        UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
+        String username = userPrincipal.getUsername();
+        String companyCode = userPrincipal.getCompanyCode();
+        String apiKey = userPrincipal.getApiKey();
+        String apiSecret = userPrincipal.getApiSecret();
+        Integer companyId= Math.toIntExact(userPrincipal.getCompanyId());
         final String nonce = generateNonce();
 
         final HMACBuilder signatureBuilder = new HMACBuilder()
                 .algorithm(HMAC_ALGORITHM)
                 .nonce(nonce)
-                .apiKey(HMAC_API_KEY)
-                .username(userPrincipal.getUsername());
+                .apiKey(apiKey)
+                .companyCode(companyCode)
+                .companyId(companyId)
+                .username(username)
+                .apiSecret(apiSecret);;
 
         final String signature = signatureBuilder
                 .buildAsBase64String();
 
         String authToken = HMAC_ALGORITHM +
                 SPACE +
-                userPrincipal.getUsername() +
+                username +
                 COLON +
-                HMAC_API_KEY +
+                companyId +
+                COLON +
+                companyCode +
+                COLON +
+                apiKey +
                 COLON +
                 nonce +
                 COLON +
                 signature;
+
 
         return authToken;
     }

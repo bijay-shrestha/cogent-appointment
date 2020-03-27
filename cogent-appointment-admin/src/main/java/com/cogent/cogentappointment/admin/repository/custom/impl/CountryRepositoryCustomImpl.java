@@ -12,7 +12,9 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
 
+import static com.cogent.cogentappointment.admin.log.constants.CountryLog.COUNTRY;
 import static com.cogent.cogentappointment.admin.query.CountryQuery.QUERY_TO_FETCH_ACTIVE_COUNTRY;
+import static com.cogent.cogentappointment.admin.utils.commons.LogUtils.logError;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
 
@@ -32,7 +34,10 @@ public class CountryRepositoryCustomImpl implements CountryRepositoryCustom {
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
-        if (results.isEmpty()) throw new NoContentFoundException(Country.class);
+        if (results.isEmpty()){
+            logError(COUNTRY);
+            throw new NoContentFoundException(Country.class);
+        }
         else return results;
     }
 }

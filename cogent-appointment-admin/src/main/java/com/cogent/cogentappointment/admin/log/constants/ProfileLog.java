@@ -6,4 +6,7 @@ package com.cogent.cogentappointment.admin.log.constants;
 public class ProfileLog {
 
     public final static String PROFILE = "PROFILE";
+
+    public final static String PROFILE_MENU = "PROFILE MENU";
+
 }

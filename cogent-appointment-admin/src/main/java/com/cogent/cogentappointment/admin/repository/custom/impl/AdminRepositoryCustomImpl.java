@@ -15,6 +15,7 @@ import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdmin
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.AdminRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Admin;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,11 +32,13 @@ import java.util.function.Supplier;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.ADMIN_INFO_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
+import static com.cogent.cogentappointment.admin.log.constants.AdminLog.ADMIN;
 import static com.cogent.cogentappointment.admin.query.AdminQuery.QUERY_FO_FETCH_MAC_ADDRESS_INFO;
 import static com.cogent.cogentappointment.admin.query.AdminQuery.*;
 import static com.cogent.cogentappointment.admin.query.AdminQuery.QUERY_TO_FETCH_ADMIN_BY_USERNAME_OR_EMAIL;
 import static com.cogent.cogentappointment.admin.query.AdminQuery.QUERY_TO_GET_LOGGED_ADMIN_INFO;
 import static com.cogent.cogentappointment.admin.query.CompanyAdminQuery.*;
+import static com.cogent.cogentappointment.admin.utils.commons.LogUtils.logError;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
 
@@ -44,6 +47,7 @@ import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
  */
 @Service
 @Transactional(readOnly = true)
+@Slf4j
 public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
 
     @PersistenceContext
@@ -110,8 +114,10 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
 
         List<AdminDropdownDTO> list = transformQueryToResultList(query, AdminDropdownDTO.class);
 
-        if (list.isEmpty()) throw NO_ADMIN_FOUND.get();
-        else return list;
+        if (list.isEmpty()) {
+            logError(ADMIN);
+            throw NO_ADMIN_FOUND.get();
+        } else return list;
     }
 
     @Override
@@ -124,8 +130,10 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
 
         List<AdminMinimalResponseDTO> result = transformQueryToResultList(query, AdminMinimalResponseDTO.class);
 
-        if (ObjectUtils.isEmpty(result)) throw NO_ADMIN_FOUND.get();
-        else {
+        if (ObjectUtils.isEmpty(result)) {
+            logError(ADMIN);
+            throw NO_ADMIN_FOUND.get();
+        } else {
             result.get(0).setTotalItems(totalItems);
             return result;
         }
@@ -149,6 +157,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
                     .setParameter(EMAIL, username)
                     .getSingleResult();
         } catch (NoResultException ex) {
+            logError(ADMIN);
             throw ADMIN_NOT_FOUND.apply(username);
         }
     }
@@ -163,6 +172,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         try {
             return transformQueryToSingleResult(query, AdminLoggedInInfoResponseDTO.class);
         } catch (NoResultException e) {
+            logError(ADMIN);
             throw new NoContentFoundException(ADMIN_INFO_NOT_FOUND);
         }
     }
@@ -175,6 +185,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         try {
             return transformQueryToSingleResult(query, LoggedInAdminDTO.class);
         } catch (NoResultException e) {
+            logError(ADMIN);
             throw ADMIN_NOT_FOUND.apply(username);
         }
     }
@@ -230,19 +241,21 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         }
     }
 
-    public AdminDetailResponseDTO fetchAdminDetailResponseDTO(Long id) {
+    private AdminDetailResponseDTO fetchAdminDetailResponseDTO(Long id) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ADMIN_DETAIL)
                 .setParameter(ID, id);
 
         List<Object[]> results = query.getResultList();
 
-        if (results.isEmpty())
+        if (results.isEmpty()) {
+            logError(ADMIN);
             throw ADMIN_WITH_GIVEN_ID_NOT_FOUND.apply(id);
+        }
 
         return transformQueryToResultList(query, AdminDetailResponseDTO.class).get(0);
     }
 
-    public CompanyAdminDetailResponseDTO fetchCompanyAdminDetailResponseDTO(Long id) {
+    private CompanyAdminDetailResponseDTO fetchCompanyAdminDetailResponseDTO(Long id) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_COMPANY_ADMIN_DETAIL)
                 .setParameter(ID, id);
 
@@ -254,7 +267,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         return transformQueryToResultList(query, CompanyAdminDetailResponseDTO.class).get(0);
     }
 
-    public List<AdminMacAddressInfoResponseDTO> getMacAddressInfo(Long id) {
+    private List<AdminMacAddressInfoResponseDTO> getMacAddressInfo(Long id) {
         Query query = createQuery.apply(entityManager, QUERY_FO_FETCH_MAC_ADDRESS_INFO)
                 .setParameter(ID, id);
 

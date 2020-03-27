@@ -87,7 +87,6 @@ public class SwaggerConstants {
     }
 
 
-
     //D
 
     public interface DashboardConstant {
@@ -98,6 +97,7 @@ public class SwaggerConstants {
         String REVENUE_STATISTICS_OPERATION = "Revenue statistics as per the filter.";
         String REVENUE_TREND_OPERATION = "Revenue Trend as per the filter.";
         String FETCH_APPOINTMENT_QUEUE = "Fetch Appointment Queue of Today for Dashboard.";
+        String DOCTOR_REVENUE_OPERATION = "Doctor Revenue list.";
         String REFUND_AMOUNT_OPERATION = "Calculate Total Refunded Amount.";
     }
 

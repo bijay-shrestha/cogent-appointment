@@ -1,5 +1,7 @@
 package com.cogent.cogentappointment.admin.query;
 
+import com.cogent.cogentappointment.admin.dto.request.dashboard.DoctorRevenueRequestDTO;
+
 import java.util.Objects;
 
 /**
@@ -155,8 +157,8 @@ public class DashBoardQuery {
                 " atd.transactionDate";
     }
 
-    public static String QUERY_TO_FETCH_REFUND_AMOUNT(Long doctorId, Long specializationId, Long hospitalId){
-        String query=  "SELECT" +
+    public static String QUERY_TO_FETCH_REFUND_AMOUNT(Long doctorId, Long specializationId, Long hospitalId) {
+        String query = "SELECT" +
                 " COALESCE(SUM(ard.refundAmount ),0) as totalRefundedAmount" +
                 " FROM" +
                 " AppointmentRefundDetail ard" +
@@ -176,5 +178,43 @@ public class DashBoardQuery {
 
         return query;
     }
+
+    public static String QUERY_TO_GENERATE_DOCTOR_REVENUE_LIST(DoctorRevenueRequestDTO requestDTO) {
+
+
+        return "SELECT" +
+                " d.id as doctorId," +
+                " d.name as doctorName," +
+                " da.fileUri as fileUri," +
+                " s.name as specialization," +
+                " COUNT(d.id) as totalAppointmentCount," +
+                " COALESCE(SUM(atd.appointmentAmount),0) as revenueAmount" +
+                " FROM Appointment a" +
+                " LEFT JOIN Doctor d ON d.id= a.doctorId.id" +
+                " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId.id" +
+                " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
+                " LEFT JOIN Specialization s ON s.id=a.specializationId.id" +
+                " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
+                GET_WHERE_CLAUSE_GENERATE_DOCTOR_REVENUE_LIST(requestDTO);
+    }
+
+    private static String GET_WHERE_CLAUSE_GENERATE_DOCTOR_REVENUE_LIST(DoctorRevenueRequestDTO requestDTO) {
+        String whereClause = " WHERE h.id=:hospitalId ";
+
+        if (requestDTO.getSpecializationId() != 0 && !Objects.isNull(requestDTO.getSpecializationId()))
+            whereClause += " AND s.id=" + requestDTO.getSpecializationId();
+
+        if (requestDTO.getDoctorId() != 0 && !Objects.isNull(requestDTO.getDoctorId()))
+            whereClause += " AND d.id=" + requestDTO.getDoctorId();
+
+        whereClause +=
+                " AND atd.transactionDate BETWEEN :fromDate AND :toDate" +
+                        " GROUP BY d.id,da.id,s.id " +
+                        " ORDER BY SUM(atd.appointmentAmount) DESC ";
+
+
+        return whereClause;
+    }
+
 
 }

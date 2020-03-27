@@ -13,5 +13,7 @@ public class DashboardLog {
 
     public final static String REVENUE_STATISTICS = "REVENUE STATISTICS";
 
+    public final static String DOCTOR_REVENUE = "DOCTOR REVENUE";
+
     public final static String TOTAL_REFUNDED_AMOUNT="TOTAL REFUNDED AMOUNT";
 }

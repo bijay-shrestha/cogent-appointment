@@ -24,10 +24,12 @@ import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
+import static com.cogent.cogentappointment.admin.log.constants.DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER;
 import static com.cogent.cogentappointment.admin.query.DoctorDutyRosterOverrideQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_DETAILS;
 import static com.cogent.cogentappointment.admin.query.DoctorDutyRosterQuery.*;
 import static com.cogent.cogentappointment.admin.utils.DoctorDutyRosterUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
+import static com.cogent.cogentappointment.admin.utils.commons.LogUtils.logError;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
 
@@ -71,7 +73,10 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
         List<DoctorDutyRosterMinimalResponseDTO> results = transformQueryToResultList(
                 query, DoctorDutyRosterMinimalResponseDTO.class);
 
-        if (results.isEmpty()) throw DOCTOR_DUTY_ROSTER_NOT_FOUND.get();
+        if (results.isEmpty()){
+            logError(DOCTOR_DUTY_ROSTER);
+            throw DOCTOR_DUTY_ROSTER_NOT_FOUND.get();
+        }
         else {
             results.get(0).setTotalItems(totalItems);
             return results;
@@ -180,6 +185,7 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
 
     private Function<Long, NoContentFoundException> DOCTOR_DUTY_ROSTER_WITH_GIVEN_ID_NOT_FOUND =
             (doctorDutyRosterId) -> {
+                logError(DOCTOR_DUTY_ROSTER);
                 throw new NoContentFoundException
                         (DoctorDutyRoster.class, "doctorDutyRosterId", doctorDutyRosterId.toString());
             };

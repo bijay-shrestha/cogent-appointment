@@ -58,7 +58,7 @@ public class QualificationAliasQuery {
 
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
-            whereClause += " AND qa.status = '" + searchRequestDTO.getStatus()+"'";
+            whereClause += " AND qa.status = '" + searchRequestDTO.getStatus() + "'";
 
         return whereClause;
     }

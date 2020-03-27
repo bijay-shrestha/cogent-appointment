@@ -122,6 +122,7 @@ public class SwaggerConstants {
         String COUNT_REGISTERED_PATIENTS_OPERATION = "Count no. of registered patients.";
         String REVENUE_STATISTICS_OPERATION = "Revenue statistics as per the filter.";
         String REVENUE_TREND_OPERATION = "Revenue Trend as per the filter.";
+        String DOCTOR_REVENUE_OPERATION = "Doctor Revenue list.";
         String REFUND_AMOUNT_OPERATION = "Calculate Total Refunded Amount.";
     }
 

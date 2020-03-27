@@ -19,9 +19,11 @@ import javax.persistence.Query;
 import java.util.List;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.admin.log.constants.PatientLog.PATIENT;
 import static com.cogent.cogentappointment.admin.query.DashBoardQuery.QUERY_TO_COUNT_OVERALL_REGISTERED_PATIENTS;
 import static com.cogent.cogentappointment.admin.query.PatientQuery.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
+import static com.cogent.cogentappointment.admin.utils.commons.LogUtils.logError;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
 
@@ -68,6 +70,7 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
                     transformQueryToSingleResult(query, PatientDetailResponseDTO.class);
             return detailResponseDTO;
         } catch (NoResultException e) {
+            logError(PATIENT);
             throw new NoContentFoundException(Patient.class, "id", hospitalPatientInfoId.toString());
         }
     }
@@ -83,7 +86,10 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
 
         List<Object[]> results = query.getResultList();
 
-        if (results.isEmpty()) throw new NoContentFoundException(Patient.class);
+        if (results.isEmpty()){
+            logError(PATIENT);
+            throw new NoContentFoundException(Patient.class);
+        }
 
         else {
             List<PatientResponseDTO> responseDTOS = transformQueryToResultList(query, PatientResponseDTO.class);
@@ -115,6 +121,7 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
         try {
             return transformQueryToSingleResult(query, PatientMinDetailResponseDTO.class);
         } catch (NoResultException e) {
+            logError(PATIENT);
             throw new NoContentFoundException(Patient.class, "appointmentId", appointmentId.toString());
         }
     }

@@ -5,7 +5,6 @@ import com.cogent.cogentappointment.admin.dto.request.qualificationAlias.Qualifi
 import com.cogent.cogentappointment.admin.dto.response.qualificationAlias.QualificationAliasMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.QualificationAliasRepositoryCustom;
-import com.cogent.cogentappointment.persistence.model.Qualification;
 import com.cogent.cogentappointment.persistence.model.QualificationAlias;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -19,7 +18,10 @@ import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.ID;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.NAME;
+import static com.cogent.cogentappointment.admin.log.constants.QualificationAliasLog.QUALIFICATION_ALIAS;
 import static com.cogent.cogentappointment.admin.query.QualificationAliasQuery.*;
+import static com.cogent.cogentappointment.admin.query.QualificationQuery.QUERY_TO_VALIDATE_DUPLICITY;
+import static com.cogent.cogentappointment.admin.utils.commons.LogUtils.logError;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
@@ -40,8 +42,10 @@ public class QualificationAliasRepositoryCustomImpl implements QualificationAlia
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
-        if (results.isEmpty()) throw new NoContentFoundException(QualificationAlias.class);
-        else return results;
+        if (results.isEmpty()) {
+            logError(QUALIFICATION_ALIAS);
+            throw new NoContentFoundException(QualificationAlias.class);
+        } else return results;
     }
 
     @Override
@@ -74,8 +78,10 @@ public class QualificationAliasRepositoryCustomImpl implements QualificationAlia
         List<QualificationAliasMinimalResponseDTO> results = transformQueryToResultList(
                 query, QualificationAliasMinimalResponseDTO.class);
 
-        if (results.isEmpty()) throw QUALIFICATION_ALIAS_NOT_FOUND.get();
-        else {
+        if (results.isEmpty()) {
+            logError(QUALIFICATION_ALIAS);
+            throw QUALIFICATION_ALIAS_NOT_FOUND.get();
+        } else {
             results.get(0).setTotalItems(totalItems);
             return results;
         }

@@ -27,10 +27,12 @@ import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.HOSPITAL_ID;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.ID;
+import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.HOSPITAL;
 import static com.cogent.cogentappointment.admin.query.CompanyQuery.*;
 import static com.cogent.cogentappointment.admin.query.HospitalQuery.*;
 import static com.cogent.cogentappointment.admin.utils.CompanyUtils.parseToCompanyResponseDTO;
 import static com.cogent.cogentappointment.admin.utils.HospitalUtils.parseToHospitalResponseDTO;
+import static com.cogent.cogentappointment.admin.utils.commons.LogUtils.logError;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
 
 /**
@@ -161,8 +163,10 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
         List<HospitalDropdownResponseDTO> results = transformQueryToResultList(query, HospitalDropdownResponseDTO.class);
 
-        if (results.isEmpty()) throw HOSPITAL_NOT_FOUND.get();
-        else return results;
+        if (results.isEmpty()) {
+            logError(HOSPITAL);
+            throw HOSPITAL_NOT_FOUND.get();
+        } else return results;
     }
 
     @Override
@@ -178,7 +182,7 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
     private Supplier<NoContentFoundException> HOSPITAL_NOT_FOUND = () -> new NoContentFoundException(Hospital.class);
 
     private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        log.error("Company with id : {} not found", id);
+        logError(HOSPITAL);
         throw new NoContentFoundException(Hospital.class, "id", id.toString());
     };
 }

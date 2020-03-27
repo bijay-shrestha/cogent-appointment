@@ -18,9 +18,12 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.admin.log.constants.DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER_OVERRIDE;
+import static com.cogent.cogentappointment.admin.log.constants.DoctorLog.DOCTOR;
 import static com.cogent.cogentappointment.admin.query.DoctorDutyRosterOverrideQuery.*;
 import static com.cogent.cogentappointment.admin.utils.DoctorDutyRosterOverrideUtils.parseQueryResultToDoctorDutyRosterStatusResponseDTO;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
+import static com.cogent.cogentappointment.admin.utils.commons.LogUtils.logError;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
 
 @Repository
@@ -89,8 +92,10 @@ public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyR
                         DoctorDutyRosterOverride.class)
                         .getResultList();
 
-        if(doctorDutyRosterOverrides.isEmpty())
+        if (doctorDutyRosterOverrides.isEmpty()) {
+            logError(DOCTOR_DUTY_ROSTER_OVERRIDE);
             throw DOCTOR_DUTY_ROSTER_OVERRIDE_NOT_FOUND.get();
+        }
 
         return doctorDutyRosterOverrides;
     }

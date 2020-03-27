@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.admin.resource;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.DashBoardRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.dashboard.DoctorRevenueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.GenerateRevenueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.RefundAmountRequestDTO;
 import com.cogent.cogentappointment.admin.service.AppointmentService;
@@ -16,11 +17,14 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentConstant.FETCH_APPOINTMENT_QUEUE;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.DashboardConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.DashboardConstants.*;
+import static com.cogent.cogentappointment.admin.utils.DoctorRevenueUtils.convertToDoctorRevenueRequestDTO;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.convertStringToDate;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -85,6 +89,33 @@ public class DashboardResource {
     @ApiOperation(REFUND_AMOUNT_OPERATION)
     public ResponseEntity<?> calculateTotalRefundedAmount(@RequestBody RefundAmountRequestDTO refundAmountRequestDTO) {
         return ok().body(dashboardService.calculateTotalRefundedAmount(refundAmountRequestDTO));
+    }
+
+    @GetMapping(DOCTOR_REVENUE)
+    @ApiOperation(DOCTOR_REVENUE_OPERATION)
+//    @ApiImplicitParams({@ApiImplicitParam(name = "toDate", value = "dd/MM/yyyy", required = true, dataType = "date",
+//            paramType = "query"),
+//            @ApiImplicitParam(name = "fromDate", value = "dd/MM/yyyy", required = true, dataType = "date",
+//                    paramType = "query")})
+    public ResponseEntity<?> getDoctorRevenueList(@RequestParam("toDate") String toDate,
+                                                  @RequestParam("fromDate") String fromDate,
+                                                  @RequestParam("doctorId") Long doctorId,
+                                                  @RequestParam("hospitalId") Long hospitalId,
+                                                  @RequestParam("specializationId") Long specializationId,
+                                                  @RequestParam("page") int page,
+                                                  @RequestParam("size") int size) throws ParseException {
+
+//    public ResponseEntity<?> getDoctorRevenueList(@RequestParam("request") String request,
+//                                                  @RequestParam("page") int page,
+//                                                  @RequestParam("size") int size) throws ParseException, IOException {
+//
+//        DoctorRevenueRequestDTO requestDTO = ObjectMapperUtils.map(request, DoctorRevenueRequestDTO.class);
+
+        DoctorRevenueRequestDTO doctorRevenueRequestDTO =
+                convertToDoctorRevenueRequestDTO(doctorId, hospitalId, specializationId);
+
+        Pageable pageable = PageRequest.of(page, size);
+        return ok(dashboardService.getDoctorRevenueList(convertStringToDate(toDate), convertStringToDate(fromDate), doctorRevenueRequestDTO, pageable));
     }
 
 }

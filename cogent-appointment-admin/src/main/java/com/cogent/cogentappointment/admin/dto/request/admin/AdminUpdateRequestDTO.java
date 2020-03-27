@@ -58,4 +58,6 @@ public class AdminUpdateRequestDTO implements Serializable {
     private Character isAvatarUpdate;
 
     private List<AdminMacAddressInfoUpdateRequestDTO> macAddressUpdateInfo;
+
+    private List<AdminDashboardRequestDTO> adminDashboardRequestDTOS;
 }

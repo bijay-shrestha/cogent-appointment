@@ -28,6 +28,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.Validator;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -43,6 +45,7 @@ import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.AdminLog.*;
 import static com.cogent.cogentappointment.admin.utils.AdminUtils.*;
 import static com.cogent.cogentappointment.admin.utils.GenderUtils.fetchGenderByCode;
+import static com.cogent.cogentappointment.admin.utils.DashboardFeatureUtils.parseToAdminDashboardFeature;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static java.lang.reflect.Array.get;
@@ -65,6 +68,10 @@ public class AdminServiceImpl implements AdminService {
 
     private final AdminAvatarRepository adminAvatarRepository;
 
+    private final DashboardFeatureRepository dashboardFeatureRepository;
+
+    private final AdminDashboardFeatureRepository adminDashboardFeatureRepository;
+
     private final AdminConfirmationTokenRepository confirmationTokenRepository;
 
     private final MinioFileService minioFileService;
@@ -78,7 +85,7 @@ public class AdminServiceImpl implements AdminService {
                             AdminMacAddressInfoRepository adminMacAddressInfoRepository,
                             AdminMetaInfoRepository adminMetaInfoRepository,
                             AdminAvatarRepository adminAvatarRepository,
-                            AdminConfirmationTokenRepository confirmationTokenRepository,
+                            DashboardFeatureRepository dashboardFeatureRepository, AdminDashboardFeatureRepository adminDashboardFeatureRepository, AdminConfirmationTokenRepository confirmationTokenRepository,
                             MinioFileService minioFileService, EmailService emailService,
                             ProfileService profileService) {
         this.validator = validator;
@@ -86,6 +93,8 @@ public class AdminServiceImpl implements AdminService {
         this.adminMacAddressInfoRepository = adminMacAddressInfoRepository;
         this.adminMetaInfoRepository = adminMetaInfoRepository;
         this.adminAvatarRepository = adminAvatarRepository;
+        this.dashboardFeatureRepository = dashboardFeatureRepository;
+        this.adminDashboardFeatureRepository = adminDashboardFeatureRepository;
         this.confirmationTokenRepository = confirmationTokenRepository;
         this.minioFileService = minioFileService;
         this.emailService = emailService;
@@ -118,6 +127,8 @@ public class AdminServiceImpl implements AdminService {
 
         saveAdminMetaInfo(admin);
 
+        saveAllAdminDashboardFeature(adminRequestDTO.getAdminDashboardRequestDTOS(), admin);
+
         AdminConfirmationToken adminConfirmationToken =
                 saveAdminConfirmationToken(parseInAdminConfirmationToken(admin));
 
@@ -127,6 +138,36 @@ public class AdminServiceImpl implements AdminService {
         sendEmail(emailRequestDTO);
 
         log.info(SAVING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    private void saveAllAdminDashboardFeature(List<AdminDashboardRequestDTO> dashboardRequestDTOList, Admin admin) {
+
+        if (dashboardRequestDTOList.size() > 0) {
+            List<DashboardFeature> dashboardFeatureList = findActiveDashboardFeatures(dashboardRequestDTOList);
+            adminDashboardFeatureRepository.saveAll(parseToAdminDashboardFeature(dashboardFeatureList, admin));
+        }
+
+    }
+
+    private List<DashboardFeature> findActiveDashboardFeatures(List<AdminDashboardRequestDTO> adminDashboardRequestDTOS) {
+
+        String ids = adminDashboardRequestDTOS.stream()
+                .map(request -> request.getId().toString())
+                .collect(Collectors.joining(","));
+
+        List<DashboardFeature> dashboardFeatureList = validateDashboardFeature(ids);
+        int requestCount = adminDashboardRequestDTOS.size();
+
+        if ((dashboardFeatureList.size()) != requestCount) {
+            throw new NoContentFoundException(DashboardFeature.class);
+        }
+
+        return dashboardFeatureList;
+
+    }
+
+    private List<DashboardFeature> validateDashboardFeature(String ids) {
+        return dashboardFeatureRepository.validateDashboardFeatureCount(ids);
     }
 
     @Override
@@ -252,11 +293,45 @@ public class AdminServiceImpl implements AdminService {
 
         updateMacAddressInfo(updateRequestDTO.getMacAddressUpdateInfo(), admin);
 
+        updateAdminDashboardFeature(updateRequestDTO.getAdminDashboardRequestDTOS(), admin);
+
         updateAdminMetaInfo(admin);
 
         sendEmail(emailRequestDTO);
 
         log.info(UPDATING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    private void updateAdminDashboardFeature(List<AdminDashboardRequestDTO> adminDashboardRequestDTOS, Admin admin) {
+
+        List<AdminDashboardFeature> adminDashboardFeatureList = new ArrayList<>();
+        adminDashboardRequestDTOS.forEach(result -> {
+
+            AdminDashboardFeature adminDashboardFeature = adminDashboardFeatureRepository.findAdminDashboardFeatureBydashboardFeatureId(result.getId(), admin.getId());
+
+            if (adminDashboardFeature == null) {
+                saveAdminDashboardFeature(result.getId(), admin);
+            }
+
+            if (adminDashboardFeature != null) {
+                adminDashboardFeature.setStatus(result.getStatus());
+                adminDashboardFeatureList.add(adminDashboardFeature);
+            }
+
+        });
+
+        adminDashboardFeatureRepository.saveAll(adminDashboardFeatureList);
+
+    }
+
+    public void saveAdminDashboardFeature(Long id, Admin admin) {
+
+        DashboardFeature dashboardFeature = dashboardFeatureRepository.findActiveDashboardFeatureById(id)
+                .orElseThrow(() -> new NoContentFoundException(DashboardFeature.class));
+
+        List<DashboardFeature> dashboardFeatureList = Arrays.asList(dashboardFeature);
+        adminDashboardFeatureRepository.saveAll(parseToAdminDashboardFeature(dashboardFeatureList, admin));
+
     }
 
     @Override

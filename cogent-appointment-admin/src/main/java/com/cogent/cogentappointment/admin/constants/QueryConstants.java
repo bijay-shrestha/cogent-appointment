@@ -7,6 +7,7 @@ public class QueryConstants {
 
     //A
     public static final String APPOINTMENT_ID = "appointmentId";
+    public static final String ADMIN_ID = "adminId";
 
     //B
 
@@ -22,6 +23,7 @@ public class QueryConstants {
     //D
 
     public static final String DOCTOR_ID = "doctorId";
+    public static final String DASHBOARD_FEATURE_ID = "dashboardFeatureId";
     public static final String DATE = "date";
     public static final String DATE_OF_BIRTH = "dateOfBirth";
 

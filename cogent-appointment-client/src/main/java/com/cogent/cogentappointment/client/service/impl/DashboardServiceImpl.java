@@ -158,10 +158,22 @@ public class DashboardServiceImpl implements DashboardService {
 
         log.info(FETCHING_PROCESS_STARTED, DYNAMIC_DASHBOARD_FEATURE);
 
-        Long hospitalId = getLoggedInHospitalId();
+        List<DashboardFeatureResponseDTO> responseDTOS =
+                adminRepository.fetchDashboardFeaturesByAdmin(adminId);
+
+        log.info(FETCHING_PROCESS_COMPLETED, DYNAMIC_DASHBOARD_FEATURE, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public List<DashboardFeatureResponseDTO> fetchAllDashboardFeature() {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, DYNAMIC_DASHBOARD_FEATURE);
 
         List<DashboardFeatureResponseDTO> responseDTOS =
-                adminRepository.fetchDashboardFeaturesByAdmin(adminId, hospitalId);
+                adminRepository.fetchOverAllDashboardFeature();
 
         log.info(FETCHING_PROCESS_COMPLETED, DYNAMIC_DASHBOARD_FEATURE, getDifferenceBetweenTwoTime(startTime));
 

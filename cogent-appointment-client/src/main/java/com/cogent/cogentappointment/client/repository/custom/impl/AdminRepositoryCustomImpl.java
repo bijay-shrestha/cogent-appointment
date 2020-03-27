@@ -10,6 +10,8 @@ import com.cogent.cogentappointment.client.dto.response.admin.AdminMacAddressInf
 import com.cogent.cogentappointment.client.dto.response.admin.AdminMinimalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.DashboardFeatureResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
+import com.cogent.cogentappointment.client.query.DashBoardQuery;
+import com.cogent.cogentappointment.client.repository.custom.AdminDashboardRepositoryCustom;
 import com.cogent.cogentappointment.client.repository.custom.AdminRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Admin;
 import com.cogent.cogentappointment.persistence.model.DashboardFeature;
@@ -40,7 +42,7 @@ import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
  */
 @Service
 @Transactional(readOnly = true)
-public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
+public class AdminRepositoryCustomImpl implements AdminRepositoryCustom{
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -151,8 +153,20 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     }
 
     @Override
-    public List<DashboardFeatureResponseDTO> fetchDashboardFeaturesByAdmin(Long adminId, Long hospitalId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DASHBOARD_FEATURES(adminId, hospitalId));
+    public List<DashboardFeatureResponseDTO> fetchDashboardFeaturesByAdmin(Long adminId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DASHBOARD_FEATURES(adminId));
+
+        List<DashboardFeatureResponseDTO> result = transformQueryToResultList(query, DashboardFeatureResponseDTO.class);
+
+        if (ObjectUtils.isEmpty(result)) throw NO_DASHBOARD_FEATURE_FOUND.get();
+        else {
+            return result;
+        }
+    }
+
+    @Override
+    public List<DashboardFeatureResponseDTO> fetchOverAllDashboardFeature() {
+        Query query = createQuery.apply(entityManager, DashBoardQuery.QUERY_TO_FETCH_DASHBOARD_FEATURES);
 
         List<DashboardFeatureResponseDTO> result = transformQueryToResultList(query, DashboardFeatureResponseDTO.class);
 

@@ -22,4 +22,6 @@ public interface DashboardService {
     RevenueTrendResponseDTO getRevenueTrend(DashBoardRequestDTO dashBoardRequestDTO);
 
     List<DashboardFeatureResponseDTO> getDashboardFeaturesByAdmin(Long adminId);
+
+    List<DashboardFeatureResponseDTO> fetchAllDashboardFeature();
 }

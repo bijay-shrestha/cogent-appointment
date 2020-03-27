@@ -13,5 +13,7 @@ import java.util.List;
 @Qualifier("adminDashboardRepositoryCustom")
 public interface AdminDashboardRepositoryCustom {
 
-    List<DashboardFeatureResponseDTO> fetchActiveDashboardFeatureByAdmin(Long adminId, Long hospitalId);
+    List<DashboardFeatureResponseDTO> fetchActiveDashboardFeatureByAdmin(Long adminId);
+
+
 }

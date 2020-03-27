@@ -85,4 +85,10 @@ public class DashboardResource {
     public ResponseEntity<?> fetchDashboardEntityByAdmin(@PathVariable("adminId") Long adminId) {
         return ok(dashboardService.getDashboardFeaturesByAdmin(adminId));
     }
+
+    @GetMapping(DYNAMIC_DASHBOARD_FEATURE)
+    @ApiOperation(OVER_ALL_DASHBOARD_FEATURE)
+    public ResponseEntity<?> fetchAllDashboardFeature() {
+        return ok(dashboardService.fetchAllDashboardFeature());
+    }
 }

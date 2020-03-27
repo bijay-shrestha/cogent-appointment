@@ -87,7 +87,7 @@ public class DashboardResource {
     }
 
     @GetMapping(DYNAMIC_DASHBOARD_FEATURE)
-    @ApiOperation(FETCH_DYNAMIC_DASHBOARD_FEATURE)
+    @ApiOperation(OVER_ALL_DASHBOARD_FEATURE)
     public ResponseEntity<?> fetchAllDashboardFeature() {
         return ok(dashboardService.fetchAllDashboardFeature());
     }

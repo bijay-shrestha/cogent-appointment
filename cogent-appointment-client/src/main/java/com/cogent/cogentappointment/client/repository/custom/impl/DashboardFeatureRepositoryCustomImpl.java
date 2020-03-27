@@ -31,7 +31,7 @@ public class DashboardFeatureRepositoryCustomImpl implements AdminDashboardRepos
     private EntityManager entityManager;
 
     @Override
-    public List<DashboardFeatureResponseDTO> fetchActiveDashboardFeatureByAdmin(Long adminId, Long hospitalId) {
+    public List<DashboardFeatureResponseDTO> fetchActiveDashboardFeatureByAdmin(Long adminId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DASHBOARD_FEATURES(adminId));
 
         List<DashboardFeatureResponseDTO> result = transformQueryToResultList(query, DashboardFeatureResponseDTO.class);

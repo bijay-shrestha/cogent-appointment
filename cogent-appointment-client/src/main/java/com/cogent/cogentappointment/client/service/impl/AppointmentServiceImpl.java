@@ -800,8 +800,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         DoctorDutyRosterTimeResponseDTO doctorDutyRosterInfo = fetchDoctorDutyRosterInfo(appointmentInfo);
 
-        validateIfRequestedAppointmentTimeIsValid(doctorDutyRosterInfo, appointmentInfo);
-
         boolean isTimeValid = validateIfRequestedAppointmentTimeIsValid(doctorDutyRosterInfo, appointmentInfo);
 
         if (!isTimeValid)

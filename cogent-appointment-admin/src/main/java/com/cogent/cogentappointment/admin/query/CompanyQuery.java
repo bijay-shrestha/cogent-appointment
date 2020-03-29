@@ -10,7 +10,6 @@ import java.util.function.Function;
  */
 public class CompanyQuery {
 
-
     public static final String QUERY_TO_VALIDATE_COMPANY_DUPLICITY =
             "SELECT " +
                     " h.name," +                        //[0]

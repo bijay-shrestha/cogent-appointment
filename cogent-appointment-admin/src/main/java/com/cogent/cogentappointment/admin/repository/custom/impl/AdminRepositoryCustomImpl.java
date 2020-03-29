@@ -12,10 +12,12 @@ import com.cogent.cogentappointment.admin.dto.response.admin.*;
 import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminLoggedInInfoResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminMinimalResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.dashboard.DashboardFeatureResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
+import com.cogent.cogentappointment.admin.query.DashBoardQuery;
 import com.cogent.cogentappointment.admin.repository.custom.AdminRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Admin;
-import lombok.extern.slf4j.Slf4j;
+import com.cogent.cogentappointment.persistence.model.DashboardFeature;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +39,7 @@ import static com.cogent.cogentappointment.admin.query.AdminQuery.QUERY_FO_FETCH
 import static com.cogent.cogentappointment.admin.query.AdminQuery.*;
 import static com.cogent.cogentappointment.admin.query.AdminQuery.QUERY_TO_FETCH_ADMIN_BY_USERNAME_OR_EMAIL;
 import static com.cogent.cogentappointment.admin.query.CompanyAdminQuery.*;
+import static com.cogent.cogentappointment.admin.query.DashBoardQuery.QUERY_TO_FETCH_DASHBOARD_FEATURES;
 import static com.cogent.cogentappointment.admin.utils.commons.LogUtils.logError;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
@@ -46,7 +49,6 @@ import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
  */
 @Service
 @Transactional(readOnly = true)
-@Slf4j
 public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
 
     @PersistenceContext
@@ -240,6 +242,30 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         }
     }
 
+    @Override
+    public List<DashboardFeatureResponseDTO> fetchDashboardFeaturesByAdmin(Long adminId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DASHBOARD_FEATURES(adminId));
+
+        List<DashboardFeatureResponseDTO> result = transformQueryToResultList(query, DashboardFeatureResponseDTO.class);
+
+        if (ObjectUtils.isEmpty(result)) throw NO_DASHBOARD_FEATURE_FOUND.get();
+        else {
+            return result;
+        }
+    }
+
+    @Override
+    public List<DashboardFeatureResponseDTO> fetchOverAllDashboardFeature() {
+        Query query = createQuery.apply(entityManager, DashBoardQuery.QUERY_TO_FETCH_DASHBOARD_FEATURES);
+
+        List<DashboardFeatureResponseDTO> result = transformQueryToResultList(query, DashboardFeatureResponseDTO.class);
+
+        if (ObjectUtils.isEmpty(result)) throw NO_DASHBOARD_FEATURE_FOUND.get();
+        else {
+            return result;
+        }
+    }
+
     private AdminDetailResponseDTO fetchAdminDetailResponseDTO(Long id) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ADMIN_DETAIL)
                 .setParameter(ID, id);
@@ -272,6 +298,8 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
 
         return transformQueryToResultList(query, AdminMacAddressInfoResponseDTO.class);
     }
+
+    private Supplier<NoContentFoundException> NO_DASHBOARD_FEATURE_FOUND = () -> new NoContentFoundException(DashboardFeature.class);
 
     private Supplier<NoContentFoundException> NO_ADMIN_FOUND = () -> new NoContentFoundException(Admin.class);
 

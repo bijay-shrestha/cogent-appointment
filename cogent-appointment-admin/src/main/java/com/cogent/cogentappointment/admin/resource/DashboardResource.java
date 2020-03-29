@@ -85,6 +85,18 @@ public class DashboardResource {
         return ok().body(appointmentService.fetchTodayAppointmentQueueByTime(appointmentQueueRequestDTO, pageable));
     }
 
+    @PutMapping(DYNAMIC_DASHBOARD_FEATURE + ADMIN_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_DYNAMIC_DASHBOARD_FEATURE)
+    public ResponseEntity<?> fetchDashboardEntityByAdmin(@PathVariable("adminId") Long adminId) {
+        return ok(dashboardService.getDashboardFeaturesByAdmin(adminId));
+    }
+
+    @GetMapping(DYNAMIC_DASHBOARD_FEATURE)
+    @ApiOperation(OVER_ALL_DASHBOARD_FEATURE)
+    public ResponseEntity<?> fetchAllDashboardFeature() {
+        return ok(dashboardService.fetchAllDashboardFeature());
+    }
+
     @PutMapping(TOTAL_REFUNDED_AMOUNT)
     @ApiOperation(REFUND_AMOUNT_OPERATION)
     public ResponseEntity<?> calculateTotalRefundedAmount(@RequestBody RefundAmountRequestDTO refundAmountRequestDTO) {

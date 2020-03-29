@@ -2,9 +2,9 @@ server:
   port: 9090
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/cogent-admin
-    username: sauravi
-    password: Test@123##
+    url: jdbc:mysql://localhost:3306/demo
+    username: root
+    password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -35,7 +35,7 @@ spring:
       max-request-size: 215000MB
 
   minio:
-    url: http://localhost:9000
-    bucket: cogent
-    access-key: minioadmin
-    secret-key: minioadmin
+    url: http://uat-presigned.cogenthealth.com.np
+    bucket: cogent-appointment
+    access-key: cogent-appointment
+    secret-key: cogentappointment@123

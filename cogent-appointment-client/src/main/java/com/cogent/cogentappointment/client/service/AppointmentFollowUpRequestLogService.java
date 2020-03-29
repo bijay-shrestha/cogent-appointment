@@ -5,5 +5,7 @@ package com.cogent.cogentappointment.client.service;
  */
 public interface AppointmentFollowUpRequestLogService {
 
+    void save(Long appointmentFollowUpTrackerId);
+
     Integer fetchRequestCountByFollowUpTrackerId(Long appointmentFollowUpTrackerId);
 }

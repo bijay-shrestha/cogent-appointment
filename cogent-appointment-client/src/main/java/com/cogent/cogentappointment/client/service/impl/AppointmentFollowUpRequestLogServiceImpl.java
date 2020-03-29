@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.client.service.impl;
 import com.cogent.cogentappointment.client.log.constants.AppointmentFollowUpRequestLog;
 import com.cogent.cogentappointment.client.repository.AppointmentFollowUpRequestLogRepository;
 import com.cogent.cogentappointment.client.service.AppointmentFollowUpRequestLogService;
+import com.cogent.cogentappointment.persistence.model.AppointmentFollowUpTracker;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +28,7 @@ public class AppointmentFollowUpRequestLogServiceImpl implements AppointmentFoll
     }
 
     @Override
-    public void save(Long appointmentFollowUpTrackerId) {
+    public void save(AppointmentFollowUpTracker appointmentFollowUpTracker) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, APPOINTMENT_FOLLOW_UP_REQUEST_LOG);

@@ -749,13 +749,16 @@ public class AppointmentServiceImpl implements AppointmentService {
             appointmentFollowUpTrackerService.updateFollowUpTracker(appointmentFollowUpLog.getParentAppointmentId());
 
         } else {
-            appointmentFollowUpTrackerService.save(
-                    appointment.getId(),
-                    appointment.getHospitalId(),
-                    appointment.getDoctorId(),
-                    appointment.getSpecializationId(),
-                    appointment.getPatientId()
-            );
+            AppointmentFollowUpTracker appointmentFollowUpTracker =
+                    appointmentFollowUpTrackerService.save(
+                            appointment.getId(),
+                            appointment.getHospitalId(),
+                            appointment.getDoctorId(),
+                            appointment.getSpecializationId(),
+                            appointment.getPatientId()
+                    );
+
+
 
             registerPatient(appointment.getPatientId().getId(), appointment.getHospitalId().getId());
         }

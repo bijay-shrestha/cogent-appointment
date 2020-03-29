@@ -4,24 +4,18 @@ import lombok.*;
 import org.springframework.http.HttpStatus;
 
 import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
 
 /**
- * @author smriti ON 25/01/2020
+ * @author smriti on 17/02/20
  */
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppointmentCheckAvailabilityResponseDTO implements Serializable {
+public class AppointmentDetailResponseWithStatusDTO implements Serializable {
 
-    private Date queryDate;
-
-    private String doctorAvailableTime;
-
-    private List<String> availableTimeSlots;
+    private AppointmentDetailResponseDTO appointmentDetailResponseDTO;
 
     private int responseCode;
 

@@ -20,12 +20,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.client.constants.EsewaStatusConstants.OK;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.client.log.constants.eSewaLog.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.client.utils.EsewaUtils.*;
+import static org.springframework.http.HttpStatus.OK;
 
 @Service
 @Transactional
@@ -58,9 +58,9 @@ public class EsewaServiceImpl implements EsewaService {
                         ? doctorAvailableStatus
                         : dutyRosterRepository.fetchDoctorDutyRosterStatus(requestDTO);
 
-        log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_AVAILABLE_STATUS, getDifferenceBetweenTwoTime(startTime));
+        parseDoctorAvailabilityResponseStatus(responseDTO);
 
-        responseDTO.setSuccessStatus(OK);
+        log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_AVAILABLE_STATUS, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
     }
@@ -282,7 +282,9 @@ public class EsewaServiceImpl implements EsewaService {
         });
         responseDTO.setAvaliableDates(avaliableDates);
 
-        responseDTO.setStatus(OK);
+        responseDTO.setResponseStatus(OK);
+
+        responseDTO.setResponseCode(OK.value());
 
         if (ObjectUtils.isEmpty(responseDTO.getAvaliableDates()))
             throw APPOINTMENT_NOT_AVAILABLE.get();

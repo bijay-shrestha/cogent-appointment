@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.admin.service;
 
 import com.cogent.cogentappointment.admin.dto.request.dashboard.DashBoardRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.GenerateRevenueRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.dashboard.RefundAmountRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.AppointmentCountResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueStatisticsResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueTrendResponseDTO;
@@ -20,4 +21,6 @@ public interface DashboardService {
     Long getPatientStatistics(Long hospitalId);
 
     RevenueTrendResponseDTO getRevenueTrend(DashBoardRequestDTO dashBoardRequestDTO);
+
+    Double calculateTotalRefundedAmount(RefundAmountRequestDTO refundAmountRequestDTO);
 }

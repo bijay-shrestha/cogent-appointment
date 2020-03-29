@@ -21,4 +21,6 @@ public class AvailableDoctorWithSpecialization implements Serializable {
     private Long specializationId;
 
     private String specializationName;
+
+    private Character dayOffStatus;
 }

@@ -1,4 +1,4 @@
-gserver:
+server:
   port: 9090
 spring:
   datasource:
@@ -35,7 +35,7 @@ spring:
       max-request-size: 215000MB
 
   minio:
-    url: http://localhost:9000
-    bucket: cogent
-    access-key: minioadmin
-    secret-key: minioadmin
+    url: http://uat-presigned.cogenthealth.com.np
+    bucket: cogent-appointment
+    access-key: cogent-appointment
+    secret-key: cogentappointment@123

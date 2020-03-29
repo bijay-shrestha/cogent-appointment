@@ -13,9 +13,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.cogent.cogentappointment.client.constants.EsewaStatusConstants.OK;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.NO;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDates;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
+import static org.springframework.http.HttpStatus.OK;
 
 
 /**
@@ -31,11 +33,14 @@ public class EsewaUtils {
                 .filter(actual -> (overrideList.stream()
                         .filter(override -> (override.getDoctorId().equals(actual.getDoctorId()))
                                 && (override.getSpecializationId().equals(actual.getSpecializationId()))
+                                && (actual.getDayOffStatus().equals(NO))
                         )
                         .count()) < 1)
                 .collect(Collectors.toList());
 
         overrideList.addAll(unmatchedList);
+
+        overrideList.removeIf(override -> override.getDayOffStatus().equals(YES));
 
         return overrideList;
     }
@@ -46,7 +51,8 @@ public class EsewaUtils {
         appointmentDatesResponseDTO.setDoctorId(requestDTO.getDoctorId());
         appointmentDatesResponseDTO.setSpecializationId(requestDTO.getSpecializationId());
         appointmentDatesResponseDTO.setDates(finalAvaliableDateAndTime);
-        appointmentDatesResponseDTO.setStatus(OK);
+        appointmentDatesResponseDTO.setResponseCode(OK.value());
+        appointmentDatesResponseDTO.setResponseStatus(OK);
 
         return appointmentDatesResponseDTO;
     }
@@ -135,7 +141,7 @@ public class EsewaUtils {
 
     public static List<Date> getDutyRosterDates(List<Date> dates,
                                                 List<String> weekDays) {
-        List<Date> availableDates=new ArrayList<>();
+        List<Date> availableDates = new ArrayList<>();
         for (Date date : dates) {
             weekDays.forEach(weekdays -> {
                 if (date.toString().substring(0, 3).toUpperCase().equals(weekdays)) {
@@ -147,29 +153,37 @@ public class EsewaUtils {
     }
 
     public static AvailableDoctorWithSpecializationResponseDTO getAvailableDoctorWithSpecializationResponseDTO(
-            List<AvailableDoctorWithSpecialization> mergedList){
+            List<AvailableDoctorWithSpecialization> mergedList) {
 
         return AvailableDoctorWithSpecializationResponseDTO.builder()
                 .availableDoctorWithSpecializations(mergedList)
-                .status(OK)
+                .responseCode(OK.value())
+                .responseStatus(OK)
                 .build();
     }
 
     public static AvailableDatesWithSpecializationResponseDTO getAvailableDatesWithSpecializationResponseDTO(
-            List<AvailableDatesWithSpecialization> responseDTOList){
+            List<AvailableDatesWithSpecialization> responseDTOList) {
 
         return AvailableDatesWithSpecializationResponseDTO.builder()
                 .availableDatesWithSpecialization(responseDTOList)
-                .status(OK)
+                .responseCode(OK.value())
+                .responseStatus(OK)
                 .build();
     }
 
     public static AvailableDatesWithDoctorResponseDTO getAvailableDatesWithDoctorResponseDTO(
-            List<AvailableDatesWithDoctor> responseDTOList){
+            List<AvailableDatesWithDoctor> responseDTOList) {
 
         return AvailableDatesWithDoctorResponseDTO.builder()
                 .availableDatesWithDoctor(responseDTOList)
-                .status(OK)
+                .responseCode(OK.value())
+                .responseStatus(OK)
                 .build();
+    }
+
+    public static void parseDoctorAvailabilityResponseStatus(DoctorAvailabilityStatusResponseDTO responseDTO) {
+        responseDTO.setResponseStatus(OK);
+        responseDTO.setResponseCode(OK.value());
     }
 }

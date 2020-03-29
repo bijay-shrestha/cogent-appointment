@@ -4,6 +4,7 @@ package com.cogent.cogentappointment.admin.resource;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.DashBoardRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.GenerateRevenueRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.dashboard.RefundAmountRequestDTO;
 import com.cogent.cogentappointment.admin.service.AppointmentService;
 import com.cogent.cogentappointment.admin.service.DashboardService;
 import io.swagger.annotations.Api;
@@ -78,6 +79,12 @@ public class DashboardResource {
                                                               @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ok().body(appointmentService.fetchTodayAppointmentQueueByTime(appointmentQueueRequestDTO, pageable));
+    }
+
+    @PutMapping(TOTAL_REFUNDED_AMOUNT)
+    @ApiOperation(REFUND_AMOUNT_OPERATION)
+    public ResponseEntity<?> calculateTotalRefundedAmount(@RequestBody RefundAmountRequestDTO refundAmountRequestDTO) {
+        return ok().body(dashboardService.calculateTotalRefundedAmount(refundAmountRequestDTO));
     }
 
 }

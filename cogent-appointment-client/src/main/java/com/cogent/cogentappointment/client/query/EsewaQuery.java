@@ -136,7 +136,8 @@ public class EsewaQuery {
                 " DISTINCT(d.id) AS doctorId," +                        //[0]
                 " d.name AS doctorName," +                              //[1]
                 " s.id AS specializationId," +                          //[2]
-                " s.name AS specializationName" +                       //[3]
+                " s.name AS specializationName," +                      //[3]
+                " ddro.dayOffStatus AS dayOffStatus" +                  //[4]
                 " FROM DoctorDutyRosterOverride ddro" +
                 " LEFT JOIN DoctorDutyRoster ddr ON ddr.id = ddro.doctorDutyRosterId.id" +
                 " LEFT JOIN Doctor d ON d.id = ddr.doctorId.id" +
@@ -145,7 +146,6 @@ public class EsewaQuery {
                 " ddr.status = 'Y'" +
                 " AND ddro.status = 'Y'" +
                 " AND ddr.hospitalId.id =:hospitalId" +
-                " AND ddro.dayOffStatus = 'N'" +
                 " AND :date BETWEEN ddro.fromDate AND ddro.toDate";
 
         if (!Objects.isNull(requestDTO.getSpecializationId()))
@@ -162,15 +162,15 @@ public class EsewaQuery {
                 " DISTINCT(d.id) AS doctorId," +                 //[0]
                 " d.name AS doctorName," +                       //[1]
                 " s.id AS specializationId," +                   //[2]
-                " s.name AS specializationName" +                //[3]
+                " s.name AS specializationName," +               //[3]
+                " dw.dayOffStatus AS dayOffStatus"+              //[4]
                 " FROM DoctorDutyRoster ddr" +
                 " LEFT JOIN DoctorWeekDaysDutyRoster dw ON dw.doctorDutyRosterId.id = ddr.id" +
                 " LEFT JOIN Doctor d ON d.id = ddr.doctorId.id" +
                 " LEFT JOIN Specialization s ON s.id = ddr.specializationId.id" +
                 " LEFT JOIN WeekDays w ON w.id = dw.weekDaysId.id" +
                 " WHERE" +
-                " dw.dayOffStatus = 'N'" +
-                " AND ddr.status = 'Y'" +
+                "  ddr.status = 'Y'" +
                 " AND w.code = :code" +
                 " AND ddr.hospitalId.id =:hospitalId" +
                 " AND :date BETWEEN ddr.fromDate AND ddr.toDate";

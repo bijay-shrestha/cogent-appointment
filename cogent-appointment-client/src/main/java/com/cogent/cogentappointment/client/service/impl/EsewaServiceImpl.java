@@ -58,11 +58,9 @@ public class EsewaServiceImpl implements EsewaService {
                         ? doctorAvailableStatus
                         : dutyRosterRepository.fetchDoctorDutyRosterStatus(requestDTO);
 
+        parseDoctorAvailabilityResponseStatus(responseDTO);
+
         log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_AVAILABLE_STATUS, getDifferenceBetweenTwoTime(startTime));
-
-        responseDTO.setResponseStatus(OK);
-
-        responseDTO.setResponseCode(OK.value());
 
         return responseDTO;
     }

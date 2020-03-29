@@ -40,7 +40,7 @@ public class EsewaUtils {
 
         overrideList.addAll(unmatchedList);
 
-        overrideList.removeIf(override-> override.getDayOffStatus().equals(YES));
+        overrideList.removeIf(override -> override.getDayOffStatus().equals(YES));
 
         return overrideList;
     }
@@ -180,5 +180,10 @@ public class EsewaUtils {
                 .responseCode(OK.value())
                 .responseStatus(OK)
                 .build();
+    }
+
+    public static void parseDoctorAvailabilityResponseStatus(DoctorAvailabilityStatusResponseDTO responseDTO) {
+        responseDTO.setResponseStatus(OK);
+        responseDTO.setResponseCode(OK.value());
     }
 }

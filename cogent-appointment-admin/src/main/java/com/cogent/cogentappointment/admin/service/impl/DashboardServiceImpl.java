@@ -3,9 +3,11 @@ package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.request.dashboard.DashBoardRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.GenerateRevenueRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.dashboard.RefundAmountRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.AppointmentCountResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueStatisticsResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueTrendResponseDTO;
+import com.cogent.cogentappointment.admin.repository.AppointmentRefundDetailRepository;
 import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
 import com.cogent.cogentappointment.admin.repository.AppointmentTransactionDetailRepository;
 import com.cogent.cogentappointment.admin.repository.PatientRepository;
@@ -42,11 +44,15 @@ public class DashboardServiceImpl implements DashboardService {
 
     private final PatientRepository patientRepository;
 
+    private final AppointmentRefundDetailRepository appointmentRefundDetailRepository;
+
     public DashboardServiceImpl(AppointmentTransactionDetailRepository appointmentTransactionDetailRepository,
-                                AppointmentRepository appointmentRepository, PatientRepository patientRepository) {
+                                AppointmentRepository appointmentRepository, PatientRepository patientRepository,
+                                AppointmentRefundDetailRepository appointmentRefundDetailRepository) {
         this.appointmentTransactionDetailRepository = appointmentTransactionDetailRepository;
         this.appointmentRepository = appointmentRepository;
         this.patientRepository = patientRepository;
+        this.appointmentRefundDetailRepository = appointmentRefundDetailRepository;
     }
 
     @Override
@@ -135,5 +141,19 @@ public class DashboardServiceImpl implements DashboardService {
         log.info(FETCHING_PROCESS_COMPLETED, REVENUE_STATISTICS, getDifferenceBetweenTwoTime(startTime));
 
         return revenueTrendResponseDTO;
+    }
+
+    @Override
+    public Double calculateTotalRefundedAmount(RefundAmountRequestDTO refundAmountRequestDTO) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, TOTAL_REFUNDED_AMOUNT);
+
+        Double totalRefundedAmount = appointmentRefundDetailRepository.getTotalRefundedAmount(refundAmountRequestDTO);
+
+        log.info(FETCHING_PROCESS_COMPLETED, TOTAL_REFUNDED_AMOUNT, getDifferenceBetweenTwoTime(startTime));
+
+        return totalRefundedAmount;
     }
 }

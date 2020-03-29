@@ -201,6 +201,11 @@
             <artifactId>commons-io</artifactId>
             <version>1.3.2</version>
         </dependency>
+        <dependency>
+            <groupId>com.cogent.cogentappointment.admin</groupId>
+            <artifactId>cogent-appointment-admin</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
 
     </dependencies>
 

@@ -12,4 +12,6 @@ public class DashboardLog {
     public final static String OVER_ALL_REGISTERED_PATIENTS = "OVERALL PATIENTS";
 
     public final static String REVENUE_STATISTICS = "REVENUE STATISTICS";
+
+    public final static String TOTAL_REFUNDED_AMOUNT="TOTAL REFUNDED AMOUNT";
 }

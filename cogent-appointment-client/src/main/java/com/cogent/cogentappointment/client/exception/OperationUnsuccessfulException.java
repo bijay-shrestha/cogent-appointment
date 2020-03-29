@@ -21,7 +21,8 @@ public class OperationUnsuccessfulException extends RuntimeException {
         exception = ExceptionResponse.builder()
                 .errorMessage(errorMessage)
                 .debugMessage(debugMessage)
-                .status(EXPECTATION_FAILED)
+                .responseStatus(EXPECTATION_FAILED)
+                .responseCode(EXPECTATION_FAILED.value())
                 .timeStamp(getLocalDateTime())
                 .build();
     }

@@ -62,6 +62,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private ResponseEntity<Object> buildResponseEntity(ExceptionResponse e) {
-        return new ResponseEntity<>(e, e.getStatus());
+        return new ResponseEntity<>(e, e.getResponseStatus());
     }
 }

@@ -16,15 +16,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import static com.cogent.cogentappointment.client.constants.StatusConstants.INACTIVE;
-import static com.cogent.cogentappointment.client.constants.StatusConstants.NO;
-import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.*;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentFollowUpTrackerLog.APPOINTMENT_FOLLOW_UP_TRACKER;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentFollowUpTrackerLog.APPOINTMENT_FOLLOW_UP_TRACKER_STATUS;
-import static com.cogent.cogentappointment.client.utils.AppointmentFollowUpTrackerUtils.parseToAppointmentFollowUpResponseDTO;
-import static com.cogent.cogentappointment.client.utils.AppointmentFollowUpTrackerUtils.parseToAppointmentFollowUpTracker;
-import static com.cogent.cogentappointment.client.utils.AppointmentFollowUpTrackerUtils.updateNumberOfFollowUps;
+import static com.cogent.cogentappointment.client.utils.AppointmentFollowUpTrackerUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static java.lang.reflect.Array.get;
 
@@ -61,6 +57,7 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
 
         log.info(FETCHING_PROCESS_STARTED, APPOINTMENT_FOLLOW_UP_TRACKER);
 
+        /*TEMPORARILY HOLD SELECTED TIME SLOT*/
         Long savedAppointmentReservationId = appointmentReservationService.save(requestDTO);
 
         List<Object[]> followUpDetails = appointmentFollowUpTrackerRepository.fetchFollowUpDetails(
@@ -72,39 +69,15 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
 
         AppointmentFollowUpResponseDTO responseDTO;
 
-        if (followUpDetails.isEmpty()) {
-            Double doctorAppointmentCharge = doctorRepository.fetchDoctorAppointmentCharge(
-                    requestDTO.getDoctorId(), requestDTO.getHospitalId());
+        if (followUpDetails.isEmpty())
 
-            responseDTO = parseToAppointmentFollowUpResponseDTO(NO, doctorAppointmentCharge, null,
-                    savedAppointmentReservationId);
-        } else {
-            Object[] followUpObject = followUpDetails.get(0);
+            /*THIS IS NORMAL APPOINTMENT AND APPOINTMENT CHARGE = DOCTOR APPOINTMENT CHARGE*/
+            responseDTO = parseDoctorAppointmentCharge(
+                    requestDTO.getDoctorId(), requestDTO.getHospitalId(), savedAppointmentReservationId);
+        else
+             /*THIS IS FOLLOW UP APPOINTMENT CASE */
+            responseDTO = parseDoctorAppointmentFollowUpCharge(followUpDetails, requestDTO, savedAppointmentReservationId);
 
-            Long parentAppointmentId = (Long) get(followUpObject, 0);
-
-            Date appointmentDate = (Date) get(followUpObject, 1);
-
-            int intervalDays = hospitalRepository.fetchHospitalFollowUpIntervalDays(requestDTO.getHospitalId());
-
-            Date requestedDate = utilDateToSqlDate(requestDTO.getAppointmentDate());
-            Date expiryDate = utilDateToSqlDate(addDays(appointmentDate, intervalDays));
-
-            if (isAppointmentActive(requestedDate, expiryDate)) {
-
-                Double doctorFollowUpCharge = doctorRepository.fetchDoctorAppointmentFollowUpCharge(
-                        requestDTO.getDoctorId(), requestDTO.getHospitalId());
-
-                responseDTO = parseToAppointmentFollowUpResponseDTO(YES, doctorFollowUpCharge, parentAppointmentId,
-                        savedAppointmentReservationId);
-            } else {
-                Double doctorAppointmentCharge = doctorRepository.fetchDoctorAppointmentCharge(
-                        requestDTO.getDoctorId(), requestDTO.getHospitalId());
-
-                responseDTO = parseToAppointmentFollowUpResponseDTO(NO, doctorAppointmentCharge, null,
-                        savedAppointmentReservationId);
-            }
-        }
 
         log.info(FETCHING_PROCESS_COMPLETED, APPOINTMENT_FOLLOW_UP_TRACKER, getDifferenceBetweenTwoTime(startTime));
 
@@ -182,5 +155,42 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
 
         return (Objects.requireNonNull(requestedDate).compareTo(Objects.requireNonNull(expiryDate))) < 0
                 || (Objects.requireNonNull(requestedDate).compareTo(Objects.requireNonNull(expiryDate))) == 0;
+    }
+
+    private AppointmentFollowUpResponseDTO parseDoctorAppointmentCharge(Long doctorId,
+                                                                        Long hospitalId,
+                                                                        Long savedAppointmentReservationId) {
+
+        Double doctorAppointmentCharge = doctorRepository.fetchDoctorAppointmentCharge(
+                doctorId, hospitalId);
+
+        return parseToAppointmentFollowUpResponseDTO(NO, doctorAppointmentCharge, null,
+                savedAppointmentReservationId);
+    }
+
+    private AppointmentFollowUpResponseDTO parseDoctorAppointmentFollowUpCharge(List<Object[]> followUpDetails,
+                                                                                AppointmentFollowUpRequestDTO requestDTO,
+                                                                                Long savedAppointmentReservationId) {
+
+        Object[] followUpObject = followUpDetails.get(0);
+        Long parentAppointmentId = (Long) get(followUpObject, 0);
+        Date appointmentDate = (Date) get(followUpObject, 1);
+
+        int intervalDays = hospitalRepository.fetchHospitalFollowUpIntervalDays(requestDTO.getHospitalId());
+
+        Date requestedDate = utilDateToSqlDate(requestDTO.getAppointmentDate());
+        Date expiryDate = utilDateToSqlDate(addDays(appointmentDate, intervalDays));
+
+        if (isAppointmentActive(requestedDate, expiryDate)) {
+
+            Double doctorFollowUpCharge = doctorRepository.fetchDoctorAppointmentFollowUpCharge(
+                    requestDTO.getDoctorId(), requestDTO.getHospitalId());
+
+            return parseToAppointmentFollowUpResponseDTO(YES, doctorFollowUpCharge, parentAppointmentId,
+                    savedAppointmentReservationId);
+        } else {
+            return parseDoctorAppointmentCharge
+                    (requestDTO.getDoctorId(), requestDTO.getHospitalId(), savedAppointmentReservationId);
+        }
     }
 }

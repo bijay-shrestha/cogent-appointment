@@ -24,6 +24,8 @@ import java.util.Date;
  *      THEN STATUS = 'Y'
  * ELSE
  *      STATUS = 'N'
+ *
+ * STATUS FLAG IS UPDATED BY SCHEDULER ALSO
  */
 @Entity
 @Table(name = "appointment_follow_up_tracker")
@@ -53,9 +55,6 @@ public class AppointmentFollowUpTracker implements Serializable {
 
     @Column(name = "parent_appointment_id")
     private Long parentAppointmentId;
-
-    @Column(name = "parent_appointment_number")
-    private String parentAppointmentNumber;
 
     @Column(name = "remaining_number_of_follow_ups")
     private Integer remainingNumberOfFollowUps;

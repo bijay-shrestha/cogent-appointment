@@ -40,7 +40,6 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
 
     @Override
     public void save(Long parentAppointmentId,
-                     String parentAppointmentNumber,
                      Hospital hospital,
                      Doctor doctor,
                      Specialization specialization,
@@ -53,7 +52,7 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
         Integer numberOfFollowUps = hospitalRepository.fetchHospitalFollowUpCount(hospital.getId());
 
         save(parseToAppointmentFollowUpTracker(
-                parentAppointmentId, parentAppointmentNumber, numberOfFollowUps,
+                parentAppointmentId, numberOfFollowUps,
                 doctor, specialization, patient, hospital));
 
         log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT_FOLLOW_UP_TRACKER, getDifferenceBetweenTwoTime(startTime));
@@ -72,10 +71,6 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
         updateNumberOfFollowUps(followUpTracker);
 
         log.info(UPDATING_PROCESS_COMPLETED, APPOINTMENT_FOLLOW_UP_TRACKER, getDifferenceBetweenTwoTime(startTime));
-    }
-
-    private void save(AppointmentFollowUpTracker followUpTracker) {
-        appointmentFollowUpTrackerRepository.save(followUpTracker);
     }
 
     @Override
@@ -104,4 +99,10 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
 
         log.info(UPDATING_PROCESS_COMPLETED, APPOINTMENT_FOLLOW_UP_TRACKER_STATUS, getDifferenceBetweenTwoTime(startTime));
     }
+
+    private void save(AppointmentFollowUpTracker followUpTracker) {
+        appointmentFollowUpTrackerRepository.save(followUpTracker);
+    }
+
+
 }

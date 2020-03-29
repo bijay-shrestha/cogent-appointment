@@ -36,7 +36,6 @@ public class AppointmentFollowUpTrackerUtils {
     }
 
     public static AppointmentFollowUpTracker parseToAppointmentFollowUpTracker(Long parentAppointmentId,
-                                                                               String parentAppointmentNumber,
                                                                                Integer remainingFollowUpCount,
                                                                                Doctor doctor,
                                                                                Specialization specialization,
@@ -49,7 +48,6 @@ public class AppointmentFollowUpTrackerUtils {
         followUpTracker.setSpecializationId(specialization);
         followUpTracker.setHospitalId(hospital);
         followUpTracker.setParentAppointmentId(parentAppointmentId);
-        followUpTracker.setParentAppointmentNumber(parentAppointmentNumber);
         followUpTracker.setRemainingNumberOfFollowUps(remainingFollowUpCount);
         followUpTracker.setAppointmentApprovedDate(new Date());
         followUpTracker.setStatus(ACTIVE);

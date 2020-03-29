@@ -751,7 +751,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         } else {
             appointmentFollowUpTrackerService.save(
                     appointment.getId(),
-                    appointment.getAppointmentNumber(),
                     appointment.getHospitalId(),
                     appointment.getDoctorId(),
                     appointment.getSpecializationId(),

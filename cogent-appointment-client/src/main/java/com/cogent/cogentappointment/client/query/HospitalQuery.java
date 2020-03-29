@@ -38,7 +38,9 @@ public class HospitalQuery {
                 " WHERE hc.status = 'Y'" +
                 " GROUP BY hc.hospital_id" +
                 " )tbl1 ON tbl1.hospitalId = h.id" +
-                " WHERE h.status ='Y'";
+                " WHERE" +
+                " h.status ='Y'" +
+                " AND h.isCompany = 'N'";
 
         if (!ObjectUtils.isEmpty(requestDTO.getName()))
             query += " AND h.name LIKE '%" + requestDTO.getName() + "%'";
@@ -49,10 +51,18 @@ public class HospitalQuery {
     public static final String QUERY_TO_FETCH_HOSPITAL_FOLLOW_UP_INTERVAL_DAYS =
             " SELECT h.followUpIntervalDays as followUpIntervalDays" +
                     " FROM Hospital h" +
-                    " WHERE h.id =:hospitalId";
+                    " WHERE h.id =:hospitalId AND h.isCompany = 'N'";
 
     public static final String QUERY_TO_FETCH_HOSPITAL_FOLLOW_UP_COUNT =
             " SELECT h.numberOfFollowUps as numberOfFollowUps" +
                     " FROM Hospital h" +
-                    " WHERE h.id =:hospitalId";
+                    " WHERE" +
+                    " h.id =:hospitalId AND h.isCompany = 'N'";
+
+    public static final String QUERY_TO_FETCH_HOSPITAL_FOLLOW_UP_DETAILS =
+            " SELECT h.numberOfFollowUps as numberOfFollowUps," +                   //[0]
+                    " h.followUpIntervalDays as followUpIntervalDays" +             //[1]
+                    " FROM Hospital h" +
+                    " WHERE h.id =:hospitalId" +
+                    " AND h.status = 'Y' AND h.isCompany = 'N'";
 }

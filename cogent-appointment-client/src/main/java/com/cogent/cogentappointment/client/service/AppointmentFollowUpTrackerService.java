@@ -15,7 +15,7 @@ public interface AppointmentFollowUpTrackerService {
     /*esewa*/
     AppointmentFollowUpResponseDTO fetchAppointmentFollowUpDetails(AppointmentFollowUpRequestDTO requestDTO);
 
-    void save(Long parentAppointmentId, String parentAppointmentNumber, Hospital hospital,
+    void save(Long parentAppointmentId, Hospital hospital,
               Doctor doctor, Specialization specialization, Patient patient);
 
     void updateFollowUpTracker(Long parentAppointmentId);

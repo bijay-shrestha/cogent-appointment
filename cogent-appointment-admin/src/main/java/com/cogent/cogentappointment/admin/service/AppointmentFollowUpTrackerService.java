@@ -10,7 +10,7 @@ import com.cogent.cogentappointment.persistence.model.Specialization;
  */
 public interface AppointmentFollowUpTrackerService {
 
-    void save(Long parentAppointmentId, String parentAppointmentNumber, Hospital hospital,
+    void save(Long parentAppointmentId, Hospital hospital,
               Doctor doctor, Specialization specialization, Patient patient);
 
     void updateFollowUpTracker(Long parentAppointmentId);

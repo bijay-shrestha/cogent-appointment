@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.repository.custom;
 
 import com.cogent.cogentappointment.client.dto.request.hospital.HospitalMinSearchRequestDTO;
+import com.cogent.cogentappointment.client.dto.response.hospital.HospitalFollowUpResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospital.HospitalMinResponseDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -19,4 +20,6 @@ public interface HospitalRepositoryCustom {
     Integer fetchHospitalFollowUpIntervalDays(Long hospitalId);
 
     Integer fetchHospitalFollowUpCount(Long hospitalId);
+
+    HospitalFollowUpResponseDTO fetchFollowUpDetails(Long hospitalId);
 }

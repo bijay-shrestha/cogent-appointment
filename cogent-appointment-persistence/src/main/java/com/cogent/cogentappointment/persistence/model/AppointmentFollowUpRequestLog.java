@@ -16,7 +16,7 @@ import java.io.Serializable;
  * FALSE -> NORMAL APPOINTMENT
  *
  * INITALLY SAVED WHEN USER CHECKS IN WHERE followUpRequestedCount = 0
- * INCREMENTS BY 1 WHEN USER TAKES ANOTHER APPOINTMENT
+ * AND INCREMENTS BY 1 WHEN USER TAKES ANOTHER CONSECUTIVE FOLLOW UP APPOINTMENT
  */
 @Entity
 @Table(name = "appointment_follow_up_request_log")

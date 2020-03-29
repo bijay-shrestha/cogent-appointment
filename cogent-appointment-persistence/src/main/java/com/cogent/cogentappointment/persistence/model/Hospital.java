@@ -52,8 +52,8 @@ public class Hospital extends Auditable<String> implements Serializable {
     @Column(name = "number_of_admins")
     private Integer numberOfAdmins;
 
-    @Column(name = "number_of_free_follow_ups")
-    private Integer numberOfFreeFollowUps;
+    @Column(name = "number_of_follow_ups")
+    private Integer numberOfFollowUps;
 
     @Column(name = "follow_up_interval_days")
     private Integer followUpIntervalDays;
@@ -76,7 +76,7 @@ public class Hospital extends Auditable<String> implements Serializable {
                 ", status=" + status +
                 ", refundPercentage=" + refundPercentage +
                 ", numberOfAdmins=" + numberOfAdmins +
-                ", numberOfFreeFollowUps=" + numberOfFreeFollowUps +
+                ", numberOfFollowUps=" + numberOfFollowUps +
                 ", followUpIntervalDays=" + followUpIntervalDays +
                 ", remarks='" + remarks +
                 '}';

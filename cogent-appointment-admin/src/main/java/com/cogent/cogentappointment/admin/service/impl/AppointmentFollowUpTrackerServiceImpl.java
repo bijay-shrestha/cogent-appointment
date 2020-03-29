@@ -17,7 +17,7 @@ import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentFollowUpTrackerLog.APPOINTMENT_FOLLOW_UP_TRACKER;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentFollowUpTrackerLog.APPOINTMENT_FOLLOW_UP_TRACKER_STATUS;
 import static com.cogent.cogentappointment.admin.utils.AppointmentFollowUpTrackerUtils.parseToAppointmentFollowUpTracker;
-import static com.cogent.cogentappointment.admin.utils.AppointmentFollowUpTrackerUtils.updateNumberOfFreeFollowUps;
+import static com.cogent.cogentappointment.admin.utils.AppointmentFollowUpTrackerUtils.updateNumberOfFollowUps;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
 
 /**
@@ -50,10 +50,10 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
 
         log.info(SAVING_PROCESS_STARTED, APPOINTMENT_FOLLOW_UP_TRACKER);
 
-        Integer numberOfFreeFollowUps = hospitalRepository.fetchHospitalFollowUpCount(hospital.getId());
+        Integer numberOfFollowUps = hospitalRepository.fetchHospitalFollowUpCount(hospital.getId());
 
         save(parseToAppointmentFollowUpTracker(
-                parentAppointmentId, parentAppointmentNumber, numberOfFreeFollowUps,
+                parentAppointmentId, parentAppointmentNumber, numberOfFollowUps,
                 doctor, specialization, patient, hospital));
 
         log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT_FOLLOW_UP_TRACKER, getDifferenceBetweenTwoTime(startTime));
@@ -69,7 +69,7 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
         AppointmentFollowUpTracker followUpTracker =
                 appointmentFollowUpTrackerRepository.fetchLatestAppointmentFollowUpTracker(parentAppointmentId);
 
-        updateNumberOfFreeFollowUps(followUpTracker);
+        updateNumberOfFollowUps(followUpTracker);
 
         log.info(UPDATING_PROCESS_COMPLETED, APPOINTMENT_FOLLOW_UP_TRACKER, getDifferenceBetweenTwoTime(startTime));
     }
@@ -89,7 +89,7 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
                 appointmentFollowUpTrackerRepository.fetchActiveFollowUpTracker();
 
         followUpTrackers.forEach(followUpTracker -> {
-            int intervalDays = hospitalRepository.fetchHospitalFreeFollowUpIntervalDays(
+            int intervalDays = hospitalRepository.fetchHospitalFollowUpIntervalDays(
                     followUpTracker.getHospitalId().getId());
 
             Date expiryDate = utilDateToSqlDate(

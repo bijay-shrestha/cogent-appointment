@@ -9,6 +9,21 @@ import java.util.Date;
 
 /**
  * @author smriti ON 12/02/2020
+ *
+ * THIS TABLE REFLECTS THE REMAINING FOLLOW UPS FOR A SPECIFIC APPOINTMENT
+ *
+ * INITIALLY,
+ * remainingNumberOfFollowUps = allowed number of follow ups for selected hospital (say 2)
+ * appointmentApprovedDate = appointment approved date
+ *
+ *  IF PATIENT CHECK-IN,
+ *  remainingNumberOfFollowUps = previous count -1 (2- 1 = 1)
+ *
+ * IF remainingNumberOfFollowUps > 0 AND
+ * APPOINTMENT APPROVED DATE  + HOSPITAL FOLLOW UP INTERVAL DAYS > REQUESTED DATE
+ *      THEN STATUS = 'Y'
+ * ELSE
+ *      STATUS = 'N'
  */
 @Entity
 @Table(name = "appointment_follow_up_tracker")

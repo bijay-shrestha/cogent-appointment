@@ -28,7 +28,7 @@ public class AppointmentFollowUpTrackerUtils {
 
     }
 
-    public static void updateNumberOfFreeFollowUps(AppointmentFollowUpTracker followUpTracker) {
+    public static void updateNumberOfFollowUps(AppointmentFollowUpTracker followUpTracker) {
         followUpTracker.setRemainingNumberOfFollowUps(followUpTracker.getRemainingNumberOfFollowUps() - 1);
 
         if (followUpTracker.getRemainingNumberOfFollowUps() <= 0)

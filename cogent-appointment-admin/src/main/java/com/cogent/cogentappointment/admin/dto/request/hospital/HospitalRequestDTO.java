@@ -49,7 +49,7 @@ public class HospitalRequestDTO implements Serializable {
     @NotEmpty
     private List<String> contactNumber;
 
-    private Integer numberOfFreeFollowUps;
+    private Integer numberOfFollowUps;
 
     private Integer followUpIntervalDays;
 

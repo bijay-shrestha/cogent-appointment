@@ -28,7 +28,7 @@ public class Appointment extends Auditable<String> implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /*eg.Doctor name like Dr.Sanjeev Uprety*/
+    /*eg.Specialization name like Surgeon, Physician,etc*/
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "specialization_id")
     private Specialization specializationId;
@@ -42,6 +42,7 @@ public class Appointment extends Auditable<String> implements Serializable {
     @JoinColumn(name = "patient_id")
     private Patient patientId;
 
+    /*saved in format YYYY-MM-DD*/
     @Temporal(TemporalType.DATE)
     @Column(name = "appointment_date")
     private Date appointmentDate;
@@ -53,6 +54,7 @@ public class Appointment extends Auditable<String> implements Serializable {
     @Column(name = "appointment_number", updatable = false)
     private String appointmentNumber;
 
+    /*maintained to avoid duplicate row persist*/
     @Column(name = "serial_number")
     private String serialNumber;
 
@@ -77,9 +79,13 @@ public class Appointment extends Auditable<String> implements Serializable {
     @JoinColumn(name = "hospital_id")
     private Hospital hospitalId;
 
+    /*Y - FOLLOW UP APPOINTMENT
+    * N - NORMAL APPOINTMENT*/
     @Column(name = "is_follow_up")
     private Character isFollowUp;
 
+    /*Y - MYSELF
+    * N - OTHERS*/
     @Column(name = "is_self")
     private Character isSelf;
 

@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.admin.utils;
 
-import com.cogent.cogentappointment.admin.constants.StringConstant;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalContactNumberUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalRequestDTO;
@@ -8,7 +7,6 @@ import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalUpdateReq
 import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalContactNumberResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalResponseDTO;
-import com.cogent.cogentappointment.admin.utils.commons.StringUtil;
 import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.HospitalBanner;
 import com.cogent.cogentappointment.persistence.model.HospitalContactNumber;
@@ -21,8 +19,9 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
-import static com.cogent.cogentappointment.admin.constants.StringConstant.N;
+import static com.cogent.cogentappointment.admin.constants.StringConstant.*;
 import static com.cogent.cogentappointment.admin.utils.commons.SecurityContextUtils.getLoggedInCompanyId;
+import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.convertToNormalCase;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.toUpperCase;
 
 /**
@@ -32,7 +31,7 @@ public class HospitalUtils {
 
     public static Hospital convertDTOToHospital(HospitalRequestDTO hospitalRequestDTO) {
         Hospital hospital = new Hospital();
-        hospital.setName(StringUtil.convertToNormalCase(hospitalRequestDTO.getName()));
+        hospital.setName(convertToNormalCase(hospitalRequestDTO.getName()));
         hospital.setCode(toUpperCase(hospitalRequestDTO.getHospitalCode()));
         hospital.setAddress(hospitalRequestDTO.getAddress());
         hospital.setPanNumber(hospitalRequestDTO.getPanNumber());
@@ -88,12 +87,11 @@ public class HospitalUtils {
     public static void parseToUpdatedHospital(HospitalUpdateRequestDTO updateRequestDTO,
                                               Hospital hospital) {
 
-        hospital.setName(StringUtil.convertToNormalCase(updateRequestDTO.getName()));
+        hospital.setName(convertToNormalCase(updateRequestDTO.getName()));
         hospital.setAddress(updateRequestDTO.getAddress());
         hospital.setPanNumber(updateRequestDTO.getPanNumber());
         hospital.setStatus(updateRequestDTO.getStatus());
-        hospital.setRemarks(StringUtil.convertToNormalCase(updateRequestDTO.getRemarks()));
-        hospital.setIsCompany(updateRequestDTO.getIsHospital());
+        hospital.setRemarks(convertToNormalCase(updateRequestDTO.getRemarks()));
         hospital.setRefundPercentage(updateRequestDTO.getRefundPercentage());
         hospital.setNumberOfAdmins(updateRequestDTO.getNumberOfAdmins());
         hospital.setNumberOfFreeFollowUps(updateRequestDTO.getNumberOfFreeFollowUps());
@@ -170,10 +168,10 @@ public class HospitalUtils {
 
         final int CONTACT_DETAILS_INDEX = 9;
 
-        String[] contactWithIdAndNumber = results[CONTACT_DETAILS_INDEX].toString().split(StringConstant.COMMA_SEPARATED);
+        String[] contactWithIdAndNumber = results[CONTACT_DETAILS_INDEX].toString().split(COMMA_SEPARATED);
 
         return Arrays.stream(contactWithIdAndNumber)
-                .map(contact -> contact.split(StringConstant.HYPHEN))
+                .map(contact -> contact.split(HYPHEN))
                 .map(contactDetails -> HospitalContactNumberResponseDTO.builder()
                         .hospitalContactNumberId(Long.parseLong(contactDetails[0]))
                         .contactNumber(contactDetails[1])

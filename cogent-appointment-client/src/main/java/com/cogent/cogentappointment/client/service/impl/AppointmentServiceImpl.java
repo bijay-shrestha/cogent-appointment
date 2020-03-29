@@ -10,7 +10,6 @@ import com.cogent.cogentappointment.client.dto.request.appointment.refund.Appoin
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.dashboard.RefundAmountRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestByDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestForDTO;
 import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
@@ -193,7 +192,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         saveAppointmentTransactionDetail(requestDTO.getTransactionInfo(), appointment);
 
-        if (appointmentInfo.getIsFreeFollowUp().equals(YES))
+        if (appointmentInfo.getIsFollowUp().equals(YES))
             saveAppointmentFollowUpLog(appointmentInfo.getParentAppointmentId(), appointment.getId());
 
         log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
@@ -241,7 +240,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         saveAppointmentTransactionDetail(requestDTO.getTransactionInfo(), appointment);
 
-        if (appointmentInfo.getIsFreeFollowUp().equals(YES))
+        if (appointmentInfo.getIsFollowUp().equals(YES))
             saveAppointmentFollowUpLog(appointmentInfo.getParentAppointmentId(), appointment.getId());
 
         log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
@@ -742,7 +741,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private void saveAppointmentFollowUpTracker(Appointment appointment) {
 
-        if (appointment.getIsFreeFollowUp().equals(YES)) {
+        if (appointment.getIsFollowUp().equals(YES)) {
             AppointmentFollowUpLog appointmentFollowUpLog =
                     appointmentFollowUpLogRepository.findByFollowUpAppointmentId(appointment.getId())
                             .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointment.getId()));

@@ -20,7 +20,7 @@ public class AppointmentFollowUpTrackerUtils {
             Long savedAppointmentReservationId) {
 
         return AppointmentFollowUpResponseDTO.builder()
-                .isFreeFollowUp(isFollowUp)
+                .isFollowUp(isFollowUp)
                 .appointmentCharge(appointmentCharge)
                 .parentAppointmentId(parentAppointmentId)
                 .appointmentReservationId(savedAppointmentReservationId)

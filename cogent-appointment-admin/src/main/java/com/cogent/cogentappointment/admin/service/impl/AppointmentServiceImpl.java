@@ -258,7 +258,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private void saveAppointmentFollowUpTracker(Appointment appointment) {
 
-        if (appointment.getIsFreeFollowUp().equals(YES)) {
+        if (appointment.getIsFollowUp().equals(YES)) {
             AppointmentFollowUpLog appointmentFollowUpLog =
                     appointmentFollowUpLogRepository.findByFollowUpAppointmentId(appointment.getId())
                             .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointment.getId()));

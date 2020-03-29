@@ -14,7 +14,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class AppointmentFollowUpResponseDTO implements Serializable {
 
-    private Character isFreeFollowUp;
+    private Character isFollowUp;
 
     private Double appointmentCharge;
 

@@ -42,7 +42,7 @@ public class AppointmentRequestDTO implements Serializable {
     @NotEmpty
     private String createdDateNepali;
 
-    private Character isFreeFollowUp;
+    private Character isFollowUp;
 
     private Long parentAppointmentId;
 }

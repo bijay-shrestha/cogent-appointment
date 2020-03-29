@@ -77,8 +77,8 @@ public class Appointment extends Auditable<String> implements Serializable {
     @JoinColumn(name = "hospital_id")
     private Hospital hospitalId;
 
-    @Column(name = "is_free_follow_up")
-    private Character isFreeFollowUp;
+    @Column(name = "is_follow_up")
+    private Character isFollowUp;
 
     @Column(name = "is_self")
     private Character isSelf;
@@ -99,7 +99,7 @@ public class Appointment extends Auditable<String> implements Serializable {
                 ", status=" + status +
                 ", remarks=" + remarks +
                 ", hospitalId=" + hospitalId +
-                ", isFreeFollowUp=" + isFreeFollowUp +
+                ", isFollowUp=" + isFollowUp +
                 ", isSelf=" + isSelf +
                 '}';
     }

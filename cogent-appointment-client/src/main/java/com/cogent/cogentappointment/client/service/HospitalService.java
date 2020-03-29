@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.client.service;
 
 import com.cogent.cogentappointment.client.dto.request.hospital.HospitalMinSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.hospital.HospitalMinResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.hospital.HospitalMinResponseDTOWithStatus;
 import com.cogent.cogentappointment.persistence.model.Hospital;
 
 import java.util.List;
@@ -12,5 +13,5 @@ import java.util.List;
 public interface HospitalService {
     Hospital fetchActiveHospital(Long id);
 
-    List<HospitalMinResponseDTO> fetchMinDetails(HospitalMinSearchRequestDTO searchRequestDTO);
+    HospitalMinResponseDTOWithStatus fetchMinDetails(HospitalMinSearchRequestDTO searchRequestDTO);
 }

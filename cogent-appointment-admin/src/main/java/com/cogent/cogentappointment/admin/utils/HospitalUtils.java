@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.N;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.toUpperCase;
+import static org.springframework.http.HttpStatus.OK;
 
 /**
  * @author smriti ON 12/01/2020

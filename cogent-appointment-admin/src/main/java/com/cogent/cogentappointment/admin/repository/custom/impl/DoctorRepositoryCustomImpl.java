@@ -8,6 +8,7 @@ import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorUpdateRespon
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.DoctorRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Doctor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,10 +22,10 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ERROR_LOG;
 import static com.cogent.cogentappointment.admin.log.constants.DoctorLog.DOCTOR;
 import static com.cogent.cogentappointment.admin.query.DoctorQuery.*;
 import static com.cogent.cogentappointment.admin.utils.DoctorUtils.parseToDoctorUpdateResponseDTO;
-import static com.cogent.cogentappointment.admin.utils.commons.LogUtils.logError;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
 
@@ -33,6 +34,7 @@ import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
  */
 @Repository
 @Transactional(readOnly = true)
+@Slf4j
 public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
 
     @PersistenceContext
@@ -74,7 +76,8 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
                 query, DoctorMinimalResponseDTO.class);
 
         if (results.isEmpty()){
-            logError(DOCTOR);
+
+            log.error(ERROR_LOG,DOCTOR);
             throw DOCTOR_NOT_FOUND.get();
         }
         else {
@@ -90,7 +93,7 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
         List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
         if (results.isEmpty()){
-            logError(DOCTOR);
+            log.error(ERROR_LOG,DOCTOR);
             throw DOCTOR_NOT_FOUND.get();
         }
         else return results;
@@ -115,7 +118,7 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
         List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
         if (results.isEmpty()){
-            logError(DOCTOR);
+            log.error(ERROR_LOG,DOCTOR);
             throw DOCTOR_NOT_FOUND.get();
         }
         else return results;
@@ -129,7 +132,7 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
         List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
         if (results.isEmpty()){
-            logError(DOCTOR);
+            log.error(ERROR_LOG,DOCTOR);
             throw DOCTOR_NOT_FOUND.get();
         }
         else return results;
@@ -155,7 +158,7 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
         List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
         if (results.isEmpty()){
-            logError(DOCTOR);
+            log.error(ERROR_LOG,DOCTOR);
             throw DOCTOR_NOT_FOUND.get();
         }
         else return results;
@@ -165,7 +168,7 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
             new NoContentFoundException(Doctor.class);
 
     private Function<Long, NoContentFoundException> DOCTOR_WITH_GIVEN_ID_NOT_FOUND = (doctorId) -> {
-        logError(DOCTOR);
+        log.error(ERROR_LOG,DOCTOR);
         throw new NoContentFoundException(Doctor.class, "doctorId", doctorId.toString());
     };
 }

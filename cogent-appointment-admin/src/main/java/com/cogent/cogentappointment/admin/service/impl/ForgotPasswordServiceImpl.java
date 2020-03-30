@@ -130,6 +130,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
     private void validateAdmin(Admin admin, String username) {
         if (!admin.getStatus().equals(ACTIVE))
+            log.error(ADMIN_NOT_ACTIVE_ERROR,username);
             throw new NoContentFoundException(String.format(ADMIN_NOT_ACTIVE, username), "username/email", username);
     }
    private Supplier<BadRequestException> RESET_CODE_HAS_EXPIRED = () ->

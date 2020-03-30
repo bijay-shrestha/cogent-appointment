@@ -8,6 +8,7 @@ import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.ProfileRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Profile;
 import com.cogent.cogentappointment.persistence.model.ProfileMenu;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,12 +22,13 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ERROR_LOG;
+import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.HOSPITAL;
 import static com.cogent.cogentappointment.admin.log.constants.ProfileLog.PROFILE;
 import static com.cogent.cogentappointment.admin.log.constants.ProfileLog.PROFILE_MENU;
 import static com.cogent.cogentappointment.admin.query.ProfileQuery.*;
 import static com.cogent.cogentappointment.admin.utils.ProfileUtils.parseToAssignedProfileMenuResponseDTO;
 import static com.cogent.cogentappointment.admin.utils.ProfileUtils.parseToProfileDetailResponseDTO;
-import static com.cogent.cogentappointment.admin.utils.commons.LogUtils.logError;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
 
@@ -35,6 +37,7 @@ import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
  */
 @Service
 @Transactional(readOnly = true)
+@Slf4j
 public class ProfileRepositoryCustomImpl implements ProfileRepositoryCustom {
 
     @PersistenceContext
@@ -71,11 +74,10 @@ public class ProfileRepositoryCustomImpl implements ProfileRepositoryCustom {
 
         List<ProfileMinimalResponseDTO> results = transformQueryToResultList(query, ProfileMinimalResponseDTO.class);
 
-        if (results.isEmpty()){
-            logError(PROFILE);
+        if (results.isEmpty()) {
+            error(PROFILE);
             throw PROFILES_NOT_FOUND.get();
-        }
-        else {
+        } else {
             results.get(0).setTotalItems(totalItems);
             return results;
         }
@@ -110,11 +112,10 @@ public class ProfileRepositoryCustomImpl implements ProfileRepositoryCustom {
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
-        if (results.isEmpty()){
-            logError(PROFILE);
+        if (results.isEmpty()) {
+            error(PROFILE);
             throw PROFILES_NOT_FOUND.get();
-        }
-        else return results;
+        } else return results;
     }
 
     @Override
@@ -124,11 +125,10 @@ public class ProfileRepositoryCustomImpl implements ProfileRepositoryCustom {
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
-        if (results.isEmpty()){
-            logError(PROFILE);
+        if (results.isEmpty()) {
+            error(PROFILE);
             throw PROFILES_NOT_FOUND.get();
-        }
-        else return results;
+        } else return results;
     }
 
     @Override
@@ -139,8 +139,8 @@ public class ProfileRepositoryCustomImpl implements ProfileRepositoryCustom {
 
         List<Object[]> results = query.getResultList();
 
-        if (results.isEmpty()){
-            logError(PROFILE_MENU);
+        if (results.isEmpty()) {
+            error(PROFILE_MENU);
             throw new NoContentFoundException(ProfileMenu.class);
         }
 
@@ -150,7 +150,11 @@ public class ProfileRepositoryCustomImpl implements ProfileRepositoryCustom {
     private Supplier<NoContentFoundException> PROFILES_NOT_FOUND = () -> new NoContentFoundException(Profile.class);
 
     private Function<Long, NoContentFoundException> PROFILE_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        logError(PROFILE);
+        error(PROFILE);
         throw new NoContentFoundException(Profile.class, "id", id.toString());
     };
+
+    private void error(String name) {
+        log.error(ERROR_LOG, name);
+    }
 }

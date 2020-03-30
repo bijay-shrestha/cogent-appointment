@@ -7,6 +7,7 @@ import com.cogent.cogentappointment.admin.dto.response.specialization.Specializa
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.SpecializationRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Specialization;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,9 +21,9 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ERROR_LOG;
 import static com.cogent.cogentappointment.admin.log.constants.SpecializationLog.SPECIALIZATION;
 import static com.cogent.cogentappointment.admin.query.SpecializationQuery.*;
-import static com.cogent.cogentappointment.admin.utils.commons.LogUtils.logError;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
 
@@ -31,6 +32,7 @@ import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
  */
 @Repository
 @Transactional(readOnly = true)
+@Slf4j
 public class SpecializationRepositoryCustomImpl implements SpecializationRepositoryCustom {
 
     @PersistenceContext
@@ -68,11 +70,10 @@ public class SpecializationRepositoryCustomImpl implements SpecializationReposit
         List<SpecializationMinimalResponseDTO> results = transformQueryToResultList(
                 query, SpecializationMinimalResponseDTO.class);
 
-        if (results.isEmpty()){
-            logError(SPECIALIZATION);
+        if (results.isEmpty()) {
+            error();
             throw SPECIALIZATION_NOT_FOUND.get();
-        }
-        else {
+        } else {
             results.get(0).setTotalItems(totalItems);
             return results;
         }
@@ -84,11 +85,10 @@ public class SpecializationRepositoryCustomImpl implements SpecializationReposit
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
-        if (results.isEmpty()){
-            logError(SPECIALIZATION);
+        if (results.isEmpty()) {
+            error();
             throw SPECIALIZATION_NOT_FOUND.get();
-        }
-        else return results;
+        } else return results;
     }
 
     @Override
@@ -109,11 +109,10 @@ public class SpecializationRepositoryCustomImpl implements SpecializationReposit
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
-        if (results.isEmpty()){
-            logError(SPECIALIZATION);
+        if (results.isEmpty()) {
+            error();
             throw SPECIALIZATION_NOT_FOUND.get();
-        }
-        else return results;
+        } else return results;
     }
 
     @Override
@@ -123,19 +122,23 @@ public class SpecializationRepositoryCustomImpl implements SpecializationReposit
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
-        if (results.isEmpty()){
-            logError(SPECIALIZATION);
+        if (results.isEmpty()) {
+            error();
             throw SPECIALIZATION_NOT_FOUND.get();
-        }
-        else return results;
+        } else return results;
     }
 
     private Function<Long, NoContentFoundException> SPECIALIZATION_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        logError(SPECIALIZATION);
+        error();
         throw new NoContentFoundException(Specialization.class, "id", id.toString());
     };
 
     private Supplier<NoContentFoundException> SPECIALIZATION_NOT_FOUND = ()
             -> new NoContentFoundException(Specialization.class);
+
+
+    private void error() {
+        log.error(ERROR_LOG, SPECIALIZATION);
+    }
 }
 

@@ -27,6 +27,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NAME_AND_MOBILE_NUMBER_DUPLICATION_MESSAGE;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.DoctorLog.*;
@@ -429,8 +430,9 @@ public class DoctorServiceImpl implements DoctorService {
     private void validateDoctor(Long doctorCount, String name, String mobileNumber) {
 
         if (doctorCount.intValue() > 0)
+            log.error(NAME_AND_MOBILE_NUMBER_DUPLICATION_ERROR,name,mobileNumber);
             throw new DataDuplicationException(
-                    String.format(ErrorMessageConstants.NAME_AND_MOBILE_NUMBER_DUPLICATION_MESSAGE, Doctor.class.getSimpleName(), name, mobileNumber),
+                    String.format(NAME_AND_MOBILE_NUMBER_DUPLICATION_MESSAGE, Doctor.class.getSimpleName(), name, mobileNumber),
                     "name", name, "mobileNumber", mobileNumber
             );
     }
@@ -457,6 +459,7 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     private Function<Long, NoContentFoundException> DOCTOR_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(DOCTOR_NOT_FOUND,id);
         throw new NoContentFoundException(Doctor.class, "id", id.toString());
     };
 }

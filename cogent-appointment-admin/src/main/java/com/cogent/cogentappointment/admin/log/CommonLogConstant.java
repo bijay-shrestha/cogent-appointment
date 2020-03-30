@@ -17,6 +17,9 @@ public class CommonLogConstant {
 
 
     //E
+    public static String ERROR_LOG = ":::: {} NOT FOUND ::::";
+    public static String DUPLICATION_ERROR =":::: {} WITH {} ALREADY EXISTS ::::";
+
 
     //F
 
@@ -45,7 +48,7 @@ public class CommonLogConstant {
     //M
 
     //N
-    public static String ERROR_LOG = ":::: {} NOT FOUND ::::";
+
 
 
     //O

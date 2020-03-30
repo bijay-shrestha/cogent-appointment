@@ -312,6 +312,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
                 overrideFromDate, overrideToDate, doctorId, specializationId);
 
         if (appointments.intValue() > 0)
+            log.error(APPOINTMENT_EXISTS_MESSAGE);
             throw new BadRequestException(APPOINTMENT_EXISTS_MESSAGE);
     }
 
@@ -322,6 +323,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
                 doctorId, specializationId, fromDate, toDate);
 
         if (doctorDutyRosterCount.intValue() > 0)
+            log.error(DUPLICATION_MESSAGE);
             throw new DataDuplicationException(DUPLICATION_MESSAGE);
     }
 
@@ -335,11 +337,13 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
                         && isDateBetweenInclusive(dutyRosterFromDate, dutyRosterToDate, overrideToDate);
 
         if (!isDateBetweenInclusive)
+            log.error(BAD_REQUEST_MESSAGE);
             throw new BadRequestException(BAD_REQUEST_MESSAGE);
     }
 
     private void validateDoctorDutyRosterOverrideCount(Long doctorDutyRosterOverrideCount) {
         if (doctorDutyRosterOverrideCount.intValue() > 0)
+            log.error(DUPLICATION_MESSAGE);
             throw new DataDuplicationException(DUPLICATION_MESSAGE);
     }
 
@@ -486,6 +490,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
     }
 
     private Function<Long, NoContentFoundException> DOCTOR_DUTY_ROSTER_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(DOCTOR_DUTY_ROSTER_NOT_FOUND,id);
         throw new NoContentFoundException(DoctorDutyRoster.class, "id", id.toString());
     };
 
@@ -493,6 +498,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
         boolean fromDateGreaterThanToDate = isFirstDateGreater(fromDate, toDate);
 
         if (fromDateGreaterThanToDate)
+            log.error(INVALID_DATE_DEBUG_MESSAGE);
             throw new BadRequestException(INVALID_DATE_MESSAGE, INVALID_DATE_DEBUG_MESSAGE);
     }
 

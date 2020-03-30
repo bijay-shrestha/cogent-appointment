@@ -24,6 +24,7 @@ import java.util.List;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NAME_DUPLICATION_MESSAGE;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.UniversityLog.UNIVERSITY;
+import static com.cogent.cogentappointment.admin.log.constants.UniversityLog.UNIVERSITY_NAME_DUPLICATION;
 import static com.cogent.cogentappointment.admin.utils.UniversityUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
@@ -152,6 +153,7 @@ public class UniversityServiceImpl implements UniversityService {
 
     private void validateName(Long universityCount, String name) {
         if (universityCount.intValue() > 0)
+            log.error(UNIVERSITY_NAME_DUPLICATION,name);
             throw new DataDuplicationException(
                     String.format(NAME_DUPLICATION_MESSAGE, University.class.getSimpleName(), name));
     }

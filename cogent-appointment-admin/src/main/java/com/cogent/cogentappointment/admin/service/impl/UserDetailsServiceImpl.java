@@ -35,6 +35,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetailsImpl loadUserByUsername(String username) throws UsernameNotFoundException {
         LoggedInAdminDTO loggedInAdminDTO = getAdmin(username);
         if (loggedInAdminDTO == null) {
+            log.error("USER NOT FOUND");
             throw new NoContentFoundException("USER NOT FOUND");
         }
         return UserDetailsImpl.build(loggedInAdminDTO);

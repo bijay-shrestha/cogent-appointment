@@ -25,9 +25,9 @@ import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.ADMIN_INFO_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ERROR_LOG;
 import static com.cogent.cogentappointment.admin.log.constants.AdminLog.ADMIN;
 import static com.cogent.cogentappointment.admin.query.AdminQuery.*;
-import static com.cogent.cogentappointment.admin.utils.commons.LogUtils.logError;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
 
@@ -84,7 +84,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         List<AdminDropdownDTO> list = transformQueryToResultList(query, AdminDropdownDTO.class);
 
         if (list.isEmpty()) {
-            logError(ADMIN);
+            error();
             throw NO_ADMIN_FOUND.get();
         } else return list;
     }
@@ -99,10 +99,10 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
 
         List<AdminMinimalResponseDTO> result = transformQueryToResultList(query, AdminMinimalResponseDTO.class);
 
-        if (ObjectUtils.isEmpty(result)){
-            logError(ADMIN);
-            throw NO_ADMIN_FOUND.get();}
-        else {
+        if (ObjectUtils.isEmpty(result)) {
+            error();
+            throw NO_ADMIN_FOUND.get();
+        } else {
             result.get(0).setTotalItems(totalItems);
             return result;
         }
@@ -126,7 +126,6 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
                     .setParameter(EMAIL, username)
                     .getSingleResult();
         } catch (NoResultException ex) {
-            logError(ADMIN);
             throw ADMIN_NOT_FOUND.apply(username);
         }
     }
@@ -141,7 +140,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         try {
             return transformQueryToSingleResult(query, AdminLoggedInInfoResponseDTO.class);
         } catch (NoResultException e) {
-            logError(ADMIN);
+            error();
             throw new NoContentFoundException(ADMIN_INFO_NOT_FOUND);
         }
     }
@@ -154,7 +153,6 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         try {
             return transformQueryToSingleResult(query, LoggedInAdminDTO.class);
         } catch (NoResultException e) {
-            logError(ADMIN);
             throw ADMIN_NOT_FOUND.apply(username);
         }
     }
@@ -166,7 +164,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         List<Object[]> results = query.getResultList();
 
         if (results.isEmpty()) {
-            logError(ADMIN);
+            error();
             throw ADMIN_WITH_GIVEN_ID_NOT_FOUND.apply(id);
         }
 
@@ -187,8 +185,13 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     };
 
     private Function<String, NoContentFoundException> ADMIN_NOT_FOUND = (username) -> {
+        error();
         throw new NoContentFoundException(String.format(ErrorMessageConstants.AdminServiceMessages.ADMIN_NOT_FOUND, username),
                 "username/email", username);
     };
+
+    private void error() {
+        log.error(ERROR_LOG, ADMIN);
+    }
 }
 

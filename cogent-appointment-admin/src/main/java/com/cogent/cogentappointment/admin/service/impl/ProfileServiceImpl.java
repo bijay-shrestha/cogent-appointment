@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
+import static com.cogent.cogentappointment.admin.log.constants.ProfileLog.PROFILE_NAME_DUPLICATION;
+import static com.cogent.cogentappointment.admin.log.constants.ProfileLog.PROFILE_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.utils.ProfileMenuUtils.convertToProfileMenu;
 import static com.cogent.cogentappointment.admin.utils.ProfileMenuUtils.convertToUpdatedProfileMenu;
 import static com.cogent.cogentappointment.admin.utils.ProfileUtils.*;
@@ -116,6 +118,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     private void validateName(Long profileCount, String name) {
         if (profileCount.intValue() > 0)
+            log.error(PROFILE_NAME_DUPLICATION,name);
             throw new DataDuplicationException(
                     String.format(ErrorMessageConstants.NAME_DUPLICATION_MESSAGE, Profile.class.getSimpleName(), name));
     }
@@ -209,6 +212,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     private Function<Long, NoContentFoundException> PROFILE_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(PROFILE_NOT_FOUND,id);
         throw new NoContentFoundException(Profile.class, "id", id.toString());
     };
 

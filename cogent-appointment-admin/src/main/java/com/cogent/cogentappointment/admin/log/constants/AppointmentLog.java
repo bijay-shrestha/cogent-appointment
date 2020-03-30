@@ -16,7 +16,7 @@ public class AppointmentLog {
 
     public final static String APPOINTMENT_TODAY_QUEUE = "APPOINTMENT QUEUE FOR LOG";
 
-    public static String PENDING_APPROVAL_LIST = "PENDING APPROVALS";
+    public final static String PENDING_APPROVAL_LIST = "PENDING APPROVALS";
 
     public final static String APPROVE_PROCESS_STARTED = ":::: APPROVING {} STARTED ::::";
     public final static String APPROVE_PROCESS_COMPLETED = ":::: APPROVING {} COMPLETED IN {} ms ::::";
@@ -24,6 +24,9 @@ public class AppointmentLog {
     public final static String REJECT_PROCESS_STARTED = ":::: REJECTING {} STARTED ::::";
     public final static String REJECT_PROCESS_COMPLETED = ":::: REJECTING {} COMPLETED IN {} ms ::::";
 
-    public static String FETCHING_PROCESS_STARTED = ":::: FETCHING BOOKED APPOINTMENT PROCESS STARTED ::::";
-    public static String FETCHING_PROCESS_COMPLETED = ":::: FETCHING BOOKED APPOINTMENT PROCESS COMPLETED IN :::: {} ms";
+    public final static String FETCHING_PROCESS_STARTED = ":::: FETCHING BOOKED APPOINTMENT PROCESS STARTED ::::";
+    public final  String FETCHING_PROCESS_COMPLETED = ":::: FETCHING BOOKED APPOINTMENT PROCESS COMPLETED" +
+            " IN :::: {} ms";
+
+    public final static String APPOINTMENT_NOT_FOUND="::: Appointment with id : {} not found :::";
 }

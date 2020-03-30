@@ -25,6 +25,8 @@ import java.util.function.Function;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NAME_DUPLICATION_MESSAGE;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.SpecializationLog.SPECIALIZATION;
+import static com.cogent.cogentappointment.admin.log.constants.SpecializationLog.SPECIALIZATION_NAME_DUPLICATION;
+import static com.cogent.cogentappointment.admin.log.constants.SpecializationLog.SPECIALIZATION_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.utils.SpecializationUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
@@ -187,6 +189,7 @@ public class SpecializationServiceImpl implements SpecializationService {
 
     private void validateName(Long specializationCount, String name) {
         if (specializationCount.intValue() > 0)
+            log.error(SPECIALIZATION_NAME_DUPLICATION,name);
             throw new DataDuplicationException(
                     String.format(NAME_DUPLICATION_MESSAGE, Specialization.class.getSimpleName(), name));
     }
@@ -201,6 +204,7 @@ public class SpecializationServiceImpl implements SpecializationService {
     }
 
     private Function<Long, NoContentFoundException> SPECIALIZATION_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(SPECIALIZATION_NOT_FOUND,id);
         throw new NoContentFoundException(Specialization.class, "id", id.toString());
     };
 

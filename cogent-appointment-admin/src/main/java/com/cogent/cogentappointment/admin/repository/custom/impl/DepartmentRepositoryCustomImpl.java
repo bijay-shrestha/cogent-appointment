@@ -9,6 +9,7 @@ import com.cogent.cogentappointment.admin.dto.response.department.DepartmentResp
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.DepartmentRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Department;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,10 +22,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ERROR_LOG;
 import static com.cogent.cogentappointment.admin.log.constants.DepartmentLog.DEPARTMENT;
-import static com.cogent.cogentappointment.admin.log.constants.DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER_OVERRIDE;
 import static com.cogent.cogentappointment.admin.query.DepartmentQuery.*;
-import static com.cogent.cogentappointment.admin.utils.commons.LogUtils.logError;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
 
@@ -33,6 +33,7 @@ import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
  */
 @Repository
 @Transactional(readOnly = true)
+@Slf4j
 public class DepartmentRepositoryCustomImpl implements DepartmentRepositoryCustom {
 
     @PersistenceContext
@@ -74,7 +75,7 @@ public class DepartmentRepositoryCustomImpl implements DepartmentRepositoryCusto
                 DepartmentMinimalResponseDTO.class);
 
         if (minimalResponseDTOS.isEmpty()) {
-            logError(DEPARTMENT);
+            error();
             throw new NoContentFoundException(Department.class);
         } else {
             minimalResponseDTOS.get(0).setTotalItems(totalItems);
@@ -91,7 +92,7 @@ public class DepartmentRepositoryCustomImpl implements DepartmentRepositoryCusto
         try {
             return transformQueryToSingleResult(query, DepartmentResponseDTO.class);
         } catch (NoResultException e) {
-            logError(DEPARTMENT);
+            error();
             throw new NoContentFoundException(Department.class, "id", id.toString());
         }
     }
@@ -124,6 +125,10 @@ public class DepartmentRepositoryCustomImpl implements DepartmentRepositoryCusto
         List<DropDownResponseDTO> dropDownDTOS = transformQueryToResultList(query, DropDownResponseDTO.class);
 
         return dropDownDTOS.isEmpty() ? Optional.empty() : Optional.of(dropDownDTOS);
+    }
+
+    private void error() {
+        log.error(ERROR_LOG, DEPARTMENT);
     }
 }
 

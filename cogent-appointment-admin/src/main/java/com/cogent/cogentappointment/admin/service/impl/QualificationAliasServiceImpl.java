@@ -21,6 +21,7 @@ import java.util.List;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NAME_DUPLICATION_MESSAGE;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.QualificationAliasLog.QUALIFICATION_ALIAS;
+import static com.cogent.cogentappointment.admin.log.constants.QualificationAliasLog.QUALIFICATION_ALIAS_NAME_DUPLICATION;
 import static com.cogent.cogentappointment.admin.utils.QualificationAliasUtils.*;
 import static com.cogent.cogentappointment.admin.utils.QualificationAliasUtils.parseToDeletedQualification;
 import static com.cogent.cogentappointment.admin.utils.QualificationAliasUtils.parseToUpdatedQualificationAlias;
@@ -133,6 +134,7 @@ public class QualificationAliasServiceImpl implements QualificationAliasService 
 
     private void validateName(Long qualificationCount, String name) {
         if (qualificationCount.intValue() > 0)
+            log.error(QUALIFICATION_ALIAS_NAME_DUPLICATION,name);
             throw new DataDuplicationException(
                     String.format(NAME_DUPLICATION_MESSAGE, QualificationAlias.class.getSimpleName(), name));
     }

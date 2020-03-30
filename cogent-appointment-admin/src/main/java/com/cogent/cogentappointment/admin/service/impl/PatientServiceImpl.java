@@ -186,6 +186,7 @@ public class PatientServiceImpl implements PatientService {
                                           Date dateOfBirth) {
 
         if (patientCount.intValue() != 0)
+            log.error(DUPLICATE_PATIENT_ERROR_MESSAGE,name, mobileNumber, utilDateToSqlDate(dateOfBirth));
             throw new DataDuplicationException(String.format(DUPLICATE_PATIENT_MESSAGE,
                     name, mobileNumber, utilDateToSqlDate(dateOfBirth)));
     }
@@ -195,6 +196,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     private Function<Long, NoContentFoundException> PATIENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(PATIENT_NOT_FOUND,id);
         throw new NoContentFoundException(Patient.class, "patientId", id.toString());
     };
 

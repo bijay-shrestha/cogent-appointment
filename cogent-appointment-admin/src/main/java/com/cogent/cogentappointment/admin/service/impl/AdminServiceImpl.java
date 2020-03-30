@@ -10,7 +10,10 @@ import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.exception.OperationUnsuccessfulException;
 import com.cogent.cogentappointment.admin.repository.*;
-import com.cogent.cogentappointment.admin.service.*;
+import com.cogent.cogentappointment.admin.service.AdminService;
+import com.cogent.cogentappointment.admin.service.EmailService;
+import com.cogent.cogentappointment.admin.service.MinioFileService;
+import com.cogent.cogentappointment.admin.service.ProfileService;
 import com.cogent.cogentappointment.admin.validator.LoginValidator;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
@@ -34,10 +37,10 @@ import java.util.stream.Collectors;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.*;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
-import static com.cogent.cogentappointment.admin.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.AdminLog.*;
+import static com.cogent.cogentappointment.admin.log.constants.AdminLog.ADMIN_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.utils.AdminUtils.*;
 import static com.cogent.cogentappointment.admin.utils.GenderUtils.fetchGenderByCode;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
@@ -312,7 +315,10 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private void validateStatus(Object status) {
-        if (status.equals(INACTIVE)) throw ADMIN_ALREADY_REGISTERED.get();
+
+        if (status.equals(INACTIVE))
+            log.error("ADMIN ALREADY REGISTERED");
+        throw ADMIN_ALREADY_REGISTERED.get();
     }
 
     private void validateAdminDuplicity(List<Object[]> adminList, String requestUsername, String requestEmail,
@@ -344,25 +350,29 @@ public class AdminServiceImpl implements AdminService {
         Integer numberOfAdminsAllowed = (Integer) get(objects, 1);
 
         if (savedAdmin.intValue() == numberOfAdminsAllowed)
-            throw new BadRequestException(ADMIN_CANNOT_BE_REGISTERED_MESSAGE, ADMIN_CANNOT_BE_REGISTERED_DEBUG_MESSAGE);
+            log.error(ADMIN_CANNOT_BE_REGISTERED_DEBUG_MESSAGE);
+        throw new BadRequestException(ADMIN_CANNOT_BE_REGISTERED_MESSAGE, ADMIN_CANNOT_BE_REGISTERED_DEBUG_MESSAGE);
     }
 
     private void validateUsername(boolean isUsernameExists, String username) {
         if (isUsernameExists)
-            throw new DataDuplicationException(
-                    String.format(USERNAME_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), username));
+            log.error(DUPLICATION_ERROR, ADMIN, username);
+        throw new DataDuplicationException(
+                String.format(USERNAME_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), username));
     }
 
     private void validateEmail(boolean isEmailExists, String email) {
         if (isEmailExists)
-            throw new DataDuplicationException(
-                    String.format(EMAIL_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), email));
+            log.error(DUPLICATION_ERROR, ADMIN, email);
+        throw new DataDuplicationException(
+                String.format(EMAIL_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), email));
     }
 
     private void validateMobileNumber(boolean isMobileNumberExists, String mobileNumber) {
         if (isMobileNumberExists)
-            throw new DataDuplicationException(
-                    String.format(MOBILE_NUMBER_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), mobileNumber));
+            log.error(DUPLICATION_ERROR, ADMIN, mobileNumber);
+        throw new DataDuplicationException(
+                String.format(MOBILE_NUMBER_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), mobileNumber));
     }
 
     private Admin save(AdminRequestDTO adminRequestDTO) {
@@ -499,28 +509,36 @@ public class AdminServiceImpl implements AdminService {
 
     private Consumer<List<String>> validateMacAddressInfoSize = (macInfos) -> {
         if (ObjectUtils.isEmpty(macInfos))
-            throw new NoContentFoundException(AdminMacAddressInfo.class);
+            log.error(ERROR_LOG, AdminMacAddressInfo.class.getSimpleName());
+        throw new NoContentFoundException(AdminMacAddressInfo.class);
     };
 
     private void validatePassword(Admin admin, AdminChangePasswordRequestDTO requestDTO) {
 
-        if (!LoginValidator.checkPassword(requestDTO.getOldPassword(), admin.getPassword()))
+        if (!LoginValidator.checkPassword(requestDTO.getOldPassword(), admin.getPassword())) {
+            log.error(PASSWORD_MISMATCH_MESSAGE);
             throw new OperationUnsuccessfulException(PASSWORD_MISMATCH_MESSAGE);
+        }
 
-        if (LoginValidator.checkPassword(requestDTO.getNewPassword(), admin.getPassword()))
+        if (LoginValidator.checkPassword(requestDTO.getNewPassword(), admin.getPassword())) {
+            log.error(DUPLICATE_PASSWORD_MESSAGE);
             throw new DataDuplicationException(DUPLICATE_PASSWORD_MESSAGE);
+        }
+
     }
 
     private Supplier<DataDuplicationException> ADMIN_DUPLICATION = () ->
             new DataDuplicationException(ADMIN_DUPLICATION_MESSAGE);
 
     private Function<Long, NoContentFoundException> ADMIN_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(ADMIN_NOT_FOUND, id);
         throw new NoContentFoundException(Admin.class, "id", id.toString());
     };
 
     private Supplier<BadRequestException> ADMIN_ALREADY_REGISTERED = () -> new BadRequestException(ADMIN_REGISTERED);
 
     private Function<String, NoContentFoundException> CONFIRMATION_TOKEN_NOT_FOUND = (confirmationToken) -> {
+        log.error(INVALID_CONFIRMATION_TOKEN_ERROR);
         throw new NoContentFoundException(INVALID_CONFIRMATION_TOKEN, "confirmationToken", confirmationToken);
     };
 

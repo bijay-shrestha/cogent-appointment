@@ -2,13 +2,12 @@ package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.request.qualificationAlias.QualificationAliasSearchRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.qualification.QualificationMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.qualificationAlias.QualificationAliasMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.query.QualificationAliasQuery;
 import com.cogent.cogentappointment.admin.repository.custom.QualificationAliasRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Qualification;
 import com.cogent.cogentappointment.persistence.model.QualificationAlias;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,10 +19,11 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.NAME;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ERROR_LOG;
 import static com.cogent.cogentappointment.admin.log.constants.QualificationAliasLog.QUALIFICATION_ALIAS;
-import static com.cogent.cogentappointment.admin.query.QualificationAliasQuery.*;
+import static com.cogent.cogentappointment.admin.query.QualificationAliasQuery.QUERY_TO_FETCH_ACTIVE_QUALIFICATION_ALIAS;
+import static com.cogent.cogentappointment.admin.query.QualificationAliasQuery.QUERY_TO_SEARCH_QUALIFICATION_ALIAS;
 import static com.cogent.cogentappointment.admin.query.QualificationQuery.QUERY_TO_VALIDATE_DUPLICITY;
-import static com.cogent.cogentappointment.admin.utils.commons.LogUtils.logError;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
@@ -33,6 +33,7 @@ import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transf
  */
 @Repository
 @Transactional(readOnly = true)
+@Slf4j
 public class QualificationAliasRepositoryCustomImpl implements QualificationAliasRepositoryCustom {
 
     @PersistenceContext
@@ -44,11 +45,10 @@ public class QualificationAliasRepositoryCustomImpl implements QualificationAlia
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
-        if (results.isEmpty()){
-            logError(QUALIFICATION_ALIAS);
+        if (results.isEmpty()) {
+            error();
             throw new NoContentFoundException(QualificationAlias.class);
-        }
-        else return results;
+        } else return results;
     }
 
     @Override
@@ -72,11 +72,12 @@ public class QualificationAliasRepositoryCustomImpl implements QualificationAlia
         List<QualificationAliasMinimalResponseDTO> results = transformQueryToResultList(
                 query, QualificationAliasMinimalResponseDTO.class);
 
-        if (results.isEmpty()){
-            logError(QUALIFICATION_ALIAS);
+        if (results.isEmpty()) {
+
+            error();
+
             throw QUALIFICATION_ALIAS_NOT_FOUND.get();
-        }
-        else {
+        } else {
             results.get(0).setTotalItems(totalItems);
             return results;
         }
@@ -85,4 +86,8 @@ public class QualificationAliasRepositoryCustomImpl implements QualificationAlia
     private Supplier<NoContentFoundException> QUALIFICATION_ALIAS_NOT_FOUND = () ->
             new NoContentFoundException(Qualification.class);
 
+
+    private void error() {
+        log.error(ERROR_LOG, QUALIFICATION_ALIAS);
+    }
 }

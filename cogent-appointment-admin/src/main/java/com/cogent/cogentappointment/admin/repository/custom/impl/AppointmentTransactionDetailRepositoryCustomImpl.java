@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ERROR_LOG;
+import static com.cogent.cogentappointment.admin.log.constants.DashboardLog.DOCTOR_REVENUE;
 import static com.cogent.cogentappointment.admin.query.DashBoardQuery.*;
 import static com.cogent.cogentappointment.admin.utils.DashboardUtils.revenueStatisticsResponseDTO;
 import static com.cogent.cogentappointment.admin.utils.DoctorUtils.parseTodoctorRevenueResponseListDTO;
@@ -88,7 +90,7 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
         DoctorRevenueResponseListDTO responseListDTO = parseTodoctorRevenueResponseListDTO(objects);
 
         if (responseListDTO.getDoctorRevenueResponseDTOList().isEmpty()) {
-            log.error("Doctor Revenue List Not Found");
+            error();
             throw DOCTOR_REVENUE_NOT_FOUND.get();
         }
 
@@ -110,4 +112,8 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
 
     private Supplier<NoContentFoundException> DOCTOR_REVENUE_NOT_FOUND = () ->
             new NoContentFoundException(AppointmentTransactionDetail.class);
+
+    private void error() {
+        log.error(ERROR_LOG,DOCTOR_REVENUE );
+    }
 }

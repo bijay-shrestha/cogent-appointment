@@ -162,10 +162,10 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
          (SUPPOSE INITIALLY IT IS 3(AS PER HOSPITAL). NOW WHEN USER CHECKS IN, THAT COUNT IS DECREMENTED BY 1
          ie NOW ITS 2 AND DECREMENTS TILL 0)
 
-    2. IF FOLLOW UP REQUEST COUNT IN AppointmentFollowUpRequestLog < ALLOWED numberOfFollowUps IN Hospital
+    2. IF FOLLOW UP REQUEST COUNT IN AppointmentFollowUpRequestLogConstant < ALLOWED numberOfFollowUps IN Hospital
     (WHEN FIRST APPOINTMENT IS APPROVED ->
         PERSIST IN AppointmentFollowUpTracker AND
-        AppointmentFollowUpRequestLog WITH REQUEST COUNT AS 0.
+        AppointmentFollowUpRequestLogConstant WITH REQUEST COUNT AS 0.
     WHEN CONSECUTIVE FOLLOW UP APPOINTMENT IS TAKEN, REQUEST COUNT IS INCREMENTED BY 1 )
 
     3. IF REQUESTED APPOINTMENT DATE HAS NOT EXPIRED WHERE

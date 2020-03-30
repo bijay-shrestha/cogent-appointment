@@ -10,6 +10,7 @@ public class AppointmentFollowUpRequestLogUtils {
 
     public static AppointmentFollowUpRequestLog parseToAppointmentFollowUpRequestLog
             (AppointmentFollowUpTracker appointmentFollowUpTracker) {
+
         AppointmentFollowUpRequestLog requestLog = new AppointmentFollowUpRequestLog();
         requestLog.setAppointmentFollowUpTracker(appointmentFollowUpTracker);
         requestLog.setFollowUpRequestedCount(0);

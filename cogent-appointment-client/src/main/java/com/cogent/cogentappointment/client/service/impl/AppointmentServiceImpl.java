@@ -98,6 +98,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final PatientRelationInfoRepository patientRelationInfoRepository;
 
+    private final AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService;
+
     public AppointmentServiceImpl(PatientService patientService,
                                   DoctorService doctorService,
                                   SpecializationService specializationService,
@@ -114,7 +116,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   HospitalPatientInfoService hospitalPatientInfoService,
                                   PatientMetaInfoService patientMetaInfoService,
                                   PatientRelationInfoService patientRelationInfoService,
-                                  PatientRelationInfoRepository patientRelationInfoRepository) {
+                                  PatientRelationInfoRepository patientRelationInfoRepository,
+                                  AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -132,6 +135,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.patientMetaInfoService = patientMetaInfoService;
         this.patientRelationInfoService = patientRelationInfoService;
         this.patientRelationInfoRepository = patientRelationInfoRepository;
+        this.appointmentFollowUpRequestLogService = appointmentFollowUpRequestLogService;
     }
 
     @Override
@@ -758,7 +762,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                             appointment.getPatientId()
                     );
 
-
+            appointmentFollowUpRequestLogService.save(appointmentFollowUpTracker);
 
             registerPatient(appointment.getPatientId().getId(), appointment.getHospitalId().getId());
         }

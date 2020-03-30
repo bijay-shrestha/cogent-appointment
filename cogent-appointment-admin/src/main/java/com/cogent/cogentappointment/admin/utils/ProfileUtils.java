@@ -17,6 +17,8 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.convertToNormalCase;
+
 /**
  * @author smriti on 7/8/19
  */
@@ -25,7 +27,7 @@ public class ProfileUtils {
     public static Profile convertDTOToProfile(ProfileDTO profileDTO,
                                               Department department) {
         Profile profile = new Profile();
-        profile.setName(StringUtil.toUpperCase(profileDTO.getName()));
+        profile.setName(convertToNormalCase(profileDTO.getName()));
         profile.setDescription(profileDTO.getDescription());
         profile.setStatus(profileDTO.getStatus());
         profile.setDepartment(department);
@@ -35,7 +37,7 @@ public class ProfileUtils {
     public static Profile convertToUpdatedProfile(ProfileUpdateDTO profileDTO,
                                                   Department department,
                                                   Profile profile) {
-        profile.setName(StringUtil.toUpperCase(profileDTO.getName()));
+        profile.setName(convertToNormalCase(profileDTO.getName()));
         profile.setDescription(profileDTO.getDescription());
         profile.setStatus(profileDTO.getStatus());
         profile.setDepartment(department);

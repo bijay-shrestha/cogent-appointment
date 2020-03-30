@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.client.utils;
 
 import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateDTOForOthers;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateRequestDTO;
+import com.cogent.cogentappointment.client.dto.response.patient.*;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.HospitalPatientInfo;
 import com.cogent.cogentappointment.persistence.model.Patient;
@@ -15,7 +16,9 @@ import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.constants.StringConstant.OR;
 import static com.cogent.cogentappointment.client.utils.GenderUtils.fetchGenderByCode;
 import static com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils.generateRandomNumber;
+import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toNormalCase;
 import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toUpperCase;
+import static org.springframework.http.HttpStatus.OK;
 
 /**
  * @author smriti ON 16/01/2020
@@ -28,7 +31,7 @@ public class PatientUtils {
                                          String eSewaId,
                                          Gender gender) {
         Patient patient = new Patient();
-        patient.setName(toUpperCase(name));
+        patient.setName(toNormalCase(name));
         patient.setMobileNumber(mobileNumber);
         patient.setDateOfBirth(dateOfBirth);
         patient.setESewaId(eSewaId);
@@ -39,7 +42,7 @@ public class PatientUtils {
 
     public static void updatePatient(PatientUpdateRequestDTO requestDTO,
                                      Patient patient) {
-        patient.setName(toUpperCase(requestDTO.getName()));
+        patient.setName(toNormalCase(requestDTO.getName()));
         patient.setDateOfBirth(requestDTO.getDateOfBirth());
         patient.setMobileNumber(requestDTO.getMobileNumber());
         patient.setGender(requestDTO.getGender());
@@ -123,5 +126,25 @@ public class PatientUtils {
         patient.setMobileNumber(requestDTO.getMobileNumber());
         patient.setDateOfBirth(requestDTO.getDateOfBirth());
         patient.setGender(fetchGenderByCode(requestDTO.getGender()));
+    }
+
+    public static PatientDetailResponseDTOWithStatus parseToPatientDetailResponseDTOWithStatus(
+            PatientDetailResponseDTO responseDTO) {
+
+        return PatientDetailResponseDTOWithStatus.builder()
+                .detailResponseDTO(responseDTO)
+                .responseStatus(OK)
+                .responseCode(OK.value())
+                .build();
+    }
+
+    public static PatientResponseDTOForOthersWithStatus parseToPatientMinResponseDTOForOthersWithStatus(
+            PatientResponseDTOForOthers responseDTO) {
+
+        return PatientResponseDTOForOthersWithStatus.builder()
+                .minResponseDTOForOthers(responseDTO)
+                .responseStatus(OK)
+                .responseCode(OK.value())
+                .build();
     }
 }

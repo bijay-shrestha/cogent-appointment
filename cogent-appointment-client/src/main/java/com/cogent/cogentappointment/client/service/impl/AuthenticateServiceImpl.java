@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.CANNOT_ACCESS_CLIENT_MODULE;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.INVALID_PASSWORD;
 
 /**
@@ -35,11 +36,14 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     public String loginUser(LoginRequestDTO requestDTO) {
         AdminMinDetails adminMinDetails = hmacApiInfoRepository.verifyLoggedInAdmin(requestDTO.getUsername(),
                 requestDTO.getHospitalCode());
-        if (BCrypt.checkpw(requestDTO.getPassword(), adminMinDetails.getPassword())) {
-            return hmacUtils.getAuthToken(adminMinDetails);
-        }
-        throw new NoContentFoundException(INVALID_PASSWORD);
-
+        if (adminMinDetails.getIsCompany().equals('N')) {
+            if (BCrypt.checkpw(requestDTO.getPassword(), adminMinDetails.getPassword())) {
+                return hmacUtils.getAuthToken(adminMinDetails);
+            } else {
+                throw new NoContentFoundException(INVALID_PASSWORD);
+            }
+        } else
+            throw new NoContentFoundException(CANNOT_ACCESS_CLIENT_MODULE);
     }
 
     @Override

@@ -21,7 +21,6 @@ import static com.cogent.cogentappointment.client.constants.WebResourceKeyConsta
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.DoctorConstants.BASE_DOCTOR;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.DoctorConstants.UPDATE_DETAILS;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.HospitalConstants.HOSPITAL_WISE;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.SpecializationConstants.SPECIALIZATION_ID_PATH_VARIABLE_BASE;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.SpecializationConstants.SPECIALIZATION_WISE;
 import static com.cogent.cogentappointment.client.utils.commons.ObjectMapperUtils.map;
 import static java.net.URI.create;
@@ -100,7 +99,7 @@ public class DoctorResource {
         return ok(doctorService.fetchDoctorBySpecializationId(specializationId));
     }
 
-    @GetMapping(HOSPITAL_WISE )
+    @GetMapping(HOSPITAL_WISE)
     @ApiOperation(FETCH_BY_HOSPITAL_ID)
     public ResponseEntity<?> fetchDoctorByHospitalId() {
         return ok(doctorService.fetchDoctorByHospitalId());

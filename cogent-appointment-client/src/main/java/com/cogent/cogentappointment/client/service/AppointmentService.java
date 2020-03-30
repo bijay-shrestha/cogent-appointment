@@ -13,11 +13,9 @@ import com.cogent.cogentappointment.client.dto.request.appointment.refund.Appoin
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.dashboard.RefundAmountRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentCheckAvailabilityResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentDetailResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentMinResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentSuccessResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.*;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.approval.AppointmentPendingApprovalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.log.AppointmentLogResponseDTO;
@@ -41,17 +39,17 @@ public interface AppointmentService {
 
     AppointmentSuccessResponseDTO saveAppointmentForOthers(AppointmentRequestDTOForOthers appointmentRequestDTO);
 
-    List<AppointmentMinResponseDTO> fetchPendingAppointments(AppointmentSearchDTO searchDTO);
+    AppointmentMinResponseWithStatusDTO fetchPendingAppointments(AppointmentSearchDTO searchDTO);
 
-    void cancelAppointment(AppointmentCancelRequestDTO cancelRequestDTO);
+    StatusResponseDTO cancelAppointment(AppointmentCancelRequestDTO cancelRequestDTO);
 
-    void rescheduleAppointment(AppointmentRescheduleRequestDTO rescheduleRequestDTO);
+    StatusResponseDTO rescheduleAppointment(AppointmentRescheduleRequestDTO rescheduleRequestDTO);
 
-    AppointmentDetailResponseDTO fetchAppointmentDetails(Long appointmentId);
+    AppointmentDetailResponseWithStatusDTO fetchAppointmentDetails(Long appointmentId);
 
-    List<AppointmentMinResponseDTO> fetchAppointmentHistory(AppointmentSearchDTO searchDTO);
+    AppointmentMinResponseWithStatusDTO fetchAppointmentHistory(AppointmentSearchDTO searchDTO);
 
-    void cancelRegistration(Long appointmentReservationId);
+    StatusResponseDTO cancelRegistration(Long appointmentReservationId);
 
     /*admin*/
     /*PENDING APPROVAL*/
@@ -85,6 +83,4 @@ public interface AppointmentService {
 
     Map<String, List<AppointmentQueueDTO>> fetchTodayAppointmentQueueByTime(
             AppointmentQueueRequestDTO appointmentQueueRequestDTO, Pageable pageable);
-
-
 }

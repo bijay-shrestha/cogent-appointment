@@ -14,6 +14,9 @@ public interface HmacApiInfoRepository extends JpaRepository<HmacApiInfo, Long> 
 
     @Query("FROM HmacApiInfo hai WHERE hai.hospital.id=:hospitalId AND hai.status!='D'")
     HmacApiInfo getHmacApiInfoByHospitalId(@Param("hospitalId") Long hospitalId);
+
+    @Query("FROM HmacApiInfo hai WHERE hai.hospital.id=:companyId AND hai.status!='D'")
+    HmacApiInfo getHmacApiInfoByCompanyId(@Param("companyId") Long companyId);
 }
 
 

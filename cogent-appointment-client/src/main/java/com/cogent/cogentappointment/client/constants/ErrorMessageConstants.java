@@ -9,6 +9,10 @@ public class ErrorMessageConstants {
 
     public interface AppointmentServiceMessage {
         String APPOINTMENT_EXISTS = "Appointment already exists for the selected time: '%s'";
+
+        String INVALID_APPOINTMENT_TIME = "Invalid appointment time: '%s'";
+
+        String INVALID_APPOINTMENT_DATE_TIME = "Sorry! Appointment failed because requested date/time has already passed.";
     }
 
     public interface AdminServiceMessages {
@@ -46,9 +50,17 @@ public class ErrorMessageConstants {
 
     //C
     public final static String CANNOT_CREATE_SIGNATURE = "Cannot create signature: ";
+
     public static final String CODE_DUPLICATION_MESSAGE = "%s already exists with code '%s'";
 
+    public static final String CANNOT_ACCESS_CLIENT_MODULE = "SORRY!!! YOU CANNOT ACCESS CLIENT MODULE";
+
     //D
+    public interface DoctorServiceMessages {
+        String DOCTOR_NOT_AVAILABLE = "Sorry, Doctor is not available in selected date '%s'.";
+    }
+
+
     public interface DoctorDutyRosterServiceMessages {
         String DUPLICATION_MESSAGE = "Doctor Duty Roster already exists for selected doctor.";
 
@@ -64,13 +76,6 @@ public class ErrorMessageConstants {
     //E
 
     //F
-    public interface FileServiceMessages {
-        String FILES_EMPTY_MESSAGE = "Failed to store empty file";
-        String INVALID_FILE_TYPE_MESSAGE = "Could not read file :";
-        String INVALID_FILE_SEQUENCE = "Sorry! Filename contains invalid path sequence";
-        String FILE_EXCEPTION = "Unable to store file. Please try again later";
-    }
-
     public interface ForgotPasswordMessages {
         String INVALID_RESET_CODE = "Invalid Password Reset Code. Please try again.";
         String RESET_CODE_EXPIRED = "Reset code has expired. Request a new password reset code.";
@@ -90,6 +95,8 @@ public class ErrorMessageConstants {
 
     public static final String INVALID_USERNAME_OR_HOSPITAL_CODE = "Invalid username or hospitalcode";
     public static final String INVALID_PASSWORD = "Invalid password";
+
+    public static final String INVALID_VERIFICATION_TOKEN = "Invalid verification token";
 
     //J
 

@@ -41,10 +41,6 @@ public class HospitalRequestDTO implements Serializable {
     private Character status;
 
     @NotNull
-    @Status
-    private Character isCogentAdmin;
-
-    @NotNull
     private Double refundPercentage;
 
     @NotNull
@@ -56,5 +52,8 @@ public class HospitalRequestDTO implements Serializable {
     private Integer numberOfFreeFollowUps;
 
     private Integer followUpIntervalDays;
+
+    private String alias;
+
 }
 

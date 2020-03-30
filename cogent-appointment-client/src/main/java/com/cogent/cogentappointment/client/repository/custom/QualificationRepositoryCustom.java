@@ -18,17 +18,18 @@ import java.util.List;
 @Qualifier("qualificationRepositoryCustom")
 public interface QualificationRepositoryCustom {
 
-    Long validateDuplicity(String name);
+    Long validateDuplicity(String name, Long hospitalId);
 
-    Long validateDuplicity(Long id, String name);
+    Long validateDuplicity(Long id, String name, Long hospitalId);
 
     List<QualificationMinimalResponseDTO> search(QualificationSearchRequestDTO searchRequestDTO,
+                                                 Long hospitalId,
                                                  Pageable pageable);
 
-    QualificationResponseDTO fetchDetailsById(Long id);
+    QualificationResponseDTO fetchDetailsById(Long id, Long hospitalId);
 
-    List<QualificationDropdownDTO> fetchActiveQualificationForDropDown();
+    List<QualificationDropdownDTO> fetchActiveQualificationForDropDown(Long hospitalId);
 
-    List<DropDownResponseDTO> fetchMinQualification();
+    List<DropDownResponseDTO> fetchMinQualification(Long hospitalId);
 
 }

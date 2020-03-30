@@ -35,22 +35,24 @@ public class SpecializationRepositoryCustomImpl implements SpecializationReposit
     private EntityManager entityManager;
 
     @Override
-    public Long validateDuplicity(String name, Long hospitalId) {
+    public List<Object[]> validateDuplicity(String name, String code, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_SPECIALIZATION)
                 .setParameter(NAME, name)
+                .setParameter(CODE, code)
                 .setParameter(HOSPITAL_ID, hospitalId);
 
-        return (Long) query.getSingleResult();
+        return query.getResultList();
     }
 
     @Override
-    public Long validateDuplicity(Long id, String name, Long hospitalId) {
+    public List<Object[]> validateDuplicity(Long id, String name, String code, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_SPECIALIZATION_FOR_UPDATE)
                 .setParameter(ID, id)
                 .setParameter(NAME, name)
+                .setParameter(CODE, code)
                 .setParameter(HOSPITAL_ID, hospitalId);
 
-        return (Long) query.getSingleResult();
+        return query.getResultList();
     }
 
     @Override

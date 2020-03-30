@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.INVALID_PASSWORD;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.UNAUTHORISED;
 
 /**
@@ -26,7 +27,7 @@ public class AuthEntryPointHmac implements AuthenticationEntryPoint {
                          AuthenticationException authException) throws IOException, ServletException {
         LoginErrorResponse loginResponse = LoginErrorResponse.builder()
                 .status(401)
-                .errorMessage(UNAUTHORISED)
+                .errorMessage(INVALID_PASSWORD)
                 .build();
 
         String json = null;

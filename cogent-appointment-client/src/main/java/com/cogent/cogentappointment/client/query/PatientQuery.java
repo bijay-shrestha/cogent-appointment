@@ -141,7 +141,8 @@ public class PatientQuery {
                 " hpi.email as email," +                                         //[4]
                 " p.mobileNumber as mobileNumber," +                             //[5]
                 " hpi.registrationNumber as registrationNumber," +               //[6]
-                " p.eSewaId as eSewaId," +                                       //[7]
+                " p.eSewaId as eSewaId," +
+                " p.gender as gender," +                                       //[7]
                 " hpi.status as status," +                                       //[8]
                 " hpi.hospitalNumber as hospitalNumber," +                       //[9]
                 " a.appointmentDate as appointmentDate," +                         //[10]
@@ -195,13 +196,14 @@ public class PatientQuery {
                     " p.name as name," +                                        //[1]
                     " p.mobileNumber as mobileNumber," +                        //[2]
                     " p.gender as gender," +                                    //[3]
-                    " hpi.address as address," +
-                    " hpi.isRegistered as patientType," +
-                    " hpi.registrationNumber as registrationNumber," +
-                    " p.eSewaId as eSewaId," +
-                    " atd.transactionNumber as transactionNumber," +
-                    " a.isSelf as isSelf," +
-                    QUERY_TO_CALCULATE_PATIENT_AGE +                            //[5]
+                    " hpi.address as address," +                                //[4]
+                    " hpi.isRegistered as patientType," +                       //[5]
+                    " hpi.registrationNumber as registrationNumber," +          //[6]
+                    " p.eSewaId as eSewaId," +                                  //[7]
+                    " atd.transactionNumber as transactionNumber," +            //[8]
+                    " a.isSelf as isSelf," +                                    //[9]
+                    " atd.appointmentAmount as appointmentAmount," +            //[10]
+                    QUERY_TO_CALCULATE_PATIENT_AGE +                            //[11]
                     " FROM Appointment a" +
                     " LEFT JOIN Patient p ON p.id=a.patientId.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +

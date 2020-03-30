@@ -47,6 +47,7 @@ public class SwaggerConstants {
         String REJECT_APPOINTMENT = "Reject Appointment and set status as 'R'.";
         String FETCH_APPOINTMENT_LOG = "Fetch Appointment Log";
         String FETCH_APPOINTMENT_RESCHEDULE_LOG = "Fetch Appointment Reschedule Log";
+        String FETCH_VACANT_APPOINTMENT_DATES = "Fetch Appointment vacant dates by doctorId and SpeciliazationId ";
         String DETAILS_APPROVAL_VISIT_OPERATION = "Fetch appointment visit approval details by its id";
     }
 
@@ -97,6 +98,7 @@ public class SwaggerConstants {
         String REVENUE_TREND_OPERATION = "Revenue Trend as per the filter.";
         String FETCH_APPOINTMENT_QUEUE = "Fetch Appointment Queue of Today for Dashboard.";
         String DOCTOR_REVENUE_OPERATION = "Doctor Revenue list.";
+        String REFUND_AMOUNT_OPERATION = "Calculate Total Refunded Amount.";
 
     }
 
@@ -148,6 +150,19 @@ public class SwaggerConstants {
 
 
     //E
+    public interface EsewaConstant {
+        String BASE_API_VALUE = "This is eSewa Resource";
+        String FETCH_AVAILABLE_APPOINTMENT_DATES = "Returns all the avaliable appointment dates and time by doctorId and" +
+                " specializationId";
+        String FETCH_AVAILABLE_DOCTOR_DATES = "Returns all the avaliable appointment dates by doctorId";
+        String FETCH_AVAILABLE_SPECIALIZATION_DATES = "Returns all the avaliable appointment dates by specializationId";
+        String FETCH_AVAILABLE_DATES = "Returns all the avaliable appointment dates by doctorId and specializationId";
+        String FETCH_DOCTOR_AVAILABLE_STATUS_OPERATION = "Return message if the doctor is available on the date" +
+                " (Case V/Case VIII)";
+        String FETCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION_OPERATION = "Fetch all available doctors and " +
+                "their specialization on the choosen date (Case II/Case IV)";
+
+    }
 
 
     //F
@@ -198,7 +213,7 @@ public class SwaggerConstants {
                 " selected name, mobile number and dob.";
         String FETCH_DETAILS_OF_OTHERS = " Fetch patient details by hospital patient info id";
         String UPDATE_PATIENT_INFO_OPERATION = "Update patient info (others)";
-        String DELETE_PATIENT_INFO_OPERATION = "Update patient info (others)";
+        String DELETE_PATIENT_INFO_OPERATION = "Delete patient info (others)";
         String SEARCH_OPERATION = "Search Patient Info";
         String FETCH_DETAILS_BY_ID = " Fetch patient details by id";
         String FETCH_PATIENT_MIN_DETAIL_BY_APPOINTMENT_ID = "Fetch min patient detail by appointment id.";
@@ -230,6 +245,10 @@ public class SwaggerConstants {
 
     public interface QualificationAliasConstant {
         String BASE_API_VALUE = "This is Qualification Alias Resource";
+        String SAVE_OPERATION = "Save new Qualification Alias Resource";
+        String UPDATE_OPERATION = "Update existing Qualification Alias Resource";
+        String DELETE_OPERATION = "Set Qualification Alias Resource status as 'D' when deleted";
+        String SEARCH_OPERATION = "Search Qualification Alias Resource according to given request parameters";
         String FETCH_ACTIVE_QUALIFICATION_ALIAS = "Fetch active Qualification Alias like M.D.,M.B.B.S, etc";
     }
 

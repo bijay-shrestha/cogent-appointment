@@ -1,8 +1,8 @@
 package com.cogent.cogentappointment.client.exception;
 
-import com.cogent.cogentappointment.client.exception.utils.ExceptionUtils;
 import lombok.Getter;
 
+import static com.cogent.cogentappointment.client.exception.utils.ExceptionUtils.getLocalDateTime;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 /**
@@ -26,8 +26,9 @@ public class BadRequestException extends RuntimeException {
         exception = ExceptionResponse.builder()
                 .errorMessage(errorMessage)
                 .debugMessage(debugMessage)
-                .status(BAD_REQUEST)
-                .timeStamp(ExceptionUtils.getLocalDateTime())
+                .responseStatus(BAD_REQUEST)
+                .responseCode(BAD_REQUEST.value())
+                .timeStamp(getLocalDateTime())
                 .build();
     }
 }

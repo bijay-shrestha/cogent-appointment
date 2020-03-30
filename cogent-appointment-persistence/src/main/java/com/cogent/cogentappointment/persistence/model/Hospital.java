@@ -38,10 +38,10 @@ public class Hospital extends Auditable<String> implements Serializable {
     @Column(name = "pan_number")
     private String panNumber;
 
-    /*Y= IF COGENT ADMIN
+    /*Y= IF COMPANY(F1SOFT GROUP OF COMPANIES) ADMIN
      * N= IF HOSPITALS ADMIN*/
-    @Column(name = "is_cogent_admin")
-    private Character isCogentAdmin;
+    @Column(name = "is_company")
+    private Character isCompany;
 
     @Column(name = "status")
     private Character status;
@@ -61,6 +61,9 @@ public class Hospital extends Auditable<String> implements Serializable {
     @Column(name = "remarks")
     private String remarks;
 
+    @Column(name = "alias")
+    private String alias;
+
     @Override
     public String toString() {
         return "Hospital{" +
@@ -69,7 +72,7 @@ public class Hospital extends Auditable<String> implements Serializable {
                 ", code='" + code +
                 ", address='" + address +
                 ", panNumber='" + panNumber +
-                ", isCogentAdmin=" + isCogentAdmin +
+                ", isCompany=" + isCompany +
                 ", status=" + status +
                 ", refundPercentage=" + refundPercentage +
                 ", numberOfAdmins=" + numberOfAdmins +

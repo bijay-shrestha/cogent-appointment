@@ -30,6 +30,7 @@ import static com.cogent.cogentappointment.admin.log.constants.SpecializationLog
 import static com.cogent.cogentappointment.admin.utils.SpecializationUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.admin.utils.commons.NameAndCodeValidationUtils.validateDuplicity;
 
 /**
  * @author smriti on 2019-08-11
@@ -55,11 +56,13 @@ public class SpecializationServiceImpl implements SpecializationService {
 
         log.info(SAVING_PROCESS_STARTED, SPECIALIZATION);
 
-        Long specializationCount = specializationRepository.validateDuplicity(
-                requestDTO.getName(), requestDTO.getHospitalId());
+        List<Object[]> specializations = specializationRepository.validateDuplicity(
+                requestDTO.getName(),
+                requestDTO.getCode(),
+                requestDTO.getHospitalId());
 
-        //todo: validate code duplicity
-        validateName(specializationCount, requestDTO.getName());
+        validateDuplicity(specializations, requestDTO.getName(), requestDTO.getCode(),
+                Specialization.class.getSimpleName());
 
         Hospital hospital = fetchHospitalById(requestDTO.getHospitalId());
 
@@ -77,10 +80,15 @@ public class SpecializationServiceImpl implements SpecializationService {
 
         Specialization specialization = findBySpecializationId(requestDTO.getId());
 
-        Long specializationCount = specializationRepository.validateDuplicity(
-                requestDTO.getId(), requestDTO.getName(), requestDTO.getHospitalId());
+        List<Object[]> specializations = specializationRepository.validateDuplicity(
+                requestDTO.getId(),
+                requestDTO.getName(),
+                specialization.getCode(),
+                requestDTO.getHospitalId()
+        );
 
-        validateName(specializationCount, requestDTO.getName());
+        validateDuplicity(specializations, requestDTO.getName(), specialization.getCode(),
+                Specialization.class.getSimpleName());
 
         Hospital hospital = fetchHospitalById(requestDTO.getHospitalId());
 

@@ -5,14 +5,10 @@ import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentQue
 import com.cogent.cogentappointment.admin.dto.request.dashboard.DashBoardRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.DoctorRevenueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.GenerateRevenueRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.dashboard.RefundAmountRequestDTO;
 import com.cogent.cogentappointment.admin.service.AppointmentService;
 import com.cogent.cogentappointment.admin.service.DashboardService;
-import com.cogent.cogentappointment.admin.utils.commons.DateConverterUtils;
-import com.cogent.cogentappointment.admin.utils.commons.DateUtils;
-import com.cogent.cogentappointment.admin.utils.commons.ObjectMapperUtils;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 
@@ -116,5 +111,12 @@ public class DashboardResource {
         Pageable pageable = PageRequest.of(page, size);
         return ok(dashboardService.getDoctorRevenueList(convertStringToDate(toDate), convertStringToDate(fromDate), doctorRevenueRequestDTO, pageable));
     }
+
+    @PutMapping(TOTAL_REFUNDED_AMOUNT)
+    @ApiOperation(REFUND_AMOUNT_OPERATION)
+    public ResponseEntity<?> calculateTotalRefundedAmount(@RequestBody RefundAmountRequestDTO refundAmountRequestDTO) {
+        return ok().body(dashboardService.calculateTotalRefundedAmount(refundAmountRequestDTO));
+    }
+
 
 }

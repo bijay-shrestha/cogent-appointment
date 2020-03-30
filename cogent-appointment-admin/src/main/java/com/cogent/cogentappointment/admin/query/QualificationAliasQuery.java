@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.query;
 
 import com.cogent.cogentappointment.admin.dto.request.qualificationAlias.QualificationAliasSearchRequestDTO;
+import org.springframework.util.ObjectUtils;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -17,6 +18,14 @@ public class QualificationAliasQuery {
                     " qa.status !='D'" +
                     " AND qa.name=:name";
 
+    public static final String QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE =
+            " SELECT COUNT(qa.id)" +
+                    " FROM QualificationAlias qa" +
+                    " WHERE" +
+                    " qa.status !='D'" +
+                    " AND qa.id=:id" +
+                    " AND qa.name=:name";
+
     public static final String QUERY_TO_FETCH_ACTIVE_QUALIFICATION_ALIAS =
             "SELECT" +
                     " qa.id as value," +
@@ -24,7 +33,7 @@ public class QualificationAliasQuery {
                     " FROM QualificationAlias qa" +
                     " WHERE qa.status = 'Y'";
 
-    private static  String SELECT_CLAUSE_TO_FETCH_MINIMAL_QUALIFICATION_ALIAS =
+    private static String SELECT_CLAUSE_TO_FETCH_MINIMAL_QUALIFICATION_ALIAS =
             "SELECT qa.id as id," +                                                //[0]
                     " qa.name as name," +                                          //[1]
                     " qa.status as status" +                                       //[2]
@@ -44,8 +53,12 @@ public class QualificationAliasQuery {
         if (!Objects.isNull(searchRequestDTO.getQualificationAliasId()))
             whereClause += " AND qa.id = " + searchRequestDTO.getQualificationAliasId();
 
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
+            whereClause += " AND qa.status = '" + searchRequestDTO.getStatus() + "'";
 
 
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
+            whereClause += " AND qa.status = '" + searchRequestDTO.getStatus() + "'";
 
         return whereClause;
     }

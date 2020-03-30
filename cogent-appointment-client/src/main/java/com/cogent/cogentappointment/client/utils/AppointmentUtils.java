@@ -4,9 +4,7 @@ import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRe
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedTimeResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentCheckAvailabilityResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentSuccessResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.*;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueSearchByTimeDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentTimeDTO;
@@ -24,6 +22,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.springframework.http.HttpStatus;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -36,6 +35,8 @@ import static com.cogent.cogentappointment.client.constants.StringConstant.HYPHE
 import static com.cogent.cogentappointment.client.utils.commons.DateConverterUtils.calculateAge;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils.generateRandomNumber;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 /**
  * @author smriti on 2019-10-24
@@ -65,7 +66,7 @@ public class AppointmentUtils {
         return appointment;
     }
 
-    private static Date parseAppointmentTime(Date appointmentDate, String appointmentTime) {
+    public static Date parseAppointmentTime(Date appointmentDate, String appointmentTime) {
         return datePlusTime(utilDateToSqlDate(appointmentDate), Objects.requireNonNull(parseTime(appointmentTime)));
     }
 
@@ -86,6 +87,8 @@ public class AppointmentUtils {
         return AppointmentSuccessResponseDTO.builder()
                 .appointmentNumber(appointmentNumber)
                 .appointmentTransactionStatus(ACTIVE)
+                .responseStatus(CREATED)
+                .responseCode(CREATED.value())
                 .build();
     }
 
@@ -143,6 +146,8 @@ public class AppointmentUtils {
                 .queryDate(queryDate)
                 .doctorAvailableTime(startTime + HYPHEN + endTime)
                 .availableTimeSlots(availableTimeSlots)
+                .responseStatus(OK)
+                .responseCode(OK.value())
                 .build();
     }
 
@@ -243,7 +248,7 @@ public class AppointmentUtils {
                             .previousAppointmentDate(previosAppointmentDate)
                             .rescheduleAppointmentDate(rescheduledAppointmentDate)
                             .appointmentNumber(result[APPOINTMENT_NUMBER_INDEX].toString())
-                            .esewaId(result[ESEWA_ID_INDEX].toString())
+                            .esewaId(Objects.isNull(result[ESEWA_ID_INDEX]) ? null : result[ESEWA_ID_INDEX].toString())
                             .registrationNumber(registrationNumber)
                             .patientName(result[PATIENT_NAME_INDEX].toString())
                             .patientGender((Gender) result[PATIENT_GENDER_INDEX])
@@ -314,7 +319,7 @@ public class AppointmentUtils {
                             .appointmentDate(appointmentDate)
                             .appointmentNumber(result[APPOINTMENT_NUMBER_INDEX].toString())
                             .appointmentTime(result[APPOINTMENT_TIME_INDEX].toString())
-                            .esewaId(result[ESEWA_ID_INDEX].toString())
+                            .esewaId(Objects.isNull(result[ESEWA_ID_INDEX]) ? null : result[ESEWA_ID_INDEX].toString())
                             .registrationNumber(registrationNumber)
                             .patientName(result[PATIENT_NAME_INDEX].toString())
                             .patientGender((Gender) result[PATIENT_GENDER_INDEX])
@@ -502,6 +507,34 @@ public class AppointmentUtils {
 
         return groupByPriceMap;
 
+    }
+
+    public static StatusResponseDTO parseToStatusResponseDTO() {
+
+        return StatusResponseDTO.builder()
+                .responseCode(OK.value())
+                .responseStatus(OK)
+                .build();
+    }
+
+    public static AppointmentMinResponseWithStatusDTO parseToAppointmentMinResponseWithStatusDTO(
+            List<AppointmentMinResponseDTO> minResponseDTOList) {
+
+        return AppointmentMinResponseWithStatusDTO.builder()
+                .appointmentMinResponseDTOS(minResponseDTOList)
+                .responseStatus(OK)
+                .responseCode(OK.value())
+                .build();
+    }
+
+    public static AppointmentDetailResponseWithStatusDTO parseToAppointmentDetailResponseWithStatusDTO(
+            AppointmentDetailResponseDTO responseDTO) {
+
+        return AppointmentDetailResponseWithStatusDTO.builder()
+                .appointmentDetailResponseDTO(responseDTO)
+                .responseStatus(OK)
+                .responseCode(OK.value())
+                .build();
     }
 
 

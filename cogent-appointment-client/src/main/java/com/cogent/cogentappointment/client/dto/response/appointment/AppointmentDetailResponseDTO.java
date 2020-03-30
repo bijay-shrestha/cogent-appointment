@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.dto.response.appointment;
 
 import lombok.*;
+import org.springframework.http.HttpStatus;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -40,4 +41,5 @@ public class AppointmentDetailResponseDTO implements Serializable {
     private Double serviceChargeAmount;
 
     private Double discountAmount;
+
 }

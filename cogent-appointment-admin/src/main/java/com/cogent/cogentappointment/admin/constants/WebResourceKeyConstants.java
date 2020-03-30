@@ -43,6 +43,11 @@ public class WebResourceKeyConstants {
         String BASE_COUNTRY = "/country";
     }
 
+    public interface CompanyConstants {
+        String BASE_COMPANY = "/company";
+    }
+
+
     //D
     public interface DashboardConstants {
         String BASE_DASHBOARD = "/dashboard";
@@ -55,7 +60,8 @@ public class WebResourceKeyConstants {
         String APPOINTMENT_QUEUE = "/today-appointment";
         String APPOINTMENT_QUEUE_BY_TIME = "/today-appointment-timely";
         String REVENUE_TREND = "/revenueTrend";
-        String DOCTOR_REVENUE="/doctorRevenue";
+        String DOCTOR_REVENUE = "/doctorRevenue";
+        String TOTAL_REFUNDED_AMOUNT = "/totalRefundedAmount";
     }
 
     public static final String DETAIL = "/detail";
@@ -80,8 +86,6 @@ public class WebResourceKeyConstants {
     }
 
     //F
-    public static final String FILES = "/files";
-    public static final String FILE = "/files/{subDirectoryLocation}/{filename:.+}";
 
     public interface ForgotPasswordConstants {
         String VERIFY = "/verify";
@@ -112,6 +116,12 @@ public class WebResourceKeyConstants {
     //M
     public static final String META_INFO = "/metaInfo";
     public static final String MIN = "/min";
+
+    public interface MinioFileConstants {
+        String BASE_FILE = "/file";
+        String FETCH_FILE = "/{subDirectory}/{object}";
+
+    }
 
     //N
 

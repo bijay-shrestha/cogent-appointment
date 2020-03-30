@@ -87,6 +87,7 @@ public class ErrorMessageConstants {
     //I
     public static final String INVALID_DATE_MESSAGE = "From date cannot be greater than to date";
     public static final String INVALID_DATE_DEBUG_MESSAGE = "Failed to complete operation due to invalid from and to date";
+    public static final String INVALID_VERIFICATION_TOKEN = "Invalid verification token";
 
     //J
 
@@ -126,7 +127,7 @@ public class ErrorMessageConstants {
 
 
     //U
-    public static final String UNAUTHORISED = "Unauthorised";
+    public static final String INVALID_PASSWORD = "Invalid Password.";
 
     //V
 

@@ -5,7 +5,6 @@ import com.cogent.cogentappointment.admin.dto.request.qualificationAlias.Qualifi
 import com.cogent.cogentappointment.admin.dto.response.qualificationAlias.QualificationAliasMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.QualificationAliasRepositoryCustom;
-import com.cogent.cogentappointment.persistence.model.Qualification;
 import com.cogent.cogentappointment.persistence.model.QualificationAlias;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -18,11 +17,11 @@ import javax.persistence.Query;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.admin.constants.QueryConstants.ID;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.NAME;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ERROR_LOG;
 import static com.cogent.cogentappointment.admin.log.constants.QualificationAliasLog.QUALIFICATION_ALIAS;
-import static com.cogent.cogentappointment.admin.query.QualificationAliasQuery.QUERY_TO_FETCH_ACTIVE_QUALIFICATION_ALIAS;
-import static com.cogent.cogentappointment.admin.query.QualificationAliasQuery.QUERY_TO_SEARCH_QUALIFICATION_ALIAS;
+import static com.cogent.cogentappointment.admin.query.QualificationAliasQuery.*;
 import static com.cogent.cogentappointment.admin.query.QualificationQuery.QUERY_TO_VALIDATE_DUPLICITY;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
@@ -60,6 +59,15 @@ public class QualificationAliasRepositoryCustomImpl implements QualificationAlia
     }
 
     @Override
+    public Long validateDuplicity(Long id, String name) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE)
+                .setParameter(NAME, name)
+                .setParameter(ID, id);
+
+        return (Long) query.getSingleResult();
+    }
+
+    @Override
     public List<QualificationAliasMinimalResponseDTO> search(QualificationAliasSearchRequestDTO searchRequestDTO,
                                                              Pageable pageable) {
 
@@ -84,7 +92,7 @@ public class QualificationAliasRepositoryCustomImpl implements QualificationAlia
     }
 
     private Supplier<NoContentFoundException> QUALIFICATION_ALIAS_NOT_FOUND = () ->
-            new NoContentFoundException(Qualification.class);
+            new NoContentFoundException(QualificationAlias.class);
 
 
     private void error() {

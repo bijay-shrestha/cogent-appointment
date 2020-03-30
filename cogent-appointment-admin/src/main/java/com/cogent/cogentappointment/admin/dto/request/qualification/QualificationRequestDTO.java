@@ -30,6 +30,9 @@ public class QualificationRequestDTO implements Serializable {
     private Long qualificationAliasId;
 
     @NotNull
+    private Long hospitalId;
+
+    @NotNull
     @Status
     private Character status;
 }

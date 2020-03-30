@@ -132,8 +132,8 @@ public class ProfileQuery {
                     " AND " +
                     " (" +
                     " a.email =:username OR" +
-                    " a.username =:username" +
-                    " )" +
-                    " AND h.is_cogent_admin ='Y'" +
+                    " a.username =:username OR" +
+                    " a.mobile_number=:username)" +
+                    " AND h.is_company ='Y'" +
                     " GROUP BY pm.parent_id, pm.user_menu_id, pm.profile_id";
 }

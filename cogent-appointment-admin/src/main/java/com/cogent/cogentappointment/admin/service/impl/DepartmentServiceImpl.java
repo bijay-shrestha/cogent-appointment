@@ -178,7 +178,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         return hospitalService.fetchActiveHospital(hospitalId);
     }
 
-    public Department fetchDepartmentById(Long id) {
+    private Department fetchDepartmentById(Long id) {
         return departmentRepository.findDepartmentById(id).orElseThrow(() ->
                 new NoContentFoundException(Department.class, "id", id.toString()));
     }

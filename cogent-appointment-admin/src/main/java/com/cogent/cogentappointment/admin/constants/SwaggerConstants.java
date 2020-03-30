@@ -71,6 +71,16 @@ public class SwaggerConstants {
         String FETCH_ACTIVE_COUNTRY = "Fetch active country for dropdown.";
     }
 
+    public interface CompanyConstant {
+        String BASE_API_VALUE = "This is Common Resource";
+        String SAVE_OPERATION = "Save new company";
+        String UPDATE_OPERATION = "Update existing company";
+        String DELETE_OPERATION = "Set company status as 'D' when deleted with remarks";
+        String SEARCH_OPERATION = "Search company according to given request parameters";
+        String DETAILS_OPERATION = "Fetch company details by id";
+        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal company details (id and name) for dropdown";
+    }
+
 
     //D
     public interface DashboardConstant {
@@ -81,6 +91,7 @@ public class SwaggerConstants {
         String REVENUE_STATISTICS_OPERATION = "Revenue statistics as per the filter.";
         String REVENUE_TREND_OPERATION = "Revenue Trend as per the filter.";
         String DOCTOR_REVENUE_OPERATION = "Doctor Revenue list.";
+        String REFUND_AMOUNT_OPERATION = "Calculate Total Refunded Amount.";
     }
 
     public interface DepartmentConstant {

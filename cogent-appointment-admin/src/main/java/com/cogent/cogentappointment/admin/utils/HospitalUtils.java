@@ -21,6 +21,9 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
+import static com.cogent.cogentappointment.admin.constants.StringConstant.N;
+import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.toUpperCase;
+import static org.springframework.http.HttpStatus.OK;
 
 /**
  * @author smriti ON 12/01/2020
@@ -29,16 +32,17 @@ public class HospitalUtils {
 
     public static Hospital convertDTOToHospital(HospitalRequestDTO hospitalRequestDTO) {
         Hospital hospital = new Hospital();
-        hospital.setName(StringUtil.toUpperCase(hospitalRequestDTO.getName()));
-        hospital.setCode(StringUtil.toUpperCase(hospitalRequestDTO.getHospitalCode()));
+        hospital.setName(StringUtil.convertToNormalCase(hospitalRequestDTO.getName()));
+        hospital.setCode(toUpperCase(hospitalRequestDTO.getHospitalCode()));
         hospital.setAddress(hospitalRequestDTO.getAddress());
         hospital.setPanNumber(hospitalRequestDTO.getPanNumber());
         hospital.setStatus(hospitalRequestDTO.getStatus());
-        hospital.setIsCogentAdmin(hospitalRequestDTO.getIsCogentAdmin());
+        hospital.setIsCompany(N);
         hospital.setRefundPercentage(hospitalRequestDTO.getRefundPercentage());
         hospital.setNumberOfAdmins(hospitalRequestDTO.getNumberOfAdmins());
         hospital.setNumberOfFreeFollowUps(hospitalRequestDTO.getNumberOfFreeFollowUps());
         hospital.setFollowUpIntervalDays(hospitalRequestDTO.getFollowUpIntervalDays());
+        hospital.setAlias(hospitalRequestDTO.getAlias());
         return hospital;
     }
 
@@ -83,16 +87,17 @@ public class HospitalUtils {
     public static void parseToUpdatedHospital(HospitalUpdateRequestDTO updateRequestDTO,
                                               Hospital hospital) {
 
-        hospital.setName(StringUtil.toUpperCase(updateRequestDTO.getName()));
+        hospital.setName(StringUtil.convertToNormalCase(updateRequestDTO.getName()));
         hospital.setAddress(updateRequestDTO.getAddress());
         hospital.setPanNumber(updateRequestDTO.getPanNumber());
         hospital.setStatus(updateRequestDTO.getStatus());
-        hospital.setRemarks(updateRequestDTO.getRemarks());
-        hospital.setIsCogentAdmin(updateRequestDTO.getIsHospital());
+        hospital.setRemarks(StringUtil.convertToNormalCase(updateRequestDTO.getRemarks()));
+        hospital.setIsCompany(updateRequestDTO.getIsHospital());
         hospital.setRefundPercentage(updateRequestDTO.getRefundPercentage());
         hospital.setNumberOfAdmins(updateRequestDTO.getNumberOfAdmins());
         hospital.setNumberOfFreeFollowUps(updateRequestDTO.getNumberOfFreeFollowUps());
         hospital.setFollowUpIntervalDays(updateRequestDTO.getFollowUpIntervalDays());
+        hospital.setAlias(updateRequestDTO.getAlias());
     }
 
     public static HospitalContactNumber parseToUpdatedHospitalContactNumber(
@@ -136,7 +141,7 @@ public class HospitalUtils {
         final int NUMBER_OF_FREE_FOLLOWUPS_INDEX = 12;
         final int FOLLOW_UP_INTERVAL_DAYS_INDEX = 13;
         final int IS_COGENT_ADMIN_INDEX =14;
-
+        final int ALIAS_INDEX =15;
 
         return HospitalResponseDTO.builder()
                 .id(Long.parseLong(results[HOSPITAL_ID_INDEX].toString()))
@@ -155,7 +160,8 @@ public class HospitalUtils {
                         Integer.parseInt(results[NUMBER_OF_ADMINS_INDEX].toString()))
                 .numberOfFreeFollowUps(Integer.parseInt(results[NUMBER_OF_FREE_FOLLOWUPS_INDEX].toString()))
                 .followUpIntervalDays(Integer.parseInt(results[FOLLOW_UP_INTERVAL_DAYS_INDEX].toString()))
-                .isCogentAdmin(results[IS_COGENT_ADMIN_INDEX].toString().charAt(0))
+                .isCompany(results[IS_COGENT_ADMIN_INDEX].toString().charAt(0))
+                .alias(Objects.isNull(results[ALIAS_INDEX])? null: results[ALIAS_INDEX].toString())
                 .build();
     }
 

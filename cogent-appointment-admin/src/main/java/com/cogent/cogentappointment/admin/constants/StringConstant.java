@@ -41,6 +41,8 @@ public class StringConstant {
 
     //N
 
+    public static final Character N = 'N';
+
 
     //O
     public static final String OR = "|";
@@ -66,6 +68,7 @@ public class StringConstant {
     //X
 
     //Y
+    public static final Character Y = 'Y';
 
     //Z
 

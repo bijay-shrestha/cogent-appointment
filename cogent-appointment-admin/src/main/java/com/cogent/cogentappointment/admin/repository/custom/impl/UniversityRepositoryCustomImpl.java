@@ -19,8 +19,7 @@ import javax.persistence.Query;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.admin.constants.QueryConstants.ID;
-import static com.cogent.cogentappointment.admin.constants.QueryConstants.NAME;
+import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ERROR_LOG;
 import static com.cogent.cogentappointment.admin.log.constants.UniversityLog.UNIVERSITY;
 import static com.cogent.cogentappointment.admin.query.UniversityQuery.*;
@@ -39,18 +38,20 @@ public class UniversityRepositoryCustomImpl implements UniversityRepositoryCusto
     private EntityManager entityManager;
 
     @Override
-    public Long validateDuplicity(String name) {
+    public Long validateDuplicity(String name, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY)
-                .setParameter(NAME, name);
+                .setParameter(NAME, name)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Long) query.getSingleResult();
     }
 
     @Override
-    public Long validateDuplicity(Long id, String name) {
+    public Long validateDuplicity(Long id, String name, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE)
                 .setParameter(ID, id)
-                .setParameter(NAME, name);
+                .setParameter(NAME, name)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Long) query.getSingleResult();
     }

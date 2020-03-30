@@ -1,10 +1,10 @@
 package com.cogent.cogentappointment.admin.utils.commons;
 
-import com.cogent.cogentappointment.admin.constants.ErrorMessageConstants;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 
 import java.util.List;
 
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.*;
 import static java.lang.reflect.Array.get;
 
 /**
@@ -26,7 +26,7 @@ public class NameAndCodeValidationUtils {
 
             if (isNameExists && isCodeExists)
                 throw new DataDuplicationException(
-                        String.format(ErrorMessageConstants.NAME_AND_CODE_DUPLICATION_MESSAGE, className, requestedName, requestedCode),
+                        String.format(NAME_AND_CODE_DUPLICATION_MESSAGE, className, requestedName, requestedCode),
                         "name", requestedName, "code", requestedCode
                 );
 
@@ -37,15 +37,11 @@ public class NameAndCodeValidationUtils {
 
     private static void validateName(boolean isNameExists, String name, String className) {
         if (isNameExists)
-            throw new DataDuplicationException(
-                    String.format(ErrorMessageConstants.NAME_DUPLICATION_MESSAGE, className, name),
-                    "name", name);
+            throw new DataDuplicationException(String.format(NAME_DUPLICATION_MESSAGE, className, name), "name", name);
     }
 
     private static void validateCode(boolean isCodeExists, String code, String className) {
         if (isCodeExists)
-            throw new DataDuplicationException(
-                    String.format(ErrorMessageConstants.CODE_DUPLICATION_MESSAGE, className, code),
-                    "code", code);
+            throw new DataDuplicationException(String.format(CODE_DUPLICATION_MESSAGE, className, code), "code", code);
     }
 }

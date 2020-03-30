@@ -193,10 +193,10 @@ public class DashBoardQuery {
     private static String GET_WHERE_CLAUSE_GENERATE_DOCTOR_REVENUE_LIST(DoctorRevenueRequestDTO requestDTO) {
         String whereClause = " WHERE h.id=:hospitalId ";
 
-        if (requestDTO.getSpecializationId()>0)
+        if (requestDTO.getSpecializationId() > 0)
             whereClause += " AND s.id=" + requestDTO.getSpecializationId();
 
-        if (requestDTO.getDoctorId()>0)
+        if (requestDTO.getDoctorId() > 0)
             whereClause += " AND d.id=" + requestDTO.getDoctorId();
 
         whereClause +=
@@ -208,4 +208,23 @@ public class DashBoardQuery {
         return whereClause;
     }
 
+    public static String QUERY_TO_FETCH_REFUND_AMOUNT(Long doctorId, Long specializationId) {
+        String query = "SELECT" +
+                " COALESCE(SUM(ard.refundAmount ),0) as totalRefundedAmount" +
+                " FROM" +
+                " AppointmentRefundDetail ard" +
+                " LEFT JOIN Appointment a ON a.id=ard.appointmentId.id" +
+                " WHERE" +
+                " ard.status = 'A'" +
+                " AND ard.refundedDate BETWEEN :fromDate AND :toDate" +
+                " AND a.hospitalId.id=:hospitalId";
+
+        if (!Objects.isNull(doctorId))
+            query += " AND a.doctorId.id = " + doctorId;
+
+        if (!Objects.isNull(specializationId))
+            query += " AND a.specializationId.id = " + specializationId;
+
+        return query;
+    }
 }

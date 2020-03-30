@@ -59,4 +59,6 @@ public class HospitalUpdateRequestDTO implements Serializable {
 
     @NotEmpty
     private List<HospitalContactNumberUpdateRequestDTO> contactNumberUpdateRequestDTOS;
+
+    private String alias;
 }

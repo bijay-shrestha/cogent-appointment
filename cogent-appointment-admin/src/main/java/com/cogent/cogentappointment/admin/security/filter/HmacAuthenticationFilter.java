@@ -52,7 +52,7 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
             UserDetailsImpl userDetails = userDetailsService.loadUserByUsername(authHeader.getUsername());
 
-            if (userDetails.getIsCogentAdmin().equals('Y')) {
+            if (userDetails.getIsCompany().equals('Y')) {
                 signatureBuilder = new HMACBuilder()
                         .algorithm(authHeader.getAlgorithm())
                         .nonce(authHeader.getNonce())

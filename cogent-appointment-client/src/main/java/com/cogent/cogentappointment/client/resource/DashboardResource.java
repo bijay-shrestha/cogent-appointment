@@ -4,22 +4,18 @@ import com.cogent.cogentappointment.client.dto.request.DoctorRevenueRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.GenerateRevenueRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.dashboard.RefundAmountRequestDTO;
 import com.cogent.cogentappointment.client.service.AppointmentService;
 import com.cogent.cogentappointment.client.service.DashboardService;
-import com.cogent.cogentappointment.client.utils.DoctorRevenueUtils;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.text.ParseException;
-import java.util.Date;
 
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.DashboardConstant.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
@@ -105,5 +101,11 @@ public class DashboardResource {
         DoctorRevenueRequestDTO doctorRevenueRequestDTO = convertToDoctorRevenueRequestDTO(doctorId, getLoggedInHospitalId(), specializationId);
         Pageable pageable = PageRequest.of(page, size);
         return ok(dashboardService.getDoctorRevenueList(convertStringToDate(toDate), convertStringToDate(fromDate), doctorRevenueRequestDTO, pageable));
+    }
+
+    @PutMapping(TOTAL_REFUNDED_AMOUNT)
+    @ApiOperation(REFUND_AMOUNT_OPERATION)
+    public ResponseEntity<?> calculateTotalRefundedAmount(@RequestBody RefundAmountRequestDTO refundAmountRequestDTO) {
+        return ok().body(dashboardService.calculateTotalRefundedAmount(refundAmountRequestDTO));
     }
 }

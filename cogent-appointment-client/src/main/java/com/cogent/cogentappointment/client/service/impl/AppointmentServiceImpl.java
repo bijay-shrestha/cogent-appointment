@@ -739,6 +739,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     private void saveAppointmentFollowUpDetails(Long parentAppointmentId, Long followUpAppointmentId) {
 
         saveAppointmentFollowUpLog(parentAppointmentId, followUpAppointmentId);
+
+        updateAppointmentFollowUpRequestLog(parentAppointmentId);
     }
 
     private void saveAppointmentFollowUpLog(Long parentAppointmentId, Long followUpAppointmentId) {
@@ -748,9 +750,12 @@ public class AppointmentServiceImpl implements AppointmentService {
         );
     }
 
-    private void saveAppointmentFollowUpRequestLog(){
+    private void updateAppointmentFollowUpRequestLog(Long parentAppointmentId) {
 
+        Long appointmentFollowUpTrackerId =
+                appointmentFollowUpTrackerService.fetchByParentAppointmentId(parentAppointmentId);
 
+        appointmentFollowUpRequestLogService.update(appointmentFollowUpTrackerId);
     }
 
     private void saveAppointmentFollowUpTracker(Appointment appointment) {

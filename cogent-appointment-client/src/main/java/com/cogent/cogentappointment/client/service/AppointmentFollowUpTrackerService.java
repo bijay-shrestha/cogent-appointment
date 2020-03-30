@@ -19,5 +19,5 @@ public interface AppointmentFollowUpTrackerService {
 
     void updateFollowUpTrackerStatus();
 
-    Long fetchAppointmentFollowUpTrackerByParentAppointmentId(Long parentAppointmentId);
+    Long fetchByParentAppointmentId(Long parentAppointmentId);
 }

@@ -10,4 +10,6 @@ public interface AppointmentFollowUpRequestLogService {
     void save(AppointmentFollowUpTracker appointmentFollowUpTracker);
 
     Integer fetchRequestCountByFollowUpTrackerId(Long appointmentFollowUpTrackerId);
+
+    void update(Long appointmentFollowUpTrackerId);
 }

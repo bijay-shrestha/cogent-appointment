@@ -159,7 +159,7 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
     }
 
     @Override
-    public Long fetchAppointmentFollowUpTrackerByParentAppointmentId(Long parentAppointmentId) {
+    public Long fetchByParentAppointmentId(Long parentAppointmentId) {
         return appointmentFollowUpTrackerRepository.fetchByParentAppointmentId(parentAppointmentId)
                 .orElseThrow(() -> new NoContentFoundException(AppointmentFollowUpTracker.class));
     }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
@@ -61,7 +62,11 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_FOLLOW_UP_DETAILS)
                 .setParameter(HOSPITAL_ID, hospitalId);
 
-        return transformQueryToSingleResult(query, HospitalFollowUpResponseDTO.class);
+        try{
+            return transformQueryToSingleResult(query, HospitalFollowUpResponseDTO.class);
+        }catch (NoResultException e){
+            throw HOSPITAL_NOT_FOUND.get();
+        }
     }
 
     private Supplier<NoContentFoundException> HOSPITAL_NOT_FOUND = () -> new NoContentFoundException(Hospital.class);

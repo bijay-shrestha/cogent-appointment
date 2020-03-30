@@ -33,7 +33,6 @@ import java.util.stream.Collectors;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.HOSPITAL;
-import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.HOSPITAL_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.utils.HmacApiInfoUtils.parseToHmacApiInfo;
 import static com.cogent.cogentappointment.admin.utils.HmacApiInfoUtils.updateHmacApiInfoAsHospital;
 import static com.cogent.cogentappointment.admin.utils.HospitalUtils.*;
@@ -318,7 +317,7 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        log.error(HOSPITAL_NOT_FOUND, id);
+        log.error(CONTENT_NOT_FOUND_BY_ID, HOSPITAL, id);
         throw new NoContentFoundException(Hospital.class, "id", id.toString());
     };
 

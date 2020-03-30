@@ -6,7 +6,4 @@ package com.cogent.cogentappointment.admin.log.constants;
 public class QualificationLog {
 
     public final static String QUALIFICATION = "QUALIFICATION";
-
-    public static final String QUALIFICATION_NAME_DUPLICATION = "::: Qualification already exists with" +
-            " name: {} :::";
 }

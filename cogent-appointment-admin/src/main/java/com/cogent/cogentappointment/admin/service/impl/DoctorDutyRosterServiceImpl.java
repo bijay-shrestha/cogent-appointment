@@ -489,7 +489,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
     }
 
     private Function<Long, NoContentFoundException> DOCTOR_DUTY_ROSTER_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        log.error(DOCTOR_DUTY_ROSTER_NOT_FOUND,id);
+        log.error(CONTENT_NOT_FOUND_BY_ID,DOCTOR_DUTY_ROSTER,id);
         throw new NoContentFoundException(DoctorDutyRoster.class, "id", id.toString());
     };
 

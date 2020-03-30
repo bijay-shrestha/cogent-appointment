@@ -253,7 +253,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     private Function<Long, NoContentFoundException> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND = (appointmentId) -> {
-        log.error(APPOINTMENT_NOT_FOUND,appointmentId);
+        log.error(CONTENT_NOT_FOUND_BY_ID,APPOINTMENT,appointmentId);
         throw new NoContentFoundException(Appointment.class, "appointmentId", appointmentId.toString());
     };
 

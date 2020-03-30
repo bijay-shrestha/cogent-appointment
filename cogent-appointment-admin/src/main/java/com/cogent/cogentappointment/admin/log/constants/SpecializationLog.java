@@ -5,9 +5,4 @@ package com.cogent.cogentappointment.admin.log.constants;
  */
 public class SpecializationLog {
     public final static String SPECIALIZATION = "SPECIALIZATION";
-
-    public static final String SPECIALIZATION_NAME_DUPLICATION = "::: Specialization already exists with" +
-            " name: {} :::";
-
-    public final static String SPECIALIZATION_NOT_FOUND="::: Specialization with id : {} not found :::";
 }

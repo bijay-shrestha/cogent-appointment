@@ -40,7 +40,6 @@ import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.AdminLog.*;
-import static com.cogent.cogentappointment.admin.log.constants.AdminLog.ADMIN_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.utils.AdminUtils.*;
 import static com.cogent.cogentappointment.admin.utils.GenderUtils.fetchGenderByCode;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
@@ -531,7 +530,7 @@ public class AdminServiceImpl implements AdminService {
             new DataDuplicationException(ADMIN_DUPLICATION_MESSAGE);
 
     private Function<Long, NoContentFoundException> ADMIN_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        log.error(ADMIN_NOT_FOUND, id);
+        log.error(CONTENT_NOT_FOUND_BY_ID,ADMIN, id);
         throw new NoContentFoundException(Admin.class, "id", id.toString());
     };
 

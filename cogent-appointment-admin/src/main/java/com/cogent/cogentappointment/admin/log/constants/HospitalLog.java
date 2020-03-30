@@ -6,6 +6,4 @@ package com.cogent.cogentappointment.admin.log.constants;
 public class HospitalLog {
 
     public final static String HOSPITAL = "HOSPITAL";
-
-    public final static String HOSPITAL_NOT_FOUND="::: Hospital with id : {} not found :::";
 }

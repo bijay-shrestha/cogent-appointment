@@ -37,6 +37,17 @@ public class CommonLogConstant {
 
 
     //G
+    public final static String CONTENT_NOT_FOUND_BY_ID="::: {} with id : {} not found :::";
+
+    public static final String INVALID_VERIFICATION_TOKEN_ERROR = "Invalid verification token : {}";
+
+
+    public final static String NAME_AND_MOBILE_NUMBER_DUPLICATION_ERROR="::: {} with name : {} and " +
+            "mobileNumber : {} already exists :::";
+
+    public final static String NAME_DUPLICATION_ERROR="::: {} with name : {} already exists :::";
+
+    public final static String USER_NOT_FOUND="::: User with name: {} not found :::";
 
     //H
 

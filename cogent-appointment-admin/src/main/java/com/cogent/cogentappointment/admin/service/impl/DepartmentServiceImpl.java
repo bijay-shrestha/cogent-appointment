@@ -20,9 +20,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
+import static com.cogent.cogentappointment.admin.log.constants.DepartmentLog.DEPARTMENT;
 import static com.cogent.cogentappointment.admin.utils.DepartmentUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
@@ -51,7 +53,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(SAVING_PROCESS_STARTED, DepartmentLog.DEPARTMENT);
+        log.info(SAVING_PROCESS_STARTED, DEPARTMENT);
 
         List<Object[]> departments = departmentRepository.validateDuplicity(requestDTO);
 
@@ -62,7 +64,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         save(parseToDepartment(requestDTO, hospital));
 
-        log.info(SAVING_PROCESS_COMPLETED, DepartmentLog.DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
+        log.info(SAVING_PROCESS_COMPLETED, DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
@@ -70,7 +72,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(UPDATING_PROCESS_STARTED, DepartmentLog.DEPARTMENT);
+        log.info(UPDATING_PROCESS_STARTED, DEPARTMENT);
 
         Department department = fetchDepartmentById(updateRequestDTO.getId());
 
@@ -81,7 +83,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         parseToUpdatedDepartment(updateRequestDTO, department);
 
-        log.info(UPDATING_PROCESS_COMPLETED, DepartmentLog.DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
+        log.info(UPDATING_PROCESS_COMPLETED, DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
@@ -89,13 +91,13 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(DELETING_PROCESS_STARTED, DepartmentLog.DEPARTMENT);
+        log.info(DELETING_PROCESS_STARTED, DEPARTMENT);
 
         Department department = fetchDepartmentById(deleteRequestDTO.getId());
 
         parseDepartmentStatus(deleteRequestDTO.getStatus(), deleteRequestDTO.getRemarks(), department);
 
-        log.info(DELETING_PROCESS_COMPLETED, DepartmentLog.DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
+        log.info(DELETING_PROCESS_COMPLETED, DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
@@ -104,12 +106,12 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(SEARCHING_PROCESS_STARTED, DepartmentLog.DEPARTMENT);
+        log.info(SEARCHING_PROCESS_STARTED, DEPARTMENT);
 
         List<DepartmentMinimalResponseDTO> responseDTO = departmentRepository.search
                 (searchRequestDTO, pageable);
 
-        log.info(SEARCHING_PROCESS_COMPLETED, DepartmentLog.DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
+        log.info(SEARCHING_PROCESS_COMPLETED, DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
     }
@@ -119,12 +121,12 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_DETAIL_PROCESS_STARTED, DepartmentLog.DEPARTMENT);
+        log.info(FETCHING_DETAIL_PROCESS_STARTED, DEPARTMENT);
 
         DepartmentResponseDTO departmentResponseDTO = departmentRepository
                 .fetchDetails(id);
 
-        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, DepartmentLog.DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
 
         return departmentResponseDTO;
     }
@@ -134,12 +136,12 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DepartmentLog.DEPARTMENT);
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DEPARTMENT);
 
         List<DropDownResponseDTO> departmentDropDownDTOS = departmentRepository.fetchDepartmentForDropdown()
                 .orElseThrow(() -> DEPARTMENT_NOT_FOUND.get());
 
-        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DepartmentLog.DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
 
         return departmentDropDownDTOS;
     }
@@ -149,12 +151,12 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DepartmentLog.DEPARTMENT);
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DEPARTMENT);
 
         List<DropDownResponseDTO> departmentDropDownDTOS = departmentRepository.fetchActiveDropDownList()
                 .orElseThrow(() -> DEPARTMENT_NOT_FOUND.get());
 
-        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DepartmentLog.DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
 
         return departmentDropDownDTOS;
     }
@@ -164,12 +166,12 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DepartmentLog.DEPARTMENT);
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DEPARTMENT);
 
         List<DropDownResponseDTO> responseDTOS = departmentRepository.fetchDepartmentByHospitalId(hospitalId)
                 .orElseThrow(() -> DEPARTMENT_NOT_FOUND.get());
 
-        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DepartmentLog.DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
     }
@@ -180,7 +182,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     private Department fetchDepartmentById(Long id) {
         return departmentRepository.findDepartmentById(id).orElseThrow(() ->
-                new NoContentFoundException(Department.class, "id", id.toString()));
+                DEPARTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(id));
     }
 
     public void save(Department department) {
@@ -189,4 +191,9 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     private Supplier<NoContentFoundException> DEPARTMENT_NOT_FOUND = () ->
             new NoContentFoundException(Department.class);
+
+    private Function<Long, NoContentFoundException> DEPARTMENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID,DEPARTMENT, id);
+        throw new NoContentFoundException(Department.class, "id", id.toString());
+    };
 }

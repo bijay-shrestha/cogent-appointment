@@ -29,7 +29,6 @@ import java.util.List;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NAME_DUPLICATION_MESSAGE;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.QualificationLog.QUALIFICATION;
-import static com.cogent.cogentappointment.admin.log.constants.QualificationLog.QUALIFICATION_NAME_DUPLICATION;
 import static com.cogent.cogentappointment.admin.utils.QualificationUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
@@ -193,7 +192,7 @@ public class QualificationServiceImpl implements QualificationService {
 
     private void validateName(Long qualificationCount, String name) {
         if (qualificationCount.intValue() > 0)
-            log.error(QUALIFICATION_NAME_DUPLICATION,name);
+            log.error(NAME_DUPLICATION_ERROR,QUALIFICATION,name);
             throw new DataDuplicationException(
                     String.format(NAME_DUPLICATION_MESSAGE, Qualification.class.getSimpleName(), name));
     }

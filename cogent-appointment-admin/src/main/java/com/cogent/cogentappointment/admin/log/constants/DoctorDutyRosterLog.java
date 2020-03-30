@@ -18,6 +18,4 @@ public class DoctorDutyRosterLog {
     public final static String REVERTING_PROCESS_STARTED = " REVERTING {} PROCESS STARTED";
 
     public final static String REVERTING_PROCESS_COMPLETED = " REVERTING {} PROCESS COMPLETED IN {} ms";
-
-    public final static String DOCTOR_DUTY_ROSTER_NOT_FOUND="::: Doctor Duty Roster with id : {} not found :::";
 }

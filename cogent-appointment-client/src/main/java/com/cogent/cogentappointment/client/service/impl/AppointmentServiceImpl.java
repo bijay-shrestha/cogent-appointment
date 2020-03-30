@@ -197,7 +197,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         saveAppointmentTransactionDetail(requestDTO.getTransactionInfo(), appointment);
 
         if (appointmentInfo.getIsFollowUp().equals(YES))
-            saveAppointmentFollowUpLog(appointmentInfo.getParentAppointmentId(), appointment.getId());
+            saveAppointmentFollowUpDetails(appointmentInfo.getParentAppointmentId(), appointment.getId());
 
         log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
 
@@ -245,7 +245,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         saveAppointmentTransactionDetail(requestDTO.getTransactionInfo(), appointment);
 
         if (appointmentInfo.getIsFollowUp().equals(YES))
-            saveAppointmentFollowUpLog(appointmentInfo.getParentAppointmentId(), appointment.getId());
+            saveAppointmentFollowUpDetails(appointmentInfo.getParentAppointmentId(), appointment.getId());
 
         log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
 
@@ -736,11 +736,20 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointmentRescheduleLogRepository.save(appointmentRescheduleLog);
     }
 
+    private void saveAppointmentFollowUpDetails(Long parentAppointmentId, Long followUpAppointmentId) {
+
+        saveAppointmentFollowUpLog(parentAppointmentId, followUpAppointmentId);
+    }
+
     private void saveAppointmentFollowUpLog(Long parentAppointmentId, Long followUpAppointmentId) {
 
         appointmentFollowUpLogRepository.save(
                 parseToAppointmentFollowUpLog(parentAppointmentId, followUpAppointmentId)
         );
+    }
+
+    private void saveAppointmentFollowUpRequestLog(){
+
     }
 
     private void saveAppointmentFollowUpTracker(Appointment appointment) {

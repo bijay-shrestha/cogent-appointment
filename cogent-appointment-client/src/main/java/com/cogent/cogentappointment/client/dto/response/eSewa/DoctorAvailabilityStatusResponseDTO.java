@@ -4,7 +4,6 @@ import lombok.*;
 import org.springframework.http.HttpStatus;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 
 /**
  * @author smriti on 15/03/20
@@ -15,8 +14,6 @@ import java.math.BigInteger;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DoctorAvailabilityStatusResponseDTO implements Serializable {
-
-    private Long count;
 
     private String status;
 

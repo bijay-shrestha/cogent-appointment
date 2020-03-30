@@ -17,6 +17,7 @@ import static com.cogent.cogentappointment.client.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDates;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
+import static java.lang.reflect.Array.get;
 import static org.springframework.http.HttpStatus.OK;
 
 
@@ -185,5 +186,25 @@ public class EsewaUtils {
     public static void parseDoctorAvailabilityResponseStatus(DoctorAvailabilityStatusResponseDTO responseDTO) {
         responseDTO.setResponseStatus(OK);
         responseDTO.setResponseCode(OK.value());
+    }
+
+    public static DoctorAvailabilityStatusResponseDTO parseToDoctorAvailabilityStatusResponseDTO(Object[] queryResult) {
+        String doctorName = (String) get(queryResult, 0);
+        Character dayOffStatus = (Character) get(queryResult, 1);
+
+        if (dayOffStatus.equals(NO))
+            return DoctorAvailabilityStatusResponseDTO.builder()
+                    .status("Y")
+                    .message(doctorName + " IS AVAILABLE FOR THE DAY.")
+                    .responseCode(OK.value())
+                    .responseStatus(OK)
+                    .build();
+        else
+            return DoctorAvailabilityStatusResponseDTO.builder()
+                    .status("N")
+                    .message(doctorName + " IS NOT AVAILABLE FOR THE DAY.")
+                    .responseCode(OK.value())
+                    .responseStatus(OK)
+                    .build();
     }
 }

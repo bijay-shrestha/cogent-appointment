@@ -18,6 +18,7 @@ import org.springframework.util.ObjectUtils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
@@ -53,12 +54,9 @@ public class EsewaServiceImpl implements EsewaService {
         DoctorAvailabilityStatusResponseDTO doctorAvailableStatus =
                 dutyRosterOverrideRepository.fetchDoctorDutyRosterOverrideStatus(requestDTO);
 
-        DoctorAvailabilityStatusResponseDTO responseDTO =
-                doctorAvailableStatus.getCount() > 0
-                        ? doctorAvailableStatus
-                        : dutyRosterRepository.fetchDoctorDutyRosterStatus(requestDTO);
-
-        parseDoctorAvailabilityResponseStatus(responseDTO);
+        DoctorAvailabilityStatusResponseDTO responseDTO = (!Objects.isNull(doctorAvailableStatus))
+                ? doctorAvailableStatus
+                : dutyRosterRepository.fetchDoctorDutyRosterStatus(requestDTO);
 
         log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_AVAILABLE_STATUS, getDifferenceBetweenTwoTime(startTime));
 

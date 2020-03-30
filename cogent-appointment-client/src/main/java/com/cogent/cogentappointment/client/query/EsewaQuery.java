@@ -57,27 +57,27 @@ public class EsewaQuery {
     public static String QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_STATUS(AppointmentDetailRequestDTO requestDTO) {
 
         String query = "SELECT" +
+                " COUNT(ddro.id) as count," +                                       //[0]
                 " CASE WHEN" +
-                "   COUNT(ddro.id)>0" +
+                "   ddro.dayOffStatus = 'N'" +
                 " THEN" +
                 "   'Y'" +
                 " ELSE" +
                 "   'N'" +
-                " END AS status," +                                                 //[0]
+                " END AS status," +                                                 //[1]
                 " CASE WHEN" +
-                "   COUNT(ddro.id)>0" +
+                "   ddro.dayOffStatus = 'Y'" +
                 " THEN" +
                 "   CONCAT(d.name, ' is available for the day')" +
                 " ELSE" +
                 "   CONCAT(d.name, ' is not available for the day')" +
-                " END AS message" +                                                //[1]
+                " END AS message" +                                                //[2]
                 " FROM DoctorDutyRoster ddr" +
                 " LEFT JOIN DoctorDutyRosterOverride ddro ON ddr.id = ddro.doctorDutyRosterId.id" +
                 " LEFT JOIN Doctor d ON d.id = ddr.doctorId.id" +
                 " WHERE" +
                 " ddr.status = 'Y'" +
                 " AND ddro.status = 'Y'" +
-                " AND ddro.dayOffStatus = 'N'" +
                 " AND ddr.hospitalId.id =:hospitalId" +
                 " AND (:date BETWEEN ddro.fromDate AND ddro.toDate)";
 

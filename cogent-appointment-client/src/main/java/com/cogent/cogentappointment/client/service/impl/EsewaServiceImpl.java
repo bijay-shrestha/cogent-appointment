@@ -54,7 +54,7 @@ public class EsewaServiceImpl implements EsewaService {
                 dutyRosterOverrideRepository.fetchDoctorDutyRosterOverrideStatus(requestDTO);
 
         DoctorAvailabilityStatusResponseDTO responseDTO =
-                doctorAvailableStatus.getStatus().equals("Y")
+                doctorAvailableStatus.getCount() > 0
                         ? doctorAvailableStatus
                         : dutyRosterRepository.fetchDoctorDutyRosterStatus(requestDTO);
 
@@ -120,7 +120,7 @@ public class EsewaServiceImpl implements EsewaService {
             checkIfOverrideExists(doctorDutyRosterAppointmentDate, appointmentDatesResponseDTO, appointmentDateAndTime);
         }
 
-        AppointmentDatesResponseDTO responseDTO=getFinalResponse(requestDTO, appointmentDateAndTime);
+        AppointmentDatesResponseDTO responseDTO = getFinalResponse(requestDTO, appointmentDateAndTime);
 
         if (ObjectUtils.isEmpty(responseDTO.getDates()))
             throw APPOINTMENT_NOT_AVAILABLE.get();

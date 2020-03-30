@@ -35,6 +35,8 @@ public class HospitalHistory implements Serializable {
     @JoinColumn(name = "hospital_id", foreignKey = @ForeignKey(name = "FK_hospital_history_hospital"))
     private Hospital hospital;
 
+    @Column(name = "hospital_content")
+    @Lob
     private String hospitalContent;
 
     @CreatedBy

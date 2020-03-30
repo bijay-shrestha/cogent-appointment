@@ -45,6 +45,7 @@ public class WebResourceKeyConstants {
 
     public interface CompanyConstants {
         String BASE_COMPANY = "/company";
+        String COMPANY_ID_PATH_VARIABLE_BASE = "/{companyId}";
     }
 
     public interface CompanyAdminConstants {
@@ -75,7 +76,7 @@ public class WebResourceKeyConstants {
         String APPOINTMENT_QUEUE = "/today-appointment";
         String APPOINTMENT_QUEUE_BY_TIME = "/today-appointment-timely";
         String REVENUE_TREND = "/revenueTrend";
-        String DOCTOR_REVENUE="/doctorRevenue";
+        String DOCTOR_REVENUE = "/doctorRevenue";
         String TOTAL_REFUNDED_AMOUNT = "/totalRefundedAmount";
     }
 

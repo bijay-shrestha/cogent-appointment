@@ -112,6 +112,7 @@ public class SwaggerConstants {
         String SEARCH_OPERATION = "Search company profile according to given request parameters";
         String DETAILS_OPERATION = "Fetch company profile details by id";
         String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal company profile details (id and name) for dropdown";
+        String FETCH_MIN_DETAILS_BY_COMPANY_ID = "Fetch minimal company profile details (id and name) for dropdown by company id";
     }
 
     //D

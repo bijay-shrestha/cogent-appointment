@@ -165,6 +165,21 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
         return minInfo;
     }
 
+    @Override
+    public List<DropDownResponseDTO> fetchMinActiveCompanyProfileByCompanyId(Long companyId) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, COMPANY_PROFILE);
+
+        List<DropDownResponseDTO> minInfo =
+                companyProfileRepository.fetchMinActiveCompanyProfileByCompanyId(companyId);
+
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, COMPANY_PROFILE, getDifferenceBetweenTwoTime(startTime));
+
+        return minInfo;
+    }
+
     private void validateName(Long profileCount, String name) {
         if (profileCount.intValue() > 0)
             throw new DataDuplicationException(

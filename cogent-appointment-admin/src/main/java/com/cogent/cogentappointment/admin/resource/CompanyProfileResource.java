@@ -16,6 +16,7 @@ import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.CompanyProfileConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.CompanyConstants.COMPANY_ID_PATH_VARIABLE_BASE;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.CompanyProfileConstants.BASE_COMPANY_PROFILE;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
@@ -75,5 +76,11 @@ public class CompanyProfileResource {
     @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
     public ResponseEntity<?> fetchMinActiveCompanyProfile() {
         return ok(companyProfileService.fetchMinActiveCompanyProfile());
+    }
+
+    @GetMapping(ACTIVE + MIN + COMPANY_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_MIN_DETAILS_BY_COMPANY_ID)
+    public ResponseEntity<?> fetchMinActiveCompanyProfile(@PathVariable("companyId") Long companyId) {
+        return ok(companyProfileService.fetchMinActiveCompanyProfileByCompanyId(companyId));
     }
 }

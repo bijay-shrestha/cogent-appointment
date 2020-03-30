@@ -109,6 +109,16 @@ public class CompanyProfileRepositoryCustomImpl implements CompanyProfileReposit
         else return results;
     }
 
+    @Override
+    public List<DropDownResponseDTO> fetchMinActiveCompanyProfileByCompanyId(Long companyId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_COMPANY_PROFILES_BY_COMPANY_ID);
+
+        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
+
+        if (results.isEmpty()) throw COMPANY_PROFILES_NOT_FOUND.get();
+        else return results;
+    }
+
     private Supplier<NoContentFoundException> COMPANY_PROFILES_NOT_FOUND =
             () -> new NoContentFoundException(Profile.class);
 

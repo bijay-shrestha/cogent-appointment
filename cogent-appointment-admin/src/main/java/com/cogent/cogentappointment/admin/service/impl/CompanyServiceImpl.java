@@ -10,14 +10,12 @@ import com.cogent.cogentappointment.admin.dto.response.company.CompanyDropdownRe
 import com.cogent.cogentappointment.admin.dto.response.company.CompanyMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.company.CompanyResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalDropdownResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.HmacApiInfoRepository;
 import com.cogent.cogentappointment.admin.repository.HospitalContactNumberRepository;
 import com.cogent.cogentappointment.admin.repository.HospitalLogoRepository;
 import com.cogent.cogentappointment.admin.repository.HospitalRepository;
 import com.cogent.cogentappointment.admin.service.CompanyService;
-import com.cogent.cogentappointment.admin.service.FileService;
 import com.cogent.cogentappointment.admin.service.MinioFileService;
 import com.cogent.cogentappointment.persistence.model.HmacApiInfo;
 import com.cogent.cogentappointment.persistence.model.Hospital;

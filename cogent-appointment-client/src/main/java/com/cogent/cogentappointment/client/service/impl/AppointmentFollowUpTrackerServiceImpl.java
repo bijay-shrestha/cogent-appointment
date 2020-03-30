@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.client.service.impl;
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentFollowUpRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentFollowUpResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospital.HospitalFollowUpResponseDTO;
+import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.AppointmentFollowUpTrackerRepository;
 import com.cogent.cogentappointment.client.repository.DoctorRepository;
 import com.cogent.cogentappointment.client.repository.HospitalRepository;
@@ -155,6 +156,15 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
         });
 
         log.info(UPDATING_PROCESS_COMPLETED, APPOINTMENT_FOLLOW_UP_TRACKER_STATUS, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    @Override
+    public Long fetchAppointmentFollowUpTrackerByParentAppointmentId(Long parentAppointmentId) {
+
+        Long appointmentFollowUpTrackerId =
+                appointmentFollowUpTrackerRepository.fetchByParentAppointmentId(parentAppointmentId)
+                        .orElseThrow(() -> new NoContentFoundException(AppointmentFollowUpTracker.class));
+        return null;
     }
 
     /* TO BE A FOLLOW UP APPOINTMENT:

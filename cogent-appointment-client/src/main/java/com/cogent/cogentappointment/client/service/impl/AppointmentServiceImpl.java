@@ -750,6 +750,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private void saveAppointmentFollowUpRequestLog(){
 
+
     }
 
     private void saveAppointmentFollowUpTracker(Appointment appointment) {

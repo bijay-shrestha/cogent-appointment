@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ERROR_LOG;
 import static com.cogent.cogentappointment.admin.log.constants.DepartmentLog.DEPARTMENT;
 import static com.cogent.cogentappointment.admin.query.DepartmentQuery.*;
@@ -92,7 +93,7 @@ public class DepartmentRepositoryCustomImpl implements DepartmentRepositoryCusto
         try {
             return transformQueryToSingleResult(query, DepartmentResponseDTO.class);
         } catch (NoResultException e) {
-            error();
+            log.error(CONTENT_NOT_FOUND_BY_ID,DEPARTMENT,id);
             throw new NoContentFoundException(Department.class, "id", id.toString());
         }
     }

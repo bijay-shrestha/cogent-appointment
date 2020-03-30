@@ -27,6 +27,7 @@ import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.HOSPITAL_ID;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.ID;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ERROR_LOG;
 import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.HOSPITAL;
 import static com.cogent.cogentappointment.admin.query.CompanyQuery.*;
@@ -94,7 +95,10 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
         List<CompanyMinimalResponseDTO> results = transformNativeQueryToResultList(query, CompanyMinimalResponseDTO.class);
 
-        if (results.isEmpty()) throw HOSPITAL_NOT_FOUND.get();
+        if (results.isEmpty()){
+            error();
+            throw HOSPITAL_NOT_FOUND.get();
+        }
 
         results.get(0).setTotalItems(totalItems);
         return results;
@@ -108,7 +112,6 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
         List<Object[]> results = query.getResultList();
 
         if (results.isEmpty()) {
-            error();
             throw HOSPITAL_WITH_GIVEN_ID_NOT_FOUND.apply(id);
         }
 
@@ -161,14 +164,17 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
         List<CompanyDropdownResponseDTO> results = transformQueryToResultList(query, CompanyDropdownResponseDTO.class);
 
-        if (results.isEmpty()) throw HOSPITAL_NOT_FOUND.get();
+        if (results.isEmpty()){
+            error();
+            throw HOSPITAL_NOT_FOUND.get();
+        }
         else return results;
     }
 
     private Supplier<NoContentFoundException> HOSPITAL_NOT_FOUND = () -> new NoContentFoundException(Hospital.class);
 
     private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        error();
+        log.error(CONTENT_NOT_FOUND_BY_ID,HOSPITAL,id);
         throw new NoContentFoundException(Hospital.class, "id", id.toString());
     };
 

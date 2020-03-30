@@ -22,6 +22,7 @@ import java.util.List;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ERROR_LOG;
 import static com.cogent.cogentappointment.admin.log.constants.PatientLog.PATIENT;
+import static com.cogent.cogentappointment.admin.log.constants.PatientLog.PATIENT_NOT_FOUND_BY_APPOINTMENT_ID;
 import static com.cogent.cogentappointment.admin.query.DashBoardQuery.QUERY_TO_COUNT_OVERALL_REGISTERED_PATIENTS;
 import static com.cogent.cogentappointment.admin.query.PatientQuery.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
@@ -123,7 +124,7 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
         try {
             return transformQueryToSingleResult(query, PatientMinDetailResponseDTO.class);
         } catch (NoResultException e) {
-            error();
+            log.error(PATIENT_NOT_FOUND_BY_APPOINTMENT_ID,appointmentId);
             throw new NoContentFoundException(Patient.class, "appointmentId", appointmentId.toString());
         }
     }

@@ -14,6 +14,7 @@ import java.util.function.Function;
 
 import static com.cogent.cogentappointment.admin.constants.EmailConstants.ForgotPassword.RESET_CODE;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.ForgotPasswordMessages.INVALID_RESET_CODE;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.INVALID_RESET_CODE_ERROR;
 import static com.cogent.cogentappointment.admin.query.ForgotPasswordVerificationQuery.QUERY_TO_FETCH_EXPIRATION_TIME;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
 
@@ -36,7 +37,7 @@ public class ForgotPasswordRepositoryCustomImpl implements ForgotPasswordReposit
         try {
             return query.getSingleResult();
         } catch (NoResultException ex) {
-            log.error("Invalid Password Reset Code.");
+            log.error(INVALID_RESET_CODE_ERROR, resetCode);
             throw RESET_CODE_NOT_FOUND.apply(resetCode);
         }
     }

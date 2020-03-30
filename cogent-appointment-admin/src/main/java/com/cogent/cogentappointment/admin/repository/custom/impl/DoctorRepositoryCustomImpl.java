@@ -22,6 +22,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ERROR_LOG;
 import static com.cogent.cogentappointment.admin.log.constants.DoctorLog.DOCTOR;
 import static com.cogent.cogentappointment.admin.query.DoctorQuery.*;
@@ -77,7 +78,7 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
 
         if (results.isEmpty()){
 
-            log.error(ERROR_LOG,DOCTOR);
+            error();
             throw DOCTOR_NOT_FOUND.get();
         }
         else {
@@ -93,7 +94,7 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
         List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
         if (results.isEmpty()){
-            log.error(ERROR_LOG,DOCTOR);
+            error();
             throw DOCTOR_NOT_FOUND.get();
         }
         else return results;
@@ -118,7 +119,7 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
         List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
         if (results.isEmpty()){
-            log.error(ERROR_LOG,DOCTOR);
+            error();
             throw DOCTOR_NOT_FOUND.get();
         }
         else return results;
@@ -132,7 +133,7 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
         List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
         if (results.isEmpty()){
-            log.error(ERROR_LOG,DOCTOR);
+            error();
             throw DOCTOR_NOT_FOUND.get();
         }
         else return results;
@@ -158,7 +159,7 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
         List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
         if (results.isEmpty()){
-            log.error(ERROR_LOG,DOCTOR);
+            error();
             throw DOCTOR_NOT_FOUND.get();
         }
         else return results;
@@ -168,7 +169,11 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
             new NoContentFoundException(Doctor.class);
 
     private Function<Long, NoContentFoundException> DOCTOR_WITH_GIVEN_ID_NOT_FOUND = (doctorId) -> {
-        log.error(ERROR_LOG,DOCTOR);
+        log.error(CONTENT_NOT_FOUND_BY_ID,DOCTOR,doctorId);
         throw new NoContentFoundException(Doctor.class, "doctorId", doctorId.toString());
     };
+
+    public void error(){
+        log.error(ERROR_LOG,DOCTOR);
+    }
 }

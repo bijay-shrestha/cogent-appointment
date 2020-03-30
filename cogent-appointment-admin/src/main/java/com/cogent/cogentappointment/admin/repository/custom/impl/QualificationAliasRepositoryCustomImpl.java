@@ -83,7 +83,6 @@ public class QualificationAliasRepositoryCustomImpl implements QualificationAlia
         if (results.isEmpty()) {
 
             error();
-
             throw QUALIFICATION_ALIAS_NOT_FOUND.get();
         } else {
             results.get(0).setTotalItems(totalItems);

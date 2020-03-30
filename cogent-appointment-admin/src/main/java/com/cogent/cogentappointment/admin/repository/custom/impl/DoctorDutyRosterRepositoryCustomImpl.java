@@ -25,6 +25,7 @@ import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ERROR_LOG;
 import static com.cogent.cogentappointment.admin.log.constants.DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER;
 import static com.cogent.cogentappointment.admin.query.DoctorDutyRosterOverrideQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_DETAILS;
@@ -186,7 +187,7 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
 
     private Function<Long, NoContentFoundException> DOCTOR_DUTY_ROSTER_WITH_GIVEN_ID_NOT_FOUND =
             (doctorDutyRosterId) -> {
-                error();
+               log.error(CONTENT_NOT_FOUND_BY_ID,DOCTOR_DUTY_ROSTER,doctorDutyRosterId);
                 throw new NoContentFoundException
                         (DoctorDutyRoster.class, "doctorDutyRosterId", doctorDutyRosterId.toString());
             };

@@ -8,7 +8,6 @@ import com.cogent.cogentappointment.admin.dto.request.department.DepartmentUpdat
 import com.cogent.cogentappointment.admin.dto.response.department.DepartmentMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.department.DepartmentResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.log.constants.DepartmentLog;
 import com.cogent.cogentappointment.admin.repository.DepartmentRepository;
 import com.cogent.cogentappointment.admin.service.DepartmentService;
 import com.cogent.cogentappointment.admin.service.HospitalService;
@@ -24,6 +23,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
+import static com.cogent.cogentappointment.admin.log.constants.DepartmentLog.CONTENT_NOT_FOUND_BY_HOSPITAL_ID;
 import static com.cogent.cogentappointment.admin.log.constants.DepartmentLog.DEPARTMENT;
 import static com.cogent.cogentappointment.admin.utils.DepartmentUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
@@ -169,7 +169,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DEPARTMENT);
 
         List<DropDownResponseDTO> responseDTOS = departmentRepository.fetchDepartmentByHospitalId(hospitalId)
-                .orElseThrow(() -> DEPARTMENT_NOT_FOUND.get());
+                .orElseThrow(() -> DEPARTMENT_BY_GIVEN_HOSPITAL_ID_NOT_FOUND.apply(hospitalId));
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
 
@@ -195,5 +195,10 @@ public class DepartmentServiceImpl implements DepartmentService {
     private Function<Long, NoContentFoundException> DEPARTMENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID,DEPARTMENT, id);
         throw new NoContentFoundException(Department.class, "id", id.toString());
+    };
+
+    private Function<Long, NoContentFoundException> DEPARTMENT_BY_GIVEN_HOSPITAL_ID_NOT_FOUND = (hospitalId) -> {
+        log.error(CONTENT_NOT_FOUND_BY_HOSPITAL_ID,hospitalId);
+        throw new NoContentFoundException(Department.class, "hospitalId", hospitalId.toString());
     };
 }

@@ -14,6 +14,7 @@ import javax.persistence.Query;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.CONFIRMATION_TOKEN;
+import static com.cogent.cogentappointment.admin.log.constants.AdminLog.CONFORMATION_TOKEN_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.query.AdminConfirmationTokenQuery.QUERY_TO_FETCH_CONFIRMATION_TOKEN_STATUS;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
 
@@ -35,12 +36,13 @@ public class AdminConfirmationTokenRepositoryCustomImpl implements AdminConfirma
         try {
             return query.getSingleResult();
         } catch (NoResultException ex) {
-            log.error("CONFORMATION TOKEN NOT FOUND");
             throw CONFIRMATION_TOKEN_NOT_FOUND.apply(confirmationToken);
         }
     }
 
     private Function<String, NoContentFoundException> CONFIRMATION_TOKEN_NOT_FOUND = (confirmationToken) -> {
-        throw new NoContentFoundException(ErrorMessageConstants.AdminServiceMessages.INVALID_CONFIRMATION_TOKEN, "confirmationToken", confirmationToken);
+        log.error(CONFORMATION_TOKEN_NOT_FOUND,confirmationToken);
+        throw new NoContentFoundException(ErrorMessageConstants.AdminServiceMessages.INVALID_CONFIRMATION_TOKEN,
+                "confirmationToken", confirmationToken);
     };
 }

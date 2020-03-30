@@ -13,4 +13,8 @@ public class PatientLog {
 
     public static final String REGISTERING_PATIENT_PROCESS_COMPLETED = ":::: REGISTERING PATIENT PROCESS COMPLETED" +
             " IN {} ms ::::";
+
+    public final static String PATIENT_NOT_FOUND_BY_APPOINTMENT_ID="::: Patient with appointmentId : {} not found :::";
+
+
 }

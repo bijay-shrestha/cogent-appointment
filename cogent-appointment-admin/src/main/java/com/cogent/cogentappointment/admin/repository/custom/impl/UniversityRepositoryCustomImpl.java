@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ERROR_LOG;
 import static com.cogent.cogentappointment.admin.log.constants.UniversityLog.UNIVERSITY;
 import static com.cogent.cogentappointment.admin.query.UniversityQuery.*;
@@ -85,7 +86,7 @@ public class UniversityRepositoryCustomImpl implements UniversityRepositoryCusto
         try {
             return transformQueryToSingleResult(query, UniversityResponseDTO.class);
         } catch (NoResultException e) {
-            error();
+            log.error(CONTENT_NOT_FOUND_BY_ID,UNIVERSITY,id);
             throw new NoContentFoundException(University.class, "id", id.toString());
         }
     }

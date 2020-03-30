@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.constants.ErrorMessageConstants;
+import com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages;
 import com.cogent.cogentappointment.admin.constants.StatusConstants;
 import com.cogent.cogentappointment.admin.dto.request.admin.AdminInfoRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.AdminSearchRequestDTO;
@@ -28,6 +29,7 @@ import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ERROR_LOG;
 import static com.cogent.cogentappointment.admin.log.constants.AdminLog.ADMIN;
+import static com.cogent.cogentappointment.admin.log.constants.AdminLog.ADMIN_NOT_FOUND_ERROR;
 import static com.cogent.cogentappointment.admin.query.AdminQuery.*;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
@@ -141,7 +143,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         try {
             return transformQueryToSingleResult(query, AdminLoggedInInfoResponseDTO.class);
         } catch (NoResultException e) {
-            error();
+            log.error(ADMIN_INFO_NOT_FOUND);
             throw new NoContentFoundException(ADMIN_INFO_NOT_FOUND);
         }
     }
@@ -165,7 +167,6 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         List<Object[]> results = query.getResultList();
 
         if (results.isEmpty()) {
-            error();
             throw ADMIN_WITH_GIVEN_ID_NOT_FOUND.apply(id);
         }
 
@@ -187,8 +188,8 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     };
 
     private Function<String, NoContentFoundException> ADMIN_NOT_FOUND = (username) -> {
-        error();
-        throw new NoContentFoundException(String.format(ErrorMessageConstants.AdminServiceMessages.ADMIN_NOT_FOUND, username),
+        log.error(ADMIN_NOT_FOUND_ERROR,username);
+        throw new NoContentFoundException(String.format(AdminServiceMessages.ADMIN_NOT_FOUND, username),
                 "username/email", username);
     };
 

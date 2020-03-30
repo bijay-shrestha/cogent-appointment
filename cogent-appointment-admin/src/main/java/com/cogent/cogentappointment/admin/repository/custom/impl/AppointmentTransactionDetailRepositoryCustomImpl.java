@@ -7,7 +7,6 @@ import com.cogent.cogentappointment.admin.dto.response.dashboard.DoctorRevenueRe
 import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueTrendResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.AppointmentTransactionDetailRepositoryCustom;
-import com.cogent.cogentappointment.admin.utils.DoctorUtils;
 import com.cogent.cogentappointment.persistence.model.AppointmentTransactionDetail;
 import com.cogent.cogentappointment.persistence.model.Doctor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +25,6 @@ import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ERROR_LOG;
-import static com.cogent.cogentappointment.admin.log.constants.DashboardLog.DOCTOR_REVENUE;
 import static com.cogent.cogentappointment.admin.query.DashBoardQuery.*;
 import static com.cogent.cogentappointment.admin.utils.DashboardUtils.revenueStatisticsResponseDTO;
 import static com.cogent.cogentappointment.admin.utils.DoctorUtils.parseTodoctorRevenueResponseListDTO;
@@ -114,6 +112,6 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
             new NoContentFoundException(AppointmentTransactionDetail.class);
 
     private void error() {
-        log.error(ERROR_LOG,DOCTOR_REVENUE );
+        log.error(ERROR_LOG,AppointmentTransactionDetail.class.getSimpleName() );
     }
 }

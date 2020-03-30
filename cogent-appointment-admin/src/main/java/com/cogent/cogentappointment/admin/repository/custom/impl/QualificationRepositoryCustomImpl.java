@@ -23,6 +23,7 @@ import java.util.function.Supplier;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.HOSPITAL_ID;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.ID;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.NAME;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ERROR_LOG;
 import static com.cogent.cogentappointment.admin.log.constants.QualificationLog.QUALIFICATION;
 import static com.cogent.cogentappointment.admin.query.QualificationQuery.*;
@@ -88,7 +89,7 @@ public class QualificationRepositoryCustomImpl implements QualificationRepositor
         try {
             return transformQueryToSingleResult(query, QualificationResponseDTO.class);
         } catch (NoResultException e) {
-            error();
+            log.error(CONTENT_NOT_FOUND_BY_ID,QUALIFICATION,id);
             throw new NoContentFoundException(Qualification.class, "id", id.toString());
         }
     }

@@ -49,6 +49,8 @@ public class CommonLogConstant {
 
     public final static String USER_NOT_FOUND="::: User with name: {} not found :::";
 
+    public final static String INVALID_RESET_CODE_ERROR="Invalid Password Reset Code {}.";
+
     //H
 
     //I

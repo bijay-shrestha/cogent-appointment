@@ -21,6 +21,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ERROR_LOG;
 import static com.cogent.cogentappointment.admin.log.constants.SpecializationLog.SPECIALIZATION;
 import static com.cogent.cogentappointment.admin.query.SpecializationQuery.*;
@@ -131,7 +132,7 @@ public class SpecializationRepositoryCustomImpl implements SpecializationReposit
     }
 
     private Function<Long, NoContentFoundException> SPECIALIZATION_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        error();
+        log.error(CONTENT_NOT_FOUND_BY_ID,SPECIALIZATION,id);
         throw new NoContentFoundException(Specialization.class, "id", id.toString());
     };
 

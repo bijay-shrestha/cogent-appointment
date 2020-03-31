@@ -28,7 +28,7 @@ import static com.cogent.cogentappointment.admin.constants.StatusConstants.Appoi
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.HYPHEN;
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ERROR_LOG;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.APPOINTMENT;
@@ -222,7 +222,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
 
         /*THROW EXCEPTION IF NO APPOINTMENT EXISTS FOR THE SELECTED STATUS*/
         if (appointments.isEmpty()){
-            log.error(ERROR_LOG,APPOINTMENT);
+            log.error(CONTENT_NOT_FOUND,APPOINTMENT);
             throw new NoContentFoundException(Appointment.class);
         }
 
@@ -308,7 +308,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
     /*IF DOCTOR DUTY ROSTERS IS NOT SET UP, THEN THROW EXCEPTION*/
     private void validateDoctorDutyRosterStatus(List<DoctorDutyRosterStatusResponseDTO> doctorDutyRosterStatus) {
         if (doctorDutyRosterStatus.isEmpty())
-            log.error(ERROR_LOG,DOCTOR_DUTY_ROSTER);
+            log.error(CONTENT_NOT_FOUND,DOCTOR_DUTY_ROSTER);
             throw new NoContentFoundException(DoctorDutyRoster.class);
     }
 }

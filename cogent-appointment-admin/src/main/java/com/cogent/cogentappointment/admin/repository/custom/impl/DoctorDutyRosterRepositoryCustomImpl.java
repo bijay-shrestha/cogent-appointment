@@ -26,7 +26,7 @@ import java.util.function.Supplier;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ERROR_LOG;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER;
 import static com.cogent.cogentappointment.admin.query.DoctorDutyRosterOverrideQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_DETAILS;
 import static com.cogent.cogentappointment.admin.query.DoctorDutyRosterQuery.*;
@@ -200,6 +200,6 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
     }
 
     private void error() {
-        log.error(ERROR_LOG, DOCTOR_DUTY_ROSTER);
+        log.error(CONTENT_NOT_FOUND, DOCTOR_DUTY_ROSTER);
     }
 }

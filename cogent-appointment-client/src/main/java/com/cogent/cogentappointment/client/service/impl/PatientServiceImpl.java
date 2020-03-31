@@ -373,15 +373,17 @@ public class PatientServiceImpl implements PatientService {
     }
 
     private Function<Long, NoContentFoundException> PATIENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID,PATIENT,id);
         throw new NoContentFoundException(Patient.class, "patientId", id.toString());
     };
 
     private Patient fetchPatientByIdAndHospitalId(Long id, Long hospitalId) {
         return patientRepository.fetchPatientByIdAndHospitalId(id, hospitalId).orElseThrow(() ->
-                new NoContentFoundException(Patient.class));
+                NoContentFoundException());
     }
 
     private static void PATIENT_DUPLICATION_EXCEPTION(String name, String mobileNumber, Date dateOfBirth) {
+        log.error(NAME_AND_MOBILE_NUMBER_DUPLICATION_ERROR,PATIENT,name, mobileNumber, utilDateToSqlDate(dateOfBirth));
         throw new DataDuplicationException(String.format(DUPLICATE_PATIENT_MESSAGE,
                 name, mobileNumber, utilDateToSqlDate(dateOfBirth))
         );
@@ -389,7 +391,7 @@ public class PatientServiceImpl implements PatientService {
 
     private HospitalPatientInfo fetchHospitalPatientInfoById(Long hospitalPatientInfoId) {
         return hospitalPatientInfoRepository.fetchHospitalPatientInfoById(hospitalPatientInfoId)
-                .orElseThrow(() -> new NoContentFoundException(Patient.class));
+                .orElseThrow(() -> NoContentFoundException());
     }
 
     private void saveHospitalPatientInfo(HospitalPatientInfo hospitalPatientInfo) {
@@ -399,6 +401,12 @@ public class PatientServiceImpl implements PatientService {
     private void savePatientMetaInfo(PatientMetaInfo patientMetaInfo) {
         patientMetaInfoRepository.save(patientMetaInfo);
     }
+
+    private NoContentFoundException NoContentFoundException(){
+        log.error(CONTENT_NOT_FOUND,PATIENT);
+        throw new NoContentFoundException(Patient.class);
+    }
+
 
 }
 

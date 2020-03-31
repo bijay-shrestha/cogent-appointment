@@ -23,7 +23,7 @@ import java.util.Optional;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ERROR_LOG;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.DepartmentLog.DEPARTMENT;
 import static com.cogent.cogentappointment.admin.query.DepartmentQuery.*;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
@@ -129,7 +129,7 @@ public class DepartmentRepositoryCustomImpl implements DepartmentRepositoryCusto
     }
 
     private void error() {
-        log.error(ERROR_LOG, DEPARTMENT);
+        log.error(CONTENT_NOT_FOUND, DEPARTMENT);
     }
 }
 

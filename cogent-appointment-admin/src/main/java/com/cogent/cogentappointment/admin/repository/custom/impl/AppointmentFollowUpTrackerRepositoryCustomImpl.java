@@ -12,7 +12,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.AppointmentFollowUpTrackerConstants.PARENT_APPOINTMENT_ID;
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ERROR_LOG;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentFollowUpTrackerLog.APPOINTMENT_FOLLOW_UP_TRACKER;
 import static com.cogent.cogentappointment.admin.query.AppointmentFollowUpTrackerQuery.QUERY_TO_FETCH_LATEST_APPOINTMENT_FOLLOW_UP_TRACKER;
 
@@ -42,7 +42,7 @@ public class AppointmentFollowUpTrackerRepositoryCustomImpl implements Appointme
     }
 
     private void error() {
-        log.error(ERROR_LOG, APPOINTMENT_FOLLOW_UP_TRACKER);
+        log.error(CONTENT_NOT_FOUND, APPOINTMENT_FOLLOW_UP_TRACKER);
     }
 
 

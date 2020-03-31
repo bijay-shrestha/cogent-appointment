@@ -133,7 +133,9 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     }
 
     private void validateExpirationTime(Object expirationTime) {
-        if (((Date) expirationTime).before(new Date())) throw RESET_CODE_HAS_EXPIRED.get();
+        if (((Date) expirationTime).before(new Date())){
+            log.error(RESET_CODE_EXPIRED);
+            throw RESET_CODE_HAS_EXPIRED.get();}
     }
 
     public void save(ForgotPasswordVerification forgotPasswordVerification) {

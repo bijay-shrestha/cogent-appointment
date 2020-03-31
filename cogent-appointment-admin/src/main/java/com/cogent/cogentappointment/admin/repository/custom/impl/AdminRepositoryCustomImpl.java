@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
-import com.cogent.cogentappointment.admin.constants.ErrorMessageConstants;
 import com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages;
 import com.cogent.cogentappointment.admin.constants.StatusConstants;
 import com.cogent.cogentappointment.admin.dto.request.admin.AdminInfoRequestDTO;
@@ -27,7 +26,7 @@ import java.util.function.Supplier;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.ADMIN_INFO_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ERROR_LOG;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.AdminLog.ADMIN;
 import static com.cogent.cogentappointment.admin.log.constants.AdminLog.ADMIN_NOT_FOUND_ERROR;
 import static com.cogent.cogentappointment.admin.query.AdminQuery.*;
@@ -194,7 +193,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     };
 
     private void error() {
-        log.error(ERROR_LOG, ADMIN);
+        log.error(CONTENT_NOT_FOUND, ADMIN);
     }
 }
 

@@ -19,7 +19,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ERROR_LOG;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER_OVERRIDE;
 import static com.cogent.cogentappointment.admin.query.DoctorDutyRosterOverrideQuery.*;
 import static com.cogent.cogentappointment.admin.utils.DoctorDutyRosterOverrideUtils.parseQueryResultToDoctorDutyRosterStatusResponseDTO;
@@ -105,7 +105,7 @@ public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyR
             new NoContentFoundException(DoctorDutyRosterOverride.class);
 
     private void error() {
-        log.error(ERROR_LOG, DOCTOR_DUTY_ROSTER_OVERRIDE);
+        log.error(CONTENT_NOT_FOUND, DOCTOR_DUTY_ROSTER_OVERRIDE);
     }
 
 }

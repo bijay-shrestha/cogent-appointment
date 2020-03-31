@@ -13,7 +13,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
 
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ERROR_LOG;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.AdminLog.ADMIN_META_INFO;
 import static com.cogent.cogentappointment.admin.query.AdminQuery.QUERY_TO_FETCH_ADMIN_META_INFO;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
@@ -45,6 +45,6 @@ public class AdminMetaInfoRepositoryCustomImpl implements AdminMetaInfoRepositor
     }
 
     private void error() {
-        log.error(ERROR_LOG, ADMIN_META_INFO);
+        log.error(CONTENT_NOT_FOUND, ADMIN_META_INFO);
     }
 }

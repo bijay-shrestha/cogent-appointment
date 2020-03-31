@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.ID;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.NAME;
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ERROR_LOG;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.QualificationAliasLog.QUALIFICATION_ALIAS;
 import static com.cogent.cogentappointment.admin.query.QualificationAliasQuery.*;
 import static com.cogent.cogentappointment.admin.query.QualificationQuery.QUERY_TO_VALIDATE_DUPLICITY;
@@ -95,6 +95,6 @@ public class QualificationAliasRepositoryCustomImpl implements QualificationAlia
 
 
     private void error() {
-        log.error(ERROR_LOG, QUALIFICATION_ALIAS);
+        log.error(CONTENT_NOT_FOUND, QUALIFICATION_ALIAS);
     }
 }

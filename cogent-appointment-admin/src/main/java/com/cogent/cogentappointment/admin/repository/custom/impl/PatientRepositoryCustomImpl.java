@@ -20,7 +20,7 @@ import javax.persistence.Query;
 import java.util.List;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ERROR_LOG;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.PatientLog.PATIENT;
 import static com.cogent.cogentappointment.admin.log.constants.PatientLog.PATIENT_NOT_FOUND_BY_APPOINTMENT_ID;
 import static com.cogent.cogentappointment.admin.query.DashBoardQuery.QUERY_TO_COUNT_OVERALL_REGISTERED_PATIENTS;
@@ -130,6 +130,6 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
     }
 
     private void error() {
-        log.error(ERROR_LOG,PATIENT );
+        log.error(CONTENT_NOT_FOUND,PATIENT );
     }
 }

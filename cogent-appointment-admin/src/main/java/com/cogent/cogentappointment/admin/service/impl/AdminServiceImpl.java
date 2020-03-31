@@ -315,9 +315,10 @@ public class AdminServiceImpl implements AdminService {
 
     private void validateStatus(Object status) {
 
-        if (status.equals(INACTIVE))
+        if (status.equals(INACTIVE)) {
             log.error("ADMIN ALREADY REGISTERED");
-        throw ADMIN_ALREADY_REGISTERED.get();
+            throw ADMIN_ALREADY_REGISTERED.get();
+        }
     }
 
     private void validateAdminDuplicity(List<Object[]> adminList, String requestUsername, String requestEmail,
@@ -332,8 +333,10 @@ public class AdminServiceImpl implements AdminService {
             boolean isEmailExists = requestEmail.equalsIgnoreCase((String) get(admin, EMAIL));
             boolean isMobileNumberExists = requestMobileNumber.equalsIgnoreCase((String) get(admin, MOBILE_NUMBER));
 
-            if (isUsernameExists && isEmailExists && isMobileNumberExists)
+            if (isUsernameExists && isEmailExists && isMobileNumberExists){
+                log.error(ADMIN_DUPLICATION_MESSAGE);
                 throw ADMIN_DUPLICATION.get();
+            }
 
             validateUsername(isUsernameExists, requestUsername);
             validateEmail(isEmailExists, requestEmail);
@@ -508,7 +511,7 @@ public class AdminServiceImpl implements AdminService {
 
     private Consumer<List<String>> validateMacAddressInfoSize = (macInfos) -> {
         if (ObjectUtils.isEmpty(macInfos))
-            log.error(ERROR_LOG, AdminMacAddressInfo.class.getSimpleName());
+            log.error(CONTENT_NOT_FOUND, AdminMacAddressInfo.class.getSimpleName());
         throw new NoContentFoundException(AdminMacAddressInfo.class);
     };
 
@@ -530,14 +533,14 @@ public class AdminServiceImpl implements AdminService {
             new DataDuplicationException(ADMIN_DUPLICATION_MESSAGE);
 
     private Function<Long, NoContentFoundException> ADMIN_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        log.error(CONTENT_NOT_FOUND_BY_ID,ADMIN, id);
+        log.error(CONTENT_NOT_FOUND_BY_ID, ADMIN, id);
         throw new NoContentFoundException(Admin.class, "id", id.toString());
     };
 
     private Supplier<BadRequestException> ADMIN_ALREADY_REGISTERED = () -> new BadRequestException(ADMIN_REGISTERED);
 
     private Function<String, NoContentFoundException> CONFIRMATION_TOKEN_NOT_FOUND = (confirmationToken) -> {
-        log.error(INVALID_CONFIRMATION_TOKEN_ERROR);
+        log.error(INVALID_CONFIRMATION_TOKEN_ERROR, confirmationToken);
         throw new NoContentFoundException(INVALID_CONFIRMATION_TOKEN, "confirmationToken", confirmationToken);
     };
 

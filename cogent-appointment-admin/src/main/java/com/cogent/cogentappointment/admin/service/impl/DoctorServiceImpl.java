@@ -464,7 +464,7 @@ public class DoctorServiceImpl implements DoctorService {
     };
 
     private Function<Long, NoContentFoundException> DOCTOR_APPOINTMENT_CHARGE_WITH_GIVEN_DOCTOR_ID_NOT_FOUND = (doctorId) -> {
-        log.error(CONTENT_NOT_FOUND_BY_ID,DoctorAppointmentCharge.class.getSimpleName(),doctorId);
+        log.error(DOCTOR_APPOINTMENT_CHARGE_NOT_FOUND,DoctorAppointmentCharge.class.getSimpleName(),doctorId);
         throw new NoContentFoundException(DoctorAppointmentCharge.class, "doctorId", doctorId.toString());
     };
 }

@@ -51,6 +51,7 @@ import static com.cogent.cogentappointment.client.constants.StatusConstants.Appo
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.*;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentReservationLog.APPOINTMENT_RESERVATION_LOG;
+import static com.cogent.cogentappointment.client.log.constants.PatientLog.PATIENT;
 import static com.cogent.cogentappointment.client.utils.AppointmentFollowUpLogUtils.parseToAppointmentFollowUpLog;
 import static com.cogent.cogentappointment.client.utils.AppointmentTransactionDetailUtils.parseToAppointmentTransactionInfo;
 import static com.cogent.cogentappointment.client.utils.AppointmentUtils.*;
@@ -599,6 +600,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private void validateAppointmentExists(Long appointmentCount, String appointmentTime) {
         if (appointmentCount.intValue() > 0)
+            log.error(APPOINTMENT_EXISTS, convert24HourTo12HourFormat(appointmentTime));
             throw new DataDuplicationException(String.format(APPOINTMENT_EXISTS,
                     convert24HourTo12HourFormat(appointmentTime)));
     }
@@ -690,6 +692,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     private Function<Long, NoContentFoundException> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID,APPOINTMENT,id);
         throw new NoContentFoundException(Appointment.class, "id", id.toString());
     };
 
@@ -785,6 +788,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     private static void PATIENT_DUPLICATION_EXCEPTION(String name, String mobileNumber, Date dateOfBirth) {
+        log.error(NAME_AND_MOBILE_NUMBER_DUPLICATION_ERROR,PATIENT,name,mobileNumber,dateOfBirth);
         throw new DataDuplicationException(String.format(DUPLICATE_PATIENT_MESSAGE,
                 name, mobileNumber, utilDateToSqlDate(dateOfBirth))
         );
@@ -804,6 +808,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         boolean isTimeValid = validateIfRequestedAppointmentTimeIsValid(doctorDutyRosterInfo, appointmentInfo);
 
         if (!isTimeValid)
+            log.error(INVALID_APPOINTMENT_TIME, convert24HourTo12HourFormat(appointmentInfo.getAppointmentTime()));
             throw new NoContentFoundException(String.format(INVALID_APPOINTMENT_TIME,
                     convert24HourTo12HourFormat(appointmentInfo.getAppointmentTime())));
     }
@@ -819,6 +824,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         boolean isRequestedBeforeCurrentDateTime = requestDateTime.before(currentDateTime);
 
         if (isRequestedBeforeCurrentDateTime)
+            log.error(INVALID_APPOINTMENT_DATE_TIME);
             throw new BadRequestException(INVALID_APPOINTMENT_DATE_TIME);
     }
 
@@ -858,9 +864,11 @@ public class AppointmentServiceImpl implements AppointmentService {
                 appointmentInfo.getSpecializationId()
         );
 
-        if (doctorDutyRosterInfo.getDayOffStatus().equals(YES))
+        if (doctorDutyRosterInfo.getDayOffStatus().equals(YES)){
+            log.error(DOCTOR_NOT_AVAILABLE, utilDateToSqlDate(appointmentInfo.getAppointmentDate()));
             throw new NoContentFoundException(
                     String.format(DOCTOR_NOT_AVAILABLE, utilDateToSqlDate(appointmentInfo.getAppointmentDate())));
+        }
 
         return doctorDutyRosterInfo;
     }

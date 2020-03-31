@@ -32,7 +32,7 @@ public class AdminLog {
     public static final String VERIFY_CONFIRMATION_TOKEN_PROCESS_COMPLETED = "::::VERIFICATION OF CONFIRMATION TOKEN" +
             " PROCESS COMPLETED IN :::: {} ms";
 
-    public static String INVALID_CONFIRMATION_TOKEN_ERROR = ":::: INVALID CONFIRMATION TOKEN ::::";
+    public static String INVALID_CONFIRMATION_TOKEN_ERROR = ":::: INVALID CONFIRMATION TOKEN: {} ::::";
 
     public final static String ADMIN_NOT_ACTIVE_ERROR=":::: Admin with username/email {} not active ::::";
 

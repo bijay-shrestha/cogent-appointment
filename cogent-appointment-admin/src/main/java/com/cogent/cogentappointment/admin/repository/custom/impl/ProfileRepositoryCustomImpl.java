@@ -23,7 +23,7 @@ import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ERROR_LOG;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.ProfileLog.PROFILE;
 import static com.cogent.cogentappointment.admin.log.constants.ProfileLog.PROFILE_MENU;
 import static com.cogent.cogentappointment.admin.query.ProfileQuery.*;
@@ -155,6 +155,6 @@ public class ProfileRepositoryCustomImpl implements ProfileRepositoryCustom {
     };
 
     private void error(String name) {
-        log.error(ERROR_LOG, name);
+        log.error(CONTENT_NOT_FOUND, name);
     }
 }

@@ -201,4 +201,9 @@ public class DepartmentServiceImpl implements DepartmentService {
         log.error(CONTENT_NOT_FOUND_BY_HOSPITAL_ID,hospitalId);
         throw new NoContentFoundException(Department.class, "hospitalId", hospitalId.toString());
     };
+
+    private NoContentFoundException DEPARTMENT_NOT_FOUND(){
+        log.error(CONTENT_NOT_FOUND,DEPARTMENT);
+        throw new NoContentFoundException(Department.class);
+    }
 }

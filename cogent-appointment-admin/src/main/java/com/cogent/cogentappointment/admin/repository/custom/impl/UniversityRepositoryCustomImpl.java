@@ -21,7 +21,7 @@ import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ERROR_LOG;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.UniversityLog.UNIVERSITY;
 import static com.cogent.cogentappointment.admin.query.UniversityQuery.*;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
@@ -107,6 +107,6 @@ public class UniversityRepositoryCustomImpl implements UniversityRepositoryCusto
             new NoContentFoundException(University.class);
 
     private void error() {
-        log.error(ERROR_LOG, UNIVERSITY);
+        log.error(CONTENT_NOT_FOUND, UNIVERSITY);
     }
 }

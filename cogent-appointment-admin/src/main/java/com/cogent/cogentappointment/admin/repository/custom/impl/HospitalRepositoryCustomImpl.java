@@ -28,7 +28,7 @@ import java.util.function.Supplier;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.HOSPITAL_ID;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.ID;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ERROR_LOG;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.HOSPITAL;
 import static com.cogent.cogentappointment.admin.query.CompanyQuery.*;
 import static com.cogent.cogentappointment.admin.query.HospitalQuery.*;
@@ -179,7 +179,7 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
     };
 
     private void error() {
-        log.error(ERROR_LOG, HOSPITAL);
+        log.error(CONTENT_NOT_FOUND, HOSPITAL);
     }
 }
 

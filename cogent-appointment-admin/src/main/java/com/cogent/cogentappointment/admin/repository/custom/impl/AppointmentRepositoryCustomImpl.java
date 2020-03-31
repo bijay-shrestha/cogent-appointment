@@ -34,7 +34,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ERROR_LOG;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.APPOINTMENT;
 import static com.cogent.cogentappointment.admin.query.AppointmentQuery.*;
 import static com.cogent.cogentappointment.admin.query.DashBoardQuery.*;
@@ -289,6 +289,6 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
             -> new NoContentFoundException(Appointment.class);
 
     private void error() {
-        log.error(ERROR_LOG, APPOINTMENT);
+        log.error(CONTENT_NOT_FOUND, APPOINTMENT);
     }
 }

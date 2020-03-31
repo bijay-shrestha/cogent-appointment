@@ -14,7 +14,7 @@ import javax.persistence.Query;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ERROR_LOG;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.PatientLog.PATIENT_META_INFO;
 import static com.cogent.cogentappointment.admin.query.PatientMetaInfoQuery.QUERY_TO_FETCH_ACTIVE_PATIENT_META_INFO_FOR_DROP_DOWN_BY_HOSPITAL_ID;
 import static com.cogent.cogentappointment.admin.query.PatientMetaInfoQuery.QUERY_TO_FETCH_PATIENT_META_INFO_FOR_DROP_DOWN_BY_HOSPITAL_ID;
@@ -61,6 +61,6 @@ public class PatientMetaInfoRepositoryCustomImpl implements PatientMetaInfoRepos
             -> new NoContentFoundException(PatientMetaInfo.class);
 
     private void error() {
-        log.error(ERROR_LOG, PATIENT_META_INFO);
+        log.error(CONTENT_NOT_FOUND, PATIENT_META_INFO);
     }
 }

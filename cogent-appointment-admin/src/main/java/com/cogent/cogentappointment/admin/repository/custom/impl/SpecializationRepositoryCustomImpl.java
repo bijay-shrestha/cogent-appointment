@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ERROR_LOG;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.SpecializationLog.SPECIALIZATION;
 import static com.cogent.cogentappointment.admin.query.SpecializationQuery.*;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
@@ -141,7 +141,7 @@ public class SpecializationRepositoryCustomImpl implements SpecializationReposit
 
 
     private void error() {
-        log.error(ERROR_LOG, SPECIALIZATION);
+        log.error(CONTENT_NOT_FOUND, SPECIALIZATION);
     }
 }
 

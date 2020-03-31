@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ERROR_LOG;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.query.DashBoardQuery.*;
 import static com.cogent.cogentappointment.admin.utils.DashboardUtils.revenueStatisticsResponseDTO;
 import static com.cogent.cogentappointment.admin.utils.DoctorUtils.parseTodoctorRevenueResponseListDTO;
@@ -112,6 +112,6 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
             new NoContentFoundException(AppointmentTransactionDetail.class);
 
     private void error() {
-        log.error(ERROR_LOG,AppointmentTransactionDetail.class.getSimpleName() );
+        log.error(CONTENT_NOT_FOUND,AppointmentTransactionDetail.class.getSimpleName() );
     }
 }

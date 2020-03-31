@@ -9,12 +9,13 @@ public class CommonLogConstant {
     //B
 
     //C
-
+    public final static String CONTENT_NOT_FOUND_BY_ID="::: {} with id : {} not found :::";
+    public final static String CONTENT_NOT_FOUND = ":::: {} NOT FOUND ::::";
 
     //D
     public static String DELETING_PROCESS_STARTED = ":::: DELETING {} PROCESS STARTED ::::";
     public static String DELETING_PROCESS_COMPLETED = ":::: DELETING {} PROCESS COMPLETED IN :::: {} ms";
-
+    public static String DUPLICATION_ERROR =":::: {} WITH {} ALREADY EXISTS ::::";
 
     //E
 
@@ -35,6 +36,9 @@ public class CommonLogConstant {
     //H
 
     //I
+    public static final String INVALID_VERIFICATION_TOKEN_ERROR = "Invalid verification token : {}";
+
+    public final static String INVALID_RESET_CODE_ERROR="Invalid Password Reset Code {}.";
 
     //J
 
@@ -45,6 +49,10 @@ public class CommonLogConstant {
     //M
 
     //N
+    public final static String NAME_AND_MOBILE_NUMBER_DUPLICATION_ERROR="::: {} with name : {} and " +
+            "mobileNumber : {} already exists :::";
+
+    public final static String NAME_DUPLICATION_ERROR="::: {} with name : {} already exists :::";
 
     //O
 
@@ -68,6 +76,8 @@ public class CommonLogConstant {
     //U
     public static String UPDATING_PROCESS_STARTED = ":::: UPDATING {} PROCESS STARTED ::::";
     public static String UPDATING_PROCESS_COMPLETED = ":::: UPDATING {} PROCESS COMPLETED IN :::: {} ms";
+
+    public final static String USER_NOT_FOUND="::: User with name: {} not found :::";
 
     //V
 

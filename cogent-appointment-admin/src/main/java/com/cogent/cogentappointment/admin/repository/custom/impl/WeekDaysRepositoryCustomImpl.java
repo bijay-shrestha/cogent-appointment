@@ -15,7 +15,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
 
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ERROR_LOG;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.WeekDaysLog.WEEK_DAYS;
 import static com.cogent.cogentappointment.admin.query.WeekDaysQuery.QUERY_TO_FETCH_ACTIVE_WEEK_DAYS;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
@@ -57,6 +57,6 @@ public class WeekDaysRepositoryCustomImpl implements WeekDaysRepositoryCustom {
     }
 
     private void error() {
-        log.error(ERROR_LOG, WEEK_DAYS);
+        log.error(CONTENT_NOT_FOUND, WEEK_DAYS);
     }
 }

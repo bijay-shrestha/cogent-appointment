@@ -24,7 +24,7 @@ import static com.cogent.cogentappointment.admin.constants.QueryConstants.HOSPIT
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.ID;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.NAME;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ERROR_LOG;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.QualificationLog.QUALIFICATION;
 import static com.cogent.cogentappointment.admin.query.QualificationQuery.*;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
@@ -122,7 +122,7 @@ public class QualificationRepositoryCustomImpl implements QualificationRepositor
             new NoContentFoundException(Qualification.class);
 
     private void error() {
-        log.error(ERROR_LOG, QUALIFICATION);
+        log.error(CONTENT_NOT_FOUND, QUALIFICATION);
     }
 
 }

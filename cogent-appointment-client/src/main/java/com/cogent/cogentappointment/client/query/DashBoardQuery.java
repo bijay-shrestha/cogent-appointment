@@ -159,7 +159,7 @@ public class DashBoardQuery {
         String whereClause = " WHERE " +
                 " s.status='Y' " +
                 " AND a.status='PA'" +
-                " AND DATE(a.appointmentDate) = date" +
+                " AND DATE(a.appointmentDate) = :date" +
                 " AND h.id= :hospitalId";
 
         if (!Objects.isNull(appointmentQueueRequestDTO.getDoctorId()))

@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
-import com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.*;
 import com.cogent.cogentappointment.admin.dto.request.email.EmailRequestDTO;
@@ -44,8 +43,8 @@ import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.AdminLog.*;
 import static com.cogent.cogentappointment.admin.utils.AdminUtils.*;
-import static com.cogent.cogentappointment.admin.utils.GenderUtils.fetchGenderByCode;
 import static com.cogent.cogentappointment.admin.utils.DashboardFeatureUtils.parseToAdminDashboardFeature;
+import static com.cogent.cogentappointment.admin.utils.GenderUtils.fetchGenderByCode;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static java.lang.reflect.Array.get;
@@ -246,7 +245,7 @@ public class AdminServiceImpl implements AdminService {
 
         log.info(UPDATING_PASSWORD_PROCESS_STARTED);
 
-        Admin admin = findByUsername(requestDTO.getUsername());
+        Admin admin = findById(requestDTO.getId());
 
         updateAdminPassword(requestDTO.getPassword(), requestDTO.getRemarks(), admin);
 
@@ -324,7 +323,7 @@ public class AdminServiceImpl implements AdminService {
 
     }
 
-    public void saveAdminDashboardFeature(Long id, Admin admin) {
+    private void saveAdminDashboardFeature(Long id, Admin admin) {
 
         DashboardFeature dashboardFeature = dashboardFeatureRepository.findActiveDashboardFeatureById(id)
                 .orElseThrow(() -> new NoContentFoundException(DashboardFeature.class));
@@ -524,11 +523,6 @@ public class AdminServiceImpl implements AdminService {
     private Admin findById(Long adminId) {
         return adminRepository.findAdminById(adminId)
                 .orElseThrow(() -> ADMIN_WITH_GIVEN_ID_NOT_FOUND.apply(adminId));
-    }
-
-    private Admin findByUsername(String username) {
-        return adminRepository.findAdminByUsername(username)
-                .orElseThrow(() -> new NoContentFoundException(Admin.class));
     }
 
     private void validateAdminDuplicity(List<Object[]> adminList, String requestEmail,

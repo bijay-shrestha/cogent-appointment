@@ -28,5 +28,4 @@ public class AppointmentLog {
     public final  String FETCHING_PROCESS_COMPLETED = ":::: FETCHING BOOKED APPOINTMENT PROCESS COMPLETED" +
             " IN :::: {} ms";
 
-    public final static String APPOINTMENT_NOT_FOUND="::: Appointment with id : {} not found :::";
 }

@@ -9,7 +9,7 @@ public class ProfileLog {
 
     public final static String PROFILE_MENU = "PROFILE MENU";
 
-    public static final String PROFILE_NAME_DUPLICATION = "::: Profile already exists with name: {} :::";
+    public static final String PROFILE_NAME_DUPLICATION = ":::: PROFILE ALREADY ESIXSTS WITH NAME : {} ::::";
 
-    public final static String PROFILE_NOT_FOUND="::: Profile with id : {} not found :::";
+    public final static String PROFILE_NOT_FOUND=":::: PROFILE WITH ID : {} NOT FOUND ::::";
 }

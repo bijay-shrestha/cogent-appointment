@@ -26,13 +26,13 @@ public class AdminLog {
     public static final String VERIFY_CONFIRMATION_TOKEN_PROCESS_COMPLETED = "::::VERIFICATION OF CONFIRMATION TOKEN PROCESS COMPLETED IN :::: {} ms";
 
 
-    public static String INVALID_CONFIRMATION_TOKEN_ERROR = ":::: INVALID CONFIRMATION TOKEN: {} ::::";
+    public final static String INVALID_CONFIRMATION_TOKEN_ERROR = ":::: INVALID CONFIRMATION TOKEN: {} ::::";
 
-    public final static String ADMIN_NOT_ACTIVE_ERROR=":::: Admin with username/email {} not active ::::";
+    public final static String ADMIN_NOT_ACTIVE_ERROR=":::: ADMIN WITH USERNAME/EMAIL : {} NOT ACTIVE ::::";
 
-    public final static String ADMIN_NOT_FOUND_ERROR=":::: Admin with username/email {} not found ::::";
+    public final static String ADMIN_NOT_FOUND_ERROR=":::: ADMIN WITH USERNAME/EMAIL : {} NOT FOUND ::::";
 
-    public final static String CONFORMATION_TOKEN_NOT_FOUND="::::  Conformation token {} not found  ::::";
+    public final static String CONFORMATION_TOKEN_NOT_FOUND=":::: CONFORMATION TOKEN : {} NOT FOUND  ::::";
 
 
 }

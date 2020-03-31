@@ -7,5 +7,6 @@ public class QualificationLog {
 
     public final static String QUALIFICATION = "QUALIFICATION";
 
-    public final static String QUALIFICAION_NOT_FOUND_BY_ID="::: Qualification by id : {} and hospitalId: {} not found :::";
+    public final static String QUALIFICAION_NOT_FOUND_BY_ID=":::: QUALIFICATION BY ID : {} AND HOSPITAL ID: {}" +
+            " NOT FOUND ::::";
 }

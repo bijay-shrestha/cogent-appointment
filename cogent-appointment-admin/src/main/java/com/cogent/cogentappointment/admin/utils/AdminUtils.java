@@ -4,7 +4,6 @@ import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.*;
 import com.cogent.cogentappointment.admin.dto.request.email.EmailRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
-import com.cogent.cogentappointment.admin.utils.commons.StringUtil;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.Admin;
 import com.cogent.cogentappointment.persistence.model.*;
@@ -232,13 +231,14 @@ public class AdminUtils {
     }
 
     public static EmailRequestDTO parseToResetPasswordEmailRequestDTO(AdminResetPasswordRequestDTO requestDTO,
-                                                                      String emailAddress) {
+                                                                      String emailAddress,
+                                                                      String username) {
 
         return EmailRequestDTO.builder()
                 .receiverEmailAddress(emailAddress)
                 .subject(SUBJECT_FOR_ADMIN_RESET_PASSWORD)
                 .templateName(ADMIN_RESET_PASSWORD)
-                .paramValue(requestDTO.getUsername() + COMMA_SEPARATED
+                .paramValue(username + COMMA_SEPARATED
                         + requestDTO.getPassword() + COMMA_SEPARATED + requestDTO.getRemarks())
                 .build();
     }

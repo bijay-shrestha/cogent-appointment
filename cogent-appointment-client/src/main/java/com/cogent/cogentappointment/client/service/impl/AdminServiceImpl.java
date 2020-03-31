@@ -208,11 +208,11 @@ public class AdminServiceImpl implements AdminService {
 
         log.info(UPDATING_PASSWORD_PROCESS_STARTED);
 
-        Admin admin = findByUsername(requestDTO.getUsername());
+        Admin admin = findAdminByIdAndHospitalId(requestDTO.getId(), getLoggedInHospitalId());
 
         updateAdminPassword(requestDTO.getPassword(), requestDTO.getRemarks(), admin);
 
-        sendEmail(parseToResetPasswordEmailRequestDTO(requestDTO, admin.getEmail()));
+        sendEmail(parseToResetPasswordEmailRequestDTO(requestDTO, admin.getEmail(), admin.getUsername()));
 
         log.info(UPDATING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
     }
@@ -453,11 +453,6 @@ public class AdminServiceImpl implements AdminService {
     private Admin findAdminByIdAndHospitalId(Long adminId, Long hospitalId) {
         return adminRepository.findAdminByIdAndHospitalId(adminId, hospitalId)
                 .orElseThrow(() -> ADMIN_WITH_GIVEN_ID_NOT_FOUND.apply(adminId));
-    }
-
-    private Admin findByUsername(String username) {
-        return adminRepository.findAdminByUsernameAndHospitalId(username, getLoggedInHospitalId())
-                .orElseThrow(() -> new NoContentFoundException(Admin.class));
     }
 
     private void validateAdminDuplicity(List<Object[]> adminList, String requestEmail,

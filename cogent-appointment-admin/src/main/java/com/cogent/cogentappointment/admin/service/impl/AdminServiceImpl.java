@@ -10,7 +10,10 @@ import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.exception.OperationUnsuccessfulException;
 import com.cogent.cogentappointment.admin.repository.*;
-import com.cogent.cogentappointment.admin.service.*;
+import com.cogent.cogentappointment.admin.service.AdminService;
+import com.cogent.cogentappointment.admin.service.EmailService;
+import com.cogent.cogentappointment.admin.service.MinioFileService;
+import com.cogent.cogentappointment.admin.service.ProfileService;
 import com.cogent.cogentappointment.admin.validator.LoginValidator;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
@@ -34,7 +37,6 @@ import java.util.stream.Collectors;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.*;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
-import static com.cogent.cogentappointment.admin.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.AdminLog.*;
@@ -199,11 +201,11 @@ public class AdminServiceImpl implements AdminService {
 
         log.info(UPDATING_PASSWORD_PROCESS_STARTED);
 
-        Admin admin = findByUsername(requestDTO.getUsername());
+        Admin admin = findById(requestDTO.getId());
 
         updateAdminPassword(requestDTO.getPassword(), requestDTO.getRemarks(), admin);
 
-        sendEmail(parseToResetPasswordEmailRequestDTO(requestDTO, admin.getEmail()));
+        sendEmail(parseToResetPasswordEmailRequestDTO(requestDTO, admin.getEmail(), admin.getUsername()));
 
         log.info(UPDATING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
     }
@@ -443,11 +445,6 @@ public class AdminServiceImpl implements AdminService {
     private Admin findById(Long adminId) {
         return adminRepository.findAdminById(adminId)
                 .orElseThrow(() -> ADMIN_WITH_GIVEN_ID_NOT_FOUND.apply(adminId));
-    }
-
-    private Admin findByUsername(String username) {
-        return adminRepository.findAdminByUsername(username)
-                .orElseThrow(() -> new NoContentFoundException(Admin.class));
     }
 
     private void validateAdminDuplicity(List<Object[]> adminList, String requestEmail,

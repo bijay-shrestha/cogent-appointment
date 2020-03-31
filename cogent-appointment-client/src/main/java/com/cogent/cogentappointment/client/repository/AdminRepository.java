@@ -16,11 +16,6 @@ public interface AdminRepository extends JpaRepository<Admin, Long>, AdminReposi
     Optional<Admin> findAdminByIdAndHospitalId(@Param("id") Long id,
                                                @Param("hospitalId") Long hospitalId);
 
-    @Query("SELECT a FROM Admin a WHERE a.profileId.department.hospital.id=:hospitalId AND a.status!='D' " +
-            "AND a.username = :username")
-    Optional<Admin> findAdminByUsernameAndHospitalId(@Param("username") String username,
-                                                     @Param("hospitalId") Long hospitalId);
-
     @Query("SELECT a FROM Admin a WHERE a.username=:username AND a.status='Y'")
     Admin getLoggedInAdmin(@Param("username") String username);
 }

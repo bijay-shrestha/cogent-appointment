@@ -30,7 +30,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AppointmentServiceMessage.INVALID_APPOINTMENT_DATE_TIME;
-import static com.cogent.cogentappointment.client.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.*;
 import static com.cogent.cogentappointment.client.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.client.utils.commons.DateConverterUtils.calculateAge;
@@ -48,7 +47,7 @@ public class AppointmentUtils {
 
     /*VALIDATE IS REQUESTED DATE AND TIME IS BEFORE CURRENT DATE AND TIME*/
     public static void validateIfRequestIsBeforeCurrentDateTime(Date appointmentDate,
-                                                         String appointmentTime) {
+                                                                String appointmentTime) {
 
         Date requestDateTime = parseAppointmentTime(appointmentDate, appointmentTime);
 
@@ -81,7 +80,7 @@ public class AppointmentUtils {
         return appointment;
     }
 
-    public static Date parseAppointmentTime(Date appointmentDate, String appointmentTime) {
+    private static Date parseAppointmentTime(Date appointmentDate, String appointmentTime) {
         return datePlusTime(utilDateToSqlDate(appointmentDate), Objects.requireNonNull(parseTime(appointmentTime)));
     }
 
@@ -98,10 +97,11 @@ public class AppointmentUtils {
         appointment.setSerialNumber(generateRandomNumber(6));
     }
 
-    public static AppointmentSuccessResponseDTO parseToAppointmentSuccessResponseDTO(String appointmentNumber) {
+    public static AppointmentSuccessResponseDTO parseToAppointmentSuccessResponseDTO(String appointmentNumber,
+                                                                                     Character transactionStatus) {
         return AppointmentSuccessResponseDTO.builder()
                 .appointmentNumber(appointmentNumber)
-                .appointmentTransactionStatus(ACTIVE)
+                .appointmentTransactionStatus(transactionStatus)
                 .responseStatus(CREATED)
                 .responseCode(CREATED.value())
                 .build();
@@ -525,7 +525,6 @@ public class AppointmentUtils {
     }
 
     public static StatusResponseDTO parseToStatusResponseDTO() {
-
         return StatusResponseDTO.builder()
                 .responseCode(OK.value())
                 .responseStatus(OK)

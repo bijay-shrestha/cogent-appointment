@@ -21,10 +21,8 @@ import com.cogent.cogentappointment.client.dto.response.appointment.refund.Appoi
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
-import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.log.constants.AppointmentReservationLog;
 import com.cogent.cogentappointment.client.repository.*;
 import com.cogent.cogentappointment.client.service.*;
 import com.cogent.cogentappointment.persistence.model.*;
@@ -41,7 +39,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.function.Function;
 
-import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AppointmentServiceMessage.*;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AppointmentServiceMessage.APPOINTMENT_EXISTS;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AppointmentServiceMessage.INVALID_APPOINTMENT_TIME;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.DoctorServiceMessages.DOCTOR_NOT_AVAILABLE;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.PatientServiceMessages.DUPLICATE_PATIENT_MESSAGE;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.*;
@@ -49,9 +48,10 @@ import static com.cogent.cogentappointment.client.constants.StatusConstants.Appo
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.REFUNDED;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.*;
-import static com.cogent.cogentappointment.client.log.constants.AppointmentReservationLog.APPOINTMENT_RESERVATION_LOG;
+import static com.cogent.cogentappointment.client.log.constants.AppointmentReservationLogConstant.APPOINTMENT_RESERVATION_LOG;
 import static com.cogent.cogentappointment.client.utils.AppointmentFollowUpLogUtils.parseToAppointmentFollowUpLog;
 import static com.cogent.cogentappointment.client.utils.AppointmentTransactionDetailUtils.parseToAppointmentTransactionInfo;
+import static com.cogent.cogentappointment.client.utils.AppointmentTransactionRequestLogUtils.updateAppointmentTransactionRequestLog;
 import static com.cogent.cogentappointment.client.utils.AppointmentUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
@@ -100,6 +100,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService;
 
+    private final AppointmentTransactionRequestLogService appointmentTransactionRequestLogService;
+
     public AppointmentServiceImpl(PatientService patientService,
                                   DoctorService doctorService,
                                   SpecializationService specializationService,
@@ -117,7 +119,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   PatientMetaInfoService patientMetaInfoService,
                                   PatientRelationInfoService patientRelationInfoService,
                                   PatientRelationInfoRepository patientRelationInfoRepository,
-                                  AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService) {
+                                  AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService,
+                                  AppointmentTransactionRequestLogService appointmentTransactionRequestLogService) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -136,6 +139,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.patientRelationInfoService = patientRelationInfoService;
         this.patientRelationInfoRepository = patientRelationInfoRepository;
         this.appointmentFollowUpRequestLogService = appointmentFollowUpRequestLogService;
+        this.appointmentTransactionRequestLogService = appointmentTransactionRequestLogService;
     }
 
     @Override
@@ -165,6 +169,13 @@ public class AppointmentServiceImpl implements AppointmentService {
         log.info(SAVING_PROCESS_STARTED, APPOINTMENT);
 
         AppointmentRequestDTO appointmentInfo = requestDTO.getAppointmentInfo();
+
+        AppointmentTransactionRequestLog transactionRequestLog =
+                appointmentTransactionRequestLogService.save(
+                        requestDTO.getTransactionInfo().getTransactionDate(),
+                        requestDTO.getTransactionInfo().getTransactionNumber(),
+                        requestDTO.getPatientInfo().getName()
+                );
 
         validateRequestedAppointmentInfo(appointmentInfo);
 
@@ -199,9 +210,14 @@ public class AppointmentServiceImpl implements AppointmentService {
         if (appointmentInfo.getIsFollowUp().equals(YES))
             saveAppointmentFollowUpDetails(appointmentInfo.getParentAppointmentId(), appointment.getId());
 
+        updateAppointmentTransactionRequestLog(transactionRequestLog);
+
+        AppointmentSuccessResponseDTO responseDTO =
+                parseToAppointmentSuccessResponseDTO(appointmentNumber, transactionRequestLog.getTransactionStatus());
+
         log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
 
-        return parseToAppointmentSuccessResponseDTO(appointmentNumber);
+        return responseDTO;
     }
 
     @Override
@@ -212,6 +228,13 @@ public class AppointmentServiceImpl implements AppointmentService {
         log.info(SAVING_PROCESS_STARTED, APPOINTMENT);
 
         AppointmentRequestDTO appointmentInfo = requestDTO.getAppointmentInfo();
+
+        AppointmentTransactionRequestLog transactionRequestLog =
+                appointmentTransactionRequestLogService.save(
+                        requestDTO.getTransactionInfo().getTransactionDate(),
+                        requestDTO.getTransactionInfo().getTransactionNumber(),
+                        requestDTO.getRequestFor().getName()
+                );
 
         validateRequestedAppointmentInfo(appointmentInfo);
 
@@ -247,9 +270,14 @@ public class AppointmentServiceImpl implements AppointmentService {
         if (appointmentInfo.getIsFollowUp().equals(YES))
             saveAppointmentFollowUpDetails(appointmentInfo.getParentAppointmentId(), appointment.getId());
 
+        updateAppointmentTransactionRequestLog(transactionRequestLog);
+
+        AppointmentSuccessResponseDTO responseDTO =
+                parseToAppointmentSuccessResponseDTO(appointmentNumber, transactionRequestLog.getTransactionStatus());
+
         log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
 
-        return parseToAppointmentSuccessResponseDTO(appointmentNumber);
+        return responseDTO;
     }
 
     @Override
@@ -348,11 +376,11 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         log.info(DELETING_PROCESS_STARTED, APPOINTMENT_RESERVATION_LOG);
 
-        com.cogent.cogentappointment.persistence.model.AppointmentReservationLog appointmentReservationLog =
-                appointmentReservationLogRepository.findAppointmentReservationLogById(appointmentReservationId)
-                        .orElseThrow(() -> new NoContentFoundException(AppointmentReservationLog.class));
+        AppointmentReservationLog appointmentReservationLog =
+                fetchAppointmentReservationLogById(appointmentReservationId);
 
-        appointmentReservationLogRepository.delete(appointmentReservationLog);
+        if (!Objects.isNull(appointmentReservationLog))
+            appointmentReservationLogRepository.delete(appointmentReservationLog);
 
         log.info(DELETING_PROCESS_COMPLETED, APPOINTMENT_RESERVATION_LOG, getDifferenceBetweenTwoTime(startTime));
 
@@ -841,6 +869,14 @@ public class AppointmentServiceImpl implements AppointmentService {
                     convert24HourTo12HourFormat(appointmentInfo.getAppointmentTime())));
     }
 
+    private void validateRequestedTimeSlotIsActive(Long appointmentReservationId) {
+        AppointmentReservationLog appointmentReservationLog =
+                fetchAppointmentReservationLogById(appointmentReservationId);
+
+//        if (Objects.isNull(appointmentReservationLog))
+
+    }
+
     /*VALIDATE IF APPOINTMENT ALREADY EXISTS ON SELECTED DATE AND TIME */
     private void validateIfParentAppointmentExists(AppointmentRequestDTO appointmentInfo) {
 
@@ -910,6 +946,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         } while (startDateTime.compareTo(FORMAT.parseDateTime(doctorEndTime)) <= 0);
 
         return false;
+    }
+
+    private AppointmentReservationLog fetchAppointmentReservationLogById(Long appointmentReservationId) {
+        return appointmentReservationLogRepository.findAppointmentReservationLogById(appointmentReservationId);
     }
 }
 

@@ -40,6 +40,8 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.admin.constants.QueryConstants.DATE;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.query.AppointmentQuery.*;
 import static com.cogent.cogentappointment.client.query.DashBoardQuery.*;
@@ -344,7 +346,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TODAY_APPOINTMENT_QUEUE
                 .apply(appointmentQueueRequestDTO))
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(HOSPITAL_ID, hospitalId)
+                .setParameter(DATE,utilDateToSqlDate(appointmentQueueRequestDTO.getDate()));
 
         int totalItems = query.getResultList().size();
 
@@ -366,7 +369,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
             Pageable pageable) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TODAY_APPOINTMENT_QUEUE.apply(appointmentQueueRequestDTO))
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(HOSPITAL_ID, hospitalId)
+                .setParameter(DATE,utilDateToSqlDate(appointmentQueueRequestDTO.getDate()));;
 
         int totalItems = query.getResultList().size();
 

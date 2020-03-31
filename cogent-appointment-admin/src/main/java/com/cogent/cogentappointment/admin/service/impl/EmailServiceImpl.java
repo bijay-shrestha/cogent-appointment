@@ -88,6 +88,8 @@ public class EmailServiceImpl implements EmailService {
 
         log.info(SENDING_EMAIL_PROCESS_STARTED);
 
+        System.out.println(CATALINA_LOGO_LOCATION);
+
         try {
             MimeMessage message = getMimeMessage(emailToSend);
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -125,7 +127,7 @@ public class EmailServiceImpl implements EmailService {
             }
 
             helper.setText(html, true);
-            helper.addInline(LOGO_FILE_NAME, new FileSystemResource(new File(LOGO_LOCATION)));
+            helper.addInline(LOGO_FILE_NAME, new FileSystemResource(new File(CATALINA_LOGO_LOCATION)));
 
             javaMailSender.send(message);
 

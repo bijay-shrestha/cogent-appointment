@@ -21,8 +21,10 @@ import com.cogent.cogentappointment.client.dto.response.appointment.refund.Appoi
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
+import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
+import com.cogent.cogentappointment.client.exception.OperationUnsuccessfulException;
 import com.cogent.cogentappointment.client.repository.*;
 import com.cogent.cogentappointment.client.service.*;
 import com.cogent.cogentappointment.persistence.model.*;
@@ -39,8 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.function.Function;
 
-import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AppointmentServiceMessage.APPOINTMENT_EXISTS;
-import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AppointmentServiceMessage.INVALID_APPOINTMENT_TIME;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AppointmentServiceMessage.*;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.DoctorServiceMessages.DOCTOR_NOT_AVAILABLE;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.PatientServiceMessages.DUPLICATE_PATIENT_MESSAGE;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.*;
@@ -161,6 +162,35 @@ public class AppointmentServiceImpl implements AppointmentService {
         return responseDTO;
     }
 
+    /*1.SAVE IN AppointmentTransactionRequestLog WHERE TRANSACTION STATUS = 'N'.
+    * SAVED INITIALLY SUCH THAT IF ANY TIMEOUT OR SERVER ISSUES OCCUR,
+    * THEN WHOLE APPOINTMENT CAN BE TRACED BY ITS STATUS.
+    *
+    * 2. VALIDATE IF AppointmentReservationLog(TEMPORARILY RESERVED TIME SLOT) EXISTS.
+    * SINCE AFTER SOME TIME, THE ROW IS RIGHT AWAY DELETED FROM THE TABLE.
+    * HENCE THE SELECTED TIME SLOT IS EXPIRED AND IS NO LONGER AVAILABLE FOR APPOINTMENT.
+    *
+    * 3. VALIDATE REQUEST INFO :
+    *   A. VALIDATE IF REQUESTED DATE AND TIME IS BEFORE CURRENT DATE AND TIME.
+    *   B. VALIDATE IF ANY OTHER APPOINTMENT EXISTS ON THE SAME CRITERIA
+    *   C. VALIDATE IF ANY APPOINTMENT RESERVATION EXISTS
+    *   D. VALIDATE IF REQUESTED APPOINTMENT TIME LIES BETWEEN DOCTOR DUTY ROSTER TIME SCHEDULES
+    *
+    * 4. SAVE Patient, PatientMetaInfo, HospitalPatientInfo
+    *
+    * 5. GENERATE UNIQUE APPOINTMENT NUMBER WHICH STARTS WITH '0001' AND INCREMENTS BY 1 TILL IT REACHES FISCAL YEAR.
+    *    IT STARTS WITH '0001' IN NEXT FISCAL YEAR. GENERATE ON THE BASIS OF LATEST APPOINTMENT NUMBER & FISCAL YEAR.
+    *
+    * 6. SAVE APPOINTMENT
+    *
+    * 7. SAVE APPOINTMENT TRANSACTION DETAILS
+    *
+    * 8. IF isFollowUp = 'Y', SAVE APPOINTMENT FOLLOW UP TABLES
+    *
+    * 9. UPDATE TRANSACTION STATUS IN AppointmentTransactionRequestLog AS 'Y'
+    * AND RETURN THE FINAL RESPONSE.
+    *
+    * */
     @Override
     public AppointmentSuccessResponseDTO saveAppointmentForSelf(AppointmentRequestDTOForSelf requestDTO) {
 
@@ -176,6 +206,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                         requestDTO.getTransactionInfo().getTransactionNumber(),
                         requestDTO.getPatientInfo().getName()
                 );
+
+        validateAppointmentReservationIsActive(appointmentInfo.getAppointmentReservationId());
 
         validateRequestedAppointmentInfo(appointmentInfo);
 
@@ -235,6 +267,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                         requestDTO.getTransactionInfo().getTransactionNumber(),
                         requestDTO.getRequestFor().getName()
                 );
+
+        validateAppointmentReservationIsActive(appointmentInfo.getAppointmentReservationId());
 
         validateRequestedAppointmentInfo(appointmentInfo);
 
@@ -869,12 +903,12 @@ public class AppointmentServiceImpl implements AppointmentService {
                     convert24HourTo12HourFormat(appointmentInfo.getAppointmentTime())));
     }
 
-    private void validateRequestedTimeSlotIsActive(Long appointmentReservationId) {
+    private void validateAppointmentReservationIsActive(Long appointmentReservationId) {
         AppointmentReservationLog appointmentReservationLog =
                 fetchAppointmentReservationLogById(appointmentReservationId);
 
-//        if (Objects.isNull(appointmentReservationLog))
-
+        if (Objects.isNull(appointmentReservationLog))
+            throw new BadRequestException(APPOINTMENT_FAILED_MESSAGE, APPOINTMENT_FAILED_DEBUG_MESSAGE);
     }
 
     /*VALIDATE IF APPOINTMENT ALREADY EXISTS ON SELECTED DATE AND TIME */
@@ -897,7 +931,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 appointmentInfo.getAppointmentDate(),
                 appointmentInfo.getAppointmentTime(),
                 appointmentInfo.getDoctorId(),
-                appointmentInfo.getSpecializationId()
+                appointmentInfo.getSpecializationId(),
+                appointmentInfo.getAppointmentReservationId()
         );
 
         validateAppointmentExists(appointmentCount, appointmentInfo.getAppointmentTime());

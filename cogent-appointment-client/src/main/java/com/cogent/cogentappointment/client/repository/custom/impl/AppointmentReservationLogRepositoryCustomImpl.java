@@ -12,7 +12,6 @@ import java.util.Date;
 import java.util.List;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
-import static com.cogent.cogentappointment.client.query.AppointmentQuery.QUERY_TO_VALIDATE_APPOINTMENT_EXISTS;
 import static com.cogent.cogentappointment.client.query.AppointmentReservationLogQuery.QUERY_TO_FETCH_APPOINTMENT_RESERVATION_LOG;
 import static com.cogent.cogentappointment.client.query.AppointmentReservationLogQuery.QUERY_TO_VALIDATE_APPOINTMENT_RESERVATION_EXISTS;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
@@ -43,9 +42,11 @@ public class AppointmentReservationLogRepositoryCustomImpl implements Appointmen
     public Long validateIfAppointmentReservationExists(Date appointmentDate,
                                                        String appointmentTime,
                                                        Long doctorId,
-                                                       Long specializationId) {
+                                                       Long specializationId,
+                                                       Long appointmentReservationId) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_APPOINTMENT_RESERVATION_EXISTS)
+                .setParameter(APPOINTMENT_ID, appointmentReservationId)
                 .setParameter(APPOINTMENT_DATE, utilDateToSqlDate(appointmentDate))
                 .setParameter(DOCTOR_ID, doctorId)
                 .setParameter(SPECIALIZATION_ID, specializationId)

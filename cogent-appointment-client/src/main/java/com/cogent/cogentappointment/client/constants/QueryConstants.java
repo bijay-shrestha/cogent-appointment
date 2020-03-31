@@ -34,7 +34,6 @@ public class QueryConstants {
     //F
     public interface AppointmentFollowUpTrackerConstants {
         String PARENT_APPOINTMENT_ID = "parentAppointmentId";
-        String PATIENT_ID = "patientId";
     }
 
 
@@ -45,8 +44,6 @@ public class QueryConstants {
     //H
     public static final String HOSPITAL_ID = "hospitalId";
     public static final String HOSPITAL_CODE = "hospitalCode";
-
-    public static final String HOSPITAL_PATIENT_INFO_ID = "hospitalPatientInfoId";
 
 
     //I

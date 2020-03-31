@@ -15,5 +15,6 @@ public interface AppointmentReservationLogRepositoryCustom {
     Long validateIfAppointmentReservationExists(Date appointmentDate,
                                                 String appointmentTime,
                                                 Long doctorId,
-                                                Long specializationId);
+                                                Long specializationId,
+                                                Long appointmentReservationId);
 }

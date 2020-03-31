@@ -46,5 +46,6 @@ public class AppointmentRequestDTO implements Serializable {
 
     private Long parentAppointmentId;
 
+    @NotNull
     private Long appointmentReservationId;
 }

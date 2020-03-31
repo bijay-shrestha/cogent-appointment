@@ -57,8 +57,8 @@ public interface AppointmentRepositoryCustom {
 
     Long countOverAllAppointment(DashBoardRequestDTO dashBoardRequestDTO);
 
-    List<AppointmentQueueDTO> fetchTodayAppointmentQueue(AppointmentQueueRequestDTO appointmentQueueRequestDTO,
-                                                         Pageable pageable);
+    List<AppointmentQueueDTO> fetchAppointmentQueueLog(AppointmentQueueRequestDTO appointmentQueueRequestDTO,
+                                                       Pageable pageable);
 
     Map<String, List<AppointmentQueueDTO>> fetchTodayAppointmentQueueByTime
             (AppointmentQueueRequestDTO appointmentQueueRequestDTO, Pageable pageable);

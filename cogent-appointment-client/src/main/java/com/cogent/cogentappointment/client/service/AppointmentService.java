@@ -79,7 +79,7 @@ public interface AppointmentService {
                                                                    Pageable pageable);
 
     /*APPOINTMENT QUEUE*/
-    List<AppointmentQueueDTO> fetchTodayAppointmentQueue(AppointmentQueueRequestDTO searchRequestDTO, Pageable pageable);
+    List<AppointmentQueueDTO> fetchAppointmentQueueLog(AppointmentQueueRequestDTO searchRequestDTO, Pageable pageable);
 
     Map<String, List<AppointmentQueueDTO>> fetchTodayAppointmentQueueByTime(
             AppointmentQueueRequestDTO appointmentQueueRequestDTO, Pageable pageable);

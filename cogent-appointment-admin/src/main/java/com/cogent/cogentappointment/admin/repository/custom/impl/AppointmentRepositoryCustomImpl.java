@@ -155,10 +155,10 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
-    public List<AppointmentQueueDTO> fetchTodayAppointmentQueue(AppointmentQueueRequestDTO appointmentQueueRequestDTO,
-                                                                Pageable pageable) {
+    public List<AppointmentQueueDTO> fetchAppointmentQueueLog(AppointmentQueueRequestDTO appointmentQueueRequestDTO,
+                                                              Pageable pageable) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TODAY_APPOINTMENT_QUEUE
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_QUEUE
                 .apply(appointmentQueueRequestDTO))
                 .setParameter(DATE,utilDateToSqlDate(appointmentQueueRequestDTO.getDate()));
 
@@ -178,7 +178,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     @Override
     public Map<String, List<AppointmentQueueDTO>> fetchTodayAppointmentQueueByTime(AppointmentQueueRequestDTO appointmentQueueRequestDTO,
                                                                                    Pageable pageable) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TODAY_APPOINTMENT_QUEUE.apply(appointmentQueueRequestDTO))
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_QUEUE.apply(appointmentQueueRequestDTO))
                 .setParameter(DATE,utilDateToSqlDate(appointmentQueueRequestDTO.getDate()));
 
         int totalItems = query.getResultList().size();

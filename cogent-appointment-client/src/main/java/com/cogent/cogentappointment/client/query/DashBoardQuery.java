@@ -131,7 +131,7 @@ public class DashBoardQuery {
                     " ORDER BY" +
                     " atd.transactionDate";
 
-    public static Function<AppointmentQueueRequestDTO, String> QUERY_TO_FETCH_TODAY_APPOINTMENT_QUEUE =
+    public static Function<AppointmentQueueRequestDTO, String> QUERY_TO_FETCH_APPOINTMENT_QUEUE =
             (searchDTO) ->
                     "SELECT" +
                             " DATE_FORMAT(a.appointmentTime,'%H:%i %p') as appointmentTime," +

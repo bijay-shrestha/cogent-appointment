@@ -352,7 +352,7 @@ public class AppointmentQuery {
         return whereClause;
     }
 
-    public static Function<AppointmentQueueRequestDTO, String> QUERY_TO_FETCH_TODAY_APPOINTMENT_QUEUE =
+    public static Function<AppointmentQueueRequestDTO, String> QUERY_TO_FETCH_APPOINTMENT_QUEUE =
             (appointmentQueueSearchDTO) ->
                     "SELECT" +
                             " DATE_FORMAT(a.appointmentTime,'%h:%i %p') as appointmentTime," +

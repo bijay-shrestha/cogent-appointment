@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.client.service;
 
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentFollowUpRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.eSewa.AppointmentFollowUpRequestDTO;
 
 /**
  * @author smriti on 18/02/20

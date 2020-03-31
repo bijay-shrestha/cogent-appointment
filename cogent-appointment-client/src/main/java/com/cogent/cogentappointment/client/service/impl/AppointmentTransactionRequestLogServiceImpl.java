@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.Objects;
 
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.SAVING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.SAVING_PROCESS_STARTED;
@@ -40,15 +41,31 @@ public class AppointmentTransactionRequestLogServiceImpl implements AppointmentT
 
         log.info(SAVING_PROCESS_STARTED, APPOINTMENT_TRANSACTION_REQUEST_LOG);
 
-        AppointmentTransactionRequestLog transactionRequestLog = save
-                (parseToAppointmentTransactionRequestLog(transactionDate, transactionNumber, patientName));
+        AppointmentTransactionRequestLog transactionRequestLog =
+                fetchAppointmentTransactionRequestLog(transactionNumber, patientName);
+
+        if (Objects.isNull(transactionRequestLog))
+            transactionRequestLog = save(parseToAppointmentTransactionRequestLog
+                    (transactionDate, transactionNumber, patientName));
 
         log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT_TRANSACTION_REQUEST_LOG, getDifferenceBetweenTwoTime(startTime));
 
         return transactionRequestLog;
     }
 
+    @Override
+    public AppointmentTransactionRequestLog findByTxnNumberAndPatientName(String transactionNumber,
+                                                                          String patientName) {
+        return null;
+    }
+
     private AppointmentTransactionRequestLog save(AppointmentTransactionRequestLog appointmentTransactionRequestLog) {
         return appointmentTransactionRequestLogRepository.save(appointmentTransactionRequestLog);
+    }
+
+    private AppointmentTransactionRequestLog fetchAppointmentTransactionRequestLog(String transactionNumber,
+                                                                                   String patientName) {
+        return appointmentTransactionRequestLogRepository.fetchAppointmentTransactionRequestLog
+                (transactionNumber, patientName);
     }
 }

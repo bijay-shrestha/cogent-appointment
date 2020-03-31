@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.eSewa.AppointmentCheckAvailabilityRequestDTO;
 import com.cogent.cogentappointment.client.repository.custom.AppointmentReservationLogRepositoryCustom;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +11,7 @@ import javax.persistence.Query;
 import java.util.Date;
 import java.util.List;
 
+import static com.cogent.cogentappointment.client.constants.QueryConstants.AppointmentConstants.*;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.query.AppointmentReservationLogQuery.QUERY_TO_FETCH_APPOINTMENT_RESERVATION_LOG;
 import static com.cogent.cogentappointment.client.query.AppointmentReservationLogQuery.QUERY_TO_VALIDATE_APPOINTMENT_RESERVATION_EXISTS;

@@ -12,4 +12,7 @@ public interface AppointmentTransactionRequestLogService {
     AppointmentTransactionRequestLog save(Date transactionDate,
                                           String transactionNumber,
                                           String patientName);
+
+    AppointmentTransactionRequestLog findByTxnNumberAndPatientName(String transactionNumber,
+                                                                   String patientName);
 }

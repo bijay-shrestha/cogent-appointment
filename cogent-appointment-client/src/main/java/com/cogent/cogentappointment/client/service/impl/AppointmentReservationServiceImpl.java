@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.client.service.impl;
 
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentFollowUpRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.eSewa.AppointmentFollowUpRequestDTO;
 import com.cogent.cogentappointment.client.repository.AppointmentReservationLogRepository;
 import com.cogent.cogentappointment.client.service.AppointmentReservationService;
 import com.cogent.cogentappointment.persistence.model.AppointmentReservationLog;

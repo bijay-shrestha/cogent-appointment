@@ -8,7 +8,7 @@
         <version>2.2.4.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.cogent.cogentappointment.admin</groupId>
+    <groupId>com.cogent</groupId>
     <artifactId>cogent-appointment-admin</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>cogent-appointment-admin</name>
@@ -31,18 +31,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.boot</groupId>-->
-            <!--<artifactId>spring-boot-starter-cache</artifactId>-->
-        <!--</dependency>-->
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <scope>compile</scope>
-            <optional>true</optional>
         </dependency>
 
         <!--ENTITY MANAGER-->
@@ -86,7 +74,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.10</version>
-            <scope>provided</scope>
         </dependency>
 
         <!--TRANSACTIONAL-->
@@ -199,16 +186,21 @@
         </dependency>
 
         <dependency>
-            <groupId>com.cogent.cogentappointment.persistence</groupId>
+            <groupId>com.cogent</groupId>
             <artifactId>cogent-appointment-persistence</artifactId>
             <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <!--<scope>provided</scope>-->
         </dependency>
     </dependencies>
 
@@ -218,6 +210,10 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <classifier>exec</classifier>
+                    <mainClass>com.cogent.cogentappointment.admin.CogentAppointmentAdminApplication</mainClass>
+                </configuration>
             </plugin>
         </plugins>
     </build>

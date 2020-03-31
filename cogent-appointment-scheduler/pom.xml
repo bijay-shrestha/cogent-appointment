@@ -10,7 +10,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.cogent.cogentappointment.scheduler</groupId>
+    <groupId>com.cogent</groupId>
     <artifactId>cogent-appointment-scheduler</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>cogent-appointment-scheduler</name>
@@ -52,10 +52,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.cogent.cogentappointment.persistence</groupId>
+            <groupId>com.cogent</groupId>
             <artifactId>cogent-appointment-persistence</artifactId>
             <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
 
         <!--TRANSACTIONAL-->
@@ -75,6 +74,9 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <classifier>exec</classifier>
+                </configuration>
             </plugin>
         </plugins>
     </build>

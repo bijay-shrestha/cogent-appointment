@@ -57,27 +57,14 @@ public class EsewaQuery {
     public static String QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_STATUS(AppointmentDetailRequestDTO requestDTO) {
 
         String query = "SELECT" +
-                " CASE WHEN" +
-                "   COUNT(ddro.id)>0" +
-                " THEN" +
-                "   'Y'" +
-                " ELSE" +
-                "   'N'" +
-                " END AS status," +                                                 //[0]
-                " CASE WHEN" +
-                "   COUNT(ddro.id)>0" +
-                " THEN" +
-                "   CONCAT(d.name, ' is available for the day')" +
-                " ELSE" +
-                "   CONCAT(d.name, ' is not available for the day')" +
-                " END AS message" +                                                //[1]
+                " d.name AS doctorName," +                                  //[0]
+                " ddro.dayOffStatus AS dayOffStatus"+                       //[1]
                 " FROM DoctorDutyRoster ddr" +
                 " LEFT JOIN DoctorDutyRosterOverride ddro ON ddr.id = ddro.doctorDutyRosterId.id" +
                 " LEFT JOIN Doctor d ON d.id = ddr.doctorId.id" +
                 " WHERE" +
                 " ddr.status = 'Y'" +
                 " AND ddro.status = 'Y'" +
-                " AND ddro.dayOffStatus = 'N'" +
                 " AND ddr.hospitalId.id =:hospitalId" +
                 " AND (:date BETWEEN ddro.fromDate AND ddro.toDate)";
 
@@ -104,9 +91,9 @@ public class EsewaQuery {
                 " CASE WHEN" +
                 "   COUNT(dw.id)>0" +
                 " THEN" +
-                "   CONCAT(d.name, ' is available for the day')" +
+                "   CONCAT(d.name, ' IS AVAILABLE FOR THE DAY')" +
                 " ELSE" +
-                "   CONCAT(d.name, ' is not available for the day')" +
+                "   CONCAT(d.name, ' IS NOT AVAILABLE FOR THE DAY')" +
                 " END AS message" +                                             //[1]
                 " FROM DoctorDutyRoster ddr" +
                 " LEFT JOIN DoctorWeekDaysDutyRoster dw ON dw.doctorDutyRosterId.id = ddr.id" +
@@ -163,7 +150,7 @@ public class EsewaQuery {
                 " d.name AS doctorName," +                       //[1]
                 " s.id AS specializationId," +                   //[2]
                 " s.name AS specializationName," +               //[3]
-                " dw.dayOffStatus AS dayOffStatus"+              //[4]
+                " dw.dayOffStatus AS dayOffStatus" +              //[4]
                 " FROM DoctorDutyRoster ddr" +
                 " LEFT JOIN DoctorWeekDaysDutyRoster dw ON dw.doctorDutyRosterId.id = ddr.id" +
                 " LEFT JOIN Doctor d ON d.id = ddr.doctorId.id" +

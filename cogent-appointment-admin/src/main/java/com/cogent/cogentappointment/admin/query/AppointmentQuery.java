@@ -380,7 +380,7 @@ public class AppointmentQuery {
         String whereClause = " WHERE " +
                 " s.status='Y' " +
                 " AND a.status='PA'" +
-                " AND DATE(a.appointmentDate) = CURDATE()";
+                " AND DATE(a.appointmentDate) = :date";
 
         if (!Objects.isNull(appointmentQueueRequestDTO.getDoctorId()))
             whereClause += " AND d.id = " + appointmentQueueRequestDTO.getDoctorId();

@@ -81,7 +81,6 @@ public class QualificationAliasRepositoryCustomImpl implements QualificationAlia
                 query, QualificationAliasMinimalResponseDTO.class);
 
         if (results.isEmpty()) {
-
             error();
             throw QUALIFICATION_ALIAS_NOT_FOUND.get();
         } else {

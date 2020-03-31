@@ -24,8 +24,8 @@ import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.AppointmentRepositoryCustom;
 import com.cogent.cogentappointment.client.utils.AppointmentUtils;
 import com.cogent.cogentappointment.persistence.model.Appointment;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,19 +41,23 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
+import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.APPOINTMENT;
 import static com.cogent.cogentappointment.client.query.AppointmentQuery.*;
+import static com.cogent.cogentappointment.client.query.AppointmentQuery.QUERY_TO_FETCH_REFUND_AMOUNT;
 import static com.cogent.cogentappointment.client.query.DashBoardQuery.*;
 import static com.cogent.cogentappointment.client.utils.AppointmentUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
-import static org.springframework.http.HttpStatus.OK;
 
 /**
  * @author smriti on 2019-10-22
  */
 @Repository
 @Transactional(readOnly = true)
+@Slf4j
 public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCustom {
 
     @PersistenceContext
@@ -109,8 +113,10 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         List<AppointmentMinResponseDTO> pendingAppointments =
                 transformQueryToResultList(query, AppointmentMinResponseDTO.class);
 
-        if (pendingAppointments.isEmpty())
-            throw new NoContentFoundException(Appointment.class);
+        if (pendingAppointments.isEmpty()) {
+            error();
+            throw APPOINTMENT_NOT_FOUND.get();
+        }
 
         return pendingAppointments;
     }
@@ -210,8 +216,10 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         List<AppointmentMinResponseDTO> appointmentHistory =
                 transformQueryToResultList(query, AppointmentMinResponseDTO.class);
 
-        if (appointmentHistory.isEmpty())
-            throw new NoContentFoundException(Appointment.class);
+        if (appointmentHistory.isEmpty()) {
+            error();
+            throw APPOINTMENT_NOT_FOUND.get();
+        }
 
         return appointmentHistory;
     }
@@ -234,8 +242,10 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         AppointmentRescheduleLogResponseDTO results = parseQueryResultToAppointmentRescheduleLogResponse(objects);
 
-        if (results.getAppointmentRescheduleLogDTOS().isEmpty()) throw APPOINTMENT_NOT_FOUND.get();
-        else {
+        if (results.getAppointmentRescheduleLogDTOS().isEmpty()) {
+            error();
+            throw APPOINTMENT_NOT_FOUND.get();
+        } else {
             results.setTotalItems(totalItems);
             return results;
         }
@@ -254,8 +264,10 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         List<AppointmentRefundDTO> refundAppointments = transformQueryToResultList(query, AppointmentRefundDTO.class);
 
-        if (refundAppointments.isEmpty()) throw APPOINTMENT_NOT_FOUND.get();
-        else {
+        if (refundAppointments.isEmpty()) {
+            error();
+            throw APPOINTMENT_NOT_FOUND.get();
+        } else {
             Double totalRefundAmount = calculateTotalRefundAmount(searchDTO, hospitalId);
 
             return AppointmentRefundResponseDTO.builder()
@@ -284,8 +296,10 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         AppointmentPendingApprovalResponseDTO results = parseQueryResultToAppointmentApprovalResponse(objects);
 
-        if (results.getPendingAppointmentApprovals().isEmpty()) throw APPOINTMENT_NOT_FOUND.get();
-        else {
+        if (results.getPendingAppointmentApprovals().isEmpty()) {
+            error();
+            throw APPOINTMENT_NOT_FOUND.get();
+        } else {
             results.setTotalItems(totalItems);
             return results;
         }
@@ -330,8 +344,10 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         AppointmentLogResponseDTO results = parseQueryResultToAppointmentLogResponse(objects);
 
-        if (results.getAppointmentLogs().isEmpty()) throw APPOINTMENT_NOT_FOUND.get();
-        else {
+        if (results.getAppointmentLogs().isEmpty()) {
+            error();
+            throw APPOINTMENT_NOT_FOUND.get();
+        } else {
             results.setTotalItems(totalItems);
             return results;
         }
@@ -352,8 +368,10 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         List<AppointmentQueueDTO> results = transformQueryToResultList(query, AppointmentQueueDTO.class);
 
-        if (results.isEmpty()) throw APPOINTMENT_NOT_FOUND.get();
-        else {
+        if (results.isEmpty()) {
+            error();
+            throw APPOINTMENT_NOT_FOUND.get();
+        } else {
             results.get(0).setTotalItems(totalItems);
             return results;
         }
@@ -381,6 +399,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     private Function<Long, NoContentFoundException> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT, id);
         throw new NoContentFoundException(Appointment.class, "id", id.toString());
     };
 
@@ -405,5 +424,9 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                 .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Double) query.getSingleResult();
+    }
+
+    private void error() {
+        log.error(CONTENT_NOT_FOUND, APPOINTMENT);
     }
 }

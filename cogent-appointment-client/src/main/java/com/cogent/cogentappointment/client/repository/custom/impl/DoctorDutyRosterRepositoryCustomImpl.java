@@ -15,6 +15,7 @@ import com.cogent.cogentappointment.client.dto.response.eSewa.DutyRosterAppointm
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.DoctorDutyRosterRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRoster;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +33,9 @@ import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
+import static com.cogent.cogentappointment.client.log.constants.DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER;
 import static com.cogent.cogentappointment.client.query.DoctorDutyRosterOverrideQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_DETAILS;
 import static com.cogent.cogentappointment.client.query.DoctorDutyRosterQuery.*;
 import static com.cogent.cogentappointment.client.query.DoctorDutyRosterQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_STATUS;
@@ -48,6 +52,7 @@ import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
  */
 @Repository
 @Transactional(readOnly = true)
+@Slf4j
 public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRepositoryCustom {
 
     @PersistenceContext
@@ -85,7 +90,10 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
         List<DoctorDutyRosterMinimalResponseDTO> results = transformQueryToResultList(
                 query, DoctorDutyRosterMinimalResponseDTO.class);
 
-        if (results.isEmpty()) throw DOCTOR_DUTY_ROSTER_NOT_FOUND.get();
+        if (results.isEmpty()){
+            error();
+            throw DOCTOR_DUTY_ROSTER_NOT_FOUND.get();
+        }
         else {
             results.get(0).setTotalItems(totalItems);
             return results;
@@ -123,6 +131,7 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
         try {
             return transformQueryToSingleResult(query, DoctorDutyRosterTimeResponseDTO.class);
         } catch (NoResultException e) {
+            error();
             throw DOCTOR_DUTY_ROSTER_NOT_FOUND.get();
         }
     }
@@ -296,6 +305,7 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
 
     private Function<Long, NoContentFoundException> DOCTOR_DUTY_ROSTER_WITH_GIVEN_ID_NOT_FOUND =
             (doctorDutyRosterId) -> {
+                log.error(CONTENT_NOT_FOUND_BY_ID,DOCTOR_DUTY_ROSTER,doctorDutyRosterId);
                 throw new NoContentFoundException
                         (DoctorDutyRoster.class, "doctorDutyRosterId", doctorDutyRosterId.toString());
             };
@@ -305,5 +315,9 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
                 .setParameter(ID, doctorDutyRosterId);
 
         return (Character) query.getSingleResult();
+    }
+
+    private void error() {
+        log.error(CONTENT_NOT_FOUND, DOCTOR_DUTY_ROSTER);
     }
 }

@@ -2,15 +2,14 @@ package com.cogent.cogentappointment.client.repository.custom.impl;
 
 import com.cogent.cogentappointment.client.dto.request.DoctorRevenueRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.dashboard.DoctorRevenueResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.DoctorRevenueResponseListDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.RevenueTrendResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.AppointmentTransactionDetailRepositoryCustom;
-import com.cogent.cogentappointment.client.utils.DoctorRevenueUtils;
 import com.cogent.cogentappointment.client.utils.DoctorUtils;
 import com.cogent.cogentappointment.persistence.model.AppointmentTransactionDetail;
 import com.cogent.cogentappointment.persistence.model.Doctor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,18 +24,19 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.client.query.DashBoardQuery.*;
 import static com.cogent.cogentappointment.client.utils.DashboardUtils.revenueStatisticsResponseDTO;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
-import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.transformQueryToResultList;
 
 /**
  * @author Sauravi Thapa २०/२/१०
  */
 @Repository
 @Transactional(readOnly = true)
+@Slf4j
 public class AppointmentTransactionDetailRepositoryCustomImpl implements AppointmentTransactionDetailRepositoryCustom {
 
     @PersistenceContext
@@ -73,9 +73,9 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
 
     @Override
     public DoctorRevenueResponseListDTO getDoctorRevenue(Date toDate,
-                                                           Date fromDate,
-                                                           DoctorRevenueRequestDTO requestDTO,
-                                                           Pageable pageable) {
+                                                         Date fromDate,
+                                                         DoctorRevenueRequestDTO requestDTO,
+                                                         Pageable pageable) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_GENERATE_DOCTOR_REVENUE_LIST(requestDTO))
                 .setParameter(TO_DATE, utilDateToSqlDate(toDate))
@@ -91,6 +91,7 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
         DoctorRevenueResponseListDTO responseListDTO = DoctorUtils.parseTodoctorRevenueResponseListDTO(objects);
 
         if (responseListDTO.getDoctorRevenueResponseDTOList().isEmpty()) {
+            log.error(CONTENT_NOT_FOUND, AppointmentTransactionDetail.class.getSimpleName());
             throw DOCTOR_REVENUE_NOT_FOUND.get();
         }
 

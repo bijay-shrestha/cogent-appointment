@@ -38,7 +38,7 @@ public class CommonLogConstant {
     //I
     public static final String INVALID_VERIFICATION_TOKEN_ERROR = "Invalid verification token : {}";
 
-    public final static String INVALID_RESET_CODE_ERROR="Invalid Password Reset Code {}.";
+    public final static String INVALID_RESET_CODE_ERROR="Invalid Password Reset Code : {}.";
 
     //J
 

@@ -37,12 +37,12 @@ public class ForgotPasswordRepositoryCustomImpl implements ForgotPasswordReposit
         try {
             return query.getSingleResult();
         } catch (NoResultException ex) {
-            log.error(INVALID_RESET_CODE_ERROR, resetCode);
             throw RESET_CODE_NOT_FOUND.apply(resetCode);
         }
     }
 
     private Function<String, NoContentFoundException> RESET_CODE_NOT_FOUND = (resetCode) -> {
+        log.error(INVALID_RESET_CODE_ERROR, resetCode);
         throw new NoContentFoundException(INVALID_RESET_CODE, "resetCode", resetCode);
     };
 

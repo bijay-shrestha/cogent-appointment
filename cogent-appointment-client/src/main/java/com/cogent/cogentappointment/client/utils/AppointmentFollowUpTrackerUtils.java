@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.client.utils;
 
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentFollowUpResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.esewa.AppointmentFollowUpResponseDTO;
 import com.cogent.cogentappointment.persistence.model.*;
 
 import java.util.Date;

@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.dto.request.appointment.eSewa;
+package com.cogent.cogentappointment.client.dto.request.appointment.esewa;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.client.repository.custom;
 
-import com.cogent.cogentappointment.client.dto.request.appointment.eSewa.AppointmentCheckAvailabilityRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentCheckAvailabilityRequestDTO;
 
 import java.util.Date;
 import java.util.List;

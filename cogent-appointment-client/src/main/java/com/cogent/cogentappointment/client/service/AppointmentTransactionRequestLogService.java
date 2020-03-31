@@ -13,6 +13,5 @@ public interface AppointmentTransactionRequestLogService {
                                           String transactionNumber,
                                           String patientName);
 
-    AppointmentTransactionRequestLog findByTxnNumberAndPatientName(String transactionNumber,
-                                                                   String patientName);
+    Character fetchAppointmentTransactionStatus(String transactionNumber, String patientName);
 }

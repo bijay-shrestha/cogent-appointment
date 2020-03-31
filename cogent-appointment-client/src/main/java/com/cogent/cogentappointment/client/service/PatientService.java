@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface PatientService {
 
-    /*eSewa*/
+    /*esewa*/
     Patient saveSelfPatient(PatientRequestByDTO requestDTO);
 
     Patient saveOtherPatient(PatientRequestForDTO requestForPatientInfo);

@@ -13,4 +13,6 @@ public interface AppointmentTransactionRequestLogRepositoryCustom {
 
     AppointmentTransactionRequestLog fetchAppointmentTransactionRequestLog(String transactionNumber,
                                                                            String patientName);
+
+    Character fetchAppointmentTransactionStatus(String transactionNumber, String patientName);
 }

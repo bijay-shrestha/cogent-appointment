@@ -11,4 +11,11 @@ public class AppointmentTransactionRequestLogQuery {
                     " WHERE" +
                     " a.transactionNumber =:transactionNumber" +
                     " AND a.patientName =:name";
+
+    public static final String QUERY_TO_FETCH_APPOINTMENT_TXN_REQUEST_LOG_STATUS =
+            " SELECT a.transactionStatus" +
+                    " FROM AppointmentTransactionRequestLog a" +
+                    " WHERE" +
+                    " a.transactionNumber =:transactionNumber" +
+                    " AND a.patientName =:name";
 }

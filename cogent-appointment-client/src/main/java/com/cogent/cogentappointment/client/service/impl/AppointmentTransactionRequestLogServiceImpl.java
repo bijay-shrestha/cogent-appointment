@@ -54,9 +54,11 @@ public class AppointmentTransactionRequestLogServiceImpl implements AppointmentT
     }
 
     @Override
-    public AppointmentTransactionRequestLog findByTxnNumberAndPatientName(String transactionNumber,
-                                                                          String patientName) {
-        return null;
+    public Character fetchAppointmentTransactionStatus(String transactionNumber,
+                                                       String patientName) {
+
+        return appointmentTransactionRequestLogRepository.fetchAppointmentTransactionStatus
+                (transactionNumber, patientName);
     }
 
     private AppointmentTransactionRequestLog save(AppointmentTransactionRequestLog appointmentTransactionRequestLog) {

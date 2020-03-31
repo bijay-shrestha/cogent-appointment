@@ -8,10 +8,13 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.AppointmentConstants.TRANSACTION_NUMBER;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.NAME;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.INACTIVE;
 import static com.cogent.cogentappointment.client.query.AppointmentTransactionRequestLogQuery.QUERY_TO_FETCH_APPOINTMENT_TXN_REQUEST_LOG;
+import static com.cogent.cogentappointment.client.query.AppointmentTransactionRequestLogQuery.QUERY_TO_FETCH_APPOINTMENT_TXN_REQUEST_LOG_STATUS;
 
 /**
  * @author smriti on 31/03/20
@@ -35,6 +38,19 @@ public class AppointmentTransactionRequestLogRepositoryCustomImpl implements App
                     .getSingleResult();
         } catch (NoResultException ex) {
             return null;
+        }
+    }
+
+    @Override
+    public Character fetchAppointmentTransactionStatus(String transactionNumber, String patientName) {
+        Query query = entityManager.createQuery(QUERY_TO_FETCH_APPOINTMENT_TXN_REQUEST_LOG_STATUS)
+                .setParameter(TRANSACTION_NUMBER, transactionNumber)
+                .setParameter(NAME, patientName);
+
+        try {
+            return (Character) query.getSingleResult();
+        } catch (NoResultException e) {
+            return INACTIVE;
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.client.resource;
 
-import com.cogent.cogentappointment.client.dto.request.appointment.eSewa.AppointmentFollowUpRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentFollowUpRequestDTO;
 import com.cogent.cogentappointment.client.service.AppointmentFollowUpTrackerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

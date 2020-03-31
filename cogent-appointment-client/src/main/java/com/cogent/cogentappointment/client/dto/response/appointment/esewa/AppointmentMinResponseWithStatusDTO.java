@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.dto.response.appointment;
+package com.cogent.cogentappointment.client.dto.response.appointment.esewa;
 
 import lombok.*;
 import org.springframework.http.HttpStatus;
@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AppointmentMinResponseWithStatusDTO {
-    List<AppointmentMinResponseDTO> appointmentMinResponseDTOS;
+    private List<AppointmentMinResponseDTO> appointmentMinResponseDTOS;
 
     private int responseCode;
 

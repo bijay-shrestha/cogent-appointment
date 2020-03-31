@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.dto.request.eSewa;
+package com.cogent.cogentappointment.client.dto.request.appointment.esewa;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +11,7 @@ import java.util.Date;
  */
 @Getter
 @Setter
-public class DoctorAvailabeDatesRequestDTO implements Serializable {
+public class AppointmentDetailRequestDTO implements Serializable {
 
     private Date date;
 

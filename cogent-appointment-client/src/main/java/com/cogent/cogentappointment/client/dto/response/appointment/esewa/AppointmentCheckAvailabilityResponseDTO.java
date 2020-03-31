@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.dto.response.appointment;
+package com.cogent.cogentappointment.client.dto.response.appointment.esewa;
 
 import lombok.*;
 import org.springframework.http.HttpStatus;

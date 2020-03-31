@@ -18,11 +18,13 @@ import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.AppointmentFollowUpLogRepository;
 import com.cogent.cogentappointment.admin.repository.AppointmentRefundDetailRepository;
 import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
+import com.cogent.cogentappointment.admin.service.AppointmentFollowUpRequestLogService;
 import com.cogent.cogentappointment.admin.service.AppointmentFollowUpTrackerService;
 import com.cogent.cogentappointment.admin.service.AppointmentService;
 import com.cogent.cogentappointment.admin.service.PatientService;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.AppointmentFollowUpLog;
+import com.cogent.cogentappointment.persistence.model.AppointmentFollowUpTracker;
 import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -63,16 +65,20 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentFollowUpLogRepository appointmentFollowUpLogRepository;
 
+    private final AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService;
+
     public AppointmentServiceImpl(AppointmentRepository appointmentRepository,
                                   AppointmentRefundDetailRepository appointmentRefundDetailRepository,
                                   AppointmentFollowUpTrackerService appointmentFollowUpTrackerService,
                                   PatientService patientService,
-                                  AppointmentFollowUpLogRepository appointmentFollowUpLogRepository) {
+                                  AppointmentFollowUpLogRepository appointmentFollowUpLogRepository,
+                                  AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService) {
         this.appointmentRepository = appointmentRepository;
         this.appointmentRefundDetailRepository = appointmentRefundDetailRepository;
         this.appointmentFollowUpTrackerService = appointmentFollowUpTrackerService;
         this.patientService = patientService;
         this.appointmentFollowUpLogRepository = appointmentFollowUpLogRepository;
+        this.appointmentFollowUpRequestLogService = appointmentFollowUpRequestLogService;
     }
 
     @Override
@@ -266,13 +272,15 @@ public class AppointmentServiceImpl implements AppointmentService {
             appointmentFollowUpTrackerService.updateFollowUpTracker(appointmentFollowUpLog.getParentAppointmentId());
 
         } else {
-            appointmentFollowUpTrackerService.save(
+            AppointmentFollowUpTracker appointmentFollowUpTracker = appointmentFollowUpTrackerService.save(
                     appointment.getId(),
                     appointment.getHospitalId(),
                     appointment.getDoctorId(),
                     appointment.getSpecializationId(),
                     appointment.getPatientId()
             );
+
+            appointmentFollowUpRequestLogService.save(appointmentFollowUpTracker);
 
             registerPatient(appointment.getPatientId().getId(), appointment.getHospitalId().getId());
         }

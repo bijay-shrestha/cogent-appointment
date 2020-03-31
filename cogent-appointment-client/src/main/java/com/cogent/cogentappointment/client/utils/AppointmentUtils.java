@@ -16,6 +16,7 @@ import com.cogent.cogentappointment.client.dto.response.appointmentStatus.Appoin
 import com.cogent.cogentappointment.client.dto.response.dashboard.AppointmentCountResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRescheduleLogDTO;
 import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
+import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
 import org.joda.time.DateTime;
@@ -28,6 +29,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AppointmentServiceMessage.INVALID_APPOINTMENT_DATE_TIME;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.*;
 import static com.cogent.cogentappointment.client.constants.StringConstant.HYPHEN;
@@ -43,6 +45,20 @@ import static org.springframework.http.HttpStatus.OK;
 public class AppointmentUtils {
 
     private static final DateTimeFormatter FORMAT = DateTimeFormat.forPattern("HH:mm");
+
+    /*VALIDATE IS REQUESTED DATE AND TIME IS AFTER CURRENT DATE AND TIME*/
+    public static void validateIfRequestIsBeforeCurrentDateTime(Date appointmentDate,
+                                                         String appointmentTime) {
+
+        Date requestDateTime = parseAppointmentTime(appointmentDate, appointmentTime);
+
+        Date currentDateTime = new Date();
+
+        boolean isRequestedBeforeCurrentDateTime = requestDateTime.before(currentDateTime);
+
+        if (isRequestedBeforeCurrentDateTime)
+            throw new BadRequestException(INVALID_APPOINTMENT_DATE_TIME);
+    }
 
     public static Appointment parseToAppointment(AppointmentRequestDTO requestDTO,
                                                  String appointmentNumber,

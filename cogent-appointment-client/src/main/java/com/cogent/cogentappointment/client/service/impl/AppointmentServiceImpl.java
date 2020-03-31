@@ -828,20 +828,6 @@ public class AppointmentServiceImpl implements AppointmentService {
                     convert24HourTo12HourFormat(appointmentInfo.getAppointmentTime())));
     }
 
-    /*VALIDATE IS REQUESTED DATE AND TIME IS AFTER CURRENT DATE AND TIME*/
-    private void validateIfRequestIsBeforeCurrentDateTime(Date appointmentDate,
-                                                          String appointmentTime) {
-
-        Date requestDateTime = parseAppointmentTime(appointmentDate, appointmentTime);
-
-        Date currentDateTime = new Date();
-
-        boolean isRequestedBeforeCurrentDateTime = requestDateTime.before(currentDateTime);
-
-        if (isRequestedBeforeCurrentDateTime)
-            throw new BadRequestException(INVALID_APPOINTMENT_DATE_TIME);
-    }
-
     /*VALIDATE IF APPOINTMENT EXISTS ON SELECTED DATE AND TIME */
     private void validateIfParentAppointmentExists(AppointmentRequestDTO appointmentInfo) {
 

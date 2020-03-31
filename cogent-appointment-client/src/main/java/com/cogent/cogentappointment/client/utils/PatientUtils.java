@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.client.utils;
 
 import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateDTOForOthers;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateRequestDTO;
+import com.cogent.cogentappointment.client.dto.response.patient.*;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.HospitalPatientInfo;
 import com.cogent.cogentappointment.persistence.model.Patient;
@@ -17,6 +18,7 @@ import static com.cogent.cogentappointment.client.utils.GenderUtils.fetchGenderB
 import static com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils.generateRandomNumber;
 import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toNormalCase;
 import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toUpperCase;
+import static org.springframework.http.HttpStatus.OK;
 
 /**
  * @author smriti ON 16/01/2020
@@ -124,5 +126,25 @@ public class PatientUtils {
         patient.setMobileNumber(requestDTO.getMobileNumber());
         patient.setDateOfBirth(requestDTO.getDateOfBirth());
         patient.setGender(fetchGenderByCode(requestDTO.getGender()));
+    }
+
+    public static PatientDetailResponseDTOWithStatus parseToPatientDetailResponseDTOWithStatus(
+            PatientDetailResponseDTO responseDTO) {
+
+        return PatientDetailResponseDTOWithStatus.builder()
+                .detailResponseDTO(responseDTO)
+                .responseStatus(OK)
+                .responseCode(OK.value())
+                .build();
+    }
+
+    public static PatientResponseDTOForOthersWithStatus parseToPatientMinResponseDTOForOthersWithStatus(
+            PatientResponseDTOForOthers responseDTO) {
+
+        return PatientResponseDTOForOthersWithStatus.builder()
+                .minResponseDTOForOthers(responseDTO)
+                .responseStatus(OK)
+                .responseCode(OK.value())
+                .build();
     }
 }

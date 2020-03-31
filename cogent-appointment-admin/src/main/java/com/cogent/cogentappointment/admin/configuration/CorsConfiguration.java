@@ -17,6 +17,7 @@ public class CorsConfiguration {
         final org.springframework.web.cors.CorsConfiguration corsConfig = new org.springframework.web.cors.CorsConfiguration();
         corsConfig.setAllowCredentials(true);
         corsConfig.addAllowedOrigin("*");
+//        corsConfig.addAllowedOrigin("http://uat-admin-appointment.cogenthealth.com.np");
         corsConfig.addAllowedHeader("*");
 
         corsConfig.addAllowedMethod("OPTIONS");

@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentFollowUpRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentFollowUpResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentFollowUpResponseDTOWithStatus;
 import com.cogent.cogentappointment.client.repository.AppointmentFollowUpTrackerRepository;
 import com.cogent.cogentappointment.client.repository.DoctorRepository;
 import com.cogent.cogentappointment.client.repository.HospitalRepository;
@@ -22,9 +23,7 @@ import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentFollowUpTrackerLog.APPOINTMENT_FOLLOW_UP_TRACKER;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentFollowUpTrackerLog.APPOINTMENT_FOLLOW_UP_TRACKER_STATUS;
-import static com.cogent.cogentappointment.client.utils.AppointmentFollowUpTrackerUtils.parseToAppointmentFollowUpResponseDTO;
-import static com.cogent.cogentappointment.client.utils.AppointmentFollowUpTrackerUtils.parseToAppointmentFollowUpTracker;
-import static com.cogent.cogentappointment.client.utils.AppointmentFollowUpTrackerUtils.updateNumberOfFreeFollowUps;
+import static com.cogent.cogentappointment.client.utils.AppointmentFollowUpTrackerUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static java.lang.reflect.Array.get;
 
@@ -55,7 +54,7 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
     }
 
     @Override
-    public AppointmentFollowUpResponseDTO fetchAppointmentFollowUpDetails(AppointmentFollowUpRequestDTO requestDTO) {
+    public AppointmentFollowUpResponseDTOWithStatus fetchAppointmentFollowUpDetails(AppointmentFollowUpRequestDTO requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -108,7 +107,7 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
 
         log.info(FETCHING_PROCESS_COMPLETED, APPOINTMENT_FOLLOW_UP_TRACKER, getDifferenceBetweenTwoTime(startTime));
 
-        return responseDTO;
+        return parseToAppointmentFollowUpResponseDTOWithStatus(responseDTO);
     }
 
     @Override

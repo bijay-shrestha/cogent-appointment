@@ -10,7 +10,6 @@ import com.cogent.cogentappointment.client.dto.response.eSewa.AvailableDoctorWit
 import com.cogent.cogentappointment.client.dto.response.eSewa.DoctorAvailabilityStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.eSewa.DutyRosterOverrideAppointmentDate;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.query.EsewaQuery;
 import com.cogent.cogentappointment.client.repository.custom.DoctorDutyRosterOverrideRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRosterOverride;
 import org.springframework.stereotype.Repository;
@@ -31,8 +30,10 @@ import static com.cogent.cogentappointment.client.query.DoctorDutyRosterOverride
 import static com.cogent.cogentappointment.client.query.EsewaQuery.*;
 import static com.cogent.cogentappointment.client.query.EsewaQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_STATUS;
 import static com.cogent.cogentappointment.client.utils.DoctorDutyRosterOverrideUtils.parseQueryResultToDoctorDutyRosterStatusResponseDTO;
+import static com.cogent.cogentappointment.client.utils.EsewaUtils.parseToDoctorAvailabilityStatusResponseDTO;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
-import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
+import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
+import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.transformQueryToResultList;
 
 @Repository
 @Transactional(readOnly = true)
@@ -160,7 +161,9 @@ public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyR
         if (!Objects.isNull(requestDTO.getSpecializationId()))
             query.setParameter(SPECIALIZATION_ID, requestDTO.getSpecializationId());
 
-        return transformQueryToSingleResult(query, DoctorAvailabilityStatusResponseDTO.class);
+        List<Objects[]> results = query.getResultList();
+
+        return results.isEmpty() ? null : parseToDoctorAvailabilityStatusResponseDTO(results.get(0));
     }
 
     @Override
@@ -179,7 +182,7 @@ public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyR
     @Override
     public List<DutyRosterOverrideAppointmentDate> fetchDayOffRosterOverridebyRosterId(Long doctorDutyRosterId) {
         Query query = createQuery.apply(entityManager,
-                EsewaQuery.QUERY_TO_FETCH_DAY_OFF_ROSTER_OVERRIDE_DATES)
+                QUERY_TO_FETCH_DAY_OFF_ROSTER_OVERRIDE_DATES)
                 .setParameter(DOCTOR_DUTY_ROSTER_ID, doctorDutyRosterId);
 
         return transformQueryToResultList(query, DutyRosterOverrideAppointmentDate.class);

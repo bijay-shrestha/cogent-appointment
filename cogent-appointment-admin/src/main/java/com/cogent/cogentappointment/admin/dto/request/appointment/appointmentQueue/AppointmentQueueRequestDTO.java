@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author Rupak
@@ -15,4 +16,6 @@ public class AppointmentQueueRequestDTO implements Serializable {
     private Long hospitalId;
 
     private Long doctorId;
+
+    private Date date;
 }

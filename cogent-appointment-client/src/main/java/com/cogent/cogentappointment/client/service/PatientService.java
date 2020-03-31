@@ -22,11 +22,11 @@ public interface PatientService {
 
     Patient fetchPatientById(Long id);
 
-    PatientDetailResponseDTO searchForSelf(PatientMinSearchRequestDTO searchRequestDTO);
+    PatientDetailResponseDTOWithStatus searchForSelf(PatientMinSearchRequestDTO searchRequestDTO);
 
     /*FETCH MINIMAL DETAILS OF 'OTHERS'*/
-    PatientResponseDTOForOthers searchForOthers(PatientMinSearchRequestDTO searchRequestDTO,
-                                                         Pageable pageable);
+    PatientResponseDTOForOthersWithStatus searchForOthers(PatientMinSearchRequestDTO searchRequestDTO,
+                                                          Pageable pageable);
 
     PatientDetailResponseDTO fetchMinPatientDetailsOfOthers(Long hospitalPatientId);
 

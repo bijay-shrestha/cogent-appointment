@@ -46,7 +46,7 @@ public class AppointmentUtils {
 
     private static final DateTimeFormatter FORMAT = DateTimeFormat.forPattern("HH:mm");
 
-    /*VALIDATE IS REQUESTED DATE AND TIME IS AFTER CURRENT DATE AND TIME*/
+    /*VALIDATE IS REQUESTED DATE AND TIME IS BEFORE CURRENT DATE AND TIME*/
     public static void validateIfRequestIsBeforeCurrentDateTime(Date appointmentDate,
                                                          String appointmentTime) {
 

@@ -14,8 +14,11 @@ import java.util.Date;
 /**
  * @author smriti on 29/03/20
  *
- * TO TRACK TRANSACTION STATUS OF SPECIFIC TRANSACTION NUMBER AND PATIENT NAME (UNIQUE IDENTIFIER)
- * USEFUL IN CASE OF TIMEOUT ISSUES
+ * TO TRACK TRANSACTION STATUS OF SPECIFIC TRANSACTION NUMBER AND PATIENT NAME (UNIQUE IDENTIFIER).
+ * USEFUL TO VERIFY THE TRANSACTION STATUS ON OUR SIDE.
+ * IN CASE OF TIMEOUT ISSUES, SERVER PROBLEM ETC. transactionStatus= 'N'
+ * ELSE,
+ *  transactionStatus= 'Y'
  */
 @Entity
 @Table(name = "appointment_transaction_request_log")
@@ -41,5 +44,5 @@ public class AppointmentTransactionRequestLog extends Auditable<String> implemen
     private Date transactionDate;
 
     @Column(name = "transaction_status")
-    private Character transactionStatus;
+    private Character transactionStatus = 'N';
 }

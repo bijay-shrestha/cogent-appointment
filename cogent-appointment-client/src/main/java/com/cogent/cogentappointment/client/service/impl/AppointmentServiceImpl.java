@@ -543,7 +543,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         return responseDTOS;
     }
 
-
     /*IF DOCTOR DAY OFF STATUS = 'Y', THEN THERE ARE NO AVAILABLE TIME SLOTS
     * ELSE, CALCULATE AVAILABLE TIME SLOTS BASED ON DOCTOR DUTY ROSTER AND APPOINTMENT FOR THE SELECTED CRITERIA
     * (APPOINTMENT DATE, DOCTOR AND SPECIALIZATION)
@@ -743,6 +742,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         updateAppointmentFollowUpRequestLog(parentAppointmentId);
     }
 
+    /*RELATION BETWEEN APPOINTMENT AND ITS CONSECUTIVE APPOINTMENT LOG*/
     private void saveAppointmentFollowUpLog(Long parentAppointmentId, Long followUpAppointmentId) {
 
         appointmentFollowUpLogRepository.save(
@@ -750,6 +750,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         );
     }
 
+    /*INCREMENT APPOINTMENT FOLLOW UP REQUEST COUNT BY 1*/
     private void updateAppointmentFollowUpRequestLog(Long parentAppointmentId) {
 
         Long appointmentFollowUpTrackerId =
@@ -758,6 +759,18 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointmentFollowUpRequestLogService.update(appointmentFollowUpTrackerId);
     }
 
+    /*IF IS FOLLOW UP = 'N',
+    *   THEN PERSIST IN AppointmentFollowUpTracker WHERE
+    *   ALLOWED NUMBER OF FOLLOW UPS & INTERVAL DAYS IS BASED ON THE SELECTED HOSPITAL.
+    *   PERSIST IN APPOINTMENT FOLLOW UP REQUEST WITH REQUEST COUNT STARTING WITH 0.
+    *   REGISTER PATIENT AND GENERATE A UNIQUE REGISTRATION NUMBER.
+    *
+    * ELSE
+    *   UPDATE APPOINTMENT FOLLOW UP TRACKER
+    *   ie. DECREMENT NUMBER OF FOLLOW UPS BY 1 AND IF IT IS ZERO, THEN SET STATUS AS 'N'
+    *   ONLY ACTIVE ('Y') APPOINTMENT FOLLOW UP TRACKER ARE FETCHED TO DIFFERENTIATE
+     *  WHETHER IT IS FOLLOW UP OR NORMAL APPOINTMENT
+    *   */
     private void saveAppointmentFollowUpTracker(Appointment appointment) {
 
         if (appointment.getIsFollowUp().equals(YES)) {
@@ -828,7 +841,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                     convert24HourTo12HourFormat(appointmentInfo.getAppointmentTime())));
     }
 
-    /*VALIDATE IF APPOINTMENT EXISTS ON SELECTED DATE AND TIME */
+    /*VALIDATE IF APPOINTMENT ALREADY EXISTS ON SELECTED DATE AND TIME */
     private void validateIfParentAppointmentExists(AppointmentRequestDTO appointmentInfo) {
 
         Long appointmentCount = appointmentRepository.validateIfAppointmentExists(

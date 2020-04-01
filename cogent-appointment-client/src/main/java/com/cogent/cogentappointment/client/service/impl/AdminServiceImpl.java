@@ -228,7 +228,7 @@ public class AdminServiceImpl implements AdminService {
 
         updateAdminPassword(requestDTO.getPassword(), requestDTO.getRemarks(), admin);
 
-        sendEmail(parseToResetPasswordEmailRequestDTO(requestDTO, admin.getEmail()));
+        sendEmail(parseToResetPasswordEmailRequestDTO(requestDTO, admin.getEmail(), admin.getUsername()));
 
         log.info(UPDATING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
     }

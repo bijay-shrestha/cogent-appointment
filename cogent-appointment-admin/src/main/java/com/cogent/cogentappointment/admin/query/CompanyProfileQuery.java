@@ -39,8 +39,8 @@ public class CompanyProfileQuery {
             (searchRequestDTO) -> {
                 String whereClause = " WHERE p.status!='D' AND h.status!='D' AND p.isCompanyProfile= 'Y'";
 
-                if (!ObjectUtils.isEmpty(searchRequestDTO.getName()))
-                    whereClause += " AND p.name LIKE '%" + searchRequestDTO.getName() + "%'";
+                if (!ObjectUtils.isEmpty(searchRequestDTO.getCompanyProfileId()))
+                    whereClause += " AND p.id =" + searchRequestDTO.getCompanyProfileId();
 
                 if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
                     whereClause += " AND p.status='" + searchRequestDTO.getStatus() + "'";

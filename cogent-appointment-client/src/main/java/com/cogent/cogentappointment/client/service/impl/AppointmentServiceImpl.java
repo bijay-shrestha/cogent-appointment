@@ -939,7 +939,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     /*VALIDATE IF APPOINTMENT RESERVATION EXISTS ON SELECTED DATE AND TIME */
     private void validateIfAppointmentReservationExists(AppointmentRequestDTO appointmentInfo) {
 
-        Long appointmentCount = appointmentReservationLogRepository.validateIfAppointmentReservationExists(
+        Long appointmentCount = appointmentReservationLogRepository.validateDuplicityExceptCurrentReservationId(
                 appointmentInfo.getAppointmentDate(),
                 appointmentInfo.getAppointmentTime(),
                 appointmentInfo.getDoctorId(),

@@ -66,7 +66,9 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
 
         validateIfRequestIsBeforeCurrentDateTime(requestDTO.getAppointmentDate(), requestDTO.getAppointmentTime());
 
-        /*TEMPORARILY HOLD SELECTED TIME SLOT*/
+        /*TEMPORARILY HOLD SELECTED TIME SLOT
+        * PERSIST IN TABLE ONLY IF APPOINTMENT HAS NOT BEEN PREVIOSULY RESERVED FOR
+        * SELECTED DOCTOR, SPECIALIZATION, DATE AND TIME */
         Long savedAppointmentReservationId = appointmentReservationService.save(requestDTO);
 
         AppointmentFollowUpTracker appointmentFollowUpTracker =

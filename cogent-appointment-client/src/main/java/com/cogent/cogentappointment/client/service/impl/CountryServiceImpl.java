@@ -61,7 +61,8 @@ public class CountryServiceImpl implements CountryService {
     }
 
 
-    private Function<Long, com.cogent.cogentappointment.admin.exception.NoContentFoundException> COUNTRY_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+    private Function<Long, com.cogent.cogentappointment.admin.exception.NoContentFoundException>
+            COUNTRY_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, CountryLog.COUNTRY, id);
         throw new com.cogent.cogentappointment.admin.exception.NoContentFoundException(Country.class, "id", id.toString());
     };

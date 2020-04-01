@@ -402,7 +402,7 @@ public class AdminServiceImpl implements AdminService {
 
     private void validateStatus(Object status) {
         if (status.equals(INACTIVE)) {
-            log.error("ADMIN ALREADY REGISTERED");
+            log.error(ADMIN_REGISTERED);
             throw ADMIN_ALREADY_REGISTERED.get();
         }
     }

@@ -77,7 +77,6 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
                 query, DoctorMinimalResponseDTO.class);
 
         if (results.isEmpty()){
-
             error();
             throw DOCTOR_NOT_FOUND.get();
         }

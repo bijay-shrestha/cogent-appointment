@@ -392,9 +392,8 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private void validateStatus(Object status) {
-
         if (status.equals(INACTIVE)) {
-            log.error("ADMIN ALREADY REGISTERED");
+            log.error(ADMIN_REGISTERED);
             throw ADMIN_ALREADY_REGISTERED.get();
         }
     }
@@ -411,7 +410,7 @@ public class AdminServiceImpl implements AdminService {
             boolean isEmailExists = requestEmail.equalsIgnoreCase((String) get(admin, EMAIL));
             boolean isMobileNumberExists = requestMobileNumber.equalsIgnoreCase((String) get(admin, MOBILE_NUMBER));
 
-            if (isUsernameExists && isEmailExists && isMobileNumberExists){
+            if (isUsernameExists && isEmailExists && isMobileNumberExists) {
                 log.error(ADMIN_DUPLICATION_MESSAGE);
                 throw ADMIN_DUPLICATION.get();
             }
@@ -599,7 +598,6 @@ public class AdminServiceImpl implements AdminService {
             log.error(DUPLICATE_PASSWORD_MESSAGE);
             throw new DataDuplicationException(DUPLICATE_PASSWORD_MESSAGE);
         }
-
     }
 
     private Supplier<DataDuplicationException> ADMIN_DUPLICATION = () ->

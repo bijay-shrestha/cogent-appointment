@@ -23,6 +23,7 @@ import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.PatientLog.PATIENT;
 import static com.cogent.cogentappointment.admin.log.constants.PatientLog.PATIENT_NOT_FOUND_BY_APPOINTMENT_ID;
+import static com.cogent.cogentappointment.admin.log.constants.PatientLog.PATIENT_NOT_FOUND_BY_HOSPITAL_PATINET_INFO_ID;
 import static com.cogent.cogentappointment.admin.query.DashBoardQuery.QUERY_TO_COUNT_OVERALL_REGISTERED_PATIENTS;
 import static com.cogent.cogentappointment.admin.query.PatientQuery.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
@@ -73,7 +74,7 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
                     transformQueryToSingleResult(query, PatientDetailResponseDTO.class);
             return detailResponseDTO;
         } catch (NoResultException e) {
-            error();
+            log.error(PATIENT_NOT_FOUND_BY_HOSPITAL_PATINET_INFO_ID,hospitalPatientInfoId);
             throw new NoContentFoundException(Patient.class, "id", hospitalPatientInfoId.toString());
         }
     }

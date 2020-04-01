@@ -199,7 +199,10 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
 
         List<DropDownResponseDTO> list = transformQueryToResultList(query, DropDownResponseDTO.class);
 
-        if (list.isEmpty()) throw NO_ADMIN_FOUND.get();
+        if (list.isEmpty()){
+            error();
+            throw NO_ADMIN_FOUND.get();
+        }
         else return list;
     }
 
@@ -214,7 +217,10 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
 
         List<CompanyAdminMinimalResponseDTO> result = transformQueryToResultList(query, CompanyAdminMinimalResponseDTO.class);
 
-        if (ObjectUtils.isEmpty(result)) throw NO_ADMIN_FOUND.get();
+        if (ObjectUtils.isEmpty(result)){
+            error();
+            throw NO_ADMIN_FOUND.get();
+        }
         else {
             result.get(0).setTotalItems(totalItems);
             return result;
@@ -250,7 +256,10 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
 
         List<DashboardFeatureResponseDTO> result = transformQueryToResultList(query, DashboardFeatureResponseDTO.class);
 
-        if (ObjectUtils.isEmpty(result)) throw NO_DASHBOARD_FEATURE_FOUND.get();
+        if (ObjectUtils.isEmpty(result)){
+            log.error(CONTENT_NOT_FOUND,DashboardFeature.class.getSimpleName());
+            throw NO_DASHBOARD_FEATURE_FOUND.get();
+        }
         else {
             return result;
         }

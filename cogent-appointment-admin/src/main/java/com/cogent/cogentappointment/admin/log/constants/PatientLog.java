@@ -16,5 +16,8 @@ public class PatientLog {
 
     public final static String PATIENT_NOT_FOUND_BY_APPOINTMENT_ID=":::: PATIENT WITH APPOINTMENT ID : {} NOT FOUND ::::";
 
+    public final static String PATIENT_NOT_FOUND_BY_HOSPITAL_PATINET_INFO_ID=":::: PATIENT WITH HOSPITAL PATINET INFO ID" +
+            " : {} NOT FOUND ::::";
+
 
 }

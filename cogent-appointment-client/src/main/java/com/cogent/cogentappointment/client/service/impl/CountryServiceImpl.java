@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.service.impl;
 
+import com.cogent.cogentappointment.admin.log.constants.CountryLog;
 import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.CountryRepository;
@@ -10,7 +11,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.function.Function;
 
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.CountryLog.COUNTRY;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
@@ -50,10 +53,16 @@ public class CountryServiceImpl implements CountryService {
         log.info(FETCHING_PROCESS_STARTED, COUNTRY);
 
         Country country = countryRepository.fetchActiveCountryById(id)
-                .orElseThrow(() -> new NoContentFoundException(Country.class, "id", id.toString()));
+                .orElseThrow(() -> COUNTRY_WITH_GIVEN_ID_NOT_FOUND.apply(id));
 
         log.info(FETCHING_PROCESS_COMPLETED, COUNTRY, getDifferenceBetweenTwoTime(startTime));
 
         return country;
     }
+
+
+    private Function<Long, com.cogent.cogentappointment.admin.exception.NoContentFoundException> COUNTRY_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, CountryLog.COUNTRY, id);
+        throw new com.cogent.cogentappointment.admin.exception.NoContentFoundException(Country.class, "id", id.toString());
+    };
 }

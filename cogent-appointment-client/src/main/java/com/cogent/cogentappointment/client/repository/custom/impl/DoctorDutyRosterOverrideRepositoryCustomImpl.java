@@ -12,6 +12,7 @@ import com.cogent.cogentappointment.client.dto.response.eSewa.DutyRosterOverride
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.DoctorDutyRosterOverrideRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRosterOverride;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +26,8 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
+import static com.cogent.cogentappointment.client.log.constants.DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER_OVERRIDE;
 import static com.cogent.cogentappointment.client.query.DoctorDutyRosterOverrideQuery.*;
 import static com.cogent.cogentappointment.client.query.DoctorDutyRosterOverrideQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_STATUS;
 import static com.cogent.cogentappointment.client.query.EsewaQuery.*;
@@ -37,6 +40,7 @@ import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.trans
 
 @Repository
 @Transactional(readOnly = true)
+@Slf4j
 public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyRosterOverrideRepositoryCustom {
 
     @PersistenceContext
@@ -94,8 +98,10 @@ public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyR
                         DoctorDutyRosterOverride.class)
                         .getResultList();
 
-        if (doctorDutyRosterOverrides.isEmpty())
+        if (doctorDutyRosterOverrides.isEmpty()){
+            error();
             throw DOCTOR_DUTY_ROSTER_OVERRIDE_NOT_FOUND.get();
+        }
 
         return doctorDutyRosterOverrides;
     }
@@ -130,6 +136,7 @@ public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyR
         try {
             return transformQueryToResultList(query, DoctorDutyRosterOverrideAppointmentDate.class);
         } catch (NoResultException e) {
+            error();
             throw new NoContentFoundException("Not Found");
         }
     }
@@ -144,6 +151,7 @@ public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyR
         try {
             return transformQueryToResultList(query, DoctorDutyRosterOverrideAppointmentDate.class);
         } catch (NoResultException e) {
+            error();
             throw new NoContentFoundException("Not Found");
         }
     }
@@ -190,5 +198,9 @@ public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyR
 
     private Supplier<NoContentFoundException> DOCTOR_DUTY_ROSTER_OVERRIDE_NOT_FOUND = () ->
             new NoContentFoundException(DoctorDutyRosterOverride.class);
+
+    private void error() {
+        log.error(CONTENT_NOT_FOUND, DOCTOR_DUTY_ROSTER_OVERRIDE);
+    }
 
 }

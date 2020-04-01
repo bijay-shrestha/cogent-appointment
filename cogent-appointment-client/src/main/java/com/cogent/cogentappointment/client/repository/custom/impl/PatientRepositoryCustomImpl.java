@@ -6,6 +6,7 @@ import com.cogent.cogentappointment.client.dto.response.patient.*;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.PatientRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Patient;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
+import static com.cogent.cogentappointment.client.log.constants.PatientLog.*;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.PatientQueryConstants.HOSPITAL_PATIENT_INFO_ID;
 import static com.cogent.cogentappointment.client.constants.StringConstant.COMMA_SEPARATED;
@@ -31,7 +34,8 @@ import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
  * @author smriti ON 16/01/2020
  */
 @Repository
-@Transactional
+@Transactional(readOnly = true)
+@Slf4j
 public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
 
     @PersistenceContext
@@ -62,6 +66,7 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
         try {
             return transformQueryToSingleResult(query, PatientDetailResponseDTO.class);
         } catch (NoResultException e) {
+            log.error(PATIENT_NOT_FOUND_BY_NAME,searchRequestDTO.getName());
             throw new NoContentFoundException(Patient.class, "name", searchRequestDTO.getName());
         }
     }
@@ -78,7 +83,10 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
         List<PatientRelationInfoResponseDTO> results =
                 transformQueryToResultList(query, PatientRelationInfoResponseDTO.class);
 
-        if (results.isEmpty()) throw new NoContentFoundException(Patient.class);
+        if (results.isEmpty()){
+            error();
+            throw new NoContentFoundException(Patient.class);
+        }
 
         return results;
     }
@@ -111,7 +119,10 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
 
         addPagination.accept(pageable, query);
 
-        if (patientMinInfo.isEmpty()) throw new NoContentFoundException(Patient.class);
+        if (patientMinInfo.isEmpty()){
+            error();
+            throw new NoContentFoundException(Patient.class);
+        }
 
         else {
             patientMinInfo.get(0).setTotalItems(totalItems);
@@ -127,6 +138,7 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
         try {
             return transformQueryToSingleResult(query, PatientDetailResponseDTO.class);
         } catch (NoResultException e) {
+            log.error(PATIENT_NOT_FOUND_BY_HOSPITAL_PATIENT_INFO_ID,PATIENT,hospitalPatientInfoId);
             throw new NoContentFoundException(Patient.class, "id", hospitalPatientInfoId.toString());
         }
     }
@@ -140,6 +152,7 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
         try {
             return transformQueryToSingleResult(query, PatientResponseDTO.class);
         } catch (NoResultException e) {
+            log.error(PATIENT_NOT_FOUND_BY_HOSPITAL_PATIENT_INFO_ID,PATIENT,hospitalPatientInfoId);
             throw new NoContentFoundException(Patient.class, "id", hospitalPatientInfoId.toString());
         }
     }
@@ -157,7 +170,10 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
 
         List<PatientSearchResponseDTO> patients = transformQueryToResultList(query, PatientSearchResponseDTO.class);
 
-        if (patients.isEmpty()) throw new NoContentFoundException(Patient.class);
+        if (patients.isEmpty()){
+            error();
+            throw new NoContentFoundException(Patient.class);
+        }
 
         else {
             patients.get(0).setTotalItems(totalItems);
@@ -205,6 +221,7 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
         try {
             return transformQueryToSingleResult(query, PatientMinDetailResponseDTO.class);
         } catch (NoResultException e) {
+            log.error(PATIENT_NOT_FOUND_BY_APPOINTMENT_ID,appointmentId);
             throw new NoContentFoundException(Patient.class, "appointmentId", appointmentId.toString());
         }
     }
@@ -218,4 +235,7 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
         return (Patient) query.getSingleResult();
     }
 
+    private void error() {
+        log.error(CONTENT_NOT_FOUND,PATIENT );
+    }
 }

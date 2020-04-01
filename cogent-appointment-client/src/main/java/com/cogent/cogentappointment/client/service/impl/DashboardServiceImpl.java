@@ -6,6 +6,14 @@ import com.cogent.cogentappointment.client.dto.request.dashboard.GenerateRevenue
 import com.cogent.cogentappointment.client.dto.request.dashboard.RefundAmountRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.*;
 import com.cogent.cogentappointment.client.repository.*;
+import com.cogent.cogentappointment.client.dto.response.dashboard.AppointmentCountResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.dashboard.DoctorRevenueResponseListDTO;
+import com.cogent.cogentappointment.client.dto.response.dashboard.RevenueStatisticsResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.dashboard.RevenueTrendResponseDTO;
+import com.cogent.cogentappointment.client.repository.AppointmentRefundDetailRepository;
+import com.cogent.cogentappointment.client.repository.AppointmentRepository;
+import com.cogent.cogentappointment.client.repository.AppointmentTransactionDetailRepository;
+import com.cogent.cogentappointment.client.repository.PatientRepository;
 import com.cogent.cogentappointment.client.service.DashboardService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;

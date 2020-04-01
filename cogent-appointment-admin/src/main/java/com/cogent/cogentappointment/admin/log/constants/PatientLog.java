@@ -10,6 +10,11 @@ public class PatientLog {
 
 
     public static final String REGISTERING_PATIENT_PROCESS_STARTED = ":::: REGISTERING PATIENT PROCESS STARTED ::::";
-    public static final String REGISTERING_PATIENT_PROCESS_COMPLETED = ":::: REGISTERING PATIENT PROCESS COMPLETED IN {} ms ::::";
+
+    public static final String REGISTERING_PATIENT_PROCESS_COMPLETED = ":::: REGISTERING PATIENT PROCESS COMPLETED" +
+            " IN {} ms ::::";
+
+    public final static String PATIENT_NOT_FOUND_BY_APPOINTMENT_ID=":::: PATIENT WITH APPOINTMENT ID : {} NOT FOUND ::::";
+
 
 }

@@ -24,6 +24,7 @@ import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INVALID_VERIFICATION_TOKEN;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.INVALID_VERIFICATION_TOKEN_ERROR;
 import static com.cogent.cogentappointment.admin.log.constants.AdminLog.*;
 import static com.cogent.cogentappointment.admin.utils.ForgotPasswordUtils.convertToForgotPasswordVerification;
 import static com.cogent.cogentappointment.admin.utils.ForgotPasswordUtils.parseToEmailRequestDTO;
@@ -114,6 +115,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
             updateAdminPassword(requestDTO, admin);
             updateForgotPasswordVerification(admin.getId());
         } else {
+            log.error(INVALID_VERIFICATION_TOKEN_ERROR,requestDTO.getVerificationToken());
             throw new NoContentFoundException(INVALID_VERIFICATION_TOKEN);
         }
 
@@ -131,7 +133,9 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     }
 
     private void validateExpirationTime(Object expirationTime) {
-        if (((Date) expirationTime).before(new Date())) throw RESET_CODE_HAS_EXPIRED.get();
+        if (((Date) expirationTime).before(new Date())){
+            log.error(RESET_CODE_EXPIRED);
+            throw RESET_CODE_HAS_EXPIRED.get();}
     }
 
     public void save(ForgotPasswordVerification forgotPasswordVerification) {
@@ -140,6 +144,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
     private void validateAdmin(Admin admin, String username) {
         if (!admin.getStatus().equals(ACTIVE))
+            log.error(ADMIN_NOT_ACTIVE_ERROR,username);
             throw new NoContentFoundException(String.format(ADMIN_NOT_ACTIVE, username), "username/email", username);
     }
 

@@ -195,8 +195,9 @@ public class SpecializationServiceImpl implements SpecializationService {
 
     private void validateName(Long specializationCount, String name) {
         if (specializationCount.intValue() > 0)
-            throw new DataDuplicationException(
-                    String.format(NAME_DUPLICATION_MESSAGE, Specialization.class.getSimpleName(), name));
+            log.error(NAME_DUPLICATION_ERROR, SPECIALIZATION, name);
+        throw new DataDuplicationException(
+                String.format(NAME_DUPLICATION_MESSAGE, Specialization.class.getSimpleName(), name));
     }
 
     private Specialization save(Specialization specialization) {
@@ -209,6 +210,7 @@ public class SpecializationServiceImpl implements SpecializationService {
     }
 
     private Function<Long, NoContentFoundException> SPECIALIZATION_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, SPECIALIZATION, id);
         throw new NoContentFoundException(Specialization.class, "id", id.toString());
     };
 

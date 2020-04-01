@@ -32,6 +32,8 @@ import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.ProfileLog.PROFILE;
+import static com.cogent.cogentappointment.admin.log.constants.ProfileLog.PROFILE_NAME_DUPLICATION;
+import static com.cogent.cogentappointment.admin.log.constants.ProfileLog.PROFILE_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.utils.ProfileMenuUtils.convertToProfileMenu;
 import static com.cogent.cogentappointment.admin.utils.ProfileMenuUtils.convertToUpdatedProfileMenu;
 import static com.cogent.cogentappointment.admin.utils.ProfileUtils.*;
@@ -104,7 +106,6 @@ public class ProfileServiceImpl implements ProfileService {
 
         log.info(UPDATING_PROCESS_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
     }
-
     @Override
     public void delete(DeleteRequestDTO deleteRequestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
@@ -113,9 +114,10 @@ public class ProfileServiceImpl implements ProfileService {
 
         Profile profile = findById(deleteRequestDTO.getId());
 
-        if (profile.getIsSuperAdminProfile().equals(YES))
+        if (profile.getIsSuperAdminProfile().equals(YES)) {
+            log.error(INVALID_DELETE_REQUEST);
             throw new BadRequestException(INVALID_DELETE_REQUEST);
-
+        }
         save(convertProfileToDeleted.apply(profile, deleteRequestDTO));
 
         log.info(DELETING_PROCESS_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
@@ -216,6 +218,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     private Function<Long, NoContentFoundException> PROFILE_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(PROFILE_NOT_FOUND,id);
         throw new NoContentFoundException(Profile.class, "id", id.toString());
     };
 

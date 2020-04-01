@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
-import com.cogent.cogentappointment.admin.constants.ErrorMessageConstants;
 import com.cogent.cogentappointment.admin.constants.StatusConstants;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctor.*;
@@ -27,8 +26,10 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NAME_AND_MOBILE_NUMBER_DUPLICATION_MESSAGE;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.NAME_AND_MOBILE_NUMBER_DUPLICATION_ERROR;
 import static com.cogent.cogentappointment.admin.log.constants.DoctorLog.*;
 import static com.cogent.cogentappointment.admin.utils.DoctorUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
@@ -395,7 +396,7 @@ public class DoctorServiceImpl implements DoctorService {
 
         DoctorAppointmentCharge doctorAppointmentCharge =
                 doctorAppointmentChargeRepository.findByDoctorId(doctorId)
-                        .orElseThrow(() ->  new NoContentFoundException(DoctorAppointmentCharge.class));
+                        .orElseThrow(() ->  DOCTOR_APPOINTMENT_CHARGE_WITH_GIVEN_DOCTOR_ID_NOT_FOUND.apply(doctorId));
 
         parseDoctorAppointmentChargeDetails(doctorAppointmentCharge, appointmentCharge, appointmentFollowUpCharge);
 
@@ -429,8 +430,9 @@ public class DoctorServiceImpl implements DoctorService {
     private void validateDoctor(Long doctorCount, String name, String mobileNumber) {
 
         if (doctorCount.intValue() > 0)
+            log.error(NAME_AND_MOBILE_NUMBER_DUPLICATION_ERROR,DOCTOR,name,mobileNumber);
             throw new DataDuplicationException(
-                    String.format(ErrorMessageConstants.NAME_AND_MOBILE_NUMBER_DUPLICATION_MESSAGE, Doctor.class.getSimpleName(), name, mobileNumber),
+                    String.format(NAME_AND_MOBILE_NUMBER_DUPLICATION_MESSAGE, Doctor.class.getSimpleName(), name, mobileNumber),
                     "name", name, "mobileNumber", mobileNumber
             );
     }
@@ -457,7 +459,13 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     private Function<Long, NoContentFoundException> DOCTOR_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID,DOCTOR,id);
         throw new NoContentFoundException(Doctor.class, "id", id.toString());
+    };
+
+    private Function<Long, NoContentFoundException> DOCTOR_APPOINTMENT_CHARGE_WITH_GIVEN_DOCTOR_ID_NOT_FOUND = (doctorId) -> {
+        log.error(DOCTOR_APPOINTMENT_CHARGE_NOT_FOUND,DoctorAppointmentCharge.class.getSimpleName(),doctorId);
+        throw new NoContentFoundException(DoctorAppointmentCharge.class, "doctorId", doctorId.toString());
     };
 }
 

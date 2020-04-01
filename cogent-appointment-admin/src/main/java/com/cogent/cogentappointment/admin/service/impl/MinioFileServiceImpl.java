@@ -55,9 +55,12 @@ public class MinioFileServiceImpl implements MinioFileService {
         try {
             minioService.upload(path, file.getInputStream(), file.getContentType());
         } catch (MinioException e) {
+            log.error("The file cannot be upload on the internal storage." +
+                    " Please retry later");
             throw new IllegalStateException("The file cannot be upload on the internal storage." +
                     " Please retry later", e);
         } catch (IOException e) {
+            log.error("The file cannot be read");
             throw new IllegalStateException("The file cannot be read", e);
         }
 
@@ -94,9 +97,12 @@ public class MinioFileServiceImpl implements MinioFileService {
         try {
             minioService.upload(path, file.getInputStream(), file.getContentType());
         } catch (MinioException e) {
+            log.error("The file cannot be upload on the internal storage." +
+                    " Please retry later");
             throw new IllegalStateException("The file cannot be upload on the internal storage." +
                     " Please retry later", e);
         } catch (IOException e) {
+            log.error("The file cannot be read");
             throw new IllegalStateException("The file cannot be read", e);
         }
 

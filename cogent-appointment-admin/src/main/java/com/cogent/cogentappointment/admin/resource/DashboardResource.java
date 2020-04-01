@@ -129,5 +129,4 @@ public class DashboardResource {
         Pageable pageable = PageRequest.of(page, size);
         return ok(dashboardService.getDoctorRevenueList(convertStringToDate(toDate), convertStringToDate(fromDate), doctorRevenueRequestDTO, pageable));
     }
-
 }

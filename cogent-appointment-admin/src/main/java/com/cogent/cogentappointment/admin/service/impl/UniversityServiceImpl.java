@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.function.Function;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NAME_DUPLICATION_MESSAGE;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
@@ -157,7 +158,7 @@ public class UniversityServiceImpl implements UniversityService {
         log.info(FETCHING_PROCESS_STARTED, UNIVERSITY);
 
         University university = universityRepository.fetchActiveUniversityById(id)
-                .orElseThrow(() -> new NoContentFoundException(University.class, "id", id.toString()));
+                .orElseThrow(() -> UNIVERSITY_WITH_GIVEN_ID_NOT_FOUND.apply(id));
 
         log.info(FETCHING_PROCESS_COMPLETED, UNIVERSITY, getDifferenceBetweenTwoTime(startTime));
 
@@ -166,6 +167,7 @@ public class UniversityServiceImpl implements UniversityService {
 
     private void validateName(Long universityCount, String name) {
         if (universityCount.intValue() > 0)
+            log.error(NAME_DUPLICATION_ERROR,UNIVERSITY,name);
             throw new DataDuplicationException(
                     String.format(NAME_DUPLICATION_MESSAGE, University.class.getSimpleName(), name));
     }
@@ -180,12 +182,15 @@ public class UniversityServiceImpl implements UniversityService {
 
     private University findUniversityById(Long id) {
         return universityRepository.findUniversityById(id)
-                .orElseThrow(() -> new NoContentFoundException(University.class, "id", id.toString()));
+                .orElseThrow(() -> UNIVERSITY_WITH_GIVEN_ID_NOT_FOUND.apply(id));
     }
 
     private Hospital fetchHospital(Long hospitalId) {
         return hospitalService.fetchActiveHospital(hospitalId);
     }
 
-
+    private Function<Long, NoContentFoundException> UNIVERSITY_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID,UNIVERSITY, id);
+        throw new NoContentFoundException(University.class, "id", id.toString());
+    };
 }

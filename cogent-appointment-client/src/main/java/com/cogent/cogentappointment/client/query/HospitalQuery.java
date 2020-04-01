@@ -25,7 +25,8 @@ public class HospitalQuery {
                 " THEN null" +
                 " ELSE" +
                 " hb.file_uri" +
-                " END as hospitalBanner" +                                  //[5]
+                " END as hospitalBanner," +                                  //[5]
+                " h.code as hospitalCode" +                                  //[6]
                 " FROM" +
                 " hospital h" +
                 " LEFT JOIN hospital_logo hl ON h.id =hl.hospital_id " +
@@ -38,7 +39,8 @@ public class HospitalQuery {
                 " WHERE hc.status = 'Y'" +
                 " GROUP BY hc.hospital_id" +
                 " )tbl1 ON tbl1.hospitalId = h.id" +
-                " WHERE h.status ='Y'";
+                " WHERE h.status ='Y'" +
+                " AND h.is_company = 'N'";
 
         if (!ObjectUtils.isEmpty(requestDTO.getName()))
             query += " AND h.name LIKE '%" + requestDTO.getName() + "%'";

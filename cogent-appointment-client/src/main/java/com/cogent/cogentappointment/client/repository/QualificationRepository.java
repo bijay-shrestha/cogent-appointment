@@ -17,8 +17,8 @@ public interface QualificationRepository extends JpaRepository<Qualification, Lo
 
 
     @Query("SELECT q FROM Qualification q WHERE q.status!='D' AND q.id = :id")
-    Optional<Qualification> findQualificationByIdAndHospitalId(@Param("id") Long id);
+    Optional<Qualification> findQualificationById(@Param("id") Long id);
 
     @Query("SELECT q FROM Qualification q WHERE q.status='Y' AND q.id = :id")
-    Optional<Qualification> fetchActiveQualificationByIdAndHospitalId(@Param("id") Long id);
+    Optional<Qualification> fetchActiveQualificationById(@Param("id") Long id);
 }

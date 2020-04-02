@@ -42,31 +42,29 @@ public class QualificationRepositoryCustomImpl implements QualificationRepositor
     private EntityManager entityManager;
 
     @Override
-    public Long validateDuplicity(String name, Long hospitalId) {
+    public Long validateDuplicity(String name, Long universityId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY)
                 .setParameter(NAME, name)
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(UNIVERSITY_ID, universityId);
 
         return (Long) query.getSingleResult();
     }
 
     @Override
-    public Long validateDuplicity(Long id, String name, Long hospitalId) {
+    public Long validateDuplicity(Long id, String name, Long universityId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE)
                 .setParameter(ID, id)
                 .setParameter(NAME, name)
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(UNIVERSITY_ID, universityId);
 
         return (Long) query.getSingleResult();
     }
 
     @Override
     public List<QualificationMinimalResponseDTO> search(QualificationSearchRequestDTO searchRequestDTO,
-                                                        Long hospitalId,
                                                         Pageable pageable) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_QUALIFICATION.apply(searchRequestDTO))
-                .setParameter(HOSPITAL_ID, hospitalId);
+        Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_QUALIFICATION.apply(searchRequestDTO));
 
         int totalItems = query.getResultList().size();
 
@@ -75,57 +73,51 @@ public class QualificationRepositoryCustomImpl implements QualificationRepositor
         List<QualificationMinimalResponseDTO> results = transformQueryToResultList(
                 query, QualificationMinimalResponseDTO.class);
 
-        if (results.isEmpty()){
+        if (results.isEmpty()) {
             error();
             throw QUALIFICATION_NOT_FOUND.get();
-        }
-        else {
+        } else {
             results.get(0).setTotalItems(totalItems);
             return results;
         }
     }
 
     @Override
-    public QualificationResponseDTO fetchDetailsById(Long id, Long hospitalId) {
+    public QualificationResponseDTO fetchDetailsById(Long id) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_QUALIFICATION_DETAILS)
-                .setParameter(QueryConstants.ID, id)
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(QueryConstants.ID, id);
 
         try {
             return transformQueryToSingleResult(query, QualificationResponseDTO.class);
         } catch (NoResultException e) {
-            log.error(CONTENT_NOT_FOUND_BY_ID,QUALIFICATION,id);
+            log.error(CONTENT_NOT_FOUND_BY_ID, QUALIFICATION, id);
             throw new NoContentFoundException(Qualification.class, "id", id.toString());
         }
     }
 
     @Override
-    public List<QualificationDropdownDTO> fetchActiveQualificationForDropDown(Long hospitalId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_QUALIFICATION_FOR_DROPDOWN)
-                .setParameter(HOSPITAL_ID, hospitalId);
+    public List<QualificationDropdownDTO> fetchMinActiveQualification() {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_QUALIFICATION_FOR_DROPDOWN);
 
         List<QualificationDropdownDTO> results = transformQueryToResultList(query, QualificationDropdownDTO.class);
 
-        if (results.isEmpty()){
+        if (results.isEmpty()) {
             error();
             throw QUALIFICATION_NOT_FOUND.get();
-        }
-        else return results;
+        } else return results;
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchMinQualification(Long hospitalId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_MIN_QUALIFICATION)
-                .setParameter(HOSPITAL_ID, hospitalId);
+    public List<DropDownResponseDTO> fetchMinQualification() {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_MIN_QUALIFICATION);
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
-        if (results.isEmpty()){
+        if (results.isEmpty()) {
             error();
             throw QUALIFICATION_NOT_FOUND.get();
-        }
-        else return results;
+        } else return results;
     }
 
     private Supplier<NoContentFoundException> QUALIFICATION_NOT_FOUND = () ->

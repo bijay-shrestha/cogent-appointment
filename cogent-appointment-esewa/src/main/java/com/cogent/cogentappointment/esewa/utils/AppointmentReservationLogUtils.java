@@ -6,7 +6,7 @@ import com.cogent.cogentappointment.persistence.model.AppointmentReservationLog;
 import java.util.Date;
 import java.util.Objects;
 
-import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
+import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.*;
 
 /**
  * @author smriti on 18/02/20

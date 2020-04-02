@@ -8,7 +8,6 @@ import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalUpdateReq
 import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalContactNumberResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalResponseDTO;
-import com.cogent.cogentappointment.admin.utils.commons.StringUtil;
 import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.HospitalBanner;
 import com.cogent.cogentappointment.persistence.model.HospitalContactNumber;
@@ -22,9 +21,8 @@ import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.N;
-import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.*;
+import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.convertToNormalCase;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.toUpperCase;
-import static org.springframework.http.HttpStatus.OK;
 
 /**
  * @author smriti ON 12/01/2020
@@ -93,7 +91,6 @@ public class HospitalUtils {
         hospital.setPanNumber(updateRequestDTO.getPanNumber());
         hospital.setStatus(updateRequestDTO.getStatus());
         hospital.setRemarks(convertToNormalCase(updateRequestDTO.getRemarks()));
-        hospital.setIsCompany(updateRequestDTO.getIsHospital());
         hospital.setRefundPercentage(updateRequestDTO.getRefundPercentage());
         hospital.setNumberOfAdmins(updateRequestDTO.getNumberOfAdmins());
         hospital.setNumberOfFollowUps(updateRequestDTO.getNumberOfFollowUps());

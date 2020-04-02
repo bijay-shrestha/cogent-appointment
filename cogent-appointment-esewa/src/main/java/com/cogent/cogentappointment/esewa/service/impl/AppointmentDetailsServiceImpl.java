@@ -1,9 +1,9 @@
 package com.cogent.cogentappointment.esewa.service.impl;
 
+import com.cogent.cogentappointment.esewa.dto.eSewa.*;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.AppointmentDatesRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.eSewa.AppointmentDetailRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.appoinmentDateAndTime.*;
-import com.cogent.cogentappointment.esewa.dto.response.eSewa.*;
 import com.cogent.cogentappointment.esewa.exception.NoContentFoundException;
 import com.cogent.cogentappointment.esewa.repository.DoctorDutyRosterOverrideRepository;
 import com.cogent.cogentappointment.esewa.repository.DoctorDutyRosterRepository;
@@ -18,6 +18,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
@@ -25,6 +26,7 @@ import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.FETCHING_
 import static com.cogent.cogentappointment.esewa.log.constants.eSewaLog.*;
 import static com.cogent.cogentappointment.esewa.utils.AppointmentDetailsUtils.*;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.*;
+import static org.springframework.http.HttpStatus.OK;
 
 /**
  * @author Sauravi Thapa ON 4/2/20
@@ -56,10 +58,9 @@ public class AppointmentDetailsServiceImpl implements AppointmentDetailsService 
         DoctorAvailabilityStatusResponseDTO doctorAvailableStatus =
                 dutyRosterOverrideRepository.fetchDoctorDutyRosterOverrideStatus(requestDTO);
 
-        DoctorAvailabilityStatusResponseDTO responseDTO =
-                doctorAvailableStatus.getStatus().equals("Y")
-                        ? doctorAvailableStatus
-                        : dutyRosterRepository.fetchDoctorDutyRosterStatus(requestDTO);
+        DoctorAvailabilityStatusResponseDTO responseDTO = (!Objects.isNull(doctorAvailableStatus))
+                ? doctorAvailableStatus
+                : dutyRosterRepository.fetchDoctorDutyRosterStatus(requestDTO);
 
         log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_AVAILABLE_STATUS, getDifferenceBetweenTwoTime(startTime));
 
@@ -68,28 +69,32 @@ public class AppointmentDetailsServiceImpl implements AppointmentDetailsService 
 
     /*ALL AVAILABLE DOCTORS AND THEIR SPECIALIZATION ON THE CHOSEN DATE*/
     @Override
-    public List<AvailableDoctorResponseDTO> fetchAvailableDoctorWithSpecialization(AppointmentDetailRequestDTO requestDTO) {
+    public AvailableDoctorWithSpecializationResponseDTO fetchAvailableDoctorWithSpecialization(
+            AppointmentDetailRequestDTO requestDTO) {
+
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, AVAILABLE_DOCTOR_LIST);
 
         validateIfRequestedDateIsBeforeCurrentDate(requestDTO.getDate());
 
-        List<AvailableDoctorResponseDTO> availableDoctorFromDDROverride =
+        List<AvailableDoctorWithSpecialization> availableDoctorFromDDROverride =
                 dutyRosterOverrideRepository.fetchAvailableDoctor(requestDTO);
 
-        List<AvailableDoctorResponseDTO> availableDoctorFromDDR =
+        List<AvailableDoctorWithSpecialization> availableDoctorFromDDR =
                 dutyRosterRepository.fetchAvailableDoctor(requestDTO);
 
-        List<AvailableDoctorResponseDTO> mergedList =
+        List<AvailableDoctorWithSpecialization> mergedList =
                 mergeOverrideAndActualDoctorList(availableDoctorFromDDROverride, availableDoctorFromDDR);
 
-        if (ObjectUtils.isEmpty(mergedList))
+        if (ObjectUtils.isEmpty(mergedList)) {
+
             throw DOCTORS_NOT_AVAILABLE.get();
+        }
 
         log.info(FETCHING_PROCESS_COMPLETED, AVAILABLE_DOCTOR_LIST, getDifferenceBetweenTwoTime(startTime));
 
-        return mergedList;
+        return getAvailableDoctorWithSpecializationResponseDTO(mergedList);
     }
 
     /*RETURNS ALL THE AVAILABLE APPOINTMENT DATES AND TIME BY DOCTORID and SPECIALIZATIONID*/
@@ -121,9 +126,9 @@ public class AppointmentDetailsServiceImpl implements AppointmentDetailsService 
 
         AppointmentDatesResponseDTO responseDTO = getFinalResponse(requestDTO, appointmentDateAndTime);
 
-        if (ObjectUtils.isEmpty(responseDTO.getDates()))
+        if (ObjectUtils.isEmpty(responseDTO.getDates())) {
             throw APPOINTMENT_NOT_AVAILABLE.get();
-
+        }
         log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_AVAILABLE_DATES_AND_TIME, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
@@ -131,20 +136,20 @@ public class AppointmentDetailsServiceImpl implements AppointmentDetailsService 
 
     /*RETURNS ALL THE AVAILABLE APPOINTMENT DATES WITH SPECIALIZATION ID AND NAME BY DOCTORID*/
     @Override
-    public List<AvailableDateByDoctorIdResponseDTO> fetchAvailableDatesWithSpecialization(Long doctorId) {
+    public AvailableDatesWithSpecializationResponseDTO fetchAvailableDatesWithSpecialization(Long doctorId) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, DOCTOR_AVAILABLE_DATES);
 
-        List<AvailableDateByDoctorIdResponseDTO> responseDTOList = new ArrayList<>();
+        List<AvailableDatesWithSpecialization> responseDTOList = new ArrayList<>();
 
         List<DutyRosterAppointmentDateAndSpecilizationDTO> appointmentDateAndSpecilizations = dutyRosterRepository
                 .getAvaliableDatesAndSpecilizationByDoctorId(doctorId);
 
         appointmentDateAndSpecilizations.forEach(dateAndSpecilization -> {
 
-            AvailableDateByDoctorIdResponseDTO responseDTO = new AvailableDateByDoctorIdResponseDTO();
+            AvailableDatesWithSpecialization responseDTO = new AvailableDatesWithSpecialization();
 
             List<String> weekDays = getWeekdays(dateAndSpecilization.getId());
 
@@ -176,30 +181,30 @@ public class AppointmentDetailsServiceImpl implements AppointmentDetailsService 
             }
         });
 
-        if (ObjectUtils.isEmpty(responseDTOList))
+        if (ObjectUtils.isEmpty(responseDTOList)) {
             throw APPOINTMENT_NOT_AVAILABLE.get();
-
+        }
         log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_AVAILABLE_DATES, getDifferenceBetweenTwoTime(startTime));
 
-        return responseDTOList;
+        return getAvailableDatesWithSpecializationResponseDTO(responseDTOList);
     }
 
     /*RETURNS ALL THE AVAILABLE APPOINTMENT DATES WITH DOCTOR ID AND NAME BY SPECIALIZATIONID*/
     @Override
-    public List<AvailableDateBySpecializationIdResponseDTO> fetchAvailableDatesWithDoctor(Long specializationId) {
+    public AvailableDatesWithDoctorResponseDTO fetchAvailableDatesWithDoctor(Long specializationId) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, SPECIALIZATION_AVAILABLE_DATES);
 
-        List<AvailableDateBySpecializationIdResponseDTO> responseDTOList = new ArrayList<>();
+        List<AvailableDatesWithDoctor> responseDTOList = new ArrayList<>();
 
         List<DutyRosterAppointmentDateAndDoctorDTO> dateAndDoctorDTOS = dutyRosterRepository
                 .getAvaliableDatesAndDoctorBySpecilizationId(specializationId);
 
         dateAndDoctorDTOS.forEach(dateAndSpecilization -> {
 
-            AvailableDateBySpecializationIdResponseDTO responseDTO = new AvailableDateBySpecializationIdResponseDTO();
+            AvailableDatesWithDoctor responseDTO = new AvailableDatesWithDoctor();
 
             List<String> weekDays = getWeekdays(dateAndSpecilization.getId());
 
@@ -231,11 +236,13 @@ public class AppointmentDetailsServiceImpl implements AppointmentDetailsService 
             }
         });
 
-        if (ObjectUtils.isEmpty(responseDTOList))
+        if (ObjectUtils.isEmpty(responseDTOList)) {
             throw APPOINTMENT_NOT_AVAILABLE.get();
+        }
 
         log.info(FETCHING_PROCESS_COMPLETED, SPECIALIZATION_AVAILABLE_DATES, getDifferenceBetweenTwoTime(startTime));
-        return responseDTOList;
+
+        return getAvailableDatesWithDoctorResponseDTO(responseDTOList);
     }
 
     /*RETURNS ALL THE AVAILABLE APPOINTMENT DATES  BY DOCTORID AND SPECIALIZATIONID*/
@@ -280,13 +287,19 @@ public class AppointmentDetailsServiceImpl implements AppointmentDetailsService 
         });
         responseDTO.setAvaliableDates(avaliableDates);
 
-        if (ObjectUtils.isEmpty(responseDTO.getAvaliableDates()))
+        responseDTO.setResponseStatus(OK);
+
+        responseDTO.setResponseCode(OK.value());
+
+        if (ObjectUtils.isEmpty(responseDTO.getAvaliableDates())) {
             throw APPOINTMENT_NOT_AVAILABLE.get();
+        }
 
         log.info(FETCHING_PROCESS_COMPLETED, AVAILABLE_DATES_LIST, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
     }
+
 
     private List<AvailableDatesResponseDTO> getDutyRosterDatesAndTime(List<Date> dates,
                                                                       List<DoctorWeekDaysDutyRosterAppointmentDate>

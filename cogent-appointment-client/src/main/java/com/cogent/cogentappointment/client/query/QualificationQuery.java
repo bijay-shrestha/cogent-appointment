@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.client.query;
 import com.cogent.cogentappointment.client.dto.request.qualification.QualificationSearchRequestDTO;
 import org.springframework.util.ObjectUtils;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -16,7 +17,7 @@ public class QualificationQuery {
                     " WHERE" +
                     " q.status !='D'" +
                     " AND q.name=:name" +
-                    " AND q.hospital.id =:hospitalId";
+                    " AND q.university.id =:universityId";
 
     public static final String QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE =
             " SELECT COUNT(q.id)" +
@@ -25,12 +26,12 @@ public class QualificationQuery {
                     " q.status !='D'" +
                     " AND q.id!=:id" +
                     " AND q.name=:name" +
-                    " AND q.hospital.id =:hospitalId";
+                    " AND q.university.id =:universityId";
 
     private static final String SELECT_CLAUSE_TO_FETCH_MINIMAL_QUALIFICATION =
             "SELECT q.id as id," +                                               //[0]
                     " q.name as name," +                                        //[1]
-                    " q.university.name as university," +                             //[2]
+                    " q.university.name as universityName," +                  //[2]
                     " q.qualificationAlias.name as qualificationAliasName," +   //[3]
                     " q.status as status" +                                     //[5]
                     " FROM Qualification q ";
@@ -41,16 +42,21 @@ public class QualificationQuery {
                             GET_WHERE_CLAUSE_FOR_SEARCHING_QUALIFICATION(qualificationSearchRequestDTO)
             ));
 
-    private static String GET_WHERE_CLAUSE_FOR_SEARCHING_QUALIFICATION
-            (QualificationSearchRequestDTO searchRequestDTO) {
+    private static String GET_WHERE_CLAUSE_FOR_SEARCHING_QUALIFICATION(QualificationSearchRequestDTO searchRequestDTO) {
 
-        String whereClause = " WHERE q.status!='D' AND q.hospital.id = :hospitalId";
+        String whereClause = " WHERE q.status!='D'";
 
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getName()))
-            whereClause += " AND q.name LIKE '%" + searchRequestDTO.getName() + "%'";
+        if (!Objects.isNull(searchRequestDTO.getQualificationId()))
+            whereClause += " AND q.id = " + searchRequestDTO.getQualificationId();
 
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getUniversity()))
-            whereClause += " AND q.university LIKE '%" + searchRequestDTO.getUniversity() + "%'";
+        if (!Objects.isNull(searchRequestDTO.getUniversityId()))
+            whereClause += " AND q.university.id=" + searchRequestDTO.getUniversityId();
+
+        if (!Objects.isNull(searchRequestDTO.getQualificationAliasId()))
+            whereClause += " AND qa.qualificationAlias.id=" + searchRequestDTO.getQualificationAliasId();
+
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
+            whereClause += " AND q.status='" + searchRequestDTO.getStatus() + "'";
 
         return whereClause;
     }
@@ -58,15 +64,17 @@ public class QualificationQuery {
     public static final String QUERY_TO_FETCH_QUALIFICATION_DETAILS =
             "SELECT" +
                     " q.name as name," +                                        //[0]
-                    " q.university.name as university," +                       //[1]
-                    " q.qualificationAlias.id as qualificationAliasId," +       //[2]
-                    " q.qualificationAlias.name as qualificationAliasName," +   //[3]
-                    " q.status as status," +                                    //[4]
-                    " q.remarks as remarks" +                                   //[5]
+                    " u.id as universityId," +                                  //[1]
+                    " u.name as universityName," +                              //[2]
+                    " qa.id as qualificationAliasId," +                         //[3]
+                    " qa.name as qualificationAliasName," +                     //[4]
+                    " q.status as status," +                                    //[5]
+                    " q.remarks as remarks" +                                  //[6]
                     " FROM Qualification q " +
+                    " LEFT JOIN University u ON u.id = q.university.id" +
+                    " LEFT JOIN QualificationAlias qa ON qa.id = q.qualificationAlias.id" +
                     " WHERE q.status != 'D'" +
-                    " AND q.id =:id" +
-                    " AND q.hospital.id = :hospitalId";
+                    " AND q.id =:id";
 
     public static final String QUERY_TO_FETCH_ACTIVE_QUALIFICATION_FOR_DROPDOWN =
             "SELECT q.id as id," +                                                  //[0]
@@ -74,13 +82,11 @@ public class QualificationQuery {
                     " q.university.name as university," +                           //[2]
                     " q.qualificationAlias.name as qualificationAliasName" +        //[3]
                     " FROM Qualification q " +
-                    " WHERE q.status = 'Y'" +
-                    " AND q.hospital.id =:hospitalId";
+                    " WHERE q.status = 'Y'";
 
     public static final String QUERY_TO_FETCH_MIN_QUALIFICATION =
             "SELECT q.id as value," +                                           //[0]
                     " q.name as label" +                                        //[1]
                     " FROM Qualification q " +
-                    " WHERE q.status != 'D'" +
-                    " AND q.hospital.id =:hospitalId";
+                    " WHERE q.status != 'D'";
 }

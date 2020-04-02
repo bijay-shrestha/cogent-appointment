@@ -177,29 +177,17 @@ public class AdminQuery {
                     " LEFT JOIN Department d ON d.id=p.department.id" +
                     " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
                     " WHERE " +
-                    " (a.username=:username OR a.email =:email)" +
+                    " (a.username=:username OR a.email =:email OR a.mobileNumber=:username)" +
                     " AND a.status='Y'" +
                     " AND h.isCompany='Y'";
 
     public static final String QUERY_TO_FETCH_ADMIN_META_INFO =
-            " SELECT a.id as adminMetaInfoId," +                   //[0]
-                    " a.metaInfo as metaInfo" +                   //[1]
-                    " FROM AdminMetaInfo a" +
-                    " WHERE a.admin.status !='D'";
-
-    public static final String QUERY_TO_GET_LOGGED_ADMIN_INFO =
-            "SELECT" +
-                    " a.id as id ," +
-                    " a.username as username," +
-                    " a.password as password," +
-                    " h.isCompany as isCompany" +
-                    " FROM " +
-                    " Admin a" +
-                    " LEFT JOIN Profile p ON p.id=a.profileId.id" +
-                    " LEFT JOIN Department d ON d.id=p.department.id" +
-                    " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
-                    " WHERE" +
-                    " a.username =:username" +
-                    " AND a.status = 'Y'" +
-                    " AND h.isCompany='Y'";
+            " SELECT" +
+                    " ami.id as adminMetaInfoId," +                   //[0]
+                    " ami.metaInfo as metaInfo" +                   //[1]
+                    " FROM AdminMetaInfo ami" +
+                    " LEFT JOIN Admin a ON a.id=ami.admin.id" +
+                    " LEFT JOIN Profile ON p.id=a.profileId.id" +
+                    " WHERE a.status !='D'" +
+                    " AND p.isCompanyprofile='N'";
 }

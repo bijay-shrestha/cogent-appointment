@@ -7,18 +7,23 @@ public class QueryConstants {
 
     //A
     public static final String APPOINTMENT_ID = "appointmentId";
+    public static final String ADMIN_ID = "adminId";
 
     //B
 
 
     //C
     public static final String CODE = "code";
+
     public static final String CONFIRMATION_TOKEN = "confirmationToken";
+
+    public static final String COMPANY_ID = "companyId";
 
 
     //D
 
     public static final String DOCTOR_ID = "doctorId";
+    public static final String DASHBOARD_FEATURE_ID = "dashboardFeatureId";
     public static final String DATE = "date";
     public static final String DATE_OF_BIRTH = "dateOfBirth";
 
@@ -67,6 +72,7 @@ public class QueryConstants {
 
 
     //S
+    public static final String STATUS = "status";
 
 
     public static final String SPECIALIZATION_ID = "specializationId";
@@ -74,10 +80,11 @@ public class QueryConstants {
     //T
     public static final String TO_DATE = "toDate";
 
-    public static final String TODAY_INTERVAL = "today";
 
     //U
     public static final String USERNAME = "username";
+
+    public static final String UNIVERSITY_ID = "universityId";
 
     //V
 

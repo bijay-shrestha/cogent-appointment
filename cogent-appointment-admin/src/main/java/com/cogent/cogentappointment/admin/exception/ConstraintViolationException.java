@@ -26,7 +26,8 @@ public class ConstraintViolationException extends RuntimeException {
         exception = ExceptionResponse.builder()
                 .errorMessage(errorMessage)
                 .debugMessage(debugMessage)
-                .status(BAD_REQUEST)
+                .responseStatus(BAD_REQUEST)
+                .responseCode(BAD_REQUEST.value())
                 .timeStamp(ExceptionUtils.getLocalDateTime())
                 .build();
     }

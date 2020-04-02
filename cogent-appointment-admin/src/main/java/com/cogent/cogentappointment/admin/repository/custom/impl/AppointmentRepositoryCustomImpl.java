@@ -19,6 +19,7 @@ import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.query.AppointmentQuery;
 import com.cogent.cogentappointment.admin.repository.custom.AppointmentRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Appointment;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,10 +31,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
+import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.APPOINTMENT;
 import static com.cogent.cogentappointment.admin.query.AppointmentQuery.*;
 import static com.cogent.cogentappointment.admin.query.DashBoardQuery.*;
 import static com.cogent.cogentappointment.admin.utils.AppointmentUtils.*;
@@ -46,6 +48,7 @@ import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
  */
 @Repository
 @Transactional(readOnly = true)
+@Slf4j
 public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCustom {
 
     @PersistenceContext
@@ -92,8 +95,10 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         List<AppointmentRefundDTO> refundAppointments = transformQueryToResultList(query, AppointmentRefundDTO.class);
 
-        if (refundAppointments.isEmpty()) throw APPOINTMENT_NOT_FOUND.get();
-        else {
+        if (refundAppointments.isEmpty()) {
+            error();
+            throw APPOINTMENT_NOT_FOUND.get();
+        } else {
             Double totalRefundAmount = calculateTotalRefundAmount(searchDTO);
             return AppointmentRefundResponseDTO.builder()
                     .refundAppointments(refundAppointments)
@@ -155,11 +160,12 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
-    public List<AppointmentQueueDTO> fetchTodayAppointmentQueue(AppointmentQueueRequestDTO appointmentQueueRequestDTO,
-                                                                Pageable pageable) {
+    public List<AppointmentQueueDTO> fetchAppointmentQueueLog(AppointmentQueueRequestDTO appointmentQueueRequestDTO,
+                                                              Pageable pageable) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TODAY_APPOINTMENT_QUEUE
-                .apply(appointmentQueueRequestDTO));
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_QUEUE
+                .apply(appointmentQueueRequestDTO))
+                .setParameter(DATE,utilDateToSqlDate(appointmentQueueRequestDTO.getDate()));
 
         int totalItems = query.getResultList().size();
 
@@ -167,8 +173,10 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         List<AppointmentQueueDTO> results = transformQueryToResultList(query, AppointmentQueueDTO.class);
 
-        if (results.isEmpty()) throw APPOINTMENT_NOT_FOUND.get();
-        else {
+        if (results.isEmpty()) {
+            error();
+            throw APPOINTMENT_NOT_FOUND.get();
+        } else {
             results.get(0).setTotalItems(totalItems);
             return results;
         }
@@ -177,7 +185,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     @Override
     public Map<String, List<AppointmentQueueDTO>> fetchTodayAppointmentQueueByTime(AppointmentQueueRequestDTO appointmentQueueRequestDTO,
                                                                                    Pageable pageable) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TODAY_APPOINTMENT_QUEUE.apply(appointmentQueueRequestDTO));
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_QUEUE.apply(appointmentQueueRequestDTO))
+                .setParameter(DATE,utilDateToSqlDate(appointmentQueueRequestDTO.getDate()));
 
         int totalItems = query.getResultList().size();
 
@@ -220,8 +229,10 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         AppointmentPendingApprovalResponseDTO results = parseQueryResultToAppointmentApprovalResponse(objects);
 
-        if (results.getPendingAppointmentApprovals().isEmpty()) throw APPOINTMENT_NOT_FOUND.get();
-        else {
+        if (results.getPendingAppointmentApprovals().isEmpty()) {
+            error();
+            throw APPOINTMENT_NOT_FOUND.get();
+        } else {
             results.setTotalItems(totalItems);
             return results;
         }
@@ -243,8 +254,10 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         AppointmentLogResponseDTO results = parseQueryResultToAppointmentLogResponse(objects);
 
-        if (results.getAppointmentLogs().isEmpty()) throw APPOINTMENT_NOT_FOUND.get();
-        else {
+        if (results.getAppointmentLogs().isEmpty()) {
+            error();
+            throw APPOINTMENT_NOT_FOUND.get();
+        } else {
             results.setTotalItems(totalItems);
             return results;
         }
@@ -264,8 +277,10 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         AppointmentRescheduleLogResponseDTO results = parseQueryResultToAppointmentRescheduleLogResponse(objects);
 
-        if (results.getAppointmentRescheduleLogDTOS().isEmpty()) throw APPOINTMENT_NOT_FOUND.get();
-        else {
+        if (results.getAppointmentRescheduleLogDTOS().isEmpty()) {
+            error();
+            throw APPOINTMENT_NOT_FOUND.get();
+        } else {
             results.setTotalItems(totalItems);
             return results;
         }
@@ -275,7 +290,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     private Supplier<NoContentFoundException> APPOINTMENT_NOT_FOUND = ()
             -> new NoContentFoundException(Appointment.class);
 
-    private Function<Long, NoContentFoundException> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        throw new NoContentFoundException(Appointment.class, "id", id.toString());
-    };
+    private void error() {
+        log.error(CONTENT_NOT_FOUND, APPOINTMENT);
+    }
 }

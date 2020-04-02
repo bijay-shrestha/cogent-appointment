@@ -1,19 +1,14 @@
 package com.cogent.cogentappointment.admin.utils;
 
-import com.cogent.cogentappointment.admin.constants.StringConstant;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.company.CompanyContactNumberUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.company.CompanyRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.company.CompanyUpdateRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalContactNumberUpdateRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.company.CompanyContactNumberResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.company.CompanyResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalContactNumberResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalResponseDTO;
 import com.cogent.cogentappointment.admin.utils.commons.StringUtil;
 import com.cogent.cogentappointment.persistence.model.Hospital;
-import com.cogent.cogentappointment.persistence.model.HospitalBanner;
 import com.cogent.cogentappointment.persistence.model.HospitalContactNumber;
 import com.cogent.cogentappointment.persistence.model.HospitalLogo;
 
@@ -24,7 +19,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
-import static com.cogent.cogentappointment.admin.constants.StringConstant.Y;
+import static com.cogent.cogentappointment.admin.constants.StringConstant.*;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.toUpperCase;
 
 /**
@@ -51,7 +46,7 @@ public class CompanyUtils {
     }
 
     public static HospitalLogo convertFileToCompanyLogo(FileUploadResponseDTO fileUploadResponseDTO,
-                                                         Hospital company) {
+                                                        Hospital company) {
         HospitalLogo companyLogo = new HospitalLogo();
         setLogoFileProperties(fileUploadResponseDTO, companyLogo);
         companyLogo.setHospital(company);
@@ -67,7 +62,7 @@ public class CompanyUtils {
     }
 
     public static void parseToUpdatedCompany(CompanyUpdateRequestDTO updateRequestDTO,
-                                              Hospital company) {
+                                             Hospital company) {
 
         company.setName(StringUtil.convertToNormalCase(updateRequestDTO.getName()));
         company.setAddress(updateRequestDTO.getAddress());
@@ -113,9 +108,8 @@ public class CompanyUtils {
         final int COMPANY_LOGO_INDEX = 6;
         final int COMPANY_CODE_INDEX = 7;
         final int CONTACT_DETAILS_INDEX = 8;
-        final int IS_COGENT_ADMIN_INDEX = 9;
-        final int ALIAS_INDEX=10;
-
+        final int IS_COMPANY_INDEX = 9;
+        final int ALIAS_INDEX = 10;
 
         return CompanyResponseDTO.builder()
                 .id(Long.parseLong(results[COMPANY_ID_INDEX].toString()))
@@ -126,23 +120,23 @@ public class CompanyUtils {
                 .remarks(Objects.isNull(results[REMARKS_INDEX]) ? null : results[REMARKS_INDEX].toString())
                 .companyLogo(Objects.isNull(results[COMPANY_LOGO_INDEX]) ? null : results[COMPANY_LOGO_INDEX].toString())
                 .companyCode(results[COMPANY_CODE_INDEX].toString())
-//                .contactNumberResponseDTOS(Objects.isNull(results[CONTACT_DETAILS_INDEX]) ?
-//                        new ArrayList<>() : parseToCompanyContactNumberResponseDTOS(results))
-                .isCompany(results[IS_COGENT_ADMIN_INDEX].toString().charAt(0))
+                .contactNumberResponseDTOS(Objects.isNull(results[CONTACT_DETAILS_INDEX]) ?
+                        new ArrayList<>() : parseToCompanyContactNumberResponseDTOS(results))
+                .isCompany(results[IS_COMPANY_INDEX].toString().charAt(0))
                 .alias(results[ALIAS_INDEX].toString())
                 .build();
     }
 
-    private static List<HospitalContactNumberResponseDTO> parseToCompanyContactNumberResponseDTOS(Object[] results) {
+    private static List<CompanyContactNumberResponseDTO> parseToCompanyContactNumberResponseDTOS(Object[] results) {
 
-        final int CONTACT_DETAILS_INDEX = 9;
+        final int CONTACT_DETAILS_INDEX = 8;
 
-        String[] contactWithIdAndNumber = results[CONTACT_DETAILS_INDEX].toString().split(StringConstant.COMMA_SEPARATED);
+        String[] contactWithIdAndNumber = results[CONTACT_DETAILS_INDEX].toString().split(COMMA_SEPARATED);
 
         return Arrays.stream(contactWithIdAndNumber)
-                .map(contact -> contact.split(StringConstant.HYPHEN))
-                .map(contactDetails -> HospitalContactNumberResponseDTO.builder()
-                        .hospitalContactNumberId(Long.parseLong(contactDetails[0]))
+                .map(contact -> contact.split(HYPHEN))
+                .map(contactDetails -> CompanyContactNumberResponseDTO.builder()
+                        .companyContactNumberId(Long.parseLong(contactDetails[0]))
                         .contactNumber(contactDetails[1])
                         .status(contactDetails[2].charAt(0))
                         .build())

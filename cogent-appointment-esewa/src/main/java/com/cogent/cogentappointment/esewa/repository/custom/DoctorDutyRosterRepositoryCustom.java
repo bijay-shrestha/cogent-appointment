@@ -1,5 +1,9 @@
 package com.cogent.cogentappointment.esewa.repository.custom;
 
+import com.cogent.cogentappointment.esewa.dto.eSewa.AvailableDoctorWithSpecialization;
+import com.cogent.cogentappointment.esewa.dto.eSewa.DoctorAvailabilityStatusResponseDTO;
+import com.cogent.cogentappointment.esewa.dto.eSewa.DutyRosterAppointmentDateAndDoctorDTO;
+import com.cogent.cogentappointment.esewa.dto.eSewa.DutyRosterAppointmentDateAndSpecilizationDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.AppointmentDatesRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.doctorDutyRoster.DoctorDutyRosterSearchRequestDTO;
@@ -8,10 +12,6 @@ import com.cogent.cogentappointment.esewa.dto.request.eSewa.AppointmentDetailReq
 import com.cogent.cogentappointment.esewa.dto.response.appointment.appoinmentDateAndTime.DoctorDutyRosterAppointmentDate;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.appoinmentDateAndTime.DoctorWeekDaysDutyRosterAppointmentDate;
 import com.cogent.cogentappointment.esewa.dto.response.doctorDutyRoster.*;
-import com.cogent.cogentappointment.esewa.dto.response.eSewa.AvailableDoctorResponseDTO;
-import com.cogent.cogentappointment.esewa.dto.response.eSewa.DoctorAvailabilityStatusResponseDTO;
-import com.cogent.cogentappointment.esewa.dto.response.eSewa.DutyRosterAppointmentDateAndDoctorDTO;
-import com.cogent.cogentappointment.esewa.dto.response.eSewa.DutyRosterAppointmentDateAndSpecilizationDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -58,7 +58,7 @@ public interface DoctorDutyRosterRepositoryCustom {
 
     DoctorAvailabilityStatusResponseDTO fetchDoctorDutyRosterStatus(AppointmentDetailRequestDTO requestDTO);
 
-    List<AvailableDoctorResponseDTO> fetchAvailableDoctor(AppointmentDetailRequestDTO requestDTO);
+    List<AvailableDoctorWithSpecialization> fetchAvailableDoctor(AppointmentDetailRequestDTO requestDTO);
 
     List<DutyRosterAppointmentDateAndSpecilizationDTO> getAvaliableDatesAndSpecilizationByDoctorId(Long doctorId);
 

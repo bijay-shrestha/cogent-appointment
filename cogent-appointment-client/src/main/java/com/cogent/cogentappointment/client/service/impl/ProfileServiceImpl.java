@@ -9,6 +9,7 @@ import com.cogent.cogentappointment.client.dto.request.profile.ProfileUpdateRequ
 import com.cogent.cogentappointment.client.dto.response.profile.AssignedProfileResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.profile.ProfileDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.profile.ProfileMinimalResponseDTO;
+import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.DepartmentRepository;
@@ -24,10 +25,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.NAME_DUPLICATION_MESSAGE;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.ProfileServiceMessages.INVALID_DELETE_REQUEST;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
+import static com.cogent.cogentappointment.client.log.constants.DepartmentLog.DEPARTMENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.client.log.constants.ProfileLog.PROFILE;
 import static com.cogent.cogentappointment.client.utils.ProfileMenuUtils.convertToProfileMenu;
 import static com.cogent.cogentappointment.client.utils.ProfileMenuUtils.convertToUpdatedProfileMenu;
@@ -100,7 +105,10 @@ public class ProfileServiceImpl implements ProfileService {
 
         validateName(profileCount, requestDTO.getProfileDTO().getName());
 
-        Department department = findDepartmentByIdAndHospitalId(requestDTO.getProfileDTO().getDepartmentId(), hospitalId);
+        Department department = findDepartmentByIdAndHospitalId(
+                requestDTO.getProfileDTO().getDepartmentId(),
+                hospitalId
+        );
 
         convertToUpdatedProfile(requestDTO.getProfileDTO(), department, profile);
 
@@ -117,13 +125,17 @@ public class ProfileServiceImpl implements ProfileService {
 
         Profile profile = findByIdAndHospitalId(deleteRequestDTO.getId(), getLoggedInHospitalId());
 
+        if (profile.getIsSuperAdminProfile().equals(YES))
+            throw new BadRequestException(INVALID_DELETE_REQUEST);
+
         convertProfileToDeleted.apply(profile, deleteRequestDTO);
 
         log.info(DELETING_PROCESS_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
-    public List<ProfileMinimalResponseDTO> search(ProfileSearchRequestDTO searchRequestDTO, Pageable pageable) {
+    public List<ProfileMinimalResponseDTO> search(ProfileSearchRequestDTO searchRequestDTO,
+                                                  Pageable pageable) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -131,7 +143,8 @@ public class ProfileServiceImpl implements ProfileService {
 
         Long hospitalId = getLoggedInHospitalId();
 
-        List<ProfileMinimalResponseDTO> responseDTOS = profileRepository.search(searchRequestDTO, hospitalId, pageable);
+        List<ProfileMinimalResponseDTO> responseDTOS =
+                profileRepository.search(searchRequestDTO, hospitalId, pageable);
 
         log.info(SEARCHING_PROCESS_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
 
@@ -200,11 +213,12 @@ public class ProfileServiceImpl implements ProfileService {
         return responseDTO;
     }
 
-
     private void validateName(Long profileCount, String name) {
-        if (profileCount.intValue() > 0)
+        if (profileCount.intValue() > 0) {
+            log.error(NAME_DUPLICATION_ERROR, PROFILE, name);
             throw new DataDuplicationException(
                     String.format(NAME_DUPLICATION_MESSAGE, Profile.class.getSimpleName(), name));
+        }
     }
 
     public Profile save(Profile profile) {
@@ -221,12 +235,18 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     private Function<Long, NoContentFoundException> PROFILE_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, PROFILE, id);
         throw new NoContentFoundException(Profile.class, "id", id.toString());
     };
 
     private Department findDepartmentByIdAndHospitalId(Long id, Long hospitalId) {
         return departmentRepository.findActiveDepartmentByIdAndHospitalId(id, hospitalId)
-                .orElseThrow(() -> new NoContentFoundException(Department.class, "id", id.toString()));
+                .orElseThrow(() -> DEPARTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(id, hospitalId));
     }
+
+    private BiFunction<Long, Long, NoContentFoundException> DEPARTMENT_WITH_GIVEN_ID_NOT_FOUND = (id, hospitalId) -> {
+        log.error(DEPARTMENT_NOT_FOUND_BY_ID, id, hospitalId);
+        throw new NoContentFoundException(Department.class, "id", id.toString());
+    };
 }
 

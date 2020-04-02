@@ -51,6 +51,8 @@ public class AdminRequestDTO implements Serializable {
 
     private List<String> macAddressInfo;
 
+    private List<AdminDashboardRequestDTO> adminDashboardRequestDTOS;
+
     private String password;
 
     private String baseUrl;

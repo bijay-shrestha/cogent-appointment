@@ -10,6 +10,28 @@ import java.util.function.Function;
  */
 public class CompanyQuery {
 
+    public static final String QUERY_TO_VALIDATE_COMPANY_DUPLICITY =
+            "SELECT " +
+                    " h.name," +                        //[0]
+                    " h.code" +                         //[1]
+                    " FROM Hospital h" +
+                    " WHERE " +
+                    " (h.name =:name OR h.code =:code)" +
+                    " AND h.status != 'D'" +
+                    " AND h.isCompany='Y'";
+
+    public static final String QUERY_TO_VALIDATE_COMPANY_DUPLICITY_FOR_UPDATE =
+            "SELECT " +
+                    " h.name," +                        //[0]
+                    " h.code" +                         //[1]
+                    " FROM Hospital h" +
+                    " WHERE " +
+                    " h.id!=:id" +
+                    " AND" +
+                    " (h.name =:name OR h.code =:code)" +
+                    " AND h.status != 'D'" +
+                    " AND h.isCompany='Y'";
+
     public static final String QUERY_TO_FETCH_COMPANY_FOR_DROPDOWN =
             " SELECT" +
                     " h.id as value," +                     //[0]
@@ -18,7 +40,8 @@ public class CompanyQuery {
                     " FROM" +
                     " Hospital h" +
                     " WHERE h.status ='Y'" +
-                    " AND h.isCompany='Y'";
+                    " AND h.isCompany='Y'" +
+                    " ORDER by h.id  DESC  ";
 
     public static String QUERY_TO_SEARCH_COMPANY(CompanySearchRequestDTO searchRequestDTO) {
         return "SELECT" +
@@ -75,7 +98,7 @@ public class CompanyQuery {
                     " h.code as companyCode," +                                //[7]
                     " tbl1.contact_details as contact_details," +               //[8]
                     " h.is_company as isCompany," +                             //[9]
-                    " h.alias as alias"+                                       //10]
+                    " h.alias as alias" +                                       //10]
                     " FROM" +
                     " hospital h" +
                     " LEFT JOIN hospital_logo hl ON h.id =hl.hospital_id " +

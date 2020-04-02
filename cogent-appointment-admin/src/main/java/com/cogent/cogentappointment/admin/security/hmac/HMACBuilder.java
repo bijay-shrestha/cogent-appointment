@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
@@ -20,13 +21,37 @@ import static com.cogent.cogentappointment.admin.constants.HMACConstant.*;
 public class HMACBuilder {
 
     private String username;
+
+    private String companyCode;
+
+    private Integer companyId;
+
      private String nonce;
+
     private String algorithm;
+
     private String apiKey;
+
+    private String apiSecret;
 
 
     public HMACBuilder username(String username) {
         this.username = username;
+        return this;
+    }
+
+    public HMACBuilder companyCode(String companyCode) {
+        this.companyCode = companyCode;
+        return this;
+    }
+
+    public HMACBuilder companyId(Integer companyId) {
+        this.companyId = companyId;
+        return this;
+    }
+
+    public HMACBuilder apiSecret(String apiSecret) {
+        this.apiSecret = apiSecret;
         return this;
     }
 
@@ -48,13 +73,17 @@ public class HMACBuilder {
     public byte[] build() {
         try {
             final Mac digest = Mac.getInstance(HMAC_ALGORITHM);
-            SecretKeySpec secretKey = new SecretKeySpec(HMAC_API_SECRET.getBytes(), HMAC_ALGORITHM);
+            SecretKeySpec secretKey = new SecretKeySpec(apiSecret.getBytes(), HMAC_ALGORITHM);
             digest.init(secretKey);
             digest.update(algorithm.getBytes(StandardCharsets.UTF_8));
             digest.update(DELIMITER);
             digest.update(nonce.getBytes(StandardCharsets.UTF_8));
             digest.update(DELIMITER);
             digest.update((username != null) ? username.getBytes(StandardCharsets.UTF_8) : null);
+            digest.update(DELIMITER);
+            digest.update(ByteBuffer.allocateDirect(companyId));
+            digest.update(DELIMITER);
+            digest.update(companyCode.getBytes(StandardCharsets.UTF_8));
             digest.update(DELIMITER);
             digest.update(apiKey.getBytes(StandardCharsets.UTF_8));
             digest.update(DELIMITER);

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.function.Function;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.NAME_DUPLICATION_MESSAGE;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
@@ -71,7 +72,6 @@ public class QualificationAliasServiceImpl implements QualificationAliasService 
         parseToUpdatedQualificationAlias(qualificationAliasToBeUpdated, requestDTO);
 
         log.info(UPDATING_PROCESS_COMPLETED, QUALIFICATION_ALIAS, getDifferenceBetweenTwoTime(startTime));
-
     }
 
     @Override
@@ -108,7 +108,7 @@ public class QualificationAliasServiceImpl implements QualificationAliasService 
         log.info(FETCHING_PROCESS_STARTED, QUALIFICATION_ALIAS);
 
         QualificationAlias qualificationAlias = qualificationAliasRepository.fetchActiveQualificationAliasById(id)
-                .orElseThrow(() -> new NoContentFoundException(QualificationAlias.class, "id", id.toString()));
+                .orElseThrow(() -> QUALIFICATION_ALIAS_WITH_GIVEN_ID_NOT_FOUND.apply(id));
 
         log.info(FETCHING_PROCESS_COMPLETED, QUALIFICATION_ALIAS, getDifferenceBetweenTwoTime(startTime));
 
@@ -132,12 +132,19 @@ public class QualificationAliasServiceImpl implements QualificationAliasService 
     }
 
     private void validateName(Long qualificationCount, String name) {
-        if (qualificationCount.intValue() > 0)
+        if (qualificationCount.intValue() > 0) {
+            log.error(NAME_DUPLICATION_ERROR, QUALIFICATION_ALIAS, name);
             throw new DataDuplicationException(
                     String.format(NAME_DUPLICATION_MESSAGE, QualificationAlias.class.getSimpleName(), name));
+        }
     }
 
     private void save(QualificationAlias qualificationAlias) {
         qualificationAliasRepository.save(qualificationAlias);
     }
+
+    private Function<Long, NoContentFoundException> QUALIFICATION_ALIAS_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, QUALIFICATION_ALIAS, id);
+        throw new NoContentFoundException(QualificationAlias.class, "id", id.toString());
+    };
 }

@@ -12,6 +12,9 @@ import java.io.Serializable;
 
 /**
  * @author Sauravi Thapa २०/२/३
+ * THIS ENTITY IS USED TO SAVE BOTH HOSPITAL/CLIENT AND COMPANY
+ * IN CASE OF COMPANY - isCompany = 'Y' ELSE isCompany = 'N'
+ * REFUND PERCENTAGE AND FOLLOW UP DETAILS DO NOT NEED TO BE SAVED IN CASE OF COMPANY
  */
 @Table(name = "hospital")
 @Entity
@@ -52,8 +55,8 @@ public class Hospital extends Auditable<String> implements Serializable {
     @Column(name = "number_of_admins")
     private Integer numberOfAdmins;
 
-    @Column(name = "number_of_free_follow_ups")
-    private Integer numberOfFreeFollowUps;
+    @Column(name = "number_of_follow_ups")
+    private Integer numberOfFollowUps;
 
     @Column(name = "follow_up_interval_days")
     private Integer followUpIntervalDays;
@@ -63,6 +66,9 @@ public class Hospital extends Auditable<String> implements Serializable {
 
     @Column(name = "alias")
     private String alias;
+
+    @Column(name = "company_id")
+    private Long companyId;
 
     @Override
     public String toString() {
@@ -76,7 +82,7 @@ public class Hospital extends Auditable<String> implements Serializable {
                 ", status=" + status +
                 ", refundPercentage=" + refundPercentage +
                 ", numberOfAdmins=" + numberOfAdmins +
-                ", numberOfFreeFollowUps=" + numberOfFreeFollowUps +
+                ", numberOfFollowUps=" + numberOfFollowUps +
                 ", followUpIntervalDays=" + followUpIntervalDays +
                 ", remarks='" + remarks +
                 '}';

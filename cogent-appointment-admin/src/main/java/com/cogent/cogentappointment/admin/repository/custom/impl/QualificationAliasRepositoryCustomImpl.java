@@ -2,11 +2,12 @@ package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.request.qualificationAlias.QualificationAliasSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.qualificationAlias.QualificationAliasUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.qualificationAlias.QualificationAliasMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.QualificationAliasRepositoryCustom;
-import com.cogent.cogentappointment.persistence.model.Qualification;
 import com.cogent.cogentappointment.persistence.model.QualificationAlias;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +20,10 @@ import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.ID;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.NAME;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
+import static com.cogent.cogentappointment.admin.log.constants.QualificationAliasLog.QUALIFICATION_ALIAS;
 import static com.cogent.cogentappointment.admin.query.QualificationAliasQuery.*;
+import static com.cogent.cogentappointment.admin.query.QualificationQuery.QUERY_TO_VALIDATE_DUPLICITY;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
@@ -29,6 +33,7 @@ import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transf
  */
 @Repository
 @Transactional(readOnly = true)
+@Slf4j
 public class QualificationAliasRepositoryCustomImpl implements QualificationAliasRepositoryCustom {
 
     @PersistenceContext
@@ -40,8 +45,10 @@ public class QualificationAliasRepositoryCustomImpl implements QualificationAlia
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
-        if (results.isEmpty()) throw new NoContentFoundException(QualificationAlias.class);
-        else return results;
+        if (results.isEmpty()) {
+            error();
+            throw new NoContentFoundException(QualificationAlias.class);
+        } else return results;
     }
 
     @Override
@@ -53,10 +60,10 @@ public class QualificationAliasRepositoryCustomImpl implements QualificationAlia
     }
 
     @Override
-    public Long validateDuplicity(Long id, String name) {
+    public Long validateDuplicity(QualificationAliasUpdateRequestDTO requestDTO) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE)
-                .setParameter(NAME, name)
-                .setParameter(ID, id);
+                .setParameter(NAME, requestDTO.getName())
+                .setParameter(ID, requestDTO.getId());
 
         return (Long) query.getSingleResult();
     }
@@ -74,8 +81,10 @@ public class QualificationAliasRepositoryCustomImpl implements QualificationAlia
         List<QualificationAliasMinimalResponseDTO> results = transformQueryToResultList(
                 query, QualificationAliasMinimalResponseDTO.class);
 
-        if (results.isEmpty()) throw QUALIFICATION_ALIAS_NOT_FOUND.get();
-        else {
+        if (results.isEmpty()) {
+            error();
+            throw QUALIFICATION_ALIAS_NOT_FOUND.get();
+        } else {
             results.get(0).setTotalItems(totalItems);
             return results;
         }
@@ -84,4 +93,8 @@ public class QualificationAliasRepositoryCustomImpl implements QualificationAlia
     private Supplier<NoContentFoundException> QUALIFICATION_ALIAS_NOT_FOUND = () ->
             new NoContentFoundException(QualificationAlias.class);
 
+
+    private void error() {
+        log.error(CONTENT_NOT_FOUND, QUALIFICATION_ALIAS);
+    }
 }

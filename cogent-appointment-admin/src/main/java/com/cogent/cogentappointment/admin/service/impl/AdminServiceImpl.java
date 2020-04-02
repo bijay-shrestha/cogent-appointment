@@ -10,7 +10,10 @@ import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.exception.OperationUnsuccessfulException;
 import com.cogent.cogentappointment.admin.repository.*;
-import com.cogent.cogentappointment.admin.service.*;
+import com.cogent.cogentappointment.admin.service.AdminService;
+import com.cogent.cogentappointment.admin.service.EmailService;
+import com.cogent.cogentappointment.admin.service.MinioFileService;
+import com.cogent.cogentappointment.admin.service.ProfileService;
 import com.cogent.cogentappointment.admin.validator.LoginValidator;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
@@ -24,6 +27,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.Validator;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -34,11 +39,11 @@ import java.util.stream.Collectors;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.*;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
-import static com.cogent.cogentappointment.admin.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.AdminLog.*;
 import static com.cogent.cogentappointment.admin.utils.AdminUtils.*;
+import static com.cogent.cogentappointment.admin.utils.DashboardFeatureUtils.parseToAdminDashboardFeature;
 import static com.cogent.cogentappointment.admin.utils.GenderUtils.fetchGenderByCode;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
@@ -62,6 +67,10 @@ public class AdminServiceImpl implements AdminService {
 
     private final AdminAvatarRepository adminAvatarRepository;
 
+    private final DashboardFeatureRepository dashboardFeatureRepository;
+
+    private final AdminDashboardFeatureRepository adminDashboardFeatureRepository;
+
     private final AdminConfirmationTokenRepository confirmationTokenRepository;
 
     private final MinioFileService minioFileService;
@@ -75,7 +84,7 @@ public class AdminServiceImpl implements AdminService {
                             AdminMacAddressInfoRepository adminMacAddressInfoRepository,
                             AdminMetaInfoRepository adminMetaInfoRepository,
                             AdminAvatarRepository adminAvatarRepository,
-                            AdminConfirmationTokenRepository confirmationTokenRepository,
+                            DashboardFeatureRepository dashboardFeatureRepository, AdminDashboardFeatureRepository adminDashboardFeatureRepository, AdminConfirmationTokenRepository confirmationTokenRepository,
                             MinioFileService minioFileService, EmailService emailService,
                             ProfileService profileService) {
         this.validator = validator;
@@ -83,6 +92,8 @@ public class AdminServiceImpl implements AdminService {
         this.adminMacAddressInfoRepository = adminMacAddressInfoRepository;
         this.adminMetaInfoRepository = adminMetaInfoRepository;
         this.adminAvatarRepository = adminAvatarRepository;
+        this.dashboardFeatureRepository = dashboardFeatureRepository;
+        this.adminDashboardFeatureRepository = adminDashboardFeatureRepository;
         this.confirmationTokenRepository = confirmationTokenRepository;
         this.minioFileService = minioFileService;
         this.emailService = emailService;
@@ -115,6 +126,8 @@ public class AdminServiceImpl implements AdminService {
 
         saveAdminMetaInfo(admin);
 
+        saveAllAdminDashboardFeature(adminRequestDTO.getAdminDashboardRequestDTOS(), admin);
+
         AdminConfirmationToken adminConfirmationToken =
                 saveAdminConfirmationToken(parseInAdminConfirmationToken(admin));
 
@@ -124,6 +137,37 @@ public class AdminServiceImpl implements AdminService {
         sendEmail(emailRequestDTO);
 
         log.info(SAVING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    private void saveAllAdminDashboardFeature(List<AdminDashboardRequestDTO> dashboardRequestDTOList, Admin admin) {
+
+        if (dashboardRequestDTOList.size() > 0) {
+            List<DashboardFeature> dashboardFeatureList = findActiveDashboardFeatures(dashboardRequestDTOList);
+            adminDashboardFeatureRepository.saveAll(parseToAdminDashboardFeature(dashboardFeatureList, admin));
+        }
+
+    }
+
+    private List<DashboardFeature> findActiveDashboardFeatures(List<AdminDashboardRequestDTO> adminDashboardRequestDTOS) {
+
+        String ids = adminDashboardRequestDTOS.stream()
+                .map(request -> request.getId().toString())
+                .collect(Collectors.joining(","));
+
+        List<DashboardFeature> dashboardFeatureList = validateDashboardFeature(ids);
+        int requestCount = adminDashboardRequestDTOS.size();
+
+        if ((dashboardFeatureList.size()) != requestCount) {
+            log.error(CONTENT_NOT_FOUND,DashboardFeature.class.getSimpleName());
+            throw new NoContentFoundException(DashboardFeature.class);
+        }
+
+        return dashboardFeatureList;
+
+    }
+
+    private List<DashboardFeature> validateDashboardFeature(String ids) {
+        return dashboardFeatureRepository.validateDashboardFeatureCount(ids);
     }
 
     @Override
@@ -173,6 +217,9 @@ public class AdminServiceImpl implements AdminService {
 
         Admin admin = findById(deleteRequestDTO.getId());
 
+        if (admin.getProfileId().getIsSuperAdminProfile().equals(YES))
+            throw new BadRequestException(INVALID_DELETE_REQUEST);
+
         convertAdminToDeleted(admin, deleteRequestDTO);
 
         log.info(DELETING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
@@ -199,11 +246,11 @@ public class AdminServiceImpl implements AdminService {
 
         log.info(UPDATING_PASSWORD_PROCESS_STARTED);
 
-        Admin admin = findByUsername(requestDTO.getUsername());
+        Admin admin = findById(requestDTO.getId());
 
         updateAdminPassword(requestDTO.getPassword(), requestDTO.getRemarks(), admin);
 
-        sendEmail(parseToResetPasswordEmailRequestDTO(requestDTO, admin.getEmail()));
+        sendEmail(parseToResetPasswordEmailRequestDTO(requestDTO, admin.getEmail(), admin.getUsername()));
 
         log.info(UPDATING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
     }
@@ -246,11 +293,45 @@ public class AdminServiceImpl implements AdminService {
 
         updateMacAddressInfo(updateRequestDTO.getMacAddressUpdateInfo(), admin);
 
+        updateAdminDashboardFeature(updateRequestDTO.getAdminDashboardRequestDTOS(), admin);
+
         updateAdminMetaInfo(admin);
 
         sendEmail(emailRequestDTO);
 
         log.info(UPDATING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    private void updateAdminDashboardFeature(List<AdminDashboardRequestDTO> adminDashboardRequestDTOS, Admin admin) {
+
+        List<AdminDashboardFeature> adminDashboardFeatureList = new ArrayList<>();
+        adminDashboardRequestDTOS.forEach(result -> {
+
+            AdminDashboardFeature adminDashboardFeature = adminDashboardFeatureRepository.findAdminDashboardFeatureBydashboardFeatureId(result.getId(), admin.getId());
+
+            if (adminDashboardFeature == null) {
+                saveAdminDashboardFeature(result.getId(), admin);
+            }
+
+            if (adminDashboardFeature != null) {
+                adminDashboardFeature.setStatus(result.getStatus());
+                adminDashboardFeatureList.add(adminDashboardFeature);
+            }
+
+        });
+
+        adminDashboardFeatureRepository.saveAll(adminDashboardFeatureList);
+
+    }
+
+    private void saveAdminDashboardFeature(Long id, Admin admin) {
+
+        DashboardFeature dashboardFeature = dashboardFeatureRepository.findActiveDashboardFeatureById(id)
+                .orElseThrow(() -> new NoContentFoundException(DashboardFeature.class));
+
+        List<DashboardFeature> dashboardFeatureList = Arrays.asList(dashboardFeature);
+        adminDashboardFeatureRepository.saveAll(parseToAdminDashboardFeature(dashboardFeatureList, admin));
+
     }
 
     @Override
@@ -312,7 +393,10 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private void validateStatus(Object status) {
-        if (status.equals(INACTIVE)) throw ADMIN_ALREADY_REGISTERED.get();
+        if (status.equals(INACTIVE)) {
+            log.error(ADMIN_REGISTERED);
+            throw ADMIN_ALREADY_REGISTERED.get();
+        }
     }
 
     private void validateAdminDuplicity(List<Object[]> adminList, String requestUsername, String requestEmail,
@@ -327,8 +411,10 @@ public class AdminServiceImpl implements AdminService {
             boolean isEmailExists = requestEmail.equalsIgnoreCase((String) get(admin, EMAIL));
             boolean isMobileNumberExists = requestMobileNumber.equalsIgnoreCase((String) get(admin, MOBILE_NUMBER));
 
-            if (isUsernameExists && isEmailExists && isMobileNumberExists)
+            if (isUsernameExists && isEmailExists && isMobileNumberExists) {
+                log.error(ADMIN_DUPLICATION_MESSAGE);
                 throw ADMIN_DUPLICATION.get();
+            }
 
             validateUsername(isUsernameExists, requestUsername);
             validateEmail(isEmailExists, requestEmail);
@@ -343,26 +429,34 @@ public class AdminServiceImpl implements AdminService {
         Long savedAdmin = (Long) get(objects, 0);
         Integer numberOfAdminsAllowed = (Integer) get(objects, 1);
 
-        if (savedAdmin.intValue() == numberOfAdminsAllowed)
+        if (savedAdmin.intValue() == numberOfAdminsAllowed) {
+            log.error(ADMIN_CANNOT_BE_REGISTERED_DEBUG_MESSAGE);
             throw new BadRequestException(ADMIN_CANNOT_BE_REGISTERED_MESSAGE, ADMIN_CANNOT_BE_REGISTERED_DEBUG_MESSAGE);
+        }
     }
 
     private void validateUsername(boolean isUsernameExists, String username) {
-        if (isUsernameExists)
+        if (isUsernameExists){
+            log.error(DUPLICATION_ERROR, ADMIN, username);
             throw new DataDuplicationException(
                     String.format(USERNAME_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), username));
+        }
     }
 
     private void validateEmail(boolean isEmailExists, String email) {
-        if (isEmailExists)
+        if (isEmailExists){
+            log.error(DUPLICATION_ERROR, ADMIN, email);
             throw new DataDuplicationException(
                     String.format(EMAIL_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), email));
+        }
     }
 
     private void validateMobileNumber(boolean isMobileNumberExists, String mobileNumber) {
-        if (isMobileNumberExists)
+        if (isMobileNumberExists){
+            log.error(DUPLICATION_ERROR, ADMIN, mobileNumber);
             throw new DataDuplicationException(
                     String.format(MOBILE_NUMBER_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), mobileNumber));
+        }
     }
 
     private Admin save(AdminRequestDTO adminRequestDTO) {
@@ -445,11 +539,6 @@ public class AdminServiceImpl implements AdminService {
                 .orElseThrow(() -> ADMIN_WITH_GIVEN_ID_NOT_FOUND.apply(adminId));
     }
 
-    private Admin findByUsername(String username) {
-        return adminRepository.findAdminByUsername(username)
-                .orElseThrow(() -> new NoContentFoundException(Admin.class));
-    }
-
     private void validateAdminDuplicity(List<Object[]> adminList, String requestEmail,
                                         String requestMobileNumber) {
 
@@ -498,29 +587,37 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private Consumer<List<String>> validateMacAddressInfoSize = (macInfos) -> {
-        if (ObjectUtils.isEmpty(macInfos))
+        if (ObjectUtils.isEmpty(macInfos)){
+            log.error(CONTENT_NOT_FOUND, AdminMacAddressInfo.class.getSimpleName());
             throw new NoContentFoundException(AdminMacAddressInfo.class);
+        }
     };
 
     private void validatePassword(Admin admin, AdminChangePasswordRequestDTO requestDTO) {
 
-        if (!LoginValidator.checkPassword(requestDTO.getOldPassword(), admin.getPassword()))
+        if (!LoginValidator.checkPassword(requestDTO.getOldPassword(), admin.getPassword())) {
+            log.error(PASSWORD_MISMATCH_MESSAGE);
             throw new OperationUnsuccessfulException(PASSWORD_MISMATCH_MESSAGE);
+        }
 
-        if (LoginValidator.checkPassword(requestDTO.getNewPassword(), admin.getPassword()))
+        if (LoginValidator.checkPassword(requestDTO.getNewPassword(), admin.getPassword())) {
+            log.error(DUPLICATE_PASSWORD_MESSAGE);
             throw new DataDuplicationException(DUPLICATE_PASSWORD_MESSAGE);
+        }
     }
 
     private Supplier<DataDuplicationException> ADMIN_DUPLICATION = () ->
             new DataDuplicationException(ADMIN_DUPLICATION_MESSAGE);
 
     private Function<Long, NoContentFoundException> ADMIN_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, ADMIN, id);
         throw new NoContentFoundException(Admin.class, "id", id.toString());
     };
 
     private Supplier<BadRequestException> ADMIN_ALREADY_REGISTERED = () -> new BadRequestException(ADMIN_REGISTERED);
 
     private Function<String, NoContentFoundException> CONFIRMATION_TOKEN_NOT_FOUND = (confirmationToken) -> {
+        log.error(INVALID_CONFIRMATION_TOKEN_ERROR, confirmationToken);
         throw new NoContentFoundException(INVALID_CONFIRMATION_TOKEN, "confirmationToken", confirmationToken);
     };
 

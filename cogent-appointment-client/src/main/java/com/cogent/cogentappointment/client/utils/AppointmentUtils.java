@@ -1,23 +1,23 @@
 package com.cogent.cogentappointment.client.utils;
 
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedTimeResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentCheckAvailabilityResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentSuccessResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.*;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueSearchByTimeDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentTimeDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.approval.AppointmentPendingApprovalDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.approval.AppointmentPendingApprovalResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.esewa.*;
 import com.cogent.cogentappointment.client.dto.response.appointment.log.AppointmentLogDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.log.AppointmentLogResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.AppointmentCountResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRescheduleLogDTO;
 import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
+import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
 import org.joda.time.DateTime;
@@ -30,12 +30,14 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-import static com.cogent.cogentappointment.client.constants.StatusConstants.ACTIVE;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AppointmentServiceMessage.INVALID_APPOINTMENT_DATE_TIME;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.*;
 import static com.cogent.cogentappointment.client.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.client.utils.commons.DateConverterUtils.calculateAge;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils.generateRandomNumber;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 /**
  * @author smriti on 2019-10-24
@@ -43,6 +45,20 @@ import static com.cogent.cogentappointment.client.utils.commons.NumberFormatterU
 public class AppointmentUtils {
 
     private static final DateTimeFormatter FORMAT = DateTimeFormat.forPattern("HH:mm");
+
+    /*VALIDATE IF REQUESTED DATE AND TIME IS BEFORE CURRENT DATE AND TIME*/
+    public static void validateIfRequestIsBeforeCurrentDateTime(Date appointmentDate,
+                                                                String appointmentTime) {
+
+        Date requestDateTime = parseAppointmentTime(appointmentDate, appointmentTime);
+
+        Date currentDateTime = new Date();
+
+        boolean isRequestedBeforeCurrentDateTime = requestDateTime.before(currentDateTime);
+
+        if (isRequestedBeforeCurrentDateTime)
+            throw new BadRequestException(INVALID_APPOINTMENT_DATE_TIME);
+    }
 
     public static Appointment parseToAppointment(AppointmentRequestDTO requestDTO,
                                                  String appointmentNumber,
@@ -59,13 +75,13 @@ public class AppointmentUtils {
                 requestDTO.getAppointmentTime()));
         appointment.setAppointmentNumber(appointmentNumber);
         appointment.setCreatedDateNepali(requestDTO.getCreatedDateNepali());
-        appointment.setIsFreeFollowUp(requestDTO.getIsFreeFollowUp());
+        appointment.setIsFollowUp(requestDTO.getIsFollowUp());
         appointment.setIsSelf(isSelf);
         parseToAppointment(patient, specialization, doctor, hospital, appointment);
         return appointment;
     }
 
-    public static Date parseAppointmentTime(Date appointmentDate, String appointmentTime) {
+    private static Date parseAppointmentTime(Date appointmentDate, String appointmentTime) {
         return datePlusTime(utilDateToSqlDate(appointmentDate), Objects.requireNonNull(parseTime(appointmentTime)));
     }
 
@@ -82,10 +98,13 @@ public class AppointmentUtils {
         appointment.setSerialNumber(generateRandomNumber(6));
     }
 
-    public static AppointmentSuccessResponseDTO parseToAppointmentSuccessResponseDTO(String appointmentNumber) {
+    public static AppointmentSuccessResponseDTO parseToAppointmentSuccessResponseDTO(String appointmentNumber,
+                                                                                     Character transactionStatus) {
         return AppointmentSuccessResponseDTO.builder()
                 .appointmentNumber(appointmentNumber)
-                .appointmentTransactionStatus(ACTIVE)
+                .appointmentTransactionStatus(transactionStatus)
+                .responseStatus(CREATED)
+                .responseCode(CREATED.value())
                 .build();
     }
 
@@ -143,6 +162,8 @@ public class AppointmentUtils {
                 .queryDate(queryDate)
                 .doctorAvailableTime(startTime + HYPHEN + endTime)
                 .availableTimeSlots(availableTimeSlots)
+                .responseStatus(OK)
+                .responseCode(OK.value())
                 .build();
     }
 
@@ -502,6 +523,33 @@ public class AppointmentUtils {
 
         return groupByPriceMap;
 
+    }
+
+    public static StatusResponseDTO parseToStatusResponseDTO() {
+        return StatusResponseDTO.builder()
+                .responseCode(OK.value())
+                .responseStatus(OK)
+                .build();
+    }
+
+    public static AppointmentMinResponseWithStatusDTO parseToAppointmentMinResponseWithStatusDTO(
+            List<AppointmentMinResponseDTO> minResponseDTOList) {
+
+        return AppointmentMinResponseWithStatusDTO.builder()
+                .appointmentMinResponseDTOS(minResponseDTOList)
+                .responseStatus(OK)
+                .responseCode(OK.value())
+                .build();
+    }
+
+    public static AppointmentDetailResponseWithStatusDTO parseToAppointmentDetailResponseWithStatusDTO(
+            AppointmentDetailResponseDTO responseDTO) {
+
+        return AppointmentDetailResponseWithStatusDTO.builder()
+                .appointmentDetailResponseDTO(responseDTO)
+                .responseStatus(OK)
+                .responseCode(OK.value())
+                .build();
     }
 
 

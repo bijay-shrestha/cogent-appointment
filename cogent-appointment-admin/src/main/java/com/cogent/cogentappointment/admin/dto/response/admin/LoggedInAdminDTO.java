@@ -11,7 +11,18 @@ import java.io.Serializable;
 @Builder
 public class LoggedInAdminDTO implements Serializable{
     private Long id;
+
     private String username;
+
     private String password;
+
     private Character isCompany;
+
+    private String companyCode;
+
+    private Long companyId;
+
+    private String apiKey;
+
+    private String apiSecret;
 }

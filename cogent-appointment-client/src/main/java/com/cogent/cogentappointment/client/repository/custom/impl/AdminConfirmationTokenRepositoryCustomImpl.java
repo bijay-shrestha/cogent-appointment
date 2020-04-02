@@ -1,9 +1,8 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
-import com.cogent.cogentappointment.client.constants.QueryConstants;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.query.AdminConfirmationTokenQuery;
 import com.cogent.cogentappointment.client.repository.custom.AdminConfirmationTokenRepositoryCustom;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,7 +13,8 @@ import javax.persistence.Query;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AdminServiceMessages.INVALID_CONFIRMATION_TOKEN;
-import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.client.constants.QueryConstants.CONFIRMATION_TOKEN;
+import static com.cogent.cogentappointment.client.log.constants.AdminLog.CONFORMATION_TOKEN_NOT_FOUND;
 import static com.cogent.cogentappointment.client.query.AdminConfirmationTokenQuery.QUERY_TO_FETCH_CONFIRMATION_TOKEN_STATUS;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
 
@@ -23,6 +23,7 @@ import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.creat
  */
 @Repository
 @Transactional(readOnly = true)
+@Slf4j
 public class AdminConfirmationTokenRepositoryCustomImpl implements AdminConfirmationTokenRepositoryCustom {
 
     @PersistenceContext
@@ -40,6 +41,7 @@ public class AdminConfirmationTokenRepositoryCustomImpl implements AdminConfirma
     }
 
     private Function<String, NoContentFoundException> CONFIRMATION_TOKEN_NOT_FOUND = (confirmationToken) -> {
+        log.error(CONFORMATION_TOKEN_NOT_FOUND, confirmationToken);
         throw new NoContentFoundException(INVALID_CONFIRMATION_TOKEN, "confirmationToken", confirmationToken);
     };
 }

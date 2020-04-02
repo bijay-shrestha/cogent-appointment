@@ -28,9 +28,10 @@ import static com.cogent.cogentappointment.client.constants.StatusConstants.Appo
 import static com.cogent.cogentappointment.client.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.client.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.client.constants.StringConstant.HYPHEN;
-import static com.cogent.cogentappointment.client.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
-import static com.cogent.cogentappointment.client.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
+import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.APPOINTMENT;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.APPOINTMENT_STATUS;
+import static com.cogent.cogentappointment.client.log.constants.DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER;
 import static com.cogent.cogentappointment.client.utils.AppointmentStatusUtils.*;
 import static com.cogent.cogentappointment.client.utils.DoctorDutyRosterUtils.mergeOverrideAndActualDoctorDutyRoster;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
@@ -224,9 +225,10 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
             List<AppointmentStatusResponseDTO> appointments) {
 
         /*THROW EXCEPTION IF NO APPOINTMENT EXISTS FOR THE SELECTED STATUS*/
-        if (appointments.isEmpty())
+        if (appointments.isEmpty()) {
+            log.error(CONTENT_NOT_FOUND, APPOINTMENT);
             throw new NoContentFoundException(Appointment.class);
-
+        }
         /*FILTER OUT FROM DOCTOR DUTY ROSTERS SUCH THAT IT CONTAINS ONLY THOSE ROSTERS HAVING
         * APPOINTMENT*/
         List<DoctorDutyRosterStatusResponseDTO> rostersWithAppointment = doctorDutyRosterStatus.stream()
@@ -309,9 +311,10 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
 
     /*IF DOCTOR DUTY ROSTERS IS NOT SET UP, THEN THROW EXCEPTION*/
     private void validateDoctorDutyRosterStatus(List<DoctorDutyRosterStatusResponseDTO> doctorDutyRosterStatus) {
-        if (doctorDutyRosterStatus.isEmpty())
+        if (doctorDutyRosterStatus.isEmpty()) {
+            log.error(CONTENT_NOT_FOUND, DOCTOR_DUTY_ROSTER);
             throw new NoContentFoundException(DoctorDutyRoster.class);
+        }
     }
-
 
 }

@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.esewa.dto.response.appointment.appoinmentDateAndTime;
 
 import lombok.*;
+import org.springframework.http.HttpStatus;
 
 import java.io.Serializable;
 import java.util.List;
@@ -17,4 +18,8 @@ public class AppointmentDatesResponseDTO implements Serializable {
     private Long specializationId;
 
     private List<AvailableDatesResponseDTO> dates;
+
+    private int responseCode;
+
+    private HttpStatus responseStatus;
 }

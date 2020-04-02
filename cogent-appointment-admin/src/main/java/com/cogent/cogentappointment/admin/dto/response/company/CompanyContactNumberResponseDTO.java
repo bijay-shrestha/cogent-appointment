@@ -14,7 +14,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class CompanyContactNumberResponseDTO implements Serializable {
 
-    private Long hospitalContactNumberId;
+    private Long companyContactNumberId;
 
     private String contactNumber;
 

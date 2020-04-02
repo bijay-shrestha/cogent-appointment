@@ -6,12 +6,15 @@ import com.cogent.cogentappointment.admin.constants.StringConstant;
 import com.cogent.cogentappointment.admin.dto.request.email.EmailRequestDTO;
 import com.cogent.cogentappointment.admin.repository.EmailToSendRepository;
 import com.cogent.cogentappointment.admin.service.EmailService;
+import com.cogent.cogentappointment.admin.utils.commons.FileResourceUtils;
 import com.cogent.cogentappointment.persistence.model.EmailToSend;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -22,8 +25,7 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -88,7 +90,7 @@ public class EmailServiceImpl implements EmailService {
 
         log.info(SENDING_EMAIL_PROCESS_STARTED);
 
-        System.out.println(CATALINA_LOGO_LOCATION);
+        System.out.println(LOGO_LOCATION);
 
         try {
             MimeMessage message = getMimeMessage(emailToSend);
@@ -127,7 +129,8 @@ public class EmailServiceImpl implements EmailService {
             }
 
             helper.setText(html, true);
-            helper.addInline(LOGO_FILE_NAME, new FileSystemResource(new File(CATALINA_LOGO_LOCATION)));
+
+            helper.addInline(LOGO_FILE_NAME,new FileSystemResource(new FileResourceUtils().convertResourcesFileIntoFile(LOGO_LOCATION)));
 
             javaMailSender.send(message);
 

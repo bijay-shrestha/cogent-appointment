@@ -385,9 +385,10 @@ public class EsewaServiceImpl implements EsewaService {
     private void validateIfRequestedDateIsBeforeCurrentDate(Date requestedDate) {
         boolean isRequestedDateBeforeCurrentDate = isFirstDateGreater(new Date(), requestedDate);
 
-        if (isRequestedDateBeforeCurrentDate)
+        if (isRequestedDateBeforeCurrentDate){
             doctorNotAvailableError();
             throw DOCTORS_NOT_AVAILABLE.get();
+        }
     }
 
     private Supplier<NoContentFoundException> DOCTORS_NOT_AVAILABLE = () -> new NoContentFoundException(Doctor.class);

@@ -179,7 +179,6 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     private Department fetchDepartmentByIdAndHospitalId(Long id, Long hospitalId) {
-        log.error(CONTENT_NOT_FOUND_BY_ID,DEPARTMENT,id);
         return departmentRepository.findByIdAndHospitalId(id, hospitalId).orElseThrow(() ->
                 new NoContentFoundException(Department.class, "id", id.toString()));
     }

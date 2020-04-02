@@ -311,10 +311,10 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
 
     /*IF DOCTOR DUTY ROSTERS IS NOT SET UP, THEN THROW EXCEPTION*/
     private void validateDoctorDutyRosterStatus(List<DoctorDutyRosterStatusResponseDTO> doctorDutyRosterStatus) {
-        if (doctorDutyRosterStatus.isEmpty())
+        if (doctorDutyRosterStatus.isEmpty()) {
             log.error(CONTENT_NOT_FOUND, DOCTOR_DUTY_ROSTER);
-        throw new NoContentFoundException(DoctorDutyRoster.class);
+            throw new NoContentFoundException(DoctorDutyRoster.class);
+        }
     }
-
 
 }

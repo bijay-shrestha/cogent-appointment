@@ -64,7 +64,7 @@ public class QualificationAliasServiceImpl implements QualificationAliasService 
 
         QualificationAlias qualificationAliasToBeUpdated = fetchQualificationAliasById(requestDTO.getId());
 
-        Long count = qualificationAliasRepository.validateDuplicity(requestDTO.getId(), requestDTO.getName());
+        Long count = qualificationAliasRepository.validateDuplicity(requestDTO);
 
         validateName(count, requestDTO.getName());
 

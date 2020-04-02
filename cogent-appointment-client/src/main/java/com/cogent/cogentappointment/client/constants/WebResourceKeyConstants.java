@@ -35,6 +35,7 @@ public class WebResourceKeyConstants {
         String STATUS = "/status";
         String LOG = "/log";
         String RESCHEDULE_LOG = "/reschedule-log";
+        String TRANSACTION_STATUS = "/transaction-status";
     }
 
     //B
@@ -171,7 +172,7 @@ public class WebResourceKeyConstants {
 
 
     //S
-    public static final String SAVE = "/save";
+
     public static final String SEARCH = "/search";
 
     public static final String SELF = "/self";

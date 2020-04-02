@@ -10,7 +10,6 @@ import com.cogent.cogentappointment.client.repository.PatientMetaInfoRepository;
 import com.cogent.cogentappointment.client.repository.PatientRelationInfoRepository;
 import com.cogent.cogentappointment.client.repository.PatientRepository;
 import com.cogent.cogentappointment.client.service.PatientService;
-import com.cogent.cogentappointment.client.utils.PatientMetaInfoUtils;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.HospitalPatientInfo;
 import com.cogent.cogentappointment.persistence.model.Patient;
@@ -32,6 +31,7 @@ import static com.cogent.cogentappointment.client.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.PatientLog.*;
 import static com.cogent.cogentappointment.client.utils.GenderUtils.fetchGenderByCode;
+import static com.cogent.cogentappointment.client.utils.PatientMetaInfoUtils.updatePatientMetaInfoDetails;
 import static com.cogent.cogentappointment.client.utils.PatientUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
@@ -204,7 +204,8 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public List<PatientSearchResponseDTO> search(PatientSearchRequestDTO searchRequestDTO, Pageable pageable) {
+    public List<PatientSearchResponseDTO> search(PatientSearchRequestDTO searchRequestDTO,
+                                                 Pageable pageable) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, PATIENT);
@@ -295,7 +296,7 @@ public class PatientServiceImpl implements PatientService {
             registerPatientDetails(hospitalPatientInfo, latestRegistrationNumber);
 
             PatientMetaInfo patientMetaInfo = patientMetaInfoRepository.fetchByPatientId(patientId);
-            PatientMetaInfoUtils.updatePatientMetaInfo(patientMetaInfo, hospitalPatientInfo.getRegistrationNumber());
+            updatePatientMetaInfoDetails(patientMetaInfo, hospitalPatientInfo.getRegistrationNumber());
         }
 
         log.info(REGISTERING_PATIENT_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
@@ -373,17 +374,12 @@ public class PatientServiceImpl implements PatientService {
     }
 
     private Function<Long, NoContentFoundException> PATIENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        log.error(CONTENT_NOT_FOUND_BY_ID,PATIENT,id);
+        log.error(CONTENT_NOT_FOUND_BY_ID, PATIENT, id);
         throw new NoContentFoundException(Patient.class, "patientId", id.toString());
     };
 
-    private Patient fetchPatientByIdAndHospitalId(Long id, Long hospitalId) {
-        return patientRepository.fetchPatientByIdAndHospitalId(id, hospitalId).orElseThrow(() ->
-                NoContentFoundException());
-    }
-
     private static void PATIENT_DUPLICATION_EXCEPTION(String name, String mobileNumber, Date dateOfBirth) {
-        log.error(NAME_AND_MOBILE_NUMBER_DUPLICATION_ERROR,PATIENT,name, mobileNumber, utilDateToSqlDate(dateOfBirth));
+        log.error(NAME_AND_MOBILE_NUMBER_DUPLICATION_ERROR, PATIENT, name, mobileNumber, utilDateToSqlDate(dateOfBirth));
         throw new DataDuplicationException(String.format(DUPLICATE_PATIENT_MESSAGE,
                 name, mobileNumber, utilDateToSqlDate(dateOfBirth))
         );
@@ -402,8 +398,8 @@ public class PatientServiceImpl implements PatientService {
         patientMetaInfoRepository.save(patientMetaInfo);
     }
 
-    private NoContentFoundException NoContentFoundException(){
-        log.error(CONTENT_NOT_FOUND,PATIENT);
+    private NoContentFoundException NoContentFoundException() {
+        log.error(CONTENT_NOT_FOUND, PATIENT);
         throw new NoContentFoundException(Patient.class);
     }
 

@@ -12,7 +12,6 @@ import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalMinimalR
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
-import com.cogent.cogentappointment.admin.service.FileService;
 import com.cogent.cogentappointment.admin.service.HospitalService;
 import com.cogent.cogentappointment.admin.service.MinioFileService;
 import com.cogent.cogentappointment.persistence.model.*;
@@ -58,8 +57,6 @@ public class HospitalServiceImpl implements HospitalService {
 
     private final HmacApiInfoRepository hmacApiInfoRepository;
 
-    private final FileService fileService;
-
     private final MinioFileService minioFileService;
 
     private final Validator validator;
@@ -69,14 +66,12 @@ public class HospitalServiceImpl implements HospitalService {
                                HospitalLogoRepository hospitalLogoRepository,
                                HospitalBannerRepository hospitalBannerRepository,
                                HmacApiInfoRepository hmacApiInfoRepository,
-                               FileService fileService,
                                MinioFileService minioFileService, Validator validator) {
         this.hospitalRepository = hospitalRepository;
         this.hospitalContactNumberRepository = hospitalContactNumberRepository;
         this.hospitalLogoRepository = hospitalLogoRepository;
         this.hospitalBannerRepository = hospitalBannerRepository;
         this.hmacApiInfoRepository = hmacApiInfoRepository;
-        this.fileService = fileService;
         this.minioFileService = minioFileService;
         this.validator = validator;
     }
@@ -276,7 +271,7 @@ public class HospitalServiceImpl implements HospitalService {
         saveHospitalContactNumber(hospitalContactNumbers);
     }
 
-    public void updateHmacApiInfo(HmacApiInfo hmacApiInfo, Character status, String remarks) {
+    private void updateHmacApiInfo(HmacApiInfo hmacApiInfo, Character status, String remarks) {
         HmacApiInfo hmacApiInfoToUpdate = updateHmacApiInfoAsHospital(
                 hmacApiInfo,
                 status,
@@ -284,7 +279,7 @@ public class HospitalServiceImpl implements HospitalService {
         saveHmacApiInfo(hmacApiInfoToUpdate);
     }
 
-    public void updateHospitalLogo(Hospital hospital, MultipartFile files) {
+    private void updateHospitalLogo(Hospital hospital, MultipartFile files) {
         HospitalLogo hospitalLogo = hospitalLogoRepository.findHospitalLogoByHospitalId(hospital.getId());
 
         if (Objects.isNull(hospitalLogo)) saveHospitalLogo(hospital, files);
@@ -309,7 +304,7 @@ public class HospitalServiceImpl implements HospitalService {
             hospitalBanner.setStatus(StatusConstants.INACTIVE);
     }
 
-    public void updateHospitalBanner(Hospital hospital, MultipartFile banner) {
+    private void updateHospitalBanner(Hospital hospital, MultipartFile banner) {
         HospitalBanner hospitalBanner = hospitalBannerRepository.findHospitalBannerByHospitalId(hospital.getId());
 
         if (Objects.isNull(hospitalBanner)) saveHospitalBanner(hospital, banner);

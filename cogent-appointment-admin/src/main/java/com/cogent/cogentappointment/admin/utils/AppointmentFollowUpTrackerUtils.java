@@ -13,7 +13,6 @@ import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACT
 public class AppointmentFollowUpTrackerUtils {
 
     public static AppointmentFollowUpTracker parseToAppointmentFollowUpTracker(Long parentAppointmentId,
-                                                                               String parentAppointmentNumber,
                                                                                Integer remainingFollowUpCount,
                                                                                Doctor doctor,
                                                                                Specialization specialization,
@@ -26,14 +25,13 @@ public class AppointmentFollowUpTrackerUtils {
         followUpTracker.setSpecializationId(specialization);
         followUpTracker.setHospitalId(hospital);
         followUpTracker.setParentAppointmentId(parentAppointmentId);
-        followUpTracker.setParentAppointmentNumber(parentAppointmentNumber);
         followUpTracker.setRemainingNumberOfFollowUps(remainingFollowUpCount);
         followUpTracker.setAppointmentApprovedDate(new Date());
         followUpTracker.setStatus(ACTIVE);
         return followUpTracker;
     }
 
-    public static void updateNumberOfFreeFollowUps(AppointmentFollowUpTracker followUpTracker) {
+    public static void updateNumberOfFollowUps(AppointmentFollowUpTracker followUpTracker) {
         followUpTracker.setRemainingNumberOfFollowUps(followUpTracker.getRemainingNumberOfFollowUps() - 1);
 
         if (followUpTracker.getRemainingNumberOfFollowUps() <= 0)

@@ -7,8 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
 /**
  * @author smriti on 18/02/20
  */
@@ -17,5 +15,5 @@ public interface AppointmentReservationLogRepository extends JpaRepository<Appoi
         AppointmentReservationLogRepositoryCustom {
 
     @Query("SELECT a FROM AppointmentReservationLog a WHERE a.id=:id")
-    Optional<AppointmentReservationLog> findAppointmentReservationLogById(@Param("id") Long id);
+    AppointmentReservationLog findAppointmentReservationLogById(@Param("id") Long id);
 }

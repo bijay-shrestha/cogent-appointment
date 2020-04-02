@@ -37,8 +37,10 @@ public class SwaggerConstants {
         String RESCHEDULE_OPERATION = "Reschedule appointment date and time.";
         String FETCH_APPOINTMENT_HISTORY = " Fetch appointment history (only approved)";
         String CANCEL_REGISTRATION_OPERATION = "Delete Appointment Reservation when user cancels registration process";
+        String FETCH_APPOINTMENT_TRANSACTION_STATUS = "Fetch Appointment Transaction Status." +
+                " If 'Y', then it is successful appointment, else it is failed appointment";
 
-        String FETCH_APPOINTMENT_QUEUE = "Fetch Appointment Queue of Today for Dashboard";
+        /*admin*/
         String FETCH_REFUND_APPOINTMENTS = "Fetch Refund Appointment Request List";
         String APPROVE_REFUND_APPOINTMENT = "Approve Refund Request Appointment";
         String REJECT_REFUND_APPOINTMENT = "Reject Refund Request Appointment";
@@ -47,8 +49,6 @@ public class SwaggerConstants {
         String REJECT_APPOINTMENT = "Reject Appointment and set status as 'R'.";
         String FETCH_APPOINTMENT_LOG = "Fetch Appointment Log";
         String FETCH_APPOINTMENT_RESCHEDULE_LOG = "Fetch Appointment Reschedule Log";
-        String FETCH_VACANT_APPOINTMENT_DATES = "Fetch Appointment vacant dates by doctorId and SpeciliazationId ";
-        String DETAILS_APPROVAL_VISIT_OPERATION = "Fetch appointment visit approval details by its id";
     }
 
     public interface AppointmentStatusConstant {
@@ -114,7 +114,6 @@ public class SwaggerConstants {
         String FETCH_DEPARTMENT_FOR_DROP_DOWN_OPERATION = "Fetch minimal department details (id and name) for dropdown";
         String FETCH_ACTIVE_DEPARTMENT_FOR_DROP_DOWN_OPERATION = "Fetch minimal active department details (id and name)" +
                 " for dropdown";
-        String FETCH_DEPARTMENT_BY_HOSPITAL_OPERATION = "Fetch department by hospital id";
     }
 
     public interface DoctorConstant {
@@ -153,7 +152,7 @@ public class SwaggerConstants {
 
     //E
     public interface EsewaConstant {
-        String BASE_API_VALUE = "This is eSewa Resource";
+        String BASE_API_VALUE = "This is esewa Resource";
         String FETCH_AVAILABLE_APPOINTMENT_DATES = "Returns all the avaliable appointment dates and time by doctorId and" +
                 " specializationId";
         String FETCH_AVAILABLE_DOCTOR_DATES = "Returns all the avaliable appointment dates by doctorId";

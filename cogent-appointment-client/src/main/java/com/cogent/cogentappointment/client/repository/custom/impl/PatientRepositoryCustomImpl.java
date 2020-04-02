@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.client.log.constants.PatientLog.*;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.client.constants.QueryConstants.AppointmentConstants.APPOINTMENT_ID;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.PatientQueryConstants.HOSPITAL_PATIENT_INFO_ID;
 import static com.cogent.cogentappointment.client.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.client.query.DashBoardQuery.QUERY_TO_COUNT_OVERALL_REGISTERED_PATIENTS;

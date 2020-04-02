@@ -1,19 +1,14 @@
 package com.cogent.cogentappointment.admin.utils;
 
-import com.cogent.cogentappointment.admin.constants.StringConstant;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.company.CompanyContactNumberUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.company.CompanyRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.company.CompanyUpdateRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalContactNumberUpdateRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.company.CompanyResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalContactNumberResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalResponseDTO;
 import com.cogent.cogentappointment.admin.utils.commons.StringUtil;
 import com.cogent.cogentappointment.persistence.model.Hospital;
-import com.cogent.cogentappointment.persistence.model.HospitalBanner;
 import com.cogent.cogentappointment.persistence.model.HospitalContactNumber;
 import com.cogent.cogentappointment.persistence.model.HospitalLogo;
 
@@ -25,7 +20,6 @@ import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.*;
-import static com.cogent.cogentappointment.admin.constants.StringConstant.Y;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.toUpperCase;
 
 /**

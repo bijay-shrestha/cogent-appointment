@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.client.service.impl;
 
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentDatesRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.eSewa.AppointmentDetailRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentDatesRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentDetailRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appoinmentDateAndTime.*;
 import com.cogent.cogentappointment.client.dto.response.eSewa.*;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;

@@ -72,6 +72,8 @@ public class QueryConstants {
 
 
     //S
+    public static final String STATUS = "status";
+
 
 
     public static final String SPECIALIZATION_ID = "specializationId";

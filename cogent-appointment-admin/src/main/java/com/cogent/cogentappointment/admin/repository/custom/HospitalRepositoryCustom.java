@@ -43,5 +43,5 @@ public interface HospitalRepositoryCustom {
 
     Integer fetchHospitalFollowUpCount(Long hospitalId);
 
-    Integer fetchHospitalFreeFollowUpIntervalDays(Long hospitalId);
+    Integer fetchHospitalFollowUpIntervalDays(Long hospitalId);
 }

@@ -1,9 +1,9 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentPendingApprovalSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentCheckAvailabilityRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.log.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
@@ -11,10 +11,10 @@ import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardReques
 import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedDateResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedTimeResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentDetailResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentMinResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.approval.AppointmentPendingApprovalResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.esewa.AppointmentDetailResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.esewa.AppointmentMinResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.log.AppointmentLogResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundResponseDTO;
@@ -42,6 +42,8 @@ import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.DATE;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
+import static com.cogent.cogentappointment.client.constants.QueryConstants.AppointmentConstants.APPOINTMENT_DATE;
+import static com.cogent.cogentappointment.client.constants.QueryConstants.AppointmentConstants.APPOINTMENT_TIME;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
@@ -363,7 +365,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_QUEUE
                 .apply(appointmentQueueRequestDTO))
                 .setParameter(HOSPITAL_ID, hospitalId)
-                .setParameter(DATE,utilDateToSqlDate(appointmentQueueRequestDTO.getDate()));
+                .setParameter(DATE, utilDateToSqlDate(appointmentQueueRequestDTO.getDate()));
 
         int totalItems = query.getResultList().size();
 
@@ -388,7 +390,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_QUEUE.apply(appointmentQueueRequestDTO))
                 .setParameter(HOSPITAL_ID, hospitalId)
-                .setParameter(DATE,utilDateToSqlDate(appointmentQueueRequestDTO.getDate()));;
+                .setParameter(DATE, utilDateToSqlDate(appointmentQueueRequestDTO.getDate()));
+        ;
 
         int totalItems = query.getResultList().size();
 

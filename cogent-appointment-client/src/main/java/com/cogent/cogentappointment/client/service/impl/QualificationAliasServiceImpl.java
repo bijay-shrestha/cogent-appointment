@@ -72,7 +72,6 @@ public class QualificationAliasServiceImpl implements QualificationAliasService 
         parseToUpdatedQualificationAlias(qualificationAliasToBeUpdated, requestDTO);
 
         log.info(UPDATING_PROCESS_COMPLETED, QUALIFICATION_ALIAS, getDifferenceBetweenTwoTime(startTime));
-
     }
 
     @Override

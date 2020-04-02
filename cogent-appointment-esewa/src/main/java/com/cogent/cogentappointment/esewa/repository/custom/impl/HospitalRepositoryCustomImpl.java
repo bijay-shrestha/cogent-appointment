@@ -13,15 +13,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.esewa.constants.QueryConstants.HOSPITAL_ID;
-import static com.cogent.cogentappointment.esewa.query.HospitalQuery.QUERY_TO_FETCH_HOSPITAL_FREE_FOLLOW_UP_COUNT;
-import static com.cogent.cogentappointment.esewa.query.HospitalQuery.QUERY_TO_FETCH_HOSPITAL_FREE_FOLLOW_UP_INTERVAL_DAYS;
 import static com.cogent.cogentappointment.esewa.query.HospitalQuery.QUERY_TO_FETCH_MIN_HOSPITAL;
 import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.createNativeQuery;
-import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.transformNativeQueryToResultList;
 
 /**
@@ -45,27 +40,7 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
         else return results;
     }
 
-    @Override
-    public Integer fetchHospitalFreeFollowUpIntervalDays(Long hospitalId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_FREE_FOLLOW_UP_INTERVAL_DAYS)
-                .setParameter(HOSPITAL_ID, hospitalId);
-
-        return (Integer) query.getSingleResult();
-    }
-
-    @Override
-    public Integer fetchHospitalFollowUpCount(Long hospitalId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_FREE_FOLLOW_UP_COUNT)
-                .setParameter(HOSPITAL_ID, hospitalId);
-
-        return (Integer) query.getSingleResult();
-    }
-
     private Supplier<NoContentFoundException> HOSPITAL_NOT_FOUND = () -> new NoContentFoundException(Hospital.class);
-
-    private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        throw new NoContentFoundException(Hospital.class, "id", id.toString());
-    };
 }
 
 

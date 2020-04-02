@@ -3,7 +3,7 @@ package com.cogent.cogentappointment.esewa.constants;
 public class SwaggerConstants {
     public static String BASE_PACKAGE = "com.cogent.cogentappointment.esewa.resource";
 
-    public static String PATH_REGEX = "/api.*";
+    public static String PATH_REGEX = "/esewa/api.*";
 
     //A
     public interface AdminConstant {

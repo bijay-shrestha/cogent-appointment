@@ -6,7 +6,7 @@ package com.cogent.cogentappointment.esewa.constants;
 public class WebResourceKeyConstants {
 
     //A
-    public static final String API_V1 = "/api/v1";
+    public static final String API_V1 = "/esewa/api/v1";
     public static final String ACTIVE = "/active";
 
     public interface AdminConstants {

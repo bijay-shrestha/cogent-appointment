@@ -11,11 +11,9 @@ import com.cogent.cogentappointment.admin.dto.response.qualification.Qualificati
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.QualificationRepository;
-import com.cogent.cogentappointment.admin.service.HospitalService;
 import com.cogent.cogentappointment.admin.service.QualificationAliasService;
 import com.cogent.cogentappointment.admin.service.QualificationService;
 import com.cogent.cogentappointment.admin.service.UniversityService;
-import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.Qualification;
 import com.cogent.cogentappointment.persistence.model.QualificationAlias;
 import com.cogent.cogentappointment.persistence.model.University;
@@ -47,16 +45,12 @@ public class QualificationServiceImpl implements QualificationService {
 
     private final UniversityService universityService;
 
-    private final HospitalService hospitalService;
-
     public QualificationServiceImpl(QualificationRepository qualificationRepository,
                                     QualificationAliasService qualificationAliasService,
-                                    UniversityService universityService,
-                                    HospitalService hospitalService) {
+                                    UniversityService universityService) {
         this.qualificationRepository = qualificationRepository;
         this.qualificationAliasService = qualificationAliasService;
         this.universityService = universityService;
-        this.hospitalService = hospitalService;
     }
 
     @Override
@@ -65,20 +59,15 @@ public class QualificationServiceImpl implements QualificationService {
 
         log.info(SAVING_PROCESS_STARTED, QUALIFICATION);
 
+        Long count = qualificationRepository.validateDuplicity(requestDTO.getName(), requestDTO.getUniversityId());
+
+        validateName(count, requestDTO.getName());
+
         QualificationAlias qualificationAlias = fetchQualificationAlias(requestDTO.getQualificationAliasId());
 
         University university = fetchUniversity(requestDTO.getUniversityId());
 
-        Hospital hospital = fetchHospital(requestDTO.getHospitalId());
-
-        Long count = qualificationRepository.validateDuplicity(
-                requestDTO.getName(),
-                requestDTO.getHospitalId()
-        );
-
-        validateName(count, requestDTO.getName());
-
-        save(parseToQualification(requestDTO, qualificationAlias, university, hospital));
+        save(parseToQualification(requestDTO, qualificationAlias, university));
 
         log.info(SAVING_PROCESS_COMPLETED, QUALIFICATION, getDifferenceBetweenTwoTime(startTime));
     }
@@ -94,7 +83,7 @@ public class QualificationServiceImpl implements QualificationService {
         Long count = qualificationRepository.validateDuplicity(
                 requestDTO.getId(),
                 requestDTO.getName(),
-                requestDTO.getHospitalId());
+                requestDTO.getUniversityId());
 
         validateName(count, requestDTO.getName());
 
@@ -102,9 +91,7 @@ public class QualificationServiceImpl implements QualificationService {
 
         University university = fetchUniversity(requestDTO.getUniversityId());
 
-        Hospital hospital = fetchHospital(requestDTO.getHospitalId());
-
-        parseToUpdatedQualification(requestDTO, qualificationAlias, university, hospital, qualification);
+        parseToUpdatedQualification(requestDTO, qualificationAlias, university, qualification);
 
         log.info(UPDATING_PROCESS_COMPLETED, QUALIFICATION, getDifferenceBetweenTwoTime(startTime));
     }
@@ -197,7 +184,7 @@ public class QualificationServiceImpl implements QualificationService {
     }
 
     private QualificationAlias fetchQualificationAlias(Long id) {
-        return qualificationAliasService.fetchQualificationAliasById(id);
+        return qualificationAliasService.fetchActiveQualificationAliasById(id);
     }
 
     private University fetchUniversity(Long universityId) {
@@ -207,10 +194,6 @@ public class QualificationServiceImpl implements QualificationService {
     private Qualification findQualificationById(Long id) {
         return qualificationRepository.findQualificationById(id)
                 .orElseThrow(() -> new NoContentFoundException(Qualification.class, "id", id.toString()));
-    }
-
-    private Hospital fetchHospital(Long hospitalId) {
-        return hospitalService.fetchActiveHospital(hospitalId);
     }
 
     private void save(Qualification qualification) {

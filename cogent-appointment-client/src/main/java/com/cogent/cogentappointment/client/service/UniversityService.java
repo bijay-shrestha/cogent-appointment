@@ -30,5 +30,5 @@ public interface UniversityService {
 
     List<DropDownResponseDTO> fetchActiveMinUniversity();
 
-    University findActiveUniversityByIdAndHospitalId(Long id, Long hospitalId);
+    University findActiveUniversityById(Long id);
 }

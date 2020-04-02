@@ -19,7 +19,6 @@ public interface UniversityRepository extends JpaRepository<University, Long>, U
     Optional<University> fetchUniversityByIdAndHospitalId(@Param("id") Long id,
                                                           @Param("hospitalId") Long hospitalId);
 
-    @Query("SELECT u FROM University u WHERE u.status='Y' AND u.id = :id AND u.hospital.id =:hospitalId")
-    Optional<University> fetchActiveUniversityByIdAndHospitalId(@Param("id") Long id,
-                                                                @Param("hospitalId") Long hospitalId);
+    @Query("SELECT u FROM University u WHERE u.status='Y' AND u.id = :id")
+    Optional<University> fetchActiveUniversityById(@Param("id") Long id);
 }

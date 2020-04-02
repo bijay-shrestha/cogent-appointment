@@ -138,8 +138,8 @@ public class HospitalUtils {
         final int NUMBER_OF_ADMINS_INDEX = 11;
         final int NUMBER_OF_FOLLOWUPS_INDEX = 12;
         final int FOLLOW_UP_INTERVAL_DAYS_INDEX = 13;
-        final int IS_COGENT_ADMIN_INDEX =14;
-        final int ALIAS_INDEX =15;
+        final int IS_COGENT_ADMIN_INDEX = 14;
+        final int ALIAS_INDEX = 15;
 
         return HospitalResponseDTO.builder()
                 .id(Long.parseLong(results[HOSPITAL_ID_INDEX].toString()))
@@ -156,10 +156,13 @@ public class HospitalUtils {
                 .refundPercentage(Double.parseDouble(results[REFUND_PERCENTAGE_INDEX].toString()))
                 .numberOfAdmins(Objects.isNull(results[NUMBER_OF_ADMINS_INDEX]) ? 0 :
                         Integer.parseInt(results[NUMBER_OF_ADMINS_INDEX].toString()))
-                .numberOfFollowUps(Integer.parseInt(results[NUMBER_OF_FOLLOWUPS_INDEX].toString()))
-                .followUpIntervalDays(Integer.parseInt(results[FOLLOW_UP_INTERVAL_DAYS_INDEX].toString()))
-                .isCompany(results[IS_COGENT_ADMIN_INDEX].toString().charAt(0))
-                .alias(Objects.isNull(results[ALIAS_INDEX])? null: results[ALIAS_INDEX].toString())
+                .numberOfFollowUps(Objects.isNull(results[NUMBER_OF_FOLLOWUPS_INDEX]) ?
+                        0 : Integer.parseInt(results[NUMBER_OF_FOLLOWUPS_INDEX].toString()))
+                .followUpIntervalDays(Objects.isNull(results[NUMBER_OF_FOLLOWUPS_INDEX]) ?
+                        0 : Integer.parseInt(results[FOLLOW_UP_INTERVAL_DAYS_INDEX].toString()))
+                .isCompany(Objects.isNull(results[IS_COGENT_ADMIN_INDEX]) ? 'N' :
+                        results[IS_COGENT_ADMIN_INDEX].toString().charAt(0))
+                .alias(Objects.isNull(results[ALIAS_INDEX]) ? null : results[ALIAS_INDEX].toString())
                 .build();
     }
 

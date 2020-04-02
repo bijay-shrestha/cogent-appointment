@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.dto.request.appointment;
+package com.cogent.cogentappointment.client.dto.request.appointment.esewa;
 
 import lombok.*;
 
@@ -42,7 +42,10 @@ public class AppointmentRequestDTO implements Serializable {
     @NotEmpty
     private String createdDateNepali;
 
-    private Character isFreeFollowUp;
+    private Character isFollowUp;
 
     private Long parentAppointmentId;
+
+    @NotNull
+    private Long appointmentReservationId;
 }

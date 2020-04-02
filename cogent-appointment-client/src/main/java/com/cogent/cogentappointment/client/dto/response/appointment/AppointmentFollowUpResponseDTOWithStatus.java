@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.dto.response.appointment;
 
+import com.cogent.cogentappointment.client.dto.response.appointment.esewa.AppointmentFollowUpResponseDTO;
 import lombok.*;
 import org.springframework.http.HttpStatus;
 
@@ -14,7 +15,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AppointmentFollowUpResponseDTOWithStatus implements Serializable {
-    AppointmentFollowUpResponseDTO responseDTO;
+    private AppointmentFollowUpResponseDTO responseDTO;
 
     private int responseCode;
 

@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
 import com.cogent.cogentappointment.client.dto.request.hospital.HospitalMinSearchRequestDTO;
+import com.cogent.cogentappointment.client.dto.response.hospital.HospitalFollowUpResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospital.HospitalMinResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.HospitalRepositoryCustom;
@@ -9,10 +10,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.HOSPITAL_ID;
@@ -41,8 +42,8 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
     }
 
     @Override
-    public Integer fetchHospitalFreeFollowUpIntervalDays(Long hospitalId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_FREE_FOLLOW_UP_INTERVAL_DAYS)
+    public Integer fetchHospitalFollowUpIntervalDays(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_FOLLOW_UP_INTERVAL_DAYS)
                 .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Integer) query.getSingleResult();
@@ -50,17 +51,25 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
     @Override
     public Integer fetchHospitalFollowUpCount(Long hospitalId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_FREE_FOLLOW_UP_COUNT)
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_FOLLOW_UP_COUNT)
                 .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Integer) query.getSingleResult();
     }
 
-    private Supplier<NoContentFoundException> HOSPITAL_NOT_FOUND = () -> new NoContentFoundException(Hospital.class);
+    @Override
+    public HospitalFollowUpResponseDTO fetchFollowUpDetails(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_FOLLOW_UP_DETAILS)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
-    private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        throw new NoContentFoundException(Hospital.class, "id", id.toString());
-    };
+        try{
+            return transformQueryToSingleResult(query, HospitalFollowUpResponseDTO.class);
+        }catch (NoResultException e){
+            throw HOSPITAL_NOT_FOUND.get();
+        }
+    }
+
+    private Supplier<NoContentFoundException> HOSPITAL_NOT_FOUND = () -> new NoContentFoundException(Hospital.class);
 }
 
 

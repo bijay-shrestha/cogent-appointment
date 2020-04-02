@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.dto.response.appointment;
+package com.cogent.cogentappointment.client.dto.response.appointment.esewa;
 
 import lombok.*;
 
@@ -14,7 +14,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class AppointmentFollowUpResponseDTO implements Serializable {
 
-    private Character isFreeFollowUp;
+    private Character isFollowUp;
 
     private Double appointmentCharge;
 

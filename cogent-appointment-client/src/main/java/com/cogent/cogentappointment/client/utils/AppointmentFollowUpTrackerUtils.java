@@ -1,9 +1,8 @@
 package com.cogent.cogentappointment.client.utils;
 
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentFollowUpResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentFollowUpResponseDTOWithStatus;
+import com.cogent.cogentappointment.client.dto.response.appointment.esewa.AppointmentFollowUpResponseDTO;
 import com.cogent.cogentappointment.persistence.model.*;
-import org.springframework.http.HttpStatus;
 
 import java.util.Date;
 
@@ -23,7 +22,7 @@ public class AppointmentFollowUpTrackerUtils {
             Long savedAppointmentReservationId) {
 
         return AppointmentFollowUpResponseDTO.builder()
-                .isFreeFollowUp(isFollowUp)
+                .isFollowUp(isFollowUp)
                 .appointmentCharge(appointmentCharge)
                 .parentAppointmentId(parentAppointmentId)
                 .appointmentReservationId(savedAppointmentReservationId)
@@ -31,7 +30,7 @@ public class AppointmentFollowUpTrackerUtils {
 
     }
 
-    public static void updateNumberOfFreeFollowUps(AppointmentFollowUpTracker followUpTracker) {
+    public static void updateNumberOfFollowUps(AppointmentFollowUpTracker followUpTracker) {
         followUpTracker.setRemainingNumberOfFollowUps(followUpTracker.getRemainingNumberOfFollowUps() - 1);
 
         if (followUpTracker.getRemainingNumberOfFollowUps() <= 0)
@@ -39,7 +38,6 @@ public class AppointmentFollowUpTrackerUtils {
     }
 
     public static AppointmentFollowUpTracker parseToAppointmentFollowUpTracker(Long parentAppointmentId,
-                                                                               String parentAppointmentNumber,
                                                                                Integer remainingFollowUpCount,
                                                                                Doctor doctor,
                                                                                Specialization specialization,
@@ -52,7 +50,6 @@ public class AppointmentFollowUpTrackerUtils {
         followUpTracker.setSpecializationId(specialization);
         followUpTracker.setHospitalId(hospital);
         followUpTracker.setParentAppointmentId(parentAppointmentId);
-        followUpTracker.setParentAppointmentNumber(parentAppointmentNumber);
         followUpTracker.setRemainingNumberOfFollowUps(remainingFollowUpCount);
         followUpTracker.setAppointmentApprovedDate(new Date());
         followUpTracker.setStatus(ACTIVE);

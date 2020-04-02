@@ -5,10 +5,9 @@ package com.cogent.cogentappointment.client.query;
  */
 public class AppointmentFollowUpTrackerQuery {
 
-    public static final String QUERY_TO_FETCH_FOLLOW_UP_DETAILS =
+    public static final String QUERY_TO_FETCH_APPOINTMENT_FOLLOW_UP_TRACKER =
             " SELECT" +
-                    " f.parentAppointmentId as parentAppointmentId," +              //[0]
-                    " f.appointmentApprovedDate as appointmentApprovedDate" +       //[1]
+                    " f" +
                     " FROM AppointmentFollowUpTracker f " +
                     " WHERE" +
                     " f.status = 'Y'" +
@@ -16,7 +15,6 @@ public class AppointmentFollowUpTrackerQuery {
                     " AND f.doctorId.id = :doctorId" +
                     " AND f.specializationId.id=:specializationId" +
                     " AND f.hospitalId.id =:hospitalId";
-
 
     public static final String QUERY_TO_FETCH_LATEST_APPOINTMENT_FOLLOW_UP_TRACKER =
             " SELECT * FROM appointment_follow_up_tracker f" +

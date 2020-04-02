@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.N;
+import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.*;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.toUpperCase;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -32,7 +33,7 @@ public class HospitalUtils {
 
     public static Hospital convertDTOToHospital(HospitalRequestDTO hospitalRequestDTO) {
         Hospital hospital = new Hospital();
-        hospital.setName(StringUtil.convertToNormalCase(hospitalRequestDTO.getName()));
+        hospital.setName(convertToNormalCase(hospitalRequestDTO.getName()));
         hospital.setCode(toUpperCase(hospitalRequestDTO.getHospitalCode()));
         hospital.setAddress(hospitalRequestDTO.getAddress());
         hospital.setPanNumber(hospitalRequestDTO.getPanNumber());
@@ -40,7 +41,7 @@ public class HospitalUtils {
         hospital.setIsCompany(N);
         hospital.setRefundPercentage(hospitalRequestDTO.getRefundPercentage());
         hospital.setNumberOfAdmins(hospitalRequestDTO.getNumberOfAdmins());
-        hospital.setNumberOfFreeFollowUps(hospitalRequestDTO.getNumberOfFreeFollowUps());
+        hospital.setNumberOfFollowUps(hospitalRequestDTO.getNumberOfFollowUps());
         hospital.setFollowUpIntervalDays(hospitalRequestDTO.getFollowUpIntervalDays());
         hospital.setAlias(hospitalRequestDTO.getAlias());
         return hospital;
@@ -87,15 +88,15 @@ public class HospitalUtils {
     public static void parseToUpdatedHospital(HospitalUpdateRequestDTO updateRequestDTO,
                                               Hospital hospital) {
 
-        hospital.setName(StringUtil.convertToNormalCase(updateRequestDTO.getName()));
+        hospital.setName(convertToNormalCase(updateRequestDTO.getName()));
         hospital.setAddress(updateRequestDTO.getAddress());
         hospital.setPanNumber(updateRequestDTO.getPanNumber());
         hospital.setStatus(updateRequestDTO.getStatus());
-        hospital.setRemarks(StringUtil.convertToNormalCase(updateRequestDTO.getRemarks()));
+        hospital.setRemarks(convertToNormalCase(updateRequestDTO.getRemarks()));
         hospital.setIsCompany(updateRequestDTO.getIsHospital());
         hospital.setRefundPercentage(updateRequestDTO.getRefundPercentage());
         hospital.setNumberOfAdmins(updateRequestDTO.getNumberOfAdmins());
-        hospital.setNumberOfFreeFollowUps(updateRequestDTO.getNumberOfFreeFollowUps());
+        hospital.setNumberOfFollowUps(updateRequestDTO.getNumberOfFollowUps());
         hospital.setFollowUpIntervalDays(updateRequestDTO.getFollowUpIntervalDays());
         hospital.setAlias(updateRequestDTO.getAlias());
     }
@@ -138,7 +139,7 @@ public class HospitalUtils {
         final int CONTACT_DETAILS_INDEX = 9;
         final int REFUND_PERCENTAGE_INDEX = 10;
         final int NUMBER_OF_ADMINS_INDEX = 11;
-        final int NUMBER_OF_FREE_FOLLOWUPS_INDEX = 12;
+        final int NUMBER_OF_FOLLOWUPS_INDEX = 12;
         final int FOLLOW_UP_INTERVAL_DAYS_INDEX = 13;
         final int IS_COGENT_ADMIN_INDEX =14;
         final int ALIAS_INDEX =15;
@@ -158,7 +159,7 @@ public class HospitalUtils {
                 .refundPercentage(Double.parseDouble(results[REFUND_PERCENTAGE_INDEX].toString()))
                 .numberOfAdmins(Objects.isNull(results[NUMBER_OF_ADMINS_INDEX]) ? 0 :
                         Integer.parseInt(results[NUMBER_OF_ADMINS_INDEX].toString()))
-                .numberOfFreeFollowUps(Integer.parseInt(results[NUMBER_OF_FREE_FOLLOWUPS_INDEX].toString()))
+                .numberOfFollowUps(Integer.parseInt(results[NUMBER_OF_FOLLOWUPS_INDEX].toString()))
                 .followUpIntervalDays(Integer.parseInt(results[FOLLOW_UP_INTERVAL_DAYS_INDEX].toString()))
                 .isCompany(results[IS_COGENT_ADMIN_INDEX].toString().charAt(0))
                 .alias(Objects.isNull(results[ALIAS_INDEX])? null: results[ALIAS_INDEX].toString())

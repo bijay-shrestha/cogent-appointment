@@ -25,12 +25,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.NAME_DUPLICATION_MESSAGE;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
-import static com.cogent.cogentappointment.client.log.constants.QualificationLog.QUALIFICAION_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.client.log.constants.QualificationLog.QUALIFICATION;
 import static com.cogent.cogentappointment.client.utils.QualificationUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
@@ -97,7 +95,7 @@ public class QualificationServiceImpl implements QualificationService {
 
         Long hospitalId = getLoggedInHospitalId();
 
-        Qualification qualification = findQualificationByIdAndHospitalId(requestDTO.getId(), hospitalId);
+        Qualification qualification = findQualificationById(requestDTO.getId());
 
         QualificationAlias qualificationAlias = fetchQualificationAlias(requestDTO.getQualificationAliasId());
 
@@ -123,9 +121,8 @@ public class QualificationServiceImpl implements QualificationService {
 
         log.info(DELETING_PROCESS_STARTED, QUALIFICATION);
 
-        Qualification qualification = findQualificationByIdAndHospitalId(
-                deleteRequestDTO.getId(), getLoggedInHospitalId()
-        );
+        Qualification qualification = findQualificationById(
+                deleteRequestDTO.getId());
 
         parseToDeletedQualification(qualification, deleteRequestDTO);
 
@@ -183,11 +180,9 @@ public class QualificationServiceImpl implements QualificationService {
 
         log.info(FETCHING_PROCESS_STARTED, QUALIFICATION);
 
-        Long hospitalId = getLoggedInHospitalId();
-
         Qualification qualification =
-                qualificationRepository.fetchActiveQualificationByIdAndHospitalId(id, hospitalId)
-                        .orElseThrow(() -> QUALIFICATION_WITH_GIVEN_ID_NOT_FOUND.apply(id,hospitalId));
+                qualificationRepository.fetchActiveQualificationByIdAndHospitalId(id)
+                        .orElseThrow(() -> QUALIFICATION_WITH_GIVEN_ID_NOT_FOUND.apply(id));
 
         log.info(FETCHING_PROCESS_COMPLETED, QUALIFICATION, getDifferenceBetweenTwoTime(startTime));
 
@@ -209,18 +204,18 @@ public class QualificationServiceImpl implements QualificationService {
 
     private void validateName(Long qualificationCount, String name) {
         if (qualificationCount.intValue() > 0)
-            log.error(NAME_DUPLICATION_ERROR,QUALIFICATION,name);
-            throw new DataDuplicationException(
-                    String.format(NAME_DUPLICATION_MESSAGE, Qualification.class.getSimpleName(), name));
+            log.error(NAME_DUPLICATION_ERROR, QUALIFICATION, name);
+        throw new DataDuplicationException(
+                String.format(NAME_DUPLICATION_MESSAGE, Qualification.class.getSimpleName(), name));
     }
 
     private QualificationAlias fetchQualificationAlias(Long id) {
         return qualificationAliasService.fetchQualificationAliasById(id);
     }
 
-    private Qualification findQualificationByIdAndHospitalId(Long id, Long hospitalId) {
-        return qualificationRepository.findQualificationByIdAndHospitalId(id, hospitalId)
-                .orElseThrow(() -> QUALIFICATION_WITH_GIVEN_ID_NOT_FOUND.apply(id,hospitalId));
+    private Qualification findQualificationById(Long id) {
+        return qualificationRepository.findQualificationByIdAndHospitalId(id)
+                .orElseThrow(() -> QUALIFICATION_WITH_GIVEN_ID_NOT_FOUND.apply(id));
     }
 
     private University fetchUniversity(Long universityId, Long hospitalId) {
@@ -235,8 +230,8 @@ public class QualificationServiceImpl implements QualificationService {
         qualificationRepository.save(qualification);
     }
 
-    private BiFunction<Long,Long, NoContentFoundException> QUALIFICATION_WITH_GIVEN_ID_NOT_FOUND = (id,hospitalId) -> {
-        log.error(QUALIFICAION_NOT_FOUND_BY_ID,id , hospitalId);
+    private Function<Long, NoContentFoundException> QUALIFICATION_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, QUALIFICATION, id);
         throw new NoContentFoundException(Qualification.class, "id", id.toString());
     };
 }

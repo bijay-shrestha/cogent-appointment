@@ -15,8 +15,7 @@ public class QualificationQuery {
                     " FROM Qualification q" +
                     " WHERE" +
                     " q.status !='D'" +
-                    " AND q.name=:name" +
-                    " AND q.hospital.id =:hospitalId";
+                    " AND q.name=:name";
 
     public static final String QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE =
             " SELECT COUNT(q.id)" +
@@ -24,8 +23,7 @@ public class QualificationQuery {
                     " WHERE" +
                     " q.status !='D'" +
                     " AND q.id!=:id" +
-                    " AND q.name=:name" +
-                    " AND q.hospital.id =:hospitalId";
+                    " AND q.name=:name" ;
 
     private static final String SELECT_CLAUSE_TO_FETCH_MINIMAL_QUALIFICATION =
             "SELECT q.id as id," +                                               //[0]
@@ -44,7 +42,7 @@ public class QualificationQuery {
     private static String GET_WHERE_CLAUSE_FOR_SEARCHING_QUALIFICATION
             (QualificationSearchRequestDTO searchRequestDTO) {
 
-        String whereClause = " WHERE q.status!='D' AND q.hospital.id = :hospitalId";
+        String whereClause = " WHERE q.status!='D'";
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getName()))
             whereClause += " AND q.name LIKE '%" + searchRequestDTO.getName() + "%'";
@@ -65,8 +63,7 @@ public class QualificationQuery {
                     " q.remarks as remarks" +                                   //[5]
                     " FROM Qualification q " +
                     " WHERE q.status != 'D'" +
-                    " AND q.id =:id" +
-                    " AND q.hospital.id = :hospitalId";
+                    " AND q.id =:id";
 
     public static final String QUERY_TO_FETCH_ACTIVE_QUALIFICATION_FOR_DROPDOWN =
             "SELECT q.id as id," +                                                  //[0]
@@ -74,13 +71,11 @@ public class QualificationQuery {
                     " q.university.name as university," +                           //[2]
                     " q.qualificationAlias.name as qualificationAliasName" +        //[3]
                     " FROM Qualification q " +
-                    " WHERE q.status = 'Y'" +
-                    " AND q.hospital.id =:hospitalId";
+                    " WHERE q.status = 'Y'";
 
     public static final String QUERY_TO_FETCH_MIN_QUALIFICATION =
             "SELECT q.id as value," +                                           //[0]
                     " q.name as label" +                                        //[1]
                     " FROM Qualification q " +
-                    " WHERE q.status != 'D'" +
-                    " AND q.hospital.id =:hospitalId";
+                    " WHERE q.status != 'D'";
 }

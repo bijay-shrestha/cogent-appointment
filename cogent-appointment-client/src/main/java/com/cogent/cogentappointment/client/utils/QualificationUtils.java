@@ -34,7 +34,6 @@ public class QualificationUtils {
                                              Hospital hospital) {
         qualification.setQualificationAlias(qualificationAlias);
         qualification.setUniversity(university);
-        qualification.setHospital(hospital);
     }
 
     public static void parseToUpdatedQualification(QualificationUpdateRequestDTO requestDTO,

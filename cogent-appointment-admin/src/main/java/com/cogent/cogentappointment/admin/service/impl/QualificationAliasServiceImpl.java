@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NAME_DUPLICATION_MESSAGE;
@@ -102,7 +103,7 @@ public class QualificationAliasServiceImpl implements QualificationAliasService 
     }
 
     @Override
-    public QualificationAlias fetchQualificationAliasById(Long id) {
+    public QualificationAlias fetchActiveQualificationAliasById(Long id) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, QUALIFICATION_ALIAS);
@@ -139,4 +140,11 @@ public class QualificationAliasServiceImpl implements QualificationAliasService 
     private void save(QualificationAlias qualificationAlias) {
         qualificationAliasRepository.save(qualificationAlias);
     }
+
+
+    private QualificationAlias fetchQualificationAliasById(Long id) {
+        return qualificationAliasRepository.fetchQualificationAliasById(id)
+                .orElseThrow(() -> new NoContentFoundException(QualificationAlias.class, "id", id.toString()));
+    }
+
 }

@@ -7,10 +7,6 @@ public class ErrorMessageConstants {
 
     //A
 
-    public interface AppointmentServiceMessage {
-
-    }
-
     public interface AdminServiceMessages {
 
         String ADMIN_DUPLICATION_MESSAGE = "Admin with given username, email and mobile number" +

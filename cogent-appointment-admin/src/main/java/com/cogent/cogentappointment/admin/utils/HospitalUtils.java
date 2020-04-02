@@ -8,7 +8,6 @@ import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalUpdateReq
 import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalContactNumberResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalResponseDTO;
-import com.cogent.cogentappointment.admin.utils.commons.StringUtil;
 import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.HospitalBanner;
 import com.cogent.cogentappointment.persistence.model.HospitalContactNumber;
@@ -22,9 +21,8 @@ import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.N;
-import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.*;
+import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.convertToNormalCase;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.toUpperCase;
-import static org.springframework.http.HttpStatus.OK;
 
 /**
  * @author smriti ON 12/01/2020
@@ -141,8 +139,8 @@ public class HospitalUtils {
         final int NUMBER_OF_ADMINS_INDEX = 11;
         final int NUMBER_OF_FOLLOWUPS_INDEX = 12;
         final int FOLLOW_UP_INTERVAL_DAYS_INDEX = 13;
-        final int IS_COGENT_ADMIN_INDEX =14;
-        final int ALIAS_INDEX =15;
+        final int IS_COGENT_ADMIN_INDEX = 14;
+        final int ALIAS_INDEX = 15;
 
         return HospitalResponseDTO.builder()
                 .id(Long.parseLong(results[HOSPITAL_ID_INDEX].toString()))
@@ -159,10 +157,13 @@ public class HospitalUtils {
                 .refundPercentage(Double.parseDouble(results[REFUND_PERCENTAGE_INDEX].toString()))
                 .numberOfAdmins(Objects.isNull(results[NUMBER_OF_ADMINS_INDEX]) ? 0 :
                         Integer.parseInt(results[NUMBER_OF_ADMINS_INDEX].toString()))
-                .numberOfFollowUps(Integer.parseInt(results[NUMBER_OF_FOLLOWUPS_INDEX].toString()))
-                .followUpIntervalDays(Integer.parseInt(results[FOLLOW_UP_INTERVAL_DAYS_INDEX].toString()))
-                .isCompany(results[IS_COGENT_ADMIN_INDEX].toString().charAt(0))
-                .alias(Objects.isNull(results[ALIAS_INDEX])? null: results[ALIAS_INDEX].toString())
+                .numberOfFollowUps(Objects.isNull(results[NUMBER_OF_FOLLOWUPS_INDEX]) ?
+                        0 : Integer.parseInt(results[NUMBER_OF_FOLLOWUPS_INDEX].toString()))
+                .followUpIntervalDays(Objects.isNull(results[NUMBER_OF_FOLLOWUPS_INDEX]) ?
+                        0 : Integer.parseInt(results[FOLLOW_UP_INTERVAL_DAYS_INDEX].toString()))
+                .isCompany(Objects.isNull(results[IS_COGENT_ADMIN_INDEX]) ? 'N' :
+                        results[IS_COGENT_ADMIN_INDEX].toString().charAt(0))
+                .alias(Objects.isNull(results[ALIAS_INDEX]) ? null : results[ALIAS_INDEX].toString())
                 .build();
     }
 

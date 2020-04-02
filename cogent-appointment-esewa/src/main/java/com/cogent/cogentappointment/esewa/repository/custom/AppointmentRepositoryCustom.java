@@ -64,4 +64,5 @@ public interface AppointmentRepositoryCustom {
     AppointmentLogResponseDTO searchAppointmentLogs(
             AppointmentLogSearchDTO searchRequestDTO, Pageable pageable, Long hospitalId);
 
+    Double calculateRefundAmount(Long appointmentId);
 }

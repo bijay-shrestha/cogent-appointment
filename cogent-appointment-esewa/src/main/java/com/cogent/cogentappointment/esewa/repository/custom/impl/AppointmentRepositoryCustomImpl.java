@@ -23,6 +23,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.Date;
@@ -258,6 +259,18 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         else {
             results.setTotalItems(totalItems);
             return results;
+        }
+    }
+
+    @Override
+    public Double calculateRefundAmount(Long appointmentId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_REFUND_AMOUNT)
+                .setParameter(ID, appointmentId);
+
+        try {
+            return Double.parseDouble(query.getSingleResult().toString());
+        } catch (NoResultException e) {
+            throw APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId);
         }
     }
 

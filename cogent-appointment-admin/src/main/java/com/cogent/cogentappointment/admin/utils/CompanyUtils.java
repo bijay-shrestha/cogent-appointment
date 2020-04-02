@@ -4,9 +4,9 @@ import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.company.CompanyContactNumberUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.company.CompanyRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.company.CompanyUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.company.CompanyContactNumberResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.company.CompanyResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalContactNumberResponseDTO;
 import com.cogent.cogentappointment.admin.utils.commons.StringUtil;
 import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.HospitalContactNumber;
@@ -46,7 +46,7 @@ public class CompanyUtils {
     }
 
     public static HospitalLogo convertFileToCompanyLogo(FileUploadResponseDTO fileUploadResponseDTO,
-                                                         Hospital company) {
+                                                        Hospital company) {
         HospitalLogo companyLogo = new HospitalLogo();
         setLogoFileProperties(fileUploadResponseDTO, companyLogo);
         companyLogo.setHospital(company);
@@ -62,7 +62,7 @@ public class CompanyUtils {
     }
 
     public static void parseToUpdatedCompany(CompanyUpdateRequestDTO updateRequestDTO,
-                                              Hospital company) {
+                                             Hospital company) {
 
         company.setName(StringUtil.convertToNormalCase(updateRequestDTO.getName()));
         company.setAddress(updateRequestDTO.getAddress());
@@ -109,7 +109,7 @@ public class CompanyUtils {
         final int COMPANY_CODE_INDEX = 7;
         final int CONTACT_DETAILS_INDEX = 8;
         final int IS_COMPANY_INDEX = 9;
-        final int ALIAS_INDEX=10;
+        final int ALIAS_INDEX = 10;
 
         return CompanyResponseDTO.builder()
                 .id(Long.parseLong(results[COMPANY_ID_INDEX].toString()))
@@ -127,7 +127,7 @@ public class CompanyUtils {
                 .build();
     }
 
-    private static List<HospitalContactNumberResponseDTO> parseToCompanyContactNumberResponseDTOS(Object[] results) {
+    private static List<CompanyContactNumberResponseDTO> parseToCompanyContactNumberResponseDTOS(Object[] results) {
 
         final int CONTACT_DETAILS_INDEX = 8;
 
@@ -135,8 +135,8 @@ public class CompanyUtils {
 
         return Arrays.stream(contactWithIdAndNumber)
                 .map(contact -> contact.split(HYPHEN))
-                .map(contactDetails -> HospitalContactNumberResponseDTO.builder()
-                        .hospitalContactNumberId(Long.parseLong(contactDetails[0]))
+                .map(contactDetails -> CompanyContactNumberResponseDTO.builder()
+                        .companyContactNumberId(Long.parseLong(contactDetails[0]))
                         .contactNumber(contactDetails[1])
                         .status(contactDetails[2].charAt(0))
                         .build())

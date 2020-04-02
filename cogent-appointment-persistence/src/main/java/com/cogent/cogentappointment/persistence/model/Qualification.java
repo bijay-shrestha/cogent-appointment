@@ -37,10 +37,6 @@ public class Qualification extends Auditable<String> implements Serializable {
     @JoinColumn(name = "university_id")
     private University university;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hospital_id")
-    private Hospital hospital;
-
     @Column(name = "status")
     private Character status;
 
@@ -54,7 +50,6 @@ public class Qualification extends Auditable<String> implements Serializable {
                 ", name='" + name + '\'' +
                 ", qualificationAlias=" + qualificationAlias.getName() +
                 ", university=" + university.getName() +
-                ", hospital=" + hospital.getName() +
                 ", status=" + status +
                 ", remarks='" + remarks + '\'' +
                 '}';

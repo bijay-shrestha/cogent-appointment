@@ -17,7 +17,7 @@ public class QualificationQuery {
                     " WHERE" +
                     " q.status !='D'" +
                     " AND q.name=:name" +
-                    " AND q.hospital.id =:hospitalId";
+                    " AND q.university.id =:universityId";
 
     public static final String QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE =
             " SELECT COUNT(q.id)" +
@@ -26,7 +26,7 @@ public class QualificationQuery {
                     " q.status !='D'" +
                     " AND q.id!=:id" +
                     " AND q.name=:name" +
-                    " AND q.hospital.id =:hospitalId";
+                    " AND q.university.id =:universityId";
 
     private static final String SELECT_CLAUSE_TO_FETCH_MINIMAL_QUALIFICATION =
             "SELECT q.id as id," +                                                //[0]
@@ -36,7 +36,6 @@ public class QualificationQuery {
                     " q.status as status" +                                       //[4]
                     " FROM Qualification q " +
                     " LEFT JOIN University u ON u.id = q.university.id" +
-                    " LEFT JOIN Hospital h ON h.id = q.hospital.id" +
                     " LEFT JOIN QualificationAlias qa ON qa.id = q.qualificationAlias.id";
 
     public static Function<QualificationSearchRequestDTO, String> QUERY_TO_SEARCH_QUALIFICATION =
@@ -59,9 +58,6 @@ public class QualificationQuery {
         if (!Objects.isNull(searchRequestDTO.getQualificationAliasId()))
             whereClause += " AND qa.id=" + searchRequestDTO.getQualificationAliasId();
 
-        if (!Objects.isNull(searchRequestDTO.getHospitalId()))
-            whereClause += " AND h.id=" + searchRequestDTO.getHospitalId();
-
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
             whereClause += " AND q.status='" + searchRequestDTO.getStatus() + "'";
 
@@ -76,13 +72,10 @@ public class QualificationQuery {
                     " qa.id as qualificationAliasId," +                         //[3]
                     " qa.name as qualificationAliasName," +                     //[4]
                     " q.status as status," +                                    //[5]
-                    " q.remarks as remarks," +                                  //[6]
-                    " h.id as hospitalId," +                                     //[7]
-                    " h.name as hospitalName" +                                  //[8]
+                    " q.remarks as remarks" +                                  //[6]
                     " FROM Qualification q " +
                     " LEFT JOIN University u ON u.id = q.university.id" +
                     " LEFT JOIN QualificationAlias qa ON qa.id = q.qualificationAlias.id" +
-                    " LEFT JOIN Hospital h ON h.id = q.hospital.id" +
                     " WHERE q.status != 'D'" +
                     " AND q.id =:id";
 

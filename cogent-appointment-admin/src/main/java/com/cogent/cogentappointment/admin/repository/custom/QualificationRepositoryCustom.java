@@ -18,9 +18,9 @@ import java.util.List;
 @Qualifier("qualificationRepositoryCustom")
 public interface QualificationRepositoryCustom {
 
-    Long validateDuplicity(String name, Long hospitalId);
+    Long validateDuplicity(String name, Long universityId);
 
-    Long validateDuplicity(Long id, String name, Long hospitalId);
+    Long validateDuplicity(Long id, String name, Long universityId);
 
     List<QualificationMinimalResponseDTO> search(QualificationSearchRequestDTO searchRequestDTO,
                                                  Pageable pageable);

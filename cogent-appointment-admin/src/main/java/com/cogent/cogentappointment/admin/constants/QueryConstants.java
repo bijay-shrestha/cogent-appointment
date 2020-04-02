@@ -75,16 +75,16 @@ public class QueryConstants {
     public static final String STATUS = "status";
 
 
-
     public static final String SPECIALIZATION_ID = "specializationId";
 
     //T
     public static final String TO_DATE = "toDate";
 
-    public static final String TODAY_INTERVAL = "today";
 
     //U
     public static final String USERNAME = "username";
+
+    public static final String UNIVERSITY_ID = "universityId";
 
     //V
 

@@ -101,7 +101,7 @@ public class QualificationAliasServiceImpl implements QualificationAliasService 
     }
 
     @Override
-    public QualificationAlias fetchQualificationAliasById(Long id) {
+    public QualificationAlias fetchActiveQualificationAliasById(Long id) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, QUALIFICATION_ALIAS);
@@ -131,9 +131,9 @@ public class QualificationAliasServiceImpl implements QualificationAliasService 
 
     private void validateName(Long qualificationCount, String name) {
         if (qualificationCount.intValue() > 0)
-            log.error(NAME_DUPLICATION_ERROR,QUALIFICATION_ALIAS,name);
-            throw new DataDuplicationException(
-                    String.format(NAME_DUPLICATION_MESSAGE, QualificationAlias.class.getSimpleName(), name));
+            log.error(NAME_DUPLICATION_ERROR, QUALIFICATION_ALIAS, name);
+        throw new DataDuplicationException(
+                String.format(NAME_DUPLICATION_MESSAGE, QualificationAlias.class.getSimpleName(), name));
     }
 
     private void save(QualificationAlias qualificationAlias) {
@@ -144,4 +144,11 @@ public class QualificationAliasServiceImpl implements QualificationAliasService 
         log.error(CONTENT_NOT_FOUND_BY_ID, QUALIFICATION_ALIAS, id);
         throw new NoContentFoundException(QualificationAlias.class, "id", id.toString());
     };
+
+
+    private QualificationAlias fetchQualificationAliasById(Long id) {
+        return qualificationAliasRepository.fetchQualificationAliasById(id)
+                .orElseThrow(() -> new NoContentFoundException(QualificationAlias.class, "id", id.toString()));
+    }
+
 }

@@ -43,8 +43,6 @@ public class EmailConstants {
 
     //L
     public static final String LOGO_FILE_NAME = "logo.png";
-//    public static final String CATALINA_LOGO_LOCATION = System.getProperty("catalina.base") + "/cogent-appointment-admin/src/main/resources/images/logo.png";
-//    public static final String LOGO_LOCATION = "./cogent-appointment-admin/src/main/resources/images/logo.png";
     public static final String LOGO_LOCATION = "./images/logo.png";
 
     //M

@@ -115,7 +115,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
             updateAdminPassword(requestDTO, admin);
             updateForgotPasswordVerification(admin.getId());
         } else {
-            log.error(INVALID_VERIFICATION_TOKEN_ERROR,requestDTO.getVerificationToken());
+            log.error(INVALID_VERIFICATION_TOKEN_ERROR, requestDTO.getVerificationToken());
             throw new NoContentFoundException(INVALID_VERIFICATION_TOKEN);
         }
 
@@ -133,9 +133,10 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     }
 
     private void validateExpirationTime(Object expirationTime) {
-        if (((Date) expirationTime).before(new Date())){
+        if (((Date) expirationTime).before(new Date())) {
             log.error(RESET_CODE_EXPIRED);
-            throw RESET_CODE_HAS_EXPIRED.get();}
+            throw RESET_CODE_HAS_EXPIRED.get();
+        }
     }
 
     public void save(ForgotPasswordVerification forgotPasswordVerification) {

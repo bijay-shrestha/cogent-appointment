@@ -6,6 +6,9 @@ import com.cogent.cogentappointment.persistence.model.Hospital;
 
 import java.security.NoSuchAlgorithmException;
 
+import static com.cogent.cogentappointment.admin.utils.HMACKeyGenerator.generateApiKey;
+import static com.cogent.cogentappointment.admin.utils.HMACKeyGenerator.generateApiSecret;
+
 /**
  * @author Sauravi Thapa २०/२/२
  */
@@ -13,8 +16,8 @@ public class HmacApiInfoUtils {
     public static HmacApiInfo parseToHmacApiInfo(Hospital hospital) throws NoSuchAlgorithmException {
         HmacApiInfo hmacApiInfo = new HmacApiInfo();
         hmacApiInfo.setHospital(hospital);
-        hmacApiInfo.setApiKey(HMACKeyGenerator.generateApiKey());
-        hmacApiInfo.setApiSecret(HMACKeyGenerator.generateApiSecret());
+        hmacApiInfo.setApiKey(generateApiKey());
+        hmacApiInfo.setApiSecret(generateApiSecret());
         hmacApiInfo.setStatus(hospital.getStatus());
 
         return hmacApiInfo;

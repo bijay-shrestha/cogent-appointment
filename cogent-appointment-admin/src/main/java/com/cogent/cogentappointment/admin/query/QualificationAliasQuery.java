@@ -23,7 +23,7 @@ public class QualificationAliasQuery {
                     " FROM QualificationAlias qa" +
                     " WHERE" +
                     " qa.status !='D'" +
-                    " AND qa.id!=:id" +
+                    " AND qa.id=:id" +
                     " AND qa.name=:name";
 
     public static final String QUERY_TO_FETCH_ACTIVE_QUALIFICATION_ALIAS =

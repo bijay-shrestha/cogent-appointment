@@ -3,13 +3,14 @@ package com.cogent.cogentappointment.admin.service.impl;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminInfoRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminUpdateRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.admin.*;
 import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.admin.AdminChangePasswordRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.admin.AdminMacAddressInfoUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.admin.AdminPasswordRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.admin.AdminResetPasswordRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.email.EmailRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.admin.AdminMinimalResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.company.CompanyMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminLoggedInInfoResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminMetaInfoResponseDTO;
@@ -211,7 +212,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         log.info(UPDATING_PASSWORD_PROCESS_STARTED);
 
-        Admin admin = findByUsername(requestDTO.getUsername());
+        Admin admin = findById(requestDTO.getId());
 
         updateAdminPassword(requestDTO.getPassword(), requestDTO.getRemarks(), admin);
 
@@ -446,11 +447,6 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                 .orElseThrow(() -> ADMIN_WITH_GIVEN_ID_NOT_FOUND.apply(adminId));
     }
 
-    private Admin findByUsername(String username) {
-        return adminRepository.findAdminByUsername(username)
-                .orElseThrow(() -> new NoContentFoundException(Admin.class));
-    }
-
     private void updateAvatar(Admin admin, MultipartFile files) {
         AdminAvatar adminAvatar = adminAvatarRepository.findAdminAvatarByAdminId(admin.getId());
 
@@ -458,7 +454,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         else updateAdminAvatar(admin, adminAvatar, files);
     }
 
-    public void updateCompanyAdmin(CompanyAdminUpdateRequestDTO adminRequestDTO, Admin admin) {
+    private void updateCompanyAdmin(CompanyAdminUpdateRequestDTO adminRequestDTO, Admin admin) {
         Gender gender = fetchGender(adminRequestDTO.getGenderCode());
 
         Profile profile = fetchProfile(adminRequestDTO.getProfileId());

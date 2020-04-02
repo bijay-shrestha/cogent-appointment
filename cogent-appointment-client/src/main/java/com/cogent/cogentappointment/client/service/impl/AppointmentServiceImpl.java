@@ -10,7 +10,6 @@ import com.cogent.cogentappointment.client.dto.request.appointment.refund.Appoin
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.dashboard.RefundAmountRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestByDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestForDTO;
 import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
@@ -405,14 +404,14 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<AppointmentQueueDTO> fetchTodayAppointmentQueue(AppointmentQueueRequestDTO appointmentQueueRequestDTO,
-                                                                Pageable pageable) {
+    public List<AppointmentQueueDTO> fetchAppointmentQueueLog(AppointmentQueueRequestDTO appointmentQueueRequestDTO,
+                                                              Pageable pageable) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_TODAY_QUEUE);
 
-        List<AppointmentQueueDTO> appointmentQueue = appointmentRepository.fetchTodayAppointmentQueue(
+        List<AppointmentQueueDTO> appointmentQueue = appointmentRepository.fetchAppointmentQueueLog(
                 appointmentQueueRequestDTO, getLoggedInHospitalId(), pageable);
 
         log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_TODAY_QUEUE, getDifferenceBetweenTwoTime(startTime));
@@ -800,8 +799,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         validateIfAppointmentReservationExists(appointmentInfo);
 
         DoctorDutyRosterTimeResponseDTO doctorDutyRosterInfo = fetchDoctorDutyRosterInfo(appointmentInfo);
-
-        validateIfRequestedAppointmentTimeIsValid(doctorDutyRosterInfo, appointmentInfo);
 
         boolean isTimeValid = validateIfRequestedAppointmentTimeIsValid(doctorDutyRosterInfo, appointmentInfo);
 

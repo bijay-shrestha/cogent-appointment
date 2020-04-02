@@ -132,7 +132,7 @@ public class DashBoardQuery {
                     " ORDER BY" +
                     " atd.transactionDate";
 
-    public static Function<AppointmentQueueRequestDTO, String> QUERY_TO_FETCH_TODAY_APPOINTMENT_QUEUE =
+    public static Function<AppointmentQueueRequestDTO, String> QUERY_TO_FETCH_APPOINTMENT_QUEUE =
             (searchDTO) ->
                     "SELECT" +
                             " DATE_FORMAT(a.appointmentTime,'%H:%i %p') as appointmentTime," +
@@ -160,7 +160,7 @@ public class DashBoardQuery {
         String whereClause = " WHERE " +
                 " s.status='Y' " +
                 " AND a.status='PA'" +
-                " AND DATE(a.appointmentDate) = CURDATE()" +
+                " AND DATE(a.appointmentDate) = :date" +
                 " AND h.id= :hospitalId";
 
         if (!Objects.isNull(appointmentQueueRequestDTO.getDoctorId()))

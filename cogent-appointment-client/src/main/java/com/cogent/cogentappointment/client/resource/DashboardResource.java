@@ -69,11 +69,11 @@ public class DashboardResource {
 
     @PutMapping(APPOINTMENT_QUEUE)
     @ApiOperation(FETCH_APPOINTMENT_QUEUE)
-    public ResponseEntity<?> fetchTodayAppointmentQueue(@RequestBody AppointmentQueueRequestDTO appointmentQueueRequestDTO,
-                                                        @RequestParam("page") int page,
-                                                        @RequestParam("size") int size) {
+    public ResponseEntity<?> fetchAppointmentQueueLog(@RequestBody AppointmentQueueRequestDTO appointmentQueueRequestDTO,
+                                                      @RequestParam("page") int page,
+                                                      @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return ok().body(appointmentService.fetchTodayAppointmentQueue(appointmentQueueRequestDTO, pageable));
+        return ok().body(appointmentService.fetchAppointmentQueueLog(appointmentQueueRequestDTO, pageable));
     }
 
     @PutMapping(APPOINTMENT_QUEUE_BY_TIME)

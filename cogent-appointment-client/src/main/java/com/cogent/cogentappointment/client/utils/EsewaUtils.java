@@ -13,8 +13,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.client.constants.StatusConstants.NO;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDates;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
+import static java.lang.reflect.Array.get;
 import static org.springframework.http.HttpStatus.OK;
 
 
@@ -31,11 +34,14 @@ public class EsewaUtils {
                 .filter(actual -> (overrideList.stream()
                         .filter(override -> (override.getDoctorId().equals(actual.getDoctorId()))
                                 && (override.getSpecializationId().equals(actual.getSpecializationId()))
+                                && (actual.getDayOffStatus().equals(NO))
                         )
                         .count()) < 1)
                 .collect(Collectors.toList());
 
         overrideList.addAll(unmatchedList);
+
+        overrideList.removeIf(override -> override.getDayOffStatus().equals(YES));
 
         return overrideList;
     }
@@ -136,7 +142,7 @@ public class EsewaUtils {
 
     public static List<Date> getDutyRosterDates(List<Date> dates,
                                                 List<String> weekDays) {
-        List<Date> availableDates=new ArrayList<>();
+        List<Date> availableDates = new ArrayList<>();
         for (Date date : dates) {
             weekDays.forEach(weekdays -> {
                 if (date.toString().substring(0, 3).toUpperCase().equals(weekdays)) {
@@ -148,7 +154,7 @@ public class EsewaUtils {
     }
 
     public static AvailableDoctorWithSpecializationResponseDTO getAvailableDoctorWithSpecializationResponseDTO(
-            List<AvailableDoctorWithSpecialization> mergedList){
+            List<AvailableDoctorWithSpecialization> mergedList) {
 
         return AvailableDoctorWithSpecializationResponseDTO.builder()
                 .availableDoctorWithSpecializations(mergedList)
@@ -158,7 +164,7 @@ public class EsewaUtils {
     }
 
     public static AvailableDatesWithSpecializationResponseDTO getAvailableDatesWithSpecializationResponseDTO(
-            List<AvailableDatesWithSpecialization> responseDTOList){
+            List<AvailableDatesWithSpecialization> responseDTOList) {
 
         return AvailableDatesWithSpecializationResponseDTO.builder()
                 .availableDatesWithSpecialization(responseDTOList)
@@ -168,12 +174,37 @@ public class EsewaUtils {
     }
 
     public static AvailableDatesWithDoctorResponseDTO getAvailableDatesWithDoctorResponseDTO(
-            List<AvailableDatesWithDoctor> responseDTOList){
+            List<AvailableDatesWithDoctor> responseDTOList) {
 
         return AvailableDatesWithDoctorResponseDTO.builder()
                 .availableDatesWithDoctor(responseDTOList)
                 .responseCode(OK.value())
                 .responseStatus(OK)
                 .build();
+    }
+
+    public static void parseDoctorAvailabilityResponseStatus(DoctorAvailabilityStatusResponseDTO responseDTO) {
+        responseDTO.setResponseStatus(OK);
+        responseDTO.setResponseCode(OK.value());
+    }
+
+    public static DoctorAvailabilityStatusResponseDTO parseToDoctorAvailabilityStatusResponseDTO(Object[] queryResult) {
+        String doctorName = (String) get(queryResult, 0);
+        Character dayOffStatus = (Character) get(queryResult, 1);
+
+        if (dayOffStatus.equals(NO))
+            return DoctorAvailabilityStatusResponseDTO.builder()
+                    .status("Y")
+                    .message(doctorName + " IS AVAILABLE FOR THE DAY.")
+                    .responseCode(OK.value())
+                    .responseStatus(OK)
+                    .build();
+        else
+            return DoctorAvailabilityStatusResponseDTO.builder()
+                    .status("N")
+                    .message(doctorName + " IS NOT AVAILABLE FOR THE DAY.")
+                    .responseCode(OK.value())
+                    .responseStatus(OK)
+                    .build();
     }
 }

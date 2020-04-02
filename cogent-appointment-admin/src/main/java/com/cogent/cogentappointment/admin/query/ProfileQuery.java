@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.admin.query;
 import com.cogent.cogentappointment.admin.dto.request.profile.ProfileSearchRequestDTO;
 import org.springframework.util.ObjectUtils;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -43,8 +44,8 @@ public class ProfileQuery {
                         " AND p.isCompanyProfile= 'N'" +
                         " AND h.isCompany = 'N'";
 
-                if (!ObjectUtils.isEmpty(searchRequestDTO.getName()))
-                    whereClause += " AND p.name LIKE '%" + searchRequestDTO.getName() + "%'";
+                if (!Objects.isNull(searchRequestDTO.getProfileId()))
+                    whereClause += " AND p.id= " + searchRequestDTO.getProfileId();
 
                 if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
                     whereClause += " AND p.status='" + searchRequestDTO.getStatus() + "'";

@@ -5,6 +5,11 @@ import com.cogent.cogentappointment.admin.dto.request.dashboard.DashBoardRequest
 import com.cogent.cogentappointment.admin.dto.request.dashboard.DoctorRevenueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.GenerateRevenueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.RefundAmountRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.dashboard.RefundAmountRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.dashboard.AppointmentCountResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.dashboard.DoctorRevenueResponseListDTO;
+import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueStatisticsResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueTrendResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.*;
 import org.springframework.data.domain.Pageable;
 

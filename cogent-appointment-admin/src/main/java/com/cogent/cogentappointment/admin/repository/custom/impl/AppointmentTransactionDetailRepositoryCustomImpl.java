@@ -7,7 +7,6 @@ import com.cogent.cogentappointment.admin.dto.response.dashboard.DoctorRevenueRe
 import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueTrendResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.AppointmentTransactionDetailRepositoryCustom;
-import com.cogent.cogentappointment.admin.utils.DoctorUtils;
 import com.cogent.cogentappointment.persistence.model.AppointmentTransactionDetail;
 import com.cogent.cogentappointment.persistence.model.Doctor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +24,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.query.DashBoardQuery.*;
 import static com.cogent.cogentappointment.admin.utils.DashboardUtils.revenueStatisticsResponseDTO;
 import static com.cogent.cogentappointment.admin.utils.DoctorUtils.parseTodoctorRevenueResponseListDTO;
@@ -88,7 +88,7 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
         DoctorRevenueResponseListDTO responseListDTO = parseTodoctorRevenueResponseListDTO(objects);
 
         if (responseListDTO.getDoctorRevenueResponseDTOList().isEmpty()) {
-            log.error("Doctor Revenue List Not Found");
+            error();
             throw DOCTOR_REVENUE_NOT_FOUND.get();
         }
 
@@ -110,4 +110,8 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
 
     private Supplier<NoContentFoundException> DOCTOR_REVENUE_NOT_FOUND = () ->
             new NoContentFoundException(AppointmentTransactionDetail.class);
+
+    private void error() {
+        log.error(CONTENT_NOT_FOUND,AppointmentTransactionDetail.class.getSimpleName() );
+    }
 }

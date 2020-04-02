@@ -6,6 +6,8 @@ import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.query.WeekDaysQuery;
 import com.cogent.cogentappointment.admin.repository.custom.WeekDaysRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.WeekDays;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -13,16 +15,18 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
 
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.WeekDaysLog.WEEK_DAYS;
 import static com.cogent.cogentappointment.admin.query.WeekDaysQuery.QUERY_TO_FETCH_ACTIVE_WEEK_DAYS;
-import static com.cogent.cogentappointment.admin.utils.commons.LogUtils.logError;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
 
 /**
  * @author smriti on 25/11/2019
  */
+@Repository
 @Transactional(readOnly = true)
+@Slf4j
 public class WeekDaysRepositoryCustomImpl implements WeekDaysRepositoryCustom {
 
     @PersistenceContext
@@ -34,11 +38,10 @@ public class WeekDaysRepositoryCustomImpl implements WeekDaysRepositoryCustom {
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
-        if (results.isEmpty()){
-            logError(WEEK_DAYS);
+        if (results.isEmpty()) {
+            error();
             throw new NoContentFoundException(WeekDays.class);
-        }
-        else return results;
+        } else return results;
     }
 
     @Override
@@ -47,10 +50,13 @@ public class WeekDaysRepositoryCustomImpl implements WeekDaysRepositoryCustom {
 
         List<WeekDaysResponseDTO> results = transformQueryToResultList(query, WeekDaysResponseDTO.class);
 
-        if (results.isEmpty()){
-            logError(WEEK_DAYS);
+        if (results.isEmpty()) {
+            error();
             throw new NoContentFoundException(WeekDays.class);
-        }
-        else return results;
+        } else return results;
+    }
+
+    private void error() {
+        log.error(CONTENT_NOT_FOUND, WEEK_DAYS);
     }
 }

@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.client.repository.custom.impl;
 
 import com.cogent.cogentappointment.client.repository.custom.HospitalPatientInfoRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.HospitalPatientInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,7 @@ import static com.cogent.cogentappointment.client.query.HospitalPatientInfoQuery
  */
 @Repository
 @Transactional(readOnly = true)
+@Slf4j
 public class HospitalPatientInfoRepositoryCustomImpl implements HospitalPatientInfoRepositoryCustom {
 
     @PersistenceContext
@@ -43,6 +45,7 @@ public class HospitalPatientInfoRepositoryCustomImpl implements HospitalPatientI
                     .setParameter(HOSPITAL_ID, hospitalId)
                     .getSingleResult();
         } catch (NoResultException ex) {
+            log.error(ex.getLocalizedMessage());
             return null;
         }
     }

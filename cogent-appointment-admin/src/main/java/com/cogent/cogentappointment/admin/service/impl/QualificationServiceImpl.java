@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.function.Function;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NAME_DUPLICATION_MESSAGE;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
@@ -183,7 +184,7 @@ public class QualificationServiceImpl implements QualificationService {
         log.info(FETCHING_PROCESS_STARTED, QUALIFICATION);
 
         Qualification qualification = qualificationRepository.fetchActiveQualificationById(id)
-                .orElseThrow(() -> new NoContentFoundException(Qualification.class, "id", id.toString()));
+                .orElseThrow(() -> QUALIFICATION_WITH_GIVEN_ID_NOT_FOUND.apply(id));
 
         log.info(FETCHING_PROCESS_COMPLETED, QUALIFICATION, getDifferenceBetweenTwoTime(startTime));
 
@@ -192,6 +193,7 @@ public class QualificationServiceImpl implements QualificationService {
 
     private void validateName(Long qualificationCount, String name) {
         if (qualificationCount.intValue() > 0)
+            log.error(NAME_DUPLICATION_ERROR,QUALIFICATION,name);
             throw new DataDuplicationException(
                     String.format(NAME_DUPLICATION_MESSAGE, Qualification.class.getSimpleName(), name));
     }
@@ -206,7 +208,7 @@ public class QualificationServiceImpl implements QualificationService {
 
     private Qualification findQualificationById(Long id) {
         return qualificationRepository.findQualificationById(id)
-                .orElseThrow(() -> new NoContentFoundException(Qualification.class, "id", id.toString()));
+                .orElseThrow(() -> QUALIFICATION_WITH_GIVEN_ID_NOT_FOUND.apply(id));
     }
 
     private Hospital fetchHospital(Long hospitalId) {
@@ -216,4 +218,9 @@ public class QualificationServiceImpl implements QualificationService {
     private void save(Qualification qualification) {
         qualificationRepository.save(qualification);
     }
+
+    private Function<Long, NoContentFoundException> QUALIFICATION_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID,id );
+        throw new NoContentFoundException(Qualification.class, "id", id.toString());
+    };
 }

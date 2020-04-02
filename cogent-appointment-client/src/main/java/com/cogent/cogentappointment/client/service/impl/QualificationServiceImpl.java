@@ -25,9 +25,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.NAME_DUPLICATION_MESSAGE;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
+import static com.cogent.cogentappointment.client.log.constants.QualificationLog.QUALIFICAION_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.client.log.constants.QualificationLog.QUALIFICATION;
 import static com.cogent.cogentappointment.client.utils.QualificationUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
@@ -184,7 +187,7 @@ public class QualificationServiceImpl implements QualificationService {
 
         Qualification qualification =
                 qualificationRepository.fetchActiveQualificationByIdAndHospitalId(id, hospitalId)
-                        .orElseThrow(() -> new NoContentFoundException(Qualification.class, "id", id.toString()));
+                        .orElseThrow(() -> QUALIFICATION_WITH_GIVEN_ID_NOT_FOUND.apply(id,hospitalId));
 
         log.info(FETCHING_PROCESS_COMPLETED, QUALIFICATION, getDifferenceBetweenTwoTime(startTime));
 
@@ -206,6 +209,7 @@ public class QualificationServiceImpl implements QualificationService {
 
     private void validateName(Long qualificationCount, String name) {
         if (qualificationCount.intValue() > 0)
+            log.error(NAME_DUPLICATION_ERROR,QUALIFICATION,name);
             throw new DataDuplicationException(
                     String.format(NAME_DUPLICATION_MESSAGE, Qualification.class.getSimpleName(), name));
     }
@@ -216,7 +220,7 @@ public class QualificationServiceImpl implements QualificationService {
 
     private Qualification findQualificationByIdAndHospitalId(Long id, Long hospitalId) {
         return qualificationRepository.findQualificationByIdAndHospitalId(id, hospitalId)
-                .orElseThrow(() -> new NoContentFoundException(Qualification.class, "id", id.toString()));
+                .orElseThrow(() -> QUALIFICATION_WITH_GIVEN_ID_NOT_FOUND.apply(id,hospitalId));
     }
 
     private University fetchUniversity(Long universityId, Long hospitalId) {
@@ -230,4 +234,9 @@ public class QualificationServiceImpl implements QualificationService {
     private void save(Qualification qualification) {
         qualificationRepository.save(qualification);
     }
+
+    private BiFunction<Long,Long, NoContentFoundException> QUALIFICATION_WITH_GIVEN_ID_NOT_FOUND = (id,hospitalId) -> {
+        log.error(QUALIFICAION_NOT_FOUND_BY_ID,id , hospitalId);
+        throw new NoContentFoundException(Qualification.class, "id", id.toString());
+    };
 }

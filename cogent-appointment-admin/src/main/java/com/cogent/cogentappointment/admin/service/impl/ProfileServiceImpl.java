@@ -31,6 +31,7 @@ import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.ProfileServiceMessages.INVALID_DELETE_REQUEST;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
+import static com.cogent.cogentappointment.admin.log.constants.DepartmentLog.DEPARTMENT;
 import static com.cogent.cogentappointment.admin.log.constants.ProfileLog.PROFILE;
 import static com.cogent.cogentappointment.admin.utils.ProfileMenuUtils.convertToProfileMenu;
 import static com.cogent.cogentappointment.admin.utils.ProfileMenuUtils.convertToUpdatedProfileMenu;
@@ -104,7 +105,6 @@ public class ProfileServiceImpl implements ProfileService {
 
         log.info(UPDATING_PROCESS_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
     }
-
     @Override
     public void delete(DeleteRequestDTO deleteRequestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
@@ -113,9 +113,10 @@ public class ProfileServiceImpl implements ProfileService {
 
         Profile profile = findById(deleteRequestDTO.getId());
 
-        if (profile.getIsSuperAdminProfile().equals(YES))
+        if (profile.getIsSuperAdminProfile().equals(YES)) {
+            log.error(INVALID_DELETE_REQUEST);
             throw new BadRequestException(INVALID_DELETE_REQUEST);
-
+        }
         save(convertProfileToDeleted.apply(profile, deleteRequestDTO));
 
         log.info(DELETING_PROCESS_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
@@ -211,17 +212,25 @@ public class ProfileServiceImpl implements ProfileService {
 
     private void validateName(Long profileCount, String name) {
         if (profileCount.intValue() > 0)
+            log.error(NAME_DUPLICATION_ERROR,PROFILE,name);
             throw new DataDuplicationException(
                     String.format(NAME_DUPLICATION_MESSAGE, Profile.class.getSimpleName(), name));
     }
 
-    private Function<Long, NoContentFoundException> PROFILE_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        throw new NoContentFoundException(Profile.class, "id", id.toString());
-    };
 
     private Department findDepartmentById(Long id) {
         return departmentRepository.findActiveDepartmentById(id)
-                .orElseThrow(() -> new NoContentFoundException(Department.class, "id", id.toString()));
+                .orElseThrow(() -> DEPARTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(id));
     }
+
+    private Function<Long, NoContentFoundException> PROFILE_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID,PROFILE,id);
+        throw new NoContentFoundException(Profile.class, "id", id.toString());
+    };
+
+    private Function<Long, NoContentFoundException> DEPARTMENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID,DEPARTMENT,id);
+        throw new NoContentFoundException(Department.class, "id", id.toString());
+    };
 }
 

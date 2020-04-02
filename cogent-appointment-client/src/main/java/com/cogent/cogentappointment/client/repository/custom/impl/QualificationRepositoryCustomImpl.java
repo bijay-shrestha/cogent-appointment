@@ -9,6 +9,7 @@ import com.cogent.cogentappointment.client.dto.response.qualification.Qualificat
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.QualificationRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Qualification;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,9 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
+import static com.cogent.cogentappointment.client.log.constants.QualificationLog.QUALIFICATION;
 import static com.cogent.cogentappointment.client.query.QualificationQuery.*;
 import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
@@ -31,6 +35,7 @@ import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
  */
 @Repository
 @Transactional(readOnly = true)
+@Slf4j
 public class QualificationRepositoryCustomImpl implements QualificationRepositoryCustom {
 
     @PersistenceContext
@@ -70,7 +75,10 @@ public class QualificationRepositoryCustomImpl implements QualificationRepositor
         List<QualificationMinimalResponseDTO> results = transformQueryToResultList(
                 query, QualificationMinimalResponseDTO.class);
 
-        if (results.isEmpty()) throw QUALIFICATION_NOT_FOUND.get();
+        if (results.isEmpty()){
+            error();
+            throw QUALIFICATION_NOT_FOUND.get();
+        }
         else {
             results.get(0).setTotalItems(totalItems);
             return results;
@@ -87,6 +95,7 @@ public class QualificationRepositoryCustomImpl implements QualificationRepositor
         try {
             return transformQueryToSingleResult(query, QualificationResponseDTO.class);
         } catch (NoResultException e) {
+            log.error(CONTENT_NOT_FOUND_BY_ID,QUALIFICATION,id);
             throw new NoContentFoundException(Qualification.class, "id", id.toString());
         }
     }
@@ -98,7 +107,10 @@ public class QualificationRepositoryCustomImpl implements QualificationRepositor
 
         List<QualificationDropdownDTO> results = transformQueryToResultList(query, QualificationDropdownDTO.class);
 
-        if (results.isEmpty()) throw QUALIFICATION_NOT_FOUND.get();
+        if (results.isEmpty()){
+            error();
+            throw QUALIFICATION_NOT_FOUND.get();
+        }
         else return results;
     }
 
@@ -109,11 +121,18 @@ public class QualificationRepositoryCustomImpl implements QualificationRepositor
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
-        if (results.isEmpty()) throw QUALIFICATION_NOT_FOUND.get();
+        if (results.isEmpty()){
+            error();
+            throw QUALIFICATION_NOT_FOUND.get();
+        }
         else return results;
     }
 
     private Supplier<NoContentFoundException> QUALIFICATION_NOT_FOUND = () ->
             new NoContentFoundException(Qualification.class);
+
+    private void error() {
+        log.error(CONTENT_NOT_FOUND, QUALIFICATION);
+    }
 
 }

@@ -178,6 +178,7 @@ public class UniversityServiceImpl implements UniversityService {
 
     private void validateName(Long universityCount, String name) {
         if (universityCount.intValue() > 0)
+            log.error(NAME_DUPLICATION_ERROR, UNIVERSITY, name);
             throw new DataDuplicationException(
                     String.format(NAME_DUPLICATION_MESSAGE, University.class.getSimpleName(), name));
     }
@@ -200,6 +201,7 @@ public class UniversityServiceImpl implements UniversityService {
     }
 
     private Function<Long, NoContentFoundException> UNIVERSITY_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID,UNIVERSITY,id);
         throw new NoContentFoundException(University.class, "id", id.toString());
     };
 

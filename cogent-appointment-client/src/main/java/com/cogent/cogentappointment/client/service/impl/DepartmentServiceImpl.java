@@ -179,6 +179,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     private Department fetchDepartmentByIdAndHospitalId(Long id, Long hospitalId) {
+        log.error(CONTENT_NOT_FOUND_BY_ID,DEPARTMENT,id);
         return departmentRepository.findByIdAndHospitalId(id, hospitalId).orElseThrow(() ->
                 new NoContentFoundException(Department.class, "id", id.toString()));
     }
@@ -189,4 +190,9 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     private Supplier<NoContentFoundException> DEPARTMENT_NOT_FOUND = () ->
             new NoContentFoundException(Department.class);
+
+    private NoContentFoundException DEPARTMENT_NOT_FOUND(){
+        log.error(CONTENT_NOT_FOUND,DEPARTMENT);
+       throw new NoContentFoundException(Department.class);
+    }
 }

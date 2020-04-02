@@ -130,10 +130,11 @@ public class QualificationAliasServiceImpl implements QualificationAliasService 
     }
 
     private void validateName(Long qualificationCount, String name) {
-        if (qualificationCount.intValue() > 0)
+        if (qualificationCount.intValue() > 0) {
             log.error(NAME_DUPLICATION_ERROR, QUALIFICATION_ALIAS, name);
-        throw new DataDuplicationException(
-                String.format(NAME_DUPLICATION_MESSAGE, QualificationAlias.class.getSimpleName(), name));
+            throw new DataDuplicationException(
+                    String.format(NAME_DUPLICATION_MESSAGE, QualificationAlias.class.getSimpleName(), name));
+        }
     }
 
     private void save(QualificationAlias qualificationAlias) {

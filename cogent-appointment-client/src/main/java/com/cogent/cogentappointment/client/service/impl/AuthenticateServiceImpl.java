@@ -48,6 +48,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
             throw new NoContentFoundException(CANNOT_ACCESS_CLIENT_MODULE);
         }
     }
+
     @Override
     public String loginThirdParty(LoginRequestDTO requestDTO) {
         ThirdPartyDetail thirdPartyDetail = hmacApiInfoRepository.getDetailsByHospitalCode(requestDTO.getHospitalCode());

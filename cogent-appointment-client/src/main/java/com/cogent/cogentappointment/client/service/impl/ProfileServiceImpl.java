@@ -20,7 +20,6 @@ import com.cogent.cogentappointment.persistence.model.Department;
 import com.cogent.cogentappointment.persistence.model.Profile;
 import com.cogent.cogentappointment.persistence.model.ProfileMenu;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.concurrent.BackgroundInitializer;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +32,6 @@ import static com.cogent.cogentappointment.client.constants.ErrorMessageConstant
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.ProfileServiceMessages.INVALID_DELETE_REQUEST;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
-import static com.cogent.cogentappointment.client.log.constants.DepartmentLog.DEPARTMENT;
 import static com.cogent.cogentappointment.client.log.constants.DepartmentLog.DEPARTMENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.client.log.constants.ProfileLog.PROFILE;
 import static com.cogent.cogentappointment.client.utils.ProfileMenuUtils.convertToProfileMenu;
@@ -237,17 +235,17 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     private Function<Long, NoContentFoundException> PROFILE_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        log.error(CONTENT_NOT_FOUND_BY_ID,PROFILE,id);
+        log.error(CONTENT_NOT_FOUND_BY_ID, PROFILE, id);
         throw new NoContentFoundException(Profile.class, "id", id.toString());
     };
 
     private Department findDepartmentByIdAndHospitalId(Long id, Long hospitalId) {
         return departmentRepository.findActiveDepartmentByIdAndHospitalId(id, hospitalId)
-                .orElseThrow(() -> DEPARTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(id,hospitalId));
+                .orElseThrow(() -> DEPARTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(id, hospitalId));
     }
 
-    private BiFunction<Long,Long, NoContentFoundException> DEPARTMENT_WITH_GIVEN_ID_NOT_FOUND = (id,hospitalId) -> {
-        log.error(DEPARTMENT_NOT_FOUND_BY_ID,id,hospitalId);
+    private BiFunction<Long, Long, NoContentFoundException> DEPARTMENT_WITH_GIVEN_ID_NOT_FOUND = (id, hospitalId) -> {
+        log.error(DEPARTMENT_NOT_FOUND_BY_ID, id, hospitalId);
         throw new NoContentFoundException(Department.class, "id", id.toString());
     };
 }

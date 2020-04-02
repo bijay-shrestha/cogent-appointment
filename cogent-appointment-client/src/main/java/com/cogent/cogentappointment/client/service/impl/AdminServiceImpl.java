@@ -414,9 +414,10 @@ public class AdminServiceImpl implements AdminService {
         Long savedAdmin = (Long) get(objects, 0);
         Integer numberOfAdminsAllowed = (Integer) get(objects, 1);
 
-        if (savedAdmin.intValue() == numberOfAdminsAllowed)
+        if (savedAdmin.intValue() == numberOfAdminsAllowed){
             log.error(ADMIN_CANNOT_BE_REGISTERED_DEBUG_MESSAGE);
             throw new BadRequestException(ADMIN_CANNOT_BE_REGISTERED_MESSAGE, ADMIN_CANNOT_BE_REGISTERED_DEBUG_MESSAGE);
+        }
     }
 
     private void validateAdminDuplicity(List<Object[]> adminList, String requestUsername, String requestEmail,
@@ -443,24 +444,27 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private void validateUsername(boolean isUsernameExists, String username) {
-        if (isUsernameExists)
+        if (isUsernameExists){
             log.error(DUPLICATION_ERROR,username);
             throw new DataDuplicationException(
                     String.format(USERNAME_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), username));
+        }
     }
 
     private void validateEmail(boolean isEmailExists, String email) {
-        if (isEmailExists)
-            log.error(DUPLICATION_ERROR,email);
+        if (isEmailExists){
+            log.error(DUPLICATION_ERROR, email);
             throw new DataDuplicationException(
                     String.format(EMAIL_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), email));
+        }
     }
 
     private void validateMobileNumber(boolean isMobileNumberExists, String mobileNumber) {
-        if (isMobileNumberExists)
-            log.error(DUPLICATION_ERROR,mobileNumber);
+        if (isMobileNumberExists){
+            log.error(DUPLICATION_ERROR, mobileNumber);
             throw new DataDuplicationException(
                     String.format(MOBILE_NUMBER_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), mobileNumber));
+        }
     }
 
     private Admin save(AdminRequestDTO adminRequestDTO, Long hospitalId) {
@@ -591,9 +595,10 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private Consumer<List<String>> validateMacAddressInfoSize = (macInfos) -> {
-        if (ObjectUtils.isEmpty(macInfos))
+        if (ObjectUtils.isEmpty(macInfos)){
             log.error(CONTENT_NOT_FOUND, AdminMacAddressInfo.class.getSimpleName());
-        throw new NoContentFoundException(AdminMacAddressInfo.class);
+            throw new NoContentFoundException(AdminMacAddressInfo.class);
+        }
     };
 
     private void validatePassword(Admin admin, AdminChangePasswordRequestDTO requestDTO) {

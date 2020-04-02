@@ -177,10 +177,11 @@ public class UniversityServiceImpl implements UniversityService {
     }
 
     private void validateName(Long universityCount, String name) {
-        if (universityCount.intValue() > 0)
+        if (universityCount.intValue() > 0) {
             log.error(NAME_DUPLICATION_ERROR, UNIVERSITY, name);
             throw new DataDuplicationException(
                     String.format(NAME_DUPLICATION_MESSAGE, University.class.getSimpleName(), name));
+        }
     }
 
     private Country fetchCountry(Long countryId) {

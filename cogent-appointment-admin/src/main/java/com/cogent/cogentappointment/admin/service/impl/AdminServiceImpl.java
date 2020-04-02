@@ -158,6 +158,7 @@ public class AdminServiceImpl implements AdminService {
         int requestCount = adminDashboardRequestDTOS.size();
 
         if ((dashboardFeatureList.size()) != requestCount) {
+            log.error(CONTENT_NOT_FOUND,DashboardFeature.class.getSimpleName());
             throw new NoContentFoundException(DashboardFeature.class);
         }
 

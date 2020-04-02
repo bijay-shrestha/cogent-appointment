@@ -216,10 +216,11 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     private void validateName(Long profileCount, String name) {
-        if (profileCount.intValue() > 0)
+        if (profileCount.intValue() > 0) {
             log.error(NAME_DUPLICATION_ERROR, PROFILE, name);
             throw new DataDuplicationException(
                     String.format(NAME_DUPLICATION_MESSAGE, Profile.class.getSimpleName(), name));
+        }
     }
 
     public Profile save(Profile profile) {

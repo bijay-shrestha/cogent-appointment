@@ -8,14 +8,18 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.esewa.query.DoctorQuery.QUERY_TO_FETCH_DOCTOR_APPOINTMENT_CHARGE;
+import static com.cogent.cogentappointment.esewa.query.DoctorQuery.QUERY_TO_FETCH_DOCTOR_APPOINTMENT_FOLLOW_UP_CHARGE;
+import static com.cogent.cogentappointment.esewa.constants.QueryConstants.DOCTOR_ID;
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.HOSPITAL_ID;
 import static com.cogent.cogentappointment.esewa.query.DoctorQuery.QUERY_TO_FETCH_MIN_DOCTOR_INFO;
-import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.createNativeQuery;
+import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.*;
 import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.transformNativeQueryToResultList;
 
 /**
@@ -41,6 +45,31 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
         }
 
         return results;
+    }
+
+    @Override
+    public Double fetchDoctorAppointmentFollowUpCharge(Long doctorId, Long hospitalId) {
+        try {
+            Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_APPOINTMENT_FOLLOW_UP_CHARGE)
+                    .setParameter(DOCTOR_ID, doctorId)
+                    .setParameter(HOSPITAL_ID, hospitalId);
+            return (Double) query.getSingleResult();
+        } catch (NoResultException ex) {
+            throw DOCTOR_NOT_FOUND.get();
+        }
+    }
+
+    @Override
+    public Double fetchDoctorAppointmentCharge(Long doctorId, Long hospitalId) {
+        try {
+            Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_APPOINTMENT_CHARGE)
+                    .setParameter(DOCTOR_ID, doctorId)
+                    .setParameter(HOSPITAL_ID, hospitalId);
+
+            return (Double) query.getSingleResult();
+        } catch (NoResultException ex) {
+            throw DOCTOR_NOT_FOUND.get();
+        }
     }
 
     private Supplier<NoContentFoundException> DOCTOR_NOT_FOUND = () ->

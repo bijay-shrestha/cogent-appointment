@@ -15,8 +15,10 @@ import javax.persistence.Query;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.esewa.constants.QueryConstants.HOSPITAL_ID;
+import static com.cogent.cogentappointment.esewa.query.HospitalQuery.QUERY_TO_FETCH_HOSPITAL_FREE_FOLLOW_UP_INTERVAL_DAYS;
 import static com.cogent.cogentappointment.esewa.query.HospitalQuery.QUERY_TO_FETCH_MIN_HOSPITAL;
-import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.createNativeQuery;
+import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.*;
 import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.transformNativeQueryToResultList;
 
 /**
@@ -38,6 +40,14 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
         if (results.isEmpty()) throw HOSPITAL_NOT_FOUND.get();
         else return results;
+    }
+
+    @Override
+    public Integer fetchHospitalFreeFollowUpIntervalDays(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_FREE_FOLLOW_UP_INTERVAL_DAYS)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        return (Integer) query.getSingleResult();
     }
 
     private Supplier<NoContentFoundException> HOSPITAL_NOT_FOUND = () -> new NoContentFoundException(Hospital.class);

@@ -50,4 +50,17 @@ public class DoctorQuery {
                     " AND h.id =:hospitalId" +
                     " ORDER BY d.name";
 
+
+    public static String QUERY_TO_FETCH_DOCTOR_APPOINTMENT_FOLLOW_UP_CHARGE =
+            " SELECT da.appointmentFollowUpCharge" +
+                    " FROM DoctorAppointmentCharge da " +
+                    " WHERE da.doctorId.id = :doctorId" +
+                    " AND da.doctorId.hospital.id = :hospitalId";
+
+    public static String QUERY_TO_FETCH_DOCTOR_APPOINTMENT_CHARGE =
+            " SELECT da.appointmentCharge" +
+                    " FROM DoctorAppointmentCharge da " +
+                    " WHERE da.doctorId.id = :doctorId" +
+                    " AND da.doctorId.hospital.id = :hospitalId";
+
 }

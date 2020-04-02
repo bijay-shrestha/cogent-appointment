@@ -15,4 +15,7 @@ import java.util.List;
 public interface HospitalRepositoryCustom {
 
     List<HospitalMinResponseDTO> fetchMinDetails(HospitalMinSearchRequestDTO searchRequestDTO);
+
+
+    Integer fetchHospitalFreeFollowUpIntervalDays(Long hospitalId);
 }

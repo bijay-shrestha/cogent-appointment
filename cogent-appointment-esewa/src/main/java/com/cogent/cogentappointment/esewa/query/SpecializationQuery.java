@@ -1,10 +1,5 @@
 package com.cogent.cogentappointment.esewa.query;
 
-import com.cogent.cogentappointment.client.dto.request.specialization.SpecializationSearchRequestDTO;
-import org.springframework.util.ObjectUtils;
-
-import java.util.function.Function;
-
 /**
  * @author smriti on 2019-09-25
  */

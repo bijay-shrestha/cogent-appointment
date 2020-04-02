@@ -679,7 +679,6 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     private Function<Long, com.cogent.cogentappointment.client.exception.NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        log.error("Hospital with id : {} not found", id);
         throw new com.cogent.cogentappointment.client.exception.NoContentFoundException(Hospital.class, "id", id.toString());
     };
 }

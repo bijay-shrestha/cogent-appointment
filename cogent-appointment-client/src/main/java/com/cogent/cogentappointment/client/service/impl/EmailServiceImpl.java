@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.client.constants.StringConstant;
 import com.cogent.cogentappointment.client.dto.request.email.EmailRequestDTO;
 import com.cogent.cogentappointment.client.repository.EmailToSendRepository;
 import com.cogent.cogentappointment.client.service.EmailService;
+import com.cogent.cogentappointment.client.utils.commons.FileResourceUtils;
 import com.cogent.cogentappointment.persistence.model.EmailToSend;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -123,7 +124,7 @@ public class EmailServiceImpl implements EmailService {
             }
 
             helper.setText(html, true);
-            helper.addInline(LOGO_FILE_NAME, new FileSystemResource(new File(LOGO_LOCATION)));
+            helper.addInline(LOGO_FILE_NAME,new FileSystemResource(new FileResourceUtils().convertResourcesFileIntoFile(LOGO_LOCATION)));
 
             javaMailSender.send(message);
 

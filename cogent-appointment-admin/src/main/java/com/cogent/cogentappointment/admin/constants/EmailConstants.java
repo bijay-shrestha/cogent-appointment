@@ -8,7 +8,7 @@ public class EmailConstants {
     public interface Admin {
         String ADMIN_CONFIRMATION_URL = "CONFIRMATION_URL";
         String PASSWORD = "password";
-        String REMARKS ="remarks";
+        String REMARKS = "remarks";
         String HAS_MAC_BINDING = "hasMacBinding";
         String UPDATED_DATA = "updatedData";
         String UPDATED_MAC_ADDRESS = "updatedMacAddress";
@@ -43,7 +43,7 @@ public class EmailConstants {
 
     //L
     public static final String LOGO_FILE_NAME = "logo.png";
-    public static final String LOGO_LOCATION = "./cogent-appointment-admin/src/main/resources/images/logo.png";
+    public static final String LOGO_LOCATION = "./images/logo.png";
 
     //M
 
@@ -69,7 +69,6 @@ public class EmailConstants {
 
     //U
     public static final String USERNAME = "username";
-
 
 
     //V

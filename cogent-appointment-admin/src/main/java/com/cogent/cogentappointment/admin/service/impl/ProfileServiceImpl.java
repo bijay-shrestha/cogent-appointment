@@ -105,6 +105,7 @@ public class ProfileServiceImpl implements ProfileService {
 
         log.info(UPDATING_PROCESS_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
     }
+
     @Override
     public void delete(DeleteRequestDTO deleteRequestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
@@ -218,19 +219,18 @@ public class ProfileServiceImpl implements ProfileService {
         }
     }
 
-
     private Department findDepartmentById(Long id) {
         return departmentRepository.findActiveDepartmentById(id)
                 .orElseThrow(() -> DEPARTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(id));
     }
 
     private Function<Long, NoContentFoundException> PROFILE_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        log.error(CONTENT_NOT_FOUND_BY_ID,PROFILE,id);
+        log.error(CONTENT_NOT_FOUND_BY_ID, PROFILE, id);
         throw new NoContentFoundException(Profile.class, "id", id.toString());
     };
 
     private Function<Long, NoContentFoundException> DEPARTMENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        log.error(CONTENT_NOT_FOUND_BY_ID,DEPARTMENT,id);
+        log.error(CONTENT_NOT_FOUND_BY_ID, DEPARTMENT, id);
         throw new NoContentFoundException(Department.class, "id", id.toString());
     };
 }

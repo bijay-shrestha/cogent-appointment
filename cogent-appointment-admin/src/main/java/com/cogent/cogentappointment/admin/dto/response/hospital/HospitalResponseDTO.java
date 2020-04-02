@@ -4,6 +4,7 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.util.List;
+
 @Getter
 @Setter
 @Builder
@@ -37,7 +38,7 @@ public class HospitalResponseDTO implements Serializable {
 
     private List<HospitalContactNumberResponseDTO> contactNumberResponseDTOS;
 
-    private Integer numberOfFreeFollowUps;
+    private Integer numberOfFollowUps;
 
     private Integer followUpIntervalDays;
 

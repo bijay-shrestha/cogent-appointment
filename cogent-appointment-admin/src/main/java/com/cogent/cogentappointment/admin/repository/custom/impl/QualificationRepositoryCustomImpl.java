@@ -20,11 +20,9 @@ import javax.persistence.Query;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.admin.constants.QueryConstants.HOSPITAL_ID;
-import static com.cogent.cogentappointment.admin.constants.QueryConstants.ID;
-import static com.cogent.cogentappointment.admin.constants.QueryConstants.NAME;
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
+import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.admin.log.constants.QualificationLog.QUALIFICATION;
 import static com.cogent.cogentappointment.admin.query.QualificationQuery.*;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
@@ -42,20 +40,20 @@ public class QualificationRepositoryCustomImpl implements QualificationRepositor
     private EntityManager entityManager;
 
     @Override
-    public Long validateDuplicity(String name, Long hospitalId) {
+    public Long validateDuplicity(String name, Long universityId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY)
                 .setParameter(NAME, name)
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(UNIVERSITY_ID, universityId);
 
         return (Long) query.getSingleResult();
     }
 
     @Override
-    public Long validateDuplicity(Long id, String name, Long hospitalId) {
+    public Long validateDuplicity(Long id, String name, Long universityId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE)
                 .setParameter(ID, id)
                 .setParameter(NAME, name)
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(UNIVERSITY_ID, universityId);
 
         return (Long) query.getSingleResult();
     }
@@ -89,7 +87,7 @@ public class QualificationRepositoryCustomImpl implements QualificationRepositor
         try {
             return transformQueryToSingleResult(query, QualificationResponseDTO.class);
         } catch (NoResultException e) {
-            log.error(CONTENT_NOT_FOUND_BY_ID,QUALIFICATION,id);
+            log.error(CONTENT_NOT_FOUND_BY_ID, QUALIFICATION, id);
             throw new NoContentFoundException(Qualification.class, "id", id.toString());
         }
     }

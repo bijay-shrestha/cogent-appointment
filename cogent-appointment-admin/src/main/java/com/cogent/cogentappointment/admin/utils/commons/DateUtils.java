@@ -9,6 +9,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -162,6 +163,12 @@ public class DateUtils {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static Date convertLocalDateToDate(LocalDate requestedDate) {
+        return java.util.Date.from(requestedDate.atStartOfDay()
+                .atZone(ZoneId.systemDefault())
+                .toInstant());
     }
 
 }

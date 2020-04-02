@@ -67,7 +67,8 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public List<PatientResponseDTO> search(PatientSearchRequestDTO searchRequestDTO, Pageable pageable) {
+    public List<PatientResponseDTO> search(PatientSearchRequestDTO searchRequestDTO,
+                                           Pageable pageable) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, PATIENT);
@@ -171,11 +172,6 @@ public class PatientServiceImpl implements PatientService {
         log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
         return patientInfo;
-    }
-
-    private Patient fetchPatientById(Long id) {
-        return patientRepository.fetchPatientById(id)
-                .orElseThrow(() -> PATIENT_WITH_GIVEN_ID_NOT_FOUND.apply(id));
     }
 
     private void savePatientMetaInfo(PatientMetaInfo patientMetaInfo) {

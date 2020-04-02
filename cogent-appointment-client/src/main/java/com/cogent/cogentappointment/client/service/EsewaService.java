@@ -1,11 +1,9 @@
 package com.cogent.cogentappointment.client.service;
 
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentDatesRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.eSewa.AppointmentDetailRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentDatesRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentDetailRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appoinmentDateAndTime.AppointmentDatesResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.eSewa.*;
-
-import java.util.List;
 
 public interface EsewaService {
 

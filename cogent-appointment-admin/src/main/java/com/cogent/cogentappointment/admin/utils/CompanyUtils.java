@@ -7,6 +7,7 @@ import com.cogent.cogentappointment.admin.dto.request.company.CompanyRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.company.CompanyUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalContactNumberUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.company.CompanyContactNumberResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.company.CompanyResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalContactNumberResponseDTO;
@@ -133,7 +134,7 @@ public class CompanyUtils {
                 .build();
     }
 
-    private static List<HospitalContactNumberResponseDTO> parseToCompanyContactNumberResponseDTOS(Object[] results) {
+    private static List<CompanyContactNumberResponseDTO> parseToCompanyContactNumberResponseDTOS(Object[] results) {
 
         final int CONTACT_DETAILS_INDEX = 8;
 
@@ -141,8 +142,8 @@ public class CompanyUtils {
 
         return Arrays.stream(contactWithIdAndNumber)
                 .map(contact -> contact.split(HYPHEN))
-                .map(contactDetails -> HospitalContactNumberResponseDTO.builder()
-                        .hospitalContactNumberId(Long.parseLong(contactDetails[0]))
+                .map(contactDetails -> CompanyContactNumberResponseDTO.builder()
+                        .companyContactNumberId(Long.parseLong(contactDetails[0]))
                         .contactNumber(contactDetails[1])
                         .status(contactDetails[2].charAt(0))
                         .build())

@@ -146,7 +146,6 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
         List<Object[]> results = query.getResultList();
 
         if (results.isEmpty()) throw HOSPITAL_WITH_GIVEN_ID_NOT_FOUND.apply(id);
-//todo:contact
         return parseToCompanyResponseDTO(results.get(0));
     }
 

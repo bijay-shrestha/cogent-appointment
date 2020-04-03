@@ -58,6 +58,7 @@ public class SpecializationServiceImpl implements SpecializationService {
 
 
     private Function<Long, NoContentFoundException> SPECIALIZATION_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID,SPECIALIZATION,id);
         throw new NoContentFoundException(Specialization.class, "id", id.toString());
     };
 

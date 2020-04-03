@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.esewa.repository.custom.impl;
 import com.cogent.cogentappointment.esewa.exception.NoContentFoundException;
 import com.cogent.cogentappointment.esewa.repository.custom.AppointmentFollowUpTrackerRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.AppointmentFollowUpTracker;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +15,8 @@ import java.util.List;
 
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.AppointmentFollowUpTrackerConstants.PARENT_APPOINTMENT_ID;
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.CONTENT_NOT_FOUND;
+import static com.cogent.cogentappointment.esewa.log.constants.AppointmentFollowUpTrackerLog.APPOINTMENT_FOLLOW_UP_TRACKER;
 import static com.cogent.cogentappointment.esewa.query.AppointmentFollowUpTrackerQuery.QUERY_TO_FETCH_FOLLOW_UP_DETAILS;
 import static com.cogent.cogentappointment.esewa.query.AppointmentFollowUpTrackerQuery.QUERY_TO_FETCH_LATEST_APPOINTMENT_FOLLOW_UP_TRACKER;
 import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.createQuery;
@@ -23,6 +26,7 @@ import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.create
  */
 @Repository
 @Transactional(readOnly = true)
+@Slf4j
 public class AppointmentFollowUpTrackerRepositoryCustomImpl implements AppointmentFollowUpTrackerRepositoryCustom {
 
     @PersistenceContext
@@ -52,6 +56,7 @@ public class AppointmentFollowUpTrackerRepositoryCustomImpl implements Appointme
                     .getSingleResult();
 
         } catch (NoResultException e) {
+            log.error(CONTENT_NOT_FOUND,APPOINTMENT_FOLLOW_UP_TRACKER);
             throw new NoContentFoundException(AppointmentFollowUpTracker.class);
         }
     }

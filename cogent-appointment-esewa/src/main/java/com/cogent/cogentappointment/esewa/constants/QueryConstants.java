@@ -20,7 +20,7 @@ public class QueryConstants {
 
     //C
     public static final String CODE = "code";
-    public static final String CONFIRMATION_TOKEN = "confirmationToken";
+    public static final String COMPANY_CODE = "companyCode";
 
 
     //D
@@ -32,7 +32,6 @@ public class QueryConstants {
 
 
     //E
-    public static final String EMAIL = "email";
 
     //F
     public interface AppointmentFollowUpTrackerConstants {
@@ -45,7 +44,7 @@ public class QueryConstants {
     //G
 
     //H
-    public static final String HOSPITAL_ID = "hospitalId";
+    public static final String  HOSPITAL_ID = "hospitalId";
     public static final String HOSPITAL_CODE = "hospitalCode";
 
 
@@ -90,8 +89,6 @@ public class QueryConstants {
 
     //U
     public static final String USERNAME = "username";
-
-    public static final String UNIVERSITY_ID = "universityId";
 
     //V
 

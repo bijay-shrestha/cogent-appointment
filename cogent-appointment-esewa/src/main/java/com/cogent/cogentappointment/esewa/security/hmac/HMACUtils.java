@@ -15,7 +15,7 @@ public class HMACUtils {
 
     public static String getAuthToken(ThirdPartyDetail thirdPartyDetail) {
         final String nonce = generateNonce();
-        String companyCode = thirdPartyDetail.getHospitalCode();
+        String companyCode = thirdPartyDetail.getCompanyCode();
         String apiKey = thirdPartyDetail.getApiKey();
         String apiSecret = thirdPartyDetail.getApiSecret();
 

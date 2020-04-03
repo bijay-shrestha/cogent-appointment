@@ -26,4 +26,15 @@ public class UnauthorisedException extends RuntimeException {
 
     }
 
+    public UnauthorisedException( String debugMessage) {
+        exception = ExceptionResponse.builder()
+                .errorMessage(debugMessage)
+                .debugMessage(debugMessage)
+                .responseStatus(UNAUTHORIZED)
+                .responseCode(UNAUTHORIZED.value())
+                .timeStamp(getLocalDateTime())
+                .build();
+
+    }
+
 }

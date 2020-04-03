@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.INVALID_PASSWORD;
+import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.UNAUTHORIZED;
 
 /**
  * @author Sauravi Thapa २०/१/२०
@@ -26,7 +26,7 @@ public class AuthEntryPointHmac implements AuthenticationEntryPoint {
                          AuthenticationException authException) throws IOException, ServletException {
         LoginErrorResponse loginResponse = LoginErrorResponse.builder()
                 .status(401)
-                .errorMessage(INVALID_PASSWORD)
+                .errorMessage(UNAUTHORIZED)
                 .build();
 
         String json = null;

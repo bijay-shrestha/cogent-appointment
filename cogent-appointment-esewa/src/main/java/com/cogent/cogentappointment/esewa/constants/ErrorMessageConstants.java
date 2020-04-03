@@ -19,35 +19,7 @@ public class ErrorMessageConstants {
         String APPOINTMENT_FAILED_DEBUG_MESSAGE = "AppointmentReservationLog(s) is null";
     }
 
-    public interface AdminServiceMessages {
-
-        String ADMIN_DUPLICATION_MESSAGE = "Admin with given username, email and mobile number" +
-                " already exists.";
-
-        String USERNAME_DUPLICATION_MESSAGE = "%s already exists with username '%s'";
-
-        String EMAIL_DUPLICATION_MESSAGE = "%s already exists with email '%s'";
-
-        String MOBILE_NUMBER_DUPLICATION_MESSAGE = "%s already exists with mobile number '%s'";
-
-        String ADMIN_NOT_FOUND = "Admin '%s' doesn't exist";
-
-        String ADMIN_NOT_ACTIVE = "Admin '%s' is not active";
-
-        String ADMIN_REGISTERED = "Admin is already registered";
-
-        String DUPLICATE_PASSWORD_MESSAGE = "New Password must be different than current password.";
-
-        String INVALID_CONFIRMATION_TOKEN = "Invalid Confirmation Link. Please try again.";
-
-        String PASSWORD_MISMATCH_MESSAGE = "Old password doesn't match.";
-
-        String ADMIN_INFO_NOT_FOUND = "Admin info is not found.";
-
-        String ADMIN_CANNOT_BE_REGISTERED_MESSAGE = "Admin exceeds for the selected hospital";
-
-        String ADMIN_CANNOT_BE_REGISTERED_DEBUG_MESSAGE = "Admin count is equal to hospital's allowed number of admins";
-    }
+    public final static String AUTH_HEADER_NULL="AUTH HEADER NULL";
 
 
     public final static String HMAC_BAD_SIGNATURE = "HmacAccessFilter.badSignature";
@@ -65,13 +37,6 @@ public class ErrorMessageConstants {
 
 
     public interface DoctorDutyRosterServiceMessages {
-        String DUPLICATION_MESSAGE = "Doctor Duty Roster already exists for selected doctor.";
-
-        String BAD_REQUEST_MESSAGE = "Doctor Duty Roster Override doesn't lie within the duty roster date range.";
-
-        String APPOINTMENT_EXISTS_MESSAGE = "Cannot update doctor duty roster because appointment" +
-                " exists within the selected date range.";
-
         String APPOINTMENT_EXISTS_ON_WEEK_DAY_MESSAGE = "Cannot update doctor duty roster because appointment" +
                 " exists within the selected date range '%s'.";
     }
@@ -79,10 +44,6 @@ public class ErrorMessageConstants {
     //E
 
     //F
-    public interface ForgotPasswordMessages {
-        String INVALID_RESET_CODE = "Invalid Password Reset Code. Please try again.";
-        String RESET_CODE_EXPIRED = "Reset code has expired. Request a new password reset code.";
-    }
 
 
     //G
@@ -93,13 +54,10 @@ public class ErrorMessageConstants {
 
 
     //I
-    public static final String INVALID_DATE_MESSAGE = "From date cannot be greater than to date";
-    public static final String INVALID_DATE_DEBUG_MESSAGE = "Failed to complete operation due to invalid from and to date";
 
-    public static final String INVALID_USERNAME_OR_HOSPITAL_CODE = "Invalid username or hospitalcode";
-    public static final String INVALID_PASSWORD = "Invalid password";
+    public static final String INVALID_COMPANY_CODE = "INVALID COMPANY CODE";
 
-    public static final String INVALID_VERIFICATION_TOKEN = "Invalid verification token";
+    public static final String UNAUTHORIZED = "UNAUTHORIZED";
 
     //J
 
@@ -111,8 +69,7 @@ public class ErrorMessageConstants {
 
     //N
     public static final String NAME_DUPLICATION_MESSAGE = "%s already exists with name '%s'";
-    public static final String NAME_AND_MOBILE_NUMBER_DUPLICATION_MESSAGE = "%s already exists with name '%s' " +
-            "and mobile number '%s'";
+
 
     public static final String NAME_AND_CODE_DUPLICATION_MESSAGE = "%s already exists with name '%s' " +
             "and code '%s' ";
@@ -139,7 +96,6 @@ public class ErrorMessageConstants {
 
 
     //U
-    public static final String UNAUTHORISED = "Unauthorised";
 
     //V
 

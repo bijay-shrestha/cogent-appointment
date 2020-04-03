@@ -2,9 +2,11 @@ package com.cogent.cogentappointment.esewa.security.filter;
 
 import com.cogent.cogentappointment.esewa.dto.request.admin.AdminMinDetails;
 import com.cogent.cogentappointment.esewa.dto.request.login.ThirdPartyDetail;
+import com.cogent.cogentappointment.esewa.exception.UnauthorisedException;
 import com.cogent.cogentappointment.esewa.repository.HmacApiInfoRepository;
 import com.cogent.cogentappointment.esewa.security.hmac.AuthHeader;
 import com.cogent.cogentappointment.esewa.security.hmac.HMACBuilder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,6 +23,7 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.AUTH_HEADER_NULL;
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.HMAC_BAD_SIGNATURE;
 import static com.cogent.cogentappointment.esewa.constants.PatternConstants.AUTHORIZATION_HEADER_PATTERN;
 import static com.cogent.cogentappointment.esewa.constants.PatternConstants.AUTHORIZATION_HEADER_PATTERN_FOR_ESEWA;
@@ -29,6 +32,7 @@ import static com.cogent.cogentappointment.esewa.constants.PatternConstants.AUTH
  * @author Sauravi Thapa २०/१/१९
  */
 @Component
+@Slf4j
 public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
     private final HmacApiInfoRepository hmacApiInfoRepository;
@@ -61,16 +65,20 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
             compareSignature(signatureBuilder, eSewaAuthHeader.getDigest());
 
-            SecurityContextHolder.getContext().setAuthentication(getAuthentication(thirdPartyDetail.getHospitalCode(),
-                    thirdPartyDetail.getHospitalCode()));
-        }
+            SecurityContextHolder.getContext().setAuthentication(getAuthentication(thirdPartyDetail.getCompanyCode()));
 
-        try {
-            filterChain.doFilter(request, response);
-        } finally {
-            SecurityContextHolder.clearContext();
+            try {
+                filterChain.doFilter(request, response);
+            } finally {
+                SecurityContextHolder.clearContext();
+            }
+        }
+        else{
+            log.error(AUTH_HEADER_NULL);
+            throw new UnauthorisedException(AUTH_HEADER_NULL);
         }
     }
+
 
 
     public AuthHeader getAuthHeaderForeSewa(HttpServletRequest request) {
@@ -95,17 +103,10 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
             throw new BadCredentialsException(HMAC_BAD_SIGNATURE);
     }
 
-    public PreAuthenticatedAuthenticationToken getAuthentication(String username, String hospitalCode) {
+    public PreAuthenticatedAuthenticationToken getAuthentication(String companyCode) {
         return new PreAuthenticatedAuthenticationToken(
-                username,
-                hospitalCode,
-                null);
-    }
-
-    public PreAuthenticatedAuthenticationToken getAuthenticationForHospital(String username, Long hospitalId) {
-        return new PreAuthenticatedAuthenticationToken(
-                username,
-                hospitalId,
+                companyCode,
+                companyCode,
                 null);
     }
 }

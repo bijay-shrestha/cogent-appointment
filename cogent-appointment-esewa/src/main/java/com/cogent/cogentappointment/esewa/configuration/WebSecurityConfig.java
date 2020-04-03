@@ -26,18 +26,15 @@ import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.AUTH
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final HMACConfig hmaconfig;
-
     private final UserDetailsServiceImpl userDetailsService;
 
     private final AuthEntryPointHmac unauthorizedHandler;
 
     private final HmacAuthenticationFilter hmacAuthenticationFilter;
 
-    public WebSecurityConfig(HMACConfig hmaconfig,
-                             UserDetailsServiceImpl userDetailsService,
-                             AuthEntryPointHmac unauthorizedHandler, HmacAuthenticationFilter hmacAuthenticationFilter) {
-        this.hmaconfig = hmaconfig;
+    public WebSecurityConfig(UserDetailsServiceImpl userDetailsService,
+                             AuthEntryPointHmac unauthorizedHandler,
+                             HmacAuthenticationFilter hmacAuthenticationFilter) {
         this.userDetailsService = userDetailsService;
         this.unauthorizedHandler = unauthorizedHandler;
         this.hmacAuthenticationFilter = hmacAuthenticationFilter;

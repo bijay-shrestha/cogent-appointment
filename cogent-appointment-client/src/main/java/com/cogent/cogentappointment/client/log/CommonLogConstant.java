@@ -7,8 +7,11 @@ public class CommonLogConstant {
     //A
 
     //B
+    private final static String BOLD = "\033[0;1m";
 
     //C
+    public final static String CONTENT_NOT_FOUND_BY_ID = BOLD + ":::: {} WITH ID : {} NOT FOUND ::::";
+    public final static String CONTENT_NOT_FOUND = BOLD + ":::: {} NOT FOUND ::::";
 
 
     //D
@@ -45,6 +48,7 @@ public class CommonLogConstant {
     //M
 
     //N
+    public final static String NAME_DUPLICATION_ERROR = BOLD + ":::: {} WITH NAME : '{}' ALREADY EXISTS ::::";
 
     //O
 

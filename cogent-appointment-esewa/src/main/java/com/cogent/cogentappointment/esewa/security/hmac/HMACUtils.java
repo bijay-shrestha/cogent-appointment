@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.esewa.security.hmac;
 
-import com.cogent.cogentappointment.esewa.dto.request.admin.AdminMinDetails;
 import com.cogent.cogentappointment.esewa.dto.request.login.ThirdPartyDetail;
 import org.springframework.stereotype.Component;
 
@@ -14,46 +13,9 @@ import static com.cogent.cogentappointment.esewa.utils.HMACKeyGenerator.generate
 @Component
 public class HMACUtils {
 
-    public String getAuthToken(AdminMinDetails admin) {
+    public static String getAuthToken(ThirdPartyDetail thirdPartyDetail) {
         final String nonce = generateNonce();
-        String username = admin.getUsername();
-        String hospitalCode = admin.getHospitalCode();
-        String apiKey = admin.getApiKey();
-        String apiSecret = admin.getApiSecret();
-        Integer hospitalId= Math.toIntExact(admin.getHospitalId());
-
-        final HMACBuilder signatureBuilder = new HMACBuilder()
-                .algorithm(HMAC_ALGORITHM)
-                .nonce(nonce)
-                .apiKey(apiKey)
-                .hospitalCode(hospitalCode)
-                .hospitalId(hospitalId)
-                .username(username)
-                .apiSecret(apiSecret);
-
-        final String signature = signatureBuilder
-                .buildAsBase64String();
-
-        String authToken = HMAC_ALGORITHM +
-                SPACE +
-                username +
-                COLON +
-                hospitalId +
-                COLON +
-                hospitalCode +
-                COLON +
-                apiKey +
-                COLON +
-                nonce +
-                COLON +
-                signature;
-
-        return authToken;
-    }
-
-    public String getAuthTokenForEsewa(ThirdPartyDetail thirdPartyDetail) {
-        final String nonce = generateNonce();
-        String hospitalCode = thirdPartyDetail.getHospitalCode();
+        String companyCode = thirdPartyDetail.getHospitalCode();
         String apiKey = thirdPartyDetail.getApiKey();
         String apiSecret = thirdPartyDetail.getApiSecret();
 
@@ -62,14 +24,14 @@ public class HMACUtils {
                 .nonce(nonce)
                 .apiSecret(apiSecret)
                 .apiKey(apiKey)
-                .hospitalCode(hospitalCode);
+                .companyCode(companyCode);
 
         final String signature = signatureBuilder
                 .buildAsBase64String();
 
         String authToken = HMAC_ALGORITHM +
                 SPACE +
-                hospitalCode +
+                companyCode +
                 COLON +
                 apiKey +
                 COLON +

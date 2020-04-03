@@ -43,38 +43,10 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
-        final AuthHeader authHeader = getAuthHeader(request);
-
         final AuthHeader eSewaAuthHeader = getAuthHeaderForeSewa(request);
 
-        if (authHeader != null) {
-            final HMACBuilder signatureBuilder;
 
-            AdminMinDetails adminMinDetails = hmacApiInfoRepository.getAdminDetailForAuthentication(
-                    authHeader.getUsername(),
-                    authHeader.getCompanyCode(),
-                    authHeader.getApiKey());
-
-            if (adminMinDetails.getIsCompany().equals('N')) {
-                signatureBuilder = new HMACBuilder()
-                        .algorithm(authHeader.getAlgorithm())
-                        .nonce(authHeader.getNonce())
-                        .username(adminMinDetails.getUsername())
-                        .hospitalId(Math.toIntExact(adminMinDetails.getHospitalId()))
-                        .hospitalCode(adminMinDetails.getHospitalCode())
-                        .apiKey(adminMinDetails.getApiKey())
-                        .apiSecret(adminMinDetails.getApiSecret());
-            } else {
-                signatureBuilder = null;
-            }
-
-            compareSignature(signatureBuilder, authHeader.getDigest());
-
-            SecurityContextHolder.getContext().setAuthentication(getAuthenticationForHospital(adminMinDetails.getUsername(),
-                    adminMinDetails.getHospitalId()));
-        }
-
-        if (authHeader == null && eSewaAuthHeader != null) {
+        if (eSewaAuthHeader != null) {
 
             ThirdPartyDetail thirdPartyDetail = hmacApiInfoRepository.getDetailForAuthentication(
                     eSewaAuthHeader.getCompanyCode(),
@@ -83,8 +55,8 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
             final HMACBuilder signatureBuilder = new HMACBuilder()
                     .algorithm(eSewaAuthHeader.getAlgorithm())
                     .nonce(eSewaAuthHeader.getNonce())
-                    .hospitalCode(thirdPartyDetail.getHospitalCode())
-                    .apiKey(thirdPartyDetail.getApiKey())
+                    .companyCode(eSewaAuthHeader.getCompanyCode())
+                    .apiKey(eSewaAuthHeader.getApiKey())
                     .apiSecret(thirdPartyDetail.getApiSecret());
 
             compareSignature(signatureBuilder, eSewaAuthHeader.getDigest());
@@ -100,27 +72,6 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
         }
     }
 
-    public AuthHeader getAuthHeader(HttpServletRequest request) {
-
-        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (authHeader == null) {
-            return null;
-        }
-        final Matcher authHeaderMatcher = Pattern.compile(AUTHORIZATION_HEADER_PATTERN).matcher(authHeader);
-
-        if (!authHeaderMatcher.matches()) {
-            return null;
-        }
-
-        return new AuthHeader(authHeaderMatcher.group(1),
-                authHeaderMatcher.group(2),
-                Integer.parseInt(authHeaderMatcher.group(3)),
-                authHeaderMatcher.group(4),
-                authHeaderMatcher.group(5),
-                authHeaderMatcher.group(6),
-                DatatypeConverter.parseBase64Binary(authHeaderMatcher.group(7)));
-
-    }
 
     public AuthHeader getAuthHeaderForeSewa(HttpServletRequest request) {
 
@@ -133,8 +84,6 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
             return null;
         }
         return new AuthHeader(authHeaderMatcher.group(1),
-                null,
-                null,
                 authHeaderMatcher.group(2),
                 authHeaderMatcher.group(3),
                 authHeaderMatcher.group(4),

@@ -195,7 +195,7 @@ public class UniversityServiceImpl implements UniversityService {
     }
 
     private University fetchByIdAndHospitalId(Long id, Long hospitalId) {
-        return universityRepository.fetchUniversityByIdAndHospitalId(id, hospitalId)
+        return universityRepository.fetchUniversityById(id, hospitalId)
                 .orElseThrow(() -> UNIVERSITY_WITH_GIVEN_ID_NOT_FOUND.apply(id));
     }
 

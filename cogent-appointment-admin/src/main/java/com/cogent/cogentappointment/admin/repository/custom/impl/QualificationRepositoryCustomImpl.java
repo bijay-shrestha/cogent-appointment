@@ -85,7 +85,7 @@ public class QualificationRepositoryCustomImpl implements QualificationRepositor
     }
 
     @Override
-    public List<QualificationDropdownDTO> fetchActiveQualificationForDropDown() {
+    public List<QualificationDropdownDTO> fetchActiveMinQualification() {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_QUALIFICATION_FOR_DROPDOWN);
 
         List<QualificationDropdownDTO> results = transformQueryToResultList(query, QualificationDropdownDTO.class);

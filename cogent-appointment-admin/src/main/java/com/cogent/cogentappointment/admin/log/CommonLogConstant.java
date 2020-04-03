@@ -54,7 +54,7 @@ public class CommonLogConstant {
     //N
     public final static String NAME_AND_MOBILE_NUMBER_DUPLICATION_ERROR=":::: {} WITH NAME : {} AND " +
             "MOBILE NUMBER : {}  ALREADY EXISTS ::::";
-    public final static String NAME_DUPLICATION_ERROR=":::: {} WITH NAME : {} ALREADY EXISTS ::::";
+    public final static String NAME_DUPLICATION_ERROR=":::: {} WITH NAME : '{}' ALREADY EXISTS ::::";
 
     //O
 

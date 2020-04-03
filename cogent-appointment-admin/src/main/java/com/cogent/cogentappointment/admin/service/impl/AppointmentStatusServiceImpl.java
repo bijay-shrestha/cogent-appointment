@@ -62,8 +62,7 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
     }
 
     @Override
-    public AppointmentStatusDTO fetchAppointmentStatusResponseDTO
-            (AppointmentStatusRequestDTO requestDTO) {
+    public AppointmentStatusDTO fetchAppointmentStatusResponseDTO(AppointmentStatusRequestDTO requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -158,6 +157,29 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
         }
     }
 
+    private void setTimeSlotForAllAppointmentStatus
+            (DoctorDutyRosterStatusResponseDTO doctorDutyRosterStatusResponseDTO,
+             List<DoctorTimeSlotResponseDTO> doctorTimeSlots,
+             List<AppointmentStatusResponseDTO> appointments) {
+
+        List<AppointmentStatusResponseDTO> appointmentMatchedWithRoster =
+                appointments.stream()
+                        .filter(appointment -> hasAppointment(appointment, doctorDutyRosterStatusResponseDTO))
+                        .collect(Collectors.toList());
+
+        if (!ObjectUtils.isEmpty(appointmentMatchedWithRoster)) {
+
+            setTimeSlotHavingAppointments(appointmentMatchedWithRoster, doctorTimeSlots);
+
+            doctorTimeSlots = calculateTimeSlotsForAll(doctorDutyRosterStatusResponseDTO, doctorTimeSlots);
+        } else {
+            if (doctorDutyRosterStatusResponseDTO.getDayOffStatus().equals(NO))
+                doctorTimeSlots = calculateTimeSlotsForAll(doctorDutyRosterStatusResponseDTO, doctorTimeSlots);
+        }
+
+        doctorDutyRosterStatusResponseDTO.setDoctorTimeSlots(doctorTimeSlots);
+    }
+
     /*FOR SIMPLICITY, ADD ALL MATCHED APPOINTMENT LIST INTO FINAL LIST*/
     private void setTimeSlotHavingAppointments(List<AppointmentStatusResponseDTO> appointmentMatchedWithRoster,
                                                List<DoctorTimeSlotResponseDTO> doctorTimeSlots) {
@@ -165,6 +187,18 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
         for (AppointmentStatusResponseDTO appointment : appointmentMatchedWithRoster) {
             parseAppointmentDetails(appointment, doctorTimeSlots);
         }
+    }
+
+    private List<DoctorTimeSlotResponseDTO> calculateTimeSlotsForAll(
+            DoctorDutyRosterStatusResponseDTO doctorDutyRosterStatusResponseDTO,
+            List<DoctorTimeSlotResponseDTO> doctorTimeSlots) {
+
+        return calculateTimeSlotsForAllAppointmentStatus(
+                doctorDutyRosterStatusResponseDTO.getDate(),
+                doctorDutyRosterStatusResponseDTO.getStartTime(),
+                doctorDutyRosterStatusResponseDTO.getEndTime(),
+                doctorDutyRosterStatusResponseDTO.getRosterGapDuration(),
+                doctorTimeSlots);
     }
 
     private void setDoctorTimeSlotForVacantAppointmentStatus(
@@ -191,6 +225,51 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
                             (doctorDutyRosterStatusResponseDTO, appointments, doctorTimeSlots);
             }
         }
+    }
+
+    private void setTimeSlotForVacantAppointmentStatus
+            (DoctorDutyRosterStatusResponseDTO doctorDutyRosterStatusResponseDTO,
+             List<AppointmentStatusResponseDTO> appointments,
+             List<DoctorTimeSlotResponseDTO> doctorTimeSlots) {
+
+         /*FILTER APPOINTMENT THAT MATCHES WITH DOCTOR DUTY ROSTER INFO*/
+        List<AppointmentStatusResponseDTO> appointmentMatchedWithRoster =
+                appointments.stream()
+                        .filter(appointment -> hasAppointment(appointment, doctorDutyRosterStatusResponseDTO))
+                        .collect(Collectors.toList());
+
+        if (!ObjectUtils.isEmpty(appointmentMatchedWithRoster)) {
+
+            /*JOIN MATCHED APPOINTMENTS INTO COMMA SEPARATED STRING eg. 10:00-PA, 10:20-PA*/
+            String matchedAppointmentWithStatus =
+                    appointmentMatchedWithRoster.stream()
+                            .map(AppointmentStatusResponseDTO::getAppointmentTimeDetails)
+                            .collect(Collectors.joining(COMMA_SEPARATED));
+
+            doctorTimeSlots = calculateTimeSlotsForVacantAppointmentStatus(
+                    doctorDutyRosterStatusResponseDTO.getDate(),
+                    doctorDutyRosterStatusResponseDTO.getStartTime(),
+                    doctorDutyRosterStatusResponseDTO.getEndTime(),
+                    doctorDutyRosterStatusResponseDTO.getRosterGapDuration(),
+                    matchedAppointmentWithStatus,
+                    doctorTimeSlots
+            );
+        } else {
+
+            if (doctorDutyRosterStatusResponseDTO.getDayOffStatus().equals(NO)) {
+
+                doctorTimeSlots = calculateTimeSlotsForVacantAppointmentStatus(
+                        doctorDutyRosterStatusResponseDTO.getDate(),
+                        doctorDutyRosterStatusResponseDTO.getStartTime(),
+                        doctorDutyRosterStatusResponseDTO.getEndTime(),
+                        doctorDutyRosterStatusResponseDTO.getRosterGapDuration(),
+                        null,
+                        doctorTimeSlots
+                );
+            }
+        }
+
+        doctorDutyRosterStatusResponseDTO.setDoctorTimeSlots(doctorTimeSlots);
     }
 
     /*IF STATUS IN SEARCH DTO IS NOT EMPTY AND IS NOT VACANT (i.e,PA/A/C),
@@ -256,83 +335,5 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
                 && (appointment.getSpecializationId().equals(doctorDutyRosterStatus.getSpecializationId()));
     }
 
-    private void setTimeSlotForAllAppointmentStatus
-            (DoctorDutyRosterStatusResponseDTO doctorDutyRosterStatusResponseDTO,
-             List<DoctorTimeSlotResponseDTO> doctorTimeSlots,
-             List<AppointmentStatusResponseDTO> appointments) {
 
-        List<AppointmentStatusResponseDTO> appointmentMatchedWithRoster =
-                appointments.stream()
-                        .filter(appointment -> hasAppointment(appointment, doctorDutyRosterStatusResponseDTO))
-                        .collect(Collectors.toList());
-
-        if (!ObjectUtils.isEmpty(appointmentMatchedWithRoster)) {
-
-            setTimeSlotHavingAppointments(appointmentMatchedWithRoster, doctorTimeSlots);
-
-            doctorTimeSlots = calculateTimeSlotsForAll(doctorDutyRosterStatusResponseDTO, doctorTimeSlots);
-        } else {
-            if (doctorDutyRosterStatusResponseDTO.getDayOffStatus().equals(NO))
-                doctorTimeSlots = calculateTimeSlotsForAll(doctorDutyRosterStatusResponseDTO, doctorTimeSlots);
-        }
-
-        doctorDutyRosterStatusResponseDTO.setDoctorTimeSlots(doctorTimeSlots);
-    }
-
-    private List<DoctorTimeSlotResponseDTO> calculateTimeSlotsForAll(
-            DoctorDutyRosterStatusResponseDTO doctorDutyRosterStatusResponseDTO,
-            List<DoctorTimeSlotResponseDTO> doctorTimeSlots) {
-
-        return calculateTimeSlotsForAllAppointmentStatus(
-                doctorDutyRosterStatusResponseDTO.getDate(),
-                doctorDutyRosterStatusResponseDTO.getStartTime(),
-                doctorDutyRosterStatusResponseDTO.getEndTime(),
-                doctorDutyRosterStatusResponseDTO.getRosterGapDuration(),
-                doctorTimeSlots);
-    }
-
-    private void setTimeSlotForVacantAppointmentStatus
-            (DoctorDutyRosterStatusResponseDTO doctorDutyRosterStatusResponseDTO,
-             List<AppointmentStatusResponseDTO> appointments,
-             List<DoctorTimeSlotResponseDTO> doctorTimeSlots) {
-
-         /*FILTER APPOINTMENT THAT MATCHES WITH DOCTOR DUTY ROSTER INFO*/
-        List<AppointmentStatusResponseDTO> appointmentMatchedWithRoster =
-                appointments.stream()
-                        .filter(appointment -> hasAppointment(appointment, doctorDutyRosterStatusResponseDTO))
-                        .collect(Collectors.toList());
-
-        if (!ObjectUtils.isEmpty(appointmentMatchedWithRoster)) {
-
-            /*JOIN MATCHED APPOINTMENTS INTO COMMA SEPARATED STRING eg. 10:00-PA, 10:20-PA*/
-            String matchedAppointmentWithStatus =
-                    appointmentMatchedWithRoster.stream()
-                            .map(AppointmentStatusResponseDTO::getAppointmentTimeDetails)
-                            .collect(Collectors.joining(COMMA_SEPARATED));
-
-            doctorTimeSlots = calculateTimeSlotsForVacantAppointmentStatus(
-                    doctorDutyRosterStatusResponseDTO.getDate(),
-                    doctorDutyRosterStatusResponseDTO.getStartTime(),
-                    doctorDutyRosterStatusResponseDTO.getEndTime(),
-                    doctorDutyRosterStatusResponseDTO.getRosterGapDuration(),
-                    matchedAppointmentWithStatus,
-                    doctorTimeSlots
-            );
-        } else {
-
-            if (doctorDutyRosterStatusResponseDTO.getDayOffStatus().equals(NO)) {
-
-                doctorTimeSlots = calculateTimeSlotsForVacantAppointmentStatus(
-                        doctorDutyRosterStatusResponseDTO.getDate(),
-                        doctorDutyRosterStatusResponseDTO.getStartTime(),
-                        doctorDutyRosterStatusResponseDTO.getEndTime(),
-                        doctorDutyRosterStatusResponseDTO.getRosterGapDuration(),
-                        null,
-                        doctorTimeSlots
-                );
-            }
-        }
-
-        doctorDutyRosterStatusResponseDTO.setDoctorTimeSlots(doctorTimeSlots);
-    }
 }

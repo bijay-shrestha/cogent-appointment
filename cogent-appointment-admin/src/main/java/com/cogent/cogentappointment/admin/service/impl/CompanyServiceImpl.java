@@ -195,7 +195,7 @@ public class CompanyServiceImpl implements CompanyService {
 
         String responseDTO = hospitalRepository.getAliasById(companyId);
 
-        log.info(FETCHING_ALIAS_PROCESS_STARTED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_ALIAS_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
     }

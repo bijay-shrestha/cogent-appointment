@@ -1,12 +1,12 @@
 package com.cogent.cogentappointment.client.utils;
 
-import com.cogent.cogentappointment.admin.constants.StringConstant;
-import com.cogent.cogentappointment.admin.utils.commons.DateUtils;
+import com.cogent.cogentappointment.client.constants.StringConstant;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.DoctorTimeSlotResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.doctor.DoctorDropdownDTO;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
+import com.cogent.cogentappointment.client.utils.commons.DateUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.Minutes;
@@ -20,11 +20,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants;
-import static com.cogent.cogentappointment.admin.constants.StringConstant.HYPHEN;
-import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.VACANT;
-import static com.cogent.cogentappointment.client.utils.commons.DateUtils.convert24HourTo12HourFormat;
+import static com.cogent.cogentappointment.client.constants.StringConstant.HYPHEN;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 
 /**
  * @author smriti ON 16/12/2019

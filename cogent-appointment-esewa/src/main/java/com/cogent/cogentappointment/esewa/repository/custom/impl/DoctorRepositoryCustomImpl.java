@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.esewa.dto.response.doctor.DoctorMinResponseD
 import com.cogent.cogentappointment.esewa.exception.NoContentFoundException;
 import com.cogent.cogentappointment.esewa.repository.custom.DoctorRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Doctor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,19 +15,19 @@ import javax.persistence.Query;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.esewa.query.DoctorQuery.QUERY_TO_FETCH_DOCTOR_APPOINTMENT_CHARGE;
-import static com.cogent.cogentappointment.esewa.query.DoctorQuery.QUERY_TO_FETCH_DOCTOR_APPOINTMENT_FOLLOW_UP_CHARGE;
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.DOCTOR_ID;
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.HOSPITAL_ID;
-import static com.cogent.cogentappointment.esewa.query.DoctorQuery.QUERY_TO_FETCH_MIN_DOCTOR_INFO;
+import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.CONTENT_NOT_FOUND;
+import static com.cogent.cogentappointment.esewa.log.constants.DoctorLog.DOCTOR;
+import static com.cogent.cogentappointment.esewa.query.DoctorQuery.*;
 import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.*;
-import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.transformNativeQueryToResultList;
 
 /**
  * @author smriti on 2019-09-29
  */
 @Repository
 @Transactional(readOnly = true)
+@Slf4j
 public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
 
     @PersistenceContext
@@ -41,7 +42,7 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
         List<DoctorMinResponseDTO> results = transformNativeQueryToResultList(query, DoctorMinResponseDTO.class);
 
         if (results.isEmpty()) {
-            throw DOCTOR_NOT_FOUND.get();
+            throw DOCTOR_NOT_FOUND();
         }
 
         return results;
@@ -55,7 +56,7 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
                     .setParameter(HOSPITAL_ID, hospitalId);
             return (Double) query.getSingleResult();
         } catch (NoResultException ex) {
-            throw DOCTOR_NOT_FOUND.get();
+            throw DOCTOR_NOT_FOUND();
         }
     }
 
@@ -68,11 +69,14 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
 
             return (Double) query.getSingleResult();
         } catch (NoResultException ex) {
-            throw DOCTOR_NOT_FOUND.get();
+            throw DOCTOR_NOT_FOUND();
         }
     }
 
-    private Supplier<NoContentFoundException> DOCTOR_NOT_FOUND = () ->
-            new NoContentFoundException(Doctor.class);
+    private NoContentFoundException DOCTOR_NOT_FOUND() {
+        log.error(CONTENT_NOT_FOUND, DOCTOR);
+        throw new NoContentFoundException(Doctor.class);
+    }
+
 
 }

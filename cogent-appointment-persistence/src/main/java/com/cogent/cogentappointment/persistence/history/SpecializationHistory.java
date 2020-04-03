@@ -32,8 +32,7 @@ public class SpecializationHistory implements Serializable {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "specialization_id",
-            foreignKey = @ForeignKey(name = "FK_specialization_history_specialization"))
+    @JoinColumn(name = "specialization_id")
     private Specialization specialization;
 
     @Column(name = "specialization_content")

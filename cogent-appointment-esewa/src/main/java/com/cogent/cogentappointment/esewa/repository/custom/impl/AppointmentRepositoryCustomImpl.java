@@ -18,6 +18,7 @@ import com.cogent.cogentappointment.esewa.exception.NoContentFoundException;
 import com.cogent.cogentappointment.esewa.repository.custom.AppointmentRepositoryCustom;
 import com.cogent.cogentappointment.esewa.utils.AppointmentUtils;
 import com.cogent.cogentappointment.persistence.model.Appointment;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,11 +31,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.esewa.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.AppointmentConstants.APPOINTMENT_DATE;
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.AppointmentConstants.APPOINTMENT_TIME;
+import static com.cogent.cogentappointment.esewa.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.CONTENT_NOT_FOUND;
+import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
+import static com.cogent.cogentappointment.esewa.log.constants.AppointmentLog.APPOINTMENT;
 import static com.cogent.cogentappointment.esewa.query.AppointmentQuery.*;
 import static com.cogent.cogentappointment.esewa.utils.AppointmentUtils.*;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.*;
@@ -47,6 +50,7 @@ import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.*;
  */
 @Repository
 @Transactional(readOnly = true)
+@Slf4j
 public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCustom {
 
     @PersistenceContext
@@ -186,7 +190,9 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         AppointmentRescheduleLogResponseDTO results = parseQueryResultToAppointmentRescheduleLogResponse(objects);
 
-        if (results.getAppointmentRescheduleLogDTOS().isEmpty()) throw APPOINTMENT_NOT_FOUND.get();
+        if (results.getAppointmentRescheduleLogDTOS().isEmpty()){
+            throw APPOINTMENT_NOT_FOUND();
+        }
         else {
             results.setTotalItems(totalItems);
             return results;
@@ -211,8 +217,9 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         AppointmentPendingApprovalResponseDTO results = parseQueryResultToAppointmentApprovalResponse(objects);
 
-        if (results.getPendingAppointmentApprovals().isEmpty()) throw APPOINTMENT_NOT_FOUND.get();
-        else {
+        if (results.getPendingAppointmentApprovals().isEmpty()) {
+            throw APPOINTMENT_NOT_FOUND();
+        } else {
             results.setTotalItems(totalItems);
             return results;
         }
@@ -257,8 +264,9 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         AppointmentLogResponseDTO results = parseQueryResultToAppointmentLogResponse(objects);
 
-        if (results.getAppointmentLogs().isEmpty()) throw APPOINTMENT_NOT_FOUND.get();
-        else {
+        if (results.getAppointmentLogs().isEmpty()) {
+            throw APPOINTMENT_NOT_FOUND();
+        } else {
             results.setTotalItems(totalItems);
             return results;
         }
@@ -278,10 +286,13 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
 
     private Function<Long, NoContentFoundException> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT, id);
         throw new NoContentFoundException(Appointment.class, "id", id.toString());
     };
 
-    private Supplier<NoContentFoundException> APPOINTMENT_NOT_FOUND = ()
-            -> new NoContentFoundException(Appointment.class);
+    public NoContentFoundException APPOINTMENT_NOT_FOUND() {
+        log.error(CONTENT_NOT_FOUND, APPOINTMENT);
+        throw new NoContentFoundException(Appointment.class);
+    }
 
 }

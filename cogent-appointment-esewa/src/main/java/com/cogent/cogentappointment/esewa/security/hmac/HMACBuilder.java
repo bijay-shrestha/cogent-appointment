@@ -23,10 +23,6 @@ public class HMACBuilder {
 
     private String username;
 
-    private String hospitalCode;
-
-    private Integer hospitalId;
-
     private String nonce;
 
     private String algorithm;
@@ -41,15 +37,6 @@ public class HMACBuilder {
         return this;
     }
 
-    public HMACBuilder hospitalCode(String hospitalCode) {
-        this.hospitalCode = hospitalCode;
-        return this;
-    }
-
-    public HMACBuilder hospitalId(Integer hospitalId) {
-        this.hospitalId = hospitalId;
-        return this;
-    }
 
     public HMACBuilder algorithm(String algorithm) {
         this.algorithm = algorithm;
@@ -82,11 +69,7 @@ public class HMACBuilder {
             digest.update(DELIMITER);
             digest.update(nonce.getBytes(StandardCharsets.UTF_8));
             digest.update(DELIMITER);
-            digest.update((username != null) ? username.getBytes(StandardCharsets.UTF_8) : null);
-            digest.update(DELIMITER);
-            digest.update(ByteBuffer.allocateDirect((hospitalId != null) ? hospitalId: null));
-            digest.update(DELIMITER);
-            digest.update((hospitalCode != null) ? hospitalCode.getBytes(StandardCharsets.UTF_8) : null);
+            digest.update(username.getBytes(StandardCharsets.UTF_8));
             digest.update(DELIMITER);
             digest.update(apiKey.getBytes(StandardCharsets.UTF_8));
             digest.update(DELIMITER);

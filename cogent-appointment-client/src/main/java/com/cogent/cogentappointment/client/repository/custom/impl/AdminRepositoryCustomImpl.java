@@ -28,11 +28,11 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AdminServiceMessages;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AdminServiceMessages.ADMIN_INFO_NOT_FOUND;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.client.log.constants.AdminLog.ADMIN;
 import static com.cogent.cogentappointment.client.log.constants.AdminLog.ADMIN_NOT_FOUND_ERROR;
@@ -206,7 +206,8 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         return transformQueryToResultList(query, AdminMacAddressInfoResponseDTO.class);
     }
 
-    private Supplier<NoContentFoundException> NO_DASHBOARD_FEATURE_FOUND = () -> new NoContentFoundException(DashboardFeature.class);
+    private Supplier<NoContentFoundException> NO_DASHBOARD_FEATURE_FOUND = () -> new NoContentFoundException(
+            DashboardFeature.class);
 
     private Supplier<NoContentFoundException> NO_ADMIN_FOUND = () -> new NoContentFoundException(Admin.class);
 

@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface PatientService {
 
-    /*eSewa*/
+    /*appointmentDetails*/
     Patient saveSelfPatient(PatientRequestByDTO requestDTO);
 
     Patient saveOtherPatient(PatientRequestForDTO requestForPatientInfo);
@@ -22,10 +22,10 @@ public interface PatientService {
 
     Patient fetchPatientById(Long id);
 
-    PatientDetailResponseDTO searchForSelf(PatientMinSearchRequestDTO searchRequestDTO);
+    PatientDetailResponseDTOWithStatus searchForSelf(PatientMinSearchRequestDTO searchRequestDTO);
 
     /*FETCH MINIMAL DETAILS OF 'OTHERS'*/
-    PatientResponseDTOForOthers searchForOthers(PatientMinSearchRequestDTO searchRequestDTO,
+    PatientResponseDTOForOthersWithStatus searchForOthers(PatientMinSearchRequestDTO searchRequestDTO,
                                                 Pageable pageable);
 
     PatientDetailResponseDTO fetchMinPatientDetailsOfOthers(Long hospitalPatientId);

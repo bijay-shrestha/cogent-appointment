@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.esewa.dto.response.common;
 import com.cogent.cogentappointment.esewa.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.doctor.DoctorMinResponseDTO;
 import lombok.*;
+import org.springframework.http.HttpStatus;
 
 import java.io.Serializable;
 import java.util.List;
@@ -20,4 +21,9 @@ public class DoctorSpecializationResponseDTO implements Serializable {
     private List<DoctorMinResponseDTO> doctorInfo;
 
     private List<DropDownResponseDTO> specializationInfo;
+
+    private int responseCode;
+
+    private HttpStatus responseStatus;
+
 }

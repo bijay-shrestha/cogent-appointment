@@ -7,11 +7,11 @@ import com.cogent.cogentappointment.esewa.dto.request.doctorDutyRoster.DoctorExi
 import com.cogent.cogentappointment.esewa.dto.request.eSewa.AppointmentDetailRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.appoinmentDateAndTime.DoctorDutyRosterAppointmentDate;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.appoinmentDateAndTime.DoctorWeekDaysDutyRosterAppointmentDate;
+import com.cogent.cogentappointment.esewa.dto.response.appointmentDetails.AvailableDoctorWithSpecialization;
+import com.cogent.cogentappointment.esewa.dto.response.appointmentDetails.DoctorAvailabilityStatusResponseDTO;
+import com.cogent.cogentappointment.esewa.dto.response.appointmentDetails.DutyRosterAppointmentDateAndDoctorDTO;
+import com.cogent.cogentappointment.esewa.dto.response.appointmentDetails.DutyRosterAppointmentDateAndSpecilizationDTO;
 import com.cogent.cogentappointment.esewa.dto.response.doctorDutyRoster.*;
-import com.cogent.cogentappointment.esewa.dto.response.eSewa.AvailableDoctorResponseDTO;
-import com.cogent.cogentappointment.esewa.dto.response.eSewa.DoctorAvailabilityStatusResponseDTO;
-import com.cogent.cogentappointment.esewa.dto.response.eSewa.DutyRosterAppointmentDateAndDoctorDTO;
-import com.cogent.cogentappointment.esewa.dto.response.eSewa.DutyRosterAppointmentDateAndSpecilizationDTO;
 import com.cogent.cogentappointment.esewa.exception.NoContentFoundException;
 import com.cogent.cogentappointment.esewa.repository.custom.DoctorDutyRosterRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRoster;
@@ -229,7 +229,7 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
     }
 
     @Override
-    public List<AvailableDoctorResponseDTO> fetchAvailableDoctor(AppointmentDetailRequestDTO requestDTO) {
+    public List<AvailableDoctorWithSpecialization> fetchAvailableDoctor(AppointmentDetailRequestDTO requestDTO) {
         Date sqlDate = utilDateToSqlDate(requestDTO.getDate());
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_AVAILABLE_DOCTORS_FROM_DDR(requestDTO))
@@ -240,7 +240,7 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
         if (!Objects.isNull(requestDTO.getSpecializationId()))
             query.setParameter(SPECIALIZATION_ID, requestDTO.getSpecializationId());
 
-        return transformQueryToResultList(query, AvailableDoctorResponseDTO.class);
+        return transformQueryToResultList(query, AvailableDoctorWithSpecialization.class);
     }
 
     @Override

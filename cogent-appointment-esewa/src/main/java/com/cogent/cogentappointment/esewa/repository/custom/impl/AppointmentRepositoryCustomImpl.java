@@ -33,6 +33,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.esewa.constants.QueryConstants.AppointmentConstants.APPOINTMENT_DATE;
+import static com.cogent.cogentappointment.esewa.constants.QueryConstants.AppointmentConstants.APPOINTMENT_TIME;
 import static com.cogent.cogentappointment.esewa.query.AppointmentQuery.*;
 import static com.cogent.cogentappointment.esewa.utils.AppointmentUtils.*;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.*;

@@ -28,7 +28,7 @@ import java.util.List;
 @Qualifier("appointmentRepositoryCustom")
 public interface AppointmentRepositoryCustom {
 
-    /*eSewa*/
+    /*appointmentDetails*/
     Long validateIfAppointmentExists(Date appointmentDate, String appointmentTime,
                                      Long doctorId, Long specializationId);
 

@@ -45,4 +45,7 @@ public class AppointmentRequestDTO implements Serializable {
     private Character isFreeFollowUp;
 
     private Long parentAppointmentId;
+
+    @NotNull
+    private Long appointmentReservationId;
 }

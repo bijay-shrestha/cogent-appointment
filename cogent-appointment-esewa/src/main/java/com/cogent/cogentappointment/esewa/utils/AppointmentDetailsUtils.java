@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.esewa.utils;
 
-import com.cogent.cogentappointment.esewa.dto.eSewa.*;
+import com.cogent.cogentappointment.esewa.dto.response.appointmentDetails.*;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.AppointmentDatesRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.appoinmentDateAndTime.AppointmentDatesResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.appoinmentDateAndTime.AvailableDatesResponseDTO;

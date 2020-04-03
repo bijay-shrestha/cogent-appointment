@@ -27,7 +27,8 @@ public class NoContentFoundException extends RuntimeException {
         exception = ExceptionResponse.builder()
                 .errorMessage(errorMessage)
                 .debugMessage(debugMessage)
-                .status(NOT_FOUND)
+                .responseStatus(NOT_FOUND)
+                .responseCode(NOT_FOUND.value())
                 .timeStamp(getLocalDateTime())
                 .build();
     }

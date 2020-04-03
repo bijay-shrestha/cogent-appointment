@@ -17,5 +17,5 @@ public interface AppointmentReservationLogRepository extends JpaRepository<Appoi
         AppointmentReservationLogRepositoryCustom {
 
     @Query("SELECT a FROM AppointmentReservationLog a WHERE a.id=:id")
-    Optional<AppointmentReservationLog> findAppointmentReservationLogById(@Param("id") Long id);
+    AppointmentReservationLog findAppointmentReservationLogById(@Param("id") Long id);
 }

@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.IntStream;
 
-import static com.cogent.cogentappointment.esewa.utils.commons.StringUtil.splitByCharacterTypeCamelCase;
-
 /**
  * @author smriti on 7/2/19
  */
@@ -20,15 +18,15 @@ public class ExceptionUtils {
     }
 
     public static String generateMessage(Class clazz) {
-        return "No " + splitByCharacterTypeCamelCase(clazz.getSimpleName()) + "(s) found.";
+        return "No " + StringUtil.splitByCharacterTypeCamelCase(clazz.getSimpleName()) + "(s) found.";
     }
 
     public static String generateMessage(Class clazz, String errorMessage) {
-        return splitByCharacterTypeCamelCase(clazz.getSimpleName()) + errorMessage;
+        return StringUtil.splitByCharacterTypeCamelCase(clazz.getSimpleName()) + errorMessage;
     }
 
     public static String generateDebugMessage(Class clazz, String debugMessage) {
-        return splitByCharacterTypeCamelCase(clazz.getSimpleName()) + debugMessage;
+        return StringUtil.splitByCharacterTypeCamelCase(clazz.getSimpleName()) + debugMessage;
     }
 
     public static String generateMessage(String entity, Map<String, String> searchParams) {
@@ -36,7 +34,7 @@ public class ExceptionUtils {
     }
 
     public static String generateDebugMessage(Class clazz) {
-        return splitByCharacterTypeCamelCase(clazz.getSimpleName()) + "(s) is empty.";
+        return StringUtil.splitByCharacterTypeCamelCase(clazz.getSimpleName()) + "(s) is empty.";
     }
 
     public static <K, V> Map<K, V> toMap(Class<K> keyType,

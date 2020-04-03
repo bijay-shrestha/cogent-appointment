@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.client.service.impl;
 
-import com.cogent.cogentappointment.admin.constants.ErrorMessageConstants;
 import com.cogent.cogentappointment.client.dto.request.email.EmailRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.forgotPassword.ForgotPasswordRequestDTO;
 import com.cogent.cogentappointment.client.exception.BadRequestException;

@@ -23,7 +23,8 @@ public class MethodArgumentNotValidException extends RuntimeException {
         return ExceptionResponse.builder()
                 .errorMessage(errorMessage)
                 .debugMessage(errorMessage)
-                .status(BAD_REQUEST)
+                .responseStatus(BAD_REQUEST)
+                .responseCode(BAD_REQUEST.value())
                 .timeStamp(getLocalDateTime())
                 .build();
     }

@@ -926,8 +926,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         AppointmentReservationLog appointmentReservationLog =
                 fetchAppointmentReservationLogById(appointmentReservationId);
 
-        if (Objects.isNull(appointmentReservationLog))
+        if (Objects.isNull(appointmentReservationLog)) {
+            log.error(APPOINTMENT_FAILED_DEBUG_MESSAGE);
             throw new BadRequestException(APPOINTMENT_FAILED_MESSAGE, APPOINTMENT_FAILED_DEBUG_MESSAGE);
+        }
     }
 
     /*VALIDATE IF APPOINTMENT ALREADY EXISTS ON SELECTED DATE AND TIME */

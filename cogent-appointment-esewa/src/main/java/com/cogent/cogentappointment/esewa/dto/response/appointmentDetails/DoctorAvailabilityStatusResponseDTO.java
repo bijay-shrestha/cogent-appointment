@@ -1,10 +1,9 @@
-package com.cogent.cogentappointment.esewa.dto.eSewa;
+package com.cogent.cogentappointment.esewa.dto.response.appointmentDetails;
 
 import lombok.*;
 import org.springframework.http.HttpStatus;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * @author smriti on 15/03/20
@@ -14,8 +13,11 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AvailableDatesWithSpecializationResponseDTO implements Serializable {
-    private List<AvailableDatesWithSpecialization> availableDatesWithSpecialization;
+public class DoctorAvailabilityStatusResponseDTO implements Serializable {
+
+    private String status;
+
+    private String message;
 
     private int responseCode;
 

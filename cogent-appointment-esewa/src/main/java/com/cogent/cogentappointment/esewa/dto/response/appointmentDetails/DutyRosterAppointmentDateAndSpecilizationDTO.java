@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.esewa.dto.eSewa;
+package com.cogent.cogentappointment.esewa.dto.response.appointmentDetails;
 
 import lombok.*;
 
@@ -10,7 +10,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class DutyRosterAppointmentDateAndDoctorDTO implements Serializable {
+public class DutyRosterAppointmentDateAndSpecilizationDTO implements Serializable {
 
     private Long id;
 
@@ -20,7 +20,7 @@ public class DutyRosterAppointmentDateAndDoctorDTO implements Serializable {
 
     private Date toDate;
 
-    private Long doctorId;
+    private Long specializationId;
 
-    private String doctorName;
+    private String specializationName;
 }

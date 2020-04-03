@@ -453,7 +453,7 @@ public class AdminServiceImpl implements AdminService {
 
     private void validateEmail(boolean isEmailExists, String email) {
         if (isEmailExists){
-            log.error(DUPLICATION_ERROR, email);
+            log.error(DUPLICATION_ERROR,ADMIN, email);
             throw new DataDuplicationException(
                     String.format(EMAIL_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), email));
         }

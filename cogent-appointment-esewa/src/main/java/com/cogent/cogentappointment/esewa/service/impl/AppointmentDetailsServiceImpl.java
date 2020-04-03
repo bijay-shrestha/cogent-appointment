@@ -1,9 +1,9 @@
 package com.cogent.cogentappointment.esewa.service.impl;
 
-import com.cogent.cogentappointment.esewa.dto.eSewa.*;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.AppointmentDatesRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.eSewa.AppointmentDetailRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.appoinmentDateAndTime.*;
+import com.cogent.cogentappointment.esewa.dto.response.appointmentDetails.*;
 import com.cogent.cogentappointment.esewa.exception.NoContentFoundException;
 import com.cogent.cogentappointment.esewa.repository.DoctorDutyRosterOverrideRepository;
 import com.cogent.cogentappointment.esewa.repository.DoctorDutyRosterRepository;
@@ -21,8 +21,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
-import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
+import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.*;
+import static com.cogent.cogentappointment.esewa.log.constants.AppointmentLog.APPOINTMENT;
+import static com.cogent.cogentappointment.esewa.log.constants.DoctorLog.DOCTOR;
 import static com.cogent.cogentappointment.esewa.log.constants.eSewaLog.*;
 import static com.cogent.cogentappointment.esewa.utils.AppointmentDetailsUtils.*;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.*;
@@ -88,7 +89,7 @@ public class AppointmentDetailsServiceImpl implements AppointmentDetailsService 
                 mergeOverrideAndActualDoctorList(availableDoctorFromDDROverride, availableDoctorFromDDR);
 
         if (ObjectUtils.isEmpty(mergedList)) {
-
+            doctorNotAvailableError();
             throw DOCTORS_NOT_AVAILABLE.get();
         }
 
@@ -127,6 +128,7 @@ public class AppointmentDetailsServiceImpl implements AppointmentDetailsService 
         AppointmentDatesResponseDTO responseDTO = getFinalResponse(requestDTO, appointmentDateAndTime);
 
         if (ObjectUtils.isEmpty(responseDTO.getDates())) {
+            appointmentNotAvailableError();
             throw APPOINTMENT_NOT_AVAILABLE.get();
         }
         log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_AVAILABLE_DATES_AND_TIME, getDifferenceBetweenTwoTime(startTime));
@@ -182,6 +184,7 @@ public class AppointmentDetailsServiceImpl implements AppointmentDetailsService 
         });
 
         if (ObjectUtils.isEmpty(responseDTOList)) {
+            appointmentNotAvailableError();
             throw APPOINTMENT_NOT_AVAILABLE.get();
         }
         log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_AVAILABLE_DATES, getDifferenceBetweenTwoTime(startTime));
@@ -237,6 +240,7 @@ public class AppointmentDetailsServiceImpl implements AppointmentDetailsService 
         });
 
         if (ObjectUtils.isEmpty(responseDTOList)) {
+            appointmentNotAvailableError();
             throw APPOINTMENT_NOT_AVAILABLE.get();
         }
 
@@ -292,6 +296,7 @@ public class AppointmentDetailsServiceImpl implements AppointmentDetailsService 
         responseDTO.setResponseCode(OK.value());
 
         if (ObjectUtils.isEmpty(responseDTO.getAvaliableDates())) {
+            appointmentNotAvailableError();
             throw APPOINTMENT_NOT_AVAILABLE.get();
         }
 
@@ -383,8 +388,10 @@ public class AppointmentDetailsServiceImpl implements AppointmentDetailsService 
     private void validateIfRequestedDateIsBeforeCurrentDate(Date requestedDate) {
         boolean isRequestedDateBeforeCurrentDate = isFirstDateGreater(new Date(), requestedDate);
 
-        if (isRequestedDateBeforeCurrentDate)
+        if (isRequestedDateBeforeCurrentDate) {
+            doctorNotAvailableError();
             throw DOCTORS_NOT_AVAILABLE.get();
+        }
     }
 
     private Supplier<NoContentFoundException> DOCTORS_NOT_AVAILABLE = () -> new NoContentFoundException(Doctor.class);
@@ -394,6 +401,14 @@ public class AppointmentDetailsServiceImpl implements AppointmentDetailsService 
     private List<Date> getDatesBetween(Date fromDate, Date toDate) {
         return utilDateListToSqlDateList(getDates(fromDate,
                 toDate));
+    }
+
+    private void appointmentNotAvailableError() {
+        log.error(CONTENT_NOT_FOUND, APPOINTMENT);
+    }
+
+    private void doctorNotAvailableError() {
+        log.error(CONTENT_NOT_FOUND, DOCTOR);
     }
 
 }

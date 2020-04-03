@@ -109,7 +109,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public PatientDetailResponseDTO searchForSelf(PatientMinSearchRequestDTO searchRequestDTO) {
+    public PatientDetailResponseDTOWithStatus searchForSelf(PatientMinSearchRequestDTO searchRequestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, PATIENT);
@@ -118,11 +118,11 @@ public class PatientServiceImpl implements PatientService {
 
         log.info(SEARCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
-        return responseDTO;
+        return parseToPatientDetailResponseDTOWithStatus(responseDTO);
     }
 
     @Override
-    public PatientResponseDTOForOthers searchForOthers(PatientMinSearchRequestDTO searchRequestDTO,
+    public PatientResponseDTOForOthersWithStatus searchForOthers(PatientMinSearchRequestDTO searchRequestDTO,
                                                        Pageable pageable) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
@@ -132,12 +132,12 @@ public class PatientServiceImpl implements PatientService {
         List<PatientRelationInfoResponseDTO> patientRelationInfo =
                 patientRepository.fetchPatientRelationInfo(searchRequestDTO);
 
-        PatientResponseDTOForOthers patientMinInfo =
+        PatientResponseDTOForOthers infoForOthers =
                 patientRepository.fetchMinPatientInfoForOthers(patientRelationInfo, pageable);
 
         log.info(SEARCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
-        return patientMinInfo;
+        return parseToPatientMinResponseDTOForOthersWithStatus(infoForOthers);
     }
 
     @Override

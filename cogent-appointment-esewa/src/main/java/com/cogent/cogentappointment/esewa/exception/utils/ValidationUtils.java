@@ -1,8 +1,8 @@
 package com.cogent.cogentappointment.esewa.exception.utils;
 
 import com.cogent.cogentappointment.esewa.constants.StringConstant;
-import com.cogent.cogentappointment.esewa.exception.ConstraintViolationException;
 import com.cogent.cogentappointment.esewa.utils.commons.StringUtil;
+import com.cogent.cogentappointment.esewa.exception.ConstraintViolationException;
 
 import javax.validation.ConstraintViolation;
 import java.util.List;

@@ -12,6 +12,8 @@ import java.util.Date;
 import java.util.List;
 
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.esewa.constants.QueryConstants.AppointmentConstants.APPOINTMENT_DATE;
+import static com.cogent.cogentappointment.esewa.constants.QueryConstants.AppointmentConstants.APPOINTMENT_TIME;
 import static com.cogent.cogentappointment.esewa.query.AppointmentReservationLogQuery.QUERY_TO_FETCH_APPOINTMENT_RESERVATION_LOG;
 import static com.cogent.cogentappointment.esewa.query.AppointmentReservationLogQuery.QUERY_TO_VALIDATE_APPOINTMENT_RESERVATION_EXISTS;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.utilDateToSqlDate;

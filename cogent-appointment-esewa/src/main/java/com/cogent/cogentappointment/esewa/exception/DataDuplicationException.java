@@ -27,7 +27,8 @@ public class DataDuplicationException extends RuntimeException {
         exception = ExceptionResponse.builder()
                 .errorMessage(errorMessage)
                 .debugMessage(debugMessage)
-                .status(CONFLICT)
+                .responseStatus(CONFLICT)
+                .responseCode(CONFLICT.value())
                 .timeStamp(getLocalDateTime())
                 .build();
     }

@@ -4,11 +4,11 @@ import com.cogent.cogentappointment.esewa.dto.request.appointmentStatus.Appointm
 import com.cogent.cogentappointment.esewa.dto.request.doctorDutyRoster.DoctorDutyRosterOverrideUpdateRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.eSewa.AppointmentDetailRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.appoinmentDateAndTime.DoctorDutyRosterOverrideAppointmentDate;
+import com.cogent.cogentappointment.esewa.dto.response.appointmentDetails.AvailableDoctorWithSpecialization;
+import com.cogent.cogentappointment.esewa.dto.response.appointmentDetails.DoctorAvailabilityStatusResponseDTO;
+import com.cogent.cogentappointment.esewa.dto.response.appointmentDetails.DutyRosterOverrideAppointmentDate;
 import com.cogent.cogentappointment.esewa.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
-import com.cogent.cogentappointment.esewa.dto.response.eSewa.AvailableDoctorResponseDTO;
-import com.cogent.cogentappointment.esewa.dto.response.eSewa.DoctorAvailabilityStatusResponseDTO;
-import com.cogent.cogentappointment.esewa.dto.response.eSewa.DutyRosterOverrideAppointmentDate;
 import com.cogent.cogentappointment.esewa.exception.NoContentFoundException;
 import com.cogent.cogentappointment.esewa.query.EsewaQuery;
 import com.cogent.cogentappointment.esewa.repository.custom.DoctorDutyRosterOverrideRepositoryCustom;
@@ -164,7 +164,7 @@ public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyR
     }
 
     @Override
-    public List<AvailableDoctorResponseDTO> fetchAvailableDoctor(AppointmentDetailRequestDTO requestDTO) {
+    public  List<AvailableDoctorWithSpecialization> fetchAvailableDoctor(AppointmentDetailRequestDTO requestDTO) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_AVAILABLE_DOCTORS_FROM_DDR_OVERRIDE(requestDTO))
                 .setParameter(DATE, requestDTO.getDate())
@@ -173,7 +173,7 @@ public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyR
         if (!Objects.isNull(requestDTO.getSpecializationId()))
             query.setParameter(SPECIALIZATION_ID, requestDTO.getSpecializationId());
 
-        return transformQueryToResultList(query, AvailableDoctorResponseDTO.class);
+        return transformQueryToResultList(query, AvailableDoctorWithSpecialization.class);
     }
 
     @Override

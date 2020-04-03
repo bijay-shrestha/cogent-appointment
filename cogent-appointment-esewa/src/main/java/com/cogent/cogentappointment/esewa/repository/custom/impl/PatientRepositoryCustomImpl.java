@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.esewa.constants.QueryConstants.AppointmentConstants.APPOINTMENT_ID;
+import static com.cogent.cogentappointment.esewa.constants.QueryConstants.PatientQueryConstants.HOSPITAL_PATIENT_INFO_ID;
 import static com.cogent.cogentappointment.esewa.constants.StringConstant.*;
 import static com.cogent.cogentappointment.esewa.query.PatientQuery.*;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.*;

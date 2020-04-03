@@ -13,6 +13,10 @@ public class ErrorMessageConstants {
         String INVALID_APPOINTMENT_TIME = "Invalid appointment time: '%s'";
 
         String INVALID_APPOINTMENT_DATE_TIME = "Sorry! Appointment failed because requested date/time has already passed.";
+
+        String APPOINTMENT_FAILED_MESSAGE = "The selected time slot has expired. Please try again!";
+
+        String APPOINTMENT_FAILED_DEBUG_MESSAGE = "AppointmentReservationLog(s) is null";
     }
 
     public interface AdminServiceMessages {

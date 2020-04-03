@@ -5,9 +5,7 @@ import com.cogent.cogentappointment.esewa.dto.request.appointment.AppointmentReq
 import com.cogent.cogentappointment.esewa.dto.request.appointment.approval.AppointmentRejectDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
-import com.cogent.cogentappointment.esewa.dto.response.appointment.AppointmentBookedTimeResponseDTO;
-import com.cogent.cogentappointment.esewa.dto.response.appointment.AppointmentCheckAvailabilityResponseDTO;
-import com.cogent.cogentappointment.esewa.dto.response.appointment.AppointmentSuccessResponseDTO;
+import com.cogent.cogentappointment.esewa.dto.response.appointment.*;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.appointmentQueue.AppointmentQueueSearchByTimeDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.appointmentQueue.AppointmentTimeDTO;
@@ -37,6 +35,8 @@ import static com.cogent.cogentappointment.esewa.constants.StringConstant.HYPHEN
 import static com.cogent.cogentappointment.esewa.utils.commons.DateConverterUtils.calculateAge;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.esewa.utils.commons.NumberFormatterUtils.generateRandomNumber;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 /**
  * @author smriti on 2019-10-24
@@ -60,7 +60,7 @@ public class AppointmentUtils {
                 requestDTO.getAppointmentTime()));
         appointment.setAppointmentNumber(appointmentNumber);
         appointment.setCreatedDateNepali(requestDTO.getCreatedDateNepali());
-        appointment.setIsFreeFollowUp(requestDTO.getIsFreeFollowUp());
+        appointment.setIsFollowUp(requestDTO.getIsFreeFollowUp());
         appointment.setIsSelf(isSelf);
         parseToAppointment(patient, specialization, doctor, hospital, appointment);
         return appointment;
@@ -83,10 +83,14 @@ public class AppointmentUtils {
         appointment.setSerialNumber(generateRandomNumber(6));
     }
 
-    public static AppointmentSuccessResponseDTO parseToAppointmentSuccessResponseDTO(String appointmentNumber) {
+
+    public static AppointmentSuccessResponseDTO parseToAppointmentSuccessResponseDTO(String appointmentNumber,
+                                                                                     Character transactionStatus) {
         return AppointmentSuccessResponseDTO.builder()
                 .appointmentNumber(appointmentNumber)
-                .appointmentTransactionStatus(ACTIVE)
+                .appointmentTransactionStatus(transactionStatus)
+                .responseStatus(CREATED)
+                .responseCode(CREATED.value())
                 .build();
     }
 
@@ -144,6 +148,8 @@ public class AppointmentUtils {
                 .queryDate(queryDate)
                 .doctorAvailableTime(startTime + HYPHEN + endTime)
                 .availableTimeSlots(availableTimeSlots)
+                .responseStatus(OK)
+                .responseCode(OK.value())
                 .build();
     }
 
@@ -505,5 +511,31 @@ public class AppointmentUtils {
 
     }
 
+    public static StatusResponseDTO parseToStatusResponseDTO() {
+        return StatusResponseDTO.builder()
+                .responseCode(OK.value())
+                .responseStatus(OK)
+                .build();
+    }
+
+    public static AppointmentMinResponseWithStatusDTO parseToAppointmentMinResponseWithStatusDTO(
+            List<AppointmentMinResponseDTO> minResponseDTOList) {
+
+        return AppointmentMinResponseWithStatusDTO.builder()
+                .appointmentMinResponseDTOS(minResponseDTOList)
+                .responseStatus(OK)
+                .responseCode(OK.value())
+                .build();
+    }
+
+    public static AppointmentDetailResponseWithStatusDTO parseToAppointmentDetailResponseWithStatusDTO(
+            AppointmentDetailResponseDTO responseDTO) {
+
+        return AppointmentDetailResponseWithStatusDTO.builder()
+                .appointmentDetailResponseDTO(responseDTO)
+                .responseStatus(OK)
+                .responseCode(OK.value())
+                .build();
+    }
 
 }

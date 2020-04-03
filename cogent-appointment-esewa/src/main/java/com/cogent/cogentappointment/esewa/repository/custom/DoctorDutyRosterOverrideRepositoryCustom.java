@@ -1,8 +1,8 @@
 package com.cogent.cogentappointment.esewa.repository.custom;
 
-import com.cogent.cogentappointment.esewa.dto.eSewa.AvailableDoctorWithSpecialization;
-import com.cogent.cogentappointment.esewa.dto.eSewa.DoctorAvailabilityStatusResponseDTO;
-import com.cogent.cogentappointment.esewa.dto.eSewa.DutyRosterOverrideAppointmentDate;
+import com.cogent.cogentappointment.esewa.dto.response.appointmentDetails.AvailableDoctorWithSpecialization;
+import com.cogent.cogentappointment.esewa.dto.response.appointmentDetails.DoctorAvailabilityStatusResponseDTO;
+import com.cogent.cogentappointment.esewa.dto.response.appointmentDetails.DutyRosterOverrideAppointmentDate;
 import com.cogent.cogentappointment.esewa.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.doctorDutyRoster.DoctorDutyRosterOverrideUpdateRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.eSewa.AppointmentDetailRequestDTO;

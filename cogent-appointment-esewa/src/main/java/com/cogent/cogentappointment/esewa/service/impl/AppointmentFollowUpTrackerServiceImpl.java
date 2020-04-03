@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.esewa.service.impl;
 
+import com.cogent.cogentappointment.esewa.dto.response.appointment.AppointmentFollowUpResponseDTOWithStatus;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.AppointmentFollowUpRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.AppointmentFollowUpResponseDTO;
 import com.cogent.cogentappointment.esewa.repository.AppointmentFollowUpTrackerRepository;
@@ -21,6 +22,7 @@ import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.FETCHING_
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.esewa.log.constants.AppointmentFollowUpTrackerLog.APPOINTMENT_FOLLOW_UP_TRACKER;
 import static com.cogent.cogentappointment.esewa.utils.AppointmentFollowUpTrackerUtils.parseToAppointmentFollowUpResponseDTO;
+import static com.cogent.cogentappointment.esewa.utils.AppointmentFollowUpTrackerUtils.parseToAppointmentFollowUpResponseDTOWithStatus;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.*;
 import static java.lang.reflect.Array.get;
 
@@ -51,7 +53,7 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
     }
 
     @Override
-    public AppointmentFollowUpResponseDTO fetchAppointmentFollowUpDetails(AppointmentFollowUpRequestDTO requestDTO) {
+    public AppointmentFollowUpResponseDTOWithStatus fetchAppointmentFollowUpDetails(AppointmentFollowUpRequestDTO requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -104,7 +106,7 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
 
         log.info(FETCHING_PROCESS_COMPLETED, APPOINTMENT_FOLLOW_UP_TRACKER, getDifferenceBetweenTwoTime(startTime));
 
-        return responseDTO;
+        return parseToAppointmentFollowUpResponseDTOWithStatus(responseDTO);
     }
 
 

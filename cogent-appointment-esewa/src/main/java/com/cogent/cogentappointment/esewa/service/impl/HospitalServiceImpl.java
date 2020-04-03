@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.esewa.service.impl;
 
 import com.cogent.cogentappointment.esewa.dto.request.hospital.HospitalMinSearchRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.response.hospital.HospitalMinResponseDTO;
+import com.cogent.cogentappointment.esewa.dto.response.hospital.HospitalMinResponseDTOWithStatus;
 import com.cogent.cogentappointment.esewa.exception.NoContentFoundException;
 import com.cogent.cogentappointment.esewa.repository.HospitalRepository;
 import com.cogent.cogentappointment.esewa.service.HospitalService;
@@ -15,6 +16,7 @@ import java.util.function.Function;
 
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.esewa.log.constants.HospitalLog.HOSPITAL;
+import static com.cogent.cogentappointment.esewa.utils.HospitalUtils.parseToHospitalMinResponseDTOWithStatus;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
@@ -33,7 +35,7 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     @Override
-    public List<HospitalMinResponseDTO> fetchMinDetails(HospitalMinSearchRequestDTO searchRequestDTO) {
+    public HospitalMinResponseDTOWithStatus fetchMinDetails(HospitalMinSearchRequestDTO searchRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -43,6 +45,6 @@ public class HospitalServiceImpl implements HospitalService {
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
 
-        return responseDTO;
+        return parseToHospitalMinResponseDTOWithStatus(responseDTO);
     }
 }

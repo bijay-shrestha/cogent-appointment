@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.esewa.dto.response.appointment;
 
 import lombok.*;
+import org.springframework.http.HttpStatus;
 
 import java.io.Serializable;
 
@@ -17,4 +18,8 @@ public class AppointmentSuccessResponseDTO implements Serializable {
     private String appointmentNumber;
 
     private Character appointmentTransactionStatus;
+
+    private int responseCode;
+
+    private HttpStatus responseStatus;
 }

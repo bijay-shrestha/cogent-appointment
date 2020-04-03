@@ -40,4 +40,5 @@ public class AppointmentDetailResponseDTO implements Serializable {
     private Double serviceChargeAmount;
 
     private Double discountAmount;
+
 }

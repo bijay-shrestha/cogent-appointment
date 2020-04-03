@@ -15,9 +15,8 @@ import java.util.Optional;
 @Repository
 public interface UniversityRepository extends JpaRepository<University, Long>, UniversityRepositoryCustom {
 
-    @Query("SELECT u FROM University u WHERE u.status!='D' AND u.id = :id AND u.hospital.id =:hospitalId")
-    Optional<University> fetchUniversityByIdAndHospitalId(@Param("id") Long id,
-                                                          @Param("hospitalId") Long hospitalId);
+    @Query("SELECT u FROM University u WHERE u.status!='D' AND u.id = :id")
+    Optional<University> fetchUniversityById(@Param("id") Long id);
 
     @Query("SELECT u FROM University u WHERE u.status='Y' AND u.id = :id")
     Optional<University> fetchActiveUniversityById(@Param("id") Long id);

@@ -195,7 +195,7 @@ public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyR
             new NoContentFoundException(DoctorDutyRosterOverride.class);
 
     private NoContentFoundException DOCTOR_DUTY_ROSTER_OVERRIDE_NOT_FOUND() {
-        log.error(CONTENT_NOT_FOUND,DOCTOR_DUTY_ROSTER_OVERRIDE);
-      throw  new NoContentFoundException(DoctorDutyRosterOverride.class);
+        log.error(CONTENT_NOT_FOUND, DOCTOR_DUTY_ROSTER_OVERRIDE);
+        throw new NoContentFoundException(DoctorDutyRosterOverride.class);
     }
 }

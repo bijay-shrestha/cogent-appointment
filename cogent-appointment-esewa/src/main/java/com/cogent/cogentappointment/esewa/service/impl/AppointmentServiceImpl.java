@@ -188,7 +188,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         saveAppointmentTransactionDetail(requestDTO.getTransactionInfo(), appointment);
 
-        if (appointmentInfo.getIsFreeFollowUp().equals(YES))
+        if (appointmentInfo.getIsFollowUp().equals(YES))
             saveAppointmentFollowUpLog(appointmentInfo.getParentAppointmentId(), appointment.getId());
 
         updateAppointmentTransactionRequestLog(transactionRequestLog);
@@ -250,7 +250,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         saveAppointmentTransactionDetail(requestDTO.getTransactionInfo(), appointment);
 
-        if (appointmentInfo.getIsFreeFollowUp().equals(YES))
+        if (appointmentInfo.getIsFollowUp().equals(YES))
             saveAppointmentFollowUpLog(appointmentInfo.getParentAppointmentId(), appointment.getId());
 
         updateAppointmentTransactionRequestLog(transactionRequestLog);
@@ -426,10 +426,11 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     private void validateAppointmentExists(Long appointmentCount, String appointmentTime) {
-        if (appointmentCount.intValue() > 0)
+        if (appointmentCount.intValue() > 0) {
             log.error(APPOINTMENT_EXISTS, convert24HourTo12HourFormat(appointmentTime));
             throw new DataDuplicationException(String.format(APPOINTMENT_EXISTS,
                     convert24HourTo12HourFormat(appointmentTime)));
+        }
     }
 
     private Doctor fetchDoctor(Long doctorId, Long hospitalId) {

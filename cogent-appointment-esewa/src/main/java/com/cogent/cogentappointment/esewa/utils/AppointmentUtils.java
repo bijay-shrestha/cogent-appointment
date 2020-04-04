@@ -29,7 +29,6 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-import static com.cogent.cogentappointment.esewa.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.esewa.constants.StatusConstants.AppointmentStatusConstants.*;
 import static com.cogent.cogentappointment.esewa.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateConverterUtils.calculateAge;
@@ -60,7 +59,7 @@ public class AppointmentUtils {
                 requestDTO.getAppointmentTime()));
         appointment.setAppointmentNumber(appointmentNumber);
         appointment.setCreatedDateNepali(requestDTO.getCreatedDateNepali());
-        appointment.setIsFollowUp(requestDTO.getIsFreeFollowUp());
+        appointment.setIsFollowUp(requestDTO.getIsFollowUp());
         appointment.setIsSelf(isSelf);
         parseToAppointment(patient, specialization, doctor, hospital, appointment);
         return appointment;

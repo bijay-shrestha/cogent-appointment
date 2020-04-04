@@ -91,7 +91,6 @@ public class WebResourceKeyConstants {
 
     //E
     public interface EsewaConstants {
-        String BASE_ESEWA = "/esewa";
         String FETCH_DOCTOR_AVAILABLE_STATUS = "/doctor-available-status";
         String AVAILABLE_APPOINTMENT_DATES_AND_TIME = "/availableAppointmentDatesAndTime";
         String DOCTOR_AVAILABLE_DATES = "/doctorAvailableDates";

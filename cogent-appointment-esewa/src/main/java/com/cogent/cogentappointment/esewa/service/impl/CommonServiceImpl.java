@@ -7,6 +7,7 @@ import com.cogent.cogentappointment.esewa.repository.DoctorRepository;
 import com.cogent.cogentappointment.esewa.repository.SpecializationRepository;
 import com.cogent.cogentappointment.esewa.service.CommonService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,7 @@ import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.FETCHING_
 import static com.cogent.cogentappointment.esewa.log.constants.CommonLog.DOCTOR_SPECIALIZATION_INFO;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static org.springframework.http.HttpStatus.OK;
 
 /**
  * @author smriti ON 05/02/2020
@@ -51,6 +53,8 @@ public class CommonServiceImpl implements CommonService {
         DoctorSpecializationResponseDTO commonInfo = DoctorSpecializationResponseDTO.builder()
                 .doctorInfo(doctorInfo)
                 .specializationInfo(specializationInfo)
+                .responseStatus(OK)
+                .responseCode(OK.value())
                 .build();
 
         log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_SPECIALIZATION_INFO,

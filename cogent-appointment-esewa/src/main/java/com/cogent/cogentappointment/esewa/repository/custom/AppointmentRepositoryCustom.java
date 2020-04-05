@@ -2,20 +2,10 @@ package com.cogent.cogentappointment.esewa.repository.custom;
 
 import com.cogent.cogentappointment.esewa.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.AppointmentSearchDTO;
-import com.cogent.cogentappointment.esewa.dto.request.appointment.approval.AppointmentPendingApprovalSearchDTO;
-import com.cogent.cogentappointment.esewa.dto.request.appointment.log.AppointmentLogSearchDTO;
-import com.cogent.cogentappointment.esewa.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
-import com.cogent.cogentappointment.esewa.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
-import com.cogent.cogentappointment.esewa.dto.response.appointment.AppointmentBookedDateResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.AppointmentBookedTimeResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.AppointmentDetailResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.AppointmentMinResponseDTO;
-import com.cogent.cogentappointment.esewa.dto.response.appointment.approval.AppointmentPendingApprovalResponseDTO;
-import com.cogent.cogentappointment.esewa.dto.response.appointment.log.AppointmentLogResponseDTO;
-import com.cogent.cogentappointment.esewa.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
-import com.cogent.cogentappointment.esewa.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -43,26 +33,6 @@ public interface AppointmentRepositoryCustom {
     /*admin*/
     List<AppointmentBookedTimeResponseDTO> fetchBookedAppointments(AppointmentCheckAvailabilityRequestDTO requestDTO);
 
-    List<AppointmentBookedDateResponseDTO> fetchBookedAppointmentDates(Date fromDate,
-                                                                       Date toDate,
-                                                                       Long doctorId,
-                                                                       Long specializationId);
-
-    Long fetchBookedAppointmentCount(Date fromDate, Date toDate, Long doctorId, Long specializationId);
-
-    AppointmentPendingApprovalResponseDTO searchPendingVisitApprovals(
-            AppointmentPendingApprovalSearchDTO searchRequestDTO, Pageable pageable, Long hospitalId);
-
-
-    List<AppointmentStatusResponseDTO> fetchAppointmentForAppointmentStatus(AppointmentStatusRequestDTO requestDTO,
-                                                                            Long hospitalId);
-
-    AppointmentRescheduleLogResponseDTO fetchRescheduleAppointment(AppointmentRescheduleLogSearchDTO rescheduleDTO,
-                                                                   Pageable pageable,
-                                                                   Long hospitalId);
-
-    AppointmentLogResponseDTO searchAppointmentLogs(
-            AppointmentLogSearchDTO searchRequestDTO, Pageable pageable, Long hospitalId);
 
     Double calculateRefundAmount(Long appointmentId);
 }

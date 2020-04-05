@@ -181,10 +181,5 @@ public class AppointmentDetailsUtils {
                 .build();
     }
 
-    public static void parseDoctorAvailabilityResponseStatus(DoctorAvailabilityStatusResponseDTO responseDTO) {
-        responseDTO.setResponseStatus(OK);
-        responseDTO.setResponseCode(OK.value());
-    }
-
 
 }

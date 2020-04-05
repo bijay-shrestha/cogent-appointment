@@ -24,39 +24,6 @@ import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.isLocal
 
 public class DoctorDutyRosterOverrideUtils {
 
-    public static DoctorDutyRosterOverride parseToDoctorDutyRosterOverride(
-            DoctorDutyRosterOverrideRequestDTO requestDTO,
-            DoctorDutyRoster doctorDutyRoster) {
-
-        DoctorDutyRosterOverride doctorDutyRosterOverride = new DoctorDutyRosterOverride();
-        doctorDutyRosterOverride.setFromDate(requestDTO.getFromDate());
-        doctorDutyRosterOverride.setToDate(requestDTO.getToDate());
-        doctorDutyRosterOverride.setStartTime(requestDTO.getStartTime());
-        doctorDutyRosterOverride.setEndTime(requestDTO.getEndTime());
-        doctorDutyRosterOverride.setDayOffStatus(requestDTO.getDayOffStatus());
-        doctorDutyRosterOverride.setStatus(requestDTO.getStatus());
-        doctorDutyRosterOverride.setRemarks(requestDTO.getRemarks());
-        doctorDutyRosterOverride.setDoctorDutyRosterId(doctorDutyRoster);
-        return doctorDutyRosterOverride;
-    }
-
-    public static DoctorDutyRosterOverride parseDoctorDutyRosterOverrideDetails(
-            DoctorDutyRosterOverrideUpdateRequestDTO updateRequestDTO,
-            DoctorDutyRosterOverride doctorDutyRosterOverride) {
-
-        doctorDutyRosterOverride.setFromDate(updateRequestDTO.getOverrideFromDate());
-        doctorDutyRosterOverride.setToDate(updateRequestDTO.getOverrideToDate());
-        doctorDutyRosterOverride.setEndTime(updateRequestDTO.getEndTime());
-        doctorDutyRosterOverride.setStartTime(updateRequestDTO.getStartTime());
-        doctorDutyRosterOverride.setDayOffStatus(updateRequestDTO.getDayOffStatus());
-        doctorDutyRosterOverride.setStatus(updateRequestDTO.getStatus());
-        doctorDutyRosterOverride.setRemarks(updateRequestDTO.getRemarks());
-        return doctorDutyRosterOverride;
-    }
-
-    public static void updateDutyRosterOverrideStatus(List<DoctorDutyRosterOverride> doctorDutyRosterOverrides) {
-        doctorDutyRosterOverrides.forEach(doctorDutyRosterOverride -> doctorDutyRosterOverride.setStatus(StatusConstants.NO));
-    }
 
     /*ADD TO FINAL LIST ONLY IF QUERY RESULT IS WITHIN THE SELECTED SEARCH DATE RANGE*/
     public static List<DoctorDutyRosterStatusResponseDTO> parseQueryResultToDoctorDutyRosterStatusResponseDTO
@@ -110,29 +77,5 @@ public class DoctorDutyRosterOverrideUtils {
         });
 
         return doctorDutyRosterStatusResponseDTOS;
-    }
-
-    public static DoctorRosterOverrideUpdateResponseDTO parseToOverrideUpdateResponse(Long savedOverrideId) {
-        return DoctorRosterOverrideUpdateResponseDTO.builder()
-                .savedOverrideId(savedOverrideId)
-                .build();
-    }
-
-    public static void parseDeletedOverrideDetails(DoctorDutyRosterOverride doctorDutyRosterOverride,
-                                                   Character status,
-                                                   String remarks) {
-
-        doctorDutyRosterOverride.setStatus(status);
-        doctorDutyRosterOverride.setRemarks(remarks);
-    }
-
-    public static void updateDoctorRosterOverrideDetails(DoctorDutyRosterOverride originalInfo,
-                                                         DoctorDutyRosterOverrideUpdateRequestDTO updatedInfo) {
-        originalInfo.setStartTime(updatedInfo.getStartTime());
-        originalInfo.setEndTime(updatedInfo.getEndTime());
-        originalInfo.setFromDate(updatedInfo.getOverrideFromDate());
-        originalInfo.setToDate(updatedInfo.getOverrideToDate());
-        originalInfo.setStatus(updatedInfo.getStatus());
-        originalInfo.setRemarks(updatedInfo.getRemarks());
     }
 }

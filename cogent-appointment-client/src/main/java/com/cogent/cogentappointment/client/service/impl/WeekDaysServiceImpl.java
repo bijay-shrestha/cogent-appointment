@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.function.Function;
 
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.WeekDaysLog.WEEK_DAYS;
@@ -51,7 +52,7 @@ public class WeekDaysServiceImpl implements WeekDaysService {
         log.info(FETCHING_PROCESS_STARTED, WEEK_DAYS);
 
         WeekDays weekDays = weekDaysRepository.fetchActiveWeekDaysById(id)
-                .orElseThrow(() -> new NoContentFoundException(WeekDays.class, "id", id.toString()));
+                .orElseThrow(() -> WEEK_DAYS_WITH_GIVEN_ID_NOT_FOUND.apply(id));
 
         log.info(FETCHING_PROCESS_COMPLETED, WEEK_DAYS, getDifferenceBetweenTwoTime(startTime));
 
@@ -70,4 +71,9 @@ public class WeekDaysServiceImpl implements WeekDaysService {
 
         return responseDTOS;
     }
+
+    private Function<Long, NoContentFoundException> WEEK_DAYS_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID,WEEK_DAYS, id);
+        throw new NoContentFoundException(WeekDays.class, "id", id.toString());
+    };
 }

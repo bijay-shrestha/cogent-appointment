@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 import static com.cogent.cogentappointment.client.constants.StringConstant.HYPHEN;
@@ -188,4 +189,11 @@ public class DateUtils {
         }
         return datesInRange;
     }
+
+    public static Date convertLocalDateToDate(LocalDate requestedDate) {
+        return java.util.Date.from(requestedDate.atStartOfDay()
+                .atZone(ZoneId.systemDefault())
+                .toInstant());
+    }
+
 }

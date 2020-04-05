@@ -63,7 +63,7 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        log.error("Hospital with id : {} not found", id);
+        log.error(CONTENT_NOT_FOUND_BY_ID,HOSPITAL, id);
         throw new NoContentFoundException(Hospital.class, "id", id.toString());
     };
 }

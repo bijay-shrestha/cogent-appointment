@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.service.impl;
 
+import com.cogent.cogentappointment.admin.constants.ErrorMessageConstants;
 import com.cogent.cogentappointment.client.dto.request.email.EmailRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.forgotPassword.ForgotPasswordRequestDTO;
 import com.cogent.cogentappointment.client.exception.BadRequestException;
@@ -24,6 +25,7 @@ import static com.cogent.cogentappointment.client.constants.ErrorMessageConstant
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.INVALID_VERIFICATION_TOKEN;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.INACTIVE;
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.INVALID_VERIFICATION_TOKEN_ERROR;
 import static com.cogent.cogentappointment.client.log.constants.AdminLog.*;
 import static com.cogent.cogentappointment.client.utils.ForgotPasswordUtils.convertToForgotPasswordVerification;
 import static com.cogent.cogentappointment.client.utils.ForgotPasswordUtils.parseToEmailRequestDTO;
@@ -115,6 +117,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
             updateAdminPassword(requestDTO, admin);
             updateForgotPasswordVerification(admin.getId());
         } else {
+            log.error(INVALID_VERIFICATION_TOKEN_ERROR,requestDTO.getVerificationToken());
             throw new NoContentFoundException(INVALID_VERIFICATION_TOKEN);
         }
         log.info(UPDATING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
@@ -131,7 +134,10 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     }
 
     private void validateExpirationTime(Object expirationTime) {
-        if (((Date) expirationTime).before(new Date())) throw RESET_CODE_HAS_EXPIRED.get();
+        if (((Date) expirationTime).before(new Date())){
+            log.error(RESET_CODE_EXPIRED);
+            throw RESET_CODE_HAS_EXPIRED.get();
+        }
     }
 
     public void save(ForgotPasswordVerification forgotPasswordVerification) {
@@ -139,8 +145,10 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     }
 
     private void validateAdmin(Admin admin, String username) {
-        if (!admin.getStatus().equals(ACTIVE))
+        if (!admin.getStatus().equals(ACTIVE)){
+            log.error(ADMIN_NOT_ACTIVE_ERROR, username);
             throw new NoContentFoundException(String.format(ADMIN_NOT_ACTIVE, username), "username/email", username);
+        }
     }
 
     private Supplier<BadRequestException> RESET_CODE_HAS_EXPIRED = () ->

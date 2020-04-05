@@ -8,6 +8,7 @@ import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.ProfileRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Profile;
 import com.cogent.cogentappointment.persistence.model.ProfileMenu;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +21,11 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
+import static com.cogent.cogentappointment.client.log.constants.ProfileLog.PROFILE;
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.client.log.constants.ProfileLog.PROFILE_MENU;
 import static com.cogent.cogentappointment.client.query.ProfileQuery.*;
 import static com.cogent.cogentappointment.client.utils.ProfileUtils.parseToAssignedProfileMenuResponseDTO;
 import static com.cogent.cogentappointment.client.utils.ProfileUtils.parseToProfileDetailResponseDTO;
@@ -32,6 +37,7 @@ import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
  */
 @Service
 @Transactional(readOnly = true)
+@Slf4j
 public class ProfileRepositoryCustomImpl implements ProfileRepositoryCustom {
 
     @PersistenceContext
@@ -70,7 +76,10 @@ public class ProfileRepositoryCustomImpl implements ProfileRepositoryCustom {
 
         List<ProfileMinimalResponseDTO> results = transformQueryToResultList(query, ProfileMinimalResponseDTO.class);
 
-        if (results.isEmpty()) throw PROFILES_NOT_FOUND.get();
+        if (results.isEmpty()){
+            error(PROFILE);
+            throw PROFILES_NOT_FOUND.get();
+        }
         else {
             results.get(0).setTotalItems(totalItems);
             return results;
@@ -108,7 +117,10 @@ public class ProfileRepositoryCustomImpl implements ProfileRepositoryCustom {
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
-        if (results.isEmpty()) throw PROFILES_NOT_FOUND.get();
+        if (results.isEmpty()){
+            error(PROFILE);
+            throw PROFILES_NOT_FOUND.get();
+        }
         else return results;
     }
 
@@ -120,7 +132,10 @@ public class ProfileRepositoryCustomImpl implements ProfileRepositoryCustom {
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
-        if (results.isEmpty()) throw PROFILES_NOT_FOUND.get();
+        if (results.isEmpty()){
+            error(PROFILE);
+            throw PROFILES_NOT_FOUND.get();
+        }
         else return results;
     }
 
@@ -134,8 +149,10 @@ public class ProfileRepositoryCustomImpl implements ProfileRepositoryCustom {
 
         List<Object[]> results = query.getResultList();
 
-        if (results.isEmpty())
+        if (results.isEmpty()){
+            error(PROFILE_MENU);
             throw new NoContentFoundException(ProfileMenu.class);
+        }
 
         return parseToAssignedProfileMenuResponseDTO(results);
     }
@@ -143,6 +160,12 @@ public class ProfileRepositoryCustomImpl implements ProfileRepositoryCustom {
     private Supplier<NoContentFoundException> PROFILES_NOT_FOUND = () -> new NoContentFoundException(Profile.class);
 
     private Function<Long, NoContentFoundException> PROFILE_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, PROFILE, id);
         throw new NoContentFoundException(Profile.class, "id", id.toString());
     };
+
+    private void error(String name) {
+        log.error(CONTENT_NOT_FOUND, name);
+    }
+
 }

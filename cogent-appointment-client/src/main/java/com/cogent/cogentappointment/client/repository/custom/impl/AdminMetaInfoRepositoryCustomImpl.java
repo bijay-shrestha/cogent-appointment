@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.client.dto.response.admin.AdminMetaInfoRespo
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.AdminMetaInfoRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.AdminMetaInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +14,8 @@ import javax.persistence.Query;
 import java.util.List;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.HOSPITAL_ID;
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
+import static com.cogent.cogentappointment.client.log.constants.AdminLog.ADMIN_META_INFO;
 import static com.cogent.cogentappointment.client.query.AdminQuery.QUERY_TO_FETCH_ADMIN_META_INFO;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.transformQueryToResultList;
@@ -22,6 +25,7 @@ import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.trans
  */
 @Repository
 @Transactional(readOnly = true)
+@Slf4j
 public class AdminMetaInfoRepositoryCustomImpl implements AdminMetaInfoRepositoryCustom {
 
     @PersistenceContext
@@ -34,7 +38,10 @@ public class AdminMetaInfoRepositoryCustomImpl implements AdminMetaInfoRepositor
 
         List<AdminMetaInfoResponseDTO> list = transformQueryToResultList(query, AdminMetaInfoResponseDTO.class);
 
-        if (list.isEmpty()) throw new NoContentFoundException((AdminMetaInfo.class));
+        if (list.isEmpty()){
+            log.error(CONTENT_NOT_FOUND,ADMIN_META_INFO);
+            throw new NoContentFoundException((AdminMetaInfo.class));
+        }
 
         return list;
     }

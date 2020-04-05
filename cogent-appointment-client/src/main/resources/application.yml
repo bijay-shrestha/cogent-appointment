@@ -1,7 +1,5 @@
 spring:
-<<<<<<< HEAD
   profiles.active: dev
-=======
   datasource:
     url: jdbc:mysql://localhost:3306/demo
     username: root
@@ -28,4 +26,3 @@ spring:
     bucket: cogent-appointment
     access-key: cogent-appointment
     secret-key: cogentappointment@123
->>>>>>> 4a21efe4cb755c941321968413c20997ee67b257

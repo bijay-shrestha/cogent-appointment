@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
@@ -26,9 +25,6 @@ public class UniversityRequestDTO implements Serializable {
 
     @NotNull
     private Long countryId;
-
-    @NotNull
-    private Long hospitalId;
 
     @NotNull
     @Status

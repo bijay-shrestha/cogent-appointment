@@ -10,6 +10,7 @@ import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.DepartmentRepositoryCustom;
 import com.cogent.cogentappointment.client.utils.commons.PageableUtils;
 import com.cogent.cogentappointment.persistence.model.Department;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
+import static com.cogent.cogentappointment.client.log.constants.DepartmentLog.DEPARTMENT;
 import static com.cogent.cogentappointment.client.query.DepartmentQuery.*;
 import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
@@ -31,6 +35,7 @@ import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
  */
 @Repository
 @Transactional(readOnly = true)
+@Slf4j
 public class DepartmentRepositoryCustomImpl implements DepartmentRepositoryCustom {
 
     @PersistenceContext
@@ -73,7 +78,10 @@ public class DepartmentRepositoryCustomImpl implements DepartmentRepositoryCusto
         List<DepartmentMinimalResponseDTO> minimalResponseDTOS = transformQueryToResultList(query,
                 DepartmentMinimalResponseDTO.class);
 
-        if (minimalResponseDTOS.isEmpty()) throw new NoContentFoundException(Department.class);
+        if (minimalResponseDTOS.isEmpty()){
+            error();
+            throw new NoContentFoundException(Department.class);
+        }
         else {
             minimalResponseDTOS.get(0).setTotalItems(totalItems);
             return minimalResponseDTOS;
@@ -90,6 +98,7 @@ public class DepartmentRepositoryCustomImpl implements DepartmentRepositoryCusto
         try {
             return transformQueryToSingleResult(query, DepartmentResponseDTO.class);
         } catch (NoResultException e) {
+            log.error(CONTENT_NOT_FOUND_BY_ID,DEPARTMENT,id);
             throw new NoContentFoundException(Department.class, "id", id.toString());
         }
     }
@@ -114,6 +123,10 @@ public class DepartmentRepositoryCustomImpl implements DepartmentRepositoryCusto
         List<DropDownResponseDTO> dropDownDTOS = transformQueryToResultList(query, DropDownResponseDTO.class);
 
         return dropDownDTOS.isEmpty() ? Optional.empty() : Optional.of(dropDownDTOS);
+    }
+
+    private void error() {
+        log.error(CONTENT_NOT_FOUND, DEPARTMENT);
     }
 }
 

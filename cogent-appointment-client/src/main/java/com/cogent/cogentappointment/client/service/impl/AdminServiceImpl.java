@@ -228,7 +228,7 @@ public class AdminServiceImpl implements AdminService {
 
         updateAdminPassword(requestDTO.getPassword(), requestDTO.getRemarks(), admin);
 
-        sendEmail(parseToResetPasswordEmailRequestDTO(requestDTO, admin.getEmail()));
+        sendEmail(parseToResetPasswordEmailRequestDTO(requestDTO, admin.getEmail(), admin.getUsername()));
 
         log.info(UPDATING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
     }
@@ -401,7 +401,10 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private void validateStatus(Object status) {
-        if (status.equals(INACTIVE)) throw ADMIN_ALREADY_REGISTERED.get();
+        if (status.equals(INACTIVE)) {
+            log.error(ADMIN_REGISTERED);
+            throw ADMIN_ALREADY_REGISTERED.get();
+        }
     }
 
     /*CAN SAVE NUMBER OF ADMINS BASED ON HOSPITAL*/
@@ -411,8 +414,10 @@ public class AdminServiceImpl implements AdminService {
         Long savedAdmin = (Long) get(objects, 0);
         Integer numberOfAdminsAllowed = (Integer) get(objects, 1);
 
-        if (savedAdmin.intValue() == numberOfAdminsAllowed)
+        if (savedAdmin.intValue() == numberOfAdminsAllowed){
+            log.error(ADMIN_CANNOT_BE_REGISTERED_DEBUG_MESSAGE);
             throw new BadRequestException(ADMIN_CANNOT_BE_REGISTERED_MESSAGE, ADMIN_CANNOT_BE_REGISTERED_DEBUG_MESSAGE);
+        }
     }
 
     private void validateAdminDuplicity(List<Object[]> adminList, String requestUsername, String requestEmail,
@@ -427,8 +432,10 @@ public class AdminServiceImpl implements AdminService {
             boolean isEmailExists = requestEmail.equalsIgnoreCase((String) get(admin, EMAIL));
             boolean isMobileNumberExists = requestMobileNumber.equalsIgnoreCase((String) get(admin, MOBILE_NUMBER));
 
-            if (isUsernameExists && isEmailExists && isMobileNumberExists)
+            if (isUsernameExists && isEmailExists && isMobileNumberExists){
+                log.error(ADMIN_DUPLICATION_MESSAGE);
                 throw ADMIN_DUPLICATION.get();
+            }
 
             validateUsername(isUsernameExists, requestUsername);
             validateEmail(isEmailExists, requestEmail);
@@ -437,21 +444,27 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private void validateUsername(boolean isUsernameExists, String username) {
-        if (isUsernameExists)
+        if (isUsernameExists){
+            log.error(DUPLICATION_ERROR,username);
             throw new DataDuplicationException(
                     String.format(USERNAME_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), username));
+        }
     }
 
     private void validateEmail(boolean isEmailExists, String email) {
-        if (isEmailExists)
+        if (isEmailExists){
+            log.error(DUPLICATION_ERROR, email);
             throw new DataDuplicationException(
                     String.format(EMAIL_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), email));
+        }
     }
 
     private void validateMobileNumber(boolean isMobileNumberExists, String mobileNumber) {
-        if (isMobileNumberExists)
+        if (isMobileNumberExists){
+            log.error(DUPLICATION_ERROR, mobileNumber);
             throw new DataDuplicationException(
                     String.format(MOBILE_NUMBER_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), mobileNumber));
+        }
     }
 
     private Admin save(AdminRequestDTO adminRequestDTO, Long hospitalId) {
@@ -543,9 +556,10 @@ public class AdminServiceImpl implements AdminService {
             boolean isEmailExists = requestEmail.equalsIgnoreCase((String) get(admin, EMAIL));
             boolean isMobileNumberExists = requestMobileNumber.equalsIgnoreCase((String) get(admin, MOBILE_NUMBER));
 
-            if (isEmailExists && isMobileNumberExists)
+            if (isEmailExists && isMobileNumberExists) {
+                log.error(ADMIN_DUPLICATION_MESSAGE);
                 throw ADMIN_DUPLICATION.get();
-
+            }
             validateEmail(isEmailExists, requestEmail);
             validateMobileNumber(isMobileNumberExists, requestMobileNumber);
         });
@@ -581,29 +595,37 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private Consumer<List<String>> validateMacAddressInfoSize = (macInfos) -> {
-        if (ObjectUtils.isEmpty(macInfos))
+        if (ObjectUtils.isEmpty(macInfos)){
+            log.error(CONTENT_NOT_FOUND, AdminMacAddressInfo.class.getSimpleName());
             throw new NoContentFoundException(AdminMacAddressInfo.class);
+        }
     };
 
     private void validatePassword(Admin admin, AdminChangePasswordRequestDTO requestDTO) {
 
-        if (!LoginValidator.checkPassword(requestDTO.getOldPassword(), admin.getPassword()))
+        if (!LoginValidator.checkPassword(requestDTO.getOldPassword(), admin.getPassword())) {
+            log.error(PASSWORD_MISMATCH_MESSAGE);
             throw new OperationUnsuccessfulException(PASSWORD_MISMATCH_MESSAGE);
+        }
 
-        if (LoginValidator.checkPassword(requestDTO.getNewPassword(), admin.getPassword()))
+        if (LoginValidator.checkPassword(requestDTO.getNewPassword(), admin.getPassword())) {
+            log.error(DUPLICATE_PASSWORD_MESSAGE);
             throw new DataDuplicationException(DUPLICATE_PASSWORD_MESSAGE);
+        }
     }
 
     private Supplier<DataDuplicationException> ADMIN_DUPLICATION = () ->
             new DataDuplicationException(ADMIN_DUPLICATION_MESSAGE);
 
     private Function<Long, NoContentFoundException> ADMIN_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, ADMIN, id);
         throw new NoContentFoundException(Admin.class, "id", id.toString());
     };
 
     private Supplier<BadRequestException> ADMIN_ALREADY_REGISTERED = () -> new BadRequestException(ADMIN_REGISTERED);
 
     private Function<String, NoContentFoundException> CONFIRMATION_TOKEN_NOT_FOUND = (confirmationToken) -> {
+        log.error(INVALID_CONFIRMATION_TOKEN_ERROR, confirmationToken);
         throw new NoContentFoundException(INVALID_CONFIRMATION_TOKEN, "confirmationToken", confirmationToken);
     };
 

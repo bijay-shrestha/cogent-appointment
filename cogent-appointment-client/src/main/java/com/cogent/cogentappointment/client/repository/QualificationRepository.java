@@ -16,11 +16,9 @@ import java.util.Optional;
 public interface QualificationRepository extends JpaRepository<Qualification, Long>, QualificationRepositoryCustom {
 
 
-    @Query("SELECT q FROM Qualification q WHERE q.status!='D' AND q.id = :id AND q.hospital.id=:hospitalId")
-    Optional<Qualification> findQualificationByIdAndHospitalId(@Param("id") Long id,
-                                                               @Param("hospitalId") Long hospitalId);
+    @Query("SELECT q FROM Qualification q WHERE q.status!='D' AND q.id = :id")
+    Optional<Qualification> findQualificationById(@Param("id") Long id);
 
-    @Query("SELECT q FROM Qualification q WHERE q.status='Y' AND q.id = :id AND q.hospital.id=:hospitalId")
-    Optional<Qualification> fetchActiveQualificationByIdAndHospitalId(@Param("id") Long id,
-                                                                      @Param("hospitalId") Long hospitalId);
+    @Query("SELECT q FROM Qualification q WHERE q.status='Y' AND q.id = :id")
+    Optional<Qualification> fetchActiveQualificationById(@Param("id") Long id);
 }

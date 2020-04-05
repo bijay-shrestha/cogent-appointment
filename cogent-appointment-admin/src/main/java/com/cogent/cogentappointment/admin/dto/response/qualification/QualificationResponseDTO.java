@@ -24,10 +24,6 @@ public class QualificationResponseDTO implements Serializable {
 
     private String qualificationAliasName;
 
-    private Long hospitalId;
-
-    private String hospitalName;
-
     private Character status;
 
     private String remarks;

@@ -35,6 +35,7 @@ public class WebResourceKeyConstants {
         String STATUS = "/status";
         String LOG = "/log";
         String RESCHEDULE_LOG = "/reschedule-log";
+        String TRANSACTION_STATUS = "/transaction-status";
     }
 
     //B
@@ -50,6 +51,7 @@ public class WebResourceKeyConstants {
         String DOCTOR_SPECIALIZATION = "/doctor-specialization";
     }
 
+
     //D
     public interface DashboardConstants {
         String BASE_DASHBOARD = "/dashboard";
@@ -63,8 +65,8 @@ public class WebResourceKeyConstants {
         String APPOINTMENT_QUEUE = "/today-appointment";
         String APPOINTMENT_QUEUE_BY_TIME = "/today-appointment-timely";
         String REVENUE_TREND = "/revenueTrend";
-        String TOTAL_REFUNDED_AMOUNT = "/totalRefundedAmount";
         String DOCTOR_REVENUE = "/doctorRevenue";
+        String TOTAL_REFUNDED_AMOUNT = "/totalRefundedAmount";
     }
 
     public static final String DETAIL = "/detail";
@@ -170,7 +172,7 @@ public class WebResourceKeyConstants {
 
 
     //S
-    public static final String SAVE = "/save";
+
     public static final String SEARCH = "/search";
 
     public static final String SELF = "/self";

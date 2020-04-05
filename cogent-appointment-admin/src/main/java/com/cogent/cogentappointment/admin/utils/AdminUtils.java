@@ -244,10 +244,4 @@ public class AdminUtils {
                 .build();
     }
 
-    public static String getUsername(String email) {
-        StringTokenizer token = new StringTokenizer(email, "@");
-        return token.nextToken();
-    }
-
-
 }

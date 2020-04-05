@@ -191,25 +191,32 @@ public class AppointmentQuery {
             whereClause += " AND a.appointmentDate BETWEEN '"
                     + pendingApprovalSearchDTO.getFromDate() + "' AND '" + pendingApprovalSearchDTO.getFromDate() + "'";
 
-        if (!Objects.isNull(pendingApprovalSearchDTO.getAppointmentId()))
+        if (!Objects.isNull(pendingApprovalSearchDTO.getAppointmentId()) ||
+                !ObjectUtils.isEmpty(pendingApprovalSearchDTO.getAppointmentId()))
             whereClause += " AND a.id = " + pendingApprovalSearchDTO.getAppointmentId();
 
-        if (!Objects.isNull(pendingApprovalSearchDTO.getHospitalId()))
+        if (!Objects.isNull(pendingApprovalSearchDTO.getHospitalId()) ||
+                !ObjectUtils.isEmpty(pendingApprovalSearchDTO.getHospitalId()))
             whereClause += " AND h.id = " + pendingApprovalSearchDTO.getHospitalId();
 
-        if (!Objects.isNull(pendingApprovalSearchDTO.getPatientMetaInfoId()))
+        if (!Objects.isNull(pendingApprovalSearchDTO.getPatientMetaInfoId())
+                || !ObjectUtils.isEmpty(pendingApprovalSearchDTO.getPatientMetaInfoId()))
             whereClause += " AND pi.id = " + pendingApprovalSearchDTO.getPatientMetaInfoId();
 
-        if (!Objects.isNull(pendingApprovalSearchDTO.getSpecializationId()))
+        if (!Objects.isNull(pendingApprovalSearchDTO.getSpecializationId())
+                || !ObjectUtils.isEmpty(pendingApprovalSearchDTO.getSpecializationId()))
             whereClause += " AND sp.id = " + pendingApprovalSearchDTO.getSpecializationId();
 
-        if (!Objects.isNull(pendingApprovalSearchDTO.getPatientType()))
+        if (!Objects.isNull(pendingApprovalSearchDTO.getPatientType())
+                || !ObjectUtils.isEmpty(pendingApprovalSearchDTO.getPatientType()))
             whereClause += " AND hpi.isRegistered = '" + pendingApprovalSearchDTO.getPatientType() + "'";
 
-        if (!Objects.isNull(pendingApprovalSearchDTO.getDoctorId()))
+        if (!Objects.isNull(pendingApprovalSearchDTO.getDoctorId())
+                || !ObjectUtils.isEmpty(pendingApprovalSearchDTO.getDoctorId()))
             whereClause += " AND d.id = " + pendingApprovalSearchDTO.getDoctorId();
 
-        if (!Objects.isNull(pendingApprovalSearchDTO.getAppointmentNumber()))
+        if (!Objects.isNull(pendingApprovalSearchDTO.getAppointmentNumber())
+                || !ObjectUtils.isEmpty(pendingApprovalSearchDTO.getAppointmentNumber()))
             whereClause += " AND a.appointmentNumber = '" + pendingApprovalSearchDTO.getAppointmentNumber() + "'";
 
         whereClause += " ORDER BY a.appointmentDate DESC";

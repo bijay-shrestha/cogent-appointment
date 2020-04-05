@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.logging.dto.request;
+package com.cogent.cogentappointment.logging.dto.request.admin;
 
 import lombok.Getter;
 import lombok.Setter;

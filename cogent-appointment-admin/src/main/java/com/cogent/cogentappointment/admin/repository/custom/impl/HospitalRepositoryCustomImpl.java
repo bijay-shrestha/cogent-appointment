@@ -27,12 +27,13 @@ import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.HOSPITAL_ID;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.ID;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.HOSPITAL;
 import static com.cogent.cogentappointment.admin.query.CompanyQuery.*;
 import static com.cogent.cogentappointment.admin.query.HospitalQuery.*;
 import static com.cogent.cogentappointment.admin.utils.CompanyUtils.parseToCompanyResponseDTO;
 import static com.cogent.cogentappointment.admin.utils.HospitalUtils.parseToHospitalResponseDTO;
-import static com.cogent.cogentappointment.admin.utils.commons.LogUtils.logError;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
 
 /**
@@ -95,7 +96,10 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
         List<HospitalMinimalResponseDTO> results = transformNativeQueryToResultList(query, HospitalMinimalResponseDTO.class);
 
-        if (results.isEmpty()) throw HOSPITAL_NOT_FOUND.get();
+        if (results.isEmpty()) {
+            error();
+            throw HOSPITAL_NOT_FOUND.get();
+        }
 
         results.get(0).setTotalItems(totalItems);
         return results;
@@ -111,7 +115,10 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
         List<CompanyMinimalResponseDTO> results = transformNativeQueryToResultList(query, CompanyMinimalResponseDTO.class);
 
-        if (results.isEmpty()) throw HOSPITAL_NOT_FOUND.get();
+        if (results.isEmpty()) {
+            error();
+            throw HOSPITAL_NOT_FOUND.get();
+        }
 
         results.get(0).setTotalItems(totalItems);
         return results;
@@ -124,7 +131,9 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
         List<Object[]> results = query.getResultList();
 
-        if (results.isEmpty()) throw HOSPITAL_WITH_GIVEN_ID_NOT_FOUND.apply(id);
+        if (results.isEmpty()) {
+            throw HOSPITAL_WITH_GIVEN_ID_NOT_FOUND.apply(id);
+        }
 
         return parseToHospitalResponseDTO(results.get(0));
     }
@@ -137,21 +146,20 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
         List<Object[]> results = query.getResultList();
 
         if (results.isEmpty()) throw HOSPITAL_WITH_GIVEN_ID_NOT_FOUND.apply(id);
-//todo:contact
         return parseToCompanyResponseDTO(results.get(0));
     }
 
     @Override
     public Integer fetchHospitalFollowUpCount(Long hospitalId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_FREE_FOLLOW_UP_COUNT)
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_FOLLOW_UP_COUNT)
                 .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Integer) query.getSingleResult();
     }
 
     @Override
-    public Integer fetchHospitalFreeFollowUpIntervalDays(Long hospitalId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_FREE_FOLLOW_UP_INTERVAL_DAYS)
+    public Integer fetchHospitalFollowUpIntervalDays(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_FOLLOW_UP_INTERVAL_DAYS)
                 .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Integer) query.getSingleResult();
@@ -164,7 +172,7 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
         List<HospitalDropdownResponseDTO> results = transformQueryToResultList(query, HospitalDropdownResponseDTO.class);
 
         if (results.isEmpty()) {
-            logError(HOSPITAL);
+            error();
             throw HOSPITAL_NOT_FOUND.get();
         } else return results;
     }
@@ -175,16 +183,22 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
         List<CompanyDropdownResponseDTO> results = transformQueryToResultList(query, CompanyDropdownResponseDTO.class);
 
-        if (results.isEmpty()) throw HOSPITAL_NOT_FOUND.get();
-        else return results;
+        if (results.isEmpty()) {
+            error();
+            throw HOSPITAL_NOT_FOUND.get();
+        } else return results;
     }
 
     private Supplier<NoContentFoundException> HOSPITAL_NOT_FOUND = () -> new NoContentFoundException(Hospital.class);
 
     private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        logError(HOSPITAL);
+        log.error(CONTENT_NOT_FOUND_BY_ID, HOSPITAL, id);
         throw new NoContentFoundException(Hospital.class, "id", id.toString());
     };
+
+    private void error() {
+        log.error(CONTENT_NOT_FOUND, HOSPITAL);
+    }
 }
 
 

@@ -33,9 +33,6 @@ public class QualificationUpdateRequestDTO implements Serializable {
     private Long qualificationAliasId;
 
     @NotNull
-    private Long hospitalId;
-
-    @NotNull
     @Status
     private Character status;
 

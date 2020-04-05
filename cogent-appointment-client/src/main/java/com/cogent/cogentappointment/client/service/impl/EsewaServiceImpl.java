@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.client.service.impl;
 
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentDatesRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.eSewa.AppointmentDetailRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentDatesRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentDetailRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appoinmentDateAndTime.*;
 import com.cogent.cogentappointment.client.dto.response.eSewa.*;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
@@ -21,8 +21,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
+import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.APPOINTMENT;
+import static com.cogent.cogentappointment.client.log.constants.DoctorLog.DOCTOR;
 import static com.cogent.cogentappointment.client.log.constants.eSewaLog.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.client.utils.EsewaUtils.*;
@@ -83,8 +86,10 @@ public class EsewaServiceImpl implements EsewaService {
         List<AvailableDoctorWithSpecialization> mergedList =
                 mergeOverrideAndActualDoctorList(availableDoctorFromDDROverride, availableDoctorFromDDR);
 
-        if (ObjectUtils.isEmpty(mergedList))
+        if (ObjectUtils.isEmpty(mergedList)) {
+            doctorNotAvailableError();
             throw DOCTORS_NOT_AVAILABLE.get();
+        }
 
         log.info(FETCHING_PROCESS_COMPLETED, AVAILABLE_DOCTOR_LIST, getDifferenceBetweenTwoTime(startTime));
 
@@ -120,9 +125,10 @@ public class EsewaServiceImpl implements EsewaService {
 
         AppointmentDatesResponseDTO responseDTO = getFinalResponse(requestDTO, appointmentDateAndTime);
 
-        if (ObjectUtils.isEmpty(responseDTO.getDates()))
+        if (ObjectUtils.isEmpty(responseDTO.getDates())) {
+            appointmentNotAvailableError();
             throw APPOINTMENT_NOT_AVAILABLE.get();
-
+        }
         log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_AVAILABLE_DATES_AND_TIME, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
@@ -175,9 +181,10 @@ public class EsewaServiceImpl implements EsewaService {
             }
         });
 
-        if (ObjectUtils.isEmpty(responseDTOList))
+        if (ObjectUtils.isEmpty(responseDTOList)) {
+            appointmentNotAvailableError();
             throw APPOINTMENT_NOT_AVAILABLE.get();
-
+        }
         log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_AVAILABLE_DATES, getDifferenceBetweenTwoTime(startTime));
 
         return getAvailableDatesWithSpecializationResponseDTO(responseDTOList);
@@ -230,8 +237,10 @@ public class EsewaServiceImpl implements EsewaService {
             }
         });
 
-        if (ObjectUtils.isEmpty(responseDTOList))
+        if (ObjectUtils.isEmpty(responseDTOList)) {
+            appointmentNotAvailableError();
             throw APPOINTMENT_NOT_AVAILABLE.get();
+        }
 
         log.info(FETCHING_PROCESS_COMPLETED, SPECIALIZATION_AVAILABLE_DATES, getDifferenceBetweenTwoTime(startTime));
 
@@ -284,8 +293,10 @@ public class EsewaServiceImpl implements EsewaService {
 
         responseDTO.setResponseCode(OK.value());
 
-        if (ObjectUtils.isEmpty(responseDTO.getAvaliableDates()))
+        if (ObjectUtils.isEmpty(responseDTO.getAvaliableDates())) {
+            appointmentNotAvailableError();
             throw APPOINTMENT_NOT_AVAILABLE.get();
+        }
 
         log.info(FETCHING_PROCESS_COMPLETED, AVAILABLE_DATES_LIST, getDifferenceBetweenTwoTime(startTime));
 
@@ -374,8 +385,10 @@ public class EsewaServiceImpl implements EsewaService {
     private void validateIfRequestedDateIsBeforeCurrentDate(Date requestedDate) {
         boolean isRequestedDateBeforeCurrentDate = isFirstDateGreater(new Date(), requestedDate);
 
-        if (isRequestedDateBeforeCurrentDate)
+        if (isRequestedDateBeforeCurrentDate){
+            doctorNotAvailableError();
             throw DOCTORS_NOT_AVAILABLE.get();
+        }
     }
 
     private Supplier<NoContentFoundException> DOCTORS_NOT_AVAILABLE = () -> new NoContentFoundException(Doctor.class);
@@ -385,6 +398,14 @@ public class EsewaServiceImpl implements EsewaService {
     private List<Date> getDatesBetween(Date fromDate, Date toDate) {
         return utilDateListToSqlDateList(getDates(fromDate,
                 toDate));
+    }
+
+    private void appointmentNotAvailableError(){
+        log.error(CONTENT_NOT_FOUND,APPOINTMENT);
+    }
+
+    private void doctorNotAvailableError(){
+        log.error(CONTENT_NOT_FOUND,DOCTOR);
     }
 }
 

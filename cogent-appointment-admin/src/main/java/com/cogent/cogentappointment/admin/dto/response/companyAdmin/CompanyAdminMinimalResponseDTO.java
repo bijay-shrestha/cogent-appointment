@@ -34,7 +34,7 @@ public class CompanyAdminMinimalResponseDTO implements Serializable {
 
     private String profileName;
 
-    private String hospitalName;
+    private String companyName;
 
     private String fileUri;
 

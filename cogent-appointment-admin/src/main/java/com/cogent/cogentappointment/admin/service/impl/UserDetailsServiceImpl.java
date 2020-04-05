@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.USER_NOT_FOUND;
+
 
 /**
  * @author Sauravi Thapa २०/१/१३
@@ -35,6 +37,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetailsImpl loadUserByUsername(String username) throws UsernameNotFoundException {
         LoggedInAdminDTO loggedInAdminDTO = getAdmin(username);
         if (loggedInAdminDTO == null) {
+            log.error(USER_NOT_FOUND,username);
             throw new NoContentFoundException("USER NOT FOUND");
         }
         return UserDetailsImpl.build(loggedInAdminDTO);

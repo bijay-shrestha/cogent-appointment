@@ -80,7 +80,7 @@ public class CompanyAdminQuery {
                     " a.hasMacBinding as hasMacBinding," +                      //[6]
                     " a.gender as gender," +                                    //[7]
                     " p.name as profileName," +
-                    " h.name as hospitalName," +                                //[8]
+                    " h.name as companyName," +                                //[8]
                     " CASE WHEN" +
                     " (av.status IS NULL OR av.status = 'N')" +
                     " THEN null" +
@@ -119,7 +119,7 @@ public class CompanyAdminQuery {
     public static final String QUERY_TO_FETCH_COMPANY_ADMIN_DETAIL =
             SELECT_CLAUSE_TO_FETCH_COMPANY_ADMIN + "," +
                     " a.remarks as remarks," +                                      //[10]
-                    " h.id as hospitalId," +                                        //[11]
+                    " h.id as companyId," +                                        //[11]
                     " p.id as profileId" +                                         //[12]
                     " FROM" +
                     " Admin a" +

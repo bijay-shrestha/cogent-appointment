@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.client.repository.custom.impl;
 
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.ForgotPasswordRepositoryCustom;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +14,7 @@ import java.util.function.Function;
 
 import static com.cogent.cogentappointment.client.constants.EmailConstants.ForgotPassword.RESET_CODE;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.ForgotPasswordMessages.INVALID_RESET_CODE;
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.INVALID_RESET_CODE_ERROR;
 import static com.cogent.cogentappointment.client.query.ForgotPasswordVerificationQuery.QUERY_TO_FETCH_EXPIRATION_TIME;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
 
@@ -21,6 +23,7 @@ import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.creat
  */
 @Repository
 @Transactional(readOnly = true)
+@Slf4j
 public class ForgotPasswordRepositoryCustomImpl implements ForgotPasswordRepositoryCustom {
 
     @PersistenceContext
@@ -39,6 +42,7 @@ public class ForgotPasswordRepositoryCustomImpl implements ForgotPasswordReposit
     }
 
     private Function<String, NoContentFoundException> RESET_CODE_NOT_FOUND = (resetCode) -> {
+        log.error(INVALID_RESET_CODE_ERROR, resetCode);
         throw new NoContentFoundException(INVALID_RESET_CODE, "resetCode", resetCode);
     };
 

@@ -8,6 +8,7 @@ import com.cogent.cogentappointment.admin.dto.response.patient.PatientResponseDT
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.PatientRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Patient;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,11 +20,13 @@ import javax.persistence.Query;
 import java.util.List;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.PatientLog.PATIENT;
+import static com.cogent.cogentappointment.admin.log.constants.PatientLog.PATIENT_NOT_FOUND_BY_APPOINTMENT_ID;
+import static com.cogent.cogentappointment.admin.log.constants.PatientLog.PATIENT_NOT_FOUND_BY_HOSPITAL_PATINET_INFO_ID;
 import static com.cogent.cogentappointment.admin.query.DashBoardQuery.QUERY_TO_COUNT_OVERALL_REGISTERED_PATIENTS;
 import static com.cogent.cogentappointment.admin.query.PatientQuery.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
-import static com.cogent.cogentappointment.admin.utils.commons.LogUtils.logError;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
 
@@ -32,6 +35,7 @@ import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
  */
 @Repository
 @Transactional
+@Slf4j
 public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
 
     @PersistenceContext
@@ -70,7 +74,7 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
                     transformQueryToSingleResult(query, PatientDetailResponseDTO.class);
             return detailResponseDTO;
         } catch (NoResultException e) {
-            logError(PATIENT);
+            log.error(PATIENT_NOT_FOUND_BY_HOSPITAL_PATINET_INFO_ID,hospitalPatientInfoId);
             throw new NoContentFoundException(Patient.class, "id", hospitalPatientInfoId.toString());
         }
     }
@@ -87,7 +91,7 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
         List<Object[]> results = query.getResultList();
 
         if (results.isEmpty()){
-            logError(PATIENT);
+            error();
             throw new NoContentFoundException(Patient.class);
         }
 
@@ -121,8 +125,12 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
         try {
             return transformQueryToSingleResult(query, PatientMinDetailResponseDTO.class);
         } catch (NoResultException e) {
-            logError(PATIENT);
+            log.error(PATIENT_NOT_FOUND_BY_APPOINTMENT_ID,appointmentId);
             throw new NoContentFoundException(Patient.class, "appointmentId", appointmentId.toString());
         }
+    }
+
+    private void error() {
+        log.error(CONTENT_NOT_FOUND,PATIENT );
     }
 }

@@ -137,11 +137,9 @@ public class ProfileQuery {
                     " FROM profile_menu pm" +
                     " LEFT JOIN profile p ON p.id =pm.profile_id" +
                     " LEFT JOIN admin a ON a.profile_id = p.id" +
-                    " LEFT JOIN department d ON d.id = p.department_id" +
-                    " LEFT JOIN hospital h ON h.id = d.hospital_id" +
+                    " LEFT JOIN hospital h ON h.id = p.company_id" +
                     " WHERE" +
                     " pm.status = 'Y'" +
-                    " AND d.status ='Y'" +
                     " AND h.status ='Y'" +
                     " AND p.status = 'Y'" +
                     " AND a.status ='Y'" +

@@ -39,6 +39,7 @@ public class DoctorDutyRosterStatusResponseDTO implements Serializable {
 
     private String fileUri;
 
+    /*FOR FRONT-END CONVENIENCE TO SHOW DETAIL MODAL*/
     private String patientDetails;
 
     private List<DoctorTimeSlotResponseDTO> doctorTimeSlots;

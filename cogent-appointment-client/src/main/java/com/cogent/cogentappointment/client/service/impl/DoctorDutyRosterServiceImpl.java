@@ -31,6 +31,7 @@ import static com.cogent.cogentappointment.client.constants.ErrorMessageConstant
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.INVALID_DATE_MESSAGE;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.DoctorDutyRosterLog.*;
+import static com.cogent.cogentappointment.client.log.constants.HospitalLog.HOSPITAL;
 import static com.cogent.cogentappointment.client.utils.DoctorDutyRosterOverrideUtils.*;
 import static com.cogent.cogentappointment.client.utils.DoctorDutyRosterUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
@@ -325,8 +326,10 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
         Long appointments = appointmentRepository.fetchBookedAppointmentCount(
                 overrideFromDate, overrideToDate, doctorId, specializationId);
 
-        if (appointments.intValue() > 0)
+        if (appointments.intValue() > 0) {
+            log.error(APPOINTMENT_EXISTS_MESSAGE);
             throw new BadRequestException(APPOINTMENT_EXISTS_MESSAGE);
+        }
     }
 
     private void validateDoctorDutyRosterCount(Long doctorId, Long specializationId,
@@ -335,8 +338,10 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
         Long doctorDutyRosterCount = doctorDutyRosterRepository.validateDoctorDutyRosterCount(
                 doctorId, specializationId, fromDate, toDate);
 
-        if (doctorDutyRosterCount.intValue() > 0)
+        if (doctorDutyRosterCount.intValue() > 0) {
+            log.error(DUPLICATION_MESSAGE);
             throw new DataDuplicationException(DUPLICATION_MESSAGE);
+        }
     }
 
     private void validateIfOverrideDateIsBetweenDoctorDutyRoster(Date dutyRosterFromDate,
@@ -348,13 +353,17 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
                 isDateBetweenInclusive(dutyRosterFromDate, dutyRosterToDate, overrideFromDate)
                         && isDateBetweenInclusive(dutyRosterFromDate, dutyRosterToDate, overrideToDate);
 
-        if (!isDateBetweenInclusive)
+        if (!isDateBetweenInclusive) {
+            log.error(BAD_REQUEST_MESSAGE);
             throw new BadRequestException(BAD_REQUEST_MESSAGE);
+        }
     }
 
     private void validateDoctorDutyRosterOverrideCount(Long doctorDutyRosterOverrideCount) {
-        if (doctorDutyRosterOverrideCount.intValue() > 0)
+        if (doctorDutyRosterOverrideCount.intValue() > 0){
+            log.error(DUPLICATION_MESSAGE);
             throw new DataDuplicationException(DUPLICATION_MESSAGE);
+        }
     }
 
     private Doctor findDoctorByIdAndHospitalId(Long doctorId, Long hospitalId) {
@@ -496,6 +505,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
     }
 
     private Function<Long, NoContentFoundException> DOCTOR_DUTY_ROSTER_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID,DOCTOR_DUTY_ROSTER,id);
         throw new NoContentFoundException(DoctorDutyRoster.class, "id", id.toString());
     };
 
@@ -503,17 +513,23 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
         boolean fromDateGreaterThanToDate = isFirstDateGreater(fromDate, toDate);
 
         if (fromDateGreaterThanToDate)
+            log.error(INVALID_DATE_DEBUG_MESSAGE);
             throw new BadRequestException(INVALID_DATE_MESSAGE, INVALID_DATE_DEBUG_MESSAGE);
     }
 
     private Hospital findHospitalById(Long hospitalId) {
         return hospitalRepository.findActiveHospitalById(hospitalId)
-                .orElseThrow(() -> new NoContentFoundException(Hospital.class, "hospitalId", hospitalId.toString()));
+                .orElseThrow(() -> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND.apply(hospitalId));
     }
 
     private static boolean isOriginalUpdatedCondition(DoctorDutyRosterOverride originalOverride,
                                                       DoctorDutyRosterOverrideUpdateRequestDTO updatedOverride) {
         return originalOverride.getId().equals(updatedOverride.getDoctorDutyRosterOverrideId());
     }
+
+    private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (hospitalId) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID,HOSPITAL,hospitalId);
+        throw new NoContentFoundException(Hospital.class, "hospitalId", hospitalId.toString());
+    };
 
 }

@@ -13,7 +13,8 @@ public class HospitalQuery {
         String query = " SELECT" +
                 " h.id as hospitalId," +                                   //[0]
                 " h.name as name," +                                       //[1]
-                " h.address as address," +                                 //[2]
+                " h.address as address," +                                  //[2]
+                " h.code as hospitalCode," +                                 //[3]
                 " CASE WHEN" +
                 " (hl.status IS NULL OR hl.status = 'N')" +
                 " THEN null" +

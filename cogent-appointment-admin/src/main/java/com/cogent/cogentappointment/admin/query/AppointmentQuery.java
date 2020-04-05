@@ -176,7 +176,7 @@ public class AppointmentQuery {
                             " LEFT JOIN Hospital h ON a.hospitalId=h.id" +
                             " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id" +
                             " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
-                            " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id"
+                            " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='PA'"
                             + GET_WHERE_CLAUSE_TO_SEARCH_PENDING_APPOINTMENT_DETAILS(searchRequestDTO);
 
     private static String GET_WHERE_CLAUSE_TO_SEARCH_PENDING_APPOINTMENT_DETAILS(
@@ -184,8 +184,12 @@ public class AppointmentQuery {
 
         String whereClause = " WHERE " +
                 " sp.status='Y' " +
-                " AND a.status='PA'" +
-                " AND a.appointmentDate BETWEEN :fromDate AND :toDate";
+                " AND a.status='PA'";
+
+        if (!ObjectUtils.isEmpty(pendingApprovalSearchDTO.getFromDate())
+                && !ObjectUtils.isEmpty(pendingApprovalSearchDTO.getToDate()))
+            whereClause += " AND a.appointmentDate BETWEEN '"
+                    + pendingApprovalSearchDTO.getFromDate() + "' AND '" + pendingApprovalSearchDTO.getFromDate() + "'";
 
         if (!Objects.isNull(pendingApprovalSearchDTO.getAppointmentId()))
             whereClause += " AND a.id = " + pendingApprovalSearchDTO.getAppointmentId();
@@ -204,6 +208,9 @@ public class AppointmentQuery {
 
         if (!Objects.isNull(pendingApprovalSearchDTO.getDoctorId()))
             whereClause += " AND d.id = " + pendingApprovalSearchDTO.getDoctorId();
+
+        if (!Objects.isNull(pendingApprovalSearchDTO.getAppointmentNumber()))
+            whereClause += " AND a.appointmentNumber = '" + pendingApprovalSearchDTO.getAppointmentNumber() + "'";
 
         whereClause += " ORDER BY a.appointmentDate DESC";
 
@@ -239,7 +246,7 @@ public class AppointmentQuery {
                             " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
                             " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id" +
                             " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
-                            " LEFT JOIN AppointmentRefundDetail ard ON a.id=ard.appointmentId"
+                            " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='PA'"
                             + GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_LOG_DETAILS(appointmentLogSearchDTO);
 
 

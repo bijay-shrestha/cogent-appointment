@@ -293,8 +293,6 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         AppointmentPendingApprovalResponseDTO appointmentPendingApprovalResponseDTO=new AppointmentPendingApprovalResponseDTO();
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PENDING_APPROVALS.apply(searchRequestDTO))
-                .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
-                .setParameter(TO_DATE, searchRequestDTO.getToDate())
                 .setParameter(HOSPITAL_ID, hospitalId);
 
         int totalItems = query.getResultList().size();

@@ -10,4 +10,6 @@ public interface AppointmentFollowUpTrackerService {
 
     /*esewa*/
     AppointmentFollowUpResponseDTOWithStatus fetchAppointmentFollowUpDetails(AppointmentFollowUpRequestDTO requestDTO);
+
+    void updateFollowUpTrackerStatus();
 }

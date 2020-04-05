@@ -19,6 +19,7 @@ import java.util.function.Supplier;
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.HOSPITAL_ID;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.esewa.log.constants.HospitalLog.HOSPITAL;
+import static com.cogent.cogentappointment.esewa.query.HospitalQuery.QUERY_TO_FETCH_HOSPITAL_FOLLOW_UP_INTERVAL_DAYS;
 import static com.cogent.cogentappointment.esewa.query.HospitalQuery.QUERY_TO_FETCH_HOSPITAL_FREE_FOLLOW_UP_INTERVAL_DAYS;
 import static com.cogent.cogentappointment.esewa.query.HospitalQuery.QUERY_TO_FETCH_MIN_HOSPITAL;
 import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.*;
@@ -49,6 +50,14 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
     @Override
     public Integer fetchHospitalFreeFollowUpIntervalDays(Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_FREE_FOLLOW_UP_INTERVAL_DAYS)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        return (Integer) query.getSingleResult();
+    }
+
+    @Override
+    public Integer fetchHospitalFollowUpIntervalDays(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_FOLLOW_UP_INTERVAL_DAYS)
                 .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Integer) query.getSingleResult();

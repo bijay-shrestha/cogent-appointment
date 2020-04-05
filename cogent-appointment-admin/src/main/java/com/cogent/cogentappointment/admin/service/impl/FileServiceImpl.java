@@ -63,9 +63,11 @@ public class FileServiceImpl implements FileService {
                 log.info(LOADING_FILE_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
                 return resource;
             } else {
+                log.error(INVALID_FILE_TYPE_MESSAGE + fileName);
                 throw new NoContentFoundException(INVALID_FILE_TYPE_MESSAGE + fileName);
             }
         } catch (MalformedURLException e) {
+            log.error(INVALID_FILE_TYPE_MESSAGE + fileName);
             throw new NoContentFoundException(INVALID_FILE_TYPE_MESSAGE + fileName);
         }
     }
@@ -132,11 +134,17 @@ public class FileServiceImpl implements FileService {
 
         String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         try {
-            if (file.isEmpty())
+            if (file.isEmpty()){
+                log.error(FILES_EMPTY_MESSAGE + filename);
                 throw new NoContentFoundException(FILES_EMPTY_MESSAGE + filename);
+            }
 
-            if (filename.contains(".."))
+
+            if (filename.contains("..")){
+                log.error(INVALID_FILE_SEQUENCE);
                 throw new BadRequestException(INVALID_FILE_SEQUENCE);
+            }
+
 
             resolvePath(subDirectory);
 
@@ -152,6 +160,7 @@ public class FileServiceImpl implements FileService {
 
             return filename;
         } catch (IOException exception) {
+            log.error(FILE_EXCEPTION);
             throw new OperationUnsuccessfulException(FILE_EXCEPTION);
         }
     }

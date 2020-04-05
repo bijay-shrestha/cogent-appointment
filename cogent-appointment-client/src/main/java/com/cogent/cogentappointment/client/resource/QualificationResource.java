@@ -70,7 +70,7 @@ public class QualificationResource {
     @GetMapping(ACTIVE + MIN)
     @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
     public ResponseEntity<List<QualificationDropdownDTO>> fetchQualificationForDropDown() {
-        return ok(qualificationService.fetchActiveQualificationForDropDown());
+        return ok(qualificationService.fetchMinActiveQualification());
     }
 
     @GetMapping(DETAIL + ID_PATH_VARIABLE_BASE)

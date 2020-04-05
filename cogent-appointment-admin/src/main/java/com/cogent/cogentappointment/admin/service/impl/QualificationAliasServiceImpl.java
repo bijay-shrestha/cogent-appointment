@@ -17,13 +17,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.function.Function;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NAME_DUPLICATION_MESSAGE;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.QualificationAliasLog.QUALIFICATION_ALIAS;
 import static com.cogent.cogentappointment.admin.utils.QualificationAliasUtils.*;
-import static com.cogent.cogentappointment.admin.utils.QualificationAliasUtils.parseToDeletedQualification;
-import static com.cogent.cogentappointment.admin.utils.QualificationAliasUtils.parseToUpdatedQualificationAlias;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
@@ -65,7 +64,7 @@ public class QualificationAliasServiceImpl implements QualificationAliasService 
 
         QualificationAlias qualificationAliasToBeUpdated = fetchQualificationAliasById(requestDTO.getId());
 
-        Long count = qualificationAliasRepository.validateDuplicity(requestDTO.getId(), requestDTO.getName());
+        Long count = qualificationAliasRepository.validateDuplicity(requestDTO);
 
         validateName(count, requestDTO.getName());
 
@@ -102,13 +101,13 @@ public class QualificationAliasServiceImpl implements QualificationAliasService 
     }
 
     @Override
-    public QualificationAlias fetchQualificationAliasById(Long id) {
+    public QualificationAlias fetchActiveQualificationAliasById(Long id) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, QUALIFICATION_ALIAS);
 
         QualificationAlias qualificationAlias = qualificationAliasRepository.fetchActiveQualificationAliasById(id)
-                .orElseThrow(() -> new NoContentFoundException(QualificationAlias.class, "id", id.toString()));
+                .orElseThrow(() -> QUALIFICATION_ALIAS_WITH_GIVEN_ID_NOT_FOUND.apply(id));
 
         log.info(FETCHING_PROCESS_COMPLETED, QUALIFICATION_ALIAS, getDifferenceBetweenTwoTime(startTime));
 
@@ -131,12 +130,26 @@ public class QualificationAliasServiceImpl implements QualificationAliasService 
     }
 
     private void validateName(Long qualificationCount, String name) {
-        if (qualificationCount.intValue() > 0)
+        if (qualificationCount.intValue() > 0) {
+            log.error(NAME_DUPLICATION_ERROR, QUALIFICATION_ALIAS, name);
             throw new DataDuplicationException(
                     String.format(NAME_DUPLICATION_MESSAGE, QualificationAlias.class.getSimpleName(), name));
+        }
     }
 
     private void save(QualificationAlias qualificationAlias) {
         qualificationAliasRepository.save(qualificationAlias);
     }
+
+    private Function<Long, NoContentFoundException> QUALIFICATION_ALIAS_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, QUALIFICATION_ALIAS, id);
+        throw new NoContentFoundException(QualificationAlias.class, "id", id.toString());
+    };
+
+
+    private QualificationAlias fetchQualificationAliasById(Long id) {
+        return qualificationAliasRepository.fetchQualificationAliasById(id)
+                .orElseThrow(() -> new NoContentFoundException(QualificationAlias.class, "id", id.toString()));
+    }
+
 }

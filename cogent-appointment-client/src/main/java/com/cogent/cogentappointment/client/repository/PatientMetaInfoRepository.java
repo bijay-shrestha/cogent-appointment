@@ -14,6 +14,6 @@ import org.springframework.stereotype.Repository;
 public interface PatientMetaInfoRepository extends JpaRepository<PatientMetaInfo, Long>,
         PatientMetaInfoRepositoryCustom {
 
-    @Query("FROM PatientMetaInfo pmi WHERE pmi.patient.id=:patientId AND pmi.status!='D'")
+    @Query("SELECT pmi FROM PatientMetaInfo pmi WHERE pmi.patient.id=:patientId AND pmi.status!='D'")
     PatientMetaInfo fetchByPatientId(@Param("patientId") Long patientId);
 }

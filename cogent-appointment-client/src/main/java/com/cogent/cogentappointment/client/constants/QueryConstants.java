@@ -6,10 +6,13 @@ package com.cogent.cogentappointment.client.constants;
 public class QueryConstants {
 
     //A
-    public static final String APPOINTMENT_ID = "appointmentId";
+    public interface AppointmentConstants {
+        String APPOINTMENT_ID = "appointmentId";
+        String APPOINTMENT_DATE = "appointmentDate";
+        String APPOINTMENT_TIME = "appointmentTime";
+        String TRANSACTION_NUMBER = "transactionNumber";
+    }
 
-    public static final String APPOINTMENT_DATE = "appointmentDate";
-    public static final String APPOINTMENT_TIME = "appointmentTime";
     public static final String API_KEY = "apiKey";
 
     //B
@@ -34,7 +37,6 @@ public class QueryConstants {
     //F
     public interface AppointmentFollowUpTrackerConstants {
         String PARENT_APPOINTMENT_ID = "parentAppointmentId";
-        String PATIENT_ID = "patientId";
     }
 
 
@@ -45,8 +47,6 @@ public class QueryConstants {
     //H
     public static final String HOSPITAL_ID = "hospitalId";
     public static final String HOSPITAL_CODE = "hospitalCode";
-
-    public static final String HOSPITAL_PATIENT_INFO_ID = "hospitalPatientInfoId";
 
 
     //I
@@ -90,6 +90,8 @@ public class QueryConstants {
 
     //U
     public static final String USERNAME = "username";
+
+    public static final String UNIVERSITY_ID = "universityId";
 
     //V
 

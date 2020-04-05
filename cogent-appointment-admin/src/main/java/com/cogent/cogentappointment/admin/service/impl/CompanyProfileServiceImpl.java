@@ -181,9 +181,10 @@ public class CompanyProfileServiceImpl implements CompanyProfileService {
     }
 
     private void validateName(Long profileCount, String name) {
-        if (profileCount.intValue() > 0)
+        if (profileCount.intValue() > 0) {
             throw new DataDuplicationException(
                     String.format(NAME_DUPLICATION_MESSAGE, Profile.class.getSimpleName(), name));
+        }
     }
 
     public Profile save(Profile profile) {

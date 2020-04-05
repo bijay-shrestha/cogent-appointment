@@ -7,7 +7,6 @@ import com.cogent.cogentappointment.admin.dto.request.specialization.Specializat
 import com.cogent.cogentappointment.admin.dto.request.specialization.SpecializationUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.specialization.SpecializationMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.specialization.SpecializationResponseDTO;
-import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.SpecializationRepository;
 import com.cogent.cogentappointment.admin.service.HospitalService;
@@ -22,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.function.Function;
 
-import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NAME_DUPLICATION_MESSAGE;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.SpecializationLog.SPECIALIZATION;
 import static com.cogent.cogentappointment.admin.utils.SpecializationUtils.*;
@@ -193,14 +191,8 @@ public class SpecializationServiceImpl implements SpecializationService {
         return specialization;
     }
 
-    private void validateName(Long specializationCount, String name) {
-        if (specializationCount.intValue() > 0)
-            throw new DataDuplicationException(
-                    String.format(NAME_DUPLICATION_MESSAGE, Specialization.class.getSimpleName(), name));
-    }
-
-    private Specialization save(Specialization specialization) {
-        return specializationRepository.save(specialization);
+    private void save(Specialization specialization) {
+        specializationRepository.save(specialization);
     }
 
     private Specialization findBySpecializationId(Long specializationId) {
@@ -209,6 +201,7 @@ public class SpecializationServiceImpl implements SpecializationService {
     }
 
     private Function<Long, NoContentFoundException> SPECIALIZATION_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, SPECIALIZATION, id);
         throw new NoContentFoundException(Specialization.class, "id", id.toString());
     };
 

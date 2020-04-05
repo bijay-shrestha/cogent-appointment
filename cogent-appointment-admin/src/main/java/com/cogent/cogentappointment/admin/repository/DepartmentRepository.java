@@ -21,7 +21,4 @@ public interface DepartmentRepository extends JpaRepository<Department, Long>, D
     @Query(value = "SELECT d FROM Department d WHERE d.id = :id AND d.status = 'Y'")
     Optional<Department> findActiveDepartmentById(@Param("id") Long id);
 
-    @Query("FROM Department d WHERE d.id = :id AND d.status = 'Y'")
-    Department fetchActiveDepartmentById(@Param("id") Long id);
-
 }

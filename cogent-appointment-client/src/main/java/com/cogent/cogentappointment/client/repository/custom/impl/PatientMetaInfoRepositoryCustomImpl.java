@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.PatientMetaInfoRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.PatientMetaInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +15,8 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.HOSPITAL_ID;
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
+import static com.cogent.cogentappointment.client.log.constants.PatientLog.PATIENT_META_INFO;
 import static com.cogent.cogentappointment.client.query.PatientMetaInfoQuery.QUERY_TO_FETCH_ACTIVE_PATIENT_META_INFO_FOR_DROP_DOWN;
 import static com.cogent.cogentappointment.client.query.PatientMetaInfoQuery.QUERY_TO_FETCH_PATIENT_META_INFO_FOR_DROP_DOWN;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
@@ -24,6 +27,7 @@ import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.trans
  */
 @Repository
 @Transactional(readOnly = true)
+@Slf4j
 public class PatientMetaInfoRepositoryCustomImpl implements PatientMetaInfoRepositoryCustom {
 
     @PersistenceContext
@@ -36,7 +40,10 @@ public class PatientMetaInfoRepositoryCustomImpl implements PatientMetaInfoRepos
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
-        if (results.isEmpty()) throw PATIENT_META_INFO_NOT_FOUND.get();
+        if (results.isEmpty()){
+            error();
+            throw PATIENT_META_INFO_NOT_FOUND.get();
+        }
         else return results;
     }
 
@@ -47,10 +54,17 @@ public class PatientMetaInfoRepositoryCustomImpl implements PatientMetaInfoRepos
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
-        if (results.isEmpty()) throw PATIENT_META_INFO_NOT_FOUND.get();
+        if (results.isEmpty()){
+            error();
+            throw PATIENT_META_INFO_NOT_FOUND.get();
+        }
         else return results;
     }
 
     private Supplier<NoContentFoundException> PATIENT_META_INFO_NOT_FOUND = ()
             -> new NoContentFoundException(PatientMetaInfo.class);
+
+    public void error(){
+        log.error(CONTENT_NOT_FOUND,PATIENT_META_INFO);
+    }
 }

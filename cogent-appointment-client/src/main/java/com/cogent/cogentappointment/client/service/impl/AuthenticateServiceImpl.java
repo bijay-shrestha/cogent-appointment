@@ -40,10 +40,13 @@ public class AuthenticateServiceImpl implements AuthenticateService {
             if (BCrypt.checkpw(requestDTO.getPassword(), adminMinDetails.getPassword())) {
                 return hmacUtils.getAuthToken(adminMinDetails);
             } else {
+                log.error(INVALID_PASSWORD);
                 throw new NoContentFoundException(INVALID_PASSWORD);
             }
-        } else
+        } else {
+            log.error(CANNOT_ACCESS_CLIENT_MODULE);
             throw new NoContentFoundException(CANNOT_ACCESS_CLIENT_MODULE);
+        }
     }
 
     @Override

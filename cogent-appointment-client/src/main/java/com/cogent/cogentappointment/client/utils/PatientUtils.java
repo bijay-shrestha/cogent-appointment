@@ -49,7 +49,7 @@ public class PatientUtils {
     }
 
     public static HospitalPatientInfo updateHospitalPatientInfo(PatientUpdateRequestDTO requestDTO,
-                                                 HospitalPatientInfo hospitalPatientInfo) {
+                                                                HospitalPatientInfo hospitalPatientInfo) {
 
         hospitalPatientInfo.setAddress(requestDTO.getAddress());
         hospitalPatientInfo.setHospitalNumber(requestDTO.getHospitalNumber());
@@ -61,8 +61,8 @@ public class PatientUtils {
     }
 
     public static PatientMetaInfo updatePatientMetaInfo(HospitalPatientInfo hospitalPatientInfo,
-                                             PatientMetaInfo patientMetaInfo,
-                                             PatientUpdateRequestDTO updateRequestDTO) {
+                                                        PatientMetaInfo patientMetaInfo,
+                                                        PatientUpdateRequestDTO updateRequestDTO) {
         patientMetaInfo.setMetaInfo(toUpperCase(updateRequestDTO.getName())
                 + OR +
                 updateRequestDTO.getMobileNumber()
@@ -116,7 +116,7 @@ public class PatientUtils {
     }
 
     public static void updateOtherPatient(PatientUpdateDTOForOthers requestDTO,
-                                           HospitalPatientInfo hospitalPatientInfo) {
+                                          HospitalPatientInfo hospitalPatientInfo) {
 
         hospitalPatientInfo.setEmail(requestDTO.getEmail());
         hospitalPatientInfo.setAddress(requestDTO.getAddress());

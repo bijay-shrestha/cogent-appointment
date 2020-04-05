@@ -7,6 +7,7 @@ import com.cogent.cogentappointment.client.dto.response.university.UniversityRes
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.UniversityRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.University;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +19,10 @@ import javax.persistence.Query;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.client.constants.QueryConstants.ID;
+import static com.cogent.cogentappointment.client.constants.QueryConstants.NAME;
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
+import static com.cogent.cogentappointment.client.log.constants.UniversityLog.UNIVERSITY;
 import static com.cogent.cogentappointment.client.query.UniversityQuery.*;
 import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
@@ -28,37 +32,34 @@ import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
  */
 @Repository
 @Transactional(readOnly = true)
+@Slf4j
 public class UniversityRepositoryCustomImpl implements UniversityRepositoryCustom {
 
     @PersistenceContext
     private EntityManager entityManager;
 
     @Override
-    public Long validateDuplicity(String name, Long hospitalId) {
+    public Long validateDuplicity(String name) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY)
-                .setParameter(NAME, name)
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(NAME, name);
 
         return (Long) query.getSingleResult();
     }
 
     @Override
-    public Long validateDuplicity(Long id, String name, Long hospitalId) {
+    public Long validateDuplicity(Long id, String name) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE)
                 .setParameter(ID, id)
-                .setParameter(NAME, name)
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(NAME, name);
 
         return (Long) query.getSingleResult();
     }
 
     @Override
     public List<UniversityMinimalResponseDTO> search(UniversitySearchRequestDTO searchRequestDTO,
-                                                     Long hospitalId,
                                                      Pageable pageable) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_UNIVERSITY.apply(searchRequestDTO))
-                .setParameter(HOSPITAL_ID, hospitalId);
+        Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_UNIVERSITY.apply(searchRequestDTO));
 
         int totalItems = query.getResultList().size();
 
@@ -75,22 +76,20 @@ public class UniversityRepositoryCustomImpl implements UniversityRepositoryCusto
     }
 
     @Override
-    public UniversityResponseDTO fetchDetailsById(Long id, Long hospitalId) {
+    public UniversityResponseDTO fetchDetailsById(Long id) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_UNIVERSITY_DETAILS)
-                .setParameter(ID, id)
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(ID, id);
 
         try {
             return transformQueryToSingleResult(query, UniversityResponseDTO.class);
         } catch (NoResultException e) {
-            throw new NoContentFoundException(University.class, "id", id.toString());
+            throw UNIVERSITY_NOT_FOUND.get();
         }
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchActiveMinUniversity(Long hospitalId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_UNIVERSITY)
-                .setParameter(HOSPITAL_ID, hospitalId);
+    public List<DropDownResponseDTO> fetchActiveMinUniversity() {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_UNIVERSITY);
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
@@ -98,7 +97,9 @@ public class UniversityRepositoryCustomImpl implements UniversityRepositoryCusto
         else return results;
     }
 
-    private Supplier<NoContentFoundException> UNIVERSITY_NOT_FOUND = () ->
-            new NoContentFoundException(University.class);
+    private Supplier<NoContentFoundException> UNIVERSITY_NOT_FOUND = () -> {
+        log.error(CONTENT_NOT_FOUND, UNIVERSITY);
+        throw new NoContentFoundException(University.class);
+    };
 
 }

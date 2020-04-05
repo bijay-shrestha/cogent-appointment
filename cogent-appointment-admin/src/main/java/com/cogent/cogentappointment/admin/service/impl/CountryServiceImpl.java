@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.function.Function;
 
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.CountryLog.COUNTRY;
@@ -50,10 +51,15 @@ public class CountryServiceImpl implements CountryService {
         log.info(FETCHING_PROCESS_STARTED, COUNTRY);
 
         Country country = countryRepository.fetchActiveCountryById(id)
-                .orElseThrow(() -> new NoContentFoundException(Country.class, "id", id.toString()));
+                .orElseThrow(() -> COUNTRY_WITH_GIVEN_ID_NOT_FOUND.apply(id));
 
         log.info(FETCHING_PROCESS_COMPLETED, COUNTRY, getDifferenceBetweenTwoTime(startTime));
 
         return country;
     }
+
+    private Function<Long, NoContentFoundException> COUNTRY_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID,COUNTRY, id);
+        throw new NoContentFoundException(Country.class, "id", id.toString());
+    };
 }

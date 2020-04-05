@@ -33,9 +33,9 @@ public class CompanyAdminDetailResponseDTO implements Serializable {
 
     private Gender gender;
 
-    private Long hospitalId;
+    private Long companyId;
 
-    private String hospitalName;
+    private String companyName;
 
     private Long profileId;
 

@@ -100,12 +100,12 @@ public class HospitalQuery {
                     " END as hospitalBanner," +                                 //[7]
                     " h.code as hospitalCode," +                                //[8]
                     " tbl1.contact_details as contact_details," +               //[9]
-                    " h.refund_percentage as refundPercentage," +                //[10]
-                    " h.number_of_admins as numberOfAdmins," +                   //[11]
-                    " h.number_of_free_follow_ups as numberOfFreeFollowUps," +   //[12]
-                    " h.follow_up_interval_days as followUpIntervalDays," +       //[13]
-                    " h.is_company as isCompany," +                                 //[14]
-                    " h.alias as alias"+                                            //[15]
+                    " h.refund_percentage as refundPercentage," +               //[10]
+                    " h.number_of_admins as numberOfAdmins," +                  //[11]
+                    " h.number_of_follow_ups as numberOfFollowUps," +           //[12]
+                    " h.follow_up_interval_days as followUpIntervalDays," +     //[13]
+                    " h.is_company as isCompany," +                             //[14]
+                    " h.alias as alias"+                                        //[15]
                     " FROM" +
                     " hospital h" +
                     " LEFT JOIN hospital_logo hl ON h.id =hl.hospital_id " +
@@ -122,12 +122,12 @@ public class HospitalQuery {
                     " AND h.status !='D'" +
                     " AND h.is_company='N'";
 
-    public static final String QUERY_TO_FETCH_HOSPITAL_FREE_FOLLOW_UP_COUNT =
-            " SELECT h.numberOfFreeFollowUps as numberOfFreeFollowUps" +
+    public static final String QUERY_TO_FETCH_HOSPITAL_FOLLOW_UP_COUNT =
+            " SELECT h.numberOfFollowUps as numberOfFollowUps" +
                     " FROM Hospital h" +
                     " WHERE h.id =:hospitalId";
 
-    public static final String QUERY_TO_FETCH_HOSPITAL_FREE_FOLLOW_UP_INTERVAL_DAYS =
+    public static final String QUERY_TO_FETCH_HOSPITAL_FOLLOW_UP_INTERVAL_DAYS =
             " SELECT h.followUpIntervalDays as followUpIntervalDays" +
                     " FROM Hospital h" +
                     " WHERE h.id =:hospitalId";

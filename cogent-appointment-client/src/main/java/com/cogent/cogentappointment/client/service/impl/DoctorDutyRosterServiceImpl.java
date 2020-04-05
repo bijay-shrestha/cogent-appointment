@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.client.service.impl;
 
-import com.cogent.cogentappointment.client.constants.StatusConstants;
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.*;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedDateResponseDTO;
@@ -20,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -29,6 +29,8 @@ import java.util.stream.Collectors;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.DoctorDutyRosterServiceMessages.*;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.INVALID_DATE_DEBUG_MESSAGE;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.INVALID_DATE_MESSAGE;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.NO;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.DoctorDutyRosterLog.*;
 import static com.cogent.cogentappointment.client.log.constants.HospitalLog.HOSPITAL;
@@ -350,8 +352,8 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
                                                                  Date overrideToDate) {
 
         boolean isDateBetweenInclusive =
-                isDateBetweenInclusive(dutyRosterFromDate, dutyRosterToDate, overrideFromDate)
-                        && isDateBetweenInclusive(dutyRosterFromDate, dutyRosterToDate, overrideToDate);
+                isDateBetweenInclusive(dutyRosterFromDate, dutyRosterToDate, removeTime(overrideFromDate))
+                        && isDateBetweenInclusive(dutyRosterFromDate, dutyRosterToDate, removeTime(overrideToDate));
 
         if (!isDateBetweenInclusive) {
             log.error(BAD_REQUEST_MESSAGE);
@@ -360,7 +362,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
     }
 
     private void validateDoctorDutyRosterOverrideCount(Long doctorDutyRosterOverrideCount) {
-        if (doctorDutyRosterOverrideCount.intValue() > 0){
+        if (doctorDutyRosterOverrideCount.intValue() > 0) {
             log.error(DUPLICATION_MESSAGE);
             throw new DataDuplicationException(DUPLICATION_MESSAGE);
         }
@@ -405,13 +407,15 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
     private void saveDoctorDutyRosterOverride(DoctorDutyRoster doctorDutyRoster,
                                               List<DoctorDutyRosterOverrideRequestDTO> overrideRequestDTOS) {
 
-        if (doctorDutyRoster.getHasOverrideDutyRoster().equals(StatusConstants.YES)) {
+        if (doctorDutyRoster.getHasOverrideDutyRoster().equals(YES)) {
 
             Long startTime = getTimeInMillisecondsFromLocalDate();
 
             log.info(SAVING_PROCESS_STARTED, DOCTOR_DUTY_ROSTER_OVERRIDE);
 
-            List<DoctorDutyRosterOverride> doctorDutyRosterOverrides = overrideRequestDTOS
+            List<DoctorDutyRosterOverride> doctorDutyRosterOverrides = new ArrayList<>();
+
+            doctorDutyRosterOverrides = overrideRequestDTOS
                     .stream()
                     .map(requestDTO -> {
 
@@ -491,7 +495,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
     }
 
     private void updateDoctorDutyRosterOverrideStatus(DoctorDutyRoster doctorDutyRoster) {
-        if (doctorDutyRoster.getHasOverrideDutyRoster().equals(StatusConstants.NO))
+        if (doctorDutyRoster.getHasOverrideDutyRoster().equals(NO))
             updateDutyRosterOverrideStatus(
                     doctorDutyRosterOverrideRepository.fetchByDoctorRosterId(doctorDutyRoster.getId()));
     }
@@ -505,7 +509,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
     }
 
     private Function<Long, NoContentFoundException> DOCTOR_DUTY_ROSTER_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        log.error(CONTENT_NOT_FOUND_BY_ID,DOCTOR_DUTY_ROSTER,id);
+        log.error(CONTENT_NOT_FOUND_BY_ID, DOCTOR_DUTY_ROSTER, id);
         throw new NoContentFoundException(DoctorDutyRoster.class, "id", id.toString());
     };
 
@@ -529,7 +533,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
     }
 
     private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (hospitalId) -> {
-        log.error(CONTENT_NOT_FOUND_BY_ID,HOSPITAL,hospitalId);
+        log.error(CONTENT_NOT_FOUND_BY_ID, HOSPITAL, hospitalId);
         throw new NoContentFoundException(Hospital.class, "hospitalId", hospitalId.toString());
     };
 

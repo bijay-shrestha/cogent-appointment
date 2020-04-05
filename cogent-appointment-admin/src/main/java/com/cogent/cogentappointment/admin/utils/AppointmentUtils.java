@@ -4,8 +4,6 @@ import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPen
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.AppointmentLogDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.AppointmentLogResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPendingApproval.AppointmentPendingApprovalDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPendingApproval.AppointmentPendingApprovalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentQueue.AppointmentQueueSearchByTimeDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentQueue.AppointmentTimeDTO;
@@ -94,79 +92,79 @@ public class AppointmentUtils {
         return appointmentStatusResponseDTOS;
     }
 
-    public static AppointmentPendingApprovalResponseDTO parseQueryResultToAppointmentApprovalResponse
-            (List<Object[]> results) {
-
-        AppointmentPendingApprovalResponseDTO appointmentPendingApprovalResponseDTO = new AppointmentPendingApprovalResponseDTO();
-
-        List<AppointmentPendingApprovalDTO> appointmentPendingApprovalDTOS = new ArrayList<>();
-
-        AtomicReference<Double> totalAmount = new AtomicReference<>(0D);
-
-        results.forEach(result -> {
-            final int HOSPITAL_NAME_INDEX = 0;
-            final int APPOINTMENT_DATE_INDEX = 1;
-            final int APPOINTMENT_NUMBER_INDEX = 2;
-            final int APPOINTMENT_TIME_INDEX = 3;
-            final int ESEWA_ID_INDEX = 4;
-            final int REGISTRATION_NUMBER_INDEX = 5;
-            final int PATIENT_NAME_INDEX = 6;
-            final int PATIENT_GENDER_INDEX = 7;
-            final int PATIENT_DOB_INDEX = 8;
-            final int IS_REGISTERED_INDEX = 9;
-            final int PATIENT_MOBILE_NUMBER_INDEX = 10;
-            final int SPECIALIZATION_NAME_INDEX = 11;
-            final int TRANSACTION_NUMBER_INDEX = 12;
-            final int APPOINTMENT_AMOUNT_INDEX = 13;
-            final int DOCTOR_NAME_INDEX = 14;
-            final int REFUND_AMOUNT_INDEX = 15;
-            final int APPOINTMENT_ID_INDEX = 16;
-            final int IS_SELF_INDEX = 17;
-
-            Date appointmentDate = (Date) result[APPOINTMENT_DATE_INDEX];
-            Date patientDob = (Date) result[PATIENT_DOB_INDEX];
-
-            Double appointmentAmount = Objects.isNull(result[APPOINTMENT_AMOUNT_INDEX]) ?
-                    0D : Double.parseDouble(result[APPOINTMENT_AMOUNT_INDEX].toString());
-
-            Double refundAmount = Objects.isNull(result[REFUND_AMOUNT_INDEX]) ?
-                    0D : Double.parseDouble(result[REFUND_AMOUNT_INDEX].toString());
-
-            AppointmentPendingApprovalDTO appointmentStatusResponseDTO =
-                    AppointmentPendingApprovalDTO.builder()
-                            .hospitalName(result[HOSPITAL_NAME_INDEX].toString())
-                            .appointmentDate(appointmentDate)
-                            .appointmentNumber(result[APPOINTMENT_NUMBER_INDEX].toString())
-                            .appointmentTime(result[APPOINTMENT_TIME_INDEX].toString())
-                            .esewaId(Objects.isNull(result[ESEWA_ID_INDEX]) ? null : result[ESEWA_ID_INDEX].toString())
-                            .registrationNumber(Objects.isNull(result[REGISTRATION_NUMBER_INDEX]) ?
-                                    null : result[REGISTRATION_NUMBER_INDEX].toString())
-                            .patientName(result[PATIENT_NAME_INDEX].toString())
-                            .patientGender((Gender) result[PATIENT_GENDER_INDEX])
-                            .patientDob(patientDob)
-                            .patientAge(calculateAge(patientDob))
-                            .isRegistered((Character) result[IS_REGISTERED_INDEX])
-                            .mobileNumber(result[PATIENT_MOBILE_NUMBER_INDEX].toString())
-                            .specializationName(result[SPECIALIZATION_NAME_INDEX].toString())
-                            .transactionNumber(result[TRANSACTION_NUMBER_INDEX].toString())
-                            .appointmentAmount(appointmentAmount)
-                            .specializationName(result[SPECIALIZATION_NAME_INDEX].toString())
-                            .doctorName(result[DOCTOR_NAME_INDEX].toString())
-                            .refundAmount(refundAmount)
-                            .appointmentId(Long.parseLong(result[APPOINTMENT_ID_INDEX].toString()))
-                            .isSelf(Objects.isNull(result[IS_SELF_INDEX]) ? null : result[IS_SELF_INDEX].toString().charAt(0))
-                            .build();
-
-            appointmentPendingApprovalDTOS.add(appointmentStatusResponseDTO);
-
-            totalAmount.updateAndGet(v -> v + appointmentAmount);
-        });
-
-        appointmentPendingApprovalResponseDTO.setPendingAppointmentApprovals(appointmentPendingApprovalDTOS);
-        appointmentPendingApprovalResponseDTO.setTotalAmount(totalAmount.get());
-
-        return appointmentPendingApprovalResponseDTO;
-    }
+//    public static AppointmentPendingApprovalResponseDTO parseQueryResultToAppointmentApprovalResponse
+//            (List<Object[]> results) {
+//
+//        AppointmentPendingApprovalResponseDTO appointmentPendingApprovalResponseDTO = new AppointmentPendingApprovalResponseDTO();
+//
+//        List<AppointmentPendingApprovalDTO> appointmentPendingApprovalDTOS = new ArrayList<>();
+//
+//        AtomicReference<Double> totalAmount = new AtomicReference<>(0D);
+//
+//        results.forEach(result -> {
+//            final int HOSPITAL_NAME_INDEX = 0;
+//            final int APPOINTMENT_DATE_INDEX = 1;
+//            final int APPOINTMENT_NUMBER_INDEX = 2;
+//            final int APPOINTMENT_TIME_INDEX = 3;
+//            final int ESEWA_ID_INDEX = 4;
+//            final int REGISTRATION_NUMBER_INDEX = 5;
+//            final int PATIENT_NAME_INDEX = 6;
+//            final int PATIENT_GENDER_INDEX = 7;
+//            final int PATIENT_DOB_INDEX = 8;
+//            final int IS_REGISTERED_INDEX = 9;
+//            final int PATIENT_MOBILE_NUMBER_INDEX = 10;
+//            final int SPECIALIZATION_NAME_INDEX = 11;
+//            final int TRANSACTION_NUMBER_INDEX = 12;
+//            final int APPOINTMENT_AMOUNT_INDEX = 13;
+//            final int DOCTOR_NAME_INDEX = 14;
+//            final int REFUND_AMOUNT_INDEX = 15;
+//            final int APPOINTMENT_ID_INDEX = 16;
+//            final int IS_SELF_INDEX = 17;
+//
+//            Date appointmentDate = (Date) result[APPOINTMENT_DATE_INDEX];
+//            Date patientDob = (Date) result[PATIENT_DOB_INDEX];
+//
+//            Double appointmentAmount = Objects.isNull(result[APPOINTMENT_AMOUNT_INDEX]) ?
+//                    0D : Double.parseDouble(result[APPOINTMENT_AMOUNT_INDEX].toString());
+//
+//            Double refundAmount = Objects.isNull(result[REFUND_AMOUNT_INDEX]) ?
+//                    0D : Double.parseDouble(result[REFUND_AMOUNT_INDEX].toString());
+//
+//            AppointmentPendingApprovalDTO appointmentStatusResponseDTO =
+//                    AppointmentPendingApprovalDTO.builder()
+//                            .hospitalName(result[HOSPITAL_NAME_INDEX].toString())
+//                            .appointmentDate(appointmentDate)
+//                            .appointmentNumber(result[APPOINTMENT_NUMBER_INDEX].toString())
+//                            .appointmentTime(result[APPOINTMENT_TIME_INDEX].toString())
+//                            .esewaId(Objects.isNull(result[ESEWA_ID_INDEX]) ? null : result[ESEWA_ID_INDEX].toString())
+//                            .registrationNumber(Objects.isNull(result[REGISTRATION_NUMBER_INDEX]) ?
+//                                    null : result[REGISTRATION_NUMBER_INDEX].toString())
+//                            .patientName(result[PATIENT_NAME_INDEX].toString())
+//                            .patientGender((Gender) result[PATIENT_GENDER_INDEX])
+//                            .patientDob(patientDob)
+//                            .patientAge(calculateAge(patientDob))
+//                            .isRegistered((Character) result[IS_REGISTERED_INDEX])
+//                            .mobileNumber(result[PATIENT_MOBILE_NUMBER_INDEX].toString())
+//                            .specializationName(result[SPECIALIZATION_NAME_INDEX].toString())
+//                            .transactionNumber(result[TRANSACTION_NUMBER_INDEX].toString())
+//                            .appointmentAmount(appointmentAmount)
+//                            .specializationName(result[SPECIALIZATION_NAME_INDEX].toString())
+//                            .doctorName(result[DOCTOR_NAME_INDEX].toString())
+//                            .refundAmount(refundAmount)
+//                            .appointmentId(Long.parseLong(result[APPOINTMENT_ID_INDEX].toString()))
+//                            .isSelf(Objects.isNull(result[IS_SELF_INDEX]) ? null : result[IS_SELF_INDEX].toString().charAt(0))
+//                            .build();
+//
+//            appointmentPendingApprovalDTOS.add(appointmentStatusResponseDTO);
+//
+//            totalAmount.updateAndGet(v -> v + appointmentAmount);
+//        });
+//
+//        appointmentPendingApprovalResponseDTO.setPendingAppointmentApprovals(appointmentPendingApprovalDTOS);
+//        appointmentPendingApprovalResponseDTO.setTotalAmount(totalAmount.get());
+//
+//        return appointmentPendingApprovalResponseDTO;
+//    }
 
     public static AppointmentRescheduleLogResponseDTO parseQueryResultToAppointmentRescheduleLogResponse(List<Object[]> results) {
 

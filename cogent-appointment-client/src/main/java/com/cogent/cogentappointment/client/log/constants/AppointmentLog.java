@@ -35,5 +35,7 @@ public class AppointmentLog {
 
     public static String PENDING_APPROVAL_LIST = "PENDING APPROVALS";
 
+    public static String PENDING_APPROVAL_DETAIL = "PENDING APPROVALS DETAIL";
+
 
 }

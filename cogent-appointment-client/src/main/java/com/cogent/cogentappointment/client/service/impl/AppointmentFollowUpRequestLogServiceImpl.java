@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.client.service.impl;
 
-import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
+import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.AppointmentFollowUpRequestLogRepository;
 import com.cogent.cogentappointment.client.service.AppointmentFollowUpRequestLogService;
 import com.cogent.cogentappointment.persistence.model.AppointmentFollowUpRequestLog;

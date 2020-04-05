@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.esewa.scheduler;
 
 //import com.cogent.cogentappointment.esewa.service.AppointmentFollowUpTrackerService;
+import com.cogent.cogentappointment.esewa.service.AppointmentFollowUpTrackerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -17,15 +18,15 @@ import static com.cogent.cogentappointment.esewa.log.constants.AppointmentFollow
 @Slf4j
 public class AppointmentFollowUpScheduler {
 
-//    private final AppointmentFollowUpTrackerService appointmentFollowUpTrackerService;
-//
-//    public AppointmentFollowUpScheduler(AppointmentFollowUpTrackerService appointmentFollowUpTrackerService) {
-//        this.appointmentFollowUpTrackerService = appointmentFollowUpTrackerService;
-//    }
+    private final AppointmentFollowUpTrackerService appointmentFollowUpTrackerService;
+
+    public AppointmentFollowUpScheduler(AppointmentFollowUpTrackerService appointmentFollowUpTrackerService) {
+        this.appointmentFollowUpTrackerService = appointmentFollowUpTrackerService;
+    }
 
     @Scheduled(fixedDelayString = "${followup.schedulerTime}")
     public void updateFollowUpTracker() {
-//        log.info(SCHEDULER_RUNNING, APPOINTMENT_FOLLOW_UP_TRACKER);
-//        appointmentFollowUpTrackerService.updateFollowUpTrackerStatus();
+        log.info(SCHEDULER_RUNNING, APPOINTMENT_FOLLOW_UP_TRACKER);
+        appointmentFollowUpTrackerService.updateFollowUpTrackerStatus();
     }
 }

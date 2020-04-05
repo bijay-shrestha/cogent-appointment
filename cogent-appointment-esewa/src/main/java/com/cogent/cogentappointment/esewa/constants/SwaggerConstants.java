@@ -6,26 +6,7 @@ public class SwaggerConstants {
     public static String PATH_REGEX = "/esewa/api.*";
 
     //A
-    public interface AdminConstant {
-        String BASE_API_VALUE = "This is Admin Resource";
-        String SAVE_OPERATION = "Save new admin";
-        String UPDATE_OPERATION = "Update existing admin details";
-        String DELETE_OPERATION = "Set admin status as 'D' with specific remarks";
-        String SEARCH_OPERATION = "Search admin according to given request parameters";
-        String DETAILS_OPERATION = "Fetch admin details by its id";
-        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal admin details (id and name) for dropdown";
-        String CHANGE_PASSWORD_OPERATION = "Validate the requested password with original and update it accordingly" +
-                " (Change password).";
-        String RESET_PASSWORD_OPERATION = "Reset password of any admin. This can be done only by those admin who has privilege to do so";
-        String UPDATE_AVATAR_OPERATION = "Update admin avatar and if the file size is empty " +
-                "then change the isDefaultImage status as 'Y' else update accordingly.";
-        String VERIFY_ADMIN = "Verify if the confirmation token sent in email (after successful saveSelfPatient) is valid" +
-                " and admin has not been registered.";
-        String SAVE_PASSWORD_OPERATION = "Save admin password";
-        String FETCH_LOGGED_IN_ADMIN_INFO = "Fetch logged in admin information." +
-                " Used to show in top-bar and to validate if the admin updates its own profile";
-        String FETCH_ADMIN_META_INFO = "Fetch active admin meta info for dropdown";
-    }
+
 
     public interface AppointmentConstant {
         String BASE_API_VALUE = "This is Appointment Resource";
@@ -38,27 +19,6 @@ public class SwaggerConstants {
         String FETCH_APPOINTMENT_HISTORY = " Fetch appointment history (only approved)";
         String CANCEL_REGISTRATION_OPERATION = "Delete Appointment Reservation when user cancels registration process";
 
-        String FETCH_APPOINTMENT_QUEUE = "Fetch Appointment Queue of Today for Dashboard";
-        String FETCH_REFUND_APPOINTMENTS = "Fetch Refund Appointment Request List";
-        String APPROVE_REFUND_APPOINTMENT = "Approve Refund Request Appointment";
-        String REJECT_REFUND_APPOINTMENT = "Reject Refund Request Appointment";
-        String FETCH_PENDING_APPOINTMENT_APPROVAL = "Fetch pending appointment approvals";
-        String APPROVE_APPOINTMENT = "Approve Appointment and set status as 'A'.";
-        String REJECT_APPOINTMENT = "Reject Appointment and set status as 'R'.";
-        String FETCH_APPOINTMENT_LOG = "Fetch Appointment Log";
-        String FETCH_APPOINTMENT_RESCHEDULE_LOG = "Fetch Appointment Reschedule Log";
-        String FETCH_VACANT_APPOINTMENT_DATES = "Fetch Appointment vacant dates by doctorId and SpeciliazationId ";
-        String DETAILS_APPROVAL_VISIT_OPERATION = "Fetch appointment visit approval details by its id";
-    }
-
-    public interface AppointmentStatusConstant {
-        String BASE_API_VALUE = "This is Appointment Status Resource";
-        String FETCH_APPOINTMENT_STATUS = "Fetch appointment status.";
-    }
-
-    public interface AuthenticateConstant {
-        String BASE_API_VALUE = "This is Login and SignUp Resource.";
-        String LOGIN_OPERATION = "Login User";
     }
 
     public static final String[] AUTH_WHITELIST = {
@@ -76,75 +36,15 @@ public class SwaggerConstants {
     //B
 
     //C
-    public interface CountryConstant {
-        String BASE_API_VALUE = "This is Country Resource.";
-        String FETCH_ACTIVE_COUNTRY = "Fetch active country for dropdown.";
-    }
-
     public interface CommonConstant {
         String BASE_API_VALUE = "This is Common Resource";
         String FETCH_DOCTOR_SPECIALIZATION_INFO = "Fetch doctor and specialization combined info";
     }
 
 
-
     //D
 
-    public interface DashboardConstant {
-        String BASE_API_VALUE = "This is Dashboard Resource";
-        String GENERATE_REVENUE_OPERATION = "Fetch revenue generated.";
-        String OVER_ALL_APPOINTMENT_OPERATION = "Fetch over all appointments.";
-        String COUNT_REGISTERED_PATIENTS_OPERATION = "Count no. of registered patients.";
-        String REVENUE_STATISTICS_OPERATION = "Revenue statistics as per the filter.";
-        String REVENUE_TREND_OPERATION = "Revenue Trend as per the filter.";
-        String FETCH_APPOINTMENT_QUEUE = "Fetch Appointment Queue of Today for Dashboard.";
-    }
 
-    public interface DepartmentConstant {
-        String BASE_DEPARTMENT_API_VALUE = "This is Department Resource";
-        String SAVE_DEPARTMENT_OPERATION = "Save new department";
-        String UPDATE_DEPARTMENT_OPERATION = "Update existing department";
-        String DELETE_DEPARTMENT_OPERATION = "Set department status as 'D' when deleted";
-        String SEARCH_DEPARTMENT_OPERATION = "Search department according to given request parameters";
-        String DEPARTMENT_DETAILS_OPERATION = "Fetch department details";
-        String FETCH_DEPARTMENT_FOR_DROP_DOWN_OPERATION = "Fetch minimal department details (id and name) for dropdown";
-        String FETCH_ACTIVE_DEPARTMENT_FOR_DROP_DOWN_OPERATION = "Fetch minimal active department details (id and name)" +
-                " for dropdown";
-        String FETCH_DEPARTMENT_BY_HOSPITAL_OPERATION = "Fetch department by hospital id";
-    }
-
-    public interface DoctorConstant {
-        String BASE_API_VALUE = "This is Doctor Resource";
-        String SAVE_OPERATION = "Save new Doctor like Dr.Sanjeeev Upreti, Dr. Daniel Shrestha, etc";
-        String UPDATE_OPERATION = "Update existing Doctor";
-        String DELETE_OPERATION = "Set Doctor status as 'D' when deleted";
-        String SEARCH_OPERATION = "Search Doctor according to given request parameters";
-        String DETAILS_OPERATION = "Fetch Doctor details by its id";
-        String DETAILS_FOR_UPDATE_MODAL_OPERATION = "Fetch Doctor details for update modal by its id";
-        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch Doctor details (id and name) for dropdown";
-        String FETCH_BY_SPECIALIZATION_ID = "Fetch active doctors by specialization id";
-        String FETCH_BY_HOSPITAL_ID = "Fetch active doctors by hospital id";
-    }
-
-    public interface DoctorDutyRosterConstant {
-        String BASE_API_VALUE = "This is Doctor Duty Roster Resource";
-        String SAVE_OPERATION = "Save Doctor Duty Roster";
-        String UPDATE_OPERATION = "Update Doctor Duty Roster. Note that week days time can be updated " +
-                "only if there are no appointments within the selected date range";
-        String DELETE_OPERATION = "Set Doctor Duty Roster status as 'D' when deleted. " +
-                " Note that doctor duty roster can be deleted " +
-                " only if there are no appointments within the selected date range";
-        String SEARCH_OPERATION = "Search Doctor Duty Roster according to given request parameters";
-        String DETAILS_OPERATION = "Fetch Doctor Duty Roster details by its id";
-        String UPDATE_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION = "Update Doctor Duty Roster Override schedules." +
-                " (Can saveSelfPatient new override schedules for the same roster or update existing rosters). " +
-                " Returns saved/updated override id as response.";
-        String DELETE_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION = "Set Doctor Duty Roster Override status as 'D' when deleted. " +
-                " Note that doctor duty roster override can be deleted " +
-                " only if there are no appointments within the selected date range";
-        String FETCH_EXISTING_ROSTERS = " Fetch existing doctor duty rosters within the selected date range";
-        String REVERT_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION = "Revert doctor duty roster.";
-    }
 
 
     //E
@@ -164,13 +64,6 @@ public class SwaggerConstants {
 
 
     //F
-    public interface ForgotPasswordConstant {
-        String BASE_API_VALUE = "This is Forgot Password Resource";
-        String FORGOT_PASSWORD_OPERATION = "Validate admin and send reset code in email";
-        String VERIFY_RESET_CODE = "Verify if the reset code is valid and has not expired";
-        String UPDATE_PASSWORD = "Update password of respective admin (Reset password)";
-    }
-
 
     public interface FollowUpTrackerConstant {
         String BASE_API_VALUE = "This is Follow-Up Tracker Resource";
@@ -209,92 +102,26 @@ public class SwaggerConstants {
                 "request parameters (name, mobile number, dob)";
         String SEARCH_PATIENT_WITH_OTHERS_TYPE_OPERATION = "Fetch list of other child patients for" +
                 " selected name, mobile number and dob.";
-        String FETCH_DETAILS_OF_OTHERS = " Fetch patient details by hospital patient info id";
-        String UPDATE_PATIENT_INFO_OPERATION = "Update patient info (others)";
-        String DELETE_PATIENT_INFO_OPERATION = "Delete patient info (others)";
-        String SEARCH_OPERATION = "Search Patient Info";
-        String FETCH_DETAILS_BY_ID = " Fetch patient details by id";
-        String FETCH_PATIENT_MIN_DETAIL_BY_APPOINTMENT_ID = "Fetch min patient detail by appointment id.";
 
     }
 
-    public interface ProfileConstant {
-        String BASE_API_VALUE = "This is Profile Resource";
-        String SAVE_OPERATION = "Save new profile";
-        String UPDATE_OPERATION = "Update existing profile";
-        String DELETE_OPERATION = "Set profile status as 'D' when deleted";
-        String SEARCH_OPERATION = "Search profile according to given request parameters";
-        String DETAILS_OPERATION = "Fetch profile details by its id. Group profile-menu response by parent-id";
-        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal profile details (id and name) for dropdown";
-        String FETCH_PROFILE_BY_DEPARTMENT_ID = "Fetch active profiles by department id";
-    }
 
 
     //Q
-    public interface QualificationConstant {
-        String BASE_API_VALUE = "This is Qualification Resource";
-        String SAVE_OPERATION = "Save new Qualification";
-        String UPDATE_OPERATION = "Update existing Qualification";
-        String DELETE_OPERATION = "Set Qualification status as 'D' when deleted";
-        String SEARCH_OPERATION = "Search Qualification according to given request parameters";
-        String DETAILS_OPERATION = "Fetch Qualification details by its id";
-        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal Qualification details for dropdown";
-    }
-
-    public interface QualificationAliasConstant {
-        String BASE_API_VALUE = "This is Qualification Alias Resource";
-        String SAVE_OPERATION = "Save new Qualification Alias Resource";
-        String UPDATE_OPERATION = "Update existing Qualification Alias Resource";
-        String DELETE_OPERATION = "Set Qualification Alias Resource status as 'D' when deleted";
-        String SEARCH_OPERATION = "Search Qualification Alias Resource according to given request parameters";
-        String FETCH_ACTIVE_QUALIFICATION_ALIAS = "Fetch active Qualification Alias like M.D.,M.B.B.S, etc";
-    }
 
     //R
 
     //S
-
-    public interface SpecializationConstant {
-        String BASE_API_VALUE = "This is Specialization Resource";
-        String SAVE_OPERATION = "Save new Specialization like Physician, Surgeon, etc. Generates random 3-digit code.";
-        String UPDATE_OPERATION = "Update existing Specialization";
-        String DELETE_OPERATION = "Set Specialization status as 'D' when deleted";
-        String SEARCH_OPERATION = "Search Specialization according to given request parameters";
-        String DETAILS_OPERATION = "Fetch Specialization details by its id";
-        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal Specialization details (id and name) for dropdown";
-        String FETCH_BY_DOCTOR_ID = "Fetch active specializations by doctor id";
-        String FETCH_BY_HOSPITAL_ID = "Fetch active specializations by hospital id";
-    }
-
-    public interface SideBarConstant {
-        String BASE_API_VALUE = "This is SideBar Resource";
-        String FETCH_ASSIGNED_PROFILE_RESPONSE = "Fetch assigned profile response";
-    }
 
 
     //T
 
 
     //U
-    public interface UniversityConstant {
-        String BASE_API_VALUE = "This is University Resource.";
-        String SAVE_OPERATION = "Save new University";
-        String UPDATE_OPERATION = "Update existing University";
-        String DELETE_OPERATION = "Set University status as 'D' when deleted";
-        String SEARCH_OPERATION = "Search University according to given request parameters";
-        String DETAILS_OPERATION = "Fetch University details by its id";
-        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal University details for dropdown";
-    }
-
 
     //V
 
     //W
-    public interface WeekDaysConstant {
-        String BASE_API_VALUE = "This is Week Days Resource.";
-        String FETCH_ACTIVE_WEEK_DAYS = "Fetch active week days.";
-        String FETCH_PREPARE_WEEK_DAYS = "Prepare active week days (for doctor duty roster).";
-    }
 
 
     //X

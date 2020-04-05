@@ -6,10 +6,7 @@ import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminI
 import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminUpdateRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.admin.AdminChangePasswordRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.admin.AdminMacAddressInfoUpdateRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.admin.AdminPasswordRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.admin.AdminResetPasswordRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.admin.*;
 import com.cogent.cogentappointment.admin.dto.request.email.EmailRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminLoggedInInfoResponseDTO;
@@ -38,6 +35,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.Validator;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -53,6 +52,7 @@ import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.AdminLog.*;
 import static com.cogent.cogentappointment.admin.utils.AdminUtils.*;
 import static com.cogent.cogentappointment.admin.utils.CompanyAdminUtils.*;
+import static com.cogent.cogentappointment.admin.utils.DashboardFeatureUtils.parseToAdminDashboardFeature;
 import static com.cogent.cogentappointment.admin.utils.GenderUtils.fetchGenderByCode;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
@@ -84,6 +84,10 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
     private final ProfileService profileService;
 
+    private final DashboardFeatureRepository dashboardFeatureRepository;
+
+    private final AdminDashboardFeatureRepository adminDashboardFeatureRepository;
+
     public CompanyAdminServiceImpl(Validator validator,
                                    AdminRepository adminRepository,
                                    AdminMacAddressInfoRepository adminMacAddressInfoRepository,
@@ -91,7 +95,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                                    AdminAvatarRepository adminAvatarRepository,
                                    AdminConfirmationTokenRepository confirmationTokenRepository,
                                    MinioFileService minioFileService, EmailService emailService,
-                                   ProfileService profileService) {
+                                   ProfileService profileService, DashboardFeatureRepository dashboardFeatureRepository, AdminDashboardFeatureRepository adminDashboardFeatureRepository) {
         this.validator = validator;
         this.adminRepository = adminRepository;
         this.adminMacAddressInfoRepository = adminMacAddressInfoRepository;
@@ -101,6 +105,8 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         this.minioFileService = minioFileService;
         this.emailService = emailService;
         this.profileService = profileService;
+        this.dashboardFeatureRepository = dashboardFeatureRepository;
+        this.adminDashboardFeatureRepository = adminDashboardFeatureRepository;
     }
 
     @Override
@@ -127,10 +133,12 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         saveAdminMetaInfo(admin);
 
+        saveAllAdminDashboardFeature(adminRequestDTO.getAdminDashboardRequestDTOS(), admin);
+
         AdminConfirmationToken adminConfirmationToken =
                 saveAdminConfirmationToken(parseInAdminConfirmationToken(admin));
 
-        EmailRequestDTO emailRequestDTO = convertCompanyAdminRequestToEmailRequestDTO(adminRequestDTO,admin,
+        EmailRequestDTO emailRequestDTO = convertCompanyAdminRequestToEmailRequestDTO(adminRequestDTO, admin,
                 adminConfirmationToken.getConfirmationToken(), httpServletRequest);
 
         sendEmail(emailRequestDTO);
@@ -258,10 +266,12 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
             updateAvatar(admin, files);
 
 //        todo:mac cannot be saved
-        if(updateRequestDTO.getHasMacBinding().equals(YES))
-        updateMacAddressInfo(updateRequestDTO.getMacAddressUpdateInfo(), admin);
+        if (updateRequestDTO.getHasMacBinding().equals(YES))
+            updateMacAddressInfo(updateRequestDTO.getMacAddressUpdateInfo(), admin);
 
         updateAdminMetaInfo(admin);
+
+        updateAdminDashboardFeature(updateRequestDTO.getAdminDashboardRequestDTOS(), admin);
 
         sendEmail(emailRequestDTO);
 
@@ -327,12 +337,77 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         return metaInfoResponseDTOS;
     }
 
+
+    private void saveAllAdminDashboardFeature(List<AdminDashboardRequestDTO> dashboardRequestDTOList, Admin admin) {
+
+        if (dashboardRequestDTOList.size() > 0) {
+            List<DashboardFeature> dashboardFeatureList = findActiveDashboardFeatures(dashboardRequestDTOList);
+            adminDashboardFeatureRepository.saveAll(parseToAdminDashboardFeature(dashboardFeatureList, admin));
+        }
+
+    }
+
+    private List<DashboardFeature> findActiveDashboardFeatures(List<AdminDashboardRequestDTO> adminDashboardRequestDTOS) {
+
+        String ids = adminDashboardRequestDTOS.stream()
+                .map(request -> request.getId().toString())
+                .collect(Collectors.joining(","));
+
+        List<DashboardFeature> dashboardFeatureList = validateDashboardFeature(ids);
+        int requestCount = adminDashboardRequestDTOS.size();
+
+        if ((dashboardFeatureList.size()) != requestCount) {
+            throw new NoContentFoundException(DashboardFeature.class);
+        }
+
+        return dashboardFeatureList;
+
+    }
+
+    private List<DashboardFeature> validateDashboardFeature(String ids) {
+        return dashboardFeatureRepository.validateDashboardFeatureCount(ids);
+    }
+
+
+    private void updateAdminDashboardFeature(List<AdminDashboardRequestDTO> adminDashboardRequestDTOS, Admin admin) {
+
+        List<AdminDashboardFeature> adminDashboardFeatureList = new ArrayList<>();
+        adminDashboardRequestDTOS.forEach(result -> {
+
+            AdminDashboardFeature adminDashboardFeature = adminDashboardFeatureRepository.findAdminDashboardFeatureBydashboardFeatureId(result.getId(), admin.getId());
+
+            if (adminDashboardFeature == null) {
+                saveAdminDashboardFeature(result.getId(), admin);
+            }
+
+            if (adminDashboardFeature != null) {
+                adminDashboardFeature.setStatus(result.getStatus());
+                adminDashboardFeatureList.add(adminDashboardFeature);
+            }
+
+        });
+
+        adminDashboardFeatureRepository.saveAll(adminDashboardFeatureList);
+
+    }
+
+    private void saveAdminDashboardFeature(Long id, Admin admin) {
+
+        DashboardFeature dashboardFeature = dashboardFeatureRepository.findActiveDashboardFeatureById(id)
+                .orElseThrow(() -> new NoContentFoundException(DashboardFeature.class));
+
+        List<DashboardFeature> dashboardFeatureList = Arrays.asList(dashboardFeature);
+        adminDashboardFeatureRepository.saveAll(parseToAdminDashboardFeature(dashboardFeatureList, admin));
+
+    }
+
+
     private void validateStatus(Object status) {
         if (status.equals(INACTIVE)) throw ADMIN_ALREADY_REGISTERED.get();
     }
 
     private void validateCompanyAdminDuplicity(List<Object[]> adminList, String requestEmail,
-                                        String requestMobileNumber) {
+                                               String requestMobileNumber) {
 
         final int EMAIL = 0;
         final int MOBILE_NUMBER = 1;

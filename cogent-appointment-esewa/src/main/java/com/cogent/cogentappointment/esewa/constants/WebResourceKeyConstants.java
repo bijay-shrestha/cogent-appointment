@@ -9,14 +9,6 @@ public class WebResourceKeyConstants {
     public static final String API_V1 = "/esewa/api/v1";
     public static final String ACTIVE = "/active";
 
-    public interface AdminConstants {
-        String BASE_ADMIN = "/admin";
-        String AVATAR = "/avatar";
-        String ADMIN_META_INFO = "/metaInfo";
-        String CHANGE_PASSWORD = "/changePassword";
-        String RESET_PASSWORD = "/resetPassword";
-        String VERIFY = "/verify";
-    }
 
     public interface AppointmentConstants {
         String BASE_APPOINTMENT = "/appointment";
@@ -28,65 +20,25 @@ public class WebResourceKeyConstants {
         String RESCHEDULE = "/reschedule";
         String FOLLOW_UP = "/follow-up";
         String HISTORY = "/history";
-        String PENDING_APPROVAL = "/pending-approval";
-        String REFUND = "/refund";
-        String APPROVE = "/approve";
-        String REJECT = "/reject";
-        String STATUS = "/status";
-        String LOG = "/log";
-        String RESCHEDULE_LOG = "/reschedule-log";
     }
 
     //B
-    public static final String BASE_PASSWORD = "/password";
 
     //C
-    public interface CountryConstants {
-        String BASE_COUNTRY = "/country";
-    }
-
     public interface CommonConstants {
         String BASE_COMMON = "/common";
         String DOCTOR_SPECIALIZATION = "/doctor-specialization";
     }
 
 
-
     //D
-    public interface DashboardConstants {
-        String BASE_DASHBOARD = "/dashboard";
-        String GENERATE_REVENUE = "/revenueGenerated";
-        String OVER_ALL_APPOINTMENT = "/overAllAppointments";
-        String REVENUE_STATISTICS = "/revenueStatistics";
-        String REGISTERED = "/registeredPatients";
-        String COUNT = "/count";
-        String APPOINTMENT_QUEUE = "/today-appointment";
-        String APPOINTMENT_QUEUE_BY_TIME = "/today-appointment-timely";
-        String REVENUE_TREND = "/revenueTrend";
-    }
+
 
     public static final String DETAIL = "/detail";
     public static final String DELETE = "/delete";
 
-    public interface DepartmentConstants {
-        String BASE_DEPARTMENT = "/department";
-        String DEPARTMENT_ID_PATH_VARIABLE_BASE = "/{departmentId}";
-    }
-
-    public interface DoctorConstants {
-        String BASE_DOCTOR = "/doctor";
-        String DOCTOR_WISE = "/doctor-wise";
-        String UPDATE_DETAILS = "/updateDetails";
-    }
 
     public static final String DOCTOR_ID_PATH_VARIABLE_BASE = "/{doctorId}";
-
-    public interface DoctorDutyRosterConstants {
-        String BASE_DOCTOR_DUTY_ROSTER = "/doctorDutyRoster";
-        String DOCTOR_DUTY_ROSTER_OVERRIDE = "/doctorDutyRosterOverride";
-        String EXISTING = "/existing";
-        String REVERT_DOCTOR_DUTY_ROSTER_OVERRIDE = "/revert";
-    }
 
 
     //E
@@ -101,12 +53,6 @@ public class WebResourceKeyConstants {
     }
 
     //F
-
-    public interface ForgotPasswordConstants {
-        String VERIFY = "/verify";
-        String FORGOT = "/forgot";
-    }
-
 
     //G
 
@@ -150,18 +96,9 @@ public class WebResourceKeyConstants {
         String HOSPITAL_PATIENT_INFO_ID_PATH_VARIABLE_BASE = "/{hospitalPatientInfoId}";
     }
 
-    public interface ProfileSetupConstants {
-        String BASE_PROFILE = "/profile";
-    }
 
     //Q
-    public interface QualificationConstants {
-        String BASE_QUALIFICATION = "/qualification";
-    }
 
-    public interface QualificationAliasConstants {
-        String BASE_QUALIFICATION_ALIAS = "/qualificationAlias";
-    }
 
     //R
 
@@ -172,37 +109,16 @@ public class WebResourceKeyConstants {
 
     public static final String SELF = "/self";
 
-    public interface SidebarConstants {
-        String BASE_SIDE_BAR = "/sidebar";
-    }
-
-
-    public interface SpecializationConstants {
-        String BASE_SPECIALIZATION = "/specialization";
-        String SPECIALIZATION_WISE = "/specialization-wise";
-    }
-
     public static final String SPECIALIZATION_ID_PATH_VARIABLE_BASE = "/{specializationId}";
 
 
     //T
 
     //U
-    public static final String UPDATE = "/update";
-
-    public interface UniversityConstants {
-        String BASE_UNIVERSITY = "/university";
-    }
-
 
     //V
 
     //W
-    public interface WeekDaysConstants {
-        String BASE_WEEK_DAYS = "/weekDays";
-        String PREPARE_WEEK_DAYS_DATA = "/prepare-weekdays-data";
-    }
-
 
     //X
 

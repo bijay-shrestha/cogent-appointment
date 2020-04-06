@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.logging.dto.response;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -11,6 +10,9 @@ import java.util.Date;
  */
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class AdminLogSearchResponseDTO implements Serializable {
 
     private Date logDate;

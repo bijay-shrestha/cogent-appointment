@@ -12,21 +12,21 @@ public class AdminLogQuery {
 
     public static String QUERY_TO_SEARCH_ADMIN_LOGS(AdminLogSearchRequestDTO searchRequestDTO) {
 
-        return "SELECT" +
+        return "SELECT " +
                 " al.logDate as logDate," +
                 " a.username as userName," +
                 " al.ipAddress as ipAddress," +
                 " al.feature as feature," +
                 " al.actionType as actionType," +
                 " al.logDescription as logDescription" +
-                " FROM adminLog al" +
-                " LEFT JOIN admin a ON al.adminId.id =a.id" +
+                " FROM AdminLog al" +
+                " LEFT JOIN Admin a ON al.adminId.id =a.id" +
                 WHERE_CLAUSE_TO_SEARCH_ADMIN_LOGS(searchRequestDTO);
     }
 
     public static String WHERE_CLAUSE_TO_SEARCH_ADMIN_LOGS(AdminLogSearchRequestDTO searchRequestDTO) {
 
-        String whereClause = "WHERE al.status != 'D'";
+        String whereClause = " WHERE al.status != 'D'";
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getAdminId()))
             whereClause += " AND a.id=" + searchRequestDTO.getAdminId();
@@ -38,7 +38,7 @@ public class AdminLogQuery {
             whereClause += " AND al.roleId=" + searchRequestDTO.getRoleId();
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getDate()))
-            whereClause += " AND al.logDate=:" + utilDateToSqlDate(searchRequestDTO.getDate());
+            whereClause += " AND al.logDate='" + utilDateToSqlDate(searchRequestDTO.getDate())+"'";
 
         return whereClause;
 

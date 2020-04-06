@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.logging.utils.common;
 
-import com.cogent.cogentappointment.admin.constants.StringConstant;
-import com.cogent.cogentappointment.admin.constants.UtilityConfigConstants;
+import com.cogent.cogentappointment.logging.constants.StringConstant;
+import com.cogent.cogentappointment.logging.constants.UtilityConfigConstants;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;

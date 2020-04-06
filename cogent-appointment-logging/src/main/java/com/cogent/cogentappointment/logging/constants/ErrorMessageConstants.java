@@ -26,6 +26,11 @@ public class ErrorMessageConstants {
         String INVALID_DELETE_REQUEST = "Sorry! Cannot delete this admin since it has Super Admin Profile";
     }
 
+    public interface AdminLogServiceMessages {
+
+        String ADMIN_LOG_NOT_FOUND = "Admin Log '%s' doesn't exist";
+    }
+
     //B
 
     //C

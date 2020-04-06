@@ -36,6 +36,10 @@ public class AdminLog {
     private Long roleId;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "log_date_time")
+    private Date logDateTime;
+
+    @Temporal(TemporalType.DATE)
     @Column(name = "log_date")
     private Date logDate;
 

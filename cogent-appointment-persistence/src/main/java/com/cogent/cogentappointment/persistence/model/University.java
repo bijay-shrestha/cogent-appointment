@@ -36,10 +36,6 @@ public class University extends Auditable<String> implements Serializable {
     @JoinColumn(name = "country_id")
     private Country country;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hospital_id")
-    private Hospital hospital;
-
     @Column(name = "status")
     private Character status;
 

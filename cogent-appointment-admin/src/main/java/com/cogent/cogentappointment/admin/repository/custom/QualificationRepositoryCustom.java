@@ -27,7 +27,7 @@ public interface QualificationRepositoryCustom {
 
     QualificationResponseDTO fetchDetailsById(Long id);
 
-    List<QualificationDropdownDTO> fetchActiveQualificationForDropDown();
+    List<QualificationDropdownDTO> fetchActiveMinQualification();
 
     List<DropDownResponseDTO> fetchMinQualification();
 

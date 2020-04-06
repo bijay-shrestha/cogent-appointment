@@ -139,12 +139,12 @@ public class QualificationServiceImpl implements QualificationService {
     }
 
     @Override
-    public List<QualificationDropdownDTO> fetchActiveQualificationForDropDown() {
+    public List<QualificationDropdownDTO> fetchActiveMinQualification() {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, QUALIFICATION);
 
-        List<QualificationDropdownDTO> responseDTOS = qualificationRepository.fetchActiveQualificationForDropDown();
+        List<QualificationDropdownDTO> responseDTOS = qualificationRepository.fetchActiveMinQualification();
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, QUALIFICATION, getDifferenceBetweenTwoTime(startTime));
 

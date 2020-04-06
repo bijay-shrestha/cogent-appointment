@@ -4,7 +4,6 @@ import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.university.UniversityRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.university.UniversityUpdateRequestDTO;
 import com.cogent.cogentappointment.persistence.model.Country;
-import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.University;
 
 import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toNormalCase;
@@ -15,28 +14,24 @@ import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toNor
 public class UniversityUtils {
 
     public static University parseToUniversity(UniversityRequestDTO requestDTO,
-                                               Country country,
-                                               Hospital hospital) {
+                                               Country country) {
 
         University university = new University();
         university.setName(toNormalCase(requestDTO.getName()));
         university.setAddress(requestDTO.getAddress());
         university.setStatus(requestDTO.getStatus());
         university.setCountry(country);
-        university.setHospital(hospital);
         return university;
     }
 
     public static void parseToUpdatedUniversity(UniversityUpdateRequestDTO requestDTO,
                                                 Country country,
-                                                Hospital hospital,
                                                 University university) {
         university.setName(toNormalCase(requestDTO.getName()));
         university.setAddress(requestDTO.getAddress());
         university.setStatus(requestDTO.getStatus());
         university.setRemarks(requestDTO.getRemarks());
         university.setCountry(country);
-        university.setHospital(hospital);
     }
 
     public static void parseToDeletedUniversity(University university,

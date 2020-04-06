@@ -21,6 +21,9 @@ public interface PatientService {
 
     PatientDetailResponseDTOWithStatus searchForSelf(PatientMinSearchRequestDTO searchRequestDTO);
 
+    Patient fetchPatient(PatientRequestForDTO patientRequestForDTO);
+
+
     /*FETCH MINIMAL DETAILS OF 'OTHERS'*/
     PatientResponseDTOForOthersWithStatus searchForOthers(PatientMinSearchRequestDTO searchRequestDTO,
                                                 Pageable pageable);

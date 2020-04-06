@@ -189,6 +189,15 @@ public class PatientServiceImpl implements PatientService {
         log.info(DELETING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
     }
 
+    @Override
+    public Patient fetchPatient(PatientRequestForDTO patientRequestForDTO) {
+        return patientRepository.fetchPatient(
+                patientRequestForDTO.getName(),
+                patientRequestForDTO.getMobileNumber(),
+                patientRequestForDTO.getDateOfBirth()
+        );
+    }
+
     private Patient savePatientForSelf(PatientRequestByDTO requestDTO) {
         return savePatientInfo(
                 requestDTO.getName(),

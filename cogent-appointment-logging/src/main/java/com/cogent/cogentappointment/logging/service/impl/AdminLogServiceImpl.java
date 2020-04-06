@@ -28,6 +28,7 @@ public class AdminLogServiceImpl implements AdminLogService {
 
     @Override
     public List<AdminLogSearchResponseDTO> search(AdminLogSearchRequestDTO searchRequestDTO, Pageable pageable) {
-        return null;
+        List<AdminLogSearchResponseDTO> responseDTOS = adminLogRepository.search(searchRequestDTO);
+        return responseDTOS;
     }
 }

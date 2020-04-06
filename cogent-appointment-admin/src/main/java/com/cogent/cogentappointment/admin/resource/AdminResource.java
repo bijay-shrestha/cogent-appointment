@@ -54,10 +54,11 @@ public class AdminResource {
         return created(create(API_V1 + BASE_ADMIN)).build();
     }
 
-    @GetMapping(ACTIVE + MIN)
+    @PutMapping(ACTIVE + MIN)
     @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
-    public ResponseEntity<?> fetchActiveAdminsForDropdown() {
-
+    public ResponseEntity<?> fetchActiveAdminsForDropdown(@RequestBody AdminLogRequestDTO adminLogRequestDTO,
+                                                          HttpServletRequest httpServletRequest) {
+        saveLogs(adminLogRequestDTO, httpServletRequest);
 
         return ok(adminService.fetchActiveAdminsForDropdown());
     }

@@ -1,18 +1,15 @@
 package com.cogent.cogentappointment.esewa.repository.custom;
 
+import com.cogent.cogentappointment.esewa.dto.request.appointment.AppointmentDatesRequestDTO;
+import com.cogent.cogentappointment.esewa.dto.request.eSewa.AppointmentDetailRequestDTO;
+import com.cogent.cogentappointment.esewa.dto.response.appointment.appoinmentDateAndTime.DoctorDutyRosterAppointmentDate;
+import com.cogent.cogentappointment.esewa.dto.response.appointment.appoinmentDateAndTime.DoctorWeekDaysDutyRosterAppointmentDate;
 import com.cogent.cogentappointment.esewa.dto.response.appointmentDetails.AvailableDoctorWithSpecialization;
 import com.cogent.cogentappointment.esewa.dto.response.appointmentDetails.DoctorAvailabilityStatusResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointmentDetails.DutyRosterAppointmentDateAndDoctorDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointmentDetails.DutyRosterAppointmentDateAndSpecilizationDTO;
-import com.cogent.cogentappointment.esewa.dto.request.appointment.AppointmentDatesRequestDTO;
-import com.cogent.cogentappointment.esewa.dto.request.doctorDutyRoster.DoctorDutyRosterSearchRequestDTO;
-import com.cogent.cogentappointment.esewa.dto.request.doctorDutyRoster.DoctorExistingDutyRosterRequestDTO;
-import com.cogent.cogentappointment.esewa.dto.request.eSewa.AppointmentDetailRequestDTO;
-import com.cogent.cogentappointment.esewa.dto.response.appointment.appoinmentDateAndTime.DoctorDutyRosterAppointmentDate;
-import com.cogent.cogentappointment.esewa.dto.response.appointment.appoinmentDateAndTime.DoctorWeekDaysDutyRosterAppointmentDate;
-import com.cogent.cogentappointment.esewa.dto.response.doctorDutyRoster.*;
+import com.cogent.cogentappointment.esewa.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;

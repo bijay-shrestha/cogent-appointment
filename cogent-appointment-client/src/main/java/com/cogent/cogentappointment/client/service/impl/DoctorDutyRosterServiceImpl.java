@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.client.service.impl;
 
-import com.cogent.cogentappointment.client.constants.StatusConstants;
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.*;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedDateResponseDTO;
@@ -29,6 +28,8 @@ import java.util.stream.Collectors;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.DoctorDutyRosterServiceMessages.*;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.INVALID_DATE_DEBUG_MESSAGE;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.INVALID_DATE_MESSAGE;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.NO;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.DoctorDutyRosterLog.*;
 import static com.cogent.cogentappointment.client.log.constants.HospitalLog.HOSPITAL;
@@ -405,7 +406,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
     private void saveDoctorDutyRosterOverride(DoctorDutyRoster doctorDutyRoster,
                                               List<DoctorDutyRosterOverrideRequestDTO> overrideRequestDTOS) {
 
-        if (doctorDutyRoster.getHasOverrideDutyRoster().equals(StatusConstants.YES)) {
+        if (doctorDutyRoster.getHasOverrideDutyRoster().equals(YES)) {
 
             Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -491,7 +492,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
     }
 
     private void updateDoctorDutyRosterOverrideStatus(DoctorDutyRoster doctorDutyRoster) {
-        if (doctorDutyRoster.getHasOverrideDutyRoster().equals(StatusConstants.NO))
+        if (doctorDutyRoster.getHasOverrideDutyRoster().equals(NO))
             updateDutyRosterOverrideStatus(
                     doctorDutyRosterOverrideRepository.fetchByDoctorRosterId(doctorDutyRoster.getId()));
     }
@@ -505,16 +506,17 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
     }
 
     private Function<Long, NoContentFoundException> DOCTOR_DUTY_ROSTER_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        log.error(CONTENT_NOT_FOUND_BY_ID,DOCTOR_DUTY_ROSTER,id);
+        log.error(CONTENT_NOT_FOUND_BY_ID, DOCTOR_DUTY_ROSTER, id);
         throw new NoContentFoundException(DoctorDutyRoster.class, "id", id.toString());
     };
 
     private void validateIsFirstDateGreater(Date fromDate, Date toDate) {
         boolean fromDateGreaterThanToDate = isFirstDateGreater(fromDate, toDate);
 
-        if (fromDateGreaterThanToDate)
+        if (fromDateGreaterThanToDate) {
             log.error(INVALID_DATE_DEBUG_MESSAGE);
             throw new BadRequestException(INVALID_DATE_MESSAGE, INVALID_DATE_DEBUG_MESSAGE);
+        }
     }
 
     private Hospital findHospitalById(Long hospitalId) {
@@ -528,7 +530,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
     }
 
     private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (hospitalId) -> {
-        log.error(CONTENT_NOT_FOUND_BY_ID,HOSPITAL,hospitalId);
+        log.error(CONTENT_NOT_FOUND_BY_ID, HOSPITAL, hospitalId);
         throw new NoContentFoundException(Hospital.class, "hospitalId", hospitalId.toString());
     };
 

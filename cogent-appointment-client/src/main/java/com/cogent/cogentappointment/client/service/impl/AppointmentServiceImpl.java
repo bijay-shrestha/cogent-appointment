@@ -15,6 +15,7 @@ import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestFor
 import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.approval.AppointmentPendingApprovalDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.approval.AppointmentPendingApprovalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.esewa.*;
 import com.cogent.cogentappointment.client.dto.response.appointment.log.AppointmentLogResponseDTO;
@@ -56,6 +57,7 @@ import static com.cogent.cogentappointment.client.utils.AppointmentTransactionDe
 import static com.cogent.cogentappointment.client.utils.AppointmentTransactionRequestLogUtils.parseToAppointmentTransactionStatusResponseDTO;
 import static com.cogent.cogentappointment.client.utils.AppointmentTransactionRequestLogUtils.updateAppointmentTransactionRequestLog;
 import static com.cogent.cogentappointment.client.utils.AppointmentUtils.*;
+import static com.cogent.cogentappointment.client.utils.commons.DateConverterUtils.calculateAge;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 
@@ -446,6 +448,23 @@ public class AppointmentServiceImpl implements AppointmentService {
                 appointmentRepository.searchPendingVisitApprovals(searchRequestDTO, pageable, getLoggedInHospitalId());
 
         log.info(SEARCHING_PROCESS_COMPLETED, PENDING_APPROVAL_LIST, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public AppointmentPendingApprovalDetailResponseDTO fetchDetailByAppointmentId(Long appointmentId) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_DETAIL_PROCESS_STARTED, PENDING_APPROVAL_DETAIL);
+
+        AppointmentPendingApprovalDetailResponseDTO responseDTOS =
+                appointmentRepository.fetchDetailsByAppointmentId(appointmentId);
+
+        responseDTOS.setPatientAge(calculateAge(responseDTOS.getPatientDob()));
+
+        log.info(FETCHING_DETAIL_PROCESS_STARTED, PENDING_APPROVAL_DETAIL, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
     }

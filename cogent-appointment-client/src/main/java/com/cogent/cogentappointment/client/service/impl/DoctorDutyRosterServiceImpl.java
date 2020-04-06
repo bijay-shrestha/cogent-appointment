@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -351,8 +352,8 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
                                                                  Date overrideToDate) {
 
         boolean isDateBetweenInclusive =
-                isDateBetweenInclusive(dutyRosterFromDate, dutyRosterToDate, overrideFromDate)
-                        && isDateBetweenInclusive(dutyRosterFromDate, dutyRosterToDate, overrideToDate);
+                isDateBetweenInclusive(dutyRosterFromDate, dutyRosterToDate, removeTime(overrideFromDate))
+                        && isDateBetweenInclusive(dutyRosterFromDate, dutyRosterToDate, removeTime(overrideToDate));
 
         if (!isDateBetweenInclusive) {
             log.error(BAD_REQUEST_MESSAGE);
@@ -361,7 +362,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
     }
 
     private void validateDoctorDutyRosterOverrideCount(Long doctorDutyRosterOverrideCount) {
-        if (doctorDutyRosterOverrideCount.intValue() > 0){
+        if (doctorDutyRosterOverrideCount.intValue() > 0) {
             log.error(DUPLICATION_MESSAGE);
             throw new DataDuplicationException(DUPLICATION_MESSAGE);
         }
@@ -412,7 +413,9 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
             log.info(SAVING_PROCESS_STARTED, DOCTOR_DUTY_ROSTER_OVERRIDE);
 
-            List<DoctorDutyRosterOverride> doctorDutyRosterOverrides = overrideRequestDTOS
+            List<DoctorDutyRosterOverride> doctorDutyRosterOverrides = new ArrayList<>();
+
+            doctorDutyRosterOverrides = overrideRequestDTOS
                     .stream()
                     .map(requestDTO -> {
 

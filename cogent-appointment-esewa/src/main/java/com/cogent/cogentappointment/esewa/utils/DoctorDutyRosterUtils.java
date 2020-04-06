@@ -26,82 +26,6 @@ import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.isLocal
  */
 public class DoctorDutyRosterUtils {
 
-    public static DoctorDutyRoster parseToDoctorDutyRoster(DoctorDutyRosterRequestDTO requestDTO,
-                                                           Doctor doctor,
-                                                           Specialization specialization,
-                                                           Hospital hospital) {
-
-        DoctorDutyRoster doctorDutyRoster = new DoctorDutyRoster();
-        doctorDutyRoster.setFromDate(requestDTO.getFromDate());
-        doctorDutyRoster.setToDate(requestDTO.getToDate());
-        doctorDutyRoster.setRosterGapDuration(requestDTO.getRosterGapDuration());
-        doctorDutyRoster.setStatus(requestDTO.getStatus());
-        doctorDutyRoster.setHasOverrideDutyRoster(requestDTO.getHasOverrideDutyRoster());
-        doctorDutyRoster.setDoctorId(doctor);
-        doctorDutyRoster.setHospitalId(hospital);
-        doctorDutyRoster.setSpecializationId(specialization);
-        return doctorDutyRoster;
-    }
-
-    public static DoctorWeekDaysDutyRoster parseToDoctorWeekDaysDutyRoster(DoctorWeekDaysDutyRosterRequestDTO requestDTO,
-                                                                           DoctorDutyRoster doctorDutyRoster,
-                                                                           WeekDays weekDays) {
-
-        DoctorWeekDaysDutyRoster weekDaysDutyRoster = new DoctorWeekDaysDutyRoster();
-        weekDaysDutyRoster.setStartTime(requestDTO.getStartTime());
-        weekDaysDutyRoster.setEndTime(requestDTO.getEndTime());
-        weekDaysDutyRoster.setDayOffStatus(requestDTO.getDayOffStatus());
-        weekDaysDutyRoster.setDoctorDutyRosterId(doctorDutyRoster);
-        weekDaysDutyRoster.setWeekDaysId(weekDays);
-        return weekDaysDutyRoster;
-    }
-
-    public static void filterUpdatedWeekDaysRosterAndAppointment(
-            List<DoctorWeekDaysDutyRosterUpdateRequestDTO> unmatchedWeekDaysRosterList,
-            List<AppointmentBookedDateResponseDTO> appointmentBookedDateResponseDTO) {
-
-        unmatchedWeekDaysRosterList.forEach(unmatchedList ->
-                appointmentBookedDateResponseDTO
-                        .stream()
-                        .map(appointmentDates ->
-                                convertDateToLocalDate(appointmentDates.getAppointmentDate()).getDayOfWeek().toString())
-                        .filter(weekName ->
-                                unmatchedList.getWeekDaysName().equals(weekName))
-                        .forEachOrdered(weekName -> {
-                            throw new BadRequestException(String.format(APPOINTMENT_EXISTS_ON_WEEK_DAY_MESSAGE, weekName));
-                        }));
-    }
-
-    public static void parseToUpdatedDoctorDutyRoster(DoctorDutyRoster doctorDutyRoster,
-                                                      DoctorDutyRosterUpdateRequestDTO updateRequestDTO) {
-
-        doctorDutyRoster.setRosterGapDuration(updateRequestDTO.getRosterGapDuration());
-        doctorDutyRoster.setStatus(updateRequestDTO.getStatus());
-        doctorDutyRoster.setRemarks(updateRequestDTO.getRemarks());
-        doctorDutyRoster.setHasOverrideDutyRoster(updateRequestDTO.getHasOverrideDutyRoster());
-    }
-
-    public static DoctorWeekDaysDutyRoster parseToUpdatedDoctorWeekDaysDutyRoster(
-            DoctorWeekDaysDutyRosterUpdateRequestDTO updateRequestDTO,
-            DoctorDutyRoster doctorDutyRoster,
-            WeekDays weekDays) {
-
-        DoctorWeekDaysDutyRoster weekDaysDutyRoster = new DoctorWeekDaysDutyRoster();
-        weekDaysDutyRoster.setId(updateRequestDTO.getDoctorWeekDaysDutyRosterId());
-        weekDaysDutyRoster.setStartTime(updateRequestDTO.getStartTime());
-        weekDaysDutyRoster.setEndTime(updateRequestDTO.getEndTime());
-        weekDaysDutyRoster.setDayOffStatus(updateRequestDTO.getDayOffStatus());
-        weekDaysDutyRoster.setDoctorDutyRosterId(doctorDutyRoster);
-        weekDaysDutyRoster.setWeekDaysId(weekDays);
-        return weekDaysDutyRoster;
-    }
-
-    public static void convertToDeletedDoctorDutyRoster(DoctorDutyRoster doctorDutyRoster,
-                                                        DeleteRequestDTO deleteRequestDTO) {
-        doctorDutyRoster.setStatus(deleteRequestDTO.getStatus());
-        doctorDutyRoster.setRemarks(deleteRequestDTO.getRemarks());
-    }
-
     public static DoctorDutyRosterDetailResponseDTO parseToDoctorDutyRosterDetailResponseDTO(
             DoctorDutyRosterResponseDTO dutyRosterResponseDTO,
             List<DoctorWeekDaysDutyRosterResponseDTO> weekDaysRosters,
@@ -178,53 +102,6 @@ public class DoctorDutyRosterUtils {
         });
 
         return doctorDutyRosterStatusResponseDTOS;
-    }
-
-    public static List<DoctorDutyRosterStatusResponseDTO> mergeOverrideAndActualDoctorDutyRoster(
-            List<DoctorDutyRosterStatusResponseDTO> doctorDutyRosterOverrideStatus,
-            List<DoctorDutyRosterStatusResponseDTO> doctorDutyRosterStatus) {
-
-        /*COUNT <1 WILL RETURN UNMATCHED VALUES AND COUNT > 0 WILL RETURN MATCHED VALUES*/
-        /*FETCH ONLY THOSE DOCTOR DUTY ROSTER EXCEPT OVERRIDE DUTY ROSTER
-        BY COMPARING DATE, DOCTOR ID AND SPECIALIZATION ID*/
-        List<DoctorDutyRosterStatusResponseDTO> unmatchedList = doctorDutyRosterStatus.stream()
-                .filter(rosterStatus -> (doctorDutyRosterOverrideStatus.stream()
-                        .filter(overrideStatus -> (overrideStatus.getDate().equals(rosterStatus.getDate()))
-                                && (overrideStatus.getDoctorId().equals(rosterStatus.getDoctorId()))
-                                && (overrideStatus.getSpecializationId().equals(rosterStatus.getSpecializationId())))
-                        .count()) < 1)
-                .collect(Collectors.toList());
-
-        /*MERGE DUTY ROSTER LIST (UNMATCHED LIST) WITH REMAINING OVERRIDE DUTY ROSTER LIST  */
-        doctorDutyRosterOverrideStatus.addAll(unmatchedList);
-
-        /*SORT BY DATE*/
-        doctorDutyRosterOverrideStatus.sort(Comparator.comparing(DoctorDutyRosterStatusResponseDTO::getDate));
-
-        return doctorDutyRosterOverrideStatus;
-    }
-
-    public static List<DoctorWeekDaysDutyRosterUpdateRequestDTO> filterOriginalAndUpdatedWeekDaysRoster(
-            List<DoctorWeekDaysDutyRosterUpdateRequestDTO> updateRequestDTO,
-            List<DoctorWeekDaysDutyRoster> weekDaysDutyRosters) {
-
-        return updateRequestDTO
-                .stream()
-                .filter(weekDaysDutyRosterUpdateRequestDTO -> (weekDaysDutyRosters
-                        .stream()
-                        .filter(originalRoster -> (
-                                        (weekDaysDutyRosterUpdateRequestDTO.getStartTime()
-                                                .equals(originalRoster.getStartTime())
-                                                && (weekDaysDutyRosterUpdateRequestDTO.getEndTime()
-                                                .equals(originalRoster.getEndTime()))
-                                                && (weekDaysDutyRosterUpdateRequestDTO.getDayOffStatus()
-                                                .equals(originalRoster.getDayOffStatus()))
-                                                && (weekDaysDutyRosterUpdateRequestDTO.getWeekDaysId()
-                                                .equals(originalRoster.getWeekDaysId().getId())))
-                                )
-                        )
-                        .count()) < 1)
-                .collect(Collectors.toList());
     }
 
     public static DoctorExistingDutyRosterDetailResponseDTO parseToExistingRosterDetails(

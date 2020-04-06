@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.esewa.service.impl;
 
-import com.cogent.cogentappointment.esewa.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.request.patient.*;
 import com.cogent.cogentappointment.esewa.dto.response.patient.*;
 import com.cogent.cogentappointment.esewa.exception.DataDuplicationException;
@@ -123,7 +122,7 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public PatientResponseDTOForOthersWithStatus searchForOthers(PatientMinSearchRequestDTO searchRequestDTO,
-                                                       Pageable pageable) {
+                                                                 Pageable pageable) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -191,19 +190,6 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public PatientResponseDTO fetchDetailsById(Long id) {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(FETCHING_PROCESS_STARTED, PATIENT);
-
-        PatientResponseDTO responseDTOs = patientRepository.fetchPatientDetailsById(id, getLoggedInHospitalId());
-
-        log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
-
-        return responseDTOs;
-    }
-
-    @Override
     public List<PatientSearchResponseDTO> search(PatientSearchRequestDTO searchRequestDTO, Pageable pageable) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -250,35 +236,6 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchMinPatientMetaInfo() {
-
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(FETCHING_PROCESS_STARTED, PATIENT);
-
-        List<DropDownResponseDTO> responseDTOS =
-                patientMetaInfoRepository.fetchMinPatientMetaInfo(getLoggedInHospitalId());
-
-        log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
-
-        return responseDTOS;
-    }
-
-    @Override
-    public List<DropDownResponseDTO> fetchActiveMinPatientMetaInfo() {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(FETCHING_PROCESS_STARTED, PATIENT);
-
-        List<DropDownResponseDTO> responseDTOS =
-                patientMetaInfoRepository.fetchActiveMinPatientMetaInfo(getLoggedInHospitalId());
-
-        log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
-
-        return responseDTOS;
-    }
-
-    @Override
     public void registerPatient(Long patientId, Long hospitalId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -308,20 +265,6 @@ public class PatientServiceImpl implements PatientService {
                 patientRequestForDTO.getMobileNumber(),
                 patientRequestForDTO.getDateOfBirth()
         );
-    }
-
-    @Override
-    public PatientMinDetailResponseDTO fetchDetailByAppointmentId(Long appointmentId) {
-
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(FETCHING_PROCESS_STARTED, PATIENT);
-
-        PatientMinDetailResponseDTO patientInfo = patientRepository.fetchDetailByAppointmentId(appointmentId);
-
-        log.info(FETCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
-
-        return patientInfo;
     }
 
     private Patient savePatientForSelf(PatientRequestByDTO requestDTO) {
@@ -373,7 +316,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     private Function<Long, NoContentFoundException> PATIENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        log.error(CONTENT_NOT_FOUND_BY_ID,PATIENT,id);
+        log.error(CONTENT_NOT_FOUND_BY_ID, PATIENT, id);
         throw new NoContentFoundException(Patient.class, "patientId", id.toString());
     };
 

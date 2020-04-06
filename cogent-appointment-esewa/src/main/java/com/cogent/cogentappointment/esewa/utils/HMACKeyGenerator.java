@@ -11,24 +11,6 @@ import java.util.UUID;
  */
 public class HMACKeyGenerator {
 
-    public static String generateApiKey() {
-        UUID uuid = UUID.randomUUID();
-        return uuid.toString();
-    }
-
-    public static String generateApiSecret() throws
-            NoSuchAlgorithmException {
-
-        javax.crypto.KeyGenerator keyGen = javax.crypto.KeyGenerator.getInstance("DES");
-        //Creating a SecureRandom object
-        SecureRandom secRandom = new SecureRandom();
-        //Initializing the KeyGenerator
-        keyGen.init(secRandom);
-        //Creating/Generating a key
-        Key key = keyGen.generateKey();
-        return DatatypeConverter.printHexBinary(key.getEncoded());
-    }
-
     public static String generateNonce() {
         SecureRandom secureRandom = new SecureRandom();
         StringBuilder stringBuilder = new StringBuilder();

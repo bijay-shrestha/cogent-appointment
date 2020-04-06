@@ -15,7 +15,7 @@ public class CommonLogConstant {
     //D
     public static String DELETING_PROCESS_STARTED = ":::: DELETING {} PROCESS STARTED ::::";
     public static String DELETING_PROCESS_COMPLETED = ":::: DELETING {} PROCESS COMPLETED IN :::: {} ms";
-    public static String DUPLICATION_ERROR =":::: {} WITH {} ALREADY EXISTS ::::";
+
 
     //E
 
@@ -27,17 +27,12 @@ public class CommonLogConstant {
     public static String FETCHING_PROCESS_STARTED = ":::: FETCHING {} PROCESS STARTED ::::";
     public static String FETCHING_PROCESS_COMPLETED = ":::: FETCHING {} PROCESS COMPLETED IN :::: {} ms";
 
-    public static String FETCHING_PROCESS_STARTED_FOR_DROPDOWN = ":::: FETCHING {} FOR DROPDOWN STARTED ::::";
-    public static String FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED = ":::: FETCHING {} FOR DROPDOWN COMPLETED IN :::: {} ms";
-
 
     //G
 
     //H
 
     //I
-    public static final String INVALID_VERIFICATION_TOKEN_ERROR = ":::: INVALID VERIFICATION TOKEN : {} ::::";
-    public final static String INVALID_RESET_CODE_ERROR=":::: INVALID PASSWORD RESET : {} ::::";
 
     //J
 
@@ -50,8 +45,6 @@ public class CommonLogConstant {
     //N
     public final static String NAME_AND_MOBILE_NUMBER_DUPLICATION_ERROR=":::: {} WITH NAME : {} AND " +
             "MOBILE NUMBER : {}  ALREADY EXISTS ::::";
-    public final static String NAME_DUPLICATION_ERROR=":::: {} WITH NAME : {} ALREADY EXISTS ::::";
-
     //O
 
     //P
@@ -75,7 +68,6 @@ public class CommonLogConstant {
     public static String UPDATING_PROCESS_STARTED = ":::: UPDATING {} PROCESS STARTED ::::";
     public static String UPDATING_PROCESS_COMPLETED = ":::: UPDATING {} PROCESS COMPLETED IN :::: {} ms";
 
-    public final static String USER_NOT_FOUND=":::: USER WITH NAME : {} NOT FOUND ::::";
 
     //V
 

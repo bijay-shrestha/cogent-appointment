@@ -34,19 +34,10 @@ public interface PatientService {
 
     void deleteOtherPatient(PatientDeleteRequestDTOForOthers requestDTO);
 
-    /*admin*/
-    PatientResponseDTO fetchDetailsById(Long id);
-
     List<PatientSearchResponseDTO> search(PatientSearchRequestDTO searchRequestDTO,
                                           Pageable pageable);
 
     void update(PatientUpdateRequestDTO patientUpdateRequestDTO);
 
-    List<DropDownResponseDTO> fetchMinPatientMetaInfo();
-
-    List<DropDownResponseDTO> fetchActiveMinPatientMetaInfo();
-
     void registerPatient(Long patientId, Long hospitalId);
-
-    PatientMinDetailResponseDTO fetchDetailByAppointmentId(Long appointmentId);
 }

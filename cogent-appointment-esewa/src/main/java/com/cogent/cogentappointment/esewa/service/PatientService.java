@@ -12,7 +12,7 @@ import org.springframework.data.domain.Pageable;
  */
 public interface PatientService {
 
-    /*appointmentDetails*/
+
     Patient saveSelfPatient(PatientRequestByDTO requestDTO);
 
     Patient saveOtherPatient(PatientRequestForDTO requestForPatientInfo);
@@ -26,7 +26,7 @@ public interface PatientService {
 
     /*FETCH MINIMAL DETAILS OF 'OTHERS'*/
     PatientResponseDTOForOthersWithStatus searchForOthers(PatientMinSearchRequestDTO searchRequestDTO,
-                                                Pageable pageable);
+                                                          Pageable pageable);
 
     PatientDetailResponseDTO fetchMinPatientDetailsOfOthers(Long hospitalPatientId);
 

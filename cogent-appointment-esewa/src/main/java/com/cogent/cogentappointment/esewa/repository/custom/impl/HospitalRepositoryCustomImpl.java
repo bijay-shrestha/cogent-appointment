@@ -49,14 +49,6 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
     }
 
     @Override
-    public Integer fetchHospitalFreeFollowUpIntervalDays(Long hospitalId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_FREE_FOLLOW_UP_INTERVAL_DAYS)
-                .setParameter(HOSPITAL_ID, hospitalId);
-
-        return (Integer) query.getSingleResult();
-    }
-
-    @Override
     public Integer fetchHospitalFollowUpIntervalDays(Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_FOLLOW_UP_INTERVAL_DAYS)
                 .setParameter(HOSPITAL_ID, hospitalId);

@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.esewa.repository.custom.impl;
 
-import com.cogent.cogentappointment.esewa.exception.NoContentFoundException;
 import com.cogent.cogentappointment.esewa.repository.custom.AppointmentFollowUpTrackerRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.AppointmentFollowUpTracker;
 import lombok.extern.slf4j.Slf4j;
@@ -11,12 +10,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
-import static com.cogent.cogentappointment.esewa.constants.QueryConstants.AppointmentFollowUpTrackerConstants.PARENT_APPOINTMENT_ID;
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.*;
-import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.CONTENT_NOT_FOUND;
-import static com.cogent.cogentappointment.esewa.log.constants.AppointmentFollowUpTrackerLog.APPOINTMENT_FOLLOW_UP_TRACKER;
 import static com.cogent.cogentappointment.esewa.query.AppointmentFollowUpTrackerQuery.QUERY_TO_FETCH_APPOINTMENT_FOLLOW_UP_TRACKER;
-import static com.cogent.cogentappointment.esewa.query.AppointmentFollowUpTrackerQuery.QUERY_TO_FETCH_LATEST_APPOINTMENT_FOLLOW_UP_TRACKER;
 
 /**
  * @author smriti on 18/11/2019
@@ -46,20 +41,6 @@ public class AppointmentFollowUpTrackerRepositoryCustomImpl implements Appointme
 
         } catch (NoResultException e) {
             return null;
-        }
-    }
-
-    @Override
-    public AppointmentFollowUpTracker fetchLatestAppointmentFollowUpTracker(Long parentAppointmentId) {
-        try {
-            return (AppointmentFollowUpTracker) entityManager.createNativeQuery(
-                    QUERY_TO_FETCH_LATEST_APPOINTMENT_FOLLOW_UP_TRACKER, AppointmentFollowUpTracker.class)
-                    .setParameter(PARENT_APPOINTMENT_ID, parentAppointmentId)
-                    .getSingleResult();
-
-        } catch (NoResultException e) {
-            log.error(CONTENT_NOT_FOUND,APPOINTMENT_FOLLOW_UP_TRACKER);
-            throw new NoContentFoundException(AppointmentFollowUpTracker.class);
         }
     }
 

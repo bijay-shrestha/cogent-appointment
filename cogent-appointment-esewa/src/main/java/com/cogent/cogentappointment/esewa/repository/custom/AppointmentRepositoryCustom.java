@@ -18,7 +18,6 @@ import java.util.List;
 @Qualifier("appointmentRepositoryCustom")
 public interface AppointmentRepositoryCustom {
 
-    /*appointmentDetails*/
     Long validateIfAppointmentExists(Date appointmentDate, String appointmentTime,
                                      Long doctorId, Long specializationId);
 
@@ -30,7 +29,6 @@ public interface AppointmentRepositoryCustom {
 
     List<AppointmentMinResponseDTO> fetchAppointmentHistory(AppointmentSearchDTO searchDTO);
 
-    /*admin*/
     List<AppointmentBookedTimeResponseDTO> fetchBookedAppointments(AppointmentCheckAvailabilityRequestDTO requestDTO);
 
 

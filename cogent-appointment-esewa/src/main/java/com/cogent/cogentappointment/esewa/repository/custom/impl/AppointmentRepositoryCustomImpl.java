@@ -93,9 +93,9 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         List<AppointmentMinResponseDTO> pendingAppointments =
                 transformQueryToResultList(query, AppointmentMinResponseDTO.class);
 
-        if (pendingAppointments.isEmpty())
-            throw new NoContentFoundException(Appointment.class);
-
+        if (pendingAppointments.isEmpty()) {
+            throw APPOINTMENT_NOT_FOUND();
+        }
         return pendingAppointments;
     }
 
@@ -124,7 +124,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                 transformQueryToResultList(query, AppointmentMinResponseDTO.class);
 
         if (appointmentHistory.isEmpty())
-            throw new NoContentFoundException(Appointment.class);
+            throw APPOINTMENT_NOT_FOUND();
+
 
         return appointmentHistory;
     }
@@ -151,5 +152,6 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         log.error(CONTENT_NOT_FOUND, APPOINTMENT);
         throw new NoContentFoundException(Appointment.class);
     }
+
 
 }

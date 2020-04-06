@@ -1,36 +1,6 @@
 package com.cogent.cogentappointment.esewa.query;
 
-import com.cogent.cogentappointment.esewa.dto.request.doctorDutyRoster.DoctorDutyRosterOverrideUpdateRequestDTO;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static com.cogent.cogentappointment.esewa.constants.StringConstant.COMMA_SEPARATED;
-
 public class DoctorDutyRosterOverrideQuery {
-
-    public static final String VALIDATE_DOCTOR_DUTY_ROSTER_OVERRIDE_COUNT =
-            " SELECT COUNT(d.id)" +
-                    " FROM DoctorDutyRosterOverride d" +
-                    " LEFT JOIN DoctorDutyRoster dr ON dr.id = d.doctorDutyRosterId.id" +
-                    " WHERE dr.status != 'D'" +
-                    " AND d.status = 'Y'" +
-                    " AND dr.doctorId.id=:doctorId" +
-                    " AND dr.specializationId.id= :specializationId" +
-                    " AND d.toDate >=:fromDate" +
-                    " AND d.fromDate <=:toDate";
-
-    public static final String VALIDATE_DOCTOR_DUTY_ROSTER_OVERRIDE_COUNT_FOR_UPDATE =
-            " SELECT COUNT(d.id)" +
-                    " FROM DoctorDutyRosterOverride d" +
-                    " LEFT JOIN DoctorDutyRoster dr ON dr.id = d.doctorDutyRosterId.id" +
-                    " WHERE dr.status != 'D'" +
-                    " AND d.status = 'Y'" +
-                    " AND d.id!=:id" +
-                    " AND dr.doctorId.id=:doctorId" +
-                    " AND dr.specializationId.id= :specializationId" +
-                    " AND d.toDate >=:fromDate" +
-                    " AND d.fromDate <=:toDate";
 
     public static final String QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_DETAILS =
             "SELECT" +
@@ -61,15 +31,5 @@ public class DoctorDutyRosterOverrideQuery {
                     " AND dd.doctorId.id = :doctorId" +
                     " AND dd.specializationId.id = :specializationId";
 
-    public static String QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE(
-            List<DoctorDutyRosterOverrideUpdateRequestDTO> overrideUpdateRequestDTOS) {
-
-        String overrideIds = overrideUpdateRequestDTOS.stream()
-                .map(request -> request.getDoctorDutyRosterOverrideId().toString())
-                .collect(Collectors.joining(COMMA_SEPARATED));
-
-        return " SELECT d FROM DoctorDutyRosterOverride d" +
-                " WHERE d.id IN (" + overrideIds + ")";
-    }
 
 }

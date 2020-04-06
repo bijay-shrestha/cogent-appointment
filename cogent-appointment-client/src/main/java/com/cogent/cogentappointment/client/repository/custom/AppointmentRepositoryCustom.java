@@ -11,6 +11,7 @@ import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardReques
 import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedDateResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedTimeResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.approval.AppointmentPendingApprovalDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.esewa.AppointmentDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.esewa.AppointmentMinResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
@@ -66,6 +67,8 @@ public interface AppointmentRepositoryCustom {
 
     AppointmentPendingApprovalResponseDTO searchPendingVisitApprovals(
             AppointmentPendingApprovalSearchDTO searchRequestDTO, Pageable pageable, Long hospitalId);
+
+    AppointmentPendingApprovalDetailResponseDTO fetchDetailsByAppointmentId(Long appointmentId);
 
     AppointmentRefundResponseDTO fetchRefundAppointments(AppointmentRefundSearchDTO searchDTO,
                                                          Pageable pageable,

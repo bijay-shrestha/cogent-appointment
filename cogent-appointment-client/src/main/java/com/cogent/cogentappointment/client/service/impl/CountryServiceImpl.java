@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
+import com.cogent.cogentappointment.client.log.constants.CountryLog;
 import com.cogent.cogentappointment.client.repository.CountryRepository;
 import com.cogent.cogentappointment.client.service.CountryService;
 import com.cogent.cogentappointment.persistence.model.Country;
@@ -58,9 +59,10 @@ public class CountryServiceImpl implements CountryService {
         return country;
     }
 
+
     private Function<Long, NoContentFoundException>
             COUNTRY_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        log.error(CONTENT_NOT_FOUND_BY_ID, COUNTRY, id);
+        log.error(CONTENT_NOT_FOUND_BY_ID, CountryLog.COUNTRY, id);
         throw new NoContentFoundException(Country.class, "id", id.toString());
     };
 }

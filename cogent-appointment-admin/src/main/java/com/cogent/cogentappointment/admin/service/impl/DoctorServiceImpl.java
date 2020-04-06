@@ -429,7 +429,7 @@ public class DoctorServiceImpl implements DoctorService {
 
     private void validateDoctor(Long doctorCount, String name, String mobileNumber) {
 
-        if (doctorCount.intValue() > 0){
+        if (doctorCount.intValue() > 0) {
             log.error(NAME_AND_MOBILE_NUMBER_DUPLICATION_ERROR, DOCTOR, name, mobileNumber);
             throw new DataDuplicationException(
                     String.format(NAME_AND_MOBILE_NUMBER_DUPLICATION_MESSAGE, Doctor.class.getSimpleName(), name, mobileNumber),

@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.service.impl;
 
+import com.cogent.cogentappointment.client.log.constants.SpecializationLog;
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.request.specialization.SpecializationRequestDTO;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.NAME_DUPLICATION_ERROR;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.NAME_DUPLICATION_MESSAGE;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.HospitalLog.HOSPITAL;
@@ -203,13 +205,6 @@ public class SpecializationServiceImpl implements SpecializationService {
         log.info(FETCHING_PROCESS_COMPLETED, SPECIALIZATION, getDifferenceBetweenTwoTime(startTime));
 
         return specialization;
-    }
-
-    private void validateName(Long specializationCount, String name) {
-        if (specializationCount.intValue() > 0)
-            log.error(NAME_DUPLICATION_ERROR, SPECIALIZATION, name);
-            throw new DataDuplicationException(
-                    String.format(NAME_DUPLICATION_MESSAGE, Specialization.class.getSimpleName(), name));
     }
 
     private Specialization save(Specialization specialization) {

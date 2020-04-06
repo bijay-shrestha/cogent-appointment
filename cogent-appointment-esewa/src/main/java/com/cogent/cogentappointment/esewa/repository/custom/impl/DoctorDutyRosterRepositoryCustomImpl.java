@@ -1,9 +1,7 @@
 package com.cogent.cogentappointment.esewa.repository.custom.impl;
 
 import com.cogent.cogentappointment.esewa.dto.request.appointment.AppointmentDatesRequestDTO;
-import com.cogent.cogentappointment.esewa.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.doctorDutyRoster.DoctorDutyRosterSearchRequestDTO;
-import com.cogent.cogentappointment.esewa.dto.request.doctorDutyRoster.DoctorExistingDutyRosterRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.eSewa.AppointmentDetailRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.appoinmentDateAndTime.DoctorDutyRosterAppointmentDate;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.appoinmentDateAndTime.DoctorWeekDaysDutyRosterAppointmentDate;
@@ -29,7 +27,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.esewa.constants.StatusConstants.YES;
@@ -38,11 +35,9 @@ import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.CONTENT_N
 import static com.cogent.cogentappointment.esewa.log.constants.DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER;
 import static com.cogent.cogentappointment.esewa.query.DoctorDutyRosterOverrideQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_DETAILS;
 import static com.cogent.cogentappointment.esewa.query.DoctorDutyRosterQuery.*;
-import static com.cogent.cogentappointment.esewa.query.DoctorDutyRosterQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_STATUS;
 import static com.cogent.cogentappointment.esewa.query.EsewaQuery.*;
-import static com.cogent.cogentappointment.esewa.query.EsewaQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_STATUS;
 import static com.cogent.cogentappointment.esewa.utils.AppointmentDetailsUtils.parseDoctorAvailabilityResponseStatus;
-import static com.cogent.cogentappointment.esewa.utils.DoctorDutyRosterUtils.*;
+import static com.cogent.cogentappointment.esewa.utils.DoctorDutyRosterUtils.parseToDoctorDutyRosterDetailResponseDTO;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.getDayCodeFromDate;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.esewa.utils.commons.PageableUtils.addPagination;
@@ -131,58 +126,6 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
         } catch (NoResultException e) {
             throw DOCTOR_DUTY_ROSTER_NOT_FOUND();
         }
-    }
-
-    @Override
-    public List<DoctorExistingDutyRosterResponseDTO> fetchExistingDoctorDutyRosters(
-            DoctorExistingDutyRosterRequestDTO requestDTO,
-            Long hospitalId) {
-
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_EXISTING_DOCTOR_DUTY_ROSTERS)
-                .setParameter(DOCTOR_ID, requestDTO.getDoctorId())
-                .setParameter(SPECIALIZATION_ID, requestDTO.getSpecializationId())
-                .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
-                .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()))
-                .setParameter(HOSPITAL_ID, hospitalId);
-
-        return transformQueryToResultList(query, DoctorExistingDutyRosterResponseDTO.class);
-    }
-
-    @Override
-    public DoctorExistingDutyRosterDetailResponseDTO fetchExistingRosterDetails(Long doctorDutyRosterId) {
-        Character hasOverrideRosters = checkIfDoctorDutyRosterOverrideExists(doctorDutyRosterId);
-
-        List<DoctorWeekDaysDutyRosterResponseDTO> weekDaysDutyRosterResponseDTO =
-                fetchDoctorWeekDaysDutyRosterResponseDTO(doctorDutyRosterId);
-
-        List<DoctorDutyRosterOverrideResponseDTO> overrideResponseDTOS =
-                hasOverrideRosters.equals(YES)
-                        ? fetchDoctorDutyRosterOverrideResponseDTO(doctorDutyRosterId)
-                        : new ArrayList<>();
-
-        return parseToExistingRosterDetails(weekDaysDutyRosterResponseDTO, overrideResponseDTOS);
-    }
-
-    @Override
-    public List<DoctorDutyRosterStatusResponseDTO> fetchDoctorDutyRosterStatus(
-            AppointmentStatusRequestDTO requestDTO,
-            Long hospitalId) {
-
-        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_STATUS(requestDTO))
-                .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
-                .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()))
-                .setParameter(HOSPITAL_ID, hospitalId);
-
-        if (!Objects.isNull(requestDTO.getDoctorId()))
-            query.setParameter(DOCTOR_ID, requestDTO.getDoctorId());
-
-        if (!Objects.isNull(requestDTO.getSpecializationId()))
-            query.setParameter(SPECIALIZATION_ID, requestDTO.getSpecializationId());
-
-        List<Object[]> results = query.getResultList();
-
-        return parseQueryResultToDoctorDutyRosterStatusResponseDTOS(
-                results, requestDTO.getFromDate(), requestDTO.getToDate());
     }
 
     @Override

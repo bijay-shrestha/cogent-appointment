@@ -41,6 +41,7 @@ import static com.cogent.cogentappointment.esewa.query.DoctorDutyRosterQuery.*;
 import static com.cogent.cogentappointment.esewa.query.DoctorDutyRosterQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_STATUS;
 import static com.cogent.cogentappointment.esewa.query.EsewaQuery.*;
 import static com.cogent.cogentappointment.esewa.query.EsewaQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_STATUS;
+import static com.cogent.cogentappointment.esewa.utils.AppointmentDetailsUtils.parseDoctorAvailabilityResponseStatus;
 import static com.cogent.cogentappointment.esewa.utils.DoctorDutyRosterUtils.*;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.getDayCodeFromDate;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.utilDateToSqlDate;
@@ -230,7 +231,12 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
         if (!Objects.isNull(requestDTO.getSpecializationId()))
             query.setParameter(SPECIALIZATION_ID, requestDTO.getSpecializationId());
 
-        return transformQueryToSingleResult(query, DoctorAvailabilityStatusResponseDTO.class);
+        DoctorAvailabilityStatusResponseDTO doctorAvailabilityStatus =
+                transformQueryToSingleResult(query, DoctorAvailabilityStatusResponseDTO.class);
+
+        parseDoctorAvailabilityResponseStatus(doctorAvailabilityStatus);
+
+        return doctorAvailabilityStatus;
     }
 
     @Override

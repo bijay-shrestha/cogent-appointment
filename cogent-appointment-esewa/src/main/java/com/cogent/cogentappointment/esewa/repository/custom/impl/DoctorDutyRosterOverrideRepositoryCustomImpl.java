@@ -27,15 +27,17 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.*;
-import static com.cogent.cogentappointment.esewa.log.constants.DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER_OVERRIDE;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.CONTENT_NOT_FOUND;
+import static com.cogent.cogentappointment.esewa.log.constants.DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER_OVERRIDE;
 import static com.cogent.cogentappointment.esewa.query.DoctorDutyRosterOverrideQuery.*;
 import static com.cogent.cogentappointment.esewa.query.DoctorDutyRosterOverrideQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_STATUS;
 import static com.cogent.cogentappointment.esewa.query.EsewaQuery.*;
 import static com.cogent.cogentappointment.esewa.query.EsewaQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_STATUS;
+import static com.cogent.cogentappointment.esewa.utils.AppointmentDetailsUtils.parseToDoctorAvailabilityStatusResponseDTO;
 import static com.cogent.cogentappointment.esewa.utils.DoctorDutyRosterOverrideUtils.parseQueryResultToDoctorDutyRosterStatusResponseDTO;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.utilDateToSqlDate;
-import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.*;
+import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.createQuery;
+import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.transformQueryToResultList;
 
 @Repository
 @Transactional(readOnly = true)
@@ -166,7 +168,9 @@ public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyR
         if (!Objects.isNull(requestDTO.getSpecializationId()))
             query.setParameter(SPECIALIZATION_ID, requestDTO.getSpecializationId());
 
-        return transformQueryToSingleResult(query, DoctorAvailabilityStatusResponseDTO.class);
+        List<Objects[]> results = query.getResultList();
+
+        return results.isEmpty() ? null : parseToDoctorAvailabilityStatusResponseDTO(results.get(0));
     }
 
     @Override

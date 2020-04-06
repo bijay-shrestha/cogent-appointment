@@ -1,9 +1,11 @@
 package com.cogent.cogentappointment.esewa.repository.custom.impl;
 
-
-import com.cogent.cogentappointment.esewa.dto.request.patient.*;
-import com.cogent.cogentappointment.esewa.dto.response.patient.*;
-import com.cogent.cogentappointment.esewa.exception.*;
+import com.cogent.cogentappointment.esewa.dto.request.patient.PatientMinSearchRequestDTO;
+import com.cogent.cogentappointment.esewa.dto.response.patient.PatientDetailResponseDTO;
+import com.cogent.cogentappointment.esewa.dto.response.patient.PatientMinResponseDTOForOthers;
+import com.cogent.cogentappointment.esewa.dto.response.patient.PatientRelationInfoResponseDTO;
+import com.cogent.cogentappointment.esewa.dto.response.patient.PatientResponseDTOForOthers;
+import com.cogent.cogentappointment.esewa.exception.NoContentFoundException;
 import com.cogent.cogentappointment.esewa.repository.custom.PatientRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Patient;
 import lombok.extern.slf4j.Slf4j;
@@ -20,13 +22,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.*;
-import static com.cogent.cogentappointment.esewa.constants.QueryConstants.AppointmentConstants.APPOINTMENT_ID;
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.PatientQueryConstants.HOSPITAL_PATIENT_INFO_ID;
-import static com.cogent.cogentappointment.esewa.constants.StringConstant.*;
+import static com.cogent.cogentappointment.esewa.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.esewa.log.constants.PatientLog.*;
 import static com.cogent.cogentappointment.esewa.query.PatientQuery.*;
-import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.*;
+import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.esewa.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.*;
 
@@ -145,55 +146,6 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
     }
 
     @Override
-    public PatientResponseDTO fetchPatientDetailsById(Long hospitalPatientInfoId, Long hospitalId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_DETAILS_BY_ID)
-                .setParameter(HOSPITAL_PATIENT_INFO_ID, hospitalPatientInfoId)
-                .setParameter(HOSPITAL_ID, hospitalId);
-
-        try {
-            return transformQueryToSingleResult(query, PatientResponseDTO.class);
-        } catch (NoResultException e) {
-            log.error(PATIENT_NOT_FOUND_BY_HOSPITAL_PATIENT_INFO_ID,PATIENT,hospitalPatientInfoId);
-            throw new NoContentFoundException(Patient.class, "id", hospitalPatientInfoId.toString());
-        }
-    }
-
-    @Override
-    public List<PatientSearchResponseDTO> search(PatientSearchRequestDTO searchRequestDTO, Pageable pageable,
-                                                 Long hospitalId) {
-
-        Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_PATIENT(searchRequestDTO))
-                .setParameter(HOSPITAL_ID, hospitalId);
-
-        Integer totalItems = query.getResultList().size();
-
-        addPagination.accept(pageable, query);
-
-        List<PatientSearchResponseDTO> patients = transformQueryToResultList(query, PatientSearchResponseDTO.class);
-
-        if (patients.isEmpty()){
-            error();
-            throw new NoContentFoundException(Patient.class);
-        }
-
-        else {
-            patients.get(0).setTotalItems(totalItems);
-            return patients;
-        }
-    }
-
-
-    @Override
-    public String fetchLatestRegistrationNumber(Long hospitalId) {
-        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_LATEST_REGISTRATION_NUMBER)
-                .setParameter(HOSPITAL_ID, hospitalId);
-
-        List results = query.getResultList();
-
-        return results.isEmpty() ? null : results.get(0).toString();
-    }
-
-    @Override
     public Patient fetchPatient(String name, String mobileNumber, Date dateOfBirth) {
 
         try {
@@ -205,28 +157,6 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
         } catch (NoResultException ex) {
             return null;
         }
-    }
-
-    @Override
-    public PatientMinDetailResponseDTO fetchDetailByAppointmentId(Long appointmentId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_DETAIL_BY_APPOINTMENT_ID)
-                .setParameter(APPOINTMENT_ID, appointmentId);
-
-        try {
-            return transformQueryToSingleResult(query, PatientMinDetailResponseDTO.class);
-        } catch (NoResultException e) {
-            log.error(PATIENT_NOT_FOUND_BY_APPOINTMENT_ID,appointmentId);
-            throw new NoContentFoundException(Patient.class, "appointmentId", appointmentId.toString());
-        }
-    }
-
-    @Override
-    public Patient getPatientByHospitalPatientInfoId(Long hospitalPatientInfoId, Long hospitalId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_BY_HOSPITAL_PATIENT_INFO_ID)
-                .setParameter(HOSPITAL_PATIENT_INFO_ID, hospitalPatientInfoId)
-                .setParameter(HOSPITAL_ID, hospitalId);
-
-        return (Patient) query.getSingleResult();
     }
 
     private void error() {

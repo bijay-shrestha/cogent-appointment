@@ -98,6 +98,10 @@ public class SwaggerConstants {
                 "request parameters (name, mobile number, dob)";
         String SEARCH_PATIENT_WITH_OTHERS_TYPE_OPERATION = "Fetch list of other child patients for" +
                 " selected name, mobile number and dob.";
+        String FETCH_DETAILS_OF_OTHERS = " Fetch patient details by hospital patient info id";
+        String UPDATE_PATIENT_INFO_OPERATION = "Update patient info (others)";
+        String DELETE_PATIENT_INFO_OPERATION = "Delete patient info (others)";
+        String FETCH_DETAILS_BY_ID = " Fetch patient details by id";
 
     }
 

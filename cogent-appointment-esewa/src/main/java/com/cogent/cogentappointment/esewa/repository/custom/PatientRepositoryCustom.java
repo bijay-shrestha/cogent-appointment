@@ -2,8 +2,9 @@ package com.cogent.cogentappointment.esewa.repository.custom;
 
 
 import com.cogent.cogentappointment.esewa.dto.request.patient.PatientMinSearchRequestDTO;
-import com.cogent.cogentappointment.esewa.dto.request.patient.PatientSearchRequestDTO;
-import com.cogent.cogentappointment.esewa.dto.response.patient.*;
+import com.cogent.cogentappointment.esewa.dto.response.patient.PatientDetailResponseDTO;
+import com.cogent.cogentappointment.esewa.dto.response.patient.PatientRelationInfoResponseDTO;
+import com.cogent.cogentappointment.esewa.dto.response.patient.PatientResponseDTOForOthers;
 import com.cogent.cogentappointment.persistence.model.Patient;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +20,8 @@ import java.util.List;
 @Qualifier("patientRepositoryCustom")
 public interface PatientRepositoryCustom {
 
+    Long validatePatientDuplicity(Long patientId, String name, String mobileNumber, Date dateOfBirth);
+
     /*appointmentDetails*/
     PatientDetailResponseDTO searchForSelf(PatientMinSearchRequestDTO searchRequestDTO);
 
@@ -29,20 +32,7 @@ public interface PatientRepositoryCustom {
 
     PatientDetailResponseDTO fetchMinPatientDetailsOfOthers(Long hospitalPatientId);
 
-    /*admin*/
-    Long validatePatientDuplicity(Long patientId, String name, String mobileNumber, Date dateOfBirth);
-
-    PatientResponseDTO fetchPatientDetailsById(Long id, Long hospitalId);
-
-    List<PatientSearchResponseDTO> search(PatientSearchRequestDTO searchRequestDTO,
-                                          Pageable pageable, Long hospitalId);
-
-
-    String fetchLatestRegistrationNumber(Long hospitalId);
-
     Patient fetchPatient(String name, String mobileNumber, Date dateOfBirth);
 
-    PatientMinDetailResponseDTO fetchDetailByAppointmentId(Long appointmentId);
 
-    Patient getPatientByHospitalPatientInfoId(Long hospitalPatientInfoId, Long hospitalId);
 }

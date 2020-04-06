@@ -132,47 +132,6 @@ public class PatientQuery {
                     " AND h.id =:hospitalId" +
                     " AND hpi.status='Y'";
 
-    public static String QUERY_TO_SEARCH_PATIENT(PatientSearchRequestDTO searchRequestDTO) {
-        return "SELECT" +
-                " hpi.id as id," +                                               //[0]
-                " p.name as name," +                                             //[1]
-                " p.dateOfBirth as dateOfBirth," +                               //[2]
-                " hpi.address as address," +                                     //[3]
-                " hpi.email as email," +                                         //[4]
-                " p.mobileNumber as mobileNumber," +                             //[5]
-                " hpi.registrationNumber as registrationNumber," +               //[6]
-                " p.eSewaId as eSewaId," +
-                " p.gender as gender," +                                       //[7]
-                " hpi.status as status," +                                       //[8]
-                " hpi.hospitalNumber as hospitalNumber," +                       //[9]
-                " a.appointmentDate as appointmentDate," +                         //[10]
-                " DATE_FORMAT(a.appointmentTime ,'%h:%i %p') as appointmentTime," +  //[11]
-                QUERY_TO_CALCULATE_PATIENT_AGE +                                //[12]
-                " FROM Patient p" +
-                " LEFT JOIN Appointment a ON p.id = a.patientId.id" +
-                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
-                " LEFT JOIN Hospital h ON h.id=hpi.hospital.id" +
-                " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id" +
-                GET_WHERE_CLAUSE_FOR_SEARCH_PATIENT(searchRequestDTO);
-    }
-
-    private static String GET_WHERE_CLAUSE_FOR_SEARCH_PATIENT(PatientSearchRequestDTO searchRequestDTO) {
-
-        String whereClause = " WHERE h.id= :hospitalId AND hpi.status!='D'";
-
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getEsewaId()))
-            whereClause += " AND p.eSewaId LIKE '%" + searchRequestDTO.getEsewaId() + "%'";
-
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
-            whereClause += " AND hpi.status='" + searchRequestDTO.getStatus() + "'";
-
-        if (!Objects.isNull(searchRequestDTO.getPatientMetaInfoId()))
-            whereClause += " AND pmi.id=" + searchRequestDTO.getPatientMetaInfoId();
-
-        whereClause += " ORDER BY p.id DESC";
-
-        return whereClause;
-    }
 
     public static final String QUERY_TO_FETCH_LATEST_REGISTRATION_NUMBER =
             " SELECT registration_number" +

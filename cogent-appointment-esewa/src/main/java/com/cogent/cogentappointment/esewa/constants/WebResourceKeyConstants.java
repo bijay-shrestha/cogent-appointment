@@ -90,6 +90,7 @@ public class WebResourceKeyConstants {
     //P
     public interface PatientConstant {
         String BASE_PATIENT = "/patient";
+        String HOSPITAL_PATIENT_INFO_ID_PATH_VARIABLE_BASE = "/{hospitalPatientInfoId}";
 
     }
 
@@ -112,6 +113,7 @@ public class WebResourceKeyConstants {
     //T
 
     //U
+    public static final String UPDATE = "/update";
 
     //V
 

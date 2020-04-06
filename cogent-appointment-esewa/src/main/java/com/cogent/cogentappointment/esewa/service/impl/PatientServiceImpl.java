@@ -189,84 +189,6 @@ public class PatientServiceImpl implements PatientService {
         log.info(DELETING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
     }
 
-    @Override
-    public List<PatientSearchResponseDTO> search(PatientSearchRequestDTO searchRequestDTO, Pageable pageable) {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(SEARCHING_PROCESS_STARTED, PATIENT);
-
-        List<PatientSearchResponseDTO> patients =
-                patientRepository.search(searchRequestDTO, pageable, getLoggedInHospitalId());
-
-        log.info(SEARCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
-
-        return patients;
-    }
-
-    @Override
-    public void update(PatientUpdateRequestDTO updateRequestDTO) {
-
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(UPDATING_PROCESS_STARTED, PATIENT);
-
-        Long hospitalId = getLoggedInHospitalId();
-
-        Patient patientToUpdate = patientRepository.getPatientByHospitalPatientInfoId(updateRequestDTO.getId(),
-                hospitalId);
-
-        HospitalPatientInfo hospitalPatientInfoToBeUpdated = hospitalPatientInfoRepository
-                .fetchHospitalPatientInfoByPatientId(updateRequestDTO.getId());
-
-        validatePatientDuplicity(patientToUpdate.getId(),
-                updateRequestDTO.getName(),
-                updateRequestDTO.getMobileNumber(),
-                updateRequestDTO.getDateOfBirth()
-        );
-
-        updatePatient(updateRequestDTO, patientToUpdate);
-
-        saveHospitalPatientInfo(updateHospitalPatientInfo(updateRequestDTO, hospitalPatientInfoToBeUpdated));
-
-        savePatientMetaInfo(updatePatientMetaInfo(hospitalPatientInfoToBeUpdated,
-                patientMetaInfoRepository.fetchByPatientId(patientToUpdate.getId()),
-                updateRequestDTO));
-
-        log.info(UPDATING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
-    }
-
-    @Override
-    public void registerPatient(Long patientId, Long hospitalId) {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(REGISTERING_PATIENT_PROCESS_STARTED);
-
-        HospitalPatientInfo hospitalPatientInfo =
-                hospitalPatientInfoRepository.findByPatientAndHospitalId(patientId, hospitalId)
-                        .orElseThrow(() -> PATIENT_WITH_GIVEN_ID_NOT_FOUND.apply(patientId));
-
-        if (hospitalPatientInfo.getIsRegistered().equals(NO)) {
-            String latestRegistrationNumber =
-                    patientRepository.fetchLatestRegistrationNumber(hospitalPatientInfo.getHospital().getId());
-
-            registerPatientDetails(hospitalPatientInfo, latestRegistrationNumber);
-
-            PatientMetaInfo patientMetaInfo = patientMetaInfoRepository.fetchByPatientId(patientId);
-            PatientMetaInfoUtils.updatePatientMetaInfo(patientMetaInfo, hospitalPatientInfo.getRegistrationNumber());
-        }
-
-        log.info(REGISTERING_PATIENT_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
-    }
-
-    @Override
-    public Patient fetchPatient(PatientRequestForDTO patientRequestForDTO) {
-        return patientRepository.fetchPatient(
-                patientRequestForDTO.getName(),
-                patientRequestForDTO.getMobileNumber(),
-                patientRequestForDTO.getDateOfBirth()
-        );
-    }
-
     private Patient savePatientForSelf(PatientRequestByDTO requestDTO) {
         return savePatientInfo(
                 requestDTO.getName(),
@@ -330,14 +252,6 @@ public class PatientServiceImpl implements PatientService {
     private HospitalPatientInfo fetchHospitalPatientInfoById(Long hospitalPatientInfoId) {
         return hospitalPatientInfoRepository.fetchHospitalPatientInfoById(hospitalPatientInfoId)
                 .orElseThrow(() -> NoContentFoundException());
-    }
-
-    private void saveHospitalPatientInfo(HospitalPatientInfo hospitalPatientInfo) {
-        hospitalPatientInfoRepository.save(hospitalPatientInfo);
-    }
-
-    private void savePatientMetaInfo(PatientMetaInfo patientMetaInfo) {
-        patientMetaInfoRepository.save(patientMetaInfo);
     }
 
     private NoContentFoundException NoContentFoundException() {

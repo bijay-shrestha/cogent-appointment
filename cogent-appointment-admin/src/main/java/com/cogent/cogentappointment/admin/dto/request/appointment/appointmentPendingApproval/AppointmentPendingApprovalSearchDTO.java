@@ -27,4 +27,6 @@ public class AppointmentPendingApprovalSearchDTO implements Serializable {
     private Long specializationId;
 
     private Character patientType;
+
+    private String appointmentNumber;
 }

@@ -67,6 +67,12 @@ public class AppointmentResource {
         return ok().body(appointmentService.searchPendingVisitApprovals(searchRequestDTO, pageable));
     }
 
+    @GetMapping(PENDING_APPROVAL + APPOINTMENT_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_PENDING_APPOINTMENT_APPROVAL_DETAIL)
+    public ResponseEntity<?> fetchDetailByAppointmentId(@PathVariable("appointmentId") Long appointmentId) {
+        return ok(appointmentService.fetchDetailByAppointmentId(appointmentId));
+    }
+
     @GetMapping(APPROVE + APPOINTMENT_ID_PATH_VARIABLE_BASE)
     @ApiOperation(APPROVE_APPOINTMENT)
     public ResponseEntity<?> approveAppointment(@PathVariable("appointmentId") Long appointmentId) {

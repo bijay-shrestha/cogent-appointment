@@ -12,6 +12,8 @@ import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRes
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedDateResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.approval.AppointmentPendingApprovalDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.approval.AppointmentPendingApprovalDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.approval.AppointmentPendingApprovalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.esewa.AppointmentDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.esewa.AppointmentMinResponseDTO;
@@ -40,9 +42,10 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.admin.constants.QueryConstants.DATE;
-import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
+import static com.cogent.cogentappointment.client.constants.QueryConstants.DATE;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.AppointmentConstants.APPOINTMENT_DATE;
+import static com.cogent.cogentappointment.client.constants.QueryConstants.AppointmentConstants.APPOINTMENT_ID;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.AppointmentConstants.APPOINTMENT_TIME;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
@@ -287,25 +290,36 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                                                                              Pageable pageable,
                                                                              Long hospitalId) {
 
+        AppointmentPendingApprovalResponseDTO appointmentPendingApprovalResponseDTO=new AppointmentPendingApprovalResponseDTO();
+
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PENDING_APPROVALS.apply(searchRequestDTO))
-                .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
-                .setParameter(TO_DATE, searchRequestDTO.getToDate())
                 .setParameter(HOSPITAL_ID, hospitalId);
 
         int totalItems = query.getResultList().size();
 
         addPagination.accept(pageable, query);
 
-        List<Object[]> objects = query.getResultList();
+        List<AppointmentPendingApprovalDTO> appointmentPendingApprovalDTOS=
+                transformQueryToResultList(query,AppointmentPendingApprovalDTO.class);
 
-        AppointmentPendingApprovalResponseDTO results = parseQueryResultToAppointmentApprovalResponse(objects);
-
-        if (results.getPendingAppointmentApprovals().isEmpty()) {
+        if (appointmentPendingApprovalDTOS.isEmpty()) {
             error();
             throw APPOINTMENT_NOT_FOUND.get();
         } else {
-            results.setTotalItems(totalItems);
-            return results;
+            appointmentPendingApprovalResponseDTO.setPendingAppointmentApprovals(appointmentPendingApprovalDTOS);
+            appointmentPendingApprovalResponseDTO.setTotalItems(totalItems);
+            return appointmentPendingApprovalResponseDTO;
+        }
+    }
+
+    @Override
+    public AppointmentPendingApprovalDetailResponseDTO fetchDetailsByAppointmentId(Long appointmentId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PENDING_APPROVAL_DETAIL_BY_ID)
+                .setParameter(APPOINTMENT_ID, appointmentId);
+        try {
+            return transformQueryToSingleResult(query, AppointmentPendingApprovalDetailResponseDTO.class);
+        } catch (NoResultException e) {
+            throw APPOINTMENT_DETAILS_NOT_FOUND.apply(appointmentId);
         }
     }
 
@@ -432,6 +446,14 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         return (Double) query.getSingleResult();
     }
+
+
+    private Function<Long, NoContentFoundException> APPOINTMENT_DETAILS_NOT_FOUND = (appointmentId) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT, appointmentId);
+        throw new NoContentFoundException
+                (AppointmentPendingApprovalDetailResponseDTO.class, "appointmentId", appointmentId.toString());
+    };
+
 
     private void error() {
         log.error(CONTENT_NOT_FOUND, APPOINTMENT);

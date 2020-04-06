@@ -40,8 +40,8 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.admin.constants.QueryConstants.DATE;
-import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
+import static com.cogent.cogentappointment.client.constants.QueryConstants.DATE;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.AppointmentConstants.APPOINTMENT_DATE;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.AppointmentConstants.APPOINTMENT_TIME;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
@@ -391,7 +391,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_QUEUE.apply(appointmentQueueRequestDTO))
                 .setParameter(HOSPITAL_ID, hospitalId)
                 .setParameter(DATE, utilDateToSqlDate(appointmentQueueRequestDTO.getDate()));
-        ;
+
 
         int totalItems = query.getResultList().size();
 

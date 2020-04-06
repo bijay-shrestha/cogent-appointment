@@ -14,6 +14,7 @@ import java.util.function.Function;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.VACANT;
 import static com.cogent.cogentappointment.admin.query.PatientQuery.QUERY_TO_CALCULATE_PATIENT_AGE;
 import static com.cogent.cogentappointment.admin.query.PatientQuery.QUERY_TO_CALCULATE_PATIENT_AGE_NATIVE;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
 
 /**
  * @author smriti on 2019-10-22
@@ -154,7 +155,7 @@ public class AppointmentQuery {
     public static Function<AppointmentPendingApprovalSearchDTO, String> QUERY_TO_FETCH_PENDING_APPROVALS =
             (searchRequestDTO) ->
                     "SELECT" +
-                            " a.id as appointmentId,"+                                                    //[0]
+                            " a.id as appointmentId," +                                                    //[0]
                             " a.appointmentDate as appointmentDate," +                                   //[1]
                             " a.appointmentNumber as appointmentNumber," +                               //[2]
                             " DATE_FORMAT(a.appointmentTime, '%h:%i %p') as appointmentTime," +          //[3]
@@ -175,9 +176,9 @@ public class AppointmentQuery {
                             " LEFT JOIN Specialization sp ON a.specializationId=sp.id" +
                             " LEFT JOIN Hospital h ON a.hospitalId=h.id" +
                             " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id" +
-                            " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
-                            " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='PA'"
+                            " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id"
                             + GET_WHERE_CLAUSE_TO_SEARCH_PENDING_APPOINTMENT_DETAILS(searchRequestDTO);
+
 
     private static String GET_WHERE_CLAUSE_TO_SEARCH_PENDING_APPOINTMENT_DETAILS(
             AppointmentPendingApprovalSearchDTO pendingApprovalSearchDTO) {
@@ -188,36 +189,30 @@ public class AppointmentQuery {
 
         if (!ObjectUtils.isEmpty(pendingApprovalSearchDTO.getFromDate())
                 && !ObjectUtils.isEmpty(pendingApprovalSearchDTO.getToDate()))
-            whereClause += " AND a.appointmentDate BETWEEN '"
-                    + pendingApprovalSearchDTO.getFromDate() + "' AND '" + pendingApprovalSearchDTO.getFromDate() + "'";
+            whereClause += " AND (a.appointmentDate BETWEEN '"
+                    + utilDateToSqlDate(pendingApprovalSearchDTO.getFromDate()) + "' AND '"
+                    + utilDateToSqlDate(pendingApprovalSearchDTO.getToDate()) + "')";
 
-        if (!Objects.isNull(pendingApprovalSearchDTO.getAppointmentId()) ||
-                !ObjectUtils.isEmpty(pendingApprovalSearchDTO.getAppointmentId()))
+        if (!Objects.isNull(pendingApprovalSearchDTO.getAppointmentId()))
             whereClause += " AND a.id = " + pendingApprovalSearchDTO.getAppointmentId();
 
-        if (!Objects.isNull(pendingApprovalSearchDTO.getHospitalId()) ||
-                !ObjectUtils.isEmpty(pendingApprovalSearchDTO.getHospitalId()))
+        if (!Objects.isNull(pendingApprovalSearchDTO.getHospitalId()))
             whereClause += " AND h.id = " + pendingApprovalSearchDTO.getHospitalId();
 
-        if (!Objects.isNull(pendingApprovalSearchDTO.getPatientMetaInfoId())
-                || !ObjectUtils.isEmpty(pendingApprovalSearchDTO.getPatientMetaInfoId()))
+        if (!Objects.isNull(pendingApprovalSearchDTO.getPatientMetaInfoId()))
             whereClause += " AND pi.id = " + pendingApprovalSearchDTO.getPatientMetaInfoId();
 
-        if (!Objects.isNull(pendingApprovalSearchDTO.getSpecializationId())
-                || !ObjectUtils.isEmpty(pendingApprovalSearchDTO.getSpecializationId()))
+        if (!Objects.isNull(pendingApprovalSearchDTO.getSpecializationId()))
             whereClause += " AND sp.id = " + pendingApprovalSearchDTO.getSpecializationId();
 
-        if (!Objects.isNull(pendingApprovalSearchDTO.getPatientType())
-                || !ObjectUtils.isEmpty(pendingApprovalSearchDTO.getPatientType()))
+        if (!Objects.isNull(pendingApprovalSearchDTO.getPatientType()))
             whereClause += " AND hpi.isRegistered = '" + pendingApprovalSearchDTO.getPatientType() + "'";
 
-        if (!Objects.isNull(pendingApprovalSearchDTO.getDoctorId())
-                || !ObjectUtils.isEmpty(pendingApprovalSearchDTO.getDoctorId()))
+        if (!Objects.isNull(pendingApprovalSearchDTO.getDoctorId()))
             whereClause += " AND d.id = " + pendingApprovalSearchDTO.getDoctorId();
 
-        if (!Objects.isNull(pendingApprovalSearchDTO.getAppointmentNumber())
-                || !ObjectUtils.isEmpty(pendingApprovalSearchDTO.getAppointmentNumber()))
-            whereClause += " AND a.appointmentNumber = '" + pendingApprovalSearchDTO.getAppointmentNumber() + "'";
+        if (!ObjectUtils.isEmpty(pendingApprovalSearchDTO.getAppointmentNumber()))
+            whereClause += " AND a.appointmentNumber LIKE '%" + pendingApprovalSearchDTO.getAppointmentNumber() + "%'";
 
         whereClause += " ORDER BY a.appointmentDate DESC";
 
@@ -243,8 +238,7 @@ public class AppointmentQuery {
                             " atd.appointmentAmount as appointmentAmount," +                //[13]
                             " d.name as doctorName," +                                     //[14]
                             " a.status as status," +                                       //[15]
-                            " ard.refundAmount as refundAmount," +                         //[16]
-                            " hpi.address as patientAddress" +                             //[17]
+                            " hpi.address as patientAddress" +                             //[16]
                             " FROM Appointment a" +
                             " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                             " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
@@ -252,8 +246,7 @@ public class AppointmentQuery {
                             " LEFT JOIN Specialization sp ON a.specializationId=sp.id" +
                             " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
                             " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id" +
-                            " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
-                            " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='PA'"
+                            " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id"
                             + GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_LOG_DETAILS(appointmentLogSearchDTO);
 
 

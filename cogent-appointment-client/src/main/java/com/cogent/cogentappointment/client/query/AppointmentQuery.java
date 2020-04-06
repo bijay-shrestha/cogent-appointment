@@ -13,6 +13,7 @@ import java.util.function.Function;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.VACANT;
 import static com.cogent.cogentappointment.client.query.PatientQuery.QUERY_TO_CALCULATE_PATIENT_AGE;
 import static com.cogent.cogentappointment.client.query.PatientQuery.QUERY_TO_CALCULATE_PATIENT_AGE_NATIVE;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 
 /**
  * @author smriti on 2019-10-22
@@ -303,8 +304,7 @@ public class AppointmentQuery {
                             " LEFT JOIN Specialization sp ON a.specializationId=sp.id" +
                             " LEFT JOIN Hospital h ON a.hospitalId=h.id" +
                             " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id" +
-                            " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
-                            " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='PA'"
+                            " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id"
                             + GET_WHERE_CLAUSE_TO_SEARCH_PENDING_APPOINTMENT_DETAILS(searchRequestDTO);
 
 
@@ -318,32 +318,27 @@ public class AppointmentQuery {
 
         if (!ObjectUtils.isEmpty(pendingApprovalSearchDTO.getFromDate())
                 && !ObjectUtils.isEmpty(pendingApprovalSearchDTO.getToDate()))
-            whereClause += " AND a.appointmentDate BETWEEN '"
-                    + pendingApprovalSearchDTO.getFromDate() + "' AND '" + pendingApprovalSearchDTO.getFromDate() + "'";
+            whereClause += " AND (a.appointmentDate BETWEEN '"
+                    + utilDateToSqlDate(pendingApprovalSearchDTO.getFromDate()) + "' AND '"
+                    + utilDateToSqlDate(pendingApprovalSearchDTO.getToDate()) + "')";
 
-        if (!Objects.isNull(pendingApprovalSearchDTO.getAppointmentId()) ||
-                !ObjectUtils.isEmpty(pendingApprovalSearchDTO.getAppointmentId()))
+        if (!Objects.isNull(pendingApprovalSearchDTO.getAppointmentId()))
             whereClause += " AND a.id = " + pendingApprovalSearchDTO.getAppointmentId();
 
-        if (!Objects.isNull(pendingApprovalSearchDTO.getPatientMetaInfoId())
-                || !ObjectUtils.isEmpty(pendingApprovalSearchDTO.getPatientMetaInfoId()))
+        if (!Objects.isNull(pendingApprovalSearchDTO.getPatientMetaInfoId()))
             whereClause += " AND pi.id = " + pendingApprovalSearchDTO.getPatientMetaInfoId();
 
-        if (!Objects.isNull(pendingApprovalSearchDTO.getSpecializationId())
-                || !ObjectUtils.isEmpty(pendingApprovalSearchDTO.getSpecializationId()))
+        if (!Objects.isNull(pendingApprovalSearchDTO.getSpecializationId()))
             whereClause += " AND sp.id = " + pendingApprovalSearchDTO.getSpecializationId();
 
-        if (!Objects.isNull(pendingApprovalSearchDTO.getPatientType())
-                || !ObjectUtils.isEmpty(pendingApprovalSearchDTO.getPatientType()))
+        if (!Objects.isNull(pendingApprovalSearchDTO.getPatientType()))
             whereClause += " AND hpi.isRegistered = '" + pendingApprovalSearchDTO.getPatientType() + "'";
 
-        if (!Objects.isNull(pendingApprovalSearchDTO.getDoctorId())
-                || !ObjectUtils.isEmpty(pendingApprovalSearchDTO.getDoctorId()))
+        if (!Objects.isNull(pendingApprovalSearchDTO.getDoctorId()))
             whereClause += " AND d.id = " + pendingApprovalSearchDTO.getDoctorId();
 
-        if (!Objects.isNull(pendingApprovalSearchDTO.getAppointmentNumber())
-                || !ObjectUtils.isEmpty(pendingApprovalSearchDTO.getAppointmentNumber()))
-            whereClause += " AND a.appointmentNumber = '" + pendingApprovalSearchDTO.getAppointmentNumber() + "'";
+        if (!ObjectUtils.isEmpty(pendingApprovalSearchDTO.getAppointmentNumber()))
+            whereClause += " AND a.appointmentNumber LIKE '%" + pendingApprovalSearchDTO.getAppointmentNumber() + "%'";
 
         whereClause += " ORDER BY a.appointmentDate DESC";
 
@@ -482,9 +477,8 @@ public class AppointmentQuery {
                     " atd.transactionNumber as transactionNumber," +                            //[12]
                     " COALESCE(atd.appointmentAmount,0) as appointmentAmount," +                //[13]
                     " d.name as doctorName," +                                                  //[14]
-                    " COALESCE(ard.refundAmount,0) as refundAmount," +                          //[15]
-                    " a.isSelf as isSelf," +                                                     //[16]
-                    " h.name as hospitalName" +                                                   //[17]
+                    " a.isSelf as isSelf," +                                                     //[15]
+                    " h.name as hospitalName" +                                                   //[16]
                     " FROM Appointment a" +
                     " LEFT JOIN Patient p ON a.patientId=p.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
@@ -493,7 +487,6 @@ public class AppointmentQuery {
                     " LEFT JOIN Hospital h ON a.hospitalId=h.id" +
                     " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
-                    " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='PA'" +
                     " WHERE " +
                     " sp.status='Y' " +
                     " AND a.status='PA'" +

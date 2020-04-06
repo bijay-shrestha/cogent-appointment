@@ -5,7 +5,6 @@ import com.cogent.cogentappointment.esewa.dto.response.appointmentDetails.Doctor
 import com.cogent.cogentappointment.esewa.dto.response.appointmentDetails.DutyRosterAppointmentDateAndDoctorDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointmentDetails.DutyRosterAppointmentDateAndSpecilizationDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.AppointmentDatesRequestDTO;
-import com.cogent.cogentappointment.esewa.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.doctorDutyRoster.DoctorDutyRosterSearchRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.doctorDutyRoster.DoctorExistingDutyRosterRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.eSewa.AppointmentDetailRequestDTO;
@@ -26,29 +25,10 @@ import java.util.List;
 @Qualifier("doctorDutyRosterRepositoryCustom")
 public interface DoctorDutyRosterRepositoryCustom {
 
-    Long validateDoctorDutyRosterCount(Long doctorId,
-                                       Long specializationId,
-                                       Date fromDate,
-                                       Date toDate);
-
-    List<DoctorDutyRosterMinimalResponseDTO> search(DoctorDutyRosterSearchRequestDTO searchRequestDTO,
-                                                    Pageable pageable,
-                                                    Long hospitalId);
-
-    DoctorDutyRosterDetailResponseDTO fetchDetailsById(Long id, Long hospitalId);
-
     DoctorDutyRosterTimeResponseDTO fetchDoctorDutyRosterTime(Date date,
                                                               Long doctorId,
                                                               Long specializationId);
 
-    List<DoctorExistingDutyRosterResponseDTO> fetchExistingDoctorDutyRosters(
-            DoctorExistingDutyRosterRequestDTO requestDTO, Long hospitalId);
-
-    DoctorExistingDutyRosterDetailResponseDTO fetchExistingRosterDetails(Long doctorDutyRosterId);
-
-    List<DoctorDutyRosterStatusResponseDTO> fetchDoctorDutyRosterStatus
-            (AppointmentStatusRequestDTO requestDTO,
-             Long hospitalId);
 
     List<DoctorDutyRosterAppointmentDate> getDutyRosterByDoctorAndSpecializationId(AppointmentDatesRequestDTO requestDTO);
 

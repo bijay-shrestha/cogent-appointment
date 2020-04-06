@@ -111,7 +111,8 @@ public class CompanyProfileRepositoryCustomImpl implements CompanyProfileReposit
 
     @Override
     public List<DropDownResponseDTO> fetchMinActiveCompanyProfileByCompanyId(Long companyId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_COMPANY_PROFILES_BY_COMPANY_ID);
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_COMPANY_PROFILES_BY_COMPANY_ID)
+                .setParameter(COMPANY_ID, companyId);
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 

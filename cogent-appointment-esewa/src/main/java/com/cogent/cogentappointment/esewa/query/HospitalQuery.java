@@ -20,14 +20,14 @@ public class HospitalQuery {
                 " THEN null" +
                 " ELSE" +
                 " hl.file_uri" +
-                " END as hospitalLogo," +                                  //[3]
-                " tbl1.contactNumber," +                                    //[4]
+                " END as hospitalLogo," +                                  //[4]
+                " tbl1.contactNumber," +                                    //[5]
                 " CASE WHEN" +
                 " (hb.status IS NULL OR hb.status = 'N')" +
                 " THEN null" +
                 " ELSE" +
                 " hb.file_uri" +
-                " END as hospitalBanner" +                                  //[5]
+                " END as hospitalBanner" +                                  //[6]
                 " FROM" +
                 " hospital h" +
                 " LEFT JOIN hospital_logo hl ON h.id =hl.hospital_id " +

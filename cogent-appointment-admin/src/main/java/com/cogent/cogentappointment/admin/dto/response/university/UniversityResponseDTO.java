@@ -22,10 +22,6 @@ public class UniversityResponseDTO implements Serializable {
 
     private Long countryId;
 
-    private Long hospitalId;
-
-    private String hospitalName;
-
     private Character status;
 
     private String remarks;

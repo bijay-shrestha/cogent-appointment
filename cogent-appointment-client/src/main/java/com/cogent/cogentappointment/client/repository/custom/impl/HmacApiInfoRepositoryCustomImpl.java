@@ -4,6 +4,9 @@ import com.cogent.cogentappointment.client.dto.request.admin.AdminMinDetails;
 import com.cogent.cogentappointment.client.dto.request.login.ThirdPartyDetail;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.HmacApiInfoRepositoryCustom;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -19,6 +22,9 @@ import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.trans
 /**
  * @author Sauravi Thapa २०/२/२
  */
+@Repository
+@Transactional(readOnly = true)
+@Slf4j
 public class HmacApiInfoRepositoryCustomImpl implements HmacApiInfoRepositoryCustom {
 
     @PersistenceContext
@@ -32,6 +38,7 @@ public class HmacApiInfoRepositoryCustomImpl implements HmacApiInfoRepositoryCus
         try {
             return transformQueryToSingleResult(query, ThirdPartyDetail.class);
         } catch (NoResultException e) {
+            log.error(INVALID_USERNAME_OR_HOSPITAL_CODE);
             throw new NoContentFoundException(INVALID_USERNAME_OR_HOSPITAL_CODE);
         }
     }
@@ -43,6 +50,7 @@ public class HmacApiInfoRepositoryCustomImpl implements HmacApiInfoRepositoryCus
         try {
             return transformQueryToSingleResult(query, ThirdPartyDetail.class);
         } catch (NoResultException e) {
+            log.error(INVALID_USERNAME_OR_HOSPITAL_CODE);
             throw new NoContentFoundException(INVALID_USERNAME_OR_HOSPITAL_CODE);
         }
     }
@@ -55,6 +63,7 @@ public class HmacApiInfoRepositoryCustomImpl implements HmacApiInfoRepositoryCus
         try {
             return transformQueryToSingleResult(query, AdminMinDetails.class);
         } catch (NoResultException e) {
+            log.error(INVALID_USERNAME_OR_HOSPITAL_CODE);
             throw new NoContentFoundException(INVALID_USERNAME_OR_HOSPITAL_CODE);
         }
     }
@@ -68,6 +77,7 @@ public class HmacApiInfoRepositoryCustomImpl implements HmacApiInfoRepositoryCus
         try {
             return transformQueryToSingleResult(query, AdminMinDetails.class);
         } catch (NoResultException e) {
+            log.error(INVALID_USERNAME_OR_HOSPITAL_CODE);
             throw new NoContentFoundException(INVALID_USERNAME_OR_HOSPITAL_CODE);
         }
     }

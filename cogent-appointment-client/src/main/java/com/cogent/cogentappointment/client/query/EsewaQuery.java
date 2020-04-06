@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.client.query;
 
-import com.cogent.cogentappointment.client.dto.request.eSewa.AppointmentDetailRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentDetailRequestDTO;
 
 import java.util.Objects;
 
@@ -57,27 +57,14 @@ public class EsewaQuery {
     public static String QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_STATUS(AppointmentDetailRequestDTO requestDTO) {
 
         String query = "SELECT" +
-                " CASE WHEN" +
-                "   COUNT(ddro.id)>0" +
-                " THEN" +
-                "   'Y'" +
-                " ELSE" +
-                "   'N'" +
-                " END AS status," +                                                 //[0]
-                " CASE WHEN" +
-                "   COUNT(ddro.id)>0" +
-                " THEN" +
-                "   CONCAT(d.name, ' is available for the day')" +
-                " ELSE" +
-                "   CONCAT(d.name, ' is not available for the day')" +
-                " END AS message" +                                                //[1]
+                " d.name AS doctorName," +                                  //[0]
+                " ddro.dayOffStatus AS dayOffStatus"+                       //[1]
                 " FROM DoctorDutyRoster ddr" +
                 " LEFT JOIN DoctorDutyRosterOverride ddro ON ddr.id = ddro.doctorDutyRosterId.id" +
                 " LEFT JOIN Doctor d ON d.id = ddr.doctorId.id" +
                 " WHERE" +
                 " ddr.status = 'Y'" +
                 " AND ddro.status = 'Y'" +
-                " AND ddro.dayOffStatus = 'N'" +
                 " AND ddr.hospitalId.id =:hospitalId" +
                 " AND (:date BETWEEN ddro.fromDate AND ddro.toDate)";
 
@@ -104,9 +91,9 @@ public class EsewaQuery {
                 " CASE WHEN" +
                 "   COUNT(dw.id)>0" +
                 " THEN" +
-                "   CONCAT(d.name, ' is available for the day')" +
+                "   CONCAT(d.name, ' IS AVAILABLE FOR THE DAY')" +
                 " ELSE" +
-                "   CONCAT(d.name, ' is not available for the day')" +
+                "   CONCAT(d.name, ' IS NOT AVAILABLE FOR THE DAY')" +
                 " END AS message" +                                             //[1]
                 " FROM DoctorDutyRoster ddr" +
                 " LEFT JOIN DoctorWeekDaysDutyRoster dw ON dw.doctorDutyRosterId.id = ddr.id" +
@@ -136,7 +123,8 @@ public class EsewaQuery {
                 " DISTINCT(d.id) AS doctorId," +                        //[0]
                 " d.name AS doctorName," +                              //[1]
                 " s.id AS specializationId," +                          //[2]
-                " s.name AS specializationName" +                       //[3]
+                " s.name AS specializationName," +                      //[3]
+                " ddro.dayOffStatus AS dayOffStatus" +                  //[4]
                 " FROM DoctorDutyRosterOverride ddro" +
                 " LEFT JOIN DoctorDutyRoster ddr ON ddr.id = ddro.doctorDutyRosterId.id" +
                 " LEFT JOIN Doctor d ON d.id = ddr.doctorId.id" +
@@ -145,7 +133,6 @@ public class EsewaQuery {
                 " ddr.status = 'Y'" +
                 " AND ddro.status = 'Y'" +
                 " AND ddr.hospitalId.id =:hospitalId" +
-                " AND ddro.dayOffStatus = 'N'" +
                 " AND :date BETWEEN ddro.fromDate AND ddro.toDate";
 
         if (!Objects.isNull(requestDTO.getSpecializationId()))
@@ -162,15 +149,15 @@ public class EsewaQuery {
                 " DISTINCT(d.id) AS doctorId," +                 //[0]
                 " d.name AS doctorName," +                       //[1]
                 " s.id AS specializationId," +                   //[2]
-                " s.name AS specializationName" +                //[3]
+                " s.name AS specializationName," +               //[3]
+                " dw.dayOffStatus AS dayOffStatus" +              //[4]
                 " FROM DoctorDutyRoster ddr" +
                 " LEFT JOIN DoctorWeekDaysDutyRoster dw ON dw.doctorDutyRosterId.id = ddr.id" +
                 " LEFT JOIN Doctor d ON d.id = ddr.doctorId.id" +
                 " LEFT JOIN Specialization s ON s.id = ddr.specializationId.id" +
                 " LEFT JOIN WeekDays w ON w.id = dw.weekDaysId.id" +
                 " WHERE" +
-                " dw.dayOffStatus = 'N'" +
-                " AND ddr.status = 'Y'" +
+                "  ddr.status = 'Y'" +
                 " AND w.code = :code" +
                 " AND ddr.hospitalId.id =:hospitalId" +
                 " AND :date BETWEEN ddr.fromDate AND ddr.toDate";

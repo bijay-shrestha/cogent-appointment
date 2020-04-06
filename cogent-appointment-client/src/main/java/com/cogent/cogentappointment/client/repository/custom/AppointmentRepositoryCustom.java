@@ -1,9 +1,9 @@
 package com.cogent.cogentappointment.client.repository.custom;
 
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentPendingApprovalSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentCheckAvailabilityRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.log.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
@@ -11,8 +11,8 @@ import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardReques
 import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedDateResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedTimeResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentDetailResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentMinResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.esewa.AppointmentDetailResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.esewa.AppointmentMinResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.approval.AppointmentPendingApprovalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.log.AppointmentLogResponseDTO;
@@ -34,7 +34,7 @@ import java.util.Map;
 @Qualifier("appointmentRepositoryCustom")
 public interface AppointmentRepositoryCustom {
 
-    /*eSewa*/
+    /*esewa*/
     Long validateIfAppointmentExists(Date appointmentDate, String appointmentTime,
                                      Long doctorId, Long specializationId);
 
@@ -81,9 +81,9 @@ public interface AppointmentRepositoryCustom {
     AppointmentLogResponseDTO searchAppointmentLogs(
             AppointmentLogSearchDTO searchRequestDTO, Pageable pageable, Long hospitalId);
 
-    List<AppointmentQueueDTO> fetchTodayAppointmentQueue(AppointmentQueueRequestDTO appointmentQueueRequestDTO,
-                                                         Long hospitalId,
-                                                         Pageable pageable);
+    List<AppointmentQueueDTO> fetchAppointmentQueueLog(AppointmentQueueRequestDTO appointmentQueueRequestDTO,
+                                                       Long hospitalId,
+                                                       Pageable pageable);
 
     Map<String, List<AppointmentQueueDTO>> fetchTodayAppointmentQueueByTime(
             AppointmentQueueRequestDTO appointmentQueueRequestDTO,

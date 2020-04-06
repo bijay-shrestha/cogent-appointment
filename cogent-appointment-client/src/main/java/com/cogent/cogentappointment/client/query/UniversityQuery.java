@@ -16,8 +16,7 @@ public class UniversityQuery {
                     " FROM University u" +
                     " WHERE" +
                     " u.status !='D'" +
-                    " AND u.name=:name" +
-                    " AND u.hospital.id =:hospitalId";
+                    " AND u.name=:name";
 
     public static final String QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE =
             " SELECT COUNT(u.id)" +
@@ -25,8 +24,7 @@ public class UniversityQuery {
                     " WHERE" +
                     " u.status!='D'" +
                     " AND u.id!=:id" +
-                    " AND u.name=:name" +
-                    " AND u.hospital.id =:hospitalId";
+                    " AND u.name=:name";
 
     private static final String SELECT_CLAUSE_TO_FETCH_MINIMAL_UNIVERSITY =
             "SELECT u.id as id," +                                                //[0]
@@ -46,7 +44,7 @@ public class UniversityQuery {
     private static String GET_WHERE_CLAUSE_FOR_SEARCHING_UNIVERSITY
             (UniversitySearchRequestDTO searchRequestDTO) {
 
-        String whereClause = " WHERE u.status!='D' AND u.hospital.id=:hospitalId";
+        String whereClause = " WHERE u.status!='D'";
 
         if (!Objects.isNull(searchRequestDTO.getUniversityId()))
             whereClause += " AND u.id = " + searchRequestDTO.getUniversityId();
@@ -71,14 +69,12 @@ public class UniversityQuery {
                     " FROM University u " +
                     " LEFT JOIN Country c ON c.id = u.country.id" +
                     " WHERE u.status != 'D'" +
-                    " AND u.id =:id" +
-                    " AND u.hospital.id=:hospitalId";
+                    " AND u.id =:id";
 
     public static final String QUERY_TO_FETCH_ACTIVE_UNIVERSITY =
             "SELECT" +
                     " u.id as value," +                         //[0]
                     " u.name as label" +                        //[1]
                     " FROM University u" +
-                    " WHERE u.status = 'Y'" +
-                    " AND u.hospital.id=:hospitalId";
+                    " WHERE u.status = 'Y'";
 }

@@ -1,12 +1,9 @@
 package com.cogent.cogentappointment.client.resource;
 
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRequestDTOForOthers;
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRequestDTOForSelf;
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.cancel.AppointmentCancelRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.*;
 import com.cogent.cogentappointment.client.dto.request.appointment.log.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundSearchDTO;
@@ -43,68 +40,73 @@ public class AppointmentResource {
         this.appointmentService = appointmentService;
     }
 
-    /*eSewa*/
+    /*esewa*/
     @PutMapping(CHECK_AVAILABILITY)
     @ApiOperation(CHECK_APPOINTMENT_AVAILABILITY)
     public ResponseEntity<?> checkAvailability(@Valid @RequestBody AppointmentCheckAvailabilityRequestDTO requestDTO) {
         return ok(appointmentService.checkAvailability(requestDTO));
     }
 
-    /*eSewa*/
+    /*esewa*/
     @PostMapping(SELF)
     @ApiOperation(SAVE_OPERATION)
     public ResponseEntity<?> saveAppointmentForSelf(@Valid @RequestBody AppointmentRequestDTOForSelf requestDTO) {
         return created(create(API_V1 + BASE_APPOINTMENT)).body(appointmentService.saveAppointmentForSelf(requestDTO));
     }
 
+    /*esewa*/
     @PostMapping(OTHERS)
     @ApiOperation(SAVE_OPERATION)
     public ResponseEntity<?> saveAppointmentForOthers(@Valid @RequestBody AppointmentRequestDTOForOthers requestDTO) {
         return created(create(API_V1 + BASE_APPOINTMENT)).body(appointmentService.saveAppointmentForOthers(requestDTO));
     }
 
-    /*eSewa*/
+    /*esewa*/
     @PutMapping(PENDING_APPOINTMENT)
     @ApiOperation((FETCH_PENDING_APPOINTMENT))
     public ResponseEntity<?> fetchPendingAppointments(@RequestBody AppointmentSearchDTO searchDTO) {
         return ok(appointmentService.fetchPendingAppointments(searchDTO));
     }
 
-    /*eSewa*/
+    /*esewa*/
     @PutMapping(CANCEL)
     @ApiOperation(CANCEL_APPOINTMENT_OPERATION)
     public ResponseEntity<?> cancelAppointment(@Valid @RequestBody AppointmentCancelRequestDTO cancelRequestDTO) {
-        appointmentService.cancelAppointment(cancelRequestDTO);
-        return ok().build();
+        return ok(appointmentService.cancelAppointment(cancelRequestDTO));
     }
 
-    /*eSewa*/
+    /*esewa*/
     @PutMapping(RESCHEDULE)
     @ApiOperation(RESCHEDULE_OPERATION)
     public ResponseEntity<?> rescheduleAppointment(@Valid @RequestBody AppointmentRescheduleRequestDTO requestDTO) {
-        appointmentService.rescheduleAppointment(requestDTO);
-        return ok().build();
+        return ok(appointmentService.rescheduleAppointment(requestDTO));
     }
 
-    /*eSewa*/
+    /*esewa*/
     @GetMapping(DETAIL + APPOINTMENT_ID_PATH_VARIABLE_BASE)
     public ResponseEntity<?> fetchAppointmentDetails(@PathVariable("appointmentId") Long appointmentId) {
         return ok().body(appointmentService.fetchAppointmentDetails(appointmentId));
     }
 
-    /*eSewa*/
+    /*esewa*/
     @PutMapping(HISTORY)
     @ApiOperation(FETCH_APPOINTMENT_HISTORY)
     public ResponseEntity<?> fetchAppointmentHistory(@RequestBody AppointmentSearchDTO searchDTO) {
         return ok(appointmentService.fetchAppointmentHistory(searchDTO));
     }
 
-    /*eSewa*/
+    /*esewa*/
     @GetMapping(CANCEL + APPOINTMENT_RESERVATION_ID_PATH_VARIABLE_BASE)
     @ApiOperation(CANCEL_REGISTRATION_OPERATION)
     public ResponseEntity<?> cancelRegistration(@PathVariable("appointmentReservationId") Long appointmentReservationId) {
-        appointmentService.cancelRegistration(appointmentReservationId);
-        return ok().build();
+        return ok(appointmentService.cancelRegistration(appointmentReservationId));
+    }
+
+    @PutMapping(TRANSACTION_STATUS)
+    @ApiOperation(FETCH_APPOINTMENT_TRANSACTION_STATUS)
+    public ResponseEntity<?> fetchAppointmentTransactionStatus(
+            @Valid @RequestBody AppointmentTransactionStatusRequestDTO requestDTO) {
+        return ok(appointmentService.fetchAppointmentTransactionStatus(requestDTO));
     }
 
     @PutMapping(PENDING_APPROVAL)

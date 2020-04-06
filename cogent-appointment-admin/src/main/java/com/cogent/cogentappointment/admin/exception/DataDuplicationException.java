@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.admin.exception;
 import com.cogent.cogentappointment.admin.exception.utils.ExceptionUtils;
 import lombok.Getter;
 
+import static com.cogent.cogentappointment.admin.exception.utils.ExceptionUtils.*;
 import static org.springframework.http.HttpStatus.CONFLICT;
 
 /**
@@ -18,7 +19,7 @@ public class DataDuplicationException extends RuntimeException {
     }
 
     public DataDuplicationException(String errorMessage, String... searchParamsMap) {
-        String debugMessage = "Duplicate entries with " + ExceptionUtils.toMap(String.class, String.class, searchParamsMap);
+        String debugMessage = "Duplicate entries with " + toMap(String.class, String.class, searchParamsMap);
         setErrorResponse(errorMessage, debugMessage);
     }
 
@@ -26,8 +27,9 @@ public class DataDuplicationException extends RuntimeException {
         exception = ExceptionResponse.builder()
                 .errorMessage(errorMessage)
                 .debugMessage(debugMessage)
-                .status(CONFLICT)
-                .timeStamp(ExceptionUtils.getLocalDateTime())
+                .responseStatus(CONFLICT)
+                .responseCode(CONFLICT.value())
+                .timeStamp(getLocalDateTime())
                 .build();
     }
 

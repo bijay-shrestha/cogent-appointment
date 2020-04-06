@@ -2,20 +2,22 @@ package com.cogent.cogentappointment.admin.service.impl;
 
 
 import com.cogent.cogentappointment.admin.dto.request.dashboard.DashBoardRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.dashboard.DoctorRevenueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.GenerateRevenueRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.dashboard.AppointmentCountResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueStatisticsResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueTrendResponseDTO;
-import com.cogent.cogentappointment.admin.repository.AppointmentRepository;
-import com.cogent.cogentappointment.admin.repository.AppointmentTransactionDetailRepository;
-import com.cogent.cogentappointment.admin.repository.PatientRepository;
+import com.cogent.cogentappointment.admin.dto.request.dashboard.RefundAmountRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.dashboard.*;
+import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.DashboardService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.DashboardConstants.DYNAMIC_DASHBOARD_FEATURE;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.admin.log.constants.DashboardLog.*;
@@ -40,13 +42,22 @@ public class DashboardServiceImpl implements DashboardService {
 
     private final AppointmentRepository appointmentRepository;
 
+    private final AdminRepository adminRepository;
+
     private final PatientRepository patientRepository;
 
+    private final AppointmentRefundDetailRepository appointmentRefundDetailRepository;
+
     public DashboardServiceImpl(AppointmentTransactionDetailRepository appointmentTransactionDetailRepository,
-                                AppointmentRepository appointmentRepository, PatientRepository patientRepository) {
+                                AppointmentRepository appointmentRepository,
+                                AdminRepository adminRepository,
+                                PatientRepository patientRepository,
+                                AppointmentRefundDetailRepository appointmentRefundDetailRepository) {
         this.appointmentTransactionDetailRepository = appointmentTransactionDetailRepository;
         this.appointmentRepository = appointmentRepository;
+        this.adminRepository = adminRepository;
         this.patientRepository = patientRepository;
+        this.appointmentRefundDetailRepository = appointmentRefundDetailRepository;
     }
 
     @Override
@@ -135,5 +146,66 @@ public class DashboardServiceImpl implements DashboardService {
         log.info(FETCHING_PROCESS_COMPLETED, REVENUE_STATISTICS, getDifferenceBetweenTwoTime(startTime));
 
         return revenueTrendResponseDTO;
+    }
+
+    @Override
+    public Double calculateTotalRefundedAmount(RefundAmountRequestDTO refundAmountRequestDTO) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, TOTAL_REFUNDED_AMOUNT);
+
+        Double totalRefundedAmount = appointmentRefundDetailRepository.getTotalRefundedAmount(refundAmountRequestDTO);
+
+        log.info(FETCHING_PROCESS_COMPLETED, TOTAL_REFUNDED_AMOUNT, getDifferenceBetweenTwoTime(startTime));
+
+        return totalRefundedAmount;
+    }
+
+    @Override
+    public DoctorRevenueResponseListDTO getDoctorRevenueList(Date toDate,
+                                                             Date fromDate,
+                                                             DoctorRevenueRequestDTO doctorRevenueRequestDTO,
+                                                             Pageable pageable) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, DOCTOR_REVENUE);
+
+        DoctorRevenueResponseListDTO doctorRevenueResponseListDTO = appointmentTransactionDetailRepository
+                .getDoctorRevenue(toDate, fromDate, doctorRevenueRequestDTO, pageable);
+
+        log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_REVENUE, getDifferenceBetweenTwoTime(startTime));
+
+        return doctorRevenueResponseListDTO;
+    }
+
+
+    @Override
+    public List<DashboardFeatureResponseDTO> getDashboardFeaturesByAdmin(Long adminId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, DYNAMIC_DASHBOARD_FEATURE);
+
+        List<DashboardFeatureResponseDTO> responseDTOS =
+                adminRepository.fetchDashboardFeaturesByAdmin(adminId);
+
+        log.info(FETCHING_PROCESS_COMPLETED, DYNAMIC_DASHBOARD_FEATURE, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public List<DashboardFeatureResponseDTO> fetchAllDashboardFeature() {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, DYNAMIC_DASHBOARD_FEATURE);
+
+        List<DashboardFeatureResponseDTO> responseDTOS =
+                adminRepository.fetchOverAllDashboardFeature();
+
+        log.info(FETCHING_PROCESS_COMPLETED, DYNAMIC_DASHBOARD_FEATURE, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
     }
 }

@@ -24,7 +24,7 @@ import static javax.persistence.TemporalType.TIMESTAMP;
 @Setter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "qualification_hisotry")
+@Table(name = "qualification_history")
 public class QualificationHistory implements Serializable {
 
     @Id

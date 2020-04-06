@@ -13,6 +13,9 @@ import java.util.Date;
 
 /**
  * @author smriti ON 12/02/2020
+ *
+ * SAVED IN THIS TABLE WHEN USER RESCHEDULES THEIR APPOINTMENT
+ * MAINTAINED FOR LOG
  */
 @Entity
 @Table(name = "appointment_reschedule_log")

@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.client.service.impl;
 
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentDatesRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.eSewa.AppointmentDetailRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentDatesRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentDetailRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appoinmentDateAndTime.*;
 import com.cogent.cogentappointment.client.dto.response.eSewa.*;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
@@ -18,13 +18,18 @@ import org.springframework.util.ObjectUtils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
+import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.APPOINTMENT;
+import static com.cogent.cogentappointment.client.log.constants.DoctorLog.DOCTOR;
 import static com.cogent.cogentappointment.client.log.constants.eSewaLog.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
-import static com.cogent.cogentappointment.client.utils.eSewaUtils.*;
+import static com.cogent.cogentappointment.client.utils.EsewaUtils.*;
+import static org.springframework.http.HttpStatus.OK;
 
 @Service
 @Transactional
@@ -52,10 +57,9 @@ public class EsewaServiceImpl implements EsewaService {
         DoctorAvailabilityStatusResponseDTO doctorAvailableStatus =
                 dutyRosterOverrideRepository.fetchDoctorDutyRosterOverrideStatus(requestDTO);
 
-        DoctorAvailabilityStatusResponseDTO responseDTO =
-                doctorAvailableStatus.getStatus().equals("Y")
-                        ? doctorAvailableStatus
-                        : dutyRosterRepository.fetchDoctorDutyRosterStatus(requestDTO);
+        DoctorAvailabilityStatusResponseDTO responseDTO = (!Objects.isNull(doctorAvailableStatus))
+                ? doctorAvailableStatus
+                : dutyRosterRepository.fetchDoctorDutyRosterStatus(requestDTO);
 
         log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_AVAILABLE_STATUS, getDifferenceBetweenTwoTime(startTime));
 
@@ -64,28 +68,32 @@ public class EsewaServiceImpl implements EsewaService {
 
     /*ALL AVAILABLE DOCTORS AND THEIR SPECIALIZATION ON THE CHOSEN DATE*/
     @Override
-    public List<AvailableDoctorResponseDTO> fetchAvailableDoctorWithSpecialization(AppointmentDetailRequestDTO requestDTO) {
+    public AvailableDoctorWithSpecializationResponseDTO fetchAvailableDoctorWithSpecialization(
+            AppointmentDetailRequestDTO requestDTO) {
+
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, AVAILABLE_DOCTOR_LIST);
 
         validateIfRequestedDateIsBeforeCurrentDate(requestDTO.getDate());
 
-        List<AvailableDoctorResponseDTO> availableDoctorFromDDROverride =
+        List<AvailableDoctorWithSpecialization> availableDoctorFromDDROverride =
                 dutyRosterOverrideRepository.fetchAvailableDoctor(requestDTO);
 
-        List<AvailableDoctorResponseDTO> availableDoctorFromDDR =
+        List<AvailableDoctorWithSpecialization> availableDoctorFromDDR =
                 dutyRosterRepository.fetchAvailableDoctor(requestDTO);
 
-        List<AvailableDoctorResponseDTO> mergedList =
+        List<AvailableDoctorWithSpecialization> mergedList =
                 mergeOverrideAndActualDoctorList(availableDoctorFromDDROverride, availableDoctorFromDDR);
 
-        if (ObjectUtils.isEmpty(mergedList))
+        if (ObjectUtils.isEmpty(mergedList)) {
+            doctorNotAvailableError();
             throw DOCTORS_NOT_AVAILABLE.get();
+        }
 
         log.info(FETCHING_PROCESS_COMPLETED, AVAILABLE_DOCTOR_LIST, getDifferenceBetweenTwoTime(startTime));
 
-        return mergedList;
+        return getAvailableDoctorWithSpecializationResponseDTO(mergedList);
     }
 
     /*RETURNS ALL THE AVAILABLE APPOINTMENT DATES AND TIME BY DOCTORID and SPECIALIZATIONID*/
@@ -115,11 +123,12 @@ public class EsewaServiceImpl implements EsewaService {
             checkIfOverrideExists(doctorDutyRosterAppointmentDate, appointmentDatesResponseDTO, appointmentDateAndTime);
         }
 
-        AppointmentDatesResponseDTO responseDTO=getFinalResponse(requestDTO, appointmentDateAndTime);
+        AppointmentDatesResponseDTO responseDTO = getFinalResponse(requestDTO, appointmentDateAndTime);
 
-        if (ObjectUtils.isEmpty(responseDTO.getDates()))
+        if (ObjectUtils.isEmpty(responseDTO.getDates())) {
+            appointmentNotAvailableError();
             throw APPOINTMENT_NOT_AVAILABLE.get();
-
+        }
         log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_AVAILABLE_DATES_AND_TIME, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
@@ -127,20 +136,20 @@ public class EsewaServiceImpl implements EsewaService {
 
     /*RETURNS ALL THE AVAILABLE APPOINTMENT DATES WITH SPECIALIZATION ID AND NAME BY DOCTORID*/
     @Override
-    public List<AvailableDateByDoctorIdResponseDTO> fetchAvailableDatesWithSpecialization(Long doctorId) {
+    public AvailableDatesWithSpecializationResponseDTO fetchAvailableDatesWithSpecialization(Long doctorId) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, DOCTOR_AVAILABLE_DATES);
 
-        List<AvailableDateByDoctorIdResponseDTO> responseDTOList = new ArrayList<>();
+        List<AvailableDatesWithSpecialization> responseDTOList = new ArrayList<>();
 
         List<DutyRosterAppointmentDateAndSpecilizationDTO> appointmentDateAndSpecilizations = dutyRosterRepository
                 .getAvaliableDatesAndSpecilizationByDoctorId(doctorId);
 
         appointmentDateAndSpecilizations.forEach(dateAndSpecilization -> {
 
-            AvailableDateByDoctorIdResponseDTO responseDTO = new AvailableDateByDoctorIdResponseDTO();
+            AvailableDatesWithSpecialization responseDTO = new AvailableDatesWithSpecialization();
 
             List<String> weekDays = getWeekdays(dateAndSpecilization.getId());
 
@@ -172,30 +181,31 @@ public class EsewaServiceImpl implements EsewaService {
             }
         });
 
-        if (ObjectUtils.isEmpty(responseDTOList))
+        if (ObjectUtils.isEmpty(responseDTOList)) {
+            appointmentNotAvailableError();
             throw APPOINTMENT_NOT_AVAILABLE.get();
-
+        }
         log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_AVAILABLE_DATES, getDifferenceBetweenTwoTime(startTime));
 
-        return responseDTOList;
+        return getAvailableDatesWithSpecializationResponseDTO(responseDTOList);
     }
 
     /*RETURNS ALL THE AVAILABLE APPOINTMENT DATES WITH DOCTOR ID AND NAME BY SPECIALIZATIONID*/
     @Override
-    public List<AvailableDateBySpecializationIdResponseDTO> fetchAvailableDatesWithDoctor(Long specializationId) {
+    public AvailableDatesWithDoctorResponseDTO fetchAvailableDatesWithDoctor(Long specializationId) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, SPECIALIZATION_AVAILABLE_DATES);
 
-        List<AvailableDateBySpecializationIdResponseDTO> responseDTOList = new ArrayList<>();
+        List<AvailableDatesWithDoctor> responseDTOList = new ArrayList<>();
 
         List<DutyRosterAppointmentDateAndDoctorDTO> dateAndDoctorDTOS = dutyRosterRepository
                 .getAvaliableDatesAndDoctorBySpecilizationId(specializationId);
 
         dateAndDoctorDTOS.forEach(dateAndSpecilization -> {
 
-            AvailableDateBySpecializationIdResponseDTO responseDTO = new AvailableDateBySpecializationIdResponseDTO();
+            AvailableDatesWithDoctor responseDTO = new AvailableDatesWithDoctor();
 
             List<String> weekDays = getWeekdays(dateAndSpecilization.getId());
 
@@ -227,11 +237,14 @@ public class EsewaServiceImpl implements EsewaService {
             }
         });
 
-        if (ObjectUtils.isEmpty(responseDTOList))
+        if (ObjectUtils.isEmpty(responseDTOList)) {
+            appointmentNotAvailableError();
             throw APPOINTMENT_NOT_AVAILABLE.get();
+        }
 
         log.info(FETCHING_PROCESS_COMPLETED, SPECIALIZATION_AVAILABLE_DATES, getDifferenceBetweenTwoTime(startTime));
-        return responseDTOList;
+
+        return getAvailableDatesWithDoctorResponseDTO(responseDTOList);
     }
 
     /*RETURNS ALL THE AVAILABLE APPOINTMENT DATES  BY DOCTORID AND SPECIALIZATIONID*/
@@ -276,8 +289,14 @@ public class EsewaServiceImpl implements EsewaService {
         });
         responseDTO.setAvaliableDates(avaliableDates);
 
-        if (ObjectUtils.isEmpty(responseDTO.getAvaliableDates()))
+        responseDTO.setResponseStatus(OK);
+
+        responseDTO.setResponseCode(OK.value());
+
+        if (ObjectUtils.isEmpty(responseDTO.getAvaliableDates())) {
+            appointmentNotAvailableError();
             throw APPOINTMENT_NOT_AVAILABLE.get();
+        }
 
         log.info(FETCHING_PROCESS_COMPLETED, AVAILABLE_DATES_LIST, getDifferenceBetweenTwoTime(startTime));
 
@@ -366,8 +385,10 @@ public class EsewaServiceImpl implements EsewaService {
     private void validateIfRequestedDateIsBeforeCurrentDate(Date requestedDate) {
         boolean isRequestedDateBeforeCurrentDate = isFirstDateGreater(new Date(), requestedDate);
 
-        if (isRequestedDateBeforeCurrentDate)
+        if (isRequestedDateBeforeCurrentDate){
+            doctorNotAvailableError();
             throw DOCTORS_NOT_AVAILABLE.get();
+        }
     }
 
     private Supplier<NoContentFoundException> DOCTORS_NOT_AVAILABLE = () -> new NoContentFoundException(Doctor.class);
@@ -377,6 +398,14 @@ public class EsewaServiceImpl implements EsewaService {
     private List<Date> getDatesBetween(Date fromDate, Date toDate) {
         return utilDateListToSqlDateList(getDates(fromDate,
                 toDate));
+    }
+
+    private void appointmentNotAvailableError(){
+        log.error(CONTENT_NOT_FOUND,APPOINTMENT);
+    }
+
+    private void doctorNotAvailableError(){
+        log.error(CONTENT_NOT_FOUND,DOCTOR);
     }
 }
 

@@ -182,7 +182,7 @@ public class AdminQuery {
                     " LEFT JOIN Department d ON d.id=p.department.id" +
                     " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
                     " WHERE " +
-                    " (a.username=:username OR a.email =:email)" +
+                    " (a.username=:username OR a.email =:email OR a.mobileNumber=:username)" +
                     " AND a.status='Y'" +
                     " AND h.id=:hospitalId";
 

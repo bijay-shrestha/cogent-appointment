@@ -44,16 +44,12 @@ public class HospitalUpdateRequestDTO implements Serializable {
     private String remarks;
 
     @NotNull
-    @Status
-    private Character isHospital;
-
-    @NotNull
     private Double refundPercentage;
 
     @NotNull
     private Integer numberOfAdmins;
 
-    private Integer numberOfFreeFollowUps;
+    private Integer numberOfFollowUps;
 
     private Integer followUpIntervalDays;
 

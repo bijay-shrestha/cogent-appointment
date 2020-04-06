@@ -352,7 +352,7 @@ public class AppointmentQuery {
         return whereClause;
     }
 
-    public static Function<AppointmentQueueRequestDTO, String> QUERY_TO_FETCH_TODAY_APPOINTMENT_QUEUE =
+    public static Function<AppointmentQueueRequestDTO, String> QUERY_TO_FETCH_APPOINTMENT_QUEUE =
             (appointmentQueueSearchDTO) ->
                     "SELECT" +
                             " DATE_FORMAT(a.appointmentTime,'%h:%i %p') as appointmentTime," +
@@ -380,7 +380,7 @@ public class AppointmentQuery {
         String whereClause = " WHERE " +
                 " s.status='Y' " +
                 " AND a.status='PA'" +
-                " AND DATE(a.appointmentDate) = CURDATE()";
+                " AND DATE(a.appointmentDate) = :date";
 
         if (!Objects.isNull(appointmentQueueRequestDTO.getDoctorId()))
             whereClause += " AND d.id = " + appointmentQueueRequestDTO.getDoctorId();

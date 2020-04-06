@@ -13,6 +13,10 @@ public class ErrorMessageConstants {
         String INVALID_APPOINTMENT_TIME = "Invalid appointment time: '%s'";
 
         String INVALID_APPOINTMENT_DATE_TIME = "Sorry! Appointment failed because requested date/time has already passed.";
+
+        String APPOINTMENT_FAILED_MESSAGE = "The selected time slot has expired. Please try again!";
+
+        String APPOINTMENT_FAILED_DEBUG_MESSAGE = "AppointmentReservationLog(s) is null";
     }
 
     public interface AdminServiceMessages {
@@ -43,6 +47,8 @@ public class ErrorMessageConstants {
         String ADMIN_CANNOT_BE_REGISTERED_MESSAGE = "Admin exceeds for the selected hospital";
 
         String ADMIN_CANNOT_BE_REGISTERED_DEBUG_MESSAGE = "Admin count is equal to hospital's allowed number of admins";
+
+        String INVALID_DELETE_REQUEST = "Sorry! Cannot delete this admin since it has Super Admin Profile";
     }
 
 
@@ -123,6 +129,9 @@ public class ErrorMessageConstants {
                 "'%s'";
     }
 
+    public interface ProfileServiceMessages {
+        String INVALID_DELETE_REQUEST = "Sorry! Cannot delete Super Admin Profile";
+    }
 
     //Q
 

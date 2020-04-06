@@ -24,6 +24,9 @@ public interface HospitalRepository extends JpaRepository<Hospital, Long>, Hospi
     @Query("SELECT h FROM Hospital h WHERE h.status='Y' AND h.id = :id AND h.isCompany='N'")
     Optional<Hospital> findActiveHospitalById(@Param("id") Long id);
 
+    @Query("SELECT h FROM Hospital h WHERE h.status='Y' AND h.id = :id AND h.isCompany='Y'")
+    Optional<Hospital> findActiveCompanyById(@Param("id") Long id);
+
     @Query("SELECT h.alias FROM Hospital h WHERE h.status='Y' AND h.id = :id")
     String getAliasById(@Param("id") Long id);
 

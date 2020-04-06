@@ -18,7 +18,7 @@ import java.util.List;
 @Qualifier("patientRepositoryCustom")
 public interface PatientRepositoryCustom {
 
-    /*eSewa*/
+    /*esewa*/
     PatientDetailResponseDTO searchForSelf(PatientMinSearchRequestDTO searchRequestDTO);
 
     List<PatientRelationInfoResponseDTO> fetchPatientRelationInfo(PatientMinSearchRequestDTO searchRequestDTO);

@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.repository.custom;
 
 import com.cogent.cogentappointment.admin.dto.response.admin.AdminMetaInfoResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminMetaInfoResponseDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
@@ -13,4 +14,6 @@ import java.util.List;
 @Qualifier("adminMetaInfoRepositoryCustom")
 public interface AdminMetaInfoRepositoryCustom {
     List<AdminMetaInfoResponseDTO> fetchAdminMetaInfoResponseDTOS();
+
+    List<CompanyAdminMetaInfoResponseDTO> fetchCompanyAdminMetaInfoResponseDTOS();
 }

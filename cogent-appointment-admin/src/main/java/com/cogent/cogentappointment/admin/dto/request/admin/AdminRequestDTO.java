@@ -8,6 +8,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
+
 /**
  * @author smriti on 6/25/19
  */
@@ -52,6 +53,8 @@ public class AdminRequestDTO implements Serializable {
     private Long profileId;
 
     private List<String> macAddressInfo;
+
+    private List<AdminDashboardRequestDTO> adminDashboardRequestDTOS;
 
     private String baseUrl;
 }

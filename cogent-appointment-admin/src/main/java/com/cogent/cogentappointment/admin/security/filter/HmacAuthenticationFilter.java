@@ -57,7 +57,10 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
                         .algorithm(authHeader.getAlgorithm())
                         .nonce(authHeader.getNonce())
                         .username(userDetails.getUsername())
-                        .apiKey(authHeader.getApiKey());
+                        .companyId(Math.toIntExact(authHeader.getCompanyId()))
+                        .companyCode(authHeader.getCompanyCode())
+                        .apiKey(authHeader.getApiKey())
+                        .apiSecret(userDetails.getApiSecret());
 
             } else {
                 signatureBuilder = null;
@@ -65,7 +68,8 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
             compareSignature(signatureBuilder, authHeader.getDigest());
 
-            SecurityContextHolder.getContext().setAuthentication(getAuthentication(userDetails));
+            SecurityContextHolder.getContext().setAuthentication(getAuthenticationForCompany(userDetails.getUsername(),
+                    userDetails.getCompanyId()));
         }
 
         try {
@@ -86,12 +90,13 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
             return null;
         }
 
-        return new AuthHeader(
-                authHeaderMatcher.group(1),
-                authHeaderMatcher.group(3),
+        return new AuthHeader(authHeaderMatcher.group(1),
                 authHeaderMatcher.group(2),
+                Integer.parseInt(authHeaderMatcher.group(3)),
                 authHeaderMatcher.group(4),
-                DatatypeConverter.parseBase64Binary(authHeaderMatcher.group(5)));
+                authHeaderMatcher.group(5),
+                authHeaderMatcher.group(6),
+                DatatypeConverter.parseBase64Binary(authHeaderMatcher.group(7)));
     }
 
     public void compareSignature(HMACBuilder signatureBuilder, byte[] digest) {
@@ -103,6 +108,13 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
         return new PreAuthenticatedAuthenticationToken(
                 userDetails,
                 null,
+                null);
+    }
+
+    public PreAuthenticatedAuthenticationToken getAuthenticationForCompany(String username, Long companyId) {
+        return new PreAuthenticatedAuthenticationToken(
+                username,
+                companyId,
                 null);
     }
 

@@ -1,25 +1,19 @@
 package com.cogent.cogentappointment.client.service;
 
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRequestDTOForOthers;
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentRequestDTOForSelf;
-import com.cogent.cogentappointment.client.dto.request.appointment.AppointmentSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.cancel.AppointmentCancelRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.*;
 import com.cogent.cogentappointment.client.dto.request.appointment.log.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentCheckAvailabilityResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentDetailResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentMinResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentSuccessResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.approval.AppointmentPendingApprovalResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.esewa.*;
 import com.cogent.cogentappointment.client.dto.response.appointment.log.AppointmentLogResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
@@ -41,17 +35,20 @@ public interface AppointmentService {
 
     AppointmentSuccessResponseDTO saveAppointmentForOthers(AppointmentRequestDTOForOthers appointmentRequestDTO);
 
-    List<AppointmentMinResponseDTO> fetchPendingAppointments(AppointmentSearchDTO searchDTO);
+    AppointmentMinResponseWithStatusDTO fetchPendingAppointments(AppointmentSearchDTO searchDTO);
 
-    void cancelAppointment(AppointmentCancelRequestDTO cancelRequestDTO);
+    StatusResponseDTO cancelAppointment(AppointmentCancelRequestDTO cancelRequestDTO);
 
-    void rescheduleAppointment(AppointmentRescheduleRequestDTO rescheduleRequestDTO);
+    StatusResponseDTO rescheduleAppointment(AppointmentRescheduleRequestDTO rescheduleRequestDTO);
 
-    AppointmentDetailResponseDTO fetchAppointmentDetails(Long appointmentId);
+    AppointmentDetailResponseWithStatusDTO fetchAppointmentDetails(Long appointmentId);
 
-    List<AppointmentMinResponseDTO> fetchAppointmentHistory(AppointmentSearchDTO searchDTO);
+    AppointmentMinResponseWithStatusDTO fetchAppointmentHistory(AppointmentSearchDTO searchDTO);
 
-    void cancelRegistration(Long appointmentReservationId);
+    StatusResponseDTO cancelRegistration(Long appointmentReservationId);
+
+    AppointmentTransactionStatusResponseDTO fetchAppointmentTransactionStatus
+            (AppointmentTransactionStatusRequestDTO requestDTO);
 
     /*admin*/
     /*PENDING APPROVAL*/
@@ -81,7 +78,7 @@ public interface AppointmentService {
                                                                    Pageable pageable);
 
     /*APPOINTMENT QUEUE*/
-    List<AppointmentQueueDTO> fetchTodayAppointmentQueue(AppointmentQueueRequestDTO searchRequestDTO, Pageable pageable);
+    List<AppointmentQueueDTO> fetchAppointmentQueueLog(AppointmentQueueRequestDTO searchRequestDTO, Pageable pageable);
 
     Map<String, List<AppointmentQueueDTO>> fetchTodayAppointmentQueueByTime(
             AppointmentQueueRequestDTO appointmentQueueRequestDTO, Pageable pageable);

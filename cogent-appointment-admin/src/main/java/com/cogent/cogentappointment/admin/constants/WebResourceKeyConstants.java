@@ -45,21 +45,39 @@ public class WebResourceKeyConstants {
 
     public interface CompanyConstants {
         String BASE_COMPANY = "/company";
+        String COMPANY_ID_PATH_VARIABLE_BASE = "/{companyId}";
     }
 
+    public interface CompanyAdminConstants {
+        String BASE_COMPANY_ADMIN = "/companyAdmin";
+        String AVATAR = "/avatar";
+        String COMPANY_ADMIN_META_INFO = "/metaInfo";
+        String CHANGE_PASSWORD = "/changePassword";
+        String RESET_PASSWORD = "/resetPassword";
+        String INFO = "/info";
+        String VERIFY = "/verify";
+    }
+
+    public interface CompanyProfileConstants {
+        String BASE_COMPANY_PROFILE = "/company-profile";
+    }
 
     //D
     public interface DashboardConstants {
         String BASE_DASHBOARD = "/dashboard";
+        String DYNAMIC_DASHBOARD_FEATURE = "/features";
         String GENERATE_REVENUE = "/revenueGenerated";
         String OVER_ALL_APPOINTMENT = "/overAllAppointments";
         String REVENUE_STATISTICS = "/revenueStatistics";
         String REGISTERED = "/registeredPatients";
         String COUNT = "/count";
         String HOSPITAL_ID_PATH_VARIABLE_BASE = "/{hospitalId}";
+        String ADMIN_ID_PATH_VARIABLE_BASE = "/{adminId}";
         String APPOINTMENT_QUEUE = "/today-appointment";
         String APPOINTMENT_QUEUE_BY_TIME = "/today-appointment-timely";
         String REVENUE_TREND = "/revenueTrend";
+        String DOCTOR_REVENUE = "/doctorRevenue";
+        String TOTAL_REFUNDED_AMOUNT = "/totalRefundedAmount";
     }
 
     public static final String DETAIL = "/detail";

@@ -1,8 +1,10 @@
 package com.cogent.cogentappointment.client.resource;
 
+import com.cogent.cogentappointment.client.dto.request.DoctorRevenueRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.GenerateRevenueRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.dashboard.RefundAmountRequestDTO;
 import com.cogent.cogentappointment.client.service.AppointmentService;
 import com.cogent.cogentappointment.client.service.DashboardService;
 import io.swagger.annotations.Api;
@@ -13,10 +15,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.text.ParseException;
 
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.DashboardConstant.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.DashboardConstants.*;
+import static com.cogent.cogentappointment.client.utils.DoctorRevenueUtils.convertToDoctorRevenueRequestDTO;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.convertStringToDate;
+import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -49,7 +55,7 @@ public class DashboardResource {
         return ok(dashboardService.countOverallAppointments(countRequestDTO));
     }
 
-    @GetMapping(REGISTERED + COUNT )
+    @GetMapping(REGISTERED + COUNT)
     @ApiOperation(COUNT_REGISTERED_PATIENTS_OPERATION)
     public ResponseEntity<?> countRegisteredPatients() {
         return ok(dashboardService.getPatientStatistics());
@@ -63,11 +69,11 @@ public class DashboardResource {
 
     @PutMapping(APPOINTMENT_QUEUE)
     @ApiOperation(FETCH_APPOINTMENT_QUEUE)
-    public ResponseEntity<?> fetchTodayAppointmentQueue(@RequestBody AppointmentQueueRequestDTO appointmentQueueRequestDTO,
-                                                        @RequestParam("page") int page,
-                                                        @RequestParam("size") int size) {
+    public ResponseEntity<?> fetchAppointmentQueueLog(@RequestBody AppointmentQueueRequestDTO appointmentQueueRequestDTO,
+                                                      @RequestParam("page") int page,
+                                                      @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return ok().body(appointmentService.fetchTodayAppointmentQueue(appointmentQueueRequestDTO, pageable));
+        return ok().body(appointmentService.fetchAppointmentQueueLog(appointmentQueueRequestDTO, pageable));
     }
 
     @PutMapping(APPOINTMENT_QUEUE_BY_TIME)
@@ -77,5 +83,41 @@ public class DashboardResource {
                                                               @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ok().body(appointmentService.fetchTodayAppointmentQueueByTime(appointmentQueueRequestDTO, pageable));
+    }
+
+    @PutMapping(TOTAL_REFUNDED_AMOUNT)
+    @ApiOperation(REFUND_AMOUNT_OPERATION)
+    public ResponseEntity<?> calculateTotalRefundedAmount(@RequestBody RefundAmountRequestDTO refundAmountRequestDTO) {
+        return ok().body(dashboardService.calculateTotalRefundedAmount(refundAmountRequestDTO));
+    }
+
+    @GetMapping(DOCTOR_REVENUE)
+    @ApiOperation(DOCTOR_REVENUE_OPERATION)
+//    @ApiImplicitParams({@ApiImplicitParam(name = "toDate", value = "dd/MM/yyyy", required = true, dataType = "date",
+//            paramType = "query"),
+//            @ApiImplicitParam(name = "fromDate", value = "dd/MM/yyyy", required = true, dataType = "date",
+//                    paramType = "query")})
+    public ResponseEntity<?> getDoctorRevenueList(@RequestParam("toDate") String toDate,
+                                                  @RequestParam("fromDate") String fromDate,
+                                                  @RequestParam("doctorId") Long doctorId,
+                                                  @RequestParam("specializationId") Long specializationId,
+                                                  @RequestParam("page") int page,
+                                                  @RequestParam("size") int size) throws ParseException {
+
+        DoctorRevenueRequestDTO doctorRevenueRequestDTO = convertToDoctorRevenueRequestDTO(doctorId, getLoggedInHospitalId(), specializationId);
+        Pageable pageable = PageRequest.of(page, size);
+        return ok(dashboardService.getDoctorRevenueList(convertStringToDate(toDate), convertStringToDate(fromDate), doctorRevenueRequestDTO, pageable));
+    }
+
+    @PutMapping(DYNAMIC_DASHBOARD_FEATURE + ADMIN_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_DYNAMIC_DASHBOARD_FEATURE)
+    public ResponseEntity<?> fetchDashboardEntityByAdmin(@PathVariable("adminId") Long adminId) {
+        return ok(dashboardService.getDashboardFeaturesByAdmin(adminId));
+    }
+
+    @GetMapping(DYNAMIC_DASHBOARD_FEATURE)
+    @ApiOperation(OVER_ALL_DASHBOARD_FEATURE)
+    public ResponseEntity<?> fetchAllDashboardFeature() {
+        return ok(dashboardService.fetchAllDashboardFeature());
     }
 }

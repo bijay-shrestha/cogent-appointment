@@ -13,6 +13,11 @@ import java.util.Date;
 
 /**
  * @author smriti ON 06/02/2020
+ *
+ * SAVED IN THIS TABLE WHEN USER CANCELS THEIR APPOINTMENT
+ *
+ * RELATION BETWEEN APPOINTMENT AND REFUNDED APPOINTMENT
+ * HERE REFUNDED AMOUNT IS CALCULATED ON THE BASIS OF REFUND PERCENTAGE DONE DURING HOSPITAL/CLIENT SETUP
  */
 @Entity
 @Table(name = "appointment_refund_detail")
@@ -47,14 +52,21 @@ public class AppointmentRefundDetail extends Auditable<String> implements Serial
     @Column(name = "cancelled_date")
     private Date cancelledDate;
 
+    @Temporal(TemporalType.DATE)
+    @Column(name = "refunded_date")
+    private Date refundedDate;
+
     @Override
     public String toString() {
-        return "Appointment{" +
+        return "AppointmentRefundDetail{" +
                 "id=" + id +
                 ", appointmentId=" + appointmentId.getAppointmentNumber() +
                 ", refundAmount=" + refundAmount +
-                ", remarks=" + remarks +
-                ", status=" + status +
+                ", remarks='" + remarks + '\'' +
+                ", status='" + status + '\'' +
+                ", cancelledDate=" + cancelledDate +
+                ", refundedDate=" + refundedDate +
                 '}';
     }
+
 }

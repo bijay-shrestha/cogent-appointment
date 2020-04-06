@@ -1,8 +1,5 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
-import com.cogent.cogentappointment.admin.constants.EmailTemplates;
-import com.cogent.cogentappointment.admin.constants.StatusConstants;
-import com.cogent.cogentappointment.admin.constants.StringConstant;
 import com.cogent.cogentappointment.admin.dto.request.email.EmailRequestDTO;
 import com.cogent.cogentappointment.admin.repository.EmailToSendRepository;
 import com.cogent.cogentappointment.admin.service.EmailService;

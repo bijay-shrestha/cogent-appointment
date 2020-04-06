@@ -10,14 +10,12 @@ import com.cogent.cogentappointment.admin.dto.response.company.CompanyDropdownRe
 import com.cogent.cogentappointment.admin.dto.response.company.CompanyMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.company.CompanyResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalDropdownResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.HmacApiInfoRepository;
 import com.cogent.cogentappointment.admin.repository.HospitalContactNumberRepository;
 import com.cogent.cogentappointment.admin.repository.HospitalLogoRepository;
 import com.cogent.cogentappointment.admin.repository.HospitalRepository;
 import com.cogent.cogentappointment.admin.service.CompanyService;
-import com.cogent.cogentappointment.admin.service.FileService;
 import com.cogent.cogentappointment.admin.service.MinioFileService;
 import com.cogent.cogentappointment.persistence.model.HmacApiInfo;
 import com.cogent.cogentappointment.persistence.model.Hospital;
@@ -87,11 +85,11 @@ public class CompanyServiceImpl implements CompanyService {
 
         validateConstraintViolation(validator.validate(requestDTO));
 
-        List<Object[]> companies = hospitalRepository.validateHospitalDuplicity(
+        List<Object[]> companies = hospitalRepository.validateCompanyDuplicity(
                 requestDTO.getName(), requestDTO.getCompanyCode());
 
         validateDuplicity(companies, requestDTO.getName(), requestDTO.getCompanyCode(),
-               "COMPANY");
+                "COMPANY");
 
         Hospital company = save(convertComapanyDTOToHospital(requestDTO));
 
@@ -113,7 +111,7 @@ public class CompanyServiceImpl implements CompanyService {
 
         Hospital company = findById(updateRequestDTO.getId());
 
-        List<Object[]> hospitals = hospitalRepository.validateHospitalDuplicityForUpdate(
+        List<Object[]> hospitals = hospitalRepository.validateCompanyDuplicityForUpdate(
                 updateRequestDTO.getId(), updateRequestDTO.getName(), updateRequestDTO.getCompanyCode());
 
         validateDuplicity(hospitals, updateRequestDTO.getName(),
@@ -197,9 +195,15 @@ public class CompanyServiceImpl implements CompanyService {
 
         String responseDTO = hospitalRepository.getAliasById(companyId);
 
-        log.info(FETCHING_ALIAS_PROCESS_STARTED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_ALIAS_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
+    }
+
+    @Override
+    public Hospital findActiveCompanyById(Long companyById) {
+        return hospitalRepository.findActiveCompanyById(companyById)
+                .orElseThrow(() -> COMPANY_WITH_GIVEN_ID_NOT_FOUND.apply(companyById));
     }
 
     private Hospital save(Hospital company) {
@@ -252,7 +256,7 @@ public class CompanyServiceImpl implements CompanyService {
         saveCompanyContactNumber(hospitalContactNumbers);
     }
 
-    public void updateHmacApiInfo(HmacApiInfo hmacApiInfo, Character status, String remarks) {
+    private void updateHmacApiInfo(HmacApiInfo hmacApiInfo, Character status, String remarks) {
         HmacApiInfo hmacApiInfoToUpdate = updateHmacApiInfoAsHospital(
                 hmacApiInfo,
                 status,
@@ -260,7 +264,7 @@ public class CompanyServiceImpl implements CompanyService {
         saveHmacApiInfo(hmacApiInfoToUpdate);
     }
 
-    public void updateCompanyLogo(Hospital hospital, MultipartFile files) {
+    private void updateCompanyLogo(Hospital hospital, MultipartFile files) {
         HospitalLogo hospitalLogo = hospitalLogoRepository.findHospitalLogoByHospitalId(hospital.getId());
 
         if (Objects.isNull(hospitalLogo)) saveCompanyLogo(hospital, files);
@@ -278,7 +282,7 @@ public class CompanyServiceImpl implements CompanyService {
 
 
     private Function<Long, NoContentFoundException> COMPANY_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        log.error("Company with id : {} not found", id);
+        log.error(CONTENT_NOT_FOUND_BY_ID,COMPANY, id);
         throw new NoContentFoundException("Company Doesn't Exists");
     };
 }

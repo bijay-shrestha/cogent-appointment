@@ -14,7 +14,8 @@ import java.util.stream.Collectors;
  */
 public class ProfileMenuUtils {
 
-    public static List<ProfileMenu> convertToProfileMenu(Profile profile, List<ProfileMenuRequestDTO> requestDTO) {
+    public static List<ProfileMenu> convertToProfileMenu(Profile profile,
+                                                         List<ProfileMenuRequestDTO> requestDTO) {
         return requestDTO.stream()
                 .map(profileMenu -> convertToProfileMenuResponse.apply(profile, profileMenu))
                 .collect(Collectors.toList());

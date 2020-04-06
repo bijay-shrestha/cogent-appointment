@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Setter
 public class ProfileSearchRequestDTO implements Serializable {
 
-    private String name;
+    private Long profileId;
 
     private Character status;
 

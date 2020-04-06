@@ -7,9 +7,6 @@ public class ErrorMessageConstants {
 
     //A
 
-    public interface AppointmentServiceMessage {
-
-    }
 
     public interface AdminServiceMessages {
 
@@ -39,6 +36,8 @@ public class ErrorMessageConstants {
         String ADMIN_CANNOT_BE_REGISTERED_MESSAGE = "Admin exceeds for the selected hospital";
 
         String ADMIN_CANNOT_BE_REGISTERED_DEBUG_MESSAGE = "Admin count is equal to hospital's allowed number of admins";
+
+        String INVALID_DELETE_REQUEST = "Sorry! Cannot delete this admin since it has Super Admin Profile";
     }
 
 
@@ -112,6 +111,10 @@ public class ErrorMessageConstants {
     public interface PatientServiceMessages {
         String DUPLICATE_PATIENT_MESSAGE = "Patient already exists with name '%s', mobile number '%s' and date of birth " +
                 "'%s'";
+    }
+
+    public interface ProfileServiceMessages {
+        String INVALID_DELETE_REQUEST = "Sorry! Cannot delete Super Admin Profile";
     }
 
 

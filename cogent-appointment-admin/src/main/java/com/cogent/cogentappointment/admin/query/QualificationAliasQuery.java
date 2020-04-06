@@ -23,7 +23,7 @@ public class QualificationAliasQuery {
                     " FROM QualificationAlias qa" +
                     " WHERE" +
                     " qa.status !='D'" +
-                    " AND qa.id!=:id" +
+                    " AND qa.id !=:id" +
                     " AND qa.name=:name";
 
     public static final String QUERY_TO_FETCH_ACTIVE_QUALIFICATION_ALIAS =
@@ -48,17 +48,17 @@ public class QualificationAliasQuery {
     private static String GET_WHERE_CLAUSE_FOR_SEARCHING_QUALIFICATION_ALIAS
             (QualificationAliasSearchRequestDTO searchRequestDTO) {
 
-        String whereClause = " WHERE ";
+        String whereClause = " WHERE qa.status!='D'";
 
         if (!Objects.isNull(searchRequestDTO.getQualificationAliasId()))
-            whereClause += " qa.id = " + searchRequestDTO.getQualificationAliasId();
+            whereClause += " AND qa.id = " + searchRequestDTO.getQualificationAliasId();
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
             whereClause += " AND qa.status = '" + searchRequestDTO.getStatus() + "'";
 
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
-            whereClause += " AND qa.status = '" + searchRequestDTO.getStatus()+"'";
+            whereClause += " AND qa.status = '" + searchRequestDTO.getStatus() + "'";
 
         return whereClause;
     }

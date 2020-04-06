@@ -24,4 +24,15 @@ public class AdminLog {
 
     public static final String VERIFY_CONFIRMATION_TOKEN_PROCESS_STARTED = ":::: VERIFICATION OF CONFIRMATION TOKEN PROCESS STARTED ::::";
     public static final String VERIFY_CONFIRMATION_TOKEN_PROCESS_COMPLETED = "::::VERIFICATION OF CONFIRMATION TOKEN PROCESS COMPLETED IN :::: {} ms";
+
+
+    public final static String INVALID_CONFIRMATION_TOKEN_ERROR = ":::: INVALID CONFIRMATION TOKEN: {} ::::";
+
+    public final static String ADMIN_NOT_ACTIVE_ERROR=":::: ADMIN WITH USERNAME/EMAIL : {} NOT ACTIVE ::::";
+
+    public final static String ADMIN_NOT_FOUND_ERROR=":::: ADMIN WITH USERNAME/EMAIL : {} NOT FOUND ::::";
+
+    public final static String CONFORMATION_TOKEN_NOT_FOUND=":::: CONFORMATION TOKEN : {} NOT FOUND  ::::";
+
+
 }

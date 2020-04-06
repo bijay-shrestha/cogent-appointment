@@ -512,9 +512,10 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
     private void validateIsFirstDateGreater(Date fromDate, Date toDate) {
         boolean fromDateGreaterThanToDate = isFirstDateGreater(fromDate, toDate);
 
-        if (fromDateGreaterThanToDate)
+        if (fromDateGreaterThanToDate) {
             log.error(INVALID_DATE_DEBUG_MESSAGE);
             throw new BadRequestException(INVALID_DATE_MESSAGE, INVALID_DATE_DEBUG_MESSAGE);
+        }
     }
 
     private Hospital findHospitalById(Long hospitalId) {

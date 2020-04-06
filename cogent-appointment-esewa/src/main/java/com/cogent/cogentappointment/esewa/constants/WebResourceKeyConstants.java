@@ -59,7 +59,6 @@ public class WebResourceKeyConstants {
     //H
     public interface HospitalConstants {
         String BASE_HOSPITAL = "/hospital";
-        String HOSPITAL_WISE = "/hospital-wise";
         String HOSPITAL_ID_PATH_VARIABLE_BASE = "/{hospitalId}";
     }
 
@@ -73,11 +72,9 @@ public class WebResourceKeyConstants {
     //K
 
     //L
-    public static final String LOGIN = "/login";
 
     //M
     public static final String MIN = "/min";
-    public static final String META_INFO = "/metaInfo";
 
     public interface MinioFileConstants {
         String BASE_FILE = "/file";
@@ -93,7 +90,7 @@ public class WebResourceKeyConstants {
     //P
     public interface PatientConstant {
         String BASE_PATIENT = "/patient";
-        String HOSPITAL_PATIENT_INFO_ID_PATH_VARIABLE_BASE = "/{hospitalPatientInfoId}";
+
     }
 
 

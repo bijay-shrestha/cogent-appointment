@@ -45,7 +45,6 @@ public class QueryConstants {
 
     //H
     public static final String  HOSPITAL_ID = "hospitalId";
-    public static final String HOSPITAL_CODE = "hospitalCode";
 
 
     //I
@@ -88,7 +87,6 @@ public class QueryConstants {
     public static final String TO_DATE = "toDate";
 
     //U
-    public static final String USERNAME = "username";
 
     //V
 

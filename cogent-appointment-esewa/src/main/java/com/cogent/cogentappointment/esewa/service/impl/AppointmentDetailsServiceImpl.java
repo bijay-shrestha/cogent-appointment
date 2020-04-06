@@ -85,13 +85,13 @@ public class AppointmentDetailsServiceImpl implements AppointmentDetailsService 
         List<AvailableDoctorWithSpecialization> availableDoctorFromDDR =
                 dutyRosterRepository.fetchAvailableDoctor(requestDTO);
 
-        List<AvailableDoctorWithSpecialization> mergedList =
-                mergeOverrideAndActualDoctorList(availableDoctorFromDDROverride, availableDoctorFromDDR);
-
-        if (ObjectUtils.isEmpty(mergedList)) {
+        if (ObjectUtils.isEmpty(availableDoctorFromDDROverride) && ObjectUtils.isEmpty(availableDoctorFromDDR)) {
             doctorNotAvailableError();
             throw DOCTORS_NOT_AVAILABLE.get();
         }
+
+        List<AvailableDoctorWithSpecialization> mergedList =
+                mergeOverrideAndActualDoctorList(availableDoctorFromDDROverride, availableDoctorFromDDR);
 
         log.info(FETCHING_PROCESS_COMPLETED, AVAILABLE_DOCTOR_LIST, getDifferenceBetweenTwoTime(startTime));
 

@@ -50,7 +50,6 @@ public class DoctorQuery {
                     " AND h.id =:hospitalId" +
                     " ORDER BY d.name";
 
-
     public static String QUERY_TO_FETCH_DOCTOR_APPOINTMENT_FOLLOW_UP_CHARGE =
             " SELECT da.appointmentFollowUpCharge" +
                     " FROM DoctorAppointmentCharge da " +

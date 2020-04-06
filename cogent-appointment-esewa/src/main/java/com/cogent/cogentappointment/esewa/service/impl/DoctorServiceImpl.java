@@ -45,7 +45,6 @@ public class DoctorServiceImpl implements DoctorService {
         return doctor;
     }
 
-
     private Function<Long, NoContentFoundException> DOCTOR_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID,DOCTOR,id);
         throw new NoContentFoundException(Doctor.class, "id", id.toString());

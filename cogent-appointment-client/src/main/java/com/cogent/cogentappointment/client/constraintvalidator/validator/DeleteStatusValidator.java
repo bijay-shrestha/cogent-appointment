@@ -13,7 +13,6 @@ import java.util.Objects;
 public class DeleteStatusValidator implements ConstraintValidator<DeleteStatus, Character> {
     @Override
     public boolean isValid(Character status, ConstraintValidatorContext context) {
-        if (Objects.isNull(status)) return false;
-        return status.equals(StatusConstants.DELETED);
+        return !Objects.isNull(status) && status.equals(StatusConstants.DELETED);
     }
 }

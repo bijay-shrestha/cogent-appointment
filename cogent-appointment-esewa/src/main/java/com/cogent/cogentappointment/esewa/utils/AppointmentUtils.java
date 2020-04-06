@@ -1,9 +1,9 @@
 package com.cogent.cogentappointment.esewa.utils;
 
-
 import com.cogent.cogentappointment.esewa.dto.request.appointment.AppointmentRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.*;
+import com.cogent.cogentappointment.esewa.exception.BadRequestException;
 import com.cogent.cogentappointment.persistence.model.*;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.AppointmentServiceMessage.INVALID_APPOINTMENT_DATE_TIME;
 import static com.cogent.cogentappointment.esewa.constants.StatusConstants.AppointmentStatusConstants.*;
 import static com.cogent.cogentappointment.esewa.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.*;
@@ -28,6 +29,20 @@ import static org.springframework.http.HttpStatus.OK;
 public class AppointmentUtils {
 
     private static final DateTimeFormatter FORMAT = DateTimeFormat.forPattern("HH:mm");
+
+    /*VALIDATE IF REQUESTED DATE AND TIME IS BEFORE CURRENT DATE AND TIME*/
+    public static void validateIfRequestIsBeforeCurrentDateTime(Date appointmentDate,
+                                                                String appointmentTime) {
+
+        Date requestDateTime = parseAppointmentTime(appointmentDate, appointmentTime);
+
+        Date currentDateTime = new Date();
+
+        boolean isRequestedBeforeCurrentDateTime = requestDateTime.before(currentDateTime);
+
+        if (isRequestedBeforeCurrentDateTime)
+            throw new BadRequestException(INVALID_APPOINTMENT_DATE_TIME);
+    }
 
     public static Appointment parseToAppointment(AppointmentRequestDTO requestDTO,
                                                  String appointmentNumber,

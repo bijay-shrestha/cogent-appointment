@@ -1,9 +1,9 @@
 package com.cogent.cogentappointment.esewa.service.impl;
 
-
 import com.cogent.cogentappointment.esewa.dto.request.appointment.*;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.cancel.AppointmentCancelRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
+import com.cogent.cogentappointment.esewa.dto.request.eSewa.AppointmentTransactionStatusRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.patient.PatientRequestByDTO;
 import com.cogent.cogentappointment.esewa.dto.request.patient.PatientRequestForDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.*;
@@ -36,14 +36,13 @@ import static com.cogent.cogentappointment.esewa.constants.StatusConstants.*;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.esewa.log.constants.AppointmentLog.*;
 import static com.cogent.cogentappointment.esewa.log.constants.AppointmentReservationLog.APPOINTMENT_RESERVATION_LOG;
-import static com.cogent.cogentappointment.esewa.log.constants.HospitalLog.HOSPITAL;
 import static com.cogent.cogentappointment.esewa.log.constants.PatientLog.PATIENT;
 import static com.cogent.cogentappointment.esewa.utils.AppointmentFollowUpLogUtils.parseToAppointmentFollowUpLog;
 import static com.cogent.cogentappointment.esewa.utils.AppointmentTransactionDetailUtils.parseToAppointmentTransactionInfo;
+import static com.cogent.cogentappointment.esewa.utils.AppointmentTransactionRequestLogUtils.parseToAppointmentTransactionStatusResponseDTO;
 import static com.cogent.cogentappointment.esewa.utils.AppointmentTransactionRequestLogUtils.updateAppointmentTransactionRequestLog;
 import static com.cogent.cogentappointment.esewa.utils.AppointmentUtils.*;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.*;
-
 
 /**
  * @author smriti on 2019-10-22
@@ -61,7 +60,13 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
 
+    private final DoctorDutyRosterRepository doctorDutyRosterRepository;
+
+    private final DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository;
+
     private final AppointmentTransactionDetailRepository appointmentTransactionDetailRepository;
+
+    private final HospitalService hospitalService;
 
     private final AppointmentRefundDetailRepository appointmentRefundDetailRepository;
 
@@ -71,6 +76,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentReservationLogRepository appointmentReservationLogRepository;
 
+    private final AppointmentFollowUpTrackerService appointmentFollowUpTrackerService;
+
     private final HospitalPatientInfoService hospitalPatientInfoService;
 
     private final PatientMetaInfoService patientMetaInfoService;
@@ -79,11 +86,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final PatientRelationInfoRepository patientRelationInfoRepository;
 
-    private final DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository;
-
-    private final DoctorDutyRosterRepository doctorDutyRosterRepository;
-
-    private final HospitalRepository hospitalRepository;
+    private final AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService;
 
     private final AppointmentTransactionRequestLogService appointmentTransactionRequestLogService;
 
@@ -94,14 +97,18 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   DoctorDutyRosterRepository doctorDutyRosterRepository,
                                   DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository,
                                   AppointmentTransactionDetailRepository appointmentTransactionDetailRepository,
+                                  HospitalService hospitalService,
                                   AppointmentRefundDetailRepository appointmentRefundDetailRepository,
                                   AppointmentRescheduleLogRepository appointmentRescheduleLogRepository,
                                   AppointmentFollowUpLogRepository appointmentFollowUpLogRepository,
                                   AppointmentReservationLogRepository appointmentReservationLogRepository,
+                                  AppointmentFollowUpTrackerService appointmentFollowUpTrackerService,
                                   HospitalPatientInfoService hospitalPatientInfoService,
                                   PatientMetaInfoService patientMetaInfoService,
                                   PatientRelationInfoService patientRelationInfoService,
-                                  PatientRelationInfoRepository patientRelationInfoRepository, HospitalRepository hospitalRepository, AppointmentTransactionRequestLogService appointmentTransactionRequestLogService) {
+                                  PatientRelationInfoRepository patientRelationInfoRepository,
+                                  AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService,
+                                  AppointmentTransactionRequestLogService appointmentTransactionRequestLogService) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -109,20 +116,23 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.doctorDutyRosterRepository = doctorDutyRosterRepository;
         this.doctorDutyRosterOverrideRepository = doctorDutyRosterOverrideRepository;
         this.appointmentTransactionDetailRepository = appointmentTransactionDetailRepository;
+        this.hospitalService = hospitalService;
         this.appointmentRefundDetailRepository = appointmentRefundDetailRepository;
         this.appointmentRescheduleLogRepository = appointmentRescheduleLogRepository;
         this.appointmentFollowUpLogRepository = appointmentFollowUpLogRepository;
         this.appointmentReservationLogRepository = appointmentReservationLogRepository;
+        this.appointmentFollowUpTrackerService = appointmentFollowUpTrackerService;
         this.hospitalPatientInfoService = hospitalPatientInfoService;
         this.patientMetaInfoService = patientMetaInfoService;
         this.patientRelationInfoService = patientRelationInfoService;
         this.patientRelationInfoRepository = patientRelationInfoRepository;
-        this.hospitalRepository = hospitalRepository;
+        this.appointmentFollowUpRequestLogService = appointmentFollowUpRequestLogService;
         this.appointmentTransactionRequestLogService = appointmentTransactionRequestLogService;
     }
 
     @Override
-    public AppointmentCheckAvailabilityResponseDTO checkAvailability(AppointmentCheckAvailabilityRequestDTO requestDTO) {
+    public AppointmentCheckAvailabilityResponseDTO checkAvailability(
+            AppointmentCheckAvailabilityRequestDTO requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -139,6 +149,35 @@ public class AppointmentServiceImpl implements AppointmentService {
         return responseDTO;
     }
 
+    /*1.SAVE IN AppointmentTransactionRequestLog WHERE TRANSACTION STATUS = 'N'.
+    * SAVED INITIALLY SUCH THAT IF ANY TIMEOUT OR SERVER ISSUES OCCUR,
+    * THEN WHOLE APPOINTMENT CAN BE TRACED BY ITS STATUS.
+    *
+    * 2. VALIDATE IF AppointmentReservationLog(TEMPORARILY RESERVED TIME SLOT) EXISTS.
+    * SINCE AFTER SOME TIME, THE ROW IS RIGHT AWAY DELETED FROM THE TABLE.
+    * HENCE THE SELECTED TIME SLOT IS EXPIRED AND IS NO LONGER AVAILABLE FOR APPOINTMENT.
+    *
+    * 3. VALIDATE REQUEST INFO :
+    *   A. VALIDATE IF REQUESTED DATE AND TIME IS BEFORE CURRENT DATE AND TIME.
+    *   B. VALIDATE IF ANY OTHER APPOINTMENT EXISTS ON THE SAME CRITERIA
+    *   C. VALIDATE IF ANY APPOINTMENT RESERVATION EXISTS
+    *   D. VALIDATE IF REQUESTED APPOINTMENT TIME LIES BETWEEN DOCTOR DUTY ROSTER TIME SCHEDULES
+    *
+    * 4. SAVE Patient, PatientMetaInfo, HospitalPatientInfo
+    *
+    * 5. GENERATE UNIQUE APPOINTMENT NUMBER WHICH STARTS WITH '0001' AND INCREMENTS BY 1 TILL IT REACHES FISCAL YEAR.
+    *    IT STARTS WITH '0001' IN NEXT FISCAL YEAR. GENERATE ON THE BASIS OF LATEST APPOINTMENT NUMBER & FISCAL YEAR.
+    *
+    * 6. SAVE APPOINTMENT
+    *
+    * 7. SAVE APPOINTMENT TRANSACTION DETAILS
+    *
+    * 8. IF isFollowUp = 'Y', SAVE APPOINTMENT FOLLOW UP TABLES
+    *
+    * 9. UPDATE TRANSACTION STATUS IN AppointmentTransactionRequestLog AS 'Y'
+    * AND RETURN THE FINAL RESPONSE.
+    *
+    * */
     @Override
     public AppointmentSuccessResponseDTO saveAppointmentForSelf(AppointmentRequestDTOForSelf requestDTO) {
 
@@ -147,7 +186,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         log.info(SAVING_PROCESS_STARTED, APPOINTMENT);
 
         AppointmentRequestDTO appointmentInfo = requestDTO.getAppointmentInfo();
-
 
         AppointmentTransactionRequestLog transactionRequestLog =
                 appointmentTransactionRequestLogService.save(
@@ -189,7 +227,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         saveAppointmentTransactionDetail(requestDTO.getTransactionInfo(), appointment);
 
         if (appointmentInfo.getIsFollowUp().equals(YES))
-            saveAppointmentFollowUpLog(appointmentInfo.getParentAppointmentId(), appointment.getId());
+            saveAppointmentFollowUpDetails(appointmentInfo.getParentAppointmentId(), appointment.getId());
 
         updateAppointmentTransactionRequestLog(transactionRequestLog);
 
@@ -251,7 +289,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         saveAppointmentTransactionDetail(requestDTO.getTransactionInfo(), appointment);
 
         if (appointmentInfo.getIsFollowUp().equals(YES))
-            saveAppointmentFollowUpLog(appointmentInfo.getParentAppointmentId(), appointment.getId());
+            saveAppointmentFollowUpDetails(appointmentInfo.getParentAppointmentId(), appointment.getId());
 
         updateAppointmentTransactionRequestLog(transactionRequestLog);
 
@@ -359,13 +397,26 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         log.info(DELETING_PROCESS_STARTED, APPOINTMENT_RESERVATION_LOG);
 
-        AppointmentReservationLog appointmentReservationLog = fetchAppointmentReservationLogById(appointmentReservationId);
+        AppointmentReservationLog appointmentReservationLog =
+                fetchAppointmentReservationLogById(appointmentReservationId);
 
-        appointmentReservationLogRepository.delete(appointmentReservationLog);
+        if (!Objects.isNull(appointmentReservationLog))
+            appointmentReservationLogRepository.delete(appointmentReservationLog);
 
         log.info(DELETING_PROCESS_COMPLETED, APPOINTMENT_RESERVATION_LOG, getDifferenceBetweenTwoTime(startTime));
 
         return parseToStatusResponseDTO();
+    }
+
+    @Override
+    public AppointmentTransactionStatusResponseDTO fetchAppointmentTransactionStatus
+            (AppointmentTransactionStatusRequestDTO requestDTO) {
+
+        Character appointmentTransactionRequestLogStatus =
+                appointmentTransactionRequestLogService.fetchAppointmentTransactionStatus
+                        (requestDTO.getTransactionNumber(), requestDTO.getPatientName());
+
+        return parseToAppointmentTransactionStatusResponseDTO(appointmentTransactionRequestLogStatus);
     }
 
 
@@ -426,7 +477,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     private void validateAppointmentExists(Long appointmentCount, String appointmentTime) {
-        if (appointmentCount.intValue() > 0) {
+        if (appointmentCount.intValue() > 0){
             log.error(APPOINTMENT_EXISTS, convert24HourTo12HourFormat(appointmentTime));
             throw new DataDuplicationException(String.format(APPOINTMENT_EXISTS,
                     convert24HourTo12HourFormat(appointmentTime)));
@@ -543,7 +594,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     private Hospital fetchHospital(Long hospitalId) {
-        return fetchActiveHospital(hospitalId);
+        return hospitalService.fetchActiveHospital(hospitalId);
     }
 
     private void saveAppointmentTransactionDetail(AppointmentTransactionRequestDTO requestDTO,
@@ -564,6 +615,14 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointmentRescheduleLogRepository.save(appointmentRescheduleLog);
     }
 
+    private void saveAppointmentFollowUpDetails(Long parentAppointmentId, Long followUpAppointmentId) {
+
+        saveAppointmentFollowUpLog(parentAppointmentId, followUpAppointmentId);
+
+        updateAppointmentFollowUpRequestLog(parentAppointmentId);
+    }
+
+    /*RELATION BETWEEN APPOINTMENT AND ITS CONSECUTIVE APPOINTMENT LOG*/
     private void saveAppointmentFollowUpLog(Long parentAppointmentId, Long followUpAppointmentId) {
 
         appointmentFollowUpLogRepository.save(
@@ -571,9 +630,13 @@ public class AppointmentServiceImpl implements AppointmentService {
         );
     }
 
+    /*INCREMENT APPOINTMENT FOLLOW UP REQUEST COUNT BY 1*/
+    private void updateAppointmentFollowUpRequestLog(Long parentAppointmentId) {
 
-    private void registerPatient(Long patientId, Long hospitalId) {
-        patientService.registerPatient(patientId, hospitalId);
+        Long appointmentFollowUpTrackerId =
+                appointmentFollowUpTrackerService.fetchByParentAppointmentId(parentAppointmentId);
+
+        appointmentFollowUpRequestLogService.update(appointmentFollowUpTrackerId);
     }
 
     private void validatePatientDuplicity(Patient parentPatient,
@@ -611,8 +674,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         DoctorDutyRosterTimeResponseDTO doctorDutyRosterInfo = fetchDoctorDutyRosterInfo(appointmentInfo);
 
-        validateIfRequestedAppointmentTimeIsValid(doctorDutyRosterInfo, appointmentInfo);
-
         boolean isTimeValid = validateIfRequestedAppointmentTimeIsValid(doctorDutyRosterInfo, appointmentInfo);
 
         if (!isTimeValid){
@@ -622,23 +683,17 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
     }
 
-    /*VALIDATE IS REQUESTED DATE AND TIME IS AFTER CURRENT DATE AND TIME*/
-    private void validateIfRequestIsBeforeCurrentDateTime(Date appointmentDate,
-                                                          String appointmentTime) {
+    private void validateAppointmentReservationIsActive(Long appointmentReservationId) {
+        AppointmentReservationLog appointmentReservationLog =
+                fetchAppointmentReservationLogById(appointmentReservationId);
 
-        Date requestDateTime = parseAppointmentTime(appointmentDate, appointmentTime);
-
-        Date currentDateTime = new Date();
-
-        boolean isRequestedBeforeCurrentDateTime = requestDateTime.before(currentDateTime);
-
-        if (isRequestedBeforeCurrentDateTime) {
-            log.error(INVALID_APPOINTMENT_DATE_TIME);
-            throw new BadRequestException(INVALID_APPOINTMENT_DATE_TIME);
+        if (Objects.isNull(appointmentReservationLog)) {
+            log.error(APPOINTMENT_FAILED_DEBUG_MESSAGE);
+            throw new BadRequestException(APPOINTMENT_FAILED_MESSAGE, APPOINTMENT_FAILED_DEBUG_MESSAGE);
         }
     }
 
-    /*VALIDATE IF APPOINTMENT EXISTS ON SELECTED DATE AND TIME */
+    /*VALIDATE IF APPOINTMENT ALREADY EXISTS ON SELECTED DATE AND TIME */
     private void validateIfParentAppointmentExists(AppointmentRequestDTO appointmentInfo) {
 
         Long appointmentCount = appointmentRepository.validateIfAppointmentExists(
@@ -654,11 +709,12 @@ public class AppointmentServiceImpl implements AppointmentService {
     /*VALIDATE IF APPOINTMENT RESERVATION EXISTS ON SELECTED DATE AND TIME */
     private void validateIfAppointmentReservationExists(AppointmentRequestDTO appointmentInfo) {
 
-        Long appointmentCount = appointmentReservationLogRepository.validateIfAppointmentReservationExists(
+        Long appointmentCount = appointmentReservationLogRepository.validateDuplicityExceptCurrentReservationId(
                 appointmentInfo.getAppointmentDate(),
                 appointmentInfo.getAppointmentTime(),
                 appointmentInfo.getDoctorId(),
-                appointmentInfo.getSpecializationId()
+                appointmentInfo.getSpecializationId(),
+                appointmentInfo.getAppointmentReservationId()
         );
 
         validateAppointmentExists(appointmentCount, appointmentInfo.getAppointmentTime());
@@ -679,6 +735,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             throw new NoContentFoundException(
                     String.format(DOCTOR_NOT_AVAILABLE, utilDateToSqlDate(appointmentInfo.getAppointmentDate())));
         }
+
         return doctorDutyRosterInfo;
     }
 
@@ -709,35 +766,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         return false;
     }
-
-    public Hospital fetchActiveHospital(Long id) {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(FETCHING_PROCESS_STARTED, HOSPITAL);
-
-        Hospital hospital = hospitalRepository.findActiveHospitalById(id)
-                .orElseThrow(() -> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND.apply(id));
-
-        log.info(FETCHING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
-
-        return hospital;
-    }
-
-
-    private void validateAppointmentReservationIsActive(Long appointmentReservationId) {
-        AppointmentReservationLog appointmentReservationLog =
-                fetchAppointmentReservationLogById(appointmentReservationId);
-
-        if (Objects.isNull(appointmentReservationLog)) {
-            log.error(APPOINTMENT_FAILED_DEBUG_MESSAGE);
-            throw new BadRequestException(APPOINTMENT_FAILED_MESSAGE, APPOINTMENT_FAILED_DEBUG_MESSAGE);
-        }
-    }
-
-    private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        log.error(CONTENT_NOT_FOUND_BY_ID,HOSPITAL,id);
-        throw new NoContentFoundException(Hospital.class, "id", id.toString());
-    };
 
     private AppointmentReservationLog fetchAppointmentReservationLogById(Long appointmentReservationId) {
         return appointmentReservationLogRepository.findAppointmentReservationLogById(appointmentReservationId);

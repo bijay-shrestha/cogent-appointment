@@ -35,6 +35,20 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     @Override
+    public Hospital fetchActiveHospital(Long id) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, HOSPITAL);
+
+        Hospital hospital = hospitalRepository.findActiveHospitalById(id)
+                .orElseThrow(() -> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND.apply(id));
+
+        log.info(FETCHING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
+
+        return hospital;
+    }
+
+    @Override
     public HospitalMinResponseDTOWithStatus fetchMinDetails(HospitalMinSearchRequestDTO searchRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
@@ -47,4 +61,9 @@ public class HospitalServiceImpl implements HospitalService {
 
         return parseToHospitalMinResponseDTOWithStatus(responseDTO);
     }
+
+    private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, HOSPITAL, id);
+        throw new NoContentFoundException(Hospital.class, "id", id.toString());
+    };
 }

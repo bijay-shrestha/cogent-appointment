@@ -12,4 +12,6 @@ public interface AppointmentFollowUpTrackerService {
     AppointmentFollowUpResponseDTOWithStatus fetchAppointmentFollowUpDetails(AppointmentFollowUpRequestDTO requestDTO);
 
     void updateFollowUpTrackerStatus();
+
+    Long fetchByParentAppointmentId(Long parentAppointmentId);
 }

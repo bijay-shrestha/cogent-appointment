@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.esewa.repository.custom.impl;
 
 
 import com.cogent.cogentappointment.esewa.dto.request.hospital.HospitalMinSearchRequestDTO;
+import com.cogent.cogentappointment.esewa.dto.response.hospital.HospitalFollowUpResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.hospital.HospitalMinResponseDTO;
 import com.cogent.cogentappointment.esewa.exception.NoContentFoundException;
 import com.cogent.cogentappointment.esewa.repository.custom.HospitalRepositoryCustom;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
@@ -19,11 +21,8 @@ import java.util.function.Supplier;
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.HOSPITAL_ID;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.esewa.log.constants.HospitalLog.HOSPITAL;
-import static com.cogent.cogentappointment.esewa.query.HospitalQuery.QUERY_TO_FETCH_HOSPITAL_FOLLOW_UP_INTERVAL_DAYS;
-import static com.cogent.cogentappointment.esewa.query.HospitalQuery.QUERY_TO_FETCH_HOSPITAL_FREE_FOLLOW_UP_INTERVAL_DAYS;
-import static com.cogent.cogentappointment.esewa.query.HospitalQuery.QUERY_TO_FETCH_MIN_HOSPITAL;
+import static com.cogent.cogentappointment.esewa.query.HospitalQuery.*;
 import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.*;
-import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.transformNativeQueryToResultList;
 
 /**
  * @author sauravi ON 02/04/2020
@@ -43,8 +42,10 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
         List<HospitalMinResponseDTO> results = transformNativeQueryToResultList(query, HospitalMinResponseDTO.class);
 
-        if (results.isEmpty()) throw HOSPITAL_NOT_FOUND();
-        else return results;
+        if (results.isEmpty()) {
+            log.error(CONTENT_NOT_FOUND, HOSPITAL);
+            throw HOSPITAL_NOT_FOUND.get();
+        } else return results;
     }
 
     @Override
@@ -63,10 +64,20 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
         return (Integer) query.getSingleResult();
     }
 
-    private NoContentFoundException HOSPITAL_NOT_FOUND () {
-        log.error(CONTENT_NOT_FOUND,HOSPITAL);
-        throw new NoContentFoundException(Hospital.class);
+    @Override
+    public HospitalFollowUpResponseDTO fetchFollowUpDetails(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_FOLLOW_UP_DETAILS)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        try {
+            return transformQueryToSingleResult(query, HospitalFollowUpResponseDTO.class);
+        } catch (NoResultException e) {
+            log.error(CONTENT_NOT_FOUND, HOSPITAL);
+            throw HOSPITAL_NOT_FOUND.get();
+        }
     }
+
+    private Supplier<NoContentFoundException> HOSPITAL_NOT_FOUND = () -> new NoContentFoundException(Hospital.class);
 }
 
 

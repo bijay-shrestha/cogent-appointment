@@ -1,13 +1,11 @@
 package com.cogent.cogentappointment.esewa.repository.custom.impl;
 
-import com.cogent.cogentappointment.esewa.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.doctorDutyRoster.DoctorDutyRosterOverrideUpdateRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.eSewa.AppointmentDetailRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.appoinmentDateAndTime.DoctorDutyRosterOverrideAppointmentDate;
 import com.cogent.cogentappointment.esewa.dto.response.appointmentDetails.AvailableDoctorWithSpecialization;
 import com.cogent.cogentappointment.esewa.dto.response.appointmentDetails.DoctorAvailabilityStatusResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointmentDetails.DutyRosterOverrideAppointmentDate;
-import com.cogent.cogentappointment.esewa.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import com.cogent.cogentappointment.esewa.exception.NoContentFoundException;
 import com.cogent.cogentappointment.esewa.repository.custom.DoctorDutyRosterOverrideRepositoryCustom;
@@ -28,11 +26,8 @@ import static com.cogent.cogentappointment.esewa.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.esewa.log.constants.DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER_OVERRIDE;
 import static com.cogent.cogentappointment.esewa.query.DoctorDutyRosterOverrideQuery.*;
-import static com.cogent.cogentappointment.esewa.query.DoctorDutyRosterOverrideQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_STATUS;
 import static com.cogent.cogentappointment.esewa.query.EsewaQuery.*;
-import static com.cogent.cogentappointment.esewa.query.EsewaQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_STATUS;
 import static com.cogent.cogentappointment.esewa.utils.AppointmentDetailsUtils.parseToDoctorAvailabilityStatusResponseDTO;
-import static com.cogent.cogentappointment.esewa.utils.DoctorDutyRosterOverrideUtils.parseQueryResultToDoctorDutyRosterStatusResponseDTO;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.transformQueryToResultList;
@@ -101,28 +96,6 @@ public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyR
             throw DOCTOR_DUTY_ROSTER_OVERRIDE_NOT_FOUND();
 
         return doctorDutyRosterOverrides;
-    }
-
-    @Override
-    public List<DoctorDutyRosterStatusResponseDTO> fetchDoctorDutyRosterOverrideStatus(
-            AppointmentStatusRequestDTO requestDTO,
-            Long hospitalId) {
-
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_STATUS(requestDTO))
-                .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
-                .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()))
-                .setParameter(HOSPITAL_ID, hospitalId);
-
-        if (!Objects.isNull(requestDTO.getDoctorId()))
-            query.setParameter(DOCTOR_ID, requestDTO.getDoctorId());
-
-        if (!Objects.isNull(requestDTO.getSpecializationId()))
-            query.setParameter(SPECIALIZATION_ID, requestDTO.getSpecializationId());
-
-        List<Object[]> results = query.getResultList();
-
-        return parseQueryResultToDoctorDutyRosterStatusResponseDTO(
-                results, requestDTO.getFromDate(), requestDTO.getToDate());
     }
 
     @Override

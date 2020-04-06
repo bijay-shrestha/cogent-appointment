@@ -13,10 +13,10 @@ import java.util.List;
 @Qualifier("appointmentFollowUpTrackerRepositoryCustom")
 public interface AppointmentFollowUpTrackerRepositoryCustom {
 
-    List<Object[]> fetchFollowUpDetails(Long patientId,
-                                        Long doctorId,
-                                        Long specializationId,
-                                        Long hospitalId);
+    AppointmentFollowUpTracker fetchAppointmentFollowUpTracker(Long patientId,
+                                                               Long doctorId,
+                                                               Long specializationId,
+                                                               Long hospitalId);
 
     AppointmentFollowUpTracker fetchLatestAppointmentFollowUpTracker(Long parentAppointmentId);
 }

@@ -10,16 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import java.util.List;
 
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.AppointmentFollowUpTrackerConstants.PARENT_APPOINTMENT_ID;
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.esewa.log.constants.AppointmentFollowUpTrackerLog.APPOINTMENT_FOLLOW_UP_TRACKER;
-import static com.cogent.cogentappointment.esewa.query.AppointmentFollowUpTrackerQuery.QUERY_TO_FETCH_FOLLOW_UP_DETAILS;
+import static com.cogent.cogentappointment.esewa.query.AppointmentFollowUpTrackerQuery.QUERY_TO_FETCH_APPOINTMENT_FOLLOW_UP_TRACKER;
 import static com.cogent.cogentappointment.esewa.query.AppointmentFollowUpTrackerQuery.QUERY_TO_FETCH_LATEST_APPOINTMENT_FOLLOW_UP_TRACKER;
-import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.createQuery;
 
 /**
  * @author smriti on 18/11/2019
@@ -32,19 +29,24 @@ public class AppointmentFollowUpTrackerRepositoryCustomImpl implements Appointme
     @PersistenceContext
     private EntityManager entityManager;
 
+
     @Override
-    public List<Object[]> fetchFollowUpDetails(Long patientId,
-                                               Long doctorId,
-                                               Long specializationId,
-                                               Long hospitalId) {
+    public AppointmentFollowUpTracker fetchAppointmentFollowUpTracker(Long patientId,
+                                                                      Long doctorId,
+                                                                      Long specializationId,
+                                                                      Long hospitalId) {
+        try {
+            return entityManager.createQuery(
+                    QUERY_TO_FETCH_APPOINTMENT_FOLLOW_UP_TRACKER, AppointmentFollowUpTracker.class)
+                    .setParameter(PATIENT_ID, patientId)
+                    .setParameter(DOCTOR_ID, doctorId)
+                    .setParameter(SPECIALIZATION_ID, specializationId)
+                    .setParameter(HOSPITAL_ID, hospitalId)
+                    .getSingleResult();
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_FOLLOW_UP_DETAILS)
-                .setParameter(PATIENT_ID, patientId)
-                .setParameter(DOCTOR_ID, doctorId)
-                .setParameter(SPECIALIZATION_ID, specializationId)
-                .setParameter(HOSPITAL_ID, hospitalId);
-
-        return query.getResultList();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     @Override

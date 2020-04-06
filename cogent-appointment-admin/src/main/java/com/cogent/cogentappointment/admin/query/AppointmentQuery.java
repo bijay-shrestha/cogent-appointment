@@ -179,7 +179,6 @@ public class AppointmentQuery {
                             " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id"
                             + GET_WHERE_CLAUSE_TO_SEARCH_PENDING_APPOINTMENT_DETAILS(searchRequestDTO);
 
-
     private static String GET_WHERE_CLAUSE_TO_SEARCH_PENDING_APPOINTMENT_DETAILS(
             AppointmentPendingApprovalSearchDTO pendingApprovalSearchDTO) {
 
@@ -238,7 +237,8 @@ public class AppointmentQuery {
                             " atd.appointmentAmount as appointmentAmount," +                //[13]
                             " d.name as doctorName," +                                     //[14]
                             " a.status as status," +                                       //[15]
-                            " hpi.address as patientAddress" +                             //[16]
+                            " ard.refundAmount as refundAmount," +                         //[16]
+                            " hpi.address as patientAddress" +                             //[17]
                             " FROM Appointment a" +
                             " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                             " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
@@ -246,7 +246,8 @@ public class AppointmentQuery {
                             " LEFT JOIN Specialization sp ON a.specializationId=sp.id" +
                             " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
                             " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id" +
-                            " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id"
+                            " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
+                            " LEFT JOIN AppointmentRefundDetail ard ON a.id=ard.appointmentId"
                             + GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_LOG_DETAILS(appointmentLogSearchDTO);
 
 
@@ -418,9 +419,8 @@ public class AppointmentQuery {
                     " atd.transactionNumber as transactionNumber," +                            //[12]
                     " COALESCE(atd.appointmentAmount,0) as appointmentAmount," +                //[13]
                     " d.name as doctorName," +                                                  //[14]
-                    " COALESCE(ard.refundAmount,0) as refundAmount," +                          //[15]
-                    " a.isSelf as isSelf," +                                                      //[16]
-                    " h.name as hospitalName" +                                                   //[17]
+                    " a.isSelf as isSelf," +                                                      //[15]
+                    " h.name as hospitalName" +                                                   //[16]
                     " FROM Appointment a" +
                     " LEFT JOIN Patient p ON a.patientId=p.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
@@ -429,7 +429,6 @@ public class AppointmentQuery {
                     " LEFT JOIN Hospital h ON a.hospitalId=h.id" +
                     " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
-                    " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='PA'" +
                     " WHERE " +
                     " sp.status='Y' " +
                     " AND a.status='PA'" +

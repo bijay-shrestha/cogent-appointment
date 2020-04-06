@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.admin.utils;
 
 import com.cogent.cogentappointment.admin.dto.commons.AdminLogRequestDTO;
 import com.cogent.cogentappointment.admin.utils.commons.DateUtils;
+import com.cogent.cogentappointment.persistence.model.Admin;
 import com.cogent.cogentappointment.persistence.model.AdminLog;
 
 import java.util.Date;
@@ -11,10 +12,10 @@ import java.util.Date;
  */
 public class AdminLogUtils {
 
-    public static AdminLog parseToAdminLog(AdminLogRequestDTO requestDTO,String ipAddress) {
+    public static AdminLog parseToAdminLog(AdminLogRequestDTO requestDTO, Admin admin, String ipAddress) {
 
         AdminLog adminLog=new AdminLog();
-        adminLog.setAdminId(requestDTO.getAdminId());
+        adminLog.setAdminId(admin);
         adminLog.setParentId(requestDTO.getParentId());
         adminLog.setRoleId(requestDTO.getRoleId());
         adminLog.setIpAddress(ipAddress);

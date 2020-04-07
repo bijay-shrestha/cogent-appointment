@@ -15,6 +15,7 @@ import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPe
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.AppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
@@ -114,6 +115,17 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
+    public AppointmentRefundDetailResponseDTO fetchRefundDetailsById(Long appointmentId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_REFUNDED_DETAIL_BY_ID)
+                .setParameter(APPOINTMENT_ID, appointmentId);
+        try {
+            return transformQueryToSingleResult(query, AppointmentRefundDetailResponseDTO.class);
+        } catch (NoResultException e) {
+            throw APPOINTMENT_DETAILS_NOT_FOUND.apply(appointmentId);
+        }
+    }
+
+    @Override
     public List<AppointmentStatusResponseDTO> fetchAppointmentForAppointmentStatus(AppointmentStatusRequestDTO requestDTO) {
 
         Query query = createNativeQuery.apply(entityManager,
@@ -205,15 +217,11 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     private Query getQueryToFetchRefundAppointments(AppointmentRefundSearchDTO searchDTO) {
-        return createQuery.apply(entityManager, QUERY_TO_FETCH_REFUND_APPOINTMENTS(searchDTO))
-                .setParameter(FROM_DATE, utilDateToSqlDate(searchDTO.getFromDate()))
-                .setParameter(TO_DATE, utilDateToSqlDate(searchDTO.getToDate()));
+        return createQuery.apply(entityManager, QUERY_TO_FETCH_REFUND_APPOINTMENTS(searchDTO));
     }
 
     private Double calculateTotalRefundAmount(AppointmentRefundSearchDTO searchDTO) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TOTAL_REFUND_AMOUNT(searchDTO))
-                .setParameter(FROM_DATE, utilDateToSqlDate(searchDTO.getFromDate()))
-                .setParameter(TO_DATE, utilDateToSqlDate(searchDTO.getToDate()));
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TOTAL_REFUND_AMOUNT(searchDTO));
 
         return (Double) query.getSingleResult();
     }

@@ -22,8 +22,6 @@ public class AppointmentRefundDTO implements Serializable {
 
     private String appointmentNumber;
 
-    private String hospitalName;
-
     private String patientName;
 
     private String registrationNumber;
@@ -43,8 +41,6 @@ public class AppointmentRefundDTO implements Serializable {
     private Date cancelledDate;
 
     private Double refundAmount;
-
-    private String cancellationRemarks;
 
     private String mobileNumber;
 }

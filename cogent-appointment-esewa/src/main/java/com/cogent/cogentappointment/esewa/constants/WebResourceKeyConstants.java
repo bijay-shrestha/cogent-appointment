@@ -20,6 +20,7 @@ public class WebResourceKeyConstants {
         String RESCHEDULE = "/reschedule";
         String FOLLOW_UP = "/follow-up";
         String HISTORY = "/history";
+        String TRANSACTION_STATUS = "/transaction-status";
     }
 
     //B

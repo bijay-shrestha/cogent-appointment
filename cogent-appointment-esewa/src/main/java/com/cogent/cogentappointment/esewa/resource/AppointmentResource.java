@@ -6,6 +6,7 @@ import com.cogent.cogentappointment.esewa.dto.request.appointment.AppointmentReq
 import com.cogent.cogentappointment.esewa.dto.request.appointment.AppointmentSearchDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.cancel.AppointmentCancelRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
+import com.cogent.cogentappointment.esewa.dto.request.eSewa.AppointmentTransactionStatusRequestDTO;
 import com.cogent.cogentappointment.esewa.service.AppointmentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -89,5 +90,13 @@ public class AppointmentResource {
     public ResponseEntity<?> cancelRegistration(@PathVariable("appointmentReservationId") Long appointmentReservationId) {
         return ok(appointmentService.cancelRegistration(appointmentReservationId));
     }
+
+    @PutMapping(TRANSACTION_STATUS)
+    @ApiOperation(FETCH_APPOINTMENT_TRANSACTION_STATUS)
+    public ResponseEntity<?> fetchAppointmentTransactionStatus(
+            @Valid @RequestBody AppointmentTransactionStatusRequestDTO requestDTO) {
+        return ok(appointmentService.fetchAppointmentTransactionStatus(requestDTO));
+    }
+
 
 }

@@ -1,7 +1,5 @@
 package com.cogent.cogentappointment.esewa.query;
 
-import com.cogent.cogentappointment.esewa.dto.request.doctorDutyRoster.DoctorDutyRosterSearchRequestDTO;
-
 import java.util.Objects;
 
 /**

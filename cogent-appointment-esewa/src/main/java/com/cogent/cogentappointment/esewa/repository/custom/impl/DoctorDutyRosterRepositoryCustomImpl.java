@@ -8,7 +8,7 @@ import com.cogent.cogentappointment.esewa.dto.response.appointmentDetails.Availa
 import com.cogent.cogentappointment.esewa.dto.response.appointmentDetails.DoctorAvailabilityStatusResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointmentDetails.DutyRosterAppointmentDateAndDoctorDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointmentDetails.DutyRosterAppointmentDateAndSpecilizationDTO;
-import com.cogent.cogentappointment.esewa.dto.response.doctorDutyRoster.*;
+import com.cogent.cogentappointment.esewa.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import com.cogent.cogentappointment.esewa.exception.NoContentFoundException;
 import com.cogent.cogentappointment.esewa.repository.custom.DoctorDutyRosterRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRoster;
@@ -23,16 +23,12 @@ import javax.persistence.Query;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.CONTENT_NOT_FOUND;
-import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.esewa.log.constants.DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER;
-import static com.cogent.cogentappointment.esewa.query.DoctorDutyRosterOverrideQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_DETAILS;
-import static com.cogent.cogentappointment.esewa.query.DoctorDutyRosterQuery.*;
+import static com.cogent.cogentappointment.esewa.query.DoctorDutyRosterQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_TIME;
 import static com.cogent.cogentappointment.esewa.query.EsewaQuery.*;
-import static com.cogent.cogentappointment.esewa.query.EsewaQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_STATUS;
 import static com.cogent.cogentappointment.esewa.utils.AppointmentDetailsUtils.parseDoctorAvailabilityResponseStatus;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.getDayCodeFromDate;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.utilDateToSqlDate;
@@ -66,8 +62,6 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
             throw DOCTOR_DUTY_ROSTER_NOT_FOUND();
         }
     }
-
-
 
     @Override
     public List<DoctorDutyRosterAppointmentDate> getDutyRosterByDoctorAndSpecializationId
@@ -156,52 +150,8 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
         return transformQueryToResultList(query, DutyRosterAppointmentDateAndDoctorDTO.class);
     }
 
-    private DoctorDutyRosterResponseDTO fetchDoctorDutyRosterDetails(Long doctorDutyRosterId, Long hospitalId) {
-
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_DETAILS)
-                .setParameter(ID, doctorDutyRosterId)
-                .setParameter(HOSPITAL_ID, hospitalId);
-        try {
-            return transformQueryToSingleResult(query, DoctorDutyRosterResponseDTO.class);
-        } catch (NoResultException e) {
-            throw DOCTOR_DUTY_ROSTER_WITH_GIVEN_ID_NOT_FOUND.apply(doctorDutyRosterId);
-        }
-    }
-
-    private List<DoctorWeekDaysDutyRosterResponseDTO> fetchDoctorWeekDaysDutyRosterResponseDTO(
-            Long doctorDutyRosterId) {
-
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_WEEK_DAYS_DUTY_ROSTER)
-                .setParameter(ID, doctorDutyRosterId);
-
-        return transformQueryToResultList(query, DoctorWeekDaysDutyRosterResponseDTO.class);
-    }
-
-    private List<DoctorDutyRosterOverrideResponseDTO> fetchDoctorDutyRosterOverrideResponseDTO(
-            Long doctorDutyRosterId) {
-
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_DETAILS)
-                .setParameter(ID, doctorDutyRosterId);
-
-        return transformQueryToResultList(query, DoctorDutyRosterOverrideResponseDTO.class);
-    }
-
-    private Function<Long, NoContentFoundException> DOCTOR_DUTY_ROSTER_WITH_GIVEN_ID_NOT_FOUND =
-            (doctorDutyRosterId) -> {
-        log.error(CONTENT_NOT_FOUND_BY_ID,DOCTOR_DUTY_ROSTER,doctorDutyRosterId);
-                throw new NoContentFoundException
-                        (DoctorDutyRoster.class, "doctorDutyRosterId", doctorDutyRosterId.toString());
-            };
-
-    private Character checkIfDoctorDutyRosterOverrideExists(Long doctorDutyRosterId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_CHECK_IF_OVERRIDE_EXISTS)
-                .setParameter(ID, doctorDutyRosterId);
-
-        return (Character) query.getSingleResult();
-    }
-
-    private NoContentFoundException DOCTOR_DUTY_ROSTER_NOT_FOUND (){
-        log.error(CONTENT_NOT_FOUND,DOCTOR_DUTY_ROSTER);
+    private NoContentFoundException DOCTOR_DUTY_ROSTER_NOT_FOUND() {
+        log.error(CONTENT_NOT_FOUND, DOCTOR_DUTY_ROSTER);
         throw new NoContentFoundException(DoctorDutyRoster.class);
     }
 

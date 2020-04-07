@@ -11,23 +11,23 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @EntityScan(basePackages =
-		{"com.cogent.cogentappointment.persistence.model",
-				"com.cogent.cogentappointment.persistence.history"})
+        {"com.cogent.cogentappointment.persistence.model",
+                "com.cogent.cogentappointment.persistence.history"})
 @EnableJpaRepositories
 public class CogentAppointmentEsewaApplication extends SpringBootServletInitializer {
 
-	@Override
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-		return application.sources(CogentAppointmentEsewaApplication.class);
-	}
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(CogentAppointmentEsewaApplication.class);
+    }
 
-	public static void main(String[] args) {
-		SpringApplication.run(CogentAppointmentEsewaApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(CogentAppointmentEsewaApplication.class, args);
+    }
 
-	@Bean
-	public BeanUtil beanUtil() {
-		return new BeanUtil();
-	}
+    @Bean
+    public BeanUtil beanUtil() {
+        return new BeanUtil();
+    }
 
 }

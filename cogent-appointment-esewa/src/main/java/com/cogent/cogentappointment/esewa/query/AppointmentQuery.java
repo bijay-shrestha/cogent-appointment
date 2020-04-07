@@ -6,7 +6,6 @@ package com.cogent.cogentappointment.esewa.query;
  */
 public class AppointmentQuery {
 
-
     public static String QUERY_TO_VALIDATE_APPOINTMENT_EXISTS =
             "SELECT COUNT(a.id)" +
                     " FROM  Appointment a" +

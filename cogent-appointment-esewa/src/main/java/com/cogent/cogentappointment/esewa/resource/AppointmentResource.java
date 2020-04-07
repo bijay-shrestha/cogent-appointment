@@ -61,7 +61,6 @@ public class AppointmentResource {
         return ok(appointmentService.fetchPendingAppointments(searchDTO));
     }
 
-
     @PutMapping(CANCEL)
     @ApiOperation(CANCEL_APPOINTMENT_OPERATION)
     public ResponseEntity<?> cancelAppointment(@Valid @RequestBody AppointmentCancelRequestDTO cancelRequestDTO) {

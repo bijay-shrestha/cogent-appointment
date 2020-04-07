@@ -27,9 +27,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NAME_AND_MOBILE_NUMBER_DUPLICATION_MESSAGE;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.NAME_AND_MOBILE_NUMBER_DUPLICATION_ERROR;
 import static com.cogent.cogentappointment.admin.log.constants.DoctorLog.*;
 import static com.cogent.cogentappointment.admin.utils.DoctorUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;

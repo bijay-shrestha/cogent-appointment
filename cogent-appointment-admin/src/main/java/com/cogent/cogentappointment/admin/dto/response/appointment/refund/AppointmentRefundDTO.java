@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.dto.response.appointment.refund;
 
+import com.cogent.cogentappointment.persistence.enums.Gender;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,6 +25,8 @@ public class AppointmentRefundDTO implements Serializable {
     private String patientName;
 
     private String registrationNumber;
+
+    private Gender gender;
 
     private String age;
 

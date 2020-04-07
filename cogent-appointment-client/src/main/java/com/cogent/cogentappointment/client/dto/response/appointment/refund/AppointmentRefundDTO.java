@@ -26,6 +26,8 @@ public class AppointmentRefundDTO implements Serializable {
 
     private String registrationNumber;
 
+    private Gender gender;
+
     private String age;
 
     private String doctorName;

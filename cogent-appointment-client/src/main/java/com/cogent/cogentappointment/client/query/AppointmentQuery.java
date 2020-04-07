@@ -229,6 +229,7 @@ public class AppointmentQuery {
                 "  s.name as specializationName," +
                 "  atd.transactionNumber as transactionNumber," +
                 "  ard.cancelledDate as cancelledDate," +
+                "  p.gender as gender," +
                 QUERY_TO_CALCULATE_PATIENT_AGE +
                 "  FROM" +
                 "  AppointmentRefundDetail ard" +

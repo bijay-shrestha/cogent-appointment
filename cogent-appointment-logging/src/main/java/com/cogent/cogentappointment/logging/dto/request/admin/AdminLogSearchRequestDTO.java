@@ -13,7 +13,9 @@ import java.util.Date;
 @Setter
 public class AdminLogSearchRequestDTO implements Serializable {
 
-    private Date date;
+    private Date fromDate;
+
+    private Date toDate;
 
     private Long hospitalId;
 

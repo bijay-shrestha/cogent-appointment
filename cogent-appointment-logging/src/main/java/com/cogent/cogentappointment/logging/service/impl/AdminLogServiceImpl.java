@@ -33,8 +33,8 @@ public class AdminLogServiceImpl implements AdminLogService {
     }
 
     @Override
-    public List<AdminLogStaticsResponseDTO> fetchUserMenuLogsStatics() {
-      List<AdminLogStaticsResponseDTO> responseDTOS=adminLogRepository.fetchUserMenuLogsStatics();
-      return responseDTOS;
+    public List<AdminLogStaticsResponseDTO> fetchUserMenuLogsStatics(AdminLogSearchRequestDTO searchRequestDTO) {
+        List<AdminLogStaticsResponseDTO> responseDTOS = adminLogRepository.fetchUserMenuLogsStatics(searchRequestDTO);
+        return responseDTOS;
     }
 }

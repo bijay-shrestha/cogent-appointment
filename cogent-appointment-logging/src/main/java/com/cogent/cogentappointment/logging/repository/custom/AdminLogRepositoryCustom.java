@@ -18,5 +18,5 @@ public interface AdminLogRepositoryCustom {
 
     AdminLogResponseDTO search(AdminLogSearchRequestDTO searchRequestDTO,Pageable pageable);
 
-    List<AdminLogStaticsResponseDTO> fetchUserMenuLogsStatics();
+    List<AdminLogStaticsResponseDTO> fetchUserMenuLogsStatics(AdminLogSearchRequestDTO searchRequestDTO);
 }

@@ -10,12 +10,17 @@ import static com.cogent.cogentappointment.logging.utils.common.DateUtils.utilDa
  */
 public class AdminLogQuery {
 
-    public static String QUERY_TO_FETCH_USER_LOGS_STATICS() {
+    public static String QUERY_TO_FETCH_USER_LOGS_STATICS(AdminLogSearchRequestDTO searchRequestDTO) {
 
         return " SELECT " +
                 " al.feature as feature," +
                 " count(al.id) as count" +
-                " from AdminLog al GROUP BY al.feature " +
+                " from AdminLog al" +
+                " LEFT JOIN Admin a ON al.adminId.id =a.id" +
+                " LEFT JOIN Profile p ON p.id=a.profileId.id" +
+                " LEFT JOIN Hospital h ON h.id=p.company" +
+                WHERE_CLAUSE_TO_SEARCH_ADMIN_LOGS(searchRequestDTO) +
+                " GROUP BY al.feature " +
                 " ORDER BY count(al.id) DESC";
 
 
@@ -23,7 +28,7 @@ public class AdminLogQuery {
 
     public static String QUERY_TO_SEARCH_ADMIN_LOGS(AdminLogSearchRequestDTO searchRequestDTO) {
 
-        return "SELECT " +
+        return " SELECT " +
                 " al.logDate as logDate," +
                 " a.username as userName," +
                 " al.ipAddress as ipAddress," +
@@ -39,7 +44,8 @@ public class AdminLogQuery {
 
     public static String WHERE_CLAUSE_TO_SEARCH_ADMIN_LOGS(AdminLogSearchRequestDTO searchRequestDTO) {
 
-        String whereClause = " WHERE al.status != 'D'";
+        String whereClause = " WHERE al.status != 'D'"+
+                " AND al.logDate BETWEEN :fromDate AND :toDate";
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getHospitalId()))
             whereClause += " AND h.id=" + searchRequestDTO.getHospitalId();
@@ -49,9 +55,6 @@ public class AdminLogQuery {
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getRoleId()))
             whereClause += " AND al.roleId=" + searchRequestDTO.getRoleId();
-
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getDate()))
-            whereClause += " AND al.logDate='" + utilDateToSqlDate(searchRequestDTO.getDate()) + "'";
 
         return whereClause;
 

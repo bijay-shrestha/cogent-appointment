@@ -37,10 +37,10 @@ public class AdminLogResource {
         return ok().body(adminLogService.search(searchRequestDTO, pageable));
     }
 
-    @GetMapping(USERMENU_LOG_STATICS)
+    @PutMapping(USERMENU_LOG_STATICS)
     @ApiOperation(USER_MENU_STATICS_OPERATION)
-    public ResponseEntity<?> fetchUserMenuLogsStatics() {
+    public ResponseEntity<?> fetchUserMenuLogsStatics(@RequestBody AdminLogSearchRequestDTO searchRequestDTO) {
 
-        return ok().body(adminLogService.fetchUserMenuLogsStatics());
+        return ok().body(adminLogService.fetchUserMenuLogsStatics(searchRequestDTO));
     }
 }

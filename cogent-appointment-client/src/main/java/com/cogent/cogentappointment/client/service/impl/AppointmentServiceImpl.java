@@ -19,6 +19,7 @@ import com.cogent.cogentappointment.client.dto.response.appointment.approval.App
 import com.cogent.cogentappointment.client.dto.response.appointment.approval.AppointmentPendingApprovalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.esewa.*;
 import com.cogent.cogentappointment.client.dto.response.appointment.log.AppointmentLogResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
@@ -539,10 +540,23 @@ public class AppointmentServiceImpl implements AppointmentService {
                                                                 Pageable pageable) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_PROCESS_STARTED, APPOINTMENT_REFUND);
+        log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_REFUND);
 
         AppointmentRefundResponseDTO refundAppointments =
                 appointmentRepository.fetchRefundAppointments(searchDTO, pageable, getLoggedInHospitalId());
+
+        log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_REFUND, getDifferenceBetweenTwoTime(startTime));
+
+        return refundAppointments;
+    }
+
+    @Override
+    public AppointmentRefundDetailResponseDTO fetchRefundDetailsById(Long appointmentId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, APPOINTMENT_REFUND);
+
+        AppointmentRefundDetailResponseDTO refundAppointments = appointmentRepository.fetchRefundDetailsById(appointmentId);
 
         log.info(FETCHING_PROCESS_COMPLETED, APPOINTMENT_REFUND, getDifferenceBetweenTwoTime(startTime));
 

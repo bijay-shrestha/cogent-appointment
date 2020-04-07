@@ -216,19 +216,15 @@ public class AppointmentQuery {
                 " a.appointmentDate as appointmentDate," +                              //[1]
                 " DATE_FORMAT(a.appointmentTime,'%h:%i %p') as appointmentTime," +      //[2]
                 " a.appointmentNumber as appointmentNumber," +                          //[3]
-                " h.name as hospitalName," +                                            //[4]
-                " p.name as patientName," +                                             //[5]
-                " hpi.registrationNumber as registrationNumber," +                        //[6]
-                " p.gender as gender," +                                                //[7]
-                " d.name as doctorName," +                                              //[8]
-                " s.name as specializationName," +                                      //[9]
-                " p.eSewaId as eSewaId," +                                              //[10]
-                " atd.transactionNumber as transactionNumber," +                        //[11]
-                " ard.cancelledDate as cancelledDate," +                                //[12]
-                " ard.refundAmount as refundAmount," +                                  //[13]
-                " a.remarks as cancellationRemarks," +                                  //[14]
-                " p.mobileNumber as mobileNumber," +                                    //[15]
-                QUERY_TO_CALCULATE_PATIENT_AGE +                                        //[16]
+                " p.name as patientName," +                                             //[4]
+                " hpi.registrationNumber as registrationNumber," +                        //[5]
+                " d.name as doctorName," +                                              //[6]
+                " s.name as specializationName," +                                      //[7]
+                " p.eSewaId as eSewaId," +                                              //[8]
+                " atd.transactionNumber as transactionNumber," +                        //[9]
+                " ard.cancelledDate as cancelledDate," +                                //[10]
+                " p.mobileNumber as mobileNumber," +                                    //[11]
+                QUERY_TO_CALCULATE_PATIENT_AGE +                                        //[12]
                 " FROM Appointment a" +
                 " LEFT JOIN Patient p ON p.id = a.patientId.id" +
                 " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
@@ -243,8 +239,12 @@ public class AppointmentQuery {
 
     private static String GET_WHERE_CLAUSE_TO_FETCH_REFUND_APPOINTMENTS(AppointmentRefundSearchDTO searchDTO) {
         String whereClause = " WHERE ard.status = 'PA'" +
-                " AND a.appointmentDate BETWEEN :fromDate AND :toDate " +
                 " AND h.id =:hospitalId";
+
+        if (!ObjectUtils.isEmpty(searchDTO.getFromDate()) && !ObjectUtils.isEmpty(searchDTO.getToDate()))
+            whereClause += " AND (a.appointmentDate BETWEEN '"
+                    + utilDateToSqlDate(searchDTO.getFromDate()) + "' AND '"
+                    + utilDateToSqlDate(searchDTO.getToDate()) + "' )";
 
         if (!ObjectUtils.isEmpty(searchDTO.getAppointmentNumber()))
             whereClause += " AND a.appointmentNumber LIKE '%" + searchDTO.getAppointmentNumber() + "%'";
@@ -491,6 +491,43 @@ public class AppointmentQuery {
                     " sp.status='Y' " +
                     " AND a.status='PA'" +
                     " AND a.id=:appointmentId";
+
+    public static String QUERY_TO_REFUNDED_DETAIL_BY_ID =
+            "SELECT" +
+                    " a.appointmentDate as appointmentDate," +
+                    " DATE_FORMAT(a.appointmentTime, '%h:%i %p') as appointmentTime," +
+                    " a.appointmentNumber as appointmentNumber," +
+                    " h.name as hospitalName," +
+                    " p.name as patientName," +
+                    " CASE WHEN" +
+                    " (hpi.registrationNumber IS NULL)" +
+                    " THEN 'N/A'" +
+                    " ELSE" +
+                    " hpi.registrationNumber" +
+                    " END as registrationNumber," +
+                    " p.gender as gender," +
+                    " p.eSewaId  as eSewaId," +
+                    " p.mobileNumber as mobileNumber," +
+                    " d.name as doctorName," +
+                    " s.name as specializationName," +
+                    " atd.transactionNumber as transactionNumber," +
+                    " ard.cancelledDate as cancelledDate," +
+                    " ard.refundAmount as refundAmount," +
+                    " ard.remarks as cancellationRemarks," +
+                    " ard.refundedDate as refundedDate," +
+                    " atd.appointmentAmount as appointmentCharge," +
+                    QUERY_TO_CALCULATE_PATIENT_AGE +
+                    " FROM" +
+                    " AppointmentRefundDetail ard" +
+                    " LEFT JOIN Appointment a ON a.id=ard.appointmentId.id" +
+                    " LEFT JOIN Hospital h ON h.id=a.hospitalId.id" +
+                    " LEFT JOIN Patient p ON p.id=a.patientId.id" +
+                    " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id=p.id" +
+                    " LEFT JOIN Doctor d ON d.id=a.doctorId.id" +
+                    " LEFT JOIN Specialization s ON s.id=a.specializationId.id" +
+                    " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id =a.id" +
+                    " WHERE ard.appointmentId.id=:appointmentId" +
+                    " AND ard.status='PA'";
 
 
 }

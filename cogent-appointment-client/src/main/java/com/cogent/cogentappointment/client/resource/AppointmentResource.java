@@ -10,6 +10,7 @@ import com.cogent.cogentappointment.client.dto.request.appointment.refund.Appoin
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.client.service.AppointmentService;
+import com.sun.mail.imap.protocol.ID;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.PageRequest;
@@ -145,6 +146,12 @@ public class AppointmentResource {
                                                      @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ok().body(appointmentService.fetchRefundAppointments(searchDTO, pageable));
+    }
+
+    @GetMapping(REFUND+DETAIL+APPOINTMENT_ID_PATH_VARIABLE_BASE )
+    @ApiOperation(FETCH_REFUND_APPOINTMENTS)
+    public ResponseEntity<?> fetchRefundDetailsById(@PathVariable("appointmentId") Long appointmentId) {
+        return ok().body(appointmentService.fetchRefundDetailsById(appointmentId));
     }
 
     @GetMapping(REFUND + APPROVE + APPOINTMENT_ID_PATH_VARIABLE_BASE)

@@ -32,6 +32,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -114,6 +115,10 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointment.setStatus(REFUNDED);
 
         refundAppointmentDetail.setStatus(APPROVED);
+
+        refundAppointmentDetail.setRefundedDate(new Date());
+
+        saveRefundDetails(refundAppointmentDetail);
 
         log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT_REFUND, getDifferenceBetweenTwoTime(startTime));
     }
@@ -307,6 +312,10 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private void registerPatient(Long patientId, Long hospitalId) {
         patientService.registerPatient(patientId, hospitalId);
+    }
+
+    private void saveRefundDetails(AppointmentRefundDetail appointmentRefundDetail){
+        appointmentRefundDetailRepository.save(appointmentRefundDetail);
     }
 
 }

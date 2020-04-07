@@ -1,11 +1,15 @@
 package com.cogent.cogentappointment.admin.utils;
 
+import com.cogent.cogentappointment.admin.constants.StatusConstants;
 import com.cogent.cogentappointment.admin.dto.commons.AdminLogRequestDTO;
 import com.cogent.cogentappointment.admin.utils.commons.DateUtils;
 import com.cogent.cogentappointment.persistence.model.Admin;
 import com.cogent.cogentappointment.persistence.model.AdminLog;
 
 import java.util.Date;
+
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
 
 /**
  * @author Rupak
@@ -22,8 +26,9 @@ public class AdminLogUtils {
         adminLog.setFeature(requestDTO.getFeature());
         adminLog.setActionType(requestDTO.getFeature());
         adminLog.setLogDescription(requestDTO.getLogDescription());
-        adminLog.setStatus(requestDTO.getStatus());
-        adminLog.setLogDate(DateUtils.utilDateToSqlDate(new Date()));
+        adminLog.setStatus(ACTIVE);
+        adminLog.setLogDate(utilDateToSqlDate(new Date()));
+        adminLog.setLogDateTime(utilDateToSqlDate(new Date()));
 
         return adminLog;
     }

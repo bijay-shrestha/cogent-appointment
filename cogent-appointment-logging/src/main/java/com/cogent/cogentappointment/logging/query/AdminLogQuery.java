@@ -3,8 +3,6 @@ package com.cogent.cogentappointment.logging.query;
 import com.cogent.cogentappointment.logging.dto.request.admin.AdminLogSearchRequestDTO;
 import org.springframework.util.ObjectUtils;
 
-import static com.cogent.cogentappointment.logging.utils.common.DateUtils.utilDateToSqlDate;
-
 /**
  * @author Rupak
  */

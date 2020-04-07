@@ -32,8 +32,7 @@ public class AppointmentTransactionRequestLogHistory implements Serializable {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "appointment_transaction_request_log_id",
-            foreignKey = @ForeignKey(name = "FK_app_transaction_txn_request_log_history_app_transaction_txn_request_log"))
+    @JoinColumn(name = "appointment_transaction_request_log_id")
     private AppointmentTransactionRequestLog appointmentTransactionRequestLog;
 
     @Column(name = "appointment_transaction_request_log_content")

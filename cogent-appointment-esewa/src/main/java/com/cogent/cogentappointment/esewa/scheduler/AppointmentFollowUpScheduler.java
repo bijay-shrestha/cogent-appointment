@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.esewa.scheduler;
 
-//import com.cogent.cogentappointment.esewa.service.AppointmentFollowUpTrackerService;
 import com.cogent.cogentappointment.esewa.service.AppointmentFollowUpTrackerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;

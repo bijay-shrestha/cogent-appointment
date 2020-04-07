@@ -6,7 +6,7 @@ package com.cogent.cogentappointment.esewa.query;
  */
 public class AppointmentQuery {
 
-    /*appointmentDetails*/
+
     public static String QUERY_TO_VALIDATE_APPOINTMENT_EXISTS =
             "SELECT COUNT(a.id)" +
                     " FROM  Appointment a" +
@@ -16,7 +16,7 @@ public class AppointmentQuery {
                     " AND DATE_FORMAT(a.appointmentTime,'%H:%i') =:appointmentTime" +
                     " AND a.status='PA'";
 
-    /*appointmentDetails*/
+
     public static String QUERY_TO_FETCH_LATEST_APPOINTMENT_NUMBER =
             "SELECT a.appointment_number" +
                     " FROM appointment a" +
@@ -43,7 +43,7 @@ public class AppointmentQuery {
      * %i - minutes (e.g., 00,01,02,…12)
      * %p - AM/PM
      * */
-    /*appointmentDetails*/
+
     private static final String QUERY_TO_FETCH_MIN_APPOINTMENT =
             " SELECT" +
                     " a.id as appointmentId," +                                             //[0]
@@ -62,14 +62,14 @@ public class AppointmentQuery {
                     " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id";
 
-    /*appointmentDetails*/
+
     public static final String QUERY_TO_FETCH_PENDING_APPOINTMENTS =
             QUERY_TO_FETCH_MIN_APPOINTMENT +
                     " WHERE a.status = 'PA'" +
                     " AND a.appointmentDate BETWEEN :fromDate AND :toDate" +
                     " ORDER BY a.appointmentDate DESC";
 
-    /*appointmentDetails*/
+
     public static final String QUERY_TO_FETCH_REFUND_AMOUNT =
             " SELECT" +
                     " (h.refundPercentage * atd.appointmentAmount)/100" +
@@ -78,7 +78,7 @@ public class AppointmentQuery {
                     " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +
                     " WHERE a.id =:id";
 
-    /*appointmentDetails*/
+
     public static final String QUERY_TO_FETCH_APPOINTMENT_DETAILS_BY_ID =
             " SELECT" +
                     " a.appointmentDate as appointmentDate," +                              //[0]
@@ -102,7 +102,7 @@ public class AppointmentQuery {
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
                     " WHERE a.id =:id";
 
-    /*appointmentDetails*/
+
     public static final String QUERY_TO_FETCH_APPOINTMENT_HISTORY =
             QUERY_TO_FETCH_MIN_APPOINTMENT +
                     " WHERE a.status = 'A'" +

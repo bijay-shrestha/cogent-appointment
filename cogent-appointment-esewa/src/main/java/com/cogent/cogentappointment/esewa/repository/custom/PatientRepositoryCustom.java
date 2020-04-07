@@ -22,7 +22,7 @@ public interface PatientRepositoryCustom {
 
     Long validatePatientDuplicity(Long patientId, String name, String mobileNumber, Date dateOfBirth);
 
-    /*appointmentDetails*/
+
     PatientDetailResponseDTO searchForSelf(PatientMinSearchRequestDTO searchRequestDTO);
 
     List<PatientRelationInfoResponseDTO> fetchPatientRelationInfo(PatientMinSearchRequestDTO searchRequestDTO);

@@ -31,6 +31,5 @@ public interface AppointmentRepositoryCustom {
 
     List<AppointmentBookedTimeResponseDTO> fetchBookedAppointments(AppointmentCheckAvailabilityRequestDTO requestDTO);
 
-
     Double calculateRefundAmount(Long appointmentId);
 }

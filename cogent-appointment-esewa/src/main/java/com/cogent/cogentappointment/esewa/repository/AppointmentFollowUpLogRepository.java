@@ -13,6 +13,5 @@ import java.util.Optional;
  */
 @Repository
 public interface AppointmentFollowUpLogRepository extends JpaRepository<AppointmentFollowUpLog, Long> {
-    @Query("SELECT a FROM AppointmentFollowUpLog a WHERE a.followUpAppointmentId =:id")
-    Optional<AppointmentFollowUpLog> findByFollowUpAppointmentId(@Param("id") Long id);
+
 }

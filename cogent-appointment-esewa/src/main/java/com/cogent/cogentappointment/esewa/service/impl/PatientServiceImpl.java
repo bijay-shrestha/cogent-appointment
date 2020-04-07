@@ -5,15 +5,12 @@ import com.cogent.cogentappointment.esewa.dto.response.patient.*;
 import com.cogent.cogentappointment.esewa.exception.DataDuplicationException;
 import com.cogent.cogentappointment.esewa.exception.NoContentFoundException;
 import com.cogent.cogentappointment.esewa.repository.HospitalPatientInfoRepository;
-import com.cogent.cogentappointment.esewa.repository.PatientMetaInfoRepository;
 import com.cogent.cogentappointment.esewa.repository.PatientRelationInfoRepository;
 import com.cogent.cogentappointment.esewa.repository.PatientRepository;
 import com.cogent.cogentappointment.esewa.service.PatientService;
-import com.cogent.cogentappointment.esewa.utils.PatientMetaInfoUtils;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.HospitalPatientInfo;
 import com.cogent.cogentappointment.persistence.model.Patient;
-import com.cogent.cogentappointment.persistence.model.PatientMetaInfo;
 import com.cogent.cogentappointment.persistence.model.PatientRelationInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -27,13 +24,11 @@ import java.util.function.Function;
 
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.PatientServiceMessages.DUPLICATE_PATIENT_MESSAGE;
 import static com.cogent.cogentappointment.esewa.constants.StatusConstants.DELETED;
-import static com.cogent.cogentappointment.esewa.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.*;
-import static com.cogent.cogentappointment.esewa.log.constants.PatientLog.*;
+import static com.cogent.cogentappointment.esewa.log.constants.PatientLog.PATIENT;
 import static com.cogent.cogentappointment.esewa.utils.GenderUtils.fetchGenderByCode;
 import static com.cogent.cogentappointment.esewa.utils.PatientUtils.*;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.*;
-import static com.cogent.cogentappointment.esewa.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 
 /**
  * @author smriti ON 16/01/2020
@@ -45,18 +40,14 @@ public class PatientServiceImpl implements PatientService {
 
     private final PatientRepository patientRepository;
 
-    private final PatientMetaInfoRepository patientMetaInfoRepository;
-
     private final HospitalPatientInfoRepository hospitalPatientInfoRepository;
 
     private final PatientRelationInfoRepository patientRelationInfoRepository;
 
     public PatientServiceImpl(PatientRepository patientRepository,
-                              PatientMetaInfoRepository patientMetaInfoRepository,
                               HospitalPatientInfoRepository hospitalPatientInfoRepository,
                               PatientRelationInfoRepository patientRelationInfoRepository) {
         this.patientRepository = patientRepository;
-        this.patientMetaInfoRepository = patientMetaInfoRepository;
         this.hospitalPatientInfoRepository = hospitalPatientInfoRepository;
         this.patientRelationInfoRepository = patientRelationInfoRepository;
     }

@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.logging.service.impl;
 
 import com.cogent.cogentappointment.logging.dto.request.admin.AdminLogSearchRequestDTO;
 import com.cogent.cogentappointment.logging.dto.response.AdminLogResponseDTO;
+import com.cogent.cogentappointment.logging.dto.response.AdminLogStaticsResponseDTO;
 import com.cogent.cogentappointment.logging.repository.AdminLogRepository;
 import com.cogent.cogentappointment.logging.service.AdminLogService;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 /**
  * @author Rupak
@@ -28,5 +30,11 @@ public class AdminLogServiceImpl implements AdminLogService {
     public AdminLogResponseDTO search(AdminLogSearchRequestDTO searchRequestDTO, Pageable pageable) {
         AdminLogResponseDTO responseDTOS = adminLogRepository.search(searchRequestDTO, pageable);
         return responseDTOS;
+    }
+
+    @Override
+    public List<AdminLogStaticsResponseDTO> fetchUserMenuLogsStatics() {
+      List<AdminLogStaticsResponseDTO> responseDTOS=adminLogRepository.fetchUserMenuLogsStatics();
+      return responseDTOS;
     }
 }

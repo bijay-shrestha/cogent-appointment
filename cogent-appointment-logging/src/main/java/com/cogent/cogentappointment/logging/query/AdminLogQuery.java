@@ -10,6 +10,17 @@ import static com.cogent.cogentappointment.logging.utils.common.DateUtils.utilDa
  */
 public class AdminLogQuery {
 
+    public static String QUERY_TO_FETCH_USER_LOGS_STATICS() {
+
+        return " SELECT " +
+                " al.feature as feature," +
+                " count(al.id) as count" +
+                " from AdminLog al GROUP BY al.feature " +
+                " ORDER BY count(al.id) DESC";
+
+
+    }
+
     public static String QUERY_TO_SEARCH_ADMIN_LOGS(AdminLogSearchRequestDTO searchRequestDTO) {
 
         return "SELECT " +
@@ -38,7 +49,7 @@ public class AdminLogQuery {
             whereClause += " AND al.roleId=" + searchRequestDTO.getRoleId();
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getDate()))
-            whereClause += " AND al.logDate='" + utilDateToSqlDate(searchRequestDTO.getDate())+"'";
+            whereClause += " AND al.logDate='" + utilDateToSqlDate(searchRequestDTO.getDate()) + "'";
 
         return whereClause;
 

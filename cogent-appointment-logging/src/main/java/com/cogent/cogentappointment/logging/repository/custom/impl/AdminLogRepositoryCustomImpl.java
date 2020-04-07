@@ -3,7 +3,9 @@ package com.cogent.cogentappointment.logging.repository.custom.impl;
 import com.cogent.cogentappointment.logging.dto.request.admin.AdminLogSearchRequestDTO;
 import com.cogent.cogentappointment.logging.dto.response.AdminLogResponseDTO;
 import com.cogent.cogentappointment.logging.dto.response.AdminLogSearchResponseDTO;
+import com.cogent.cogentappointment.logging.dto.response.AdminLogStaticsResponseDTO;
 import com.cogent.cogentappointment.logging.exception.NoContentFoundException;
+import com.cogent.cogentappointment.logging.query.AdminLogQuery;
 import com.cogent.cogentappointment.logging.repository.custom.AdminLogRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.AdminLog;
 import lombok.extern.slf4j.Slf4j;
@@ -48,12 +50,21 @@ public class AdminLogRepositoryCustomImpl implements AdminLogRepositoryCustom {
             throw new NoContentFoundException(AdminLog.class);
         } else {
 
-            AdminLogResponseDTO adminLogResponseDTO=new AdminLogResponseDTO();
+            AdminLogResponseDTO adminLogResponseDTO = new AdminLogResponseDTO();
             adminLogResponseDTO.setResponseDTOList(result);
             adminLogResponseDTO.setTotalItems(totalItems);
 
             return adminLogResponseDTO;
-
         }
+
+    }
+
+    @Override
+    public List<AdminLogStaticsResponseDTO> fetchUserMenuLogsStatics() {
+
+        Query query = createQuery.apply(entityManager, AdminLogQuery.QUERY_TO_FETCH_USER_LOGS_STATICS());
+        List<AdminLogStaticsResponseDTO> result = transformQueryToResultList(query, AdminLogStaticsResponseDTO.class);
+
+        return result;
     }
 }

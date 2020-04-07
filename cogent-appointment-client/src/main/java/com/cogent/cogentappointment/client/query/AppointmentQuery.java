@@ -311,7 +311,7 @@ public class AppointmentQuery {
                             " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
                             " LEFT JOIN Specialization sp ON a.specializationId=sp.id" +
                             " LEFT JOIN Hospital h ON a.hospitalId=h.id" +
-                            " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pm.status='Y'" +
+                            " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
                             " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id"
                             + GET_WHERE_CLAUSE_TO_SEARCH_PENDING_APPOINTMENT_DETAILS(searchRequestDTO);
 
@@ -380,7 +380,7 @@ public class AppointmentQuery {
                             " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
                             " LEFT JOIN Specialization sp ON a.specializationId.id=sp.id" +
                             " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
-                            " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pm.status='Y'" +
+                            " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
                             " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
                             " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='PA'"
                             + GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_LOG_DETAILS(appointmentLogSearchDTO);
@@ -493,7 +493,7 @@ public class AppointmentQuery {
                     " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
                     " LEFT JOIN Specialization sp ON a.specializationId=sp.id" +
                     " LEFT JOIN Hospital h ON a.hospitalId=h.id" +
-                    " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pm.status='Y'" +
+                    " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
                     " WHERE " +
                     " sp.status='Y' " +

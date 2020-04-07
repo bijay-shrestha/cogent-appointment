@@ -181,10 +181,11 @@ public class PatientServiceImpl implements PatientService {
     private void validatePatientDuplicity(Long patientCount, String name, String mobileNumber,
                                           Date dateOfBirth) {
 
-        if (patientCount.intValue() != 0)
-            log.error(NAME_AND_MOBILE_NUMBER_DUPLICATION_ERROR,PATIENT,name, mobileNumber, utilDateToSqlDate(dateOfBirth));
+        if (patientCount.intValue() != 0) {
+            log.error(NAME_AND_MOBILE_NUMBER_DUPLICATION_ERROR, PATIENT, name, mobileNumber, utilDateToSqlDate(dateOfBirth));
             throw new DataDuplicationException(String.format(DUPLICATE_PATIENT_MESSAGE,
                     name, mobileNumber, utilDateToSqlDate(dateOfBirth)));
+        }
     }
 
     private void saveHospitalPatientInfo(HospitalPatientInfo hospitalPatientInfo) {

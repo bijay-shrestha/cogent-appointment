@@ -27,9 +27,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NAME_AND_MOBILE_NUMBER_DUPLICATION_MESSAGE;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.NAME_AND_MOBILE_NUMBER_DUPLICATION_ERROR;
 import static com.cogent.cogentappointment.admin.log.constants.DoctorLog.*;
 import static com.cogent.cogentappointment.admin.utils.DoctorUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
@@ -429,12 +429,13 @@ public class DoctorServiceImpl implements DoctorService {
 
     private void validateDoctor(Long doctorCount, String name, String mobileNumber) {
 
-        if (doctorCount.intValue() > 0)
-            log.error(NAME_AND_MOBILE_NUMBER_DUPLICATION_ERROR,DOCTOR,name,mobileNumber);
+        if (doctorCount.intValue() > 0) {
+            log.error(NAME_AND_MOBILE_NUMBER_DUPLICATION_ERROR, DOCTOR, name, mobileNumber);
             throw new DataDuplicationException(
                     String.format(NAME_AND_MOBILE_NUMBER_DUPLICATION_MESSAGE, Doctor.class.getSimpleName(), name, mobileNumber),
                     "name", name, "mobileNumber", mobileNumber
             );
+        }
     }
 
     private void saveDoctor(Doctor doctor) {

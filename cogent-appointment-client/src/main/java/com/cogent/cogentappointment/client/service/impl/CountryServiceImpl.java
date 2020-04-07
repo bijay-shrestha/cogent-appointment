@@ -60,7 +60,6 @@ public class CountryServiceImpl implements CountryService {
         return country;
     }
 
-
     private Function<Long, NoContentFoundException>
             COUNTRY_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, CountryLog.COUNTRY, id);

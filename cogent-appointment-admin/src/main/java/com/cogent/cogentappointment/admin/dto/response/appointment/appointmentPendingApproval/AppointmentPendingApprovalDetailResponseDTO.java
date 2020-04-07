@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.dto.response.appointment.approval;
+package com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPendingApproval;
 
 
 import com.cogent.cogentappointment.persistence.enums.Gender;
@@ -15,9 +15,11 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppointmentPendingApprovalDTO implements Serializable {
+public class AppointmentPendingApprovalDetailResponseDTO implements Serializable {
 
     private Long appointmentId;
+
+    private String hospitalName;
 
     private Date appointmentDate;
 
@@ -25,9 +27,19 @@ public class AppointmentPendingApprovalDTO implements Serializable {
 
     private String appointmentTime;
 
+    private String esewaId;
+
     private String registrationNumber;
 
     private String patientName;
+
+    private Gender patientGender;
+
+    private String patientAge;
+
+    private Date patientDob;
+
+    private Character isRegistered;
 
     private String mobileNumber;
 
@@ -35,4 +47,9 @@ public class AppointmentPendingApprovalDTO implements Serializable {
 
     private String specializationName;
 
+    private String transactionNumber;
+
+    private Double appointmentAmount;
+
+    private Character isSelf;
 }

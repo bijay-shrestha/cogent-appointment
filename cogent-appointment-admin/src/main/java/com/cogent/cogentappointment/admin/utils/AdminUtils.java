@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
@@ -243,11 +242,5 @@ public class AdminUtils {
                         + requestDTO.getPassword() + COMMA_SEPARATED + requestDTO.getRemarks())
                 .build();
     }
-
-    public static String getUsername(String email) {
-        StringTokenizer token = new StringTokenizer(email, "@");
-        return token.nextToken();
-    }
-
 
 }

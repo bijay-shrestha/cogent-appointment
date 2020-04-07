@@ -31,10 +31,12 @@ public class QualificationQuery {
     private static final String SELECT_CLAUSE_TO_FETCH_MINIMAL_QUALIFICATION =
             "SELECT q.id as id," +                                               //[0]
                     " q.name as name," +                                        //[1]
-                    " q.university.name as universityName," +                  //[2]
-                    " q.qualificationAlias.name as qualificationAliasName," +   //[3]
+                    " u.name as universityName," +                  //[2]
+                    " qa.name as qualificationAliasName," +   //[3]
                     " q.status as status" +                                     //[5]
-                    " FROM Qualification q ";
+                    " FROM Qualification q " +
+                    " LEFT JOIN QualificationAlias qa ON qa.id=q.qualificationAlias.id" +
+                    " LEFT JOIN University u ON u.id=q.university.id";
 
     public static Function<QualificationSearchRequestDTO, String> QUERY_TO_SEARCH_QUALIFICATION =
             (qualificationSearchRequestDTO -> (
@@ -50,10 +52,10 @@ public class QualificationQuery {
             whereClause += " AND q.id = " + searchRequestDTO.getQualificationId();
 
         if (!Objects.isNull(searchRequestDTO.getUniversityId()))
-            whereClause += " AND q.university.id=" + searchRequestDTO.getUniversityId();
+            whereClause += " AND u.id=" + searchRequestDTO.getUniversityId();
 
         if (!Objects.isNull(searchRequestDTO.getQualificationAliasId()))
-            whereClause += " AND qa.qualificationAlias.id=" + searchRequestDTO.getQualificationAliasId();
+            whereClause += " AND qa.id=" + searchRequestDTO.getQualificationAliasId();
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
             whereClause += " AND q.status='" + searchRequestDTO.getStatus() + "'";

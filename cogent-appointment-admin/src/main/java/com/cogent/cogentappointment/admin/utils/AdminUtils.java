@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
@@ -229,7 +228,7 @@ public class AdminUtils {
         Admin admin = confirmationToken.getAdmin();
         admin.setPassword(BCrypt.hashpw(requestDTO.getPassword(), BCrypt.gensalt()));
         return admin;
-    }
+    }?
 
     public static EmailRequestDTO parseToResetPasswordEmailRequestDTO(AdminResetPasswordRequestDTO requestDTO,
                                                                       String emailAddress,
@@ -243,4 +242,5 @@ public class AdminUtils {
                         + requestDTO.getPassword() + COMMA_SEPARATED + requestDTO.getRemarks())
                 .build();
     }
+
 }

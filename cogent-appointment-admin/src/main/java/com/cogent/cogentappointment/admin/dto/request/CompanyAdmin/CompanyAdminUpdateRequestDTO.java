@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.dto.request.CompanyAdmin;
 
 import com.cogent.cogentappointment.admin.constraintvalidator.Status;
+import com.cogent.cogentappointment.admin.dto.request.admin.AdminDashboardRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.AdminMacAddressInfoUpdateRequestDTO;
 import lombok.*;
 
@@ -59,4 +60,6 @@ public class CompanyAdminUpdateRequestDTO implements Serializable {
     private Character isAvatarUpdate;
 
     private List<AdminMacAddressInfoUpdateRequestDTO> macAddressUpdateInfo;
+
+    private List<AdminDashboardRequestDTO> adminDashboardRequestDTOS;
 }

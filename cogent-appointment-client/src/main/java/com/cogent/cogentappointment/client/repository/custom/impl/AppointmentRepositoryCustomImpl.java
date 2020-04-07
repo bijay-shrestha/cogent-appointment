@@ -405,7 +405,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_QUEUE.apply(appointmentQueueRequestDTO))
                 .setParameter(HOSPITAL_ID, hospitalId)
                 .setParameter(DATE, utilDateToSqlDate(appointmentQueueRequestDTO.getDate()));
-        ;
+
 
         int totalItems = query.getResultList().size();
 

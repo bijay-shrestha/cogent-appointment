@@ -179,10 +179,11 @@ public class QualificationServiceImpl implements QualificationService {
     }
 
     private void validateName(Long qualificationCount, String name) {
-        if (qualificationCount.intValue() > 0)
-            log.error(NAME_DUPLICATION_ERROR,QUALIFICATION,name);
+        if (qualificationCount.intValue() > 0){
+            log.error(NAME_DUPLICATION_ERROR, QUALIFICATION, name);
             throw new DataDuplicationException(
                     String.format(NAME_DUPLICATION_MESSAGE, Qualification.class.getSimpleName(), name));
+        }
     }
 
     private QualificationAlias fetchQualificationAlias(Long id) {

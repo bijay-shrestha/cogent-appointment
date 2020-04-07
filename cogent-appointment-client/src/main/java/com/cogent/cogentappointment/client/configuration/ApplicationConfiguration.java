@@ -9,8 +9,7 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 @PropertySource(value = {
         "classpath:expirationTime.properties",
         "classpath:emailConfiguration.properties",
-        "classpath:appointmentFollowUp.properties",
-        "classpath:fileStorage.properties"
+        "classpath:appointmentFollowUp.properties"
 })
 public class ApplicationConfiguration {
     @Bean

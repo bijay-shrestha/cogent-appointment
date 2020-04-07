@@ -18,6 +18,9 @@ public interface AppointmentReservationLogRepositoryCustom {
                                                      Long specializationId,
                                                      Long appointmentReservationId);
 
+    Long validateDuplicity(Date appointmentDate, String appointmentTime,
+                           Long doctorId, Long specializationId);
+
     Long fetchAppointmentReservationLogId(Date appointmentDate, String appointmentTime,
                                           Long doctorId, Long specializationId);
 }

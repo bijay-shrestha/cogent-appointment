@@ -12,10 +12,8 @@ import javax.persistence.Query;
 import java.util.Date;
 import java.util.List;
 
+import static com.cogent.cogentappointment.esewa.constants.QueryConstants.AppointmentConstants.*;
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.*;
-import static com.cogent.cogentappointment.esewa.constants.QueryConstants.AppointmentConstants.APPOINTMENT_DATE;
-import static com.cogent.cogentappointment.esewa.constants.QueryConstants.AppointmentConstants.APPOINTMENT_ID;
-import static com.cogent.cogentappointment.esewa.constants.QueryConstants.AppointmentConstants.APPOINTMENT_TIME;
 import static com.cogent.cogentappointment.esewa.query.AppointmentReservationLogQuery.*;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.createQuery;
@@ -48,8 +46,22 @@ public class AppointmentReservationLogRepositoryCustomImpl implements Appointmen
                                                             Long specializationId,
                                                             Long appointmentReservationId) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_APPOINTMENT_RESERVATION_DUPLICITY_EXCEPT_CURRENT_ID)
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_VALIDATE_APPOINTMENT_RESERVATION_DUPLICITY_EXCEPT_CURRENT_ID)
                 .setParameter(APPOINTMENT_ID, appointmentReservationId)
+                .setParameter(APPOINTMENT_DATE, utilDateToSqlDate(appointmentDate))
+                .setParameter(DOCTOR_ID, doctorId)
+                .setParameter(SPECIALIZATION_ID, specializationId)
+                .setParameter(APPOINTMENT_TIME, appointmentTime);
+
+        return (Long) query.getSingleResult();
+    }
+
+    @Override
+    public Long validateDuplicity(Date appointmentDate, String appointmentTime,
+                                  Long doctorId, Long specializationId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_APPOINTMENT_RESERVATION_DUPLICITY)
                 .setParameter(APPOINTMENT_DATE, utilDateToSqlDate(appointmentDate))
                 .setParameter(DOCTOR_ID, doctorId)
                 .setParameter(SPECIALIZATION_ID, specializationId)

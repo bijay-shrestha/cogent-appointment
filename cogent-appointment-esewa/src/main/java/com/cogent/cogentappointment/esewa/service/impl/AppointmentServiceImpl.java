@@ -346,13 +346,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Appointment appointment = findPendingAppointmentById(rescheduleRequestDTO.getAppointmentId());
 
-        Long appointmentCount = appointmentRepository.validateIfAppointmentExists(
-                rescheduleRequestDTO.getRescheduleDate(),
-                rescheduleRequestDTO.getRescheduleTime(),
-                appointment.getDoctorId().getId(),
-                appointment.getSpecializationId().getId());
-
-        validateAppointmentExists(appointmentCount, rescheduleRequestDTO.getRescheduleTime());
+        validateAppointmentRescheduleRequestDTO(rescheduleRequestDTO, appointment);
 
         saveAppointmentRescheduleLog(appointment, rescheduleRequestDTO);
 
@@ -477,7 +471,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     private void validateAppointmentExists(Long appointmentCount, String appointmentTime) {
-        if (appointmentCount.intValue() > 0){
+        if (appointmentCount.intValue() > 0) {
             log.error(APPOINTMENT_EXISTS, convert24HourTo12HourFormat(appointmentTime));
             throw new DataDuplicationException(String.format(APPOINTMENT_EXISTS,
                     convert24HourTo12HourFormat(appointmentTime)));
@@ -580,9 +574,9 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     /*FETCH DOCTOR DUTY ROSTER INFO FOR SELECTED DATE*/
-    private DoctorDutyRosterTimeResponseDTO fetchDoctorDutyRosterInfo(Date date,
-                                                                      Long doctorId,
-                                                                      Long specializationId) {
+    private DoctorDutyRosterTimeResponseDTO fetchDoctorDutyRosterTimeInfo(Date date,
+                                                                          Long doctorId,
+                                                                          Long specializationId) {
 
         DoctorDutyRosterTimeResponseDTO overrideRosters =
                 doctorDutyRosterOverrideRepository.fetchDoctorDutyRosterOverrideTime(date, doctorId, specializationId);
@@ -668,15 +662,27 @@ public class AppointmentServiceImpl implements AppointmentService {
         validateIfRequestIsBeforeCurrentDateTime(
                 appointmentInfo.getAppointmentDate(), appointmentInfo.getAppointmentTime());
 
-        validateIfParentAppointmentExists(appointmentInfo);
+        validateIfParentAppointmentExists(
+                appointmentInfo.getAppointmentDate(),
+                appointmentInfo.getAppointmentTime(),
+                appointmentInfo.getDoctorId(),
+                appointmentInfo.getSpecializationId()
+        );
 
         validateIfAppointmentReservationExists(appointmentInfo);
 
-        DoctorDutyRosterTimeResponseDTO doctorDutyRosterInfo = fetchDoctorDutyRosterInfo(appointmentInfo);
+        DoctorDutyRosterTimeResponseDTO doctorDutyRosterInfo = fetchDoctorDutyRosterInfo(
+                appointmentInfo.getAppointmentDate(),
+                appointmentInfo.getDoctorId(),
+                appointmentInfo.getSpecializationId()
+        );
 
-        boolean isTimeValid = validateIfRequestedAppointmentTimeIsValid(doctorDutyRosterInfo, appointmentInfo);
+        boolean isTimeValid = validateIfRequestedAppointmentTimeIsValid(
+                doctorDutyRosterInfo,
+                appointmentInfo.getAppointmentTime()
+        );
 
-        if (!isTimeValid){
+        if (!isTimeValid) {
             log.error(INVALID_APPOINTMENT_TIME, convert24HourTo12HourFormat(appointmentInfo.getAppointmentTime()));
             throw new NoContentFoundException(String.format(INVALID_APPOINTMENT_TIME,
                     convert24HourTo12HourFormat(appointmentInfo.getAppointmentTime())));
@@ -694,16 +700,15 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     /*VALIDATE IF APPOINTMENT ALREADY EXISTS ON SELECTED DATE AND TIME */
-    private void validateIfParentAppointmentExists(AppointmentRequestDTO appointmentInfo) {
+    private void validateIfParentAppointmentExists(Date appointmentDate,
+                                                   String appointmentTime,
+                                                   Long doctorId,
+                                                   Long specializationId) {
 
         Long appointmentCount = appointmentRepository.validateIfAppointmentExists(
-                appointmentInfo.getAppointmentDate(),
-                appointmentInfo.getAppointmentTime(),
-                appointmentInfo.getDoctorId(),
-                appointmentInfo.getSpecializationId()
-        );
+                appointmentDate, appointmentTime, doctorId, specializationId);
 
-        validateAppointmentExists(appointmentCount, appointmentInfo.getAppointmentTime());
+        validateAppointmentExists(appointmentCount, appointmentTime);
     }
 
     /*VALIDATE IF APPOINTMENT RESERVATION EXISTS ON SELECTED DATE AND TIME */
@@ -722,18 +727,17 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     /*FETCH DOCTOR DUTY ROSTER FOR SELECTED DATE, DOCTOR AND SPECIALIZATION
     * IF DOCTOR DAY OFF = 'Y', THEN DOCTOR IS NOT AVAILABLE AND CANNOT TAKE AN APPOINTMENT*/
-    private DoctorDutyRosterTimeResponseDTO fetchDoctorDutyRosterInfo(AppointmentRequestDTO appointmentInfo) {
+    private DoctorDutyRosterTimeResponseDTO fetchDoctorDutyRosterInfo(Date appointmentDate,
+                                                                      Long doctorId,
+                                                                      Long specializationId) {
 
-        DoctorDutyRosterTimeResponseDTO doctorDutyRosterInfo = fetchDoctorDutyRosterInfo(
-                appointmentInfo.getAppointmentDate(),
-                appointmentInfo.getDoctorId(),
-                appointmentInfo.getSpecializationId()
-        );
+        DoctorDutyRosterTimeResponseDTO doctorDutyRosterInfo = fetchDoctorDutyRosterTimeInfo(
+                appointmentDate, doctorId, specializationId);
 
         if (doctorDutyRosterInfo.getDayOffStatus().equals(YES)) {
-            log.error(DOCTOR_NOT_AVAILABLE, utilDateToSqlDate(appointmentInfo.getAppointmentDate()));
+            log.error(DOCTOR_NOT_AVAILABLE, utilDateToSqlDate(appointmentDate));
             throw new NoContentFoundException(
-                    String.format(DOCTOR_NOT_AVAILABLE, utilDateToSqlDate(appointmentInfo.getAppointmentDate())));
+                    String.format(DOCTOR_NOT_AVAILABLE, utilDateToSqlDate(appointmentDate)));
         }
 
         return doctorDutyRosterInfo;
@@ -743,7 +747,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     * IF IT MATCHES, THEN DO NOTHING
     * ELSE REQUESTED TIME IS INVALID AND THUS CANNOT TAKE AN APPOINTMENT*/
     private boolean validateIfRequestedAppointmentTimeIsValid(DoctorDutyRosterTimeResponseDTO doctorDutyRosterInfo,
-                                                              AppointmentRequestDTO appointmentInfo) {
+                                                              String appointmentTime) {
 
         final DateTimeFormatter FORMAT = DateTimeFormat.forPattern("HH:mm");
 
@@ -758,7 +762,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             final Duration rosterGapDuration = Minutes.minutes(doctorDutyRosterInfo.getRosterGapDuration())
                     .toStandardDuration();
 
-            if (date.equals(appointmentInfo.getAppointmentTime()))
+            if (date.equals(appointmentTime))
                 return true;
 
             startDateTime = startDateTime.plus(rosterGapDuration);
@@ -770,5 +774,52 @@ public class AppointmentServiceImpl implements AppointmentService {
     private AppointmentReservationLog fetchAppointmentReservationLogById(Long appointmentReservationId) {
         return appointmentReservationLogRepository.findAppointmentReservationLogById(appointmentReservationId);
     }
+
+    private void validateAppointmentRescheduleRequestDTO(AppointmentRescheduleRequestDTO rescheduleRequestDTO,
+                                                         Appointment appointment) {
+
+        validateIfRequestIsBeforeCurrentDateTime(
+                rescheduleRequestDTO.getRescheduleDate(), rescheduleRequestDTO.getRescheduleTime());
+
+        validateIfParentAppointmentExists(
+                rescheduleRequestDTO.getRescheduleDate(),
+                rescheduleRequestDTO.getRescheduleTime(),
+                appointment.getDoctorId().getId(),
+                appointment.getSpecializationId().getId()
+        );
+
+        validateAppointmentReservationDuplicity(rescheduleRequestDTO, appointment);
+
+        DoctorDutyRosterTimeResponseDTO doctorDutyRosterInfo =
+                fetchDoctorDutyRosterInfo(rescheduleRequestDTO.getRescheduleDate(),
+                        appointment.getDoctorId().getId(),
+                        appointment.getSpecializationId().getId()
+                );
+
+        boolean isTimeValid = validateIfRequestedAppointmentTimeIsValid(doctorDutyRosterInfo,
+                rescheduleRequestDTO.getRescheduleTime());
+
+        if (!isTimeValid) {
+            log.error(INVALID_APPOINTMENT_TIME, convert24HourTo12HourFormat(rescheduleRequestDTO.getRescheduleTime()));
+            throw new NoContentFoundException(String.format(INVALID_APPOINTMENT_TIME,
+                    convert24HourTo12HourFormat(rescheduleRequestDTO.getRescheduleTime())));
+        }
+    }
+
+    /*VALIDATE IF APPOINTMENT RESERVATION EXISTS ON SELECTED DATE AND TIME */
+    private void validateAppointmentReservationDuplicity(AppointmentRescheduleRequestDTO rescheduleRequestDTO,
+                                                         Appointment appointment) {
+
+        Long appointmentCount = appointmentReservationLogRepository.validateDuplicity(
+                rescheduleRequestDTO.getRescheduleDate(),
+                rescheduleRequestDTO.getRescheduleTime(),
+                appointment.getDoctorId().getId(),
+                appointment.getSpecializationId().getId()
+
+        );
+
+        validateAppointmentExists(appointmentCount, rescheduleRequestDTO.getRescheduleTime());
+    }
+
 }
 

@@ -40,5 +40,7 @@ public class AppointmentRefundDTO implements Serializable {
 
     private Date cancelledDate;
 
+    private Double refundAmount;
+
     private String mobileNumber;
 }

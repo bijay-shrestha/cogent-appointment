@@ -61,6 +61,7 @@ public class AppointmentQuery {
                 "  atd.transactionNumber as transactionNumber," +
                 "  ard.cancelledDate as cancelledDate," +
                 "  p.gender as gender," +
+                " ard.refundAmount as refundAmount, " +
                 QUERY_TO_CALCULATE_PATIENT_AGE +
                 " FROM Appointment a" +
                 " LEFT JOIN Patient p ON p.id = a.patientId.id" +

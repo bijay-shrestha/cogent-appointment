@@ -582,6 +582,10 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         refundAppointmentDetail.setStatus(APPROVED);
 
+        refundAppointmentDetail.setRefundedDate(new Date());
+
+        saveRefundDetails(refundAppointmentDetail);
+
         log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT_REFUND, getDifferenceBetweenTwoTime(startTime));
     }
 
@@ -1039,6 +1043,10 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private AppointmentReservationLog fetchAppointmentReservationLogById(Long appointmentReservationId) {
         return appointmentReservationLogRepository.findAppointmentReservationLogById(appointmentReservationId);
+    }
+
+    private void saveRefundDetails(AppointmentRefundDetail appointmentRefundDetail){
+        appointmentRefundDetailRepository.save(appointmentRefundDetail);
     }
 }
 

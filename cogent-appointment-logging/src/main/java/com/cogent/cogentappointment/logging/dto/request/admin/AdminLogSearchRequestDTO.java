@@ -15,7 +15,7 @@ public class AdminLogSearchRequestDTO implements Serializable {
 
     private Date date;
 
-    private Long adminId;
+    private Long hospitalId;
 
     private Long parentId;
     

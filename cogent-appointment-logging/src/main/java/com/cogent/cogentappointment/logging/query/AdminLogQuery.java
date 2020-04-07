@@ -32,6 +32,8 @@ public class AdminLogQuery {
                 " al.logDescription as logDescription" +
                 " FROM AdminLog al" +
                 " LEFT JOIN Admin a ON al.adminId.id =a.id" +
+                " LEFT JOIN Profile p ON p.id=a.profileId.id" +
+                " LEFT JOIN Hospital h ON h.id=p.company" +
                 WHERE_CLAUSE_TO_SEARCH_ADMIN_LOGS(searchRequestDTO);
     }
 
@@ -39,8 +41,8 @@ public class AdminLogQuery {
 
         String whereClause = " WHERE al.status != 'D'";
 
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getAdminId()))
-            whereClause += " AND a.id=" + searchRequestDTO.getAdminId();
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getHospitalId()))
+            whereClause += " AND h.id=" + searchRequestDTO.getHospitalId();
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getParentId()))
             whereClause += " AND al.parentId=" + searchRequestDTO.getParentId();

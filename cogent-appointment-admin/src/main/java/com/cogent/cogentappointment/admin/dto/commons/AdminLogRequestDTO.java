@@ -24,7 +24,6 @@ public class AdminLogRequestDTO implements Serializable {
     @NotNull
     private Long roleId;
 
-
     @NotNull
     @NotEmpty
     private String logDescription;
@@ -36,7 +35,4 @@ public class AdminLogRequestDTO implements Serializable {
     @NotNull
     @NotEmpty
     private String actionType;
-
-    @NotNull
-    private Character status;
 }

@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.dto.response.appointment.refund;
 
+import com.cogent.cogentappointment.persistence.enums.Gender;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,9 +12,7 @@ import java.util.Date;
  */
 @Getter
 @Setter
-public class AppointmentRefundDTO implements Serializable {
-
-    private Long appointmentId;
+public class AppointmentRefundDetailResponseDTO implements Serializable {
 
     private Date appointmentDate;
 
@@ -21,9 +20,13 @@ public class AppointmentRefundDTO implements Serializable {
 
     private String appointmentNumber;
 
+    private String hospitalName;
+
     private String patientName;
 
     private String registrationNumber;
+
+    private Gender gender;
 
     private String age;
 
@@ -37,5 +40,13 @@ public class AppointmentRefundDTO implements Serializable {
 
     private Date cancelledDate;
 
+    private Double refundAmount;
+
+    private String cancellationRemarks;
+
     private String mobileNumber;
+
+    private Date refundedDate;
+
+    private Double appointmentCharge;
 }

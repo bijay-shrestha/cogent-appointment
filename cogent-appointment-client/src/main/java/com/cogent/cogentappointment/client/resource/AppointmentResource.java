@@ -149,7 +149,7 @@ public class AppointmentResource {
     }
 
     @GetMapping(REFUND+DETAIL+APPOINTMENT_ID_PATH_VARIABLE_BASE )
-    @ApiOperation(FETCH_REFUND_APPOINTMENTS)
+    @ApiOperation(FETCH_REFUND_APPOINTMENTS_DETAIL)
     public ResponseEntity<?> fetchRefundDetailsById(@PathVariable("appointmentId") Long appointmentId) {
         return ok().body(appointmentService.fetchRefundDetailsById(appointmentId));
     }

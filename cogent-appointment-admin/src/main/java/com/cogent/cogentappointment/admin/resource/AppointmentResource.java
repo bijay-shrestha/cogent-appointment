@@ -19,6 +19,7 @@ import javax.validation.Valid;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.*;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.DETAIL;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -42,6 +43,12 @@ public class AppointmentResource {
                                                      @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ok().body(appointmentService.fetchRefundAppointments(searchDTO, pageable));
+    }
+
+    @GetMapping(REFUND + DETAIL + APPOINTMENT_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_REFUND_APPOINTMENTS_DETAIL)
+    public ResponseEntity<?> fetchRefundDetailsById(@PathVariable("appointmentId") Long appointmentId) {
+        return ok().body(appointmentService.fetchRefundDetailsById(appointmentId));
     }
 
     @GetMapping(REFUND + APPROVE + APPOINTMENT_ID_PATH_VARIABLE_BASE)

@@ -84,6 +84,10 @@ public class SwaggerConstants {
     //K
     //L
     //M
+    public interface MinioFileConstant {
+        String BASE_API_VALUE = "This is Minio File Resource";
+        String FETCH_FILE_OPERATION = "Fetch file from Minio server";
+    }
 
     //N
 

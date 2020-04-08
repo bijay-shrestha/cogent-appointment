@@ -230,18 +230,17 @@ public class AppointmentQuery {
                 "  atd.transactionNumber as transactionNumber," +
                 "  ard.cancelledDate as cancelledDate," +
                 "  p.gender as gender," +
-                "  ard.refundAmount as refundAmount," +
+                " ard.refundAmount as refundAmount, " +
                 QUERY_TO_CALCULATE_PATIENT_AGE +
-                "  FROM" +
-                "  AppointmentRefundDetail ard" +
-                "  LEFT JOIN Appointment a ON a.id=ard.appointmentId.id" +
-                "  LEFT JOIN Patient p ON p.id=a.patientId.id" +
-                "  LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
-                "  LEFT JOIN Doctor d ON d.id=a.doctorId.id" +
-                "  LEFT JOIN Specialization s ON s.id=a.specializationId.id " +
-                "  LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id" +
-                "  LEFT JOIN Hospital h ON h.id=a.hospitalId.id" +
-                "  LEFT JOIN PatientMetaInfo pm ON pm.patient.id = p.id AND pm.status='Y'" +
+                " FROM Appointment a" +
+                " LEFT JOIN Patient p ON p.id = a.patientId.id" +
+                " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
+                " LEFT JOIN Specialization s ON s.id = a.specializationId.id" +
+                " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +
+                " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
+                " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId.id = a.id" +
+                " LEFT JOIN PatientMetaInfo pm ON pm.patient.id = p.id AND pm.status='Y'" +
+                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                 GET_WHERE_CLAUSE_TO_FETCH_REFUND_APPOINTMENTS(searchDTO);
     }
 

@@ -30,9 +30,10 @@ public class UniversityQuery {
             "SELECT u.id as id," +                                                //[0]
                     " u.name as name," +                                          //[1]
                     " u.address as address," +                                    //[2]
-                    " c.name as countryName," +                                   //[3]
-                    " c.status as status" +                                       //[4]
-                    " FROM University u " +
+                    " c.id as countryId," +                                        //[3]
+                    " c.name as countryName," +                                   //[4]
+                    " c.status as status" +                                       //[5]
+                    " FROM University u" +
                     " LEFT JOIN Country c ON c.id = u.country.id";
 
     public static Function<UniversitySearchRequestDTO, String> QUERY_TO_SEARCH_UNIVERSITY =

@@ -20,6 +20,8 @@ public class UniversityMinimalResponseDTO implements Serializable {
 
     private String address;
 
+    private Long countryId;
+
     private String countryName;
 
     private Character status;

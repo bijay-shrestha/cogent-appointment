@@ -60,6 +60,7 @@ public class ErrorMessageConstants {
     public static final String CODE_DUPLICATION_MESSAGE = "%s already exists with code '%s'";
 
     public static final String CANNOT_ACCESS_CLIENT_MODULE = "SORRY!!! YOU CANNOT ACCESS CLIENT MODULE";
+    public static final String CANNOT_ACCESS_CLIENT_MODULE_DEBUG_MESSAGE="Admin belongs to company";
 
     //D
     public interface DoctorServiceMessages {
@@ -101,6 +102,8 @@ public class ErrorMessageConstants {
 
     public static final String INVALID_USERNAME_OR_HOSPITAL_CODE = "Invalid username or hospitalcode";
     public static final String INVALID_PASSWORD = "Invalid password";
+    public static final String PASSWORD_NOT_SET="Password Not Set";
+    public static final String PASSWORD_NOT_SET_DEBUG_MESSAGE="Password not set in database";
 
     public static final String INVALID_VERIFICATION_TOKEN = "Invalid verification token";
 

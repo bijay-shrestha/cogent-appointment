@@ -187,7 +187,7 @@ public class AdminQuery {
                     " ami.metaInfo as metaInfo" +                   //[1]
                     " FROM AdminMetaInfo ami" +
                     " LEFT JOIN Admin a ON a.id=ami.admin.id" +
-                    " LEFT JOIN Profile ON p.id=a.profileId.id" +
+                    " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                     " WHERE a.status !='D'" +
                     " AND p.isCompanyprofile='N'";
 }

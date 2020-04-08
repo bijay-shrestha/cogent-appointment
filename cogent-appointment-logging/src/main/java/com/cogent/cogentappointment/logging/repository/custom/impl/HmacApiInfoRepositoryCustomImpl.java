@@ -13,7 +13,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import static com.cogent.cogentappointment.logging.HmacApiInfoQuery.*;
+import static com.cogent.cogentappointment.logging.query.HmacApiInfoQuery.*;
 import static com.cogent.cogentappointment.logging.constants.ErrorMessageConstants.INVALID_USERNAME_OR_HOSPITAL_CODE;
 import static com.cogent.cogentappointment.logging.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.logging.utils.common.QueryUtils.createQuery;

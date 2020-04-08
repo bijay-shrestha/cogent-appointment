@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.logging;
+package com.cogent.cogentappointment.logging.query;
 
 /**
  * @author Sauravi Thapa २०/२/२

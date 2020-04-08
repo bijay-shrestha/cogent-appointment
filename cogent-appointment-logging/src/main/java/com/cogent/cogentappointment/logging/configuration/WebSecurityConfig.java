@@ -1,4 +1,5 @@
 package com.cogent.cogentappointment.logging.configuration;
+import com.cogent.cogentappointment.logging.exception.authentication.AuthEntryPointHmac;
 import com.cogent.cogentappointment.logging.security.filter.HmacAuthenticationFilter;
 import com.cogent.cogentappointment.logging.security.hmac.HMACConfig;
 import com.cogent.cogentappointment.logging.service.impl.UserDetailsServiceImpl;

@@ -31,9 +31,6 @@ public class UniversityUpdateRequestDTO implements Serializable {
     private Long countryId;
 
     @NotNull
-    private Long hospitalId;
-
-    @NotNull
     @Status
     private Character status;
 

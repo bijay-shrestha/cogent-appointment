@@ -17,9 +17,11 @@ public class ErrorMessageConstants {
         String APPOINTMENT_FAILED_MESSAGE = "The selected time slot has expired. Please try again!";
 
         String APPOINTMENT_FAILED_DEBUG_MESSAGE = "AppointmentReservationLog(s) is null";
+
+        String INVALID_TRANSACTION_NUMBER = "Transaction number '%s' and patient '%s' not found";
     }
 
-    public final static String AUTH_HEADER_NULL="AUTH HEADER NULL";
+    public final static String AUTH_HEADER_NULL = "AUTH HEADER NULL";
 
 
     public final static String HMAC_BAD_SIGNATURE = "HmacAccessFilter.badSignature";

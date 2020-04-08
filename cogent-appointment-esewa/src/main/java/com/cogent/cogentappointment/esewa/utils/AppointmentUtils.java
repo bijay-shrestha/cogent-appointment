@@ -189,10 +189,10 @@ public class AppointmentUtils {
     }
 
     public static AppointmentMinResponseWithStatusDTO parseToAppointmentMinResponseWithStatusDTO(
-            List<AppointmentMinResponseDTO> minResponseDTOList) {
+            List<AppointmentMinResponseDTO> appointmentInfo) {
 
         return AppointmentMinResponseWithStatusDTO.builder()
-                .appointmentMinResponseDTOS(minResponseDTOList)
+                .appointmentInfo(appointmentInfo)
                 .responseStatus(OK)
                 .responseCode(OK.value())
                 .build();
@@ -202,7 +202,7 @@ public class AppointmentUtils {
             AppointmentDetailResponseDTO responseDTO) {
 
         return AppointmentDetailResponseWithStatusDTO.builder()
-                .appointmentDetailResponseDTO(responseDTO)
+                .appointmentDetailInfo(responseDTO)
                 .responseStatus(OK)
                 .responseCode(OK.value())
                 .build();

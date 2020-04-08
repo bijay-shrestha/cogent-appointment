@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.logging.exception;
 
 import lombok.Getter;
+
 import static com.cogent.cogentappointment.logging.exception.utils.ExceptionUtils.getLocalDateTime;
 import static com.cogent.cogentappointment.logging.exception.utils.ExceptionUtils.toMap;
 import static org.springframework.http.HttpStatus.CONFLICT;

@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.logging.exception;
 
 import com.cogent.cogentappointment.logging.exception.utils.ExceptionUtils;
 import lombok.Getter;
+
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 /**

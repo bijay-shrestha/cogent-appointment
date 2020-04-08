@@ -1,6 +1,8 @@
 package com.cogent.cogentappointment.logging.exception;
+
 import com.cogent.cogentappointment.logging.exception.utils.ExceptionUtils;
 import lombok.Getter;
+
 import static com.cogent.cogentappointment.logging.exception.utils.ExceptionUtils.generateMessage;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 

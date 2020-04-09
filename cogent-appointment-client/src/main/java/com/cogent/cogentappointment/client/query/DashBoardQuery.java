@@ -26,8 +26,9 @@ public class DashBoardQuery {
             "SELECT" +
                     " COUNT(a.id)" +
                     " FROM Appointment a" +
+                    " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
                     " WHERE " +
-                    " (a.appointmentDate BETWEEN :fromDate AND :toDate)" +
+                    " (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
                     " AND a.hospitalId.id=:hospitalId";
 
     public static String QUERY_TO_COUNT_REGISTERED_APPOINTMENT =
@@ -35,9 +36,10 @@ public class DashBoardQuery {
                     " COUNT(a.id)" +
                     " FROM Appointment a" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =a.patientId.id" +
+                    " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
                     " AND hpi.hospital.id = a.hospitalId.id" +
                     " WHERE hpi.isRegistered='Y'" +
-                    " AND (a.appointmentDate BETWEEN :fromDate AND :toDate)" +
+                    " AND (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
                     " AND a.hospitalId.id=:hospitalId";
 
     public static String QUERY_TO_COUNT_NEW_PATIENT_APPOINTMENT =
@@ -45,9 +47,10 @@ public class DashBoardQuery {
                     " COUNT(a.id)" +
                     " FROM Appointment a" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =a.patientId.id" +
+                    " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
                     " AND hpi.hospital.id = a.hospitalId.id" +
                     " WHERE hpi.isRegistered='N'" +
-                    " AND (a.appointmentDate BETWEEN :fromDate AND :toDate)" +
+                    " AND (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
                     " AND  a.hospitalId.id=:hospitalId";
 
     public static String QUERY_TO_COUNT_OVERALL_REGISTERED_PATIENTS =

@@ -42,11 +42,15 @@ public class AdminLogQuery {
 
     public static String WHERE_CLAUSE_TO_SEARCH_ADMIN_LOGS(AdminLogSearchRequestDTO searchRequestDTO) {
 
-        String whereClause = " WHERE al.status != 'D'"+
+        String whereClause = " WHERE al.status != 'D'" +
                 " AND al.logDate BETWEEN :fromDate AND :toDate";
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getHospitalId()))
             whereClause += " AND h.id=" + searchRequestDTO.getHospitalId();
+
+
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getUserName()))
+            whereClause += " AND (a.username =:username OR a.email =:username OR a.mobileNumber = :username)";
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getParentId()))
             whereClause += " AND al.parentId=" + searchRequestDTO.getParentId();

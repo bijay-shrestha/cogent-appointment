@@ -19,8 +19,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
 
-import static com.cogent.cogentappointment.logging.constants.QueryConstants.FROM_DATE;
-import static com.cogent.cogentappointment.logging.constants.QueryConstants.TO_DATE;
+import static com.cogent.cogentappointment.logging.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.logging.query.AdminLogQuery.QUERY_TO_SEARCH_ADMIN_LOGS;
 import static com.cogent.cogentappointment.logging.utils.common.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.logging.utils.common.QueryUtils.createQuery;
@@ -41,7 +40,9 @@ public class AdminLogRepositoryCustomImpl implements AdminLogRepositoryCustom {
     public AdminLogResponseDTO search(AdminLogSearchRequestDTO searchRequestDTO, Pageable pageable) {
         Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_ADMIN_LOGS(searchRequestDTO))
                 .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
-                .setParameter(TO_DATE, searchRequestDTO.getToDate());
+                .setParameter(TO_DATE, searchRequestDTO.getToDate())
+                .setParameter(USERNAME, searchRequestDTO.getUserName());
+
 
         addPagination.accept(pageable, query);
 
@@ -68,7 +69,8 @@ public class AdminLogRepositoryCustomImpl implements AdminLogRepositoryCustom {
 
         Query query = createQuery.apply(entityManager, AdminLogQuery.QUERY_TO_FETCH_USER_LOGS_STATICS(searchRequestDTO))
                 .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
-                .setParameter(TO_DATE, searchRequestDTO.getToDate());
+                .setParameter(TO_DATE, searchRequestDTO.getToDate())
+                .setParameter(USERNAME, searchRequestDTO.getUserName());
 
 
         List<AdminLogStaticsResponseDTO> result = transformQueryToResultList(query, AdminLogStaticsResponseDTO.class);

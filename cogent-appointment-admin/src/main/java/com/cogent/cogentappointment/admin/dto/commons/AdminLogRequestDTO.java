@@ -1,8 +1,7 @@
 package com.cogent.cogentappointment.admin.dto.commons;
 
 import com.cogent.cogentappointment.persistence.model.Admin;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -13,6 +12,9 @@ import java.io.Serializable;
  */
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class AdminLogRequestDTO implements Serializable {
 
     @NotNull

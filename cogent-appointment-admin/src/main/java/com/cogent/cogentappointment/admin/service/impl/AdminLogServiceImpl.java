@@ -31,10 +31,10 @@ public class AdminLogServiceImpl implements AdminLogService {
     }
 
     @Override
-    public void save(AdminLogRequestDTO requestDTO, HttpServletRequest request) {
+    public void save(AdminLogRequestDTO requestDTO, Character status, HttpServletRequest request) {
 
         Admin admin=adminRepository.findAdminById(requestDTO.getAdminId()).get();
-        AdminLog adminLog = parseToAdminLog(requestDTO, admin,request.getRemoteAddr());
+        AdminLog adminLog = parseToAdminLog(requestDTO,status, admin,request.getRemoteAddr());
         adminLogRepository.save(adminLog);
 
     }

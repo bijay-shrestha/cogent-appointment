@@ -54,9 +54,7 @@ public class AdminResource {
 
     @PutMapping(ACTIVE + MIN)
     @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
-    public ResponseEntity<?> fetchActiveAdminsForDropdown(@RequestBody AdminLogRequestDTO adminLogRequestDTO,
-                                                          HttpServletRequest httpServletRequest) {
-
+    public ResponseEntity<?> fetchActiveAdminsForDropdown() {
         return ok(adminService.fetchActiveAdminsForDropdown());
     }
 

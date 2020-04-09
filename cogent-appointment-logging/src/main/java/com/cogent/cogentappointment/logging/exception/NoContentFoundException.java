@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.logging.exception;
 
 import lombok.Getter;
 import org.springframework.util.StringUtils;
+
 import static com.cogent.cogentappointment.logging.exception.utils.ExceptionUtils.*;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 

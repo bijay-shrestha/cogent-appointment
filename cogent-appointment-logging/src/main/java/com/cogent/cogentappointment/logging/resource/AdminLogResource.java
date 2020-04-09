@@ -7,7 +7,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 import static com.cogent.cogentappointment.logging.constants.SwaggerConstants.AdminLogConstant.*;
 import static com.cogent.cogentappointment.logging.constants.WebResourceKeyConstants.*;

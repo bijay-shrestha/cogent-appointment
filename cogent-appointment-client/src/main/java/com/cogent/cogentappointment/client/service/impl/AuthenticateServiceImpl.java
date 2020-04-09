@@ -58,7 +58,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     }
 
     public void checkIfHospitalAdmin(AdminMinDetails adminMinDetails) {
-        if (adminMinDetails.getIsCompany().equals('N')) {
+        if (!adminMinDetails.getIsCompany().equals('N')) {
             log.error(CANNOT_ACCESS_CLIENT_MODULE_DEBUG_MESSAGE);
             throw new BadRequestException(CANNOT_ACCESS_CLIENT_MODULE,CANNOT_ACCESS_CLIENT_MODULE_DEBUG_MESSAGE);
         }

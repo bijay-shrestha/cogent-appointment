@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.client.service.impl;
 
-import com.cogent.cogentappointment.client.constants.StatusConstants;
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.doctor.*;
 import com.cogent.cogentappointment.client.dto.response.doctor.DoctorDetailResponseDTO;
@@ -26,8 +25,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.NAME_AND_MOBILE_NUMBER_DUPLICATION_MESSAGE;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.INACTIVE;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
-import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.client.log.constants.DoctorLog.*;
 import static com.cogent.cogentappointment.client.utils.DoctorUtils.*;
 import static com.cogent.cogentappointment.client.utils.GenderUtils.fetchGenderByCode;
@@ -150,7 +150,8 @@ public class DoctorServiceImpl implements DoctorService {
 
         updateDoctorQualification(doctor.getId(), requestDTO.getDoctorQualificationInfo());
 
-        updateDoctorAvatar(doctor, avatar);
+        if (requestDTO.getDoctorInfo().getIsAvatarUpdate().equals(YES))
+            updateDoctorAvatar(doctor, avatar);
 
         log.info(UPDATING_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
     }
@@ -428,7 +429,7 @@ public class DoctorServiceImpl implements DoctorService {
         if (!Objects.isNull(files)) {
             List<FileUploadResponseDTO> responseList = uploadFiles(doctor, new MultipartFile[]{files});
             setAvatarFileProperties(responseList.get(0), doctorAvatar);
-        } else doctorAvatar.setStatus(StatusConstants.INACTIVE);
+        } else doctorAvatar.setStatus(INACTIVE);
 
         saveDoctorAvatar(doctorAvatar);
     }
@@ -466,12 +467,12 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     private Function<Long, NoContentFoundException> DOCTOR_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        log.error(CONTENT_NOT_FOUND_BY_ID,DOCTOR,id);
+        log.error(CONTENT_NOT_FOUND_BY_ID, DOCTOR, id);
         throw new NoContentFoundException(Doctor.class, "id", id.toString());
     };
 
     private Function<Long, NoContentFoundException> DOCTOR_APPOINTMENT_CHARGE_WITH_GIVEN_DOCTOR_ID_NOT_FOUND = (doctorId) -> {
-        log.error(DOCTOR_APPOINTMENT_CHARGE_NOT_FOUND,DoctorAppointmentCharge.class.getSimpleName(),doctorId);
+        log.error(DOCTOR_APPOINTMENT_CHARGE_NOT_FOUND, DoctorAppointmentCharge.class.getSimpleName(), doctorId);
         throw new NoContentFoundException(DoctorAppointmentCharge.class, "doctorId", doctorId.toString());
     };
 }

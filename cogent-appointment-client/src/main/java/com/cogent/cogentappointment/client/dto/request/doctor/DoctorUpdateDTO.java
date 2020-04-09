@@ -60,4 +60,6 @@ public class DoctorUpdateDTO implements Serializable {
 
     @NotNull
     private Double appointmentFollowUpCharge;
+
+    private Character isAvatarUpdate;
 }

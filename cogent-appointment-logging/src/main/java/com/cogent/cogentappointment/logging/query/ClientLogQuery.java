@@ -1,14 +1,14 @@
 package com.cogent.cogentappointment.logging.query;
 
-import com.cogent.cogentappointment.logging.dto.request.admin.AdminLogSearchRequestDTO;
+import com.cogent.cogentappointment.logging.dto.request.client.ClientLogSearchRequestDTO;
 import org.springframework.util.ObjectUtils;
 
 /**
  * @author Rupak
  */
-public class AdminLogQuery {
+public class ClientLogQuery {
 
-    public static String QUERY_TO_FETCH_USER_LOGS_STATICS(AdminLogSearchRequestDTO searchRequestDTO) {
+    public static String QUERY_TO_FETCH_USER_LOGS_STATICS(ClientLogSearchRequestDTO searchRequestDTO) {
 
         return " SELECT " +
                 " al.feature as feature," +
@@ -17,14 +17,14 @@ public class AdminLogQuery {
                 " LEFT JOIN Admin a ON al.adminId.id =a.id" +
                 " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                 " LEFT JOIN Hospital h ON h.id=p.company" +
-                WHERE_CLAUSE_TO_SEARCH_ADMIN_LOGS(searchRequestDTO) +
+                WHERE_CLAUSE_TO_SEARCH_CLIENT_LOGS(searchRequestDTO) +
                 " GROUP BY al.feature " +
                 " ORDER BY count(al.id) DESC";
 
 
     }
 
-    public static String QUERY_TO_SEARCH_ADMIN_LOGS(AdminLogSearchRequestDTO searchRequestDTO) {
+    public static String QUERY_TO_SEARCH_CLIENT_LOGS(ClientLogSearchRequestDTO searchRequestDTO) {
 
         return " SELECT " +
                 " al.logDate as logDate," +
@@ -37,17 +37,13 @@ public class AdminLogQuery {
                 " LEFT JOIN Admin a ON al.adminId.id =a.id" +
                 " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                 " LEFT JOIN Hospital h ON h.id=p.company" +
-                WHERE_CLAUSE_TO_SEARCH_ADMIN_LOGS(searchRequestDTO);
+                WHERE_CLAUSE_TO_SEARCH_CLIENT_LOGS(searchRequestDTO);
     }
 
-    public static String WHERE_CLAUSE_TO_SEARCH_ADMIN_LOGS(AdminLogSearchRequestDTO searchRequestDTO) {
+    public static String WHERE_CLAUSE_TO_SEARCH_CLIENT_LOGS(ClientLogSearchRequestDTO searchRequestDTO) {
 
-        String whereClause = " WHERE al.status != 'D'" +
+        String whereClause = " WHERE h.id=:hospitalId AND al.status != 'D'" +
                 " AND al.logDate BETWEEN :fromDate AND :toDate";
-
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getHospitalId()))
-            whereClause += " AND h.id=" + searchRequestDTO.getHospitalId();
-
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getUserName()))
             whereClause += " AND (a.username =:username OR a.email =:username OR a.mobileNumber = :username)";
@@ -61,4 +57,5 @@ public class AdminLogQuery {
         return whereClause;
 
     }
+
 }

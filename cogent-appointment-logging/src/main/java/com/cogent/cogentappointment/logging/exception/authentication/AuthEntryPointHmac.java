@@ -1,6 +1,6 @@
-package com.cogent.cogentappointment.client.exception.authentication;
+package com.cogent.cogentappointment.logging.exception.authentication;
 
-import com.cogent.cogentappointment.client.dto.response.login.LoginErrorResponse;
+import com.cogent.cogentappointment.logging.dto.response.login.LoginErrorResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.core.AuthenticationException;
@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.INVALID_PASSWORD;
+import static com.cogent.cogentappointment.logging.constants.ErrorMessageConstants.INVALID_PASSWORD;
 
 /**
  * @author Sauravi Thapa २०/१/२०

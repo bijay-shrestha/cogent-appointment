@@ -17,6 +17,8 @@ public class ClientLogSearchRequestDTO implements Serializable {
 
     private Date toDate;
 
+    private String userName;
+
     private Long parentId;
 
     private Long roleId;

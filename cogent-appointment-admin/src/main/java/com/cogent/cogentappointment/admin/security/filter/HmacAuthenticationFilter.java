@@ -106,13 +106,6 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
             throw new BadCredentialsException(HMAC_BAD_SIGNATURE);
     }
 
-    public PreAuthenticatedAuthenticationToken getAuthentication(UserDetails userDetails) {
-        return new PreAuthenticatedAuthenticationToken(
-                userDetails,
-                null,
-                null);
-    }
-
     public PreAuthenticatedAuthenticationToken getAuthenticationForCompany(String username, Long companyId) {
         return new PreAuthenticatedAuthenticationToken(
                 username,

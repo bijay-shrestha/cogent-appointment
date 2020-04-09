@@ -39,8 +39,9 @@ public class DashBoardQuery {
         return "SELECT" +
                 " COUNT(a.id)" +
                 " FROM Appointment a" +
+                " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
                 " WHERE " +
-                " (a.appointmentDate BETWEEN :fromDate AND :toDate)" +
+                " (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId);
     }
 
@@ -50,9 +51,10 @@ public class DashBoardQuery {
                 " COUNT(a.id)" +
                 " FROM Appointment a" +
                 " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =a.patientId.id" +
+                " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
                 " AND hpi.hospital.id = a.hospitalId.id" +
                 " WHERE hpi.isRegistered='Y'" +
-                " AND (a.appointmentDate BETWEEN :fromDate AND :toDate)" +
+                " AND (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId);
     }
 
@@ -62,9 +64,10 @@ public class DashBoardQuery {
                 " COUNT(a.id)" +
                 " FROM Appointment a" +
                 " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =a.patientId.id" +
+                " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
                 " AND hpi.hospital.id = a.hospitalId.id" +
                 " WHERE hpi.isRegistered='N'" +
-                " AND (a.appointmentDate BETWEEN :fromDate AND :toDate)" +
+                " AND (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId);
     }
 

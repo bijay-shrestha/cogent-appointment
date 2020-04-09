@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.logging.service;
+package com.cogent.cogentappointment.logging.repository.custom;
 
 import com.cogent.cogentappointment.logging.dto.request.admin.AdminLogSearchRequestDTO;
 import com.cogent.cogentappointment.logging.dto.request.client.ClientLogSearchRequestDTO;
@@ -11,9 +11,11 @@ import java.util.List;
 /**
  * @author Rupak
  */
-public interface ClientLogService {
+public interface ClientLogRepositoryCustom {
+
 
     AdminLogResponseDTO search(ClientLogSearchRequestDTO searchRequestDTO, Pageable pageable);
 
     List<AdminLogStaticsResponseDTO> fetchUserMenuLogsStatics(ClientLogSearchRequestDTO searchRequestDTO);
+
 }

@@ -12,6 +12,10 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 
+import static com.cogent.cogentappointment.logging.log.UserLog.*;
+import static com.cogent.cogentappointment.logging.utils.common.DateUtils.getDifferenceBetweenTwoTime;
+import static com.cogent.cogentappointment.logging.utils.common.DateUtils.getTimeInMillisecondsFromLocalDate;
+
 /**
  * @author Rupak
  */
@@ -28,13 +32,29 @@ public class AdminLogServiceImpl implements AdminLogService {
 
     @Override
     public AdminLogResponseDTO search(AdminLogSearchRequestDTO searchRequestDTO, Pageable pageable) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(USER_LOG_SEARCH_PROCESS_STARTED, USER_LOG);
+
         AdminLogResponseDTO responseDTOS = adminLogRepository.search(searchRequestDTO, pageable);
+
+        log.info(USER_LOG_SEARCH_PROCESS_COMPLETED, USER_LOG, getDifferenceBetweenTwoTime(startTime));
+
         return responseDTOS;
     }
 
     @Override
     public List<AdminLogStaticsResponseDTO> fetchUserMenuLogsStatics(AdminLogSearchRequestDTO searchRequestDTO) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(USER_LOG_SEARCH_PROCESS_STARTED, USER_LOG);
+
         List<AdminLogStaticsResponseDTO> responseDTOS = adminLogRepository.fetchUserMenuLogsStatics(searchRequestDTO);
+
+        log.info(USER_LOG_SEARCH_PROCESS_COMPLETED, USER_LOG, getDifferenceBetweenTwoTime(startTime));
+
         return responseDTOS;
     }
 }

@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.admin.loghandler;
 
 import com.cogent.cogentappointment.admin.dto.commons.AdminLogRequestDTO;
 import com.cogent.cogentappointment.admin.service.AdminLogService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -15,11 +16,9 @@ import static com.cogent.cogentappointment.admin.loghandler.RequestHandler.getPa
 @Component
 public class UserLogInterceptor implements HandlerInterceptor {
 
-    private final AdminLogService adminLogService;
+    @Autowired
+    private AdminLogService adminLogService;
 
-    public UserLogInterceptor(AdminLogService adminLogService) {
-        this.adminLogService = adminLogService;
-    }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {

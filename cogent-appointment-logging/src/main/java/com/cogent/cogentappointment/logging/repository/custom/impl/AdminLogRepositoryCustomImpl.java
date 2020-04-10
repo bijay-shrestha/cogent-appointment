@@ -18,6 +18,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
+import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.logging.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.logging.query.AdminLogQuery.QUERY_TO_SEARCH_ADMIN_LOGS;
@@ -75,6 +76,14 @@ public class AdminLogRepositoryCustomImpl implements AdminLogRepositoryCustom {
 
         List<AdminLogStaticsResponseDTO> result = transformQueryToResultList(query, AdminLogStaticsResponseDTO.class);
 
-        return result;
+        if (result.isEmpty()) {
+//            error();
+            throw NO_USER_STATICS_FOUND.get();
+        } else {
+            return result;
+        }
     }
+
+
+    private Supplier<NoContentFoundException> NO_USER_STATICS_FOUND = () -> new NoContentFoundException(AdminLog.class);
 }

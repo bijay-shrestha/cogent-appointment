@@ -10,45 +10,14 @@ public class ErrorMessageConstants {
         String ADMIN_NOT_ACTIVE = "Admin '%s' is not active";
 
         String ADMIN_REGISTERED = "Admin is already registered";
-
-        String DUPLICATE_PASSWORD_MESSAGE = "New Password must be different than current password.";
-
-        String INVALID_CONFIRMATION_TOKEN = "Invalid Confirmation Link. Please try again.";
-
-        String PASSWORD_MISMATCH_MESSAGE = "Old password doesn't match.";
-
-        String ADMIN_INFO_NOT_FOUND = "Admin info is not found.";
-
-        String ADMIN_CANNOT_BE_REGISTERED_MESSAGE = "Admin exceeds for the selected hospital";
-
-        String ADMIN_CANNOT_BE_REGISTERED_DEBUG_MESSAGE = "Admin count is equal to hospital's allowed number of admins";
-
-        String INVALID_DELETE_REQUEST = "Sorry! Cannot delete this admin since it has Super Admin Profile";
-    }
-
-    public interface AdminLogServiceMessages {
-
-        String ADMIN_LOG_NOT_FOUND = "Admin Log '%s' doesn't exist";
     }
 
     //B
 
     //C
     public final static String CANNOT_CREATE_SIGNATURE = "Cannot create signature: ";
-    public static final String CODE_DUPLICATION_MESSAGE = "%s already exists with code '%s'";
 
     //D
-    public interface DoctorDutyRosterServiceMessages {
-        String DUPLICATION_MESSAGE = "Doctor Duty Roster already exists for selected doctor.";
-
-        String BAD_REQUEST_MESSAGE = "Doctor Duty Roster Override doesn't lie within the duty roster date range.";
-
-        String APPOINTMENT_EXISTS_MESSAGE = "Cannot update doctor duty roster because appointment" +
-                " exists within the selected date range.";
-
-        String APPOINTMENT_EXISTS_ON_WEEK_DAY_MESSAGE = "Cannot update doctor duty roster because appointment" +
-                " exists within the selected date range '%s'.";
-    }
 
     //E
 
@@ -74,9 +43,6 @@ public class ErrorMessageConstants {
     public final static String HMAC_BAD_SIGNATURE = "HmacAccessFilter.badSignature";
 
     //I
-    public static final String INVALID_DATE_MESSAGE = "From date cannot be greater than to date";
-    public static final String INVALID_DATE_DEBUG_MESSAGE = "Failed to complete operation due to invalid from and to date";
-    public static final String INVALID_VERIFICATION_TOKEN = "Invalid verification token";
     public static final String INVALID_USERNAME_OR_HOSPITAL_CODE = "Invalid username or hospitalcode";
     public static final String INVALID_PASSWORD = "Invalid password";
 
@@ -89,25 +55,12 @@ public class ErrorMessageConstants {
     //M
 
     //N
-    public static final String NAME_DUPLICATION_MESSAGE = "%s already exists with name '%s'";
-    public static final String NAME_AND_MOBILE_NUMBER_DUPLICATION_MESSAGE = "%s already exists with name '%s' " +
-            "and mobile number '%s'";
-
-    public static final String NAME_AND_CODE_DUPLICATION_MESSAGE = "%s already exists with name '%s' " +
-            "and code '%s' ";
-
 
     //O
 
     //P
-    public interface PatientServiceMessages {
-        String DUPLICATE_PATIENT_MESSAGE = "Patient already exists with name '%s', mobile number '%s' and date of birth " +
-                "'%s'";
-    }
 
-    public interface ProfileServiceMessages {
-        String INVALID_DELETE_REQUEST = "Sorry! Cannot delete Super Admin Profile";
-    }
+
 
 
     //Q
@@ -119,6 +72,9 @@ public class ErrorMessageConstants {
 
 
     //T
+
+    //U
+    public static final String USER_MENU_STATICS = "User menu statics not found...";
 
     //V
 

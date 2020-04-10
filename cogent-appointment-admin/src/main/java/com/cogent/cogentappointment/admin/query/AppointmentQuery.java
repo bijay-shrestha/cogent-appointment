@@ -262,8 +262,19 @@ public class AppointmentQuery {
             AppointmentLogSearchDTO appointmentLogSearchDTO) {
 
         String whereClause = " WHERE " +
-                " sp.status='Y' " +
-                " AND a.appointmentDate BETWEEN :fromDate AND :toDate";
+                " sp.status='Y' ";
+
+        if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getFromDate())
+                && !ObjectUtils.isEmpty(appointmentLogSearchDTO.getToDate()))
+            whereClause += " AND (a.appointmentDate BETWEEN '" + utilDateToSqlDate(appointmentLogSearchDTO.getFromDate())
+                    + "' AND '" + utilDateToSqlDate(appointmentLogSearchDTO.getToDate()) + "')";
+
+        if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getTransactionFromDate())
+                && !ObjectUtils.isEmpty(appointmentLogSearchDTO.getTransactionToDate()))
+            whereClause += " AND (atd.transactionDate BETWEEN '" +
+                    utilDateToSqlDate(appointmentLogSearchDTO.getTransactionFromDate())
+                    + "' AND '" + utilDateToSqlDate(appointmentLogSearchDTO.getTransactionToDate()) + "')";
+
 
         if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getAppointmentNumber()))
             whereClause += " AND a.appointmentNumber LIKE '%" + appointmentLogSearchDTO.getAppointmentNumber() + "%'";

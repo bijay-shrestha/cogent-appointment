@@ -265,6 +265,7 @@ public class AppointmentUtils {
             final int APPOINTMENT_STATUS_INDEX = 15;
             final int REFUND_AMOUNT_INDEX = 16;
             final int PATIENT_ADDRESS_INDEX = 17;
+            final int TRANSACTION_DATE_INDEX = 18;
 
             Date appointmentDate = (Date) result[APPOINTMENT_DATE_INDEX];
             Date patientDob = (Date) result[PATIENT_DOB_INDEX];
@@ -301,6 +302,7 @@ public class AppointmentUtils {
                             .status(result[APPOINTMENT_STATUS_INDEX].toString())
                             .refundAmount(refundAmount)
                             .patientAddress(result[PATIENT_ADDRESS_INDEX].toString())
+                            .transactionDate((Date) result[TRANSACTION_DATE_INDEX])
                             .build();
 
             appointmentLogSearchDTOS.add(appointmentLogDTO);

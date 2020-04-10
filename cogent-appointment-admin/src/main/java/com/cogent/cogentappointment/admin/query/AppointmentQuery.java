@@ -268,6 +268,9 @@ public class AppointmentQuery {
         if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getAppointmentNumber()))
             whereClause += " AND a.appointmentNumber LIKE '%" + appointmentLogSearchDTO.getAppointmentNumber() + "%'";
 
+        if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getTransactionNumber()))
+            whereClause += " AND atd.transactionNumber LIKE '%" + appointmentLogSearchDTO.getTransactionNumber() + "%'";
+
         if (!Objects.isNull(appointmentLogSearchDTO.getStatus()) && !appointmentLogSearchDTO.getStatus().equals(""))
             whereClause += " AND a.status = '" + appointmentLogSearchDTO.getStatus() + "'";
 

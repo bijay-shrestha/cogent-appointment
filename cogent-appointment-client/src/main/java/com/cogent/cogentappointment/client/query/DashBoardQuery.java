@@ -194,7 +194,8 @@ public class DashBoardQuery {
     }
 
     private static String GET_WHERE_CLAUSE_GENERATE_DOCTOR_REVENUE_LIST(DoctorRevenueRequestDTO requestDTO) {
-        String whereClause = " WHERE h.id=:hospitalId ";
+        String whereClause = " WHERE h.id=:hospitalId" +
+                " AND a.status='PA' ";
 
         if (requestDTO.getSpecializationId() > 0)
             whereClause += " AND s.id=" + requestDTO.getSpecializationId();

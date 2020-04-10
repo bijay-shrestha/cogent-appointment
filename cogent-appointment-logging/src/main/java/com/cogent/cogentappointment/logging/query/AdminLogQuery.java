@@ -27,12 +27,13 @@ public class AdminLogQuery {
     public static String QUERY_TO_SEARCH_ADMIN_LOGS(AdminLogSearchRequestDTO searchRequestDTO) {
 
         return " SELECT " +
-                " al.logDate as logDate," +
+                " al.logDateTime as logDateTime," +
                 " a.username as userName," +
                 " al.ipAddress as ipAddress," +
                 " al.feature as feature," +
                 " al.actionType as actionType," +
-                " al.logDescription as logDescription" +
+                " al.logDescription as logDescription," +
+                " al.status as status" +
                 " FROM AdminLog al" +
                 " LEFT JOIN Admin a ON al.adminId.id =a.id" +
                 " LEFT JOIN Profile p ON p.id=a.profileId.id" +

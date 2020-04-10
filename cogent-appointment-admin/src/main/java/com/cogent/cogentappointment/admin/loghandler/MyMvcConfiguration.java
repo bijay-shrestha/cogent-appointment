@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.configuration;
+package com.cogent.cogentappointment.admin.loghandler;
 
 import com.cogent.cogentappointment.admin.service.AdminLogService;
 import org.springframework.context.annotation.Bean;
@@ -23,7 +23,7 @@ public class MyMvcConfiguration extends WebMvcConfigurerAdapter {
         registry.addInterceptor(this.myLogInterceptor());
     }
     @Bean
-    public MyLogInterceptor myLogInterceptor() {
-        return new MyLogInterceptor(adminLogService);
+    public UserLogInterceptor myLogInterceptor() {
+        return new UserLogInterceptor(adminLogService);
     }
 }

@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import static com.cogent.cogentappointment.logging.constants.SwaggerConstants.AdminLogConstant.SEARCH_OPERATION;
 import static com.cogent.cogentappointment.logging.constants.SwaggerConstants.AdminLogConstant.USER_MENU_STATICS_OPERATION;

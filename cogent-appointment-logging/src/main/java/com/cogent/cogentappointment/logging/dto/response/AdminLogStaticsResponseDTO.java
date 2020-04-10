@@ -1,5 +1,7 @@
 package com.cogent.cogentappointment.logging.dto.response;
 
+import lombok.*;
+
 /**
  * @author Rupak
  */

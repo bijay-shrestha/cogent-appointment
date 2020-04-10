@@ -1,6 +1,5 @@
-package com.cogent.cogentappointment.admin.configuration;
+package com.cogent.cogentappointment.admin.loghandler;
 
-import com.cogent.cogentappointment.admin.constants.StatusConstants;
 import com.cogent.cogentappointment.admin.dto.commons.AdminLogRequestDTO;
 import com.cogent.cogentappointment.admin.service.AdminLogService;
 import org.springframework.stereotype.Component;
@@ -9,28 +8,21 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
+import static com.cogent.cogentappointment.admin.loghandler.RequestHandler.getParameters;
 
 @Component
-public class MyLogInterceptor implements HandlerInterceptor {
-
+public class UserLogInterceptor implements HandlerInterceptor {
 
     private final AdminLogService adminLogService;
 
-    public MyLogInterceptor(AdminLogService adminLogService) {
+    public UserLogInterceptor(AdminLogService adminLogService) {
         this.adminLogService = adminLogService;
     }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-//        long executionStartTime = System.currentTimeMillis();
-//        request.setAttribute("start-time", executionStartTime);
-//        String fishTag = UUID.randomUUID().toString();
-//        String operationPath = this.contextPath + request.getServletPath();
-//        String user = "myuser"; /* GET USER INFORMATION FROM SESSION */
-//        ThreadContext.put("id", fishTag);
-//        ThreadContext.put("path", operationPath);
-//        ThreadContext.put("user", user);
 
         System.out.println("pre  process-----------------------------------------------");
 
@@ -41,54 +33,53 @@ public class MyLogInterceptor implements HandlerInterceptor {
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
                                 Exception exception) throws Exception {
 
-
         System.out.println("ACTION COMPLETED-----------------------------------");
+
+        System.out.println("Method=" + request.getMethod() + "\n" +
+                "URL=" + request.getRequestURI() + "\n" +
+                "Params=" + getParameters(request));
+
+        String ipAddress = RequestHandler.getRemoteAddr(request);
+
+        String parameters = String.valueOf(request.getParameterNames());
 
         AdminLogRequestDTO adminLogRequestDTO = AdminLogRequestDTO
                 .builder()
                 .adminId(1l)
-                .feature("Hospital")
+                .feature("Doctor")
                 .actionType("Created")
                 .parentId(1l)
                 .roleId(1l)
-                .logDescription("Hospital is Created")
+                .logDescription("New Doctor is Created")
                 .build();
 
+        if (exception == null) {
 
-        if (exception.getStackTrace() == null) {
-
-            saveSuccessLogs(adminLogRequestDTO, request);
-
+            saveSuccessLogs(adminLogRequestDTO, ipAddress);
         }
 
-        if (exception.getStackTrace() != null) {
+        if (exception != null) {
 
-            adminLogRequestDTO.setLogDescription(exception.getLocalizedMessage());
-
-            saveFailedLogs(adminLogRequestDTO, request);
+            adminLogRequestDTO.setLogDescription("Process cannot be completed due to exception...");
+            saveFailedLogs(adminLogRequestDTO, ipAddress);
             exception.printStackTrace();
-
         }
 
+    }
+
+    private void saveSuccessLogs(AdminLogRequestDTO adminLogRequestDTO, String ipAddress) {
+
+        System.out.println("SAVING USER LOGS STARTED-----------------------------------");
+        adminLogService.save(adminLogRequestDTO, ACTIVE, ipAddress);
+        System.out.println("SAVING USER LOGS COMPLETED-----------------------------------");
 
     }
 
-    private void saveSuccessLogs(AdminLogRequestDTO adminLogRequestDTO, HttpServletRequest httpServletRequest) {
+    private void saveFailedLogs(AdminLogRequestDTO adminLogRequestDTO, String ipAddress) {
 
         System.out.println("SAVING USER LOGS STARTED-----------------------------------");
-        adminLogService.save(adminLogRequestDTO, StatusConstants.ACTIVE, httpServletRequest);
+        adminLogService.save(adminLogRequestDTO, INACTIVE, ipAddress);
         System.out.println("SAVING USER LOGS COMPLETED-----------------------------------");
-
-
-    }
-
-    private void saveFailedLogs(AdminLogRequestDTO adminLogRequestDTO, HttpServletRequest httpServletRequest) {
-
-        System.out.println("SAVING USER LOGS STARTED-----------------------------------");
-        adminLogService.save(adminLogRequestDTO, INACTIVE, httpServletRequest);
-        System.out.println("SAVING USER LOGS COMPLETED-----------------------------------");
-
-
     }
 
 }

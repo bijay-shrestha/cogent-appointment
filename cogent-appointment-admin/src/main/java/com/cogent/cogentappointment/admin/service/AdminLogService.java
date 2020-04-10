@@ -9,6 +9,6 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface AdminLogService {
 
-    void save(AdminLogRequestDTO adminRequestDTO,Character status, HttpServletRequest httpServletRequest);
+    void save(AdminLogRequestDTO adminRequestDTO,Character status, String ipAddress);
 
 }

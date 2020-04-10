@@ -23,7 +23,7 @@ import static com.cogent.cogentappointment.admin.constants.QueryConstants.NAME;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.QualificationAliasLog.QUALIFICATION_ALIAS;
 import static com.cogent.cogentappointment.admin.query.QualificationAliasQuery.*;
-import static com.cogent.cogentappointment.admin.query.QualificationQuery.QUERY_TO_VALIDATE_DUPLICITY;
+import static com.cogent.cogentappointment.admin.query.QualificationAliasQuery.QUERY_TO_VALIDATE_DUPLICITY;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;

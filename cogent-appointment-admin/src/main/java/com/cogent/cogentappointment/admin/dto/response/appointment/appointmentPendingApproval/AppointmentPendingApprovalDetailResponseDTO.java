@@ -1,4 +1,5 @@
-package com.cogent.cogentappointment.esewa.dto.request.appointment.log;
+package com.cogent.cogentappointment.admin.dto.response.appointment.appointmentPendingApproval;
+
 
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import lombok.*;
@@ -11,13 +12,13 @@ import java.util.Date;
  */
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class AppointmentLogDTO implements Serializable {
+public class AppointmentPendingApprovalDetailResponseDTO implements Serializable {
 
-    private String status;
-    
+    private Long appointmentId;
+
     private String hospitalName;
 
     private Date appointmentDate;
@@ -31,8 +32,6 @@ public class AppointmentLogDTO implements Serializable {
     private String registrationNumber;
 
     private String patientName;
-
-    private String patientAddress;
 
     private Gender patientGender;
 
@@ -52,6 +51,5 @@ public class AppointmentLogDTO implements Serializable {
 
     private Double appointmentAmount;
 
-    private Double refundAmount;
-
+    private Character isSelf;
 }

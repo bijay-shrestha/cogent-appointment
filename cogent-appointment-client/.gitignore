@@ -37,7 +37,5 @@ build/
 ###yml file
 *.yml
 **/*.yml
-*.yaml
-**/*.yaml
 
 

@@ -13,10 +13,4 @@ public class MinioStorageConfiguration {
 
     @Value("${serverlocation}")
     private String serverlocation;
-
-    @Value("${spring.minio.bucket}")
-    private String bucket;
-
-    @Value("${spring.minio.secret-key}")
-    private String secretKey;
 }

@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
  */
 public interface PatientService {
 
-
     Patient saveSelfPatient(PatientRequestByDTO requestDTO);
 
     Patient saveOtherPatient(PatientRequestForDTO requestForPatientInfo);

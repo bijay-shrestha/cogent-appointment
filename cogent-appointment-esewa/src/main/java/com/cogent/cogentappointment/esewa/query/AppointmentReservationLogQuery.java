@@ -32,4 +32,12 @@ public class AppointmentReservationLogQuery {
                     " AND a.specializationId =:specializationId" +
                     " AND DATE_FORMAT(a.appointmentTime,'%H:%i') =:appointmentTime";
 
+    public static String QUERY_TO_VALIDATE_APPOINTMENT_RESERVATION_DUPLICITY =
+            "SELECT COUNT(a.id)" +
+                    " FROM AppointmentReservationLog a" +
+                    " WHERE" +
+                    " a.appointmentDate =:appointmentDate" +
+                    " AND a.doctorId =:doctorId" +
+                    " AND a.specializationId =:specializationId" +
+                    " AND DATE_FORMAT(a.appointmentTime,'%H:%i') =:appointmentTime";
 }

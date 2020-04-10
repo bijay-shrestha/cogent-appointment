@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.esewa.repository;
 
-import com.cogent.cogentappointment.esewa.repository.custom.PatientMetaInfoRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.PatientMetaInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,9 +10,8 @@ import org.springframework.stereotype.Repository;
  * @author smriti on 2019-08-27
  */
 @Repository
-public interface PatientMetaInfoRepository extends JpaRepository<PatientMetaInfo, Long>,
-        PatientMetaInfoRepositoryCustom {
+public interface PatientMetaInfoRepository extends JpaRepository<PatientMetaInfo, Long> {
 
-    @Query("FROM PatientMetaInfo pmi WHERE pmi.patient.id=:patientId AND pmi.status!='D'")
+    @Query("SELECT pmi FROM PatientMetaInfo pmi WHERE pmi.patient.id=:patientId AND pmi.status!='D'")
     PatientMetaInfo fetchByPatientId(@Param("patientId") Long patientId);
 }

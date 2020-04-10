@@ -19,13 +19,12 @@ public class QualificationAliasUtils {
         return qualificationAlias;
     }
 
-    public static QualificationAlias parseToUpdatedQualificationAlias(QualificationAlias qualificationAlias,
-                                                                      QualificationAliasUpdateRequestDTO requestDTO) {
+    public static void parseToUpdatedQualificationAlias(QualificationAlias qualificationAlias,
+                                                        QualificationAliasUpdateRequestDTO requestDTO) {
 
         qualificationAlias.setName(convertToNormalCase(requestDTO.getName()));
         qualificationAlias.setStatus(requestDTO.getStatus());
         qualificationAlias.setRemarks(requestDTO.getRemarks());
-        return qualificationAlias;
     }
 
     public static void parseToDeletedQualification(QualificationAlias qualificationAlias,

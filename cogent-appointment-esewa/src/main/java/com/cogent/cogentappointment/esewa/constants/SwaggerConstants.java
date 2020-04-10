@@ -18,7 +18,8 @@ public class SwaggerConstants {
         String RESCHEDULE_OPERATION = "Reschedule appointment date and time.";
         String FETCH_APPOINTMENT_HISTORY = " Fetch appointment history (only approved)";
         String CANCEL_REGISTRATION_OPERATION = "Delete Appointment Reservation when user cancels registration process";
-
+        String FETCH_APPOINTMENT_TRANSACTION_STATUS = "Fetch Appointment Transaction Status." +
+                " If 'Y', then it is successful appointment, else it is failed appointment";
     }
 
     public static final String[] AUTH_WHITELIST = {
@@ -43,8 +44,6 @@ public class SwaggerConstants {
 
 
     //D
-
-
 
 
     //E
@@ -87,6 +86,10 @@ public class SwaggerConstants {
     //K
     //L
     //M
+    public interface MinioFileConstant {
+        String BASE_API_VALUE = "This is Minio File Resource";
+        String FETCH_FILE_OPERATION = "Fetch file from Minio server";
+    }
 
     //N
 
@@ -106,7 +109,6 @@ public class SwaggerConstants {
         String FETCH_DETAILS_BY_ID = " Fetch patient details by id";
 
     }
-
 
 
     //Q

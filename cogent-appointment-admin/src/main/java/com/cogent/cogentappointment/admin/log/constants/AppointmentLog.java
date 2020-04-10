@@ -18,6 +18,8 @@ public class AppointmentLog {
 
     public final static String PENDING_APPROVAL_LIST = "PENDING APPROVALS";
 
+    public static String PENDING_APPROVAL_DETAIL = "PENDING APPROVALS DETAIL";
+
     public final static String APPROVE_PROCESS_STARTED = ":::: APPROVING {} STARTED ::::";
     public final static String APPROVE_PROCESS_COMPLETED = ":::: APPROVING {} COMPLETED IN {} ms ::::";
 

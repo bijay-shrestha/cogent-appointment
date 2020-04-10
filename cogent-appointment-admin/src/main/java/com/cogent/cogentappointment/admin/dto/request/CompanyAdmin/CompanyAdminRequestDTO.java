@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.dto.request.CompanyAdmin;
 
 import com.cogent.cogentappointment.admin.constraintvalidator.Status;
+import com.cogent.cogentappointment.admin.dto.request.admin.AdminDashboardRequestDTO;
 import lombok.*;
 
 import javax.validation.constraints.Email;
@@ -49,6 +50,8 @@ public class CompanyAdminRequestDTO implements Serializable {
     private Long profileId;
 
     private List<String> macAddressInfo;
+
+    private List<AdminDashboardRequestDTO> adminDashboardRequestDTOS;
 
     private String baseUrl;
 }

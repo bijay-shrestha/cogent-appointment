@@ -45,6 +45,7 @@ public class SwaggerConstants {
         String APPROVE_REFUND_APPOINTMENT = "Approve Refund Request Appointment";
         String REJECT_REFUND_APPOINTMENT = "Reject Refund Request Appointment";
         String FETCH_PENDING_APPOINTMENT_APPROVAL = "Fetch pending appointment approvals";
+        String FETCH_PENDING_APPOINTMENT_APPROVAL_DETAIL = "Fetch pending appointment approval detail by appointmentId";
         String APPROVE_APPOINTMENT = "Approve Appointment and set status as 'A'.";
         String REJECT_APPOINTMENT = "Reject Appointment and set status as 'R'.";
         String FETCH_APPOINTMENT_LOG = "Fetch Appointment Log";

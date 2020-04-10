@@ -15,7 +15,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class AppointmentDetailResponseWithStatusDTO implements Serializable {
 
-    private AppointmentDetailResponseDTO appointmentDetailResponseDTO;
+    private AppointmentDetailResponseDTO appointmentDetailInfo;
 
     private int responseCode;
 

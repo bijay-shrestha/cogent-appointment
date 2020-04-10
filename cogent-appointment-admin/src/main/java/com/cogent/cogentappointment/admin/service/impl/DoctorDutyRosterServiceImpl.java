@@ -334,8 +334,8 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
                                                                  Date overrideToDate) {
 
         boolean isDateBetweenInclusive =
-                isDateBetweenInclusive(dutyRosterFromDate, dutyRosterToDate, overrideFromDate)
-                        && isDateBetweenInclusive(dutyRosterFromDate, dutyRosterToDate, overrideToDate);
+                isDateBetweenInclusive(dutyRosterFromDate, dutyRosterToDate, removeTime(overrideFromDate))
+                        && isDateBetweenInclusive(dutyRosterFromDate, dutyRosterToDate, removeTime(overrideToDate));
 
         if (!isDateBetweenInclusive) {
             log.error(BAD_REQUEST_MESSAGE);
@@ -454,7 +454,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
         doctorDutyRosterOverrideRepository.saveAll(doctorDutyRosterOverrides);
     }
 
-    public DoctorDutyRoster findDoctorDutyRosterById(Long doctorDutyRosterId) {
+    private DoctorDutyRoster findDoctorDutyRosterById(Long doctorDutyRosterId) {
         return doctorDutyRosterRepository.findDoctorDutyRosterById(doctorDutyRosterId)
                 .orElseThrow(() -> DOCTOR_DUTY_ROSTER_WITH_GIVEN_ID_NOT_FOUND.apply(doctorDutyRosterId));
     }
@@ -493,7 +493,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
     }
 
     private Function<Long, NoContentFoundException> DOCTOR_DUTY_ROSTER_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        log.error(CONTENT_NOT_FOUND_BY_ID,DOCTOR_DUTY_ROSTER,id);
+        log.error(CONTENT_NOT_FOUND_BY_ID, DOCTOR_DUTY_ROSTER, id);
         throw new NoContentFoundException(DoctorDutyRoster.class, "id", id.toString());
     };
 

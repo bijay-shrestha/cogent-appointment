@@ -181,10 +181,14 @@ public class DateUtils {
 
         while (!calendar.after(endCalendar)) {
             Date result = calendar.getTime();
-            if (!result.before(today)) {
+            if (result.before(today) ) {
+                calendar.add(Calendar.DATE, 1);
+
+            }else {
                 datesInRange.add(result);
+                calendar.add(Calendar.DATE, 1);
             }
-            calendar.add(Calendar.DATE, 1);
+
         }
         return datesInRange;
     }

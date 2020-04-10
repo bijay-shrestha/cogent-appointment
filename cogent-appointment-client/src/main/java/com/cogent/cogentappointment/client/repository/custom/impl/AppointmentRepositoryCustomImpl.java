@@ -363,8 +363,6 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                                                            Long hospitalId) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_LOGS.apply(searchRequestDTO))
-                .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
-                .setParameter(TO_DATE, searchRequestDTO.getToDate())
                 .setParameter(HOSPITAL_ID, hospitalId);
 
         int totalItems = query.getResultList().size();

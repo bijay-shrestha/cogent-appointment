@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.esewa.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.esewa.log.constants.AppointmentLog.APPOINTMENT;
 import static com.cogent.cogentappointment.esewa.log.constants.DoctorLog.DOCTOR;
@@ -153,12 +154,9 @@ public class AppointmentDetailsServiceImpl implements AppointmentDetailsService 
 
             AvailableDatesWithSpecialization responseDTO = new AvailableDatesWithSpecialization();
 
-            List<String> weekDays = getWeekdays(dateAndSpecilization.getId());
-
-            List<Date> rosterDates = getDates(dateAndSpecilization.getFromDate(),
-                    dateAndSpecilization.getToDate());
-
-            List<Date> availableDates = getDutyRosterDates(rosterDates, weekDays);
+            List<Date> availableDates = getDutyRosterDates(getDates(dateAndSpecilization.getFromDate(),
+                    dateAndSpecilization.getToDate()),
+                    getWeekdays(dateAndSpecilization.getId()));
 
             if (availableDates.size() != 0) {
 
@@ -166,15 +164,14 @@ public class AppointmentDetailsServiceImpl implements AppointmentDetailsService 
 
                 responseDTO.setSpecilaizationName(dateAndSpecilization.getSpecializationName());
 
-                if (dateAndSpecilization.getHasOverride().equals('Y')) {
+                if (dateAndSpecilization.getHasOverride().equals(YES)) {
 
                     List<DutyRosterOverrideAppointmentDate> dateList = dutyRosterOverrideRepository
                             .fetchDayOffRosterOverridebyRosterId(dateAndSpecilization.getId());
 
                     dateList.forEach(date -> {
-
-                        List<Date> dayOffDates = getDatesBetween(date.getFromDate(), date.getToDate());
-                        responseDTO.setAvaliableDates(mergeRosterAndRosterOverrideDates(availableDates, dayOffDates));
+                        responseDTO.setAvaliableDates(mergeRosterAndRosterOverrideDates(availableDates,
+                                getDatesBetween(date.getFromDate(), date.getToDate())));
                     });
                 } else {
                     responseDTO.setAvaliableDates(availableDates);
@@ -183,10 +180,8 @@ public class AppointmentDetailsServiceImpl implements AppointmentDetailsService 
             }
         });
 
-        if (ObjectUtils.isEmpty(responseDTOList)) {
-            appointmentNotAvailableError();
-            throw APPOINTMENT_NOT_AVAILABLE.get();
-        }
+        checkEmpty(responseDTOList);
+
         log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_AVAILABLE_DATES, getDifferenceBetweenTwoTime(startTime));
 
         return getAvailableDatesWithSpecializationResponseDTO(responseDTOList);
@@ -222,15 +217,13 @@ public class AppointmentDetailsServiceImpl implements AppointmentDetailsService 
 
                 responseDTO.setDoctorName(dateAndSpecilization.getDoctorName());
 
-                if (dateAndSpecilization.getHasOverride().equals('Y')) {
+                if (dateAndSpecilization.getHasOverride().equals(YES)) {
                     List<DutyRosterOverrideAppointmentDate> dateList = dutyRosterOverrideRepository
                             .fetchDayOffRosterOverridebyRosterId(dateAndSpecilization.getId());
 
                     dateList.forEach(date -> {
-
-                        List<Date> dayOffDates = getDatesBetween(date.getFromDate(), date.getToDate());
-
-                        responseDTO.setAvaliableDates(mergeRosterAndRosterOverrideDates(availableDates, dayOffDates));
+                        responseDTO.setAvaliableDates(mergeRosterAndRosterOverrideDates(availableDates,
+                                getDatesBetween(date.getFromDate(), date.getToDate())));
                     });
                 } else {
                     responseDTO.setAvaliableDates(availableDates);
@@ -239,10 +232,7 @@ public class AppointmentDetailsServiceImpl implements AppointmentDetailsService 
             }
         });
 
-        if (ObjectUtils.isEmpty(responseDTOList)) {
-            appointmentNotAvailableError();
-            throw APPOINTMENT_NOT_AVAILABLE.get();
-        }
+       checkEmpty(responseDTOList);
 
         log.info(FETCHING_PROCESS_COMPLETED, SPECIALIZATION_AVAILABLE_DATES, getDifferenceBetweenTwoTime(startTime));
 
@@ -411,4 +401,11 @@ public class AppointmentDetailsServiceImpl implements AppointmentDetailsService 
         log.error(CONTENT_NOT_FOUND, DOCTOR);
     }
 
+
+    private void checkEmpty(List list){
+        if (ObjectUtils.isEmpty(list)) {
+            appointmentNotAvailableError();
+            throw APPOINTMENT_NOT_AVAILABLE.get();
+        }
+    }
 }

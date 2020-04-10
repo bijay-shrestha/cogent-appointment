@@ -41,5 +41,9 @@ public class AppointmentLogSearchDTO implements Serializable {
 
     private String transactionNumber;
 
+    private Date transactionToDate;
+
+    private Date transactionFromDate;
+
     private Date transactionDate;
 }

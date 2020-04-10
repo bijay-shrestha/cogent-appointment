@@ -396,12 +396,6 @@ public class AppointmentQuery {
             whereClause += " AND (a.appointmentDate BETWEEN '" + utilDateToSqlDate(appointmentLogSearchDTO.getFromDate())
                     + "' AND '" + utilDateToSqlDate(appointmentLogSearchDTO.getToDate()) + "')";
 
-        if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getTransactionFromDate())
-                && !ObjectUtils.isEmpty(appointmentLogSearchDTO.getTransactionToDate()))
-            whereClause += " AND (atd.transactionDate BETWEEN '" +
-                    utilDateToSqlDate(appointmentLogSearchDTO.getTransactionFromDate())
-                    + "' AND '" + utilDateToSqlDate(appointmentLogSearchDTO.getTransactionToDate()) + "')";
-
         if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getAppointmentNumber()))
             whereClause += " AND a.appointmentNumber LIKE '%" + appointmentLogSearchDTO.getAppointmentNumber() + "%'"
                     ;

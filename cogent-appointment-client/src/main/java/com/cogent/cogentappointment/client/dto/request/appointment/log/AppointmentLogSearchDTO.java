@@ -40,4 +40,6 @@ public class AppointmentLogSearchDTO implements Serializable {
     private String patientAddress;
 
     private String transactionNumber;
+
+    private Date transactionDate;
 }

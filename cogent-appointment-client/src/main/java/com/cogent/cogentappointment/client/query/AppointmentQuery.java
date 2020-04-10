@@ -372,7 +372,8 @@ public class AppointmentQuery {
                             " d.name as doctorName," +                                             //[13]
                             " a.status as status," +                                               //[14]
                             " ard.refundAmount as refundAmount," +                                 //[15]
-                            " hpi.address as patientAddress" +                                     //[16]
+                            " hpi.address as patientAddress," +                                     //[16]
+                            " atd.transactionDate as transactionDate" +                               //[17]
                             " FROM Appointment a" +
                             " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                             " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +

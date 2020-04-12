@@ -19,8 +19,7 @@ import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.EmailConstants.*;
 import static com.cogent.cogentappointment.admin.constants.EmailTemplates.*;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.*;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.*;
 import static com.cogent.cogentappointment.admin.utils.commons.NumberFormatterUtils.generateRandomToken;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.convertToNormalCase;
@@ -40,7 +39,7 @@ public class AdminUtils {
         admin.setMobileNumber(adminRequestDTO.getMobileNumber());
         admin.setStatus(adminRequestDTO.getStatus());
         admin.setHasMacBinding(adminRequestDTO.getHasMacBinding());
-        admin.setIsFirstLogin(YES);
+        admin.setIsAccountActivated(NO);
 
         parseAdminDetails(gender, profile, admin);
         return admin;
@@ -223,11 +222,11 @@ public class AdminUtils {
                 .build();
     }
 
-    public static Admin saveAdminPassword(AdminPasswordRequestDTO requestDTO,
+    public static void saveAdminPassword(AdminPasswordRequestDTO requestDTO,
                                           AdminConfirmationToken confirmationToken) {
         Admin admin = confirmationToken.getAdmin();
         admin.setPassword(BCrypt.hashpw(requestDTO.getPassword(), BCrypt.gensalt()));
-        return admin;
+        admin.setIsAccountActivated(YES);
     }
 
     public static EmailRequestDTO parseToResetPasswordEmailRequestDTO(AdminResetPasswordRequestDTO requestDTO,

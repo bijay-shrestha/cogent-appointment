@@ -15,6 +15,7 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.cogent.cogentappointment.client.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.client.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toNormalCase;
 
@@ -30,6 +31,8 @@ public class ProfileUtils {
         profile.setDescription(profileDTO.getDescription());
         profile.setStatus(profileDTO.getStatus());
         profile.setDepartment(department);
+        profile.setIsSuperAdminProfile(NO);
+        profile.setIsCompanyProfile(NO);
         return profile;
     }
 

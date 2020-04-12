@@ -13,7 +13,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.INVALID_USERNAME_OR_HOSPITAL_CODE;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.INVALID_USERNAME_OR_ACCESS_KEY;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.query.HmacApiInfoQuery.*;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
@@ -38,8 +38,8 @@ public class HmacApiInfoRepositoryCustomImpl implements HmacApiInfoRepositoryCus
         try {
             return transformQueryToSingleResult(query, ThirdPartyDetail.class);
         } catch (NoResultException e) {
-            log.error(INVALID_USERNAME_OR_HOSPITAL_CODE);
-            throw new NoContentFoundException(INVALID_USERNAME_OR_HOSPITAL_CODE);
+            log.error(INVALID_USERNAME_OR_ACCESS_KEY);
+            throw new NoContentFoundException(INVALID_USERNAME_OR_ACCESS_KEY);
         }
     }
 
@@ -50,8 +50,8 @@ public class HmacApiInfoRepositoryCustomImpl implements HmacApiInfoRepositoryCus
         try {
             return transformQueryToSingleResult(query, ThirdPartyDetail.class);
         } catch (NoResultException e) {
-            log.error(INVALID_USERNAME_OR_HOSPITAL_CODE);
-            throw new NoContentFoundException(INVALID_USERNAME_OR_HOSPITAL_CODE);
+            log.error(INVALID_USERNAME_OR_ACCESS_KEY);
+            throw new NoContentFoundException(INVALID_USERNAME_OR_ACCESS_KEY);
         }
     }
 
@@ -63,8 +63,8 @@ public class HmacApiInfoRepositoryCustomImpl implements HmacApiInfoRepositoryCus
         try {
             return transformQueryToSingleResult(query, AdminMinDetails.class);
         } catch (NoResultException e) {
-            log.error(INVALID_USERNAME_OR_HOSPITAL_CODE);
-            throw new NoContentFoundException(INVALID_USERNAME_OR_HOSPITAL_CODE);
+            log.error(INVALID_USERNAME_OR_ACCESS_KEY);
+            throw new NoContentFoundException(INVALID_USERNAME_OR_ACCESS_KEY);
         }
     }
 
@@ -77,8 +77,8 @@ public class HmacApiInfoRepositoryCustomImpl implements HmacApiInfoRepositoryCus
         try {
             return transformQueryToSingleResult(query, AdminMinDetails.class);
         } catch (NoResultException e) {
-            log.error(INVALID_USERNAME_OR_HOSPITAL_CODE);
-            throw new NoContentFoundException(INVALID_USERNAME_OR_HOSPITAL_CODE);
+            log.error(INVALID_USERNAME_OR_ACCESS_KEY);
+            throw new NoContentFoundException(INVALID_USERNAME_OR_ACCESS_KEY);
         }
     }
 }

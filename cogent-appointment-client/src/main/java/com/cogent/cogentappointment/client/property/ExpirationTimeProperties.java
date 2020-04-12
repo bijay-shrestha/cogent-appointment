@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 @Component
-@ConfigurationProperties(prefix = "time")
+@ConfigurationProperties(prefix = "forgotpassword")
 public class ExpirationTimeProperties {
 
-    private int forgotPassword;
+    private int expiryTime;
 }

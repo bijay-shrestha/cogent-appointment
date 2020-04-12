@@ -194,6 +194,9 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         Admin admin = findById(deleteRequestDTO.getId());
 
+        if (admin.getProfileId().getIsSuperAdminProfile().equals(YES))
+            throw new BadRequestException(INVALID_DELETE_REQUEST);
+
         convertAdminToDeleted(admin, deleteRequestDTO);
 
         log.info(DELETING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));

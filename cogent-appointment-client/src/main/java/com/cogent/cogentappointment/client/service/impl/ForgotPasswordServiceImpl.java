@@ -73,7 +73,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
         forgotPasswordVerification = convertToForgotPasswordVerification(
                 admin,
-                expirationTimeProperties.getForgotPassword(),
+                expirationTimeProperties.getExpiryTime(),
                 isNull(forgotPasswordVerification) ? new ForgotPasswordVerification() : forgotPasswordVerification);
 
         save(forgotPasswordVerification);

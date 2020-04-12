@@ -63,9 +63,7 @@ public class AdminUtils {
         admin.setRemarks(adminRequestDTO.getRemarks());
 
         parseAdminDetails(gender, profile, admin);
-        /*MODIFIED DATE AND MODIFIED BY*/
     }
-
 
     public static AdminMacAddressInfo convertToMACAddressInfo(String macAddress, Admin admin) {
 

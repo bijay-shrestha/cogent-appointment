@@ -430,8 +430,6 @@ public class AppointmentUtils {
                             .build();
 
             appointmentLogSearchDTOS.add(appointmentLogDTO);
-
-            totalAmount.updateAndGet(v -> v + appointmentAmount);
         });
 
         appointmentLogResponseDTO.setAppointmentLogs(appointmentLogSearchDTOS);

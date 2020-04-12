@@ -271,11 +271,14 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         int totalItems = query.getResultList().size();
 
+        Double totalAppointmentAmount=calculateTotalAppointmentAmount(searchRequestDTO);
+
         addPagination.accept(pageable, query);
 
         List<Object[]> objects = query.getResultList();
 
         AppointmentLogResponseDTO results = parseQueryResultToAppointmentLogResponse(objects);
+        results.setTotalAmount(totalAppointmentAmount);
 
         if (results.getAppointmentLogs().isEmpty()) {
             error();
@@ -307,6 +310,13 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
             results.setTotalItems(totalItems);
             return results;
         }
+    }
+
+    private Double calculateTotalAppointmentAmount(AppointmentLogSearchDTO searchDTO) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TOTAL_APPOINTMENT_AMOUNT(searchDTO));
+
+        return (Double) query.getSingleResult();
     }
 
     private Function<Long, NoContentFoundException> APPOINTMENT_DETAILS_NOT_FOUND = (appointmentId) -> {

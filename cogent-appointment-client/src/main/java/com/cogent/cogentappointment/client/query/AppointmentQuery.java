@@ -385,6 +385,25 @@ public class AppointmentQuery {
                             " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='PA'"
                             + GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_LOG_DETAILS(appointmentLogSearchDTO);
 
+    public static String QUERY_TO_FETCH_TOTAL_APPOINTMENT_AMOUNT(AppointmentLogSearchDTO searchDTO) {
+        String sql =
+                "SELECT" +
+                        " COALESCE (SUM(atd.appointmentAmount)," +
+                        " 0) as totalAmount" +
+                        " FROM Appointment a" +
+                        " LEFT JOIN Patient p ON a.patientId.id=p.id" +
+                        " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
+                        " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
+                        " LEFT JOIN Specialization sp ON a.specializationId.id=sp.id" +
+                        " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
+                        " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
+                        " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
+                        " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='PA'"
+                        + GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_LOG_DETAILS(searchDTO);
+        return sql;
+    }
+
+
     private static String GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_LOG_DETAILS(
             AppointmentLogSearchDTO appointmentLogSearchDTO) {
 
@@ -396,6 +415,12 @@ public class AppointmentQuery {
                 && !ObjectUtils.isEmpty(appointmentLogSearchDTO.getToDate()))
             whereClause += " AND (a.appointmentDate BETWEEN '" + utilDateToSqlDate(appointmentLogSearchDTO.getFromDate())
                     + "' AND '" + utilDateToSqlDate(appointmentLogSearchDTO.getToDate()) + "')";
+
+        if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getTransactionFromDate())
+                && !ObjectUtils.isEmpty(appointmentLogSearchDTO.getTransactionToDate()))
+            whereClause += " AND (atd.transactionDate BETWEEN '" +
+                    utilDateToSqlDate(appointmentLogSearchDTO.getTransactionFromDate())
+                    + "' AND '" + utilDateToSqlDate(appointmentLogSearchDTO.getTransactionToDate()) + "')";
 
         if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getAppointmentNumber()))
             whereClause += " AND a.appointmentNumber LIKE '%" + appointmentLogSearchDTO.getAppointmentNumber() + "%'"

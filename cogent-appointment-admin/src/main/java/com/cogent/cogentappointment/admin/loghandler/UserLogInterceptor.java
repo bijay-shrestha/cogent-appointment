@@ -11,10 +11,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.loghandler.RequestHandler.getParameters;
 
 @Component
 public class UserLogInterceptor implements HandlerInterceptor {
+
+    public static String admin = "/admin";
 
     @Autowired
     private AdminLogService adminLogService;
@@ -34,34 +37,42 @@ public class UserLogInterceptor implements HandlerInterceptor {
 
         System.out.println("ACTION COMPLETED-----------------------------------");
 
-        System.out.println("Method=" + request.getMethod() + "\n" +
-                "URL=" + request.getRequestURI() + "\n" +
-                "Params=" + getParameters(request));
+        String url = request.getRequestURI();
 
-        String ipAddress = RequestHandler.getRemoteAddr(request);
+        if (url.contains(API_V1 + "/admin")) {
 
-        String parameters = String.valueOf(request.getParameterNames());
+            System.out.println("Method=" + request.getMethod() + "\n" +
+                    "URL=" + request.getRequestURI() + "\n" +
+                    "Params=" + getParameters(request));
 
-        AdminLogRequestDTO adminLogRequestDTO = AdminLogRequestDTO
-                .builder()
-                .adminId(1l)
-                .feature("Doctor")
-                .actionType("Created")
-                .parentId(1l)
-                .roleId(1l)
-                .logDescription("New Doctor is Created")
-                .build();
+            String ipAddress = RequestHandler.getRemoteAddr(request);
 
-        if (exception == null) {
+            String parameters = String.valueOf(request.getParameterNames());
 
-            saveSuccessLogs(adminLogRequestDTO, ipAddress);
-        }
+            AdminLogRequestDTO adminLogRequestDTO = AdminLogRequestDTO
+                    .builder()
+                    .adminId(1l)
+                    .feature("Doctor")
+                    .actionType("Created")
+                    .parentId(1l)
+                    .roleId(1l)
+                    .logDescription("New Doctor is Created")
+                    .build();
 
-        if (exception != null) {
+            if (exception == null) {
 
-            adminLogRequestDTO.setLogDescription("Process cannot be completed due to exception...");
-            saveFailedLogs(adminLogRequestDTO, ipAddress);
-            exception.printStackTrace();
+                saveSuccessLogs(adminLogRequestDTO, ipAddress);
+            }
+
+            if (exception != null) {
+
+                int stauts = response.getStatus();
+                adminLogRequestDTO.setLogDescription("Process cannot be completed due to exception...");
+                saveFailedLogs(adminLogRequestDTO, ipAddress);
+//            exception.printStackTrace();
+            }
+
+
         }
 
     }

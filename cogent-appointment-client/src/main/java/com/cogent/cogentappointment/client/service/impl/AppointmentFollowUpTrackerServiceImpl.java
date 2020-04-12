@@ -243,10 +243,11 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
                 NO, doctorAppointmentCharge, null, savedAppointmentReservationId);
     }
 
-    private AppointmentFollowUpResponseDTO parseDoctorAppointmentFollowUpCharge(Long doctorId,
-                                                                                Long hospitalId,
-                                                                                Long parentAppointmentId,
-                                                                                Long savedAppointmentReservationId) {
+    private AppointmentFollowUpResponseDTO parseDoctorAppointmentFollowUpCharge(
+            Long doctorId,
+            Long hospitalId,
+            Long parentAppointmentId,
+            Long savedAppointmentReservationId) {
 
         Double doctorFollowUpCharge = doctorRepository.fetchDoctorAppointmentFollowUpCharge(
                 doctorId, hospitalId);

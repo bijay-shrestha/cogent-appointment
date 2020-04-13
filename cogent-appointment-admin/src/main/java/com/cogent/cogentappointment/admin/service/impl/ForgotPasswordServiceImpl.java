@@ -4,7 +4,7 @@ import com.cogent.cogentappointment.admin.dto.request.email.EmailRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.forgotPassword.ForgotPasswordRequestDTO;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.property.ExpirationTimeProperties;
+import com.cogent.cogentappointment.admin.property.ForgotPasswordProperties;
 import com.cogent.cogentappointment.admin.repository.AdminRepository;
 import com.cogent.cogentappointment.admin.repository.ForgotPasswordRepository;
 import com.cogent.cogentappointment.admin.service.EmailService;
@@ -19,14 +19,10 @@ import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.ACCOUNT_NOT_ACTIVATED_DEBUG_MESSAGE;
-import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.ACCOUNT_NOT_ACTIVATED_MESSAGE;
-import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.ADMIN_NOT_ACTIVE;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.*;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.ForgotPasswordMessages.RESET_CODE_EXPIRED;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INVALID_VERIFICATION_TOKEN;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.NO;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.INVALID_VERIFICATION_TOKEN_ERROR;
 import static com.cogent.cogentappointment.admin.log.constants.AdminLog.*;
 import static com.cogent.cogentappointment.admin.utils.ForgotPasswordUtils.convertToForgotPasswordVerification;
@@ -45,18 +41,18 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
     private final AdminRepository adminRepository;
 
-    private final ExpirationTimeProperties expirationTimeProperties;
+    private final ForgotPasswordProperties forgotPasswordProperties;
 
     private final ForgotPasswordRepository verificationRepository;
 
     private final EmailService emailService;
 
     public ForgotPasswordServiceImpl(AdminRepository adminRepository,
-                                     ExpirationTimeProperties expirationTimeProperties,
+                                     ForgotPasswordProperties forgotPasswordProperties,
                                      ForgotPasswordRepository verificationRepository,
                                      EmailService emailService) {
         this.adminRepository = adminRepository;
-        this.expirationTimeProperties = expirationTimeProperties;
+        this.forgotPasswordProperties = forgotPasswordProperties;
         this.verificationRepository = verificationRepository;
         this.emailService = emailService;
     }
@@ -75,7 +71,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
         forgotPasswordVerification = convertToForgotPasswordVerification(
                 admin,
-                expirationTimeProperties.getForgotPassword(),
+                forgotPasswordProperties.getExpiryTime(),
                 isNull(forgotPasswordVerification) ? new ForgotPasswordVerification() : forgotPasswordVerification);
 
         save(forgotPasswordVerification);

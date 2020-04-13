@@ -4,7 +4,7 @@ import com.cogent.cogentappointment.client.dto.request.email.EmailRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.forgotPassword.ForgotPasswordRequestDTO;
 import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.property.ExpirationTimeProperties;
+import com.cogent.cogentappointment.client.property.ForgotPasswordProperties;
 import com.cogent.cogentappointment.client.repository.AdminRepository;
 import com.cogent.cogentappointment.client.repository.ForgotPasswordRepository;
 import com.cogent.cogentappointment.client.service.EmailService;
@@ -41,18 +41,18 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
     private final AdminRepository adminRepository;
 
-    private final ExpirationTimeProperties expirationTimeProperties;
+    private final ForgotPasswordProperties forgotPasswordProperties;
 
     private final ForgotPasswordRepository verificationRepository;
 
     private final EmailService emailService;
 
     public ForgotPasswordServiceImpl(AdminRepository adminRepository,
-                                     ExpirationTimeProperties expirationTimeProperties,
+                                     ForgotPasswordProperties forgotPasswordProperties,
                                      ForgotPasswordRepository verificationRepository,
                                      EmailService emailService) {
         this.adminRepository = adminRepository;
-        this.expirationTimeProperties = expirationTimeProperties;
+        this.forgotPasswordProperties = forgotPasswordProperties;
         this.verificationRepository = verificationRepository;
         this.emailService = emailService;
     }
@@ -72,7 +72,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
         forgotPasswordVerification = convertToForgotPasswordVerification(
                 admin,
-                expirationTimeProperties.getExpiryTime(),
+                forgotPasswordProperties.getExpiryTime(),
                 isNull(forgotPasswordVerification) ? new ForgotPasswordVerification() : forgotPasswordVerification);
 
         save(forgotPasswordVerification);

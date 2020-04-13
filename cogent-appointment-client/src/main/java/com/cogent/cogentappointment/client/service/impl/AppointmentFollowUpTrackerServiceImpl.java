@@ -158,7 +158,6 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
 
             if ((Objects.requireNonNull(expiryDate).compareTo(Objects.requireNonNull(currentDate))) < 0)
                 followUpTracker.setStatus(INACTIVE);
-
         });
 
         log.info(UPDATING_PROCESS_COMPLETED, APPOINTMENT_FOLLOW_UP_TRACKER_STATUS, getDifferenceBetweenTwoTime(startTime));

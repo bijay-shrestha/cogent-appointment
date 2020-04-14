@@ -4,7 +4,6 @@ public class WebResourceKeyConstants {
 
     //A
     public static final String API_V1 = "/api/v1";
-    public static final String ACTIVE = "/active";
 
     public interface AdminLogConstants {
         String BASE_ADMIN_LOG = "/admin-log";

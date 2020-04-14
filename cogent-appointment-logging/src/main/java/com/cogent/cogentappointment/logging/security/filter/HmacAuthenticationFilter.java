@@ -55,18 +55,19 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
                     authHeader.getHospitalCode(),
                     authHeader.getApiKey());
 
-            if (adminMinDetails.getIsCompany().equals('N')) {
+//            if (adminMinDetails.getIsCompany().equals('N')) {
+
                 signatureBuilder = new HMACBuilder()
                         .algorithm(authHeader.getAlgorithm())
                         .nonce(authHeader.getNonce())
-                        .username(adminMinDetails.getUsername())
+                        .username(authHeader.getUsername())
                         .hospitalId(Math.toIntExact(authHeader.getHospitalId()))
                         .hospitalCode(authHeader.getHospitalCode())
                         .apiKey(authHeader.getApiKey())
                         .apiSecret(adminMinDetails.getApiSecret());
-            } else {
-                signatureBuilder = null;
-            }
+//            } else {
+//                signatureBuilder = null;
+//            }
 
             compareSignature(signatureBuilder, authHeader.getDigest());
 

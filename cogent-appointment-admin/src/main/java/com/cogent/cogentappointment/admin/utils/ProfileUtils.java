@@ -31,6 +31,7 @@ public class ProfileUtils {
         profile.setDescription(profileDTO.getDescription());
         profile.setStatus(profileDTO.getStatus());
         profile.setDepartment(department);
+        profile.setIsAllRoleAssigned(profileDTO.getIsAllRoleAssigned());
         profile.setIsCompanyProfile(NO);
         profile.setIsSuperAdminProfile(NO);
         return profile;

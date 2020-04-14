@@ -60,6 +60,9 @@ public class Profile extends Auditable<String> implements Serializable {
     @JoinColumn(name = "company_id")
     private Hospital company;
 
+    @Column(name = "is_all_role_assigned")
+    private Character isAllRoleAssigned;
+
     @Column(name = "remarks")
     private String remarks;
 

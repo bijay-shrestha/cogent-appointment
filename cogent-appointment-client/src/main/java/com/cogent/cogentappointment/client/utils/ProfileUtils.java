@@ -30,6 +30,7 @@ public class ProfileUtils {
         profile.setDescription(profileDTO.getDescription());
         profile.setStatus(profileDTO.getStatus());
         profile.setDepartment(department);
+        profile.setIsAllRoleAssigned(profileDTO.getIsAllRoleAssigned());
         return profile;
     }
 

@@ -201,6 +201,13 @@
             <!--<scope>provided</scope>-->
         </dependency>
 
+        <!--SCHEDULER MODULE-->
+        <dependency>
+            <groupId>com.cogent</groupId>
+            <artifactId>cogent-appointment-scheduler</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
 
     <build>

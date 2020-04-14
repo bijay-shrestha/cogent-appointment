@@ -44,6 +44,7 @@ public class CompanyProfileUtils {
         profile.setName(convertToNormalCase(profileDTO.getName()));
         profile.setDescription(profileDTO.getDescription());
         profile.setCompany(company);
+        profile.setIsAllRoleAssigned(profileDTO.getIsAllRoleAssigned());
         profile.setStatus(profileDTO.getStatus());
         profile.setRemarks(profileDTO.getRemarks());
     }

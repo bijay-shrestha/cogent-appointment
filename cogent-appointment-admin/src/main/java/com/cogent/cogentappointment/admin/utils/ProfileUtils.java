@@ -37,15 +37,16 @@ public class ProfileUtils {
         return profile;
     }
 
-    public static Profile convertToUpdatedProfile(ProfileUpdateDTO profileDTO,
-                                                  Department department,
-                                                  Profile profile) {
+    public static void convertToUpdatedProfile(ProfileUpdateDTO profileDTO,
+                                               Department department,
+                                               Profile profile) {
+
         profile.setName(convertToNormalCase(profileDTO.getName()));
         profile.setDescription(profileDTO.getDescription());
+        profile.setIsAllRoleAssigned(profileDTO.getIsAllRoleAssigned());
         profile.setStatus(profileDTO.getStatus());
         profile.setDepartment(department);
         profile.setRemarks(profileDTO.getRemarks());
-        return profile;
     }
 
     public static ProfileDetailResponseDTO parseToProfileDetailResponseDTO(
@@ -118,12 +119,4 @@ public class ProfileUtils {
                 .map(map -> new AssignedRolesResponseDTO(map.getKey(), map.getValue()))
                 .collect(Collectors.toList());
     }
-
-//    private static AssignedProfileResponseDTO parseToAssignedProfileMenuResponseDTO
-//            (List<AssignedRolesResponseDTO> assignedRolesResponseDTOS) {
-//
-//        return AssignedProfileResponseDTO.builder()
-//                .assignedRolesResponseDTOS(assignedRolesResponseDTOS)
-//                .build();
-//    }
 }

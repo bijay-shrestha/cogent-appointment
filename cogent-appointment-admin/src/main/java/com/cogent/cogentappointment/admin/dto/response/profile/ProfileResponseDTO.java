@@ -28,6 +28,4 @@ public class ProfileResponseDTO implements Serializable{
     private String hospitalName;
 
     private String remarks;
-
-    private Character isAllRoleAssigned;
 }

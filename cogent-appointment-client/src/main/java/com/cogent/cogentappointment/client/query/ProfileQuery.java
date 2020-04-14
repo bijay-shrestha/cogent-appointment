@@ -74,8 +74,7 @@ public class ProfileQuery {
                     " p.description as description," +                     //[2]
                     " p.remarks as remarks," +                             //[3]
                     " d.id as departmentId," +                             //[4]
-                    " d.name as departmentName," +                         //[5]
-                    " p.isAllRoleAssigned as isAllRoleAssigned"+           //[6]
+                    " d.name as departmentName" +                          //[5]
                     " FROM" +
                     " Profile p" +
                     " LEFT JOIN Department d ON d.id = p.department.id" +

@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import static com.cogentappointment.scheduler.constants.SchedulerConstants.APPOINTMENT_RESERVATION_SCHEDULER;
 import static com.cogentappointment.scheduler.log.AppointmentReservation.APPOINTMENT_RESERVATION;
 import static com.cogentappointment.scheduler.log.CommonLogConstant.SCHEDULER_RUNNING;
 
@@ -24,7 +25,7 @@ public class AppointmentReservationScheduler {
     }
 
     /*RUNS IN 2 MINS*/
-    @Scheduled(fixedDelayString = "${reservation.schedulerTimeInMilliSeconds}")
+    @Scheduled(fixedDelayString = APPOINTMENT_RESERVATION_SCHEDULER)
     public void deleteExpiredAppointmentReservation() {
         log.info(SCHEDULER_RUNNING, APPOINTMENT_RESERVATION);
         appointmentReservationService.deleteExpiredAppointmentReservation();

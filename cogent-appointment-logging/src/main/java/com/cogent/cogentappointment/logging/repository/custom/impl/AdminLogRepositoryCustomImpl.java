@@ -41,8 +41,7 @@ public class AdminLogRepositoryCustomImpl implements AdminLogRepositoryCustom {
     public AdminLogResponseDTO search(AdminLogSearchRequestDTO searchRequestDTO, Pageable pageable) {
         Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_ADMIN_LOGS(searchRequestDTO))
                 .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
-                .setParameter(TO_DATE, searchRequestDTO.getToDate())
-                .setParameter(USERNAME, searchRequestDTO.getUserName());
+                .setParameter(TO_DATE, searchRequestDTO.getToDate());
 
 
         addPagination.accept(pageable, query);
@@ -70,8 +69,7 @@ public class AdminLogRepositoryCustomImpl implements AdminLogRepositoryCustom {
 
         Query query = createQuery.apply(entityManager, AdminLogQuery.QUERY_TO_FETCH_USER_LOGS_STATICS(searchRequestDTO))
                 .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
-                .setParameter(TO_DATE, searchRequestDTO.getToDate())
-                .setParameter(USERNAME, searchRequestDTO.getUserName());
+                .setParameter(TO_DATE, searchRequestDTO.getToDate());
 
 
         List<AdminLogStaticsResponseDTO> result = transformQueryToResultList(query, AdminLogStaticsResponseDTO.class);

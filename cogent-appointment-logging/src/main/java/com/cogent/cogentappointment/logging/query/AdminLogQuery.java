@@ -50,8 +50,9 @@ public class AdminLogQuery {
             whereClause += " AND h.id=" + searchRequestDTO.getHospitalId();
 
 
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getUserName()))
-            whereClause += " AND (a.username =:username OR a.email =:username OR a.mobileNumber = :username)";
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getUserName()) || !searchRequestDTO.getUserName().equals(""))
+
+            whereClause += " AND (a.username ='" + searchRequestDTO.getUserName() + "' OR a.email ='" + searchRequestDTO.getUserName() + "' OR a.mobileNumber ='" + searchRequestDTO.getUserName() + "')";
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getParentId()))
             whereClause += " AND al.parentId=" + searchRequestDTO.getParentId();

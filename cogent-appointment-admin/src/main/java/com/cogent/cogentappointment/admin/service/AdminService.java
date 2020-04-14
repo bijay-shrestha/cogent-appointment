@@ -1,8 +1,14 @@
 package com.cogent.cogentappointment.admin.service;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.admin.*;
-import com.cogent.cogentappointment.admin.dto.response.admin.*;
+import com.cogent.cogentappointment.admin.dto.request.admin.AdminRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.admin.AdminResetPasswordRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.admin.AdminSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.admin.AdminUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.admin.AdminDetailResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.admin.AdminDropdownDTO;
+import com.cogent.cogentappointment.admin.dto.response.admin.AdminMetaInfoResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.admin.AdminMinimalResponseDTO;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,19 +30,11 @@ public interface AdminService {
 
     void delete(DeleteRequestDTO deleteRequestDTO);
 
-    void changePassword(AdminChangePasswordRequestDTO requestDTO);
-
     void resetPassword(AdminResetPasswordRequestDTO resetPasswordRequestDTO);
 
     void updateAvatar(MultipartFile files, Long adminId);
 
     void update(AdminUpdateRequestDTO updateRequestDTO, MultipartFile files);
-
-    void verifyConfirmationToken(String token);
-
-    void savePassword(AdminPasswordRequestDTO requestDTO);
-
-    AdminLoggedInInfoResponseDTO fetchLoggedInAdminInfo(AdminInfoRequestDTO requestDTO);
 
     List<AdminMetaInfoResponseDTO> fetchAdminMetaInfoResponseDto();
 }

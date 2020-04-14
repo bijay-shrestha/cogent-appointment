@@ -3,18 +3,19 @@ package com.cogent.cogentappointment.admin.service.impl;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.*;
 import com.cogent.cogentappointment.admin.dto.request.email.EmailRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.admin.*;
+import com.cogent.cogentappointment.admin.dto.response.admin.AdminDetailResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.admin.AdminDropdownDTO;
+import com.cogent.cogentappointment.admin.dto.response.admin.AdminMetaInfoResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.admin.AdminMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.exception.OperationUnsuccessfulException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.AdminService;
 import com.cogent.cogentappointment.admin.service.EmailService;
 import com.cogent.cogentappointment.admin.service.MinioFileService;
 import com.cogent.cogentappointment.admin.service.ProfileService;
-import com.cogent.cogentappointment.admin.validator.LoginValidator;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
@@ -226,21 +227,6 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void changePassword(AdminChangePasswordRequestDTO requestDTO) {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(UPDATING_PASSWORD_PROCESS_STARTED);
-
-        Admin admin = findById(requestDTO.getId());
-
-        validatePassword(admin, requestDTO);
-
-        updateAdminPassword(requestDTO.getNewPassword(), requestDTO.getRemarks(), admin);
-
-        log.info(UPDATING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
-    }
-
-    @Override
     public void resetPassword(AdminResetPasswordRequestDTO requestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -332,50 +318,6 @@ public class AdminServiceImpl implements AdminService {
         List<DashboardFeature> dashboardFeatureList = Arrays.asList(dashboardFeature);
         adminDashboardFeatureRepository.saveAll(parseToAdminDashboardFeature(dashboardFeatureList, admin));
 
-    }
-
-    @Override
-    public void verifyConfirmationToken(String token) {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(VERIFY_CONFIRMATION_TOKEN_PROCESS_STARTED);
-
-        Object status = confirmationTokenRepository.findByConfirmationToken(token);
-        validateStatus(status);
-
-        log.info(VERIFY_CONFIRMATION_TOKEN_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
-    }
-
-    @Override
-    public void savePassword(AdminPasswordRequestDTO requestDTO) {
-
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(SAVING_PASSWORD_PROCESS_STARTED);
-
-        AdminConfirmationToken adminConfirmationToken =
-                confirmationTokenRepository.findAdminConfirmationTokenByToken(requestDTO.getToken())
-                        .orElseThrow(() -> CONFIRMATION_TOKEN_NOT_FOUND.apply(requestDTO.getToken()));
-
-        saveAdminPassword(requestDTO, adminConfirmationToken);
-
-        adminConfirmationToken.setStatus(INACTIVE);
-
-        log.info(SAVING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
-    }
-
-    @Override
-    public AdminLoggedInInfoResponseDTO fetchLoggedInAdminInfo(AdminInfoRequestDTO requestDTO) {
-
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(FETCHING_PROCESS_STARTED, ADMIN);
-
-        AdminLoggedInInfoResponseDTO responseDTO = adminRepository.fetchLoggedInAdminInfo(requestDTO);
-
-        log.info(FETCHING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
-
-        return responseDTO;
     }
 
     @Override
@@ -592,19 +534,6 @@ public class AdminServiceImpl implements AdminService {
             throw new NoContentFoundException(AdminMacAddressInfo.class);
         }
     };
-
-    private void validatePassword(Admin admin, AdminChangePasswordRequestDTO requestDTO) {
-
-        if (!LoginValidator.checkPassword(requestDTO.getOldPassword(), admin.getPassword())) {
-            log.error(PASSWORD_MISMATCH_MESSAGE);
-            throw new OperationUnsuccessfulException(PASSWORD_MISMATCH_MESSAGE);
-        }
-
-        if (LoginValidator.checkPassword(requestDTO.getNewPassword(), admin.getPassword())) {
-            log.error(DUPLICATE_PASSWORD_MESSAGE);
-            throw new DataDuplicationException(DUPLICATE_PASSWORD_MESSAGE);
-        }
-    }
 
     private Supplier<DataDuplicationException> ADMIN_DUPLICATION = () ->
             new DataDuplicationException(ADMIN_DUPLICATION_MESSAGE);

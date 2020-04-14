@@ -404,9 +404,11 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
     }
 
-
     private void validateStatus(Object status) {
-        if (status.equals(INACTIVE)) throw ADMIN_ALREADY_REGISTERED.get();
+        if (status.equals(INACTIVE)) {
+            log.error(ADMIN_REGISTERED);
+            throw ADMIN_ALREADY_REGISTERED.get();
+        }
     }
 
     private void validateCompanyAdminDuplicity(List<Object[]> adminList, String requestEmail,

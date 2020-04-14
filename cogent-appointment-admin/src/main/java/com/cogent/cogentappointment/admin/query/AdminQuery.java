@@ -169,8 +169,9 @@ public class AdminQuery {
                     " d.id as departmentId," +                                              //[5]
                     " d.name as departmentName," +                                          //[6]
                     " h.id as hospitalId," +                                                //[7]
-                    " h.name as hospitalName," +                                             //[8]
-                    " h.isCompany as isCompany" +                                   //[9]
+                    " h.name as hospitalName," +                                            //[8]
+                    " h.isCompany as isCompany," +                                          //[9]
+                    " p.isAllRoleAssigned as isAllRoleAssigned" +                           //[10]
                     " FROM Admin a" +
                     " LEFT JOIN AdminAvatar av ON av.admin.id=a.id" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +

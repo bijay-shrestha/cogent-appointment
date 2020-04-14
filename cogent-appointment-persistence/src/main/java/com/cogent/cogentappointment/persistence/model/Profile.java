@@ -76,6 +76,7 @@ public class Profile extends Auditable<String> implements Serializable {
                 ", status='" + status + '\'' +
                 ", isCompanyProfile='" + isCompanyProfile + '\'' +
                 ", remarks='" + remarks + '\'' +
+                ", isAllRoleAssigned= '" + isAllRoleAssigned + '\'' +
                 '}';
     }
 }

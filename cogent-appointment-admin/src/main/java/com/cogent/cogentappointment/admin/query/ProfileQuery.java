@@ -77,14 +77,15 @@ public class ProfileQuery {
 
     public static final String QUERY_TO_FETCH_PROFILE_DETAILS =
             " SELECT" +
-                    " p.name as name," +                                    //[0]
+                    " p.name as name," +                                   //[0]
                     " p.status as status," +                               //[1]
                     " p.description as description," +                     //[2]
                     " p.remarks as remarks," +                             //[3]
                     " d.id as departmentId," +                             //[4]
                     " d.name as departmentName," +                         //[5]
                     " h.id as hospitalId," +                               //[6]
-                    " h.name as hospitalName" +                            //[7]
+                    " h.name as hospitalName," +                           //[7]
+                    " p.isAllRoleAssigned as isAllRoleAssigned"+           //[8]
                     " FROM" +
                     " Profile p" +
                     " LEFT JOIN Department d ON d.id = p.department.id" +

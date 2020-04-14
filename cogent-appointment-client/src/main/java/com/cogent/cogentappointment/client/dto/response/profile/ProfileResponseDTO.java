@@ -25,4 +25,6 @@ public class ProfileResponseDTO implements Serializable {
     private String departmentName;
 
     private String remarks;
+
+    private Character isAllRoleAssigned;
 }

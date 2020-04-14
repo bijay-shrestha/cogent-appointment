@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.admin.resource;
 
-import com.cogent.cogentappointment.admin.configuration.MinioStorageConfig;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.*;
 import com.cogent.cogentappointment.admin.service.AdminService;

@@ -20,7 +20,6 @@ public class CogentAppointmentClientApplication extends SpringBootServletInitial
         return application.sources(CogentAppointmentClientApplication.class);
     }
 
-
     public static void main(String[] args) {
         SpringApplication.run(CogentAppointmentClientApplication.class, args);
     }

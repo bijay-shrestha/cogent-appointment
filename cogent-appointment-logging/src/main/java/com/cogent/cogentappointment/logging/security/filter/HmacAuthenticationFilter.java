@@ -48,7 +48,7 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
         final AuthHeader eSewaAuthHeader = getAuthHeaderForeSewa(request);
 
         if (authHeader != null) {
-            final HMACBuilder signatureBuilder;
+
 
             AdminMinDetails adminMinDetails = hmacApiInfoRepository.getAdminDetailForAuthentication(
                     authHeader.getUsername(),
@@ -57,7 +57,7 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
 //            if (adminMinDetails.getIsCompany().equals('N')) {
 
-                signatureBuilder = new HMACBuilder()
+                HMACBuilder signatureBuilder = new HMACBuilder()
                         .algorithm(authHeader.getAlgorithm())
                         .nonce(authHeader.getNonce())
                         .username(authHeader.getUsername())

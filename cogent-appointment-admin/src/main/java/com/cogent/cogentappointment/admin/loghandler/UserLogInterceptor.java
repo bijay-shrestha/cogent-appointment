@@ -53,9 +53,9 @@ public class UserLogInterceptor implements HandlerInterceptor {
                     .adminId(1l)
                     .parentId(1l)
                     .roleId(1l)
-                    .feature("Doctor")
+                    .feature("Admin")
                     .actionType("Created")
-                    .logDescription("New Doctor is Created")
+                    .logDescription("New Admin is Created")
                     .build();
 
             if (exception == null) {

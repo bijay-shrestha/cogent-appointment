@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.logging.service.impl;
 import com.cogent.cogentappointment.logging.dto.request.admin.AdminLogSearchRequestDTO;
 import com.cogent.cogentappointment.logging.dto.response.AdminLogResponseDTO;
 import com.cogent.cogentappointment.logging.dto.response.AdminLogStaticsResponseDTO;
+import com.cogent.cogentappointment.logging.dto.response.UserMenuStaticsResponseDTO;
 import com.cogent.cogentappointment.logging.repository.AdminLogRepository;
 import com.cogent.cogentappointment.logging.service.AdminLogService;
 import lombok.extern.slf4j.Slf4j;
@@ -45,13 +46,13 @@ public class AdminLogServiceImpl implements AdminLogService {
     }
 
     @Override
-    public List<AdminLogStaticsResponseDTO> fetchUserMenuLogsStatics(AdminLogSearchRequestDTO searchRequestDTO) {
+    public UserMenuStaticsResponseDTO fetchUserMenuLogsStatics(AdminLogSearchRequestDTO searchRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(USER_LOG_SEARCH_PROCESS_STARTED, USER_LOG);
 
-        List<AdminLogStaticsResponseDTO> responseDTOS = adminLogRepository.fetchUserMenuLogsStatics(searchRequestDTO);
+        UserMenuStaticsResponseDTO responseDTOS = adminLogRepository.fetchUserMenuLogsStatics(searchRequestDTO);
 
         log.info(USER_LOG_SEARCH_PROCESS_COMPLETED, USER_LOG, getDifferenceBetweenTwoTime(startTime));
 

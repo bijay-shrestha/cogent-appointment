@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.logging.dto.request.admin.AdminLogSearchRequ
 import com.cogent.cogentappointment.logging.dto.response.AdminLogResponseDTO;
 import com.cogent.cogentappointment.logging.dto.response.AdminLogSearchResponseDTO;
 import com.cogent.cogentappointment.logging.dto.response.AdminLogStaticsResponseDTO;
+import com.cogent.cogentappointment.logging.dto.response.UserMenuStaticsResponseDTO;
 import com.cogent.cogentappointment.logging.exception.NoContentFoundException;
 import com.cogent.cogentappointment.logging.query.AdminLogQuery;
 import com.cogent.cogentappointment.logging.repository.custom.AdminLogRepositoryCustom;
@@ -65,12 +66,13 @@ public class AdminLogRepositoryCustomImpl implements AdminLogRepositoryCustom {
     }
 
     @Override
-    public List<AdminLogStaticsResponseDTO> fetchUserMenuLogsStatics(AdminLogSearchRequestDTO searchRequestDTO) {
+    public UserMenuStaticsResponseDTO fetchUserMenuLogsStatics(AdminLogSearchRequestDTO searchRequestDTO) {
 
         Query query = createQuery.apply(entityManager, AdminLogQuery.QUERY_TO_FETCH_USER_LOGS_STATICS(searchRequestDTO))
                 .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
                 .setParameter(TO_DATE, searchRequestDTO.getToDate());
 
+        int totalItems = query.getResultList().size();
 
         List<AdminLogStaticsResponseDTO> result = transformQueryToResultList(query, AdminLogStaticsResponseDTO.class);
 
@@ -78,7 +80,10 @@ public class AdminLogRepositoryCustomImpl implements AdminLogRepositoryCustom {
 //            error();
             throw NO_USER_STATICS_FOUND.get();
         } else {
-            return result;
+            UserMenuStaticsResponseDTO userMenuStaticsResponseDTO=new UserMenuStaticsResponseDTO();
+            userMenuStaticsResponseDTO.setUserMenuCountList(result);
+            userMenuStaticsResponseDTO.setTotalItems(totalItems);
+            return userMenuStaticsResponseDTO;
         }
     }
 

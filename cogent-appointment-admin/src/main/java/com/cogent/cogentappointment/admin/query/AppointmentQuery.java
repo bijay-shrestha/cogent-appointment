@@ -397,15 +397,14 @@ public class AppointmentQuery {
                             " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
                             " LEFT JOIN DoctorSpecialization ds ON ds.doctorId.id = d.id" +
                             " LEFT JOIN DoctorAvatar dv ON dv.doctorId.id = d.id" +
-                            " LEFT JOIN Specialization s ON s.id = ds.specializationId.id" +
+                            " LEFT JOIN Specialization s ON s.id = a.specializationId.id AND s.status='Y' " +
                             " LEFT JOIN Hospital h ON h.id = a.hospitalId.id"
                             + GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_QUEUE(appointmentQueueSearchDTO);
 
     private static String GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_QUEUE(AppointmentQueueRequestDTO appointmentQueueRequestDTO) {
 
-        String whereClause = " WHERE " +
-                " s.status='Y' " +
-                " AND a.status='PA'" +
+        String whereClause = " WHERE" +
+                " a.status='PA'" +
                 " AND DATE(a.appointmentDate) = :date";
 
         if (!Objects.isNull(appointmentQueueRequestDTO.getDoctorId()))

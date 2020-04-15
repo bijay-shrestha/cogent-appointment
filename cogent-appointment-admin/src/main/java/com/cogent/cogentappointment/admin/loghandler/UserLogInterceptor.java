@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
-import static com.cogent.cogentappointment.admin.loghandler.RequestHandler.getParameters;
 
 @Component
 public class UserLogInterceptor implements HandlerInterceptor {
@@ -39,23 +38,23 @@ public class UserLogInterceptor implements HandlerInterceptor {
 
         String url = request.getRequestURI();
 
-        if (url.contains(API_V1 + "/admin")) {
+        if (url.contains(API_V1)){
 
-            System.out.println("Method=" + request.getMethod() + "\n" +
-                    "URL=" + request.getRequestURI() + "\n" +
-                    "Params=" + getParameters(request));
+//            System.out.println("Method=" + request.getMethod() + "\n" +
+//                    "URL=" + request.getRequestURI() + "\n" +
+//                    "Params=" + getParameters(request));
 
             String ipAddress = RequestHandler.getRemoteAddr(request);
-
             String parameters = String.valueOf(request.getParameterNames());
 
+            //from header
             AdminLogRequestDTO adminLogRequestDTO = AdminLogRequestDTO
                     .builder()
                     .adminId(1l)
-                    .feature("Doctor")
-                    .actionType("Created")
                     .parentId(1l)
                     .roleId(1l)
+                    .feature("Doctor")
+                    .actionType("Created")
                     .logDescription("New Doctor is Created")
                     .build();
 
@@ -66,10 +65,9 @@ public class UserLogInterceptor implements HandlerInterceptor {
 
             if (exception != null) {
 
-                int stauts = response.getStatus();
+                int status = response.getStatus();
                 adminLogRequestDTO.setLogDescription("Process cannot be completed due to exception...");
                 saveFailedLogs(adminLogRequestDTO, ipAddress);
-//            exception.printStackTrace();
             }
 
 

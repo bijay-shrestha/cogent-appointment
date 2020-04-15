@@ -570,7 +570,7 @@ public class AppointmentQuery {
 
     private static String SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT =
             "SELECT" +
-                    " CONCAT(COUNT(a.id),' FROM ', COALESCE (SUM(atd.appointmentAmount ),0))"+
+                    " CONCAT(COALESCE (SUM(atd.appointmentAmount ),0),' FROM ',COUNT(a.id) )"+
                     " FROM Appointment a" +
                     " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
@@ -660,7 +660,7 @@ public class AppointmentQuery {
 
     public static String QUERY_TO_FETCH_REFUNDED_APPOINTMENT_AMOUNT(AppointmentLogSearchDTO searchRequestDTO) {
         String query = "SELECT" +
-                " CONCAT(COUNT(a.id),' FROM ', COALESCE (SUM(ard.refundAmount ),0))" +
+                " CONCAT(COALESCE (SUM(ard.refundAmount ),0),' FROM ',COUNT(a.id))" +
                 " FROM Appointment a" +
                 " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                 " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
@@ -681,7 +681,7 @@ public class AppointmentQuery {
 
     public static String QUERY_TO_FETCH_REVENUE_REFUNDED_APPOINTMENT_AMOUNT(AppointmentLogSearchDTO searchRequestDTO) {
         String query = "SELECT" +
-                "  CONCAT(COUNT(a.id),' FROM ', (COALESCE (SUM(atd.appointmentAmount ),0) - COALESCE (SUM(ard.refundAmount ),0)))" +
+                " CONCAT((COALESCE(SUM(atd.appointmentAmount ),0) - COALESCE(SUM(ard.refundAmount ),0)),' FROM ',COUNT(a.id))" +
                 " FROM Appointment a" +
                 " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                 " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
@@ -699,5 +699,6 @@ public class AppointmentQuery {
 
         return query;
     }
+
 
 }

@@ -4,6 +4,7 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Rupak
@@ -21,15 +22,15 @@ public class AppointmentLogResponseDTO implements Serializable {
 
     private Double totalAmountExcludingBooked;
 
-    private String bookedAmount;
+    private Map<Long,Double> bookedAmount;
 
-    private String checkedInAmount;
+    private Map<Long,Double> checkedInAmount;
 
-    private String refundedAmount;
+    private Map<Long,Double> refundedAmount;
 
-    private String cancelAmount;
+    private Map<Long,Double> cancelAmount;
 
-    private String revenueFromRefundedAmount;
+    private Map<Long,Double> revenueFromRefundedAmount;
 
     private int totalItems;
 }

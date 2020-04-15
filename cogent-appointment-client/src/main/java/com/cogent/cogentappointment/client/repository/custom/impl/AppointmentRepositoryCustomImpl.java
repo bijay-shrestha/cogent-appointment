@@ -374,11 +374,6 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         AppointmentLogResponseDTO results = parseQueryResultToAppointmentLogResponse(objects);
         results.setTotalAmount(calculateTotalAppointmentAmount(searchRequestDTO,hospitalId));
         results.setTotalAmountExcludingBooked(calculateAppointmentAmount(searchRequestDTO,hospitalId));
-        results.setBookedAmount(calculateBookedAppointmentAmount(searchRequestDTO,hospitalId));
-        results.setCheckedInAmount(calculateCheckedInAppointmentAmount(searchRequestDTO,hospitalId));
-        results.setCancelAmount(calculateCancelledAppointmentAmount(searchRequestDTO,hospitalId));
-        results.setRefundedAmount(calculateRefundedAppointmentAmount(searchRequestDTO,hospitalId));
-        results.setRevenueFromRefundedAmount(calculateRevenueRefundedAppointmentAmount(searchRequestDTO,hospitalId));
 
         if (results.getAppointmentLogs().isEmpty()) {
             error();
@@ -479,49 +474,6 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         return (Double) query.getSingleResult();
 
-    }
-
-    private String calculateBookedAppointmentAmount(AppointmentLogSearchDTO searchRequestDTO,Long hospitalId) {
-
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_BOOKED_APPOINTMENT_AMOUNT(searchRequestDTO))
-                .setParameter(HOSPITAL_ID, hospitalId);
-
-
-        return (String) query.getSingleResult();
-    }
-
-    private String calculateCheckedInAppointmentAmount(AppointmentLogSearchDTO searchRequestDTO,Long hospitalId) {
-
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_AMOUNT(searchRequestDTO))
-                .setParameter(HOSPITAL_ID, hospitalId);
-
-        return (String) query.getSingleResult();
-    }
-
-    private String calculateCancelledAppointmentAmount(AppointmentLogSearchDTO searchRequestDTO,Long hospitalId) {
-
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_CANCELLED_APPOINTMENT_AMOUNT(searchRequestDTO))
-                .setParameter(HOSPITAL_ID, hospitalId);
-
-
-        return (String) query.getSingleResult();
-    }
-
-    private String calculateRefundedAppointmentAmount(AppointmentLogSearchDTO searchRequestDTO,Long hospitalId) {
-
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_REFUNDED_APPOINTMENT_AMOUNT(searchRequestDTO))
-                .setParameter(HOSPITAL_ID, hospitalId);
-
-        return (String) query.getSingleResult();
-    }
-
-    private String calculateRevenueRefundedAppointmentAmount(AppointmentLogSearchDTO searchRequestDTO,Long hospitalId) {
-
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_REVENUE_REFUNDED_APPOINTMENT_AMOUNT(searchRequestDTO))
-                .setParameter(HOSPITAL_ID, hospitalId);
-
-
-        return (String) query.getSingleResult();
     }
 
 

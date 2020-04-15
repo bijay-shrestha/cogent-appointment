@@ -433,7 +433,6 @@ public class AppointmentUtils {
         });
 
         appointmentLogResponseDTO.setAppointmentLogs(appointmentLogSearchDTOS);
-        appointmentLogResponseDTO.setTotalAmount(totalAmount.get());
 
         return appointmentLogResponseDTO;
     }

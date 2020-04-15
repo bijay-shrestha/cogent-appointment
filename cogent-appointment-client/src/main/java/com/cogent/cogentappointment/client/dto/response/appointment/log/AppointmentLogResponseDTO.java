@@ -19,13 +19,17 @@ public class AppointmentLogResponseDTO implements Serializable {
 
     private Double totalAmount;
 
-    private Double bookedAmount;
+    private Double totalAmountExcludingBooked;
 
-    private Double checkedInAmount;
+    private String bookedAmount;
 
-    private Double refundedAmount;
+    private String checkedInAmount;
 
-    private Double cancelAmount;
+    private String refundedAmount;
+
+    private String cancelAmount;
+
+    private String revenueRefundedAmount;
 
     private int totalItems;
 }

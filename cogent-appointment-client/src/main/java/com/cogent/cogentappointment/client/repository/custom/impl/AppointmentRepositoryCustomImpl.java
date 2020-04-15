@@ -97,6 +97,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         return transformQueryToResultList(query, AppointmentBookedTimeResponseDTO.class);
     }
 
+    /*eg. 2076-10-10 lies in between 2076-04-01 to 2077-03-31 Fiscal Year ie. 2076/2077*/
     @Override
     public String generateAppointmentNumber(String nepaliCreatedDate,
                                             Long hospitalId) {
@@ -104,10 +105,20 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         int year = getYearFromNepaliDate(nepaliCreatedDate);
         int month = getMonthFromNepaliDate(nepaliCreatedDate);
 
+
+        String fetchEndingFiscalYear = fetchEndingFiscalYear(year, month);
+
+        System.out.println(fetchStartingFiscalYear(year, month));
+        System.out.println(fetchEndingFiscalYear(year, month));
+
         Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_LATEST_APPOINTMENT_NUMBER)
                 .setParameter(FROM_DATE, fetchStartingFiscalYear(year, month))
                 .setParameter(TO_DATE, fetchEndingFiscalYear(year, month))
                 .setParameter(HOSPITAL_ID, hospitalId);
+
+
+
+        List<Objects[]> res = query.getResultList();
 
         return AppointmentUtils.generateAppointmentNumber(query.getResultList());
     }
@@ -303,7 +314,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                                                                              Pageable pageable,
                                                                              Long hospitalId) {
 
-        AppointmentPendingApprovalResponseDTO appointmentPendingApprovalResponseDTO=new AppointmentPendingApprovalResponseDTO();
+        AppointmentPendingApprovalResponseDTO appointmentPendingApprovalResponseDTO = new AppointmentPendingApprovalResponseDTO();
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PENDING_APPROVALS.apply(searchRequestDTO))
                 .setParameter(HOSPITAL_ID, hospitalId);
@@ -312,8 +323,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         addPagination.accept(pageable, query);
 
-        List<AppointmentPendingApprovalDTO> appointmentPendingApprovalDTOS=
-                transformQueryToResultList(query,AppointmentPendingApprovalDTO.class);
+        List<AppointmentPendingApprovalDTO> appointmentPendingApprovalDTOS =
+                transformQueryToResultList(query, AppointmentPendingApprovalDTO.class);
 
         if (appointmentPendingApprovalDTOS.isEmpty()) {
             error();
@@ -367,7 +378,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         int totalItems = query.getResultList().size();
 
-        Double totalAppointmentAmount=calculateTotalAppointmentAmount(searchRequestDTO,hospitalId);
+        Double totalAppointmentAmount = calculateTotalAppointmentAmount(searchRequestDTO, hospitalId);
 
         addPagination.accept(pageable, query);
 
@@ -458,15 +469,13 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     private Double calculateTotalAppointmentAmount(AppointmentLogSearchDTO searchDTO,
-                                              Long hospitalId) {
+                                                   Long hospitalId) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TOTAL_APPOINTMENT_AMOUNT(searchDTO))
                 .setParameter(HOSPITAL_ID, hospitalId);
 
         return (Double) query.getSingleResult();
     }
-
-
 
 
     private Function<Long, NoContentFoundException> APPOINTMENT_DETAILS_NOT_FOUND = (appointmentId) -> {

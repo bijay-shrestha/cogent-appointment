@@ -15,7 +15,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class AdminLogSearchResponseDTO implements Serializable {
 
-    private Date logDateTime;
+    private String logDateTime;
 
     private String userName;
 

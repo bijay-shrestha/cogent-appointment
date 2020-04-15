@@ -27,7 +27,7 @@ public class AdminLogQuery {
     public static String QUERY_TO_SEARCH_ADMIN_LOGS(AdminLogSearchRequestDTO searchRequestDTO) {
 
         return " SELECT " +
-                " al.logDateTime as logDateTime," +
+                " DATE_FORMAT(al.logDateTime,'%Y-%m-%d %h:%i %p') as logDateTime," +
                 " a.username as userName," +
                 " al.ipAddress as ipAddress," +
                 " al.feature as feature," +
@@ -38,7 +38,8 @@ public class AdminLogQuery {
                 " LEFT JOIN Admin a ON al.adminId.id =a.id" +
                 " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                 " LEFT JOIN Hospital h ON h.id=p.company" +
-                WHERE_CLAUSE_TO_SEARCH_ADMIN_LOGS(searchRequestDTO);
+                WHERE_CLAUSE_TO_SEARCH_ADMIN_LOGS(searchRequestDTO)
+                + " ORDER BY al.logDateTime DESC";
     }
 
     public static String WHERE_CLAUSE_TO_SEARCH_ADMIN_LOGS(AdminLogSearchRequestDTO searchRequestDTO) {

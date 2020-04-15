@@ -38,6 +38,7 @@ public class RequestHandler {
     }
 
     public static String getRemoteAddr(HttpServletRequest request) {
+
         String ipFromHeader = request.getHeader("X-FORWARDED-FOR");
         if (ipFromHeader != null && ipFromHeader.length() > 0) {
             System.out.println("ip from proxy - X-FORWARDED-FOR : " + ipFromHeader);

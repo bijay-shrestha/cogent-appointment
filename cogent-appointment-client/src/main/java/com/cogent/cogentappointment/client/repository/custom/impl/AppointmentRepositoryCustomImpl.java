@@ -378,7 +378,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         results.setCheckedInAmount(calculateCheckedInAppointmentAmount(searchRequestDTO,hospitalId));
         results.setCancelAmount(calculateCancelledAppointmentAmount(searchRequestDTO,hospitalId));
         results.setRefundedAmount(calculateRefundedAppointmentAmount(searchRequestDTO,hospitalId));
-        results.setRevenueRefundedAmount(calculateRevenueRefundedAppointmentAmount(searchRequestDTO,hospitalId));
+        results.setRevenueFromRefundedAmount(calculateRevenueRefundedAppointmentAmount(searchRequestDTO,hospitalId));
 
         if (results.getAppointmentLogs().isEmpty()) {
             error();

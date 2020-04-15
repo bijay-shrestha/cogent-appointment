@@ -29,7 +29,7 @@ public class AppointmentLogResponseDTO implements Serializable {
 
     private String cancelAmount;
 
-    private String revenueRefundedAmount;
+    private String revenueFromRefundedAmount;
 
     private int totalItems;
 }

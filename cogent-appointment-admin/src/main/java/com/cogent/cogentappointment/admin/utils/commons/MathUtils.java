@@ -12,10 +12,12 @@ public class MathUtils {
 
     public static Double calculatePercenatge(Double current, Double previous) {
 
-        if(current==0 && previous==0 || previous==0){
+        if (current == 0 && previous == 0) {
             return 0D;
+        } else if (current != 0 && previous == 0) {
+            return current;
         }
-        return formatDoubleTo2DecimalPlaces((current - previous)/previous * 100 );
+        return formatDoubleTo2DecimalPlaces((current - previous) / previous * 100);
     }
 }
 

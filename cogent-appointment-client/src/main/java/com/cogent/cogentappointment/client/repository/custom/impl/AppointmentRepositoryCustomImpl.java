@@ -367,14 +367,16 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         int totalItems = query.getResultList().size();
 
-        Double totalAppointmentAmount=calculateTotalAppointmentAmount(searchRequestDTO,hospitalId);
-
         addPagination.accept(pageable, query);
 
         List<Object[]> objects = query.getResultList();
 
         AppointmentLogResponseDTO results = parseQueryResultToAppointmentLogResponse(objects);
-        results.setTotalAmount(totalAppointmentAmount);
+        results.setTotalAmount(calculateTotalAppointmentAmount(searchRequestDTO,hospitalId));
+        results.setBookedAmount(calculateBookedAppointmentAmount(searchRequestDTO,hospitalId));
+        results.setCheckedInAmount(calculateCheckedInAppointmentAmount(searchRequestDTO,hospitalId));
+        results.setCancelAmount(calculateCancelledAppointmentAmount(searchRequestDTO,hospitalId));
+        results.setRefundedAmount(calculateRefundedAppointmentAmount(searchRequestDTO,hospitalId));
 
         if (results.getAppointmentLogs().isEmpty()) {
             error();
@@ -457,16 +459,55 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         return (Double) query.getSingleResult();
     }
 
-    private Double calculateTotalAppointmentAmount(AppointmentLogSearchDTO searchDTO,
-                                              Long hospitalId) {
+    private Double calculateTotalAppointmentAmount(AppointmentLogSearchDTO searchRequestDTO,Long hospitalId) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TOTAL_APPOINTMENT_AMOUNT(searchDTO))
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TOTAL_APPOINTMENT_AMOUNT(searchRequestDTO))
                 .setParameter(HOSPITAL_ID, hospitalId);
 
-        return (Double) query.getSingleResult();
+        Double amount= (Double) query.getSingleResult();
+
+        return amount==0? 0D : amount;
     }
 
+    private Double calculateBookedAppointmentAmount(AppointmentLogSearchDTO searchRequestDTO,Long hospitalId) {
 
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_BOOKED_APPOINTMENT_AMOUNT(searchRequestDTO))
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        Double amount= (Double) query.getSingleResult();
+
+        return amount==0? 0D : amount;
+    }
+
+    private Double calculateCheckedInAppointmentAmount(AppointmentLogSearchDTO searchRequestDTO,Long hospitalId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_AMOUNT(searchRequestDTO))
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        Double amount= (Double) query.getSingleResult();
+
+        return amount==0? 0D : amount;
+    }
+
+    private Double calculateCancelledAppointmentAmount(AppointmentLogSearchDTO searchRequestDTO,Long hospitalId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_CANCELLED_APPOINTMENT_AMOUNT(searchRequestDTO))
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        Double amount= (Double) query.getSingleResult();
+
+        return amount==0? 0D : amount;
+    }
+
+    private Double calculateRefundedAppointmentAmount(AppointmentLogSearchDTO searchRequestDTO,Long hospitalId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_REFUNDED_APPOINTMENT_AMOUNT(searchRequestDTO))
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        Double amount= (Double) query.getSingleResult();
+
+        return amount==0? 0D : amount;
+    }
 
 
     private Function<Long, NoContentFoundException> APPOINTMENT_DETAILS_NOT_FOUND = (appointmentId) -> {

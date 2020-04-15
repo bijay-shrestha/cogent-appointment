@@ -271,14 +271,17 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         int totalItems = query.getResultList().size();
 
-        Double totalAppointmentAmount=calculateTotalAppointmentAmount(searchRequestDTO);
-
         addPagination.accept(pageable, query);
 
         List<Object[]> objects = query.getResultList();
 
         AppointmentLogResponseDTO results = parseQueryResultToAppointmentLogResponse(objects);
-        results.setTotalAmount(totalAppointmentAmount);
+        results.setBookedAmount(calculateBookedAppointmentAmount(searchRequestDTO));
+        results.setCheckedInAmount(calculateCheckedInAppointmentAmount(searchRequestDTO));
+        results.setCancelAmount(calculateCancelledAppointmentAmount(searchRequestDTO));
+        results.setRefundedAmount(calculateRefundedAppointmentAmount(searchRequestDTO));
+        results.setTotalAmount(calculateTotalAppointmentAmount(searchRequestDTO));
+
 
         if (results.getAppointmentLogs().isEmpty()) {
             error();
@@ -312,11 +315,50 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         }
     }
 
-    private Double calculateTotalAppointmentAmount(AppointmentLogSearchDTO searchDTO) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TOTAL_APPOINTMENT_AMOUNT(searchDTO));
+    private Double calculateTotalAppointmentAmount(AppointmentLogSearchDTO searchRequestDTO) {
 
-        return (Double) query.getSingleResult();
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TOTAL_APPOINTMENT_AMOUNT(searchRequestDTO));
+
+        Double amount= (Double) query.getSingleResult();
+
+        return amount==0? 0D : amount;
+    }
+
+    private Double calculateBookedAppointmentAmount(AppointmentLogSearchDTO searchRequestDTO) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_BOOKED_APPOINTMENT_AMOUNT(searchRequestDTO));
+
+        Double amount= (Double) query.getSingleResult();
+
+        return amount==0? 0D : amount;
+    }
+
+    private Double calculateCheckedInAppointmentAmount(AppointmentLogSearchDTO searchRequestDTO) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_AMOUNT(searchRequestDTO));
+
+        Double amount= (Double) query.getSingleResult();
+
+        return amount==0? 0D : amount;
+    }
+
+    private Double calculateCancelledAppointmentAmount(AppointmentLogSearchDTO searchRequestDTO) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_CANCELLED_APPOINTMENT_AMOUNT(searchRequestDTO));
+
+        Double amount= (Double) query.getSingleResult();
+
+        return amount==0? 0D : amount;
+    }
+
+    private Double calculateRefundedAppointmentAmount(AppointmentLogSearchDTO searchRequestDTO) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_REFUNDED_APPOINTMENT_AMOUNT(searchRequestDTO));
+
+        Double amount= (Double) query.getSingleResult();
+
+        return amount==0? 0D : amount;
     }
 
     private Function<Long, NoContentFoundException> APPOINTMENT_DETAILS_NOT_FOUND = (appointmentId) -> {

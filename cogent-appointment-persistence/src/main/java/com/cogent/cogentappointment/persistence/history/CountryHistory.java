@@ -31,7 +31,7 @@ public class CountryHistory implements Serializable {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "country_id", foreignKey = @ForeignKey(name = "FK_country_history_admin"))
+    @JoinColumn(name = "country_id", foreignKey = @ForeignKey(name = "FK_country_history_country"))
     private Country country;
 
     @Column(name = "country_content")

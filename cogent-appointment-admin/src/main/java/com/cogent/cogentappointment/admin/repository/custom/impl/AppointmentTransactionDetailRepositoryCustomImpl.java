@@ -4,6 +4,7 @@ package com.cogent.cogentappointment.admin.repository.custom.impl;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.DashBoardRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.DoctorRevenueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.DoctorRevenueResponseListDTO;
+import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueStatisticsResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueTrendResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.AppointmentTransactionDetailRepositoryCustom;
@@ -93,6 +94,11 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
         }
 
         return responseListDTO;
+    }
+
+    @Override
+    public RevenueStatisticsResponseDTO calculateRevenueStatistics(Date toDate, Date fromDate, Long hospitalId) {
+        return null;
     }
 
     private String getQueryByFilter(Long hospitalId, Character filter) {

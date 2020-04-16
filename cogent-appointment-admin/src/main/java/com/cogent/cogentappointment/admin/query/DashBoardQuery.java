@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.query;
 
+import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.DoctorRevenueRequestDTO;
 
 import java.util.Objects;
@@ -23,6 +24,7 @@ public class DashBoardQuery {
         return "";
     }
 
+    /*REVENUE STATISTICS*/
     public static String QUERY_TO_GET_REVENUE_BY_DATE(Long hospitalId) {
         return "SELECT" +
                 " COALESCE(SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 ) as totalAmount" +
@@ -32,6 +34,69 @@ public class DashBoardQuery {
                 " WHERE " +
                 " (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId);
+    }
+
+
+    private static String SELECT_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS =
+            " SELECT " +
+                    " COUNT(a.id)," +
+                    " COALESCE(SUM(atd.appointmentAmount ),0)" +
+                    " FROM AppointmentTransactionDetail atd" +
+                    " LEFT JOIN Appointment a ON a.id=atd.appointment.id";
+
+    private static String GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS(Long hospitalId) {
+        return " WHERE " +
+                " (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
+                CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId);
+    }
+
+    public static String QUERY_TO_FETCH_BOOKED_APPOINTMENT_AMOUNT(Long hospitalId) {
+        return SELECT_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS +
+                GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS(hospitalId) +
+                " a.status='PA'";
+    }
+
+    public static String QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_AMOUNT(Long hospitalId) {
+        return SELECT_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS +
+                GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS(hospitalId) +
+                " a.status='A'";
+    }
+
+
+    public static String QUERY_TO_FETCH_CANCELLED_IN_APPOINTMENT_AMOUNT(Long hospitalId) {
+        return SELECT_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS +
+                GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS(hospitalId) +
+                " a.status='C'";
+    }
+
+    public static String QUERY_TO_FETCH_REFUNDED_APPOINTMENT_AMOUNT(Long hospitalId) {
+        return "SELECT" +
+                " COUNT(a.id)," +
+                " COALESCE (SUM(ard.refundAmount ),0) as amount" +
+                " FROM AppointmentTransactionDetail atd" +
+                " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
+                " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
+                GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS(hospitalId) +
+                " AND a.status='RE' AND ard.status = 'A'";
+    }
+
+    public static String QUERY_TO_FETCH_REVENUE_REFUNDED_APPOINTMENT_AMOUNT(Long hospitalId) {
+        String query = "SELECT" +
+                " COUNT(a.id),"+
+                " (COALESCE(SUM(atd.appointmentAmount ),0) - COALESCE(SUM(ard.refundAmount ),0)) as amount" +
+                " FROM Appointment a" +
+                " LEFT JOIN Patient p ON a.patientId.id=p.id" +
+                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
+                " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
+                " LEFT JOIN Specialization sp ON a.specializationId.id=sp.id" +
+                " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
+                " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
+                " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
+                " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
+                " WHERE" +
+                " a.status='RE'";
+
+        return  QUERY_TO_SEARCH_BY_DATES(query,searchRequestDTO);
     }
 
 

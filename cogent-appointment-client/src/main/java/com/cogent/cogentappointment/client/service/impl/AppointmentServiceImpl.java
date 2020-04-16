@@ -108,6 +108,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentTransactionRequestLogService appointmentTransactionRequestLogService;
 
+    private final AppointmentStatisticsRepository appointmentStatisticsRepository;
+
     public AppointmentServiceImpl(PatientService patientService,
                                   DoctorService doctorService,
                                   SpecializationService specializationService,
@@ -126,7 +128,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   PatientRelationInfoService patientRelationInfoService,
                                   PatientRelationInfoRepository patientRelationInfoRepository,
                                   AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService,
-                                  AppointmentTransactionRequestLogService appointmentTransactionRequestLogService) {
+                                  AppointmentTransactionRequestLogService appointmentTransactionRequestLogService,
+                                  AppointmentStatisticsRepository appointmentStatisticsRepository) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -146,6 +149,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.patientRelationInfoRepository = patientRelationInfoRepository;
         this.appointmentFollowUpRequestLogService = appointmentFollowUpRequestLogService;
         this.appointmentTransactionRequestLogService = appointmentTransactionRequestLogService;
+        this.appointmentStatisticsRepository = appointmentStatisticsRepository;
     }
 
     @Override
@@ -240,7 +244,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 hospital
         );
 
-        save(appointment);
+        Appointment savedAppointment=save(appointment);
 
         saveAppointmentTransactionDetail(requestDTO.getTransactionInfo(), appointment);
 
@@ -712,7 +716,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     private void validateAppointmentExists(Long appointmentCount, String appointmentTime) {
-        if (appointmentCount.intValue() > 0){
+        if (appointmentCount.intValue() > 0) {
             log.error(APPOINTMENT_EXISTS, convert24HourTo12HourFormat(appointmentTime));
             throw new DataDuplicationException(String.format(APPOINTMENT_EXISTS,
                     convert24HourTo12HourFormat(appointmentTime)));
@@ -810,8 +814,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         throw new NoContentFoundException(Appointment.class, "id", id.toString());
     };
 
-    private void save(Appointment appointment) {
-        appointmentRepository.save(appointment);
+    private Appointment save(Appointment appointment) {
+        return appointmentRepository.save(appointment);
     }
 
     /*FETCH DOCTOR DUTY ROSTER INFO FOR SELECTED DATE*/
@@ -952,7 +956,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         boolean isTimeValid = validateIfRequestedAppointmentTimeIsValid(doctorDutyRosterInfo, appointmentInfo);
 
-        if (!isTimeValid){
+        if (!isTimeValid) {
             log.error(INVALID_APPOINTMENT_TIME, convert24HourTo12HourFormat(appointmentInfo.getAppointmentTime()));
             throw new NoContentFoundException(String.format(INVALID_APPOINTMENT_TIME,
                     convert24HourTo12HourFormat(appointmentInfo.getAppointmentTime())));
@@ -1041,11 +1045,21 @@ public class AppointmentServiceImpl implements AppointmentService {
         return false;
     }
 
+    private void saveAppointmentStatistics(AppointmentRequestDTO appointmentInfo,Appointment appointment){
+        if(Objects.isNull(appointmentInfo.getPatientId())){
+            parseAppointmentStatistics(appointment);
+        }
+    }
+
+    private void saveAppointmentStatistics(AppointmentStatistics  appointmentStatistics){
+        appointmentStatisticsRepository.save(appointmentStatistics);
+    }
+
     private AppointmentReservationLog fetchAppointmentReservationLogById(Long appointmentReservationId) {
         return appointmentReservationLogRepository.findAppointmentReservationLogById(appointmentReservationId);
     }
 
-    private void saveRefundDetails(AppointmentRefundDetail appointmentRefundDetail){
+    private void saveRefundDetails(AppointmentRefundDetail appointmentRefundDetail) {
         appointmentRefundDetailRepository.save(appointmentRefundDetail);
     }
 }

@@ -62,9 +62,9 @@ public class Appointment extends Auditable<String> implements Serializable {
     private String createdDateNepali;
 
     //todo: refactor as check in for approved
-    /* PA = PENDING APPROVAL
-       A= VISITED AND APPROVED
-       R= REJECTED BY HOSPITAL
+    /*
+       A= CHECKED IN
+       PA= BOOKED
        C = CANCELLED BUT NOT REFUNDED
        RE = CANCELLED AND REFUNDED
     */

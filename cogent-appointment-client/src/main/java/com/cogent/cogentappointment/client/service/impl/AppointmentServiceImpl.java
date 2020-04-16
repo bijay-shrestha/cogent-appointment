@@ -1056,13 +1056,17 @@ public class AppointmentServiceImpl implements AppointmentService {
         if (Objects.isNull(appointmentInfo.getPatientId())) {
             saveAppointmentStatistics(parseAppointmentStatisticsForNew(appointment));
         } else {
-            Long patientId = hospitalPatientInfoRepository.checkIfPatientIsRegistered(appointmentInfo.getPatientId(),
-                    appointmentInfo.getHospitalId());
-            if (Objects.isNull(patientId)) {
-                saveAppointmentStatistics(parseAppointmentStatisticsForNew(appointment));
-            } else {
-                saveAppointmentStatistics(parseAppointmentStatisticsForRegistered(appointment));
-            }
+           checkForRegisteredPatient(appointmentInfo,appointment);
+        }
+    }
+
+    private void checkForRegisteredPatient(AppointmentRequestDTO appointmentInfo, Appointment appointment){
+        Long patientId = hospitalPatientInfoRepository.checkIfPatientIsRegistered(appointmentInfo.getPatientId(),
+                appointmentInfo.getHospitalId());
+        if (Objects.isNull(patientId)) {
+            saveAppointmentStatistics(parseAppointmentStatisticsForNew(appointment));
+        } else {
+            saveAppointmentStatistics(parseAppointmentStatisticsForRegistered(appointment));
         }
     }
 

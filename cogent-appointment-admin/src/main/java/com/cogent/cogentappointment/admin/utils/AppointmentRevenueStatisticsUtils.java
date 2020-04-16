@@ -1,14 +1,14 @@
 package com.cogent.cogentappointment.admin.utils;
 
-import com.cogent.cogentappointment.admin.dto.response.commons.AppointmentStatisticsResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.commons.AppointmentRevenueStatisticsResponseDTO;
 
 /**
  * @author smriti on 16/04/20
  */
-public class AppointmentStatisticsUtils {
+public class AppointmentRevenueStatisticsUtils {
 
     public static void parseBookedAppointmentDetails(Object[] result,
-                                                     AppointmentStatisticsResponseDTO responseDTO) {
+                                                     AppointmentRevenueStatisticsResponseDTO responseDTO) {
 
         final int COUNT_INDEX = 0;
         final int AMOUNT_INDEX = 1;
@@ -18,7 +18,7 @@ public class AppointmentStatisticsUtils {
     }
 
     public static void parseCheckedInAppointmentDetails(Object[] result,
-                                                        AppointmentStatisticsResponseDTO responseDTO) {
+                                                        AppointmentRevenueStatisticsResponseDTO responseDTO) {
 
         final int COUNT_INDEX = 0;
         final int AMOUNT_INDEX = 1;
@@ -28,7 +28,7 @@ public class AppointmentStatisticsUtils {
     }
 
     public static void parseCancelledAppointmentDetails(Object[] result,
-                                                        AppointmentStatisticsResponseDTO responseDTO) {
+                                                        AppointmentRevenueStatisticsResponseDTO responseDTO) {
 
         final int COUNT_INDEX = 0;
         final int AMOUNT_INDEX = 1;
@@ -38,7 +38,7 @@ public class AppointmentStatisticsUtils {
     }
 
     public static void parseRefundedAppointmentDetails(Object[] result,
-                                                       AppointmentStatisticsResponseDTO responseDTO) {
+                                                       AppointmentRevenueStatisticsResponseDTO responseDTO) {
 
         final int COUNT_INDEX = 0;
         final int AMOUNT_INDEX = 1;
@@ -48,7 +48,7 @@ public class AppointmentStatisticsUtils {
     }
 
     public static void parseRevenueFromRefundedAppointmentDetails(Object[] result,
-                                                                  AppointmentStatisticsResponseDTO responseDTO) {
+                                                                  AppointmentRevenueStatisticsResponseDTO responseDTO) {
 
         final int COUNT_INDEX = 0;
         final int AMOUNT_INDEX = 1;

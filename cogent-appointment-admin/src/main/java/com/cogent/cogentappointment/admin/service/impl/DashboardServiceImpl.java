@@ -5,7 +5,7 @@ import com.cogent.cogentappointment.admin.dto.request.dashboard.DashBoardRequest
 import com.cogent.cogentappointment.admin.dto.request.dashboard.DoctorRevenueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.GenerateRevenueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.RefundAmountRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.commons.AppointmentStatisticsResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.commons.AppointmentRevenueStatisticsResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.*;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.DashboardService;
@@ -77,7 +77,7 @@ public class DashboardServiceImpl implements DashboardService {
                 requestDTO.getPreviousFromDate(),
                 requestDTO.getHospitalId());
 
-        AppointmentStatisticsResponseDTO appointmentStatistics =
+        AppointmentRevenueStatisticsResponseDTO appointmentStatistics =
                 appointmentTransactionDetailRepository.calculateAppointmentStatistics(
                         requestDTO.getCurrentToDate(),
                         requestDTO.getCurrentFromDate(),

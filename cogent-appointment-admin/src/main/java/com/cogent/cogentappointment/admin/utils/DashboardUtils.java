@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.admin.utils;
 
 
-import com.cogent.cogentappointment.admin.dto.response.commons.AppointmentStatisticsResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.commons.AppointmentRevenueStatisticsResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueStatisticsResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueTrendResponseDTO;
 
@@ -34,7 +34,7 @@ public class DashboardUtils {
             Double currentTransaction,
             Double growthPercent,
             Character filterType,
-            AppointmentStatisticsResponseDTO appointmentStatistics) {
+            AppointmentRevenueStatisticsResponseDTO appointmentStatistics) {
 
         return RevenueStatisticsResponseDTO.builder()
                 .amount(currentTransaction)

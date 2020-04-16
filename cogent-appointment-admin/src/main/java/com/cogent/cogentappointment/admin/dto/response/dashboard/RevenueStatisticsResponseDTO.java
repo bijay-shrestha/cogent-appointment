@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.admin.dto.response.dashboard;
 
-import com.cogent.cogentappointment.admin.dto.response.commons.AppointmentStatisticsResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.commons.AppointmentRevenueStatisticsResponseDTO;
 import lombok.*;
 
 import java.io.Serializable;
@@ -23,5 +23,5 @@ public class RevenueStatisticsResponseDTO implements Serializable {
 
     private Character filterType;
 
-    private AppointmentStatisticsResponseDTO appointmentStatistics;
+    private AppointmentRevenueStatisticsResponseDTO appointmentStatistics;
 }

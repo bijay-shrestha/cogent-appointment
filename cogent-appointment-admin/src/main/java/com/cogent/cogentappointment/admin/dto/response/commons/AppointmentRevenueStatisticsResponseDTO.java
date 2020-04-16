@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.admin.dto.response.commons;
 
 import lombok.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
 
@@ -13,7 +12,7 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppointmentStatisticsResponseDTO implements Serializable {
+public class AppointmentRevenueStatisticsResponseDTO implements Serializable {
 
     private Double totalAmount;
 

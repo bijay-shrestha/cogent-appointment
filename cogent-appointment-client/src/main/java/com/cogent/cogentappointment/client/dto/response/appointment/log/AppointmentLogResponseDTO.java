@@ -22,15 +22,25 @@ public class AppointmentLogResponseDTO implements Serializable {
 
     private Double totalAmountExcludingBooked;
 
-    private Map<Long,Double> bookedAmount;
+    private Double bookedAmount;
 
-    private Map<Long,Double> checkedInAmount;
+    private Double checkedInAmount;
 
-    private Map<Long,Double> refundedAmount;
+    private Double refundedAmount;
 
-    private Map<Long,Double> cancelAmount;
+    private Double cancelAmount;
 
-    private Map<Long,Double> revenueFromRefundedAmount;
+    private Double revenueFromRefundedAmount;
+
+    private Long bookedAppointmentsCount;
+
+    private Long checkedInAppointmentsCount;
+
+    private Long refundedAppointmentsCount;
+
+    private Long cancelAppointmentsCount;
+
+    private Long revenueFromRefundedAppointmentsCount;
 
     private int totalItems;
 }

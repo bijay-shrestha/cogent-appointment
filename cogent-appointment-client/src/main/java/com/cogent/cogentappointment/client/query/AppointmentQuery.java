@@ -571,7 +571,7 @@ public class AppointmentQuery {
     private static String SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT =
             "SELECT" +
                     " COUNT(a.id),"+
-                    " CONCAT(COALESCE (SUM(atd.appointmentAmount ),0) as amount"+
+                    " COALESCE(SUM(atd.appointmentAmount ),0)"+
                     " FROM Appointment a" +
                     " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
@@ -602,45 +602,35 @@ public class AppointmentQuery {
     public static String QUERY_TO_FETCH_TOTAL_APPOINTMENT_AMOUNT(AppointmentLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_TOTAL_AMOUNT;
 
-        QUERY_TO_SEARCH_BY_DATES(query,searchRequestDTO);
-
-        return query;
+        return  QUERY_TO_SEARCH_BY_DATES(query,searchRequestDTO);
     }
 
     public static String QUERY_TO_FETCH_TOTAL_APPOINTMENT_AMOUNT_EXCLUDING_BOOKED(AppointmentLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_TOTAL_AMOUNT+
                       " AND a.status!='PA'";
 
-        QUERY_TO_SEARCH_BY_DATES(query,searchRequestDTO);
-
-        return query;
+        return  QUERY_TO_SEARCH_BY_DATES(query,searchRequestDTO);
     }
 
     public static String QUERY_TO_FETCH_BOOKED_APPOINTMENT_AMOUNT(AppointmentLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
                 " AND a.status='PA'";
 
-        QUERY_TO_SEARCH_BY_DATES(query,searchRequestDTO);
-
-        return query;
+        return QUERY_TO_SEARCH_BY_DATES(query,searchRequestDTO);
     }
 
     public static String QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_AMOUNT(AppointmentLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
                 " AND a.status='A'";
 
-        QUERY_TO_SEARCH_BY_DATES(query,searchRequestDTO);
-
-        return query;
+        return QUERY_TO_SEARCH_BY_DATES(query,searchRequestDTO);
     }
 
     public static String QUERY_TO_FETCH_CANCELLED_APPOINTMENT_AMOUNT(AppointmentLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
                 " AND a.status='C'";
 
-        QUERY_TO_SEARCH_BY_DATES(query,searchRequestDTO);
-
-        return query;
+        return QUERY_TO_SEARCH_BY_DATES(query,searchRequestDTO);
     }
 
     public static String QUERY_TO_SEARCH_BY_DATES(String query,AppointmentLogSearchDTO searchRequestDTO){
@@ -662,7 +652,7 @@ public class AppointmentQuery {
     public static String QUERY_TO_FETCH_REFUNDED_APPOINTMENT_AMOUNT(AppointmentLogSearchDTO searchRequestDTO) {
         String query = "SELECT" +
                 " COUNT(a.id),"+
-                " CONCAT(COALESCE (SUM(ard.refundAmount ),0) as amount" +
+                " COALESCE (SUM(ard.refundAmount ),0) as amount" +
                 " FROM Appointment a" +
                 " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                 " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
@@ -676,9 +666,8 @@ public class AppointmentQuery {
                 " a.status='RE'" +
                 " AND h.id=:hospitalId";
 
-        QUERY_TO_SEARCH_BY_DATES(query,searchRequestDTO);
 
-        return query;
+        return  QUERY_TO_SEARCH_BY_DATES(query,searchRequestDTO);
     }
 
     public static String QUERY_TO_FETCH_REVENUE_REFUNDED_APPOINTMENT_AMOUNT(AppointmentLogSearchDTO searchRequestDTO) {
@@ -698,9 +687,8 @@ public class AppointmentQuery {
                 " a.status='RE'" +
                 " AND h.id=:hospitalId";
 
-        QUERY_TO_SEARCH_BY_DATES(query,searchRequestDTO);
 
-        return query;
+        return  QUERY_TO_SEARCH_BY_DATES(query,searchRequestDTO);
     }
 
 

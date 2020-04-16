@@ -1,15 +1,13 @@
 package com.cogent.cogentappointment.client.utils;
 
-import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentRejectDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.*;
+import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueSearchByTimeDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentTimeDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.approval.AppointmentPendingApprovalDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.approval.AppointmentPendingApprovalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.esewa.*;
 import com.cogent.cogentappointment.client.dto.response.appointment.log.AppointmentLogDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.log.AppointmentLogResponseDTO;
@@ -426,7 +424,7 @@ public class AppointmentUtils {
                             .status(result[APPOINTMENT_STATUS_INDEX].toString())
                             .refundAmount(refundAmount)
                             .patientAddress(result[PATIENT_ADDRESS_INDEX].toString())
-                            .transactionDate((Date)result[TRANSACTION_DATE_INDEX])
+                            .transactionDate((Date) result[TRANSACTION_DATE_INDEX])
                             .build();
 
             appointmentLogSearchDTOS.add(appointmentLogDTO);
@@ -552,6 +550,65 @@ public class AppointmentUtils {
     }
 
 
+    public static AppointmentLogResponseDTO parseCheckedInAppointmentDetails(Object[] result,
+                                                                             AppointmentLogResponseDTO responseDTO) {
+
+        final int COUNT_INDEX = 0;
+        final int AMOUNT_INDEX = 1;
+
+        responseDTO.setCheckedInAppointmentsCount(Long.parseLong(result[COUNT_INDEX].toString()));
+        responseDTO.setCheckedInAmount(Double.parseDouble(result[AMOUNT_INDEX].toString()));
+
+        return responseDTO;
+    }
+
+    public static AppointmentLogResponseDTO parseBookedAppointmentDetails(Object[] result,
+                                                                             AppointmentLogResponseDTO responseDTO) {
+
+        final int COUNT_INDEX = 0;
+        final int AMOUNT_INDEX = 1;
+
+        responseDTO.setBookedAppointmentsCount(Long.parseLong(result[COUNT_INDEX].toString()));
+        responseDTO.setBookedAmount(Double.parseDouble(result[AMOUNT_INDEX].toString()));
+
+        return responseDTO;
+    }
+
+    public static AppointmentLogResponseDTO parseCancelledAppointmentDetails(Object[] result,
+                                                                          AppointmentLogResponseDTO responseDTO) {
+
+        final int COUNT_INDEX = 0;
+        final int AMOUNT_INDEX = 1;
+
+        responseDTO.setCancelAppointmentsCount(Long.parseLong(result[COUNT_INDEX].toString()));
+        responseDTO.setCancelAmount(Double.parseDouble(result[AMOUNT_INDEX].toString()));
+
+        return responseDTO;
+    }
+
+    public static AppointmentLogResponseDTO parseRefundedAppointmentDetails(Object[] result,
+                                                                             AppointmentLogResponseDTO responseDTO) {
+
+        final int COUNT_INDEX = 0;
+        final int AMOUNT_INDEX = 1;
+
+        responseDTO.setRefundedAppointmentsCount(Long.parseLong(result[COUNT_INDEX].toString()));
+        responseDTO.setRefundedAmount(Double.parseDouble(result[AMOUNT_INDEX].toString()));
+
+        return responseDTO;
+    }
+
+    public static AppointmentLogResponseDTO parseRevenueFromRefundedAppointmentDetails(Object[] result,
+                                                                            AppointmentLogResponseDTO responseDTO) {
+
+        final int COUNT_INDEX = 0;
+        final int AMOUNT_INDEX = 1;
+
+        responseDTO.setRevenueFromRefundedAppointmentsCount(Long.parseLong(result[COUNT_INDEX].toString()));
+        responseDTO.setRevenueFromRefundedAmount(Double.parseDouble(result[AMOUNT_INDEX].toString()));
+
+        return responseDTO;
+    }
 
 
 }

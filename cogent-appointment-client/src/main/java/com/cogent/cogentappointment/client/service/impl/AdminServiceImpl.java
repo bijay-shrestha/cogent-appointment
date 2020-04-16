@@ -120,10 +120,10 @@ public class AdminServiceImpl implements AdminService {
 
         validateAdminCount(hospitalId);
 
-        List<Object[]> admins = adminRepository.validateDuplicity(adminRequestDTO.getUsername(),
-                adminRequestDTO.getEmail(), adminRequestDTO.getMobileNumber(), hospitalId);
+        List<Object[]> admins = adminRepository.validateDuplicity(adminRequestDTO.getEmail(),
+                adminRequestDTO.getMobileNumber(), hospitalId);
 
-        validateAdminDuplicity(admins, adminRequestDTO.getUsername(), adminRequestDTO.getEmail(),
+        validateAdminDuplicity(admins, adminRequestDTO.getEmail(),
                 adminRequestDTO.getMobileNumber());
 
         Admin admin = save(adminRequestDTO, hospitalId);
@@ -417,37 +417,6 @@ public class AdminServiceImpl implements AdminService {
         if (savedAdmin.intValue() == numberOfAdminsAllowed){
             log.error(ADMIN_CANNOT_BE_REGISTERED_DEBUG_MESSAGE);
             throw new BadRequestException(ADMIN_CANNOT_BE_REGISTERED_MESSAGE, ADMIN_CANNOT_BE_REGISTERED_DEBUG_MESSAGE);
-        }
-    }
-
-    private void validateAdminDuplicity(List<Object[]> adminList, String requestUsername, String requestEmail,
-                                        String requestMobileNumber) {
-
-        final int USERNAME = 0;
-        final int EMAIL = 1;
-        final int MOBILE_NUMBER = 2;
-
-        adminList.forEach(admin -> {
-            boolean isUsernameExists = requestUsername.equalsIgnoreCase((String) get(admin, USERNAME));
-            boolean isEmailExists = requestEmail.equalsIgnoreCase((String) get(admin, EMAIL));
-            boolean isMobileNumberExists = requestMobileNumber.equalsIgnoreCase((String) get(admin, MOBILE_NUMBER));
-
-            if (isUsernameExists && isEmailExists && isMobileNumberExists){
-                log.error(ADMIN_DUPLICATION_MESSAGE);
-                throw ADMIN_DUPLICATION.get();
-            }
-
-            validateUsername(isUsernameExists, requestUsername);
-            validateEmail(isEmailExists, requestEmail);
-            validateMobileNumber(isMobileNumberExists, requestMobileNumber);
-        });
-    }
-
-    private void validateUsername(boolean isUsernameExists, String username) {
-        if (isUsernameExists){
-            log.error(DUPLICATION_ERROR,username);
-            throw new DataDuplicationException(
-                    String.format(USERNAME_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), username));
         }
     }
 

@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
@@ -33,7 +34,7 @@ public class AdminUtils {
                                           Gender gender,
                                           Profile profile) {
         Admin admin = new Admin();
-        admin.setUsername(adminRequestDTO.getUsername());
+        admin.setUsername(getUsername(adminRequestDTO.getEmail()));
         admin.setFullName(toNormalCase(adminRequestDTO.getFullName()));
         admin.setEmail(adminRequestDTO.getEmail());
         admin.setMobileNumber(adminRequestDTO.getMobileNumber());
@@ -57,6 +58,7 @@ public class AdminUtils {
 
         admin.setEmail(adminRequestDTO.getEmail());
         admin.setFullName(toNormalCase(adminRequestDTO.getFullName()));
+        admin.setUsername(getUsername(adminRequestDTO.getEmail()));
         admin.setMobileNumber(adminRequestDTO.getMobileNumber());
         admin.setStatus(adminRequestDTO.getStatus());
         admin.setHasMacBinding(adminRequestDTO.getHasMacBinding());
@@ -108,7 +110,7 @@ public class AdminUtils {
                 .receiverEmailAddress(adminRequestDTO.getEmail())
                 .subject(SUBJECT_FOR_ADMIN_VERIFICATION)
                 .templateName(ADMIN_VERIFICATION)
-                .paramValue(adminRequestDTO.getUsername() + COMMA_SEPARATED + confirmationUrl)
+                .paramValue(getUsername(adminRequestDTO.getEmail()) + COMMA_SEPARATED + confirmationUrl)
                 .build();
     }
 
@@ -239,5 +241,10 @@ public class AdminUtils {
                 .paramValue(username + COMMA_SEPARATED
                         + requestDTO.getPassword() + COMMA_SEPARATED + requestDTO.getRemarks())
                 .build();
+    }
+
+    public static String getUsername(String email){
+        StringTokenizer token = new StringTokenizer(email, "@");
+        return token.nextToken();
     }
 }

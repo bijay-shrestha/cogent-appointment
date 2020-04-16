@@ -232,7 +232,7 @@ public class DoctorServiceImpl implements DoctorService {
 
     @Override
     public Double fetchDoctorFollowupAppointmentCharge(Long doctorId, Long hospitalId) {
-        return null;
+        return doctorRepository.fetchDoctorAppointmentFollowUpCharge(doctorId, hospitalId);
     }
 
     @Override

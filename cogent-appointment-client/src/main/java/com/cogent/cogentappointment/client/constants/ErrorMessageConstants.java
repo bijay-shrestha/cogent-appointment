@@ -66,7 +66,7 @@ public class ErrorMessageConstants {
     public interface DoctorServiceMessages {
         String DOCTOR_NOT_AVAILABLE = "Sorry, Doctor is not available in selected date '%s'.";
         String DOCTOR_APPOINTMENT_CHARGE_INVALID = "Sorry, requested appointment amount '%s' doesn't match with " +
-                " actual doctor appointment charge";
+                "actual doctor appointment charge";
         String DOCTOR_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE = "Appointment amount is not equal to " +
                 "Doctor actual appointment charge/ follow-up appointment charge";
     }

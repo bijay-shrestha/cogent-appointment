@@ -981,12 +981,14 @@ public class AppointmentServiceImpl implements AppointmentService {
                                            Character isFollowUp, Double appointmentAmount) {
 
         Double actualAppointmentCharge = isFollowUp.equals(YES)
-                ? doctorService.fetchDoctorAppointmentCharge(doctorId, hospitalId)
-                : doctorService.fetchDoctorFollowupAppointmentCharge(doctorId, hospitalId);
+                ? doctorService.fetchDoctorFollowupAppointmentCharge(doctorId, hospitalId)
+                : doctorService.fetchDoctorAppointmentCharge(doctorId, hospitalId);
 
-        if (!(Double.compare(actualAppointmentCharge, appointmentAmount) == 0))
-            throw new BadRequestException(DOCTOR_APPOINTMENT_CHARGE_INVALID,
+        if (!(Double.compare(actualAppointmentCharge, appointmentAmount) == 0)){
+            log.error(String.format(DOCTOR_APPOINTMENT_CHARGE_INVALID, appointmentAmount));
+            throw new BadRequestException(String.format(DOCTOR_APPOINTMENT_CHARGE_INVALID, appointmentAmount),
                     DOCTOR_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE);
+        }
     }
 
     private AppointmentReservationLog fetchAppointmentReservationLogById(Long appointmentReservationId) {

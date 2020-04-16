@@ -309,7 +309,8 @@ public class DoctorQuery {
             " SELECT da.appointmentFollowUpCharge" +
                     " FROM DoctorAppointmentCharge da " +
                     " WHERE da.doctorId.id = :doctorId" +
-                    " AND da.doctorId.hospital.id = :hospitalId";
+                    " AND da.doctorId.hospital.id = :hospitalId" +
+                    " AND da.doctorId.status = 'Y'";
 
     public static String QUERY_TO_FETCH_DOCTOR_APPOINTMENT_CHARGE =
             " SELECT da.appointmentCharge" +

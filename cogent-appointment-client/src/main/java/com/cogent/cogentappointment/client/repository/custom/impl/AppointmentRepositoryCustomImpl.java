@@ -420,9 +420,6 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                 .setParameter(HOSPITAL_ID, hospitalId)
                 .setParameter(DATE, utilDateToSqlDate(appointmentQueueRequestDTO.getDate()));
 
-
-        int totalItems = query.getResultList().size();
-
         addPagination.accept(pageable, query);
 
         List<Object[]> objects = query.getResultList();
@@ -553,8 +550,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         throw new NoContentFoundException
                 (AppointmentPendingApprovalDetailResponseDTO.class, "appointmentId", appointmentId.toString());
     };
-
-
+    
     private void error() {
         log.error(CONTENT_NOT_FOUND, APPOINTMENT);
     }

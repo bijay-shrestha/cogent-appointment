@@ -493,21 +493,6 @@ public class AppointmentQuery {
                     " WHERE ard.appointmentId.id=:appointmentId" +
                     " AND ard.status='PA'";
 
-    private static String SELECT_CLAUSE_TO_GET_AMOUNT=
-         "SELECT" +
-                " COALESCE (SUM(atd.appointmentAmount)," +
-                " 0) as totalAmount" +
-                " FROM Appointment a" +
-                " LEFT JOIN Patient p ON a.patientId.id=p.id" +
-                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
-                " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
-                " LEFT JOIN Specialization sp ON a.specializationId.id=sp.id" +
-                " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
-                " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
-                " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
-                " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='PA'" +
-                " WHERE";
-
     private static String SELECT_CLAUSE_TO_GET_TOTAL_AMOUNT=
             "SELECT" +
                     " COALESCE (SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 ) as totalAmount" +
@@ -520,95 +505,63 @@ public class AppointmentQuery {
                     " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
-                    " WHERE" +
+                    " WHERE"+
                     " sp.status='Y'";
+
+    private static String SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT =
+            "SELECT" +
+                    " COUNT(a.id),"+
+                    " COALESCE(SUM(atd.appointmentAmount ),0)"+
+                    " FROM Appointment a" +
+                    " LEFT JOIN Patient p ON a.patientId.id=p.id" +
+                    " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
+                    " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
+                    " LEFT JOIN Specialization sp ON a.specializationId.id=sp.id" +
+                    " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
+                    " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
+                    " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
+                    " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
+                    " WHERE";
 
     public static String QUERY_TO_FETCH_TOTAL_APPOINTMENT_AMOUNT(AppointmentLogSearchDTO searchRequestDTO) {
        String query= SELECT_CLAUSE_TO_GET_TOTAL_AMOUNT;
 
-        if (!Objects.isNull(searchRequestDTO.getHospitalId()))
-            query += " AND h.id = " + searchRequestDTO.getHospitalId();
-
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getFromDate())
-                && !ObjectUtils.isEmpty(searchRequestDTO.getToDate()))
-            query += " AND (a.appointmentDate BETWEEN '" + utilDateToSqlDate(searchRequestDTO.getFromDate())
-                    + "' AND '" + utilDateToSqlDate(searchRequestDTO.getToDate()) + "')";
-
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getTransactionFromDate())
-                && !ObjectUtils.isEmpty(searchRequestDTO.getTransactionToDate()))
-            query += " AND (atd.transactionDate BETWEEN '" +
-                    utilDateToSqlDate(searchRequestDTO.getTransactionFromDate())
-                    + "' AND '" + utilDateToSqlDate(searchRequestDTO.getTransactionToDate()) + "')";
-
-       return query;
+       return  QUERY_TO_SEARCH_BY_DATES(query,searchRequestDTO);
     }
 
+    public static String QUERY_TO_FETCH_TOTAL_APPOINTMENT_AMOUNT_EXCLUDING_BOOKED(AppointmentLogSearchDTO searchRequestDTO) {
+        String query = SELECT_CLAUSE_TO_GET_TOTAL_AMOUNT+
+                " AND a.status!='PA'";
+
+        return  QUERY_TO_SEARCH_BY_DATES(query,searchRequestDTO);
+    }
+
+
     public static String QUERY_TO_FETCH_BOOKED_APPOINTMENT_AMOUNT(AppointmentLogSearchDTO searchRequestDTO) {
-        String query= SELECT_CLAUSE_TO_GET_AMOUNT +
+        String query= SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
                 " a.status='PA'";
 
-        if (!Objects.isNull(searchRequestDTO.getHospitalId()))
-            query += " AND h.id = " + searchRequestDTO.getHospitalId();
-
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getFromDate())
-                && !ObjectUtils.isEmpty(searchRequestDTO.getToDate()))
-            query += " AND (a.appointmentDate BETWEEN '" + utilDateToSqlDate(searchRequestDTO.getFromDate())
-                    + "' AND '" + utilDateToSqlDate(searchRequestDTO.getToDate()) + "')";
-
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getTransactionFromDate())
-                && !ObjectUtils.isEmpty(searchRequestDTO.getTransactionToDate()))
-            query += " AND (atd.transactionDate BETWEEN '" +
-                    utilDateToSqlDate(searchRequestDTO.getTransactionFromDate())
-                    + "' AND '" + utilDateToSqlDate(searchRequestDTO.getTransactionToDate()) + "')";
-
-        return query;
+        return  QUERY_TO_SEARCH_BY_DATES(query,searchRequestDTO);
     }
 
     public static String QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_AMOUNT (AppointmentLogSearchDTO searchRequestDTO) {
-        String query= SELECT_CLAUSE_TO_GET_AMOUNT +
+        String query= SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
                 " a.status='A'";
 
-        if (!Objects.isNull(searchRequestDTO.getHospitalId()))
-            query += " AND h.id = " + searchRequestDTO.getHospitalId();
-
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getFromDate())
-                && !ObjectUtils.isEmpty(searchRequestDTO.getToDate()))
-            query += " AND (a.appointmentDate BETWEEN '" + utilDateToSqlDate(searchRequestDTO.getFromDate())
-                    + "' AND '" + utilDateToSqlDate(searchRequestDTO.getToDate()) + "')";
-
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getTransactionFromDate())
-                && !ObjectUtils.isEmpty(searchRequestDTO.getTransactionToDate()))
-            query += " AND (atd.transactionDate BETWEEN '" +
-                    utilDateToSqlDate(searchRequestDTO.getTransactionFromDate())
-                    + "' AND '" + utilDateToSqlDate(searchRequestDTO.getTransactionToDate()) + "')";
-
-        return query;
+        return QUERY_TO_SEARCH_BY_DATES(query,searchRequestDTO);
     }
 
     public static String QUERY_TO_FETCH_CANCELLED_APPOINTMENT_AMOUNT (AppointmentLogSearchDTO searchRequestDTO) {
-        String query= SELECT_CLAUSE_TO_GET_AMOUNT +
+        String query= SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
                 " a.status='C'";
 
-        if (!Objects.isNull(searchRequestDTO.getHospitalId()))
-            query += " AND h.id = " + searchRequestDTO.getHospitalId();
-
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getFromDate())
-                && !ObjectUtils.isEmpty(searchRequestDTO.getToDate()))
-            query += " AND (a.appointmentDate BETWEEN '" + utilDateToSqlDate(searchRequestDTO.getFromDate())
-                    + "' AND '" + utilDateToSqlDate(searchRequestDTO.getToDate()) + "')";
-
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getTransactionFromDate())
-                && !ObjectUtils.isEmpty(searchRequestDTO.getTransactionToDate()))
-            query += " AND (atd.transactionDate BETWEEN '" +
-                    utilDateToSqlDate(searchRequestDTO.getTransactionFromDate())
-                    + "' AND '" + utilDateToSqlDate(searchRequestDTO.getTransactionToDate()) + "')";
-
-        return query;
+        return QUERY_TO_SEARCH_BY_DATES(query,searchRequestDTO);
     }
 
     public static String QUERY_TO_FETCH_REFUNDED_APPOINTMENT_AMOUNT (AppointmentLogSearchDTO searchRequestDTO) {
         String query= "SELECT" +
-                " COALESCE(SUM(ard.refundAmount),0 ) as totalAmount" +
+                " COUNT(a.id),"+
+                " COALESCE (SUM(ard.refundAmount ),0) as amount" +
                 " FROM Appointment a" +
                 " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                 " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
@@ -620,6 +573,31 @@ public class AppointmentQuery {
                 " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
                 " WHERE" +
                 " a.status='RE'";
+
+
+        return QUERY_TO_SEARCH_BY_DATES(query,searchRequestDTO);
+    }
+
+    public static String QUERY_TO_FETCH_REVENUE_REFUNDED_APPOINTMENT_AMOUNT(AppointmentLogSearchDTO searchRequestDTO) {
+        String query = "SELECT" +
+                " COUNT(a.id),"+
+                " (COALESCE(SUM(atd.appointmentAmount ),0) - COALESCE(SUM(ard.refundAmount ),0)) as amount" +
+                " FROM Appointment a" +
+                " LEFT JOIN Patient p ON a.patientId.id=p.id" +
+                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
+                " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
+                " LEFT JOIN Specialization sp ON a.specializationId.id=sp.id" +
+                " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
+                " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
+                " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
+                " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
+                " WHERE" +
+                " a.status='RE'";
+
+        return  QUERY_TO_SEARCH_BY_DATES(query,searchRequestDTO);
+    }
+
+    public static String QUERY_TO_SEARCH_BY_DATES(String query,AppointmentLogSearchDTO searchRequestDTO){
 
         if (!Objects.isNull(searchRequestDTO.getHospitalId()))
             query += " AND h.id = " + searchRequestDTO.getHospitalId();

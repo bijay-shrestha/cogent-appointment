@@ -276,12 +276,13 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         List<Object[]> objects = query.getResultList();
 
         AppointmentLogResponseDTO results = parseQueryResultToAppointmentLogResponse(objects);
-        results.setBookedAmount(calculateBookedAppointmentAmount(searchRequestDTO));
-        results.setCheckedInAmount(calculateCheckedInAppointmentAmount(searchRequestDTO));
-        results.setCancelAmount(calculateCancelledAppointmentAmount(searchRequestDTO));
-        results.setRefundedAmount(calculateRefundedAppointmentAmount(searchRequestDTO));
         results.setTotalAmount(calculateTotalAppointmentAmount(searchRequestDTO));
-
+        results.setTotalAmountExcludingBooked(calculateAppointmentAmount(searchRequestDTO));
+        getCheckedInAppointmentDetails(searchRequestDTO, results);
+        getBookedAppointmentDetails(searchRequestDTO, results);
+        getCancelledAppointmentDetails(searchRequestDTO, results);
+        getRefundedAppointmentDetails(searchRequestDTO, results);
+        getRevenueFromRefundedAppointmentDetails(searchRequestDTO, results);
 
         if (results.getAppointmentLogs().isEmpty()) {
             error();
@@ -320,46 +321,81 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TOTAL_APPOINTMENT_AMOUNT(searchRequestDTO));
 
-        Double amount= (Double) query.getSingleResult();
 
-        return amount==0? 0D : amount;
+        return (Double) query.getSingleResult();
+
+
     }
 
-    private Double calculateBookedAppointmentAmount(AppointmentLogSearchDTO searchRequestDTO) {
+    private Double calculateAppointmentAmount(AppointmentLogSearchDTO searchRequestDTO) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_BOOKED_APPOINTMENT_AMOUNT(searchRequestDTO));
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TOTAL_APPOINTMENT_AMOUNT_EXCLUDING_BOOKED(searchRequestDTO));
 
-        Double amount= (Double) query.getSingleResult();
+        return (Double) query.getSingleResult();
 
-        return amount==0? 0D : amount;
     }
 
-    private Double calculateCheckedInAppointmentAmount(AppointmentLogSearchDTO searchRequestDTO) {
+    private AppointmentLogResponseDTO getCheckedInAppointmentDetails(AppointmentLogSearchDTO searchRequestDTO,
+                                                                     AppointmentLogResponseDTO responseDTO) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_AMOUNT(searchRequestDTO));
 
-        Double amount= (Double) query.getSingleResult();
+        List<Object[]> results = query.getResultList();
 
-        return amount==0? 0D : amount;
+
+        return parseCheckedInAppointmentDetails(results.get(0), responseDTO);
+
     }
 
-    private Double calculateCancelledAppointmentAmount(AppointmentLogSearchDTO searchRequestDTO) {
+    private AppointmentLogResponseDTO getBookedAppointmentDetails(AppointmentLogSearchDTO searchRequestDTO,
+                                                                  AppointmentLogResponseDTO responseDTO) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_BOOKED_APPOINTMENT_AMOUNT(searchRequestDTO));
+
+        List<Object[]> results = query.getResultList();
+
+
+        return parseBookedAppointmentDetails(results.get(0), responseDTO);
+
+    }
+
+    private AppointmentLogResponseDTO getCancelledAppointmentDetails(AppointmentLogSearchDTO searchRequestDTO,
+                                                                     AppointmentLogResponseDTO responseDTO) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_CANCELLED_APPOINTMENT_AMOUNT(searchRequestDTO));
 
-        Double amount= (Double) query.getSingleResult();
+        List<Object[]> results = query.getResultList();
 
-        return amount==0? 0D : amount;
+
+        return parseCancelledAppointmentDetails(results.get(0), responseDTO);
+
     }
 
-    private Double calculateRefundedAppointmentAmount(AppointmentLogSearchDTO searchRequestDTO) {
+    private AppointmentLogResponseDTO getRefundedAppointmentDetails(AppointmentLogSearchDTO searchRequestDTO,
+                                                                    AppointmentLogResponseDTO responseDTO) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_REFUNDED_APPOINTMENT_AMOUNT(searchRequestDTO));
 
-        Double amount= (Double) query.getSingleResult();
+        List<Object[]> results = query.getResultList();
 
-        return amount==0? 0D : amount;
+
+        return parseRefundedAppointmentDetails(results.get(0), responseDTO);
+
     }
+
+    private AppointmentLogResponseDTO getRevenueFromRefundedAppointmentDetails(AppointmentLogSearchDTO searchRequestDTO,
+
+                                                                               AppointmentLogResponseDTO responseDTO) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_REVENUE_REFUNDED_APPOINTMENT_AMOUNT(searchRequestDTO));
+
+        List<Object[]> results = query.getResultList();
+
+
+        return parseRevenueFromRefundedAppointmentDetails(results.get(0), responseDTO);
+
+    }
+
 
     private Function<Long, NoContentFoundException> APPOINTMENT_DETAILS_NOT_FOUND = (appointmentId) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT, appointmentId);

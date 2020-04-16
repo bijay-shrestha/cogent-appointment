@@ -30,6 +30,7 @@ public class AppointmentReservationLogQuery {
                     " a.appointmentDate =:appointmentDate" +
                     " AND a.doctorId =:doctorId" +
                     " AND a.specializationId =:specializationId" +
+                    " AND a.hospitalId =:hospitalId" +
                     " AND DATE_FORMAT(a.appointmentTime,'%H:%i') =:appointmentTime";
 
 

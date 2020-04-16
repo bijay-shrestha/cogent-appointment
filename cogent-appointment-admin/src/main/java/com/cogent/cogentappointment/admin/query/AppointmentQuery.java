@@ -613,6 +613,35 @@ public class AppointmentQuery {
                     utilDateToSqlDate(searchRequestDTO.getTransactionFromDate())
                     + "' AND '" + utilDateToSqlDate(searchRequestDTO.getTransactionToDate()) + "')";
 
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getAppointmentNumber()))
+            query += " AND a.appointmentNumber LIKE '%" + searchRequestDTO.getAppointmentNumber() + "%'";
+
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getTransactionNumber()))
+            query += " AND atd.transactionNumber LIKE '%" + searchRequestDTO.getTransactionNumber() + "%'";
+
+        if (!Objects.isNull(searchRequestDTO.getStatus()) && !searchRequestDTO.getStatus().equals(""))
+            query += " AND a.status = '" + searchRequestDTO.getStatus() + "'";
+
+        if (!Objects.isNull(searchRequestDTO.getAppointmentId()))
+            query += " AND a.id = " + searchRequestDTO.getAppointmentId();
+
+        if (!Objects.isNull(searchRequestDTO.getPatientMetaInfoId()))
+            query += " AND pi.id = " + searchRequestDTO.getPatientMetaInfoId();
+
+        if (!Objects.isNull(searchRequestDTO.getSpecializationId()))
+            query += " AND sp.id = " + searchRequestDTO.getSpecializationId();
+
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getPatientType()))
+            query += " AND hpi.isRegistered = '" + searchRequestDTO.getPatientType() + "'";
+
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getAppointmentCategory()))
+            query += " AND a.isSelf = '" + searchRequestDTO.getAppointmentCategory() + "'";
+
+        if (!Objects.isNull(searchRequestDTO.getDoctorId()))
+            query += " AND d.id = " + searchRequestDTO.getDoctorId();
+
+        query += " ORDER BY a.appointmentDate DESC ";
+
         return query;
     }
 

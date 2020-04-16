@@ -315,7 +315,8 @@ public class DoctorQuery {
             " SELECT da.appointmentCharge" +
                     " FROM DoctorAppointmentCharge da " +
                     " WHERE da.doctorId.id = :doctorId" +
-                    " AND da.doctorId.hospital.id = :hospitalId";
+                    " AND da.doctorId.hospital.id = :hospitalId" +
+                    " AND da.doctorId.status = 'Y'";
 
     public static String QUERY_TO_FETCH_DOCTOR_AVATAR_INFO(Long doctorId) {
         String sql = " SELECT" +

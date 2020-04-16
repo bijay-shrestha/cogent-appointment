@@ -41,6 +41,8 @@ import java.util.*;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AppointmentServiceMessage.*;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.DoctorServiceMessages.DOCTOR_APPOINTMENT_CHARGE_INVALID;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.DoctorServiceMessages.DOCTOR_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.PatientServiceMessages.DUPLICATE_PATIENT_MESSAGE;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.*;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.APPROVED;
@@ -208,6 +210,12 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         validateIfParentAppointmentExists(appointmentReservationLog);
 
+        validateAppointmentAmount(appointmentReservationLog.getDoctorId(),
+                appointmentReservationLog.getHospitalId(),
+                appointmentInfo.getIsFollowUp(),
+                requestDTO.getTransactionInfo().getAppointmentAmount()
+        );
+
         Hospital hospital = fetchHospital(appointmentReservationLog.getHospitalId());
 
         Patient patient = fetchPatientForSelf(
@@ -272,6 +280,12 @@ public class AppointmentServiceImpl implements AppointmentService {
                 validateAppointmentReservationIsActive(appointmentInfo.getAppointmentReservationId());
 
         validateIfParentAppointmentExists(appointmentReservationLog);
+
+        validateAppointmentAmount(appointmentReservationLog.getDoctorId(),
+                appointmentReservationLog.getHospitalId(),
+                appointmentInfo.getIsFollowUp(),
+                requestDTO.getTransactionInfo().getAppointmentAmount()
+        );
 
         Hospital hospital = fetchHospital(appointmentReservationLog.getHospitalId());
 
@@ -961,6 +975,18 @@ public class AppointmentServiceImpl implements AppointmentService {
             throw new DataDuplicationException(String.format(APPOINTMENT_EXISTS,
                     convert24HourTo12HourFormat(appointmentTime)));
         }
+    }
+
+    private void validateAppointmentAmount(Long doctorId, Long hospitalId,
+                                           Character isFollowUp, Double appointmentAmount) {
+
+        Double actualAppointmentCharge = isFollowUp.equals(YES)
+                ? doctorService.fetchDoctorAppointmentCharge(doctorId, hospitalId)
+                : doctorService.fetchDoctorFollowupAppointmentCharge(doctorId, hospitalId);
+
+        if (!(Double.compare(actualAppointmentCharge, appointmentAmount) == 0))
+            throw new BadRequestException(DOCTOR_APPOINTMENT_CHARGE_INVALID,
+                    DOCTOR_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE);
     }
 
     private AppointmentReservationLog fetchAppointmentReservationLogById(Long appointmentReservationId) {

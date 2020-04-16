@@ -7,7 +7,7 @@ import com.cogent.cogentappointment.persistence.model.Qualification;
 import com.cogent.cogentappointment.persistence.model.QualificationAlias;
 import com.cogent.cogentappointment.persistence.model.University;
 
-import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toNormalCase;
+import static com.cogent.cogentappointment.client.utils.commons.StringUtil.convertToNormalCase;
 
 
 /**
@@ -20,7 +20,7 @@ public class QualificationUtils {
                                                      QualificationAlias qualificationAlias) {
 
         Qualification qualification = new Qualification();
-        qualification.setName(toNormalCase(requestDTO.getName()));
+        qualification.setName(convertToNormalCase(requestDTO.getName()));
         qualification.setStatus(requestDTO.getStatus());
         parseToQualification(qualification, qualificationAlias, university);
         return qualification;
@@ -38,7 +38,7 @@ public class QualificationUtils {
                                                    University university,
                                                    Qualification qualification) {
 
-        qualification.setName(toNormalCase(requestDTO.getName()));
+        qualification.setName(convertToNormalCase(requestDTO.getName()));
         qualification.setStatus(requestDTO.getStatus());
         qualification.setRemarks(requestDTO.getRemarks());
         parseToQualification(qualification, qualificationAlias, university);

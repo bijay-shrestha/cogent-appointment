@@ -16,7 +16,7 @@ public class StringUtil {
                 (name.replaceAll("\\d+", "")), " ");
     }
 
-    public static String toNormalCase(String text) {
+    public static String convertToNormalCase(String text) {
 
         final char[] delimiters = {' ', '_'};
 

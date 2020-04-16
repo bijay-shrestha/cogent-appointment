@@ -1,15 +1,13 @@
 package com.cogent.cogentappointment.client.loghandler;
-
-import com.cogent.cogentappointment.admin.dto.commons.AdminLogRequestDTO;
-import com.cogent.cogentappointment.admin.utils.commons.ObjectMapperUtils;
 import com.cogent.cogentappointment.admin.utils.commons.SecurityContextUtils;
+import com.cogent.cogentappointment.client.dto.commons.AdminLogRequestDTO;
+import com.cogent.cogentappointment.client.utils.commons.ObjectMapperUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.Enumeration;
 
-import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.convertToNormalCase;
-import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.splitByCharacterTypeCamelCase;
+import static com.cogent.cogentappointment.client.utils.commons.StringUtil.convertToNormalCase;
+import static com.cogent.cogentappointment.client.utils.commons.StringUtil.splitByCharacterTypeCamelCase;
 
 /**
  * @author Rupak

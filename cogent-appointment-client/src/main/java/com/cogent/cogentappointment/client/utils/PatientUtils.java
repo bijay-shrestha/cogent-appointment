@@ -2,7 +2,10 @@ package com.cogent.cogentappointment.client.utils;
 
 import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateDTOForOthers;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.patient.*;
+import com.cogent.cogentappointment.client.dto.response.patient.PatientDetailResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.patient.PatientDetailResponseDTOWithStatus;
+import com.cogent.cogentappointment.client.dto.response.patient.PatientResponseDTOForOthers;
+import com.cogent.cogentappointment.client.dto.response.patient.PatientResponseDTOForOthersWithStatus;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.HospitalPatientInfo;
 import com.cogent.cogentappointment.persistence.model.Patient;
@@ -16,7 +19,7 @@ import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.constants.StringConstant.OR;
 import static com.cogent.cogentappointment.client.utils.GenderUtils.fetchGenderByCode;
 import static com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils.generateRandomNumber;
-import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toNormalCase;
+import static com.cogent.cogentappointment.client.utils.commons.StringUtil.convertToNormalCase;
 import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toUpperCase;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -31,7 +34,7 @@ public class PatientUtils {
                                          String eSewaId,
                                          Gender gender) {
         Patient patient = new Patient();
-        patient.setName(toNormalCase(name));
+        patient.setName(convertToNormalCase(name));
         patient.setMobileNumber(mobileNumber);
         patient.setDateOfBirth(dateOfBirth);
         patient.setESewaId(eSewaId);
@@ -42,7 +45,7 @@ public class PatientUtils {
 
     public static void updatePatient(PatientUpdateRequestDTO requestDTO,
                                      Patient patient) {
-        patient.setName(toNormalCase(requestDTO.getName()));
+        patient.setName(convertToNormalCase(requestDTO.getName()));
         patient.setDateOfBirth(requestDTO.getDateOfBirth());
         patient.setMobileNumber(requestDTO.getMobileNumber());
         patient.setGender(requestDTO.getGender());
@@ -81,12 +84,12 @@ public class PatientUtils {
     }
 
     /*REGISTRATION NUMBER IS GENERATED IN FORMAT :
-    * FOR FIRST RECORD : YY + MM + DD + 0001
-    *  eg.2002130001
-    * THEN 0001 INCREMENTS BY 1
-    *  NEXT REGISTRATION NUMBER = 2002130002
-    *  NOTE THAT REGISTRATION NUMBER IS UNIQUELY GENERATED ONLY ONCE FOR THE PATIENT IN SPECIFIC HOSPITAL
-    *  */
+     * FOR FIRST RECORD : YY + MM + DD + 0001
+     *  eg.2002130001
+     * THEN 0001 INCREMENTS BY 1
+     *  NEXT REGISTRATION NUMBER = 2002130002
+     *  NOTE THAT REGISTRATION NUMBER IS UNIQUELY GENERATED ONLY ONCE FOR THE PATIENT IN SPECIFIC HOSPITAL
+     *  */
     private static String generateRegistrationNumber(String latestRegistrationNumber) {
 
         LocalDateTime date = LocalDateTime.now();

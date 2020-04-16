@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.client.loghandler;
 
-import com.cogent.cogentappointment.admin.dto.commons.AdminLogRequestDTO;
-import com.cogent.cogentappointment.admin.service.AdminLogService;
+import com.cogent.cogentappointment.client.dto.commons.AdminLogRequestDTO;
+import com.cogent.cogentappointment.client.service.AdminLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -9,8 +9,8 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.ACTIVE;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.INACTIVE;
 
 @Component
 public class UserLogInterceptor implements HandlerInterceptor {
@@ -67,9 +67,7 @@ public class UserLogInterceptor implements HandlerInterceptor {
 
     private void saveFailedLogs(AdminLogRequestDTO adminLogRequestDTO, String ipAddress) {
 
-        System.out.println("SAVING USER LOGS STARTED-----------------------------------");
         adminLogService.save(adminLogRequestDTO, INACTIVE, ipAddress);
-        System.out.println("SAVING USER LOGS COMPLETED-----------------------------------");
     }
 
 }

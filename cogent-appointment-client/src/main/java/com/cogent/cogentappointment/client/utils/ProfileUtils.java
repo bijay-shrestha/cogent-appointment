@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.cogent.cogentappointment.client.constants.StringConstant.COMMA_SEPARATED;
-import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toNormalCase;
+import static com.cogent.cogentappointment.client.utils.commons.StringUtil.convertToNormalCase;
 
 /**
  * @author smriti on 7/8/19
@@ -26,7 +26,7 @@ public class ProfileUtils {
     public static Profile convertDTOToProfile(ProfileDTO profileDTO,
                                               Department department) {
         Profile profile = new Profile();
-        profile.setName(toNormalCase(profileDTO.getName()));
+        profile.setName(convertToNormalCase(profileDTO.getName()));
         profile.setDescription(profileDTO.getDescription());
         profile.setStatus(profileDTO.getStatus());
         profile.setDepartment(department);
@@ -36,7 +36,7 @@ public class ProfileUtils {
     public static void convertToUpdatedProfile(ProfileUpdateDTO profileDTO,
                                                   Department department,
                                                   Profile profile) {
-        profile.setName(toNormalCase(profileDTO.getName()));
+        profile.setName(convertToNormalCase(profileDTO.getName()));
         profile.setDescription(profileDTO.getDescription());
         profile.setStatus(profileDTO.getStatus());
         profile.setDepartment(department);

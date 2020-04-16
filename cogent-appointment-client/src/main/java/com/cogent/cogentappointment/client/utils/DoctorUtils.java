@@ -25,8 +25,7 @@ import static com.cogent.cogentappointment.client.constants.StatusConstants.ACTI
 import static com.cogent.cogentappointment.client.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils.formatDoubleTo2DecimalPlaces;
 import static com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils.generateRandomNumber;
-import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toNormalCase;
-import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toUpperCase;
+import static com.cogent.cogentappointment.client.utils.commons.StringUtil.*;
 
 /**
  * @author smriti on 2019-09-29
@@ -38,7 +37,7 @@ public class DoctorUtils {
                                           Gender gender,
                                           Hospital hospital) {
         Doctor doctor = new Doctor();
-        doctor.setName(toNormalCase(requestDTO.getName()));
+        doctor.setName(convertToNormalCase(requestDTO.getName()));
         doctor.setCode(generateRandomNumber(3));
         doctor.setMobileNumber(requestDTO.getMobileNumber());
         doctor.setEmail(requestDTO.getEmail());
@@ -118,7 +117,7 @@ public class DoctorUtils {
                                               Doctor doctor,
                                               Gender gender) {
 
-        doctor.setName(toNormalCase(requestDTO.getName()));
+        doctor.setName(convertToNormalCase(requestDTO.getName()));
         doctor.setMobileNumber(requestDTO.getMobileNumber());
         doctor.setEmail(requestDTO.getEmail());
         doctor.setNmcNumber(requestDTO.getNmcNumber());

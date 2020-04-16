@@ -49,7 +49,6 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
         if (authHeader != null) {
 
-
             AdminMinDetails adminMinDetails = hmacApiInfoRepository.getAdminDetailForAuthentication(
                     authHeader.getUsername(),
                     authHeader.getHospitalCode(),

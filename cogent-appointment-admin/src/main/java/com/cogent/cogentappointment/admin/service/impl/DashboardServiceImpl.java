@@ -5,6 +5,7 @@ import com.cogent.cogentappointment.admin.dto.request.dashboard.DashBoardRequest
 import com.cogent.cogentappointment.admin.dto.request.dashboard.DoctorRevenueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.GenerateRevenueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.RefundAmountRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.commons.AppointmentStatisticsResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.*;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.DashboardService;
@@ -26,7 +27,7 @@ import static com.cogent.cogentappointment.admin.utils.DashboardUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateConverterUtils.dateDifference;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
-import static com.cogent.cogentappointment.admin.utils.commons.MathUtils.calculatePercenatge;
+import static com.cogent.cogentappointment.admin.utils.commons.MathUtils.calculatePercentage;
 
 
 /**
@@ -76,9 +77,18 @@ public class DashboardServiceImpl implements DashboardService {
                 requestDTO.getPreviousFromDate(),
                 requestDTO.getHospitalId());
 
-        RevenueStatisticsResponseDTO responseDTO = parseToGenerateRevenueResponseDTO(currentTransaction,
-                calculatePercenatge(currentTransaction, previousTransaction),
-                requestDTO.getFilterType());
+        AppointmentStatisticsResponseDTO appointmentStatistics =
+                appointmentTransactionDetailRepository.calculateAppointmentStatistics(
+                        requestDTO.getCurrentToDate(),
+                        requestDTO.getCurrentFromDate(),
+                        requestDTO.getHospitalId()
+                );
+
+        RevenueStatisticsResponseDTO responseDTO = parseToGenerateRevenueResponseDTO(
+                currentTransaction,
+                calculatePercentage(currentTransaction, previousTransaction),
+                requestDTO.getFilterType(),
+                appointmentStatistics);
 
         log.info(FETCHING_PROCESS_COMPLETED, REVENUE_GENERATED, getDifferenceBetweenTwoTime(startTime));
 

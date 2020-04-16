@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.admin.dto.response.dashboard;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.cogent.cogentappointment.admin.dto.response.commons.AppointmentStatisticsResponseDTO;
+import lombok.*;
 
 import java.io.Serializable;
 
@@ -10,6 +10,9 @@ import java.io.Serializable;
  */
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class RevenueStatisticsResponseDTO implements Serializable {
 
     private String fiscalYear;
@@ -19,4 +22,6 @@ public class RevenueStatisticsResponseDTO implements Serializable {
     private Double growthPercent;
 
     private Character filterType;
+
+    private AppointmentStatisticsResponseDTO appointmentStatistics;
 }

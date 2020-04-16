@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.utils;
 
 
+import com.cogent.cogentappointment.admin.dto.response.commons.AppointmentStatisticsResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueStatisticsResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueTrendResponseDTO;
 
@@ -29,16 +30,19 @@ public class DashboardUtils {
         return IntStream.rangeClosed(1, numberOfDays).boxed().collect(Collectors.toList());
     }
 
-    public static RevenueStatisticsResponseDTO parseToGenerateRevenueResponseDTO(Double currentTransaction,
-                                                                                 Double growthPercent,
-                                                                                 Character filterType) {
-        RevenueStatisticsResponseDTO revenueStatisticsResponseDTO = new RevenueStatisticsResponseDTO();
-        revenueStatisticsResponseDTO.setAmount(currentTransaction);
-        revenueStatisticsResponseDTO.setGrowthPercent(growthPercent);
-        revenueStatisticsResponseDTO.setFiscalYear(getFiscalYear());
-        revenueStatisticsResponseDTO.setFilterType(filterType);
+    public static RevenueStatisticsResponseDTO parseToGenerateRevenueResponseDTO(
+            Double currentTransaction,
+            Double growthPercent,
+            Character filterType,
+            AppointmentStatisticsResponseDTO appointmentStatistics) {
 
-        return revenueStatisticsResponseDTO;
+        return RevenueStatisticsResponseDTO.builder()
+                .amount(currentTransaction)
+                .growthPercent(growthPercent)
+                .fiscalYear(getFiscalYear())
+                .filterType(filterType)
+                .appointmentStatistics(appointmentStatistics)
+                .build();
     }
 
     public static RevenueTrendResponseDTO revenueStatisticsResponseDTO(List<Object[]> resultList, Character filter) {

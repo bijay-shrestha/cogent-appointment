@@ -611,11 +611,20 @@ public class AppointmentUtils {
         return responseDTO;
     }
 
-    public static AppointmentStatistics parseAppointmentStatistics(Appointment appointment){
+    public static AppointmentStatistics parseAppointmentStatisticsForNew(Appointment appointment){
         AppointmentStatistics appointmentStatistics=new AppointmentStatistics();
         appointmentStatistics.setAppointmentId(appointment);
         appointmentStatistics.setAppointmentCreatedDate(new Date());
         appointmentStatistics.setIsNew(YES);
+
+        return appointmentStatistics;
+    }
+
+    public static AppointmentStatistics parseAppointmentStatisticsForRegistered(Appointment appointment){
+        AppointmentStatistics appointmentStatistics=new AppointmentStatistics();
+        appointmentStatistics.setAppointmentId(appointment);
+        appointmentStatistics.setAppointmentCreatedDate(new Date());
+        appointmentStatistics.setIsRegistered(YES);
 
         return appointmentStatistics;
     }

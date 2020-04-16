@@ -110,6 +110,9 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentStatisticsRepository appointmentStatisticsRepository;
 
+    private final HospitalPatientInfoRepository hospitalPatientInfoRepository;
+
+
     public AppointmentServiceImpl(PatientService patientService,
                                   DoctorService doctorService,
                                   SpecializationService specializationService,
@@ -129,7 +132,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   PatientRelationInfoRepository patientRelationInfoRepository,
                                   AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService,
                                   AppointmentTransactionRequestLogService appointmentTransactionRequestLogService,
-                                  AppointmentStatisticsRepository appointmentStatisticsRepository) {
+                                  AppointmentStatisticsRepository appointmentStatisticsRepository,
+                                  HospitalPatientInfoRepository hospitalPatientInfoRepository) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -150,6 +154,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.appointmentFollowUpRequestLogService = appointmentFollowUpRequestLogService;
         this.appointmentTransactionRequestLogService = appointmentTransactionRequestLogService;
         this.appointmentStatisticsRepository = appointmentStatisticsRepository;
+        this.hospitalPatientInfoRepository = hospitalPatientInfoRepository;
     }
 
     @Override
@@ -244,7 +249,9 @@ public class AppointmentServiceImpl implements AppointmentService {
                 hospital
         );
 
-        Appointment savedAppointment=save(appointment);
+        Appointment savedAppointment = save(appointment);
+
+        saveAppointmentStatistics(appointmentInfo,savedAppointment);
 
         saveAppointmentTransactionDetail(requestDTO.getTransactionInfo(), appointment);
 
@@ -1045,13 +1052,21 @@ public class AppointmentServiceImpl implements AppointmentService {
         return false;
     }
 
-    private void saveAppointmentStatistics(AppointmentRequestDTO appointmentInfo,Appointment appointment){
-        if(Objects.isNull(appointmentInfo.getPatientId())){
-            parseAppointmentStatistics(appointment);
+    private void saveAppointmentStatistics(AppointmentRequestDTO appointmentInfo, Appointment appointment) {
+        if (Objects.isNull(appointmentInfo.getPatientId())) {
+            saveAppointmentStatistics(parseAppointmentStatisticsForNew(appointment));
+        } else {
+            Long patientId = hospitalPatientInfoRepository.checkIfPatientIsRegistered(appointmentInfo.getPatientId(),
+                    appointmentInfo.getHospitalId());
+            if (Objects.isNull(patientId)) {
+                saveAppointmentStatistics(parseAppointmentStatisticsForNew(appointment));
+            } else {
+                saveAppointmentStatistics(parseAppointmentStatisticsForRegistered(appointment));
+            }
         }
     }
 
-    private void saveAppointmentStatistics(AppointmentStatistics  appointmentStatistics){
+    private void saveAppointmentStatistics(AppointmentStatistics appointmentStatistics) {
         appointmentStatisticsRepository.save(appointmentStatistics);
     }
 

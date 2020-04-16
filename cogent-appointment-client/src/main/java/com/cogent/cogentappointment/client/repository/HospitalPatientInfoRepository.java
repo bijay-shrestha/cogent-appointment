@@ -25,4 +25,9 @@ public interface HospitalPatientInfoRepository extends JpaRepository<HospitalPat
 
     @Query("SELECT hpi FROM HospitalPatientInfo hpi WHERE hpi.id=:id")
     Optional<HospitalPatientInfo> fetchHospitalPatientInfoById(@Param("id") Long id);
+
+    @Query("SELECT h.patient.id FROM HospitalPatientInfo h WHERE h.patient.id=:patientId AND h.hospital.id=:hospitalId" +
+            " AND h.isRegistered='Y'")
+    Long checkIfPatientIsRegistered(@Param("patientId") Long patientId, @Param("hospitalId") Long hospitalId);
+
 }

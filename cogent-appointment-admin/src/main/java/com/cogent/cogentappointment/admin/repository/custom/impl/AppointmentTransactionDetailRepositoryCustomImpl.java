@@ -57,19 +57,30 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
     }
 
     @Override
-    public AppointmentRevenueStatisticsResponseDTO calculateAppointmentStatistics(Date toDate, Date fromDate, Long hospitalId) {
+    public AppointmentRevenueStatisticsResponseDTO calculateAppointmentStatistics(Date toDate,
+                                                                                  Date fromDate,
+                                                                                  Long hospitalId) {
+
         AppointmentRevenueStatisticsResponseDTO responseDTO = new AppointmentRevenueStatisticsResponseDTO();
+
         calculateBookedAppointmentStatistics(toDate, fromDate, hospitalId, responseDTO);
+
         calculateCheckedInAppointmentStatistics(toDate, fromDate, hospitalId, responseDTO);
+
         calculateCancelledAppointmentStatistics(toDate, fromDate, hospitalId, responseDTO);
+
         calculateRefundedAppointmentStatistics(toDate, fromDate, hospitalId, responseDTO);
+
         calculateRevenueFromRefundedAppointmentStatistics(toDate, fromDate, hospitalId, responseDTO);
+
         calculateTotalRevenueExcludingBooked(responseDTO);
+
         calculateTotalRevenueIncludingBooked(responseDTO);
 
         return responseDTO;
     }
 
+    /*Revenue from Booked*/
     private void calculateBookedAppointmentStatistics(Date toDate,
                                                       Date fromDate,
                                                       Long hospitalId,
@@ -84,6 +95,7 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
         parseBookedAppointmentDetails(results.get(0), responseDTO);
     }
 
+    /*Revenue from Checked-In*/
     private void calculateCheckedInAppointmentStatistics(Date toDate,
                                                          Date fromDate,
                                                          Long hospitalId,
@@ -98,6 +110,7 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
         parseCheckedInAppointmentDetails(results.get(0), responseDTO);
     }
 
+    /*Revenue from Cancelled*/
     private void calculateCancelledAppointmentStatistics(Date toDate,
                                                          Date fromDate,
                                                          Long hospitalId,
@@ -112,6 +125,7 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
         parseCancelledAppointmentDetails(results.get(0), responseDTO);
     }
 
+    /*Refund Amount*/
     private void calculateRefundedAppointmentStatistics(Date toDate,
                                                         Date fromDate,
                                                         Long hospitalId,
@@ -126,6 +140,7 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
         parseRefundedAppointmentDetails(results.get(0), responseDTO);
     }
 
+    /*Revenue from Refund*/
     private void calculateRevenueFromRefundedAppointmentStatistics(Date toDate,
                                                                    Date fromDate,
                                                                    Long hospitalId,
@@ -140,6 +155,7 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
         parseRevenueFromRefundedAppointmentDetails(results.get(0), responseDTO);
     }
 
+    /*Client Revenue Amount = Revenue from Checked-In+ Revenue from Refund + Revenue from Cancelled */
     private void calculateTotalRevenueExcludingBooked(AppointmentRevenueStatisticsResponseDTO responseDTO) {
         Double totalAmount = responseDTO.getCheckedInAmount() +
                 responseDTO.getRevenueFromRefundedAmount() +
@@ -147,6 +163,8 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
         responseDTO.setTotalAmountExcludingBooked(totalAmount);
     }
 
+    /*Client Revenue Amount Including Booked Appointments  =
+     Revenue from Checked-In + Revenue from Refund + Revenue from Cancelled + Revenue from Booked*/
     private void calculateTotalRevenueIncludingBooked(AppointmentRevenueStatisticsResponseDTO responseDTO) {
         Double totalAmount = responseDTO.getCheckedInAmount() +
                 responseDTO.getRevenueFromRefundedAmount() +

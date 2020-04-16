@@ -712,7 +712,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     private void validateAppointmentExists(Long appointmentCount, String appointmentTime) {
-        if (appointmentCount.intValue() > 0){
+        if (appointmentCount.intValue() > 0) {
             log.error(APPOINTMENT_EXISTS, convert24HourTo12HourFormat(appointmentTime));
             throw new DataDuplicationException(String.format(APPOINTMENT_EXISTS,
                     convert24HourTo12HourFormat(appointmentTime)));
@@ -952,7 +952,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         boolean isTimeValid = validateIfRequestedAppointmentTimeIsValid(doctorDutyRosterInfo, appointmentInfo);
 
-        if (!isTimeValid){
+        if (!isTimeValid) {
             log.error(INVALID_APPOINTMENT_TIME, convert24HourTo12HourFormat(appointmentInfo.getAppointmentTime()));
             throw new NoContentFoundException(String.format(INVALID_APPOINTMENT_TIME,
                     convert24HourTo12HourFormat(appointmentInfo.getAppointmentTime())));
@@ -1045,7 +1045,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         return appointmentReservationLogRepository.findAppointmentReservationLogById(appointmentReservationId);
     }
 
-    private void saveRefundDetails(AppointmentRefundDetail appointmentRefundDetail){
+    private void saveRefundDetails(AppointmentRefundDetail appointmentRefundDetail) {
         appointmentRefundDetailRepository.save(appointmentRefundDetail);
     }
 }

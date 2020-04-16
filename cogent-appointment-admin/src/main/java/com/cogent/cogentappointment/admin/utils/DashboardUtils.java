@@ -20,12 +20,12 @@ import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.convert
  */
 public class DashboardUtils {
 
-    public static int getNumberOfDaysInMonth(int year, int month) {
+    private static int getNumberOfDaysInMonth(int year, int month) {
         YearMonth yearMonth = YearMonth.of(year, month);
         return yearMonth.lengthOfMonth();
     }
 
-    public static List<Integer> getDatesOfMonth(int year, int month) {
+    private static List<Integer> getDatesOfMonth(int year, int month) {
         Integer numberOfDays = getNumberOfDaysInMonth(year, month);
         return IntStream.rangeClosed(1, numberOfDays).boxed().collect(Collectors.toList());
     }
@@ -53,7 +53,7 @@ public class DashboardUtils {
         return revenueTrendResponseDTO;
     }
 
-    public static Map<String, String> getMapFromObject(List<Object[]> resultList) {
+    private static Map<String, String> getMapFromObject(List<Object[]> resultList) {
         final int WEEK_MONTH_YEAR_INDEX = 0;
         final int TOTAL_REVENUE = 1;
         Map<String, String> map = new LinkedHashMap<>();
@@ -134,7 +134,7 @@ public class DashboardUtils {
         return map;
     }
 
-    public static List<String> getDateBetweenLocalDates(LocalDate previous, LocalDate current) {
+    private static List<String> getDateBetweenLocalDates(LocalDate previous, LocalDate current) {
         List<String> dateBetweenLocalDates = new ArrayList<>();
         for (LocalDate localDate = previous; localDate.isBefore(current) ||
                 localDate.isEqual(current); localDate = localDate.plusDays(1)) {
@@ -145,7 +145,7 @@ public class DashboardUtils {
         return dateBetweenLocalDates;
     }
 
-    public static List<String> getDaysOfWeekBetweenLocalDates(LocalDate previous, LocalDate current) {
+    private static List<String> getDaysOfWeekBetweenLocalDates(LocalDate previous, LocalDate current) {
         List<String> daysOfWeek = new ArrayList<>();
         final Integer ONE = 1;
         for (LocalDate localDate = previous; localDate.isBefore(current) ||
@@ -159,7 +159,7 @@ public class DashboardUtils {
         return daysOfWeek;
     }
 
-    public static List<String> getMonthsBetweenLocalDates(LocalDate previous, LocalDate current) {
+    private static List<String> getMonthsBetweenLocalDates(LocalDate previous, LocalDate current) {
         List<String> monthsOfYear = new ArrayList<>();
         final Integer ONE = 1;
         for (LocalDate localDate = previous;
@@ -171,7 +171,7 @@ public class DashboardUtils {
         return monthsOfYear;
     }
 
-    public static String toTitleCase(String input) {
+    private static String toTitleCase(String input) {
         StringBuilder titleCase = new StringBuilder();
         boolean nextTitleCase = true;
         for (char c : input.toCharArray()) {
@@ -186,13 +186,13 @@ public class DashboardUtils {
         return titleCase.toString();
     }
 
-    public static LocalDate convertToLocalDateViaInstant(Date dateToConvert) {
+    private static LocalDate convertToLocalDateViaInstant(Date dateToConvert) {
         return dateToConvert.toInstant()
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate();
     }
 
-    public static String trimName(String name) {
+    private static String trimName(String name) {
         return name.substring(0, 3);
     }
 

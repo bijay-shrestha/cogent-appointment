@@ -35,6 +35,13 @@ public class DashBoardQuery {
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId);
     }
 
+    private static String SELECT_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS =
+            " SELECT " +
+                    " COUNT(a.id)," +                                   //[0]
+                    " COALESCE(SUM(atd.appointmentAmount ),0)" +        //[1]
+                    " FROM AppointmentTransactionDetail atd" +
+                    " LEFT JOIN Appointment a ON a.id=atd.appointment.id";
+
     private static String GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS(Long hospitalId) {
         return " WHERE " +
                 " (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
@@ -42,31 +49,19 @@ public class DashBoardQuery {
     }
 
     public static String QUERY_TO_FETCH_BOOKED_APPOINTMENT_REVENUE(Long hospitalId) {
-        return " SELECT " +
-                " COUNT(a.id) AS bookedAppointmentsCount," +
-                " COALESCE(SUM(atd.appointmentAmount ),0) AS bookedAmount" +
-                " FROM AppointmentTransactionDetail atd" +
-                " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
+        return SELECT_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS +
                 GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS(hospitalId) +
                 " AND a.status='PA'";
     }
 
     public static String QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_REVENUE(Long hospitalId) {
-        return " SELECT " +
-                " COUNT(a.id) AS checkedInAppointmentsCount," +
-                " COALESCE(SUM(atd.appointmentAmount ),0) AS checkedInAmount" +
-                " FROM AppointmentTransactionDetail atd" +
-                " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
+        return SELECT_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS +
                 GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS(hospitalId) +
                 " AND a.status='A'";
     }
 
     public static String QUERY_TO_FETCH_CANCELLED_APPOINTMENT_REVENUE(Long hospitalId) {
-        return " SELECT " +
-                " COUNT(a.id) AS cancelAppointmentsCount," +
-                " COALESCE(SUM(atd.appointmentAmount ),0) AS cancelAmount" +
-                " FROM AppointmentTransactionDetail atd" +
-                " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
+        return SELECT_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS +
                 GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS(hospitalId) +
                 " AND a.status='C'";
     }
@@ -102,7 +97,6 @@ public class DashBoardQuery {
                 " (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId);
     }
-
 
     public static String QUERY_TO_COUNT_REGISTERED_APPOINTMENT(Long hospitalId) {
         return "SELECT" +

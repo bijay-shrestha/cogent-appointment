@@ -7,7 +7,7 @@ import static com.cogent.cogentappointment.client.utils.commons.NumberFormatterU
  */
 public class MathUtils {
 
-    public static Double calculatePercenatge(Double current, Double previous) {
+    public static Double calculatePercentage(Double current, Double previous) {
 
         if (current == 0 && previous == 0) {
             return 0D;

@@ -61,6 +61,8 @@ public class DashboardServiceImpl implements DashboardService {
         this.appointmentRefundDetailRepository = appointmentRefundDetailRepository;
     }
 
+    //    todo:change api signature
+    //todo: remove amount
     @Override
     public RevenueStatisticsResponseDTO getRevenueStatistics(GenerateRevenueRequestDTO requestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();

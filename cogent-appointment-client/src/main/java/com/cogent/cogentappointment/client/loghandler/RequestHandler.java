@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.loghandler;
+package com.cogent.cogentappointment.client.loghandler;
 
 import com.cogent.cogentappointment.admin.dto.commons.AdminLogRequestDTO;
 import com.cogent.cogentappointment.admin.utils.commons.ObjectMapperUtils;

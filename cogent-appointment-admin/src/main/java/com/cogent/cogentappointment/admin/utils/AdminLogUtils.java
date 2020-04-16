@@ -21,7 +21,7 @@ public class AdminLogUtils {
         adminLog.setRoleId(requestDTO.getRoleId());
         adminLog.setIpAddress(ipAddress);
         adminLog.setFeature(requestDTO.getFeature());
-        adminLog.setActionType(requestDTO.getFeature());
+        adminLog.setActionType(requestDTO.getActionType());
         adminLog.setLogDescription(requestDTO.getLogDescription());
         adminLog.setStatus(status);
         adminLog.setLogDate(utilDateToSqlDate(new Date()));

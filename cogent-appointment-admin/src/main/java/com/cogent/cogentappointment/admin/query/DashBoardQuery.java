@@ -78,8 +78,6 @@ public class DashBoardQuery {
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID_FOR_OVERALL_PATIENT(hospitalId);
     }
 
-    ;
-
     public static String QUERY_TO_FETCH_REVENUE_WEEKLY(Long hospitalId) {
         return "SELECT" +
                 "  CASE" +

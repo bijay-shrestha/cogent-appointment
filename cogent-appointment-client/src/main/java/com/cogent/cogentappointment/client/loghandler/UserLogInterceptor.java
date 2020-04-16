@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.loghandler;
+package com.cogent.cogentappointment.client.loghandler;
 
 import com.cogent.cogentappointment.admin.dto.commons.AdminLogRequestDTO;
 import com.cogent.cogentappointment.admin.service.AdminLogService;
@@ -44,7 +44,7 @@ public class UserLogInterceptor implements HandlerInterceptor {
 
             if (exception == null) {
 
-                adminLogRequestDTO.setLogDescription(adminLogRequestDTO.getFeature() + " " + adminLogRequestDTO.getActionType());
+                adminLogRequestDTO.setLogDescription(adminLogRequestDTO.getFeature() + " " + adminLogRequestDTO.getActionType() + "ed...");
                 saveSuccessLogs(adminLogRequestDTO, ipAddress);
             }
 

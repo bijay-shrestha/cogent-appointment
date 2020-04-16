@@ -2,7 +2,6 @@ package com.cogent.cogentappointment.logging.service.impl;
 
 import com.cogent.cogentappointment.logging.dto.request.admin.AdminLogSearchRequestDTO;
 import com.cogent.cogentappointment.logging.dto.response.AdminLogResponseDTO;
-import com.cogent.cogentappointment.logging.dto.response.AdminLogStaticsResponseDTO;
 import com.cogent.cogentappointment.logging.dto.response.UserMenuStaticsResponseDTO;
 import com.cogent.cogentappointment.logging.repository.AdminLogRepository;
 import com.cogent.cogentappointment.logging.service.AdminLogService;
@@ -11,9 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
 
-import static com.cogent.cogentappointment.logging.log.UserLog.*;
+import static com.cogent.cogentappointment.logging.log.UserMenuLog.*;
 import static com.cogent.cogentappointment.logging.utils.common.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.logging.utils.common.DateUtils.getTimeInMillisecondsFromLocalDate;
 
@@ -36,11 +34,11 @@ public class AdminLogServiceImpl implements AdminLogService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(USER_LOG_SEARCH_PROCESS_STARTED, USER_LOG);
+        log.info(USER_MENU_LOG_SEARCH_PROCESS_STARTED, USER_MENU_LOG);
 
         AdminLogResponseDTO responseDTOS = adminLogRepository.search(searchRequestDTO, pageable);
 
-        log.info(USER_LOG_SEARCH_PROCESS_COMPLETED, USER_LOG, getDifferenceBetweenTwoTime(startTime));
+        log.info(USER_MENU_LOG_SEARCH_PROCESS_COMPLETED, USER_MENU_LOG, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
     }
@@ -50,11 +48,11 @@ public class AdminLogServiceImpl implements AdminLogService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(USER_LOG_SEARCH_PROCESS_STARTED, USER_LOG);
+        log.info(USER_MENU_LOG_SEARCH_PROCESS_STARTED, USER_MENU_LOG);
 
         UserMenuStaticsResponseDTO responseDTOS = adminLogRepository.fetchUserMenuLogsStatics(searchRequestDTO);
 
-        log.info(USER_LOG_SEARCH_PROCESS_COMPLETED, USER_LOG, getDifferenceBetweenTwoTime(startTime));
+        log.info(USER_MENU_LOG_SEARCH_PROCESS_COMPLETED, USER_MENU_LOG, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
     }

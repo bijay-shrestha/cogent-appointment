@@ -76,7 +76,6 @@ public class ClientLogRepositoryCustomImpl implements ClientLogRepositoryCustom 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_USER_LOGS_STATICS(searchRequestDTO))
                 .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
                 .setParameter(TO_DATE, searchRequestDTO.getToDate())
-                .setParameter(USERNAME, searchRequestDTO.getUserName())
                 .setParameter(HOSPITAL_ID, companyId);
 
         int totalItems = query.getResultList().size();
@@ -87,8 +86,12 @@ public class ClientLogRepositoryCustomImpl implements ClientLogRepositoryCustom 
             //            error()//Error not integrated...
             throw NO_CLIENT_LOGS_FOUND.get();
         } else {
+
+            Long totalCount = result.stream().mapToLong(AdminLogStaticsResponseDTO::getCount).sum();
+
             UserMenuStaticsResponseDTO userMenuStaticsResponseDTO = new UserMenuStaticsResponseDTO();
             userMenuStaticsResponseDTO.setUserMenuCountList(result);
+            userMenuStaticsResponseDTO.setTotalCount(totalCount);
             userMenuStaticsResponseDTO.setTotalItems(totalItems);
             return userMenuStaticsResponseDTO;
         }

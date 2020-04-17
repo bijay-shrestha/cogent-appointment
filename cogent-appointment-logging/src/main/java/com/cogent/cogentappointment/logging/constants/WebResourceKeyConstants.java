@@ -20,5 +20,7 @@ public class WebResourceKeyConstants {
     //U
     public static final String USERMENU_LOG_STATICS = "/user-log-statics";
 
+    public static final String USERMENU_LOG_DIAGRAM = "/user-log-diagram";
+
 
 }

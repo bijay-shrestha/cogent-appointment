@@ -17,6 +17,8 @@ public class UserMenuStaticsResponseDTO implements Serializable {
 
     private List<AdminLogStaticsResponseDTO> userMenuCountList;
 
+    private Long totalCount;
+
     private int totalItems;
 
 }

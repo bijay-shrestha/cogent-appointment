@@ -22,6 +22,7 @@ public class SwaggerConstants {
         String BASE_API_VALUE = "This is Admin Log Resource";
         String SEARCH_OPERATION = "Search admin logs according to given request parameters";
         String USER_MENU_STATICS_OPERATION = "Fetch user logs statics";
+        String USER_MENU_LOG_DIAGRAM_OPERATION = "Fetch user logs data for user logs diagram";
 
     }
 

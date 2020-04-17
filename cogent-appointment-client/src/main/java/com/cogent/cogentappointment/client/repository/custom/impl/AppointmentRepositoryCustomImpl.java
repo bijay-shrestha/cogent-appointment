@@ -43,11 +43,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.client.constants.QueryConstants.DATE;
-import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
-import static com.cogent.cogentappointment.client.constants.QueryConstants.AppointmentConstants.APPOINTMENT_DATE;
-import static com.cogent.cogentappointment.client.constants.QueryConstants.AppointmentConstants.APPOINTMENT_ID;
-import static com.cogent.cogentappointment.client.constants.QueryConstants.AppointmentConstants.APPOINTMENT_TIME;
+import static com.cogent.cogentappointment.client.constants.QueryConstants.AppointmentConstants.*;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
@@ -97,6 +93,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         return transformQueryToResultList(query, AppointmentBookedTimeResponseDTO.class);
     }
 
+    /*eg. 2076-10-10 lies in between 2076-04-01 to 2077-03-31 Fiscal Year ie. 2076/2077*/
     @Override
     public String generateAppointmentNumber(String nepaliCreatedDate,
                                             Long hospitalId) {
@@ -299,11 +296,12 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
-    public AppointmentPendingApprovalResponseDTO searchPendingVisitApprovals(AppointmentPendingApprovalSearchDTO searchRequestDTO,
-                                                                             Pageable pageable,
-                                                                             Long hospitalId) {
+    public AppointmentPendingApprovalResponseDTO searchPendingVisitApprovals(
+            AppointmentPendingApprovalSearchDTO searchRequestDTO,
+            Pageable pageable,
+            Long hospitalId) {
 
-        AppointmentPendingApprovalResponseDTO appointmentPendingApprovalResponseDTO=new AppointmentPendingApprovalResponseDTO();
+        AppointmentPendingApprovalResponseDTO appointmentPendingApprovalResponseDTO = new AppointmentPendingApprovalResponseDTO();
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PENDING_APPROVALS.apply(searchRequestDTO))
                 .setParameter(HOSPITAL_ID, hospitalId);
@@ -312,8 +310,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         addPagination.accept(pageable, query);
 
-        List<AppointmentPendingApprovalDTO> appointmentPendingApprovalDTOS=
-                transformQueryToResultList(query,AppointmentPendingApprovalDTO.class);
+        List<AppointmentPendingApprovalDTO> appointmentPendingApprovalDTOS =
+                transformQueryToResultList(query, AppointmentPendingApprovalDTO.class);
 
         if (appointmentPendingApprovalDTOS.isEmpty()) {
             error();
@@ -372,6 +370,11 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         List<Object[]> objects = query.getResultList();
 
         AppointmentLogResponseDTO results = parseQueryResultToAppointmentLogResponse(objects);
+        results.setTotalAmount(calculateTotalAppointmentAmount(searchRequestDTO, hospitalId));
+        results.setBookedAmount(calculateBookedAppointmentAmount(searchRequestDTO, hospitalId));
+        results.setCheckedInAmount(calculateCheckedInAppointmentAmount(searchRequestDTO, hospitalId));
+        results.setCancelAmount(calculateCancelledAppointmentAmount(searchRequestDTO, hospitalId));
+        results.setRefundedAmount(calculateRefundedAppointmentAmount(searchRequestDTO, hospitalId));
 
         if (results.getAppointmentLogs().isEmpty()) {
             error();
@@ -454,6 +457,55 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         return (Double) query.getSingleResult();
     }
 
+    private Double calculateTotalAppointmentAmount(AppointmentLogSearchDTO searchRequestDTO, Long hospitalId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TOTAL_APPOINTMENT_AMOUNT(searchRequestDTO))
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        Double amount = (Double) query.getSingleResult();
+
+        return amount == 0 ? 0D : amount;
+    }
+
+    private Double calculateBookedAppointmentAmount(AppointmentLogSearchDTO searchRequestDTO, Long hospitalId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_BOOKED_APPOINTMENT_AMOUNT(searchRequestDTO))
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        Double amount = (Double) query.getSingleResult();
+
+        return amount == 0 ? 0D : amount;
+    }
+
+    private Double calculateCheckedInAppointmentAmount(AppointmentLogSearchDTO searchRequestDTO, Long hospitalId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_AMOUNT(searchRequestDTO))
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        Double amount = (Double) query.getSingleResult();
+
+        return amount == 0 ? 0D : amount;
+    }
+
+    private Double calculateCancelledAppointmentAmount(AppointmentLogSearchDTO searchRequestDTO, Long hospitalId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_CANCELLED_APPOINTMENT_AMOUNT(searchRequestDTO))
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        Double amount = (Double) query.getSingleResult();
+
+        return amount == 0 ? 0D : amount;
+    }
+
+    private Double calculateRefundedAppointmentAmount(AppointmentLogSearchDTO searchRequestDTO, Long hospitalId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_REFUNDED_APPOINTMENT_AMOUNT(searchRequestDTO))
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        Double amount = (Double) query.getSingleResult();
+
+        return amount == 0 ? 0D : amount;
+    }
 
     private Function<Long, NoContentFoundException> APPOINTMENT_DETAILS_NOT_FOUND = (appointmentId) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT, appointmentId);

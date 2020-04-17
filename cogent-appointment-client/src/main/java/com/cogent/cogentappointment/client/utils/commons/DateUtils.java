@@ -104,15 +104,16 @@ public class DateUtils {
     }
 
     public static String fetchStartingFiscalYear(int year, int month) {
+
         return (month < APPLICATION_STARTING_FISCAL_MONTH)
-                ? (year + 1 + APPLICATION_STARTING_FISCAL_DAY)
-                : (year + APPLICATION_STARTING_FISCAL_DAY);
+                ? (year - 1 + APPLICATION_STARTING_FISCAL_DAY)
+                : (year + APPLICATION_ENDING_FISCAL_DAY);
     }
 
     public static String fetchEndingFiscalYear(int year, int month) {
         return (month < APPLICATION_STARTING_FISCAL_MONTH)
                 ? (year + APPLICATION_ENDING_FISCAL_DAY)
-                : (year + 1 + APPLICATION_ENDING_FISCAL_DAY);
+                : (year + 1 + APPLICATION_STARTING_FISCAL_DAY);
     }
 
     public static String getTimeIn12HourFormat(Date date) {

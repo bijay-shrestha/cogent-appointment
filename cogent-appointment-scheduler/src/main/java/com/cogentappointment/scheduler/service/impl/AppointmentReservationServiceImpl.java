@@ -55,11 +55,8 @@ public class AppointmentReservationServiceImpl implements AppointmentReservation
 
             long currentDateInMillis = new Date().getTime();
 
-            System.out.println(expiryDate < currentDateInMillis);
-
             if (expiryDate < currentDateInMillis)
                 appointmentReservationRepository.delete(appointmentReservation);
-
         });
 
         log.info(DELETING_PROCESS_COMPLETED, APPOINTMENT_RESERVATION, getDifferenceBetweenTwoTime(startTime));

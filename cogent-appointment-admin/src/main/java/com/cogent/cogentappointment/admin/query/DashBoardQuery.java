@@ -36,10 +36,10 @@ public class DashBoardQuery {
 
 
     public static String QUERY_TO_OVER_ALL_APPOINTMENTS(Long hospitalId) {
-        return  "SELECT" +
+        return "SELECT" +
                 " COUNT(ast.id)" +
                 " FROM AppointmentStatistics ast" +
-                " LEFT JOIN Appointment a ON a.id=ast.appointmentId.id"+
+                " LEFT JOIN Appointment a ON a.id=ast.appointmentId.id" +
                 " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
                 " WHERE " +
                 " (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
@@ -51,7 +51,7 @@ public class DashBoardQuery {
         return "SELECT" +
                 " COUNT(ast.id)" +
                 " FROM AppointmentStatistics ast" +
-                " LEFT JOIN Appointment a ON a.id=ast.appointmentId.id" +
+                " LEFT JOIN Appointment a ON a.id=ast.appointmentId.id"+
                 " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
                 " WHERE" +
                 " ast.isRegistered='Y' " +
@@ -64,7 +64,7 @@ public class DashBoardQuery {
         return "SELECT" +
                 " COUNT(ast.id)" +
                 " FROM AppointmentStatistics ast" +
-                " LEFT JOIN Appointment a ON a.id=ast.appointmentId.id" +
+                " LEFT JOIN Appointment a ON a.id=ast.appointmentId.id"+
                 " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
                 " WHERE" +
                 " ast.isNew='Y' " +

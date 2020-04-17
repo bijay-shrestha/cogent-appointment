@@ -24,8 +24,9 @@ public class DashBoardQuery {
 
     public static String QUERY_TO_OVER_ALL_APPOINTMENTS =
             "SELECT" +
-                    " COUNT(a.id)" +
-                    " FROM Appointment a" +
+                    " COUNT(ast.id)" +
+                    " FROM AppointmentStatistics ast" +
+                    " LEFT JOIN Appointment a ON a.id=ast.appointmentId.id"+
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
                     " WHERE " +
                     " (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
@@ -33,25 +34,25 @@ public class DashBoardQuery {
 
     public static String QUERY_TO_COUNT_REGISTERED_APPOINTMENT =
             "SELECT" +
-                    " COUNT(a.id)" +
-                    " FROM Appointment a" +
-                    " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =a.patientId.id" +
+                    " COUNT(ast.id)" +
+                    " FROM AppointmentStatistics ast" +
+                    " LEFT JOIN Appointment a ON a.id=ast.appointmentId.id"+
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
-                    " AND hpi.hospital.id = a.hospitalId.id" +
-                    " WHERE hpi.isRegistered='Y'" +
+                    " WHERE" +
+                    " ast.isRegistered='Y' " +
                     " AND (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
                     " AND a.hospitalId.id=:hospitalId";
 
     public static String QUERY_TO_COUNT_NEW_PATIENT_APPOINTMENT =
             "SELECT" +
-                    " COUNT(a.id)" +
-                    " FROM Appointment a" +
-                    " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =a.patientId.id" +
+                    " COUNT(ast.id)" +
+                    " FROM AppointmentStatistics ast" +
+                    " LEFT JOIN Appointment a ON a.id=ast.appointmentId.id"+
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
-                    " AND hpi.hospital.id = a.hospitalId.id" +
-                    " WHERE hpi.isRegistered='N'" +
+                    " WHERE" +
+                    " ast.isNew='Y' " +
                     " AND (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
-                    " AND  a.hospitalId.id=:hospitalId";
+                    " AND a.hospitalId.id=:hospitalId";
 
     public static String QUERY_TO_COUNT_OVERALL_REGISTERED_PATIENTS =
             "SELECT" +

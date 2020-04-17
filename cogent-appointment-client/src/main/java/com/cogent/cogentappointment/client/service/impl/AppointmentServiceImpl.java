@@ -313,7 +313,9 @@ public class AppointmentServiceImpl implements AppointmentService {
                 hospital
         );
 
-        save(appointment);
+        Appointment savedAppointment = save(appointment);
+
+        saveAppointmentStatistics(appointmentInfo,savedAppointment);
 
         saveAppointmentTransactionDetail(requestDTO.getTransactionInfo(), appointment);
 

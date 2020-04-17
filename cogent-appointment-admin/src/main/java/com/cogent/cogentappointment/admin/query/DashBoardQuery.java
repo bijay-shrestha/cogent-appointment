@@ -36,9 +36,10 @@ public class DashBoardQuery {
 
 
     public static String QUERY_TO_OVER_ALL_APPOINTMENTS(Long hospitalId) {
-        return "SELECT" +
-                " COUNT(a.id)" +
-                " FROM Appointment a" +
+        return  "SELECT" +
+                " COUNT(ast.id)" +
+                " FROM AppointmentStatistics ast" +
+                " LEFT JOIN Appointment a ON a.id=ast.appointmentId.id"+
                 " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
                 " WHERE " +
                 " (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
@@ -48,12 +49,12 @@ public class DashBoardQuery {
 
     public static String QUERY_TO_COUNT_REGISTERED_APPOINTMENT(Long hospitalId) {
         return "SELECT" +
-                " COUNT(a.id)" +
-                " FROM Appointment a" +
-                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =a.patientId.id" +
+                " COUNT(ast.id)" +
+                " FROM AppointmentStatistics ast" +
+                " LEFT JOIN Appointment a ON a.id=ast.appointmentId.id" +
                 " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
-                " AND hpi.hospital.id = a.hospitalId.id" +
-                " WHERE hpi.isRegistered='Y'" +
+                " WHERE" +
+                " ast.isRegistered='Y' " +
                 " AND (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId);
     }
@@ -61,12 +62,12 @@ public class DashBoardQuery {
 
     public static String QUERY_TO_COUNT_NEW_PATIENT_APPOINTMENT(Long hospitalId) {
         return "SELECT" +
-                " COUNT(a.id)" +
-                " FROM Appointment a" +
-                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =a.patientId.id" +
+                " COUNT(ast.id)" +
+                " FROM AppointmentStatistics ast" +
+                " LEFT JOIN Appointment a ON a.id=ast.appointmentId.id" +
                 " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
-                " AND hpi.hospital.id = a.hospitalId.id" +
-                " WHERE hpi.isRegistered='N'" +
+                " WHERE" +
+                " ast.isNew='Y' " +
                 " AND (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId);
     }

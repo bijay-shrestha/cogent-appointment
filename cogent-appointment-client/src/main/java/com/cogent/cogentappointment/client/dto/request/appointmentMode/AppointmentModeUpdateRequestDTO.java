@@ -17,13 +17,16 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppoitmentModeUpdateRequestDTO implements Serializable {
+public class AppointmentModeUpdateRequestDTO implements Serializable {
 
     @NotNull
     private Long id;
 
     @NotNull
     private String name;
+
+    @NotNull
+    private String description;
 
     @NotNull
     private String code;
@@ -35,4 +38,8 @@ public class AppoitmentModeUpdateRequestDTO implements Serializable {
     @NotNull
     @NotEmpty
     private String remarks;
+
+    @NotNull
+    @Status
+    private Character isEditable;
 }

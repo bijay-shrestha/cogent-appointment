@@ -15,13 +15,13 @@ import java.util.Date;
 @Builder
 public class AppointmentModeResponseDTO implements Serializable {
 
-    private Long id;
-
     private String name;
 
     private String code;
 
     private Character status;
+
+    private String remarks;
 
     private String description;
 

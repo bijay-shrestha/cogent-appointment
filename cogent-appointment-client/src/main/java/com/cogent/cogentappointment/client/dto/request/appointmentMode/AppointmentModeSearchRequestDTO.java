@@ -16,7 +16,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class AppointmentModeSearchRequestDTO implements Serializable {
 
-    private Long appointmentMode;
+    private Long id;
 
     private String code;
 

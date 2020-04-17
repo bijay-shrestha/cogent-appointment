@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -26,9 +27,11 @@ public class AppointmentMode extends Auditable<String>  implements Serializable 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Length(max = 50)
     @Column(name = "name")
     private String name;
 
+    @Length(max = 6)
     @Column(name = "code")
     private String code;
 
@@ -38,6 +41,7 @@ public class AppointmentMode extends Auditable<String>  implements Serializable 
     @Column(name = "status")
     private Character status;
 
+    @Length(max = 100)
     @Column(name = "description")
     private String description;
 

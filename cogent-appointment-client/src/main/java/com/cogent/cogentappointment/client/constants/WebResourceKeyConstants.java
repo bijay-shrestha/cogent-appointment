@@ -38,6 +38,11 @@ public class WebResourceKeyConstants {
         String TRANSACTION_STATUS = "/transaction-status";
     }
 
+    public interface AppointmentModeConstants {
+        String BASE_APPOINTMENT_MODE = "/appointmentMode";
+    }
+
+
     //B
     public static final String BASE_PASSWORD = "/password";
 

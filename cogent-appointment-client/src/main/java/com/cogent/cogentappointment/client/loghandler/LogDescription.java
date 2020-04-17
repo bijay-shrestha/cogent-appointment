@@ -13,11 +13,11 @@ public class LogDescription {
         }
 
         if (action.equalsIgnoreCase("Create")) {
-            logDescription = feature + "is created successfully...";
+            logDescription = feature + " is created successfully...";
         }
 
         if (action.equalsIgnoreCase("Edit")) {
-            logDescription = feature + "is edited successfully...";
+            logDescription = feature + " is edited successfully...";
         }
 
         if (action.equalsIgnoreCase("View")) {

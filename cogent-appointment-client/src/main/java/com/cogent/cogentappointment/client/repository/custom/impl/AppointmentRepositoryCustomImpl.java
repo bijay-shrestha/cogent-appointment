@@ -22,6 +22,7 @@ import com.cogent.cogentappointment.client.dto.response.appointment.refund.Appoi
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.commons.AppointmentRevenueStatisticsResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.AppointmentRepositoryCustom;
@@ -49,8 +50,10 @@ import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.APPOINTMENT;
 import static com.cogent.cogentappointment.client.query.AppointmentQuery.*;
+import static com.cogent.cogentappointment.client.query.AppointmentQuery.QUERY_TO_FETCH_REFUNDED_APPOINTMENT_AMOUNT;
 import static com.cogent.cogentappointment.client.query.AppointmentQuery.QUERY_TO_FETCH_REFUND_AMOUNT;
 import static com.cogent.cogentappointment.client.query.DashBoardQuery.*;
+import static com.cogent.cogentappointment.client.utils.AppointmentRevenueStatisticsUtils.*;
 import static com.cogent.cogentappointment.client.utils.AppointmentUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
@@ -370,17 +373,13 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         List<Object[]> objects = query.getResultList();
 
         AppointmentLogResponseDTO results = parseQueryResultToAppointmentLogResponse(objects);
-        results.setTotalAmount(calculateTotalAppointmentAmount(searchRequestDTO, hospitalId));
-        results.setBookedAmount(calculateBookedAppointmentAmount(searchRequestDTO, hospitalId));
-        results.setCheckedInAmount(calculateCheckedInAppointmentAmount(searchRequestDTO, hospitalId));
-        results.setCancelAmount(calculateCancelledAppointmentAmount(searchRequestDTO, hospitalId));
-        results.setRefundedAmount(calculateRefundedAppointmentAmount(searchRequestDTO, hospitalId));
 
         if (results.getAppointmentLogs().isEmpty()) {
             error();
             throw APPOINTMENT_NOT_FOUND.get();
         } else {
             results.setTotalItems(totalItems);
+            results.setAppointmentStatistics(calculateAppointmentStatistics(searchRequestDTO, hospitalId));
             return results;
         }
     }
@@ -420,9 +419,6 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                 .setParameter(HOSPITAL_ID, hospitalId)
                 .setParameter(DATE, utilDateToSqlDate(appointmentQueueRequestDTO.getDate()));
 
-
-        int totalItems = query.getResultList().size();
-
         addPagination.accept(pageable, query);
 
         List<Object[]> objects = query.getResultList();
@@ -457,54 +453,111 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         return (Double) query.getSingleResult();
     }
 
-    private Double calculateTotalAppointmentAmount(AppointmentLogSearchDTO searchRequestDTO, Long hospitalId) {
+    private AppointmentRevenueStatisticsResponseDTO calculateAppointmentStatistics(
+            AppointmentLogSearchDTO searchRequestDTO,
+            Long hospitalId) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TOTAL_APPOINTMENT_AMOUNT(searchRequestDTO))
-                .setParameter(HOSPITAL_ID, hospitalId);
+        AppointmentRevenueStatisticsResponseDTO responseDTO = new AppointmentRevenueStatisticsResponseDTO();
 
-        Double amount = (Double) query.getSingleResult();
+        getCheckedInAppointmentDetails(searchRequestDTO, hospitalId, responseDTO);
 
-        return amount == 0 ? 0D : amount;
+        getBookedAppointmentDetails(searchRequestDTO, hospitalId, responseDTO);
+
+        getCancelledAppointmentDetails(searchRequestDTO, hospitalId, responseDTO);
+
+        getRefundedAppointmentDetails(searchRequestDTO, hospitalId, responseDTO);
+
+        getRevenueFromRefundedAppointmentDetails(searchRequestDTO, hospitalId, responseDTO);
+
+        calculateTotalAppointmentAmount(searchRequestDTO, hospitalId, responseDTO);
+
+        calculateTotalAmountExcludingBooked(searchRequestDTO, hospitalId, responseDTO);
+
+        return responseDTO;
     }
 
-    private Double calculateBookedAppointmentAmount(AppointmentLogSearchDTO searchRequestDTO, Long hospitalId) {
-
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_BOOKED_APPOINTMENT_AMOUNT(searchRequestDTO))
-                .setParameter(HOSPITAL_ID, hospitalId);
-
-        Double amount = (Double) query.getSingleResult();
-
-        return amount == 0 ? 0D : amount;
-    }
-
-    private Double calculateCheckedInAppointmentAmount(AppointmentLogSearchDTO searchRequestDTO, Long hospitalId) {
+    private void getCheckedInAppointmentDetails(AppointmentLogSearchDTO searchRequestDTO,
+                                                Long hospitalId,
+                                                AppointmentRevenueStatisticsResponseDTO responseDTO) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_AMOUNT(searchRequestDTO))
                 .setParameter(HOSPITAL_ID, hospitalId);
 
-        Double amount = (Double) query.getSingleResult();
+        List<Object[]> results = query.getResultList();
 
-        return amount == 0 ? 0D : amount;
+        parseCheckedInAppointmentDetails(results.get(0), responseDTO);
     }
 
-    private Double calculateCancelledAppointmentAmount(AppointmentLogSearchDTO searchRequestDTO, Long hospitalId) {
+    private void getBookedAppointmentDetails(AppointmentLogSearchDTO searchRequestDTO,
+                                             Long hospitalId,
+                                             AppointmentRevenueStatisticsResponseDTO responseDTO) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_BOOKED_APPOINTMENT_AMOUNT(searchRequestDTO))
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        List<Object[]> results = query.getResultList();
+
+        parseBookedAppointmentDetails(results.get(0), responseDTO);
+    }
+
+    private void getCancelledAppointmentDetails(AppointmentLogSearchDTO searchRequestDTO,
+                                                Long hospitalId,
+                                                AppointmentRevenueStatisticsResponseDTO responseDTO) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_CANCELLED_APPOINTMENT_AMOUNT(searchRequestDTO))
                 .setParameter(HOSPITAL_ID, hospitalId);
 
-        Double amount = (Double) query.getSingleResult();
+        List<Object[]> results = query.getResultList();
 
-        return amount == 0 ? 0D : amount;
+        parseCancelledAppointmentDetails(results.get(0), responseDTO);
     }
 
-    private Double calculateRefundedAppointmentAmount(AppointmentLogSearchDTO searchRequestDTO, Long hospitalId) {
+    private void getRefundedAppointmentDetails(AppointmentLogSearchDTO searchRequestDTO,
+                                               Long hospitalId,
+                                               AppointmentRevenueStatisticsResponseDTO responseDTO) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_REFUNDED_APPOINTMENT_AMOUNT(searchRequestDTO))
                 .setParameter(HOSPITAL_ID, hospitalId);
 
-        Double amount = (Double) query.getSingleResult();
+        List<Object[]> results = query.getResultList();
 
-        return amount == 0 ? 0D : amount;
+        parseRefundedAppointmentDetails(results.get(0), responseDTO);
+    }
+
+    private void getRevenueFromRefundedAppointmentDetails(AppointmentLogSearchDTO searchRequestDTO,
+                                                          Long hospitalId,
+                                                          AppointmentRevenueStatisticsResponseDTO responseDTO) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_REVENUE_REFUNDED_APPOINTMENT_AMOUNT(searchRequestDTO))
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        List<Object[]> results = query.getResultList();
+
+        parseRevenueFromRefundedAppointmentDetails(results.get(0), responseDTO);
+    }
+
+    private void calculateTotalAppointmentAmount(AppointmentLogSearchDTO searchRequestDTO,
+                                                 Long hospitalId,
+                                                 AppointmentRevenueStatisticsResponseDTO responseDTO) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TOTAL_APPOINTMENT_AMOUNT(searchRequestDTO))
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        Double totalAppointmentAmount = (Double) query.getSingleResult();
+
+        responseDTO.setTotalAmount(totalAppointmentAmount);
+    }
+
+    private void calculateTotalAmountExcludingBooked(AppointmentLogSearchDTO searchRequestDTO,
+                                                     Long hospitalId,
+                                                     AppointmentRevenueStatisticsResponseDTO responseDTO) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TOTAL_APPOINTMENT_AMOUNT_EXCLUDING_BOOKED(searchRequestDTO))
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        Double totalAppointmentAmount = (Double) query.getSingleResult();
+
+        responseDTO.setTotalAmountExcludingBooked(totalAppointmentAmount);
     }
 
     private Function<Long, NoContentFoundException> APPOINTMENT_DETAILS_NOT_FOUND = (appointmentId) -> {
@@ -512,7 +565,6 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         throw new NoContentFoundException
                 (AppointmentPendingApprovalDetailResponseDTO.class, "appointmentId", appointmentId.toString());
     };
-
 
     private void error() {
         log.error(CONTENT_NOT_FOUND, APPOINTMENT);

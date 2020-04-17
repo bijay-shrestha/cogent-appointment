@@ -1,15 +1,13 @@
 package com.cogent.cogentappointment.client.utils;
 
-import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentRejectDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.*;
+import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueSearchByTimeDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentTimeDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.approval.AppointmentPendingApprovalDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.approval.AppointmentPendingApprovalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.esewa.*;
 import com.cogent.cogentappointment.client.dto.response.appointment.log.AppointmentLogDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.log.AppointmentLogResponseDTO;
@@ -373,8 +371,6 @@ public class AppointmentUtils {
 
         List<AppointmentLogDTO> appointmentLogSearchDTOS = new ArrayList<>();
 
-        AtomicReference<Double> totalAmount = new AtomicReference<>(0D);
-
         results.forEach(result -> {
             final int APPOINTMENT_DATE_INDEX = 0;
             final int APPOINTMENT_NUMBER_INDEX = 1;
@@ -436,7 +432,6 @@ public class AppointmentUtils {
         });
 
         appointmentLogResponseDTO.setAppointmentLogs(appointmentLogSearchDTOS);
-        appointmentLogResponseDTO.setTotalAmount(totalAmount.get());
 
         return appointmentLogResponseDTO;
     }
@@ -554,6 +549,4 @@ public class AppointmentUtils {
                 .responseCode(OK.value())
                 .build();
     }
-
-
 }

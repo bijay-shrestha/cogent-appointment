@@ -265,7 +265,6 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         if (updateRequestDTO.getIsAvatarUpdate().equals(YES))
             updateAvatar(admin, files);
 
-//        todo:mac cannot be saved
         if (updateRequestDTO.getHasMacBinding().equals(YES))
             updateMacAddressInfo(updateRequestDTO.getMacAddressUpdateInfo(), admin);
 

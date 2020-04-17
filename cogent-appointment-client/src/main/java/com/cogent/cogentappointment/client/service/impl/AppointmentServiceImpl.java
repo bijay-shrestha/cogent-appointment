@@ -189,6 +189,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     * 9. UPDATE TRANSACTION STATUS IN AppointmentTransactionRequestLog AS 'Y'
     * AND RETURN THE FINAL RESPONSE.
     * */
+    //todo: change requestDTO in esewa-module
     @Override
     public AppointmentSuccessResponseDTO saveAppointmentForSelf(AppointmentRequestDTOForSelf requestDTO) {
 
@@ -984,7 +985,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 ? doctorService.fetchDoctorFollowupAppointmentCharge(doctorId, hospitalId)
                 : doctorService.fetchDoctorAppointmentCharge(doctorId, hospitalId);
 
-        if (!(Double.compare(actualAppointmentCharge, appointmentAmount) == 0)){
+        if (!(Double.compare(actualAppointmentCharge, appointmentAmount) == 0)) {
             log.error(String.format(DOCTOR_APPOINTMENT_CHARGE_INVALID, appointmentAmount));
             throw new BadRequestException(String.format(DOCTOR_APPOINTMENT_CHARGE_INVALID, appointmentAmount),
                     DOCTOR_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE);

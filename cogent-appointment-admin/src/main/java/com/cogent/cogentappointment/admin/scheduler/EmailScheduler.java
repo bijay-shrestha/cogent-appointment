@@ -16,11 +16,11 @@ import static com.cogent.cogentappointment.admin.log.constants.AppointmentFollow
 @Configuration
 @EnableScheduling
 @Slf4j
-public class AppointmentFollowUpScheduler {
+public class EmailScheduler {
 
     private final AppointmentFollowUpTrackerService appointmentFollowUpTrackerService;
 
-    public AppointmentFollowUpScheduler(AppointmentFollowUpTrackerService appointmentFollowUpTrackerService) {
+    public EmailScheduler(AppointmentFollowUpTrackerService appointmentFollowUpTrackerService) {
         this.appointmentFollowUpTrackerService = appointmentFollowUpTrackerService;
     }
 

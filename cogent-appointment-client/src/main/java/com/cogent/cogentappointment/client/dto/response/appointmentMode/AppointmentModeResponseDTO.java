@@ -21,6 +21,8 @@ public class AppointmentModeResponseDTO implements Serializable {
 
     private Character status;
 
+    private Character isEditable;
+
     private String remarks;
 
     private String description;
@@ -29,8 +31,8 @@ public class AppointmentModeResponseDTO implements Serializable {
 
     private String modifiedBy;
 
-    private Date createdDate;
+    private String createdDate;
 
-    private Date modifiedDate;
+    private String modifiedDate;
 
 }

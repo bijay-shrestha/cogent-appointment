@@ -25,9 +25,7 @@ import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_
 import static com.cogent.cogentappointment.client.log.constants.AppointmentMode.APPOINTMENT_MODE;
 import static com.cogent.cogentappointment.client.query.AppointmentModeQuery.*;
 import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
-import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
-import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.transformNativeQueryToSingleResult;
-import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.transformQueryToResultList;
+import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
 
 /**
  * @author Sauravi Thapa ON 4/17/20
@@ -78,7 +76,7 @@ public class AppointmentModeRepositoryCustomImpl implements AppointmentModeRepos
 
     @Override
     public AppointmentModeResponseDTO fetchDetailsById(Long id) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_MODE_DETAILS)
+        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_MODE_DETAILS)
                 .setParameter(ID, id);
         try {
             return transformNativeQueryToSingleResult(query, AppointmentModeResponseDTO.class);

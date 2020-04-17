@@ -14,14 +14,14 @@ public class AppointmentModeQuery {
 
     public static final String QUERY_TO_VALIDATE_DUPLICITY =
             " SELECT COUNT(am.id)" +
-                    " FROM ApppointmentMode am" +
+                    " FROM AppointmentMode am" +
                     " WHERE" +
                     " am.status !='D'" +
                     " AND am.name=:name";
 
     public static final String QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE =
             " SELECT COUNT(am.id)" +
-                    " FROM ApppointmentMode am" +
+                    " FROM AppointmentMode am" +
                     " WHERE" +
                     " am.status!='D'" +
                     " AND am.id!=:id" +
@@ -45,10 +45,10 @@ public class AppointmentModeQuery {
 
         String whereClause = " WHERE am.status!='D'";
 
-        if (!Objects.isNull(searchRequestDTO.getCode()))
-            whereClause += " AND am.code = " + searchRequestDTO.getCode();
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getCode()))
+            whereClause += " AND am.code = '" + searchRequestDTO.getCode()+"'";
 
-        if (!Objects.isNull(searchRequestDTO.getId()))
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getId()))
             whereClause += " AND am.id=" + searchRequestDTO.getId();
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
@@ -59,24 +59,24 @@ public class AppointmentModeQuery {
 
     public static final String QUERY_TO_FETCH_APPOINTMENT_MODE_DETAILS =
             "SELECT" +
-                    " am.name as name," +                                          //[0]
-                    " am.code as code," +                                    //[1]
-                    " am.status as status," +                                      //[2]
-                    " am.remarks as remarks," +                                    //[3]
-                    " am.description as description," +                                   //[4]
+                    " am.name as name," +
+                    " am.code as code," +
+                    " am.status as status," +
+                    " am.remarks as remarks," +
+                    " am.description as description," +
                     " am.is_editable as isEditable," +
-                    " am.created_date as createdDate," +
+                    " DATE_FORMAT(am.created_date,'%Y-%m-%d') as createdDate," +
                     " am.created_by as createdBy," +
-                    " am.last_modified_date as modifiedDate," +
-                    " am.last_modified_by as modifiedBy" +                                        //[5]
+                    " DATE_FORMAT(am.last_modified_date,'%Y-%m-%d') as modifiedDate," +
+                    " am.last_modified_by as modifiedBy" +
                     " FROM appointment_mode am " +
                     " WHERE am.status != 'D'" +
                     " AND am.id =:id";
 
     public static final String QUERY_TO_FETCH_ACTIVE_APPOINTMENT_MODE =
             "SELECT" +
-                    " am.id as value," +                         //[0]
-                    " am.name as label" +                        //[1]
+                    " am.id as value," +
+                    " am.name as label" +
                     " FROM AppointmentMode am " +
                     " WHERE am.status = 'Y'";
 }

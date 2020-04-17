@@ -1,10 +1,13 @@
 package com.cogent.cogentappointment.client.loghandler;
+
 import com.cogent.cogentappointment.admin.utils.commons.SecurityContextUtils;
 import com.cogent.cogentappointment.client.dto.commons.ClientLogRequestDTO;
 import com.cogent.cogentappointment.client.utils.commons.ObjectMapperUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import static com.cogent.cogentappointment.client.utils.commons.StringUtil.convertToNormalCase;
 import static com.cogent.cogentappointment.client.utils.commons.StringUtil.splitByCharacterTypeCamelCase;
@@ -14,14 +17,22 @@ import static com.cogent.cogentappointment.client.utils.commons.StringUtil.split
  */
 public class RequestHandler {
 
-    public static String getRemoteAddr(HttpServletRequest request) {
+    public static String getRemoteAddr(HttpServletRequest request) throws UnknownHostException {
 
         String ipFromHeader = request.getHeader("X-FORWARDED-FOR");
         if (ipFromHeader != null && ipFromHeader.length() > 0) {
             System.out.println("ip from proxy - X-FORWARDED-FOR : " + ipFromHeader);
             return ipFromHeader;
         }
-        return request.getRemoteAddr();
+
+        String remoteAddr = request.getRemoteAddr();
+
+        if (remoteAddr.equalsIgnoreCase("0:0:0:0:0:0:0:1")) {
+            InetAddress inetAddress = InetAddress.getLocalHost();
+            String ipAddress = inetAddress.getHostAddress();
+            remoteAddr = ipAddress;
+        }
+        return remoteAddr;
     }
 
     public static ClientLogRequestDTO convertToClientLogRequestDTO(String userLog) throws IOException {

@@ -19,20 +19,8 @@ public class UserLogInterceptor implements HandlerInterceptor {
     private ClientLogService clientLogService;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-
-        System.out.println("pre  process-----------------------------------------------");
-
-        return true;
-    }
-
-    @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
                                 Exception exception) throws Exception {
-
-        System.out.println("ACTION COMPLETED-----------------------------------");
-
-        String url = request.getRequestURI();
 
         String userLog = request.getHeader("log-header");
 

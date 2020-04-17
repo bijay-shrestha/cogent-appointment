@@ -19,14 +19,6 @@ public class UserLogInterceptor implements HandlerInterceptor {
     private AdminLogService adminLogService;
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-
-        System.out.println("pre  process-----------------------------------------------");
-
-        return true;
-    }
-
-    @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
                                 Exception exception) throws Exception {
 

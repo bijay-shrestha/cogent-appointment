@@ -2,7 +2,7 @@ package com.cogent.cogentappointment.logging.repository.custom.impl;
 
 import com.cogent.cogentappointment.logging.dto.request.admin.AdminLogSearchRequestDTO;
 import com.cogent.cogentappointment.logging.dto.response.UserMenuLogResponseDTO;
-import com.cogent.cogentappointment.logging.dto.response.AdminLogSearchResponseDTO;
+import com.cogent.cogentappointment.logging.dto.response.UserMenuLogSearchResponseDTO;
 import com.cogent.cogentappointment.logging.dto.response.AdminLogStaticsResponseDTO;
 import com.cogent.cogentappointment.logging.dto.response.UserMenuStaticsResponseDTO;
 import com.cogent.cogentappointment.logging.exception.NoContentFoundException;
@@ -47,7 +47,7 @@ public class AdminLogRepositoryCustomImpl implements AdminLogRepositoryCustom {
 
         addPagination.accept(pageable, query);
 
-        List<AdminLogSearchResponseDTO> result = transformQueryToResultList(query, AdminLogSearchResponseDTO.class);
+        List<UserMenuLogSearchResponseDTO> result = transformQueryToResultList(query, UserMenuLogSearchResponseDTO.class);
 
         int totalItems = query.getResultList().size();
 

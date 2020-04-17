@@ -13,7 +13,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AdminLogSearchResponseDTO implements Serializable {
+public class UserMenuLogSearchResponseDTO implements Serializable {
 
     private String logDateTime;
 

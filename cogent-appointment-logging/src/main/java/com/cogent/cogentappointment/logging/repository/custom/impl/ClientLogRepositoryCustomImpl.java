@@ -1,13 +1,12 @@
 package com.cogent.cogentappointment.logging.repository.custom.impl;
 
 import com.cogent.cogentappointment.logging.dto.request.client.ClientLogSearchRequestDTO;
-import com.cogent.cogentappointment.logging.dto.response.UserMenuLogResponseDTO;
-import com.cogent.cogentappointment.logging.dto.response.AdminLogSearchResponseDTO;
 import com.cogent.cogentappointment.logging.dto.response.AdminLogStaticsResponseDTO;
+import com.cogent.cogentappointment.logging.dto.response.UserMenuLogResponseDTO;
+import com.cogent.cogentappointment.logging.dto.response.UserMenuLogSearchResponseDTO;
 import com.cogent.cogentappointment.logging.dto.response.UserMenuStaticsResponseDTO;
 import com.cogent.cogentappointment.logging.exception.NoContentFoundException;
 import com.cogent.cogentappointment.logging.repository.custom.ClientLogRepositoryCustom;
-import com.cogent.cogentappointment.persistence.model.AdminLog;
 import com.cogent.cogentappointment.persistence.model.ClientLog;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -52,13 +51,13 @@ public class ClientLogRepositoryCustomImpl implements ClientLogRepositoryCustom 
 
         addPagination.accept(pageable, query);
 
-        List<AdminLogSearchResponseDTO> result = transformQueryToResultList(query, AdminLogSearchResponseDTO.class);
+        List<UserMenuLogSearchResponseDTO> result = transformQueryToResultList(query, UserMenuLogSearchResponseDTO.class);
 
         int totalItems = query.getResultList().size();
 
         if (ObjectUtils.isEmpty(result)) {
 //            error()//Error not integrated...
-            throw new NoContentFoundException(AdminLog.class);
+            throw NO_CLIENT_LOGS_FOUND.get();
         } else {
 
             UserMenuLogResponseDTO userMenuLogResponseDTO = new UserMenuLogResponseDTO();
@@ -84,9 +83,9 @@ public class ClientLogRepositoryCustomImpl implements ClientLogRepositoryCustom 
 
         List<AdminLogStaticsResponseDTO> result = transformQueryToResultList(query, AdminLogStaticsResponseDTO.class);
 
-        if (result.isEmpty()) {
-//            error();
-            throw NO_USER_STATICS_FOUND.get();
+        if (ObjectUtils.isEmpty(result)) {
+            //            error()//Error not integrated...
+            throw NO_CLIENT_LOGS_FOUND.get();
         } else {
             UserMenuStaticsResponseDTO userMenuStaticsResponseDTO = new UserMenuStaticsResponseDTO();
             userMenuStaticsResponseDTO.setUserMenuCountList(result);
@@ -95,5 +94,5 @@ public class ClientLogRepositoryCustomImpl implements ClientLogRepositoryCustom 
         }
     }
 
-    private Supplier<NoContentFoundException> NO_USER_STATICS_FOUND = () -> new NoContentFoundException(ClientLog.class);
+    private Supplier<NoContentFoundException> NO_CLIENT_LOGS_FOUND = () -> new NoContentFoundException(ClientLog.class);
 }

@@ -32,7 +32,8 @@ public class ClientLogQuery {
                 " cl.ipAddress as ipAddress," +
                 " cl.feature as feature," +
                 " cl.actionType as actionType," +
-                " cl.logDescription as logDescription" +
+                " cl.logDescription as logDescription," +
+                " cl.status as status" +
                 " FROM ClientLog cl" +
                 " LEFT JOIN Admin a ON cl.adminId.id =a.id" +
                 " LEFT JOIN Profile p ON p.id=a.profileId.id" +

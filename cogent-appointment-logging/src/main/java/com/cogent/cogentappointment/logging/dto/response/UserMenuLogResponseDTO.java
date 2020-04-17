@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 public class UserMenuLogResponseDTO implements Serializable {
 
-    private List<AdminLogSearchResponseDTO> userLogList;
+    private List<UserMenuLogSearchResponseDTO> userLogList;
 
     private int totalItems;
 

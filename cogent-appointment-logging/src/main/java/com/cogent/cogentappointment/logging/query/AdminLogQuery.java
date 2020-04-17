@@ -27,7 +27,7 @@ public class AdminLogQuery {
     public static String QUERY_TO_SEARCH_ADMIN_LOGS(AdminLogSearchRequestDTO searchRequestDTO) {
 
         return " SELECT " +
-                " DATE_FORMAT(al.logDateTime,'%Y-%m-%d %h:%i %p') as logDateTime," +
+                " DATE_FORMAT(al.logDateTime,'%D %M %Y %h:%i %p') as logDateTime," +
                 " a.username as userName," +
                 " al.ipAddress as ipAddress," +
                 " al.feature as feature," +
@@ -50,10 +50,10 @@ public class AdminLogQuery {
         if (!ObjectUtils.isEmpty(searchRequestDTO.getHospitalId()))
             whereClause += " AND h.id=" + searchRequestDTO.getHospitalId();
 
-
         if (!ObjectUtils.isEmpty(searchRequestDTO.getUserName()) || !searchRequestDTO.getUserName().equals(""))
 
-            whereClause += " AND (a.username ='" + searchRequestDTO.getUserName() + "' OR a.email ='" + searchRequestDTO.getUserName() + "' OR a.mobileNumber ='" + searchRequestDTO.getUserName() + "')";
+            whereClause += " AND (a.username ='" + searchRequestDTO.getUserName() + "' OR a.email ='" + searchRequestDTO.getUserName()
+                    + "' OR a.mobileNumber ='" + searchRequestDTO.getUserName() + " OR a.fullName LIKE %" + searchRequestDTO.getUserName() + "%" + "')";
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getParentId()))
             whereClause += " AND al.parentId=" + searchRequestDTO.getParentId();

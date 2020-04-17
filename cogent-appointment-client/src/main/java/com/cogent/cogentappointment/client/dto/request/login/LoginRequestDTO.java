@@ -15,7 +15,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class LoginRequestDTO implements Serializable {
 
-    private String username;
+    private String email;
 
     private String password;
 

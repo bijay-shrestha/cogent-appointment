@@ -36,7 +36,8 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 
     @Override
     public String loginUser(LoginRequestDTO requestDTO) {
-        AdminMinDetails adminMinDetails = hmacApiInfoRepository.verifyLoggedInAdmin(requestDTO.getUsername(),
+        AdminMinDetails adminMinDetails = hmacApiInfoRepository.verifyLoggedInAdmin(
+                requestDTO.getEmail(),
                 requestDTO.getHospitalCode());
 
         checkIfHospitalAdmin(adminMinDetails);

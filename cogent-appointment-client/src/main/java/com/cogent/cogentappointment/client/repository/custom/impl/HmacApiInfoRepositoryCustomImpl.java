@@ -56,9 +56,9 @@ public class HmacApiInfoRepositoryCustomImpl implements HmacApiInfoRepositoryCus
     }
 
     @Override
-    public AdminMinDetails verifyLoggedInAdmin(String username, String hospitalCode) {
+    public AdminMinDetails verifyLoggedInAdmin(String email, String hospitalCode) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VERIFY_LOGGED_IN_ADMIN)
-                .setParameter(USERNAME, username)
+                .setParameter(EMAIL, email)
                 .setParameter(HOSPITAL_CODE, hospitalCode);
         try {
             return transformQueryToSingleResult(query, AdminMinDetails.class);

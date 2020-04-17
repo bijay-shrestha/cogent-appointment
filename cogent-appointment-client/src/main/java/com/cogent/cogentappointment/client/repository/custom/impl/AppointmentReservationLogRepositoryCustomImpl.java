@@ -58,13 +58,14 @@ public class AppointmentReservationLogRepositoryCustomImpl implements Appointmen
 
     @Override
     public Long fetchAppointmentReservationLogId(Date appointmentDate, String appointmentTime,
-                                                 Long doctorId, Long specializationId) {
+                                                 Long doctorId, Long specializationId, Long hospitalId) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_RESERVATION_LOG_ID)
                 .setParameter(APPOINTMENT_DATE, utilDateToSqlDate(appointmentDate))
                 .setParameter(DOCTOR_ID, doctorId)
                 .setParameter(SPECIALIZATION_ID, specializationId)
-                .setParameter(APPOINTMENT_TIME, appointmentTime);
+                .setParameter(APPOINTMENT_TIME, appointmentTime)
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         try {
             return (Long) query.getSingleResult();

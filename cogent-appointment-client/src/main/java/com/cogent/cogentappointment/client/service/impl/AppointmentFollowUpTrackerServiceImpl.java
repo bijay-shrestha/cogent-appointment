@@ -25,7 +25,6 @@ import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentFollowUpTrackerLog.APPOINTMENT_FOLLOW_UP_TRACKER;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentFollowUpTrackerLog.APPOINTMENT_FOLLOW_UP_TRACKER_STATUS;
 import static com.cogent.cogentappointment.client.utils.AppointmentFollowUpTrackerUtils.*;
-import static com.cogent.cogentappointment.client.utils.AppointmentUtils.validateIfRequestIsBeforeCurrentDateTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 
 /**
@@ -65,12 +64,10 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
 
         log.info(FETCHING_PROCESS_STARTED, APPOINTMENT_FOLLOW_UP_TRACKER);
 
-        validateIfRequestIsBeforeCurrentDateTime(requestDTO.getAppointmentDate(), requestDTO.getAppointmentTime());
-
         /*TEMPORARILY HOLD SELECTED TIME SLOT
-        * PERSIST IN TABLE ONLY IF APPOINTMENT HAS NOT BEEN PREVIOSULY RESERVED FOR
+        * PERSIST IN TABLE ONLY IF APPOINTMENT HAS NOT BEEN PREVIOUSLY RESERVED FOR
         * SELECTED DOCTOR, SPECIALIZATION, DATE AND TIME */
-        Long savedAppointmentReservationId = appointmentReservationService.save(requestDTO);
+        Long savedAppointmentReservationId = appointmentReservationService.saveAppointmentReservationLog(requestDTO);
 
         AppointmentFollowUpTracker appointmentFollowUpTracker =
                 appointmentFollowUpTrackerRepository.fetchAppointmentFollowUpTracker(

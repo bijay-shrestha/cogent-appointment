@@ -20,6 +20,7 @@ import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRe
 import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
+import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.format.DateTimeFormat;
@@ -42,6 +43,7 @@ import static org.springframework.http.HttpStatus.OK;
 /**
  * @author smriti on 2019-10-24
  */
+@Slf4j
 public class AppointmentUtils {
 
     private static final DateTimeFormatter FORMAT = DateTimeFormat.forPattern("HH:mm");
@@ -56,11 +58,14 @@ public class AppointmentUtils {
 
         boolean isRequestedBeforeCurrentDateTime = requestDateTime.before(currentDateTime);
 
-        if (isRequestedBeforeCurrentDateTime)
+        if (isRequestedBeforeCurrentDateTime) {
+            log.error(INVALID_APPOINTMENT_DATE_TIME);
             throw new BadRequestException(INVALID_APPOINTMENT_DATE_TIME);
+        }
     }
 
     public static Appointment parseToAppointment(AppointmentRequestDTO requestDTO,
+                                                 AppointmentReservationLog appointmentReservationLog,
                                                  String appointmentNumber,
                                                  Character isSelf,
                                                  Patient patient,
@@ -69,10 +74,8 @@ public class AppointmentUtils {
                                                  Hospital hospital) {
 
         Appointment appointment = new Appointment();
-        appointment.setAppointmentDate(requestDTO.getAppointmentDate());
-        appointment.setAppointmentTime(parseAppointmentTime(
-                requestDTO.getAppointmentDate(),
-                requestDTO.getAppointmentTime()));
+        appointment.setAppointmentDate(appointmentReservationLog.getAppointmentDate());
+        appointment.setAppointmentTime(appointmentReservationLog.getAppointmentTime());
         appointment.setAppointmentNumber(appointmentNumber);
         appointment.setCreatedDateNepali(requestDTO.getCreatedDateNepali());
         appointment.setIsFollowUp(requestDTO.getIsFollowUp());
@@ -426,7 +429,7 @@ public class AppointmentUtils {
                             .status(result[APPOINTMENT_STATUS_INDEX].toString())
                             .refundAmount(refundAmount)
                             .patientAddress(result[PATIENT_ADDRESS_INDEX].toString())
-                            .transactionDate((Date)result[TRANSACTION_DATE_INDEX])
+                            .transactionDate((Date) result[TRANSACTION_DATE_INDEX])
                             .build();
 
             appointmentLogSearchDTOS.add(appointmentLogDTO);

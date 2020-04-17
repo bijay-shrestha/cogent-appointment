@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
+import static com.cogent.cogentappointment.admin.loghandler.LogDescription.getFailedLogDescription;
+import static com.cogent.cogentappointment.admin.loghandler.LogDescription.getSuccessLogDescription;
 
 @Component
 public class UserLogInterceptor implements HandlerInterceptor {
@@ -36,14 +38,13 @@ public class UserLogInterceptor implements HandlerInterceptor {
 
             if (exception == null) {
 
-                adminLogRequestDTO.setLogDescription(adminLogRequestDTO.getFeature() + " " + adminLogRequestDTO.getActionType());
+                adminLogRequestDTO.setLogDescription(getSuccessLogDescription(adminLogRequestDTO.getFeature(), adminLogRequestDTO.getActionType()));
                 saveSuccessLogs(adminLogRequestDTO, ipAddress);
             }
 
             if (exception != null) {
 
-                int status = response.getStatus();
-                adminLogRequestDTO.setLogDescription("Process cannot be completed due to exception...");
+                adminLogRequestDTO.setLogDescription(getFailedLogDescription());
                 saveFailedLogs(adminLogRequestDTO, ipAddress);
             }
 

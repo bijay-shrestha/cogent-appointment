@@ -9,6 +9,8 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static com.cogent.cogentappointment.admin.loghandler.LogDescription.getFailedLogDescription;
+import static com.cogent.cogentappointment.admin.loghandler.LogDescription.getSuccessLogDescription;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.INACTIVE;
 
@@ -32,14 +34,13 @@ public class UserLogInterceptor implements HandlerInterceptor {
 
             if (exception == null) {
 
-                clientLogRequestDTO.setLogDescription(clientLogRequestDTO.getFeature() + " " + clientLogRequestDTO.getActionType() + "ed...");
+                clientLogRequestDTO.setLogDescription(getSuccessLogDescription(clientLogRequestDTO.getFeature(), clientLogRequestDTO.getActionType()));
                 saveSuccessLogs(clientLogRequestDTO, ipAddress);
             }
 
             if (exception != null) {
 
-                int status = response.getStatus();
-                clientLogRequestDTO.setLogDescription("Process cannot be completed due to exception...");
+                clientLogRequestDTO.setLogDescription(getFailedLogDescription());
                 saveFailedLogs(clientLogRequestDTO, ipAddress);
             }
 

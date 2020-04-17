@@ -16,6 +16,11 @@ public class LogDescription {
             logDescription = feature + " is created successfully...";
         }
 
+        if (action.equalsIgnoreCase("Delete")) {
+            logDescription = feature + " is deleted successfully...";
+        }
+
+
         if (action.equalsIgnoreCase("Edit")) {
             logDescription = feature + " is edited successfully...";
         }

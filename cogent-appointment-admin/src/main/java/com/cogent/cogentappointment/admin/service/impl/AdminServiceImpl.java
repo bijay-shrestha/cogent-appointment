@@ -158,7 +158,7 @@ public class AdminServiceImpl implements AdminService {
         int requestCount = adminDashboardRequestDTOS.size();
 
         if ((dashboardFeatureList.size()) != requestCount) {
-            log.error(CONTENT_NOT_FOUND,DashboardFeature.class.getSimpleName());
+            log.error(CONTENT_NOT_FOUND, DashboardFeature.class.getSimpleName());
             throw new NoContentFoundException(DashboardFeature.class);
         }
 
@@ -387,7 +387,7 @@ public class AdminServiceImpl implements AdminService {
         List<AdminMetaInfoResponseDTO> metaInfoResponseDTOS =
                 adminMetaInfoRepository.fetchAdminMetaInfoResponseDTOS();
 
-        log.info(SAVING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
 
         return metaInfoResponseDTOS;
     }
@@ -436,7 +436,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private void validateUsername(boolean isUsernameExists, String username) {
-        if (isUsernameExists){
+        if (isUsernameExists) {
             log.error(DUPLICATION_ERROR, ADMIN, username);
             throw new DataDuplicationException(
                     String.format(USERNAME_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), username));
@@ -444,7 +444,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private void validateEmail(boolean isEmailExists, String email) {
-        if (isEmailExists){
+        if (isEmailExists) {
             log.error(DUPLICATION_ERROR, ADMIN, email);
             throw new DataDuplicationException(
                     String.format(EMAIL_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), email));
@@ -452,7 +452,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private void validateMobileNumber(boolean isMobileNumberExists, String mobileNumber) {
-        if (isMobileNumberExists){
+        if (isMobileNumberExists) {
             log.error(DUPLICATION_ERROR, ADMIN, mobileNumber);
             throw new DataDuplicationException(
                     String.format(MOBILE_NUMBER_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), mobileNumber));
@@ -587,7 +587,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private Consumer<List<String>> validateMacAddressInfoSize = (macInfos) -> {
-        if (ObjectUtils.isEmpty(macInfos)){
+        if (ObjectUtils.isEmpty(macInfos)) {
             log.error(CONTENT_NOT_FOUND, AdminMacAddressInfo.class.getSimpleName());
             throw new NoContentFoundException(AdminMacAddressInfo.class);
         }

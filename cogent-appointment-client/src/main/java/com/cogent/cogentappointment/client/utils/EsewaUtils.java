@@ -7,10 +7,7 @@ import com.cogent.cogentappointment.client.dto.response.appointment.appoinmentDa
 import com.cogent.cogentappointment.client.dto.response.appointment.appoinmentDateAndTime.DoctorWeekDaysDutyRosterAppointmentDate;
 import com.cogent.cogentappointment.client.dto.response.eSewa.*;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.client.constants.StatusConstants.NO;
@@ -34,7 +31,6 @@ public class EsewaUtils {
                 .filter(actual -> (overrideList.stream()
                         .filter(override -> (override.getDoctorId().equals(actual.getDoctorId()))
                                 && (override.getSpecializationId().equals(actual.getSpecializationId()))
-                                && (actual.getDayOffStatus().equals(NO))
                         )
                         .count()) < 1)
                 .collect(Collectors.toList());

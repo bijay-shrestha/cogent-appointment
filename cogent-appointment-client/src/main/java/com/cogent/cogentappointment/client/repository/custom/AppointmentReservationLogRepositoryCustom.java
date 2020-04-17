@@ -19,6 +19,6 @@ public interface AppointmentReservationLogRepositoryCustom {
                                                      Long appointmentReservationId);
 
     Long fetchAppointmentReservationLogId(Date appointmentDate, String appointmentTime,
-                                          Long doctorId, Long specializationId);
+                                          Long doctorId, Long specializationId, Long hospitalId);
 
 }

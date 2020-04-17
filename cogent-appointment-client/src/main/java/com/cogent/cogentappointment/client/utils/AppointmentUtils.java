@@ -18,6 +18,7 @@ import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRe
 import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
+import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.format.DateTimeFormat;
@@ -41,6 +42,7 @@ import static org.springframework.http.HttpStatus.OK;
 /**
  * @author smriti on 2019-10-24
  */
+@Slf4j
 public class AppointmentUtils {
 
     private static final DateTimeFormatter FORMAT = DateTimeFormat.forPattern("HH:mm");
@@ -55,11 +57,14 @@ public class AppointmentUtils {
 
         boolean isRequestedBeforeCurrentDateTime = requestDateTime.before(currentDateTime);
 
-        if (isRequestedBeforeCurrentDateTime)
+        if (isRequestedBeforeCurrentDateTime) {
+            log.error(INVALID_APPOINTMENT_DATE_TIME);
             throw new BadRequestException(INVALID_APPOINTMENT_DATE_TIME);
+        }
     }
 
     public static Appointment parseToAppointment(AppointmentRequestDTO requestDTO,
+                                                 AppointmentReservationLog appointmentReservationLog,
                                                  String appointmentNumber,
                                                  Character isSelf,
                                                  Patient patient,
@@ -68,10 +73,8 @@ public class AppointmentUtils {
                                                  Hospital hospital) {
 
         Appointment appointment = new Appointment();
-        appointment.setAppointmentDate(requestDTO.getAppointmentDate());
-        appointment.setAppointmentTime(parseAppointmentTime(
-                requestDTO.getAppointmentDate(),
-                requestDTO.getAppointmentTime()));
+        appointment.setAppointmentDate(appointmentReservationLog.getAppointmentDate());
+        appointment.setAppointmentTime(appointmentReservationLog.getAppointmentTime());
         appointment.setAppointmentNumber(appointmentNumber);
         appointment.setCreatedDateNepali(requestDTO.getCreatedDateNepali());
         appointment.setIsFollowUp(requestDTO.getIsFollowUp());
@@ -369,8 +372,6 @@ public class AppointmentUtils {
 
         List<AppointmentLogDTO> appointmentLogSearchDTOS = new ArrayList<>();
 
-        AtomicReference<Double> totalAmount = new AtomicReference<>(0D);
-
         results.forEach(result -> {
             final int APPOINTMENT_DATE_INDEX = 0;
             final int APPOINTMENT_NUMBER_INDEX = 1;
@@ -550,69 +551,8 @@ public class AppointmentUtils {
                 .build();
     }
 
-
-    public static AppointmentLogResponseDTO parseCheckedInAppointmentDetails(Object[] result,
-                                                                             AppointmentLogResponseDTO responseDTO) {
-
-        final int COUNT_INDEX = 0;
-        final int AMOUNT_INDEX = 1;
-
-        responseDTO.setCheckedInAppointmentsCount(Long.parseLong(result[COUNT_INDEX].toString()));
-        responseDTO.setCheckedInAmount(Double.parseDouble(result[AMOUNT_INDEX].toString()));
-
-        return responseDTO;
-    }
-
-    public static AppointmentLogResponseDTO parseBookedAppointmentDetails(Object[] result,
-                                                                             AppointmentLogResponseDTO responseDTO) {
-
-        final int COUNT_INDEX = 0;
-        final int AMOUNT_INDEX = 1;
-
-        responseDTO.setBookedAppointmentsCount(Long.parseLong(result[COUNT_INDEX].toString()));
-        responseDTO.setBookedAmount(Double.parseDouble(result[AMOUNT_INDEX].toString()));
-
-        return responseDTO;
-    }
-
-    public static AppointmentLogResponseDTO parseCancelledAppointmentDetails(Object[] result,
-                                                                          AppointmentLogResponseDTO responseDTO) {
-
-        final int COUNT_INDEX = 0;
-        final int AMOUNT_INDEX = 1;
-
-        responseDTO.setCancelAppointmentsCount(Long.parseLong(result[COUNT_INDEX].toString()));
-        responseDTO.setCancelAmount(Double.parseDouble(result[AMOUNT_INDEX].toString()));
-
-        return responseDTO;
-    }
-
-    public static AppointmentLogResponseDTO parseRefundedAppointmentDetails(Object[] result,
-                                                                             AppointmentLogResponseDTO responseDTO) {
-
-        final int COUNT_INDEX = 0;
-        final int AMOUNT_INDEX = 1;
-
-        responseDTO.setRefundedAppointmentsCount(Long.parseLong(result[COUNT_INDEX].toString()));
-        responseDTO.setRefundedAmount(Double.parseDouble(result[AMOUNT_INDEX].toString()));
-
-        return responseDTO;
-    }
-
-    public static AppointmentLogResponseDTO parseRevenueFromRefundedAppointmentDetails(Object[] result,
-                                                                            AppointmentLogResponseDTO responseDTO) {
-
-        final int COUNT_INDEX = 0;
-        final int AMOUNT_INDEX = 1;
-
-        responseDTO.setRevenueFromRefundedAppointmentsCount(Long.parseLong(result[COUNT_INDEX].toString()));
-        responseDTO.setRevenueFromRefundedAmount(Double.parseDouble(result[AMOUNT_INDEX].toString()));
-
-        return responseDTO;
-    }
-
-    public static AppointmentStatistics parseAppointmentStatisticsForNew(Appointment appointment){
-        AppointmentStatistics appointmentStatistics=new AppointmentStatistics();
+    public static AppointmentStatistics parseAppointmentStatisticsForNew(Appointment appointment) {
+        AppointmentStatistics appointmentStatistics = new AppointmentStatistics();
         appointmentStatistics.setAppointmentId(appointment);
         appointmentStatistics.setAppointmentCreatedDate(new Date());
         appointmentStatistics.setIsNew(YES);
@@ -620,8 +560,8 @@ public class AppointmentUtils {
         return appointmentStatistics;
     }
 
-    public static AppointmentStatistics parseAppointmentStatisticsForRegistered(Appointment appointment){
-        AppointmentStatistics appointmentStatistics=new AppointmentStatistics();
+    public static AppointmentStatistics parseAppointmentStatisticsForRegistered(Appointment appointment) {
+        AppointmentStatistics appointmentStatistics = new AppointmentStatistics();
         appointmentStatistics.setAppointmentId(appointment);
         appointmentStatistics.setAppointmentCreatedDate(new Date());
         appointmentStatistics.setIsRegistered(YES);

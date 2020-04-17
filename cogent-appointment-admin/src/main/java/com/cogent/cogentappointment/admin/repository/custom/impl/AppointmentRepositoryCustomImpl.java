@@ -17,6 +17,7 @@ import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentSt
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.commons.AppointmentRevenueStatisticsResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.query.AppointmentQuery;
@@ -43,7 +44,9 @@ import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_N
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.APPOINTMENT;
 import static com.cogent.cogentappointment.admin.query.AppointmentQuery.*;
+import static com.cogent.cogentappointment.admin.query.AppointmentQuery.QUERY_TO_FETCH_REFUNDED_APPOINTMENT_AMOUNT;
 import static com.cogent.cogentappointment.admin.query.DashBoardQuery.*;
+import static com.cogent.cogentappointment.admin.utils.AppointmentRevenueStatisticsUtils.*;
 import static com.cogent.cogentappointment.admin.utils.AppointmentUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
@@ -276,19 +279,13 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         List<Object[]> objects = query.getResultList();
 
         AppointmentLogResponseDTO results = parseQueryResultToAppointmentLogResponse(objects);
-        results.setTotalAmount(calculateTotalAppointmentAmount(searchRequestDTO));
-        results.setTotalAmountExcludingBooked(calculateAppointmentAmount(searchRequestDTO));
-        getCheckedInAppointmentDetails(searchRequestDTO, results);
-        getBookedAppointmentDetails(searchRequestDTO, results);
-        getCancelledAppointmentDetails(searchRequestDTO, results);
-        getRefundedAppointmentDetails(searchRequestDTO, results);
-        getRevenueFromRefundedAppointmentDetails(searchRequestDTO, results);
 
         if (results.getAppointmentLogs().isEmpty()) {
             error();
             throw APPOINTMENT_NOT_FOUND.get();
         } else {
             results.setTotalItems(totalItems);
+            results.setAppointmentStatistics(calculateAppointmentStatistics(searchRequestDTO));
             return results;
         }
     }
@@ -316,84 +313,97 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         }
     }
 
+    private AppointmentRevenueStatisticsResponseDTO calculateAppointmentStatistics(AppointmentLogSearchDTO searchRequestDTO) {
 
-    private Double calculateTotalAppointmentAmount(AppointmentLogSearchDTO searchRequestDTO) {
+        AppointmentRevenueStatisticsResponseDTO responseDTO = new AppointmentRevenueStatisticsResponseDTO();
+
+        getCheckedInAppointmentDetails(searchRequestDTO, responseDTO);
+
+        getBookedAppointmentDetails(searchRequestDTO, responseDTO);
+
+        getCancelledAppointmentDetails(searchRequestDTO, responseDTO);
+
+        getRefundedAppointmentDetails(searchRequestDTO, responseDTO);
+
+        getRevenueFromRefundedAppointmentDetails(searchRequestDTO, responseDTO);
+
+        calculateTotalAppointmentAmount(searchRequestDTO, responseDTO);
+
+        calculateTotalAmountExcludingBooked(searchRequestDTO, responseDTO);
+
+        return responseDTO;
+    }
+
+    private void calculateTotalAppointmentAmount(AppointmentLogSearchDTO searchRequestDTO,
+                                                 AppointmentRevenueStatisticsResponseDTO responseDTO) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TOTAL_APPOINTMENT_AMOUNT(searchRequestDTO));
 
+        Double totalAppointmentAmount = (Double) query.getSingleResult();
 
-        return (Double) query.getSingleResult();
-
-
+        responseDTO.setTotalAmount(totalAppointmentAmount);
     }
 
-    private Double calculateAppointmentAmount(AppointmentLogSearchDTO searchRequestDTO) {
+    private void calculateTotalAmountExcludingBooked(AppointmentLogSearchDTO searchRequestDTO,
+                                                     AppointmentRevenueStatisticsResponseDTO responseDTO) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TOTAL_APPOINTMENT_AMOUNT_EXCLUDING_BOOKED(searchRequestDTO));
 
-        return (Double) query.getSingleResult();
+        Double totalAppointmentAmount = (Double) query.getSingleResult();
 
+        responseDTO.setTotalAmountExcludingBooked(totalAppointmentAmount);
     }
 
-    private AppointmentLogResponseDTO getCheckedInAppointmentDetails(AppointmentLogSearchDTO searchRequestDTO,
-                                                                     AppointmentLogResponseDTO responseDTO) {
+    private void getCheckedInAppointmentDetails(AppointmentLogSearchDTO searchRequestDTO,
+                                                AppointmentRevenueStatisticsResponseDTO responseDTO) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_AMOUNT(searchRequestDTO));
 
         List<Object[]> results = query.getResultList();
 
-
-        return parseCheckedInAppointmentDetails(results.get(0), responseDTO);
-
+        parseCheckedInAppointmentDetails(results.get(0), responseDTO);
     }
 
-    private AppointmentLogResponseDTO getBookedAppointmentDetails(AppointmentLogSearchDTO searchRequestDTO,
-                                                                  AppointmentLogResponseDTO responseDTO) {
+    private void getBookedAppointmentDetails(AppointmentLogSearchDTO searchRequestDTO,
+                                             AppointmentRevenueStatisticsResponseDTO responseDTO) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_BOOKED_APPOINTMENT_AMOUNT(searchRequestDTO));
 
         List<Object[]> results = query.getResultList();
 
 
-        return parseBookedAppointmentDetails(results.get(0), responseDTO);
-
+        parseBookedAppointmentDetails(results.get(0), responseDTO);
     }
 
-    private AppointmentLogResponseDTO getCancelledAppointmentDetails(AppointmentLogSearchDTO searchRequestDTO,
-                                                                     AppointmentLogResponseDTO responseDTO) {
+    private void getCancelledAppointmentDetails(AppointmentLogSearchDTO searchRequestDTO,
+                                                AppointmentRevenueStatisticsResponseDTO responseDTO) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_CANCELLED_APPOINTMENT_AMOUNT(searchRequestDTO));
 
         List<Object[]> results = query.getResultList();
 
-
-        return parseCancelledAppointmentDetails(results.get(0), responseDTO);
-
+        parseCancelledAppointmentDetails(results.get(0), responseDTO);
     }
 
-    private AppointmentLogResponseDTO getRefundedAppointmentDetails(AppointmentLogSearchDTO searchRequestDTO,
-                                                                    AppointmentLogResponseDTO responseDTO) {
+    private void getRefundedAppointmentDetails(AppointmentLogSearchDTO searchRequestDTO,
+                                               AppointmentRevenueStatisticsResponseDTO responseDTO) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_REFUNDED_APPOINTMENT_AMOUNT(searchRequestDTO));
 
         List<Object[]> results = query.getResultList();
 
-
-        return parseRefundedAppointmentDetails(results.get(0), responseDTO);
-
+        parseRefundedAppointmentDetails(results.get(0), responseDTO);
     }
 
-    private AppointmentLogResponseDTO getRevenueFromRefundedAppointmentDetails(AppointmentLogSearchDTO searchRequestDTO,
+    private void getRevenueFromRefundedAppointmentDetails(AppointmentLogSearchDTO searchRequestDTO,
 
-                                                                               AppointmentLogResponseDTO responseDTO) {
+                                                          AppointmentRevenueStatisticsResponseDTO responseDTO) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_REVENUE_REFUNDED_APPOINTMENT_AMOUNT(searchRequestDTO));
 
         List<Object[]> results = query.getResultList();
 
-
-        return parseRevenueFromRefundedAppointmentDetails(results.get(0), responseDTO);
-
+        parseRevenueFromRefundedAppointmentDetails(results.get(0), responseDTO);
     }
 
 

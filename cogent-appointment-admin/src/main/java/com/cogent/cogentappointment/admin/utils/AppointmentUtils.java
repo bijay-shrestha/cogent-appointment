@@ -170,8 +170,6 @@ public class AppointmentUtils {
 
         List<AppointmentLogDTO> appointmentLogSearchDTOS = new ArrayList<>();
 
-        AtomicReference<Double> totalAmount = new AtomicReference<>(0D);
-
         results.forEach(result -> {
             final int HOSPITAL_NAME_INDEX = 0;
             final int APPOINTMENT_DATE_INDEX = 1;
@@ -236,7 +234,6 @@ public class AppointmentUtils {
         });
 
         appointmentLogResponseDTO.setAppointmentLogs(appointmentLogSearchDTOS);
-        appointmentLogResponseDTO.setTotalAmount(totalAmount.get());
         appointmentLogResponseDTO.setTotalItems(appointmentLogSearchDTOS.size());
 
         return appointmentLogResponseDTO;
@@ -288,66 +285,4 @@ public class AppointmentUtils {
         return groupByPriceMap;
 
     }
-
-    public static AppointmentLogResponseDTO parseCheckedInAppointmentDetails(Object[] result,
-                                                                             AppointmentLogResponseDTO responseDTO) {
-
-        final int COUNT_INDEX = 0;
-        final int AMOUNT_INDEX = 1;
-
-        responseDTO.setCheckedInAppointmentsCount(Long.parseLong(result[COUNT_INDEX].toString()));
-        responseDTO.setCheckedInAmount(Double.parseDouble(result[AMOUNT_INDEX].toString()));
-
-        return responseDTO;
-    }
-
-    public static AppointmentLogResponseDTO parseBookedAppointmentDetails(Object[] result,
-                                                                          AppointmentLogResponseDTO responseDTO) {
-
-        final int COUNT_INDEX = 0;
-        final int AMOUNT_INDEX = 1;
-
-        responseDTO.setBookedAppointmentsCount(Long.parseLong(result[COUNT_INDEX].toString()));
-        responseDTO.setBookedAmount(Double.parseDouble(result[AMOUNT_INDEX].toString()));
-
-        return responseDTO;
-    }
-
-    public static AppointmentLogResponseDTO parseCancelledAppointmentDetails(Object[] result,
-                                                                             AppointmentLogResponseDTO responseDTO) {
-
-        final int COUNT_INDEX = 0;
-        final int AMOUNT_INDEX = 1;
-
-        responseDTO.setCancelAppointmentsCount(Long.parseLong(result[COUNT_INDEX].toString()));
-        responseDTO.setCancelAmount(Double.parseDouble(result[AMOUNT_INDEX].toString()));
-
-        return responseDTO;
-    }
-
-    public static AppointmentLogResponseDTO parseRefundedAppointmentDetails(Object[] result,
-                                                                            AppointmentLogResponseDTO responseDTO) {
-
-        final int COUNT_INDEX = 0;
-        final int AMOUNT_INDEX = 1;
-
-        responseDTO.setRefundedAppointmentsCount(Long.parseLong(result[COUNT_INDEX].toString()));
-        responseDTO.setRefundedAmount(Double.parseDouble(result[AMOUNT_INDEX].toString()));
-
-        return responseDTO;
-    }
-
-    public static AppointmentLogResponseDTO parseRevenueFromRefundedAppointmentDetails(Object[] result,
-                                                                                       AppointmentLogResponseDTO responseDTO) {
-
-        final int COUNT_INDEX = 0;
-        final int AMOUNT_INDEX = 1;
-
-        responseDTO.setRevenueFromRefundedAppointmentsCount(Long.parseLong(result[COUNT_INDEX].toString()));
-        responseDTO.setRevenueFromRefundedAmount(Double.parseDouble(result[AMOUNT_INDEX].toString()));
-
-        return responseDTO;
-    }
-
-
 }

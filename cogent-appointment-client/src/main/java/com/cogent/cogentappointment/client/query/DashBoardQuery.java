@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.client.query;
 
-
 import com.cogent.cogentappointment.client.dto.request.DoctorRevenueRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 
@@ -12,6 +11,7 @@ import java.util.function.Function;
  */
 public class DashBoardQuery {
 
+    /*REVENUE STATISTICS*/
     public static String QUERY_TO_GET_REVENUE_BY_DATE =
             "SELECT" +
                     " COALESCE(SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 ) as totalAmount" +
@@ -21,6 +21,54 @@ public class DashBoardQuery {
                     " WHERE " +
                     " (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
                     " AND a.hospitalId.id=:hospitalId";
+
+    private static String SELECT_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS =
+            " SELECT " +
+                    " COUNT(a.id)," +                                   //[0]
+                    " COALESCE(SUM(atd.appointmentAmount ),0)" +        //[1]
+                    " FROM AppointmentTransactionDetail atd" +
+                    " LEFT JOIN Appointment a ON a.id=atd.appointment.id";
+
+    private static String GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS =
+            " WHERE " +
+                    " (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
+                    " AND a.hospitalId.id=:hospitalId";
+
+    public static String QUERY_TO_FETCH_BOOKED_APPOINTMENT_REVENUE =
+            SELECT_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS +
+                    GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS +
+                    " AND a.status='PA'";
+
+    public static String QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_REVENUE =
+            SELECT_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS +
+                    GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS +
+                    " AND a.status='A'";
+
+    public static String QUERY_TO_FETCH_CANCELLED_APPOINTMENT_REVENUE =
+            SELECT_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS +
+                    GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS +
+                    " AND a.status='C'";
+
+    public static String QUERY_TO_FETCH_REFUNDED_APPOINTMENT_AMOUNT =
+            "SELECT" +
+                    " COUNT(a.id)," +                                       //[0]
+                    " COALESCE (SUM(ard.refundAmount ),0)" +                //[1]
+                    " FROM AppointmentTransactionDetail atd" +
+                    " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
+                    " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
+                    GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS +
+                    " AND a.status='RE' AND ard.status = 'A'";
+
+    public static String QUERY_TO_FETCH_REVENUE_FROM_REFUNDED_APPOINTMENT =
+            "SELECT" +
+                    " COUNT(a.id)," +
+                    " (COALESCE(SUM(atd.appointmentAmount ),0) - COALESCE(SUM(ard.refundAmount ),0))" +
+                    " FROM AppointmentTransactionDetail atd" +
+                    " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
+                    " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
+                    GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS +
+                    " AND a.status='RE' AND ard.status = 'A'";
+
 
     public static String QUERY_TO_OVER_ALL_APPOINTMENTS =
             "SELECT" +
@@ -83,7 +131,7 @@ public class DashBoardQuery {
                     " COALESCE(SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 ) AS revenue" +
                     " FROM AppointmentTransactionDetail atd" +
                     " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
-                    " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'"+
+                    " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
                     " WHERE " +
                     " atd.transactionDate BETWEEN :fromDate AND :toDate" +
                     " AND a.hospitalId.id=:hospitalId" +
@@ -97,7 +145,7 @@ public class DashBoardQuery {
                     " COALESCE(SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 ) AS revenue" +
                     " FROM AppointmentTransactionDetail atd" +
                     " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
-                    " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'"+
+                    " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
                     " WHERE" +
                     " atd.transactionDate BETWEEN :fromDate AND :toDate" +
                     " AND a.hospitalId.id=:hospitalId" +
@@ -110,7 +158,7 @@ public class DashBoardQuery {
                     " COALESCE(SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 ) AS revenue" +
                     " FROM AppointmentTransactionDetail atd" +
                     " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
-                    " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'"+
+                    " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
                     " WHERE" +
                     " atd.transactionDate BETWEEN :fromDate AND :toDate" +
                     " AND a.hospitalId.id=:hospitalId" +
@@ -127,7 +175,7 @@ public class DashBoardQuery {
                     " a.id = atd.appointment.id" +
                     " LEFT JOIN Hospital h ON" +
                     " h.id = a.hospitalId.id" +
-                    " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'"+
+                    " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
                     " WHERE" +
                     " atd.transactionDate BETWEEN :fromDate AND :toDate" +
                     " AND a.hospitalId.id =:hospitalId" +

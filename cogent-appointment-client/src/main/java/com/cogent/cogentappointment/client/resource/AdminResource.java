@@ -111,6 +111,13 @@ public class AdminResource {
         return ok().build();
     }
 
+    @GetMapping(VERIFY+EMAIL)
+    @ApiOperation(VERIFY_ADMIN)
+    public ResponseEntity<?> verifyUpdatedEmail(@RequestParam(name = "token") String token) {
+        adminService.verifyConfirmationTokenForEmail(token);
+        return ok().build();
+    }
+
     @PostMapping(BASE_PASSWORD)
     @ApiOperation(SAVE_PASSWORD_OPERATION)
     public ResponseEntity<?> savePassword(@Valid @RequestBody AdminPasswordRequestDTO requestDTO) {

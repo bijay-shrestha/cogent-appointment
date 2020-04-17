@@ -16,6 +16,7 @@ public class WebResourceKeyConstants {
         String CHANGE_PASSWORD = "/changePassword";
         String RESET_PASSWORD = "/resetPassword";
         String VERIFY = "/verify";
+        String EMAIL = "/email";
     }
 
     public interface AppointmentConstants {

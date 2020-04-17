@@ -52,6 +52,7 @@ public class AdminUtils {
     }
 
     public static void convertAdminUpdateRequestDTOToAdmin(Admin admin,
+                                                           Character status,
                                                            AdminUpdateRequestDTO adminRequestDTO,
                                                            Gender gender,
                                                            Profile profile) {
@@ -60,7 +61,7 @@ public class AdminUtils {
         admin.setFullName(toNormalCase(adminRequestDTO.getFullName()));
         admin.setUsername(getUsername(adminRequestDTO.getEmail()));
         admin.setMobileNumber(adminRequestDTO.getMobileNumber());
-        admin.setStatus(adminRequestDTO.getStatus());
+        admin.setStatus(status);
         admin.setHasMacBinding(adminRequestDTO.getHasMacBinding());
         admin.setRemarks(adminRequestDTO.getRemarks());
 
@@ -110,7 +111,23 @@ public class AdminUtils {
                 .receiverEmailAddress(adminRequestDTO.getEmail())
                 .subject(SUBJECT_FOR_ADMIN_VERIFICATION)
                 .templateName(ADMIN_VERIFICATION)
-                .paramValue(getUsername(adminRequestDTO.getEmail()) + COMMA_SEPARATED + confirmationUrl)
+                .paramValue(adminRequestDTO.getFullName() + COMMA_SEPARATED + confirmationUrl)
+                .build();
+    }
+
+    public static EmailRequestDTO convertAdminUpdateRequestToEmailRequestDTO(AdminUpdateRequestDTO adminRequestDTO,
+                                                                       String confirmationToken) {
+
+//        String origin = httpServletRequest.getHeader("origin");
+//        String confirmationUrl = origin + "/#" + "/savePassword" + "?token =" + confirmationToken;
+
+        String confirmationUrl = adminRequestDTO.getBaseUrl() + "/#" + "/savePassword" + "?token =" + confirmationToken;
+
+        return EmailRequestDTO.builder()
+                .receiverEmailAddress(adminRequestDTO.getEmail())
+                .subject(SUBJECT_FOR_ADMIN_VERIFICATION)
+                .templateName(ADMIN_VERIFICATION)
+                .paramValue(adminRequestDTO.getFullName() + COMMA_SEPARATED + confirmationUrl)
                 .build();
     }
 
@@ -210,7 +227,7 @@ public class AdminUtils {
                 ? StringUtils.join(macAddress, COMMA_SEPARATED) : "N/A";
     }
 
-    public static EmailRequestDTO parseToEmailRequestDTO(String username,
+    public static EmailRequestDTO parseToEmailRequestDTO(String fullname,
                                                          AdminUpdateRequestDTO updateRequestDTO,
                                                          String paramValues,
                                                          String updatedMacAddress) {
@@ -218,7 +235,7 @@ public class AdminUtils {
                 .receiverEmailAddress(updateRequestDTO.getEmail())
                 .subject(SUBJECT_FOR_UPDATE_ADMIN)
                 .templateName(UPDATE_ADMIN)
-                .paramValue(username + HYPHEN + paramValues + HYPHEN +
+                .paramValue(fullname + HYPHEN + paramValues + HYPHEN +
                         updateRequestDTO.getHasMacBinding() + HYPHEN + updatedMacAddress)
                 .build();
     }

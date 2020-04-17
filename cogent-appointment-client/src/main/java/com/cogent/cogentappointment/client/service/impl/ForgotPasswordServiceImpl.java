@@ -59,14 +59,14 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     }
 
     @Override
-    public void forgotPassword(String username, String hospitalCode) {
+    public void forgotPassword(String email, String hospitalCode) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FORGOT_PASSWORD_PROCESS_STARTED);
 
-        Admin admin = adminRepository.fetchAdminByUsernameOrEmail(username, hospitalCode);
+        Admin admin = adminRepository.fetchAdminByEmail(email, hospitalCode);
 
-        validateAdmin(admin, username);
+        validateAdmin(admin, email);
 
         ForgotPasswordVerification forgotPasswordVerification =
                 verificationRepository.findByAdminId(admin.getId());
@@ -80,7 +80,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
         EmailRequestDTO emailRequestDTO = parseToEmailRequestDTO(
                 admin.getEmail(),
-                admin.getUsername(),
+                admin.getFullName(),
                 forgotPasswordVerification.getResetCode());
 
         emailService.sendEmail(emailRequestDTO);
@@ -107,7 +107,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
         log.info(UPDATING_PASSWORD_PROCESS_STARTED);
 
-        Admin admin = adminRepository.fetchAdminByUsernameOrEmail(requestDTO.getUsername(), requestDTO.getHospitalCode());
+        Admin admin = adminRepository.fetchAdminByEmail(requestDTO.getEmail(), requestDTO.getHospitalCode());
 
         ForgotPasswordVerification forgotPasswordVerification = verificationRepository.findByAdminId(admin.getId());
 
@@ -143,10 +143,10 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
         verificationRepository.save(forgotPasswordVerification);
     }
 
-    private void validateAdmin(Admin admin, String username) {
+    private void validateAdmin(Admin admin, String email) {
         if (!admin.getStatus().equals(ACTIVE)) {
-            log.error(ADMIN_NOT_ACTIVE_ERROR, username);
-            throw new NoContentFoundException(String.format(ADMIN_NOT_ACTIVE, username), "username/email", username);
+            log.error(ADMIN_NOT_ACTIVE_ERROR, email);
+            throw new NoContentFoundException(String.format(ADMIN_NOT_ACTIVE, email), "email", email);
         }
     }
 

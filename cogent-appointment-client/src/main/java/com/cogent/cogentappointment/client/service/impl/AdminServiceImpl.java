@@ -40,9 +40,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AdminServiceMessages.*;
-import static com.cogent.cogentappointment.client.constants.StatusConstants.INACTIVE;
-import static com.cogent.cogentappointment.client.constants.StatusConstants.NO;
-import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.*;
 import static com.cogent.cogentappointment.client.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.AdminLog.*;
@@ -304,7 +302,7 @@ public class AdminServiceImpl implements AdminService {
             EmailRequestDTO emailRequestDTOForNewEmail = convertAdminUpdateRequestToEmailRequestDTO(updateRequestDTO,
                     adminConfirmationToken.getConfirmationToken());
 
-            update(updateRequestDTO,NO, admin, hospitalId);
+            update(updateRequestDTO,INACTIVE, admin, hospitalId);
 
             if (updateRequestDTO.getIsAvatarUpdate().equals(YES))
                 updateAvatar(admin, files);
@@ -348,7 +346,7 @@ public class AdminServiceImpl implements AdminService {
 
         Admin admin=adminRepository.findAdminById(adminConfirmationToken.getAdmin().getId());
 
-        admin.setStatus(YES);
+        admin.setStatus(ACTIVE);
 
         save(admin);
 

@@ -85,14 +85,13 @@ public class AdminQuery {
             " SELECT" +
                     " a.id as id," +                                            //[0]
                     " a.fullName as fullName," +                                //[1]
-                    " a.username as username," +                                //[2]
-                    " a.email as email," +                                      //[3]
-                    " a.mobileNumber as mobileNumber," +                        //[4]
-                    " a.status as status," +                                    //[5]
-                    " a.hasMacBinding as hasMacBinding," +                      //[6]
-                    " a.gender as gender," +                                    //[7]
-                    " p.name as profileName," +                                 //[8]
-                    " d.name as departmentName," +                              //[9]
+                    " a.email as email," +                                      //[2]
+                    " a.mobileNumber as mobileNumber," +                        //[3]
+                    " a.status as status," +                                    //[4]
+                    " a.hasMacBinding as hasMacBinding," +                      //[5]
+                    " a.gender as gender," +                                    //[6]
+                    " p.name as profileName," +                                 //[7]
+                    " d.name as departmentName," +                              //[8]
                     " CASE WHEN" +
                     " (av.status IS NULL OR av.status = 'N')" +
                     " THEN null" +
@@ -158,7 +157,7 @@ public class AdminQuery {
                     " LEFT JOIN Department d ON d.id = p.department.id" +
                     " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE" +
-                    " (a.username=:username OR a.email =:email)" +
+                    " (a.email =:email)" +
                     " AND a.status != 'D'" +
                     " AND h.code=:hospitalCode";
 

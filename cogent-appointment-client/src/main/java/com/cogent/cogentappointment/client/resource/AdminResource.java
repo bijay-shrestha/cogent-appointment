@@ -112,7 +112,7 @@ public class AdminResource {
     }
 
     @GetMapping(VERIFY+EMAIL)
-    @ApiOperation(VERIFY_ADMIN)
+    @ApiOperation(VERIFY_EMAIL_ADMIN)
     public ResponseEntity<?> verifyUpdatedEmail(@RequestParam(name = "token") String token) {
         adminService.verifyConfirmationTokenForEmail(token);
         return ok().build();

@@ -30,7 +30,7 @@ public class AdminLog {
 
     public final static String INVALID_CONFIRMATION_TOKEN_ERROR = ":::: INVALID CONFIRMATION TOKEN: {} ::::";
 
-    public final static String ADMIN_NOT_ACTIVE_ERROR=":::: ADMIN WITH USERNAME/EMAIL : {} NOT ACTIVE ::::";
+    public final static String ADMIN_NOT_ACTIVE_ERROR=":::: ADMIN WITH EMAIL : {} NOT ACTIVE ::::";
 
     public final static String ADMIN_NOT_FOUND_ERROR=":::: ADMIN WITH USERNAME/EMAIL : {} NOT FOUND ::::";
 

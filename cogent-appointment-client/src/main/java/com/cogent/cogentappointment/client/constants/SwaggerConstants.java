@@ -25,6 +25,7 @@ public class SwaggerConstants {
         String FETCH_LOGGED_IN_ADMIN_INFO = "Fetch logged in admin information." +
                 " Used to show in top-bar and to validate if the admin updates its own profile";
         String FETCH_ADMIN_META_INFO = "Fetch active admin meta info for dropdown";
+        String VERIFY_EMAIL_ADMIN = "Verify if the confirmation token sent in email (after successful email update by admin) is valid.";
     }
 
     public interface AppointmentConstant {

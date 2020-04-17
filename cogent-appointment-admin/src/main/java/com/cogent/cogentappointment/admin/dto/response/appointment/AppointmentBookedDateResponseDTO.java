@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.dto.response.appointment;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,5 +14,6 @@ import java.util.Date;
 @Setter
 public class AppointmentBookedDateResponseDTO implements Serializable {
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd YYYY")
     private Date appointmentDate;
 }

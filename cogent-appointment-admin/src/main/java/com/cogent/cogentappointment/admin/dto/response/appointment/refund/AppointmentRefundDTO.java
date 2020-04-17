@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.dto.response.appointment.refund;
 
 import com.cogent.cogentappointment.persistence.enums.Gender;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,6 +17,7 @@ public class AppointmentRefundDTO implements Serializable {
 
     private Long appointmentId;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd YYYY")
     private Date appointmentDate;
 
     private String appointmentTime;
@@ -38,6 +40,7 @@ public class AppointmentRefundDTO implements Serializable {
 
     private String transactionNumber;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd YYYY")
     private Date cancelledDate;
 
     private String mobileNumber;

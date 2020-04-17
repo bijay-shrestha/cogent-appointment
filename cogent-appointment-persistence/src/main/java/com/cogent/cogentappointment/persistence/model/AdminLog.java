@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.persistence.model;
 
+import com.cogent.cogentappointment.persistence.audit.Auditable;
 import com.cogent.cogentappointment.persistence.listener.AdminLogEntityListener;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -19,7 +21,7 @@ import java.util.Date;
 @Getter
 @Setter
 @EntityListeners(AdminLogEntityListener.class)
-public class AdminLog {
+public class AdminLog extends Auditable<String> implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

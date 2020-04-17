@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AdminLogResponseDTO implements Serializable {
+public class UserMenuLogResponseDTO implements Serializable {
 
     private List<AdminLogSearchResponseDTO> userLogList;
 

@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.logging.service.impl;
 
 import com.cogent.cogentappointment.logging.dto.request.admin.AdminLogSearchRequestDTO;
-import com.cogent.cogentappointment.logging.dto.response.AdminLogResponseDTO;
+import com.cogent.cogentappointment.logging.dto.response.UserMenuLogResponseDTO;
 import com.cogent.cogentappointment.logging.dto.response.UserMenuStaticsResponseDTO;
 import com.cogent.cogentappointment.logging.repository.AdminLogRepository;
 import com.cogent.cogentappointment.logging.service.AdminLogService;
@@ -30,13 +30,13 @@ public class AdminLogServiceImpl implements AdminLogService {
     }
 
     @Override
-    public AdminLogResponseDTO search(AdminLogSearchRequestDTO searchRequestDTO, Pageable pageable) {
+    public UserMenuLogResponseDTO search(AdminLogSearchRequestDTO searchRequestDTO, Pageable pageable) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(USER_MENU_LOG_SEARCH_PROCESS_STARTED, USER_MENU_LOG);
 
-        AdminLogResponseDTO responseDTOS = adminLogRepository.search(searchRequestDTO, pageable);
+        UserMenuLogResponseDTO responseDTOS = adminLogRepository.search(searchRequestDTO, pageable);
 
         log.info(USER_MENU_LOG_SEARCH_PROCESS_COMPLETED, USER_MENU_LOG, getDifferenceBetweenTwoTime(startTime));
 
@@ -48,11 +48,11 @@ public class AdminLogServiceImpl implements AdminLogService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(USER_MENU_LOG_SEARCH_PROCESS_STARTED, USER_MENU_LOG);
+        log.info(USER_MENU_LOG_STATICS_SEARCH_PROCESS_STARTED, USER_MENU_LOG);
 
         UserMenuStaticsResponseDTO responseDTOS = adminLogRepository.fetchUserMenuLogsStatics(searchRequestDTO);
 
-        log.info(USER_MENU_LOG_SEARCH_PROCESS_COMPLETED, USER_MENU_LOG, getDifferenceBetweenTwoTime(startTime));
+        log.info(USER_MENU_LOG_STATICS_PROCESS_COMPLETED, USER_MENU_LOG, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
     }

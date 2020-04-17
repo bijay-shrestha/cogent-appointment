@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.logging.repository.custom.impl;
 
 import com.cogent.cogentappointment.logging.dto.request.admin.AdminLogSearchRequestDTO;
-import com.cogent.cogentappointment.logging.dto.response.AdminLogResponseDTO;
+import com.cogent.cogentappointment.logging.dto.response.UserMenuLogResponseDTO;
 import com.cogent.cogentappointment.logging.dto.response.AdminLogSearchResponseDTO;
 import com.cogent.cogentappointment.logging.dto.response.AdminLogStaticsResponseDTO;
 import com.cogent.cogentappointment.logging.dto.response.UserMenuStaticsResponseDTO;
@@ -39,7 +39,7 @@ public class AdminLogRepositoryCustomImpl implements AdminLogRepositoryCustom {
     private EntityManager entityManager;
 
     @Override
-    public AdminLogResponseDTO search(AdminLogSearchRequestDTO searchRequestDTO, Pageable pageable) {
+    public UserMenuLogResponseDTO search(AdminLogSearchRequestDTO searchRequestDTO, Pageable pageable) {
         Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_ADMIN_LOGS(searchRequestDTO))
                 .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
                 .setParameter(TO_DATE, searchRequestDTO.getToDate());
@@ -56,11 +56,11 @@ public class AdminLogRepositoryCustomImpl implements AdminLogRepositoryCustom {
             throw new NoContentFoundException(AdminLog.class);
         } else {
 
-            AdminLogResponseDTO adminLogResponseDTO = new AdminLogResponseDTO();
-            adminLogResponseDTO.setUserLogList(result);
-            adminLogResponseDTO.setTotalItems(totalItems);
+            UserMenuLogResponseDTO userMenuLogResponseDTO = new UserMenuLogResponseDTO();
+            userMenuLogResponseDTO.setUserLogList(result);
+            userMenuLogResponseDTO.setTotalItems(totalItems);
 
-            return adminLogResponseDTO;
+            return userMenuLogResponseDTO;
         }
 
     }

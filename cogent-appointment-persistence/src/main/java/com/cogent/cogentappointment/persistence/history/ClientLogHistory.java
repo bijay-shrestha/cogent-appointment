@@ -50,7 +50,7 @@ public class ClientLogHistory implements Serializable {
     @Enumerated(STRING)
     private Action action;
 
-    public ClientLogHistory(ClientLog target, Action action) {
+    public ClientLogHistory(ClientLog clientLog, Action action) {
         this.clientLog = clientLog;
         this.clientLogContent = clientLog.toString();
         this.action = action;

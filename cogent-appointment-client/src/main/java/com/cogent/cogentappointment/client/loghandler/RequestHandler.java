@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.client.loghandler;
 import com.cogent.cogentappointment.admin.utils.commons.SecurityContextUtils;
-import com.cogent.cogentappointment.client.dto.commons.AdminLogRequestDTO;
+import com.cogent.cogentappointment.client.dto.commons.ClientLogRequestDTO;
 import com.cogent.cogentappointment.client.utils.commons.ObjectMapperUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,12 +24,12 @@ public class RequestHandler {
         return request.getRemoteAddr();
     }
 
-    public static AdminLogRequestDTO convertToAdminLogRequestDTO(String userLog) throws IOException {
+    public static ClientLogRequestDTO convertToClientLogRequestDTO(String userLog) throws IOException {
 
-        AdminLogRequestDTO adminLogRequestDTO = ObjectMapperUtils.map(userLog, AdminLogRequestDTO.class);
-        adminLogRequestDTO.setAdminId(SecurityContextUtils.getLoggedInCompanyId());
-        adminLogRequestDTO.setFeature(convertToNormalCase(splitByCharacterTypeCamelCase(adminLogRequestDTO.getFeature())));
+        ClientLogRequestDTO clientLogRequestDTO = ObjectMapperUtils.map(userLog, ClientLogRequestDTO.class);
+        clientLogRequestDTO.setAdminId(SecurityContextUtils.getLoggedInCompanyId());
+        clientLogRequestDTO.setFeature(convertToNormalCase(splitByCharacterTypeCamelCase(clientLogRequestDTO.getFeature())));
 
-        return adminLogRequestDTO;
+        return clientLogRequestDTO;
     }
 }

@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.client.loghandler;
 
-import com.cogent.cogentappointment.client.dto.commons.AdminLogRequestDTO;
-import com.cogent.cogentappointment.client.service.AdminLogService;
+import com.cogent.cogentappointment.client.dto.commons.ClientLogRequestDTO;
+import com.cogent.cogentappointment.client.service.ClientLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -16,7 +16,7 @@ import static com.cogent.cogentappointment.client.constants.StatusConstants.INAC
 public class UserLogInterceptor implements HandlerInterceptor {
 
     @Autowired
-    private AdminLogService adminLogService;
+    private ClientLogService clientLogService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
@@ -38,36 +38,36 @@ public class UserLogInterceptor implements HandlerInterceptor {
 
         if (userLog != null) {
 
-            AdminLogRequestDTO adminLogRequestDTO = RequestHandler.convertToAdminLogRequestDTO(userLog);
+            ClientLogRequestDTO clientLogRequestDTO = RequestHandler.convertToClientLogRequestDTO(userLog);
 
             String ipAddress = RequestHandler.getRemoteAddr(request);
 
             if (exception == null) {
 
-                adminLogRequestDTO.setLogDescription(adminLogRequestDTO.getFeature() + " " + adminLogRequestDTO.getActionType() + "ed...");
-                saveSuccessLogs(adminLogRequestDTO, ipAddress);
+                clientLogRequestDTO.setLogDescription(clientLogRequestDTO.getFeature() + " " + clientLogRequestDTO.getActionType() + "ed...");
+                saveSuccessLogs(clientLogRequestDTO, ipAddress);
             }
 
             if (exception != null) {
 
                 int status = response.getStatus();
-                adminLogRequestDTO.setLogDescription("Process cannot be completed due to exception...");
-                saveFailedLogs(adminLogRequestDTO, ipAddress);
+                clientLogRequestDTO.setLogDescription("Process cannot be completed due to exception...");
+                saveFailedLogs(clientLogRequestDTO, ipAddress);
             }
 
         }
 
     }
 
-    private void saveSuccessLogs(AdminLogRequestDTO adminLogRequestDTO, String ipAddress) {
+    private void saveSuccessLogs(ClientLogRequestDTO clientLogRequestDTO, String ipAddress) {
 
-        adminLogService.save(adminLogRequestDTO, ACTIVE, ipAddress);
+        clientLogService.save(clientLogRequestDTO, ACTIVE, ipAddress);
 
     }
 
-    private void saveFailedLogs(AdminLogRequestDTO adminLogRequestDTO, String ipAddress) {
+    private void saveFailedLogs(ClientLogRequestDTO clientLogRequestDTO, String ipAddress) {
 
-        adminLogService.save(adminLogRequestDTO, INACTIVE, ipAddress);
+        clientLogService.save(clientLogRequestDTO, INACTIVE, ipAddress);
     }
 
 }

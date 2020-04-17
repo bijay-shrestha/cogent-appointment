@@ -14,7 +14,7 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AdminLogRequestDTO implements Serializable {
+public class ClientLogRequestDTO implements Serializable {
 
     @NotNull
     private Long adminId;

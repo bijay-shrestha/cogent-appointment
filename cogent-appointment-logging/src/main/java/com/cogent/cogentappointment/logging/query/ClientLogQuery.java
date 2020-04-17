@@ -11,15 +11,15 @@ public class ClientLogQuery {
     public static String QUERY_TO_FETCH_USER_LOGS_STATICS(ClientLogSearchRequestDTO searchRequestDTO) {
 
         return " SELECT " +
-                " al.feature as feature," +
-                " count(al.id) as count" +
-                " from AdminLog al" +
-                " LEFT JOIN Admin a ON al.adminId.id =a.id" +
+                " cl.feature as feature," +
+                " count(cl.id) as count" +
+                " from ClientLog cl" +
+                " LEFT JOIN Admin a ON cl.adminId.id =a.id" +
                 " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                 " LEFT JOIN Hospital h ON h.id=p.company" +
                 WHERE_CLAUSE_TO_SEARCH_CLIENT_LOGS(searchRequestDTO) +
-                " GROUP BY al.feature " +
-                " ORDER BY count(al.id) DESC";
+                " GROUP BY cl.feature " +
+                " ORDER BY count(cl.id) DESC";
 
 
     }
@@ -27,32 +27,36 @@ public class ClientLogQuery {
     public static String QUERY_TO_SEARCH_CLIENT_LOGS(ClientLogSearchRequestDTO searchRequestDTO) {
 
         return " SELECT " +
-                " al.logDate as logDate," +
+                " DATE_FORMAT(cl.logDateTime,'%D %M %Y %h:%i %p') as logDateTime," +
                 " a.username as userName," +
-                " al.ipAddress as ipAddress," +
-                " al.feature as feature," +
-                " al.actionType as actionType," +
-                " al.logDescription as logDescription" +
-                " FROM AdminLog al" +
-                " LEFT JOIN Admin a ON al.adminId.id =a.id" +
+                " cl.ipAddress as ipAddress," +
+                " cl.feature as feature," +
+                " cl.actionType as actionType," +
+                " cl.logDescription as logDescription" +
+                " FROM ClientLog cl" +
+                " LEFT JOIN Admin a ON cl.adminId.id =a.id" +
                 " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                 " LEFT JOIN Hospital h ON h.id=p.company" +
-                WHERE_CLAUSE_TO_SEARCH_CLIENT_LOGS(searchRequestDTO);
+                WHERE_CLAUSE_TO_SEARCH_CLIENT_LOGS(searchRequestDTO)
+                + " ORDER BY cl.logDateTime DESC";
     }
 
     public static String WHERE_CLAUSE_TO_SEARCH_CLIENT_LOGS(ClientLogSearchRequestDTO searchRequestDTO) {
 
-        String whereClause = " WHERE h.id=:hospitalId AND al.status != 'D'" +
-                " AND al.logDate BETWEEN :fromDate AND :toDate";
+        String whereClause = " WHERE h.id=:hospitalId AND cl.status != 'D'" +
+                " AND cl.logDate BETWEEN :fromDate AND :toDate";
 
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getUserName()))
-            whereClause += " AND (a.username =:username OR a.email =:username OR a.mobileNumber = :username)";
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getUserName()) || !searchRequestDTO.getUserName().equals(""))
+
+            whereClause += " AND (a.username ='" + searchRequestDTO.getUserName() + "' OR a.email ='" + searchRequestDTO.getUserName()
+                    + "' OR a.mobileNumber ='" + searchRequestDTO.getUserName() + " OR a.fullName LIKE %" + searchRequestDTO.getUserName() + "%" + "')";
+
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getParentId()))
-            whereClause += " AND al.parentId=" + searchRequestDTO.getParentId();
+            whereClause += " AND cl.parentId=" + searchRequestDTO.getParentId();
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getRoleId()))
-            whereClause += " AND al.roleId=" + searchRequestDTO.getRoleId();
+            whereClause += " AND cl.roleId=" + searchRequestDTO.getRoleId();
 
         return whereClause;
 

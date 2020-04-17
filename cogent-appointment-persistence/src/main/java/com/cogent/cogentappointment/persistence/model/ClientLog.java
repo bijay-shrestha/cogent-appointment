@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.persistence.model;
 
+import com.cogent.cogentappointment.persistence.audit.Auditable;
 import com.cogent.cogentappointment.persistence.listener.ClientLogEntityListener;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -19,15 +21,11 @@ import java.util.Date;
 @Getter
 @Setter
 @EntityListeners(ClientLogEntityListener.class)
-public class ClientLog {
+public class ClientLog extends Auditable<String> implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hospital_id")
-    private Hospital hospitalId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "admin_id")
@@ -40,6 +38,10 @@ public class ClientLog {
     private Long roleId;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "log_date_time")
+    private Date logDateTime;
+
+    @Temporal(TemporalType.DATE)
     @Column(name = "log_date")
     private Date logDate;
 

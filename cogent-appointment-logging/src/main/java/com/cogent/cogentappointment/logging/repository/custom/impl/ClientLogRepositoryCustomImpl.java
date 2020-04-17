@@ -1,12 +1,14 @@
 package com.cogent.cogentappointment.logging.repository.custom.impl;
 
 import com.cogent.cogentappointment.logging.dto.request.client.ClientLogSearchRequestDTO;
-import com.cogent.cogentappointment.logging.dto.response.AdminLogResponseDTO;
+import com.cogent.cogentappointment.logging.dto.response.UserMenuLogResponseDTO;
 import com.cogent.cogentappointment.logging.dto.response.AdminLogSearchResponseDTO;
 import com.cogent.cogentappointment.logging.dto.response.AdminLogStaticsResponseDTO;
+import com.cogent.cogentappointment.logging.dto.response.UserMenuStaticsResponseDTO;
 import com.cogent.cogentappointment.logging.exception.NoContentFoundException;
 import com.cogent.cogentappointment.logging.repository.custom.ClientLogRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.AdminLog;
+import com.cogent.cogentappointment.persistence.model.ClientLog;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
+import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.logging.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.logging.query.ClientLogQuery.QUERY_TO_FETCH_USER_LOGS_STATICS;
@@ -38,13 +41,12 @@ public class ClientLogRepositoryCustomImpl implements ClientLogRepositoryCustom 
     private EntityManager entityManager;
 
     @Override
-    public AdminLogResponseDTO search(ClientLogSearchRequestDTO searchRequestDTO, Pageable pageable) {
+    public UserMenuLogResponseDTO search(ClientLogSearchRequestDTO searchRequestDTO, Pageable pageable) {
 
         Long companyId = getLoggedInCompanyId();
         Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_CLIENT_LOGS(searchRequestDTO))
                 .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
                 .setParameter(TO_DATE, searchRequestDTO.getToDate())
-                .setParameter(USERNAME, searchRequestDTO.getUserName())
                 .setParameter(HOSPITAL_ID, companyId);
 
 
@@ -59,16 +61,16 @@ public class ClientLogRepositoryCustomImpl implements ClientLogRepositoryCustom 
             throw new NoContentFoundException(AdminLog.class);
         } else {
 
-            AdminLogResponseDTO adminLogResponseDTO = new AdminLogResponseDTO();
-            adminLogResponseDTO.setUserLogList(result);
-            adminLogResponseDTO.setTotalItems(totalItems);
+            UserMenuLogResponseDTO userMenuLogResponseDTO = new UserMenuLogResponseDTO();
+            userMenuLogResponseDTO.setUserLogList(result);
+            userMenuLogResponseDTO.setTotalItems(totalItems);
 
-            return adminLogResponseDTO;
+            return userMenuLogResponseDTO;
         }
     }
 
     @Override
-    public List<AdminLogStaticsResponseDTO> fetchUserMenuLogsStatics(ClientLogSearchRequestDTO searchRequestDTO) {
+    public UserMenuStaticsResponseDTO fetchUserMenuLogsStatics(ClientLogSearchRequestDTO searchRequestDTO) {
 
         Long companyId = getLoggedInCompanyId();
 
@@ -78,9 +80,20 @@ public class ClientLogRepositoryCustomImpl implements ClientLogRepositoryCustom 
                 .setParameter(USERNAME, searchRequestDTO.getUserName())
                 .setParameter(HOSPITAL_ID, companyId);
 
+        int totalItems = query.getResultList().size();
 
         List<AdminLogStaticsResponseDTO> result = transformQueryToResultList(query, AdminLogStaticsResponseDTO.class);
 
-        return result;
+        if (result.isEmpty()) {
+//            error();
+            throw NO_USER_STATICS_FOUND.get();
+        } else {
+            UserMenuStaticsResponseDTO userMenuStaticsResponseDTO = new UserMenuStaticsResponseDTO();
+            userMenuStaticsResponseDTO.setUserMenuCountList(result);
+            userMenuStaticsResponseDTO.setTotalItems(totalItems);
+            return userMenuStaticsResponseDTO;
+        }
     }
+
+    private Supplier<NoContentFoundException> NO_USER_STATICS_FOUND = () -> new NoContentFoundException(ClientLog.class);
 }

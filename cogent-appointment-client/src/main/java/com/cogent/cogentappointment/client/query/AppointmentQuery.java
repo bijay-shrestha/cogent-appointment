@@ -303,7 +303,8 @@ public class AppointmentQuery {
                             " p.name as patientName," +                                                  //[5]
                             " p.mobileNumber as mobileNumber," +                                        //[6]
                             " sp.name as specializationName," +                                         //[7]
-                            " d.name as doctorName" +                                                  //[8]
+                            " d.name as doctorName," +
+                            " a.appointmentModeId.name as appointmentMode" +                                                  //[8]
                             " FROM Appointment a" +
                             " LEFT JOIN Patient p ON a.patientId=p.id" +
                             " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
@@ -374,8 +375,9 @@ public class AppointmentQuery {
                             " ard.refundAmount as refundAmount," +                                 //[15]
                             " hpi.address as patientAddress," +                                     //[16]
                             " atd.transactionDate as transactionDate," +                              //[17]
-                            " ard.refundAmount as refundAmount" +                                    //[18]
+                            " am.name as appointmentMode" +                                          //[18]
                             " FROM Appointment a" +
+                            " LEFT JOIN AppointmentMode am ON am.id=a.appointmentModeId.id" +
                             " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                             " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                             " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
@@ -501,7 +503,8 @@ public class AppointmentQuery {
                     " COALESCE(atd.appointmentAmount,0) as appointmentAmount," +                //[13]
                     " d.name as doctorName," +                                                  //[14]
                     " a.isSelf as isSelf," +                                                     //[15]
-                    " h.name as hospitalName" +                                                   //[16]
+                    " h.name as hospitalName," +
+                    " a.appointmentModeId.name as appointmentMode" +                                                   //[16]
                     " FROM Appointment a" +
                     " LEFT JOIN Patient p ON a.patientId=p.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +

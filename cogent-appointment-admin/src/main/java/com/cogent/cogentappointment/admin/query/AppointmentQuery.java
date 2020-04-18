@@ -59,9 +59,10 @@ public class AppointmentQuery {
                 "  d.name as doctorName," +
                 "  s.name as specializationName," +
                 "  atd.transactionNumber as transactionNumber," +
-                "  ard.cancelledDate as cancelledDate," +
+                "  DATE_FORMAT(ard.cancelledDate,'%Y-%m-%d') as cancelledDate," +
                 "  p.gender as gender," +
-                " ard.refundAmount as refundAmount, " +
+                " ard.refundAmount as refundAmount," +
+                " a.appointmentModeId.name as appointmentMode, " +
                 QUERY_TO_CALCULATE_PATIENT_AGE +
                 " FROM Appointment a" +
                 " LEFT JOIN Patient p ON p.id = a.patientId.id" +
@@ -246,8 +247,10 @@ public class AppointmentQuery {
                             " a.status as status," +                                       //[15]
                             " ard.refundAmount as refundAmount," +                         //[16]
                             " hpi.address as patientAddress," +                            //[17]
-                            " atd.transactionDate as transactionDate" +                     //[18]
+                            " atd.transactionDate as transactionDate," +                    //[18]
+                            " am.name as appointmentMode" +                                //[19]
                             " FROM Appointment a" +
+                            " LEFT JOIN AppointmentMode am On am.id=a.appointmentModeId.id" +
                             " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                             " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                             " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
@@ -475,11 +478,10 @@ public class AppointmentQuery {
                     " d.name as doctorName," +
                     " s.name as specializationName," +
                     " atd.transactionNumber as transactionNumber," +
-                    " ard.cancelledDate as cancelledDate," +
                     " ard.refundAmount as refundAmount," +
-                    " ard.remarks as cancellationRemarks," +
-                    " ard.refundedDate as refundedDate," +
                     " atd.appointmentAmount as appointmentCharge," +
+                    " DATE_FORMAT(ard.cancelledDate,'%Y-%m-%d') as cancelledDate," +
+                    " a.appointmentModeId.name as appointmentMode," +
                     QUERY_TO_CALCULATE_PATIENT_AGE +
                     " FROM" +
                     " AppointmentRefundDetail ard" +

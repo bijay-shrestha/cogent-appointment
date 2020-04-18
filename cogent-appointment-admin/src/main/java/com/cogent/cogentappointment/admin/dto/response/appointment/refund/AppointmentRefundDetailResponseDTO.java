@@ -38,15 +38,13 @@ public class AppointmentRefundDetailResponseDTO implements Serializable {
 
     private String transactionNumber;
 
-    private Date cancelledDate;
+    private String cancelledDate;
 
     private Double refundAmount;
 
-    private String cancellationRemarks;
-
     private String mobileNumber;
 
-    private Date refundedDate;
-
     private Double appointmentCharge;
+
+    private String appointmentMode;
 }

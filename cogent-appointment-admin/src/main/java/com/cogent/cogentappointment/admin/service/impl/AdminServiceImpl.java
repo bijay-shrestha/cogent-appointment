@@ -42,6 +42,8 @@ import static com.cogent.cogentappointment.admin.constants.StringConstant.COMMA_
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.AdminLog.*;
+import static com.cogent.cogentappointment.admin.utils.AdminFeatureUtils.parseToAdminFeature;
+import static com.cogent.cogentappointment.admin.utils.AdminFeatureUtils.updateAdminFeatureFlag;
 import static com.cogent.cogentappointment.admin.utils.AdminUtils.*;
 import static com.cogent.cogentappointment.admin.utils.DashboardFeatureUtils.parseToAdminDashboardFeature;
 import static com.cogent.cogentappointment.admin.utils.GenderUtils.fetchGenderByCode;
@@ -79,6 +81,8 @@ public class AdminServiceImpl implements AdminService {
 
     private final ProfileService profileService;
 
+    private final AdminFeatureRepository adminFeatureRepository;
+
     public AdminServiceImpl(Validator validator,
                             AdminRepository adminRepository,
                             AdminMacAddressInfoRepository adminMacAddressInfoRepository,
@@ -88,7 +92,8 @@ public class AdminServiceImpl implements AdminService {
                             AdminDashboardFeatureRepository adminDashboardFeatureRepository,
                             AdminConfirmationTokenRepository confirmationTokenRepository,
                             MinioFileService minioFileService, EmailService emailService,
-                            ProfileService profileService) {
+                            ProfileService profileService,
+                            AdminFeatureRepository adminFeatureRepository) {
         this.validator = validator;
         this.adminRepository = adminRepository;
         this.adminMacAddressInfoRepository = adminMacAddressInfoRepository;
@@ -100,6 +105,7 @@ public class AdminServiceImpl implements AdminService {
         this.minioFileService = minioFileService;
         this.emailService = emailService;
         this.profileService = profileService;
+        this.adminFeatureRepository = adminFeatureRepository;
     }
 
     @Override
@@ -132,6 +138,8 @@ public class AdminServiceImpl implements AdminService {
         saveMacAddressInfo(admin, adminRequestDTO.getMacAddressInfo());
 
         saveAdminMetaInfo(admin);
+
+        saveAdminFeature(admin, adminRequestDTO.getIsSideBarCollapse());
 
         saveAllAdminDashboardFeature(adminRequestDTO.getAdminDashboardRequestDTOS(), admin);
 
@@ -272,6 +280,8 @@ public class AdminServiceImpl implements AdminService {
 
         updateAdminMetaInfo(admin);
 
+        updateAdminFeature(admin.getId(), updateRequestDTO.getIsSideBarCollapse());
+
         saveEmailToSend(emailRequestDTO);
 
         log.info(UPDATING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
@@ -406,7 +416,8 @@ public class AdminServiceImpl implements AdminService {
 
         if (savedAdmin.intValue() == numberOfAdminsAllowed) {
             log.error(ADMIN_CANNOT_BE_REGISTERED_DEBUG_MESSAGE);
-            throw new BadRequestException(ADMIN_CANNOT_BE_REGISTERED_MESSAGE, ADMIN_CANNOT_BE_REGISTERED_DEBUG_MESSAGE);
+            throw new BadRequestException(ADMIN_CANNOT_BE_REGISTERED_MESSAGE,
+                    ADMIN_CANNOT_BE_REGISTERED_DEBUG_MESSAGE);
         }
     }
 
@@ -494,11 +505,23 @@ public class AdminServiceImpl implements AdminService {
         adminMetaInfoRepository.save(parseInAdminMetaInfo(admin));
     }
 
+    private void saveAdminFeature(Admin admin, Character isSideBarCollapse) {
+        AdminFeature adminFeature = parseToAdminFeature(admin, isSideBarCollapse);
+        adminFeatureRepository.save(adminFeature);
+    }
+
     private void updateAdminMetaInfo(Admin admin) {
         AdminMetaInfo adminMetaInfo = adminMetaInfoRepository.findAdminMetaInfoByAdminId(admin.getId())
                 .orElseThrow(() -> new NoContentFoundException(AdminMetaInfo.class));
 
         parseMetaInfo(admin, adminMetaInfo);
+    }
+
+    private void updateAdminFeature(Long adminId, Character isSideBarCollapse) {
+        AdminFeature adminFeature = adminFeatureRepository.findAdminFeatureByAdminId(adminId)
+                .orElseThrow(() -> new NoContentFoundException(AdminFeature.class));
+
+        updateAdminFeatureFlag(adminFeature, isSideBarCollapse);
     }
 
     private AdminConfirmationToken saveAdminConfirmationToken(Admin admin) {

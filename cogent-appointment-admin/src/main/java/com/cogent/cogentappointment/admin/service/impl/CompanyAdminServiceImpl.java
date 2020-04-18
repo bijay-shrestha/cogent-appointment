@@ -454,7 +454,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
     }
 
     private List<FileUploadResponseDTO> uploadFiles(Admin admin, MultipartFile[] files) {
-        String subDirectory = admin.getFullName();
+        String subDirectory = admin.getUsername();
 
         return minioFileService.addAttachmentIntoSubDirectory(subDirectory, files);
     }

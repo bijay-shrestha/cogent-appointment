@@ -35,4 +35,6 @@ public class AppointmentPendingApprovalDTO implements Serializable {
 
     private String specializationName;
 
+    private String appointmentMode;
+
 }

@@ -10,10 +10,7 @@ import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.exception.OperationUnsuccessfulException;
 import com.cogent.cogentappointment.admin.repository.*;
-import com.cogent.cogentappointment.admin.service.AdminService;
-import com.cogent.cogentappointment.admin.service.EmailService;
-import com.cogent.cogentappointment.admin.service.MinioFileService;
-import com.cogent.cogentappointment.admin.service.ProfileService;
+import com.cogent.cogentappointment.admin.service.*;
 import com.cogent.cogentappointment.admin.validator.LoginValidator;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
@@ -42,8 +39,6 @@ import static com.cogent.cogentappointment.admin.constants.StringConstant.COMMA_
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.AdminLog.*;
-import static com.cogent.cogentappointment.admin.utils.AdminFeatureUtils.parseToAdminFeature;
-import static com.cogent.cogentappointment.admin.utils.AdminFeatureUtils.updateAdminFeatureFlag;
 import static com.cogent.cogentappointment.admin.utils.AdminUtils.*;
 import static com.cogent.cogentappointment.admin.utils.DashboardFeatureUtils.parseToAdminDashboardFeature;
 import static com.cogent.cogentappointment.admin.utils.GenderUtils.fetchGenderByCode;
@@ -81,7 +76,7 @@ public class AdminServiceImpl implements AdminService {
 
     private final ProfileService profileService;
 
-    private final AdminFeatureRepository adminFeatureRepository;
+    private final AdminFeatureService adminFeatureService;
 
     public AdminServiceImpl(Validator validator,
                             AdminRepository adminRepository,
@@ -93,7 +88,7 @@ public class AdminServiceImpl implements AdminService {
                             AdminConfirmationTokenRepository confirmationTokenRepository,
                             MinioFileService minioFileService, EmailService emailService,
                             ProfileService profileService,
-                            AdminFeatureRepository adminFeatureRepository) {
+                            AdminFeatureService adminFeatureService) {
         this.validator = validator;
         this.adminRepository = adminRepository;
         this.adminMacAddressInfoRepository = adminMacAddressInfoRepository;
@@ -105,7 +100,7 @@ public class AdminServiceImpl implements AdminService {
         this.minioFileService = minioFileService;
         this.emailService = emailService;
         this.profileService = profileService;
-        this.adminFeatureRepository = adminFeatureRepository;
+        this.adminFeatureService = adminFeatureService;
     }
 
     @Override
@@ -506,8 +501,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private void saveAdminFeature(Admin admin, Character isSideBarCollapse) {
-        AdminFeature adminFeature = parseToAdminFeature(admin, isSideBarCollapse);
-        adminFeatureRepository.save(adminFeature);
+        adminFeatureService.save(admin, isSideBarCollapse);
     }
 
     private void updateAdminMetaInfo(Admin admin) {
@@ -518,10 +512,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private void updateAdminFeature(Long adminId, Character isSideBarCollapse) {
-        AdminFeature adminFeature = adminFeatureRepository.findAdminFeatureByAdminId(adminId)
-                .orElseThrow(() -> new NoContentFoundException(AdminFeature.class));
-
-        updateAdminFeatureFlag(adminFeature, isSideBarCollapse);
+        adminFeatureService.update(adminId, isSideBarCollapse);
     }
 
     private AdminConfirmationToken saveAdminConfirmationToken(Admin admin) {

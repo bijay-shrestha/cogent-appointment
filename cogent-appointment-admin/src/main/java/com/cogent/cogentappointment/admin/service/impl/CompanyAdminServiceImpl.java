@@ -18,10 +18,7 @@ import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.exception.OperationUnsuccessfulException;
 import com.cogent.cogentappointment.admin.repository.*;
-import com.cogent.cogentappointment.admin.service.CompanyAdminService;
-import com.cogent.cogentappointment.admin.service.EmailService;
-import com.cogent.cogentappointment.admin.service.MinioFileService;
-import com.cogent.cogentappointment.admin.service.ProfileService;
+import com.cogent.cogentappointment.admin.service.*;
 import com.cogent.cogentappointment.admin.validator.LoginValidator;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
@@ -49,8 +46,6 @@ import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.AdminLog.*;
-import static com.cogent.cogentappointment.admin.utils.AdminFeatureUtils.parseToAdminFeature;
-import static com.cogent.cogentappointment.admin.utils.AdminFeatureUtils.updateAdminFeatureFlag;
 import static com.cogent.cogentappointment.admin.utils.AdminUtils.*;
 import static com.cogent.cogentappointment.admin.utils.CompanyAdminUtils.*;
 import static com.cogent.cogentappointment.admin.utils.DashboardFeatureUtils.parseToAdminDashboardFeature;
@@ -89,7 +84,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
     private final AdminDashboardFeatureRepository adminDashboardFeatureRepository;
 
-    private final AdminFeatureRepository adminFeatureRepository;
+    private final AdminFeatureService adminFeatureService;
 
     public CompanyAdminServiceImpl(Validator validator,
                                    AdminRepository adminRepository,
@@ -101,7 +96,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                                    ProfileService profileService,
                                    DashboardFeatureRepository dashboardFeatureRepository,
                                    AdminDashboardFeatureRepository adminDashboardFeatureRepository,
-                                   AdminFeatureRepository adminFeatureRepository) {
+                                   AdminFeatureService adminFeatureService) {
         this.validator = validator;
         this.adminRepository = adminRepository;
         this.adminMacAddressInfoRepository = adminMacAddressInfoRepository;
@@ -113,7 +108,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         this.profileService = profileService;
         this.dashboardFeatureRepository = dashboardFeatureRepository;
         this.adminDashboardFeatureRepository = adminDashboardFeatureRepository;
-        this.adminFeatureRepository = adminFeatureRepository;
+        this.adminFeatureService = adminFeatureService;
     }
 
     @Override
@@ -506,8 +501,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
     }
 
     private void saveAdminFeature(Admin admin, Character isSideBarCollapse) {
-        AdminFeature adminFeature = parseToAdminFeature(admin, isSideBarCollapse);
-        adminFeatureRepository.save(adminFeature);
+        adminFeatureService.save(admin, isSideBarCollapse);
     }
 
     private void updateAdminMetaInfo(Admin admin) {
@@ -518,10 +512,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
     }
 
     private void updateAdminFeature(Long adminId, Character isSideBarCollapse) {
-        AdminFeature adminFeature = adminFeatureRepository.findAdminFeatureByAdminId(adminId)
-                .orElseThrow(() -> new NoContentFoundException(AdminFeature.class));
-
-        updateAdminFeatureFlag(adminFeature, isSideBarCollapse);
+        adminFeatureService.update(adminId, isSideBarCollapse);
     }
 
     private AdminConfirmationToken saveAdminConfirmationToken(AdminConfirmationToken adminConfirmationToken) {

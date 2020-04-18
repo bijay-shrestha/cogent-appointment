@@ -146,15 +146,17 @@ public class CompanyAdminQuery {
                     " CASE " +
                     "    WHEN (av.status = 'N' OR  av.status IS NULL) THEN null" +
                     "    ELSE av.fileUri END as fileUri," +                                //[2]
-                    " p.id as profileId," +                                                 //[3]
-                    " p.name as profileName," +                                             //[4]
-                    " h.id as hospitalId," +                                                //[5]
-                    " h.name as hospitalName," +                                             //[6]
-                    " h.isCompany as isCompany" +                                            //[7]
+                    " p.id as profileId," +                                                //[3]
+                    " p.name as profileName," +                                            //[4]
+                    " h.id as hospitalId," +                                               //[5]
+                    " h.name as hospitalName," +                                           //[6]
+                    " h.isCompany as isCompany," +                                         //[7]
+                    " af.isSideBarCollapse as isSideBarCollapse" +                         //[8]
                     " FROM Admin a" +
                     " LEFT JOIN AdminAvatar av ON av.admin.id=a.id" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                     " LEFT JOIN Hospital h ON h.id=p.company.id" +
+                    " LEFT JOIN AdminFeature af ON a.id = af.admin.id" +
                     " WHERE " +
                     " (a.username=:username OR a.email =:email OR a.mobileNumber=:username)" +
                     " AND a.status='Y'" +

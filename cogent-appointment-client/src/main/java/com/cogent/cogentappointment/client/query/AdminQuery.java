@@ -174,13 +174,15 @@ public class AdminQuery {
                     " p.id as profileId," +                                                //[3]
                     " p.name as profileName," +                                            //[4]
                     " d.id as departmentId," +                                             //[5]
-                    " d.name as departmentName," +
-                    " h.name as hospitalName" +                                          //[6]
+                    " d.name as departmentName," +                                         //[6]
+                    " h.name as hospitalName," +                                           //[7]
+                    " af.isSideBarCollapse as isSideBarCollapse" +                         //[8]
                     " FROM Admin a" +
                     " LEFT JOIN AdminAvatar av ON av.admin.id=a.id" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                     " LEFT JOIN Department d ON d.id=p.department.id" +
                     " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
+                    " LEFT JOIN AdminFeature af ON a.id = af.admin.id" +
                     " WHERE " +
                     " (a.username=:username OR a.email =:email OR a.mobileNumber=:username)" +
                     " AND a.status='Y'" +

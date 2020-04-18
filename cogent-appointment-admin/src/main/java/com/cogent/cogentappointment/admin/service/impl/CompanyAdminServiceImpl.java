@@ -273,7 +273,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         updateAdminDashboardFeature(updateRequestDTO.getAdminDashboardRequestDTOS(), admin);
 
-        sendEmail(emailRequestDTO);
+        saveEmailToSend(emailRequestDTO);
 
         log.info(UPDATING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
     }
@@ -424,12 +424,6 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         });
     }
 
-    private void validateUsername(boolean isUsernameExists, String username) {
-        if (isUsernameExists)
-            throw new DataDuplicationException(
-                    String.format(USERNAME_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), username));
-    }
-
     private void validateEmail(boolean isEmailExists, String email) {
         if (isEmailExists)
             throw new DataDuplicationException(
@@ -460,7 +454,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
     }
 
     private List<FileUploadResponseDTO> uploadFiles(Admin admin, MultipartFile[] files) {
-        String subDirectory = admin.getUsername();
+        String subDirectory = admin.getFullName();
 
         return minioFileService.addAttachmentIntoSubDirectory(subDirectory, files);
     }

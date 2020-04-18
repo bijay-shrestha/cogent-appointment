@@ -1,11 +1,11 @@
-package com.cogent.cogentappointment.client.utils;
+package com.cogent.cogentappointment.admin.utils;
 
-import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointmentMode.AppointmentModeRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointmentMode.AppointmentModeUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointmentMode.AppointmentModeRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointmentMode.AppointmentModeUpdateRequestDTO;
 import com.cogent.cogentappointment.persistence.model.AppointmentMode;
 
-import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toNormalCase;
+import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.convertToNormalCase;
 
 /**
  * @author Sauravi Thapa ON 4/17/20
@@ -25,7 +25,7 @@ public class AppointmentModeUtils {
 
     public static void parseToUpdatedAppointmentMode(AppointmentModeUpdateRequestDTO requestDTO,
                                                 AppointmentMode appointmentMode) {
-        appointmentMode.setName(toNormalCase(requestDTO.getName()));
+        appointmentMode.setName(convertToNormalCase(requestDTO.getName()));
         appointmentMode.setCode(requestDTO.getCode());
         appointmentMode.setStatus(requestDTO.getStatus());
         appointmentMode.setRemarks(requestDTO.getRemarks());

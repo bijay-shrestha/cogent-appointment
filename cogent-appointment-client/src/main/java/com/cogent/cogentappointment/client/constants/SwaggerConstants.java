@@ -63,16 +63,6 @@ public class SwaggerConstants {
         String LOGIN_OPERATION = "Login User";
     }
 
-    public interface AppointmentModeConstant {
-        String BASE_API_VALUE = "This is Appointment Mode Resource.";
-        String SAVE_OPERATION = "Save new Appointment Mode";
-        String UPDATE_OPERATION = "Update existing Appointment Mode";
-        String DELETE_OPERATION = "Set Appointment Mode status as 'D' when deleted";
-        String SEARCH_OPERATION = "Search Appointment Mode according to given request parameters";
-        String DETAILS_OPERATION = "Fetch Appointment Mode details by its id";
-        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal Appointment Mode details for dropdown";
-    }
-
     public static final String[] AUTH_WHITELIST = {
             // -- swagger ui
             "/v2/api-docs",

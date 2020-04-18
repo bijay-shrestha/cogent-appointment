@@ -1,10 +1,10 @@
-package com.cogent.cogentappointment.client.resource;
+package com.cogent.cogentappointment.admin.resource;
 
-import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointmentMode.AppointmentModeRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointmentMode.AppointmentModeSearchRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointmentMode.AppointmentModeUpdateRequestDTO;
-import com.cogent.cogentappointment.client.service.AppointmentModeService;
+import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointmentMode.AppointmentModeRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointmentMode.AppointmentModeSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointmentMode.AppointmentModeUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.service.AppointmentModeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.PageRequest;
@@ -14,12 +14,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AppointmentModeConstant.BASE_API_VALUE;
-import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AppointmentModeConstant.*;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.ACTIVE;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.AppointmentModeConstants.BASE_APPOINTMENT_MODE;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.MIN;
+import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentModeConstant.*;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentModeConstants.BASE_APPOINTMENT_MODE;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;

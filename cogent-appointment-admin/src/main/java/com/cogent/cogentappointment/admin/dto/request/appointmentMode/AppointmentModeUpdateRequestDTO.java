@@ -1,6 +1,6 @@
-package com.cogent.cogentappointment.client.dto.request.appointmentMode;
+package com.cogent.cogentappointment.admin.dto.request.appointmentMode;
 
-import com.cogent.cogentappointment.client.constraintvalidator.Status;
+import com.cogent.cogentappointment.admin.constraintvalidator.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

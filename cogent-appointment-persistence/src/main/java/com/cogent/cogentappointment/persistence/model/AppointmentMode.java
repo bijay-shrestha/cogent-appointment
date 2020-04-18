@@ -31,7 +31,7 @@ public class AppointmentMode extends Auditable<String>  implements Serializable 
     @Column(name = "name")
     private String name;
 
-    @Length(max = 6)
+    @Length(max = 7)
     @Column(name = "code")
     private String code;
 

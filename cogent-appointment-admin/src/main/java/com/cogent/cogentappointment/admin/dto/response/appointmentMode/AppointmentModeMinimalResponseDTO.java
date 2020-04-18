@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.dto.response.appointmentMode;
+package com.cogent.cogentappointment.admin.dto.response.appointmentMode;
 
 import lombok.*;
 

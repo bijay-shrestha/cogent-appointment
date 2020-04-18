@@ -69,7 +69,8 @@ public class AppointmentUtils {
                                                  Patient patient,
                                                  Specialization specialization,
                                                  Doctor doctor,
-                                                 Hospital hospital) {
+                                                 Hospital hospital,
+                                                 AppointmentMode  appointmentMode) {
 
         Appointment appointment = new Appointment();
         appointment.setAppointmentDate(appointmentReservationLog.getAppointmentDate());
@@ -78,6 +79,7 @@ public class AppointmentUtils {
         appointment.setCreatedDateNepali(requestDTO.getCreatedDateNepali());
         appointment.setIsFollowUp(requestDTO.getIsFollowUp());
         appointment.setIsSelf(isSelf);
+        appointment.setAppointmentModeId(appointmentMode);
         parseToAppointment(patient, specialization, doctor, hospital, appointment);
         return appointment;
     }

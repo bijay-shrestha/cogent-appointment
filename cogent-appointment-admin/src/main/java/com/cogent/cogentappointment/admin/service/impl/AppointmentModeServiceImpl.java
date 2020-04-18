@@ -1,18 +1,17 @@
-package com.cogent.cogentappointment.client.service.impl;
+package com.cogent.cogentappointment.admin.service.impl;
 
-import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
-import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
-import com.cogent.cogentappointment.client.dto.request.appointmentMode.AppointmentModeRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointmentMode.AppointmentModeSearchRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointmentMode.AppointmentModeUpdateRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.appointmentMode.AppointmentModeMinimalResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointmentMode.AppointmentModeResponseDTO;
-import com.cogent.cogentappointment.client.exception.DataDuplicationException;
-import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.repository.AppointmentModeRepository;
-import com.cogent.cogentappointment.client.service.AppointmentModeService;
+import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
+import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointmentMode.AppointmentModeRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointmentMode.AppointmentModeSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointmentMode.AppointmentModeUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointmentMode.AppointmentModeMinimalResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointmentMode.AppointmentModeResponseDTO;
+import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
+import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
+import com.cogent.cogentappointment.admin.repository.AppointmentModeRepository;
+import com.cogent.cogentappointment.admin.service.AppointmentModeService;
 import com.cogent.cogentappointment.persistence.model.AppointmentMode;
-import com.sun.org.glassfish.external.amx.AMX;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,15 +20,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.function.Function;
 
-import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.NAME_DUPLICATION_MESSAGE;
-import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
-import static com.cogent.cogentappointment.client.log.CommonLogConstant.UPDATING_PROCESS_COMPLETED;
-import static com.cogent.cogentappointment.client.log.constants.AppointmentMode.APPOINTMENT_MODE;
-import static com.cogent.cogentappointment.client.utils.AppointmentModeUtils.parseToAppointmentMode;
-import static com.cogent.cogentappointment.client.utils.AppointmentModeUtils.parseToDeletedAppointmentMode;
-import static com.cogent.cogentappointment.client.utils.AppointmentModeUtils.parseToUpdatedAppointmentMode;
-import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
-import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NAME_DUPLICATION_MESSAGE;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
+import static com.cogent.cogentappointment.admin.log.constants.AppointmentModeLog.APPOINTMENT_MODE;
+import static com.cogent.cogentappointment.admin.utils.AppointmentModeUtils.*;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
 /**
  * @author Sauravi Thapa ON 4/17/20

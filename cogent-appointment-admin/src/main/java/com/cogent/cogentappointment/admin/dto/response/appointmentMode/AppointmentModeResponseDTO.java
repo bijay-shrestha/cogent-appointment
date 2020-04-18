@@ -1,9 +1,8 @@
-package com.cogent.cogentappointment.client.dto.response.appointmentMode;
+package com.cogent.cogentappointment.admin.dto.response.appointmentMode;
 
 import lombok.*;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * @author smriti on 11/11/2019

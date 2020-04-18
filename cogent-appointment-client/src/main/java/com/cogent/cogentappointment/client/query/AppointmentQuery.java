@@ -228,9 +228,10 @@ public class AppointmentQuery {
                 "  d.name as doctorName," +
                 "  s.name as specializationName," +
                 "  atd.transactionNumber as transactionNumber," +
-                "  ard.cancelledDate as cancelledDate," +
+                "  DATE_FORMAT(ard.cancelledDate,'%Y-%m-%d') as cancelledDate," +
                 "  p.gender as gender," +
-                " ard.refundAmount as refundAmount, " +
+                " ard.refundAmount as refundAmount," +
+                " a.appointmentModeId.name as appointmentMode, " +
                 QUERY_TO_CALCULATE_PATIENT_AGE +
                 " FROM Appointment a" +
                 " LEFT JOIN Patient p ON p.id = a.patientId.id" +
@@ -532,16 +533,20 @@ public class AppointmentQuery {
                     " hpi.registrationNumber" +
                     " END as registrationNumber," +
                     " p.gender as gender," +
-                    " p.eSewaId  as eSewaId," +
+                    " CASE WHEN" +
+                    " (p.eSewaId IS NULL)" +
+                    " THEN 'N/A'" +
+                    " ELSE" +
+                    " p.eSewaId" +
+                    " END as eSewaId," +
                     " p.mobileNumber as mobileNumber," +
                     " d.name as doctorName," +
                     " s.name as specializationName," +
                     " atd.transactionNumber as transactionNumber," +
-                    " ard.cancelledDate as cancelledDate," +
+                    " DATE_FORMAT(ard.cancelledDate,'%Y-%m-%d') as cancelledDate," +
                     " ard.refundAmount as refundAmount," +
-                    " ard.remarks as cancellationRemarks," +
-                    " ard.refundedDate as refundedDate," +
                     " atd.appointmentAmount as appointmentCharge," +
+                    " a.appointmentModeId.name as appointmentMode," +
                     QUERY_TO_CALCULATE_PATIENT_AGE +
                     " FROM" +
                     " AppointmentRefundDetail ard" +

@@ -162,10 +162,6 @@ public class EmailServiceImpl implements EmailService {
         return html;
     }
 
-    private void updateEmailToSend(EmailToSend emailToSend) {
-
-    }
-
     private void parseToAdminVerificationTemplate(EmailToSend emailToSend,
                                                   Map<String, Object> model) {
         final int USERNAME_INDEX = 0;

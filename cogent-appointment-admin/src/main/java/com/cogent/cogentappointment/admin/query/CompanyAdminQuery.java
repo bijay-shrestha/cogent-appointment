@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.admin.query;
 
 import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminSearchRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.admin.AdminSearchRequestDTO;
 import com.cogent.cogentappointment.admin.utils.GenderUtils;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import org.springframework.util.ObjectUtils;
@@ -118,14 +117,16 @@ public class CompanyAdminQuery {
 
     public static final String QUERY_TO_FETCH_COMPANY_ADMIN_DETAIL =
             SELECT_CLAUSE_TO_FETCH_COMPANY_ADMIN + "," +
-                    " a.remarks as remarks," +                                      //[10]
+                    " a.remarks as remarks," +                                     //[10]
                     " h.id as companyId," +                                        //[11]
-                    " p.id as profileId" +                                         //[12]
+                    " p.id as profileId," +                                        //[12]
+                    " af.isSideBarCollapse as isSideBarCollapse" +                 //[13]
                     " FROM" +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id = a.profileId.id" +
                     " LEFT JOIN AdminAvatar av ON a.id = av.admin.id" +
                     " LEFT JOIN Hospital h ON h.id = p.company.id" +
+                    " LEFT JOIN AdminFeature af ON a.id = af.admin.id" +
                     GET_WHERE_CLAUSE_TO_FETCH_ADMIN +
                     " AND a.id = :id";
 
@@ -136,12 +137,6 @@ public class CompanyAdminQuery {
                     " WHERE" +
                     " am.status = 'Y'" +
                     " AND am.admin.id = :id";
-
-    public static final String QUERY_TO_FETCH_ADMIN_BY_USERNAME_OR_EMAIL =
-            " SELECT a FROM Admin a" +
-                    " WHERE" +
-                    " (a.username=:username OR a.email =:email)" +
-                    " AND a.status != 'D'";
 
     public static final String QUERY_TO_FETCH_COMPANY_ADMIN_INFO =
             " SELECT" +

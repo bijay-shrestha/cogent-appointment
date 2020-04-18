@@ -49,6 +49,8 @@ public class CompanyAdminRequestDTO implements Serializable {
     @NotNull
     private Long profileId;
 
+    private Character isSideBarCollapse;
+
     private List<String> macAddressInfo;
 
     private List<AdminDashboardRequestDTO> adminDashboardRequestDTOS;

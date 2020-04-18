@@ -31,7 +31,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.Validator;
@@ -50,6 +49,8 @@ import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.AdminLog.*;
+import static com.cogent.cogentappointment.admin.utils.AdminFeatureUtils.parseToAdminFeature;
+import static com.cogent.cogentappointment.admin.utils.AdminFeatureUtils.updateAdminFeatureFlag;
 import static com.cogent.cogentappointment.admin.utils.AdminUtils.*;
 import static com.cogent.cogentappointment.admin.utils.CompanyAdminUtils.*;
 import static com.cogent.cogentappointment.admin.utils.DashboardFeatureUtils.parseToAdminDashboardFeature;
@@ -88,6 +89,8 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
     private final AdminDashboardFeatureRepository adminDashboardFeatureRepository;
 
+    private final AdminFeatureRepository adminFeatureRepository;
+
     public CompanyAdminServiceImpl(Validator validator,
                                    AdminRepository adminRepository,
                                    AdminMacAddressInfoRepository adminMacAddressInfoRepository,
@@ -97,7 +100,8 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                                    MinioFileService minioFileService, EmailService emailService,
                                    ProfileService profileService,
                                    DashboardFeatureRepository dashboardFeatureRepository,
-                                   AdminDashboardFeatureRepository adminDashboardFeatureRepository) {
+                                   AdminDashboardFeatureRepository adminDashboardFeatureRepository,
+                                   AdminFeatureRepository adminFeatureRepository) {
         this.validator = validator;
         this.adminRepository = adminRepository;
         this.adminMacAddressInfoRepository = adminMacAddressInfoRepository;
@@ -109,6 +113,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         this.profileService = profileService;
         this.dashboardFeatureRepository = dashboardFeatureRepository;
         this.adminDashboardFeatureRepository = adminDashboardFeatureRepository;
+        this.adminFeatureRepository = adminFeatureRepository;
     }
 
     @Override
@@ -133,6 +138,8 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         saveMacAddressInfo(admin, adminRequestDTO.getMacAddressInfo());
 
         saveAdminMetaInfo(admin);
+
+        saveAdminFeature(admin, adminRequestDTO.getIsSideBarCollapse());
 
         saveAllAdminDashboardFeature(adminRequestDTO.getAdminDashboardRequestDTOS(), admin);
 
@@ -270,6 +277,8 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
             updateMacAddressInfo(updateRequestDTO.getMacAddressUpdateInfo(), admin);
 
         updateAdminMetaInfo(admin);
+
+        updateAdminFeature(admin.getId(), updateRequestDTO.getIsSideBarCollapse());
 
         updateAdminDashboardFeature(updateRequestDTO.getAdminDashboardRequestDTOS(), admin);
 
@@ -496,11 +505,23 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         adminMetaInfoRepository.save(parseInAdminMetaInfo(admin));
     }
 
+    private void saveAdminFeature(Admin admin, Character isSideBarCollapse) {
+        AdminFeature adminFeature = parseToAdminFeature(admin, isSideBarCollapse);
+        adminFeatureRepository.save(adminFeature);
+    }
+
     private void updateAdminMetaInfo(Admin admin) {
         AdminMetaInfo adminMetaInfo = adminMetaInfoRepository.findAdminMetaInfoByAdminId(admin.getId())
                 .orElseThrow(() -> new NoContentFoundException(AdminMetaInfo.class));
 
         parseMetaInfo(admin, adminMetaInfo);
+    }
+
+    private void updateAdminFeature(Long adminId, Character isSideBarCollapse) {
+        AdminFeature adminFeature = adminFeatureRepository.findAdminFeatureByAdminId(adminId)
+                .orElseThrow(() -> new NoContentFoundException(AdminFeature.class));
+
+        updateAdminFeatureFlag(adminFeature, isSideBarCollapse);
     }
 
     private AdminConfirmationToken saveAdminConfirmationToken(AdminConfirmationToken adminConfirmationToken) {

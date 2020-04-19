@@ -62,8 +62,6 @@ public class CompanyAdminUpdateRequestDTO implements Serializable {
     * */
     private Character isAvatarUpdate;
 
-    private Character isSideBarCollapse;
-
     private List<AdminMacAddressInfoUpdateRequestDTO> macAddressUpdateInfo;
 
     private List<AdminDashboardRequestDTO> adminDashboardRequestDTOS;

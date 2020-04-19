@@ -8,10 +8,10 @@ import com.cogent.cogentappointment.persistence.model.Admin;
  */
 public interface AdminFeatureService {
 
-    void save(Admin admin, Character isSideBarCollapse);
+    void save(Admin admin);
 
     void update(AdminFeatureRequestDTO requestDTO);
 
-    void update(Long adminId, Character isSideBarCollapse);
+    void update(String username, Character isSideBarCollapse);
 }
 

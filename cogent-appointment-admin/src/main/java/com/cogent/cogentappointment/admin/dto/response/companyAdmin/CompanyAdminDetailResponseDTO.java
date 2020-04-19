@@ -45,7 +45,5 @@ public class CompanyAdminDetailResponseDTO implements Serializable {
 
     private String remarks;
 
-    private Character isSideBarCollapse;
-
     private List<AdminMacAddressInfoResponseDTO> adminMacAddressInfo;
 }

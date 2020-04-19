@@ -132,15 +132,13 @@ public class AdminQuery {
                     " h.id as hospitalId," +                                        //[11]
                     " p.id as profileId," +                                         //[12]
                     " d.id as departmentId," +                                      //[13]
-                    " d.name as departmentName," +                                  //[14]
-                    " af.isSideBarCollapse as isSideBarCollapse" +                  //[15]
+                    " d.name as departmentName" +                                  //[14]
                     " FROM" +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id = a.profileId.id" +
                     " LEFT JOIN AdminAvatar av ON a.id = av.admin.id" +
                     " LEFT JOIN Department d ON d.id = p.department.id" +
                     " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
-                    " LEFT JOIN AdminFeature af ON a.id = af.admin.id" +
                     GET_WHERE_CLAUSE_TO_FETCH_ADMIN +
                     " AND a.id = :id";
 

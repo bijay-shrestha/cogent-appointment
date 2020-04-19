@@ -134,7 +134,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         saveAdminMetaInfo(admin);
 
-        saveAdminFeature(admin, adminRequestDTO.getIsSideBarCollapse());
+        saveAdminFeature(admin);
 
         saveAllAdminDashboardFeature(adminRequestDTO.getAdminDashboardRequestDTOS(), admin);
 
@@ -275,8 +275,6 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
             updateMacAddressInfo(updateRequestDTO.getMacAddressUpdateInfo(), admin);
 
         updateAdminMetaInfo(admin);
-
-        updateAdminFeature(admin.getId(), updateRequestDTO.getIsSideBarCollapse());
 
         updateAdminDashboardFeature(updateRequestDTO.getAdminDashboardRequestDTOS(), admin);
 
@@ -505,8 +503,8 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         adminMetaInfoRepository.save(parseInAdminMetaInfo(admin));
     }
 
-    private void saveAdminFeature(Admin admin, Character isSideBarCollapse) {
-        adminFeatureService.save(admin, isSideBarCollapse);
+    private void saveAdminFeature(Admin admin) {
+        adminFeatureService.save(admin);
     }
 
     private void updateAdminMetaInfo(Admin admin) {
@@ -514,10 +512,6 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                 .orElseThrow(() -> new NoContentFoundException(AdminMetaInfo.class));
 
         parseMetaInfo(admin, adminMetaInfo);
-    }
-
-    private void updateAdminFeature(Long adminId, Character isSideBarCollapse) {
-        adminFeatureService.update(adminId, isSideBarCollapse);
     }
 
     private AdminConfirmationToken saveAdminConfirmationToken(AdminConfirmationToken adminConfirmationToken) {

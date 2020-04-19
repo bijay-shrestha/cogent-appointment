@@ -51,6 +51,9 @@ public class AdminUpdateRequestDTO implements Serializable {
     @NotEmpty
     private String remarks;
 
+    /*Y-> NEW AVATAR IS UPDATED
+    * N-> AVATAR IS SAME AS BEFORE. SO IF IT IS 'N', THEN NO NEED TO UPDATE AVATAR
+    * */
     private Character isAvatarUpdate;
 
     private List<AdminMacAddressInfoUpdateRequestDTO> macAddressUpdateInfo;

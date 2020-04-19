@@ -31,16 +31,19 @@ public class ProfileUtils {
         profile.setDescription(profileDTO.getDescription());
         profile.setStatus(profileDTO.getStatus());
         profile.setDepartment(department);
+        profile.setIsAllRoleAssigned(profileDTO.getIsAllRoleAssigned());
         profile.setIsSuperAdminProfile(NO);
         profile.setIsCompanyProfile(NO);
         return profile;
     }
 
     public static void convertToUpdatedProfile(ProfileUpdateDTO profileDTO,
-                                                  Department department,
-                                                  Profile profile) {
+                                               Department department,
+                                               Profile profile) {
+
         profile.setName(toNormalCase(profileDTO.getName()));
         profile.setDescription(profileDTO.getDescription());
+        profile.setIsAllRoleAssigned(profileDTO.getIsAllRoleAssigned());
         profile.setStatus(profileDTO.getStatus());
         profile.setDepartment(department);
         profile.setRemarks(profileDTO.getRemarks());

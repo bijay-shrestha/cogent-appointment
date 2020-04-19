@@ -22,7 +22,7 @@ public class WebResourceKeyConstants {
         String BASE_APPOINTMENT = "/appointment";
         String APPOINTMENT_ID_PATH_VARIABLE_BASE = "/{appointmentId}";
         String APPOINTMENT_RESERVATION_ID_PATH_VARIABLE_BASE = "/{appointmentReservationId}";
-        String CHECK_AVAILABILITY = "/checkAvailability";
+        String CHECK_AVAILABILITY = "/availableTimeSlots";
         String PENDING_APPOINTMENT = "/pending-appointment";
         String CANCEL = "/cancel";
         String RESCHEDULE = "/reschedule";
@@ -101,7 +101,7 @@ public class WebResourceKeyConstants {
         String DOCTOR_AVAILABLE_DATES = "/doctorAvailableDates";
         String SPECIALIZATION_AVAILABLE_DATES = "/specializationAvailableDates";
         String DOCTOR_WITH_SPECIALIZATION_AVAILABLE_DATES = "/doctorWithSpecializationAvailableDates";
-        String FETCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION = "/available-doctors-with-specialization";
+        String FETCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION = "/availableDoctorsWithSpecialization";
 
     }
 

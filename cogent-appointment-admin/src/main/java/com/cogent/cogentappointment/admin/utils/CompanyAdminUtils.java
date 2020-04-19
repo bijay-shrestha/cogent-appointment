@@ -9,7 +9,6 @@ import com.cogent.cogentappointment.persistence.model.Admin;
 import com.cogent.cogentappointment.persistence.model.Profile;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +20,9 @@ import static com.cogent.cogentappointment.admin.constants.EmailConstants.SUBJEC
 import static com.cogent.cogentappointment.admin.constants.EmailTemplates.ADMIN_VERIFICATION;
 import static com.cogent.cogentappointment.admin.constants.EmailTemplates.UPDATE_ADMIN;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
+import static com.cogent.cogentappointment.admin.constants.StringConstant.COMMA_SEPARATED;
+import static com.cogent.cogentappointment.admin.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.HYPHEN;
@@ -140,8 +142,7 @@ public class CompanyAdminUtils {
 
     public static EmailRequestDTO convertCompanyAdminRequestToEmailRequestDTO(CompanyAdminRequestDTO adminRequestDTO,
                                                                        Admin admin,
-                                                                       String confirmationToken,
-                                                                       HttpServletRequest httpServletRequest) {
+                                                                       String confirmationToken) {
 
 //        String origin = httpServletRequest.getHeader("origin");
 //        String confirmationUrl = origin + "/#" + "/savePassword" + "?token =" + confirmationToken;

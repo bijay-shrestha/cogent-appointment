@@ -57,4 +57,14 @@ public class HospitalUpdateRequestDTO implements Serializable {
     private List<HospitalContactNumberUpdateRequestDTO> contactNumberUpdateRequestDTOS;
 
     private String alias;
+
+    /*Y-> NEW LOGO IS UPDATED
+    * N-> LOGO IS SAME AS BEFORE. SO IF IT IS 'N', THEN NO NEED TO UPDATE LOGO
+    */
+    private Character isLogoUpdate;
+
+    /*Y-> NEW BANNER IS UPDATED
+   * N-> BANNER IS SAME AS BEFORE. SO IF IT IS 'N', THEN NO NEED TO UPDATE BANNER
+   */
+    private Character isBannerUpdate;
 }

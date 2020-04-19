@@ -42,7 +42,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
         checkIfHospitalAdmin(adminMinDetails);
         checkIfPasswordIsNull(adminMinDetails);
         if (BCrypt.checkpw(requestDTO.getPassword(), adminMinDetails.getPassword())) {
-            return hmacUtils.getAuthToken(adminMinDetails);
+            return hmacUtils.getHash(adminMinDetails);
         } else {
             log.error(INVALID_PASSWORD);
             throw new NoContentFoundException(INVALID_PASSWORD);

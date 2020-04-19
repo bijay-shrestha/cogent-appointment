@@ -82,8 +82,7 @@ public class AdminUtils {
         return adminMetaInfo;
     }
 
-    public static void parseMetaInfo(Admin admin,
-                                     AdminMetaInfo adminMetaInfo) {
+    public static void parseMetaInfo(Admin admin, AdminMetaInfo adminMetaInfo) {
         adminMetaInfo.setMetaInfo(admin.getFullName() + OR + admin.getUsername() + OR + admin.getMobileNumber());
     }
 
@@ -97,8 +96,7 @@ public class AdminUtils {
     }
 
     public static EmailRequestDTO convertAdminRequestToEmailRequestDTO(AdminRequestDTO adminRequestDTO,
-                                                                       String confirmationToken,
-                                                                       HttpServletRequest httpServletRequest) {
+                                                                       String confirmationToken) {
 
 //        String origin = httpServletRequest.getHeader("origin");
 //        String confirmationUrl = origin + "/#" + "/savePassword" + "?token =" + confirmationToken;

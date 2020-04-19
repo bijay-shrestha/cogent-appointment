@@ -14,7 +14,7 @@ public class ErrorMessageConstants {
 
         String INVALID_APPOINTMENT_DATE_TIME = "Sorry! Appointment failed because requested date/time has already passed.";
 
-        String APPOINTMENT_FAILED_MESSAGE = "The selected time slot has expired. Please try again!";
+        String APPOINTMENT_FAILED_MESSAGE = "The selected time slot has expired/or is invalid. Please try again!";
 
         String APPOINTMENT_FAILED_DEBUG_MESSAGE = "AppointmentReservationLog(s) is null";
     }
@@ -67,6 +67,10 @@ public class ErrorMessageConstants {
     //D
     public interface DoctorServiceMessages {
         String DOCTOR_NOT_AVAILABLE = "Sorry, Doctor is not available in selected date '%s'.";
+        String DOCTOR_APPOINTMENT_CHARGE_INVALID = "Sorry, requested appointment amount '%s' doesn't match with " +
+                "actual doctor appointment charge";
+        String DOCTOR_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE = "Appointment amount is not equal to " +
+                "Doctor actual appointment charge/ follow-up appointment charge";
     }
 
 

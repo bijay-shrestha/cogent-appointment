@@ -142,7 +142,7 @@ public class AdminServiceImpl implements AdminService {
         EmailRequestDTO emailRequestDTO = convertAdminRequestToEmailRequestDTO(adminRequestDTO,
                 adminConfirmationToken.getConfirmationToken());
 
-        sendEmail(emailRequestDTO);
+        saveEmailToSend(emailRequestDTO);
 
         log.info(SAVING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
     }
@@ -276,7 +276,7 @@ public class AdminServiceImpl implements AdminService {
 
         updateAdminMetaInfo(admin);
 
-        sendEmail(emailRequestDTO);
+        saveEmailToSend(emailRequestDTO);
 
         log.info(UPDATING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
     }
@@ -539,6 +539,10 @@ public class AdminServiceImpl implements AdminService {
 
     private void sendEmail(EmailRequestDTO emailRequestDTO) {
         emailService.sendEmail(emailRequestDTO);
+    }
+
+    private void saveEmailToSend(EmailRequestDTO emailRequestDTO) {
+        emailService.saveEmailToSend(emailRequestDTO);
     }
 
     private Admin findAdminByIdAndHospitalId(Long adminId, Long hospitalId) {

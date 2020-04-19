@@ -357,8 +357,9 @@ public class PatientServiceImpl implements PatientService {
 
         Long patientCount = patientRepository.validatePatientDuplicity(patientId, name, mobileNumber, dateOfBirth);
 
-        if (patientCount.intValue() > 0)
+        if (patientCount.intValue() > 0) {
             PATIENT_DUPLICATION_EXCEPTION(name, mobileNumber, dateOfBirth);
+        }
     }
 
     private Gender fetchGender(Character genderCode) {

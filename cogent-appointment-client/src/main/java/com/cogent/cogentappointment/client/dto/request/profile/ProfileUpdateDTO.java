@@ -39,4 +39,8 @@ public class ProfileUpdateDTO implements Serializable {
     @NotNull
     @NotEmpty
     private String remarks;
+
+    @NotNull
+    @Status
+    private Character isAllRoleAssigned;
 }

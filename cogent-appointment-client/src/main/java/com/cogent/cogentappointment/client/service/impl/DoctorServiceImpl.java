@@ -226,6 +226,16 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
+    public Double fetchDoctorAppointmentCharge(Long doctorId, Long hospitalId) {
+        return doctorRepository.fetchDoctorAppointmentCharge(doctorId, hospitalId);
+    }
+
+    @Override
+    public Double fetchDoctorFollowupAppointmentCharge(Long doctorId, Long hospitalId) {
+        return doctorRepository.fetchDoctorAppointmentFollowUpCharge(doctorId, hospitalId);
+    }
+
+    @Override
     public Doctor fetchActiveDoctorByIdAndHospitalId(Long id, Long hospitalId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 

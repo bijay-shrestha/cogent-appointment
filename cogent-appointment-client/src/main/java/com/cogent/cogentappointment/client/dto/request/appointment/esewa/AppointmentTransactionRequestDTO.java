@@ -24,4 +24,6 @@ public class AppointmentTransactionRequestDTO implements Serializable {
     private Double discountAmount;
 
     private Double serviceChargeAmount;
+
+    private String appointmentModeCode;
 }

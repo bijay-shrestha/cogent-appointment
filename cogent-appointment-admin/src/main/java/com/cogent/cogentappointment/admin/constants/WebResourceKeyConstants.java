@@ -28,8 +28,13 @@ public class WebResourceKeyConstants {
         String STATUS = "/status";
         String LOG = "/log";
         String PENDING_APPROVAL = "/pending-approval";
+        String RESCHEDULE = "/reschedule";
         String RESCHEDULE_LOG = "/reschedule-log";
+        String DETAILS = "/detail";
+    }
 
+    public interface AppointmentModeConstants {
+        String BASE_APPOINTMENT_MODE = "/appointmentMode";
     }
 
     //B

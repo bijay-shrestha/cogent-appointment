@@ -228,9 +228,10 @@ public class AppointmentQuery {
                 "  d.name as doctorName," +
                 "  s.name as specializationName," +
                 "  atd.transactionNumber as transactionNumber," +
-                "  ard.cancelledDate as cancelledDate," +
+                "  DATE_FORMAT(ard.cancelledDate,'%Y-%m-%d') as cancelledDate," +
                 "  p.gender as gender," +
-                " ard.refundAmount as refundAmount, " +
+                " ard.refundAmount as refundAmount," +
+                " a.appointmentModeId.name as appointmentMode, " +
                 QUERY_TO_CALCULATE_PATIENT_AGE +
                 " FROM Appointment a" +
                 " LEFT JOIN Patient p ON p.id = a.patientId.id" +
@@ -303,7 +304,8 @@ public class AppointmentQuery {
                             " p.name as patientName," +                                                  //[5]
                             " p.mobileNumber as mobileNumber," +                                        //[6]
                             " sp.name as specializationName," +                                         //[7]
-                            " d.name as doctorName" +                                                  //[8]
+                            " d.name as doctorName," +
+                            " a.appointmentModeId.name as appointmentMode" +                                                  //[8]
                             " FROM Appointment a" +
                             " LEFT JOIN Patient p ON a.patientId=p.id" +
                             " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
@@ -374,8 +376,9 @@ public class AppointmentQuery {
                             " ard.refundAmount as refundAmount," +                                 //[15]
                             " hpi.address as patientAddress," +                                     //[16]
                             " atd.transactionDate as transactionDate," +                              //[17]
-                            " ard.refundAmount as refundAmount" +                                    //[18]
+                            " am.name as appointmentMode" +                                          //[18]
                             " FROM Appointment a" +
+                            " LEFT JOIN AppointmentMode am ON am.id=a.appointmentModeId.id" +
                             " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                             " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                             " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
@@ -501,7 +504,8 @@ public class AppointmentQuery {
                     " COALESCE(atd.appointmentAmount,0) as appointmentAmount," +                //[13]
                     " d.name as doctorName," +                                                  //[14]
                     " a.isSelf as isSelf," +                                                     //[15]
-                    " h.name as hospitalName" +                                                   //[16]
+                    " h.name as hospitalName," +
+                    " a.appointmentModeId.name as appointmentMode" +                                                   //[16]
                     " FROM Appointment a" +
                     " LEFT JOIN Patient p ON a.patientId=p.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
@@ -529,16 +533,20 @@ public class AppointmentQuery {
                     " hpi.registrationNumber" +
                     " END as registrationNumber," +
                     " p.gender as gender," +
-                    " p.eSewaId  as eSewaId," +
+                    " CASE WHEN" +
+                    " (p.eSewaId IS NULL)" +
+                    " THEN 'N/A'" +
+                    " ELSE" +
+                    " p.eSewaId" +
+                    " END as eSewaId," +
                     " p.mobileNumber as mobileNumber," +
                     " d.name as doctorName," +
                     " s.name as specializationName," +
                     " atd.transactionNumber as transactionNumber," +
-                    " ard.cancelledDate as cancelledDate," +
+                    " DATE_FORMAT(ard.cancelledDate,'%Y-%m-%d') as cancelledDate," +
                     " ard.refundAmount as refundAmount," +
-                    " ard.remarks as cancellationRemarks," +
-                    " ard.refundedDate as refundedDate," +
                     " atd.appointmentAmount as appointmentCharge," +
+                    " a.appointmentModeId.name as appointmentMode," +
                     QUERY_TO_CALCULATE_PATIENT_AGE +
                     " FROM" +
                     " AppointmentRefundDetail ard" +
@@ -552,21 +560,6 @@ public class AppointmentQuery {
                     " WHERE ard.appointmentId.id=:appointmentId" +
                     " AND ard.status='PA'";
 
-    private static String SELECT_CLAUSE_TO_GET_AMOUNT =
-            "SELECT" +
-                    " COALESCE (SUM(atd.appointmentAmount)," +
-                    " 0) as totalAmount" +
-                    " FROM Appointment a" +
-                    " LEFT JOIN Patient p ON a.patientId.id=p.id" +
-                    " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
-                    " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
-                    " LEFT JOIN Specialization sp ON a.specializationId.id=sp.id" +
-                    " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
-                    " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
-                    " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
-                    " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='PA'" +
-                    " WHERE" +
-                    " h.id=:hospitalId";
 
     private static String SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT =
             "SELECT" +

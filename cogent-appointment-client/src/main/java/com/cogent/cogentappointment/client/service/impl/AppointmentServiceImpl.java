@@ -49,6 +49,7 @@ import static com.cogent.cogentappointment.client.constants.StatusConstants.Appo
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.REFUNDED;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.*;
+import static com.cogent.cogentappointment.client.log.constants.AppointmentMode.APPOINTMENT_MODE;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentReservationLogConstant.APPOINTMENT_RESERVATION_LOG;
 import static com.cogent.cogentappointment.client.log.constants.PatientLog.PATIENT;
 import static com.cogent.cogentappointment.client.utils.AppointmentFollowUpLogUtils.parseToAppointmentFollowUpLog;
@@ -110,6 +111,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final HospitalPatientInfoRepository hospitalPatientInfoRepository;
 
+    private final AppointmentModeRepository appointmentModeRepository;
+
 
     public AppointmentServiceImpl(PatientService patientService,
                                   DoctorService doctorService,
@@ -131,7 +134,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   AppointmentFollowUpRequestLogService appointmentFollowUpRequestLogService,
                                   AppointmentTransactionRequestLogService appointmentTransactionRequestLogService,
                                   AppointmentStatisticsRepository appointmentStatisticsRepository,
-                                  HospitalPatientInfoRepository hospitalPatientInfoRepository) {
+                                  HospitalPatientInfoRepository hospitalPatientInfoRepository,
+                                  AppointmentModeRepository appointmentModeRepository) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -153,6 +157,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.appointmentTransactionRequestLogService = appointmentTransactionRequestLogService;
         this.appointmentStatisticsRepository = appointmentStatisticsRepository;
         this.hospitalPatientInfoRepository = hospitalPatientInfoRepository;
+        this.appointmentModeRepository = appointmentModeRepository;
     }
 
     @Override
@@ -208,6 +213,9 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         AppointmentRequestDTO appointmentInfo = requestDTO.getAppointmentInfo();
 
+        AppointmentMode appointmentMode=fetchActiveAppointmentModeIdByCode
+                (requestDTO.getTransactionInfo().getAppointmentModeCode());
+
         AppointmentTransactionRequestLog transactionRequestLog =
                 appointmentTransactionRequestLogService.save(
                         requestDTO.getTransactionInfo().getTransactionDate(),
@@ -250,7 +258,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                         appointmentReservationLog.getHospitalId()),
                 fetchDoctor(appointmentReservationLog.getDoctorId(),
                         appointmentReservationLog.getHospitalId()),
-                hospital
+                hospital,
+                appointmentMode
         );
 
         save(appointment);
@@ -280,6 +289,9 @@ public class AppointmentServiceImpl implements AppointmentService {
         log.info(SAVING_PROCESS_STARTED, APPOINTMENT);
 
         AppointmentRequestDTO appointmentInfo = requestDTO.getAppointmentInfo();
+
+        AppointmentMode appointmentMode=fetchActiveAppointmentModeIdByCode
+                (requestDTO.getTransactionInfo().getAppointmentModeCode());
 
         AppointmentTransactionRequestLog transactionRequestLog =
                 appointmentTransactionRequestLogService.save(
@@ -324,7 +336,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                         appointmentReservationLog.getHospitalId()),
                 fetchDoctor(appointmentReservationLog.getDoctorId(),
                         appointmentReservationLog.getHospitalId()),
-                hospital
+                hospital,
+                appointmentMode
         );
 
         save(appointment);
@@ -824,9 +837,19 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
     }
 
+    private AppointmentMode fetchActiveAppointmentModeIdByCode(String appointmentModeCode) {
+        return appointmentModeRepository.fetchActiveAppointmentModeByCode(appointmentModeCode)
+                .orElseThrow(() -> APPOINTMENT_MODE_WITH_GIVEN_CODE_NOT_FOUND.apply(appointmentModeCode));
+    }
+
     private Function<Long, NoContentFoundException> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT, id);
         throw new NoContentFoundException(Appointment.class, "id", id.toString());
+    };
+
+    private Function<String, NoContentFoundException> APPOINTMENT_MODE_WITH_GIVEN_CODE_NOT_FOUND = (code) -> {
+        log.error(CONTENT_NOT_FOUND_BY_CODE, APPOINTMENT_MODE, code);
+        throw new NoContentFoundException(Appointment.class, "code", code);
     };
 
     private void save(Appointment appointment) {

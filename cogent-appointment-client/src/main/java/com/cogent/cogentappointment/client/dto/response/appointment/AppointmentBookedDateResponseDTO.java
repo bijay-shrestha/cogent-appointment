@@ -14,6 +14,5 @@ import java.util.Date;
 @Setter
 public class AppointmentBookedDateResponseDTO implements Serializable {
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd YYYY")
     private Date appointmentDate;
 }

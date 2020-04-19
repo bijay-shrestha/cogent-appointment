@@ -1,12 +1,14 @@
-package com.cogent.cogentappointment.admin.query;
+package com.cogent.cogentappointment.client.query;
 
-import com.cogent.cogentappointment.admin.dto.request.appointment.TransactionLogSearchDTO;
+
+import com.cogent.cogentappointment.client.dto.request.appointment.log.TransactionLogSearchDTO;
 import org.springframework.util.ObjectUtils;
 
 import java.util.Objects;
 import java.util.function.Function;
 
-import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
+
 
 /**
  * @author Sauravi Thapa ON 4/19/20
@@ -15,25 +17,24 @@ public class TransactionLogQuery {
 
     public static String SELECT_CLAUSE_FOR_LOGS =
             "SELECT" +
-                    " h.name as hospitalName," +                                    //[0]
-                    " a.appointmentDate as appointmentDate," +                      //[1]
-                    " a.appointmentNumber as appointmentNumber," +                  //[2]
-                    " DATE_FORMAT(a.appointmentTime, '%h:%i %p') as appointmentTime," +          //[3]
-                    " p.eSewaId as esewaId," +                                      //[4]
-                    " hpi.registrationNumber as registrationNumber," +                //[5]
-                    " p.name as patientName," +                                     //[6]
-                    " p.gender as patientGender," +                                 //[7]
-                    " p.dateOfBirth as patientDob," +                               //[8]
-                    " hpi.isRegistered as isRegistered," +                          //[9]
-                    " p.mobileNumber as mobileNumber," +                            //[10]
-                    " sp.name as specializationName," +                             //[11]
-                    " atd.transactionNumber as transactionNumber," +                //[12]
-                    " atd.appointmentAmount as appointmentAmount," +                //[13]
-                    " d.name as doctorName," +                                     //[14]
-                    " a.status as status," +                                       //[15]
-                    " ard.refundAmount as refundAmount," +                         //[16]
-                    " atd.transactionDate as transactionDate," +                    //[17]
-                    " am.name as appointmentMode" +                                //[18]
+                    " a.appointmentDate as appointmentDate," +                      //[0]
+                    " a.appointmentNumber as appointmentNumber," +                  //[1]
+                    " DATE_FORMAT(a.appointmentTime, '%h:%i %p') as appointmentTime," +          //[2]
+                    " p.eSewaId as esewaId," +                                      //[3]
+                    " hpi.registrationNumber as registrationNumber," +                //[4]
+                    " p.name as patientName," +                                     //[5]
+                    " p.gender as patientGender," +                                 //[6]
+                    " p.dateOfBirth as patientDob," +                               //[7]
+                    " hpi.isRegistered as isRegistered," +                          //[8]
+                    " p.mobileNumber as mobileNumber," +                            //[9]
+                    " sp.name as specializationName," +                             //[10]
+                    " atd.transactionNumber as transactionNumber," +                //[11]
+                    " atd.appointmentAmount as appointmentAmount," +                //[12]
+                    " d.name as doctorName," +                                     //[13]
+                    " a.status as status," +                                       //[14]
+                    " ard.refundAmount as refundAmount," +                         //[15]
+                    " atd.transactionDate as transactionDate," +                    //[16]
+                    " am.name as appointmentMode" +                                //[17]
                     " FROM Appointment a" +
                     " LEFT JOIN AppointmentMode am On am.id=a.appointmentModeId.id" +
                     " LEFT JOIN Patient p ON a.patientId.id=p.id" +
@@ -54,7 +55,8 @@ public class TransactionLogQuery {
             TransactionLogSearchDTO transactionLogSearchDTO) {
 
         String whereClause = " WHERE " +
-                " sp.status='Y' ";
+                " sp.status='Y' " +
+                " AND h.id=:hospitalId";
 
         if (!ObjectUtils.isEmpty(transactionLogSearchDTO.getFromDate())
                 && !ObjectUtils.isEmpty(transactionLogSearchDTO.getToDate()))
@@ -67,9 +69,6 @@ public class TransactionLogQuery {
 
         if (!Objects.isNull(transactionLogSearchDTO.getStatus()) && !transactionLogSearchDTO.getStatus().equals(""))
             whereClause += " AND a.status = '" + transactionLogSearchDTO.getStatus() + "'";
-
-        if (!Objects.isNull(transactionLogSearchDTO.getHospitalId()))
-            whereClause += " AND h.id = " + transactionLogSearchDTO.getHospitalId();
 
         if (!Objects.isNull(transactionLogSearchDTO.getPatientMetaInfoId()))
             whereClause += " AND pi.id = " + transactionLogSearchDTO.getPatientMetaInfoId();
@@ -104,7 +103,7 @@ public class TransactionLogQuery {
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
                     " WHERE" +
-                    " sp.status='Y'";
+                    " h.id=:hospitalId";
 
     private static String SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT =
             "SELECT" +
@@ -119,7 +118,8 @@ public class TransactionLogQuery {
                     " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
-                    " WHERE";
+                    " WHERE" +
+                    " h.id=:hospitalId";
 
     public static String QUERY_TO_FETCH_TOTAL_APPOINTMENT_AMOUNT_FOR_TRANSACTION_LOG(TransactionLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_TOTAL_AMOUNT;
@@ -137,21 +137,21 @@ public class TransactionLogQuery {
 
     public static String QUERY_TO_FETCH_BOOKED_APPOINTMENT_AMOUNT_FOR_TRANSACTION_LOG(TransactionLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
-                " a.status='PA'";
+                " AND a.status='PA'";
 
         return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
     }
 
     public static String QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_AMOUNT_FOR_TRANSACTION_LOG(TransactionLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
-                " a.status='A'";
+                " AND a.status='A'";
 
         return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
     }
 
     public static String QUERY_TO_FETCH_CANCELLED_APPOINTMENT_AMOUNT_FOR_TRANSACTION_LOG(TransactionLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
-                " a.status='C'";
+                " AND a.status='C'";
 
         return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
     }
@@ -170,7 +170,8 @@ public class TransactionLogQuery {
                 " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
                 " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
                 " WHERE" +
-                " a.status='RE'";
+                " h.id=:hospitalId"+
+                " AND a.status='RE'";
 
 
         return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
@@ -190,15 +191,13 @@ public class TransactionLogQuery {
                 " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
                 " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
                 " WHERE" +
-                " a.status='RE'";
+                " h.id=:hospitalId"+
+                " AND a.status='RE'";
 
         return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
     }
 
     public static String QUERY_TO_SEARCH_BY_DATES(String query, TransactionLogSearchDTO searchRequestDTO) {
-
-        if (!Objects.isNull(searchRequestDTO.getHospitalId()))
-            query += " AND h.id = " + searchRequestDTO.getHospitalId();
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getFromDate())
                 && !ObjectUtils.isEmpty(searchRequestDTO.getToDate()))

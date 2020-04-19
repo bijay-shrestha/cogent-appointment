@@ -1,7 +1,7 @@
-package com.cogent.cogentappointment.admin.utils;
+package com.cogent.cogentappointment.client.utils;
 
-import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.TransactionLogDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.TransactionLogResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.log.TransactionLogDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.log.TransactionLogResponseDTO;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 
 import java.util.ArrayList;
@@ -9,7 +9,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import static com.cogent.cogentappointment.admin.utils.commons.AgeConverterUtils.calculateAge;
+import static com.cogent.cogentappointment.client.utils.commons.DateConverterUtils.calculateAge;
+
 
 /**
  * @author Sauravi Thapa ON 4/19/20
@@ -23,25 +24,24 @@ public class TransactionLogUtils {
         List<TransactionLogDTO> appointmentLogSearchDTOS = new ArrayList<>();
 
         results.forEach(result -> {
-            final int HOSPITAL_NAME_INDEX = 0;
-            final int APPOINTMENT_DATE_INDEX = 1;
-            final int APPOINTMENT_NUMBER_INDEX = 2;
-            final int APPOINTMENT_TIME_INDEX = 3;
-            final int ESEWA_ID_INDEX = 4;
-            final int REGISTRATION_NUMBER_INDEX = 5;
-            final int PATIENT_NAME_INDEX = 6;
-            final int PATIENT_GENDER_INDEX = 7;
-            final int PATIENT_DOB_INDEX = 8;
-            final int IS_REGISTERED_INDEX = 9;
-            final int PATIENT_MOBILE_NUMBER_INDEX = 10;
-            final int SPECIALIZATION_NAME_INDEX = 11;
-            final int TRANSACTION_NUMBER_INDEX = 12;
-            final int APPOINTMENT_AMOUNT_INDEX = 13;
-            final int DOCTOR_NAME_INDEX = 14;
-            final int APPOINTMENT_STATUS_INDEX = 15;
-            final int REFUND_AMOUNT_INDEX = 16;
-            final int TRANSACTION_DATE_INDEX = 17;
-            final int APPOINTMENT_MODE_INDEX = 18;
+            final int APPOINTMENT_DATE_INDEX = 0;
+            final int APPOINTMENT_NUMBER_INDEX = 1;
+            final int APPOINTMENT_TIME_INDEX = 2;
+            final int ESEWA_ID_INDEX = 3;
+            final int REGISTRATION_NUMBER_INDEX = 4;
+            final int PATIENT_NAME_INDEX = 5;
+            final int PATIENT_GENDER_INDEX = 6;
+            final int PATIENT_DOB_INDEX = 7;
+            final int IS_REGISTERED_INDEX = 8;
+            final int PATIENT_MOBILE_NUMBER_INDEX = 9;
+            final int SPECIALIZATION_NAME_INDEX = 10;
+            final int TRANSACTION_NUMBER_INDEX = 11;
+            final int APPOINTMENT_AMOUNT_INDEX = 12;
+            final int DOCTOR_NAME_INDEX = 13;
+            final int APPOINTMENT_STATUS_INDEX = 14;
+            final int REFUND_AMOUNT_INDEX = 15;
+            final int TRANSACTION_DATE_INDEX = 16;
+            final int APPOINTMENT_MODE_INDEX = 17;
 
             Date appointmentDate = (Date) result[APPOINTMENT_DATE_INDEX];
             Date patientDob = (Date) result[PATIENT_DOB_INDEX];
@@ -58,7 +58,6 @@ public class TransactionLogUtils {
 
             TransactionLogDTO appointmentLogDTO =
                     TransactionLogDTO.builder()
-                            .hospitalName(result[HOSPITAL_NAME_INDEX].toString())
                             .appointmentDate(appointmentDate)
                             .appointmentNumber(result[APPOINTMENT_NUMBER_INDEX].toString())
                             .appointmentTime(result[APPOINTMENT_TIME_INDEX].toString())

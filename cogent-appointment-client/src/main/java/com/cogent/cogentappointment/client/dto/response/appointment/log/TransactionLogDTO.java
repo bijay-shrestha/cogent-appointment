@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog;
+package com.cogent.cogentappointment.client.dto.response.appointment.log;
 
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import lombok.*;
@@ -17,8 +17,6 @@ import java.util.Date;
 public class TransactionLogDTO implements Serializable{
 
     private String status;
-
-    private String hospitalName;
 
     private Date appointmentDate;
 

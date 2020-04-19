@@ -129,20 +129,6 @@ public class CompanyAdminQuery {
                     GET_WHERE_CLAUSE_TO_FETCH_ADMIN +
                     " AND a.id = :id";
 
-    public static final String QUERY_FO_FETCH_MAC_ADDRESS_INFO =
-            "SELECT am.id as id," +                                  //[0]
-                    " am.macAddress as macAddress" +               //[1]
-                    " FROM AdminMacAddressInfo am" +
-                    " WHERE" +
-                    " am.status = 'Y'" +
-                    " AND am.admin.id = :id";
-
-    public static final String QUERY_TO_FETCH_ADMIN_BY_USERNAME_OR_EMAIL =
-            " SELECT a FROM Admin a" +
-                    " WHERE" +
-                    " (a.username=:username OR a.email =:email)" +
-                    " AND a.status != 'D'";
-
     public static final String QUERY_TO_FETCH_COMPANY_ADMIN_INFO =
             " SELECT" +
                     " a.id as adminId," +                                                   //[0]
@@ -154,8 +140,9 @@ public class CompanyAdminQuery {
                     " p.id as profileId," +                                                 //[3]
                     " p.name as profileName," +                                             //[4]
                     " h.id as hospitalId," +                                                //[5]
-                    " h.name as hospitalName," +                                             //[6]
-                    " h.isCompany as isCompany" +                                            //[7]
+                    " h.name as hospitalName," +                                            //[6]
+                    " h.isCompany as isCompany," +                                          //[7]
+                    " p.isAllRoleAssigned as isAllRoleAssigned" +                           //[8]
                     " FROM Admin a" +
                     " LEFT JOIN AdminAvatar av ON av.admin.id=a.id" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +

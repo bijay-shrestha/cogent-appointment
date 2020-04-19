@@ -6,6 +6,4 @@ package com.cogentappointment.scheduler.service;
 public interface AppointmentReservationService {
 
     void deleteExpiredAppointmentReservation();
-
-
 }

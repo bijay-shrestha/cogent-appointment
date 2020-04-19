@@ -74,7 +74,8 @@ public class CompanyProfileQuery {
                     " p.description as description," +                      //[2]
                     " p.remarks as remarks," +                              //[3]
                     " h.id as companyId," +                                 //[4]
-                    " h.name as companyName" +                              //[5]
+                    " h.name as companyName," +                             //[5]
+                    " p.isAllRoleAssigned as isAllRoleAssigned"+            //[6]
                     " FROM" +
                     " Profile p" +
                     " LEFT JOIN Hospital h ON h.id = p.company.id" +

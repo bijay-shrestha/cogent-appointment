@@ -23,6 +23,9 @@ import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIV
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.HYPHEN;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.NO;
+import static com.cogent.cogentappointment.admin.constants.StringConstant.COMMA_SEPARATED;
+import static com.cogent.cogentappointment.admin.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.convertToNormalCase;
 
 /**
@@ -40,7 +43,7 @@ public class CompanyAdminUtils {
         admin.setMobileNumber(requestDTO.getMobileNumber());
         admin.setStatus(requestDTO.getStatus());
         admin.setHasMacBinding(requestDTO.getHasMacBinding());
-        admin.setIsFirstLogin(YES);
+        admin.setIsAccountActivated(NO);
 
         parseCompanyAdminDetails(gender, profile, admin);
         return admin;

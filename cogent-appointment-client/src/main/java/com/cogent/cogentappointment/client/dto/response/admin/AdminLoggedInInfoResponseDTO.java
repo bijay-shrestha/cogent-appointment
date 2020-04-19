@@ -29,4 +29,6 @@ public class AdminLoggedInInfoResponseDTO implements Serializable {
     private String profileName;
 
     private String hospitalName;
+
+    private Character isAllRoleAssigned;
 }

@@ -155,7 +155,6 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
 
             if ((Objects.requireNonNull(expiryDate).compareTo(Objects.requireNonNull(currentDate))) < 0)
                 followUpTracker.setStatus(INACTIVE);
-
         });
 
         log.info(UPDATING_PROCESS_COMPLETED, APPOINTMENT_FOLLOW_UP_TRACKER_STATUS, getDifferenceBetweenTwoTime(startTime));
@@ -240,10 +239,11 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
                 NO, doctorAppointmentCharge, null, savedAppointmentReservationId);
     }
 
-    private AppointmentFollowUpResponseDTO parseDoctorAppointmentFollowUpCharge(Long doctorId,
-                                                                                Long hospitalId,
-                                                                                Long parentAppointmentId,
-                                                                                Long savedAppointmentReservationId) {
+    private AppointmentFollowUpResponseDTO parseDoctorAppointmentFollowUpCharge(
+            Long doctorId,
+            Long hospitalId,
+            Long parentAppointmentId,
+            Long savedAppointmentReservationId) {
 
         Double doctorFollowUpCharge = doctorRepository.fetchDoctorAppointmentFollowUpCharge(
                 doctorId, hospitalId);

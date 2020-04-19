@@ -167,21 +167,6 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     }
 
     @Override
-    public AdminLoggedInInfoResponseDTO fetchLoggedInAdminInfo(AdminInfoRequestDTO requestDTO) {
-
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ADMIN_INFO)
-                .setParameter(USERNAME, requestDTO.getUsername())
-                .setParameter(EMAIL, requestDTO.getUsername());
-
-        try {
-            return transformQueryToSingleResult(query, AdminLoggedInInfoResponseDTO.class);
-        } catch (NoResultException e) {
-            log.error(ADMIN_INFO_NOT_FOUND);
-            throw new NoContentFoundException(ADMIN_INFO_NOT_FOUND);
-        }
-    }
-
-    @Override
     public LoggedInAdminDTO getLoggedInAdmin(String username) {
         Query query = createQuery.apply(entityManager, QUERY_TO_GET_LOGGED_COMPANY_ADMIN_INFO)
                 .setParameter(USERNAME, username);

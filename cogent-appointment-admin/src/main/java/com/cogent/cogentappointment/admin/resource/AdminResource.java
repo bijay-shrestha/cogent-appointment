@@ -1,7 +1,10 @@
 package com.cogent.cogentappointment.admin.resource;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.admin.*;
+import com.cogent.cogentappointment.admin.dto.request.admin.AdminRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.admin.AdminResetPasswordRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.admin.AdminSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.admin.AdminUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.service.AdminService;
 import com.cogent.cogentappointment.admin.utils.commons.ObjectMapperUtils;
 import io.swagger.annotations.Api;
@@ -72,13 +75,6 @@ public class AdminResource {
         return ok().build();
     }
 
-    @PutMapping(CHANGE_PASSWORD)
-    @ApiOperation(CHANGE_PASSWORD_OPERATION)
-    public ResponseEntity<?> changePassword(@Valid @RequestBody AdminChangePasswordRequestDTO requestDTO) {
-        adminService.changePassword(requestDTO);
-        return ok().build();
-    }
-
     @PutMapping(RESET_PASSWORD)
     @ApiOperation(RESET_PASSWORD_OPERATION)
     public ResponseEntity<?> resetPassword(@Valid @RequestBody AdminResetPasswordRequestDTO requestDTO) {
@@ -104,29 +100,10 @@ public class AdminResource {
         return ok().build();
     }
 
-    @GetMapping(VERIFY)
-    @ApiOperation(VERIFY_ADMIN)
-    public ResponseEntity<?> verify(@RequestParam(name = "token") String token) {
-        adminService.verifyConfirmationToken(token);
-        return ok().build();
-    }
-
-    @PostMapping(BASE_PASSWORD)
-    @ApiOperation(SAVE_PASSWORD_OPERATION)
-    public ResponseEntity<?> savePassword(@Valid @RequestBody AdminPasswordRequestDTO requestDTO) {
-        adminService.savePassword(requestDTO);
-        return ok().build();
-    }
-
     @GetMapping(ADMIN_META_INFO)
     @ApiOperation(FETCH_ADMIN_META_INFO)
     public ResponseEntity<?> fetchAdminMetaInfoDropdown() {
         return ok(adminService.fetchAdminMetaInfoResponseDto());
     }
 
-    @PutMapping(INFO)
-    @ApiOperation(FETCH_LOGGED_IN_ADMIN_INFO)
-    public ResponseEntity<?> fetchLoggedInAdminInfo(@Valid @RequestBody AdminInfoRequestDTO requestDTO) {
-        return ok(adminService.fetchLoggedInAdminInfo(requestDTO));
-    }
 }

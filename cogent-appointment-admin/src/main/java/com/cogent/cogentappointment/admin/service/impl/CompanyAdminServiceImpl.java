@@ -195,6 +195,9 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         Admin admin = findById(deleteRequestDTO.getId());
 
+        if (admin.getProfileId().getIsSuperAdminProfile().equals(YES))
+            throw new BadRequestException(INVALID_DELETE_REQUEST);
+
         convertAdminToDeleted(admin, deleteRequestDTO);
 
         log.info(DELETING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
@@ -302,7 +305,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                 confirmationTokenRepository.findAdminConfirmationTokenByToken(requestDTO.getToken())
                         .orElseThrow(() -> CONFIRMATION_TOKEN_NOT_FOUND.apply(requestDTO.getToken()));
 
-        save(saveAdminPassword(requestDTO, adminConfirmationToken));
+        saveAdminPassword(requestDTO, adminConfirmationToken);
 
         adminConfirmationToken.setStatus(INACTIVE);
 
@@ -401,9 +404,11 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
     }
 
-
     private void validateStatus(Object status) {
-        if (status.equals(INACTIVE)) throw ADMIN_ALREADY_REGISTERED.get();
+        if (status.equals(INACTIVE)) {
+            log.error(ADMIN_REGISTERED);
+            throw ADMIN_ALREADY_REGISTERED.get();
+        }
     }
 
     private void validateCompanyAdminDuplicity(List<Object[]> adminList, String requestEmail,

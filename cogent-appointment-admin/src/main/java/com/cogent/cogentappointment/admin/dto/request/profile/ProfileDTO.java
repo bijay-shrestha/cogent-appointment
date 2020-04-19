@@ -31,4 +31,5 @@ public class ProfileDTO implements Serializable {
 
     @NotNull
     private Long departmentId;
+
 }

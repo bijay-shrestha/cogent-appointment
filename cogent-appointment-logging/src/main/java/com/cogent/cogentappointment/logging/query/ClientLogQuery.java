@@ -27,7 +27,7 @@ public class ClientLogQuery {
     public static String QUERY_TO_SEARCH_CLIENT_LOGS(ClientLogSearchRequestDTO searchRequestDTO) {
 
         return " SELECT " +
-                " DATE_FORMAT(cl.logDateTime,'%D %M %Y %h:%i %p') as logDateTime," +
+                " DATE_FORMAT(cl.logDateTime,'%M %d %Y %h:%i %p') as logDateTime," +
                 " cl.browser as browser," +
                 " cl.operatingSystem as os," +
                 " a.username as userName," +

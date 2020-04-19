@@ -27,7 +27,7 @@ public class AdminLogQuery {
     public static String QUERY_TO_SEARCH_ADMIN_LOGS(AdminLogSearchRequestDTO searchRequestDTO) {
 
         return " SELECT " +
-                " DATE_FORMAT(al.logDateTime,'%D %M %Y %h:%i %p') as logDateTime," +
+                " DATE_FORMAT(al.logDateTime,'%M %d %Y %h:%i %p') as logDateTime," +
                 " al.browser as browser," +
                 " al.operatingSystem as os," +
                 " a.username as userName," +

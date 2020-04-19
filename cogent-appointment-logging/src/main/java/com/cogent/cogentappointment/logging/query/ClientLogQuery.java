@@ -17,7 +17,7 @@ public class ClientLogQuery {
                 " LEFT JOIN Admin a ON cl.adminId.id =a.id" +
                 " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                 " LEFT JOIN Hospital h ON h.id=p.company" +
-                " LEFT JOIN AdminMetaInfo ami ON ami.adminId.id=a.id" +
+                " LEFT JOIN AdminMetaInfo ami ON ami.admin.id=a.id" +
                 WHERE_CLAUSE_TO_SEARCH_CLIENT_LOGS(searchRequestDTO) +
                 " GROUP BY cl.feature " +
                 " ORDER BY count(cl.id) DESC";
@@ -31,8 +31,8 @@ public class ClientLogQuery {
                 " DATE_FORMAT(cl.logDateTime,'%M %d %Y %h:%i %p') as logDateTime," +
                 " cl.browser as browser," +
                 " cl.operatingSystem as os," +
-                " cl.email as email," +
-                " cl.mobileNumber as mobileNumber," +
+                " a.email as email," +
+                " a.mobileNumber as mobileNumber," +
                 " cl.ipAddress as ipAddress," +
                 " cl.feature as feature," +
                 " cl.actionType as actionType," +
@@ -42,7 +42,7 @@ public class ClientLogQuery {
                 " LEFT JOIN Admin a ON cl.adminId.id =a.id" +
                 " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                 " LEFT JOIN Hospital h ON h.id=p.company" +
-                " LEFT JOIN AdminMetaInfo ami ON ami.adminId.id=a.id" +
+                " LEFT JOIN AdminMetaInfo ami ON ami.admin.id=a.id" +
                 WHERE_CLAUSE_TO_SEARCH_CLIENT_LOGS(searchRequestDTO)
                 + " ORDER BY cl.logDateTime DESC";
     }

@@ -21,7 +21,11 @@ public class UserMenuLogSearchResponseDTO implements Serializable {
 
     private String os;
 
-    private String userName;
+    private String location;
+
+    private String email;
+
+    private String mobileNumber;
 
     private String ipAddress;
 

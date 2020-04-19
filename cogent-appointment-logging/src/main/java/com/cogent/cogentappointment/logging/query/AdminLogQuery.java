@@ -30,7 +30,8 @@ public class AdminLogQuery {
                 " DATE_FORMAT(al.logDateTime,'%M %d %Y %h:%i %p') as logDateTime," +
                 " al.browser as browser," +
                 " al.operatingSystem as os," +
-                " a.username as userName," +
+                " a.email as email," +
+                " a.mobileNumber as mobileNumber,"+
                 " al.ipAddress as ipAddress," +
                 " al.feature as feature," +
                 " al.actionType as actionType," +

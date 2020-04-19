@@ -236,7 +236,6 @@ public class DashBoardQuery {
 
     public static String QUERY_TO_GENERATE_DOCTOR_REVENUE_LIST(DoctorRevenueRequestDTO requestDTO) {
 
-
         return "SELECT" +
                 " d.id as doctorId," +
                 " d.name as doctorName," +

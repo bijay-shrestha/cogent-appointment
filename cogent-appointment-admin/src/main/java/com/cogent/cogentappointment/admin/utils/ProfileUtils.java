@@ -31,7 +31,6 @@ public class ProfileUtils {
         profile.setDescription(profileDTO.getDescription());
         profile.setStatus(profileDTO.getStatus());
         profile.setDepartment(department);
-        profile.setIsAllRoleAssigned(profileDTO.getIsAllRoleAssigned());
         profile.setIsCompanyProfile(NO);
         profile.setIsSuperAdminProfile(NO);
         return profile;
@@ -43,7 +42,6 @@ public class ProfileUtils {
 
         profile.setName(convertToNormalCase(profileDTO.getName()));
         profile.setDescription(profileDTO.getDescription());
-        profile.setIsAllRoleAssigned(profileDTO.getIsAllRoleAssigned());
         profile.setStatus(profileDTO.getStatus());
         profile.setDepartment(department);
         profile.setRemarks(profileDTO.getRemarks());

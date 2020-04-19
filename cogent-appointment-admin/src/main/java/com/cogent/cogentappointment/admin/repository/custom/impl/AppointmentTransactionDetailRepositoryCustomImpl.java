@@ -4,7 +4,7 @@ package com.cogent.cogentappointment.admin.repository.custom.impl;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.DashBoardRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.DoctorRevenueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.commons.AppointmentRevenueStatisticsResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.dashboard.DoctorRevenueResponseListDTO;
+import com.cogent.cogentappointment.admin.dto.response.dashboard.DoctorRevenueDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueTrendResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.AppointmentTransactionDetailRepositoryCustom;
@@ -29,10 +29,9 @@ import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_N
 import static com.cogent.cogentappointment.admin.query.DashBoardQuery.*;
 import static com.cogent.cogentappointment.admin.utils.AppointmentRevenueStatisticsUtils.*;
 import static com.cogent.cogentappointment.admin.utils.DashboardUtils.revenueStatisticsResponseDTO;
-import static com.cogent.cogentappointment.admin.utils.DoctorUtils.parseTodoctorRevenueResponseListDTO;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
-import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
+import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
 
 
 /**
@@ -189,30 +188,56 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
     }
 
     @Override
-    public DoctorRevenueResponseListDTO getDoctorRevenue(Date toDate,
-                                                         Date fromDate,
-                                                         DoctorRevenueRequestDTO requestDTO,
+    public List<DoctorRevenueDTO> calculateDoctorRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO,
                                                          Pageable pageable) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_GENERATE_DOCTOR_REVENUE_LIST(requestDTO))
-                .setParameter(TO_DATE, utilDateToSqlDate(toDate))
-                .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))
-                .setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
 
-        int totalItems = query.getResultList().size();
+        Query query = createQuery.apply(entityManager, QUERY_TO_CALCULATE_DOCTOR_REVENUE(doctorRevenueRequestDTO))
+                .setParameter(FROM_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getToDate()))
+                .setParameter(HOSPITAL_ID, doctorRevenueRequestDTO.getHospitalId());
 
-        addPagination.accept(pageable, query);
-
-        List<Object[]> objects = query.getResultList();
-
-        DoctorRevenueResponseListDTO responseListDTO = parseTodoctorRevenueResponseListDTO(objects);
-
-        if (responseListDTO.getDoctorRevenueResponseDTOList().isEmpty()) {
-            error();
-            throw DOCTOR_REVENUE_NOT_FOUND.get();
-        }
-
-        return responseListDTO;
+        return transformQueryToResultList(query, DoctorRevenueDTO.class);
     }
+
+    @Override
+    public List<DoctorRevenueDTO> calculateCompanyRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO,
+                                                          Pageable pageable) {
+
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_CALCULATE_COMPANY_REVENUE(doctorRevenueRequestDTO))
+                .setParameter(FROM_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getToDate()))
+                .setParameter(HOSPITAL_ID, doctorRevenueRequestDTO.getHospitalId());
+
+        return transformQueryToResultList(query, DoctorRevenueDTO.class);
+    }
+
+//    @Override
+//    public DoctorRevenueResponseDTO getDoctorRevenue(Date toDate,
+//                                                     Date fromDate,
+//                                                     DoctorRevenueRequestDTO requestDTO,
+//                                                     Pageable pageable) {
+//
+//        Query query = createQuery.apply(entityManager, QUERY_TO_CALCULATE_DOCTOR_REVENUE(requestDTO))
+//                .setParameter(TO_DATE, utilDateToSqlDate(toDate))
+//                .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))
+//                .setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
+//
+//        int totalItems = query.getResultList().size();
+//
+//        addPagination.accept(pageable, query);
+//
+//        List<Object[]> objects = query.getResultList();
+//
+//        DoctorRevenueResponseDTO responseListDTO = parseTodoctorRevenueResponseListDTO(objects);
+//
+//        if (responseListDTO.getDoctorRevenueInfo().isEmpty()) {
+//            error();
+//            throw DOCTOR_REVENUE_NOT_FOUND.get();
+//        }
+//
+//        return responseListDTO;
+//    }
 
 
     private String getQueryByFilter(Long hospitalId, Character filter) {

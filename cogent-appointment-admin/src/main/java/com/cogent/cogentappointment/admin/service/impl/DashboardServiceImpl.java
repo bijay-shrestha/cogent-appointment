@@ -14,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -175,21 +174,25 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    public DoctorRevenueResponseListDTO getDoctorRevenueList(Date toDate,
-                                                             Date fromDate,
-                                                             DoctorRevenueRequestDTO doctorRevenueRequestDTO,
-                                                             Pageable pageable) {
+    public DoctorRevenueResponseDTO calculateDoctorRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO,
+                                                           Pageable pageable) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, DOCTOR_REVENUE);
 
-        DoctorRevenueResponseListDTO doctorRevenueResponseListDTO = appointmentTransactionDetailRepository
-                .getDoctorRevenue(toDate, fromDate, doctorRevenueRequestDTO, pageable);
+        List<DoctorRevenueDTO> doctorRevenue =
+                appointmentTransactionDetailRepository.calculateDoctorRevenue(doctorRevenueRequestDTO, pageable);
+
+        List<DoctorRevenueDTO> companyRevenue =
+                appointmentTransactionDetailRepository.calculateCompanyRevenue(doctorRevenueRequestDTO, pageable);
+
+//        DoctorRevenueResponseDTO doctorRevenueResponseDTO = appointmentTransactionDetailRepository
+//                .calculateDoctorRevenue(doctorRevenueRequestDTO, pageable);
 
         log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_REVENUE, getDifferenceBetweenTwoTime(startTime));
 
-        return doctorRevenueResponseListDTO;
+        return null;
     }
 
 

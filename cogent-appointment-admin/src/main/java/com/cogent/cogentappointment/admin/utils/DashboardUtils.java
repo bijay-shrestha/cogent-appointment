@@ -2,6 +2,8 @@ package com.cogent.cogentappointment.admin.utils;
 
 
 import com.cogent.cogentappointment.admin.dto.response.commons.AppointmentRevenueStatisticsResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.dashboard.DoctorRevenueDTO;
+import com.cogent.cogentappointment.admin.dto.response.dashboard.DoctorRevenueResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueStatisticsResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueTrendResponseDTO;
 
@@ -9,6 +11,7 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -194,6 +197,55 @@ public class DashboardUtils {
 
     private static String trimName(String name) {
         return name.substring(0, 3);
+    }
+
+    public static DoctorRevenueResponseDTO parseTodoctorRevenueResponseListDTO(List<Object[]> results) {
+
+        DoctorRevenueResponseDTO doctorRevenueResponseDTO = new DoctorRevenueResponseDTO();
+
+        List<DoctorRevenueDTO> doctorRevenueDTOS = new ArrayList<>();
+
+        AtomicReference<Double> totalRefundAmount = new AtomicReference<>(0D);
+        AtomicReference<Long> totalAppointmentCount = new AtomicReference<>(0L);
+
+        results.forEach(result -> {
+            final int DOCTOR_ID_INDEX = 0;
+            final int DOCTOR_NAME_INDEX = 1;
+            final int FILE_URI_INDEX = 2;
+            final int SPECIALIZATION_NAME_INDEX = 3;
+            final int TOTAL_APPOINTMENT_COUNT_INDEX = 4;
+            final int REVENUE_AMOUNT_INDEX = 5;
+
+            Double refundAmount = Objects.isNull(result[REVENUE_AMOUNT_INDEX]) ?
+                    0D : Double.parseDouble(result[REVENUE_AMOUNT_INDEX].toString());
+
+            Long appointmentCount = Objects.isNull(result[TOTAL_APPOINTMENT_COUNT_INDEX]) ?
+                    0L : Long.parseLong(result[TOTAL_APPOINTMENT_COUNT_INDEX].toString());
+
+            DoctorRevenueDTO doctorRevenueDTO =
+                    DoctorRevenueDTO.builder()
+                            .doctorId(Long.parseLong(result[DOCTOR_ID_INDEX].toString()))
+                            .doctorName(result[DOCTOR_NAME_INDEX].toString())
+                            .fileUri(result[FILE_URI_INDEX].toString())
+                            .specializationName(result[SPECIALIZATION_NAME_INDEX].toString())
+//                            .totalAppointmentCount(Long.parseLong(result[TOTAL_APPOINTMENT_COUNT_INDEX].toString()))
+//                            .revenueAmount(refundAmount)
+                            .build();
+
+            doctorRevenueDTOS.add(doctorRevenueDTO);
+
+            totalRefundAmount.updateAndGet(v -> v + refundAmount);
+            totalAppointmentCount.updateAndGet(v -> v + appointmentCount);
+
+        });
+
+        doctorRevenueResponseDTO.setDoctorRevenueInfo(doctorRevenueDTOS);
+        doctorRevenueResponseDTO.setTotalItems(doctorRevenueDTOS.size());
+
+        doctorRevenueResponseDTO.setTotalRevenueAmount(totalRefundAmount.get());
+        doctorRevenueResponseDTO.setOverallAppointmentCount(totalAppointmentCount.get());
+
+        return doctorRevenueResponseDTO;
     }
 
 }

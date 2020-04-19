@@ -24,7 +24,6 @@ import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.Dash
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.DashboardConstants.*;
 import static com.cogent.cogentappointment.admin.utils.DoctorRevenueUtils.convertToDoctorRevenueRequestDTO;
-import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.convertStringToDate;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -113,7 +112,7 @@ public class DashboardResource {
                                                   @RequestParam("page") int page,
                                                   @RequestParam("size") int size) throws ParseException {
 
-//    public ResponseEntity<?> getDoctorRevenueList(@RequestParam("request") String request,
+//    public ResponseEntity<?> calculateDoctorRevenue(@RequestParam("request") String request,
 //                                                  @RequestParam("page") int page,
 //                                                  @RequestParam("size") int size) throws ParseException, IOException {
 //
@@ -123,7 +122,6 @@ public class DashboardResource {
                 convertToDoctorRevenueRequestDTO(doctorId, hospitalId, specializationId);
 
         Pageable pageable = PageRequest.of(page, size);
-        return ok(dashboardService.getDoctorRevenueList(convertStringToDate(toDate),
-                convertStringToDate(fromDate), doctorRevenueRequestDTO, pageable));
+        return ok(dashboardService.calculateDoctorRevenue(doctorRevenueRequestDTO, pageable));
     }
 }

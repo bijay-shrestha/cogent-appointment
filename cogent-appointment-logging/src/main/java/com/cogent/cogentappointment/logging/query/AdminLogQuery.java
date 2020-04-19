@@ -31,7 +31,7 @@ public class AdminLogQuery {
                 " al.browser as browser," +
                 " al.operatingSystem as os," +
                 " a.email as email," +
-                " a.mobileNumber as mobileNumber,"+
+                " a.mobileNumber as mobileNumber," +
                 " al.ipAddress as ipAddress," +
                 " al.feature as feature," +
                 " al.actionType as actionType," +
@@ -41,6 +41,7 @@ public class AdminLogQuery {
                 " LEFT JOIN Admin a ON al.adminId.id =a.id" +
                 " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                 " LEFT JOIN Hospital h ON h.id=p.company" +
+                " LEFT JOIN AdminMetaInfo ami ON ami.adminId.id=a.id" +
                 WHERE_CLAUSE_TO_SEARCH_ADMIN_LOGS(searchRequestDTO)
                 + " ORDER BY al.logDateTime DESC";
     }
@@ -53,10 +54,13 @@ public class AdminLogQuery {
         if (!ObjectUtils.isEmpty(searchRequestDTO.getHospitalId()))
             whereClause += " AND h.id=" + searchRequestDTO.getHospitalId();
 
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getUserName()) || !searchRequestDTO.getUserName().equals(""))
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getAdminMetaInfoId()))
+            whereClause += " AND ami.id=" + searchRequestDTO.getAdminMetaInfoId();
 
-            whereClause += " AND (a.username ='" + searchRequestDTO.getUserName() + "' OR a.email ='" + searchRequestDTO.getUserName()
-                    + "' OR a.mobileNumber ='" + searchRequestDTO.getUserName() + " OR a.fullName LIKE %" + searchRequestDTO.getUserName() + "%" + "')";
+//        if (!ObjectUtils.isEmpty(searchRequestDTO.getUserName()) || !searchRequestDTO.getUserName().equals(""))
+//
+//            whereClause += " AND (a.username ='" + searchRequestDTO.getUserName() + "' OR a.email ='" + searchRequestDTO.getUserName()
+//                    + "' OR a.mobileNumber ='" + searchRequestDTO.getUserName() + " OR a.fullName LIKE %" + searchRequestDTO.getUserName() + "%" + "')";
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getParentId()))
             whereClause += " AND al.parentId=" + searchRequestDTO.getParentId();

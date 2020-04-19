@@ -31,7 +31,7 @@ public class ClientLogQuery {
                 " cl.browser as browser," +
                 " cl.operatingSystem as os," +
                 " cl.email as email," +
-                " cl.mobileNumber as mobileNumber,"+
+                " cl.mobileNumber as mobileNumber," +
                 " cl.ipAddress as ipAddress," +
                 " cl.feature as feature," +
                 " cl.actionType as actionType," +
@@ -41,6 +41,7 @@ public class ClientLogQuery {
                 " LEFT JOIN Admin a ON cl.adminId.id =a.id" +
                 " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                 " LEFT JOIN Hospital h ON h.id=p.company" +
+                " LEFT JOIN AdminMetaInfo ami ON ami.adminId.id=a.id" +
                 WHERE_CLAUSE_TO_SEARCH_CLIENT_LOGS(searchRequestDTO)
                 + " ORDER BY cl.logDateTime DESC";
     }
@@ -50,10 +51,13 @@ public class ClientLogQuery {
         String whereClause = " WHERE h.id=:hospitalId AND cl.status != 'D'" +
                 " AND cl.logDate BETWEEN :fromDate AND :toDate";
 
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getUserName()) || !searchRequestDTO.getUserName().equals(""))
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getAdminMetaInfoId()))
+            whereClause += " AND ami.id=" + searchRequestDTO.getAdminMetaInfoId();
 
-            whereClause += " AND (a.username ='" + searchRequestDTO.getUserName() + "' OR a.email ='" + searchRequestDTO.getUserName()
-                    + "' OR a.mobileNumber ='" + searchRequestDTO.getUserName() + " OR a.fullName LIKE %" + searchRequestDTO.getUserName() + "%" + "')";
+//        if (!ObjectUtils.isEmpty(searchRequestDTO.getUserName()) || !searchRequestDTO.getUserName().equals(""))
+//
+//            whereClause += " AND (a.username ='" + searchRequestDTO.getUserName() + "' OR a.email ='" + searchRequestDTO.getUserName()
+//                    + "' OR a.mobileNumber ='" + searchRequestDTO.getUserName() + " OR a.fullName LIKE %" + searchRequestDTO.getUserName() + "%" + "')";
 
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getParentId()))

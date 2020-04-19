@@ -17,6 +17,7 @@ import java.util.Objects;
 
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.AppointmentServiceMessage.INVALID_APPOINTMENT_DATE_TIME;
 import static com.cogent.cogentappointment.esewa.constants.StatusConstants.AppointmentStatusConstants.*;
+import static com.cogent.cogentappointment.esewa.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.esewa.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.esewa.utils.commons.NumberFormatterUtils.generateRandomNumber;
@@ -50,7 +51,8 @@ public class AppointmentUtils {
                                                  Patient patient,
                                                  Specialization specialization,
                                                  Doctor doctor,
-                                                 Hospital hospital) {
+                                                 Hospital hospital,
+                                                 AppointmentMode appointmentMode) {
 
         Appointment appointment = new Appointment();
         appointment.setAppointmentDate(requestDTO.getAppointmentDate());
@@ -61,6 +63,7 @@ public class AppointmentUtils {
         appointment.setCreatedDateNepali(requestDTO.getCreatedDateNepali());
         appointment.setIsFollowUp(requestDTO.getIsFollowUp());
         appointment.setIsSelf(isSelf);
+        appointment.setAppointmentModeId(appointmentMode);
         parseToAppointment(patient, specialization, doctor, hospital, appointment);
         return appointment;
     }
@@ -206,6 +209,24 @@ public class AppointmentUtils {
                 .responseStatus(OK)
                 .responseCode(OK.value())
                 .build();
+    }
+
+    public static AppointmentStatistics parseAppointmentStatisticsForNew(Appointment appointment) {
+        AppointmentStatistics appointmentStatistics = new AppointmentStatistics();
+        appointmentStatistics.setAppointmentId(appointment);
+        appointmentStatistics.setAppointmentCreatedDate(new Date());
+        appointmentStatistics.setIsNew(YES);
+
+        return appointmentStatistics;
+    }
+
+    public static AppointmentStatistics parseAppointmentStatisticsForRegistered(Appointment appointment) {
+        AppointmentStatistics appointmentStatistics = new AppointmentStatistics();
+        appointmentStatistics.setAppointmentId(appointment);
+        appointmentStatistics.setAppointmentCreatedDate(new Date());
+        appointmentStatistics.setIsRegistered(YES);
+
+        return appointmentStatistics;
     }
 
 }

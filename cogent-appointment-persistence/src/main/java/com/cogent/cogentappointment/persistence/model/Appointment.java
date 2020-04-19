@@ -42,6 +42,10 @@ public class Appointment extends Auditable<String> implements Serializable {
     @JoinColumn(name = "patient_id")
     private Patient patientId;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "appointment_mode_id")
+    private AppointmentMode appointmentModeId;
+
     /*saved in format YYYY-MM-DD*/
     @Temporal(TemporalType.DATE)
     @Column(name = "appointment_date")
@@ -61,9 +65,8 @@ public class Appointment extends Auditable<String> implements Serializable {
     @Column(name = "created_date_nepali")
     private String createdDateNepali;
 
-    //todo: refactor as check in for approved
     /* PA = PENDING APPROVAL
-       A= VISITED AND APPROVED
+       A= VISITED AND APPROVED (CHECKED -IN)
        R= REJECTED BY HOSPITAL
        C = CANCELLED BUT NOT REFUNDED
        RE = CANCELLED AND REFUNDED
@@ -92,19 +95,19 @@ public class Appointment extends Auditable<String> implements Serializable {
     @Override
     public String toString() {
         return "Appointment{" +
-                "id=" + id + ", " +
-                "specializationId=" + specializationId.getName() +
+                "id=" + id +
+                ", specializationId=" + specializationId.getName() +
                 ", doctorId=" + doctorId.getName() +
                 ", patientId=" + patientId.getName() +
-                ", hospital=" + hospitalId.getName() +
+                ", appointmentModeId=" + appointmentModeId.getName() +
                 ", appointmentDate=" + appointmentDate +
                 ", appointmentTime=" + appointmentTime +
-                ", appointmentNumber=" + appointmentNumber +
-                ", serialNumber=" + serialNumber +
-                ", createdDateNepali=" + createdDateNepali +
-                ", status=" + status +
-                ", remarks=" + remarks +
-                ", hospitalId=" + hospitalId +
+                ", appointmentNumber='" + appointmentNumber + '\'' +
+                ", serialNumber='" + serialNumber + '\'' +
+                ", createdDateNepali='" + createdDateNepali + '\'' +
+                ", status='" + status + '\'' +
+                ", remarks='" + remarks + '\'' +
+                ", hospitalId=" + hospitalId.getName() +
                 ", isFollowUp=" + isFollowUp +
                 ", isSelf=" + isSelf +
                 '}';

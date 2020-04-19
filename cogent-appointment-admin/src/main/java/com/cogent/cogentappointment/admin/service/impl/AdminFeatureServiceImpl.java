@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
+import com.cogent.cogentappointment.admin.dto.request.adminFeature.AdminFeatureRequestDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.AdminFeatureRepository;
 import com.cogent.cogentappointment.admin.service.AdminFeatureService;
@@ -41,6 +42,12 @@ public class AdminFeatureServiceImpl implements AdminFeatureService {
         adminFeatureRepository.save(adminFeature);
 
         log.info(UPDATING_PROCESS_COMPLETED, ADMIN_FEATURE_LOG, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    @Override
+    public void update(AdminFeatureRequestDTO requestDTO) {
+
+
     }
 
     @Override

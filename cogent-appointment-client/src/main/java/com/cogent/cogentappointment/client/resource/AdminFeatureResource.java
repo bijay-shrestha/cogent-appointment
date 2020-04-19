@@ -34,7 +34,7 @@ public class AdminFeatureResource {
     @PutMapping
     @ApiOperation(UPDATE_OPERATION)
     public ResponseEntity<?> update(@Valid AdminFeatureRequestDTO requestDTO) {
-        adminFeatureService.update(null, requestDTO.getIsSideBarCollapse());
+        adminFeatureService.update(requestDTO);
         return ok().build();
     }
 }

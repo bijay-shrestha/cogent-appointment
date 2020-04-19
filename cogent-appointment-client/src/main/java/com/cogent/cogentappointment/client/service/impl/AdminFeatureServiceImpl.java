@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.service.impl;
 
+import com.cogent.cogentappointment.client.dto.request.adminFeature.AdminFeatureRequestDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.AdminFeatureRepository;
 import com.cogent.cogentappointment.client.service.AdminFeatureService;
@@ -16,6 +17,7 @@ import static com.cogent.cogentappointment.client.utils.AdminFeatureUtils.parseT
 import static com.cogent.cogentappointment.client.utils.AdminFeatureUtils.updateAdminFeatureFlag;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInAdminUsername;
 
 /**
  * @author smriti on 18/04/20
@@ -32,12 +34,12 @@ public class AdminFeatureServiceImpl implements AdminFeatureService {
     }
 
     @Override
-    public void save(Admin admin, Character isSideBarCollapse) {
+    public void save(Admin admin) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(UPDATING_PROCESS_STARTED, ADMIN_FEATURE_LOG);
 
-        AdminFeature adminFeature = parseToAdminFeature(admin, isSideBarCollapse);
+        AdminFeature adminFeature = parseToAdminFeature(admin);
 
         adminFeatureRepository.save(adminFeature);
 
@@ -45,15 +47,17 @@ public class AdminFeatureServiceImpl implements AdminFeatureService {
     }
 
     @Override
-    public void update(Long adminId, Character isSideBarCollapse) {
+    public void update(AdminFeatureRequestDTO requestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(UPDATING_PROCESS_STARTED, ADMIN_FEATURE_LOG);
 
-        AdminFeature adminFeature = adminFeatureRepository.findAdminFeatureByAdminId(adminId)
+        String username = getLoggedInAdminUsername();
+
+        AdminFeature adminFeature = adminFeatureRepository.findAdminFeatureByAdminUsername(username)
                 .orElseThrow(() -> new NoContentFoundException(AdminFeature.class));
 
-        updateAdminFeatureFlag(adminFeature, isSideBarCollapse);
+        updateAdminFeatureFlag(adminFeature, requestDTO.getIsSideBarCollapse());
 
         log.info(UPDATING_PROCESS_COMPLETED, ADMIN_FEATURE_LOG, getDifferenceBetweenTwoTime(startTime));
     }

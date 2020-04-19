@@ -11,7 +11,5 @@ public interface AdminFeatureService {
     void save(Admin admin);
 
     void update(AdminFeatureRequestDTO requestDTO);
-
-    void update(String username, Character isSideBarCollapse);
 }
 

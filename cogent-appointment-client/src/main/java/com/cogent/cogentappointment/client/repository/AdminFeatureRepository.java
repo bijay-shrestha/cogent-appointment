@@ -14,6 +14,6 @@ import java.util.Optional;
 @Repository
 public interface AdminFeatureRepository extends JpaRepository<AdminFeature, Long> {
 
-    @Query("SELECT a FROM AdminFeature a WHERE a.admin.id = :adminId AND a.admin.status!='D'")
-    Optional<AdminFeature> findAdminFeatureByAdminId(@Param("adminId") Long adminId);
+    @Query("SELECT a FROM AdminFeature a WHERE a.admin.username = :username AND a.admin.status!='D'")
+    Optional<AdminFeature> findAdminFeatureByAdminUsername(@Param("username") String username);
 }

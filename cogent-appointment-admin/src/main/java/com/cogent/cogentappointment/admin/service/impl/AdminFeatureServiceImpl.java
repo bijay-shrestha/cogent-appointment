@@ -40,6 +40,7 @@ public class AdminFeatureServiceImpl implements AdminFeatureService {
         log.info(UPDATING_PROCESS_STARTED, ADMIN_FEATURE_LOG);
 
         AdminFeature adminFeature = parseToAdminFeature(admin);
+
         adminFeatureRepository.save(adminFeature);
 
         log.info(UPDATING_PROCESS_COMPLETED, ADMIN_FEATURE_LOG, getDifferenceBetweenTwoTime(startTime));
@@ -53,16 +54,11 @@ public class AdminFeatureServiceImpl implements AdminFeatureService {
 
         String username = getLoggedInAdminUsername();
 
-        update(username, requestDTO.getIsSideBarCollapse());
-
-        log.info(UPDATING_PROCESS_COMPLETED, ADMIN_FEATURE_LOG, getDifferenceBetweenTwoTime(startTime));
-    }
-
-    @Override
-    public void update(String username, Character isSideBarCollapse) {
         AdminFeature adminFeature = adminFeatureRepository.findAdminFeatureByAdminUsername(username)
                 .orElseThrow(() -> new NoContentFoundException(AdminFeature.class));
 
-        updateAdminFeatureFlag(adminFeature, isSideBarCollapse);
+        updateAdminFeatureFlag(adminFeature, requestDTO.getIsSideBarCollapse());
+
+        log.info(UPDATING_PROCESS_COMPLETED, ADMIN_FEATURE_LOG, getDifferenceBetweenTwoTime(startTime));
     }
 }

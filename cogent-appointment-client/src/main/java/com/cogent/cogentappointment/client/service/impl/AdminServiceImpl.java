@@ -135,7 +135,7 @@ public class AdminServiceImpl implements AdminService {
 
         saveAdminMetaInfo(admin);
 
-        saveAdminFeature(admin, adminRequestDTO.getIsSideBarCollapse());
+        saveAdminFeature(admin);
 
         saveAllAdminDashboardFeature(adminRequestDTO.getAdminDashboardRequestDTOS(), admin);
 
@@ -529,8 +529,8 @@ public class AdminServiceImpl implements AdminService {
         adminMetaInfoRepository.save(parseInAdminMetaInfo(admin));
     }
 
-    private void saveAdminFeature(Admin admin, Character isSideBarCollapse) {
-        adminFeatureService.save(admin, isSideBarCollapse);
+    private void saveAdminFeature(Admin admin) {
+        adminFeatureService.save(admin);
     }
 
     private void updateAdminMetaInfo(Admin admin) {

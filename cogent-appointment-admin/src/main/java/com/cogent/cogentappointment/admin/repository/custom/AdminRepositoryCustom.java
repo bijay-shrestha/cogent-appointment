@@ -45,8 +45,6 @@ public interface AdminRepositoryCustom {
 
     Admin fetchAdminByUsernameOrEmail(String username);
 
-    AdminLoggedInInfoResponseDTO fetchLoggedInAdminInfo(AdminInfoRequestDTO requestDTO);
-
     LoggedInAdminDTO getLoggedInAdmin(String username);
 
     List<DashboardFeatureResponseDTO> fetchDashboardFeaturesByAdmin(Long adminId);

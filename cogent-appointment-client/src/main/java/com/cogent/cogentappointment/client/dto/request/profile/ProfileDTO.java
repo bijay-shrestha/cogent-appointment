@@ -14,6 +14,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class ProfileDTO implements Serializable {
+
     @NotNull
     @NotEmpty
     private String name;
@@ -28,4 +29,7 @@ public class ProfileDTO implements Serializable {
 
     @NotNull
     private Long departmentId;
+
+    @NotNull
+    private Character isAllRoleAssigned;
 }

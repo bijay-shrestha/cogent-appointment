@@ -59,6 +59,7 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
             if (adminMinDetails.getIsCompany().equals(NO)) {
                 signatureBuilder = new HMACBuilder()
                         .algorithm(authHeader.getAlgorithm())
+                        .userId(authHeader.getUserId())
                         .nonce(authHeader.getNonce())
                         .username(adminMinDetails.getUsername())
                         .hospitalId(Math.toIntExact(authHeader.getHospitalId()))
@@ -114,12 +115,13 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
         }
 
         return new AuthHeader(authHeaderMatcher.group(1),
-                authHeaderMatcher.group(2),
-                Integer.parseInt(authHeaderMatcher.group(3)),
-                authHeaderMatcher.group(4),
+                Integer.parseInt(authHeaderMatcher.group(2)),
+                authHeaderMatcher.group(3),
+                Integer.parseInt(authHeaderMatcher.group(4)),
                 authHeaderMatcher.group(5),
                 authHeaderMatcher.group(6),
-                DatatypeConverter.parseBase64Binary(authHeaderMatcher.group(7)));
+                authHeaderMatcher.group(7),
+                DatatypeConverter.parseBase64Binary(authHeaderMatcher.group(8)));
 
     }
 
@@ -134,6 +136,7 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
             return null;
         }
         return new AuthHeader(authHeaderMatcher.group(1),
+                null,
                 null,
                 null,
                 authHeaderMatcher.group(2),

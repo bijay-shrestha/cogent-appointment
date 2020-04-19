@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AppointmentServiceMessage.INVALID_APPOINTMENT_DATE_TIME;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.*;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.client.utils.commons.DateConverterUtils.calculateAge;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
@@ -549,4 +550,23 @@ public class AppointmentUtils {
                 .responseCode(OK.value())
                 .build();
     }
+
+    public static AppointmentStatistics parseAppointmentStatisticsForNew(Appointment appointment) {
+        AppointmentStatistics appointmentStatistics = new AppointmentStatistics();
+        appointmentStatistics.setAppointmentId(appointment);
+        appointmentStatistics.setAppointmentCreatedDate(new Date());
+        appointmentStatistics.setIsNew(YES);
+
+        return appointmentStatistics;
+    }
+
+    public static AppointmentStatistics parseAppointmentStatisticsForRegistered(Appointment appointment) {
+        AppointmentStatistics appointmentStatistics = new AppointmentStatistics();
+        appointmentStatistics.setAppointmentId(appointment);
+        appointmentStatistics.setAppointmentCreatedDate(new Date());
+        appointmentStatistics.setIsRegistered(YES);
+
+        return appointmentStatistics;
+    }
+
 }

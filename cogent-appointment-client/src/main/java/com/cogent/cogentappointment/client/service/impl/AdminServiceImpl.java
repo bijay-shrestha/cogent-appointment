@@ -308,7 +308,7 @@ public class AdminServiceImpl implements AdminService {
                 confirmationTokenRepository.findAdminConfirmationTokenByToken(requestDTO.getToken())
                         .orElseThrow(() -> CONFIRMATION_TOKEN_NOT_FOUND.apply(requestDTO.getToken()));
 
-        save(saveAdminPassword(requestDTO, adminConfirmationToken));
+        saveAdminPassword(requestDTO, adminConfirmationToken);
         adminConfirmationToken.setStatus(INACTIVE);
 
         log.info(SAVING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));

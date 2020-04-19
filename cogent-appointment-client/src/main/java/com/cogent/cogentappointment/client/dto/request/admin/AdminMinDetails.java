@@ -16,6 +16,9 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AdminMinDetails implements Serializable {
+
+    private Long userId;
+
     private String username;
 
     private String fullName;

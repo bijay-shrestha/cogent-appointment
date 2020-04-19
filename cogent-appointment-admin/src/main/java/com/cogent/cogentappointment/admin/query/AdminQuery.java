@@ -158,31 +158,6 @@ public class AdminQuery {
                     " (a.username=:username OR a.email =:email)" +
                     " AND a.status != 'D'";
 
-    public static final String QUERY_TO_FETCH_ADMIN_INFO =
-            " SELECT" +
-                    " a.id as adminId," +                                                   //[0]
-                    " a.username as username," +                                            //[1]
-                    " a.fullName as fullName," +
-                    " CASE " +
-                    "    WHEN (av.status = 'N' OR  av.status IS NULL) THEN null" +
-                    "    ELSE av.fileUri END as fileUri," +                                //[2]
-                    " p.id as profileId," +                                                 //[3]
-                    " p.name as profileName," +                                             //[4]
-                    " d.id as departmentId," +                                              //[5]
-                    " d.name as departmentName," +                                          //[6]
-                    " h.id as hospitalId," +                                                //[7]
-                    " h.name as hospitalName," +                                             //[8]
-                    " h.isCompany as isCompany" +                                   //[9]
-                    " FROM Admin a" +
-                    " LEFT JOIN AdminAvatar av ON av.admin.id=a.id" +
-                    " LEFT JOIN Profile p ON p.id=a.profileId.id" +
-                    " LEFT JOIN Department d ON d.id=p.department.id" +
-                    " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
-                    " WHERE " +
-                    " (a.username=:username OR a.email =:email OR a.mobileNumber=:username)" +
-                    " AND a.status='Y'" +
-                    " AND h.isCompany='Y'";
-
     public static final String QUERY_TO_FETCH_ADMIN_META_INFO =
             " SELECT" +
                     " ami.id as adminMetaInfoId," +                   //[0]

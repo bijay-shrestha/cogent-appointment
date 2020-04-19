@@ -99,7 +99,7 @@ public class ProfileServiceImpl implements ProfileService {
 
         Department department = findDepartmentById(requestDTO.getProfileDTO().getDepartmentId());
 
-        save(convertToUpdatedProfile(requestDTO.getProfileDTO(), department, profile));
+        convertToUpdatedProfile(requestDTO.getProfileDTO(), department, profile);
 
         saveProfileMenu(convertToUpdatedProfileMenu(profile, requestDTO.getProfileMenuRequestDTO()));
 

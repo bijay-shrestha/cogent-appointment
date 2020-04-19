@@ -18,6 +18,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CompanyProfileUpdateDTO implements Serializable {
+
     @NotNull
     private Long id;
 
@@ -39,4 +40,8 @@ public class CompanyProfileUpdateDTO implements Serializable {
     @NotNull
     @NotEmpty
     private String remarks;
+
+    @NotNull
+    @Status
+    private Character isAllRoleAssigned;
 }

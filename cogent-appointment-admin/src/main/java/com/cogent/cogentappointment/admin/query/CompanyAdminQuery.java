@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.query;
 
 import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.admin.AdminSearchRequestDTO;
 import com.cogent.cogentappointment.admin.utils.GenderUtils;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import org.springframework.util.ObjectUtils;
@@ -117,26 +118,16 @@ public class CompanyAdminQuery {
 
     public static final String QUERY_TO_FETCH_COMPANY_ADMIN_DETAIL =
             SELECT_CLAUSE_TO_FETCH_COMPANY_ADMIN + "," +
-                    " a.remarks as remarks," +                                     //[10]
+                    " a.remarks as remarks," +                                      //[10]
                     " h.id as companyId," +                                        //[11]
-                    " p.id as profileId," +                                        //[12]
-                    " af.isSideBarCollapse as isSideBarCollapse" +                 //[13]
+                    " p.id as profileId" +                                         //[12]
                     " FROM" +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id = a.profileId.id" +
                     " LEFT JOIN AdminAvatar av ON a.id = av.admin.id" +
                     " LEFT JOIN Hospital h ON h.id = p.company.id" +
-                    " LEFT JOIN AdminFeature af ON a.id = af.admin.id" +
                     GET_WHERE_CLAUSE_TO_FETCH_ADMIN +
                     " AND a.id = :id";
-
-    public static final String QUERY_FO_FETCH_MAC_ADDRESS_INFO =
-            "SELECT am.id as id," +                                  //[0]
-                    " am.macAddress as macAddress" +               //[1]
-                    " FROM AdminMacAddressInfo am" +
-                    " WHERE" +
-                    " am.status = 'Y'" +
-                    " AND am.admin.id = :id";
 
     public static final String QUERY_TO_FETCH_COMPANY_ADMIN_INFO =
             " SELECT" +
@@ -146,17 +137,16 @@ public class CompanyAdminQuery {
                     " CASE " +
                     "    WHEN (av.status = 'N' OR  av.status IS NULL) THEN null" +
                     "    ELSE av.fileUri END as fileUri," +                                //[2]
-                    " p.id as profileId," +                                                //[3]
-                    " p.name as profileName," +                                            //[4]
-                    " h.id as hospitalId," +                                               //[5]
-                    " h.name as hospitalName," +                                           //[6]
-                    " h.isCompany as isCompany," +                                         //[7]
-                    " af.isSideBarCollapse as isSideBarCollapse" +                         //[8]
+                    " p.id as profileId," +                                                 //[3]
+                    " p.name as profileName," +                                             //[4]
+                    " h.id as hospitalId," +                                                //[5]
+                    " h.name as hospitalName," +                                            //[6]
+                    " h.isCompany as isCompany," +                                          //[7]
+                    " p.isAllRoleAssigned as isAllRoleAssigned" +                           //[8]
                     " FROM Admin a" +
                     " LEFT JOIN AdminAvatar av ON av.admin.id=a.id" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                     " LEFT JOIN Hospital h ON h.id=p.company.id" +
-                    " LEFT JOIN AdminFeature af ON a.id = af.admin.id" +
                     " WHERE " +
                     " (a.username=:username OR a.email =:email OR a.mobileNumber=:username)" +
                     " AND a.status='Y'" +

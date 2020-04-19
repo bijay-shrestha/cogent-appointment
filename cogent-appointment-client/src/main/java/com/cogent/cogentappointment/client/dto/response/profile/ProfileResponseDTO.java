@@ -12,7 +12,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ProfileResponseDTO implements Serializable{
+public class ProfileResponseDTO implements Serializable {
 
     private String name;
 
@@ -25,4 +25,6 @@ public class ProfileResponseDTO implements Serializable{
     private String departmentName;
 
     private String remarks;
+
+    private Character isAllRoleAssigned;
 }

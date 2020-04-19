@@ -6,22 +6,22 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @author Rupak
+ * @author Sauravi Thapa ON 4/19/20
  */
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppointmentLogSearchDTO implements Serializable {
+public class TransactionLogSearchDTO implements Serializable {
+
+    private String status;
 
     private Long hospitalId;
 
     private Date fromDate;
 
     private Date toDate;
-
-    private String appointmentNumber;
 
     private Long patientMetaInfoId;
 
@@ -35,6 +35,5 @@ public class AppointmentLogSearchDTO implements Serializable {
     /*SELF OR OTHERS*/
     private Character appointmentCategory;
 
-    private String status;
-
+    private String transactionNumber;
 }

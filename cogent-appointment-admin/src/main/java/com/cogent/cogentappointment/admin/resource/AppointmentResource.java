@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.resource;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.TransactionLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPendingApproval.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPendingApproval.AppointmentRejectDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundRejectDTO;
@@ -101,6 +102,15 @@ public class AppointmentResource {
                                                  @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ok().body(appointmentService.searchAppointmentLogs(searchRequestDTO, pageable));
+    }
+
+    @PutMapping(TRANSACTION_LOG)
+    @ApiOperation(FETCH_TRANSACTION_LOG)
+    public ResponseEntity<?> fetchTransactionLog(@RequestBody TransactionLogSearchDTO searchRequestDTO,
+                                                 @RequestParam("page") int page,
+                                                 @RequestParam("size") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ok().body(appointmentService.searchTransactionLogs(searchRequestDTO,pageable));
     }
 
     @PutMapping(RESCHEDULE_LOG)

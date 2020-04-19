@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.query;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.TransactionLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPendingApproval.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
@@ -274,24 +275,11 @@ public class AppointmentQuery {
             whereClause += " AND (a.appointmentDate BETWEEN '" + utilDateToSqlDate(appointmentLogSearchDTO.getFromDate())
                     + "' AND '" + utilDateToSqlDate(appointmentLogSearchDTO.getToDate()) + "')";
 
-        if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getTransactionFromDate())
-                && !ObjectUtils.isEmpty(appointmentLogSearchDTO.getTransactionToDate()))
-            whereClause += " AND (atd.transactionDate BETWEEN '" +
-                    utilDateToSqlDate(appointmentLogSearchDTO.getTransactionFromDate())
-                    + "' AND '" + utilDateToSqlDate(appointmentLogSearchDTO.getTransactionToDate()) + "')";
-
-
         if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getAppointmentNumber()))
             whereClause += " AND a.appointmentNumber LIKE '%" + appointmentLogSearchDTO.getAppointmentNumber() + "%'";
 
-        if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getTransactionNumber()))
-            whereClause += " AND atd.transactionNumber LIKE '%" + appointmentLogSearchDTO.getTransactionNumber() + "%'";
-
         if (!Objects.isNull(appointmentLogSearchDTO.getStatus()) && !appointmentLogSearchDTO.getStatus().equals(""))
             whereClause += " AND a.status = '" + appointmentLogSearchDTO.getStatus() + "'";
-
-        if (!Objects.isNull(appointmentLogSearchDTO.getAppointmentId()))
-            whereClause += " AND a.id = " + appointmentLogSearchDTO.getAppointmentId();
 
         if (!Objects.isNull(appointmentLogSearchDTO.getHospitalId()))
             whereClause += " AND h.id = " + appointmentLogSearchDTO.getHospitalId();
@@ -611,23 +599,11 @@ public class AppointmentQuery {
             query += " AND (a.appointmentDate BETWEEN '" + utilDateToSqlDate(searchRequestDTO.getFromDate())
                     + "' AND '" + utilDateToSqlDate(searchRequestDTO.getToDate()) + "')";
 
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getTransactionFromDate())
-                && !ObjectUtils.isEmpty(searchRequestDTO.getTransactionToDate()))
-            query += " AND (atd.transactionDate BETWEEN '" +
-                    utilDateToSqlDate(searchRequestDTO.getTransactionFromDate())
-                    + "' AND '" + utilDateToSqlDate(searchRequestDTO.getTransactionToDate()) + "')";
-
         if (!ObjectUtils.isEmpty(searchRequestDTO.getAppointmentNumber()))
             query += " AND a.appointmentNumber LIKE '%" + searchRequestDTO.getAppointmentNumber() + "%'";
 
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getTransactionNumber()))
-            query += " AND atd.transactionNumber LIKE '%" + searchRequestDTO.getTransactionNumber() + "%'";
-
         if (!Objects.isNull(searchRequestDTO.getStatus()) && !searchRequestDTO.getStatus().equals(""))
             query += " AND a.status = '" + searchRequestDTO.getStatus() + "'";
-
-        if (!Objects.isNull(searchRequestDTO.getAppointmentId()))
-            query += " AND a.id = " + searchRequestDTO.getAppointmentId();
 
         if (!Objects.isNull(searchRequestDTO.getPatientMetaInfoId()))
             query += " AND pi.id = " + searchRequestDTO.getPatientMetaInfoId();

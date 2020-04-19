@@ -46,6 +46,7 @@ public class SwaggerConstants {
         String FETCH_APPOINTMENT_QUEUE = "Fetch Appointment Queue of Today for Dashboard";
         String FETCH_APPOINTMENT_RESCHEDULE_LOG = "Fetch Appointment Reschedule Log";
         String DETAILS_APPROVAL_VISIT_OPERATION = "Fetch appointment visit approval details by its id";
+        String FETCH_TRANSACTION_LOG = "Fetch Transaction Log";
     }
 
     public interface AppointmentStatusConstant {

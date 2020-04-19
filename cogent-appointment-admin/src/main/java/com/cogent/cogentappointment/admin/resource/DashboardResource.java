@@ -112,16 +112,10 @@ public class DashboardResource {
                                                   @RequestParam("page") int page,
                                                   @RequestParam("size") int size) throws ParseException {
 
-//    public ResponseEntity<?> calculateDoctorRevenue(@RequestParam("request") String request,
-//                                                  @RequestParam("page") int page,
-//                                                  @RequestParam("size") int size) throws ParseException, IOException {
-//
-//        DoctorRevenueRequestDTO requestDTO = ObjectMapperUtils.map(request, DoctorRevenueRequestDTO.class);
-
         DoctorRevenueRequestDTO doctorRevenueRequestDTO =
-                convertToDoctorRevenueRequestDTO(doctorId, hospitalId, specializationId);
+                convertToDoctorRevenueRequestDTO(doctorId, hospitalId, specializationId, fromDate, toDate);
 
         Pageable pageable = PageRequest.of(page, size);
-        return ok(dashboardService.calculateDoctorRevenue(doctorRevenueRequestDTO, pageable));
+        return ok(dashboardService.calculateOverallDoctorRevenue(doctorRevenueRequestDTO, pageable));
     }
 }

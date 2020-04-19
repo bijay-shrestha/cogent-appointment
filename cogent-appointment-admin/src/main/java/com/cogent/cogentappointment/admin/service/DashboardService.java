@@ -25,8 +25,8 @@ public interface DashboardService {
 
     Double calculateTotalRefundedAmount(RefundAmountRequestDTO refundAmountRequestDTO);
 
-    DoctorRevenueResponseDTO calculateDoctorRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO,
-                                                    Pageable pageable);
+    DoctorRevenueResponseDTO calculateOverallDoctorRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO,
+                                                           Pageable pageable);
 
     List<DashboardFeatureResponseDTO> getDashboardFeaturesByAdmin(Long adminId);
 

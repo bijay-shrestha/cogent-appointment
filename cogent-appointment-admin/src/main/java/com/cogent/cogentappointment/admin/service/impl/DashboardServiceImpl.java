@@ -174,8 +174,8 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    public DoctorRevenueResponseDTO calculateDoctorRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO,
-                                                           Pageable pageable) {
+    public DoctorRevenueResponseDTO calculateOverallDoctorRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO,
+                                                                  Pageable pageable) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -188,7 +188,7 @@ public class DashboardServiceImpl implements DashboardService {
                 appointmentTransactionDetailRepository.calculateCompanyRevenue(doctorRevenueRequestDTO, pageable);
 
 //        DoctorRevenueResponseDTO doctorRevenueResponseDTO = appointmentTransactionDetailRepository
-//                .calculateDoctorRevenue(doctorRevenueRequestDTO, pageable);
+//                .calculateOverallDoctorRevenue(doctorRevenueRequestDTO, pageable);
 
         log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_REVENUE, getDifferenceBetweenTwoTime(startTime));
 

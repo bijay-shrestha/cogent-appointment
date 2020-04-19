@@ -3,18 +3,19 @@ package com.cogent.cogentappointment.admin.service.impl;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.*;
 import com.cogent.cogentappointment.admin.dto.request.email.EmailRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.admin.*;
+import com.cogent.cogentappointment.admin.dto.response.admin.AdminDetailResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.admin.AdminDropdownDTO;
+import com.cogent.cogentappointment.admin.dto.response.admin.AdminMetaInfoResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.admin.AdminMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.exception.OperationUnsuccessfulException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.AdminService;
 import com.cogent.cogentappointment.admin.service.EmailService;
 import com.cogent.cogentappointment.admin.service.MinioFileService;
 import com.cogent.cogentappointment.admin.service.ProfileService;
-import com.cogent.cogentappointment.admin.validator.LoginValidator;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.Validator;
@@ -39,6 +39,7 @@ import java.util.stream.Collectors;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.*;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
+import static com.cogent.cogentappointment.admin.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.AdminLog.*;
@@ -84,7 +85,9 @@ public class AdminServiceImpl implements AdminService {
                             AdminMacAddressInfoRepository adminMacAddressInfoRepository,
                             AdminMetaInfoRepository adminMetaInfoRepository,
                             AdminAvatarRepository adminAvatarRepository,
-                            DashboardFeatureRepository dashboardFeatureRepository, AdminDashboardFeatureRepository adminDashboardFeatureRepository, AdminConfirmationTokenRepository confirmationTokenRepository,
+                            DashboardFeatureRepository dashboardFeatureRepository,
+                            AdminDashboardFeatureRepository adminDashboardFeatureRepository,
+                            AdminConfirmationTokenRepository confirmationTokenRepository,
                             MinioFileService minioFileService, EmailService emailService,
                             ProfileService profileService) {
         this.validator = validator;
@@ -101,8 +104,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void save(@Valid AdminRequestDTO adminRequestDTO, MultipartFile files,
-                     HttpServletRequest httpServletRequest) {
+    public void save(@Valid AdminRequestDTO adminRequestDTO, MultipartFile files) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -112,11 +114,17 @@ public class AdminServiceImpl implements AdminService {
 
         validateAdminCount(adminRequestDTO.getHospitalId());
 
-        List<Object[]> admins = adminRepository.validateDuplicity(adminRequestDTO.getUsername(),
-                adminRequestDTO.getEmail(), adminRequestDTO.getMobileNumber(), adminRequestDTO.getHospitalId());
+        List<Object[]> admins = adminRepository.validateDuplicity(
+                adminRequestDTO.getUsername(),
+                adminRequestDTO.getEmail(),
+                adminRequestDTO.getMobileNumber(),
+                adminRequestDTO.getHospitalId()
+        );
 
-        validateAdminDuplicity(admins, adminRequestDTO.getUsername(), adminRequestDTO.getEmail(),
-                adminRequestDTO.getMobileNumber());
+        validateAdminDuplicity(admins, adminRequestDTO.getUsername(),
+                adminRequestDTO.getEmail(),
+                adminRequestDTO.getMobileNumber()
+        );
 
         Admin admin = save(adminRequestDTO);
 
@@ -128,46 +136,14 @@ public class AdminServiceImpl implements AdminService {
 
         saveAllAdminDashboardFeature(adminRequestDTO.getAdminDashboardRequestDTOS(), admin);
 
-        AdminConfirmationToken adminConfirmationToken =
-                saveAdminConfirmationToken(parseInAdminConfirmationToken(admin));
+        AdminConfirmationToken adminConfirmationToken = saveAdminConfirmationToken(admin);
 
         EmailRequestDTO emailRequestDTO = convertAdminRequestToEmailRequestDTO(adminRequestDTO,
-                adminConfirmationToken.getConfirmationToken(), httpServletRequest);
+                adminConfirmationToken.getConfirmationToken());
 
-        sendEmail(emailRequestDTO);
+        saveEmailToSend(emailRequestDTO);
 
         log.info(SAVING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
-    }
-
-    private void saveAllAdminDashboardFeature(List<AdminDashboardRequestDTO> dashboardRequestDTOList, Admin admin) {
-
-        if (dashboardRequestDTOList.size() > 0) {
-            List<DashboardFeature> dashboardFeatureList = findActiveDashboardFeatures(dashboardRequestDTOList);
-            adminDashboardFeatureRepository.saveAll(parseToAdminDashboardFeature(dashboardFeatureList, admin));
-        }
-
-    }
-
-    private List<DashboardFeature> findActiveDashboardFeatures(List<AdminDashboardRequestDTO> adminDashboardRequestDTOS) {
-
-        String ids = adminDashboardRequestDTOS.stream()
-                .map(request -> request.getId().toString())
-                .collect(Collectors.joining(","));
-
-        List<DashboardFeature> dashboardFeatureList = validateDashboardFeature(ids);
-        int requestCount = adminDashboardRequestDTOS.size();
-
-        if ((dashboardFeatureList.size()) != requestCount) {
-            log.error(CONTENT_NOT_FOUND, DashboardFeature.class.getSimpleName());
-            throw new NoContentFoundException(DashboardFeature.class);
-        }
-
-        return dashboardFeatureList;
-
-    }
-
-    private List<DashboardFeature> validateDashboardFeature(String ids) {
-        return dashboardFeatureRepository.validateDashboardFeatureCount(ids);
     }
 
     @Override
@@ -223,21 +199,6 @@ public class AdminServiceImpl implements AdminService {
         convertAdminToDeleted(admin, deleteRequestDTO);
 
         log.info(DELETING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
-    }
-
-    @Override
-    public void changePassword(AdminChangePasswordRequestDTO requestDTO) {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(UPDATING_PASSWORD_PROCESS_STARTED);
-
-        Admin admin = findById(requestDTO.getId());
-
-        validatePassword(admin, requestDTO);
-
-        updateAdminPassword(requestDTO.getNewPassword(), requestDTO.getRemarks(), admin);
-
-        log.info(UPDATING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
@@ -297,7 +258,7 @@ public class AdminServiceImpl implements AdminService {
 
         updateAdminMetaInfo(admin);
 
-        sendEmail(emailRequestDTO);
+        saveEmailToSend(emailRequestDTO);
 
         log.info(UPDATING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
     }
@@ -332,50 +293,6 @@ public class AdminServiceImpl implements AdminService {
         List<DashboardFeature> dashboardFeatureList = Arrays.asList(dashboardFeature);
         adminDashboardFeatureRepository.saveAll(parseToAdminDashboardFeature(dashboardFeatureList, admin));
 
-    }
-
-    @Override
-    public void verifyConfirmationToken(String token) {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(VERIFY_CONFIRMATION_TOKEN_PROCESS_STARTED);
-
-        Object status = confirmationTokenRepository.findByConfirmationToken(token);
-        validateStatus(status);
-
-        log.info(VERIFY_CONFIRMATION_TOKEN_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
-    }
-
-    @Override
-    public void savePassword(AdminPasswordRequestDTO requestDTO) {
-
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(SAVING_PASSWORD_PROCESS_STARTED);
-
-        AdminConfirmationToken adminConfirmationToken =
-                confirmationTokenRepository.findAdminConfirmationTokenByToken(requestDTO.getToken())
-                        .orElseThrow(() -> CONFIRMATION_TOKEN_NOT_FOUND.apply(requestDTO.getToken()));
-
-        save(saveAdminPassword(requestDTO, adminConfirmationToken));
-
-        adminConfirmationToken.setStatus(INACTIVE);
-
-        log.info(SAVING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
-    }
-
-    @Override
-    public AdminLoggedInInfoResponseDTO fetchLoggedInAdminInfo(AdminInfoRequestDTO requestDTO) {
-
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(FETCHING_PROCESS_STARTED, ADMIN);
-
-        AdminLoggedInInfoResponseDTO responseDTO = adminRepository.fetchLoggedInAdminInfo(requestDTO);
-
-        log.info(FETCHING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
-
-        return responseDTO;
     }
 
     @Override
@@ -526,12 +443,46 @@ public class AdminServiceImpl implements AdminService {
         parseMetaInfo(admin, adminMetaInfo);
     }
 
-    private AdminConfirmationToken saveAdminConfirmationToken(AdminConfirmationToken adminConfirmationToken) {
+    private AdminConfirmationToken saveAdminConfirmationToken(Admin admin) {
+        AdminConfirmationToken adminConfirmationToken = parseInAdminConfirmationToken(admin);
         return confirmationTokenRepository.save(adminConfirmationToken);
+    }
+
+    private void saveAllAdminDashboardFeature(List<AdminDashboardRequestDTO> dashboardRequestDTOList, Admin admin) {
+
+        if (dashboardRequestDTOList.size() > 0) {
+            List<DashboardFeature> dashboardFeatureList = findActiveDashboardFeatures(dashboardRequestDTOList);
+            adminDashboardFeatureRepository.saveAll(parseToAdminDashboardFeature(dashboardFeatureList, admin));
+        }
+    }
+
+    private List<DashboardFeature> findActiveDashboardFeatures(List<AdminDashboardRequestDTO> adminDashboardRequestDTOS) {
+
+        String ids = adminDashboardRequestDTOS.stream()
+                .map(request -> request.getId().toString())
+                .collect(Collectors.joining(COMMA_SEPARATED));
+
+        List<DashboardFeature> dashboardFeatureList = validateDashboardFeature(ids);
+        int requestCount = adminDashboardRequestDTOS.size();
+
+        if ((dashboardFeatureList.size()) != requestCount) {
+            log.error(CONTENT_NOT_FOUND, DashboardFeature.class.getSimpleName());
+            throw new NoContentFoundException(DashboardFeature.class);
+        }
+
+        return dashboardFeatureList;
+    }
+
+    private List<DashboardFeature> validateDashboardFeature(String ids) {
+        return dashboardFeatureRepository.validateDashboardFeatureCount(ids);
     }
 
     private void sendEmail(EmailRequestDTO emailRequestDTO) {
         emailService.sendEmail(emailRequestDTO);
+    }
+
+    private void saveEmailToSend(EmailRequestDTO emailRequestDTO) {
+        emailService.saveEmailToSend(emailRequestDTO);
     }
 
     private Admin findById(Long adminId) {
@@ -593,19 +544,6 @@ public class AdminServiceImpl implements AdminService {
         }
     };
 
-    private void validatePassword(Admin admin, AdminChangePasswordRequestDTO requestDTO) {
-
-        if (!LoginValidator.checkPassword(requestDTO.getOldPassword(), admin.getPassword())) {
-            log.error(PASSWORD_MISMATCH_MESSAGE);
-            throw new OperationUnsuccessfulException(PASSWORD_MISMATCH_MESSAGE);
-        }
-
-        if (LoginValidator.checkPassword(requestDTO.getNewPassword(), admin.getPassword())) {
-            log.error(DUPLICATE_PASSWORD_MESSAGE);
-            throw new DataDuplicationException(DUPLICATE_PASSWORD_MESSAGE);
-        }
-    }
-
     private Supplier<DataDuplicationException> ADMIN_DUPLICATION = () ->
             new DataDuplicationException(ADMIN_DUPLICATION_MESSAGE);
 
@@ -628,4 +566,6 @@ public class AdminServiceImpl implements AdminService {
     private Profile fetchProfile(Long profileId) {
         return profileService.fetchActiveProfileById(profileId);
     }
+
+
 }

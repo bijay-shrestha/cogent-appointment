@@ -29,8 +29,10 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AppointmentServiceMessage.INVALID_APPOINTMENT_DATE;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AppointmentServiceMessage.INVALID_APPOINTMENT_DATE_TIME;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.*;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.client.utils.commons.DateConverterUtils.calculateAge;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
@@ -60,6 +62,22 @@ public class AppointmentUtils {
             log.error(INVALID_APPOINTMENT_DATE_TIME);
             throw new BadRequestException(INVALID_APPOINTMENT_DATE_TIME);
         }
+    }
+
+    public static void validateIfRequestIsPastDate(Date requestedDate) {
+
+        boolean isDateBefore = removeTime(requestedDate).before(removeTime(new Date()));
+        if (isDateBefore)
+            throw new BadRequestException(INVALID_APPOINTMENT_DATE);
+    }
+
+    private static boolean hasTimePassed(Date date, String time) {
+
+        Date availableDateTime = parseAppointmentTime(date, time);
+
+        Date currentDate = new Date();
+
+        return availableDateTime.before(currentDate);
     }
 
     public static Appointment parseToAppointment(AppointmentRequestDTO requestDTO,
@@ -145,6 +163,29 @@ public class AppointmentUtils {
             String date = FORMAT.print(startDateTime);
 
             if (!isAppointmentDateMatched(bookedAppointments, date))
+                availableTimeSlots.add(date);
+
+            startDateTime = startDateTime.plus(rosterGapDuration);
+        } while (startDateTime.compareTo(FORMAT.parseDateTime(endTime)) <= 0);
+
+        return availableTimeSlots;
+    }
+
+    /*ADD ONLY TIME AFTER AFTER CURRENT TIME*/
+    public static List<String> calculateCurrentAvailableTimeSlots(String startTime,
+                                                                  String endTime,
+                                                                  Duration rosterGapDuration,
+                                                                  List<AppointmentBookedTimeResponseDTO> bookedAppointments,
+                                                                  Date requestedDate) {
+
+        List<String> availableTimeSlots = new ArrayList<>();
+
+        DateTime startDateTime = new DateTime(FORMAT.parseDateTime(startTime));
+
+        do {
+            String date = FORMAT.print(startDateTime);
+
+            if ((!isAppointmentDateMatched(bookedAppointments, date)) && (!hasTimePassed(requestedDate, date)))
                 availableTimeSlots.add(date);
 
             startDateTime = startDateTime.plus(rosterGapDuration);
@@ -549,4 +590,23 @@ public class AppointmentUtils {
                 .responseCode(OK.value())
                 .build();
     }
+
+    public static AppointmentStatistics parseAppointmentStatisticsForNew(Appointment appointment) {
+        AppointmentStatistics appointmentStatistics = new AppointmentStatistics();
+        appointmentStatistics.setAppointmentId(appointment);
+        appointmentStatistics.setAppointmentCreatedDate(new Date());
+        appointmentStatistics.setIsNew(YES);
+
+        return appointmentStatistics;
+    }
+
+    public static AppointmentStatistics parseAppointmentStatisticsForRegistered(Appointment appointment) {
+        AppointmentStatistics appointmentStatistics = new AppointmentStatistics();
+        appointmentStatistics.setAppointmentId(appointment);
+        appointmentStatistics.setAppointmentCreatedDate(new Date());
+        appointmentStatistics.setIsRegistered(YES);
+
+        return appointmentStatistics;
+    }
+
 }

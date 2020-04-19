@@ -56,6 +56,7 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
             if (userDetails.getIsCompany().equals(YES)) {
                 signatureBuilder = new HMACBuilder()
                         .algorithm(authHeader.getAlgorithm())
+                        .id(authHeader.getUserId())
                         .nonce(authHeader.getNonce())
                         .username(userDetails.getUsername())
                         .companyId(Math.toIntExact(authHeader.getCompanyId()))
@@ -92,24 +93,18 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
         }
 
         return new AuthHeader(authHeaderMatcher.group(1),
-                authHeaderMatcher.group(2),
-                Integer.parseInt(authHeaderMatcher.group(3)),
-                authHeaderMatcher.group(4),
+                Integer.parseInt(authHeaderMatcher.group(2)),
+                authHeaderMatcher.group(3),
+                Integer.parseInt(authHeaderMatcher.group(4)),
                 authHeaderMatcher.group(5),
                 authHeaderMatcher.group(6),
-                DatatypeConverter.parseBase64Binary(authHeaderMatcher.group(7)));
+                authHeaderMatcher.group(7),
+                DatatypeConverter.parseBase64Binary(authHeaderMatcher.group(8)));
     }
 
     public void compareSignature(HMACBuilder signatureBuilder, byte[] digest) {
         if (!signatureBuilder.isHashEquals(digest))
             throw new BadCredentialsException(HMAC_BAD_SIGNATURE);
-    }
-
-    public PreAuthenticatedAuthenticationToken getAuthentication(UserDetails userDetails) {
-        return new PreAuthenticatedAuthenticationToken(
-                userDetails,
-                null,
-                null);
     }
 
     public PreAuthenticatedAuthenticationToken getAuthenticationForCompany(String username, Long companyId) {

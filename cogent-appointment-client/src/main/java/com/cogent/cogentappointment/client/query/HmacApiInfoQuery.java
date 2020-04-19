@@ -33,6 +33,7 @@ public class HmacApiInfoQuery {
 
     public static final String QUERY_TO_VERIFY_LOGGED_IN_ADMIN =
             " SELECT" +
+                    " a.id as userId," +
                     " a.fullName as fullName," +
                     " a.username as username," +
                     " a.email as email," +

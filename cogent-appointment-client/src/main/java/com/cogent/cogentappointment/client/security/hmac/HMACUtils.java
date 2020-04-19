@@ -16,6 +16,7 @@ public class HMACUtils {
 
     public String getHash(AdminMinDetails admin) {
         final String nonce = generateNonce();
+        Integer userId=Math.toIntExact(admin.getUserId());
         String username = admin.getUsername();
         String hospitalCode = admin.getHospitalCode();
         String apiKey = admin.getApiKey();
@@ -24,6 +25,7 @@ public class HMACUtils {
 
         final HMACBuilder signatureBuilder = new HMACBuilder()
                 .algorithm(HMAC_ALGORITHM)
+                .userId(userId)
                 .nonce(nonce)
                 .apiKey(apiKey)
                 .hospitalCode(hospitalCode)
@@ -36,6 +38,8 @@ public class HMACUtils {
 
         String hash = HMAC_ALGORITHM +
                 SPACE +
+                userId+
+                COLON+
                 username +
                 COLON +
                 hospitalId +

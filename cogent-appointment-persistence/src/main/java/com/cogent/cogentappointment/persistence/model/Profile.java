@@ -60,6 +60,14 @@ public class Profile extends Auditable<String> implements Serializable {
     @JoinColumn(name = "company_id")
     private Hospital company;
 
+    /*The reason behind adding this flag is to make sure that admin with limited roles
+     are able to assign or modify collection of roles assigned to them.
+     When a limited profile is editing its superior profiles,
+     it won't be able to un-assign any of the menus or roles that it has not been assigned.*/
+    /*FULL DESCRIPTION HERE: https://confluence.f1soft.com/display/F1SOFT/Profile+Setup+Cases*/
+    @Column(name = "is_all_role_assigned")
+    private Character isAllRoleAssigned;
+
     @Column(name = "remarks")
     private String remarks;
 
@@ -73,6 +81,7 @@ public class Profile extends Auditable<String> implements Serializable {
                 ", status='" + status + '\'' +
                 ", isCompanyProfile='" + isCompanyProfile + '\'' +
                 ", remarks='" + remarks + '\'' +
+                ", isAllRoleAssigned= '" + isAllRoleAssigned + '\'' +
                 '}';
     }
 }

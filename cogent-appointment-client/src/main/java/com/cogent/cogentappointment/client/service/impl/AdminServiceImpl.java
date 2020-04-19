@@ -142,7 +142,7 @@ public class AdminServiceImpl implements AdminService {
         EmailRequestDTO emailRequestDTO = convertAdminRequestToEmailRequestDTO(adminRequestDTO,
                 adminConfirmationToken.getConfirmationToken());
 
-        sendEmail(emailRequestDTO);
+        saveEmailToSend(emailRequestDTO);
 
         log.info(SAVING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
     }
@@ -276,7 +276,7 @@ public class AdminServiceImpl implements AdminService {
 
         updateAdminMetaInfo(admin);
 
-        sendEmail(emailRequestDTO);
+        saveEmailToSend(emailRequestDTO);
 
         log.info(UPDATING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
     }
@@ -305,7 +305,7 @@ public class AdminServiceImpl implements AdminService {
                 confirmationTokenRepository.findAdminConfirmationTokenByToken(requestDTO.getToken())
                         .orElseThrow(() -> CONFIRMATION_TOKEN_NOT_FOUND.apply(requestDTO.getToken()));
 
-        save(saveAdminPassword(requestDTO, adminConfirmationToken));
+        saveAdminPassword(requestDTO, adminConfirmationToken);
         adminConfirmationToken.setStatus(INACTIVE);
 
         log.info(SAVING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
@@ -414,7 +414,7 @@ public class AdminServiceImpl implements AdminService {
         Long savedAdmin = (Long) get(objects, 0);
         Integer numberOfAdminsAllowed = (Integer) get(objects, 1);
 
-        if (savedAdmin.intValue() == numberOfAdminsAllowed){
+        if (savedAdmin.intValue() == numberOfAdminsAllowed) {
             log.error(ADMIN_CANNOT_BE_REGISTERED_DEBUG_MESSAGE);
             throw new BadRequestException(ADMIN_CANNOT_BE_REGISTERED_MESSAGE, ADMIN_CANNOT_BE_REGISTERED_DEBUG_MESSAGE);
         }
@@ -432,7 +432,7 @@ public class AdminServiceImpl implements AdminService {
             boolean isEmailExists = requestEmail.equalsIgnoreCase((String) get(admin, EMAIL));
             boolean isMobileNumberExists = requestMobileNumber.equalsIgnoreCase((String) get(admin, MOBILE_NUMBER));
 
-            if (isUsernameExists && isEmailExists && isMobileNumberExists){
+            if (isUsernameExists && isEmailExists && isMobileNumberExists) {
                 log.error(ADMIN_DUPLICATION_MESSAGE);
                 throw ADMIN_DUPLICATION.get();
             }
@@ -444,15 +444,15 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private void validateUsername(boolean isUsernameExists, String username) {
-        if (isUsernameExists){
-            log.error(DUPLICATION_ERROR,username);
+        if (isUsernameExists) {
+            log.error(DUPLICATION_ERROR, username);
             throw new DataDuplicationException(
                     String.format(USERNAME_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), username));
         }
     }
 
     private void validateEmail(boolean isEmailExists, String email) {
-        if (isEmailExists){
+        if (isEmailExists) {
             log.error(DUPLICATION_ERROR, email);
             throw new DataDuplicationException(
                     String.format(EMAIL_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), email));
@@ -460,7 +460,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private void validateMobileNumber(boolean isMobileNumberExists, String mobileNumber) {
-        if (isMobileNumberExists){
+        if (isMobileNumberExists) {
             log.error(DUPLICATION_ERROR, mobileNumber);
             throw new DataDuplicationException(
                     String.format(MOBILE_NUMBER_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), mobileNumber));
@@ -541,6 +541,10 @@ public class AdminServiceImpl implements AdminService {
         emailService.sendEmail(emailRequestDTO);
     }
 
+    private void saveEmailToSend(EmailRequestDTO emailRequestDTO) {
+        emailService.saveEmailToSend(emailRequestDTO);
+    }
+
     private Admin findAdminByIdAndHospitalId(Long adminId, Long hospitalId) {
         return adminRepository.findAdminByIdAndHospitalId(adminId, hospitalId)
                 .orElseThrow(() -> ADMIN_WITH_GIVEN_ID_NOT_FOUND.apply(adminId));
@@ -595,7 +599,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private Consumer<List<String>> validateMacAddressInfoSize = (macInfos) -> {
-        if (ObjectUtils.isEmpty(macInfos)){
+        if (ObjectUtils.isEmpty(macInfos)) {
             log.error(CONTENT_NOT_FOUND, AdminMacAddressInfo.class.getSimpleName());
             throw new NoContentFoundException(AdminMacAddressInfo.class);
         }

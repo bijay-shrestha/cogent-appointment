@@ -7,4 +7,8 @@ public class SecurityContextUtils {
     public static Long getLoggedInCompanyId() {
         return (Long) SecurityContextHolder.getContext().getAuthentication().getCredentials();
     }
+
+    public static String getLoggedInAdminUsername() {
+        return (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
 }

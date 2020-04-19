@@ -189,7 +189,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 requestDTO.getAppointmentDate(), requestDTO.getDoctorId(), requestDTO.getSpecializationId());
 
         AppointmentCheckAvailabilityResponseDTO responseDTO =
-                fetchAvailableTimeSlots(doctorDutyRosterInfo, requestDTO);
+                fetchCurrentAvailableTimeSlots(doctorDutyRosterInfo, requestDTO);
 
         log.info(CHECK_AVAILABILITY_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
 
@@ -739,6 +739,40 @@ public class AppointmentServiceImpl implements AppointmentService {
         return responseDTO;
     }
 
+    /*IF DOCTOR DAY OFF STATUS = 'Y', THEN THERE ARE NO AVAILABLE TIME SLOTS
+* ELSE, CALCULATE AVAILABLE TIME SLOTS BASED ON DOCTOR DUTY ROSTER AND APPOINTMENT FOR THE SELECTED CRITERIA
+* (APPOINTMENT DATE, DOCTOR AND SPECIALIZATION)
+* FETCH APPOINTMENT RESERVATIONS FOR THE SELECTED CRITERIA AND FINALLY FILTER OUT ONLY AVAILABLE TIME SLOTS
+* (EXCLUDING APPOINTMENT RESERVATION)*/
+    private AppointmentCheckAvailabilityResponseDTO fetchCurrentAvailableTimeSlots(
+            DoctorDutyRosterTimeResponseDTO doctorDutyRosterInfo,
+            AppointmentCheckAvailabilityRequestDTO requestDTO) {
+
+        Date queryDate = utilDateToSqlDate(requestDTO.getAppointmentDate());
+        String doctorStartTime = getTimeFromDate(doctorDutyRosterInfo.getStartTime());
+        String doctorEndTime = getTimeFromDate(doctorDutyRosterInfo.getEndTime());
+
+        AppointmentCheckAvailabilityResponseDTO responseDTO;
+
+        if (doctorDutyRosterInfo.getDayOffStatus().equals(YES)) {
+            responseDTO = parseToAvailabilityResponse(doctorStartTime, doctorEndTime, queryDate, new ArrayList<>());
+        } else {
+            final Duration rosterGapDuration = Minutes.minutes(doctorDutyRosterInfo.getRosterGapDuration())
+                    .toStandardDuration();
+
+            List<String> availableTimeSlots = filterCurrentDoctorTimeWithAppointments(
+                    rosterGapDuration, doctorStartTime, doctorEndTime, requestDTO);
+
+            List<String> bookedAppointmentReservations =
+                    fetchBookedAppointmentReservations(requestDTO);
+
+            filterAvailableSlotsWithAppointmentReservation(availableTimeSlots, bookedAppointmentReservations);
+
+            responseDTO = parseToAvailabilityResponse(doctorStartTime, doctorEndTime, queryDate, availableTimeSlots);
+        }
+        return responseDTO;
+    }
+
     private List<String> filterDoctorTimeWithAppointments(Duration rosterGapDuration,
                                                           String doctorStartTime,
                                                           String doctorEndTime,
@@ -747,11 +781,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         List<AppointmentBookedTimeResponseDTO> bookedAppointments =
                 appointmentRepository.fetchBookedAppointments(requestDTO);
 
-//        return calculateAvailableTimeSlots(
-//                doctorStartTime, doctorEndTime, rosterGapDuration, bookedAppointments);
-        return calculateCurrentAvailableTimeSlots(
-                doctorStartTime, doctorEndTime, rosterGapDuration, bookedAppointments, requestDTO.getAppointmentDate());
-
+        return calculateAvailableTimeSlots(
+                doctorStartTime, doctorEndTime, rosterGapDuration, bookedAppointments);
     }
 
     private List<String> filterCurrentDoctorTimeWithAppointments(Duration rosterGapDuration,

@@ -71,7 +71,7 @@ public class AppointmentUtils {
             throw new BadRequestException(INVALID_APPOINTMENT_DATE);
     }
 
-    private static boolean hasTimeHasPassed(Date date, String time) {
+    private static boolean hasTimePassed(Date date, String time) {
 
         Date availableDateTime = parseAppointmentTime(date, time);
 
@@ -171,6 +171,7 @@ public class AppointmentUtils {
         return availableTimeSlots;
     }
 
+    /*ADD ONLY TIME AFTER AFTER CURRENT TIME*/
     public static List<String> calculateCurrentAvailableTimeSlots(String startTime,
                                                                   String endTime,
                                                                   Duration rosterGapDuration,
@@ -184,9 +185,7 @@ public class AppointmentUtils {
         do {
             String date = FORMAT.print(startDateTime);
 
-            boolean hasTimePassed = hasTimeHasPassed(requestedDate, date);
-
-            if (!isAppointmentDateMatched(bookedAppointments, date))
+            if ((!isAppointmentDateMatched(bookedAppointments, date)) && (!hasTimePassed(requestedDate, date)))
                 availableTimeSlots.add(date);
 
             startDateTime = startDateTime.plus(rosterGapDuration);

@@ -7,6 +7,6 @@ import com.cogent.cogentappointment.client.dto.commons.ClientLogRequestDTO;
  */
 public interface ClientLogService {
 
-    void save(ClientLogRequestDTO adminRequestDTO, Character status, String ipAddress);
+    void save(ClientLogRequestDTO adminRequestDTO, Character status);
 
 }

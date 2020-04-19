@@ -34,14 +34,14 @@ public class AdminLogServiceImpl implements AdminLogService {
     }
 
     @Override
-    public void save(AdminLogRequestDTO requestDTO, Character status, String ipAddress) {
+    public void save(AdminLogRequestDTO requestDTO, Character status) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, ADMIN_USER_MENU_LOG);
 
         Admin admin = adminRepository.findAdminById(requestDTO.getAdminId()).get();
-        AdminLog adminLog = parseToAdminLog(requestDTO, status, admin, ipAddress);
+        AdminLog adminLog = parseToAdminLog(requestDTO, status, admin);
         adminLogRepository.save(adminLog);
 
         log.info(SAVING_PROCESS_COMPLETED, ADMIN_USER_MENU_LOG, getDifferenceBetweenTwoTime(startTime));

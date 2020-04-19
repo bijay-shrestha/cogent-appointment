@@ -16,25 +16,7 @@ import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.splitB
  * @author Rupak
  */
 public class RequestHandler {
-
-    public static String getRemoteAddr(HttpServletRequest request) throws UnknownHostException {
-
-        String ipFromHeader = request.getHeader("X-FORWARDED-FOR");
-        if (ipFromHeader != null && ipFromHeader.length() > 0) {
-            System.out.println("ip from proxy - X-FORWARDED-FOR : " + ipFromHeader);
-            return ipFromHeader;
-        }
-
-        String remoteAddr = request.getRemoteAddr();
-
-        if (remoteAddr.equalsIgnoreCase("0:0:0:0:0:0:0:1")) {
-            InetAddress inetAddress = InetAddress.getLocalHost();
-            String ipAddress = inetAddress.getHostAddress();
-            remoteAddr = ipAddress;
-        }
-        return remoteAddr;
-    }
-
+    
     public static AdminLogRequestDTO convertToAdminLogRequestDTO(String userLog) throws IOException {
 
         AdminLogRequestDTO adminLogRequestDTO = ObjectMapperUtils.map(userLog, AdminLogRequestDTO.class);

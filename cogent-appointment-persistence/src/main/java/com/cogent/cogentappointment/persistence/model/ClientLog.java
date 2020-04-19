@@ -21,7 +21,7 @@ import java.util.Date;
 @Getter
 @Setter
 @EntityListeners(ClientLogEntityListener.class)
-public class ClientLog extends Auditable<String> implements Serializable{
+public class ClientLog extends Auditable<String> implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,6 +56,12 @@ public class ClientLog extends Auditable<String> implements Serializable{
 
     @Column(name = "action_type")
     private String actionType;
+
+    @Column(name = "browser")
+    private String browser;
+
+    @Column(name = "operating_system")
+    private String operatingSystem;
 
     @Column(name = "status")
     private Character status;

@@ -13,19 +13,21 @@ import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDat
  */
 public class AdminLogUtils {
 
-    public static AdminLog parseToAdminLog(AdminLogRequestDTO requestDTO, Character status, Admin admin, String ipAddress) {
+    public static AdminLog parseToAdminLog(AdminLogRequestDTO requestDTO, Character status, Admin admin) {
 
         AdminLog adminLog = new AdminLog();
         adminLog.setAdminId(admin);
         adminLog.setParentId(requestDTO.getParentId());
         adminLog.setRoleId(requestDTO.getRoleId());
-        adminLog.setIpAddress(ipAddress);
+        adminLog.setIpAddress(requestDTO.getIpAddress());
         adminLog.setFeature(requestDTO.getFeature());
         adminLog.setActionType(requestDTO.getActionType());
         adminLog.setLogDescription(requestDTO.getLogDescription());
         adminLog.setStatus(status);
         adminLog.setLogDate(utilDateToSqlDate(new Date()));
         adminLog.setLogDateTime(new Date());
+        adminLog.setBrowser(requestDTO.getBrowser());
+        adminLog.setOperatingSystem(requestDTO.getOperatingSystem());
 
         return adminLog;
     }

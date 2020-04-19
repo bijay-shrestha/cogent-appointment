@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.loghandler;
 
+import com.cogent.cogentappointment.admin.loghandler.RequestData;
 import com.cogent.cogentappointment.client.dto.commons.ClientLogRequestDTO;
 import com.cogent.cogentappointment.client.service.ClientLogService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,33 +31,39 @@ public class UserLogInterceptor implements HandlerInterceptor {
 
             ClientLogRequestDTO clientLogRequestDTO = RequestHandler.convertToClientLogRequestDTO(userLog);
 
-            String ipAddress = RequestHandler.getRemoteAddr(request);
+            String clientBrowser = com.cogent.cogentappointment.admin.loghandler.RequestData.getClientBrowser(request);
+            String clientOS = com.cogent.cogentappointment.admin.loghandler.RequestData.getClientOS(request);
+            String clientIpAddr = RequestData.getClientIpAddr(request);
+
+            clientLogRequestDTO.setBrowser(clientBrowser);
+            clientLogRequestDTO.setOperatingSystem(clientOS);
+            clientLogRequestDTO.setIpAddress(clientIpAddr);
 
             if (exception == null) {
 
                 clientLogRequestDTO.setLogDescription(getSuccessLogDescription(clientLogRequestDTO.getFeature(), clientLogRequestDTO.getActionType()));
-                saveSuccessLogs(clientLogRequestDTO, ipAddress);
+                saveSuccessLogs(clientLogRequestDTO);
             }
 
             if (exception != null) {
 
                 clientLogRequestDTO.setLogDescription(getFailedLogDescription());
-                saveFailedLogs(clientLogRequestDTO, ipAddress);
+                saveFailedLogs(clientLogRequestDTO);
             }
 
         }
 
     }
 
-    private void saveSuccessLogs(ClientLogRequestDTO clientLogRequestDTO, String ipAddress) {
+    private void saveSuccessLogs(ClientLogRequestDTO clientLogRequestDTO) {
 
-        clientLogService.save(clientLogRequestDTO, ACTIVE, ipAddress);
+        clientLogService.save(clientLogRequestDTO, ACTIVE);
 
     }
 
-    private void saveFailedLogs(ClientLogRequestDTO clientLogRequestDTO, String ipAddress) {
+    private void saveFailedLogs(ClientLogRequestDTO clientLogRequestDTO) {
 
-        clientLogService.save(clientLogRequestDTO, INACTIVE, ipAddress);
+        clientLogService.save(clientLogRequestDTO, INACTIVE);
     }
 
 }

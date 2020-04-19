@@ -34,34 +34,42 @@ public class UserLogInterceptor implements HandlerInterceptor {
 
             AdminLogRequestDTO adminLogRequestDTO = RequestHandler.convertToAdminLogRequestDTO(userLog);
 
-            String ipAddress = RequestHandler.getRemoteAddr(request);
+            String clientBrowser = RequestData.getClientBrowser(request);
+            String clientOS = RequestData.getClientOS(request);
+            String clientIpAddr = RequestData.getClientIpAddr(request);
+
+            adminLogRequestDTO.setBrowser(clientBrowser);
+            adminLogRequestDTO.setOperatingSystem(clientOS);
+            adminLogRequestDTO.setIpAddress(clientIpAddr);
+
+            System.out.println(clientBrowser + " " + clientOS + " " + clientIpAddr);
 
             if (exception == null) {
 
                 adminLogRequestDTO.setLogDescription(getSuccessLogDescription(adminLogRequestDTO.getFeature(), adminLogRequestDTO.getActionType()));
-                saveSuccessLogs(adminLogRequestDTO, ipAddress);
+                saveSuccessLogs(adminLogRequestDTO);
             }
 
             if (exception != null) {
 
                 adminLogRequestDTO.setLogDescription(getFailedLogDescription());
-                saveFailedLogs(adminLogRequestDTO, ipAddress);
+                saveFailedLogs(adminLogRequestDTO);
             }
 
         }
 
     }
 
-    private void saveSuccessLogs(AdminLogRequestDTO adminLogRequestDTO, String ipAddress) {
+    private void saveSuccessLogs(AdminLogRequestDTO adminLogRequestDTO) {
 
-        adminLogService.save(adminLogRequestDTO, ACTIVE, ipAddress);
+        adminLogService.save(adminLogRequestDTO, ACTIVE);
 
     }
 
-    private void saveFailedLogs(AdminLogRequestDTO adminLogRequestDTO, String ipAddress) {
+    private void saveFailedLogs(AdminLogRequestDTO adminLogRequestDTO) {
 
         System.out.println("SAVING USER LOGS STARTED-----------------------------------");
-        adminLogService.save(adminLogRequestDTO, INACTIVE, ipAddress);
+        adminLogService.save(adminLogRequestDTO, INACTIVE);
         System.out.println("SAVING USER LOGS COMPLETED-----------------------------------");
     }
 

@@ -34,14 +34,14 @@ public class ClientLogServiceImpl implements ClientLogService {
     }
 
     @Override
-    public void save(ClientLogRequestDTO requestDTO, Character status, String ipAddress) {
+    public void save(ClientLogRequestDTO requestDTO, Character status) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, ADMIN_USER_MENU_LOG);
 
         Admin admin = adminRepository.findAdminById(requestDTO.getAdminId()).get();
-        ClientLog clientLog = parseToClientLog(requestDTO, status, admin, ipAddress);
+        ClientLog clientLog = parseToClientLog(requestDTO, status, admin);
         clientLogRepository.save(clientLog);
 
         log.info(SAVING_PROCESS_COMPLETED, ADMIN_USER_MENU_LOG, getDifferenceBetweenTwoTime(startTime));

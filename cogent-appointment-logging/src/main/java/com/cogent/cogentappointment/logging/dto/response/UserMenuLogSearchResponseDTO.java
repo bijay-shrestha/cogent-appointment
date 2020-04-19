@@ -17,6 +17,10 @@ public class UserMenuLogSearchResponseDTO implements Serializable {
 
     private String logDateTime;
 
+    private String browser;
+
+    private String os;
+
     private String userName;
 
     private String ipAddress;

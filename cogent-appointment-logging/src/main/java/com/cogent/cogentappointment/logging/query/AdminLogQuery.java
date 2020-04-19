@@ -28,6 +28,8 @@ public class AdminLogQuery {
 
         return " SELECT " +
                 " DATE_FORMAT(al.logDateTime,'%D %M %Y %h:%i %p') as logDateTime," +
+                " al.browser as browser," +
+                " al.operatingSystem as os," +
                 " a.username as userName," +
                 " al.ipAddress as ipAddress," +
                 " al.feature as feature," +

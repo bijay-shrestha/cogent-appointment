@@ -28,6 +28,8 @@ public class ClientLogQuery {
 
         return " SELECT " +
                 " DATE_FORMAT(cl.logDateTime,'%D %M %Y %h:%i %p') as logDateTime," +
+                " cl.browser as browser," +
+                " cl.operatingSystem as os," +
                 " a.username as userName," +
                 " cl.ipAddress as ipAddress," +
                 " cl.feature as feature," +

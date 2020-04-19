@@ -37,4 +37,16 @@ public class AdminLogRequestDTO implements Serializable {
     @NotNull
     @NotEmpty
     private String actionType;
+
+    @NotNull
+    @NotEmpty
+    private String browser;
+
+    @NotNull
+    @NotEmpty
+    private String operatingSystem;
+
+    @NotNull
+    @NotEmpty
+    private String ipAddress;
 }

@@ -31,6 +31,18 @@ public class ClientLogRequestDTO implements Serializable {
 
     @NotNull
     @NotEmpty
+    private String browser;
+
+    @NotNull
+    @NotEmpty
+    private String operatingSystem;
+
+    @NotNull
+    @NotEmpty
+    private String ipAddress;
+
+    @NotNull
+    @NotEmpty
     private String feature;
 
     @NotNull

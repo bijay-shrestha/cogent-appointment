@@ -13,19 +13,21 @@ import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDa
  */
 public class ClientLogUtils {
 
-    public static ClientLog parseToClientLog(ClientLogRequestDTO requestDTO, Character status, Admin admin, String ipAddress) {
+    public static ClientLog parseToClientLog(ClientLogRequestDTO requestDTO, Character status, Admin admin) {
 
         ClientLog clientLog = new ClientLog();
         clientLog.setAdminId(admin);
         clientLog.setParentId(requestDTO.getParentId());
         clientLog.setRoleId(requestDTO.getRoleId());
-        clientLog.setIpAddress(ipAddress);
+        clientLog.setIpAddress(requestDTO.getIpAddress());
         clientLog.setFeature(requestDTO.getFeature());
         clientLog.setActionType(requestDTO.getActionType());
         clientLog.setLogDescription(requestDTO.getLogDescription());
         clientLog.setStatus(status);
         clientLog.setLogDate(utilDateToSqlDate(new Date()));
         clientLog.setLogDateTime(new Date());
+        clientLog.setBrowser(requestDTO.getBrowser());
+        clientLog.setOperatingSystem(requestDTO.getOperatingSystem());
 
         return clientLog;
     }

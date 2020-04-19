@@ -6,6 +6,10 @@ import java.net.UnknownHostException;
 
 public class RequestData {
 
+    public static String getUserAgent(HttpServletRequest request) {
+        return request.getHeader("User-Agent");
+    }
+
     public static String getClientIpAddr(HttpServletRequest request) throws UnknownHostException {
         String ip = request.getHeader("X-Forwarded-For");
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
@@ -24,10 +28,7 @@ public class RequestData {
             ip = request.getRemoteAddr();
         }
 
-
         ip = request.getRemoteAddr();
-
-        String userDetail = request.getHeader("User-Agent");
 
         if (ip.equalsIgnoreCase("0:0:0:0:0:0:0:1")) {
             InetAddress inetAddress = InetAddress.getLocalHost();
@@ -40,9 +41,8 @@ public class RequestData {
     }
 
     public static String getClientOS(HttpServletRequest request) {
-        String browserDetails = request.getHeader("User-Agent");
+        String browserDetails = getUserAgent(request);
 
-        //=================OS=======================
         final String lowerCaseBrowser = browserDetails.toLowerCase();
         if (lowerCaseBrowser.contains("windows")) {
             return "Windows";
@@ -60,7 +60,8 @@ public class RequestData {
     }
 
     public static String getClientBrowser(HttpServletRequest request) {
-        String browserDetails = request.getHeader("User-Agent");
+        String browserDetails = getUserAgent(request);
+
         String user = browserDetails.toLowerCase();
 
         String browser = "";
@@ -69,31 +70,39 @@ public class RequestData {
         if (user.contains("msie")) {
             String substring = browserDetails.substring(browserDetails.indexOf("MSIE")).split(";")[0];
             browser = substring.split(" ")[0].replace("MSIE", "IE") + "-" + substring.split(" ")[1];
+
         } else if (user.contains("safari") && user.contains("version")) {
             browser = (browserDetails.substring(browserDetails.indexOf("Safari")).split(" ")[0]).split(
                     "/")[0] + "-" + (browserDetails.substring(
                     browserDetails.indexOf("Version")).split(" ")[0]).split("/")[1];
+
         } else if (user.contains("opr") || user.contains("opera")) {
             if (user.contains("opera"))
                 browser = (browserDetails.substring(browserDetails.indexOf("Opera")).split(" ")[0]).split(
                         "/")[0] + "-" + (browserDetails.substring(
                         browserDetails.indexOf("Version")).split(" ")[0]).split("/")[1];
+
             else if (user.contains("opr"))
                 browser = ((browserDetails.substring(browserDetails.indexOf("OPR")).split(" ")[0]).replace("/",
                         "-")).replace(
                         "OPR", "Opera");
+
         } else if (user.contains("chrome")) {
             browser = (browserDetails.substring(browserDetails.indexOf("Chrome")).split(" ")[0]).replace("/", "-");
+
         } else if ((user.indexOf("mozilla/7.0") > -1) || (user.indexOf("netscape6") != -1) || (user.indexOf(
                 "mozilla/4.7") != -1) || (user.indexOf("mozilla/4.78") != -1) || (user.indexOf(
                 "mozilla/4.08") != -1) || (user.indexOf("mozilla/3") != -1)) {
+
             //browser=(userAgent.substring(userAgent.indexOf("MSIE")).split(" ")[0]).replace("/", "-");
             browser = "Netscape-?";
 
         } else if (user.contains("firefox")) {
             browser = (browserDetails.substring(browserDetails.indexOf("Firefox")).split(" ")[0]).replace("/", "-");
+
         } else if (user.contains("rv")) {
             browser = "IE";
+
         } else {
             browser = "UnKnown, More-Info: " + browserDetails;
         }

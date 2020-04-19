@@ -253,9 +253,9 @@ public class AppointmentServiceImpl implements AppointmentService {
                 hospital
         );
 
-        Appointment savedAppointment = save(appointment);
+        save(appointment);
 
-        saveAppointmentStatistics(appointmentInfo,savedAppointment,hospital);
+        saveAppointmentStatistics(appointmentInfo, appointment, hospital);
 
         saveAppointmentTransactionDetail(requestDTO.getTransactionInfo(), appointment);
 
@@ -327,9 +327,9 @@ public class AppointmentServiceImpl implements AppointmentService {
                 hospital
         );
 
-        Appointment savedAppointment = save(appointment);
+        save(appointment);
 
-        saveAppointmentStatistics(appointmentInfo,savedAppointment,hospital);
+        saveAppointmentStatistics(appointmentInfo, appointment, hospital);
 
         saveAppointmentTransactionDetail(requestDTO.getTransactionInfo(), appointment);
 
@@ -829,8 +829,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         throw new NoContentFoundException(Appointment.class, "id", id.toString());
     };
 
-    private Appointment save(Appointment appointment) {
-        return appointmentRepository.save(appointment);
+    private void save(Appointment appointment) {
+        appointmentRepository.save(appointment);
     }
 
     /*FETCH DOCTOR DUTY ROSTER INFO FOR SELECTED DATE*/
@@ -1005,17 +1005,25 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
     }
 
-    private void saveAppointmentStatistics(AppointmentRequestDTO appointmentInfo, Appointment appointment,Hospital hospital) {
+    private void saveAppointmentStatistics(AppointmentRequestDTO appointmentInfo,
+                                           Appointment appointment,
+                                           Hospital hospital) {
         if (Objects.isNull(appointmentInfo.getPatientId())) {
             saveAppointmentStatistics(parseAppointmentStatisticsForNew(appointment));
         } else {
-           checkForRegisteredPatient(appointmentInfo,appointment,hospital);
+            checkForRegisteredPatient(appointmentInfo, appointment, hospital);
         }
     }
 
-    private void checkForRegisteredPatient(AppointmentRequestDTO appointmentInfo, Appointment appointment,Hospital hospital){
-        Long patientId = hospitalPatientInfoRepository.checkIfPatientIsRegistered(appointmentInfo.getPatientId(),
-                hospital.getId());
+    private void checkForRegisteredPatient(AppointmentRequestDTO appointmentInfo,
+                                           Appointment appointment,
+                                           Hospital hospital) {
+
+        Long patientId = hospitalPatientInfoRepository.checkIfPatientIsRegistered(
+                appointmentInfo.getPatientId(),
+                hospital.getId()
+        );
+
         if (Objects.isNull(patientId)) {
             saveAppointmentStatistics(parseAppointmentStatisticsForNew(appointment));
         } else {

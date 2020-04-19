@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.dto.response.reschedule;
 
 import com.cogent.cogentappointment.persistence.enums.Gender;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.util.Date;
@@ -19,8 +20,10 @@ public class AppointmentRescheduleLogDTO {
 
     private String hospitalName;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd YYYY")
     private Date previousAppointmentDate;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd YYYY")
     private Date rescheduleAppointmentDate;
 
     private String appointmentNumber;

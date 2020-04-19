@@ -17,6 +17,7 @@ public class AdminLogQuery {
                 " LEFT JOIN Admin a ON al.adminId.id =a.id" +
                 " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                 " LEFT JOIN Hospital h ON h.id=p.company" +
+                " LEFT JOIN AdminMetaInfo ami ON ami.adminId.id=a.id" +
                 WHERE_CLAUSE_TO_SEARCH_ADMIN_LOGS(searchRequestDTO) +
                 " GROUP BY al.feature " +
                 " ORDER BY count(al.id) DESC";

@@ -6,6 +6,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,7 +34,7 @@ public class AdminFeatureResource {
 
     @PutMapping
     @ApiOperation(UPDATE_OPERATION)
-    public ResponseEntity<?> update(@Valid AdminFeatureRequestDTO requestDTO) {
+    public ResponseEntity<?> update(@Valid @RequestBody AdminFeatureRequestDTO requestDTO) {
         adminFeatureService.update(requestDTO);
         return ok().build();
     }

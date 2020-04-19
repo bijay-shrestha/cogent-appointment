@@ -6,7 +6,6 @@ import com.cogent.cogentappointment.admin.dto.response.admin.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -14,7 +13,7 @@ import java.util.List;
  */
 public interface AdminService {
 
-    void save(AdminRequestDTO adminRequestDTO, MultipartFile files, HttpServletRequest httpServletRequest);
+    void save(AdminRequestDTO adminRequestDTO, MultipartFile files);
 
     List<AdminDropdownDTO> fetchActiveAdminsForDropdown();
 

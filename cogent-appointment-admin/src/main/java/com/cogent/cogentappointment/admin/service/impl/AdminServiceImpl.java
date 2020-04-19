@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.Validator;
@@ -39,6 +38,7 @@ import java.util.stream.Collectors;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.*;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
+import static com.cogent.cogentappointment.admin.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.AdminLog.*;
@@ -84,7 +84,9 @@ public class AdminServiceImpl implements AdminService {
                             AdminMacAddressInfoRepository adminMacAddressInfoRepository,
                             AdminMetaInfoRepository adminMetaInfoRepository,
                             AdminAvatarRepository adminAvatarRepository,
-                            DashboardFeatureRepository dashboardFeatureRepository, AdminDashboardFeatureRepository adminDashboardFeatureRepository, AdminConfirmationTokenRepository confirmationTokenRepository,
+                            DashboardFeatureRepository dashboardFeatureRepository,
+                            AdminDashboardFeatureRepository adminDashboardFeatureRepository,
+                            AdminConfirmationTokenRepository confirmationTokenRepository,
                             MinioFileService minioFileService, EmailService emailService,
                             ProfileService profileService) {
         this.validator = validator;
@@ -101,8 +103,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void save(@Valid AdminRequestDTO adminRequestDTO, MultipartFile files,
-                     HttpServletRequest httpServletRequest) {
+    public void save(@Valid AdminRequestDTO adminRequestDTO, MultipartFile files) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -112,11 +113,17 @@ public class AdminServiceImpl implements AdminService {
 
         validateAdminCount(adminRequestDTO.getHospitalId());
 
-        List<Object[]> admins = adminRepository.validateDuplicity(adminRequestDTO.getUsername(),
-                adminRequestDTO.getEmail(), adminRequestDTO.getMobileNumber(), adminRequestDTO.getHospitalId());
+        List<Object[]> admins = adminRepository.validateDuplicity(
+                adminRequestDTO.getUsername(),
+                adminRequestDTO.getEmail(),
+                adminRequestDTO.getMobileNumber(),
+                adminRequestDTO.getHospitalId()
+        );
 
-        validateAdminDuplicity(admins, adminRequestDTO.getUsername(), adminRequestDTO.getEmail(),
-                adminRequestDTO.getMobileNumber());
+        validateAdminDuplicity(admins, adminRequestDTO.getUsername(),
+                adminRequestDTO.getEmail(),
+                adminRequestDTO.getMobileNumber()
+        );
 
         Admin admin = save(adminRequestDTO);
 
@@ -128,46 +135,14 @@ public class AdminServiceImpl implements AdminService {
 
         saveAllAdminDashboardFeature(adminRequestDTO.getAdminDashboardRequestDTOS(), admin);
 
-        AdminConfirmationToken adminConfirmationToken =
-                saveAdminConfirmationToken(parseInAdminConfirmationToken(admin));
+        AdminConfirmationToken adminConfirmationToken = saveAdminConfirmationToken(admin);
 
         EmailRequestDTO emailRequestDTO = convertAdminRequestToEmailRequestDTO(adminRequestDTO,
-                adminConfirmationToken.getConfirmationToken(), httpServletRequest);
+                adminConfirmationToken.getConfirmationToken());
 
-        sendEmail(emailRequestDTO);
+        saveEmailToSend(emailRequestDTO);
 
         log.info(SAVING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
-    }
-
-    private void saveAllAdminDashboardFeature(List<AdminDashboardRequestDTO> dashboardRequestDTOList, Admin admin) {
-
-        if (dashboardRequestDTOList.size() > 0) {
-            List<DashboardFeature> dashboardFeatureList = findActiveDashboardFeatures(dashboardRequestDTOList);
-            adminDashboardFeatureRepository.saveAll(parseToAdminDashboardFeature(dashboardFeatureList, admin));
-        }
-
-    }
-
-    private List<DashboardFeature> findActiveDashboardFeatures(List<AdminDashboardRequestDTO> adminDashboardRequestDTOS) {
-
-        String ids = adminDashboardRequestDTOS.stream()
-                .map(request -> request.getId().toString())
-                .collect(Collectors.joining(","));
-
-        List<DashboardFeature> dashboardFeatureList = validateDashboardFeature(ids);
-        int requestCount = adminDashboardRequestDTOS.size();
-
-        if ((dashboardFeatureList.size()) != requestCount) {
-            log.error(CONTENT_NOT_FOUND, DashboardFeature.class.getSimpleName());
-            throw new NoContentFoundException(DashboardFeature.class);
-        }
-
-        return dashboardFeatureList;
-
-    }
-
-    private List<DashboardFeature> validateDashboardFeature(String ids) {
-        return dashboardFeatureRepository.validateDashboardFeatureCount(ids);
     }
 
     @Override
@@ -297,7 +272,7 @@ public class AdminServiceImpl implements AdminService {
 
         updateAdminMetaInfo(admin);
 
-        sendEmail(emailRequestDTO);
+        saveEmailToSend(emailRequestDTO);
 
         log.info(UPDATING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
     }
@@ -526,12 +501,46 @@ public class AdminServiceImpl implements AdminService {
         parseMetaInfo(admin, adminMetaInfo);
     }
 
-    private AdminConfirmationToken saveAdminConfirmationToken(AdminConfirmationToken adminConfirmationToken) {
+    private AdminConfirmationToken saveAdminConfirmationToken(Admin admin) {
+        AdminConfirmationToken adminConfirmationToken = parseInAdminConfirmationToken(admin);
         return confirmationTokenRepository.save(adminConfirmationToken);
+    }
+
+    private void saveAllAdminDashboardFeature(List<AdminDashboardRequestDTO> dashboardRequestDTOList, Admin admin) {
+
+        if (dashboardRequestDTOList.size() > 0) {
+            List<DashboardFeature> dashboardFeatureList = findActiveDashboardFeatures(dashboardRequestDTOList);
+            adminDashboardFeatureRepository.saveAll(parseToAdminDashboardFeature(dashboardFeatureList, admin));
+        }
+    }
+
+    private List<DashboardFeature> findActiveDashboardFeatures(List<AdminDashboardRequestDTO> adminDashboardRequestDTOS) {
+
+        String ids = adminDashboardRequestDTOS.stream()
+                .map(request -> request.getId().toString())
+                .collect(Collectors.joining(COMMA_SEPARATED));
+
+        List<DashboardFeature> dashboardFeatureList = validateDashboardFeature(ids);
+        int requestCount = adminDashboardRequestDTOS.size();
+
+        if ((dashboardFeatureList.size()) != requestCount) {
+            log.error(CONTENT_NOT_FOUND, DashboardFeature.class.getSimpleName());
+            throw new NoContentFoundException(DashboardFeature.class);
+        }
+
+        return dashboardFeatureList;
+    }
+
+    private List<DashboardFeature> validateDashboardFeature(String ids) {
+        return dashboardFeatureRepository.validateDashboardFeatureCount(ids);
     }
 
     private void sendEmail(EmailRequestDTO emailRequestDTO) {
         emailService.sendEmail(emailRequestDTO);
+    }
+
+    private void saveEmailToSend(EmailRequestDTO emailRequestDTO) {
+        emailService.saveEmailToSend(emailRequestDTO);
     }
 
     private Admin findById(Long adminId) {
@@ -628,4 +637,6 @@ public class AdminServiceImpl implements AdminService {
     private Profile fetchProfile(Long profileId) {
         return profileService.fetchActiveProfileById(profileId);
     }
+
+
 }

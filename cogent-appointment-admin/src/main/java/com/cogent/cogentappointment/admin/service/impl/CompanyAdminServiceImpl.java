@@ -95,7 +95,9 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                                    AdminAvatarRepository adminAvatarRepository,
                                    AdminConfirmationTokenRepository confirmationTokenRepository,
                                    MinioFileService minioFileService, EmailService emailService,
-                                   ProfileService profileService, DashboardFeatureRepository dashboardFeatureRepository, AdminDashboardFeatureRepository adminDashboardFeatureRepository) {
+                                   ProfileService profileService,
+                                   DashboardFeatureRepository dashboardFeatureRepository,
+                                   AdminDashboardFeatureRepository adminDashboardFeatureRepository) {
         this.validator = validator;
         this.adminRepository = adminRepository;
         this.adminMacAddressInfoRepository = adminMacAddressInfoRepository;
@@ -110,8 +112,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
     }
 
     @Override
-    public void save(@Valid CompanyAdminRequestDTO adminRequestDTO, MultipartFile files,
-                     HttpServletRequest httpServletRequest) {
+    public void save(@Valid CompanyAdminRequestDTO adminRequestDTO, MultipartFile files) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -139,9 +140,9 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                 saveAdminConfirmationToken(parseInAdminConfirmationToken(admin));
 
         EmailRequestDTO emailRequestDTO = convertCompanyAdminRequestToEmailRequestDTO(adminRequestDTO, admin,
-                adminConfirmationToken.getConfirmationToken(), httpServletRequest);
+                adminConfirmationToken.getConfirmationToken());
 
-        sendEmail(emailRequestDTO);
+        saveEmailToSend(emailRequestDTO);
 
         log.info(SAVING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
     }
@@ -272,7 +273,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         updateAdminDashboardFeature(updateRequestDTO.getAdminDashboardRequestDTOS(), admin);
 
-        sendEmail(emailRequestDTO);
+        saveEmailToSend(emailRequestDTO);
 
         log.info(UPDATING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
     }
@@ -423,12 +424,6 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         });
     }
 
-    private void validateUsername(boolean isUsernameExists, String username) {
-        if (isUsernameExists)
-            throw new DataDuplicationException(
-                    String.format(USERNAME_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), username));
-    }
-
     private void validateEmail(boolean isEmailExists, String email) {
         if (isEmailExists)
             throw new DataDuplicationException(
@@ -514,6 +509,10 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
     private void sendEmail(EmailRequestDTO emailRequestDTO) {
         emailService.sendEmail(emailRequestDTO);
+    }
+
+    private void saveEmailToSend(EmailRequestDTO emailRequestDTO) {
+        emailService.saveEmailToSend(emailRequestDTO);
     }
 
     private Admin findById(Long adminId) {

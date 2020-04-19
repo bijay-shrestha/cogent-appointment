@@ -1,28 +1,24 @@
 package com.cogent.cogentappointment.persistence.model;
 
-import com.cogent.cogentappointment.persistence.audit.Auditable;
-import com.cogent.cogentappointment.persistence.listener.EmailToSendEntityListener;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
-
 /**
  * @author smriti on 2019-08-26
+ * DO NOT USE ABSTRACT AUDITABLE ENITY WHEREVER SCHEDULER IS USED
+ * SINCE IT USED AUTHENTICATED ADMIN AS CURRENT AUDITOR WHICH IS NOT
+ * EVALUATED IN SCHEDULER
  */
 @Table(name = "email_to_send")
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
-@EntityListeners(EmailToSendEntityListener.class)
-public class EmailToSend extends Auditable<String> implements Serializable {
+public class EmailToSend implements Serializable{
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -54,7 +50,7 @@ public class EmailToSend extends Auditable<String> implements Serializable {
     public String toString() {
         return "EmailToSend{" +
                 "id=" + id +
-                ", isSent=" + isSent +
+                ", isSent='" + isSent + '\'' +
                 ", recordedDate=" + recordedDate +
                 ", sentDate=" + sentDate +
                 ", subject='" + subject + '\'' +

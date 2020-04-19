@@ -22,7 +22,8 @@ public class WebResourceKeyConstants {
         String BASE_APPOINTMENT = "/appointment";
         String APPOINTMENT_ID_PATH_VARIABLE_BASE = "/{appointmentId}";
         String APPOINTMENT_RESERVATION_ID_PATH_VARIABLE_BASE = "/{appointmentReservationId}";
-        String CHECK_AVAILABILITY = "/availableTimeSlots";
+        String FETCH_AVAILABLE_TIMESLOTS = "/availableTimeSlots";
+        String FETCH_CURRENT_AVAILABLE_TIMESLOTS = "/availableTimeSlots/current";
         String PENDING_APPOINTMENT = "/pending-appointment";
         String CANCEL = "/cancel";
         String RESCHEDULE = "/reschedule";

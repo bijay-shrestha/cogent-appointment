@@ -14,6 +14,8 @@ public class ErrorMessageConstants {
 
         String INVALID_APPOINTMENT_DATE_TIME = "Sorry! Appointment failed because requested date/time has already passed.";
 
+        String INVALID_APPOINTMENT_DATE = "Sorry! Appointment failed because requested date has already passed.";
+
         String APPOINTMENT_FAILED_MESSAGE = "The selected time slot has expired/or is invalid. Please try again!";
 
         String APPOINTMENT_FAILED_DEBUG_MESSAGE = "AppointmentReservationLog(s) is null";

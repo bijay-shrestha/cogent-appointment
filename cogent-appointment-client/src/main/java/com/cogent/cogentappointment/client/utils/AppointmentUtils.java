@@ -29,6 +29,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AppointmentServiceMessage.INVALID_APPOINTMENT_DATE;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AppointmentServiceMessage.INVALID_APPOINTMENT_DATE_TIME;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.*;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
@@ -61,6 +62,22 @@ public class AppointmentUtils {
             log.error(INVALID_APPOINTMENT_DATE_TIME);
             throw new BadRequestException(INVALID_APPOINTMENT_DATE_TIME);
         }
+    }
+
+    public static void validateIfRequestIsPastDate(Date requestedDate) {
+
+        boolean isDateBefore = removeTime(requestedDate).before(removeTime(new Date()));
+        if (isDateBefore)
+            throw new BadRequestException(INVALID_APPOINTMENT_DATE);
+    }
+
+    private static boolean hasTimeHasPassed(Date date, String time) {
+
+        Date availableDateTime = parseAppointmentTime(date, time);
+
+        Date currentDate = new Date();
+
+        return availableDateTime.before(currentDate);
     }
 
     public static Appointment parseToAppointment(AppointmentRequestDTO requestDTO,
@@ -144,6 +161,30 @@ public class AppointmentUtils {
 
         do {
             String date = FORMAT.print(startDateTime);
+
+            if (!isAppointmentDateMatched(bookedAppointments, date))
+                availableTimeSlots.add(date);
+
+            startDateTime = startDateTime.plus(rosterGapDuration);
+        } while (startDateTime.compareTo(FORMAT.parseDateTime(endTime)) <= 0);
+
+        return availableTimeSlots;
+    }
+
+    public static List<String> calculateCurrentAvailableTimeSlots(String startTime,
+                                                                  String endTime,
+                                                                  Duration rosterGapDuration,
+                                                                  List<AppointmentBookedTimeResponseDTO> bookedAppointments,
+                                                                  Date requestedDate) {
+
+        List<String> availableTimeSlots = new ArrayList<>();
+
+        DateTime startDateTime = new DateTime(FORMAT.parseDateTime(startTime));
+
+        do {
+            String date = FORMAT.print(startDateTime);
+
+            boolean hasTimePassed = hasTimeHasPassed(requestedDate, date);
 
             if (!isAppointmentDateMatched(bookedAppointments, date))
                 availableTimeSlots.add(date);

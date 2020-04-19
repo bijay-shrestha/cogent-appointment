@@ -38,8 +38,4 @@ public class AppointmentModeUpdateRequestDTO implements Serializable {
     @NotNull
     @NotEmpty
     private String remarks;
-
-    @NotNull
-    @Status
-    private Character isEditable;
 }

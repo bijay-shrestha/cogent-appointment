@@ -11,11 +11,10 @@ import static com.cogent.cogentappointment.admin.utils.HMACKeyGenerator.generate
 /**
  * @author Sauravi Thapa २०/१/१९
  */
-
 @Component
 public class HMACUtils {
 
-    public String getAuthToken(Authentication authentication) {
+    public String getHash(Authentication authentication) {
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
         Integer adminId=Math.toIntExact(userPrincipal.getId());
         String username = userPrincipal.getUsername();
@@ -38,7 +37,7 @@ public class HMACUtils {
         final String signature = signatureBuilder
                 .buildAsBase64String();
 
-        String authToken = HMAC_ALGORITHM +
+        String hash = HMAC_ALGORITHM +
                 SPACE +
                 adminId+
                 COLON+
@@ -55,7 +54,7 @@ public class HMACUtils {
                 signature;
 
 
-        return authToken;
+        return hash;
     }
 
 }

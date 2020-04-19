@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.client.repository.custom.impl;
 
 import com.cogent.cogentappointment.client.dto.request.DoctorRevenueRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
+import com.cogent.cogentappointment.client.dto.response.commons.AppointmentRevenueStatisticsResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.DoctorRevenueResponseListDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.RevenueTrendResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
@@ -26,6 +27,7 @@ import java.util.function.Supplier;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.client.query.DashBoardQuery.*;
+import static com.cogent.cogentappointment.client.utils.AppointmentRevenueStatisticsUtils.*;
 import static com.cogent.cogentappointment.client.utils.DashboardUtils.revenueStatisticsResponseDTO;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
@@ -52,6 +54,128 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
         Double count = (Double) query.getSingleResult();
 
         return (count == null) ? 0D : count;
+    }
+
+    @Override
+    public AppointmentRevenueStatisticsResponseDTO calculateAppointmentStatistics(Date toDate,
+                                                                                  Date fromDate,
+                                                                                  Long hospitalId) {
+
+        AppointmentRevenueStatisticsResponseDTO responseDTO = new AppointmentRevenueStatisticsResponseDTO();
+
+        calculateBookedAppointmentStatistics(toDate, fromDate, hospitalId, responseDTO);
+
+        calculateCheckedInAppointmentStatistics(toDate, fromDate, hospitalId, responseDTO);
+
+        calculateCancelledAppointmentStatistics(toDate, fromDate, hospitalId, responseDTO);
+
+        calculateRefundedAppointmentStatistics(toDate, fromDate, hospitalId, responseDTO);
+
+        calculateRevenueFromRefundedAppointmentStatistics(toDate, fromDate, hospitalId, responseDTO);
+
+        calculateTotalRevenueExcludingBooked(responseDTO);
+
+        calculateTotalRevenueIncludingBooked(responseDTO);
+
+        return responseDTO;
+    }
+
+    /*Revenue from Booked*/
+    private void calculateBookedAppointmentStatistics(Date toDate,
+                                                      Date fromDate,
+                                                      Long hospitalId,
+                                                      AppointmentRevenueStatisticsResponseDTO responseDTO) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_BOOKED_APPOINTMENT_REVENUE)
+                .setParameter(FROM_DATE, fromDate)
+                .setParameter(TO_DATE, toDate)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        List<Object[]> results = query.getResultList();
+
+        parseBookedAppointmentDetails(results.get(0), responseDTO);
+    }
+
+    /*Revenue from Checked-In*/
+    private void calculateCheckedInAppointmentStatistics(Date toDate,
+                                                         Date fromDate,
+                                                         Long hospitalId,
+                                                         AppointmentRevenueStatisticsResponseDTO responseDTO) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_REVENUE)
+                .setParameter(FROM_DATE, fromDate)
+                .setParameter(TO_DATE, toDate)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        List<Object[]> results = query.getResultList();
+
+        parseCheckedInAppointmentDetails(results.get(0), responseDTO);
+    }
+
+    /*Revenue from Cancelled*/
+    private void calculateCancelledAppointmentStatistics(Date toDate,
+                                                         Date fromDate,
+                                                         Long hospitalId,
+                                                         AppointmentRevenueStatisticsResponseDTO responseDTO) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_CANCELLED_APPOINTMENT_REVENUE)
+                .setParameter(FROM_DATE, fromDate)
+                .setParameter(TO_DATE, toDate)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        List<Object[]> results = query.getResultList();
+
+        parseCancelledAppointmentDetails(results.get(0), responseDTO);
+    }
+
+    /*Refund Amount*/
+    private void calculateRefundedAppointmentStatistics(Date toDate,
+                                                        Date fromDate,
+                                                        Long hospitalId,
+                                                        AppointmentRevenueStatisticsResponseDTO responseDTO) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_REFUNDED_APPOINTMENT_AMOUNT)
+                .setParameter(FROM_DATE, fromDate)
+                .setParameter(TO_DATE, toDate)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        List<Object[]> results = query.getResultList();
+
+        parseRefundedAppointmentDetails(results.get(0), responseDTO);
+    }
+
+    /*Revenue from Refund*/
+    private void calculateRevenueFromRefundedAppointmentStatistics(Date toDate,
+                                                                   Date fromDate,
+                                                                   Long hospitalId,
+                                                                   AppointmentRevenueStatisticsResponseDTO responseDTO) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_REVENUE_FROM_REFUNDED_APPOINTMENT)
+                .setParameter(FROM_DATE, fromDate)
+                .setParameter(TO_DATE, toDate)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        List<Object[]> results = query.getResultList();
+
+        parseRevenueFromRefundedAppointmentDetails(results.get(0), responseDTO);
+    }
+
+    /*Client Revenue Amount = Revenue from Checked-In+ Revenue from Refund + Revenue from Cancelled */
+    private void calculateTotalRevenueExcludingBooked(AppointmentRevenueStatisticsResponseDTO responseDTO) {
+        Double totalAmount = responseDTO.getCheckedInAmount() +
+                responseDTO.getRevenueFromRefundedAmount() +
+                responseDTO.getCancelAmount();
+        responseDTO.setTotalAmountExcludingBooked(totalAmount);
+    }
+
+    /*Client Revenue Amount Including Booked Appointments  =
+     Revenue from Checked-In + Revenue from Refund + Revenue from Cancelled + Revenue from Booked*/
+    private void calculateTotalRevenueIncludingBooked(AppointmentRevenueStatisticsResponseDTO responseDTO) {
+        Double totalAmount = responseDTO.getCheckedInAmount() +
+                responseDTO.getRevenueFromRefundedAmount() +
+                responseDTO.getCancelAmount() +
+                responseDTO.getBookedAmount();
+        responseDTO.setTotalAmount(totalAmount);
     }
 
     @Override

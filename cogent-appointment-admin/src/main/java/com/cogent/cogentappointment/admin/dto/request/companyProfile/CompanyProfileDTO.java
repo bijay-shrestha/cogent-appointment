@@ -31,4 +31,7 @@ public class CompanyProfileDTO implements Serializable {
     @NotNull
     @Status
     private Character status;
+
+    @NotNull
+    private Character isAllRoleAssigned;
 }

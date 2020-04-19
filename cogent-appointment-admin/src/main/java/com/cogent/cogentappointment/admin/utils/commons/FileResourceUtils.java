@@ -10,6 +10,5 @@ public class FileResourceUtils {
     public File convertResourcesFileIntoFile(String fileLocation){
         File file = new File(getClass().getClassLoader().getResource(fileLocation).getFile());
         return file;
-
     }
 }

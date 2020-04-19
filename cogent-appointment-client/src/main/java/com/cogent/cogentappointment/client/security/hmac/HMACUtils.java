@@ -14,7 +14,7 @@ import static com.cogent.cogentappointment.client.utils.HMACKeyGenerator.generat
 @Component
 public class HMACUtils {
 
-    public String getAuthToken(AdminMinDetails admin) {
+    public String getHash(AdminMinDetails admin) {
         final String nonce = generateNonce();
         Integer userId=Math.toIntExact(admin.getUserId());
         String username = admin.getUsername();
@@ -36,7 +36,7 @@ public class HMACUtils {
         final String signature = signatureBuilder
                 .buildAsBase64String();
 
-        String authToken = HMAC_ALGORITHM +
+        String hash = HMAC_ALGORITHM +
                 SPACE +
                 userId+
                 COLON+
@@ -52,7 +52,7 @@ public class HMACUtils {
                 COLON +
                 signature;
 
-        return authToken;
+        return hash;
     }
 
     public String getAuthTokenForEsewa(ThirdPartyDetail thirdPartyDetail) {

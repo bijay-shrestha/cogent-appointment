@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.persistence.history;
 
 import com.cogent.cogentappointment.persistence.config.Action;
-import com.cogent.cogentappointment.persistence.model.EmailToSend;
+import com.cogent.cogentappointment.persistence.model.AppointmentStatistics;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,27 +17,27 @@ import static javax.persistence.EnumType.STRING;
 import static javax.persistence.TemporalType.TIMESTAMP;
 
 /**
- * @author Sauravi Thapa २०/२/५
+ * @author Sauravi Thapa ON 4/16/20
  */
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "email_to_send_history")
-public class EmailToSendHistory implements Serializable {
+@Table(name = "appointment_statistics_history")
+public class AppointmentStatisticsHistory implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "email_to_send_id",
-            foreignKey = @ForeignKey(name = "FK_email_to_send_history_email_to_send"))
-    private EmailToSend emailToSend;
+    @JoinColumn(name = "appointment_statistics_id")
+    private AppointmentStatistics appointmentStatistics;
 
-    @Column(name = "email_to_send_content")
+    @Column(name = "appointment_statistics_content")
     @Lob
-    private String emailToSendContent;
+    private String appointmentStatisticsContent;
 
     @CreatedBy
     private String modifiedBy;
@@ -49,9 +49,9 @@ public class EmailToSendHistory implements Serializable {
     @Enumerated(STRING)
     private Action action;
 
-    public EmailToSendHistory(EmailToSend emailToSend, Action action) {
-        this.emailToSend = emailToSend;
-        this.emailToSendContent = emailToSend.toString();
-        this.action = action;
+    public AppointmentStatisticsHistory(AppointmentStatistics appointmentStatistics,Action action) {
+        this.appointmentStatistics=appointmentStatistics;
+        this.appointmentStatisticsContent=appointmentStatistics.toString();
+        this.action=action;
     }
 }

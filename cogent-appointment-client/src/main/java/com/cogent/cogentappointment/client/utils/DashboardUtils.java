@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.utils;
 
+import com.cogent.cogentappointment.client.dto.response.commons.AppointmentRevenueStatisticsResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.RevenueStatisticsResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.OverallRegisteredPatientsResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.RevenueTrendResponseDTO;
@@ -28,16 +29,19 @@ public class DashboardUtils {
         return IntStream.rangeClosed(1, numberOfDays).boxed().collect(Collectors.toList());
     }
 
-    public static RevenueStatisticsResponseDTO parseToGenerateRevenueResponseDTO(Double currentTransaction,
-                                                                                 Double growthPercent,
-                                                                                 Character revenueType) {
-        RevenueStatisticsResponseDTO revenueStatisticsResponseDTO = new RevenueStatisticsResponseDTO();
-        revenueStatisticsResponseDTO.setAmount(currentTransaction);
-        revenueStatisticsResponseDTO.setGrowthPercent(growthPercent);
-        revenueStatisticsResponseDTO.setFiscalYear(getFiscalYear());
-        revenueStatisticsResponseDTO.setFilterType(revenueType);
+    public static RevenueStatisticsResponseDTO parseToGenerateRevenueResponseDTO(
+            Double currentTransaction,
+            Double growthPercent,
+            Character revenueType,
+            AppointmentRevenueStatisticsResponseDTO appointmentStatistics) {
 
-        return revenueStatisticsResponseDTO;
+        return RevenueStatisticsResponseDTO.builder()
+                .amount(currentTransaction)
+                .growthPercent(growthPercent)
+                .fiscalYear(getFiscalYear())
+                .filterType(revenueType)
+                .appointmentStatistics(appointmentStatistics)
+                .build();
     }
 
     public static RevenueTrendResponseDTO revenueStatisticsResponseDTO(List<Object[]> resultList, Character filter) {

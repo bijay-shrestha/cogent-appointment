@@ -1,15 +1,13 @@
 package com.cogent.cogentappointment.client.utils;
 
-import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentRejectDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.*;
+import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueSearchByTimeDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentTimeDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.approval.AppointmentPendingApprovalDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.approval.AppointmentPendingApprovalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.esewa.*;
 import com.cogent.cogentappointment.client.dto.response.appointment.log.AppointmentLogDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.log.AppointmentLogResponseDTO;
@@ -20,6 +18,7 @@ import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRe
 import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
+import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.format.DateTimeFormat;
@@ -32,6 +31,7 @@ import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AppointmentServiceMessage.INVALID_APPOINTMENT_DATE_TIME;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.*;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.client.utils.commons.DateConverterUtils.calculateAge;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
@@ -42,6 +42,7 @@ import static org.springframework.http.HttpStatus.OK;
 /**
  * @author smriti on 2019-10-24
  */
+@Slf4j
 public class AppointmentUtils {
 
     private static final DateTimeFormatter FORMAT = DateTimeFormat.forPattern("HH:mm");
@@ -56,11 +57,14 @@ public class AppointmentUtils {
 
         boolean isRequestedBeforeCurrentDateTime = requestDateTime.before(currentDateTime);
 
-        if (isRequestedBeforeCurrentDateTime)
+        if (isRequestedBeforeCurrentDateTime) {
+            log.error(INVALID_APPOINTMENT_DATE_TIME);
             throw new BadRequestException(INVALID_APPOINTMENT_DATE_TIME);
+        }
     }
 
     public static Appointment parseToAppointment(AppointmentRequestDTO requestDTO,
+                                                 AppointmentReservationLog appointmentReservationLog,
                                                  String appointmentNumber,
                                                  Character isSelf,
                                                  Patient patient,
@@ -69,10 +73,8 @@ public class AppointmentUtils {
                                                  Hospital hospital) {
 
         Appointment appointment = new Appointment();
-        appointment.setAppointmentDate(requestDTO.getAppointmentDate());
-        appointment.setAppointmentTime(parseAppointmentTime(
-                requestDTO.getAppointmentDate(),
-                requestDTO.getAppointmentTime()));
+        appointment.setAppointmentDate(appointmentReservationLog.getAppointmentDate());
+        appointment.setAppointmentTime(appointmentReservationLog.getAppointmentTime());
         appointment.setAppointmentNumber(appointmentNumber);
         appointment.setCreatedDateNepali(requestDTO.getCreatedDateNepali());
         appointment.setIsFollowUp(requestDTO.getIsFollowUp());
@@ -370,8 +372,6 @@ public class AppointmentUtils {
 
         List<AppointmentLogDTO> appointmentLogSearchDTOS = new ArrayList<>();
 
-        AtomicReference<Double> totalAmount = new AtomicReference<>(0D);
-
         results.forEach(result -> {
             final int APPOINTMENT_DATE_INDEX = 0;
             final int APPOINTMENT_NUMBER_INDEX = 1;
@@ -390,6 +390,7 @@ public class AppointmentUtils {
             final int APPOINTMENT_STATUS_INDEX = 14;
             final int REFUND_AMOUNT_INDEX = 15;
             final int PATIENT_ADDRESS_INDEX = 16;
+            final int TRANSACTION_DATE_INDEX = 17;
 
             Date appointmentDate = (Date) result[APPOINTMENT_DATE_INDEX];
             Date patientDob = (Date) result[PATIENT_DOB_INDEX];
@@ -425,15 +426,13 @@ public class AppointmentUtils {
                             .status(result[APPOINTMENT_STATUS_INDEX].toString())
                             .refundAmount(refundAmount)
                             .patientAddress(result[PATIENT_ADDRESS_INDEX].toString())
+                            .transactionDate((Date) result[TRANSACTION_DATE_INDEX])
                             .build();
 
             appointmentLogSearchDTOS.add(appointmentLogDTO);
-
-            totalAmount.updateAndGet(v -> v + appointmentAmount);
         });
 
         appointmentLogResponseDTO.setAppointmentLogs(appointmentLogSearchDTOS);
-        appointmentLogResponseDTO.setTotalAmount(totalAmount.get());
 
         return appointmentLogResponseDTO;
     }
@@ -552,5 +551,22 @@ public class AppointmentUtils {
                 .build();
     }
 
+    public static AppointmentStatistics parseAppointmentStatisticsForNew(Appointment appointment) {
+        AppointmentStatistics appointmentStatistics = new AppointmentStatistics();
+        appointmentStatistics.setAppointmentId(appointment);
+        appointmentStatistics.setAppointmentCreatedDate(new Date());
+        appointmentStatistics.setIsNew(YES);
+
+        return appointmentStatistics;
+    }
+
+    public static AppointmentStatistics parseAppointmentStatisticsForRegistered(Appointment appointment) {
+        AppointmentStatistics appointmentStatistics = new AppointmentStatistics();
+        appointmentStatistics.setAppointmentId(appointment);
+        appointmentStatistics.setAppointmentCreatedDate(new Date());
+        appointmentStatistics.setIsRegistered(YES);
+
+        return appointmentStatistics;
+    }
 
 }

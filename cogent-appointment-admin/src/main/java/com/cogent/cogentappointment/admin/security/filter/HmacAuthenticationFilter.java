@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.HMAC_BAD_SIGNATURE;
 import static com.cogent.cogentappointment.admin.constants.PatternConstants.AUTHORIZATION_HEADER_PATTERN;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 
 /**
  * @author Sauravi Thapa २०/१/१९
@@ -52,7 +53,7 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
             UserDetailsImpl userDetails = userDetailsService.loadUserByUsername(authHeader.getUsername());
 
-            if (userDetails.getIsCompany().equals('Y')) {
+            if (userDetails.getIsCompany().equals(YES)) {
                 signatureBuilder = new HMACBuilder()
                         .algorithm(authHeader.getAlgorithm())
                         .id(authHeader.getUserId())

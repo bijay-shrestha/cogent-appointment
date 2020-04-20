@@ -209,7 +209,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         validatePassword(admin, requestDTO);
 
-        updateAdminPassword(requestDTO.getNewPassword(), requestDTO.getRemarks(), admin);
+        save(updateAdminPassword(requestDTO.getNewPassword(), requestDTO.getRemarks(), admin));
 
         log.info(UPDATING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
     }

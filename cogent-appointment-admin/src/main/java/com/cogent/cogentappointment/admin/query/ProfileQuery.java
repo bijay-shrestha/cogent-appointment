@@ -64,7 +64,7 @@ public class ProfileQuery {
     public static Function<ProfileSearchRequestDTO, String> QUERY_TO_SEARCH_PROFILE = (searchRequestDTO) -> {
         return " SELECT" +
                 " p.id as id," +                                             //[0]
-                " p.name as name," +                                        //[1]
+                " CONCAT(h.alias,'-',p.name) as name," +                   //[1]
                 " p.status as status," +                                    //[2]
                 " d.name as departmentName," +                              //[3]
                 " h.name as hospitalName" +                                 //[4]
@@ -84,7 +84,8 @@ public class ProfileQuery {
                     " d.id as departmentId," +                             //[4]
                     " d.name as departmentName," +                         //[5]
                     " h.id as hospitalId," +                               //[6]
-                    " h.name as hospitalName" +                            //[7]
+                    " h.name as hospitalName," +                           //[7]
+                    " h.alias as hospitalAlias" +                          //[8]
                     " FROM" +
                     " Profile p" +
                     " LEFT JOIN Department d ON d.id = p.department.id" +
@@ -111,19 +112,21 @@ public class ProfileQuery {
 
     public static final String QUERY_TO_FETCH_ACTIVE_PROFILES_FOR_DROPDOWN =
             " SELECT" +
-                    " p.id as value," +                                 //[0]
-                    " p.name as label" +                                //[1]
-                    " FROM Profile p" +
+                    " p.id as value," +                                         //[0]
+                    " CONCAT(h.alias,'-',p.name) as label" +                   //[1]
+                    " LEFT JOIN Department d ON d.id = p.department.id" +
+                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE" +
                     " p.status ='Y'" +
                     " AND p.isCompanyProfile= 'N'" +
                     " ORDER BY p.name ASC ";
 
     public static final String QUERY_TO_FETCH_PROFILE_BY_DEPARTMENT_ID =
-            " SELECT p.id as value," +
-                    " p.name as label" +
+            " SELECT p.id as value," +                                         //[0]
+                    " CONCAT(h.alias,'-',p.name) as label" +                   //[1]
                     " FROM Profile p" +
                     " LEFT JOIN Department d ON d.id = p.department.id" +
+                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE p.status ='Y'" +
                     " AND d.status ='Y'" +
                     " AND d.id =:id" +

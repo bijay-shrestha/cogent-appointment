@@ -25,16 +25,17 @@ public class AppointmentModeQuery {
                     " AND am.id!=:id" +
                     " AND am.name=:name";
 
-    private static final String SELECT_CLAUSE_TO_FETCH_MINIMAL_UNIVERSITY =
+    private static final String SELECT_CLAUSE_TO_FETCH_MINIMAL_APPOINTMENT_MODE =
             "SELECT am.id as id," +
                     " am.name as name," +
                     " am.code as code," +
-                    " am.status as status" +
+                    " am.status as status," +
+                    " am.isEditable as isEditable" +
                     " FROM AppointmentMode am";
 
     public static Function<AppointmentModeSearchRequestDTO, String> QUERY_TO_SEARCH_APPOINTMENT_MODE =
             (searchRequestDTO -> (
-                    SELECT_CLAUSE_TO_FETCH_MINIMAL_UNIVERSITY +
+                    SELECT_CLAUSE_TO_FETCH_MINIMAL_APPOINTMENT_MODE +
                             GET_WHERE_CLAUSE_FOR_SEARCHING_UNIVERSITY(searchRequestDTO)
             ));
 

@@ -91,7 +91,7 @@ public class DepartmentQuery {
                     " FROM Department d" +
                     " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE d.status != 'D'" +
-                    " ORDER BY d.id DESC";
+                    " ORDER BY label ASC";
 
     public static final String QUERY_TO_FETCH_ACTIVE_DEPARTMENT_FOR_DROPDOWN =
             "SELECT" +
@@ -100,7 +100,7 @@ public class DepartmentQuery {
                     " FROM Department d" +
                     " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE d.status = 'Y'" +
-                    " ORDER BY d.id DESC";
+                    " ORDER BY label ASC";
 
     public static final String QUERY_TO_FETCH_DEPARTMENT_BY_HOSPITAL_ID =
             "SELECT" +
@@ -111,5 +111,5 @@ public class DepartmentQuery {
                     " WHERE d.status = 'Y'" +
                     " AND h.status = 'Y'" +
                     " AND h.id=:hospitalId" +
-                    " ORDER BY d.id DESC";
+                    " ORDER BY label ASC";
 }

@@ -120,7 +120,7 @@ public class ProfileQuery {
                     " WHERE" +
                     " p.status ='Y'" +
                     " AND p.isCompanyProfile= 'N'" +
-                    " ORDER BY p.name ASC ";
+                    " ORDER BY label ASC ";
 
     public static final String QUERY_TO_FETCH_PROFILE_BY_DEPARTMENT_ID =
             " SELECT p.id as value," +                                         //[0]
@@ -131,7 +131,8 @@ public class ProfileQuery {
                     " WHERE p.status ='Y'" +
                     " AND d.status ='Y'" +
                     " AND d.id =:id" +
-                    " AND p.isCompanyProfile= 'N'";
+                    " AND p.isCompanyProfile= 'N'" +
+                    " ORDER BY label ASC ";
 
     public static final String QUERY_TO_FETCH_ASSIGNED_PROFILE_RESPONSE =
             "SELECT" +

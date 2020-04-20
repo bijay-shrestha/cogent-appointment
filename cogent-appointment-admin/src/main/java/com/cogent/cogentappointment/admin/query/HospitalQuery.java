@@ -37,11 +37,12 @@ public class HospitalQuery {
                     " h.id as value," +                     //[0]
                     " h.name as label," +                   //[1]
                     " h.isCompany as isCompany," +          //[2]
-                    " h.alias as alias"+                    //[3]
+                    " h.alias as alias" +                    //[3]
                     " FROM" +
                     " Hospital h" +
                     " WHERE h.status ='Y'" +
-                    " AND h.isCompany='N'";
+                    " AND h.isCompany='N'" +
+                    " ORDER BY h.name ASC ";
 
     public static String QUERY_TO_SEARCH_HOSPITAL(HospitalSearchRequestDTO searchRequestDTO) {
         return "SELECT" +

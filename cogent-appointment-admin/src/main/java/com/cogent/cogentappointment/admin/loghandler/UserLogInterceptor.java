@@ -24,11 +24,7 @@ public class UserLogInterceptor implements HandlerInterceptor {
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
                                 Exception exception) throws Exception {
 
-        System.out.println("ACTION COMPLETED-----------------------------------");
-
-        String url = request.getRequestURI();
-
-        String userLog = request.getHeader("log-header");
+        String userLog = RequestHeader.getUserLogs(request);
 
         if (userLog != null) {
 
@@ -41,8 +37,6 @@ public class UserLogInterceptor implements HandlerInterceptor {
             adminLogRequestDTO.setBrowser(clientBrowser);
             adminLogRequestDTO.setOperatingSystem(clientOS);
             adminLogRequestDTO.setIpAddress(clientIpAddr);
-
-            System.out.println(clientBrowser + " " + clientOS + " " + clientIpAddr);
 
             if (exception == null) {
 

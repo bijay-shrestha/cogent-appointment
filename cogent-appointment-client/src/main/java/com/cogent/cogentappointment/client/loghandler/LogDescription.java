@@ -59,8 +59,7 @@ public class LogDescription {
         return logDescription;
     }
 
-
-    public static String getSuccessLogDescription() {
+    public static String getFailedLogDescription() {
 
         return "Process cannot be completed due to exception...";
 

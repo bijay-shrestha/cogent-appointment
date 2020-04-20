@@ -4,14 +4,13 @@ import javax.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import static com.cogent.cogentappointment.admin.loghandler.RequestHeader.getUserAgent;
+
 public class RequestData {
 
-    public static String getUserAgent(HttpServletRequest request) {
-        return request.getHeader("User-Agent");
-    }
-
     public static String getClientIpAddr(HttpServletRequest request) throws UnknownHostException {
-        String ip = request.getHeader("X-Forwarded-For");
+        String ip = RequestHeader.getXForwardedFor(request);
+
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getHeader("Proxy-Client-IP");
         }

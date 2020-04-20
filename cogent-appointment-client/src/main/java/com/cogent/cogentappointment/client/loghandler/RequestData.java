@@ -4,14 +4,14 @@ import javax.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import static com.cogent.cogentappointment.client.loghandler.RequestHeader.getUserAgent;
+import static com.cogent.cogentappointment.client.loghandler.RequestHeader.getXForwardedFor;
+
 public class RequestData {
 
-    public static String getUserAgent(HttpServletRequest request) {
-        return request.getHeader("User-Agent");
-    }
-
     public static String getClientIpAddr(HttpServletRequest request) throws UnknownHostException {
-        String ip = request.getHeader("X-Forwarded-For");
+        String ip = getXForwardedFor(request);
+
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getHeader("Proxy-Client-IP");
         }
@@ -81,7 +81,6 @@ public class RequestData {
                 browser = (browserDetails.substring(browserDetails.indexOf("Opera")).split(" ")[0]).split(
                         "/")[0] + "-" + (browserDetails.substring(
                         browserDetails.indexOf("Version")).split(" ")[0]).split("/")[1];
-
             else if (user.contains("opr"))
                 browser = ((browserDetails.substring(browserDetails.indexOf("OPR")).split(" ")[0]).replace("/",
                         "-")).replace(
@@ -93,7 +92,6 @@ public class RequestData {
         } else if ((user.indexOf("mozilla/7.0") > -1) || (user.indexOf("netscape6") != -1) || (user.indexOf(
                 "mozilla/4.7") != -1) || (user.indexOf("mozilla/4.78") != -1) || (user.indexOf(
                 "mozilla/4.08") != -1) || (user.indexOf("mozilla/3") != -1)) {
-
             //browser=(userAgent.substring(userAgent.indexOf("MSIE")).split(" ")[0]).replace("/", "-");
             browser = "Netscape-?";
 

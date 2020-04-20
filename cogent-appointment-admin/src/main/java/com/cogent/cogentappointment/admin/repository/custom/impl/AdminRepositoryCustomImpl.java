@@ -5,7 +5,6 @@ import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminInfoRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminUpdateRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.admin.AdminInfoRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.AdminSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.AdminUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.admin.*;
@@ -41,7 +40,6 @@ import static com.cogent.cogentappointment.admin.log.constants.AdminLog.ADMIN;
 import static com.cogent.cogentappointment.admin.log.constants.AdminLog.ADMIN_NOT_FOUND_ERROR;
 import static com.cogent.cogentappointment.admin.query.AdminQuery.QUERY_FO_FETCH_MAC_ADDRESS_INFO;
 import static com.cogent.cogentappointment.admin.query.AdminQuery.*;
-import static com.cogent.cogentappointment.admin.query.AdminQuery.QUERY_TO_FETCH_ADMIN_BY_USERNAME_OR_EMAIL;
 import static com.cogent.cogentappointment.admin.query.CompanyAdminQuery.*;
 import static com.cogent.cogentappointment.admin.query.DashBoardQuery.QUERY_TO_FETCH_DASHBOARD_FEATURES;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
@@ -154,14 +152,13 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     }
 
     @Override
-    public Admin fetchAdminByUsernameOrEmail(String username) {
+    public Admin fetchAdminByEmail(String email) {
         try {
-            return entityManager.createQuery(QUERY_TO_FETCH_ADMIN_BY_USERNAME_OR_EMAIL, Admin.class)
-                    .setParameter(USERNAME, username)
-                    .setParameter(EMAIL, username)
+            return entityManager.createQuery(QUERY_TO_FETCH_ADMIN_BY_EMAIL, Admin.class)
+                    .setParameter(EMAIL, email)
                     .getSingleResult();
         } catch (NoResultException ex) {
-            throw ADMIN_NOT_FOUND.apply(username);
+            throw ADMIN_NOT_FOUND.apply(email);
         }
     }
 

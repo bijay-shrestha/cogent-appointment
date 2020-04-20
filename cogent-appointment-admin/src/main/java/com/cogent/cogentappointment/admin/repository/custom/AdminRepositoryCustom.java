@@ -43,7 +43,7 @@ public interface AdminRepositoryCustom {
 
     List<Object[]> validateCompanyAdminDuplicity(CompanyAdminUpdateRequestDTO updateRequestDTO);
 
-    Admin fetchAdminByUsernameOrEmail(String username);
+    Admin fetchAdminByEmail(String email);
 
     LoggedInAdminDTO getLoggedInAdmin(String email);
 

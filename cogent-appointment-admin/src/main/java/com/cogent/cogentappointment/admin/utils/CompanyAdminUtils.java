@@ -37,7 +37,6 @@ public class CompanyAdminUtils {
                                                  Gender gender,
                                                  Profile profile) {
         Admin admin = new Admin();
-        admin.setUsername(getUsername(requestDTO.getEmail()));
         admin.setFullName(convertToNormalCase(requestDTO.getFullName()));
         admin.setEmail(requestDTO.getEmail());
         admin.setMobileNumber(requestDTO.getMobileNumber());
@@ -56,7 +55,6 @@ public class CompanyAdminUtils {
                                                                   Profile profile) {
 
         admin.setEmail(updateRequestDTO.getEmail());
-        admin.setUsername(getUsername(admin.getEmail()));
         admin.setFullName(convertToNormalCase(updateRequestDTO.getFullName()));
         admin.setMobileNumber(updateRequestDTO.getMobileNumber());
         admin.setStatus(updateRequestDTO.getStatus());
@@ -70,11 +68,6 @@ public class CompanyAdminUtils {
     private static void parseCompanyAdminDetails(Gender gender, Profile profile, Admin admin) {
         admin.setGender(gender);
         admin.setProfileId(profile);
-    }
-
-    public static String getUsername(String email){
-        StringTokenizer token = new StringTokenizer(email, "@");
-        return token.nextToken();
     }
 
     public static String parseUpdatedCompanyAdminValues(Admin admin,
@@ -154,7 +147,7 @@ public class CompanyAdminUtils {
                 .receiverEmailAddress(adminRequestDTO.getEmail())
                 .subject(SUBJECT_FOR_ADMIN_VERIFICATION)
                 .templateName(ADMIN_VERIFICATION)
-                .paramValue(admin.getUsername() + COMMA_SEPARATED + confirmationUrl)
+                .paramValue(admin.getFullName() + COMMA_SEPARATED + confirmationUrl)
                 .build();
     }
 

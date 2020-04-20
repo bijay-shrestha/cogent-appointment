@@ -10,10 +10,8 @@ public class ErrorMessageConstants {
 
     public interface AdminServiceMessages {
 
-        String ADMIN_DUPLICATION_MESSAGE = "Admin with given username, email and mobile number" +
+        String ADMIN_DUPLICATION_MESSAGE = "Admin with given email and mobile number" +
                 " already exists.";
-
-        String USERNAME_DUPLICATION_MESSAGE = "%s already exists with username '%s'";
 
         String EMAIL_DUPLICATION_MESSAGE = "%s already exists with email '%s'";
 

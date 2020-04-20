@@ -416,30 +416,30 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
             boolean isEmailExists = requestEmail.equalsIgnoreCase((String) get(admin, EMAIL));
             boolean isMobileNumberExists = requestMobileNumber.equalsIgnoreCase((String) get(admin, MOBILE_NUMBER));
 
-            if (isEmailExists && isMobileNumberExists)
+            if (isEmailExists && isMobileNumberExists) {
+                log.error(ADMIN_DUPLICATION_MESSAGE);
                 throw ADMIN_DUPLICATION.get();
+            }
 
             validateEmail(isEmailExists, requestEmail);
             validateMobileNumber(isMobileNumberExists, requestMobileNumber);
         });
     }
 
-    private void validateUsername(boolean isUsernameExists, String username) {
-        if (isUsernameExists)
-            throw new DataDuplicationException(
-                    String.format(USERNAME_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), username));
-    }
-
     private void validateEmail(boolean isEmailExists, String email) {
-        if (isEmailExists)
+        if (isEmailExists) {
+            log.error(EMAIL_DUPLICATION_MESSAGE);
             throw new DataDuplicationException(
                     String.format(EMAIL_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), email));
+        }
     }
 
     private void validateMobileNumber(boolean isMobileNumberExists, String mobileNumber) {
-        if (isMobileNumberExists)
+        if (isMobileNumberExists) {
+            log.error(MOBILE_NUMBER_DUPLICATION_MESSAGE);
             throw new DataDuplicationException(
                     String.format(MOBILE_NUMBER_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), mobileNumber));
+        }
     }
 
     private Admin save(CompanyAdminRequestDTO adminRequestDTO) {
@@ -460,7 +460,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
     }
 
     private List<FileUploadResponseDTO> uploadFiles(Admin admin, MultipartFile[] files) {
-        String subDirectory = admin.getUsername();
+        String subDirectory = admin.getEmail();
 
         return minioFileService.addAttachmentIntoSubDirectory(subDirectory, files);
     }
@@ -506,7 +506,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         AdminMetaInfo adminMetaInfo = adminMetaInfoRepository.findAdminMetaInfoByAdminId(admin.getId())
                 .orElseThrow(() -> new NoContentFoundException(AdminMetaInfo.class));
 
-        parseMetaInfo(admin, adminMetaInfo);
+        adminMetaInfoRepository.save(parseMetaInfo(admin, adminMetaInfo));
     }
 
     private AdminConfirmationToken saveAdminConfirmationToken(AdminConfirmationToken adminConfirmationToken) {

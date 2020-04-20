@@ -47,7 +47,7 @@ public class CompanyAdminQuery {
     public static final String QUERY_TO_FETCH_ACTIVE_COMPANY_ADMIN_FOR_DROPDOWN =
             " SELECT" +
                     " a.id as value," +                     //[0]
-                    " a.username as label" +               //[1]
+                    " a.email as label" +               //[1]
                     " FROM" +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
@@ -73,7 +73,6 @@ public class CompanyAdminQuery {
             " SELECT" +
                     " a.id as id," +                                            //[0]
                     " a.fullName as fullName," +                                //[1]
-                    " a.username as username," +                                //[2]
                     " a.email as email," +                                      //[3]
                     " a.mobileNumber as mobileNumber," +                        //[4]
                     " a.status as status," +                                    //[5]

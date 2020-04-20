@@ -15,5 +15,5 @@ public class ProfileMenuSearchRequestDTO implements Serializable {
 
     @NotNull
     @NotEmpty
-    private String username;
+    private String email;
 }

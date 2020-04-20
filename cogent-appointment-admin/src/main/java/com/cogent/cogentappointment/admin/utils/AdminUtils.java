@@ -50,7 +50,7 @@ public class AdminUtils {
         admin.setProfileId(profile);
     }
 
-    public static void convertAdminUpdateRequestDTOToAdmin(Admin admin,
+    public static Admin convertAdminUpdateRequestDTOToAdmin(Admin admin,
                                                            AdminUpdateRequestDTO adminRequestDTO,
                                                            Gender gender,
                                                            Profile profile,
@@ -65,6 +65,7 @@ public class AdminUtils {
 
         parseAdminDetails(gender, profile, admin);
         /*MODIFIED DATE AND MODIFIED BY*/
+        return admin;
     }
 
     public static AdminMacAddressInfo convertToMACAddressInfo(String macAddress, Admin admin) {
@@ -83,9 +84,10 @@ public class AdminUtils {
         return adminMetaInfo;
     }
 
-    public static void parseMetaInfo(Admin admin,
+    public static AdminMetaInfo parseMetaInfo(Admin admin,
                                      AdminMetaInfo adminMetaInfo) {
         adminMetaInfo.setMetaInfo(admin.getFullName() + OR + admin.getEmail() + OR + admin.getMobileNumber());
+        return adminMetaInfo;
     }
 
     public static AdminConfirmationToken parseInAdminConfirmationToken(Admin admin) {

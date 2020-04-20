@@ -144,10 +144,7 @@ public class ProfileQuery {
                     " AND p.status = 'Y'" +
                     " AND a.status ='Y'" +
                     " AND " +
-                    " (" +
-                    " a.email =:username OR" +
-                    " a.username =:username" +
-                    " )" +
+                    " a.email =:email " +
                     " AND h.is_company ='Y'" +
                     " GROUP BY pm.parent_id, pm.user_menu_id, pm.profile_id";
 }

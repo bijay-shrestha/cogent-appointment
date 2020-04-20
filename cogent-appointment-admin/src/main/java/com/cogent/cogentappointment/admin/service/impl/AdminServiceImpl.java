@@ -517,7 +517,7 @@ public class AdminServiceImpl implements AdminService {
         AdminMetaInfo adminMetaInfo = adminMetaInfoRepository.findAdminMetaInfoByAdminId(admin.getId())
                 .orElseThrow(() -> new NoContentFoundException(AdminMetaInfo.class));
 
-        parseMetaInfo(admin, adminMetaInfo);
+       adminMetaInfoRepository.save(parseMetaInfo(admin, adminMetaInfo));
     }
 
     private AdminConfirmationToken saveAdminConfirmationToken(AdminConfirmationToken adminConfirmationToken) {
@@ -563,7 +563,7 @@ public class AdminServiceImpl implements AdminService {
 
         Profile profile = fetchProfile(adminRequestDTO.getProfileId());
 
-        convertAdminUpdateRequestDTOToAdmin(admin, adminRequestDTO, gender, profile,status);
+        save(convertAdminUpdateRequestDTOToAdmin(admin, adminRequestDTO, gender, profile,status));
     }
 
     private void updateMacAddressInfo(List<AdminMacAddressInfoUpdateRequestDTO> adminMacAddressInfoUpdateRequestDTOS,

@@ -13,28 +13,31 @@ public class HospitalQuery {
     public static final String QUERY_TO_VALIDATE_DUPLICITY =
             "SELECT " +
                     " h.name," +                        //[0]
-                    " h.code" +                         //[1]
+                    " h.code," +                         //[1]
+                    " h.alias" +                         //[2]
                     " FROM Hospital h" +
                     " WHERE " +
-                    " (h.name =:name OR h.code =:code)" +
+                    " (h.name =:name OR h.code =:code OR h.alias =:alias)" +
                     " AND h.status != 'D'";
 
     public static final String QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE =
             "SELECT " +
                     " h.name," +                        //[0]
-                    " h.code" +                         //[1]
+                    " h.code," +                         //[1]
+                    " h.alias" +                         //[2]
                     " FROM Hospital h" +
                     " WHERE " +
                     " h.id!=:id" +
                     " AND" +
-                    " (h.name =:name OR h.code =:code)" +
+                    " (h.name =:name OR h.code =:code OR h.alias = :alias)" +
                     " AND h.status != 'D'";
 
     public static final String QUERY_TO_FETCH_HOSPITAL_FOR_DROPDOWN =
             " SELECT" +
                     " h.id as value," +                     //[0]
-                    " h.name as label," +
-                    " h.isCompany as isCompany" +                    //[1]
+                    " h.name as label," +                   //[1]
+                    " h.isCompany as isCompany," +          //[2]
+                    " h.alias as alias"+                    //[3]
                     " FROM" +
                     " Hospital h" +
                     " WHERE h.status ='Y'" +
@@ -105,7 +108,7 @@ public class HospitalQuery {
                     " h.number_of_follow_ups as numberOfFollowUps," +           //[12]
                     " h.follow_up_interval_days as followUpIntervalDays," +     //[13]
                     " h.is_company as isCompany," +                             //[14]
-                    " h.alias as alias"+                                        //[15]
+                    " h.alias as alias" +                                       //[15]
                     " FROM" +
                     " hospital h" +
                     " LEFT JOIN hospital_logo hl ON h.id =hl.hospital_id " +

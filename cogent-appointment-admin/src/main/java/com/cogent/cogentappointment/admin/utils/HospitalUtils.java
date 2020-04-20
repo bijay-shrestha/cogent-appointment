@@ -7,10 +7,12 @@ import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalUpdateReq
 import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalContactNumberResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalResponseDTO;
+import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.HospitalBanner;
 import com.cogent.cogentappointment.persistence.model.HospitalContactNumber;
 import com.cogent.cogentappointment.persistence.model.HospitalLogo;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,16 +20,71 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.*;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.*;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ALIAS_DUPLICATION_ERROR;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.NAME_DUPLICATION_ERROR;
+import static com.cogent.cogentappointment.admin.log.constants.SpecializationLog.SPECIALIZATION;
 import static com.cogent.cogentappointment.admin.utils.commons.SecurityContextUtils.getLoggedInCompanyId;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.convertToNormalCase;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.toUpperCase;
+import static java.lang.reflect.Array.get;
 
 /**
  * @author smriti ON 12/01/2020
  */
+@Slf4j
 public class HospitalUtils {
+
+    public static void validateDuplicity(List<Object[]> objects,
+                                         String requestedName,
+                                         String requestedCode,
+                                         String requestedAlias,
+                                         String className) {
+        final int NAME = 0;
+        final int CODE = 1;
+        final int ALIAS = 2;
+
+        objects.forEach(object -> {
+            boolean isNameExists = requestedName.equalsIgnoreCase((String) get(object, NAME));
+
+            boolean isCodeExists = requestedCode.equalsIgnoreCase((String) get(object, CODE));
+
+            boolean isAliasExists = requestedAlias.equalsIgnoreCase((String) get(object, ALIAS));
+
+            if (isNameExists && isCodeExists && isAliasExists)
+                throw new DataDuplicationException(
+                        String.format(NAME_AND_CODE_DUPLICATION_MESSAGE, className, requestedName, requestedCode),
+                        "name", requestedName, "code", requestedCode
+                );
+
+            validateName(isNameExists, requestedName, className);
+            validateCode(isCodeExists, requestedCode, className);
+            validateAlias(isAliasExists, requestedAlias, className);
+        });
+    }
+
+    private static void validateName(boolean isNameExists, String name, String className) {
+        if (isNameExists) {
+            log.error(NAME_DUPLICATION_ERROR, className, name);
+            throw new DataDuplicationException(String.format(NAME_DUPLICATION_MESSAGE, className, name), "name", name);
+        }
+    }
+
+    private static void validateCode(boolean isCodeExists, String code, String className) {
+        if (isCodeExists) {
+            log.error(NAME_DUPLICATION_ERROR, className, code);
+            throw new DataDuplicationException(String.format(CODE_DUPLICATION_MESSAGE, className, code), "code", code);
+        }
+    }
+
+    private static void validateAlias(boolean isAliasExists, String alias, String className) {
+        if (isAliasExists) {
+            log.error(ALIAS_DUPLICATION_ERROR, className, alias);
+            throw new DataDuplicationException(String.format(ALIAS_DUPLICATION_ERROR, className, alias), "alias", alias);
+        }
+    }
 
     public static Hospital convertDTOToHospital(HospitalRequestDTO hospitalRequestDTO) {
         Hospital hospital = new Hospital();

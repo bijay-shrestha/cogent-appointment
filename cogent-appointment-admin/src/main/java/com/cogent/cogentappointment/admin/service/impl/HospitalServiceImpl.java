@@ -14,6 +14,7 @@ import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.HospitalService;
 import com.cogent.cogentappointment.admin.service.MinioFileService;
+import com.cogent.cogentappointment.admin.utils.HospitalUtils;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -87,9 +88,11 @@ public class HospitalServiceImpl implements HospitalService {
         validateConstraintViolation(validator.validate(requestDTO));
 
         List<Object[]> hospitals = hospitalRepository.validateHospitalDuplicity(
-                requestDTO.getName(), requestDTO.getHospitalCode());
+                requestDTO.getName(), requestDTO.getHospitalCode(), requestDTO.getAlias());
 
-        validateDuplicity(hospitals, requestDTO.getName(), requestDTO.getHospitalCode(),
+        HospitalUtils.validateDuplicity(hospitals, requestDTO.getName(),
+                requestDTO.getHospitalCode(),
+                requestDTO.getAlias(),
                 Hospital.class.getSimpleName());
 
         Hospital hospital = save(convertDTOToHospital(requestDTO));
@@ -115,10 +118,17 @@ public class HospitalServiceImpl implements HospitalService {
         Hospital hospital = findById(updateRequestDTO.getId());
 
         List<Object[]> hospitals = hospitalRepository.validateHospitalDuplicityForUpdate(
-                updateRequestDTO.getId(), updateRequestDTO.getName(), updateRequestDTO.getHospitalCode());
+                updateRequestDTO.getId(),
+                updateRequestDTO.getName(),
+                updateRequestDTO.getHospitalCode(),
+                updateRequestDTO.getAlias()
+        );
 
-        validateDuplicity(hospitals, updateRequestDTO.getName(),
-                updateRequestDTO.getHospitalCode(), Hospital.class.getSimpleName());
+        HospitalUtils.validateDuplicity(hospitals,
+                updateRequestDTO.getName(),
+                updateRequestDTO.getHospitalCode(),
+                updateRequestDTO.getAlias(),
+                Hospital.class.getSimpleName());
 
         HmacApiInfo hmacApiInfo = hmacApiInfoRepository.getHmacApiInfoByHospitalId(updateRequestDTO.getId());
 
@@ -136,7 +146,8 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     @Override
-    public List<HospitalMinimalResponseDTO> search(HospitalSearchRequestDTO hospitalSearchRequestDTO, Pageable pageable) {
+    public List<HospitalMinimalResponseDTO> search(HospitalSearchRequestDTO hospitalSearchRequestDTO,
+                                                   Pageable pageable) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, HOSPITAL);

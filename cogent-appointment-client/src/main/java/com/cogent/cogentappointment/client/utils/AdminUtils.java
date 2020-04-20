@@ -150,9 +150,11 @@ public class AdminUtils {
         admin.setRemarks(deleteRequestDTO.getRemarks());
     }
 
-    public static void updateAdminPassword(String password, String remarks, Admin admin) {
+    public static Admin updateAdminPassword(String password, String remarks, Admin admin) {
         admin.setPassword(BCrypt.hashpw(password, BCrypt.gensalt()));
         admin.setRemarks(remarks);
+
+        return admin;
     }
 
     private static BiFunction<AdminMacAddressInfoUpdateRequestDTO, Admin, AdminMacAddressInfo> convertToUpdatedMACAddressInfo =

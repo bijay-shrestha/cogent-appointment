@@ -13,10 +13,9 @@ public class WebResourceKeyConstants {
         String BASE_ADMIN = "/admin";
         String AVATAR = "/avatar";
         String ADMIN_META_INFO = "/metaInfo";
-        String CHANGE_PASSWORD = "/changePassword";
         String RESET_PASSWORD = "/resetPassword";
-        String INFO = "/info";
         String VERIFY = "/verify";
+        String EMAIL = "/email";
     }
 
     public interface AppointmentConstants {

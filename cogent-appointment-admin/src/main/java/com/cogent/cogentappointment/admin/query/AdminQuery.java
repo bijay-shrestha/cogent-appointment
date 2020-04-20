@@ -58,7 +58,7 @@ public class AdminQuery {
     public static final String QUERY_TO_FETCH_ACTIVE_ADMIN_FOR_DROPDOWN =
             " SELECT" +
                     " id as value," +                     //[0]
-                    " username as label" +               //[1]
+                    " email as label" +               //[1]
                     " FROM" +
                     " Admin" +
                     " WHERE status ='Y'";
@@ -80,7 +80,6 @@ public class AdminQuery {
             " SELECT" +
                     " a.id as id," +                                            //[0]
                     " a.fullName as fullName," +                                //[1]
-                    " a.username as username," +                                //[2]
                     " a.email as email," +                                      //[3]
                     " a.mobileNumber as mobileNumber," +                        //[4]
                     " a.status as status," +                                    //[5]
@@ -159,7 +158,7 @@ public class AdminQuery {
     public static final String QUERY_TO_FETCH_ADMIN_INFO =
             " SELECT" +
                     " a.id as adminId," +                                                   //[0]
-                    " a.username as username," +                                            //[1]
+                    " a.email as email," +                                                  //[1]
                     " a.fullName as fullName," +
                     " CASE " +
                     "    WHEN (av.status = 'N' OR  av.status IS NULL) THEN null" +
@@ -169,15 +168,14 @@ public class AdminQuery {
                     " d.id as departmentId," +                                              //[5]
                     " d.name as departmentName," +                                          //[6]
                     " h.id as hospitalId," +                                                //[7]
-                    " h.name as hospitalName," +                                             //[8]
+                    " h.name as hospitalName," +                                            //[8]
                     " h.isCompany as isCompany" +                                   //[9]
                     " FROM Admin a" +
                     " LEFT JOIN AdminAvatar av ON av.admin.id=a.id" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
-                    " LEFT JOIN Department d ON d.id=p.department.id" +
-                    " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
+                    " LEFT JOIN Hospital h ON h.id=p.company.id" +
                     " WHERE " +
-                    " (a.username=:username OR a.email =:email OR a.mobileNumber=:username)" +
+                    " (a.email =:email OR a.mobileNumber=:email)" +
                     " AND a.status='Y'" +
                     " AND h.isCompany='Y'";
 
@@ -189,5 +187,5 @@ public class AdminQuery {
                     " LEFT JOIN Admin a ON a.id=ami.admin.id" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                     " WHERE a.status !='D'" +
-                    " AND p.isCompanyprofile='N'";
+                    " AND p.isCompanyProfile='N'";
 }

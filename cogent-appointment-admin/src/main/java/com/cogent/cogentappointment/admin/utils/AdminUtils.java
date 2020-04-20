@@ -53,12 +53,13 @@ public class AdminUtils {
     public static void convertAdminUpdateRequestDTOToAdmin(Admin admin,
                                                            AdminUpdateRequestDTO adminRequestDTO,
                                                            Gender gender,
-                                                           Profile profile) {
+                                                           Profile profile,
+                                                           Character status) {
 
         admin.setEmail(adminRequestDTO.getEmail());
         admin.setFullName(convertToNormalCase(adminRequestDTO.getFullName()));
         admin.setMobileNumber(adminRequestDTO.getMobileNumber());
-        admin.setStatus(adminRequestDTO.getStatus());
+        admin.setStatus(status);
         admin.setHasMacBinding(adminRequestDTO.getHasMacBinding());
         admin.setRemarks(adminRequestDTO.getRemarks());
 
@@ -84,7 +85,7 @@ public class AdminUtils {
 
     public static void parseMetaInfo(Admin admin,
                                      AdminMetaInfo adminMetaInfo) {
-        adminMetaInfo.setMetaInfo(admin.getFullName() + OR + admin.getUsername() + OR + admin.getMobileNumber());
+        adminMetaInfo.setMetaInfo(admin.getFullName() + OR + admin.getEmail() + OR + admin.getMobileNumber());
     }
 
     public static AdminConfirmationToken parseInAdminConfirmationToken(Admin admin) {
@@ -99,6 +100,22 @@ public class AdminUtils {
     public static EmailRequestDTO convertAdminRequestToEmailRequestDTO(AdminRequestDTO adminRequestDTO,
                                                                        String confirmationToken,
                                                                        HttpServletRequest httpServletRequest) {
+
+//        String origin = httpServletRequest.getHeader("origin");
+//        String confirmationUrl = origin + "/#" + "/savePassword" + "?token =" + confirmationToken;
+
+        String confirmationUrl = adminRequestDTO.getBaseUrl() + "/#" + "/savePassword" + "?token =" + confirmationToken;
+
+        return EmailRequestDTO.builder()
+                .receiverEmailAddress(adminRequestDTO.getEmail())
+                .subject(SUBJECT_FOR_ADMIN_VERIFICATION)
+                .templateName(ADMIN_VERIFICATION)
+                .paramValue(adminRequestDTO.getFullName() + COMMA_SEPARATED + confirmationUrl)
+                .build();
+    }
+
+    public static EmailRequestDTO convertAdminUpdateRequestToEmailRequestDTO(AdminUpdateRequestDTO adminRequestDTO,
+                                                                             String confirmationToken) {
 
 //        String origin = httpServletRequest.getHeader("origin");
 //        String confirmationUrl = origin + "/#" + "/savePassword" + "?token =" + confirmationToken;
@@ -134,9 +151,11 @@ public class AdminUtils {
         admin.setRemarks(deleteRequestDTO.getRemarks());
     }
 
-    public static void updateAdminPassword(String password, String remarks, Admin admin) {
+    public static Admin updateAdminPassword(String password, String remarks, Admin admin) {
         admin.setPassword(BCrypt.hashpw(password, BCrypt.gensalt()));
         admin.setRemarks(remarks);
+
+        return admin;
     }
 
     private static BiFunction<AdminMacAddressInfoUpdateRequestDTO, Admin, AdminMacAddressInfo> convertToUpdatedMACAddressInfo =
@@ -209,7 +228,7 @@ public class AdminUtils {
                 ? StringUtils.join(macAddress, COMMA_SEPARATED) : "N/A";
     }
 
-    public static EmailRequestDTO parseToEmailRequestDTO(String username,
+    public static EmailRequestDTO parseToEmailRequestDTO(String fullname,
                                                          AdminUpdateRequestDTO updateRequestDTO,
                                                          String paramValues,
                                                          String updatedMacAddress) {
@@ -217,7 +236,7 @@ public class AdminUtils {
                 .receiverEmailAddress(updateRequestDTO.getEmail())
                 .subject(SUBJECT_FOR_UPDATE_ADMIN)
                 .templateName(UPDATE_ADMIN)
-                .paramValue(username + HYPHEN + paramValues + HYPHEN +
+                .paramValue(fullname + HYPHEN + paramValues + HYPHEN +
                         updateRequestDTO.getHasMacBinding() + HYPHEN + updatedMacAddress)
                 .build();
     }
@@ -231,13 +250,13 @@ public class AdminUtils {
 
     public static EmailRequestDTO parseToResetPasswordEmailRequestDTO(AdminResetPasswordRequestDTO requestDTO,
                                                                       String emailAddress,
-                                                                      String username) {
+                                                                      String fullname) {
 
         return EmailRequestDTO.builder()
                 .receiverEmailAddress(emailAddress)
                 .subject(SUBJECT_FOR_ADMIN_RESET_PASSWORD)
                 .templateName(ADMIN_RESET_PASSWORD)
-                .paramValue(username + COMMA_SEPARATED
+                .paramValue(fullname + COMMA_SEPARATED
                         + requestDTO.getPassword() + COMMA_SEPARATED + requestDTO.getRemarks())
                 .build();
     }

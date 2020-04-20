@@ -24,8 +24,6 @@ public interface AdminService {
 
     void delete(DeleteRequestDTO deleteRequestDTO);
 
-    void changePassword(AdminChangePasswordRequestDTO requestDTO);
-
     void resetPassword(AdminResetPasswordRequestDTO resetPasswordRequestDTO);
 
     void updateAvatar(MultipartFile files, Long adminId);
@@ -34,9 +32,7 @@ public interface AdminService {
 
     void verifyConfirmationToken(String token);
 
-    void savePassword(AdminPasswordRequestDTO requestDTO);
-
-    AdminLoggedInInfoResponseDTO fetchLoggedInAdminInfo(AdminInfoRequestDTO requestDTO);
+    void verifyConfirmationTokenForEmail(String token);
 
     List<AdminMetaInfoResponseDTO> fetchAdminMetaInfoResponseDto();
 }

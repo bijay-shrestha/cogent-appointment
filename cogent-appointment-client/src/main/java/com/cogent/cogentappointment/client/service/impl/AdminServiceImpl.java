@@ -225,7 +225,7 @@ public class AdminServiceImpl implements AdminService {
 
         Admin admin = findAdminByIdAndHospitalId(requestDTO.getId(), getLoggedInHospitalId());
 
-        updateAdminPassword(requestDTO.getPassword(), requestDTO.getRemarks(), admin);
+        save(updateAdminPassword(requestDTO.getPassword(), requestDTO.getRemarks(), admin));
 
         sendEmail(parseToResetPasswordEmailRequestDTO(requestDTO, admin.getEmail(), admin.getFullName()));
 
@@ -265,7 +265,6 @@ public class AdminServiceImpl implements AdminService {
         emailIsNotUpdated(updateRequestDTO,admin,files,hospitalId);
 
         emailIsUpdated(updateRequestDTO,admin,files,hospitalId);
-
 
         log.info(UPDATING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
     }
@@ -313,9 +312,10 @@ public class AdminServiceImpl implements AdminService {
 
             updateAdminMetaInfo(admin);
 
+            sendEmail(emailRequestDTOForNewEmail);
+
             sendEmail(emailRequestDTO);
 
-            sendEmail(emailRequestDTOForNewEmail);
         }
     }
 

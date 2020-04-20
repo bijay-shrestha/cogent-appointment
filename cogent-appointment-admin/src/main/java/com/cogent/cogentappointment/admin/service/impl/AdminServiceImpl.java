@@ -37,6 +37,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.*;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
@@ -226,21 +227,6 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void changePassword(AdminChangePasswordRequestDTO requestDTO) {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(UPDATING_PASSWORD_PROCESS_STARTED);
-
-        Admin admin = findById(requestDTO.getId());
-
-        validatePassword(admin, requestDTO);
-
-        updateAdminPassword(requestDTO.getNewPassword(), requestDTO.getRemarks(), admin);
-
-        log.info(UPDATING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
-    }
-
-    @Override
     public void resetPassword(AdminResetPasswordRequestDTO requestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -248,9 +234,9 @@ public class AdminServiceImpl implements AdminService {
 
         Admin admin = findById(requestDTO.getId());
 
-        updateAdminPassword(requestDTO.getPassword(), requestDTO.getRemarks(), admin);
+        save(updateAdminPassword(requestDTO.getPassword(), requestDTO.getRemarks(), admin));
 
-        sendEmail(parseToResetPasswordEmailRequestDTO(requestDTO, admin.getEmail(), admin.getUsername()));
+        sendEmail(parseToResetPasswordEmailRequestDTO(requestDTO, admin.getEmail(), admin.getFullName()));
 
         log.info(UPDATING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
     }
@@ -284,23 +270,65 @@ public class AdminServiceImpl implements AdminService {
         validateAdminDuplicity(admins, updateRequestDTO.getEmail(),
                 updateRequestDTO.getMobileNumber());
 
-        EmailRequestDTO emailRequestDTO = parseUpdatedInfo(updateRequestDTO, admin);
+        emailIsNotUpdated(updateRequestDTO,admin,files);
 
-        update(updateRequestDTO, admin);
-
-        if (updateRequestDTO.getIsAvatarUpdate().equals(YES))
-            updateAvatar(admin, files);
-
-        updateMacAddressInfo(updateRequestDTO.getMacAddressUpdateInfo(), admin);
-
-        updateAdminDashboardFeature(updateRequestDTO.getAdminDashboardRequestDTOS(), admin);
-
-        updateAdminMetaInfo(admin);
-
-        sendEmail(emailRequestDTO);
+        emailIsUpdated(updateRequestDTO,admin,files);
 
         log.info(UPDATING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
     }
+
+    private void emailIsNotUpdated(AdminUpdateRequestDTO updateRequestDTO,
+                                   Admin admin,MultipartFile files){
+        if(updateRequestDTO.getEmail().equals(admin.getEmail())) {
+
+            EmailRequestDTO emailRequestDTO = parseUpdatedInfo(updateRequestDTO, admin);
+
+            update(updateRequestDTO, ACTIVE,admin);
+
+            if (updateRequestDTO.getIsAvatarUpdate().equals(YES))
+                updateAvatar(admin, files);
+
+            updateMacAddressInfo(updateRequestDTO.getMacAddressUpdateInfo(), admin);
+
+            updateAdminDashboardFeature(updateRequestDTO.getAdminDashboardRequestDTOS(), admin);
+
+            updateAdminMetaInfo(admin);
+
+            sendEmail(emailRequestDTO);
+        }
+    }
+
+    private void emailIsUpdated(AdminUpdateRequestDTO updateRequestDTO,
+                                Admin admin,MultipartFile files){
+        if(!updateRequestDTO.getEmail().equals(admin.getEmail())) {
+
+            EmailRequestDTO emailRequestDTO = parseUpdatedInfo(updateRequestDTO, admin);
+
+            AdminConfirmationToken adminConfirmationToken =
+                    saveAdminConfirmationToken(parseInAdminConfirmationToken(admin));
+
+            EmailRequestDTO emailRequestDTOForNewEmail = convertAdminUpdateRequestToEmailRequestDTO(updateRequestDTO,
+                    adminConfirmationToken.getConfirmationToken());
+
+            update(updateRequestDTO,INACTIVE, admin);
+
+            if (updateRequestDTO.getIsAvatarUpdate().equals(YES))
+                updateAvatar(admin, files);
+
+            updateMacAddressInfo(updateRequestDTO.getMacAddressUpdateInfo(), admin);
+
+            updateAdminDashboardFeature(updateRequestDTO.getAdminDashboardRequestDTOS(), admin);
+
+            updateAdminMetaInfo(admin);
+
+            sendEmail(emailRequestDTOForNewEmail);
+
+            sendEmail(emailRequestDTO);
+
+        }
+    }
+
+
 
     private void updateAdminDashboardFeature(List<AdminDashboardRequestDTO> adminDashboardRequestDTOS, Admin admin) {
 
@@ -347,35 +375,24 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void savePassword(AdminPasswordRequestDTO requestDTO) {
-
+    public void verifyConfirmationTokenForEmail(String token) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(SAVING_PASSWORD_PROCESS_STARTED);
+        log.info(VERIFY_CONFIRMATION_TOKEN_FOR_EMAIL_PROCESS_STARTED);
 
         AdminConfirmationToken adminConfirmationToken =
-                confirmationTokenRepository.findAdminConfirmationTokenByToken(requestDTO.getToken())
-                        .orElseThrow(() -> CONFIRMATION_TOKEN_NOT_FOUND.apply(requestDTO.getToken()));
+                confirmationTokenRepository.findAdminConfirmationTokenByToken(token)
+                        .orElseThrow(() -> CONFIRMATION_TOKEN_NOT_FOUND.apply(token));
 
-        save(saveAdminPassword(requestDTO, adminConfirmationToken));
+        validateStatus(adminConfirmationToken.getStatus());
 
-        adminConfirmationToken.setStatus(INACTIVE);
+        Admin admin=adminRepository.findAdminByIdForEmailVerification(adminConfirmationToken.getAdmin().getId());
 
-        log.info(SAVING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
-    }
+        admin.setStatus(ACTIVE);
 
-    @Override
-    public AdminLoggedInInfoResponseDTO fetchLoggedInAdminInfo(AdminInfoRequestDTO requestDTO) {
+        save(admin);
 
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(FETCHING_PROCESS_STARTED, ADMIN);
-
-        AdminLoggedInInfoResponseDTO responseDTO = adminRepository.fetchLoggedInAdminInfo(requestDTO);
-
-        log.info(FETCHING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
-
-        return responseDTO;
+        log.info(VERIFY_CONFIRMATION_TOKEN_FOR_EMAIL_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
@@ -397,29 +414,6 @@ public class AdminServiceImpl implements AdminService {
             log.error(ADMIN_REGISTERED);
             throw ADMIN_ALREADY_REGISTERED.get();
         }
-    }
-
-    private void validateAdminDuplicity(List<Object[]> adminList, String requestUsername, String requestEmail,
-                                        String requestMobileNumber) {
-
-        final int USERNAME = 0;
-        final int EMAIL = 1;
-        final int MOBILE_NUMBER = 2;
-
-        adminList.forEach(admin -> {
-            boolean isUsernameExists = requestUsername.equalsIgnoreCase((String) get(admin, USERNAME));
-            boolean isEmailExists = requestEmail.equalsIgnoreCase((String) get(admin, EMAIL));
-            boolean isMobileNumberExists = requestMobileNumber.equalsIgnoreCase((String) get(admin, MOBILE_NUMBER));
-
-            if (isUsernameExists && isEmailExists && isMobileNumberExists) {
-                log.error(ADMIN_DUPLICATION_MESSAGE);
-                throw ADMIN_DUPLICATION.get();
-            }
-
-            validateUsername(isUsernameExists, requestUsername);
-            validateEmail(isEmailExists, requestEmail);
-            validateMobileNumber(isMobileNumberExists, requestMobileNumber);
-        });
     }
 
     /*CAN SAVE NUMBER OF ADMINS BASED ON HOSPITAL*/
@@ -477,7 +471,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private List<FileUploadResponseDTO> uploadFiles(Admin admin, MultipartFile[] files) {
-        String subDirectory = admin.getUsername();
+        String subDirectory = admin.getEmail();
 
         return minioFileService.addAttachmentIntoSubDirectory(subDirectory, files);
     }
@@ -564,12 +558,12 @@ public class AdminServiceImpl implements AdminService {
         else updateAdminAvatar(admin, adminAvatar, files);
     }
 
-    public void update(AdminUpdateRequestDTO adminRequestDTO, Admin admin) {
+    public void update(AdminUpdateRequestDTO adminRequestDTO,Character status, Admin admin) {
         Gender gender = fetchGender(adminRequestDTO.getGenderCode());
 
         Profile profile = fetchProfile(adminRequestDTO.getProfileId());
 
-        convertAdminUpdateRequestDTOToAdmin(admin, adminRequestDTO, gender, profile);
+        convertAdminUpdateRequestDTOToAdmin(admin, adminRequestDTO, gender, profile,status);
     }
 
     private void updateMacAddressInfo(List<AdminMacAddressInfoUpdateRequestDTO> adminMacAddressInfoUpdateRequestDTOS,
@@ -582,7 +576,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private EmailRequestDTO parseUpdatedInfo(AdminUpdateRequestDTO adminRequestDTO, Admin admin) {
-        return parseToEmailRequestDTO(admin.getUsername(), adminRequestDTO,
+        return parseToEmailRequestDTO(admin.getFullName(), adminRequestDTO,
                 parseUpdatedValues(admin, adminRequestDTO), parseUpdatedMacAddress(adminRequestDTO));
     }
 

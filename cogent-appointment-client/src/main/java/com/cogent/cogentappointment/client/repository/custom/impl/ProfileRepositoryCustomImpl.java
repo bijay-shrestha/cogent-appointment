@@ -143,8 +143,7 @@ public class ProfileRepositoryCustomImpl implements ProfileRepositoryCustom {
     public AssignedProfileResponseDTO fetchAssignedProfile(ProfileMenuSearchRequestDTO searchRequestDTO) {
 
         Query query = entityManager.createNativeQuery(QUERY_TO_FETCH_ASSIGNED_PROFILE_RESPONSE)
-                .setParameter(EMAIL, searchRequestDTO.getEmail())
-                .setParameter(HOSPITAL_CODE, searchRequestDTO.getHospitalCode());
+                .setParameter(EMAIL, searchRequestDTO.getEmail());
 
         List<Object[]> results = query.getResultList();
 

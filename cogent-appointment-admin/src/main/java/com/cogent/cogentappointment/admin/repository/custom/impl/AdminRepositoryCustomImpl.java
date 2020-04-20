@@ -225,8 +225,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     @Override
     public CompanyAdminLoggedInInfoResponseDTO fetchLoggedInCompanyAdminInfo(CompanyAdminInfoRequestDTO requestDTO) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_COMPANY_ADMIN_INFO)
-                .setParameter(USERNAME, requestDTO.getUsername())
-                .setParameter(EMAIL, requestDTO.getUsername());
+                .setParameter(EMAIL, requestDTO.getEmail());
 
         try {
             return transformQueryToSingleResult(query, CompanyAdminLoggedInInfoResponseDTO.class);

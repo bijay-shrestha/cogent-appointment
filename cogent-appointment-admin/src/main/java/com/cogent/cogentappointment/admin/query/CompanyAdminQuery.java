@@ -146,7 +146,7 @@ public class CompanyAdminQuery {
     public static final String QUERY_TO_FETCH_COMPANY_ADMIN_INFO =
             " SELECT" +
                     " a.id as adminId," +                                                   //[0]
-                    " a.username as username," +                                            //[1]
+                    " a.email as email," +                                                //[1]
                     " a.fullName as fullName," +
                     " CASE " +
                     "    WHEN (av.status = 'N' OR  av.status IS NULL) THEN null" +
@@ -161,7 +161,7 @@ public class CompanyAdminQuery {
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                     " LEFT JOIN Hospital h ON h.id=p.company.id" +
                     " WHERE " +
-                    " (a.username=:username OR a.email =:email OR a.mobileNumber=:username)" +
+                    " (a.email =:email OR a.mobileNumber=:email)" +
                     " AND a.status='Y'" +
                     " AND h.isCompany='Y'";
 

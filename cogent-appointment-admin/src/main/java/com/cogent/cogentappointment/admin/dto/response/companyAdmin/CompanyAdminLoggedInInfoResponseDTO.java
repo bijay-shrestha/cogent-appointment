@@ -14,7 +14,7 @@ public class CompanyAdminLoggedInInfoResponseDTO implements Serializable {
 
     private Long adminId;
 
-    private String username;
+    private String email;
 
     private String fullName;
 

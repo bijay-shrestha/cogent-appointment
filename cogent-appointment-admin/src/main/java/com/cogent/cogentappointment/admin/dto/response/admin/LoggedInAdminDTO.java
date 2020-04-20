@@ -10,7 +10,10 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Builder
 public class LoggedInAdminDTO implements Serializable{
+
     private Long id;
+
+    private String fullName;
 
     private String email;
 

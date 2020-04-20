@@ -3,9 +3,7 @@ package com.cogent.cogentappointment.admin.service.impl;
 import com.cogent.cogentappointment.admin.dto.response.admin.LoggedInAdminDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.AdminRepository;
-import com.cogent.cogentappointment.persistence.model.Admin;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -37,7 +35,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetailsImpl loadUserByUsername(String email) throws UsernameNotFoundException {
         LoggedInAdminDTO loggedInAdminDTO = getAdmin(email);
         if (loggedInAdminDTO == null) {
-            log.error(USER_NOT_FOUND,email);
+            log.error(USER_NOT_FOUND, email);
             throw new NoContentFoundException("USER NOT FOUND");
         }
         return UserDetailsImpl.build(loggedInAdminDTO);

@@ -121,7 +121,7 @@ public class CompanyAdminUtils {
                 ? StringUtils.join(macAddress, COMMA_SEPARATED) : "N/A";
     }
 
-    public static EmailRequestDTO parseToEmailRequestDTOForCompanyAdmin(String username,
+    public static EmailRequestDTO parseToEmailRequestDTOForCompanyAdmin(String fullName,
                                                                         CompanyAdminUpdateRequestDTO updateRequestDTO,
                                                                         String paramValues,
                                                                         String updatedMacAddress) {
@@ -129,7 +129,7 @@ public class CompanyAdminUtils {
                 .receiverEmailAddress(updateRequestDTO.getEmail())
                 .subject(SUBJECT_FOR_UPDATE_ADMIN)
                 .templateName(UPDATE_ADMIN)
-                .paramValue(username + HYPHEN + paramValues + HYPHEN +
+                .paramValue(fullName + HYPHEN + paramValues + HYPHEN +
                         updateRequestDTO.getHasMacBinding() + HYPHEN + updatedMacAddress)
                 .build();
     }

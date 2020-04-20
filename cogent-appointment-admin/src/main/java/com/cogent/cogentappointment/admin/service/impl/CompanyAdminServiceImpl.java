@@ -609,7 +609,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
     }
 
     private EmailRequestDTO parseUpdatedInfo(CompanyAdminUpdateRequestDTO adminRequestDTO, Admin admin) {
-        return parseToEmailRequestDTOForCompanyAdmin(admin.getUsername(), adminRequestDTO,
+        return parseToEmailRequestDTOForCompanyAdmin(admin.getFullName(), adminRequestDTO,
                 parseUpdatedCompanyAdminValues(admin, adminRequestDTO),
                 parseUpdatedMacAddressForCompanyAdmin(adminRequestDTO));
     }

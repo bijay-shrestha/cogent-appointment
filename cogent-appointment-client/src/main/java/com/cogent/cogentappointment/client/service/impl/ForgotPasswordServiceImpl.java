@@ -130,6 +130,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     private void updateForgotPasswordVerification(Long adminId) {
         ForgotPasswordVerification forgotPasswordVerification = verificationRepository.findByAdminId(adminId);
         forgotPasswordVerification.setStatus(INACTIVE);
+        save(forgotPasswordVerification);
     }
 
     private void validateExpirationTime(Object expirationTime) {

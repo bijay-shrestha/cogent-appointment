@@ -12,9 +12,8 @@ public class AdminQuery {
 
     public static final String QUERY_TO_FIND_ADMIN_FOR_VALIDATION =
             "SELECT " +
-                    " a.username," +                            //[0]
-                    " a.email," +                               //[1]
-                    " a.mobileNumber" +                        //[2]
+                    " a.email," +                               //[0]
+                    " a.mobileNumber" +                        //[1]
                     " FROM" +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id = a.profileId" +

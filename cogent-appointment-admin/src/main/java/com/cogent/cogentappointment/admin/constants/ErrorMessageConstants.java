@@ -6,6 +6,9 @@ package com.cogent.cogentappointment.admin.constants;
 public class ErrorMessageConstants {
 
     //A
+    public static final String ALIAS_NOT_FOUND = "Alias not found";
+
+    public static final String ALIAS_DUPLICATION_MESSAGE = "%s already exists with alias '%s' ";
 
 
     public interface AdminServiceMessages {

@@ -30,15 +30,16 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.ALIAS_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.HOSPITAL;
+import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.HOSPITAL_ALIAS;
 import static com.cogent.cogentappointment.admin.utils.HmacApiInfoUtils.parseToHmacApiInfo;
 import static com.cogent.cogentappointment.admin.utils.HmacApiInfoUtils.updateHmacApiInfoAsHospital;
 import static com.cogent.cogentappointment.admin.utils.HospitalUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
-import static com.cogent.cogentappointment.admin.utils.commons.NameAndCodeValidationUtils.validateDuplicity;
 
 /**
  * @author smriti ON 12/01/2020
@@ -217,6 +218,20 @@ public class HospitalServiceImpl implements HospitalService {
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
+    }
+
+    @Override
+    public String fetchAliasById(Long hospitalId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, HOSPITAL_ALIAS);
+
+        String alias = hospitalRepository.fetchAliasById(hospitalId)
+                .orElseThrow(() -> new NoContentFoundException(ALIAS_NOT_FOUND));
+
+        log.info(FETCHING_PROCESS_COMPLETED, HOSPITAL_ALIAS, getDifferenceBetweenTwoTime(startTime));
+
+        return alias;
     }
 
     private Hospital save(Hospital hospital) {

@@ -25,7 +25,6 @@ import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIV
 import static com.cogent.cogentappointment.admin.constants.StringConstant.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.ALIAS_DUPLICATION_ERROR;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.NAME_DUPLICATION_ERROR;
-import static com.cogent.cogentappointment.admin.log.constants.SpecializationLog.SPECIALIZATION;
 import static com.cogent.cogentappointment.admin.utils.commons.SecurityContextUtils.getLoggedInCompanyId;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.convertToNormalCase;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.toUpperCase;
@@ -82,7 +81,7 @@ public class HospitalUtils {
     private static void validateAlias(boolean isAliasExists, String alias, String className) {
         if (isAliasExists) {
             log.error(ALIAS_DUPLICATION_ERROR, className, alias);
-            throw new DataDuplicationException(String.format(ALIAS_DUPLICATION_ERROR, className, alias), "alias", alias);
+            throw new DataDuplicationException(String.format(ALIAS_DUPLICATION_MESSAGE, className, alias), "alias", alias);
         }
     }
 

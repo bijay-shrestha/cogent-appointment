@@ -18,6 +18,8 @@ public class DepartmentResponseDTO implements Serializable {
 
     private String hospitalName;
 
+    private String hospitalAlias;
+
     private Character status;
 
     private String remarks;

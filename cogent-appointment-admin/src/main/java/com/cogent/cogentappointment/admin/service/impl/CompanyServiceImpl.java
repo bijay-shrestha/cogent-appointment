@@ -34,6 +34,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.ALIAS_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.CompanyLog.COMPANY;
@@ -193,7 +194,8 @@ public class CompanyServiceImpl implements CompanyService {
 
         log.info(FETCHING_ALIAS_PROCESS_STARTED, HOSPITAL);
 
-        String responseDTO = hospitalRepository.getAliasById(companyId);
+        String responseDTO = hospitalRepository.fetchAliasById(companyId)
+                .orElseThrow(() -> new NoContentFoundException(ALIAS_NOT_FOUND));
 
         log.info(FETCHING_ALIAS_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
 
@@ -282,7 +284,7 @@ public class CompanyServiceImpl implements CompanyService {
 
 
     private Function<Long, NoContentFoundException> COMPANY_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        log.error(CONTENT_NOT_FOUND_BY_ID,COMPANY, id);
+        log.error(CONTENT_NOT_FOUND_BY_ID, COMPANY, id);
         throw new NoContentFoundException("Company Doesn't Exists");
     };
 }

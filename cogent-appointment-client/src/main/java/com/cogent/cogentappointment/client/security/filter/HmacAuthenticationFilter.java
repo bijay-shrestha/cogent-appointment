@@ -72,7 +72,7 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
             compareSignature(signatureBuilder, authHeader.getDigest());
 
-            SecurityContextHolder.getContext().setAuthentication(getAuthenticationForHospital(adminMinDetails.getFullName(),
+            SecurityContextHolder.getContext().setAuthentication(getAuthenticationForHospital(authHeader.getEmail(),
                     adminMinDetails.getHospitalId()));
         }
 

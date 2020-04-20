@@ -70,7 +70,7 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
             compareSignature(signatureBuilder, authHeader.getDigest());
 
-            SecurityContextHolder.getContext().setAuthentication(getAuthenticationForCompany(userDetails.getUsername(),
+            SecurityContextHolder.getContext().setAuthentication(getAuthenticationForCompany(authHeader.getEmail(),
                     userDetails.getCompanyId()));
         }
 

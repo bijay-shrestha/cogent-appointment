@@ -21,11 +21,15 @@ public class DoctorRevenueDTO implements Serializable {
 
     private String fileUri;
 
-    private Long successfulAppointment = 0L;
+    private Long successfulAppointments = 0L;
 
-    private Long cancelledAppointment = 0L;
+    private Long cancelledAppointments = 0L;
+
+    private Long totalAppointments = 0L;
 
     private Double doctorRevenue = 0D;
 
-    private Double companyRevenue = 0D;
+    private Double cancelledRevenue = 0D;
+
+    private Double totalRevenue = 0D;
 }

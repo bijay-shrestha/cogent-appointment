@@ -133,8 +133,6 @@ public class DashBoardQuery {
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID_FOR_OVERALL_PATIENT(hospitalId);
     }
 
-    ;
-
     public static String QUERY_TO_FETCH_REVENUE_WEEKLY(Long hospitalId) {
         return "SELECT" +
                 "  CASE" +
@@ -248,7 +246,7 @@ public class DashBoardQuery {
                 " END as fileUri," +                                                             //[2]
                 " s.id as specializationId," +                                                   //[3]
                 " s.name as specializationName," +                                               //[4]
-                " COUNT(d.id) as successfulAppointment," +                                       //[5]
+                " COUNT(d.id) as successfulAppointments," +                                      //[5]
                 " COALESCE(SUM(atd.appointmentAmount),0) as doctorRevenue" +                     //[6]
                 " FROM Appointment a" +
                 " LEFT JOIN Doctor d ON d.id= a.doctorId.id" +
@@ -275,9 +273,9 @@ public class DashBoardQuery {
                 " END as fileUri," +                                            //[2]
                 " s.id as specializationId," +                                  //[3]
                 " s.name as specializationName," +                              //[4]
-                " COUNT(d.id) as cancelledAppointment," +                      //[5]
+                " COUNT(d.id) as cancelledAppointments," +                      //[5]
                 " COALESCE(SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 )" +
-                " as companyRevenue" +                                           //[6]
+                " as cancelledRevenue" +                                       //[6]
                 " FROM Appointment a" +
                 " LEFT JOIN Doctor d ON d.id= a.doctorId.id" +
                 " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId.id" +
@@ -302,7 +300,6 @@ public class DashBoardQuery {
 
         whereClause += " AND atd.transactionDate BETWEEN :fromDate AND :toDate" +
                 " GROUP BY d.id,da.id,s.id ";
-//                " ORDER BY SUM(atd.appointmentAmount) DESC ";
 
         return whereClause;
     }
@@ -330,7 +327,7 @@ public class DashBoardQuery {
             QUERY_TO_SELECT_DASHBOARD_FEATURES +
                     " WHERE df.status='Y'";
 
-    public static final String QUERY_TO_VALIDATE_DASHBOARD_FEATURE_COUNT(String ids) {
+    public static String QUERY_TO_VALIDATE_DASHBOARD_FEATURE_COUNT(String ids) {
 
         return " SELECT " +
                 " df " +                   //[0]

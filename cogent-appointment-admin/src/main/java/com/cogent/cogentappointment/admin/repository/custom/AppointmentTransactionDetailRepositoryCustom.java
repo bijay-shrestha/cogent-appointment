@@ -26,14 +26,9 @@ public interface AppointmentTransactionDetailRepositoryCustom {
 
     RevenueTrendResponseDTO getRevenueTrend(DashBoardRequestDTO dashBoardRequestDTO, Character filter);
 
-//    DoctorRevenueResponseDTO getDoctorRevenue(Date toDate, Date fromDate,
-//                                              DoctorRevenueRequestDTO doctorRevenueRequestDTO,
-//                                              Pageable pageable);
-
-
     List<DoctorRevenueDTO> calculateDoctorRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO,
                                                   Pageable pageable);
 
-    List<DoctorRevenueDTO> calculateCompanyRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO,
-                                                   Pageable pageable);
+    List<DoctorRevenueDTO> calculateCancelledRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO,
+                                                     Pageable pageable);
 }

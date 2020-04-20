@@ -200,9 +200,8 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
     }
 
     @Override
-    public List<DoctorRevenueDTO> calculateCompanyRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO,
-                                                          Pageable pageable) {
-
+    public List<DoctorRevenueDTO> calculateCancelledRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO,
+                                                            Pageable pageable) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_CALCULATE_COMPANY_REVENUE(doctorRevenueRequestDTO))
                 .setParameter(FROM_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getFromDate()))
@@ -211,34 +210,6 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
 
         return transformQueryToResultList(query, DoctorRevenueDTO.class);
     }
-
-//    @Override
-//    public DoctorRevenueResponseDTO getDoctorRevenue(Date toDate,
-//                                                     Date fromDate,
-//                                                     DoctorRevenueRequestDTO requestDTO,
-//                                                     Pageable pageable) {
-//
-//        Query query = createQuery.apply(entityManager, QUERY_TO_CALCULATE_DOCTOR_REVENUE(requestDTO))
-//                .setParameter(TO_DATE, utilDateToSqlDate(toDate))
-//                .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))
-//                .setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
-//
-//        int totalItems = query.getResultList().size();
-//
-//        addPagination.accept(pageable, query);
-//
-//        List<Object[]> objects = query.getResultList();
-//
-//        DoctorRevenueResponseDTO responseListDTO = parseTodoctorRevenueResponseListDTO(objects);
-//
-//        if (responseListDTO.getDoctorRevenueInfo().isEmpty()) {
-//            error();
-//            throw DOCTOR_REVENUE_NOT_FOUND.get();
-//        }
-//
-//        return responseListDTO;
-//    }
-
 
     private String getQueryByFilter(Long hospitalId, Character filter) {
         Map<Character, String> queriesWithFilterAsKey = new HashMap<>();

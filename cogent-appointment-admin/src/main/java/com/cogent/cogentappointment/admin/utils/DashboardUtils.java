@@ -11,7 +11,6 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.ZoneId;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -199,53 +198,99 @@ public class DashboardUtils {
         return name.substring(0, 3);
     }
 
-    public static DoctorRevenueResponseDTO parseTodoctorRevenueResponseListDTO(List<Object[]> results) {
+    public static List<DoctorRevenueDTO> mergeDoctorAndCancelledRevenue(List<DoctorRevenueDTO> doctorRevenueResponse,
+                                                                        List<DoctorRevenueDTO> cancelledRevenueResponse) {
 
-        DoctorRevenueResponseDTO doctorRevenueResponseDTO = new DoctorRevenueResponseDTO();
+        List<DoctorRevenueDTO> combinedDoctorRevenueResponse =
+                combineDoctorAndCancelledRevenue(doctorRevenueResponse, cancelledRevenueResponse);
 
-        List<DoctorRevenueDTO> doctorRevenueDTOS = new ArrayList<>();
+        List<DoctorRevenueDTO> finalRevenueResponse = new ArrayList<>();
 
-        AtomicReference<Double> totalRefundAmount = new AtomicReference<>(0D);
-        AtomicReference<Long> totalAppointmentCount = new AtomicReference<>(0L);
+        combinedDoctorRevenueResponse.forEach(combinedInfo -> {
 
-        results.forEach(result -> {
-            final int DOCTOR_ID_INDEX = 0;
-            final int DOCTOR_NAME_INDEX = 1;
-            final int FILE_URI_INDEX = 2;
-            final int SPECIALIZATION_NAME_INDEX = 3;
-            final int TOTAL_APPOINTMENT_COUNT_INDEX = 4;
-            final int REVENUE_AMOUNT_INDEX = 5;
+                    DoctorRevenueDTO doctorRevenueDTO = finalRevenueResponse.stream()
+                            .filter(finalRevenue ->
+                                    isDoctorRevenueConditionMatched(combinedInfo, finalRevenue)
+                            ).findAny().orElse(null);
 
-            Double refundAmount = Objects.isNull(result[REVENUE_AMOUNT_INDEX]) ?
-                    0D : Double.parseDouble(result[REVENUE_AMOUNT_INDEX].toString());
+                    //means finalRevenueResponse already contains details of same doctor & specialization
+                    if (!Objects.isNull(doctorRevenueDTO)) {
+                        calculateMatchedRevenueDetails(doctorRevenueDTO, combinedInfo);
+                    } else {
+                        //means this is new record of doctor & specialization
+                        calculateUnmatchedMatchedRevenueDetails(combinedInfo);
 
-            Long appointmentCount = Objects.isNull(result[TOTAL_APPOINTMENT_COUNT_INDEX]) ?
-                    0L : Long.parseLong(result[TOTAL_APPOINTMENT_COUNT_INDEX].toString());
+                        finalRevenueResponse.add(combinedInfo);
+                    }
+                }
+        );
 
-            DoctorRevenueDTO doctorRevenueDTO =
-                    DoctorRevenueDTO.builder()
-                            .doctorId(Long.parseLong(result[DOCTOR_ID_INDEX].toString()))
-                            .doctorName(result[DOCTOR_NAME_INDEX].toString())
-                            .fileUri(result[FILE_URI_INDEX].toString())
-                            .specializationName(result[SPECIALIZATION_NAME_INDEX].toString())
-//                            .totalAppointmentCount(Long.parseLong(result[TOTAL_APPOINTMENT_COUNT_INDEX].toString()))
-//                            .revenueAmount(refundAmount)
-                            .build();
-
-            doctorRevenueDTOS.add(doctorRevenueDTO);
-
-            totalRefundAmount.updateAndGet(v -> v + refundAmount);
-            totalAppointmentCount.updateAndGet(v -> v + appointmentCount);
-
-        });
-
-        doctorRevenueResponseDTO.setDoctorRevenueInfo(doctorRevenueDTOS);
-        doctorRevenueResponseDTO.setTotalItems(doctorRevenueDTOS.size());
-
-        doctorRevenueResponseDTO.setTotalRevenueAmount(totalRefundAmount.get());
-        doctorRevenueResponseDTO.setOverallAppointmentCount(totalAppointmentCount.get());
-
-        return doctorRevenueResponseDTO;
+        return finalRevenueResponse;
     }
 
+    private static boolean isDoctorRevenueConditionMatched(DoctorRevenueDTO doctorRevenue,
+                                                           DoctorRevenueDTO cancelledRevenue) {
+        return doctorRevenue.getDoctorId().equals(cancelledRevenue.getDoctorId())
+                && (doctorRevenue.getSpecializationId().equals(cancelledRevenue.getSpecializationId()));
+
+    }
+
+    private static List<DoctorRevenueDTO> combineDoctorAndCancelledRevenue(List<DoctorRevenueDTO> doctorRevenueResponse,
+                                                                           List<DoctorRevenueDTO> cancelledRevenueResponse) {
+
+        List<DoctorRevenueDTO> combinedDoctorRevenueResponse = new ArrayList<>();
+        combinedDoctorRevenueResponse.addAll(doctorRevenueResponse);
+        combinedDoctorRevenueResponse.addAll(cancelledRevenueResponse);
+
+        return combinedDoctorRevenueResponse;
+    }
+
+    private static void calculateMatchedRevenueDetails(DoctorRevenueDTO doctorRevenueDTO,
+                                                       DoctorRevenueDTO combinedInfo) {
+
+        doctorRevenueDTO.setSuccessfulAppointments(
+                combinedInfo.getSuccessfulAppointments() + doctorRevenueDTO.getSuccessfulAppointments());
+
+        doctorRevenueDTO.setCancelledAppointments(
+                combinedInfo.getCancelledAppointments() + doctorRevenueDTO.getCancelledAppointments());
+
+        doctorRevenueDTO.setTotalAppointments(doctorRevenueDTO.getSuccessfulAppointments() +
+                doctorRevenueDTO.getCancelledAppointments());
+
+        doctorRevenueDTO.setDoctorRevenue(
+                combinedInfo.getDoctorRevenue() + doctorRevenueDTO.getDoctorRevenue());
+
+        doctorRevenueDTO.setCancelledRevenue(
+                combinedInfo.getCancelledRevenue() + doctorRevenueDTO.getCancelledRevenue());
+
+        doctorRevenueDTO.setTotalRevenue(
+                doctorRevenueDTO.getDoctorRevenue() + doctorRevenueDTO.getCancelledRevenue());
+    }
+
+    private static void calculateUnmatchedMatchedRevenueDetails(DoctorRevenueDTO combinedInfo) {
+
+        combinedInfo.setTotalAppointments(combinedInfo.getSuccessfulAppointments() +
+                combinedInfo.getCancelledAppointments());
+
+        combinedInfo.setTotalRevenue(combinedInfo.getDoctorRevenue() + combinedInfo.getCancelledRevenue());
+    }
+
+    public static DoctorRevenueResponseDTO parseToDoctorRevenueResponseDTO(List<DoctorRevenueDTO> revenueDTOList) {
+
+        Long overallAppointmentCount = revenueDTOList.stream()
+                .mapToLong(DoctorRevenueDTO::getTotalAppointments)
+                .sum();
+
+        Double totalRevenueAmount = revenueDTOList.stream()
+                .mapToDouble(DoctorRevenueDTO::getTotalRevenue)
+                .sum();
+
+        revenueDTOList.sort((o1, o2) -> Double.compare(o2.getTotalRevenue(), o1.getTotalRevenue()));
+
+        return DoctorRevenueResponseDTO.builder()
+                .doctorRevenueInfo(revenueDTOList)
+                .overallAppointmentCount(overallAppointmentCount)
+                .totalRevenueAmount(totalRevenueAmount)
+                .build();
+    }
 }

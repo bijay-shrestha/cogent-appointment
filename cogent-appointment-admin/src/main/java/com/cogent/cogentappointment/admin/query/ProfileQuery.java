@@ -114,6 +114,7 @@ public class ProfileQuery {
             " SELECT" +
                     " p.id as value," +                                         //[0]
                     " CONCAT(h.alias,'-',p.name) as label" +                   //[1]
+                    " FROM Profile p" +
                     " LEFT JOIN Department d ON d.id = p.department.id" +
                     " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE" +

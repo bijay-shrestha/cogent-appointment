@@ -20,8 +20,6 @@ public class AppointmentModeResponseDTO implements Serializable {
 
     private Character status;
 
-    private Character isEditable;
-
     private String remarks;
 
     private String description;

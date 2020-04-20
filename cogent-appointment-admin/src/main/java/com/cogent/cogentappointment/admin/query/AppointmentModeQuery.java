@@ -63,7 +63,6 @@ public class AppointmentModeQuery {
                     " am.status as status," +
                     " am.remarks as remarks," +
                     " am.description as description," +
-                    " am.is_editable as isEditable," +
                     " DATE_FORMAT(am.created_date,'%Y-%m-%d') as createdDate," +
                     " am.created_by as createdBy," +
                     " DATE_FORMAT(am.last_modified_date,'%Y-%m-%d') as modifiedDate," +

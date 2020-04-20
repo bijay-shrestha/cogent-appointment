@@ -20,7 +20,9 @@ import static com.cogent.cogentappointment.admin.constants.HMACConstant.*;
 @Component
 public class HMACBuilder {
 
-    private String username;
+    private Integer id;
+
+    private String email;
 
     private String companyCode;
 
@@ -34,9 +36,14 @@ public class HMACBuilder {
 
     private String apiSecret;
 
+    public HMACBuilder id(Integer id) {
+        this.id = id;
+        return this;
+    }
 
-    public HMACBuilder username(String username) {
-        this.username = username;
+
+    public HMACBuilder email(String email) {
+        this.email = email;
         return this;
     }
 
@@ -77,15 +84,17 @@ public class HMACBuilder {
             digest.init(secretKey);
             digest.update(algorithm.getBytes(StandardCharsets.UTF_8));
             digest.update(DELIMITER);
-            digest.update(nonce.getBytes(StandardCharsets.UTF_8));
+            digest.update(ByteBuffer.allocateDirect(id));
             digest.update(DELIMITER);
-            digest.update((username != null) ? username.getBytes(StandardCharsets.UTF_8) : null);
+            digest.update(email.getBytes(StandardCharsets.UTF_8) );
             digest.update(DELIMITER);
             digest.update(ByteBuffer.allocateDirect(companyId));
             digest.update(DELIMITER);
             digest.update(companyCode.getBytes(StandardCharsets.UTF_8));
             digest.update(DELIMITER);
             digest.update(apiKey.getBytes(StandardCharsets.UTF_8));
+            digest.update(DELIMITER);
+            digest.update(nonce.getBytes(StandardCharsets.UTF_8));
             digest.update(DELIMITER);
             final byte[] signatureBytes = digest.doFinal();
             digest.reset();

@@ -178,7 +178,7 @@ public class CompanyAdminQuery {
     public static final String QUERY_TO_GET_LOGGED_COMPANY_ADMIN_INFO =
             "SELECT" +
                     " a.id as id," +
-                    " a.username as username," +
+                    " a.email as email," +
                     " a.password as password," +
                     " h.isCompany as isCompany," +
                     " h.code as companyCode," +
@@ -191,7 +191,7 @@ public class CompanyAdminQuery {
                     " LEFT JOIN Hospital h ON h.id=p.company.id" +
                     " LEFT JOIN HmacApiInfo hai ON hai.hospital.id=h.id" +
                     " WHERE" +
-                    " (a.username =:username OR a.mobileNumber=:username OR a.email=:username)" +
+                    " (a.mobileNumber=:email OR a.email=:email)" +
                     " AND a.status = 'Y'" +
                     " AND h.isCompany='Y'";
 

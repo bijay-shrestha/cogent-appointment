@@ -9,9 +9,11 @@ import lombok.Getter;
 @Getter
 public class AuthHeader {
 
+    private final Integer id;
+
     private final String algorithm;
 
-    private final String username;
+    private final String email;
 
     private final Integer companyId;
 
@@ -24,14 +26,16 @@ public class AuthHeader {
     private final byte[] digest;
 
     public AuthHeader(String algorithm,
-                      String username,
+                      Integer id,
+                      String email,
                       Integer companyId,
                       String companyCode,
                       String apiKey,
                       String nonce,
                       byte[] digest) {
         this.algorithm = algorithm;
-        this.username = username;
+        this.id = id;
+        this.email = email;
         this.companyId = companyId;
         this.companyCode = companyCode;
         this.apiKey = apiKey;

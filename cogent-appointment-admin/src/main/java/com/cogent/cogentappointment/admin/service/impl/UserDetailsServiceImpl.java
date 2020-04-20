@@ -29,15 +29,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         this.adminRepository = adminRepository;
     }
 
-    public LoggedInAdminDTO getAdmin(String userName) {
-        return adminRepository.getLoggedInAdmin(userName);
+    public LoggedInAdminDTO getAdmin(String email) {
+        return adminRepository.getLoggedInAdmin(email);
     }
 
     @Override
-    public UserDetailsImpl loadUserByUsername(String username) throws UsernameNotFoundException {
-        LoggedInAdminDTO loggedInAdminDTO = getAdmin(username);
+    public UserDetailsImpl loadUserByUsername(String email) throws UsernameNotFoundException {
+        LoggedInAdminDTO loggedInAdminDTO = getAdmin(email);
         if (loggedInAdminDTO == null) {
-            log.error(USER_NOT_FOUND,username);
+            log.error(USER_NOT_FOUND,email);
             throw new NoContentFoundException("USER NOT FOUND");
         }
         return UserDetailsImpl.build(loggedInAdminDTO);

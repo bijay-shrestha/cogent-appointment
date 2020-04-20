@@ -30,7 +30,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     @Override
     public String loginUser(LoginRequestDTO requestDTO) {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(requestDTO.getUsername(), requestDTO.getPassword()));
+                new UsernamePasswordAuthenticationToken(requestDTO.getEmail(), requestDTO.getPassword()));
             return hmacUtils.getHash(authentication);
 
     }

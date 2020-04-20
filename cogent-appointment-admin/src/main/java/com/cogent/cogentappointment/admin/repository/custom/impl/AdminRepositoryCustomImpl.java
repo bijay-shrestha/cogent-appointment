@@ -182,14 +182,13 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     }
 
     @Override
-    public LoggedInAdminDTO getLoggedInAdmin(String username) {
+    public LoggedInAdminDTO getLoggedInAdmin(String email) {
         Query query = createQuery.apply(entityManager, QUERY_TO_GET_LOGGED_COMPANY_ADMIN_INFO)
-                .setParameter(USERNAME, username);
-
+                .setParameter(EMAIL, email);
         try {
             return transformQueryToSingleResult(query, LoggedInAdminDTO.class);
         } catch (NoResultException e) {
-            throw ADMIN_NOT_FOUND.apply(username);
+            throw ADMIN_NOT_FOUND.apply(email);
         }
     }
 
@@ -318,10 +317,10 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         throw new NoContentFoundException(Admin.class, "id", id.toString());
     };
 
-    private Function<String, NoContentFoundException> ADMIN_NOT_FOUND = (username) -> {
-        log.error(ADMIN_NOT_FOUND_ERROR, username);
-        throw new NoContentFoundException(String.format(AdminServiceMessages.ADMIN_NOT_FOUND, username),
-                "username/email", username);
+    private Function<String, NoContentFoundException> ADMIN_NOT_FOUND = (email) -> {
+        log.error(ADMIN_NOT_FOUND_ERROR, email);
+        throw new NoContentFoundException(String.format(AdminServiceMessages.ADMIN_NOT_FOUND, email),
+                "email", email);
     };
 
     private void error() {

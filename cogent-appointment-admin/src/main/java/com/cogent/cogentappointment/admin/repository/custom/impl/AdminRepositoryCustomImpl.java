@@ -69,11 +69,10 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     }
 
     @Override
-    public List<Object[]> validateDuplicity(String username, String email, String mobileNumber,
+    public List<Object[]> validateDuplicity(String email, String mobileNumber,
                                             Long hospitalId) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FIND_ADMIN_FOR_VALIDATION)
-                .setParameter(USERNAME, username)
                 .setParameter(EMAIL, email)
                 .setParameter(MOBILE_NUMBER, mobileNumber)
                 .setParameter(HOSPITAL_ID, hospitalId);

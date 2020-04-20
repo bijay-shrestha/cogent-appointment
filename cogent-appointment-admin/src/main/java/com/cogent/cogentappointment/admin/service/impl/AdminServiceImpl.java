@@ -112,10 +112,10 @@ public class AdminServiceImpl implements AdminService {
 
         validateAdminCount(adminRequestDTO.getHospitalId());
 
-        List<Object[]> admins = adminRepository.validateDuplicity(adminRequestDTO.getUsername(),
-                adminRequestDTO.getEmail(), adminRequestDTO.getMobileNumber(), adminRequestDTO.getHospitalId());
+        List<Object[]> admins = adminRepository.validateDuplicity(adminRequestDTO.getEmail(),
+                adminRequestDTO.getMobileNumber(), adminRequestDTO.getHospitalId());
 
-        validateAdminDuplicity(admins, adminRequestDTO.getUsername(), adminRequestDTO.getEmail(),
+        validateAdminDuplicity(admins,adminRequestDTO.getEmail(),
                 adminRequestDTO.getMobileNumber());
 
         Admin admin = save(adminRequestDTO);

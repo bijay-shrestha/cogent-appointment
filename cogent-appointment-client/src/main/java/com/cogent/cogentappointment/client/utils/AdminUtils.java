@@ -34,7 +34,6 @@ public class AdminUtils {
                                           Gender gender,
                                           Profile profile) {
         Admin admin = new Admin();
-        admin.setUsername(getUsername(adminRequestDTO.getEmail()));
         admin.setFullName(toNormalCase(adminRequestDTO.getFullName()));
         admin.setEmail(adminRequestDTO.getEmail());
         admin.setMobileNumber(adminRequestDTO.getMobileNumber());
@@ -59,7 +58,6 @@ public class AdminUtils {
 
         admin.setEmail(adminRequestDTO.getEmail());
         admin.setFullName(toNormalCase(adminRequestDTO.getFullName()));
-        admin.setUsername(getUsername(adminRequestDTO.getEmail()));
         admin.setMobileNumber(adminRequestDTO.getMobileNumber());
         admin.setStatus(status);
         admin.setHasMacBinding(adminRequestDTO.getHasMacBinding());
@@ -87,7 +85,7 @@ public class AdminUtils {
     }
 
     public static void parseMetaInfo(Admin admin, AdminMetaInfo adminMetaInfo) {
-        adminMetaInfo.setMetaInfo(admin.getFullName() + OR + admin.getUsername() + OR + admin.getMobileNumber());
+        adminMetaInfo.setMetaInfo(admin.getFullName() + OR + admin.getEmail() + OR + admin.getMobileNumber());
     }
 
     public static AdminConfirmationToken parseInAdminConfirmationToken(Admin admin) {
@@ -258,10 +256,5 @@ public class AdminUtils {
                 .paramValue(fullname + COMMA_SEPARATED
                         + requestDTO.getPassword() + COMMA_SEPARATED + requestDTO.getRemarks())
                 .build();
-    }
-
-    public static String getUsername(String email){
-        StringTokenizer token = new StringTokenizer(email, "@");
-        return token.nextToken();
     }
 }

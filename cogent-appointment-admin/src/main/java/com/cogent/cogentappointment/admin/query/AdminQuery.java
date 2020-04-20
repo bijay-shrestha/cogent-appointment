@@ -24,7 +24,7 @@ public class AdminQuery {
                     " a.status != 'D'" +
                     " AND h.status!='D'" +
                     " AND" +
-                    " (a.username =:username OR a.email =:email OR a.mobileNumber = :mobileNumber)" +
+                    " (a.email =:email OR a.mobileNumber = :mobileNumber)" +
                     " AND h.id=:hospitalId";
 
     public static final String QUERY_TO_VALIDATE_ADMIN_COUNT =

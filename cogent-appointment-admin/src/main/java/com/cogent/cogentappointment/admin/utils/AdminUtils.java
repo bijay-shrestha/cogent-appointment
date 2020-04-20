@@ -34,7 +34,6 @@ public class AdminUtils {
                                           Gender gender,
                                           Profile profile) {
         Admin admin = new Admin();
-        admin.setUsername(adminRequestDTO.getUsername());
         admin.setFullName(convertToNormalCase(adminRequestDTO.getFullName()));
         admin.setEmail(adminRequestDTO.getEmail());
         admin.setMobileNumber(adminRequestDTO.getMobileNumber());
@@ -110,7 +109,7 @@ public class AdminUtils {
                 .receiverEmailAddress(adminRequestDTO.getEmail())
                 .subject(SUBJECT_FOR_ADMIN_VERIFICATION)
                 .templateName(ADMIN_VERIFICATION)
-                .paramValue(adminRequestDTO.getUsername() + COMMA_SEPARATED + confirmationUrl)
+                .paramValue(adminRequestDTO.getFullName() + COMMA_SEPARATED + confirmationUrl)
                 .build();
     }
 

@@ -28,7 +28,7 @@ public interface AdminRepositoryCustom {
 
     Object[] validateAdminCount(Long hospitalId);
 
-    List<Object[]> validateDuplicity(String username, String email, String mobileNumber,
+    List<Object[]> validateDuplicity(String email, String mobileNumber,
                                      Long hospitalId);
 
     List<Object[]> validateDuplicityForCompanyAdmin(String email, String mobileNumber);

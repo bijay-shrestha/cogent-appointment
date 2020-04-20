@@ -222,7 +222,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         Admin admin = findById(requestDTO.getId());
 
-        updateAdminPassword(requestDTO.getPassword(), requestDTO.getRemarks(), admin);
+        save(updateAdminPassword(requestDTO.getPassword(), requestDTO.getRemarks(), admin));
 
         sendEmail(parseToResetPasswordEmailRequestDTO(requestDTO, admin.getEmail(), admin.getUsername()));
 

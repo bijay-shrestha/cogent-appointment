@@ -43,9 +43,15 @@ public class ClientLogRequestDTO implements Serializable {
 
     @NotNull
     @NotEmpty
+    private String location;
+
+    @NotNull
+    @NotEmpty
     private String feature;
 
     @NotNull
     @NotEmpty
     private String actionType;
+
+
 }

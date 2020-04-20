@@ -28,6 +28,7 @@ public class ClientLogUtils {
         clientLog.setLogDateTime(new Date());
         clientLog.setBrowser(requestDTO.getBrowser());
         clientLog.setOperatingSystem(requestDTO.getOperatingSystem());
+        clientLog.setLocation(requestDTO.getLocation());
 
         return clientLog;
     }

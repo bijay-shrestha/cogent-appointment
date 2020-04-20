@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.logging.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.io.Serializable;
@@ -15,7 +16,10 @@ import java.util.Date;
 @NoArgsConstructor
 public class UserMenuLogSearchResponseDTO implements Serializable {
 
-    private String logDateTime;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd YYYY")
+    private Date logDate;
+
+    private String logTime;
 
     private String browser;
 

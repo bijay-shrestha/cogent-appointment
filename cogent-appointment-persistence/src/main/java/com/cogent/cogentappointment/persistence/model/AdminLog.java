@@ -60,6 +60,9 @@ public class AdminLog extends Auditable<String> implements Serializable {
     @Column(name = "browser")
     private String browser;
 
+    @Column(name = "location")
+    private String location;
+
     @Column(name = "operating_system")
     private String operatingSystem;
 
@@ -79,6 +82,7 @@ public class AdminLog extends Auditable<String> implements Serializable {
                 ", feature='" + feature + '\'' +
                 ", actionType='" + actionType + '\'' +
                 ", browser='" + browser + '\'' +
+                ", location='" + location + '\'' +
                 ", operatingSystem='" + operatingSystem + '\'' +
                 ", status='" + status + '\'' +
                 '}';

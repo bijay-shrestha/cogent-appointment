@@ -49,4 +49,8 @@ public class AdminLogRequestDTO implements Serializable {
     @NotNull
     @NotEmpty
     private String ipAddress;
+
+    @NotNull
+    @NotEmpty
+    private String location;
 }

@@ -28,6 +28,7 @@ public class AdminLogUtils {
         adminLog.setLogDateTime(new Date());
         adminLog.setBrowser(requestDTO.getBrowser());
         adminLog.setOperatingSystem(requestDTO.getOperatingSystem());
+        adminLog.setLocation(requestDTO.getLocation());
 
         return adminLog;
     }

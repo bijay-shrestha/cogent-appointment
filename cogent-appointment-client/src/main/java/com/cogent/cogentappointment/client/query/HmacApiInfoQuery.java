@@ -57,7 +57,6 @@ public class HmacApiInfoQuery {
     public static final String QUERY_TO_FECTH_ADMIN_FOR_AUTHENTICATION =
             " SELECT" +
                     " a.fullName as fullName," +
-                    " a.username as username," +
                     " a.email as email," +
                     " h.code as hospitalCode," +
                     " h.isCompany as isCompany," +
@@ -70,11 +69,11 @@ public class HmacApiInfoQuery {
                     " LEFT JOIN Profile p ON p.department.id=d.id" +
                     " LEFT JOIN Admin a ON a.profileId.id=p.id" +
                     " WHERE" +
-                    " a.username=:username" +
-                    " AND" +
-                    " a.status='Y'" +
+                    " a.email=:email" +
                     " AND" +
                     " h.code=:hospitalCode" +
+                    " AND" +
+                    " a.status='Y'" +
                     " AND" +
                     " hai.apiKey=:apiKey";
 

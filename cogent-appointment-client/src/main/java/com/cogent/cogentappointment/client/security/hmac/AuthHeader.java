@@ -11,7 +11,9 @@ public class AuthHeader {
 
     private final String algorithm;
 
-    private final String username;
+    private final Integer id;
+
+    private final String email;
 
     private final Integer hospitalId;
 
@@ -24,14 +26,16 @@ public class AuthHeader {
     private final byte[] digest;
 
     public AuthHeader(String algorithm,
-                      String username,
+                      Integer id,
+                      String email,
                       Integer hospitalId,
                       String hospitalCode,
                       String apiKey,
                       String nonce,
                       byte[] digest) {
         this.algorithm = algorithm;
-        this.username = username;
+        this.id=id;
+        this.email = email;
         this.hospitalId=hospitalId;
         this.hospitalCode = hospitalCode;
         this.apiKey = apiKey;

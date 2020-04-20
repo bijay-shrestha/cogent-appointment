@@ -18,6 +18,4 @@ public class LoginRequestDTO implements Serializable {
     private String email;
 
     private String password;
-
-    private String hospitalCode;
 }

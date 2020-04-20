@@ -21,10 +21,8 @@ public class ErrorMessageConstants {
 
     public interface AdminServiceMessages {
 
-        String ADMIN_DUPLICATION_MESSAGE = "Admin with given username, email and mobile number" +
+        String ADMIN_DUPLICATION_MESSAGE = "Admin with given email and mobile number" +
                 " already exists.";
-
-        String USERNAME_DUPLICATION_MESSAGE = "%s already exists with username '%s'";
 
         String EMAIL_DUPLICATION_MESSAGE = "%s already exists with email '%s'";
 
@@ -102,8 +100,6 @@ public class ErrorMessageConstants {
 
     public static final String INVALID_USERNAME_OR_ACCESS_KEY = "Invalid username or access key";
     public static final String INVALID_PASSWORD = "Invalid password";
-    public static final String PASSWORD_NOT_SET="Password Not Set";
-    public static final String PASSWORD_NOT_SET_DEBUG_MESSAGE="Password not set in database";
 
     public static final String INVALID_VERIFICATION_TOKEN = "Invalid verification token";
 

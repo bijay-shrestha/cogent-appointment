@@ -15,9 +15,7 @@ public interface HmacApiInfoRepositoryCustom {
 
     ThirdPartyDetail getDetailsByHospitalCode(String hospitalCode);
 
-    AdminMinDetails verifyLoggedInAdmin(String email, String hospitalCode);
-
-    AdminMinDetails getAdminDetailForAuthentication(String username,
+    AdminMinDetails getAdminDetailForAuthentication(String email,
                                                     String hospitalCode,
                                                     String apiKey);
 

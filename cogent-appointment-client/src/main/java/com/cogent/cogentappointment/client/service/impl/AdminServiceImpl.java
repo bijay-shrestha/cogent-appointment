@@ -513,7 +513,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private List<FileUploadResponseDTO> uploadFiles(Admin admin, MultipartFile[] files) {
-        String subDirectory = admin.getUsername();
+        String subDirectory = admin.getEmail();
         return minioFileService.addAttachmentIntoSubDirectory(subDirectory, files);
     }
 

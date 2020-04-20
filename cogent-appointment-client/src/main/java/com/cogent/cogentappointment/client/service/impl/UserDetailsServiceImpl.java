@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.service.impl;
 
+import com.cogent.cogentappointment.client.dto.response.admin.LoggedInAdminDTO;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.repository.AdminRepository;
 import com.cogent.cogentappointment.persistence.model.Admin;
@@ -29,20 +30,19 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
 
-    public Admin getAdmin(String userName) {
+    public LoggedInAdminDTO getAdmin(String userName) {
         return adminRepository.getLoggedInAdmin(userName);
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Admin admin = getAdmin(username);
-
-        if (admin == null){
+    public UserDetailsImpl loadUserByUsername(String username) throws UsernameNotFoundException {
+        LoggedInAdminDTO loggedInAdminDTO = getAdmin(username);
+        if (loggedInAdminDTO == null){
             log.error(USER_NOT_FOUND,username);
             throw new DataDuplicationException("USER NOT FOUND");
         }
 
-        return UserDetailsImpl.build(admin);
+        return UserDetailsImpl.build(loggedInAdminDTO);
     }
 
 }

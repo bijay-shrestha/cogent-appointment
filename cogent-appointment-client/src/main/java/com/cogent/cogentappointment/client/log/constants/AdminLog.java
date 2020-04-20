@@ -32,7 +32,7 @@ public class AdminLog {
 
     public final static String ADMIN_NOT_ACTIVE_ERROR=":::: ADMIN WITH EMAIL : {} NOT ACTIVE ::::";
 
-    public final static String ADMIN_NOT_FOUND_ERROR=":::: ADMIN WITH USERNAME/EMAIL : {} NOT FOUND ::::";
+    public final static String ADMIN_NOT_FOUND_ERROR=":::: ADMIN WITH EMAIL : {} NOT FOUND ::::";
 
     public final static String CONFORMATION_TOKEN_NOT_FOUND=":::: CONFORMATION TOKEN : {} NOT FOUND  ::::";
 

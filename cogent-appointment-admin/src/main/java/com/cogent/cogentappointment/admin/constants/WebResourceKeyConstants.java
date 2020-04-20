@@ -13,6 +13,8 @@ public class WebResourceKeyConstants {
         String BASE_ADMIN = "/admin";
         String AVATAR = "/avatar";
         String ADMIN_META_INFO = "/metaInfo";
+        String ADMIN_META_INFO_BY_COMPANY_ID = "/company/metaInfo";
+        String ADMIN_META_INFO_BY_CLIENT_ID = "/client/metaInfo";
         String CHANGE_PASSWORD = "/changePassword";
         String RESET_PASSWORD = "/resetPassword";
         String INFO = "/info";

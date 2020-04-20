@@ -37,6 +37,8 @@ public class SwaggerConstants {
         String FETCH_LOGGED_IN_ADMIN_INFO = "Fetch logged in admin information." +
                 " Used to show in top-bar and to validate if the admin updates its own profile";
         String FETCH_ADMIN_META_INFO = "Fetch active admin meta info for dropdown";
+        String FETCH_ADMIN_META_INFO_BY_COMPANY_ID = "Fetch active admin meta info by company for dropdown";
+        String FETCH_ADMIN_META_INFO_BY_CLIENT_ID = "Fetch active admin meta info by client for dropdown";
     }
 
     public interface AppointmentConstant {

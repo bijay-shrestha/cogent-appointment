@@ -3,7 +3,6 @@ package com.cogent.cogentappointment.admin.resource;
 import com.cogent.cogentappointment.admin.dto.commons.AdminLogRequestDTO;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.*;
-import com.cogent.cogentappointment.admin.service.AdminLogService;
 import com.cogent.cogentappointment.admin.service.AdminService;
 import com.cogent.cogentappointment.admin.utils.commons.ObjectMapperUtils;
 import io.swagger.annotations.Api;
@@ -32,11 +31,9 @@ import static org.springframework.http.ResponseEntity.ok;
 public class AdminResource {
 
     private final AdminService adminService;
-    private final AdminLogService adminLogService;
 
-    public AdminResource(AdminService adminService, AdminLogService adminLogService) {
+    public AdminResource(AdminService adminService) {
         this.adminService = adminService;
-        this.adminLogService = adminLogService;
     }
 
     @PostMapping(consumes = MULTIPART_FORM_DATA_VALUE)
@@ -135,6 +132,20 @@ public class AdminResource {
     public ResponseEntity<?> fetchAdminMetaInfoDropdown() {
 
         return ok(adminService.fetchAdminMetaInfoResponseDto());
+    }
+
+    @GetMapping(ADMIN_META_INFO_BY_COMPANY_ID)
+    @ApiOperation(FETCH_ADMIN_META_INFO_BY_COMPANY_ID)
+    public ResponseEntity<?> fetchAdminMetaInfoDropdownByCompanyId() {
+
+        return ok(adminService.fetchAdminMetaInfoByCompanyIdResponseDto());
+    }
+
+    @GetMapping(ADMIN_META_INFO_BY_CLIENT_ID+ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_ADMIN_META_INFO_BY_COMPANY_ID)
+    public ResponseEntity<?> fetchAdminMetaInfoDropdownByClientId(@PathVariable("id") Long id) {
+
+        return ok(adminService.fetchAdminMetaInfoByClientIdResponseDto(id));
     }
 
     @PutMapping(INFO)

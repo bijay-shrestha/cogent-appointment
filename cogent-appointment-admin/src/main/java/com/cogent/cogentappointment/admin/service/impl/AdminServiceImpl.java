@@ -11,6 +11,7 @@ import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.exception.OperationUnsuccessfulException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.*;
+import com.cogent.cogentappointment.admin.utils.commons.SecurityContextUtils;
 import com.cogent.cogentappointment.admin.validator.LoginValidator;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
@@ -383,6 +384,35 @@ public class AdminServiceImpl implements AdminService {
 
         List<AdminMetaInfoResponseDTO> metaInfoResponseDTOS =
                 adminMetaInfoRepository.fetchAdminMetaInfoResponseDTOS();
+
+        log.info(SAVING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
+
+        return metaInfoResponseDTOS;
+    }
+
+    @Override
+    public List<AdminMetaInfoResponseDTO> fetchAdminMetaInfoByCompanyIdResponseDto() {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, ADMIN_META_INFO);
+
+        Long companyId= SecurityContextUtils.getLoggedInCompanyId();
+        List<AdminMetaInfoResponseDTO> metaInfoResponseDTOS =
+                adminMetaInfoRepository.fetchAdminMetaInfoByCompanyIdResponseDTOS(companyId);
+
+        log.info(SAVING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
+
+        return metaInfoResponseDTOS;
+    }
+
+    @Override
+    public List<AdminMetaInfoResponseDTO> fetchAdminMetaInfoByClientIdResponseDto(Long id) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, ADMIN_META_INFO);
+
+        List<AdminMetaInfoResponseDTO> metaInfoResponseDTOS =
+                adminMetaInfoRepository.fetchAdminMetaInfoByClientIdResponseDTOS(id);
 
         log.info(SAVING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
 

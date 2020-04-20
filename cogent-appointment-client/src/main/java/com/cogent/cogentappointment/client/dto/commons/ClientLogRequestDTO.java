@@ -41,8 +41,6 @@ public class ClientLogRequestDTO implements Serializable {
     @NotEmpty
     private String ipAddress;
 
-    @NotNull
-    @NotEmpty
     private String location;
 
     @NotNull

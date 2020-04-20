@@ -39,6 +39,10 @@ public interface AdminService {
     AdminLoggedInInfoResponseDTO fetchLoggedInAdminInfo(AdminInfoRequestDTO requestDTO);
 
     List<AdminMetaInfoResponseDTO> fetchAdminMetaInfoResponseDto();
+
+    List<AdminMetaInfoResponseDTO> fetchAdminMetaInfoByCompanyIdResponseDto();
+
+    List<AdminMetaInfoResponseDTO> fetchAdminMetaInfoByClientIdResponseDto(Long id);
 }
 
 

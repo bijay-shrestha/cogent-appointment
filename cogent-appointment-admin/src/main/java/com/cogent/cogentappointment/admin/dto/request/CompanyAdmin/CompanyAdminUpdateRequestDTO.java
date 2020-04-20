@@ -62,4 +62,6 @@ public class CompanyAdminUpdateRequestDTO implements Serializable {
     private List<AdminMacAddressInfoUpdateRequestDTO> macAddressUpdateInfo;
 
     private List<AdminDashboardRequestDTO> adminDashboardRequestDTOS;
+
+    private String baseUrl;
 }

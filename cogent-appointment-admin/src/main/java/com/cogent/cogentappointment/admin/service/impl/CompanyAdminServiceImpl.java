@@ -45,6 +45,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.*;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
@@ -258,24 +259,62 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         validateCompanyAdminDuplicity(admins, updateRequestDTO.getEmail(),
                 updateRequestDTO.getMobileNumber());
 
-        EmailRequestDTO emailRequestDTO = parseUpdatedInfo(updateRequestDTO, admin);
+        emailIsNotUpdated(updateRequestDTO,admin,files);
 
-        updateCompanyAdmin(updateRequestDTO, admin);
-
-        if (updateRequestDTO.getIsAvatarUpdate().equals(YES))
-            updateAvatar(admin, files);
-
-//        todo:mac cannot be saved
-        if (updateRequestDTO.getHasMacBinding().equals(YES))
-            updateMacAddressInfo(updateRequestDTO.getMacAddressUpdateInfo(), admin);
-
-        updateAdminMetaInfo(admin);
-
-        updateAdminDashboardFeature(updateRequestDTO.getAdminDashboardRequestDTOS(), admin);
-
-        sendEmail(emailRequestDTO);
+        emailIsUpdated(updateRequestDTO,admin,files);
 
         log.info(UPDATING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    private void emailIsNotUpdated(CompanyAdminUpdateRequestDTO updateRequestDTO,
+                                   Admin admin,MultipartFile files){
+        if(updateRequestDTO.getEmail().equals(admin.getEmail())) {
+
+            EmailRequestDTO emailRequestDTO = parseUpdatedInfo(updateRequestDTO, admin);
+
+            updateCompanyAdmin(updateRequestDTO, ACTIVE,admin);
+
+            if (updateRequestDTO.getIsAvatarUpdate().equals(YES))
+                updateAvatar(admin, files);
+
+            updateMacAddressInfo(updateRequestDTO.getMacAddressUpdateInfo(), admin);
+
+            updateAdminDashboardFeature(updateRequestDTO.getAdminDashboardRequestDTOS(), admin);
+
+            updateAdminMetaInfo(admin);
+
+            sendEmail(emailRequestDTO);
+        }
+    }
+
+    private void emailIsUpdated(CompanyAdminUpdateRequestDTO updateRequestDTO,
+                                Admin admin,MultipartFile files){
+        if(!updateRequestDTO.getEmail().equals(admin.getEmail())) {
+
+            EmailRequestDTO emailRequestDTO = parseUpdatedInfo(updateRequestDTO, admin);
+
+            AdminConfirmationToken adminConfirmationToken =
+                    saveAdminConfirmationToken(parseInAdminConfirmationToken(admin));
+
+            EmailRequestDTO emailRequestDTOForNewEmail = convertCompanyAdminUpdateRequestToEmailRequestDTO(updateRequestDTO,
+                    adminConfirmationToken.getConfirmationToken());
+
+            updateCompanyAdmin(updateRequestDTO,INACTIVE, admin);
+
+            if (updateRequestDTO.getIsAvatarUpdate().equals(YES))
+                updateAvatar(admin, files);
+
+            updateMacAddressInfo(updateRequestDTO.getMacAddressUpdateInfo(), admin);
+
+            updateAdminDashboardFeature(updateRequestDTO.getAdminDashboardRequestDTOS(), admin);
+
+            updateAdminMetaInfo(admin);
+
+            sendEmail(emailRequestDTOForNewEmail);
+
+            sendEmail(emailRequestDTO);
+
+        }
     }
 
     @Override
@@ -292,6 +331,27 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
     }
 
     @Override
+    public void verifyConfirmationTokenForEmail(String token) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(VERIFY_CONFIRMATION_TOKEN_FOR_EMAIL_PROCESS_STARTED);
+
+        AdminConfirmationToken adminConfirmationToken =
+                confirmationTokenRepository.findAdminConfirmationTokenByToken(token)
+                        .orElseThrow(() -> CONFIRMATION_TOKEN_NOT_FOUND.apply(token));
+
+        validateStatus(adminConfirmationToken.getStatus());
+
+        Admin admin=adminRepository.findAdminByIdForEmailVerification(adminConfirmationToken.getAdmin().getId());
+
+        admin.setStatus(ACTIVE);
+
+        save(admin);
+
+        log.info(VERIFY_CONFIRMATION_TOKEN_FOR_EMAIL_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    @Override
     public void savePassword(AdminPasswordRequestDTO requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
@@ -305,6 +365,8 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         save(saveAdminPassword(requestDTO, adminConfirmationToken));
 
         adminConfirmationToken.setStatus(INACTIVE);
+
+        saveAdminConfirmationToken(adminConfirmationToken);
 
         log.info(SAVING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
     }
@@ -529,12 +591,12 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         else updateAdminAvatar(admin, adminAvatar, files);
     }
 
-    private void updateCompanyAdmin(CompanyAdminUpdateRequestDTO adminRequestDTO, Admin admin) {
+    private void updateCompanyAdmin(CompanyAdminUpdateRequestDTO adminRequestDTO,Character status, Admin admin) {
         Gender gender = fetchGender(adminRequestDTO.getGenderCode());
 
         Profile profile = fetchProfile(adminRequestDTO.getProfileId());
 
-        convertCompanyAdminUpdateRequestDTOToAdmin(admin, adminRequestDTO, gender, profile);
+        convertCompanyAdminUpdateRequestDTOToAdmin(admin, adminRequestDTO, gender, profile,status);
     }
 
     private void updateMacAddressInfo(List<AdminMacAddressInfoUpdateRequestDTO> adminMacAddressInfoUpdateRequestDTOS,

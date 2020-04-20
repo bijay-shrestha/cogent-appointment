@@ -52,12 +52,13 @@ public class CompanyAdminUtils {
     public static void convertCompanyAdminUpdateRequestDTOToAdmin(Admin admin,
                                                                   CompanyAdminUpdateRequestDTO updateRequestDTO,
                                                                   Gender gender,
-                                                                  Profile profile) {
+                                                                  Profile profile,
+                                                                  Character status) {
 
         admin.setEmail(updateRequestDTO.getEmail());
         admin.setFullName(convertToNormalCase(updateRequestDTO.getFullName()));
         admin.setMobileNumber(updateRequestDTO.getMobileNumber());
-        admin.setStatus(updateRequestDTO.getStatus());
+        admin.setStatus(status);
         admin.setHasMacBinding(updateRequestDTO.getHasMacBinding());
         admin.setRemarks(updateRequestDTO.getRemarks());
 
@@ -148,6 +149,22 @@ public class CompanyAdminUtils {
                 .subject(SUBJECT_FOR_ADMIN_VERIFICATION)
                 .templateName(ADMIN_VERIFICATION)
                 .paramValue(admin.getFullName() + COMMA_SEPARATED + confirmationUrl)
+                .build();
+    }
+
+    public static EmailRequestDTO convertCompanyAdminUpdateRequestToEmailRequestDTO(CompanyAdminUpdateRequestDTO adminRequestDTO,
+                                                                             String confirmationToken) {
+
+//        String origin = httpServletRequest.getHeader("origin");
+//        String confirmationUrl = origin + "/#" + "/savePassword" + "?token =" + confirmationToken;
+
+        String confirmationUrl = adminRequestDTO.getBaseUrl() + "/#" + "/savePassword" + "?token =" + confirmationToken;
+
+        return EmailRequestDTO.builder()
+                .receiverEmailAddress(adminRequestDTO.getEmail())
+                .subject(SUBJECT_FOR_EMAIL_VERIFICATION)
+                .templateName(EMAIL_VERIFICATION)
+                .paramValue(adminRequestDTO.getFullName() + COMMA_SEPARATED + confirmationUrl)
                 .build();
     }
 

@@ -7,7 +7,10 @@ public class EmailTemplates {
 
     //A
     public static final String ADMIN_VERIFICATION = "ADMIN VERIFICATION";
+    public static final String EMAIL_VERIFICATION ="EMAIL VERIFICATION";
+
     public static final String ADMIN_VERIFICATION_TEMPLATE = "adminVerification.ftl";
+    public static final String EMAIL_VERIFICATION_TEMPLATE = "emailVerification.ftl";
 
     public static final String ADMIN_RESET_PASSWORD = "RESET PASSWORD";
     public static final String ADMIN_RESET_PASSWORD_TEMPLATE = "resetPassword.ftl";

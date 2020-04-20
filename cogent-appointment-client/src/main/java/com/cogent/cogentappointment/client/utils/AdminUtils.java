@@ -119,12 +119,12 @@ public class AdminUtils {
 //        String origin = httpServletRequest.getHeader("origin");
 //        String confirmationUrl = origin + "/#" + "/savePassword" + "?token =" + confirmationToken;
 
-        String confirmationUrl = adminRequestDTO.getBaseUrl() + "/#" + "/savePassword" + "?token =" + confirmationToken;
+        String confirmationUrl = adminRequestDTO.getBaseUrl() + "/#" + "/updateEmail" + "?token =" + confirmationToken;
 
         return EmailRequestDTO.builder()
                 .receiverEmailAddress(adminRequestDTO.getEmail())
-                .subject(SUBJECT_FOR_ADMIN_VERIFICATION)
-                .templateName(ADMIN_VERIFICATION)
+                .subject(SUBJECT_FOR_EMAIL_VERIFICATION)
+                .templateName(EMAIL_VERIFICATION)
                 .paramValue(adminRequestDTO.getFullName() + COMMA_SEPARATED + confirmationUrl)
                 .build();
     }

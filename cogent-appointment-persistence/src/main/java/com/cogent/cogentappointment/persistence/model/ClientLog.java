@@ -65,4 +65,23 @@ public class ClientLog extends Auditable<String> implements Serializable {
 
     @Column(name = "status")
     private Character status;
+
+    @Override
+    public String toString() {
+        return "ClientLog{" +
+                "id=" + id +
+                ", adminId='" + adminId.getId() + '\'' +
+                ", parentId='" + parentId + '\'' +
+                ", roleId='" + roleId + '\'' +
+                ", logDateTime='" + logDateTime + '\'' +
+                ", logDate='" + logDate + '\'' +
+                ", logDescription='" + logDescription + '\'' +
+                ", feature='" + feature + '\'' +
+                ", actionType='" + actionType + '\'' +
+                ", browser='" + browser + '\'' +
+                ", operatingSystem='" + operatingSystem + '\'' +
+                ", status='" + status + '\'' +
+                '}';
+    }
+
 }

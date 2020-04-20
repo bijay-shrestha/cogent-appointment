@@ -2,6 +2,8 @@ package com.cogent.cogentappointment.logging.dto.response;
 
 import lombok.*;
 
+import java.io.Serializable;
+
 /**
  * @author Rupak
  */
@@ -10,7 +12,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AdminLogStaticsResponseDTO {
+public class AdminLogStaticsResponseDTO implements Serializable {
 
     private String feature;
 

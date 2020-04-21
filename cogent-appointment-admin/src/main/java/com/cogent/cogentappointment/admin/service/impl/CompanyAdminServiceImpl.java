@@ -225,7 +225,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         save(updateAdminPassword(requestDTO.getPassword(), requestDTO.getRemarks(), admin));
 
-        sendEmail(parseToResetPasswordEmailRequestDTO(requestDTO, admin.getEmail(), admin.getUsername()));
+        sendEmail(parseToResetPasswordEmailRequestDTO(requestDTO, admin.getEmail(), admin.getFullName()));
 
         log.info(UPDATING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
     }

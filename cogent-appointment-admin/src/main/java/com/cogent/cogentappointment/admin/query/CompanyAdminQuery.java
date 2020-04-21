@@ -136,10 +136,10 @@ public class CompanyAdminQuery {
                     " am.status = 'Y'" +
                     " AND am.admin.id = :id";
 
-    public static final String QUERY_TO_FETCH_ADMIN_BY_USERNAME_OR_EMAIL =
+    public static final String QUERY_TO_FETCH_ADMIN_BY_EMAIL =
             " SELECT a FROM Admin a" +
                     " WHERE" +
-                    " (a.username=:username OR a.email =:email)" +
+                    " (a.email =:email)" +
                     " AND a.status != 'D'";
 
     public static final String QUERY_TO_FETCH_COMPANY_ADMIN_INFO =

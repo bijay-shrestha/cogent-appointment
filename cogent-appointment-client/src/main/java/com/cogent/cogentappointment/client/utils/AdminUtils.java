@@ -119,7 +119,7 @@ public class AdminUtils {
 //        String origin = httpServletRequest.getHeader("origin");
 //        String confirmationUrl = origin + "/#" + "/savePassword" + "?token =" + confirmationToken;
 
-        String confirmationUrl = adminRequestDTO.getBaseUrl() + "/#" + "/" + "?token =" + confirmationToken;
+        String confirmationUrl = adminRequestDTO.getBaseUrl() + "/#" + "/verifyEmail" + "/" + "?token =" + confirmationToken;
 
         return EmailRequestDTO.builder()
                 .receiverEmailAddress(adminRequestDTO.getEmail())

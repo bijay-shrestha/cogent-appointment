@@ -1,9 +1,7 @@
 package com.cogent.cogentappointment.client.service.impl;
 
-import com.cogent.cogentappointment.client.dto.request.admin.AdminMinDetails;
 import com.cogent.cogentappointment.client.dto.request.login.LoginRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.login.ThirdPartyDetail;
-import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.repository.HmacApiInfoRepository;
 import com.cogent.cogentappointment.client.security.hmac.HMACUtils;
 import com.cogent.cogentappointment.client.service.AuthenticateService;
@@ -12,10 +10,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-
-import java.util.Objects;
-
-import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.*;
 
 /**
  * @author Sauravi Thapa २०/१/१९
@@ -42,7 +36,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     public String loginUser(LoginRequestDTO requestDTO) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(requestDTO.getEmail(), requestDTO.getPassword()));
-            return hmacUtils.getHash(authentication);
+        return hmacUtils.getHash(authentication);
     }
 
     @Override

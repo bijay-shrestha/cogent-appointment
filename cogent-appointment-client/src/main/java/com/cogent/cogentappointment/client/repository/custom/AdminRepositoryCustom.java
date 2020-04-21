@@ -35,7 +35,7 @@ public interface AdminRepositoryCustom {
 
     List<Object[]> validateDuplicity(AdminUpdateRequestDTO updateRequestDTO, Long hospitalId);
 
-    Admin fetchAdminByEmail(String email, String hospitalCode);
+    Admin fetchAdminByEmail(String email);
 
     AdminLoggedInInfoResponseDTO fetchLoggedInAdminInfo(AdminInfoRequestDTO requestDTO, Long hospitalId);
 
@@ -43,6 +43,6 @@ public interface AdminRepositoryCustom {
 
     List<DashboardFeatureResponseDTO> fetchOverAllDashboardFeature();
 
-    LoggedInAdminDTO getLoggedInAdmin(String username);
+    LoggedInAdminDTO getLoggedInAdmin(String email);
 }
 

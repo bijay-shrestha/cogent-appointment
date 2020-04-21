@@ -59,12 +59,12 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     }
 
     @Override
-    public void forgotPassword(String email, String hospitalCode) {
+    public void forgotPassword(String email) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FORGOT_PASSWORD_PROCESS_STARTED);
 
-        Admin admin = adminRepository.fetchAdminByEmail(email, hospitalCode);
+        Admin admin = adminRepository.fetchAdminByEmail(email);
 
         validateAdmin(admin, email);
 
@@ -107,7 +107,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
         log.info(UPDATING_PASSWORD_PROCESS_STARTED);
 
-        Admin admin = adminRepository.fetchAdminByEmail(requestDTO.getEmail(), requestDTO.getHospitalCode());
+        Admin admin = adminRepository.fetchAdminByEmail(requestDTO.getEmail());
 
         ForgotPasswordVerification forgotPasswordVerification = verificationRepository.findByAdminId(admin.getId());
 

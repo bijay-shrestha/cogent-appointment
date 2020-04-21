@@ -157,8 +157,7 @@ public class AdminQuery {
                     " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE" +
                     " (a.email =:email)" +
-                    " AND a.status != 'D'" +
-                    " AND h.code=:hospitalCode";
+                    " AND a.status != 'D'";
 
     public static final String QUERY_TO_FETCH_ADMIN_INFO =
             " SELECT" +

@@ -3,9 +3,7 @@ package com.cogent.cogentappointment.client.service.impl;
 import com.cogent.cogentappointment.client.dto.response.admin.LoggedInAdminDTO;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.repository.AdminRepository;
-import com.cogent.cogentappointment.persistence.model.Admin;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -30,15 +28,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
 
-    public LoggedInAdminDTO getAdmin(String userName) {
-        return adminRepository.getLoggedInAdmin(userName);
+    public LoggedInAdminDTO getAdmin(String email) {
+        return adminRepository.getLoggedInAdmin(email);
     }
 
     @Override
-    public UserDetailsImpl loadUserByUsername(String username) throws UsernameNotFoundException {
-        LoggedInAdminDTO loggedInAdminDTO = getAdmin(username);
+    public UserDetailsImpl loadUserByUsername(String email) throws UsernameNotFoundException {
+        LoggedInAdminDTO loggedInAdminDTO = getAdmin(email);
         if (loggedInAdminDTO == null){
-            log.error(USER_NOT_FOUND,username);
+            log.error(USER_NOT_FOUND,email);
             throw new DataDuplicationException("USER NOT FOUND");
         }
 

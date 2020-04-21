@@ -91,8 +91,7 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
             compareSignature(signatureBuilder, eSewaAuthHeader.getDigest());
 
-            SecurityContextHolder.getContext().setAuthentication(getAuthentication(thirdPartyDetail.getHospitalCode(),
-                    thirdPartyDetail.getHospitalCode()));
+            SecurityContextHolder.getContext().setAuthentication(getAuthentication(thirdPartyDetail.getHospitalCode()));
         }
 
         try {
@@ -150,16 +149,15 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
             throw new BadCredentialsException(HMAC_BAD_SIGNATURE);
     }
 
-    public PreAuthenticatedAuthenticationToken getAuthentication(String username, String hospitalCode) {
+    public PreAuthenticatedAuthenticationToken getAuthentication(String email) {
         return new PreAuthenticatedAuthenticationToken(
-                username,
-                hospitalCode,
+                email,
                 null);
     }
 
-    public PreAuthenticatedAuthenticationToken getAuthenticationForHospital(String username, Long hospitalId) {
+    public PreAuthenticatedAuthenticationToken getAuthenticationForHospital(String email, Long hospitalId) {
         return new PreAuthenticatedAuthenticationToken(
-                username,
+                email,
                 hospitalId,
                 null);
     }

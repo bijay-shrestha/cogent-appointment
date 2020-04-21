@@ -48,7 +48,7 @@ public class ClientLogServiceImpl implements ClientLogService {
 
         log.info(USER_MENU_LOG_STATICS_SEARCH_PROCESS_STARTED, USER_MENU_LOG);
 
-        UserMenuStaticsResponseDTO responseDTOS = clientLogRepository.fetchUserMenuLogsStatics(searchRequestDTO, pageable);
+        UserMenuStaticsResponseDTO responseDTOS = clientLogRepository.fetchUserMenuLogsStaticsByClientId(searchRequestDTO, pageable);
 
         log.info(USER_MENU_LOG_STATICS_PROCESS_COMPLETED, USER_MENU_LOG, getDifferenceBetweenTwoTime(startTime));
 
@@ -77,6 +77,32 @@ public class ClientLogServiceImpl implements ClientLogService {
         log.info(USER_MENU_LOG_STATICS_SEARCH_PROCESS_STARTED, USER_MENU_LOG);
 
         UserMenuStaticsResponseDTO responseDTOS = clientLogRepository.fetchUserMenuLogsStatics(searchRequestDTO, pageable);
+
+        log.info(USER_MENU_LOG_STATICS_PROCESS_COMPLETED, USER_MENU_LOG, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public UserMenuStaticsResponseDTO fetchUserMenuLogsStaticsforDiagram(ClientLogSearchRequestDTO searchRequestDTO) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(USER_MENU_LOG_STATICS_SEARCH_PROCESS_STARTED, USER_MENU_LOG);
+
+        UserMenuStaticsResponseDTO responseDTOS = clientLogRepository.fetchUserMenuLogsStaticsforDiagram(searchRequestDTO);
+
+        log.info(USER_MENU_LOG_STATICS_PROCESS_COMPLETED, USER_MENU_LOG, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public UserMenuStaticsResponseDTO fetchUserMenuLogsStaticsforDiagramByClientId(ClientLogSearchRequestDTO searchRequestDTO) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(USER_MENU_LOG_STATICS_SEARCH_PROCESS_STARTED, USER_MENU_LOG);
+
+        UserMenuStaticsResponseDTO responseDTOS = clientLogRepository.fetchUserMenuLogsStaticsforDiagramByClientId(searchRequestDTO);
 
         log.info(USER_MENU_LOG_STATICS_PROCESS_COMPLETED, USER_MENU_LOG, getDifferenceBetweenTwoTime(startTime));
 

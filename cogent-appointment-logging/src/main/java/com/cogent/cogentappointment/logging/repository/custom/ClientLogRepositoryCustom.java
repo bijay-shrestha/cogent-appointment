@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.logging.repository.custom;
 
-import com.cogent.cogentappointment.logging.dto.request.admin.AdminClientLogSearchRequestDTO;
 import com.cogent.cogentappointment.logging.dto.request.client.ClientLogSearchRequestDTO;
 import com.cogent.cogentappointment.logging.dto.response.UserMenuLogResponseDTO;
 import com.cogent.cogentappointment.logging.dto.response.UserMenuStaticsResponseDTO;
@@ -19,4 +18,9 @@ public interface ClientLogRepositoryCustom {
 
     UserMenuStaticsResponseDTO fetchUserMenuLogsStatics(ClientLogSearchRequestDTO searchRequestDTO, Pageable pageable);
 
+    UserMenuStaticsResponseDTO fetchUserMenuLogsStatics(ClientLogSearchRequestDTO searchRequestDTO);
+
+    UserMenuStaticsResponseDTO fetchUserMenuLogsStaticsforDiagram(ClientLogSearchRequestDTO searchRequestDTO);
+
+    UserMenuStaticsResponseDTO fetchUserMenuLogsStaticsforDiagramByClientId(ClientLogSearchRequestDTO searchRequestDTO);
 }

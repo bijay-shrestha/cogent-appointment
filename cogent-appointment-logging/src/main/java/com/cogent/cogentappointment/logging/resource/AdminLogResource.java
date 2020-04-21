@@ -1,11 +1,9 @@
 package com.cogent.cogentappointment.logging.resource;
 
-import com.cogent.cogentappointment.logging.dto.request.admin.AdminClientLogSearchRequestDTO;
 import com.cogent.cogentappointment.logging.dto.request.admin.AdminLogSearchRequestDTO;
 import com.cogent.cogentappointment.logging.dto.request.client.ClientLogSearchRequestDTO;
 import com.cogent.cogentappointment.logging.service.AdminLogService;
 import com.cogent.cogentappointment.logging.service.ClientLogService;
-import com.cogent.cogentappointment.persistence.model.Admin;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.PageRequest;
@@ -17,7 +15,6 @@ import static com.cogent.cogentappointment.logging.constants.SwaggerConstants.Ad
 import static com.cogent.cogentappointment.logging.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.logging.constants.WebResourceKeyConstants.AdminLogConstants.BASE_ADMIN_LOG;
 import static com.cogent.cogentappointment.logging.constants.WebResourceKeyConstants.ClientLogConstants.BASE_CLIENT;
-import static com.cogent.cogentappointment.logging.constants.WebResourceKeyConstants.ClientLogConstants.BASE_CLIENT_LOG;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -52,10 +49,18 @@ public class AdminLogResource {
                                                       @RequestParam("size") int size) {
 
         Pageable pageable = PageRequest.of(page, size);
-        return ok().body(adminLogService.fetchUserMenuLogsStatics(searchRequestDTO,pageable));
+        return ok().body(adminLogService.fetchUserMenuLogsStatics(searchRequestDTO, pageable));
     }
 
-    @PutMapping(BASE_CLIENT+SEARCH)
+    @PutMapping(USERMENU_LOG_DIAGRAM)
+    @ApiOperation(USER_MENU_LOG_DIAGRAM_OPERATION)
+    public ResponseEntity<?> fetchUserMenuLogsStaticsforDiagram(@RequestBody AdminLogSearchRequestDTO searchRequestDTO) {
+
+
+        return ok().body(adminLogService.fetchUserMenuLogsStaticsforDiagram(searchRequestDTO));
+    }
+
+    @PutMapping(BASE_CLIENT + SEARCH)
     @ApiOperation(SEARCH_OPERATION)
     public ResponseEntity<?> search(@RequestBody ClientLogSearchRequestDTO searchRequestDTO,
                                     @RequestParam("page") int page,
@@ -64,7 +69,7 @@ public class AdminLogResource {
         return ok().body(clientLogService.searchByClientId(searchRequestDTO, pageable));
     }
 
-    @PutMapping(BASE_CLIENT+USERMENU_LOG_STATICS)
+    @PutMapping(BASE_CLIENT + USERMENU_LOG_STATICS)
     @ApiOperation(USER_MENU_STATICS_OPERATION)
     public ResponseEntity<?> fetchUserMenuLogsStatics(@RequestBody ClientLogSearchRequestDTO searchRequestDTO,
                                                       @RequestParam("page") int page,
@@ -72,6 +77,13 @@ public class AdminLogResource {
 
         Pageable pageable = PageRequest.of(page, size);
         return ok().body(clientLogService.fetchUserMenuLogsStaticsByClientId(searchRequestDTO, pageable));
+    }
+
+    @PutMapping(BASE_CLIENT + USERMENU_LOG_DIAGRAM)
+    @ApiOperation(USER_MENU_LOG_DIAGRAM_OPERATION)
+    public ResponseEntity<?> fetchUserMenuLogsStaticsforDiagramByClientId(@RequestBody ClientLogSearchRequestDTO searchRequestDTO) {
+
+        return ok().body(clientLogService.fetchUserMenuLogsStaticsforDiagramByClientId(searchRequestDTO));
     }
 
 

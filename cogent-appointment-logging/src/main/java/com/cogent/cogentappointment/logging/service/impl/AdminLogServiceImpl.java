@@ -56,4 +56,17 @@ public class AdminLogServiceImpl implements AdminLogService {
 
         return responseDTOS;
     }
+
+    @Override
+    public UserMenuStaticsResponseDTO fetchUserMenuLogsStaticsforDiagram(AdminLogSearchRequestDTO searchRequestDTO) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(USER_MENU_LOG_STATICS_SEARCH_PROCESS_STARTED, USER_MENU_LOG);
+
+        UserMenuStaticsResponseDTO responseDTOS = adminLogRepository.fetchUserMenuLogsStaticsforDiagram(searchRequestDTO);
+
+        log.info(USER_MENU_LOG_STATICS_PROCESS_COMPLETED, USER_MENU_LOG, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
 }

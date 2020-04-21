@@ -25,6 +25,24 @@ public class AdminLogQuery {
 
     }
 
+    public static String QUERY_TO_FETCH_USER_LOGS_STATICS_FOR_PIE_CHART(AdminLogSearchRequestDTO searchRequestDTO) {
+
+        return " SELECT " +
+                " al.feature as feature," +
+                " count(al.id) as count" +
+                " from AdminLog al" +
+                " LEFT JOIN Admin a ON al.adminId.id =a.id" +
+                " LEFT JOIN Profile p ON p.id=a.profileId.id" +
+                " LEFT JOIN Hospital h ON h.id=p.company" +
+                " LEFT JOIN AdminMetaInfo ami ON ami.admin.id=a.id" +
+                WHERE_CLAUSE_TO_SEARCH_ADMIN_LOGS(searchRequestDTO) +
+                " GROUP BY al.feature" +
+                " ORDER BY count(al.id) DESC" +
+                " LIMIT 10";
+
+
+    }
+
     public static String QUERY_TO_SEARCH_ADMIN_LOGS(AdminLogSearchRequestDTO searchRequestDTO) {
 
         return " SELECT " +

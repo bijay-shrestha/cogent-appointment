@@ -19,9 +19,9 @@ public class WebResourceKeyConstants {
     public static final String SEARCH = "/search";
 
     //U
-    public static final String USERMENU_LOG_STATICS = "/user-log-statics";
+    public static final String USERMENU_LOG_STATICS = "/log-statics";
 
-    public static final String USERMENU_LOG_DIAGRAM = "/user-log-diagram";
+    public static final String USERMENU_LOG_DIAGRAM = "/log-diagram";
 
 
 }

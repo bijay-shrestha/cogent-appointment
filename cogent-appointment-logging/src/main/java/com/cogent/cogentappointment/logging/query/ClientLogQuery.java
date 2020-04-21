@@ -25,6 +25,24 @@ public class ClientLogQuery {
 
     }
 
+    public static String QUERY_TO_FETCH_USER_LOGS_STATICS_FOR_PIE_CHART(ClientLogSearchRequestDTO searchRequestDTO) {
+
+        return " SELECT" +
+                " cl.feature as feature," +
+                " count(cl.id) as count" +
+                " from ClientLog cl" +
+                " LEFT JOIN Admin a ON cl.adminId.id =a.id" +
+                " LEFT JOIN Profile p ON p.id=a.profileId.id" +
+                " LEFT JOIN Hospital h ON h.id=p.company" +
+                " LEFT JOIN AdminMetaInfo ami ON ami.admin.id=a.id" +
+                WHERE_CLAUSE_TO_SEARCH_CLIENT_LOGS(searchRequestDTO) +
+                " GROUP BY cl.feature " +
+                " ORDER BY count(cl.id) DESC" +
+                " LIMIT 10 ";
+
+
+    }
+
     public static String QUERY_TO_SEARCH_CLIENT_LOGS(ClientLogSearchRequestDTO searchRequestDTO) {
 
         return " SELECT " +

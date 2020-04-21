@@ -23,6 +23,7 @@ import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.logging.constants.QueryConstants.FROM_DATE;
 import static com.cogent.cogentappointment.logging.constants.QueryConstants.TO_DATE;
+import static com.cogent.cogentappointment.logging.query.AdminLogQuery.QUERY_TO_FETCH_USER_LOGS_STATICS_FOR_PIE_CHART;
 import static com.cogent.cogentappointment.logging.query.AdminLogQuery.QUERY_TO_SEARCH_ADMIN_LOGS;
 import static com.cogent.cogentappointment.logging.utils.common.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.logging.utils.common.QueryUtils.createQuery;
@@ -75,6 +76,56 @@ public class AdminLogRepositoryCustomImpl implements AdminLogRepositoryCustom {
         int totalItems = query.getResultList().size();
 
         addPagination.accept(pageable, query);
+
+        List<AdminLogStaticsResponseDTO> result = transformQueryToResultList(query, AdminLogStaticsResponseDTO.class);
+
+        if (result.isEmpty()) {
+//            error();
+            throw NO_USER_STATICS_FOUND.get();
+        } else {
+
+            Long totalCount = result.stream().mapToLong(AdminLogStaticsResponseDTO::getCount).sum();
+
+            UserMenuStaticsResponseDTO userMenuStaticsResponseDTO = new UserMenuStaticsResponseDTO();
+            userMenuStaticsResponseDTO.setUserMenuCountList(result);
+            userMenuStaticsResponseDTO.setTotalCount(totalCount);
+            userMenuStaticsResponseDTO.setTotalItems(totalItems);
+            return userMenuStaticsResponseDTO;
+        }
+    }
+
+    @Override
+    public UserMenuStaticsResponseDTO fetchUserMenuLogsStatics(AdminLogSearchRequestDTO searchRequestDTO) {
+        Query query = createQuery.apply(entityManager, AdminLogQuery.QUERY_TO_FETCH_USER_LOGS_STATICS(searchRequestDTO))
+                .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
+                .setParameter(TO_DATE, searchRequestDTO.getToDate());
+
+        int totalItems = query.getResultList().size();
+
+        List<AdminLogStaticsResponseDTO> result = transformQueryToResultList(query, AdminLogStaticsResponseDTO.class);
+
+        if (result.isEmpty()) {
+//            error();
+            throw NO_USER_STATICS_FOUND.get();
+        } else {
+
+            Long totalCount = result.stream().mapToLong(AdminLogStaticsResponseDTO::getCount).sum();
+
+            UserMenuStaticsResponseDTO userMenuStaticsResponseDTO = new UserMenuStaticsResponseDTO();
+            userMenuStaticsResponseDTO.setUserMenuCountList(result);
+            userMenuStaticsResponseDTO.setTotalCount(totalCount);
+            userMenuStaticsResponseDTO.setTotalItems(totalItems);
+            return userMenuStaticsResponseDTO;
+        }
+    }
+
+    @Override
+    public UserMenuStaticsResponseDTO fetchUserMenuLogsStaticsforDiagram(AdminLogSearchRequestDTO searchRequestDTO) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_USER_LOGS_STATICS_FOR_PIE_CHART(searchRequestDTO))
+                .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
+                .setParameter(TO_DATE, searchRequestDTO.getToDate());
+
+        int totalItems = query.getResultList().size();
 
         List<AdminLogStaticsResponseDTO> result = transformQueryToResultList(query, AdminLogStaticsResponseDTO.class);
 

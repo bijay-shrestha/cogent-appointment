@@ -11,6 +11,7 @@ public class WebResourceKeyConstants {
 
     //C
     public interface ClientLogConstants {
+        String BASE_CLIENT = "/client";
         String BASE_CLIENT_LOG = "/client-log";
     }
 

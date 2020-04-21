@@ -108,37 +108,4 @@ public class RequestData {
         return browser;
     }
 
-    public static HashMap<String, Object> getClientLocation(HttpServletRequest request) {
-
-        HashMap<String, Object> locationMap =   null;
-
-        String country  =   "",city="",region="",latitude="",longitude="",temp="",state="",title="",address="",zip="";
-        boolean primary =   true;
-
-        try
-        {
-            locationMap = new HashMap<String, Object>();
-            country     =   request.getHeader("X-AppEngine-Country");
-            region      =   request.getHeader("X-AppEngine-Region");
-            city        =   request.getHeader("X-AppEngine-City");
-            temp        =   request.getHeader("X-AppEngine-CityLatLong");
-            latitude    =   (temp.split(","))[0];
-            longitude   =   (temp.split(","))[1];
-            System.out.println("country>>"+country+"region>>"+region+"city>>"+city+"temp>>"+temp+"latitude>>"+latitude+"longitude>>"+longitude);
-
-            locationMap.put("city"      , city);
-            locationMap.put("state"     , region);
-            locationMap.put("country"   , country);
-            locationMap.put("latitude"  , latitude);
-            locationMap.put("longitude" , longitude);
-            System.out.println("locationMap==>"+locationMap);
-        }catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-
-        return locationMap;
-
-
-    }
 }

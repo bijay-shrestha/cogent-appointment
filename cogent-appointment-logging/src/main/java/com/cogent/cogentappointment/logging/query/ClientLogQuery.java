@@ -28,7 +28,7 @@ public class ClientLogQuery {
     public static String QUERY_TO_SEARCH_CLIENT_LOGS(ClientLogSearchRequestDTO searchRequestDTO) {
 
         return " SELECT " +
-                " al.logDate as logDate," +
+                " cl.logDate as logDate," +
                 " DATE_FORMAT(cl.logDateTime,'%h:%i %p') as logTime," +
                 " cl.browser as browser," +
                 " cl.operatingSystem as os," +
@@ -55,12 +55,6 @@ public class ClientLogQuery {
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getAdminMetaInfoId()))
             whereClause += " AND ami.id=" + searchRequestDTO.getAdminMetaInfoId();
-
-//        if (!ObjectUtils.isEmpty(searchRequestDTO.getUserName()) || !searchRequestDTO.getUserName().equals(""))
-//
-//            whereClause += " AND (a.username ='" + searchRequestDTO.getUserName() + "' OR a.email ='" + searchRequestDTO.getUserName()
-//                    + "' OR a.mobileNumber ='" + searchRequestDTO.getUserName() + " OR a.fullName LIKE %" + searchRequestDTO.getUserName() + "%" + "')";
-
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getParentId()))
             whereClause += " AND cl.parentId=" + searchRequestDTO.getParentId();

@@ -30,8 +30,8 @@ public class CorsConfiguration {
 
         corsConfig.setAllowedHeaders(ImmutableList.of("Access-Control-Allow-Origin", "Authorization", "Cache-Control", "Content-Type",
                 "Set-Cookie", "XSRF-TOKEN", "x-xsrf-token",
-                "log-header", "X-FORWARDED-FOR","User-Agent",
-                "X-AppEngine-Country","X-AppEngine-Region","X-AppEngine-City","X-AppEngine-CityLatLong"));
+                "log-header", "X-FORWARDED-FOR", "User-Agent",
+                "X-AppEngine-Country", "X-AppEngine-Region", "X-AppEngine-City", "X-AppEngine-CityLatLong"));
 
         // This allow us to expose the headers
         corsConfig.setExposedHeaders(

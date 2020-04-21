@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.logging.dto.request.client;
+package com.cogent.cogentappointment.logging.dto.request.admin;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,9 +11,9 @@ import java.util.Date;
  */
 @Getter
 @Setter
-public class ClientLogSearchRequestDTO implements Serializable {
+public class AdminClientLogSearchRequestDTO implements Serializable {
 
-    private Long clientId;
+    private Long clienId;
 
     private Date fromDate;
 

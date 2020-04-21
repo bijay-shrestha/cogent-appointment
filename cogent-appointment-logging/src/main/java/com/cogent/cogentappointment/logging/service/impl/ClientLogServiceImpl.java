@@ -30,6 +30,32 @@ public class ClientLogServiceImpl implements ClientLogService {
     }
 
     @Override
+    public UserMenuLogResponseDTO searchByClientId(ClientLogSearchRequestDTO searchRequestDTO, Pageable pageable) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(USER_MENU_LOG_SEARCH_PROCESS_STARTED, USER_MENU_LOG);
+
+        UserMenuLogResponseDTO responseDTOS = clientLogRepository.searchByClientId(searchRequestDTO, pageable);
+
+        log.info(USER_MENU_LOG_SEARCH_PROCESS_COMPLETED, USER_MENU_LOG, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public UserMenuStaticsResponseDTO fetchUserMenuLogsStaticsByClientId(ClientLogSearchRequestDTO searchRequestDTO, Pageable pageable) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(USER_MENU_LOG_STATICS_SEARCH_PROCESS_STARTED, USER_MENU_LOG);
+
+        UserMenuStaticsResponseDTO responseDTOS = clientLogRepository.fetchUserMenuLogsStatics(searchRequestDTO, pageable);
+
+        log.info(USER_MENU_LOG_STATICS_PROCESS_COMPLETED, USER_MENU_LOG, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
     public UserMenuLogResponseDTO search(ClientLogSearchRequestDTO searchRequestDTO, Pageable pageable) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();

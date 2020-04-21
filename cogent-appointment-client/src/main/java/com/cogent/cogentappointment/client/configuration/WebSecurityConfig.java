@@ -57,6 +57,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, hmaconfig.getUri()).permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/file/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/admin/verify").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/admin/verify/email").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/v1/admin/password").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/password/forgot").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/password/verify").permitAll()

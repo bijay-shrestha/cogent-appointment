@@ -1,14 +1,17 @@
 package com.cogent.cogentappointment.client.dto.response.department;
 
+import com.cogent.cogentappointment.client.dto.response.common.AuditableResponseDTO;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.Date;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DepartmentResponseDTO implements Serializable {
+public class DepartmentResponseDTO extends AuditableResponseDTO implements Serializable {
 
     private String name;
 
@@ -17,4 +20,5 @@ public class DepartmentResponseDTO implements Serializable {
     private Character status;
 
     private String remarks;
+
 }

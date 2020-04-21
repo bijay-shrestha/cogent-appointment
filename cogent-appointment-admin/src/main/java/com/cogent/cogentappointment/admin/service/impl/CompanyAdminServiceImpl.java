@@ -18,10 +18,7 @@ import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.exception.OperationUnsuccessfulException;
 import com.cogent.cogentappointment.admin.repository.*;
-import com.cogent.cogentappointment.admin.service.CompanyAdminService;
-import com.cogent.cogentappointment.admin.service.EmailService;
-import com.cogent.cogentappointment.admin.service.MinioFileService;
-import com.cogent.cogentappointment.admin.service.ProfileService;
+import com.cogent.cogentappointment.admin.service.*;
 import com.cogent.cogentappointment.admin.validator.LoginValidator;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
@@ -31,7 +28,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.Validator;
@@ -88,6 +84,8 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
     private final AdminDashboardFeatureRepository adminDashboardFeatureRepository;
 
+    private final AdminFeatureService adminFeatureService;
+
     public CompanyAdminServiceImpl(Validator validator,
                                    AdminRepository adminRepository,
                                    AdminMacAddressInfoRepository adminMacAddressInfoRepository,
@@ -97,7 +95,8 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                                    MinioFileService minioFileService, EmailService emailService,
                                    ProfileService profileService,
                                    DashboardFeatureRepository dashboardFeatureRepository,
-                                   AdminDashboardFeatureRepository adminDashboardFeatureRepository) {
+                                   AdminDashboardFeatureRepository adminDashboardFeatureRepository,
+                                   AdminFeatureService adminFeatureService) {
         this.validator = validator;
         this.adminRepository = adminRepository;
         this.adminMacAddressInfoRepository = adminMacAddressInfoRepository;
@@ -109,6 +108,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         this.profileService = profileService;
         this.dashboardFeatureRepository = dashboardFeatureRepository;
         this.adminDashboardFeatureRepository = adminDashboardFeatureRepository;
+        this.adminFeatureService = adminFeatureService;
     }
 
     @Override
@@ -133,6 +133,8 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         saveMacAddressInfo(admin, adminRequestDTO.getMacAddressInfo());
 
         saveAdminMetaInfo(admin);
+
+        saveAdminFeature(admin);
 
         saveAllAdminDashboardFeature(adminRequestDTO.getAdminDashboardRequestDTOS(), admin);
 
@@ -499,6 +501,10 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
     private void saveAdminMetaInfo(Admin admin) {
         adminMetaInfoRepository.save(parseInAdminMetaInfo(admin));
+    }
+
+    private void saveAdminFeature(Admin admin) {
+        adminFeatureService.save(admin);
     }
 
     private void updateAdminMetaInfo(Admin admin) {

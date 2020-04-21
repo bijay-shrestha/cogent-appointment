@@ -131,8 +131,8 @@ public class AdminQuery {
                     " a.remarks as remarks," +                                      //[10]
                     " h.id as hospitalId," +                                        //[11]
                     " p.id as profileId," +                                         //[12]
-                    " d.id as departmentId," +
-                    " d.name as departmentName" +
+                    " d.id as departmentId," +                                      //[13]
+                    " d.name as departmentName" +                                  //[14]
                     " FROM" +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id = a.profileId.id" +

@@ -12,10 +12,7 @@ import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
-import com.cogent.cogentappointment.admin.service.AdminService;
-import com.cogent.cogentappointment.admin.service.EmailService;
-import com.cogent.cogentappointment.admin.service.MinioFileService;
-import com.cogent.cogentappointment.admin.service.ProfileService;
+import com.cogent.cogentappointment.admin.service.*;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
@@ -80,6 +77,8 @@ public class AdminServiceImpl implements AdminService {
 
     private final ProfileService profileService;
 
+    private final AdminFeatureService adminFeatureService;
+
     public AdminServiceImpl(Validator validator,
                             AdminRepository adminRepository,
                             AdminMacAddressInfoRepository adminMacAddressInfoRepository,
@@ -89,7 +88,8 @@ public class AdminServiceImpl implements AdminService {
                             AdminDashboardFeatureRepository adminDashboardFeatureRepository,
                             AdminConfirmationTokenRepository confirmationTokenRepository,
                             MinioFileService minioFileService, EmailService emailService,
-                            ProfileService profileService) {
+                            ProfileService profileService,
+                            AdminFeatureService adminFeatureService) {
         this.validator = validator;
         this.adminRepository = adminRepository;
         this.adminMacAddressInfoRepository = adminMacAddressInfoRepository;
@@ -101,6 +101,7 @@ public class AdminServiceImpl implements AdminService {
         this.minioFileService = minioFileService;
         this.emailService = emailService;
         this.profileService = profileService;
+        this.adminFeatureService = adminFeatureService;
     }
 
     @Override
@@ -133,6 +134,8 @@ public class AdminServiceImpl implements AdminService {
         saveMacAddressInfo(admin, adminRequestDTO.getMacAddressInfo());
 
         saveAdminMetaInfo(admin);
+
+        saveAdminFeature(admin);
 
         saveAllAdminDashboardFeature(adminRequestDTO.getAdminDashboardRequestDTOS(), admin);
 
@@ -348,7 +351,8 @@ public class AdminServiceImpl implements AdminService {
 
         if (savedAdmin.intValue() == numberOfAdminsAllowed) {
             log.error(ADMIN_CANNOT_BE_REGISTERED_DEBUG_MESSAGE);
-            throw new BadRequestException(ADMIN_CANNOT_BE_REGISTERED_MESSAGE, ADMIN_CANNOT_BE_REGISTERED_DEBUG_MESSAGE);
+            throw new BadRequestException(ADMIN_CANNOT_BE_REGISTERED_MESSAGE,
+                    ADMIN_CANNOT_BE_REGISTERED_DEBUG_MESSAGE);
         }
     }
 
@@ -434,6 +438,10 @@ public class AdminServiceImpl implements AdminService {
 
     private void saveAdminMetaInfo(Admin admin) {
         adminMetaInfoRepository.save(parseInAdminMetaInfo(admin));
+    }
+
+    private void saveAdminFeature(Admin admin) {
+        adminFeatureService.save(admin);
     }
 
     private void updateAdminMetaInfo(Admin admin) {

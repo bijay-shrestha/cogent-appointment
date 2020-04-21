@@ -31,4 +31,6 @@ public class CompanyAdminLoggedInInfoResponseDTO implements Serializable {
     private Character isCompany;
 
     private Character isAllRoleAssigned;
+
+    private Character isSideBarCollapse;
 }

@@ -19,6 +19,10 @@ public class WebResourceKeyConstants {
         String VERIFY = "/verify";
     }
 
+    public interface AdminFeatureConstants {
+        String BASE_ADMIN_FEATURE = "/adminFeature";
+    }
+
     public interface AppointmentConstants {
         String BASE_APPOINTMENT = "/appointment";
         String APPOINTMENT_ID_PATH_VARIABLE_BASE = "/{appointmentId}";

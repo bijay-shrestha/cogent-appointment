@@ -14,10 +14,7 @@ import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.exception.OperationUnsuccessfulException;
 import com.cogent.cogentappointment.client.repository.*;
-import com.cogent.cogentappointment.client.service.AdminService;
-import com.cogent.cogentappointment.client.service.EmailService;
-import com.cogent.cogentappointment.client.service.MinioFileService;
-import com.cogent.cogentappointment.client.service.ProfileService;
+import com.cogent.cogentappointment.client.service.*;
 import com.cogent.cogentappointment.client.validator.LoginValidator;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
@@ -83,6 +80,8 @@ public class AdminServiceImpl implements AdminService {
 
     private final ProfileService profileService;
 
+    private final AdminFeatureService adminFeatureService;
+
     public AdminServiceImpl(Validator validator,
                             AdminRepository adminRepository,
                             AdminMacAddressInfoRepository adminMacAddressInfoRepository,
@@ -93,7 +92,8 @@ public class AdminServiceImpl implements AdminService {
                             AdminDashboardFeatureRepository adminDashboardFeatureRepository,
                             MinioFileService minioFileService,
                             EmailService emailService,
-                            ProfileService profileService) {
+                            ProfileService profileService,
+                            AdminFeatureService adminFeatureService) {
         this.validator = validator;
         this.adminRepository = adminRepository;
         this.adminMacAddressInfoRepository = adminMacAddressInfoRepository;
@@ -105,6 +105,7 @@ public class AdminServiceImpl implements AdminService {
         this.minioFileService = minioFileService;
         this.emailService = emailService;
         this.profileService = profileService;
+        this.adminFeatureService = adminFeatureService;
     }
 
     @Override
@@ -133,6 +134,8 @@ public class AdminServiceImpl implements AdminService {
         saveMacAddressInfo(admin, adminRequestDTO.getMacAddressInfo());
 
         saveAdminMetaInfo(admin);
+
+        saveAdminFeature(admin);
 
         saveAllAdminDashboardFeature(adminRequestDTO.getAdminDashboardRequestDTOS(), admin);
 
@@ -524,6 +527,10 @@ public class AdminServiceImpl implements AdminService {
 
     private void saveAdminMetaInfo(Admin admin) {
         adminMetaInfoRepository.save(parseInAdminMetaInfo(admin));
+    }
+
+    private void saveAdminFeature(Admin admin) {
+        adminFeatureService.save(admin);
     }
 
     private void updateAdminMetaInfo(Admin admin) {

@@ -9,10 +9,9 @@ import org.springframework.data.domain.Pageable;
  * @author Rupak
  */
 public interface ClientLogRepositoryCustom {
-
-
+    
     UserMenuLogResponseDTO search(ClientLogSearchRequestDTO searchRequestDTO, Pageable pageable);
 
-    UserMenuStaticsResponseDTO fetchUserMenuLogsStatics(ClientLogSearchRequestDTO searchRequestDTO);
+    UserMenuStaticsResponseDTO fetchUserMenuLogsStatics(ClientLogSearchRequestDTO searchRequestDTO, Pageable pageable);
 
 }

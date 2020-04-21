@@ -9,6 +9,8 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.util.HashMap;
+
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
 import static com.cogent.cogentappointment.admin.loghandler.LogDescription.getFailedLogDescription;
@@ -33,6 +35,7 @@ public class UserLogInterceptor implements HandlerInterceptor {
             String clientBrowser = RequestData.getClientBrowser(request);
             String clientOS = RequestData.getClientOS(request);
             String clientIpAddr = RequestData.getClientIpAddr(request);
+//            HashMap<String, Object> location=RequestData.getClientLocation(request);
 
             adminLogRequestDTO.setBrowser(clientBrowser);
             adminLogRequestDTO.setOperatingSystem(clientOS);

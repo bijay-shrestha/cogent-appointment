@@ -39,8 +39,11 @@ public class AdminLogResource {
 
     @PutMapping(USERMENU_LOG_STATICS)
     @ApiOperation(USER_MENU_STATICS_OPERATION)
-    public ResponseEntity<?> fetchUserMenuLogsStatics(@RequestBody AdminLogSearchRequestDTO searchRequestDTO) {
+    public ResponseEntity<?> fetchUserMenuLogsStatics(@RequestBody AdminLogSearchRequestDTO searchRequestDTO,
+                                                      @RequestParam("page") int page,
+                                                      @RequestParam("size") int size) {
 
-        return ok().body(adminLogService.fetchUserMenuLogsStatics(searchRequestDTO));
+        Pageable pageable = PageRequest.of(page, size);
+        return ok().body(adminLogService.fetchUserMenuLogsStatics(searchRequestDTO,pageable));
     }
 }

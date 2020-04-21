@@ -45,12 +45,11 @@ public class AdminLogRepositoryCustomImpl implements AdminLogRepositoryCustom {
                 .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
                 .setParameter(TO_DATE, searchRequestDTO.getToDate());
 
+        int totalItems = query.getResultList().size();
 
         addPagination.accept(pageable, query);
 
         List<UserMenuLogSearchResponseDTO> result = transformQueryToResultList(query, UserMenuLogSearchResponseDTO.class);
-
-        int totalItems = query.getResultList().size();
 
         if (ObjectUtils.isEmpty(result)) {
 //            error()//Error not integrated...
@@ -67,13 +66,15 @@ public class AdminLogRepositoryCustomImpl implements AdminLogRepositoryCustom {
     }
 
     @Override
-    public UserMenuStaticsResponseDTO fetchUserMenuLogsStatics(AdminLogSearchRequestDTO searchRequestDTO) {
+    public UserMenuStaticsResponseDTO fetchUserMenuLogsStatics(AdminLogSearchRequestDTO searchRequestDTO,Pageable pageable) {
 
         Query query = createQuery.apply(entityManager, AdminLogQuery.QUERY_TO_FETCH_USER_LOGS_STATICS(searchRequestDTO))
                 .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
                 .setParameter(TO_DATE, searchRequestDTO.getToDate());
 
         int totalItems = query.getResultList().size();
+
+        addPagination.accept(pageable, query);
 
         List<AdminLogStaticsResponseDTO> result = transformQueryToResultList(query, AdminLogStaticsResponseDTO.class);
 

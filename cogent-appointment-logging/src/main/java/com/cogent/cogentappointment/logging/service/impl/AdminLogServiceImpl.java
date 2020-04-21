@@ -44,13 +44,13 @@ public class AdminLogServiceImpl implements AdminLogService {
     }
 
     @Override
-    public UserMenuStaticsResponseDTO fetchUserMenuLogsStatics(AdminLogSearchRequestDTO searchRequestDTO) {
+    public UserMenuStaticsResponseDTO fetchUserMenuLogsStatics(AdminLogSearchRequestDTO searchRequestDTO,Pageable pageable ) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(USER_MENU_LOG_STATICS_SEARCH_PROCESS_STARTED, USER_MENU_LOG);
 
-        UserMenuStaticsResponseDTO responseDTOS = adminLogRepository.fetchUserMenuLogsStatics(searchRequestDTO);
+        UserMenuStaticsResponseDTO responseDTOS = adminLogRepository.fetchUserMenuLogsStatics(searchRequestDTO,pageable );
 
         log.info(USER_MENU_LOG_STATICS_PROCESS_COMPLETED, USER_MENU_LOG, getDifferenceBetweenTwoTime(startTime));
 

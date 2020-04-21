@@ -41,8 +41,11 @@ public class ClientLogResource {
 
     @PutMapping(USERMENU_LOG_STATICS)
     @ApiOperation(USER_MENU_STATICS_OPERATION)
-    public ResponseEntity<?> fetchUserMenuLogsStatics(@RequestBody ClientLogSearchRequestDTO searchRequestDTO) {
+    public ResponseEntity<?> fetchUserMenuLogsStatics(@RequestBody ClientLogSearchRequestDTO searchRequestDTO,
+                                                      @RequestParam("page") int page,
+                                                      @RequestParam("size") int size) {
 
-        return ok().body(clientLogService.fetchUserMenuLogsStatics(searchRequestDTO));
+        Pageable pageable = PageRequest.of(page, size);
+        return ok().body(clientLogService.fetchUserMenuLogsStatics(searchRequestDTO, pageable));
     }
 }

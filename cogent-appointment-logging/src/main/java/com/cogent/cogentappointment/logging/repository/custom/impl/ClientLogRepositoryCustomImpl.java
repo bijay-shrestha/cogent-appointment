@@ -48,12 +48,11 @@ public class ClientLogRepositoryCustomImpl implements ClientLogRepositoryCustom 
                 .setParameter(TO_DATE, searchRequestDTO.getToDate())
                 .setParameter(HOSPITAL_ID, companyId);
 
+        int totalItems = query.getResultList().size();
 
         addPagination.accept(pageable, query);
 
         List<UserMenuLogSearchResponseDTO> result = transformQueryToResultList(query, UserMenuLogSearchResponseDTO.class);
-
-        int totalItems = query.getResultList().size();
 
         if (ObjectUtils.isEmpty(result)) {
 //            error()//Error not integrated...
@@ -69,7 +68,7 @@ public class ClientLogRepositoryCustomImpl implements ClientLogRepositoryCustom 
     }
 
     @Override
-    public UserMenuStaticsResponseDTO fetchUserMenuLogsStatics(ClientLogSearchRequestDTO searchRequestDTO) {
+    public UserMenuStaticsResponseDTO fetchUserMenuLogsStatics(ClientLogSearchRequestDTO searchRequestDTO, Pageable pageable) {
 
         Long companyId = getLoggedInCompanyId();
 
@@ -79,6 +78,8 @@ public class ClientLogRepositoryCustomImpl implements ClientLogRepositoryCustom 
                 .setParameter(HOSPITAL_ID, companyId);
 
         int totalItems = query.getResultList().size();
+
+        addPagination.accept(pageable, query);
 
         List<AdminLogStaticsResponseDTO> result = transformQueryToResultList(query, AdminLogStaticsResponseDTO.class);
 

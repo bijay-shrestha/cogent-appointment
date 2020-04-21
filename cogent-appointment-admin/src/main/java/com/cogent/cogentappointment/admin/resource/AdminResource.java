@@ -134,11 +134,11 @@ public class AdminResource {
         return ok(adminService.fetchAdminMetaInfoResponseDto());
     }
 
-    @GetMapping(ADMIN_META_INFO_BY_COMPANY_ID)
+    @GetMapping(ADMIN_META_INFO_BY_COMPANY_ID+ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_ADMIN_META_INFO_BY_COMPANY_ID)
-    public ResponseEntity<?> fetchAdminMetaInfoDropdownByCompanyId() {
+    public ResponseEntity<?> fetchAdminMetaInfoDropdownByCompanyId(@PathVariable("id") Long id) {
 
-        return ok(adminService.fetchAdminMetaInfoByCompanyIdResponseDto());
+        return ok(adminService.fetchAdminMetaInfoByCompanyIdResponseDto(id));
     }
 
     @GetMapping(ADMIN_META_INFO_BY_CLIENT_ID+ID_PATH_VARIABLE_BASE)

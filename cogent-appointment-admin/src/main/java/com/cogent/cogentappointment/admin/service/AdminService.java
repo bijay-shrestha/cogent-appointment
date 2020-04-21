@@ -40,7 +40,7 @@ public interface AdminService {
 
     List<AdminMetaInfoResponseDTO> fetchAdminMetaInfoResponseDto();
 
-    List<AdminMetaInfoResponseDTO> fetchAdminMetaInfoByCompanyIdResponseDto();
+    List<AdminMetaInfoResponseDTO> fetchAdminMetaInfoByCompanyIdResponseDto(Long id);
 
     List<AdminMetaInfoResponseDTO> fetchAdminMetaInfoByClientIdResponseDto(Long id);
 }

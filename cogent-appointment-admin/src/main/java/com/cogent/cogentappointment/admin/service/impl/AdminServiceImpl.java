@@ -391,14 +391,13 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public List<AdminMetaInfoResponseDTO> fetchAdminMetaInfoByCompanyIdResponseDto() {
+    public List<AdminMetaInfoResponseDTO> fetchAdminMetaInfoByCompanyIdResponseDto(Long id) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, ADMIN_META_INFO);
 
-        Long companyId= SecurityContextUtils.getLoggedInCompanyId();
         List<AdminMetaInfoResponseDTO> metaInfoResponseDTOS =
-                adminMetaInfoRepository.fetchAdminMetaInfoByCompanyIdResponseDTOS(companyId);
+                adminMetaInfoRepository.fetchAdminMetaInfoByCompanyIdResponseDTOS(id);
 
         log.info(SAVING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
 

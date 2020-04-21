@@ -6,6 +6,7 @@ import com.cogent.cogentappointment.client.dto.request.profile.ProfileUpdateDTO;
 import com.cogent.cogentappointment.client.dto.response.profile.*;
 import com.cogent.cogentappointment.persistence.model.Department;
 import com.cogent.cogentappointment.persistence.model.Profile;
+import org.omg.PortableInterceptor.INACTIVE;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ public class ProfileUtils {
         profile.setDescription(profileDTO.getDescription());
         profile.setStatus(profileDTO.getStatus());
         profile.setDepartment(department);
+        profile.setIsSuperAdminProfile('N');
         return profile;
     }
 

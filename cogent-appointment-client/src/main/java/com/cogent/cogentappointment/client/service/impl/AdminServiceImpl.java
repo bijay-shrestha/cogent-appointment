@@ -350,6 +350,10 @@ public class AdminServiceImpl implements AdminService {
 
         save(admin);
 
+        adminConfirmationToken.setStatus(INACTIVE);
+
+        saveAdminConfirmationToken(adminConfirmationToken);
+
         log.info(VERIFY_CONFIRMATION_TOKEN_FOR_EMAIL_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
     }
 

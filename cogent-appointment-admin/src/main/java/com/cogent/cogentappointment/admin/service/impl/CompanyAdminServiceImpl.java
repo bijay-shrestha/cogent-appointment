@@ -45,9 +45,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.*;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.*;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.AdminLog.*;
@@ -259,20 +257,20 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         validateCompanyAdminDuplicity(admins, updateRequestDTO.getEmail(),
                 updateRequestDTO.getMobileNumber());
 
-        emailIsNotUpdated(updateRequestDTO,admin,files);
+        emailIsNotUpdated(updateRequestDTO, admin, files);
 
-        emailIsUpdated(updateRequestDTO,admin,files);
+        emailIsUpdated(updateRequestDTO, admin, files);
 
         log.info(UPDATING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
     }
 
     private void emailIsNotUpdated(CompanyAdminUpdateRequestDTO updateRequestDTO,
-                                   Admin admin,MultipartFile files){
-        if(updateRequestDTO.getEmail().equals(admin.getEmail())) {
+                                   Admin admin, MultipartFile files) {
+        if (updateRequestDTO.getEmail().equals(admin.getEmail())) {
 
             EmailRequestDTO emailRequestDTO = parseUpdatedInfo(updateRequestDTO, admin);
 
-            updateCompanyAdmin(updateRequestDTO, ACTIVE,admin);
+            updateCompanyAdmin(updateRequestDTO, ACTIVE, admin);
 
             if (updateRequestDTO.getIsAvatarUpdate().equals(YES))
                 updateAvatar(admin, files);
@@ -288,8 +286,8 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
     }
 
     private void emailIsUpdated(CompanyAdminUpdateRequestDTO updateRequestDTO,
-                                Admin admin,MultipartFile files){
-        if(!updateRequestDTO.getEmail().equals(admin.getEmail())) {
+                                Admin admin, MultipartFile files) {
+        if (!updateRequestDTO.getEmail().equals(admin.getEmail())) {
 
             EmailRequestDTO emailRequestDTO = parseUpdatedInfo(updateRequestDTO, admin);
 
@@ -299,7 +297,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
             EmailRequestDTO emailRequestDTOForNewEmail = convertCompanyAdminUpdateRequestToEmailRequestDTO(updateRequestDTO,
                     adminConfirmationToken.getConfirmationToken());
 
-            updateCompanyAdmin(updateRequestDTO,INACTIVE, admin);
+            updateCompanyAdmin(updateRequestDTO, INACTIVE, admin);
 
             if (updateRequestDTO.getIsAvatarUpdate().equals(YES))
                 updateAvatar(admin, files);
@@ -342,11 +340,15 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         validateStatus(adminConfirmationToken.getStatus());
 
-        Admin admin=adminRepository.findAdminByIdForEmailVerification(adminConfirmationToken.getAdmin().getId());
+        Admin admin = adminRepository.findAdminByIdForEmailVerification(adminConfirmationToken.getAdmin().getId());
 
         admin.setStatus(ACTIVE);
 
         save(admin);
+
+        adminConfirmationToken.setStatus(INACTIVE);
+
+        saveAdminConfirmationToken(adminConfirmationToken);
 
         log.info(VERIFY_CONFIRMATION_TOKEN_FOR_EMAIL_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
     }
@@ -591,12 +593,12 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         else updateAdminAvatar(admin, adminAvatar, files);
     }
 
-    private void updateCompanyAdmin(CompanyAdminUpdateRequestDTO adminRequestDTO,Character status, Admin admin) {
+    private void updateCompanyAdmin(CompanyAdminUpdateRequestDTO adminRequestDTO, Character status, Admin admin) {
         Gender gender = fetchGender(adminRequestDTO.getGenderCode());
 
         Profile profile = fetchProfile(adminRequestDTO.getProfileId());
 
-        convertCompanyAdminUpdateRequestDTOToAdmin(admin, adminRequestDTO, gender, profile,status);
+        convertCompanyAdminUpdateRequestDTOToAdmin(admin, adminRequestDTO, gender, profile, status);
     }
 
     private void updateMacAddressInfo(List<AdminMacAddressInfoUpdateRequestDTO> adminMacAddressInfoUpdateRequestDTOS,

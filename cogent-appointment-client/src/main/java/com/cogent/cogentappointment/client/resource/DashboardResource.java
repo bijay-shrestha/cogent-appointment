@@ -93,10 +93,6 @@ public class DashboardResource {
 
     @GetMapping(DOCTOR_REVENUE)
     @ApiOperation(DOCTOR_REVENUE_OPERATION)
-//    @ApiImplicitParams({@ApiImplicitParam(name = "toDate", value = "dd/MM/yyyy", required = true, dataType = "date",
-//            paramType = "query"),
-//            @ApiImplicitParam(name = "fromDate", value = "dd/MM/yyyy", required = true, dataType = "date",
-//                    paramType = "query")})
     public ResponseEntity<?> getDoctorRevenueList(@RequestParam("toDate") String toDate,
                                                   @RequestParam("fromDate") String fromDate,
                                                   @RequestParam("doctorId") Long doctorId,
@@ -104,9 +100,10 @@ public class DashboardResource {
                                                   @RequestParam("page") int page,
                                                   @RequestParam("size") int size) throws ParseException {
 
-        DoctorRevenueRequestDTO doctorRevenueRequestDTO = convertToDoctorRevenueRequestDTO(doctorId, getLoggedInHospitalId(), specializationId);
+        DoctorRevenueRequestDTO doctorRevenueRequestDTO =
+                convertToDoctorRevenueRequestDTO(doctorId, getLoggedInHospitalId(), specializationId, fromDate, toDate);
         Pageable pageable = PageRequest.of(page, size);
-        return ok(dashboardService.getDoctorRevenueList(convertStringToDate(toDate), convertStringToDate(fromDate), doctorRevenueRequestDTO, pageable));
+        return ok(dashboardService.calculateOverallDoctorRevenue(doctorRevenueRequestDTO, pageable));
     }
 
     @PutMapping(DYNAMIC_DASHBOARD_FEATURE + ADMIN_ID_PATH_VARIABLE_BASE)

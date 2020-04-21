@@ -63,6 +63,11 @@ public class ErrorMessageConstants {
     public static final String CANNOT_ACCESS_CLIENT_MODULE_DEBUG_MESSAGE = "Admin belongs to company";
 
     //D
+
+    public interface DashboardMessages {
+        String DOCTOR_REVENUE_NOT_FOUND = "Doctor Revenue(s) not found";
+    }
+
     public interface DoctorServiceMessages {
         String DOCTOR_NOT_AVAILABLE = "Sorry, Doctor is not available in selected date '%s'.";
         String DOCTOR_APPOINTMENT_CHARGE_INVALID = "Sorry, requested appointment amount '%s' doesn't match with " +

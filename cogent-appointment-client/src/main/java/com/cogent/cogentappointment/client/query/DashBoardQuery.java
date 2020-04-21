@@ -221,44 +221,77 @@ public class DashBoardQuery {
         return whereClause;
     }
 
-    public static String QUERY_TO_GENERATE_DOCTOR_REVENUE_LIST(DoctorRevenueRequestDTO requestDTO) {
-
+    /*APPOINTMENT EXCEPT REFUNDED ONES (i.e APPOINTMENT STATUS != 'RE')*/
+    public static String QUERY_TO_CALCULATE_DOCTOR_REVENUE(DoctorRevenueRequestDTO requestDTO) {
 
         return "SELECT" +
-                " d.id as doctorId," +
-                " d.name as doctorName," +
-                " da.fileUri as fileUri," +
-                " s.name as specialization," +
-                " COUNT(d.id) as totalAppointmentCount," +
-                " COALESCE(SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 ) AS revenueAmount" +
+                " d.id as doctorId," +                                                           //[0]
+                " d.name as doctorName," +                                                       //[1]
+                " CASE WHEN" +
+                " (da.status is null OR da.status = 'N')" +
+                " THEN null" +
+                " ELSE" +
+                " da.fileUri" +
+                " END as fileUri," +                                                             //[2]
+                " s.id as specializationId," +                                                   //[3]
+                " s.name as specializationName," +                                               //[4]
+                " COUNT(d.id) as successfulAppointments," +                                      //[5]
+                " COALESCE(SUM(atd.appointmentAmount),0) as doctorRevenue" +                     //[6]
                 " FROM Appointment a" +
                 " LEFT JOIN Doctor d ON d.id= a.doctorId.id" +
                 " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId.id" +
                 " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
                 " LEFT JOIN Specialization s ON s.id=a.specializationId.id" +
                 " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
-                " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
-                GET_WHERE_CLAUSE_GENERATE_DOCTOR_REVENUE_LIST(requestDTO);
+                " WHERE" +
+                " a.status !='RE'" +
+                GET_WHERE_CLAUSE_TO_CALCULATE_DOCTOR_REVENUE(requestDTO);
     }
 
-    private static String GET_WHERE_CLAUSE_GENERATE_DOCTOR_REVENUE_LIST(DoctorRevenueRequestDTO requestDTO) {
-        String whereClause = " WHERE h.id=:hospitalId";
+    /*REFUNDED APPOINTMENTS(i.e APPOINTMENT STATUS = 'RE')*/
+    public static String QUERY_TO_CALCULATE_COMPANY_REVENUE(DoctorRevenueRequestDTO requestDTO) {
 
-        if (requestDTO.getSpecializationId() > 0)
+        return "SELECT" +
+                " d.id as doctorId," +                                          //[0]
+                " d.name as doctorName," +                                      //[1]
+                " CASE WHEN" +
+                " (da.status is null OR da.status = 'N')" +
+                " THEN null" +
+                " ELSE" +
+                " da.fileUri" +
+                " END as fileUri," +                                            //[2]
+                " s.id as specializationId," +                                  //[3]
+                " s.name as specializationName," +                              //[4]
+                " COUNT(d.id) as cancelledAppointments," +                      //[5]
+                " COALESCE(SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 )" +
+                " as cancelledRevenue" +                                       //[6]
+                " FROM Appointment a" +
+                " LEFT JOIN Doctor d ON d.id= a.doctorId.id" +
+                " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId.id" +
+                " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
+                " LEFT JOIN Specialization s ON s.id=a.specializationId.id" +
+                " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
+                " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
+                " WHERE" +
+                " a.status ='RE'" +
+                " AND ard.status='A'" +
+                GET_WHERE_CLAUSE_TO_CALCULATE_DOCTOR_REVENUE(requestDTO);
+    }
+
+    private static String GET_WHERE_CLAUSE_TO_CALCULATE_DOCTOR_REVENUE(DoctorRevenueRequestDTO requestDTO) {
+        String whereClause = " AND h.id=:hospitalId ";
+
+        if (requestDTO.getSpecializationId() != 0 && !Objects.isNull(requestDTO.getSpecializationId()))
             whereClause += " AND s.id=" + requestDTO.getSpecializationId();
 
-        if (requestDTO.getDoctorId() > 0)
+        if (requestDTO.getDoctorId() != 0 && !Objects.isNull(requestDTO.getDoctorId()))
             whereClause += " AND d.id=" + requestDTO.getDoctorId();
 
-        whereClause +=
-                " AND atd.transactionDate BETWEEN :fromDate AND :toDate" +
-                        " GROUP BY d.id,da.id,s.id " +
-                        " ORDER BY SUM(atd.appointmentAmount) DESC ";
-
+        whereClause += " AND atd.transactionDate BETWEEN :fromDate AND :toDate" +
+                " GROUP BY d.id,da.id,s.id ";
 
         return whereClause;
     }
-
 
     public static String QUERY_TO_FETCH_REFUND_AMOUNT(Long doctorId, Long specializationId) {
         String query = "SELECT" +

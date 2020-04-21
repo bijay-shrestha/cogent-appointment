@@ -191,10 +191,10 @@ public class DashboardServiceImpl implements DashboardService {
         log.info(FETCHING_PROCESS_STARTED, DOCTOR_REVENUE);
 
         List<DoctorRevenueDTO> doctorRevenue =
-                appointmentTransactionDetailRepository.calculateDoctorRevenue(doctorRevenueRequestDTO, pageable);
+                appointmentTransactionDetailRepository.calculateDoctorRevenue(doctorRevenueRequestDTO);
 
         List<DoctorRevenueDTO> cancelledRevenue =
-                appointmentTransactionDetailRepository.calculateCancelledRevenue(doctorRevenueRequestDTO, pageable);
+                appointmentTransactionDetailRepository.calculateCancelledRevenue(doctorRevenueRequestDTO);
 
         validateDoctorRevenue(doctorRevenue, cancelledRevenue);
 
@@ -241,7 +241,5 @@ public class DashboardServiceImpl implements DashboardService {
             log.error(CONTENT_NOT_FOUND, DOCTOR_REVENUE);
             throw new NoContentFoundException(DOCTOR_REVENUE_NOT_FOUND);
         }
-
-
     }
 }

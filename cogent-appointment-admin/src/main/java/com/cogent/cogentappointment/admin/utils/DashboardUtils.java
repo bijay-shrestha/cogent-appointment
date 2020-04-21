@@ -289,7 +289,7 @@ public class DashboardUtils {
 
         return DoctorRevenueResponseDTO.builder()
                 .doctorRevenueInfo(revenueDTOList)
-                .overallAppointmentCount(overallAppointmentCount)
+                .totalAppointmentCount(overallAppointmentCount)
                 .totalRevenueAmount(totalRevenueAmount)
                 .build();
     }

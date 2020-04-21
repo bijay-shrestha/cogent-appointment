@@ -17,7 +17,7 @@ public class DoctorRevenueResponseDTO implements Serializable {
 
     private List<DoctorRevenueDTO> doctorRevenueInfo;
 
-    private Long overallAppointmentCount;
+    private Long totalAppointmentCount;
 
     private Double totalRevenueAmount;
 

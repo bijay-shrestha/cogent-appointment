@@ -5,6 +5,9 @@
 #catalina:
 #  home: Path/to/your/external/tomcat
 
+#catalina:
+#  home: /Users/bijayshrestha/Dropbox/Workspaces/Backend/tomcat
+
 ##### [END] CATALINA HOME CONFIG [/END] #########
 
 spring:

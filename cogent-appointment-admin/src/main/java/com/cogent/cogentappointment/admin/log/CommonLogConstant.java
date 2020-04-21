@@ -10,6 +10,7 @@ public class CommonLogConstant {
     private final static String BOLD = "\033[0;1m";
 
     //C
+    public final static String CONTENT_NOT_FOUND_BY_CODE = BOLD + ":::: {} WITH CODE : {} NOT FOUND ::::";
     public final static String CONTENT_NOT_FOUND_BY_ID = BOLD + ":::: {} WITH ID : {} NOT FOUND ::::";
     public final static String CONTENT_NOT_FOUND = BOLD + ":::: {} NOT FOUND ::::";
 

@@ -52,4 +52,6 @@ public class AppointmentPendingApprovalDetailResponseDTO implements Serializable
     private Double appointmentAmount;
 
     private Character isSelf;
+
+    private String appointmentMode;
 }

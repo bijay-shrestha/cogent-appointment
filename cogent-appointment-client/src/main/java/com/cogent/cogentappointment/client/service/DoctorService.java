@@ -32,11 +32,15 @@ public interface DoctorService {
 
     DoctorDetailResponseDTO fetchDetailsById(Long id);
 
-    Doctor fetchActiveDoctorByIdAndHospitalId(Long id,  Long hospitalId);
+    Doctor fetchActiveDoctorByIdAndHospitalId(Long id, Long hospitalId);
 
     List<DoctorDropdownDTO> fetchDoctorBySpecializationId(Long specializationId);
 
     List<DoctorDropdownDTO> fetchDoctorByHospitalId();
 
     DoctorUpdateResponseDTO fetchDetailsForUpdate(Long id);
+
+    Double fetchDoctorAppointmentCharge(Long doctorId, Long hospitalId);
+
+    Double fetchDoctorFollowupAppointmentCharge(Long doctorId, Long hospitalId);
 }

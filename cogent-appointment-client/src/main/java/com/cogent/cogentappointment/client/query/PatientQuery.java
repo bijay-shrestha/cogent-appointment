@@ -145,12 +145,9 @@ public class PatientQuery {
                 " p.gender as gender," +                                       //[7]
                 " hpi.status as status," +                                       //[8]
                 " hpi.hospitalNumber as hospitalNumber," +                       //[9]
-                " a.appointmentDate as appointmentDate," +                         //[10]
-                " DATE_FORMAT(a.appointmentTime ,'%h:%i %p') as appointmentTime," +  //[11]
-                QUERY_TO_CALCULATE_PATIENT_AGE +                                //[12]
+                QUERY_TO_CALCULATE_PATIENT_AGE +                                //[10]
                 " FROM Patient p" +
-                " LEFT JOIN Appointment a ON p.id = a.patientId.id" +
-                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
+                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id" +
                 " LEFT JOIN Hospital h ON h.id=hpi.hospital.id" +
                 " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id" +
                 GET_WHERE_CLAUSE_FOR_SEARCH_PATIENT(searchRequestDTO);
@@ -203,7 +200,8 @@ public class PatientQuery {
                     " atd.transactionNumber as transactionNumber," +            //[8]
                     " a.isSelf as isSelf," +                                    //[9]
                     " atd.appointmentAmount as appointmentAmount," +            //[10]
-                    QUERY_TO_CALCULATE_PATIENT_AGE +                            //[11]
+                    " a.appointmentModeId.name as appointmentMode," +          //[11]
+                    QUERY_TO_CALCULATE_PATIENT_AGE +                            //[12]
                     " FROM Appointment a" +
                     " LEFT JOIN Patient p ON p.id=a.patientId.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +

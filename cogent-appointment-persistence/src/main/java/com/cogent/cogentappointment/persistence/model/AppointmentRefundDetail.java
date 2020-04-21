@@ -48,11 +48,11 @@ public class AppointmentRefundDetail extends Auditable<String> implements Serial
     @Column(name = "status")
     private String status;
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "cancelled_date")
     private Date cancelledDate;
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "refunded_date")
     private Date refundedDate;
 

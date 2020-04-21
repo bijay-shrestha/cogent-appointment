@@ -38,6 +38,10 @@ public class ErrorMessageConstants {
         String INVALID_DELETE_REQUEST = "Sorry! Cannot delete this admin since it has Super Admin Profile";
     }
 
+    public interface AppointmentModeMessages{
+         String APPOINTMENT_MODE_NOT_EDITABLE = "Appointment Mode cannot be updated'";
+        String APPOINTMENT_MODE_NOT_EDITABLE_DEBUG_MESSAGE = "Appointment Mode having is_editable 'N' cannot be updated";
+    }
 
     //B
 
@@ -101,6 +105,7 @@ public class ErrorMessageConstants {
 
     public static final String NAME_AND_CODE_DUPLICATION_MESSAGE = "%s already exists with name '%s' " +
             "and code '%s' ";
+
 
 
     //O

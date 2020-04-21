@@ -56,4 +56,6 @@ public class AppointmentLogDTO implements Serializable {
 
     private Date transactionDate;
 
+    private String appointmentMode;
+
 }

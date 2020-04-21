@@ -6,6 +6,7 @@ import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.DoctorRepositoryCustom;
 import com.cogent.cogentappointment.client.utils.commons.PageableUtils;
 import com.cogent.cogentappointment.persistence.model.Doctor;
+import com.cogent.cogentappointment.persistence.model.DoctorAppointmentCharge;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -15,7 +16,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -24,6 +24,7 @@ import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.client.log.constants.DoctorLog.DOCTOR;
+import static com.cogent.cogentappointment.client.log.constants.DoctorLog.DOCTOR_APPOINTMENT_CHARGE;
 import static com.cogent.cogentappointment.client.query.DoctorQuery.*;
 import static com.cogent.cogentappointment.client.utils.DoctorUtils.parseToDoctorUpdateResponseDTO;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
@@ -75,10 +76,8 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
         List<DoctorMinimalResponseDTO> results = transformNativeQueryToResultList(
                 query, DoctorMinimalResponseDTO.class);
 
-        if (results.isEmpty()){
-            error();
+        if (results.isEmpty())
             throw DOCTOR_NOT_FOUND.get();
-        }
         else {
             results.get(0).setTotalItems(totalItems);
             return results;
@@ -92,10 +91,8 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
 
         List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
-        if (results.isEmpty()){
-            error();
+        if (results.isEmpty())
             throw DOCTOR_NOT_FOUND.get();
-        }
         else return results;
     }
 
@@ -119,10 +116,8 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
 
         List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
-        if (results.isEmpty()){
-            error();
+        if (results.isEmpty())
             throw DOCTOR_NOT_FOUND.get();
-        }
         else return results;
     }
 
@@ -133,10 +128,8 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
 
         List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
-        if (results.isEmpty()){
-            error();
+        if (results.isEmpty())
             throw DOCTOR_NOT_FOUND.get();
-        }
         else return results;
     }
 
@@ -160,10 +153,8 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
 
         List<DoctorMinResponseDTO> results = transformNativeQueryToResultList(query, DoctorMinResponseDTO.class);
 
-        if (results.isEmpty()){
-            error();
+        if (results.isEmpty())
             throw DOCTOR_NOT_FOUND.get();
-        }
 
         return results;
     }
@@ -176,8 +167,7 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
                     .setParameter(HOSPITAL_ID, hospitalId);
             return (Double) query.getSingleResult();
         } catch (NoResultException ex) {
-            error();
-            throw DOCTOR_NOT_FOUND.get();
+            throw DOCTOR_APPOINTMENT_CHARGE_NOT_FOUND.get();
         }
     }
 
@@ -190,8 +180,7 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
 
             return (Double) query.getSingleResult();
         } catch (NoResultException ex) {
-            error();
-            throw DOCTOR_NOT_FOUND.get();
+            throw DOCTOR_APPOINTMENT_CHARGE_NOT_FOUND.get();
         }
     }
 
@@ -202,22 +191,23 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
 
         List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
-        if (results.isEmpty()){
-            error();
+        if (results.isEmpty())
             throw DOCTOR_NOT_FOUND.get();
-        }
         else return results;
     }
 
-    private Supplier<NoContentFoundException> DOCTOR_NOT_FOUND = () ->
-            new NoContentFoundException(Doctor.class);
+    private Supplier<NoContentFoundException> DOCTOR_NOT_FOUND = () -> {
+        log.error(CONTENT_NOT_FOUND, DOCTOR);
+        throw new NoContentFoundException(Doctor.class);
+    };
 
     private Function<Long, NoContentFoundException> DOCTOR_WITH_GIVEN_ID_NOT_FOUND = (doctorId) -> {
-        log.error(CONTENT_NOT_FOUND_BY_ID,DOCTOR,doctorId);
+        log.error(CONTENT_NOT_FOUND_BY_ID, DOCTOR, doctorId);
         throw new NoContentFoundException(Doctor.class, "doctorId", doctorId.toString());
     };
 
-    public void error(){
-        log.error(CONTENT_NOT_FOUND,DOCTOR);
-    }
+    private Supplier<NoContentFoundException> DOCTOR_APPOINTMENT_CHARGE_NOT_FOUND = () -> {
+        log.error(CONTENT_NOT_FOUND, DOCTOR_APPOINTMENT_CHARGE);
+        throw new NoContentFoundException(DoctorAppointmentCharge.class);
+    };
 }

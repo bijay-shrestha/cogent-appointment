@@ -37,8 +37,7 @@ public class AdminLogQuery {
                 " LEFT JOIN AdminMetaInfo ami ON ami.admin.id=a.id" +
                 WHERE_CLAUSE_TO_SEARCH_ADMIN_LOGS(searchRequestDTO) +
                 " GROUP BY al.feature" +
-                " ORDER BY count(al.id) DESC" +
-                " LIMIT 10";
+                " ORDER BY count(al.id) DESC";
 
 
     }

@@ -16,7 +16,8 @@ public class ClientLogQuery {
                 " from ClientLog cl" +
                 " LEFT JOIN Admin a ON cl.adminId.id =a.id" +
                 " LEFT JOIN Profile p ON p.id=a.profileId.id" +
-                " LEFT JOIN Hospital h ON h.id=p.company" +
+                " LEFT JOIN Department d ON d.id = p.department.id " +
+                " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                 " LEFT JOIN AdminMetaInfo ami ON ami.admin.id=a.id" +
                 WHERE_CLAUSE_TO_SEARCH_CLIENT_LOGS(searchRequestDTO) +
                 " GROUP BY cl.feature " +
@@ -33,12 +34,12 @@ public class ClientLogQuery {
                 " from ClientLog cl" +
                 " LEFT JOIN Admin a ON cl.adminId.id =a.id" +
                 " LEFT JOIN Profile p ON p.id=a.profileId.id" +
-                " LEFT JOIN Hospital h ON h.id=p.company" +
+                " LEFT JOIN Department d ON d.id = p.department.id" +
+                " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                 " LEFT JOIN AdminMetaInfo ami ON ami.admin.id=a.id" +
                 WHERE_CLAUSE_TO_SEARCH_CLIENT_LOGS(searchRequestDTO) +
-                " GROUP BY cl.feature " +
-                " ORDER BY count(cl.id) DESC" +
-                " LIMIT 10 ";
+                " GROUP BY cl.feature" +
+                " ORDER BY count(cl.id) DESC";
 
 
     }
@@ -60,7 +61,8 @@ public class ClientLogQuery {
                 " FROM ClientLog cl" +
                 " LEFT JOIN Admin a ON cl.adminId.id =a.id" +
                 " LEFT JOIN Profile p ON p.id=a.profileId.id" +
-                " LEFT JOIN Hospital h ON h.id=p.company" +
+                " LEFT JOIN Department d ON d.id = p.department.id" +
+                " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                 " LEFT JOIN AdminMetaInfo ami ON ami.admin.id=a.id" +
                 WHERE_CLAUSE_TO_SEARCH_CLIENT_LOGS(searchRequestDTO)
                 + " ORDER BY cl.logDateTime DESC";

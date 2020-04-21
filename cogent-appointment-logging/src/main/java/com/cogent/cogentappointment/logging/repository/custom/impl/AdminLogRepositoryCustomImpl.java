@@ -123,7 +123,8 @@ public class AdminLogRepositoryCustomImpl implements AdminLogRepositoryCustom {
     public UserMenuStaticsResponseDTO fetchUserMenuLogsStaticsforDiagram(AdminLogSearchRequestDTO searchRequestDTO) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_USER_LOGS_STATICS_FOR_PIE_CHART(searchRequestDTO))
                 .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
-                .setParameter(TO_DATE, searchRequestDTO.getToDate());
+                .setParameter(TO_DATE, searchRequestDTO.getToDate())
+                .setMaxResults(10);
 
         int totalItems = query.getResultList().size();
 

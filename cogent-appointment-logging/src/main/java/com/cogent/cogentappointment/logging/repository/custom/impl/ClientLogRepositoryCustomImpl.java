@@ -180,7 +180,8 @@ public class ClientLogRepositoryCustomImpl implements ClientLogRepositoryCustom 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_USER_LOGS_STATICS_FOR_PIE_CHART(searchRequestDTO))
                 .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
                 .setParameter(TO_DATE, searchRequestDTO.getToDate())
-                .setParameter(HOSPITAL_ID, searchRequestDTO.getClientId());
+                .setParameter(HOSPITAL_ID, searchRequestDTO.getClientId())
+                .setMaxResults(10);
 
         int totalItems = query.getResultList().size();
 

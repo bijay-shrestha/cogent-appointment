@@ -10,7 +10,6 @@ import com.cogent.cogentappointment.persistence.model.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,8 +18,7 @@ import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.EmailConstants.*;
 import static com.cogent.cogentappointment.admin.constants.EmailTemplates.*;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.*;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.*;
 import static com.cogent.cogentappointment.admin.utils.commons.NumberFormatterUtils.generateRandomToken;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.convertToNormalCase;
@@ -39,7 +37,7 @@ public class AdminUtils {
         admin.setMobileNumber(adminRequestDTO.getMobileNumber());
         admin.setStatus(adminRequestDTO.getStatus());
         admin.setHasMacBinding(adminRequestDTO.getHasMacBinding());
-        admin.setIsFirstLogin(YES);
+        admin.setIsAccountActivated(NO);
 
         parseAdminDetails(gender, profile, admin);
         return admin;
@@ -51,10 +49,10 @@ public class AdminUtils {
     }
 
     public static Admin convertAdminUpdateRequestDTOToAdmin(Admin admin,
-                                                           AdminUpdateRequestDTO adminRequestDTO,
-                                                           Gender gender,
-                                                           Profile profile,
-                                                           Character status) {
+                                                            AdminUpdateRequestDTO adminRequestDTO,
+                                                            Gender gender,
+                                                            Profile profile,
+                                                            Character status) {
 
         admin.setEmail(adminRequestDTO.getEmail());
         admin.setFullName(convertToNormalCase(adminRequestDTO.getFullName()));
@@ -85,7 +83,7 @@ public class AdminUtils {
     }
 
     public static AdminMetaInfo parseMetaInfo(Admin admin,
-                                     AdminMetaInfo adminMetaInfo) {
+                                              AdminMetaInfo adminMetaInfo) {
         adminMetaInfo.setMetaInfo(admin.getFullName() + OR + admin.getEmail() + OR + admin.getMobileNumber());
         return adminMetaInfo;
     }
@@ -100,8 +98,7 @@ public class AdminUtils {
     }
 
     public static EmailRequestDTO convertAdminRequestToEmailRequestDTO(AdminRequestDTO adminRequestDTO,
-                                                                       String confirmationToken,
-                                                                       HttpServletRequest httpServletRequest) {
+                                                                       String confirmationToken) {
 
 //        String origin = httpServletRequest.getHeader("origin");
 //        String confirmationUrl = origin + "/#" + "/savePassword" + "?token =" + confirmationToken;
@@ -122,7 +119,7 @@ public class AdminUtils {
 //        String origin = httpServletRequest.getHeader("origin");
 //        String confirmationUrl = origin + "/#" + "/savePassword" + "?token =" + confirmationToken;
 
-        String confirmationUrl = adminRequestDTO.getBaseUrl() + "/#" + "/verify/email"  + "?token =" + confirmationToken;
+        String confirmationUrl = adminRequestDTO.getBaseUrl() + "/#" + "/verify/email" + "?token =" + confirmationToken;
 
         return EmailRequestDTO.builder()
                 .receiverEmailAddress(adminRequestDTO.getEmail())
@@ -247,6 +244,7 @@ public class AdminUtils {
                                           AdminConfirmationToken confirmationToken) {
         Admin admin = confirmationToken.getAdmin();
         admin.setPassword(BCrypt.hashpw(requestDTO.getPassword(), BCrypt.gensalt()));
+        admin.setIsAccountActivated(YES);
         return admin;
     }
 
@@ -262,7 +260,6 @@ public class AdminUtils {
                         + requestDTO.getPassword() + COMMA_SEPARATED + requestDTO.getRemarks())
                 .build();
     }
-
 
 
 }

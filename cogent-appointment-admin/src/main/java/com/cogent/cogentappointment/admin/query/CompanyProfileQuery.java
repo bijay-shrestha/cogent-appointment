@@ -74,7 +74,8 @@ public class CompanyProfileQuery {
                     " p.description as description," +                      //[2]
                     " p.remarks as remarks," +                              //[3]
                     " h.id as companyId," +                                 //[4]
-                    " h.name as companyName" +                              //[5]
+                    " h.name as companyName," +                             //[5]
+                    " p.isAllRoleAssigned as isAllRoleAssigned" +            //[6]
                     " FROM" +
                     " Profile p" +
                     " LEFT JOIN Hospital h ON h.id = p.company.id" +
@@ -105,7 +106,8 @@ public class CompanyProfileQuery {
                     " FROM Profile p" +
                     " WHERE" +
                     " p.status ='Y'" +
-                    " AND p.isCompanyProfile= 'Y'";
+                    " AND p.isCompanyProfile= 'Y'" +
+                    " ORDER BY p.name ASC";
 
     public static final String QUERY_TO_FETCH_ACTIVE_COMPANY_PROFILES_BY_COMPANY_ID =
             " SELECT" +
@@ -115,5 +117,6 @@ public class CompanyProfileQuery {
                     " WHERE" +
                     " p.status ='Y'" +
                     " AND p.isCompanyProfile= 'Y'" +
-                    " AND p.company.id =:companyId";
+                    " AND p.company.id =:companyId" +
+                    " ORDER BY p.name ASC";
 }

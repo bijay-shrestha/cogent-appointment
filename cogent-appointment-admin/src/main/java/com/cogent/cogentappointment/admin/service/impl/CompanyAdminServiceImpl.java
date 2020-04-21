@@ -18,10 +18,7 @@ import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.exception.OperationUnsuccessfulException;
 import com.cogent.cogentappointment.admin.repository.*;
-import com.cogent.cogentappointment.admin.service.CompanyAdminService;
-import com.cogent.cogentappointment.admin.service.EmailService;
-import com.cogent.cogentappointment.admin.service.MinioFileService;
-import com.cogent.cogentappointment.admin.service.ProfileService;
+import com.cogent.cogentappointment.admin.service.*;
 import com.cogent.cogentappointment.admin.validator.LoginValidator;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
@@ -31,7 +28,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.Validator;
@@ -87,6 +83,8 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
     private final AdminDashboardFeatureRepository adminDashboardFeatureRepository;
 
+    private final AdminFeatureService adminFeatureService;
+
     public CompanyAdminServiceImpl(Validator validator,
                                    AdminRepository adminRepository,
                                    AdminMacAddressInfoRepository adminMacAddressInfoRepository,
@@ -94,7 +92,10 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                                    AdminAvatarRepository adminAvatarRepository,
                                    AdminConfirmationTokenRepository confirmationTokenRepository,
                                    MinioFileService minioFileService, EmailService emailService,
-                                   ProfileService profileService, DashboardFeatureRepository dashboardFeatureRepository, AdminDashboardFeatureRepository adminDashboardFeatureRepository) {
+                                   ProfileService profileService,
+                                   DashboardFeatureRepository dashboardFeatureRepository,
+                                   AdminDashboardFeatureRepository adminDashboardFeatureRepository,
+                                   AdminFeatureService adminFeatureService) {
         this.validator = validator;
         this.adminRepository = adminRepository;
         this.adminMacAddressInfoRepository = adminMacAddressInfoRepository;
@@ -106,11 +107,11 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         this.profileService = profileService;
         this.dashboardFeatureRepository = dashboardFeatureRepository;
         this.adminDashboardFeatureRepository = adminDashboardFeatureRepository;
+        this.adminFeatureService = adminFeatureService;
     }
 
     @Override
-    public void save(@Valid CompanyAdminRequestDTO adminRequestDTO, MultipartFile files,
-                     HttpServletRequest httpServletRequest) {
+    public void save(@Valid CompanyAdminRequestDTO adminRequestDTO, MultipartFile files) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -132,15 +133,17 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         saveAdminMetaInfo(admin);
 
+        saveAdminFeature(admin);
+
         saveAllAdminDashboardFeature(adminRequestDTO.getAdminDashboardRequestDTOS(), admin);
 
         AdminConfirmationToken adminConfirmationToken =
                 saveAdminConfirmationToken(parseInAdminConfirmationToken(admin));
 
         EmailRequestDTO emailRequestDTO = convertCompanyAdminRequestToEmailRequestDTO(adminRequestDTO, admin,
-                adminConfirmationToken.getConfirmationToken(), httpServletRequest);
+                adminConfirmationToken.getConfirmationToken());
 
-        sendEmail(emailRequestDTO);
+        saveEmailToSend(emailRequestDTO);
 
         log.info(SAVING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
     }
@@ -192,6 +195,9 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         log.info(DELETING_PROCESS_STARTED, ADMIN);
 
         Admin admin = findById(deleteRequestDTO.getId());
+
+        if (admin.getProfileId().getIsSuperAdminProfile().equals(YES))
+            throw new BadRequestException(INVALID_DELETE_REQUEST);
 
         convertAdminToDeleted(admin, deleteRequestDTO);
 
@@ -281,7 +287,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
             updateAdminMetaInfo(admin);
 
-            sendEmail(emailRequestDTO);
+            saveEmailToSend(emailRequestDTO);
         }
     }
 
@@ -311,7 +317,6 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
             sendEmail(emailRequestDTOForNewEmail);
 
             sendEmail(emailRequestDTO);
-
         }
     }
 
@@ -465,9 +470,11 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
     }
 
-
     private void validateStatus(Object status) {
-        if (status.equals(INACTIVE)) throw ADMIN_ALREADY_REGISTERED.get();
+        if (status.equals(INACTIVE)) {
+            log.error(ADMIN_REGISTERED);
+            throw ADMIN_ALREADY_REGISTERED.get();
+        }
     }
 
     private void validateCompanyAdminDuplicity(List<Object[]> adminList, String requestEmail,
@@ -566,6 +573,10 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         adminMetaInfoRepository.save(parseInAdminMetaInfo(admin));
     }
 
+    private void saveAdminFeature(Admin admin) {
+        adminFeatureService.save(admin);
+    }
+
     private void updateAdminMetaInfo(Admin admin) {
         AdminMetaInfo adminMetaInfo = adminMetaInfoRepository.findAdminMetaInfoByAdminId(admin.getId())
                 .orElseThrow(() -> new NoContentFoundException(AdminMetaInfo.class));
@@ -579,6 +590,10 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
     private void sendEmail(EmailRequestDTO emailRequestDTO) {
         emailService.sendEmail(emailRequestDTO);
+    }
+
+    private void saveEmailToSend(EmailRequestDTO emailRequestDTO) {
+        emailService.saveEmailToSend(emailRequestDTO);
     }
 
     private Admin findById(Long adminId) {

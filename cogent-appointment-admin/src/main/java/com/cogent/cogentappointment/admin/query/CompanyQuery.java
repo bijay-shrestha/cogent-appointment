@@ -41,7 +41,7 @@ public class CompanyQuery {
                     " Hospital h" +
                     " WHERE h.status ='Y'" +
                     " AND h.isCompany='Y'" +
-                    " ORDER by h.id  DESC  ";
+                    " ORDER by h.name ASC";
 
     public static String QUERY_TO_SEARCH_COMPANY(CompanySearchRequestDTO searchRequestDTO) {
         return "SELECT" +

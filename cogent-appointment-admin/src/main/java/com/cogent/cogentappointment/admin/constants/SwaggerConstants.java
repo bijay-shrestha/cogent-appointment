@@ -26,18 +26,16 @@ public class SwaggerConstants {
         String SEARCH_OPERATION = "Search admin according to given request parameters";
         String DETAILS_OPERATION = "Fetch admin details by its id";
         String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal admin details (id and name) for dropdown";
-        String CHANGE_PASSWORD_OPERATION = "Validate the requested password with original and update it accordingly" +
-                " (Change password).";
         String RESET_PASSWORD_OPERATION = "Reset password of any admin. This can be done only by those admin who has privilege to do so";
         String UPDATE_AVATAR_OPERATION = "Update admin avatar and if the file size is empty " +
                 "then change the isDefaultImage status as 'Y' else update accordingly.";
-        String VERIFY_ADMIN = "Verify if the confirmation token sent in email (after successful save) is valid" +
-                " and admin has not been registered.";
-        String SAVE_PASSWORD_OPERATION = "Save admin password";
-        String FETCH_LOGGED_IN_ADMIN_INFO = "Fetch logged in admin information." +
-                " Used to show in top-bar and to validate if the admin updates its own profile";
         String FETCH_ADMIN_META_INFO = "Fetch active admin meta info for dropdown";
         String VERIFY_EMAIL_ADMIN = "Verify if the confirmation token sent in email (after successful email update by admin) is valid.";
+    }
+
+    public interface AdminFeatureConstant {
+        String BASE_API_VALUE = "This is Admin Feature Resource";
+        String UPDATE_OPERATION = "Update 'isSideBarCollapse' flag of corresponding admin";
     }
 
     public interface AppointmentConstant {
@@ -215,6 +213,7 @@ public class SwaggerConstants {
         String SEARCH_OPERATION = "Search hospital according to given request parameters";
         String DETAILS_OPERATION = "Fetch hospital details by id";
         String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal hospital details (id and name) for dropdown";
+        String FETCH_ALIAS_BY_ID = "Fetch alias by hospital id";
     }
 
     //I

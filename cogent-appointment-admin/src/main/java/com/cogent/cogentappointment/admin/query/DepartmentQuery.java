@@ -36,10 +36,10 @@ public class DepartmentQuery {
     public static final Function<DepartmentSearchRequestDTO, String> QUERY_TO_SEARCH_DEPARTMENT =
             (searchRequestDTO ->
                     " SELECT " +
-                            " d.id as id," +                            //[0]
-                            " d.name as name," +                        //[1]
-                            " d.code as departmentCode," +               //[2]
-                            " d.status as status," +                     //[3]
+                            " d.id as id," +                                                    //[0]
+                            " CONCAT(h.alias, '-',h.name) as name," +                           //[1]
+                            " d.code as departmentCode," +                                      //[2]
+                            " d.status as status," +                                           //[3]
                             " h.name as hospitalName" +                  //[4]
                             " FROM Department d" +
                             " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
@@ -76,7 +76,8 @@ public class DepartmentQuery {
                     " d.status as status," +                        //[2]
                     " d.remarks as remarks," +                      //[3]
                     " h.id as hospitalId," +                        //[4]
-                    " h.name as hospitalName" +                     //[5]
+                    " h.name as hospitalName," +                     //[5]
+                    " h.alias as hospitalAlias" +                    //[6]
                     " FROM Department d" +
                     " LEFT JOIN Hospital h ON h.id =d.hospital.id" +
                     " WHERE d.id =:id" +
@@ -86,27 +87,29 @@ public class DepartmentQuery {
     public static final String QUERY_TO_FETCH_DEPARTMENT_FOR_DROPDOWN =
             "SELECT" +
                     " d.id as value," +
-                    " d.name as label" +
+                    " CONCAT(h.alias, '-',d.name) as label" +
                     " FROM Department d" +
+                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE d.status != 'D'" +
-                    " ORDER BY d.id DESC";
+                    " ORDER BY label ASC";
 
     public static final String QUERY_TO_FETCH_ACTIVE_DEPARTMENT_FOR_DROPDOWN =
             "SELECT" +
                     " d.id as value," +
-                    " d.name as label" +
+                    " CONCAT(h.alias, '-',d.name) as label" +
                     " FROM Department d" +
+                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE d.status = 'Y'" +
-                    " ORDER BY d.id DESC";
+                    " ORDER BY label ASC";
 
     public static final String QUERY_TO_FETCH_DEPARTMENT_BY_HOSPITAL_ID =
             "SELECT" +
                     " d.id as value," +
-                    " d.name as label" +
+                    " CONCAT(h.alias, '-',d.name) as label" +
                     " FROM Department d" +
                     " LEFT JOIN Hospital h ON h.id =d.hospital.id" +
                     " WHERE d.status = 'Y'" +
                     " AND h.status = 'Y'" +
                     " AND h.id=:hospitalId" +
-                    " ORDER BY d.id DESC";
+                    " ORDER BY label ASC";
 }

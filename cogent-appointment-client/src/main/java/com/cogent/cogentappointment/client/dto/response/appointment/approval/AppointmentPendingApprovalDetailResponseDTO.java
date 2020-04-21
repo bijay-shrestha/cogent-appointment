@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.client.dto.response.appointment.approval;
 
 
 import com.cogent.cogentappointment.persistence.enums.Gender;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.io.Serializable;
@@ -21,6 +22,7 @@ public class AppointmentPendingApprovalDetailResponseDTO implements Serializable
 
     private String hospitalName;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd YYYY")
     private Date appointmentDate;
 
     private String appointmentNumber;
@@ -37,6 +39,7 @@ public class AppointmentPendingApprovalDetailResponseDTO implements Serializable
 
     private String patientAge;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd YYYY")
     private Date patientDob;
 
     private Character isRegistered;

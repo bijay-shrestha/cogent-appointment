@@ -1,10 +1,12 @@
 package com.cogent.cogentappointment.persistence.model;
 
-
 import com.cogent.cogentappointment.persistence.audit.Auditable;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.listener.AdminEntityListener;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -36,8 +38,14 @@ public class Admin extends Auditable<String> implements Serializable {
     @Column(name = "status")
     private Character status;
 
-    @Column(name = "is_first_login")
-    private Character isFirstLogin;
+    /*INITIALLY, AFTER SAVING ADMIN, THIS FLAG IS 'N'
+     * AND AFTER IT ACTIVATES ACCOUNT (SAVES PASSWORD FROM CONFIRMATION URL, THIS FLAG IS SET AS 'Y').
+     *
+     * SUPPOSE ADMIN IS CREATED SUCCESSFULLY BUT IT HAS NOT SAVED ITS PASSWORD,
+     * BUT ATTEMPTS TO UPDATE PASSWORD USING 'FORGOT PASSWORD' FEATURE. TO AVOID THIS, THIS FLAG IS MAINTAINED.
+     * */
+    @Column(name = "is_account_activated")
+    private Character isAccountActivated;
 
     @Column(name = "has_mac_binding")
     private Character hasMacBinding;
@@ -62,7 +70,7 @@ public class Admin extends Auditable<String> implements Serializable {
                 ", email='" + email + '\'' +
                 ", mobileNumber='" + mobileNumber + '\'' +
                 ", status=" + status +
-                ", isFirstLogin=" + isFirstLogin +
+                ", isAccountActivated=" + isAccountActivated +
                 ", hasMacBinding=" + hasMacBinding +
                 ", gender=" + gender +
                 ", remarks='" + remarks + '\'' +

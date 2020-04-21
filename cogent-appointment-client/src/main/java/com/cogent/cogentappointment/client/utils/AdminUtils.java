@@ -19,8 +19,7 @@ import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.client.constants.EmailConstants.*;
 import static com.cogent.cogentappointment.client.constants.EmailTemplates.*;
-import static com.cogent.cogentappointment.client.constants.StatusConstants.ACTIVE;
-import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.*;
 import static com.cogent.cogentappointment.client.constants.StringConstant.*;
 import static com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils.generateRandomToken;
 import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toNormalCase;
@@ -39,7 +38,7 @@ public class AdminUtils {
         admin.setMobileNumber(adminRequestDTO.getMobileNumber());
         admin.setStatus(adminRequestDTO.getStatus());
         admin.setHasMacBinding(adminRequestDTO.getHasMacBinding());
-        admin.setIsFirstLogin(YES);
+        admin.setIsAccountActivated(NO);
 
         parseAdminDetails(gender, profile, admin);
         return admin;
@@ -64,9 +63,7 @@ public class AdminUtils {
         admin.setRemarks(adminRequestDTO.getRemarks());
 
         parseAdminDetails(gender, profile, admin);
-        /*MODIFIED DATE AND MODIFIED BY*/
     }
-
 
     public static AdminMacAddressInfo convertToMACAddressInfo(String macAddress, Admin admin) {
 
@@ -240,11 +237,11 @@ public class AdminUtils {
                 .build();
     }
 
-    public static Admin saveAdminPassword(AdminPasswordRequestDTO requestDTO,
-                                          AdminConfirmationToken confirmationToken) {
+    public static void saveAdminPassword(AdminPasswordRequestDTO requestDTO,
+                                                  AdminConfirmationToken confirmationToken) {
         Admin admin = confirmationToken.getAdmin();
         admin.setPassword(BCrypt.hashpw(requestDTO.getPassword(), BCrypt.gensalt()));
-        return admin;
+        admin.setIsAccountActivated(YES);
     }
 
     public static EmailRequestDTO parseToResetPasswordEmailRequestDTO(AdminResetPasswordRequestDTO requestDTO,

@@ -65,10 +65,9 @@ public class Appointment extends Auditable<String> implements Serializable {
     @Column(name = "created_date_nepali")
     private String createdDateNepali;
 
-    //todo: refactor as check in for approved
-    /*
-       A= CHECKED IN
-       PA= BOOKED
+    /* PA = PENDING APPROVAL
+       A= VISITED AND APPROVED (CHECKED -IN)
+       R= REJECTED BY HOSPITAL
        C = CANCELLED BUT NOT REFUNDED
        RE = CANCELLED AND REFUNDED
     */

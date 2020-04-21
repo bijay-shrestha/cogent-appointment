@@ -1,31 +1,33 @@
 package com.cogent.cogentappointment.admin.utils;
 
-import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminUpdateRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.admin.*;
 import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.admin.AdminMacAddressInfoUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.email.EmailRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.Admin;
-import com.cogent.cogentappointment.persistence.model.*;
+import com.cogent.cogentappointment.persistence.model.Profile;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
-import static com.cogent.cogentappointment.admin.constants.EmailConstants.*;
-import static com.cogent.cogentappointment.admin.constants.EmailTemplates.*;
+import static com.cogent.cogentappointment.admin.constants.EmailConstants.SUBJECT_FOR_ADMIN_VERIFICATION;
+import static com.cogent.cogentappointment.admin.constants.EmailConstants.SUBJECT_FOR_EMAIL_VERIFICATION;
+import static com.cogent.cogentappointment.admin.constants.EmailConstants.SUBJECT_FOR_UPDATE_ADMIN;
+import static com.cogent.cogentappointment.admin.constants.EmailTemplates.ADMIN_VERIFICATION;
+import static com.cogent.cogentappointment.admin.constants.EmailTemplates.EMAIL_VERIFICATION;
+import static com.cogent.cogentappointment.admin.constants.EmailTemplates.UPDATE_ADMIN;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
-import static com.cogent.cogentappointment.admin.constants.StringConstant.*;
-import static com.cogent.cogentappointment.admin.utils.commons.NumberFormatterUtils.generateRandomToken;
+import static com.cogent.cogentappointment.admin.constants.StringConstant.COMMA_SEPARATED;
+import static com.cogent.cogentappointment.admin.constants.StringConstant.HYPHEN;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.NO;
+import static com.cogent.cogentappointment.admin.constants.StringConstant.COMMA_SEPARATED;
+import static com.cogent.cogentappointment.admin.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.convertToNormalCase;
 
 /**
@@ -42,7 +44,7 @@ public class CompanyAdminUtils {
         admin.setMobileNumber(requestDTO.getMobileNumber());
         admin.setStatus(requestDTO.getStatus());
         admin.setHasMacBinding(requestDTO.getHasMacBinding());
-        admin.setIsFirstLogin(YES);
+        admin.setIsAccountActivated(NO);
 
         parseCompanyAdminDetails(gender, profile, admin);
         return admin;
@@ -136,8 +138,7 @@ public class CompanyAdminUtils {
 
     public static EmailRequestDTO convertCompanyAdminRequestToEmailRequestDTO(CompanyAdminRequestDTO adminRequestDTO,
                                                                        Admin admin,
-                                                                       String confirmationToken,
-                                                                       HttpServletRequest httpServletRequest) {
+                                                                       String confirmationToken) {
 
 //        String origin = httpServletRequest.getHeader("origin");
 //        String confirmationUrl = origin + "/#" + "/savePassword" + "?token =" + confirmationToken;

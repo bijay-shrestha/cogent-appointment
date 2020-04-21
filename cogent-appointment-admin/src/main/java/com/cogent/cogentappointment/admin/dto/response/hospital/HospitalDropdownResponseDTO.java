@@ -18,4 +18,6 @@ public class HospitalDropdownResponseDTO implements Serializable {
     private String label;
 
     private Character isCompany;
+
+    private String alias;
 }

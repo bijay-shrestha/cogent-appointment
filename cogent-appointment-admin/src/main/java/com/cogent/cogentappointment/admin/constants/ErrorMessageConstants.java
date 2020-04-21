@@ -6,6 +6,9 @@ package com.cogent.cogentappointment.admin.constants;
 public class ErrorMessageConstants {
 
     //A
+    public static final String ALIAS_NOT_FOUND = "Alias not found";
+
+    public static final String ALIAS_DUPLICATION_MESSAGE = "%s already exists with alias '%s' ";
 
 
     public interface AdminServiceMessages {
@@ -36,6 +39,9 @@ public class ErrorMessageConstants {
         String ADMIN_CANNOT_BE_REGISTERED_DEBUG_MESSAGE = "Admin count is equal to hospital's allowed number of admins";
 
         String INVALID_DELETE_REQUEST = "Sorry! Cannot delete this admin since it has Super Admin Profile";
+
+        String ACCOUNT_NOT_ACTIVATED_MESSAGE = "Sorry '%s', please activate your account first.";
+        String ACCOUNT_NOT_ACTIVATED_DEBUG_MESSAGE = "'isAccountActivated' flag is 'N'";
     }
 
     public interface AppointmentModeMessages{

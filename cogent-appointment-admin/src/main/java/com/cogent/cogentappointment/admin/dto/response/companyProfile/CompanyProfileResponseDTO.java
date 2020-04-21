@@ -25,4 +25,6 @@ public class CompanyProfileResponseDTO implements Serializable{
     private String companyName;
 
     private String remarks;
+
+    private Character isAllRoleAssigned;
 }

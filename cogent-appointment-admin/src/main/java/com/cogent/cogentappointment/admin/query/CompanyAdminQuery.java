@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.admin.query;
 
 import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminSearchRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.admin.AdminSearchRequestDTO;
 import com.cogent.cogentappointment.admin.utils.GenderUtils;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import org.springframework.util.ObjectUtils;
@@ -153,12 +152,15 @@ public class CompanyAdminQuery {
                     " p.id as profileId," +                                                 //[3]
                     " p.name as profileName," +                                             //[4]
                     " h.id as hospitalId," +                                                //[5]
-                    " h.name as hospitalName," +                                             //[6]
-                    " h.isCompany as isCompany" +                                            //[7]
+                    " h.name as hospitalName," +                                            //[6]
+                    " h.isCompany as isCompany," +                                          //[7]
+                    " p.isAllRoleAssigned as isAllRoleAssigned," +                          //[8]
+                    " af.isSideBarCollapse as isSideBarCollapse" +                           //[9]
                     " FROM Admin a" +
                     " LEFT JOIN AdminAvatar av ON av.admin.id=a.id" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                     " LEFT JOIN Hospital h ON h.id=p.company.id" +
+                    " LEFT JOIN AdminFeature af ON a.id = af.admin.id" +
                     " WHERE " +
                     " (a.email =:email OR a.mobileNumber=:email)" +
                     " AND a.status='Y'" +

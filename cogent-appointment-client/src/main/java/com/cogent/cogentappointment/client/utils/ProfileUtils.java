@@ -6,7 +6,6 @@ import com.cogent.cogentappointment.client.dto.request.profile.ProfileUpdateDTO;
 import com.cogent.cogentappointment.client.dto.response.profile.*;
 import com.cogent.cogentappointment.persistence.model.Department;
 import com.cogent.cogentappointment.persistence.model.Profile;
-import org.omg.PortableInterceptor.INACTIVE;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +15,7 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.cogent.cogentappointment.client.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.client.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toNormalCase;
 
@@ -31,15 +31,19 @@ public class ProfileUtils {
         profile.setDescription(profileDTO.getDescription());
         profile.setStatus(profileDTO.getStatus());
         profile.setDepartment(department);
-        profile.setIsSuperAdminProfile('N');
+        profile.setIsAllRoleAssigned(profileDTO.getIsAllRoleAssigned());
+        profile.setIsSuperAdminProfile(NO);
+        profile.setIsCompanyProfile(NO);
         return profile;
     }
 
     public static void convertToUpdatedProfile(ProfileUpdateDTO profileDTO,
-                                                  Department department,
-                                                  Profile profile) {
+                                               Department department,
+                                               Profile profile) {
+
         profile.setName(toNormalCase(profileDTO.getName()));
         profile.setDescription(profileDTO.getDescription());
+        profile.setIsAllRoleAssigned(profileDTO.getIsAllRoleAssigned());
         profile.setStatus(profileDTO.getStatus());
         profile.setDepartment(department);
         profile.setRemarks(profileDTO.getRemarks());

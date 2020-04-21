@@ -18,6 +18,10 @@ public class WebResourceKeyConstants {
         String EMAIL = "/email";
     }
 
+    public interface AdminFeatureConstants {
+        String BASE_ADMIN_FEATURE = "/adminFeature";
+    }
+
     public interface AppointmentConstants {
         String BASE_APPOINTMENT = "/appointment";
         String APPOINTMENT_ID_PATH_VARIABLE_BASE = "/{appointmentId}";
@@ -27,13 +31,13 @@ public class WebResourceKeyConstants {
         String STATUS = "/status";
         String LOG = "/log";
         String PENDING_APPROVAL = "/pending-approval";
-        String RESCHEDULE = "/reschedule";
         String RESCHEDULE_LOG = "/reschedule-log";
         String DETAILS = "/detail";
     }
 
     public interface AppointmentModeConstants {
         String BASE_APPOINTMENT_MODE = "/appointmentMode";
+
     }
 
     //B

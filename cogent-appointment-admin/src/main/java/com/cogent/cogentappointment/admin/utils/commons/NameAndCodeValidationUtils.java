@@ -7,7 +7,6 @@ import java.util.List;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.NAME_DUPLICATION_ERROR;
-import static com.cogent.cogentappointment.admin.log.constants.SpecializationLog.SPECIALIZATION;
 import static java.lang.reflect.Array.get;
 
 /**
@@ -41,14 +40,14 @@ public class NameAndCodeValidationUtils {
 
     private static void validateName(boolean isNameExists, String name, String className) {
         if (isNameExists){
-            log.error(NAME_DUPLICATION_ERROR, SPECIALIZATION, name);
+            log.error(NAME_DUPLICATION_ERROR, className, name);
             throw new DataDuplicationException(String.format(NAME_DUPLICATION_MESSAGE, className, name), "name", name);
         }
     }
 
     private static void validateCode(boolean isCodeExists, String code, String className) {
         if (isCodeExists){
-            log.error(NAME_DUPLICATION_ERROR, SPECIALIZATION, code);
+            log.error(NAME_DUPLICATION_ERROR, className, code);
             throw new DataDuplicationException(String.format(CODE_DUPLICATION_MESSAGE, className, code), "code", code);
         }
     }

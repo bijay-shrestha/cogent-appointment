@@ -14,10 +14,7 @@ import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.exception.OperationUnsuccessfulException;
 import com.cogent.cogentappointment.client.repository.*;
-import com.cogent.cogentappointment.client.service.AdminService;
-import com.cogent.cogentappointment.client.service.EmailService;
-import com.cogent.cogentappointment.client.service.MinioFileService;
-import com.cogent.cogentappointment.client.service.ProfileService;
+import com.cogent.cogentappointment.client.service.*;
 import com.cogent.cogentappointment.client.validator.LoginValidator;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
@@ -82,6 +79,8 @@ public class AdminServiceImpl implements AdminService {
 
     private final ProfileService profileService;
 
+    private final AdminFeatureService adminFeatureService;
+
     public AdminServiceImpl(Validator validator,
                             AdminRepository adminRepository,
                             AdminMacAddressInfoRepository adminMacAddressInfoRepository,
@@ -92,7 +91,8 @@ public class AdminServiceImpl implements AdminService {
                             AdminDashboardFeatureRepository adminDashboardFeatureRepository,
                             MinioFileService minioFileService,
                             EmailService emailService,
-                            ProfileService profileService) {
+                            ProfileService profileService,
+                            AdminFeatureService adminFeatureService) {
         this.validator = validator;
         this.adminRepository = adminRepository;
         this.adminMacAddressInfoRepository = adminMacAddressInfoRepository;
@@ -104,6 +104,7 @@ public class AdminServiceImpl implements AdminService {
         this.minioFileService = minioFileService;
         this.emailService = emailService;
         this.profileService = profileService;
+        this.adminFeatureService = adminFeatureService;
     }
 
     @Override
@@ -133,6 +134,8 @@ public class AdminServiceImpl implements AdminService {
 
         saveAdminMetaInfo(admin);
 
+        saveAdminFeature(admin);
+
         saveAllAdminDashboardFeature(adminRequestDTO.getAdminDashboardRequestDTOS(), admin);
 
         AdminConfirmationToken adminConfirmationToken =
@@ -141,7 +144,7 @@ public class AdminServiceImpl implements AdminService {
         EmailRequestDTO emailRequestDTO = convertAdminRequestToEmailRequestDTO(adminRequestDTO,
                 adminConfirmationToken.getConfirmationToken());
 
-        sendEmail(emailRequestDTO);
+        saveEmailToSend(emailRequestDTO);
 
         log.info(SAVING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
     }
@@ -262,19 +265,19 @@ public class AdminServiceImpl implements AdminService {
 
         validateAdminDuplicity(admins, updateRequestDTO.getEmail(), updateRequestDTO.getMobileNumber());
 
-        emailIsNotUpdated(updateRequestDTO,admin,files,hospitalId);
+        emailIsNotUpdated(updateRequestDTO, admin, files, hospitalId);
 
-        emailIsUpdated(updateRequestDTO,admin,files,hospitalId);
+        emailIsUpdated(updateRequestDTO, admin, files, hospitalId);
 
         log.info(UPDATING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
     }
 
     private void emailIsNotUpdated(AdminUpdateRequestDTO updateRequestDTO,
-                                  Admin admin,MultipartFile files,Long hospitalId){
-        if(updateRequestDTO.getEmail().equals(admin.getEmail())) {
+                                   Admin admin, MultipartFile files, Long hospitalId) {
+        if (updateRequestDTO.getEmail().equals(admin.getEmail())) {
             EmailRequestDTO emailRequestDTO = parseUpdatedInfo(updateRequestDTO, admin);
 
-            update(updateRequestDTO,updateRequestDTO.getStatus(), admin, hospitalId);
+            update(updateRequestDTO, updateRequestDTO.getStatus(), admin, hospitalId);
 
             if (updateRequestDTO.getIsAvatarUpdate().equals(YES))
                 updateAvatar(admin, files);
@@ -285,13 +288,13 @@ public class AdminServiceImpl implements AdminService {
 
             updateAdminMetaInfo(admin);
 
-            sendEmail(emailRequestDTO);
+            saveEmailToSend(emailRequestDTO);
         }
     }
 
     private void emailIsUpdated(AdminUpdateRequestDTO updateRequestDTO,
-                                   Admin admin,MultipartFile files,Long hospitalId){
-        if(!updateRequestDTO.getEmail().equals(admin.getEmail())) {
+                                Admin admin, MultipartFile files, Long hospitalId) {
+        if (!updateRequestDTO.getEmail().equals(admin.getEmail())) {
 
             EmailRequestDTO emailRequestDTO = parseUpdatedInfo(updateRequestDTO, admin);
 
@@ -301,7 +304,7 @@ public class AdminServiceImpl implements AdminService {
             EmailRequestDTO emailRequestDTOForNewEmail = convertAdminUpdateRequestToEmailRequestDTO(updateRequestDTO,
                     adminConfirmationToken.getConfirmationToken());
 
-            update(updateRequestDTO,INACTIVE, admin, hospitalId);
+            update(updateRequestDTO, INACTIVE, admin, hospitalId);
 
             if (updateRequestDTO.getIsAvatarUpdate().equals(YES))
                 updateAvatar(admin, files);
@@ -344,7 +347,7 @@ public class AdminServiceImpl implements AdminService {
 
         validateStatus(adminConfirmationToken.getStatus());
 
-        Admin admin=adminRepository.findAdminById(adminConfirmationToken.getAdmin().getId());
+        Admin admin = adminRepository.findAdminById(adminConfirmationToken.getAdmin().getId());
 
         admin.setStatus(ACTIVE);
 
@@ -368,7 +371,7 @@ public class AdminServiceImpl implements AdminService {
                 confirmationTokenRepository.findAdminConfirmationTokenByToken(requestDTO.getToken())
                         .orElseThrow(() -> CONFIRMATION_TOKEN_NOT_FOUND.apply(requestDTO.getToken()));
 
-        save(saveAdminPassword(requestDTO, adminConfirmationToken));
+        saveAdminPassword(requestDTO, adminConfirmationToken);
         adminConfirmationToken.setStatus(INACTIVE);
 
         log.info(SAVING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
@@ -477,14 +480,14 @@ public class AdminServiceImpl implements AdminService {
         Long savedAdmin = (Long) get(objects, 0);
         Integer numberOfAdminsAllowed = (Integer) get(objects, 1);
 
-        if (savedAdmin.intValue() == numberOfAdminsAllowed){
+        if (savedAdmin.intValue() == numberOfAdminsAllowed) {
             log.error(ADMIN_CANNOT_BE_REGISTERED_DEBUG_MESSAGE);
             throw new BadRequestException(ADMIN_CANNOT_BE_REGISTERED_MESSAGE, ADMIN_CANNOT_BE_REGISTERED_DEBUG_MESSAGE);
         }
     }
 
     private void validateEmail(boolean isEmailExists, String email) {
-        if (isEmailExists){
+        if (isEmailExists) {
             log.error(DUPLICATION_ERROR, email);
             throw new DataDuplicationException(
                     String.format(EMAIL_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), email));
@@ -492,7 +495,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private void validateMobileNumber(boolean isMobileNumberExists, String mobileNumber) {
-        if (isMobileNumberExists){
+        if (isMobileNumberExists) {
             log.error(DUPLICATION_ERROR, mobileNumber);
             throw new DataDuplicationException(
                     String.format(MOBILE_NUMBER_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), mobileNumber));
@@ -558,6 +561,10 @@ public class AdminServiceImpl implements AdminService {
         adminMetaInfoRepository.save(parseInAdminMetaInfo(admin));
     }
 
+    private void saveAdminFeature(Admin admin) {
+        adminFeatureService.save(admin);
+    }
+
     private void updateAdminMetaInfo(Admin admin) {
         AdminMetaInfo adminMetaInfo = adminMetaInfoRepository.findAdminMetaInfoByAdminId(admin.getId())
                 .orElseThrow(() -> new NoContentFoundException(AdminMetaInfo.class));
@@ -571,6 +578,10 @@ public class AdminServiceImpl implements AdminService {
 
     private void sendEmail(EmailRequestDTO emailRequestDTO) {
         emailService.sendEmail(emailRequestDTO);
+    }
+
+    private void saveEmailToSend(EmailRequestDTO emailRequestDTO) {
+        emailService.saveEmailToSend(emailRequestDTO);
     }
 
     private Admin findAdminByIdAndHospitalId(Long adminId, Long hospitalId) {
@@ -604,12 +615,12 @@ public class AdminServiceImpl implements AdminService {
         else updateAdminAvatar(admin, adminAvatar, files);
     }
 
-    public void update(AdminUpdateRequestDTO adminRequestDTO,Character status, Admin admin, Long hospitalId) {
+    public void update(AdminUpdateRequestDTO adminRequestDTO, Character status, Admin admin, Long hospitalId) {
         Gender gender = fetchGender(adminRequestDTO.getGenderCode());
 
         Profile profile = fetchProfile(adminRequestDTO.getProfileId(), hospitalId);
 
-        convertAdminUpdateRequestDTOToAdmin(admin,status, adminRequestDTO, gender, profile);
+        convertAdminUpdateRequestDTOToAdmin(admin, status, adminRequestDTO, gender, profile);
     }
 
     private void updateMacAddressInfo(List<AdminMacAddressInfoUpdateRequestDTO> adminMacAddressInfoUpdateRequestDTOS,
@@ -627,7 +638,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private Consumer<List<String>> validateMacAddressInfoSize = (macInfos) -> {
-        if (ObjectUtils.isEmpty(macInfos)){
+        if (ObjectUtils.isEmpty(macInfos)) {
             log.error(CONTENT_NOT_FOUND, AdminMacAddressInfo.class.getSimpleName());
             throw new NoContentFoundException(AdminMacAddressInfo.class);
         }

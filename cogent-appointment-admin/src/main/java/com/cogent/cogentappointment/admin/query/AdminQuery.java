@@ -129,8 +129,8 @@ public class AdminQuery {
                     " a.remarks as remarks," +                                      //[10]
                     " h.id as hospitalId," +                                        //[11]
                     " p.id as profileId," +                                         //[12]
-                    " d.id as departmentId," +
-                    " d.name as departmentName" +
+                    " d.id as departmentId," +                                      //[13]
+                    " d.name as departmentName" +                                  //[14]
                     " FROM" +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id = a.profileId.id" +
@@ -147,36 +147,6 @@ public class AdminQuery {
                     " WHERE" +
                     " am.status = 'Y'" +
                     " AND am.admin.id = :id";
-
-    public static final String QUERY_TO_FETCH_ADMIN_BY_EMAIL =
-            " SELECT a FROM Admin a" +
-                    " WHERE" +
-                    " a.email =:email" +
-                    " AND a.status != 'D'";
-
-    public static final String QUERY_TO_FETCH_ADMIN_INFO =
-            " SELECT" +
-                    " a.id as adminId," +                                                   //[0]
-                    " a.email as email," +                                                  //[1]
-                    " a.fullName as fullName," +
-                    " CASE " +
-                    "    WHEN (av.status = 'N' OR  av.status IS NULL) THEN null" +
-                    "    ELSE av.fileUri END as fileUri," +                                //[2]
-                    " p.id as profileId," +                                                 //[3]
-                    " p.name as profileName," +                                             //[4]
-                    " d.id as departmentId," +                                              //[5]
-                    " d.name as departmentName," +                                          //[6]
-                    " h.id as hospitalId," +                                                //[7]
-                    " h.name as hospitalName," +                                            //[8]
-                    " h.isCompany as isCompany" +                                   //[9]
-                    " FROM Admin a" +
-                    " LEFT JOIN AdminAvatar av ON av.admin.id=a.id" +
-                    " LEFT JOIN Profile p ON p.id=a.profileId.id" +
-                    " LEFT JOIN Hospital h ON h.id=p.company.id" +
-                    " WHERE " +
-                    " (a.email =:email OR a.mobileNumber=:email)" +
-                    " AND a.status='Y'" +
-                    " AND h.isCompany='Y'";
 
     public static final String QUERY_TO_FETCH_ADMIN_META_INFO =
             " SELECT" +

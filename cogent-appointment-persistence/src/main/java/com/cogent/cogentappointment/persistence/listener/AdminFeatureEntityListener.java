@@ -1,8 +1,9 @@
+
 package com.cogent.cogentappointment.persistence.listener;
 
 import com.cogent.cogentappointment.persistence.config.Action;
-import com.cogent.cogentappointment.persistence.history.EmailToSendHistory;
-import com.cogent.cogentappointment.persistence.model.EmailToSend;
+import com.cogent.cogentappointment.persistence.history.AdminFeatureHistory;
+import com.cogent.cogentappointment.persistence.model.AdminFeature;
 import com.cogent.cogentappointment.persistence.util.BeanUtil;
 
 import javax.persistence.EntityManager;
@@ -14,27 +15,28 @@ import javax.transaction.Transactional;
 import static com.cogent.cogentappointment.persistence.config.Action.*;
 import static javax.transaction.Transactional.TxType.MANDATORY;
 
-public class EmailToSendEntityListener {
-
+/**
+ * @author smriti on 18/04/20
+ */
+public class AdminFeatureEntityListener {
     @PrePersist
-    public void prePersist(EmailToSend target) {
+    public void prePersist(AdminFeature target) {
         perform(target, INSERTED);
     }
 
     @PreUpdate
-    public void preUpdate(EmailToSend target) {
+    public void preUpdate(AdminFeature target) {
         perform(target, UPDATED);
     }
 
     @PreRemove
-    public void preRemove(EmailToSend target) {
+    public void preRemove(AdminFeature target) {
         perform(target, DELETED);
     }
 
     @Transactional(MANDATORY)
-    public void perform(EmailToSend target, Action action) {
+    public void perform(AdminFeature target, Action action) {
         EntityManager entityManager = BeanUtil.getBean(EntityManager.class);
-        entityManager.persist(new EmailToSendHistory(target, action));
+        entityManager.persist(new AdminFeatureHistory(target, action));
     }
 }
-

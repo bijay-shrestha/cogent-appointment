@@ -38,7 +38,7 @@ public class AdminMetaInfo extends Auditable<String> implements Serializable {
         return "AdminMetaInfo{" +
                 "id=" + id +
                 ", metaInfo='" + metaInfo + '\'' +
-                ", admin=" + admin.getUsername() +
+                ", admin=" + admin.getFullName() +
                 '}';
     }
 }

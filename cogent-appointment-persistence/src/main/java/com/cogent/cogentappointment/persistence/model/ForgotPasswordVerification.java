@@ -45,7 +45,7 @@ public class ForgotPasswordVerification extends Auditable<String> implements Ser
     public String toString() {
         return "ForgotPasswordVerification{" +
                 "id=" + id +
-                ", admin=" + admin.getUsername() +
+                ", admin=" + admin.getFullName() +
                 ", resetCode='" + resetCode + '\'' +
                 ", status=" + status +
                 ", expirationDate=" + expirationDate +

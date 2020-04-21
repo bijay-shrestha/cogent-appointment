@@ -40,7 +40,7 @@ public class AdminConfirmationToken extends Auditable<String> implements Seriali
     public String toString() {
         return "AdminConfirmationToken{" +
                 "id=" + id +
-                ", admin=" + admin.getUsername() +
+                ", admin=" + admin.getFullName() +
                 ", confirmationToken='" + confirmationToken + '\'' +
                 ", status=" + status +
                 '}';

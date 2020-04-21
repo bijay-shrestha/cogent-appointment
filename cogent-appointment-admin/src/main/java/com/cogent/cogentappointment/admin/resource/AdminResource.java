@@ -106,6 +106,13 @@ public class AdminResource {
         return ok(adminService.fetchAdminMetaInfoResponseDto());
     }
 
+    @GetMapping(VERIFY)
+    @ApiOperation(VERIFY_ADMIN)
+    public ResponseEntity<?> verify(@RequestParam(name = "token") String token) {
+        adminService.verifyConfirmationToken(token);
+        return ok().build();
+    }
+
     @GetMapping(VERIFY+EMAIL)
     @ApiOperation(VERIFY_EMAIL_ADMIN)
     public ResponseEntity<?> verifyUpdatedEmail(@RequestParam(name = "token") String token) {

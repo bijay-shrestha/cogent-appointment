@@ -158,7 +158,7 @@ public class CompanyAdminUtils {
 //        String origin = httpServletRequest.getHeader("origin");
 //        String confirmationUrl = origin + "/#" + "/savePassword" + "?token =" + confirmationToken;
 
-        String confirmationUrl = adminRequestDTO.getBaseUrl() + "/#" + "/verifyEmail"  + "?token =" + confirmationToken;
+        String confirmationUrl = adminRequestDTO.getBaseUrl() + "/#" + "/verify/email"  + "?token =" + confirmationToken;
 
         return EmailRequestDTO.builder()
                 .receiverEmailAddress(adminRequestDTO.getEmail())

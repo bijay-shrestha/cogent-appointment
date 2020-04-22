@@ -17,8 +17,6 @@ import java.io.Serializable;
 public class DepartmentUpdateRequestDTO implements Serializable {
 
     @NotNull
-    @NotEmpty
-    @NotBlank
     private Long id;
 
     @NotNull
@@ -32,8 +30,6 @@ public class DepartmentUpdateRequestDTO implements Serializable {
     private String departmentCode;
 
     @NotNull
-    @NotEmpty
-    @NotBlank
     private Long hospitalId;
 
     @NotNull

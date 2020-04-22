@@ -1,10 +1,7 @@
 package com.cogent.cogentappointment.client.dto.response.doctor;
 
 import com.cogent.cogentappointment.client.dto.response.common.AuditableResponseDTO;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serializable;
 import java.math.BigInteger;
@@ -12,6 +9,8 @@ import java.math.BigInteger;
 /**
  * @author smriti on 2019-09-30
  */
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

@@ -175,9 +175,11 @@ public class HospitalUtils {
         hospitalContactNumber.setStatus(status);
     }
 
-    public static void parseToDeletedHospital(Hospital hospital, DeleteRequestDTO deleteRequestDTO) {
+    public static Hospital parseToDeletedHospital(Hospital hospital, DeleteRequestDTO deleteRequestDTO) {
         hospital.setStatus(deleteRequestDTO.getStatus());
         hospital.setRemarks(deleteRequestDTO.getRemarks());
+
+        return hospital;
     }
 
     public static HospitalResponseDTO parseToHospitalResponseDTO(Object[] results) {

@@ -29,6 +29,7 @@ public class CogentAppointmentClientApplication extends SpringBootServletInitial
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(CogentAppointmentClientApplication.class);
     }
+
     //  BEFORE RUNNING THIS CHECK IF 'catalina.home' PATH IS SET IN YOUR 'application.yml'
     public static void main(String[] args) {
 
@@ -43,13 +44,11 @@ public class CogentAppointmentClientApplication extends SpringBootServletInitial
         System.out.println("Value of `application-${spring.profiles.active}.yml`");
         System.out.println("Value of `spring.datasource.url` = " + env.getProperty("spring.datasource.url"));
         System.out.println("Value of `spring.minio.url` = " + env.getProperty("spring.minio.url"));
-        System.out.println("Value of `====> spring.minio.bucket` = " + env.getProperty("spring.minio.bucket"));
+        System.out.println("Value of `spring.minio.bucket` = " + env.getProperty("spring.minio.bucket"));
         System.out.println("Value of `serverlocation` = " + env.getProperty("serverlocation"));
         System.out.println("Value of `spring.minio.access-key` = " + env.getProperty("spring.minio.access-key"));
         System.out.println("Value of `mail.host` = " + env.getProperty("mail.host"));
         System.out.println("Value of `catalina.home` = " + env.getProperty("catalina.home"));
-        System.out.println("Value of `bijay.shrestha` = " + env.getProperty("bijay.shrestha"));
-        System.out.println("Value of `bijay.weird` = " + env.getProperty("bijay.weird"));
     }
 
     @Bean

@@ -5,11 +5,11 @@
 #catalina:
 #  home: Path/to/your/external/tomcat
 
-catalina:
-  home: /home/f1soft/Softwares/tomcat
+#catalina:
+  #home: /home/f1soft/Softwares/tomcat
 
 ##### [END] CATALINA HOME CONFIG [/END] #########
 
 spring:
   profiles:
-    active: dev
+    active: uat

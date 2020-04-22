@@ -10,13 +10,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 @Qualifier("hmacApiKeyRepositoryCustom")
 public interface HmacApiInfoRepositoryCustom {
-    ThirdPartyDetail getDetailForAuthentication(String hospitalCode, String apiKey);
 
-    ThirdPartyDetail getDetailsByHospitalCode(String hospitalCode);
+    AdminMinDetails getAdminDetailForAuthentication(String email,
+                                                    String hospitalCode,
+                                                    String apiKey);
 
-    AdminMinDetails verifyLoggedInAdmin(String username, String hospitalCode);
-
-    AdminMinDetails getAdminDetailForAuthentication(String username,
+    AdminMinDetails getAdminDetailForAuthenticationForClient(String email,
                                                     String hospitalCode,
                                                     String apiKey);
 

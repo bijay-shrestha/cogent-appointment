@@ -132,7 +132,8 @@ public class AdminQuery {
                     " a.remarks as remarks," +                                      //[11]
                     " p.id as profileId," +                                         //[12]
                     " d.id as departmentId," +                                      //[13]
-                    " d.name as departmentName" +                                   //[14]
+                    " d.name as departmentName," +                                   //[14]
+                    ADMIN_AUDITABLE_QUERY() +
                     " FROM" +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id = a.profileId.id" +
@@ -214,6 +215,13 @@ public class AdminQuery {
                     " (a.mobileNumber=:email OR a.email=:email)" +
                     " AND a.status = 'Y'" +
                     " AND h.isCompany='N'";
+
+    public static String ADMIN_AUDITABLE_QUERY() {
+        return " a.createdBy as createdBy," +
+                " a.createdDate as createdDate," +
+                " a.lastModifiedBy as lastModifiedBy," +
+                " a.lastModifiedDate as lastModifiedDate";
+    }
 
 
 }

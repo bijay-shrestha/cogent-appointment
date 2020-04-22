@@ -27,7 +27,7 @@ public class HMACUtils {
                 .apiKey(apiKey)
                 .hospitalCode(hospitalCode)
                 .hospitalId(hospitalId)
-                .username(username)
+                .email(username)
                 .apiSecret(apiSecret);
 
         final String signature = signatureBuilder

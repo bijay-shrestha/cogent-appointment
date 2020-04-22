@@ -167,6 +167,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     public LoggedInAdminDTO getLoggedInAdmin(String email) {
         Query query = createQuery.apply(entityManager, QUERY_TO_GET_LOGGED_COMPANY_ADMIN_INFO)
                 .setParameter(EMAIL, email);
+        LoggedInAdminDTO loggedInAdminDTO=transformQueryToSingleResult(query, LoggedInAdminDTO.class);
         try {
             return transformQueryToSingleResult(query, LoggedInAdminDTO.class);
         } catch (NoResultException e) {

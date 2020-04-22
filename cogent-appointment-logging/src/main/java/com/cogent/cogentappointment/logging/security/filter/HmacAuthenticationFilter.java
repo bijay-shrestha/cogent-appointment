@@ -64,6 +64,11 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(getAuthenticationForHospital(adminMinDetails.getEmail(),
                     adminMinDetails.getHospitalId()));
         }
+        try {
+            filterChain.doFilter(request, response);
+        } finally {
+            SecurityContextHolder.clearContext();
+        }
     }
 
 

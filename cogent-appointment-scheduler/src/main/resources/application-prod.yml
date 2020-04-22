@@ -22,3 +22,10 @@ spring:
 
   jackson:
     deserialization.fail-on-unknown-properties: false
+
+#APPOINTMENT RESERVATION PROPERTIES
+# Appointment Reservation Scheduler runs in 2 minutes
+# & automatically deletes after 5 minutes of its created date
+reservation:
+  schedulerTimeInMilliSeconds: 120000
+  deleteIntervalInMinutes: 5

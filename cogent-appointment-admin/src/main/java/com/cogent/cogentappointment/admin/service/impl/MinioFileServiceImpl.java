@@ -39,7 +39,8 @@ public class MinioFileServiceImpl implements MinioFileService {
     private final MinioService minioService;
     private final MinioStorageConfig minioStorageConfig;
 
-    public MinioFileServiceImpl(MinioService minioService, MinioStorageConfig minioStorageConfig) {
+    public MinioFileServiceImpl(MinioService minioService,
+                                MinioStorageConfig minioStorageConfig) {
         this.minioService = minioService;
         this.minioStorageConfig = minioStorageConfig;
     }

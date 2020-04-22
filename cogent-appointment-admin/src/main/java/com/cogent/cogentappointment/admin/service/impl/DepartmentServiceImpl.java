@@ -81,7 +81,7 @@ public class DepartmentServiceImpl implements DepartmentService {
         validateDuplicity(departments, updateRequestDTO.getName(), updateRequestDTO.getDepartmentCode(),
                 Department.class.getSimpleName());
 
-        parseToUpdatedDepartment(updateRequestDTO, department);
+        save(parseToUpdatedDepartment(updateRequestDTO, department));
 
         log.info(UPDATING_PROCESS_COMPLETED, DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
     }
@@ -95,7 +95,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         Department department = fetchDepartmentById(deleteRequestDTO.getId());
 
-        parseDepartmentStatus(deleteRequestDTO.getStatus(), deleteRequestDTO.getRemarks(), department);
+        save(parseDepartmentStatus(deleteRequestDTO.getStatus(), deleteRequestDTO.getRemarks(), department));
 
         log.info(DELETING_PROCESS_COMPLETED, DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
     }

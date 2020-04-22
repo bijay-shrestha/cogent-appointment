@@ -110,11 +110,13 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     @Override
-    public void update(HospitalUpdateRequestDTO updateRequestDTO, MultipartFile logo, MultipartFile banner) {
+    public void update(@Valid HospitalUpdateRequestDTO updateRequestDTO, MultipartFile logo, MultipartFile banner) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(UPDATING_PROCESS_STARTED, HOSPITAL);
+
+        validateConstraintViolation(validator.validate(updateRequestDTO));
 
         Hospital hospital = findById(updateRequestDTO.getId());
 
@@ -171,7 +173,7 @@ public class HospitalServiceImpl implements HospitalService {
 
         HmacApiInfo hmacApiInfo = hmacApiInfoRepository.getHmacApiInfoByHospitalId(deleteRequestDTO.getId());
 
-        parseToDeletedHospital(hospital, deleteRequestDTO);
+        save(parseToDeletedHospital(hospital, deleteRequestDTO));
 
         updateHmacApiInfo(hmacApiInfo, deleteRequestDTO.getStatus(), deleteRequestDTO.getRemarks());
 

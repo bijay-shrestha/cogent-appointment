@@ -60,6 +60,9 @@ public class HospitalRequestDTO implements Serializable {
 
     private Integer followUpIntervalDays;
 
+    @NotNull
+    @NotEmpty
+    @NotBlank
     private String alias;
 
 }

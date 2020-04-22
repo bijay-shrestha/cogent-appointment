@@ -46,5 +46,7 @@ public class AdminDetailResponseDTO implements Serializable {
 
     private String remarks;
 
+    private String hospitalAlias;
+
     private List<AdminMacAddressInfoResponseDTO> adminMacAddressInfo;
 }

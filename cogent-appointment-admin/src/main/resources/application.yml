@@ -12,4 +12,4 @@ catalina:
 
 spring:
   profiles:
-    active: dev
+    active: uat

@@ -338,6 +338,35 @@ public class AdminServiceImpl implements AdminService {
         List<AdminMetaInfoResponseDTO> metaInfoResponseDTOS =
                 adminMetaInfoRepository.fetchAdminMetaInfoResponseDTOS();
 
+        log.info(SAVING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
+
+        return metaInfoResponseDTOS;
+    }
+
+    @Override
+    public List<AdminMetaInfoResponseDTO> fetchAdminMetaInfoByCompanyIdResponseDto(Long id) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, ADMIN_META_INFO);
+
+        List<AdminMetaInfoResponseDTO> metaInfoResponseDTOS =
+                adminMetaInfoRepository.fetchAdminMetaInfoByCompanyIdResponseDTOS(id);
+
+        log.info(SAVING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
+
+        return metaInfoResponseDTOS;
+    }
+
+    @Override
+    public List<AdminMetaInfoResponseDTO> fetchAdminMetaInfoByClientIdResponseDto(Long id) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, ADMIN_META_INFO);
+
+        List<AdminMetaInfoResponseDTO> metaInfoResponseDTOS =
+                adminMetaInfoRepository.fetchAdminMetaInfoByClientIdResponseDTOS(id);
+
+        log.info(SAVING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
         log.info(FETCHING_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
 
         return metaInfoResponseDTOS;

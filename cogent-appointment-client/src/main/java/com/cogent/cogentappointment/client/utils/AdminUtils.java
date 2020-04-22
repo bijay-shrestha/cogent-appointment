@@ -13,7 +13,6 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
@@ -111,7 +110,7 @@ public class AdminUtils {
     }
 
     public static EmailRequestDTO convertAdminUpdateRequestToEmailRequestDTO(AdminUpdateRequestDTO adminRequestDTO,
-                                                                       String confirmationToken) {
+                                                                             String confirmationToken) {
 
 //        String origin = httpServletRequest.getHeader("origin");
 //        String confirmationUrl = origin + "/#" + "/savePassword" + "?token =" + confirmationToken;
@@ -238,7 +237,7 @@ public class AdminUtils {
     }
 
     public static void saveAdminPassword(AdminPasswordRequestDTO requestDTO,
-                                                  AdminConfirmationToken confirmationToken) {
+                                         AdminConfirmationToken confirmationToken) {
         Admin admin = confirmationToken.getAdmin();
         admin.setPassword(BCrypt.hashpw(requestDTO.getPassword(), BCrypt.gensalt()));
         admin.setIsAccountActivated(YES);

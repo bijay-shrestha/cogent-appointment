@@ -18,6 +18,7 @@ import java.net.URI;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.DepartmentConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.DepartmentConstants.BASE_DEPARTMENT;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.HospitalConstants.HOSPITAL_ID_PATH_VARIABLE_BASE;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -84,7 +85,7 @@ public class DepartmentResource {
         return ok(departmentService.fetchActiveDropDownList());
     }
 
-    @GetMapping(HospitalConstants.HOSPITAL_ID_PATH_VARIABLE_BASE)
+    @GetMapping(ACTIVE + MIN + HOSPITAL_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_DEPARTMENT_BY_HOSPITAL_OPERATION)
     public ResponseEntity<?> fetchDepartmentByHospitalId(@PathVariable("hospitalId") Long hospitalId) {
         return ok(departmentService.fetchDepartmentByHospitalId(hospitalId));

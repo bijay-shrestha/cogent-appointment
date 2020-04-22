@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.logging.repository.custom;
 
+import com.cogent.cogentappointment.logging.dto.response.LoggedInAdminDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Repository;
 public interface AdminRepositoryCustom {
 
     Object[] validateAdminCount(Long hospitalId);
+
+    LoggedInAdminDTO getLoggedInAdmin(String email);
 
 //    List<Object[]> validateDuplicity(String username, String email, String mobileNumber, Long hospitalId);
 //

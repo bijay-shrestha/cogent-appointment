@@ -3,8 +3,10 @@ package com.cogent.cogentappointment.logging.service.impl;
 import com.cogent.cogentappointment.logging.dto.request.client.ClientLogSearchRequestDTO;
 import com.cogent.cogentappointment.logging.dto.response.UserMenuLogResponseDTO;
 import com.cogent.cogentappointment.logging.dto.response.UserMenuStaticsResponseDTO;
+import com.cogent.cogentappointment.logging.repository.AdminRepository;
 import com.cogent.cogentappointment.logging.repository.ClientLogRepository;
 import com.cogent.cogentappointment.logging.service.ClientLogService;
+import com.cogent.cogentappointment.logging.utils.common.SecurityContextUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,9 +26,11 @@ import static com.cogent.cogentappointment.logging.utils.common.DateUtils.getTim
 public class ClientLogServiceImpl implements ClientLogService {
 
     private final ClientLogRepository clientLogRepository;
+    private final AdminRepository adminRepository;
 
-    public ClientLogServiceImpl(ClientLogRepository clientLogRepository) {
+    public ClientLogServiceImpl(ClientLogRepository clientLogRepository, AdminRepository adminRepository) {
         this.clientLogRepository = clientLogRepository;
+        this.adminRepository = adminRepository;
     }
 
     @Override
@@ -62,7 +66,9 @@ public class ClientLogServiceImpl implements ClientLogService {
 
         log.info(USER_MENU_LOG_SEARCH_PROCESS_STARTED, USER_MENU_LOG);
 
-        UserMenuLogResponseDTO responseDTOS = clientLogRepository.search(searchRequestDTO, pageable);
+        String email = SecurityContextUtils.getLoggedInAdminEmail();
+        Long hospitalId = adminRepository.findAdminByEmail(email).get().getId();
+        UserMenuLogResponseDTO responseDTOS = clientLogRepository.search(searchRequestDTO, hospitalId, pageable);
 
         log.info(USER_MENU_LOG_SEARCH_PROCESS_COMPLETED, USER_MENU_LOG, getDifferenceBetweenTwoTime(startTime));
 
@@ -76,7 +82,10 @@ public class ClientLogServiceImpl implements ClientLogService {
 
         log.info(USER_MENU_LOG_STATICS_SEARCH_PROCESS_STARTED, USER_MENU_LOG);
 
-        UserMenuStaticsResponseDTO responseDTOS = clientLogRepository.fetchUserMenuLogsStatics(searchRequestDTO, pageable);
+        String email = SecurityContextUtils.getLoggedInAdminEmail();
+        Long hospitalId = adminRepository.findAdminByEmail(email).get().getId();
+
+        UserMenuStaticsResponseDTO responseDTOS = clientLogRepository.fetchUserMenuLogsStatics(searchRequestDTO, hospitalId, pageable);
 
         log.info(USER_MENU_LOG_STATICS_PROCESS_COMPLETED, USER_MENU_LOG, getDifferenceBetweenTwoTime(startTime));
 
@@ -89,7 +98,10 @@ public class ClientLogServiceImpl implements ClientLogService {
 
         log.info(USER_MENU_LOG_STATICS_SEARCH_PROCESS_STARTED, USER_MENU_LOG);
 
-        UserMenuStaticsResponseDTO responseDTOS = clientLogRepository.fetchUserMenuLogsStaticsforDiagram(searchRequestDTO);
+        String email = SecurityContextUtils.getLoggedInAdminEmail();
+        Long hospitalId = adminRepository.findAdminByEmail(email).get().getId();
+
+        UserMenuStaticsResponseDTO responseDTOS = clientLogRepository.fetchUserMenuLogsStaticsforDiagram(searchRequestDTO, hospitalId);
 
         log.info(USER_MENU_LOG_STATICS_PROCESS_COMPLETED, USER_MENU_LOG, getDifferenceBetweenTwoTime(startTime));
 

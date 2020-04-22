@@ -124,7 +124,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.cogent.cogentappointment.persistence</groupId>
+            <groupId>com.cogent</groupId>
             <artifactId>cogent-appointment-persistence</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>

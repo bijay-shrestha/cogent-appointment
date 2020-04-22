@@ -25,7 +25,6 @@ import static com.cogent.cogentappointment.logging.query.ClientLogQuery.*;
 import static com.cogent.cogentappointment.logging.utils.common.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.logging.utils.common.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.logging.utils.common.QueryUtils.transformQueryToResultList;
-import static com.cogent.cogentappointment.logging.utils.common.SecurityContextUtils.getLoggedInCompanyId;
 
 /**
  * @author Rupak
@@ -93,9 +92,9 @@ public class ClientLogRepositoryCustomImpl implements ClientLogRepositoryCustom 
     }
 
     @Override
-    public UserMenuLogResponseDTO search(ClientLogSearchRequestDTO searchRequestDTO, Pageable pageable) {
+    public UserMenuLogResponseDTO search(ClientLogSearchRequestDTO searchRequestDTO, Long hospitalId, Pageable pageable) {
 
-        Long hospitalId = getLoggedInCompanyId();
+
         Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_CLIENT_LOGS(searchRequestDTO))
                 .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
                 .setParameter(TO_DATE, searchRequestDTO.getToDate())
@@ -121,12 +120,12 @@ public class ClientLogRepositoryCustomImpl implements ClientLogRepositoryCustom 
     }
 
     @Override
-    public UserMenuStaticsResponseDTO fetchUserMenuLogsStatics(ClientLogSearchRequestDTO searchRequestDTO) {
+    public UserMenuStaticsResponseDTO fetchUserMenuLogsStatics(ClientLogSearchRequestDTO searchRequestDTO, Long hospitalId) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_USER_LOGS_STATICS(searchRequestDTO))
                 .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
                 .setParameter(TO_DATE, searchRequestDTO.getToDate())
-                .setParameter(HOSPITAL_ID, searchRequestDTO.getClientId());
+                .setParameter(HOSPITAL_ID, hospitalId);
 
         int totalItems = query.getResultList().size();
 
@@ -148,9 +147,8 @@ public class ClientLogRepositoryCustomImpl implements ClientLogRepositoryCustom 
     }
 
     @Override
-    public UserMenuStaticsResponseDTO fetchUserMenuLogsStaticsforDiagram(ClientLogSearchRequestDTO searchRequestDTO) {
+    public UserMenuStaticsResponseDTO fetchUserMenuLogsStaticsforDiagram(ClientLogSearchRequestDTO searchRequestDTO, Long hospitalId) {
 
-        Long hospitalId = getLoggedInCompanyId();
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_USER_LOGS_STATICS_FOR_PIE_CHART(searchRequestDTO))
                 .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
                 .setParameter(TO_DATE, searchRequestDTO.getToDate())
@@ -203,9 +201,8 @@ public class ClientLogRepositoryCustomImpl implements ClientLogRepositoryCustom 
     }
 
     @Override
-    public UserMenuStaticsResponseDTO fetchUserMenuLogsStatics(ClientLogSearchRequestDTO searchRequestDTO, Pageable pageable) {
+    public UserMenuStaticsResponseDTO fetchUserMenuLogsStatics(ClientLogSearchRequestDTO searchRequestDTO, Long hospitalId, Pageable pageable) {
 
-        Long hospitalId = getLoggedInCompanyId();
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_USER_LOGS_STATICS(searchRequestDTO))
                 .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
                 .setParameter(TO_DATE, searchRequestDTO.getToDate())

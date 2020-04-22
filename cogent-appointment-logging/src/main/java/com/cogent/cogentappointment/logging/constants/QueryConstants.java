@@ -11,6 +11,8 @@ public class QueryConstants {
     //D
     public static final String DATE = "date";
 
+    public static final String EMAIl = "email";
+
 
     //F
     public static final String FROM_DATE = "fromDate";

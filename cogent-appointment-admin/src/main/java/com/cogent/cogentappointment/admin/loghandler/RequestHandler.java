@@ -22,7 +22,7 @@ public class RequestHandler {
         AdminLogRequestDTO adminLogRequestDTO = ObjectMapperUtils.map(userLog, AdminLogRequestDTO.class);
 
         //to do: rupak
-        adminLogRequestDTO.setAdminId(SecurityContextUtils.getLoggedInCompanyId());
+        adminLogRequestDTO.setAdminEmail(SecurityContextUtils.getLoggedInAdminEmail());
         adminLogRequestDTO.setFeature(convertToNormalCase(splitByCharacterTypeCamelCase(adminLogRequestDTO.getFeature())));
 
         return adminLogRequestDTO;

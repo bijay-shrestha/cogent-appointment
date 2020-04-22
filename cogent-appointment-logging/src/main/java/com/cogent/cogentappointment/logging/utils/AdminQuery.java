@@ -1,8 +1,4 @@
 package com.cogent.cogentappointment.logging.utils;
-
-import com.cogent.cogentappointment.persistence.enums.Gender;
-import org.springframework.util.ObjectUtils;
-
 /**
  * @author smriti on 2019-08-05
  */
@@ -35,6 +31,27 @@ public class AdminQuery {
                     " AND" +
                     " (a.username =:username OR a.email =:email OR a.mobileNumber = :mobileNumber)" +
                     " AND h.id=:hospitalId";
+
+    public static final String QUERY_TO_GET_LOGGED_ADMIN_INFO =
+            "SELECT" +
+                    " a.id as id," +
+                    " a.email as email," +
+                    " a.password as password," +
+                    " h.isCompany as isCompany," +
+                    " h.code as hospitalCode," +
+                    " h.id as hospitalId," +
+                    " hai.apiKey as apiKey," +
+                    " hai.apiSecret as apiSecret" +
+                    " FROM " +
+                    " Admin a" +
+                    " LEFT JOIN Profile p ON p.id=a.profileId.id" +
+                    " LEFT JOIN Department d ON d.id=p.department.id" +
+                    " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
+                    " LEFT JOIN HmacApiInfo hai ON hai.hospital.id=h.id" +
+                    " WHERE" +
+                    " (a.mobileNumber=:email OR a.email=:email)" +
+                    " AND a.status = 'Y'" +
+                    " AND h.isCompany='N'";
 
 
 

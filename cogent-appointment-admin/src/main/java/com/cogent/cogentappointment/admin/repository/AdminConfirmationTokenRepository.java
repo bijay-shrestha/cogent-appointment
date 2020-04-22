@@ -16,7 +16,7 @@ import java.util.Optional;
 public interface AdminConfirmationTokenRepository extends JpaRepository<AdminConfirmationToken, Long>,
         AdminConfirmationTokenRepositoryCustom {
 
-    @Query("SELECT a FROM AdminConfirmationToken a WHERE a.confirmationToken =:confirmationToken")
+    @Query("SELECT a FROM AdminConfirmationToken a WHERE a.confirmationToken =:confirmationToken AND a.status = 'Y'")
     Optional<AdminConfirmationToken> findAdminConfirmationTokenByToken(@Param("confirmationToken") String confirmationToken);
 
 }

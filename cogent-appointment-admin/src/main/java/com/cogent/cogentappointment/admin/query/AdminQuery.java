@@ -57,10 +57,11 @@ public class AdminQuery {
     public static final String QUERY_TO_FETCH_ACTIVE_ADMIN_FOR_DROPDOWN =
             " SELECT" +
                     " id as value," +                     //[0]
-                    " email as label" +               //[1]
+                    " email as label" +                  //[1]
                     " FROM" +
                     " Admin" +
-                    " WHERE status ='Y'";
+                    " WHERE status ='Y'" +
+                    " ORDER BY label ASC";
 
     public static String QUERY_TO_SEARCH_ADMIN(AdminSearchRequestDTO searchRequestDTO) {
 
@@ -79,12 +80,12 @@ public class AdminQuery {
             " SELECT" +
                     " a.id as id," +                                            //[0]
                     " a.fullName as fullName," +                                //[1]
-                    " a.email as email," +                                      //[3]
-                    " a.mobileNumber as mobileNumber," +                        //[4]
-                    " a.status as status," +                                    //[5]
-                    " a.hasMacBinding as hasMacBinding," +                      //[6]
-                    " a.gender as gender," +                                    //[7]
-                    " p.name as profileName," +
+                    " a.email as email," +                                      //[2]
+                    " a.mobileNumber as mobileNumber," +                        //[3]
+                    " a.status as status," +                                    //[4]
+                    " a.hasMacBinding as hasMacBinding," +                      //[5]
+                    " a.gender as gender," +                                    //[6]
+                    " CONCAT(h.alias, '-', p.name) as profileName," +           //[7]
                     " h.name as hospitalName," +                                //[8]
                     " CASE WHEN" +
                     " (av.status IS NULL OR av.status = 'N')" +
@@ -130,7 +131,8 @@ public class AdminQuery {
                     " h.id as hospitalId," +                                        //[11]
                     " p.id as profileId," +                                         //[12]
                     " d.id as departmentId," +                                      //[13]
-                    " d.name as departmentName" +                                  //[14]
+                    " d.name as departmentName," +                                  //[14]
+                    " h.alias as hospitalAlias"+                                    //[15]
                     " FROM" +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id = a.profileId.id" +

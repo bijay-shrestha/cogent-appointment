@@ -291,10 +291,9 @@ public class AdminServiceImpl implements AdminService {
 
             updateAdminMetaInfo(admin);
 
-            sendEmail(emailRequestDTOForNewEmail);
+            saveEmailToSend(emailRequestDTOForNewEmail);
 
-            sendEmail(emailRequestDTO);
-
+            saveEmailToSend(emailRequestDTO);
         }
     }
 

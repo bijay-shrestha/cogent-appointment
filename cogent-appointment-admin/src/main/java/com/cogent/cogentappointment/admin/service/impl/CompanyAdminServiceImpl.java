@@ -314,9 +314,9 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
             updateAdminMetaInfo(admin);
 
-            sendEmail(emailRequestDTOForNewEmail);
+            saveEmailToSend(emailRequestDTOForNewEmail);
 
-            sendEmail(emailRequestDTO);
+            saveEmailToSend(emailRequestDTO);
         }
     }
 

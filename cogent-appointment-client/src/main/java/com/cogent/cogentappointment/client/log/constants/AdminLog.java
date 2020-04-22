@@ -6,6 +6,8 @@ package com.cogent.cogentappointment.client.log.constants;
 public class AdminLog {
     public static final String ADMIN = "ADMIN";
 
+    public static final String ADMIN_USER_MENU_LOG = "ADMIN USER MENU LOG";
+
     public static final String ADMIN_AVATAR = "ADMIN AVATAR";
 
     public static final String ADMIN_META_INFO = "ADMIN META INFO";

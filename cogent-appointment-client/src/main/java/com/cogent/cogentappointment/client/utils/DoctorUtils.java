@@ -25,8 +25,7 @@ import static com.cogent.cogentappointment.client.constants.StatusConstants.ACTI
 import static com.cogent.cogentappointment.client.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils.formatDoubleTo2DecimalPlaces;
 import static com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils.generateRandomNumber;
-import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toNormalCase;
-import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toUpperCase;
+import static com.cogent.cogentappointment.client.utils.commons.StringUtil.*;
 
 /**
  * @author smriti on 2019-09-29

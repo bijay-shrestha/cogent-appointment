@@ -346,7 +346,8 @@ public class AdminServiceImpl implements AdminService {
 
         validateStatus(adminConfirmationToken.getStatus());
 
-        Admin admin = adminRepository.findAdminById(adminConfirmationToken.getAdmin().getId());
+        Admin admin = adminRepository.findAdminById(adminConfirmationToken.getAdmin().getId())
+                .orElseThrow(() -> ADMIN_WITH_GIVEN_ID_NOT_FOUND.apply(adminConfirmationToken.getAdmin().getId()));
 
         admin.setStatus(ACTIVE);
 

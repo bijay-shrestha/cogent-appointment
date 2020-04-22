@@ -16,4 +16,8 @@ public interface AdminMetaInfoRepositoryCustom {
     List<AdminMetaInfoResponseDTO> fetchAdminMetaInfoResponseDTOS();
 
     List<CompanyAdminMetaInfoResponseDTO> fetchCompanyAdminMetaInfoResponseDTOS();
+
+    List<AdminMetaInfoResponseDTO> fetchAdminMetaInfoByCompanyIdResponseDTOS(Long companyId);
+
+    List<AdminMetaInfoResponseDTO> fetchAdminMetaInfoByClientIdResponseDTOS(Long id);
 }

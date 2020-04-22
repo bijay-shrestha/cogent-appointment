@@ -17,7 +17,6 @@ public class AdminQuery {
 
     public static final String QUERY_TO_FIND_ADMIN_FOR_VALIDATION =
             "SELECT " +
-                    " a.username," +                            //[0]
                     " a.email," +                               //[1]
                     " a.mobileNumber" +                        //[2]
                     " FROM" +
@@ -29,7 +28,7 @@ public class AdminQuery {
                     " a.status != 'D'" +
                     " AND h.status!='D'" +
                     " AND" +
-                    " (a.username =:username OR a.email =:email OR a.mobileNumber = :mobileNumber)" +
+                    " (a.email =:email OR a.mobileNumber = :mobileNumber)" +
                     " AND h.id=:hospitalId";
 
     public static final String QUERY_TO_GET_LOGGED_ADMIN_INFO =

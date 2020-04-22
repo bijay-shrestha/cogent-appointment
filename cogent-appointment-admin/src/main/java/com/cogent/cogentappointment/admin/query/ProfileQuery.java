@@ -64,9 +64,9 @@ public class ProfileQuery {
     public static Function<ProfileSearchRequestDTO, String> QUERY_TO_SEARCH_PROFILE = (searchRequestDTO) -> {
         return " SELECT" +
                 " p.id as id," +                                             //[0]
-                " CONCAT(h.alias,'-',p.name) as name," +                   //[1]
+                " CONCAT(h.alias, '-', p.name) as name," +                    //[1]
                 " p.status as status," +                                    //[2]
-                " d.name as departmentName," +                              //[3]
+                " CONCAT(h.alias, '-', d.name) as departmentName," +         //[3]
                 " h.name as hospitalName" +                                 //[4]
                 " FROM" +
                 " Profile p" +

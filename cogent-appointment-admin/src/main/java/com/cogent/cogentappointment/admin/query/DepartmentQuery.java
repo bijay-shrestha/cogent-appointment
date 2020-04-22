@@ -37,7 +37,7 @@ public class DepartmentQuery {
             (searchRequestDTO ->
                     " SELECT " +
                             " d.id as id," +                                                    //[0]
-                            " CONCAT(h.alias, '-',h.name) as name," +                           //[1]
+                            " CONCAT(h.alias, '-',d.name) as name," +                           //[1]
                             " d.code as departmentCode," +                                      //[2]
                             " d.status as status," +                                           //[3]
                             " h.name as hospitalName" +                  //[4]

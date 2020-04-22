@@ -51,11 +51,12 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
             HMACBuilder signatureBuilder = new HMACBuilder()
                     .algorithm(authHeader.getAlgorithm())
-                    .nonce(authHeader.getNonce())
-                    .username(authHeader.getEmail())
+                    .id(authHeader.getId())
+                    .email(authHeader.getEmail())
                     .hospitalId(Math.toIntExact(authHeader.getHospitalId()))
                     .hospitalCode(authHeader.getHospitalCode())
                     .apiKey(authHeader.getApiKey())
+                    .nonce(authHeader.getNonce())
                     .apiSecret(adminMinDetails.getApiSecret());
 
             compareSignature(signatureBuilder, authHeader.getDigest());

@@ -1,2 +1,5 @@
+catalina:
+  home: /Users/bijayshrestha/Dropbox/Workspaces/Backend/tomcat
+
 spring:
   profiles.active: uat

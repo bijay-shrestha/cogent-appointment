@@ -72,6 +72,8 @@ public class HospitalUpdateRequestDTO implements Serializable {
     /*Y-> NEW LOGO IS UPDATED
     * N-> LOGO IS SAME AS BEFORE. SO IF IT IS 'N', THEN NO NEED TO UPDATE LOGO
     */
+    @NotNull
+    @Status
     private Character isLogoUpdate;
 
     /*Y-> NEW BANNER IS UPDATED

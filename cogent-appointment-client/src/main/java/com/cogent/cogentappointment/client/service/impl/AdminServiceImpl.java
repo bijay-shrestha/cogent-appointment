@@ -180,7 +180,7 @@ public class AdminServiceImpl implements AdminService {
 
         log.info(FETCHING_DETAIL_PROCESS_STARTED, ADMIN);
 
-        AdminDetailResponseDTO responseDTO = adminRepository.fetchDetailsById(id, getLoggedInHospitalId());
+        AdminDetailResponseDTO responseDTO = adminRepository.fetchDetailsById(id, 3L);
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
 

@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.resource;
 
+import com.cogent.cogentappointment.client.dto.request.login.LoginEsewaRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.login.LoginRequestDTO;
 import com.cogent.cogentappointment.client.service.impl.AuthenticateServiceImpl;
 import io.swagger.annotations.Api;
@@ -35,6 +36,14 @@ public class LoginResource {
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO requestDTO) {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.AUTHORIZATION, authenticateService.loginUser(requestDTO));
+        return new ResponseEntity<>(headers, HttpStatus.OK);
+    }
+
+    @PostMapping(LOGIN+"/eSewa")
+    @ApiOperation(LOGIN_OPERATION)
+    public ResponseEntity<?> logineSewa(@RequestBody LoginEsewaRequestDTO requestDTO) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.AUTHORIZATION, authenticateService.loginThirdParty(requestDTO));
         return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 

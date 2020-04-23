@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
@@ -19,13 +18,9 @@ import static com.cogent.cogentappointment.client.constants.HMACConstant.HMAC_AL
  * @author Sauravi Thapa २०/१/१९
  */
 @Component
-public class HMACBuilder {
-
-    private String username;
+public class HMACBuilderEsewa {
 
     private String hospitalCode;
-
-    private Integer hospitalId;
 
     private String nonce;
 
@@ -36,38 +31,29 @@ public class HMACBuilder {
     private String apiSecret;
 
 
-    public HMACBuilder username(String username) {
-        this.username = username;
-        return this;
-    }
-
-    public HMACBuilder hospitalCode(String hospitalCode) {
+    public HMACBuilderEsewa hospitalCode(String hospitalCode) {
         this.hospitalCode = hospitalCode;
         return this;
     }
 
-    public HMACBuilder hospitalId(Integer hospitalId) {
-        this.hospitalId = hospitalId;
-        return this;
-    }
 
-    public HMACBuilder algorithm(String algorithm) {
+    public HMACBuilderEsewa algorithm(String algorithm) {
         this.algorithm = algorithm;
         return this;
     }
 
 
-    public HMACBuilder nonce(String nonce) {
+    public HMACBuilderEsewa nonce(String nonce) {
         this.nonce = nonce;
         return this;
     }
 
-    public HMACBuilder apiKey(String key) {
+    public HMACBuilderEsewa apiKey(String key) {
         this.apiKey = key;
         return this;
     }
 
-    public HMACBuilder apiSecret(String apiSecret) {
+    public HMACBuilderEsewa apiSecret(String apiSecret) {
         this.apiSecret = apiSecret;
         return this;
     }
@@ -80,9 +66,7 @@ public class HMACBuilder {
             digest.init(secretKey);
             digest.update(algorithm.getBytes(StandardCharsets.UTF_8));
             digest.update(DELIMITER);
-            digest.update((username != null) ? username.getBytes(StandardCharsets.UTF_8) : null);
-            digest.update(DELIMITER);
-            digest.update( hospitalCode.getBytes(StandardCharsets.UTF_8));
+            digest.update(hospitalCode.getBytes(StandardCharsets.UTF_8));
             digest.update(DELIMITER);
             digest.update(apiKey.getBytes(StandardCharsets.UTF_8));
             digest.update(DELIMITER);

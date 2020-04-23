@@ -57,7 +57,7 @@ public class HMACUtils {
         String apiKey = thirdPartyDetail.getApiKey();
         String apiSecret = thirdPartyDetail.getApiSecret();
 
-        final HMACBuilder signatureBuilder = new HMACBuilder()
+        final HMACBuilderEsewa signatureBuilder = new HMACBuilderEsewa()
                 .algorithm(HMAC_ALGORITHM)
                 .nonce(nonce)
                 .apiSecret(apiSecret)

@@ -1,2 +1,45 @@
+server:
+  port: 9091
+
+serverlocation: https://localhost:8082
+
 spring:
-  profiles.active: prod
+  datasource:
+    url: jdbc:mysql://localhost:3306/latest_uat
+    username: sauravi
+    password: Test@123##
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    properties:
+      hibernate.dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    hibernate:
+      ddl-auto: update
+      generate_statistics: true
+      format_sql: true
+      temp.use_jdbc_metadata_defaults: false
+      cache:
+        region.factory_class: org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory
+        use_second_level_cache: true
+        use_query_cache: true
+    show-sql: true
+    generate-ddl: true
+    open-in-view: false
+
+  jackson:
+    deserialization.fail-on-unknown-properties: false
+
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2KB
+      max-file-size: 20000MB
+      max-request-size: 215000MB
+
+  minio:
+   url: http://localhost:9000
+   bucket: cogent
+   access-key: minioadmin
+   secret-key: minioadmin
+
+

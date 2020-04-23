@@ -201,7 +201,9 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         if (admin.getProfileId().getIsSuperAdminProfile().equals(YES))
             throw new BadRequestException(INVALID_DELETE_REQUEST);
 
-        convertAdminToDeleted(admin, deleteRequestDTO);
+        deleteAdminMetaInfo(admin, deleteRequestDTO);
+
+        save(convertAdminToDeleted(admin, deleteRequestDTO));
 
         log.info(DELETING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
     }
@@ -278,7 +280,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
             EmailRequestDTO emailRequestDTO = parseUpdatedInfo(updateRequestDTO, admin);
 
-            updateCompanyAdmin(updateRequestDTO, ACTIVE, admin);
+            updateCompanyAdmin(updateRequestDTO, updateRequestDTO.getStatus(), admin);
 
             if (updateRequestDTO.getIsAvatarUpdate().equals(YES))
                 updateAvatar(admin, files);
@@ -584,6 +586,13 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                 .orElseThrow(() -> new NoContentFoundException(AdminMetaInfo.class));
 
         adminMetaInfoRepository.save(parseMetaInfo(admin, adminMetaInfo));
+    }
+
+    private void deleteAdminMetaInfo(Admin admin, DeleteRequestDTO deleteRequestDTO) {
+        AdminMetaInfo adminMetaInfo = adminMetaInfoRepository.findAdminMetaInfoByAdminId(admin.getId())
+                .orElseThrow(() -> new NoContentFoundException(AdminMetaInfo.class));
+
+        adminMetaInfoRepository.save(deleteMetaInfo(adminMetaInfo, deleteRequestDTO));
     }
 
     private AdminConfirmationToken saveAdminConfirmationToken(AdminConfirmationToken adminConfirmationToken) {

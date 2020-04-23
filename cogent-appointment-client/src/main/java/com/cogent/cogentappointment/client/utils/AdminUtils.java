@@ -77,12 +77,24 @@ public class AdminUtils {
     public static AdminMetaInfo parseInAdminMetaInfo(Admin admin) {
         AdminMetaInfo adminMetaInfo = new AdminMetaInfo();
         adminMetaInfo.setAdmin(admin);
-        parseMetaInfo(admin, adminMetaInfo);
+        adminMetaInfo.setMetaInfo(admin.getFullName() + OR + admin.getEmail() + OR + admin.getMobileNumber());
+        adminMetaInfo.setStatus(admin.getStatus());
         return adminMetaInfo;
     }
 
-    public static void parseMetaInfo(Admin admin, AdminMetaInfo adminMetaInfo) {
+    public static AdminMetaInfo parseMetaInfo(Admin admin, AdminMetaInfo adminMetaInfo) {
         adminMetaInfo.setMetaInfo(admin.getFullName() + OR + admin.getEmail() + OR + admin.getMobileNumber());
+        adminMetaInfo.setStatus(admin.getStatus());
+        adminMetaInfo.setRemarks(admin.getRemarks());
+
+        return adminMetaInfo;
+    }
+
+    public static AdminMetaInfo deleteMetaInfo(AdminMetaInfo adminMetaInfo,DeleteRequestDTO requestDTO) {
+        adminMetaInfo.setStatus(requestDTO.getStatus());
+        adminMetaInfo.setRemarks(requestDTO.getRemarks());
+
+        return adminMetaInfo;
     }
 
     public static AdminConfirmationToken parseInAdminConfirmationToken(Admin admin) {
@@ -142,9 +154,11 @@ public class AdminUtils {
         adminAvatar.setStatus(ACTIVE);
     }
 
-    public static void convertAdminToDeleted(Admin admin, DeleteRequestDTO deleteRequestDTO) {
+    public static Admin convertAdminToDeleted(Admin admin, DeleteRequestDTO deleteRequestDTO) {
         admin.setStatus(deleteRequestDTO.getStatus());
         admin.setRemarks(deleteRequestDTO.getRemarks());
+
+        return admin;
     }
 
     public static Admin updateAdminPassword(String password, String remarks, Admin admin) {

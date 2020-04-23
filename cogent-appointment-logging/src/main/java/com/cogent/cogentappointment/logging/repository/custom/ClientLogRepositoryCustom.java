@@ -16,11 +16,11 @@ public interface ClientLogRepositoryCustom {
 
     UserMenuStaticsResponseDTO fetchUserMenuLogsStaticsforDiagramByClientId(ClientLogSearchRequestDTO searchRequestDTO);
 
-    UserMenuLogResponseDTO search(ClientLogSearchRequestDTO searchRequestDTO, Long hospitalId, Pageable pageable);
+    UserMenuLogResponseDTO search(ClientLogSearchRequestDTO searchRequestDTO, Pageable pageable);
 
-    UserMenuStaticsResponseDTO fetchUserMenuLogsStatics(ClientLogSearchRequestDTO searchRequestDTO,Long hospitalId, Pageable pageable);
+    UserMenuStaticsResponseDTO fetchUserMenuLogsStatics(ClientLogSearchRequestDTO searchRequestDTO, Pageable pageable);
 
-    UserMenuStaticsResponseDTO fetchUserMenuLogsStatics(ClientLogSearchRequestDTO searchRequestDTO,Long hospitalId);
+    UserMenuStaticsResponseDTO fetchUserMenuLogsStatics(ClientLogSearchRequestDTO searchRequestDTO);
 
-    UserMenuStaticsResponseDTO fetchUserMenuLogsStaticsforDiagram(ClientLogSearchRequestDTO searchRequestDTO,Long hospitalId);
+    UserMenuStaticsResponseDTO fetchUserMenuLogsStaticsforDiagram(ClientLogSearchRequestDTO searchRequestDTO);
 }

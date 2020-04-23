@@ -90,9 +90,8 @@ public class ClientLogRepositoryCustomImpl implements ClientLogRepositoryCustom 
     }
 
     @Override
-    public UserMenuLogResponseDTO search(ClientLogSearchRequestDTO searchRequestDTO, Long hospitalId, Pageable pageable) {
+    public UserMenuLogResponseDTO search(ClientLogSearchRequestDTO searchRequestDTO, Pageable pageable) {
 
-        searchRequestDTO.setClientId(hospitalId);
         Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_CLIENT_LOGS(searchRequestDTO))
                 .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
                 .setParameter(TO_DATE, searchRequestDTO.getToDate());
@@ -117,9 +116,8 @@ public class ClientLogRepositoryCustomImpl implements ClientLogRepositoryCustom 
     }
 
     @Override
-    public UserMenuStaticsResponseDTO fetchUserMenuLogsStatics(ClientLogSearchRequestDTO searchRequestDTO, Long hospitalId) {
+    public UserMenuStaticsResponseDTO fetchUserMenuLogsStatics(ClientLogSearchRequestDTO searchRequestDTO) {
 
-        searchRequestDTO.setClientId(hospitalId);
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_USER_LOGS_STATICS(searchRequestDTO))
                 .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
                 .setParameter(TO_DATE, searchRequestDTO.getToDate());
@@ -144,9 +142,8 @@ public class ClientLogRepositoryCustomImpl implements ClientLogRepositoryCustom 
     }
 
     @Override
-    public UserMenuStaticsResponseDTO fetchUserMenuLogsStaticsforDiagram(ClientLogSearchRequestDTO searchRequestDTO, Long hospitalId) {
+    public UserMenuStaticsResponseDTO fetchUserMenuLogsStaticsforDiagram(ClientLogSearchRequestDTO searchRequestDTO) {
 
-        searchRequestDTO.setClientId(hospitalId);
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_USER_LOGS_STATICS_FOR_PIE_CHART(searchRequestDTO))
                 .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
                 .setParameter(TO_DATE, searchRequestDTO.getToDate());
@@ -197,9 +194,8 @@ public class ClientLogRepositoryCustomImpl implements ClientLogRepositoryCustom 
     }
 
     @Override
-    public UserMenuStaticsResponseDTO fetchUserMenuLogsStatics(ClientLogSearchRequestDTO searchRequestDTO, Long hospitalId, Pageable pageable) {
+    public UserMenuStaticsResponseDTO fetchUserMenuLogsStatics(ClientLogSearchRequestDTO searchRequestDTO, Pageable pageable) {
 
-        searchRequestDTO.setClientId(hospitalId);
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_USER_LOGS_STATICS(searchRequestDTO))
                 .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
                 .setParameter(TO_DATE, searchRequestDTO.getToDate());

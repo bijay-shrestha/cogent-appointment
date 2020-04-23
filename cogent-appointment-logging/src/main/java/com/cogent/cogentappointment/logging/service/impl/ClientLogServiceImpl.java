@@ -66,9 +66,7 @@ public class ClientLogServiceImpl implements ClientLogService {
 
         log.info(USER_MENU_LOG_SEARCH_PROCESS_STARTED, USER_MENU_LOG);
 
-        String email = SecurityContextUtils.getLoggedInAdminEmail();
-        Long hospitalId = adminRepository.findAdminByEmail(email).get().getId();
-        UserMenuLogResponseDTO responseDTOS = clientLogRepository.search(searchRequestDTO, hospitalId, pageable);
+        UserMenuLogResponseDTO responseDTOS = clientLogRepository.search(searchRequestDTO, pageable);
 
         log.info(USER_MENU_LOG_SEARCH_PROCESS_COMPLETED, USER_MENU_LOG, getDifferenceBetweenTwoTime(startTime));
 
@@ -82,10 +80,7 @@ public class ClientLogServiceImpl implements ClientLogService {
 
         log.info(USER_MENU_LOG_STATICS_SEARCH_PROCESS_STARTED, USER_MENU_LOG);
 
-        String email = SecurityContextUtils.getLoggedInAdminEmail();
-        Long hospitalId = adminRepository.findAdminByEmail(email).get().getId();
-
-        UserMenuStaticsResponseDTO responseDTOS = clientLogRepository.fetchUserMenuLogsStatics(searchRequestDTO, hospitalId, pageable);
+        UserMenuStaticsResponseDTO responseDTOS = clientLogRepository.fetchUserMenuLogsStatics(searchRequestDTO, pageable);
 
         log.info(USER_MENU_LOG_STATICS_PROCESS_COMPLETED, USER_MENU_LOG, getDifferenceBetweenTwoTime(startTime));
 
@@ -98,10 +93,8 @@ public class ClientLogServiceImpl implements ClientLogService {
 
         log.info(USER_MENU_LOG_STATICS_SEARCH_PROCESS_STARTED, USER_MENU_LOG);
 
-        String email = SecurityContextUtils.getLoggedInAdminEmail();
-        Long hospitalId = adminRepository.findAdminByEmail(email).get().getId();
 
-        UserMenuStaticsResponseDTO responseDTOS = clientLogRepository.fetchUserMenuLogsStaticsforDiagram(searchRequestDTO, hospitalId);
+        UserMenuStaticsResponseDTO responseDTOS = clientLogRepository.fetchUserMenuLogsStaticsforDiagram(searchRequestDTO);
 
         log.info(USER_MENU_LOG_STATICS_PROCESS_COMPLETED, USER_MENU_LOG, getDifferenceBetweenTwoTime(startTime));
 

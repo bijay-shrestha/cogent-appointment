@@ -119,8 +119,10 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         validateConstraintViolation(validator.validate(adminRequestDTO));
 
-        List<Object[]> admins = adminRepository.validateDuplicityForCompanyAdmin(adminRequestDTO.getEmail(),
-                adminRequestDTO.getMobileNumber());
+        List<Object[]> admins = adminRepository.validateDuplicityForCompanyAdmin(
+                adminRequestDTO.getEmail(),
+                adminRequestDTO.getMobileNumber()
+        );
 
         validateCompanyAdminDuplicity(admins, adminRequestDTO.getEmail(),
                 adminRequestDTO.getMobileNumber());

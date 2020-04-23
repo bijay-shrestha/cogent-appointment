@@ -120,8 +120,10 @@ public class AdminServiceImpl implements AdminService {
 
         validateAdminCount(hospitalId);
 
-        List<Object[]> admins = adminRepository.validateDuplicity(adminRequestDTO.getEmail(),
-                adminRequestDTO.getMobileNumber(), hospitalId);
+        List<Object[]> admins = adminRepository.validateDuplicity(
+                adminRequestDTO.getEmail(),
+                adminRequestDTO.getMobileNumber()
+        );
 
         validateAdminDuplicity(admins, adminRequestDTO.getEmail(),
                 adminRequestDTO.getMobileNumber());
@@ -261,7 +263,7 @@ public class AdminServiceImpl implements AdminService {
 
         Admin admin = findAdminByIdAndHospitalId(updateRequestDTO.getId(), hospitalId);
 
-        List<Object[]> admins = adminRepository.validateDuplicity(updateRequestDTO, hospitalId);
+        List<Object[]> admins = adminRepository.validateDuplicity(updateRequestDTO);
 
         validateAdminDuplicity(admins, updateRequestDTO.getEmail(), updateRequestDTO.getMobileNumber());
 

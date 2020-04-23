@@ -25,7 +25,7 @@ public interface AdminRepositoryCustom {
 
     Object[] validateAdminCount(Long hospitalId);
 
-    List<Object[]> validateDuplicity(String email, String mobileNumber, Long hospitalId);
+    List<Object[]> validateDuplicity(String email, String mobileNumber);
 
     List<DropDownResponseDTO> fetchActiveMinAdmin(Long hospitalId);
 
@@ -33,7 +33,7 @@ public interface AdminRepositoryCustom {
 
     AdminDetailResponseDTO fetchDetailsById(Long id, Long hospitalId);
 
-    List<Object[]> validateDuplicity(AdminUpdateRequestDTO updateRequestDTO, Long hospitalId);
+    List<Object[]> validateDuplicity(AdminUpdateRequestDTO updateRequestDTO);
 
     Admin fetchAdminByEmail(String email);
 

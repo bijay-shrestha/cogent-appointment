@@ -16,15 +16,10 @@ public class CompanyAdminQuery {
                     " a.mobileNumber" +                        //[1]
                     " FROM" +
                     " Admin a" +
-                    " LEFT JOIN Profile p ON p.id = a.profileId" +
-                    " LEFT JOIN Hospital h ON h.id = p.company.id" +
                     " WHERE" +
                     " a.status != 'D'" +
-                    " AND h.status!='D'" +
                     " AND" +
-                    " (a.email =:email OR a.mobileNumber = :mobileNumber)" +
-                    " AND h.isCompany='Y'";
-
+                    " (a.email =:email OR a.mobileNumber =:mobileNumber)";
 
     public static final String QUERY_TO_FIND_COMPANY_ADMIN_EXCEPT_CURRENT_COMPANY_ADMIN =
             "SELECT " +
@@ -32,16 +27,11 @@ public class CompanyAdminQuery {
                     " a.mobileNumber" +                        //[1]
                     " FROM" +
                     " Admin a" +
-                    " LEFT JOIN Profile p ON p.id = a.profileId.id" +
-                    " LEFT JOIN Hospital h ON h.id = p.company.id" +
                     " WHERE" +
                     " a.status != 'D'" +
-                    " AND h.status!='D'" +
-                    " AND h.isCompany='Y'" +
                     " AND a.id !=:id" +
                     " AND" +
-                    " (a.email =:email OR a.mobileNumber = :mobileNumber)" +
-                    " AND h.id=:companyId";
+                    " (a.email =:email OR a.mobileNumber = :mobileNumber)";
 
     public static final String QUERY_TO_FETCH_ACTIVE_COMPANY_ADMIN_FOR_DROPDOWN =
             " SELECT" +
@@ -54,7 +44,6 @@ public class CompanyAdminQuery {
                     " AND p.isCompanyProfile='Y'" +
                     " AND p.status='Y'" +
                     " ORDER by a.id  DESC  ";
-
 
     public static String QUERY_TO_SEARCH_COMPANY_ADMIN(CompanyAdminSearchRequestDTO searchRequestDTO) {
 

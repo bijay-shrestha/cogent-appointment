@@ -117,7 +117,7 @@ public class HospitalQuery {
                     " LEFT JOIN " +
                     " (" +
                     " SELECT hc.hospital_id as hospitalId," +
-                    " GROUP_CONCAT((CONCAT(hc.id, '-', hc.contact_number, '-', hc.status))) as contact_details" +
+                    " GROUP_CONCAT((CONCAT(hc.id, '/', hc.contact_number, '/', hc.status))) as contact_details" +
                     " FROM hospital_contact_number hc" +
                     " WHERE hc.status = 'Y'" +
                     " GROUP by hc.hospital_id" +

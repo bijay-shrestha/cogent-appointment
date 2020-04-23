@@ -138,7 +138,7 @@ public class CompanyUtils {
         String[] contactWithIdAndNumber = results[CONTACT_DETAILS_INDEX].toString().split(COMMA_SEPARATED);
 
         return Arrays.stream(contactWithIdAndNumber)
-                .map(contact -> contact.split(HYPHEN))
+                .map(contact -> contact.split(FORWARD_SLASH))
                 .map(contactDetails -> CompanyContactNumberResponseDTO.builder()
                         .companyContactNumberId(Long.parseLong(contactDetails[0]))
                         .contactNumber(contactDetails[1])

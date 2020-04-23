@@ -25,7 +25,7 @@ public class UserLogInterceptor implements HandlerInterceptor {
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
                                 Exception exception) throws Exception {
 
-        String userLog = RequestHeader.getUserAgent(request);
+        String userLog = RequestHeader.getUserLogs(request);
 
         if (userLog != null) {
 

@@ -22,7 +22,6 @@ import java.util.regex.Pattern;
 
 import static com.cogent.cogentappointment.logging.constants.ErrorMessageConstants.HMAC_BAD_SIGNATURE;
 import static com.cogent.cogentappointment.logging.constants.PatternConstants.AUTHORIZATION_HEADER_PATTERN;
-import static com.cogent.cogentappointment.logging.constants.PatternConstants.AUTHORIZATION_HEADER_PATTERN_FOR_ESEWA;
 
 /**
  * @author Sauravi Thapa २०/१/१९
@@ -47,7 +46,7 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
         if (authHeader != null) {
 
             AdminMinDetails adminMinDetails = getAdminMinDetails(authHeader.getEmail(),
-                    authHeader.getHospitalCode(),authHeader.getApiKey());
+                    authHeader.getHospitalCode(), authHeader.getApiKey());
 
             HMACBuilder signatureBuilder = new HMACBuilder()
                     .algorithm(authHeader.getAlgorithm())
@@ -95,7 +94,7 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
     }
 
-    private AdminMinDetails getAdminMinDetails(String email,String hospitalCode,String apiKey){
+    private AdminMinDetails getAdminMinDetails(String email, String hospitalCode, String apiKey) {
 
         AdminMinDetails admin = hmacApiInfoRepository.getAdminDetailForAuthentication(
                 email,
@@ -106,9 +105,9 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
                 email,
                 hospitalCode,
                 apiKey);
-        if (admin!=null){
+        if (admin != null) {
             return admin;
-        }else {
+        } else {
             return client;
         }
 

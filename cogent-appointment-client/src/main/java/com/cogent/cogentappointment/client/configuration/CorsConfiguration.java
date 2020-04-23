@@ -27,11 +27,15 @@ public class CorsConfiguration {
         corsConfig.addAllowedMethod("DELETE");
         corsConfig.addAllowedMethod("PATCH");
 
-        corsConfig.setAllowedHeaders(ImmutableList.of("Access-Control-Allow-Origin", "Authorization", "Cache-Control", "Content-Type", "Set-Cookie",
+        corsConfig.setAllowedHeaders(ImmutableList.of(
+                "Access-Control-Allow-Origin",
+                "Authorization",
+                "Cache-Control",
+                "Content-Type",
+                "Set-Cookie",
                 "XSRF-TOKEN",
                 "x-xsrf-token",
                 "log-header",
-                "X-FORWARDED-FOR",
                 "X-FORWARDED-FOR",
                 "User-Agent"));
 

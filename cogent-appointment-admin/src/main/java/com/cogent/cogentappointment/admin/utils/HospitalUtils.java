@@ -232,7 +232,7 @@ public class HospitalUtils {
         String[] contactWithIdAndNumber = results[CONTACT_DETAILS_INDEX].toString().split(COMMA_SEPARATED);
 
         return Arrays.stream(contactWithIdAndNumber)
-                .map(contact -> contact.split(HYPHEN))
+                .map(contact -> contact.split(FORWARD_SLASH))
                 .map(contactDetails -> HospitalContactNumberResponseDTO.builder()
                         .hospitalContactNumberId(Long.parseLong(contactDetails[0]))
                         .contactNumber(contactDetails[1])

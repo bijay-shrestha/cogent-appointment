@@ -67,13 +67,11 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     }
 
     @Override
-    public List<Object[]> validateDuplicity(String email, String mobileNumber,
-                                            Long hospitalId) {
+    public List<Object[]> validateDuplicity(String email, String mobileNumber) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FIND_ADMIN_FOR_VALIDATION)
                 .setParameter(EMAIL, email)
-                .setParameter(MOBILE_NUMBER, mobileNumber)
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(MOBILE_NUMBER, mobileNumber);
 
         return query.getResultList();
     }
@@ -92,8 +90,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         Query query = createQuery.apply(entityManager, QUERY_TO_FIND_ADMIN_EXCEPT_CURRENT_ADMIN)
                 .setParameter(ID, updateRequestDTO.getId())
                 .setParameter(EMAIL, updateRequestDTO.getEmail())
-                .setParameter(MOBILE_NUMBER, updateRequestDTO.getMobileNumber())
-                .setParameter(HOSPITAL_ID, updateRequestDTO.getHospitalId());
+                .setParameter(MOBILE_NUMBER, updateRequestDTO.getMobileNumber());
 
         return query.getResultList();
     }
@@ -103,8 +100,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         Query query = createQuery.apply(entityManager, QUERY_TO_FIND_COMPANY_ADMIN_EXCEPT_CURRENT_COMPANY_ADMIN)
                 .setParameter(ID, updateRequestDTO.getId())
                 .setParameter(EMAIL, updateRequestDTO.getEmail())
-                .setParameter(MOBILE_NUMBER, updateRequestDTO.getMobileNumber())
-                .setParameter(COMPANY_ID, updateRequestDTO.getCompanyId());
+                .setParameter(MOBILE_NUMBER, updateRequestDTO.getMobileNumber());
 
         return query.getResultList();
     }

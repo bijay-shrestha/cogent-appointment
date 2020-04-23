@@ -16,15 +16,10 @@ public class AdminQuery {
                     " a.mobileNumber" +                        //[1]
                     " FROM" +
                     " Admin a" +
-                    " LEFT JOIN Profile p ON p.id = a.profileId" +
-                    " LEFT JOIN Department d ON d.id = p.department.id" +
-                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE" +
                     " a.status != 'D'" +
-                    " AND h.status!='D'" +
                     " AND" +
-                    " (a.email =:email OR a.mobileNumber = :mobileNumber)" +
-                    " AND h.id=:hospitalId";
+                    " (a.email =:email OR a.mobileNumber = :mobileNumber)";
 
     public static final String QUERY_TO_VALIDATE_ADMIN_COUNT =
             " SELECT " +
@@ -43,16 +38,11 @@ public class AdminQuery {
                     " a.mobileNumber" +                        //[1]
                     " FROM" +
                     " Admin a" +
-                    " LEFT JOIN Profile p ON p.id = a.profileId" +
-                    " LEFT JOIN Department d ON d.id = p.department.id" +
-                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE" +
                     " a.status != 'D'" +
-                    " AND h.status!='D'" +
                     " AND a.id !=:id" +
                     " AND" +
-                    " (a.email =:email OR a.mobileNumber = :mobileNumber)" +
-                    " AND h.id=:hospitalId";
+                    " (a.email =:email OR a.mobileNumber = :mobileNumber)" ;
 
     public static final String QUERY_TO_FETCH_ACTIVE_ADMIN_FOR_DROPDOWN =
             " SELECT" +
@@ -132,7 +122,7 @@ public class AdminQuery {
                     " p.id as profileId," +                                         //[12]
                     " d.id as departmentId," +                                      //[13]
                     " d.name as departmentName," +                                  //[14]
-                    " h.alias as hospitalAlias"+                                    //[15]
+                    " h.alias as hospitalAlias" +                                    //[15]
                     " FROM" +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id = a.profileId.id" +

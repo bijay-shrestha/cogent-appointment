@@ -70,8 +70,15 @@ public class ClientLogQuery {
 
     public static String WHERE_CLAUSE_TO_SEARCH_CLIENT_LOGS(ClientLogSearchRequestDTO searchRequestDTO) {
 
-        String whereClause = " WHERE h.id=:hospitalId AND cl.status != 'D'" +
+        String whereClause = " WHERE cl.status != 'D'" +
                 " AND cl.logDate BETWEEN :fromDate AND :toDate";
+
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getClientId()))
+            whereClause += " AND h.id=" + searchRequestDTO.getClientId();
+
+
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getAdminMetaInfoId()))
+            whereClause += " AND h.id=" + searchRequestDTO.getAdminMetaInfoId();
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getAdminMetaInfoId()))
             whereClause += " AND ami.id=" + searchRequestDTO.getAdminMetaInfoId();

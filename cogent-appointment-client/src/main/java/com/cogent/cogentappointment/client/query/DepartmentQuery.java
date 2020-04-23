@@ -51,9 +51,6 @@ public class DepartmentQuery {
         if (!ObjectUtils.isEmpty(searchRequestDTO.getId()))
             whereClause += " AND d.id=" + searchRequestDTO.getId();
 
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getName()))
-            whereClause += " AND d.name LIKE '%" + searchRequestDTO.getName() + "%'";
-
         if (!ObjectUtils.isEmpty(searchRequestDTO.getDepartmentCode()))
             whereClause += " AND d.code LIKE '%" + searchRequestDTO.getDepartmentCode() + "%'";
 

@@ -52,6 +52,13 @@ public class CompanyUpdateRequestDTO implements Serializable {
     @NotBlank
     private String remarks;
 
+    /*Y-> NEW LOGO IS UPDATED
+   * N-> LOGO IS SAME AS BEFORE. SO IF IT IS 'N', THEN NO NEED TO UPDATE LOGO
+   */
+    @NotNull
+    @Status
+    private Character isLogoUpdate;
+
     @NotEmpty
     private List<CompanyContactNumberUpdateRequestDTO> contactNumberUpdateRequestDTOS;
 

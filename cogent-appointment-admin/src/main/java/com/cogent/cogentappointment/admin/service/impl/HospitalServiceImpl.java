@@ -31,6 +31,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.ALIAS_NOT_FOUND;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.HOSPITAL;
@@ -139,9 +140,11 @@ public class HospitalServiceImpl implements HospitalService {
 
         updateHospitalContactNumber(hospital.getId(), updateRequestDTO.getContactNumberUpdateRequestDTOS());
 
-        updateHospitalLogo(hospital, logo);
+        if (updateRequestDTO.getIsLogoUpdate().equals(YES))
+            updateHospitalLogo(hospital, logo);
 
-        updateHospitalBanner(hospital, banner);
+        if (updateRequestDTO.getIsBannerUpdate().equals(YES))
+            updateHospitalBanner(hospital, banner);
 
         updateHmacApiInfo(hmacApiInfo, updateRequestDTO.getStatus(), updateRequestDTO.getRemarks());
 

@@ -32,7 +32,7 @@ public class UniversityQuery {
                     " u.address as address," +                                    //[2]
                     " c.id as countryId," +                                        //[3]
                     " c.name as countryName," +                                   //[4]
-                    " c.status as status" +                                       //[5]
+                    " u.status as status" +                                       //[5]
                     " FROM University u " +
                     " LEFT JOIN Country c ON c.id = u.country.id";
 

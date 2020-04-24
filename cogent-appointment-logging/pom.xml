@@ -8,7 +8,7 @@
         <version>2.2.6.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.cogent.cogentappointment.logging</groupId>
+    <groupId>com.cogent</groupId>
     <artifactId>cogent-appointment-logging</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>cogent-appointment-logging</name>
@@ -127,6 +127,13 @@
             <groupId>com.cogent</groupId>
             <artifactId>cogent-appointment-persistence</artifactId>
             <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <!--<scope>provided</scope>-->
         </dependency>
 
 

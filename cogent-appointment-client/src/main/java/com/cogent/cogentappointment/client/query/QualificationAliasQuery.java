@@ -32,7 +32,8 @@ public class QualificationAliasQuery {
                     " qa.id as value," +
                     " qa.name as label" +
                     " FROM QualificationAlias qa" +
-                    " WHERE qa.status = 'Y'";
+                    " WHERE qa.status = 'Y'" +
+                    " ORDER BY label ASC";
 
     private static String SELECT_CLAUSE_TO_FETCH_MINIMAL_QUALIFICATION_ALIAS =
             "SELECT qa.id as id," +                                                //[0]
@@ -55,7 +56,8 @@ public class QualificationAliasQuery {
             whereClause += " AND qa.id = " + searchRequestDTO.getQualificationAliasId();
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
-            whereClause += " AND qa.status = '" + searchRequestDTO.getStatus()+"'";
+            whereClause += " AND qa.status = '" + searchRequestDTO.getStatus() + "'";
 
         return whereClause;
-    }}
+    }
+}

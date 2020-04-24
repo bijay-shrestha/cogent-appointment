@@ -5,7 +5,6 @@ import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.request.qualification.QualificationRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.qualification.QualificationSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.qualification.QualificationUpdateRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.qualification.QualificationDropdownDTO;
 import com.cogent.cogentappointment.client.dto.response.qualification.QualificationMinimalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.qualification.QualificationResponseDTO;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
@@ -142,12 +141,12 @@ public class QualificationServiceImpl implements QualificationService {
     }
 
     @Override
-    public List<QualificationDropdownDTO> fetchMinActiveQualification() {
+    public List<DropDownResponseDTO> fetchMinActiveQualification() {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, QUALIFICATION);
 
-        List<QualificationDropdownDTO> responseDTOS =
+        List<DropDownResponseDTO> responseDTOS =
                 qualificationRepository.fetchMinActiveQualification();
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, QUALIFICATION, getDifferenceBetweenTwoTime(startTime));

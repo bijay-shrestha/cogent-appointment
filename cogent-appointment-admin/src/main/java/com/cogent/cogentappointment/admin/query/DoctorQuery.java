@@ -115,7 +115,8 @@ public class DoctorQuery {
                     " FROM" +
                     " Doctor d" +
                     " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId" +
-                    " WHERE d.status ='Y'";
+                    " WHERE d.status ='Y'" +
+                    " ORDER BY label ASC";
 
     private static final String QUERY_TO_FETCH_DOCTOR_QUALIFICATION_FOR_DETAIL =
             " SELECT" +

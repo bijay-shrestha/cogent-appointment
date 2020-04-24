@@ -39,9 +39,13 @@ public class AdminQuery {
     public static final String QUERY_TO_FIND_ADMIN_EXCEPT_CURRENT_ADMIN =
             "SELECT " +
                     " a.email," +                               //[0]
-                    " a.mobileNumber" +                        //[1]
+                    " a.mobileNumber," +                        //[1]
+                    " h.id" +
                     " FROM" +
                     " Admin a" +
+                    " LEFT JOIN Profile p ON p.id = a.profileId.id" +
+                    " LEFT JOIN Department d ON d.id = p.department.id" +
+                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE" +
                     " a.status != 'D'" +
                     " AND a.id !=:id" +

@@ -19,13 +19,13 @@ public class ErrorMessageConstants {
         String ADMIN_DUPLICATION_IN_DIFFERENT_HOSPITAL_MESSAGE = "Cannot create Admin with email '%s'" +
                 " and mobile number '%s'.";
 
-        String EMAIL_DUPLICATION_MESSAGE = "%s already exists with email '%s'";
+        String EMAIL_DUPLICATION_MESSAGE = "Admin already exists with email '%s'.";
 
         String EMAIL_DUPLICATION_IN_DIFFERENT_HOSPITAL_MESSAGE = "Cannot create Admin with email '%s'.";
 
-        String MOBILE_NUMBER_DUPLICATION_MESSAGE = "%s already exists with mobile number '%s'";
+        String MOBILE_NUMBER_DUPLICATION_MESSAGE = "Admin already exists with mobile number '%s'.";
 
-        String MOBILE_NUMBER_DUPLICATION_IN_DIFFERENT_HOSPITAL_MESSAGE = "Cannot create Admin with email '%s'" +
+        String MOBILE_NUMBER_DUPLICATION_IN_DIFFERENT_HOSPITAL_MESSAGE = "Cannot create Admin with" +
                 " and mobile number '%s'.";
 
         String ADMIN_NOT_FOUND = "Admin '%s' doesn't exist";

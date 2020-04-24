@@ -40,6 +40,8 @@ public class CogentAppointmentLoggingApplication {
         System.out.println("Value of `spring.minio.access-key` = " + env.getProperty("spring.minio.access-key"));
         System.out.println("Value of `mail.host` = " + env.getProperty("mail.host"));
         System.out.println("Value of `catalina.home` = " + env.getProperty("catalina.home"));
+        System.out.println("Value of `server.port` = " + env.getProperty("server.port"));
+        System.out.println("Value of `server.servlet.context-path` = " + env.getProperty("server.servlet.context-path"));
     }
 
     @Bean

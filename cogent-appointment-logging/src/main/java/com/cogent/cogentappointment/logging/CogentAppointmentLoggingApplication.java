@@ -5,6 +5,7 @@ import com.cogent.cogentappointment.persistence.util.BeanUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
@@ -21,7 +22,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
                 {
                         "file:${catalina.home}/conf/logging/application-${spring.profiles.active}.yml"
                 })
-public class CogentAppointmentLoggingApplication {
+public class CogentAppointmentLoggingApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
 

@@ -14,13 +14,16 @@ public class SwaggerConstants {
             "/configuration/ui",
             "/configuration/security",
             "/swagger-ui.html",
-            "/webjars/**"
+            "/webjars/**",
+            "/test/**"
             // other public endpoints of your API may be appended to this array
     };
 
     public interface AdminLogConstant {
         String BASE_API_VALUE = "This is Admin Log Resource";
+        String TEST_RESOURCE = "This is Test Resource";
         String SEARCH_OPERATION = "Search admin logs according to given request parameters";
+        String TEST_OPERATION = "Test If logging is running.";
         String USER_MENU_STATICS_OPERATION = "Fetch user logs statics";
         String USER_MENU_LOG_DIAGRAM_OPERATION = "Fetch user logs data for user logs diagram";
 

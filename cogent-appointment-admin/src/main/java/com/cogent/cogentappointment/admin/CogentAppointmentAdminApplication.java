@@ -31,7 +31,6 @@ public class CogentAppointmentAdminApplication extends SpringBootServletInitiali
         return application.sources(CogentAppointmentAdminApplication.class);
     }
 
-
     public static void main(String[] args) {
 
 //        SpringApplication.run(CogentAppointmentAdminApplication.class, args);

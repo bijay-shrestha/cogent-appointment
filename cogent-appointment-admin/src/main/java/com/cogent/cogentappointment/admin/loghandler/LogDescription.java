@@ -12,24 +12,23 @@ public class LogDescription {
             logDescription = feature + " is added successfully...";
         }
 
-        if (action.equalsIgnoreCase("Create")) {
+        if (action.equalsIgnoreCase("Create") || action.equalsIgnoreCase("Create [Single Tab]")) {
             logDescription = feature + " is created successfully...";
         }
 
-        if (action.equalsIgnoreCase("Delete")) {
+        if (action.equalsIgnoreCase("Delete") || action.equalsIgnoreCase("Delete [Single Tab]")) {
             logDescription = feature + " is deleted successfully...";
         }
 
-
-        if (action.equalsIgnoreCase("Edit")) {
+        if (action.equalsIgnoreCase("Edit") || action.equalsIgnoreCase("Edit [Single Tab]")) {
             logDescription = feature + " is edited successfully...";
         }
 
-        if (action.equalsIgnoreCase("View")) {
+        if (action.equalsIgnoreCase("View") || action.equalsIgnoreCase("View [Single Tab]")) {
             logDescription = feature + " is viewed successfully...";
         }
 
-        if (action.equalsIgnoreCase("Manage")) {
+        if (action.equalsIgnoreCase("Manage") || action.equalsIgnoreCase("Create [Single Tab]")) {
             logDescription = feature + " is managed successfully...";
         }
 
@@ -41,19 +40,15 @@ public class LogDescription {
             logDescription = feature + " is cloned and added new...";
         }
 
-        if (action.equalsIgnoreCase("Approve")) {
+        if (action.equalsIgnoreCase("Approve") || action.equalsIgnoreCase("Approve [Single Tab]")) {
             logDescription = feature + " is approved successfully...";
         }
 
-        if (action.equalsIgnoreCase("Reject")) {
+        if (action.equalsIgnoreCase("Reject") || action.equalsIgnoreCase("Reject [Single Tab]")) {
             logDescription = feature + " is rejected successfully...";
         }
 
-        if (action.equalsIgnoreCase("Approve")) {
-            logDescription = feature + " is approved successfully...";
-        }
-
-        if (action.equalsIgnoreCase("Refund")) {
+        if (action.equalsIgnoreCase("Refund") || action.equalsIgnoreCase("Refund [Single Tab]")) {
             logDescription = feature + " is refunded successfully...";
         }
 

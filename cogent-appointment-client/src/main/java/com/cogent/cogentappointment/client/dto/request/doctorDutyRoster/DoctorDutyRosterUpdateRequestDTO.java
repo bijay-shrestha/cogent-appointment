@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.client.dto.request.doctorDutyRoster;
 import com.cogent.cogentappointment.client.constraintvalidator.Status;
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -33,6 +34,8 @@ public class DoctorDutyRosterUpdateRequestDTO implements Serializable {
     private Character hasOverrideDutyRoster;
 
     @NotEmpty
+    @NotBlank
+    @NotNull
     private String remarks;
 
     @NotEmpty

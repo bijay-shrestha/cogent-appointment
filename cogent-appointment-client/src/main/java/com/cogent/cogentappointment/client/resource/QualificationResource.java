@@ -1,10 +1,10 @@
 package com.cogent.cogentappointment.client.resource;
 
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
+import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.request.qualification.QualificationRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.qualification.QualificationSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.qualification.QualificationUpdateRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.qualification.QualificationDropdownDTO;
 import com.cogent.cogentappointment.client.service.QualificationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -69,7 +69,7 @@ public class QualificationResource {
 
     @GetMapping(ACTIVE + MIN)
     @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
-    public ResponseEntity<List<QualificationDropdownDTO>> fetchQualificationForDropDown() {
+    public ResponseEntity<List<DropDownResponseDTO>> fetchQualificationForDropDown() {
         return ok(qualificationService.fetchMinActiveQualification());
     }
 

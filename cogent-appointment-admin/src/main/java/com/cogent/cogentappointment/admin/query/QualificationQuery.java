@@ -80,14 +80,14 @@ public class QualificationQuery {
                     " AND q.id =:id";
 
     public static final String QUERY_TO_FETCH_ACTIVE_QUALIFICATION_FOR_DROPDOWN =
-            "SELECT q.id as id," +                                               //[0]
-                    " q.name as qualificationName," +                            //[1]
-                    " u.name as universityName," +                               //[2]
-                    " qa.name as qualificationAliasName" +                       //[3]
+            "SELECT q.id as value," +                                             //[0]
+                    " CONCAT(q.name,',',u.name)" +                               //[1]
+                    " AS label" +
                     " FROM Qualification q " +
                     " LEFT JOIN University u ON u.id = q.university.id" +
-                    " LEFT JOIN QualificationAlias qa ON qa.id = q.qualificationAlias.id" +
-                    " WHERE q.status = 'Y'";
+                    " WHERE q.status = 'Y'" +
+                    " AND u.status = 'Y'" +
+                    " ORDER BY label ASC";
 
     public static final String QUERY_TO_FETCH_MIN_QUALIFICATION =
             "SELECT q.id as value," +                                           //[0]

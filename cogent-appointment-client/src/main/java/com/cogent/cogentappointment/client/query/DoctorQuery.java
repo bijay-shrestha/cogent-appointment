@@ -65,8 +65,7 @@ public class DoctorQuery {
                         " doctor_specialization cs" +
                         " LEFT JOIN specialization s ON s.id = cs.specialization_id" +
                         " WHERE" +
-                        " s.status = 'Y'" +
-                        " AND cs.status ='Y'";
+                        " cs.status ='Y'";
 
                 if (!Objects.isNull(searchRequestDTO)) {
                     if (!Objects.isNull(searchRequestDTO.getSpecializationId()))
@@ -112,7 +111,8 @@ public class DoctorQuery {
                     " Doctor d" +
                     " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId" +
                     " WHERE d.status ='Y'" +
-                    " AND d.hospital.id=:hospitalId";
+                    " AND d.hospital.id=:hospitalId" +
+                    " ORDER BY label ASC";
 
     private static final String QUERY_TO_FETCH_DOCTOR_QUALIFICATION_FOR_DETAIL =
             " SELECT" +
@@ -123,7 +123,6 @@ public class DoctorQuery {
                     " LEFT JOIN qualification q ON q.id = dq.qualification_id" +
                     " WHERE" +
                     " dq.status = 'Y'" +
-                    " AND q.status ='Y'" +
                     " GROUP BY dq.doctor_id";
 
     private static final String SELECT_CLAUSE_TO_FETCH_DOCTOR_DETAILS =
@@ -178,8 +177,7 @@ public class DoctorQuery {
                     " doctor_specialization cs" +
                     " LEFT JOIN specialization s ON s.id = cs.specialization_id" +
                     " WHERE" +
-                    " s.status = 'Y'" +
-                    " AND cs.status ='Y'" +
+                    " cs.status ='Y'" +
                     " GROUP BY cs.doctor_id";
 
     private static final String QUERY_TO_FETCH_DOCTOR_QUALIFICATION_FOR_UPDATE =
@@ -193,7 +191,6 @@ public class DoctorQuery {
                     " LEFT JOIN qualification q ON q.id = dq.qualification_id" +
                     " WHERE" +
                     " dq.status = 'Y'" +
-                    " AND q.status ='Y'" +
                     " GROUP BY dq.doctor_id";
 
     public static final String QUERY_TO_FETCH_DOCTOR_DETAILS_FOR_UPDATE =

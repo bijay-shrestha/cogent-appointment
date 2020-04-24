@@ -13,9 +13,12 @@ public class CompanyAdminQuery {
     public static final String QUERY_TO_FIND_COMPANY_ADMIN_FOR_VALIDATION =
             "SELECT " +
                     " a.email," +                               //[0]
-                    " a.mobileNumber" +                        //[1]
+                    " a.mobileNumber," +                        //[1]
+                    " h.id" +                                   //[2]
                     " FROM" +
                     " Admin a" +
+                    " LEFT JOIN Profile p ON p.id = a.profileId.id" +
+                    " LEFT JOIN Hospital h ON h.id = p.company.id" +
                     " WHERE" +
                     " a.status != 'D'" +
                     " AND" +
@@ -24,9 +27,12 @@ public class CompanyAdminQuery {
     public static final String QUERY_TO_FIND_COMPANY_ADMIN_EXCEPT_CURRENT_COMPANY_ADMIN =
             "SELECT " +
                     " a.email," +                               //[0]
-                    " a.mobileNumber" +                        //[1]
+                    " a.mobileNumber," +                        //[1]
+                    " h.id" +                                   //[2]
                     " FROM" +
                     " Admin a" +
+                    " LEFT JOIN Profile p ON p.id = a.profileId.id" +
+                    " LEFT JOIN Hospital h ON h.id = p.company.id" +
                     " WHERE" +
                     " a.status != 'D'" +
                     " AND a.id !=:id" +
@@ -43,7 +49,7 @@ public class CompanyAdminQuery {
                     " WHERE a.status ='Y'" +
                     " AND p.isCompanyProfile='Y'" +
                     " AND p.status='Y'" +
-                    " ORDER by a.id  DESC  ";
+                    " ORDER by label ASC";
 
     public static String QUERY_TO_SEARCH_COMPANY_ADMIN(CompanyAdminSearchRequestDTO searchRequestDTO) {
 

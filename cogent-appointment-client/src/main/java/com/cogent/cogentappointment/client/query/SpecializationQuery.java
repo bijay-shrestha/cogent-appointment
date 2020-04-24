@@ -40,7 +40,8 @@ public class SpecializationQuery {
                     " FROM" +
                     " Specialization s" +
                     " WHERE s.status ='Y'" +
-                    " AND s.hospital.id=:hospitalId";
+                    " AND s.hospital.id=:hospitalId" +
+                    " ORDER BY label ASC";
 
     public static final String QUERY_TO_FETCH_SPECIALIZATION_DETAILS =
             " SELECT s.name as name," +                                     //[0]
@@ -94,7 +95,8 @@ public class SpecializationQuery {
                     " cs.doctorId =:id" +
                     " AND cs.status = 'Y'" +
                     " AND s.status = 'Y'" +
-                    " AND s.hospital.id=:hospitalId";
+                    " AND s.hospital.id=:hospitalId"+
+                    " ORDER BY label ASC";
 
     public static final String QUERY_TO_FETCH_SPECIALIZATION_BY_HOSPITAL_ID =
             " SELECT" +

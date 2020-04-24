@@ -124,8 +124,11 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                 adminRequestDTO.getMobileNumber()
         );
 
-        validateCompanyAdminDuplicity(admins, adminRequestDTO.getEmail(),
-                adminRequestDTO.getMobileNumber());
+        validateCompanyAdminDuplicity(admins,
+                adminRequestDTO.getEmail(),
+                adminRequestDTO.getMobileNumber(),
+                adminRequestDTO.getCompanyId()
+        );
 
         Admin admin = save(adminRequestDTO);
 
@@ -264,8 +267,10 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         List<Object[]> admins = adminRepository.validateCompanyAdminDuplicity(updateRequestDTO);
 
-        validateCompanyAdminDuplicity(admins, updateRequestDTO.getEmail(),
-                updateRequestDTO.getMobileNumber());
+        validateCompanyAdminDuplicity(
+                admins, updateRequestDTO.getEmail(),
+                updateRequestDTO.getMobileNumber(),
+                updateRequestDTO.getCompanyId());
 
         emailIsNotUpdated(updateRequestDTO, admin, files);
 
@@ -482,39 +487,34 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
     }
 
     private void validateCompanyAdminDuplicity(List<Object[]> adminList, String requestEmail,
-                                               String requestMobileNumber) {
+                                               String requestMobileNumber, Long requestedCompanyId) {
 
         final int EMAIL = 0;
         final int MOBILE_NUMBER = 1;
+        final int COMPANY_ID = 2;
 
         adminList.forEach(admin -> {
             boolean isEmailExists = requestEmail.equalsIgnoreCase((String) get(admin, EMAIL));
             boolean isMobileNumberExists = requestMobileNumber.equalsIgnoreCase((String) get(admin, MOBILE_NUMBER));
+            Long companyId = (Long) get(admin, COMPANY_ID);
 
-            if (isEmailExists && isMobileNumberExists) {
-                log.error(ADMIN_DUPLICATION_MESSAGE);
-                throw ADMIN_DUPLICATION.get();
+            /*THIS MEANS ADMIN WITH SAME EMAIL/ MOBILE NUMBER ALREADY EXISTS IN REQUESTED COMPANY*/
+            if (companyId.equals(requestedCompanyId)) {
+                if (isEmailExists && isMobileNumberExists)
+                    ADMIN_DUPLICATION(requestEmail, requestMobileNumber);
+
+                validateEmail(isEmailExists, requestEmail);
+                validateMobileNumber(isMobileNumberExists, requestMobileNumber);
             }
+              /*THIS MEANS ADMIN WITH SAME EMAIL/ MOBILE NUMBER ALREADY EXISTS IN ANOTHER COMPANY*/
+            else {
+                if (isEmailExists && isMobileNumberExists)
+                    ADMIN_DUPLICATION_IN_DIFFERENT_HOSPITAL(requestEmail, requestMobileNumber);
 
-            validateEmail(isEmailExists, requestEmail);
-            validateMobileNumber(isMobileNumberExists, requestMobileNumber);
+                validateEmailInDifferentHospital(isEmailExists, requestEmail);
+                validateMobileNumberInDifferentHospital(isMobileNumberExists, requestMobileNumber);
+            }
         });
-    }
-
-    private void validateEmail(boolean isEmailExists, String email) {
-        if (isEmailExists) {
-            log.error(EMAIL_DUPLICATION_MESSAGE);
-            throw new DataDuplicationException(
-                    String.format(EMAIL_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), email));
-        }
-    }
-
-    private void validateMobileNumber(boolean isMobileNumberExists, String mobileNumber) {
-        if (isMobileNumberExists) {
-            log.error(MOBILE_NUMBER_DUPLICATION_MESSAGE);
-            throw new DataDuplicationException(
-                    String.format(MOBILE_NUMBER_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), mobileNumber));
-        }
     }
 
     private Admin save(CompanyAdminRequestDTO adminRequestDTO) {
@@ -647,6 +647,42 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
             throw new NoContentFoundException(AdminMacAddressInfo.class);
     };
 
+    private void ADMIN_DUPLICATION(String email, String mobileNumber) {
+        throw new DataDuplicationException(String.format(ADMIN_DUPLICATION_MESSAGE, email, mobileNumber));
+    }
+
+    private void ADMIN_DUPLICATION_IN_DIFFERENT_HOSPITAL(String email, String mobileNumber) {
+        throw new DataDuplicationException(String.format(ADMIN_DUPLICATION_IN_DIFFERENT_HOSPITAL_MESSAGE, email, mobileNumber));
+    }
+
+    private void validateEmail(boolean isEmailExists, String email) {
+        if (isEmailExists) {
+            log.error(DUPLICATION_ERROR, ADMIN, email);
+            throw new DataDuplicationException(String.format(EMAIL_DUPLICATION_MESSAGE, email));
+        }
+    }
+
+    private void validateEmailInDifferentHospital(boolean isEmailExists, String email) {
+        if (isEmailExists) {
+            log.error(DUPLICATION_ERROR, ADMIN, email);
+            throw new DataDuplicationException(String.format(EMAIL_DUPLICATION_IN_DIFFERENT_HOSPITAL_MESSAGE, email));
+        }
+    }
+
+    private void validateMobileNumber(boolean isMobileNumberExists, String mobileNumber) {
+        if (isMobileNumberExists) {
+            log.error(DUPLICATION_ERROR, ADMIN, mobileNumber);
+            throw new DataDuplicationException(String.format(MOBILE_NUMBER_DUPLICATION_MESSAGE, mobileNumber));
+        }
+    }
+
+    private void validateMobileNumberInDifferentHospital(boolean isMobileNumberExists, String mobileNumber) {
+        if (isMobileNumberExists) {
+            log.error(DUPLICATION_ERROR, ADMIN, mobileNumber);
+            throw new DataDuplicationException(String.format(MOBILE_NUMBER_DUPLICATION_IN_DIFFERENT_HOSPITAL_MESSAGE, mobileNumber));
+        }
+    }
+
     private void validatePassword(Admin admin, AdminChangePasswordRequestDTO requestDTO) {
 
         if (!LoginValidator.checkPassword(requestDTO.getOldPassword(), admin.getPassword()))
@@ -656,8 +692,6 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
             throw new DataDuplicationException(DUPLICATE_PASSWORD_MESSAGE);
     }
 
-    private Supplier<DataDuplicationException> ADMIN_DUPLICATION = () ->
-            new DataDuplicationException(ADMIN_DUPLICATION_MESSAGE);
 
     private Function<Long, NoContentFoundException> ADMIN_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         throw new NoContentFoundException(Admin.class, "id", id.toString());

@@ -1,5 +1,5 @@
 catalina:
-  home: /home/f1soft/Softwares/apache-tomcat
+  home: /home/f1soft/Softwares/tomcat
 
 spring:
   profiles.active: uat

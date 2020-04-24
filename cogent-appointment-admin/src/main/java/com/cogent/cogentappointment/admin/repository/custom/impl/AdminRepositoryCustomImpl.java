@@ -28,6 +28,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -162,6 +163,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     public LoggedInAdminDTO getLoggedInAdmin(String email) {
         Query query = createQuery.apply(entityManager, QUERY_TO_GET_LOGGED_COMPANY_ADMIN_INFO)
                 .setParameter(EMAIL, email);
+        LoggedInAdminDTO loggedInAdminDTO=transformQueryToSingleResult(query, LoggedInAdminDTO.class);
         try {
             return transformQueryToSingleResult(query, LoggedInAdminDTO.class);
         } catch (NoResultException e) {

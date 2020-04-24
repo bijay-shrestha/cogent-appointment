@@ -149,4 +149,26 @@ public class AdminQuery {
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                     " WHERE ami.status !='D'" +
                     " AND p.isCompanyProfile='N'";
+
+    public static String QUERY_TO_FETCH_COMPANY_ADMIN_META_INFO_BY_COMPANY_ID =
+            " SELECT" +
+                    " ami.id as adminMetaInfoId," +                         //[0]
+                    " ami.metaInfo as metaInfo" +                    //[1]
+                    " FROM AdminMetaInfo ami" +
+                    " LEFT JOIN Admin a ON a.id=ami.admin.id" +
+                    " LEFT JOIN Profile p ON p.id=a.profileId.id" +
+                    " WHERE a.status !='D'" +
+                    " AND p.isCompanyProfile='Y'"+
+                    " AND p.company.id =:companyId";
+
+    public static String QUERY_TO_FETCH_COMPANY_ADMIN_META_INFO_BY_CLIENT_ID =
+            " SELECT ami.id as adminMetaInfoId," +                   //[0]
+                    " ami.metaInfo as metaInfo" +                   //[1]
+                    " FROM AdminMetaInfo ami" +
+                    " LEFT JOIN Admin a On a.id=ami.admin.id" +
+                    " LEFT JOIN Profile p ON p.id=a.profileId.id" +
+                    " LEFT JOIN Department d ON d.id=p.department.id" +
+                    " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
+                    " WHERE a.status !='D'" +
+                    " AND h.id=:hospitalId";
 }

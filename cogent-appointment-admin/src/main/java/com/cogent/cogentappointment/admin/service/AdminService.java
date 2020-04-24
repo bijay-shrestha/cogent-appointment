@@ -36,6 +36,10 @@ public interface AdminService {
     void update(AdminUpdateRequestDTO updateRequestDTO, MultipartFile files);
 
     List<AdminMetaInfoResponseDTO> fetchAdminMetaInfoResponseDto();
+
+    List<AdminMetaInfoResponseDTO> fetchAdminMetaInfoByCompanyIdResponseDto(Long id);
+
+    List<AdminMetaInfoResponseDTO> fetchAdminMetaInfoByClientIdResponseDto(Long id);
 }
 
 

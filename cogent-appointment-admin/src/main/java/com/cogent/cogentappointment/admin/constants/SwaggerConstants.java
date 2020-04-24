@@ -31,11 +31,15 @@ public class SwaggerConstants {
                 "then change the isDefaultImage status as 'Y' else update accordingly.";
         String FETCH_ADMIN_META_INFO = "Fetch active admin meta info for dropdown";
         String VERIFY_EMAIL_ADMIN = "Verify if the confirmation token sent in email (after successful email update by admin) is valid.";
+
+        String FETCH_ADMIN_META_INFO_BY_COMPANY_ID = "Fetch active admin meta info by company for dropdown";
+        String FETCH_ADMIN_META_INFO_BY_CLIENT_ID = "Fetch active admin meta info by client for dropdown";
     }
 
     public interface AdminFeatureConstant {
         String BASE_API_VALUE = "This is Admin Feature Resource";
         String UPDATE_OPERATION = "Update 'isSideBarCollapse' flag of corresponding admin";
+
     }
 
     public interface AppointmentConstant {

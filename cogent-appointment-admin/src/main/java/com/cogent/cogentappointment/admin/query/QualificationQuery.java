@@ -72,7 +72,8 @@ public class QualificationQuery {
                     " qa.id as qualificationAliasId," +                         //[3]
                     " qa.name as qualificationAliasName," +                     //[4]
                     " q.status as status," +                                    //[5]
-                    " q.remarks as remarks" +                                  //[6]
+                    " q.remarks as remarks," +                                  //[6]
+                    QUALIFICATION_AUDITABLE_QUERY() +
                     " FROM Qualification q " +
                     " LEFT JOIN University u ON u.id = q.university.id" +
                     " LEFT JOIN QualificationAlias qa ON qa.id = q.qualificationAlias.id" +
@@ -94,5 +95,13 @@ public class QualificationQuery {
                     " q.name as label" +                                        //[1]
                     " FROM Qualification q " +
                     " WHERE q.status != 'D'";
+
+    public static String QUALIFICATION_AUDITABLE_QUERY() {
+        return " q.createdBy as createdBy," +
+                " q.createdDate as createdDate," +
+                " q.lastModifiedBy as lastModifiedBy," +
+                " q.lastModifiedDate as lastModifiedDate";
+    }
+
 
 }

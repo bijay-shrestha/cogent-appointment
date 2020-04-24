@@ -48,7 +48,8 @@ public class SpecializationQuery {
                     " s.status as status," +                                //[2]
                     " s.remarks as remarks," +                               //[3]
                     " h.id as hospitalId," +                                 //[4]
-                    " h.name as hospitalName" +                              //[5]
+                    " h.name as hospitalName," +                              //[5]
+                    SPECIALIZATION_AUDITABLE_QUERY() +
                     " FROM" +
                     " Specialization s" +
                     " LEFT JOIN Hospital h ON h.id = s.hospital.id" +
@@ -110,4 +111,12 @@ public class SpecializationQuery {
                     " WHERE s.status ='Y'" +
                     " AND h.status = 'Y'" +
                     " AND h.id =:hospitalId";
+
+    public static String SPECIALIZATION_AUDITABLE_QUERY() {
+        return " s.createdBy as createdBy," +
+                " s.createdDate as createdDate," +
+                " s.lastModifiedBy as lastModifiedBy," +
+                " s.lastModifiedDate as lastModifiedDate";
+    }
+
 }

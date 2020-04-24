@@ -151,7 +151,8 @@ public class DoctorQuery {
                     SELECT_CLAUSE_TO_FETCH_DOCTOR_DETAILS + "," +
                     " tbl1.specialization_name as specializationName," +                //[12]
                     " tbl2.qualification_name as qualificationName," +                   //[13]
-                    " tbl3.file_uri as fileUri" +                                       //[14]
+                    " tbl3.file_uri as fileUri," +                                       //[14]
+                    DOCTOR_AUDITABLE_QUERY() +
                     " FROM doctor d" +
                     " LEFT JOIN hospital h ON h.id = d.hospital_id" +
                     " LEFT JOIN doctor_appointment_charge dac ON dac.doctor_id= d.id" +
@@ -282,6 +283,13 @@ public class DoctorQuery {
             sql += " AND d.id =" + doctorId;
 
         return sql;
+    }
+
+    public static String DOCTOR_AUDITABLE_QUERY() {
+        return " d.created_by as createdBy," +
+                " d.created_date as createdDate," +
+                " d.last_modified_by as lastModifiedBy," +
+                " d.last_modified_date as lastModifiedDate";
     }
 
 }

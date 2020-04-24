@@ -26,7 +26,8 @@ public class HospitalQuery {
                 " ELSE" +
                 " hb.file_uri" +
                 " END as hospitalBanner," +                                  //[5]
-                " h.code as hospitalCode" +                                  //[6]
+                " h.code as hospitalCode," +                                  //[6]
+                HOSPITAL_AUDITABLE_QUERY() +
                 " FROM" +
                 " hospital h" +
                 " LEFT JOIN hospital_logo hl ON h.id =hl.hospital_id " +
@@ -65,4 +66,11 @@ public class HospitalQuery {
                     " FROM Hospital h" +
                     " WHERE h.id =:hospitalId" +
                     " AND h.status = 'Y' AND h.isCompany = 'N'";
+
+    public static String HOSPITAL_AUDITABLE_QUERY() {
+        return " h.createdBy as createdBy," +
+                " h.createdDate as createdDate," +
+                " h.lastModifiedBy as lastModifiedBy," +
+                " h.lastModifiedDate as lastModifiedDate";
+    }
 }

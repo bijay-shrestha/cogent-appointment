@@ -342,10 +342,10 @@ public class DoctorQuery {
     }
 
     public static String DOCTOR_AUDITABLE_QUERY() {
-        return " d.createdBy as createdBy," +
-                " d.createdDate as createdDate," +
-                " d.lastModifiedBy as lastModifiedBy," +
-                " d.lastModifiedDate as lastModifiedDate";
+        return " d.created_by as createdBy," +
+                " d.created_date as createdDate," +
+                " d.last_modified_by as lastModifiedBy," +
+                " d.last_modified_date as lastModifiedDate";
     }
 
 }

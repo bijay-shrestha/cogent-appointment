@@ -76,7 +76,8 @@ public class DepartmentQuery {
                     " d.status as status," +                        //[2]
                     " d.remarks as remarks," +                      //[3]
                     " h.id as hospitalId," +                        //[4]
-                    " h.name as hospitalName" +                     //[5]
+                    " h.name as hospitalName," +                     //[5]
+                    DEPARTMENT_AUDITABLE_QUERY()+
                     " FROM Department d" +
                     " LEFT JOIN Hospital h ON h.id =d.hospital.id" +
                     " WHERE d.id =:id" +
@@ -109,4 +110,11 @@ public class DepartmentQuery {
                     " AND h.status = 'Y'" +
                     " AND h.id=:hospitalId" +
                     " ORDER BY d.id DESC";
+
+    public static String DEPARTMENT_AUDITABLE_QUERY() {
+        return " d.createdBy as createdBy," +
+                " d.createdDate as createdDate," +
+                " d.lastModifiedBy as lastModifiedBy," +
+                " d.lastModifiedDate as lastModifiedDate";
+    }
 }

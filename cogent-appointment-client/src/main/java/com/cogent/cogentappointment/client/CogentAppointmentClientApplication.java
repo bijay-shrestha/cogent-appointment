@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client;
 
+import com.cogent.cogentappointment.client.configuration.YamlPropertySourceFactory;
 import com.cogent.cogentappointment.persistence.util.BeanUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

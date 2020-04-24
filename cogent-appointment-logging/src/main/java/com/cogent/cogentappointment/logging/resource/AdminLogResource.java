@@ -54,8 +54,7 @@ public class AdminLogResource {
 
     @PutMapping(USERMENU_LOG_DIAGRAM)
     @ApiOperation(USER_MENU_LOG_DIAGRAM_OPERATION)
-    public ResponseEntity<?> fetchUserMenuLogsStaticsforDiagram(@RequestBody AdminLogSearchRequestDTO searchRequestDTO) {
-
+    public ResponseEntity<?> fetchUserMenuLogStaticsForDiagram(@RequestBody AdminLogSearchRequestDTO searchRequestDTO) {
 
         return ok().body(adminLogService.fetchUserMenuLogsStaticsforDiagram(searchRequestDTO));
     }

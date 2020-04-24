@@ -76,10 +76,6 @@ public class ClientLogQuery {
         if (!ObjectUtils.isEmpty(searchRequestDTO.getClientId()))
             whereClause += " AND h.id=" + searchRequestDTO.getClientId();
 
-
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getAdminMetaInfoId()))
-            whereClause += " AND h.id=" + searchRequestDTO.getAdminMetaInfoId();
-
         if (!ObjectUtils.isEmpty(searchRequestDTO.getAdminMetaInfoId()))
             whereClause += " AND ami.id=" + searchRequestDTO.getAdminMetaInfoId();
 

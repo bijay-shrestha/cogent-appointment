@@ -202,7 +202,9 @@ public class AdminServiceImpl implements AdminService {
         if (admin.getProfileId().getIsSuperAdminProfile().equals(YES))
             throw new BadRequestException(INVALID_DELETE_REQUEST);
 
-        convertAdminToDeleted(admin, deleteRequestDTO);
+        deleteAdminMetaInfo(admin,deleteRequestDTO);
+
+        save(convertAdminToDeleted(admin, deleteRequestDTO));
 
         log.info(DELETING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
     }
@@ -570,7 +572,14 @@ public class AdminServiceImpl implements AdminService {
         AdminMetaInfo adminMetaInfo = adminMetaInfoRepository.findAdminMetaInfoByAdminId(admin.getId())
                 .orElseThrow(() -> new NoContentFoundException(AdminMetaInfo.class));
 
-        parseMetaInfo(admin, adminMetaInfo);
+        adminMetaInfoRepository.save(parseMetaInfo(admin, adminMetaInfo));
+    }
+
+    private void deleteAdminMetaInfo(Admin admin,DeleteRequestDTO deleteRequestDTO) {
+        AdminMetaInfo adminMetaInfo = adminMetaInfoRepository.findAdminMetaInfoByAdminId(admin.getId())
+                .orElseThrow(() -> new NoContentFoundException(AdminMetaInfo.class));
+
+        adminMetaInfoRepository.save(deleteMetaInfo(adminMetaInfo, deleteRequestDTO));
     }
 
     private AdminConfirmationToken saveAdminConfirmationToken(AdminConfirmationToken adminConfirmationToken) {

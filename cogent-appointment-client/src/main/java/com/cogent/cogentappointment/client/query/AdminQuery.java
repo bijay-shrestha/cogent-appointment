@@ -184,7 +184,7 @@ public class AdminQuery {
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                     " LEFT JOIN Department d ON d.id=p.department.id" +
                     " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
-                    " WHERE a.status !='D'" +
+                    " WHERE ami.status !='D'" +
                     " AND h.id=:hospitalId";
 
     public static final String QUERY_TO_GET_LOGGED_ADMIN_INFO =

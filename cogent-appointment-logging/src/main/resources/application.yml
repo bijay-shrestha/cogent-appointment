@@ -7,7 +7,7 @@
 
 #catalina:
 #  home: /home/f1soft/Softwares/tomcat
-
+#
 ##### [END] CATALINA HOME CONFIG [/END] #########
 
 spring:

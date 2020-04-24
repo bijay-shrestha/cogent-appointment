@@ -188,7 +188,7 @@ public class DoctorUtils {
                 .appointmentFollowUpCharge(Double.parseDouble(results[APPOINTMENT_FOLLOW_UP_CHARGE].toString()))
                 .doctorSpecializationResponseDTOS(parseToDoctorSpecialization(results))
                 .doctorQualificationResponseDTOS(parseToDoctorQualification(results))
-                .fileUri(results[FILE_URI_INDEX].toString())
+                .fileUri(Objects.isNull(results[FILE_URI_INDEX]) ? null : results[FILE_URI_INDEX].toString())
                 .build();
     }
 

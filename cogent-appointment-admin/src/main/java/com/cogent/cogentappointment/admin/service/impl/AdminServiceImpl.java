@@ -30,11 +30,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.*;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.*;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
@@ -119,8 +119,11 @@ public class AdminServiceImpl implements AdminService {
                 adminRequestDTO.getMobileNumber()
         );
 
-        validateAdminDuplicity(admins, adminRequestDTO.getEmail(),
-                adminRequestDTO.getMobileNumber());
+        validateAdminDuplicity(admins,
+                adminRequestDTO.getEmail(),
+                adminRequestDTO.getMobileNumber(),
+                adminRequestDTO.getHospitalId()
+        );
 
         Admin admin = save(adminRequestDTO);
 
@@ -194,7 +197,7 @@ public class AdminServiceImpl implements AdminService {
         if (admin.getProfileId().getIsSuperAdminProfile().equals(YES))
             throw new BadRequestException(INVALID_DELETE_REQUEST);
 
-        deleteAdminMetaInfo(admin,deleteRequestDTO);
+        deleteAdminMetaInfo(admin, deleteRequestDTO);
 
         save(convertAdminToDeleted(admin, deleteRequestDTO));
 
@@ -242,8 +245,11 @@ public class AdminServiceImpl implements AdminService {
 
         List<Object[]> admins = adminRepository.validateDuplicity(updateRequestDTO);
 
-        validateAdminDuplicity(admins, updateRequestDTO.getEmail(),
-                updateRequestDTO.getMobileNumber());
+        validateAdminDuplicity(admins,
+                updateRequestDTO.getEmail(),
+                updateRequestDTO.getMobileNumber(),
+                updateRequestDTO.getHospitalId()
+        );
 
         emailIsNotUpdated(updateRequestDTO, admin, files);
 
@@ -306,7 +312,11 @@ public class AdminServiceImpl implements AdminService {
         List<AdminDashboardFeature> adminDashboardFeatureList = new ArrayList<>();
         adminDashboardRequestDTOS.forEach(result -> {
 
-            AdminDashboardFeature adminDashboardFeature = adminDashboardFeatureRepository.findAdminDashboardFeatureBydashboardFeatureId(result.getId(), admin.getId());
+            AdminDashboardFeature adminDashboardFeature =
+                    adminDashboardFeatureRepository.findAdminDashboardFeatureBydashboardFeatureId(
+                            result.getId(),
+                            admin.getId()
+                    );
 
             if (adminDashboardFeature == null) {
                 saveAdminDashboardFeature(result.getId(), admin);
@@ -358,22 +368,6 @@ public class AdminServiceImpl implements AdminService {
             log.error(ADMIN_CANNOT_BE_REGISTERED_DEBUG_MESSAGE);
             throw new BadRequestException(ADMIN_CANNOT_BE_REGISTERED_MESSAGE,
                     ADMIN_CANNOT_BE_REGISTERED_DEBUG_MESSAGE);
-        }
-    }
-
-    private void validateEmail(boolean isEmailExists, String email) {
-        if (isEmailExists) {
-            log.error(DUPLICATION_ERROR, ADMIN, email);
-            throw new DataDuplicationException(
-                    String.format(EMAIL_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), email));
-        }
-    }
-
-    private void validateMobileNumber(boolean isMobileNumberExists, String mobileNumber) {
-        if (isMobileNumberExists) {
-            log.error(DUPLICATION_ERROR, ADMIN, mobileNumber);
-            throw new DataDuplicationException(
-                    String.format(MOBILE_NUMBER_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), mobileNumber));
         }
     }
 
@@ -448,7 +442,7 @@ public class AdminServiceImpl implements AdminService {
         adminMetaInfoRepository.save(parseMetaInfo(admin, adminMetaInfo));
     }
 
-    private void deleteAdminMetaInfo(Admin admin,DeleteRequestDTO deleteRequestDTO) {
+    private void deleteAdminMetaInfo(Admin admin, DeleteRequestDTO deleteRequestDTO) {
         AdminMetaInfo adminMetaInfo = adminMetaInfoRepository.findAdminMetaInfoByAdminId(admin.getId())
                 .orElseThrow(() -> new NoContentFoundException(AdminMetaInfo.class));
 
@@ -503,20 +497,35 @@ public class AdminServiceImpl implements AdminService {
     }
 
     private void validateAdminDuplicity(List<Object[]> adminList, String requestEmail,
-                                        String requestMobileNumber) {
+                                        String requestMobileNumber, Long requestedHospitalId) {
 
         final int EMAIL = 0;
         final int MOBILE_NUMBER = 1;
+        final int HOSPITAL_ID = 2;
 
         adminList.forEach(admin -> {
             boolean isEmailExists = requestEmail.equalsIgnoreCase((String) get(admin, EMAIL));
             boolean isMobileNumberExists = requestMobileNumber.equalsIgnoreCase((String) get(admin, MOBILE_NUMBER));
+            Long hospitalId = (Long) get(admin, HOSPITAL_ID);
 
-            if (isEmailExists && isMobileNumberExists)
-                throw ADMIN_DUPLICATION.get();
+              /*THIS MEANS ADMIN WITH SAME EMAIL/ MOBILE NUMBER ALREADY EXISTS IN REQUESTED HOSPITAL*/
+            if (hospitalId.equals(requestedHospitalId)) {
+                if (isEmailExists && isMobileNumberExists){
+                    log.error(String.format(ADMIN_DUPLICATION_MESSAGE, requestEmail, requestMobileNumber));
+                    ADMIN_DUPLICATION(requestEmail, requestMobileNumber);
+                }
 
-            validateEmail(isEmailExists, requestEmail);
-            validateMobileNumber(isMobileNumberExists, requestMobileNumber);
+                validateEmail(isEmailExists, requestEmail);
+                validateMobileNumber(isMobileNumberExists, requestMobileNumber);
+            }
+              /*THIS MEANS ADMIN WITH SAME EMAIL/ MOBILE NUMBER ALREADY EXISTS IN ANOTHER HOSPITAL*/
+            else {
+                if (isEmailExists && isMobileNumberExists)
+                    ADMIN_DUPLICATION_IN_DIFFERENT_HOSPITAL(requestEmail, requestMobileNumber);
+
+                validateEmailInDifferentHospital(isEmailExists, requestEmail);
+                validateMobileNumberInDifferentHospital(isMobileNumberExists, requestMobileNumber);
+            }
         });
     }
 
@@ -556,8 +565,41 @@ public class AdminServiceImpl implements AdminService {
         }
     };
 
-    private Supplier<DataDuplicationException> ADMIN_DUPLICATION = () ->
-            new DataDuplicationException(ADMIN_DUPLICATION_MESSAGE);
+    private void ADMIN_DUPLICATION(String email, String mobileNumber) {
+        throw new DataDuplicationException(String.format(ADMIN_DUPLICATION_MESSAGE, email, mobileNumber));
+    }
+
+    private void ADMIN_DUPLICATION_IN_DIFFERENT_HOSPITAL(String email, String mobileNumber) {
+        throw new DataDuplicationException(String.format(ADMIN_DUPLICATION_IN_DIFFERENT_HOSPITAL_MESSAGE, email, mobileNumber));
+    }
+
+    private void validateEmail(boolean isEmailExists, String email) {
+        if (isEmailExists) {
+            log.error(DUPLICATION_ERROR, ADMIN, email);
+            throw new DataDuplicationException(String.format(EMAIL_DUPLICATION_MESSAGE, email));
+        }
+    }
+
+    private void validateEmailInDifferentHospital(boolean isEmailExists, String email) {
+        if (isEmailExists) {
+            log.error(DUPLICATION_ERROR, ADMIN, email);
+            throw new DataDuplicationException(String.format(EMAIL_DUPLICATION_IN_DIFFERENT_HOSPITAL_MESSAGE, email));
+        }
+    }
+
+    private void validateMobileNumber(boolean isMobileNumberExists, String mobileNumber) {
+        if (isMobileNumberExists) {
+            log.error(DUPLICATION_ERROR, ADMIN, mobileNumber);
+            throw new DataDuplicationException(String.format(MOBILE_NUMBER_DUPLICATION_MESSAGE, mobileNumber));
+        }
+    }
+
+    private void validateMobileNumberInDifferentHospital(boolean isMobileNumberExists, String mobileNumber) {
+        if (isMobileNumberExists) {
+            log.error(DUPLICATION_ERROR, ADMIN, mobileNumber);
+            throw new DataDuplicationException(String.format(MOBILE_NUMBER_DUPLICATION_IN_DIFFERENT_HOSPITAL_MESSAGE, mobileNumber));
+        }
+    }
 
     private Function<Long, NoContentFoundException> ADMIN_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, ADMIN, id);

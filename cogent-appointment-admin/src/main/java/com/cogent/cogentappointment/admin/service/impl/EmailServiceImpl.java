@@ -53,16 +53,12 @@ public class EmailServiceImpl implements EmailService {
 
     private final Configuration configuration;
 
-    private final EmailProperties emailProperties;
-
     public EmailServiceImpl(EmailToSendRepository emailToSendRepository,
                             @Qualifier("getMailSender") JavaMailSender javaMailSender,
-                            Configuration configuration,
-                            EmailProperties emailProperties) {
+                            Configuration configuration) {
         this.emailToSendRepository = emailToSendRepository;
         this.javaMailSender = javaMailSender;
         this.configuration = configuration;
-        this.emailProperties = emailProperties;
     }
 
     @Override
@@ -88,20 +84,18 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void sendEmail() {
 
-        if(emailProperties.getEnabled().equals(YES)){
-            Long startTime = getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
-            log.info(SENDING_EMAIL_PROCESS_STARTED);
+        log.info(SENDING_EMAIL_PROCESS_STARTED);
 
-            List<EmailToSend> unsentEmails = emailToSendRepository.fetchUnsentEmails();
+        List<EmailToSend> unsentEmails = emailToSendRepository.fetchUnsentEmails();
 
-            unsentEmails.forEach(unsentEmail -> {
-                send(unsentEmail);
-                updateEmailToSendStatus(unsentEmail);
-            });
+        unsentEmails.forEach(unsentEmail -> {
+            sendForAddAndUpdate(unsentEmail);
+            updateEmailToSendStatus(unsentEmail);
+        });
 
-            log.info(SENDING_EMAIL_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
-        }
+        log.info(SENDING_EMAIL_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
     }
 
     private void send(EmailToSend emailToSend) {
@@ -141,6 +135,49 @@ public class EmailServiceImpl implements EmailService {
                 case FORGOT_PASSWORD: {
                     parseToForgotPasswordTemplate(emailToSend, model);
                     html = getFreeMarkerContent(model, FORGOT_PASSWORD_TEMPLATE, html);
+                    break;
+                }
+
+                default:
+                    break;
+            }
+
+            helper.setText(html, true);
+
+            helper.addInline(LOGO_FILE_NAME, new FileSystemResource
+                    (new FileResourceUtils().convertResourcesFileIntoFile(LOGO_LOCATION)));
+
+            javaMailSender.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sendForAddAndUpdate(EmailToSend emailToSend) {
+
+        try {
+            MimeMessage message = getMimeMessage(emailToSend);
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+            Map<String, Object> model = new HashMap<>();
+            String html = "";
+
+            switch (emailToSend.getTemplateName()) {
+                case ADMIN_VERIFICATION: {
+                    parseToAdminVerificationTemplate(emailToSend, model);
+                    html = getFreeMarkerContent(model, ADMIN_VERIFICATION_TEMPLATE, html);
+                    break;
+                }
+
+                case EMAIL_VERIFICATION: {
+                    parseToAdminVerificationTemplate(emailToSend, model);
+                    html = getFreeMarkerContent(model, EMAIL_VERIFICATION_TEMPLATE, html);
+                    break;
+                }
+
+                case UPDATE_ADMIN: {
+                    parseToUpdateAdminTemplate(emailToSend, model);
+                    html = getFreeMarkerContent(model, UPDATE_ADMIN_TEMPLATE, html);
                     break;
                 }
 

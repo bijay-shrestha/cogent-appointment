@@ -5,7 +5,6 @@ import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.request.qualification.QualificationRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.qualification.QualificationSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.qualification.QualificationUpdateRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.qualification.QualificationDropdownDTO;
 import com.cogent.cogentappointment.client.dto.response.qualification.QualificationMinimalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.qualification.QualificationResponseDTO;
 import com.cogent.cogentappointment.persistence.model.Qualification;
@@ -29,7 +28,7 @@ public interface QualificationService {
 
     QualificationResponseDTO fetchDetailsById(Long id);
 
-    List<QualificationDropdownDTO> fetchMinActiveQualification();
+    List<DropDownResponseDTO> fetchMinActiveQualification();
 
     Qualification fetchActiveQualificationById(Long id);
 

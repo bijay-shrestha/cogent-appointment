@@ -22,8 +22,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.admin.log.constants.DoctorLog.DOCTOR;
 import static com.cogent.cogentappointment.admin.query.DoctorQuery.*;
 import static com.cogent.cogentappointment.admin.utils.DoctorUtils.parseToDoctorUpdateResponseDTO;

@@ -66,8 +66,7 @@ public class DoctorQuery {
                         " doctor_specialization cs" +
                         " LEFT JOIN specialization s ON s.id = cs.specialization_id" +
                         " WHERE" +
-                        " s.status = 'Y'" +
-                        " AND cs.status ='Y'";
+                        " cs.status ='Y'";
 
                 if (!Objects.isNull(searchRequestDTO)) {
                     if (!Objects.isNull(searchRequestDTO.getSpecializationId()))
@@ -127,7 +126,6 @@ public class DoctorQuery {
                     " LEFT JOIN qualification q ON q.id = dq.qualification_id" +
                     " WHERE" +
                     " dq.status = 'Y'" +
-                    " AND q.status ='Y'" +
                     " GROUP BY dq.doctor_id";
 
     private static final String SELECT_CLAUSE_TO_FETCH_DOCTOR_DETAILS =

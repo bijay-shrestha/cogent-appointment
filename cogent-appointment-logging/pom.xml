@@ -133,10 +133,15 @@
     </dependencies>
 
     <build>
+        <finalName>logging</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <classifier>exec</classifier>
+                    <mainClass>com.cogent.cogentappointment.logging.CogentAppointmentLoggingApplication</mainClass>
+                </configuration>
             </plugin>
         </plugins>
     </build>

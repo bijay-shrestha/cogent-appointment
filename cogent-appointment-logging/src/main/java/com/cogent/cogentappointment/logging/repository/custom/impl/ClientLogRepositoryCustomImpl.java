@@ -63,7 +63,7 @@ public class ClientLogRepositoryCustomImpl implements ClientLogRepositoryCustom 
     }
 
     @Override
-    public UserMenuStaticsResponseDTO fetchUserMenuLogsStaticsByClientId(ClientLogSearchRequestDTO searchRequestDTO, Pageable pageable) {
+    public UserMenuStaticsResponseDTO fetchUserMenuLogStaticsByClientId(ClientLogSearchRequestDTO searchRequestDTO, Pageable pageable) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_USER_LOGS_STATICS(searchRequestDTO))
                 .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
                 .setParameter(TO_DATE, searchRequestDTO.getToDate());
@@ -116,33 +116,7 @@ public class ClientLogRepositoryCustomImpl implements ClientLogRepositoryCustom 
     }
 
     @Override
-    public UserMenuStaticsResponseDTO fetchUserMenuLogsStatics(ClientLogSearchRequestDTO searchRequestDTO) {
-
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_USER_LOGS_STATICS(searchRequestDTO))
-                .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
-                .setParameter(TO_DATE, searchRequestDTO.getToDate());
-
-        int totalItems = query.getResultList().size();
-
-        List<AdminLogStaticsResponseDTO> result = transformQueryToResultList(query, AdminLogStaticsResponseDTO.class);
-
-        if (ObjectUtils.isEmpty(result)) {
-            //            error()//Error not integrated...
-            throw NO_CLIENT_LOGS_FOUND.get();
-        } else {
-
-            Long totalCount = result.stream().mapToLong(AdminLogStaticsResponseDTO::getCount).sum();
-
-            UserMenuStaticsResponseDTO userMenuStaticsResponseDTO = new UserMenuStaticsResponseDTO();
-            userMenuStaticsResponseDTO.setUserMenuCountList(result);
-            userMenuStaticsResponseDTO.setTotalCount(totalCount);
-            userMenuStaticsResponseDTO.setTotalItems(totalItems);
-            return userMenuStaticsResponseDTO;
-        }
-    }
-
-    @Override
-    public UserMenuStaticsResponseDTO fetchUserMenuLogsStaticsforDiagram(ClientLogSearchRequestDTO searchRequestDTO) {
+    public UserMenuStaticsResponseDTO fetchUserMenuLogStaticsForDiagram(ClientLogSearchRequestDTO searchRequestDTO) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_USER_LOGS_STATICS_FOR_PIE_CHART(searchRequestDTO))
                 .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
@@ -168,7 +142,7 @@ public class ClientLogRepositoryCustomImpl implements ClientLogRepositoryCustom 
     }
 
     @Override
-    public UserMenuStaticsResponseDTO fetchUserMenuLogsStaticsforDiagramByClientId(ClientLogSearchRequestDTO searchRequestDTO) {
+    public UserMenuStaticsResponseDTO fetchUserMenuLogStaticsForDiagramByClientId(ClientLogSearchRequestDTO searchRequestDTO) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_USER_LOGS_STATICS_FOR_PIE_CHART(searchRequestDTO))
                 .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
                 .setParameter(TO_DATE, searchRequestDTO.getToDate())

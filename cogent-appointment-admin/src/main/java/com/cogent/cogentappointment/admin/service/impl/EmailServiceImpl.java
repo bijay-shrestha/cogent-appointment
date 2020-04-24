@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.request.email.EmailRequestDTO;
+import com.cogent.cogentappointment.admin.property.EmailProperties;
 import com.cogent.cogentappointment.admin.repository.EmailToSendRepository;
 import com.cogent.cogentappointment.admin.service.EmailService;
 import com.cogent.cogentappointment.admin.utils.commons.FileResourceUtils;
@@ -28,6 +29,7 @@ import static com.cogent.cogentappointment.admin.constants.EmailConstants.Admin.
 import static com.cogent.cogentappointment.admin.constants.EmailConstants.ForgotPassword.RESET_CODE;
 import static com.cogent.cogentappointment.admin.constants.EmailConstants.*;
 import static com.cogent.cogentappointment.admin.constants.EmailTemplates.*;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.SAVING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.SAVING_PROCESS_STARTED;
@@ -51,12 +53,16 @@ public class EmailServiceImpl implements EmailService {
 
     private final Configuration configuration;
 
+    private final EmailProperties emailProperties;
+
     public EmailServiceImpl(EmailToSendRepository emailToSendRepository,
                             @Qualifier("getMailSender") JavaMailSender javaMailSender,
-                            Configuration configuration) {
+                            Configuration configuration,
+                            EmailProperties emailProperties) {
         this.emailToSendRepository = emailToSendRepository;
         this.javaMailSender = javaMailSender;
         this.configuration = configuration;
+        this.emailProperties = emailProperties;
     }
 
     @Override
@@ -82,18 +88,20 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void sendEmail() {
 
-        Long startTime = getTimeInMillisecondsFromLocalDate();
+        if(emailProperties.getEnabled().equals(YES)){
+            Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(SENDING_EMAIL_PROCESS_STARTED);
+            log.info(SENDING_EMAIL_PROCESS_STARTED);
 
-        List<EmailToSend> unsentEmails = emailToSendRepository.fetchUnsentEmails();
+            List<EmailToSend> unsentEmails = emailToSendRepository.fetchUnsentEmails();
 
-        unsentEmails.forEach(unsentEmail -> {
-            send(unsentEmail);
-            updateEmailToSendStatus(unsentEmail);
-        });
+            unsentEmails.forEach(unsentEmail -> {
+                send(unsentEmail);
+                updateEmailToSendStatus(unsentEmail);
+            });
 
-        log.info(SENDING_EMAIL_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
+            log.info(SENDING_EMAIL_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
+        }
     }
 
     private void send(EmailToSend emailToSend) {

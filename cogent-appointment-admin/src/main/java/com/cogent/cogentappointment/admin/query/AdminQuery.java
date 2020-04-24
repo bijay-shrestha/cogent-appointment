@@ -14,7 +14,7 @@ public class AdminQuery {
             "SELECT " +
                     " a.email," +                               //[0]
                     " a.mobileNumber," +                        //[1]
-                    " h.id" +
+                    " h.id" +                                   //[2]
                     " FROM" +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id = a.profileId.id" +

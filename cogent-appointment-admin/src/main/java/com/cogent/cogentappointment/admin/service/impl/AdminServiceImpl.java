@@ -510,8 +510,10 @@ public class AdminServiceImpl implements AdminService {
 
               /*THIS MEANS ADMIN WITH SAME EMAIL/ MOBILE NUMBER ALREADY EXISTS IN REQUESTED HOSPITAL*/
             if (hospitalId.equals(requestedHospitalId)) {
-                if (isEmailExists && isMobileNumberExists)
+                if (isEmailExists && isMobileNumberExists){
+                    log.error(String.format(ADMIN_DUPLICATION_MESSAGE, requestEmail, requestMobileNumber));
                     ADMIN_DUPLICATION(requestEmail, requestMobileNumber);
+                }
 
                 validateEmail(isEmailExists, requestEmail);
                 validateMobileNumber(isMobileNumberExists, requestMobileNumber);

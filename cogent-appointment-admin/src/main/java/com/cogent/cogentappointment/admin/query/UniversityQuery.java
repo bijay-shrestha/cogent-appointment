@@ -56,6 +56,8 @@ public class UniversityQuery {
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
             whereClause += " AND u.status='" + searchRequestDTO.getStatus() + "'";
 
+        whereClause += " ORDER BY u.id DESC";
+
         return whereClause;
     }
 

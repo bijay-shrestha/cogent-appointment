@@ -105,7 +105,6 @@ public class AdminLogRepositoryCustomImpl implements AdminLogRepositoryCustom {
         List<AdminLogStaticsResponseDTO> result = transformQueryToResultList(query, AdminLogStaticsResponseDTO.class);
 
         if (result.isEmpty()) {
-//            error();
             throw NO_USER_STATICS_FOUND.get();
         } else {
 

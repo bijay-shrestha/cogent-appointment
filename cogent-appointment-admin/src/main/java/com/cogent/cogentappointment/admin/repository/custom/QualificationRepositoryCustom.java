@@ -1,10 +1,9 @@
 package com.cogent.cogentappointment.admin.repository.custom;
 
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.qualification.QualificationDropdownDTO;
+import com.cogent.cogentappointment.admin.dto.request.qualification.QualificationSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.qualification.QualificationMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.qualification.QualificationResponseDTO;
-import com.cogent.cogentappointment.admin.dto.request.qualification.QualificationSearchRequestDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -27,7 +26,7 @@ public interface QualificationRepositoryCustom {
 
     QualificationResponseDTO fetchDetailsById(Long id);
 
-    List<QualificationDropdownDTO> fetchActiveMinQualification();
+    List<DropDownResponseDTO> fetchActiveMinQualification();
 
     List<DropDownResponseDTO> fetchMinQualification();
 

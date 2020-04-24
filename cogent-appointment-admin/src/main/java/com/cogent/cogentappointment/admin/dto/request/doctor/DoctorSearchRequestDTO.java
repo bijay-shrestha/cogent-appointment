@@ -13,7 +13,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class DoctorSearchRequestDTO implements Serializable {
 
-    private Long id;
+    private Long doctorId;
 
     private String code;
 

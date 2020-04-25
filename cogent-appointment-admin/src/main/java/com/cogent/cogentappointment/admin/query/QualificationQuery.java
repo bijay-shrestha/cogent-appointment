@@ -82,7 +82,7 @@ public class QualificationQuery {
     public static final String QUERY_TO_FETCH_ACTIVE_QUALIFICATION_FOR_DROPDOWN =
             "SELECT q.id as value," +                                             //[0]
                     " CONCAT(q.name,',',u.name)" +                               //[1]
-                    " END AS label" +
+                    " AS label" +
                     " FROM Qualification q " +
                     " LEFT JOIN University u ON u.id = q.university.id" +
                     " WHERE q.status = 'Y'" +

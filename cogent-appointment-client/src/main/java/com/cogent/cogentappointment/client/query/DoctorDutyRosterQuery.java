@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.client.query;
 
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.DoctorDutyRosterSearchRequestDTO;
+import org.springframework.util.ObjectUtils;
 
 import java.util.Objects;
 
@@ -36,6 +37,9 @@ public class DoctorDutyRosterQuery {
                 " ddr.status !='D'" +
                 " AND ddr.hospitalId.id=:hospitalId" +
                 " AND ddr.toDate >=:fromDate AND ddr.fromDate <=:toDate";
+
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
+            sql += " AND ddr.status='" + searchRequestDTO.getStatus() + "'";
 
         if (!Objects.isNull(searchRequestDTO.getDoctorId()))
             sql += " AND d.id = " + searchRequestDTO.getDoctorId();

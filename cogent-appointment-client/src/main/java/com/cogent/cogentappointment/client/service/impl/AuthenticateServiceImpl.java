@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.service.impl;
 
+import com.cogent.cogentappointment.client.dto.request.login.LoginEsewaRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.login.LoginRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.login.ThirdPartyDetail;
 import com.cogent.cogentappointment.client.repository.HmacApiInfoRepository;
@@ -40,8 +41,8 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     }
 
     @Override
-    public String loginThirdParty(LoginRequestDTO requestDTO) {
-        ThirdPartyDetail thirdPartyDetail = hmacApiInfoRepository.getDetailsByHospitalCode(null);
+    public String loginThirdParty(LoginEsewaRequestDTO requestDTO) {
+        ThirdPartyDetail thirdPartyDetail = hmacApiInfoRepository.getDetailsByHospitalCode(requestDTO.getCompanyCode());
 
         return hmacUtils.getAuthTokenForEsewa(thirdPartyDetail);
     }

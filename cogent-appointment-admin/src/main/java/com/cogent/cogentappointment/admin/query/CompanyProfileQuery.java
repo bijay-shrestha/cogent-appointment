@@ -91,8 +91,7 @@ public class CompanyProfileQuery {
                     " pm.roleId as roleId," +                                 //[1]
                     " pm.userMenuId as userMenuId," +                         //[2]
                     " pm.parentId as parentId," +                             //[3]
-                    " pm.status as status," +                                  //[4]
-                    COMPANY_PROFILE_MENU_AUDITABLE_QUERY() +
+                    " pm.status as status" +                                  //[4]
                     " FROM" +
                     " ProfileMenu pm" +
                     " LEFT JOIN Profile p ON pm.profile.id = p.id" +

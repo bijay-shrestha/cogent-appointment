@@ -16,7 +16,7 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CompanyProfileDetailResponseDTO extends AuditableResponseDTO implements Serializable {
+public class CompanyProfileDetailResponseDTO implements Serializable {
 
     private CompanyProfileResponseDTO companyProfileInfo;
 

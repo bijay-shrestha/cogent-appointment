@@ -28,10 +28,8 @@ public class DoctorDutyRosterResponseDTO implements Serializable {
 
     private Integer rosterGapDuration;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd YYYY")
     private Date fromDate;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd YYYY")
     private Date toDate;
 
     private Character status;

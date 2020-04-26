@@ -35,11 +35,6 @@ public class CogentAppointmentLoggingApplication extends SpringBootServletInitia
         System.out.println("Value of `spring.profiles.active` = " + env.getProperty("spring.profiles.active"));
         System.out.println("Value of `application-${spring.profiles.active}.yml`");
         System.out.println("Value of `spring.datasource.url` = " + env.getProperty("spring.datasource.url"));
-        System.out.println("Value of `spring.minio.url` = " + env.getProperty("spring.minio.url"));
-        System.out.println("Value of `spring.minio.bucket` = " + env.getProperty("spring.minio.bucket"));
-        System.out.println("Value of `serverlocation` = " + env.getProperty("serverlocation"));
-        System.out.println("Value of `spring.minio.access-key` = " + env.getProperty("spring.minio.access-key"));
-        System.out.println("Value of `mail.host` = " + env.getProperty("mail.host"));
         System.out.println("Value of `catalina.home` = " + env.getProperty("catalina.home"));
         System.out.println("Value of `server.port` = " + env.getProperty("server.port"));
         System.out.println("Value of `server.servlet.context-path` = " + env.getProperty("server.servlet.context-path"));

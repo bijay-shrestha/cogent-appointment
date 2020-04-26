@@ -37,6 +37,7 @@ public class DoctorDutyRosterQuery {
                 " LEFT JOIN Hospital h ON ddr.hospitalId.id = h.id" +
                 " WHERE" +
                 " ddr.status !='D'" +
+                " AND d.status = 'Y'" +
                 " AND ddr.toDate >=:fromDate AND ddr.fromDate <=:toDate";
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))

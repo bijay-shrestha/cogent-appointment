@@ -35,6 +35,7 @@ public class DoctorDutyRosterQuery {
                 " LEFT JOIN Specialization s ON ddr.specializationId.id = s.id" +
                 " WHERE" +
                 " ddr.status !='D'" +
+                " AND d.status = 'Y'" +
                 " AND ddr.hospitalId.id=:hospitalId" +
                 " AND ddr.toDate >=:fromDate AND ddr.fromDate <=:toDate";
 

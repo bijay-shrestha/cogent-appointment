@@ -47,7 +47,7 @@ public class DoctorDutyRosterQuery {
         if (!Objects.isNull(searchRequestDTO.getSpecializationId()))
             sql += " AND s.id = " + searchRequestDTO.getSpecializationId();
 
-        return sql;
+        return sql + " ORDER BY ddr.id DESC";
     }
 
     public static final String QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_DETAILS =

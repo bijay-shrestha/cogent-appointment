@@ -9,8 +9,8 @@ import com.cogent.cogentappointment.client.dto.response.qualification.Qualificat
 import com.cogent.cogentappointment.client.dto.response.qualification.QualificationResponseDTO;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
+import com.cogent.cogentappointment.client.repository.QualificationAliasRepository;
 import com.cogent.cogentappointment.client.repository.QualificationRepository;
-import com.cogent.cogentappointment.client.service.QualificationAliasService;
 import com.cogent.cogentappointment.client.service.QualificationService;
 import com.cogent.cogentappointment.client.service.UniversityService;
 import com.cogent.cogentappointment.persistence.model.Qualification;
@@ -26,6 +26,7 @@ import java.util.function.Function;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.NAME_DUPLICATION_MESSAGE;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
+import static com.cogent.cogentappointment.client.log.constants.QualificationAliasLog.QUALIFICATION_ALIAS;
 import static com.cogent.cogentappointment.client.log.constants.QualificationLog.QUALIFICATION;
 import static com.cogent.cogentappointment.client.utils.QualificationUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
@@ -41,15 +42,15 @@ public class QualificationServiceImpl implements QualificationService {
 
     private final QualificationRepository qualificationRepository;
 
-    private final QualificationAliasService qualificationAliasService;
+    private final QualificationAliasRepository qualificationAliasRepository;
 
     private final UniversityService universityService;
 
     public QualificationServiceImpl(QualificationRepository qualificationRepository,
-                                    QualificationAliasService qualificationAliasService,
+                                    QualificationAliasRepository qualificationAliasRepository,
                                     UniversityService universityService) {
         this.qualificationRepository = qualificationRepository;
-        this.qualificationAliasService = qualificationAliasService;
+        this.qualificationAliasRepository = qualificationAliasRepository;
         this.universityService = universityService;
     }
 
@@ -190,7 +191,8 @@ public class QualificationServiceImpl implements QualificationService {
     }
 
     private QualificationAlias fetchQualificationAlias(Long id) {
-        return qualificationAliasService.fetchQualificationAliasById(id);
+        return qualificationAliasRepository.fetchActiveQualificationAliasById(id).orElseThrow(() ->
+                QUALIFICATION_ALIAS_WITH_GIVEN_ID_NOT_FOUND.apply(id));
     }
 
     private Qualification findQualificationById(Long id) {
@@ -209,5 +211,10 @@ public class QualificationServiceImpl implements QualificationService {
     private Function<Long, NoContentFoundException> QUALIFICATION_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, QUALIFICATION, id);
         throw new NoContentFoundException(Qualification.class, "id", id.toString());
+    };
+
+    private Function<Long, NoContentFoundException> QUALIFICATION_ALIAS_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, QUALIFICATION_ALIAS, id);
+        throw new NoContentFoundException(QualificationAlias.class, "id", id.toString());
     };
 }

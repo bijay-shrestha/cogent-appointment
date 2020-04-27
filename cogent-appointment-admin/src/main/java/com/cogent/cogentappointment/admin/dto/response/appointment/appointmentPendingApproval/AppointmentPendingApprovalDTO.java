@@ -39,4 +39,6 @@ public class AppointmentPendingApprovalDTO implements Serializable {
 
     private String appointmentMode;
 
+    private Double appointmentAmount;
+
 }

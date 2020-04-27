@@ -20,10 +20,10 @@ public class AppointmentRescheduleLogDTO {
 
     private String hospitalName;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd YYYY")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd YYYY",timezone = "Asia/Kathmandu")
     private Date previousAppointmentDate;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd YYYY")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd YYYY",timezone = "Asia/Kathmandu")
     private Date rescheduleAppointmentDate;
 
     private String appointmentNumber;

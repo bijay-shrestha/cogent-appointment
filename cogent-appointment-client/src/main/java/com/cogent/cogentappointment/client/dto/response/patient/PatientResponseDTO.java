@@ -44,4 +44,6 @@ public class PatientResponseDTO implements Serializable {
 
     private Character isRegistered;
 
+    private String remarks;
+
 }

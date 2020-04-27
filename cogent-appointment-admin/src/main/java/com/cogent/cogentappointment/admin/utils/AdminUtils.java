@@ -35,9 +35,8 @@ public class AdminUtils {
         admin.setFullName(convertToNormalCase(adminRequestDTO.getFullName()));
         admin.setEmail(adminRequestDTO.getEmail());
         admin.setMobileNumber(adminRequestDTO.getMobileNumber());
-        admin.setStatus(adminRequestDTO.getStatus());
+        admin.setStatus(NO);
         admin.setHasMacBinding(adminRequestDTO.getHasMacBinding());
-        admin.setIsAccountActivated(NO);
 
         parseAdminDetails(gender, profile, admin);
         return admin;
@@ -91,7 +90,7 @@ public class AdminUtils {
         return adminMetaInfo;
     }
 
-    public static AdminMetaInfo deleteMetaInfo(AdminMetaInfo adminMetaInfo,DeleteRequestDTO requestDTO) {
+    public static AdminMetaInfo deleteMetaInfo(AdminMetaInfo adminMetaInfo, DeleteRequestDTO requestDTO) {
         adminMetaInfo.setStatus(requestDTO.getStatus());
         adminMetaInfo.setRemarks(requestDTO.getRemarks());
 
@@ -253,10 +252,10 @@ public class AdminUtils {
     }
 
     public static Admin saveAdminPassword(AdminPasswordRequestDTO requestDTO,
-                                          AdminConfirmationToken confirmationToken) {
-        Admin admin = confirmationToken.getAdmin();
+                                          Admin admin) {
+
         admin.setPassword(BCrypt.hashpw(requestDTO.getPassword(), BCrypt.gensalt()));
-        admin.setIsAccountActivated(YES);
+        admin.setStatus(YES);
         return admin;
     }
 

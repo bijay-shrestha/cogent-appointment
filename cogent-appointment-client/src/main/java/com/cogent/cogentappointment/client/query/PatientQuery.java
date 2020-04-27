@@ -124,6 +124,7 @@ public class PatientQuery {
                     " hpi.email as email," +
                     " hpi.address as address," +
                     " hpi.isRegistered as isRegistered," +
+                    " hpi.remarks as remarks,"+
                     QUERY_TO_CALCULATE_PATIENT_AGE +
                     " FROM Patient p " +
                     " LEFT JOIN HospitalPatientInfo hpi ON p.id=hpi.patient.id" +

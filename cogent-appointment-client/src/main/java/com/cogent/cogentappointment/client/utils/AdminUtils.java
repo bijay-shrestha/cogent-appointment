@@ -35,9 +35,8 @@ public class AdminUtils {
         admin.setFullName(toNormalCase(adminRequestDTO.getFullName()));
         admin.setEmail(adminRequestDTO.getEmail());
         admin.setMobileNumber(adminRequestDTO.getMobileNumber());
-        admin.setStatus(adminRequestDTO.getStatus());
+        admin.setStatus(NO);
         admin.setHasMacBinding(adminRequestDTO.getHasMacBinding());
-        admin.setIsAccountActivated(NO);
 
         parseAdminDetails(gender, profile, admin);
         return admin;
@@ -251,10 +250,9 @@ public class AdminUtils {
     }
 
     public static void saveAdminPassword(AdminPasswordRequestDTO requestDTO,
-                                         AdminConfirmationToken confirmationToken) {
-        Admin admin = confirmationToken.getAdmin();
+                                         Admin admin) {
         admin.setPassword(BCrypt.hashpw(requestDTO.getPassword(), BCrypt.gensalt()));
-        admin.setIsAccountActivated(YES);
+        admin.setStatus(YES);
     }
 
     public static EmailRequestDTO parseToResetPasswordEmailRequestDTO(AdminResetPasswordRequestDTO requestDTO,

@@ -25,15 +25,14 @@ public class PatientMetaInfoQuery {
         return QUERY_TO_FETCH_ACTIVE_PATIENT_META_INFO_FOR_DROP_DOWN + CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId);
     }
 
-
     public static String QUERY_TO_FETCH_PATIENT_META_INFO_FOR_DROP_DOWN_BY_HOSPITAL_ID(Long hospitalId) {
         return QUERY_TO_FETCH_PATIENT_META_INFO_FOR_DROP_DOWN + CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId);
     }
 
     private static String CLAUSE_TO_FIND_BY_HOSPITAL_ID(Long hospitalId) {
-        if (hospitalId != 0) {
-            return " AND hpi.hospital.id=" + hospitalId;
-        }
-        return "";
+        if (hospitalId != 0)
+            return " AND hpi.hospital.id=" + hospitalId + " ORDER BY label ASC";
+
+        return " ORDER BY label ASC";
     }
 }

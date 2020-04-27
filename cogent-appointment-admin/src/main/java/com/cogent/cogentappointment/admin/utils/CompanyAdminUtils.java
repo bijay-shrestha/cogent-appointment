@@ -42,14 +42,11 @@ public class CompanyAdminUtils {
         admin.setFullName(convertToNormalCase(requestDTO.getFullName()));
         admin.setEmail(requestDTO.getEmail());
         admin.setMobileNumber(requestDTO.getMobileNumber());
-        admin.setStatus(requestDTO.getStatus());
+        admin.setStatus(NO);
         admin.setHasMacBinding(requestDTO.getHasMacBinding());
-        admin.setIsAccountActivated(NO);
-
         parseCompanyAdminDetails(gender, profile, admin);
         return admin;
     }
-
 
     public static void convertCompanyAdminUpdateRequestDTOToAdmin(Admin admin,
                                                                   CompanyAdminUpdateRequestDTO updateRequestDTO,
@@ -137,8 +134,8 @@ public class CompanyAdminUtils {
     }
 
     public static EmailRequestDTO convertCompanyAdminRequestToEmailRequestDTO(CompanyAdminRequestDTO adminRequestDTO,
-                                                                       Admin admin,
-                                                                       String confirmationToken) {
+                                                                              Admin admin,
+                                                                              String confirmationToken) {
 
 //        String origin = httpServletRequest.getHeader("origin");
 //        String confirmationUrl = origin + "/#" + "/savePassword" + "?token =" + confirmationToken;
@@ -154,12 +151,12 @@ public class CompanyAdminUtils {
     }
 
     public static EmailRequestDTO convertCompanyAdminUpdateRequestToEmailRequestDTO(CompanyAdminUpdateRequestDTO adminRequestDTO,
-                                                                             String confirmationToken) {
+                                                                                    String confirmationToken) {
 
 //        String origin = httpServletRequest.getHeader("origin");
 //        String confirmationUrl = origin + "/#" + "/savePassword" + "?token =" + confirmationToken;
 
-        String confirmationUrl = adminRequestDTO.getBaseUrl() + "/#" + "/verify/email"  + "?token =" + confirmationToken;
+        String confirmationUrl = adminRequestDTO.getBaseUrl() + "/#" + "/verify/email" + "?token =" + confirmationToken;
 
         return EmailRequestDTO.builder()
                 .receiverEmailAddress(adminRequestDTO.getEmail())

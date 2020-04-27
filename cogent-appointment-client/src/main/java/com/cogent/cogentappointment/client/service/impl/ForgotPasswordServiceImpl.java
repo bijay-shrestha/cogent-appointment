@@ -156,7 +156,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     }
 
     private void validateIfAdminIsActivated(Admin admin, String email) {
-        if (admin.getIsAccountActivated().equals(NO)) {
+        if (admin.getStatus().equals(NO)) {
             log.error(String.format(ACCOUNT_NOT_ACTIVATED_MESSAGE, email));
             throw new BadRequestException(
                     String.format(ACCOUNT_NOT_ACTIVATED_MESSAGE, email), ACCOUNT_NOT_ACTIVATED_DEBUG_MESSAGE);

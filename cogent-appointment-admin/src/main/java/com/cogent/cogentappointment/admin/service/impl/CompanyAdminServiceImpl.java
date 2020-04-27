@@ -378,7 +378,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                 confirmationTokenRepository.findAdminConfirmationTokenByToken(requestDTO.getToken())
                         .orElseThrow(() -> CONFIRMATION_TOKEN_NOT_FOUND.apply(requestDTO.getToken()));
 
-        save(saveAdminPassword(requestDTO, adminConfirmationToken));
+        save(saveAdminPassword(requestDTO, adminConfirmationToken.getAdmin()));
 
         adminConfirmationToken.setStatus(INACTIVE);
 

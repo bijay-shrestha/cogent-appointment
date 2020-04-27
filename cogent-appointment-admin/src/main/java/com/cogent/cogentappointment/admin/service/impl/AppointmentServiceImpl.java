@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.TransactionLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPendingApproval.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPendingApproval.AppointmentRejectDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
@@ -15,6 +16,7 @@ import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentQu
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.AppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.refund.AppointmentRefundResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.TransactionLogResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.AppointmentFollowUpLogRepository;
@@ -41,9 +43,8 @@ import java.util.function.Function;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.APPROVED;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.AppointmentStatusConstants.REFUNDED;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.*;
 import static com.cogent.cogentappointment.admin.utils.AppointmentUtils.parseAppointmentRejectDetails;
 import static com.cogent.cogentappointment.admin.utils.AppointmentUtils.parseRefundRejectDetails;
@@ -248,6 +249,20 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    public TransactionLogResponseDTO searchTransactionLogs(TransactionLogSearchDTO searchRequestDTO, Pageable pageable) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SEARCHING_PROCESS_STARTED, TRANSACTION_LOG);
+
+        TransactionLogResponseDTO responseDTOS = appointmentRepository.searchTransactionLogs(searchRequestDTO,
+                pageable);
+
+        log.info(SEARCHING_PROCESS_COMPLETED, TRANSACTION_LOG, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
     public AppointmentRescheduleLogResponseDTO fetchRescheduleAppointment(AppointmentRescheduleLogSearchDTO rescheduleDTO,
                                                                           Pageable pageable) {
 
@@ -296,7 +311,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     private Function<Long, NoContentFoundException> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND = (appointmentId) -> {
-        log.error(CONTENT_NOT_FOUND_BY_ID,APPOINTMENT,appointmentId);
+        log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT, appointmentId);
         throw new NoContentFoundException(Appointment.class, "appointmentId", appointmentId.toString());
     };
 
@@ -328,7 +343,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         patientService.registerPatient(patientId, hospitalId);
     }
 
-    private void saveRefundDetails(AppointmentRefundDetail appointmentRefundDetail){
+    private void saveRefundDetails(AppointmentRefundDetail appointmentRefundDetail) {
         appointmentRefundDetailRepository.save(appointmentRefundDetail);
     }
 

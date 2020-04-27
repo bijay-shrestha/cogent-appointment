@@ -5,6 +5,7 @@ import com.cogent.cogentappointment.client.dto.request.appointment.appointmentQu
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentCheckAvailabilityRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.log.AppointmentLogSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.log.TransactionLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
@@ -17,6 +18,7 @@ import com.cogent.cogentappointment.client.dto.response.appointment.esewa.Appoin
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.approval.AppointmentPendingApprovalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.log.AppointmentLogResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.log.TransactionLogResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
@@ -86,6 +88,9 @@ public interface AppointmentRepositoryCustom {
 
     AppointmentLogResponseDTO searchAppointmentLogs(
             AppointmentLogSearchDTO searchRequestDTO, Pageable pageable, Long hospitalId);
+
+    TransactionLogResponseDTO searchTransactionLogs(
+            TransactionLogSearchDTO searchRequestDTO, Pageable pageable, Long hospitalId);
 
     List<AppointmentQueueDTO> fetchAppointmentQueueLog(AppointmentQueueRequestDTO appointmentQueueRequestDTO,
                                                        Long hospitalId,

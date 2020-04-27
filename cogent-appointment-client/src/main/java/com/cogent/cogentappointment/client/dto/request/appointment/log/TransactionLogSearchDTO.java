@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.dto.request.appointment;
+package com.cogent.cogentappointment.client.dto.request.appointment.log;
 
 import lombok.*;
 
@@ -6,22 +6,20 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @author Rupak
+ * @author Sauravi Thapa ON 4/19/20
  */
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppointmentLogSearchDTO implements Serializable {
+public class TransactionLogSearchDTO implements Serializable {
 
-    private Long hospitalId;
+    private String status;
 
     private Date fromDate;
 
     private Date toDate;
-
-    private String appointmentNumber;
 
     private Long patientMetaInfoId;
 
@@ -35,6 +33,5 @@ public class AppointmentLogSearchDTO implements Serializable {
     /*SELF OR OTHERS*/
     private Character appointmentCategory;
 
-    private String status;
-
+    private String transactionNumber;
 }

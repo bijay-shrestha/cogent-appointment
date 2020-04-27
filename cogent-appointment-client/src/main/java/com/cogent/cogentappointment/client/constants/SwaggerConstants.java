@@ -59,6 +59,7 @@ public class SwaggerConstants {
         String REJECT_APPOINTMENT = "Reject Appointment and set status as 'R'.";
         String FETCH_APPOINTMENT_LOG = "Fetch Appointment Log";
         String FETCH_APPOINTMENT_RESCHEDULE_LOG = "Fetch Appointment Reschedule Log";
+        String FETCH_TRANSACTION_LOG = "Fetch Transaction Log";
     }
 
     public interface AppointmentStatusConstant {

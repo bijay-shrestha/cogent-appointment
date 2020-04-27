@@ -80,7 +80,8 @@ public class PatientUtils {
     public static void registerPatientDetails(HospitalPatientInfo hospitalPatientInfo,
                                               String latestRegistrationNumber) {
         hospitalPatientInfo.setIsRegistered(YES);
-        hospitalPatientInfo.setRegistrationNumber(generateRegistrationNumber(latestRegistrationNumber));
+        hospitalPatientInfo.setRegistrationNumber(
+                generateRegistrationNumber(latestRegistrationNumber, hospitalPatientInfo.getHospital().getAlias()));
     }
 
     /*REGISTRATION NUMBER IS GENERATED IN FORMAT :
@@ -90,7 +91,7 @@ public class PatientUtils {
      *  NEXT REGISTRATION NUMBER = 2002130002
      *  NOTE THAT REGISTRATION NUMBER IS UNIQUELY GENERATED ONLY ONCE FOR THE PATIENT IN SPECIFIC HOSPITAL
      *  */
-    private static String generateRegistrationNumber(String latestRegistrationNumber) {
+    private static String generateRegistrationNumber(String latestRegistrationNumber, String alias) {
 
         LocalDateTime date = LocalDateTime.now();
 
@@ -115,7 +116,7 @@ public class PatientUtils {
             registrationNumber = year + month + day + patientCount;
         }
 
-        return registrationNumber;
+        return Objects.isNull(alias) ? registrationNumber : alias + "-" + registrationNumber;
     }
 
     public static void updateOtherPatient(PatientUpdateDTOForOthers requestDTO,

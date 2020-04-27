@@ -20,7 +20,7 @@ public class AppointmentPendingApprovalDTO implements Serializable {
 
     private Long appointmentId;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd YYYY")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd YYYY",timezone = "Asia/Kathmandu")
     private Date appointmentDate;
 
     private String appointmentNumber;

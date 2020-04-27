@@ -58,14 +58,14 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     }
 
     @Override
-    public void forgotPassword(String username, String hospitalCode) {
+    public void forgotPassword(String email) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FORGOT_PASSWORD_PROCESS_STARTED);
 
-        Admin admin = adminRepository.fetchAdminByUsernameOrEmail(username, hospitalCode);
+        Admin admin = adminRepository.fetchAdminByEmail(email);
 
-        validateAdmin(admin, username);
+        validateAdmin(admin, email);
 
         ForgotPasswordVerification forgotPasswordVerification =
                 verificationRepository.findByAdminId(admin.getId());
@@ -79,7 +79,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
         EmailRequestDTO emailRequestDTO = parseToEmailRequestDTO(
                 admin.getEmail(),
-                admin.getUsername(),
+                admin.getFullName(),
                 forgotPasswordVerification.getResetCode());
 
         emailService.sendEmail(emailRequestDTO);
@@ -106,7 +106,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
         log.info(UPDATING_PASSWORD_PROCESS_STARTED);
 
-        Admin admin = adminRepository.fetchAdminByUsernameOrEmail(requestDTO.getUsername(), requestDTO.getHospitalCode());
+        Admin admin = adminRepository.fetchAdminByEmail(requestDTO.getEmail());
 
         ForgotPasswordVerification forgotPasswordVerification = verificationRepository.findByAdminId(admin.getId());
 
@@ -129,6 +129,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     private void updateForgotPasswordVerification(Long adminId) {
         ForgotPasswordVerification forgotPasswordVerification = verificationRepository.findByAdminId(adminId);
         forgotPasswordVerification.setStatus(INACTIVE);
+        save(forgotPasswordVerification);
     }
 
     private void validateExpirationTime(Object expirationTime) {
@@ -142,23 +143,23 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
         verificationRepository.save(forgotPasswordVerification);
     }
 
-    private void validateAdmin(Admin admin, String username) {
-        validateAdminStatus(admin, username);
-        validateIfAdminIsActivated(admin, username);
+    private void validateAdmin(Admin admin, String email) {
+        validateAdminStatus(admin, email);
+        validateIfAdminIsActivated(admin, email);
     }
 
-    private void validateAdminStatus(Admin admin, String username) {
+    private void validateAdminStatus(Admin admin, String email) {
         if (!admin.getStatus().equals(ACTIVE)) {
-            log.error(ADMIN_NOT_ACTIVE_ERROR, username);
-            throw new NoContentFoundException(String.format(ADMIN_NOT_ACTIVE, username), "username/email", username);
+            log.error(ADMIN_NOT_ACTIVE_ERROR, email);
+            throw new NoContentFoundException(String.format(ADMIN_NOT_ACTIVE, email), "email", email);
         }
     }
 
-    private void validateIfAdminIsActivated(Admin admin, String username) {
+    private void validateIfAdminIsActivated(Admin admin, String email) {
         if (admin.getIsAccountActivated().equals(NO)) {
-            log.error(String.format(ACCOUNT_NOT_ACTIVATED_MESSAGE, username));
+            log.error(String.format(ACCOUNT_NOT_ACTIVATED_MESSAGE, email));
             throw new BadRequestException(
-                    String.format(ACCOUNT_NOT_ACTIVATED_MESSAGE, username), ACCOUNT_NOT_ACTIVATED_DEBUG_MESSAGE);
+                    String.format(ACCOUNT_NOT_ACTIVATED_MESSAGE, email), ACCOUNT_NOT_ACTIVATED_DEBUG_MESSAGE);
         }
     }
 

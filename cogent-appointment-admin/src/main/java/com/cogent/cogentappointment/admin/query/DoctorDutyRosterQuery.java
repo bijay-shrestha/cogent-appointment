@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.admin.query;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDutyRosterSearchRequestDTO;
+import org.springframework.util.ObjectUtils;
 
 import java.util.Objects;
 
@@ -36,7 +37,11 @@ public class DoctorDutyRosterQuery {
                 " LEFT JOIN Hospital h ON ddr.hospitalId.id = h.id" +
                 " WHERE" +
                 " ddr.status !='D'" +
+                " AND d.status = 'Y'" +
                 " AND ddr.toDate >=:fromDate AND ddr.fromDate <=:toDate";
+
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
+            sql += " AND ddr.status='" + searchRequestDTO.getStatus() + "'";
 
         if (!Objects.isNull(searchRequestDTO.getDoctorId()))
             sql += " AND d.id = " + searchRequestDTO.getDoctorId();

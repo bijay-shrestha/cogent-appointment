@@ -6,6 +6,8 @@ package com.cogent.cogentappointment.admin.log.constants;
 public class AdminLog {
     public static final String ADMIN = "ADMIN";
 
+    public static final String ADMIN_USER_MENU_LOG = "ADMIN USER MENU LOG";
+
     public static final String ADMIN_AVATAR = "ADMIN AVATAR";
 
     public static final String ADMIN_META_INFO = "ADMIN META INFO";
@@ -34,10 +36,14 @@ public class AdminLog {
 
     public static String INVALID_CONFIRMATION_TOKEN_ERROR = ":::: INVALID CONFIRMATION TOKEN: {} ::::";
 
-    public final static String ADMIN_NOT_ACTIVE_ERROR=":::: ADMIN WITH USERNAME/EMAIL : {} NOT ACTIVE ::::";
+    public final static String ADMIN_NOT_ACTIVE_ERROR=":::: ADMIN WITH EMAIL : {} NOT ACTIVE ::::";
 
-    public final static String ADMIN_NOT_FOUND_ERROR=":::: ADMIN WITH USERNAME/EMAIL : {} NOT FOUND ::::";
+    public final static String ADMIN_NOT_FOUND_ERROR=":::: ADMIN WITH EMAIL : {} NOT FOUND ::::";
 
     public final static String CONFORMATION_TOKEN_NOT_FOUND=":::: CONFORMATION TOKEN : {} NOT FOUND  ::::";
+
+    public static final String VERIFY_CONFIRMATION_TOKEN_FOR_EMAIL_PROCESS_STARTED = ":::: VERIFICATION OF CONFIRMATION TOKEN FOR EMAIL UPDATE PROCESS STARTED ::::";
+    public static final String VERIFY_CONFIRMATION_TOKEN_FOR_EMAIL_PROCESS_COMPLETED = "::::VERIFICATION OF CONFIRMATION TOKEN FOR EMAIL UPDATE PROCESS COMPLETED IN :::: {} ms";
+
 
 }

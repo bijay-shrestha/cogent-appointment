@@ -5,6 +5,7 @@ import com.cogent.cogentappointment.client.dto.request.login.ThirdPartyDetail;
 import com.cogent.cogentappointment.client.repository.HmacApiInfoRepository;
 import com.cogent.cogentappointment.client.security.hmac.AuthHeader;
 import com.cogent.cogentappointment.client.security.hmac.HMACBuilder;
+import com.cogent.cogentappointment.client.security.hmac.HMACBuilderEsewa;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -52,19 +53,19 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
             final HMACBuilder signatureBuilder;
 
             AdminMinDetails adminMinDetails = hmacApiInfoRepository.getAdminDetailForAuthentication(
-                    authHeader.getUsername(),
+                    authHeader.getEmail(),
                     authHeader.getHospitalCode(),
                     authHeader.getApiKey());
 
             if (adminMinDetails.getIsCompany().equals(NO)) {
                 signatureBuilder = new HMACBuilder()
                         .algorithm(authHeader.getAlgorithm())
-                        .userId(authHeader.getUserId())
-                        .nonce(authHeader.getNonce())
-                        .username(adminMinDetails.getUsername())
+                        .id(authHeader.getId())
+                        .email(authHeader.getEmail())
                         .hospitalId(Math.toIntExact(authHeader.getHospitalId()))
                         .hospitalCode(authHeader.getHospitalCode())
                         .apiKey(authHeader.getApiKey())
+                        .nonce(authHeader.getNonce())
                         .apiSecret(adminMinDetails.getApiSecret());
             } else {
                 signatureBuilder = null;
@@ -72,7 +73,7 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
             compareSignature(signatureBuilder, authHeader.getDigest());
 
-            SecurityContextHolder.getContext().setAuthentication(getAuthenticationForHospital(adminMinDetails.getUsername(),
+            SecurityContextHolder.getContext().setAuthentication(getAuthenticationForHospital(authHeader.getEmail(),
                     adminMinDetails.getHospitalId()));
         }
 
@@ -82,14 +83,15 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
                     eSewaAuthHeader.getHospitalCode(),
                     eSewaAuthHeader.getApiKey());
 
-            final HMACBuilder signatureBuilder = new HMACBuilder()
+            final HMACBuilderEsewa signatureBuilder = new HMACBuilderEsewa()
                     .algorithm(eSewaAuthHeader.getAlgorithm())
                     .nonce(eSewaAuthHeader.getNonce())
                     .hospitalCode(eSewaAuthHeader.getHospitalCode())
                     .apiKey(eSewaAuthHeader.getApiKey())
                     .apiSecret(thirdPartyDetail.getApiSecret());
 
-            compareSignature(signatureBuilder, eSewaAuthHeader.getDigest());
+            if (!signatureBuilder.isHashEquals(eSewaAuthHeader.getDigest()))
+                throw new BadCredentialsException(HMAC_BAD_SIGNATURE);
 
             SecurityContextHolder.getContext().setAuthentication(getAuthentication(thirdPartyDetail.getHospitalCode(),
                     thirdPartyDetail.getHospitalCode()));
@@ -97,6 +99,7 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             filterChain.doFilter(request, response);
+            System.out.println("test");
         } finally {
             SecurityContextHolder.clearContext();
         }
@@ -157,9 +160,9 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
                 null);
     }
 
-    public PreAuthenticatedAuthenticationToken getAuthenticationForHospital(String username, Long hospitalId) {
+    public PreAuthenticatedAuthenticationToken getAuthenticationForHospital(String email, Long hospitalId) {
         return new PreAuthenticatedAuthenticationToken(
-                username,
+                email,
                 hospitalId,
                 null);
     }

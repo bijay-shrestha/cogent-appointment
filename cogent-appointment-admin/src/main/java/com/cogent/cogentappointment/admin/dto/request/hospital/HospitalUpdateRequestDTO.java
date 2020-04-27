@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.admin.constraintvalidator.SpecialCharacters;
 import com.cogent.cogentappointment.admin.constraintvalidator.Status;
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -22,18 +23,24 @@ public class HospitalUpdateRequestDTO implements Serializable {
     @NotNull
     @NotEmpty
     @SpecialCharacters
+    @NotBlank
     private String name;
 
+    @NotNull
+    @NotEmpty
+    @NotBlank
     private String hospitalCode;
 
     @NotNull
     @NotEmpty
     @SpecialCharacters
+    @NotBlank
     private String address;
 
     @NotNull
     @NotEmpty
     @SpecialCharacters
+    @NotBlank
     private String panNumber;
 
     @Status
@@ -41,6 +48,7 @@ public class HospitalUpdateRequestDTO implements Serializable {
 
     @NotNull
     @NotEmpty
+    @NotBlank
     private String remarks;
 
     @NotNull
@@ -56,11 +64,16 @@ public class HospitalUpdateRequestDTO implements Serializable {
     @NotEmpty
     private List<HospitalContactNumberUpdateRequestDTO> contactNumberUpdateRequestDTOS;
 
+    @NotNull
+    @NotEmpty
+    @NotBlank
     private String alias;
 
     /*Y-> NEW LOGO IS UPDATED
     * N-> LOGO IS SAME AS BEFORE. SO IF IT IS 'N', THEN NO NEED TO UPDATE LOGO
     */
+    @NotNull
+    @Status
     private Character isLogoUpdate;
 
     /*Y-> NEW BANNER IS UPDATED

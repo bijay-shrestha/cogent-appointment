@@ -135,7 +135,6 @@ public class ProfileQuery {
                     " AND h.status ='Y'" +
                     " AND p.status = 'Y'" +
                     " AND a.status ='Y'" +
-                    " AND (a.username = :username OR a.email=:email OR a.mobile_number=:username)" +
-                    " AND h.code =:hospitalCode" +
+                    " AND (a.email=:email OR a.mobile_number=:email)" +
                     " GROUP BY pm.parent_id, pm.user_menu_id, pm.profile_id";
 }

@@ -14,7 +14,7 @@ import java.io.Serializable;
 public class CompanyAdminResetPasswordRequestDTO implements Serializable {
 
     @NotNull
-    private String username;
+    private String email;
 
     @NotNull
     private String password;

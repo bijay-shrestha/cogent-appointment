@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.dto.response.doctorDutyRoster;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.io.Serializable;

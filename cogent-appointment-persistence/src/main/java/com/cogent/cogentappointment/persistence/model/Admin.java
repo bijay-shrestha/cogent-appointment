@@ -26,9 +26,6 @@ public class Admin extends Auditable<String> implements Serializable {
     @Column(name = "full_name", length = 100)
     private String fullName;
 
-    @Column(name = "username", length = 50)
-    private String username;
-
     @Column(name = "password")
     private String password;
 
@@ -69,7 +66,6 @@ public class Admin extends Auditable<String> implements Serializable {
         return "Admin{" +
                 "id=" + id +
                 ", fullName='" + fullName + '\'' +
-                ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 ", mobileNumber='" + mobileNumber + '\'' +

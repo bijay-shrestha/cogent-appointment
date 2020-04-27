@@ -41,7 +41,7 @@ public class CompanyQuery {
                     " Hospital h" +
                     " WHERE h.status ='Y'" +
                     " AND h.isCompany='Y'" +
-                    " ORDER by h.id  DESC  ";
+                    " ORDER by h.name ASC";
 
     public static String QUERY_TO_SEARCH_COMPANY(CompanySearchRequestDTO searchRequestDTO) {
         return "SELECT" +
@@ -106,7 +106,7 @@ public class CompanyQuery {
                     " LEFT JOIN " +
                     " (" +
                     " SELECT hc.hospital_id as hospitalId," +
-                    " GROUP_CONCAT((CONCAT(hc.id, '-', hc.contact_number, '-', hc.status))) as contact_details" +
+                    " GROUP_CONCAT((CONCAT(hc.id, '/', hc.contact_number, '/', hc.status))) as contact_details" +
                     " FROM hospital_contact_number hc" +
                     " WHERE hc.status = 'Y'" +
                     " GROUP by hc.hospital_id" +

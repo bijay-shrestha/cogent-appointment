@@ -8,7 +8,7 @@ public class SecurityContextUtils {
         return (Long) SecurityContextHolder.getContext().getAuthentication().getCredentials();
     }
 
-    public static String getLoggedInAdminUsername() {
+    public static String getLoggedInAdminEmail() {
         return (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }

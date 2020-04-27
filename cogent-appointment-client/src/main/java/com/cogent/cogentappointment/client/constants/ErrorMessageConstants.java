@@ -14,6 +14,8 @@ public class ErrorMessageConstants {
 
         String INVALID_APPOINTMENT_DATE_TIME = "Sorry! Appointment failed because requested date/time has already passed.";
 
+        String INVALID_APPOINTMENT_DATE = "Sorry! Appointment failed because requested date has already passed.";
+
         String APPOINTMENT_FAILED_MESSAGE = "The selected time slot has expired/or is invalid. Please try again!";
 
         String APPOINTMENT_FAILED_DEBUG_MESSAGE = "AppointmentReservationLog(s) is null";
@@ -21,14 +23,20 @@ public class ErrorMessageConstants {
 
     public interface AdminServiceMessages {
 
-        String ADMIN_DUPLICATION_MESSAGE = "Admin with given username, email and mobile number" +
-                " already exists.";
+        String ADMIN_DUPLICATION_MESSAGE = "Admin with email '%s' and mobile number" +
+                " '%s' already exists.";
 
-        String USERNAME_DUPLICATION_MESSAGE = "%s already exists with username '%s'";
+        String ADMIN_DUPLICATION_IN_DIFFERENT_HOSPITAL_MESSAGE = "Cannot create Admin with email '%s'" +
+                " and mobile number '%s'.";
 
-        String EMAIL_DUPLICATION_MESSAGE = "%s already exists with email '%s'";
+        String EMAIL_DUPLICATION_MESSAGE = "Admin already exists with email '%s'.";
 
-        String MOBILE_NUMBER_DUPLICATION_MESSAGE = "%s already exists with mobile number '%s'";
+        String EMAIL_DUPLICATION_IN_DIFFERENT_HOSPITAL_MESSAGE = "Cannot create Admin with email '%s'.";
+
+        String MOBILE_NUMBER_DUPLICATION_MESSAGE = "Admin already exists with mobile number '%s'.";
+
+        String MOBILE_NUMBER_DUPLICATION_IN_DIFFERENT_HOSPITAL_MESSAGE = "Cannot create Admin with" +
+                " and mobile number '%s'.";
 
         String ADMIN_NOT_FOUND = "Admin '%s' doesn't exist";
 
@@ -45,6 +53,7 @@ public class ErrorMessageConstants {
         String ADMIN_INFO_NOT_FOUND = "Admin info is not found.";
 
         String ADMIN_CANNOT_BE_REGISTERED_MESSAGE = "Admin exceeds for the selected hospital";
+
         String ADMIN_CANNOT_BE_REGISTERED_DEBUG_MESSAGE = "Admin count is equal to hospital's allowed number of admins";
 
         String INVALID_DELETE_REQUEST = "Sorry! Cannot delete this admin since it has Super Admin Profile";
@@ -108,8 +117,6 @@ public class ErrorMessageConstants {
 
     public static final String INVALID_USERNAME_OR_ACCESS_KEY = "Invalid username or access key";
     public static final String INVALID_PASSWORD = "Invalid password";
-    public static final String PASSWORD_NOT_SET = "Password Not Set";
-    public static final String PASSWORD_NOT_SET_DEBUG_MESSAGE = "Password not set in database";
 
     public static final String INVALID_VERIFICATION_TOKEN = "Invalid verification token";
 

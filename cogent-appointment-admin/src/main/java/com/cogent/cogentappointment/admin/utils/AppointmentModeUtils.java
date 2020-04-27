@@ -30,7 +30,6 @@ public class AppointmentModeUtils {
         appointmentMode.setStatus(requestDTO.getStatus());
         appointmentMode.setRemarks(requestDTO.getRemarks());
         appointmentMode.setDescription(requestDTO.getDescription());
-        appointmentMode.setIsEditable(requestDTO.getIsEditable());
     }
 
     public static void parseToDeletedAppointmentMode(AppointmentMode appointmentMode,

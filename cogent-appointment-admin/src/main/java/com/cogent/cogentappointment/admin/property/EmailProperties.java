@@ -25,4 +25,6 @@ public class EmailProperties implements Serializable {
     private int port;
 
     private String protocol;
+
+    private Character enabled;
 }

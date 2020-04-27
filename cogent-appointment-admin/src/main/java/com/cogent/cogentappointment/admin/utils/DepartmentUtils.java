@@ -24,19 +24,23 @@ public class DepartmentUtils {
         return department;
     }
 
-    public static void parseToUpdatedDepartment(DepartmentUpdateRequestDTO updateRequestDTO,
+    public static Department parseToUpdatedDepartment(DepartmentUpdateRequestDTO updateRequestDTO,
                                                 Department department) {
 
         department.setName(convertToNormalCase(updateRequestDTO.getName()));
         department.setCode(toUpperCase(updateRequestDTO.getDepartmentCode()));
 
         parseDepartmentStatus(updateRequestDTO.getStatus(), updateRequestDTO.getRemarks(), department);
+
+        return department;
     }
 
-    public static void parseDepartmentStatus(Character status,
+    public static Department parseDepartmentStatus(Character status,
                                              String remarks,
                                              Department department) {
         department.setStatus(status);
         department.setRemarks(remarks);
+
+        return department;
     }
 }

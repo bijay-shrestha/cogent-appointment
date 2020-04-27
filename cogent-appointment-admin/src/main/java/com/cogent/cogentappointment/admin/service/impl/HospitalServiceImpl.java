@@ -14,6 +14,7 @@ import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.HospitalService;
 import com.cogent.cogentappointment.admin.service.MinioFileService;
+import com.cogent.cogentappointment.admin.utils.HospitalUtils;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -29,15 +30,17 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.ALIAS_NOT_FOUND;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.HOSPITAL;
+import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.HOSPITAL_ALIAS;
 import static com.cogent.cogentappointment.admin.utils.HmacApiInfoUtils.parseToHmacApiInfo;
 import static com.cogent.cogentappointment.admin.utils.HmacApiInfoUtils.updateHmacApiInfoAsHospital;
 import static com.cogent.cogentappointment.admin.utils.HospitalUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
-import static com.cogent.cogentappointment.admin.utils.commons.NameAndCodeValidationUtils.validateDuplicity;
 
 /**
  * @author smriti ON 12/01/2020
@@ -87,9 +90,11 @@ public class HospitalServiceImpl implements HospitalService {
         validateConstraintViolation(validator.validate(requestDTO));
 
         List<Object[]> hospitals = hospitalRepository.validateHospitalDuplicity(
-                requestDTO.getName(), requestDTO.getHospitalCode());
+                requestDTO.getName(), requestDTO.getHospitalCode(), requestDTO.getAlias());
 
-        validateDuplicity(hospitals, requestDTO.getName(), requestDTO.getHospitalCode(),
+        HospitalUtils.validateDuplicity(hospitals, requestDTO.getName(),
+                requestDTO.getHospitalCode(),
+                requestDTO.getAlias(),
                 Hospital.class.getSimpleName());
 
         Hospital hospital = save(convertDTOToHospital(requestDTO));
@@ -106,19 +111,28 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     @Override
-    public void update(HospitalUpdateRequestDTO updateRequestDTO, MultipartFile logo, MultipartFile banner) {
+    public void update(@Valid HospitalUpdateRequestDTO updateRequestDTO, MultipartFile logo, MultipartFile banner) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(UPDATING_PROCESS_STARTED, HOSPITAL);
 
+        validateConstraintViolation(validator.validate(updateRequestDTO));
+
         Hospital hospital = findById(updateRequestDTO.getId());
 
         List<Object[]> hospitals = hospitalRepository.validateHospitalDuplicityForUpdate(
-                updateRequestDTO.getId(), updateRequestDTO.getName(), updateRequestDTO.getHospitalCode());
+                updateRequestDTO.getId(),
+                updateRequestDTO.getName(),
+                updateRequestDTO.getHospitalCode(),
+                updateRequestDTO.getAlias()
+        );
 
-        validateDuplicity(hospitals, updateRequestDTO.getName(),
-                updateRequestDTO.getHospitalCode(), Hospital.class.getSimpleName());
+        HospitalUtils.validateDuplicity(hospitals,
+                updateRequestDTO.getName(),
+                updateRequestDTO.getHospitalCode(),
+                updateRequestDTO.getAlias(),
+                Hospital.class.getSimpleName());
 
         HmacApiInfo hmacApiInfo = hmacApiInfoRepository.getHmacApiInfoByHospitalId(updateRequestDTO.getId());
 
@@ -126,9 +140,11 @@ public class HospitalServiceImpl implements HospitalService {
 
         updateHospitalContactNumber(hospital.getId(), updateRequestDTO.getContactNumberUpdateRequestDTOS());
 
-        updateHospitalLogo(hospital, logo);
+        if (updateRequestDTO.getIsLogoUpdate().equals(YES))
+            updateHospitalLogo(hospital, logo);
 
-        updateHospitalBanner(hospital, banner);
+        if (updateRequestDTO.getIsBannerUpdate().equals(YES))
+            updateHospitalBanner(hospital, banner);
 
         updateHmacApiInfo(hmacApiInfo, updateRequestDTO.getStatus(), updateRequestDTO.getRemarks());
 
@@ -136,7 +152,8 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     @Override
-    public List<HospitalMinimalResponseDTO> search(HospitalSearchRequestDTO hospitalSearchRequestDTO, Pageable pageable) {
+    public List<HospitalMinimalResponseDTO> search(HospitalSearchRequestDTO hospitalSearchRequestDTO,
+                                                   Pageable pageable) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, HOSPITAL);
@@ -159,7 +176,7 @@ public class HospitalServiceImpl implements HospitalService {
 
         HmacApiInfo hmacApiInfo = hmacApiInfoRepository.getHmacApiInfoByHospitalId(deleteRequestDTO.getId());
 
-        parseToDeletedHospital(hospital, deleteRequestDTO);
+        save(parseToDeletedHospital(hospital, deleteRequestDTO));
 
         updateHmacApiInfo(hmacApiInfo, deleteRequestDTO.getStatus(), deleteRequestDTO.getRemarks());
 
@@ -206,6 +223,20 @@ public class HospitalServiceImpl implements HospitalService {
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
+    }
+
+    @Override
+    public String fetchAliasById(Long hospitalId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, HOSPITAL_ALIAS);
+
+        String alias = hospitalRepository.fetchAliasById(hospitalId)
+                .orElseThrow(() -> new NoContentFoundException(ALIAS_NOT_FOUND));
+
+        log.info(FETCHING_PROCESS_COMPLETED, HOSPITAL_ALIAS, getDifferenceBetweenTwoTime(startTime));
+
+        return alias;
     }
 
     private Hospital save(Hospital hospital) {

@@ -39,7 +39,7 @@ public class AdminMacAddressInfo extends Auditable<String> implements Serializab
                 "id=" + id +
                 ", macAddress='" + macAddress + '\'' +
                 ", status=" + status +
-                ", admin=" + admin.getUsername() +
+                ", admin=" + admin.getFullName() +
                 '}';
     }
 }

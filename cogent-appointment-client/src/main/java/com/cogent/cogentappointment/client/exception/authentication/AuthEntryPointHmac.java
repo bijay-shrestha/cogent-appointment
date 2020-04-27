@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.INVALID_PASSWORD;
-import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.UNAUTHORISED;
 
 /**
  * @author Sauravi Thapa २०/१/२०

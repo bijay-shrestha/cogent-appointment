@@ -18,7 +18,7 @@ public class UserDetailsImpl implements UserDetails {
 
     private Long id;
 
-    private String username;
+    private String email;
 
     private Character isCompany;
 
@@ -34,7 +34,8 @@ public class UserDetailsImpl implements UserDetails {
     private String apiSecret;
 
 
-    public UserDetailsImpl(Long id, String username,
+    public UserDetailsImpl(Long id,
+                           String email,
                            Character isCompany,
                            String password,
                            String companyCode,
@@ -42,7 +43,7 @@ public class UserDetailsImpl implements UserDetails {
                            String apiKey,
                            String apiSecret) {
         this.id = id;
-        this.username = username;
+        this.email = email;
         this.isCompany = isCompany;
         this.password = password;
         this.companyCode = companyCode;
@@ -54,7 +55,7 @@ public class UserDetailsImpl implements UserDetails {
     public static UserDetailsImpl build(LoggedInAdminDTO admin) {
         return new UserDetailsImpl(
                 admin.getId(),
-                admin.getUsername(),
+                admin.getEmail(),
                 admin.getIsCompany(),
                 admin.getPassword(),
                 admin.getCompanyCode(),
@@ -75,7 +76,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @Override

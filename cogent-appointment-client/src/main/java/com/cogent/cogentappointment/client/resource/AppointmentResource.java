@@ -11,7 +11,6 @@ import com.cogent.cogentappointment.client.dto.request.appointment.refund.Appoin
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.client.service.AppointmentService;
-import com.sun.mail.imap.protocol.ID;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.PageRequest;
@@ -43,10 +42,18 @@ public class AppointmentResource {
     }
 
     /*esewa*/
-    @PutMapping(CHECK_AVAILABILITY)
+    @PutMapping(FETCH_AVAILABLE_TIMESLOTS)
     @ApiOperation(CHECK_APPOINTMENT_AVAILABILITY)
-    public ResponseEntity<?> checkAvailability(@Valid @RequestBody AppointmentCheckAvailabilityRequestDTO requestDTO) {
-        return ok(appointmentService.checkAvailability(requestDTO));
+    public ResponseEntity<?> fetchAvailableTimeSlots(@Valid @RequestBody AppointmentCheckAvailabilityRequestDTO requestDTO) {
+        return ok(appointmentService.fetchAvailableTimeSlots(requestDTO));
+    }
+
+    //todo: shift in esewa-module
+    /*esewa*/
+    @PutMapping(FETCH_CURRENT_AVAILABLE_TIMESLOTS)
+    @ApiOperation(CHECK_CURRENT_APPOINTMENT_AVAILABILITY)
+    public ResponseEntity<?> fetchCurrentAvailableTimeSlots(@Valid @RequestBody AppointmentCheckAvailabilityRequestDTO requestDTO) {
+        return ok(appointmentService.fetchCurrentAvailableTimeSlots(requestDTO));
     }
 
     /*esewa*/
@@ -149,7 +156,7 @@ public class AppointmentResource {
         return ok().body(appointmentService.fetchRefundAppointments(searchDTO, pageable));
     }
 
-    @GetMapping(REFUND+DETAIL+APPOINTMENT_ID_PATH_VARIABLE_BASE )
+    @GetMapping(REFUND + DETAIL + APPOINTMENT_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_REFUND_APPOINTMENTS_DETAIL)
     public ResponseEntity<?> fetchRefundDetailsById(@PathVariable("appointmentId") Long appointmentId) {
         return ok().body(appointmentService.fetchRefundDetailsById(appointmentId));

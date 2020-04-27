@@ -24,42 +24,39 @@ public class AdminQuery {
 
     public static final String QUERY_TO_FIND_ADMIN_FOR_VALIDATION =
             "SELECT " +
-                    " a.username," +                            //[0]
-                    " a.email," +                               //[1]
-                    " a.mobileNumber" +                        //[2]
+                    " a.email," +                               //[0]
+                    " a.mobileNumber," +                        //[1]
+                    " h.id" +                                    //[2]
                     " FROM" +
                     " Admin a" +
-                    " LEFT JOIN Profile p ON p.id = a.profileId" +
+                    " LEFT JOIN Profile p ON p.id = a.profileId.id" +
                     " LEFT JOIN Department d ON d.id = p.department.id" +
                     " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE" +
                     " a.status != 'D'" +
-                    " AND h.status!='D'" +
                     " AND" +
-                    " (a.username =:username OR a.email =:email OR a.mobileNumber = :mobileNumber)" +
-                    " AND h.id=:hospitalId";
+                    " (a.email =:email OR a.mobileNumber = :mobileNumber)";
 
     public static final String QUERY_TO_FIND_ADMIN_EXCEPT_CURRENT_ADMIN =
             "SELECT " +
                     " a.email," +                               //[0]
-                    " a.mobileNumber" +                         //[1]
+                    " a.mobileNumber," +                         //[1]
+                    " h.id" +                                    //[2]
                     " FROM" +
                     " Admin a" +
-                    " LEFT JOIN Profile p ON p.id = a.profileId" +
+                    " LEFT JOIN Profile p ON p.id = a.profileId.id" +
                     " LEFT JOIN Department d ON d.id = p.department.id" +
                     " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE" +
                     " a.status != 'D'" +
-                    " AND h.status!='D'" +
                     " AND a.id !=:id" +
                     " AND" +
-                    " (a.email =:email OR a.mobileNumber = :mobileNumber)" +
-                    " AND h.id=:hospitalId";
+                    " (a.email =:email OR a.mobileNumber = :mobileNumber)";
 
     public static final String QUERY_TO_FETCH_ACTIVE_ADMIN_FOR_DROPDOWN =
             " SELECT" +
                     " a.id as value," +                     //[0]
-                    " a.username as label" +                //[1]
+                    " a.email as label" +                //[1]
                     " FROM" +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id = a.profileId" +
@@ -85,14 +82,13 @@ public class AdminQuery {
             " SELECT" +
                     " a.id as id," +                                            //[0]
                     " a.fullName as fullName," +                                //[1]
-                    " a.username as username," +                                //[2]
-                    " a.email as email," +                                      //[3]
-                    " a.mobileNumber as mobileNumber," +                        //[4]
-                    " a.status as status," +                                    //[5]
-                    " a.hasMacBinding as hasMacBinding," +                      //[6]
-                    " a.gender as gender," +                                    //[7]
-                    " p.name as profileName," +                                 //[8]
-                    " d.name as departmentName," +                              //[9]
+                    " a.email as email," +                                      //[2]
+                    " a.mobileNumber as mobileNumber," +                        //[3]
+                    " a.status as status," +                                    //[4]
+                    " a.hasMacBinding as hasMacBinding," +                      //[5]
+                    " a.gender as gender," +                                    //[6]
+                    " p.name as profileName," +                                 //[7]
+                    " d.name as departmentName," +                              //[8]
                     " CASE WHEN" +
                     " (av.status IS NULL OR av.status = 'N')" +
                     " THEN null" +
@@ -152,20 +148,19 @@ public class AdminQuery {
                     " am.status = 'Y'" +
                     " AND am.admin.id = :id";
 
-    public static final String QUERY_TO_FETCH_ADMIN_BY_USERNAME_OR_EMAIL =
+    public static final String QUERY_TO_FETCH_ADMIN_BY_EMAIL =
             " SELECT a FROM Admin a" +
                     " LEFT JOIN Profile p ON p.id = a.profileId" +
                     " LEFT JOIN Department d ON d.id = p.department.id" +
                     " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE" +
-                    " (a.username=:username OR a.email =:email)" +
-                    " AND a.status != 'D'" +
-                    " AND h.code=:hospitalCode";
+                    " (a.email =:email)" +
+                    " AND a.status != 'D'";
 
     public static final String QUERY_TO_FETCH_ADMIN_INFO =
             " SELECT" +
                     " a.id as adminId," +                                                   //[0]
-                    " a.username as username," +                                            //[1]
+                    " a.email as email," +                                            //[1]
                     " a.fullName as fullName," +
                     " CASE " +
                     "    WHEN (av.status = 'N' OR  av.status IS NULL) THEN null" +
@@ -176,14 +171,16 @@ public class AdminQuery {
                     " d.id as departmentId," +                                             //[5]
                     " d.name as departmentName," +
                     " h.name as hospitalName," +                                           //[6]
-                    " p.isAllRoleAssigned as isAllRoleAssigned" +                          //[7]
+                    " p.isAllRoleAssigned as isAllRoleAssigned," +                         //[7]
+                    " af.isSideBarCollapse as isSideBarCollapse" +                         //[8]
                     " FROM Admin a" +
                     " LEFT JOIN AdminAvatar av ON av.admin.id=a.id" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                     " LEFT JOIN Department d ON d.id=p.department.id" +
                     " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
+                    " LEFT JOIN AdminFeature af ON a.id = af.admin.id" +
                     " WHERE " +
-                    " (a.username=:username OR a.email =:email OR a.mobileNumber=:username)" +
+                    " (a.email =:email OR a.mobileNumber=:email)" +
                     " AND a.status='Y'" +
                     " AND h.id=:hospitalId";
 
@@ -195,8 +192,29 @@ public class AdminQuery {
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                     " LEFT JOIN Department d ON d.id=p.department.id" +
                     " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
-                    " WHERE a.status !='D'" +
+                    " WHERE ami.status !='D'" +
                     " AND h.id=:hospitalId";
+
+    public static final String QUERY_TO_GET_LOGGED_ADMIN_INFO =
+            "SELECT" +
+                    " a.id as id," +
+                    " a.email as email," +
+                    " a.password as password," +
+                    " h.isCompany as isCompany," +
+                    " h.code as hospitalCode," +
+                    " h.id as hospitalId," +
+                    " hai.apiKey as apiKey," +
+                    " hai.apiSecret as apiSecret" +
+                    " FROM " +
+                    " Admin a" +
+                    " LEFT JOIN Profile p ON p.id=a.profileId.id" +
+                    " LEFT JOIN Department d ON d.id=p.department.id" +
+                    " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
+                    " LEFT JOIN HmacApiInfo hai ON hai.hospital.id=h.id" +
+                    " WHERE" +
+                    " (a.mobileNumber=:email OR a.email=:email)" +
+                    " AND a.status = 'Y'" +
+                    " AND h.isCompany='N'";
 
 
 }

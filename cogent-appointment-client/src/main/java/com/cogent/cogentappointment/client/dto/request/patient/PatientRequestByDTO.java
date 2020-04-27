@@ -27,6 +27,7 @@ public class PatientRequestByDTO implements Serializable {
     private Character gender;
 
     @NotNull
+    @NotEmpty
     private Date dateOfBirth;
 
     private String email;

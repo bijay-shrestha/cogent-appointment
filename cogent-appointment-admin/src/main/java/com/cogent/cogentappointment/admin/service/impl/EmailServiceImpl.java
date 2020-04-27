@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.request.email.EmailRequestDTO;
+import com.cogent.cogentappointment.admin.property.EmailProperties;
 import com.cogent.cogentappointment.admin.repository.EmailToSendRepository;
 import com.cogent.cogentappointment.admin.service.EmailService;
 import com.cogent.cogentappointment.admin.utils.commons.FileResourceUtils;
@@ -28,6 +29,7 @@ import static com.cogent.cogentappointment.admin.constants.EmailConstants.Admin.
 import static com.cogent.cogentappointment.admin.constants.EmailConstants.ForgotPassword.RESET_CODE;
 import static com.cogent.cogentappointment.admin.constants.EmailConstants.*;
 import static com.cogent.cogentappointment.admin.constants.EmailTemplates.*;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.SAVING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.SAVING_PROCESS_STARTED;
@@ -89,7 +91,7 @@ public class EmailServiceImpl implements EmailService {
         List<EmailToSend> unsentEmails = emailToSendRepository.fetchUnsentEmails();
 
         unsentEmails.forEach(unsentEmail -> {
-            send(unsentEmail);
+            sendForAddAndUpdate(unsentEmail);
             updateEmailToSendStatus(unsentEmail);
         });
 
@@ -112,6 +114,12 @@ public class EmailServiceImpl implements EmailService {
                     break;
                 }
 
+                case EMAIL_VERIFICATION: {
+                    parseToAdminVerificationTemplate(emailToSend, model);
+                    html = getFreeMarkerContent(model, EMAIL_VERIFICATION_TEMPLATE, html);
+                    break;
+                }
+
                 case ADMIN_RESET_PASSWORD: {
                     parseToResetPasswordTemplate(emailToSend, model);
                     html = getFreeMarkerContent(model, ADMIN_RESET_PASSWORD_TEMPLATE, html);
@@ -127,6 +135,49 @@ public class EmailServiceImpl implements EmailService {
                 case FORGOT_PASSWORD: {
                     parseToForgotPasswordTemplate(emailToSend, model);
                     html = getFreeMarkerContent(model, FORGOT_PASSWORD_TEMPLATE, html);
+                    break;
+                }
+
+                default:
+                    break;
+            }
+
+            helper.setText(html, true);
+
+            helper.addInline(LOGO_FILE_NAME, new FileSystemResource
+                    (new FileResourceUtils().convertResourcesFileIntoFile(LOGO_LOCATION)));
+
+            javaMailSender.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sendForAddAndUpdate(EmailToSend emailToSend) {
+
+        try {
+            MimeMessage message = getMimeMessage(emailToSend);
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+            Map<String, Object> model = new HashMap<>();
+            String html = "";
+
+            switch (emailToSend.getTemplateName()) {
+                case ADMIN_VERIFICATION: {
+                    parseToAdminVerificationTemplate(emailToSend, model);
+                    html = getFreeMarkerContent(model, ADMIN_VERIFICATION_TEMPLATE, html);
+                    break;
+                }
+
+                case EMAIL_VERIFICATION: {
+                    parseToAdminVerificationTemplate(emailToSend, model);
+                    html = getFreeMarkerContent(model, EMAIL_VERIFICATION_TEMPLATE, html);
+                    break;
+                }
+
+                case UPDATE_ADMIN: {
+                    parseToUpdateAdminTemplate(emailToSend, model);
+                    html = getFreeMarkerContent(model, UPDATE_ADMIN_TEMPLATE, html);
                     break;
                 }
 

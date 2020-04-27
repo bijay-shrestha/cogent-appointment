@@ -102,6 +102,12 @@ public class EmailServiceImpl implements EmailService {
                     break;
                 }
 
+                case EMAIL_VERIFICATION: {
+                    parseToAdminVerificationTemplate(emailToSend, model);
+                    html = getFreeMarkerContent(model, EMAIL_VERIFICATION_TEMPLATE, html);
+                    break;
+                }
+
                 case ADMIN_RESET_PASSWORD: {
                     parseToResetPasswordTemplate(emailToSend, model);
                     html = getFreeMarkerContent(model, ADMIN_RESET_PASSWORD_TEMPLATE, html);

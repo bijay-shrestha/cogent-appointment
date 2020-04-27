@@ -4,10 +4,12 @@ import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminInfoRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminUpdateRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.admin.AdminInfoRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.AdminSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.AdminUpdateRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.admin.*;
+import com.cogent.cogentappointment.admin.dto.response.admin.AdminDetailResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.admin.AdminDropdownDTO;
+import com.cogent.cogentappointment.admin.dto.response.admin.AdminMinimalResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.admin.LoggedInAdminDTO;
 import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminLoggedInInfoResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminMinimalResponseDTO;
@@ -18,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author smriti on 7/21/19
@@ -28,8 +31,7 @@ public interface AdminRepositoryCustom {
 
     Object[] validateAdminCount(Long hospitalId);
 
-    List<Object[]> validateDuplicity(String username, String email, String mobileNumber,
-                                     Long hospitalId);
+    List<Object[]> validateDuplicity(String email, String mobileNumber);
 
     List<Object[]> validateDuplicityForCompanyAdmin(String email, String mobileNumber);
 
@@ -43,9 +45,9 @@ public interface AdminRepositoryCustom {
 
     List<Object[]> validateCompanyAdminDuplicity(CompanyAdminUpdateRequestDTO updateRequestDTO);
 
-    Admin fetchAdminByUsernameOrEmail(String username);
+    Admin fetchAdminByEmail(String email);
 
-    LoggedInAdminDTO getLoggedInAdmin(String username);
+    LoggedInAdminDTO getLoggedInAdmin(String email);
 
     List<DashboardFeatureResponseDTO> fetchDashboardFeaturesByAdmin(Long adminId);
 

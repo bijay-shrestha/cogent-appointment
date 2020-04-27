@@ -33,7 +33,9 @@ import java.util.Map;
 public interface AppointmentService {
 
     /*esewa*/
-    AppointmentCheckAvailabilityResponseDTO checkAvailability(AppointmentCheckAvailabilityRequestDTO requestDTO);
+    AppointmentCheckAvailabilityResponseDTO fetchAvailableTimeSlots(AppointmentCheckAvailabilityRequestDTO requestDTO);
+
+    AppointmentCheckAvailabilityResponseDTO fetchCurrentAvailableTimeSlots(AppointmentCheckAvailabilityRequestDTO requestDTO);
 
     AppointmentSuccessResponseDTO saveAppointmentForSelf(AppointmentRequestDTOForSelf appointmentRequestDTO);
 

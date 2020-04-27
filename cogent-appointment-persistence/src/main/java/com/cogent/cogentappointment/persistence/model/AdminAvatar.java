@@ -44,7 +44,7 @@ public class AdminAvatar extends Auditable<String> implements Serializable {
                 ", fileType='" + fileType + '\'' +
                 ", fileSize=" + fileSize +
                 ", status=" + status +
-                ", admin=" + admin.getUsername() +
+                ", admin=" + admin.getFullName() +
                 '}';
     }
 }

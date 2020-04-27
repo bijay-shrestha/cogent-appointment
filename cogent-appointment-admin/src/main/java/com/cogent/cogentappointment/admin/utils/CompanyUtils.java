@@ -61,7 +61,7 @@ public class CompanyUtils {
         companyLogo.setStatus(ACTIVE);
     }
 
-    public static void parseToUpdatedCompany(CompanyUpdateRequestDTO updateRequestDTO,
+    public static Hospital parseToUpdatedCompany(CompanyUpdateRequestDTO updateRequestDTO,
                                              Hospital company) {
 
         company.setName(StringUtil.convertToNormalCase(updateRequestDTO.getName()));
@@ -71,6 +71,8 @@ public class CompanyUtils {
         company.setRemarks(StringUtil.convertToNormalCase(updateRequestDTO.getRemarks()));
         company.setIsCompany(company.getIsCompany());
         company.setAlias(updateRequestDTO.getAlias());
+
+        return company;
     }
 
     public static HospitalContactNumber parseToUpdatedCompanyContactNumber(
@@ -93,9 +95,11 @@ public class CompanyUtils {
         companyContactNumber.setStatus(status);
     }
 
-    public static void parseToDeletedCompany(Hospital company, DeleteRequestDTO deleteRequestDTO) {
+    public static Hospital parseToDeletedCompany(Hospital company, DeleteRequestDTO deleteRequestDTO) {
         company.setStatus(deleteRequestDTO.getStatus());
         company.setRemarks(deleteRequestDTO.getRemarks());
+
+        return company;
     }
 
     public static CompanyResponseDTO parseToCompanyResponseDTO(Object[] results) {
@@ -134,7 +138,7 @@ public class CompanyUtils {
         String[] contactWithIdAndNumber = results[CONTACT_DETAILS_INDEX].toString().split(COMMA_SEPARATED);
 
         return Arrays.stream(contactWithIdAndNumber)
-                .map(contact -> contact.split(HYPHEN))
+                .map(contact -> contact.split(FORWARD_SLASH))
                 .map(contactDetails -> CompanyContactNumberResponseDTO.builder()
                         .companyContactNumberId(Long.parseLong(contactDetails[0]))
                         .contactNumber(contactDetails[1])

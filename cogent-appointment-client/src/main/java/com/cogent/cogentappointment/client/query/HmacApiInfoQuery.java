@@ -31,34 +31,10 @@ public class HmacApiInfoQuery {
                     " AND" +
                     " h.status='Y'";
 
-    public static final String QUERY_TO_VERIFY_LOGGED_IN_ADMIN =
-            " SELECT" +
-                    " a.id as userId," +
-                    " a.fullName as fullName," +
-                    " a.username as username," +
-                    " a.email as email," +
-                    " a.password as password," +
-                    " h.code as hospitalCode," +
-                    " h.id as hospitalId," +
-                    " h.isCompany as isCompany," +
-                    " hai.apiKey as apiKey," +
-                    " hai.apiSecret as apiSecret" +
-                    " FROM HmacApiInfo hai" +
-                    " LEFT JOIN Hospital h ON h.id=hai.hospital.id" +
-                    " LEFT JOIN Department d ON d.hospital.id=h.id" +
-                    " LEFT JOIN Profile p ON p.department.id=d.id" +
-                    " LEFT JOIN Admin a ON a.profileId.id=p.id" +
-                    " WHERE" +
-                    " (a.username =:username OR a.mobileNumber=:username OR a.email=:username)" +
-                    " AND" +
-                    " a.status='Y'" +
-                    " AND" +
-                    " h.code=:hospitalCode";
 
     public static final String QUERY_TO_FECTH_ADMIN_FOR_AUTHENTICATION =
             " SELECT" +
                     " a.fullName as fullName," +
-                    " a.username as username," +
                     " a.email as email," +
                     " h.code as hospitalCode," +
                     " h.isCompany as isCompany," +
@@ -71,11 +47,11 @@ public class HmacApiInfoQuery {
                     " LEFT JOIN Profile p ON p.department.id=d.id" +
                     " LEFT JOIN Admin a ON a.profileId.id=p.id" +
                     " WHERE" +
-                    " a.username=:username" +
-                    " AND" +
-                    " a.status='Y'" +
+                    " a.email=:email" +
                     " AND" +
                     " h.code=:hospitalCode" +
+                    " AND" +
+                    " a.status='Y'" +
                     " AND" +
                     " hai.apiKey=:apiKey";
 

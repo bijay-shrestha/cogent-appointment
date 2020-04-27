@@ -22,6 +22,7 @@ public class AppointmentModeMinimalResponseDTO implements Serializable {
 
     private Character status;
 
-    private int totalItems;
+    private Character isEditable;
 
+    private int totalItems;
 }

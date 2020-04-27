@@ -5,8 +5,7 @@ import com.cogent.cogentappointment.client.dto.request.department.DepartmentUpda
 import com.cogent.cogentappointment.persistence.model.Department;
 import com.cogent.cogentappointment.persistence.model.Hospital;
 
-import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toNormalCase;
-import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toUpperCase;
+import static com.cogent.cogentappointment.client.utils.commons.StringUtil.*;
 
 /**
  * @author smriti ON 25/01/2020

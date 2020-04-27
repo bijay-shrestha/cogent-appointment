@@ -6,7 +6,7 @@ import com.cogent.cogentappointment.admin.dto.request.forgotPassword.ForgotPassw
  * @author smriti on 2019-09-20
  */
 public interface ForgotPasswordService {
-    void forgotPassword(String username);
+    void forgotPassword(String email);
 
     void verify(String resetCode);
 

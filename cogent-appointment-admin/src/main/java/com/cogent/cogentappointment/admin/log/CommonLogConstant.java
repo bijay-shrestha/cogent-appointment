@@ -4,10 +4,12 @@ package com.cogent.cogentappointment.admin.log;
  * @author smriti on 2019-08-21
  */
 public class CommonLogConstant {
+    private final static String BOLD = "\033[0;1m";
+
     //A
+    public final static String ALIAS_DUPLICATION_ERROR = BOLD + ":::: {} WITH ALIAS : '{}' ALREADY EXISTS ::::";
 
     //B
-    private final static String BOLD = "\033[0;1m";
 
     //C
     public final static String CONTENT_NOT_FOUND_BY_CODE = BOLD + ":::: {} WITH CODE : {} NOT FOUND ::::";

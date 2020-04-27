@@ -21,8 +21,10 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.io.IOException;
 
+import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AdminConstant.VERIFY_EMAIL_ADMIN;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.CompanyAdminConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AdminConstants.EMAIL;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.CompanyAdminConstants.*;
 import static java.net.URI.create;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
@@ -114,6 +116,13 @@ public class CompanyAdminResource {
     @ApiOperation(VERIFY_ADMIN)
     public ResponseEntity<?> verify(@RequestParam(name = "token") String token) {
         companyAdminService.verifyConfirmationToken(token);
+        return ok().build();
+    }
+
+    @GetMapping(VERIFY+EMAIL)
+    @ApiOperation(VERIFY_EMAIL_ADMIN)
+    public ResponseEntity<?> verifyUpdatedEmail(@RequestParam(name = "token") String token) {
+        companyAdminService.verifyConfirmationTokenForEmail(token);
         return ok().build();
     }
 

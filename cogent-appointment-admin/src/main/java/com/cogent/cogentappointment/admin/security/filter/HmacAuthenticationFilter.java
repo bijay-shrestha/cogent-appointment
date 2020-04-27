@@ -51,17 +51,17 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
             final HMACBuilder signatureBuilder;
 
-            UserDetailsImpl userDetails = userDetailsService.loadUserByUsername(authHeader.getUsername());
+            UserDetailsImpl userDetails = userDetailsService.loadUserByUsername(authHeader.getEmail());
 
             if (userDetails.getIsCompany().equals(YES)) {
                 signatureBuilder = new HMACBuilder()
                         .algorithm(authHeader.getAlgorithm())
-                        .id(authHeader.getUserId())
-                        .nonce(authHeader.getNonce())
-                        .username(userDetails.getUsername())
+                        .id(authHeader.getId())
+                        .email(authHeader.getEmail())
                         .companyId(Math.toIntExact(authHeader.getCompanyId()))
                         .companyCode(authHeader.getCompanyCode())
                         .apiKey(authHeader.getApiKey())
+                        .nonce(authHeader.getNonce())
                         .apiSecret(userDetails.getApiSecret());
 
             } else {
@@ -70,7 +70,7 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
             compareSignature(signatureBuilder, authHeader.getDigest());
 
-            SecurityContextHolder.getContext().setAuthentication(getAuthenticationForCompany(userDetails.getUsername(),
+            SecurityContextHolder.getContext().setAuthentication(getAuthenticationForCompany(authHeader.getEmail(),
                     userDetails.getCompanyId()));
         }
 
@@ -107,9 +107,9 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
             throw new BadCredentialsException(HMAC_BAD_SIGNATURE);
     }
 
-    public PreAuthenticatedAuthenticationToken getAuthenticationForCompany(String username, Long companyId) {
+    public PreAuthenticatedAuthenticationToken getAuthenticationForCompany(String email, Long companyId) {
         return new PreAuthenticatedAuthenticationToken(
-                username,
+                email,
                 companyId,
                 null);
     }

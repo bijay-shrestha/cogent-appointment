@@ -4,10 +4,7 @@ import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.request.admin.AdminInfoRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.admin.AdminSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.admin.AdminUpdateRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.admin.AdminDetailResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.admin.AdminLoggedInInfoResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.admin.AdminMacAddressInfoResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.admin.AdminMinimalResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.admin.*;
 import com.cogent.cogentappointment.client.dto.response.dashboard.DashboardFeatureResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.query.DashBoardQuery;
@@ -63,26 +60,21 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     }
 
     @Override
-    public List<Object[]> validateDuplicity(String username, String email, String mobileNumber,
-                                            Long hospitalId) {
+    public List<Object[]> validateDuplicity(String email, String mobileNumber) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FIND_ADMIN_FOR_VALIDATION)
-                .setParameter(USERNAME, username)
                 .setParameter(EMAIL, email)
-                .setParameter(MOBILE_NUMBER, mobileNumber)
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(MOBILE_NUMBER, mobileNumber);
 
         return query.getResultList();
     }
 
     @Override
-    public List<Object[]> validateDuplicity(AdminUpdateRequestDTO updateRequestDTO, Long hospitalId) {
+    public List<Object[]> validateDuplicity(AdminUpdateRequestDTO updateRequestDTO) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FIND_ADMIN_EXCEPT_CURRENT_ADMIN)
                 .setParameter(ID, updateRequestDTO.getId())
                 .setParameter(EMAIL, updateRequestDTO.getEmail())
-                .setParameter(MOBILE_NUMBER, updateRequestDTO.getMobileNumber())
-                .setParameter(HOSPITAL_ID, hospitalId);
-
+                .setParameter(MOBILE_NUMBER, updateRequestDTO.getMobileNumber());
         return query.getResultList();
     }
 
@@ -134,15 +126,13 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
 
 
     @Override
-    public Admin fetchAdminByUsernameOrEmail(String username, String hospitalCode) {
+    public Admin fetchAdminByEmail(String email) {
         try {
-            return entityManager.createQuery(QUERY_TO_FETCH_ADMIN_BY_USERNAME_OR_EMAIL, Admin.class)
-                    .setParameter(USERNAME, username)
-                    .setParameter(EMAIL, username)
-                    .setParameter(HOSPITAL_CODE, hospitalCode)
+            return entityManager.createQuery(QUERY_TO_FETCH_ADMIN_BY_EMAIL, Admin.class)
+                    .setParameter(EMAIL, email)
                     .getSingleResult();
         } catch (NoResultException ex) {
-            throw ADMIN_NOT_FOUND.apply(username);
+            throw ADMIN_NOT_FOUND.apply(email);
         }
     }
 
@@ -150,8 +140,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     public AdminLoggedInInfoResponseDTO fetchLoggedInAdminInfo(AdminInfoRequestDTO requestDTO, Long hospitalId) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ADMIN_INFO)
-                .setParameter(USERNAME, requestDTO.getUsername())
-                .setParameter(EMAIL, requestDTO.getUsername())
+                .setParameter(EMAIL, requestDTO.getEmail())
                 .setParameter(HOSPITAL_ID, hospitalId);
 
         try {
@@ -186,6 +175,17 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         }
     }
 
+    @Override
+    public LoggedInAdminDTO getLoggedInAdmin(String email) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_GET_LOGGED_ADMIN_INFO)
+                .setParameter(EMAIL, email);
+        try {
+            return transformQueryToSingleResult(query, LoggedInAdminDTO.class);
+        } catch (NoResultException e) {
+            throw ADMIN_NOT_FOUND.apply(email);
+        }
+    }
+
     private AdminDetailResponseDTO fetchAdminDetailResponseDTO(Long id, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ADMIN_DETAIL)
                 .setParameter(ID, id)
@@ -215,10 +215,10 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
         throw new NoContentFoundException(Admin.class, "id", id.toString());
     };
 
-    private Function<String, NoContentFoundException> ADMIN_NOT_FOUND = (username) -> {
-        log.error(ADMIN_NOT_FOUND_ERROR, username);
-        throw new NoContentFoundException(String.format(AdminServiceMessages.ADMIN_NOT_FOUND, username),
-                "username/email", username);
+    private Function<String, NoContentFoundException> ADMIN_NOT_FOUND = (email) -> {
+        log.error(ADMIN_NOT_FOUND_ERROR, email);
+        throw new NoContentFoundException(String.format(AdminServiceMessages.ADMIN_NOT_FOUND, email),
+                "email", email);
     };
 
     private void error() {

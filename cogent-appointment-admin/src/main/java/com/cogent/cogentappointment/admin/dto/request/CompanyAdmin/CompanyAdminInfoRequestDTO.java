@@ -16,5 +16,5 @@ public class CompanyAdminInfoRequestDTO implements Serializable {
 
     @NotNull
     @NotEmpty
-    private String username;
+    private String email;
 }

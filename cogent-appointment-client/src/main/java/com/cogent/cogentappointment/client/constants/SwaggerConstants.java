@@ -25,11 +25,19 @@ public class SwaggerConstants {
         String FETCH_LOGGED_IN_ADMIN_INFO = "Fetch logged in admin information." +
                 " Used to show in top-bar and to validate if the admin updates its own profile";
         String FETCH_ADMIN_META_INFO = "Fetch active admin meta info for dropdown";
+        String VERIFY_EMAIL_ADMIN = "Verify if the confirmation token sent in email (after successful email update by admin) is valid.";
+    }
+
+    public interface AdminFeatureConstant {
+        String BASE_API_VALUE = "This is Admin Feature Resource";
+        String UPDATE_OPERATION = "Update 'isSideBarCollapse' flag of corresponding admin";
     }
 
     public interface AppointmentConstant {
         String BASE_API_VALUE = "This is Appointment Resource";
         String CHECK_APPOINTMENT_AVAILABILITY = "Check available time schedules in requested date" +
+                " for specific doctor and specialization";
+        String CHECK_CURRENT_APPOINTMENT_AVAILABILITY = "Check current available time schedules in requested date" +
                 " for specific doctor and specialization";
         String SAVE_OPERATION = "Save new appointment";
         String FETCH_PENDING_APPOINTMENT = "Fetch pending appointments";

@@ -16,13 +16,19 @@ public class WebResourceKeyConstants {
         String CHANGE_PASSWORD = "/changePassword";
         String RESET_PASSWORD = "/resetPassword";
         String VERIFY = "/verify";
+        String EMAIL = "/email";
+    }
+
+    public interface AdminFeatureConstants {
+        String BASE_ADMIN_FEATURE = "/adminFeature";
     }
 
     public interface AppointmentConstants {
         String BASE_APPOINTMENT = "/appointment";
         String APPOINTMENT_ID_PATH_VARIABLE_BASE = "/{appointmentId}";
         String APPOINTMENT_RESERVATION_ID_PATH_VARIABLE_BASE = "/{appointmentReservationId}";
-        String CHECK_AVAILABILITY = "/availableTimeSlots";
+        String FETCH_AVAILABLE_TIMESLOTS = "/availableTimeSlots";
+        String FETCH_CURRENT_AVAILABLE_TIMESLOTS = "/availableTimeSlots/current";
         String PENDING_APPOINTMENT = "/pending-appointment";
         String CANCEL = "/cancel";
         String RESCHEDULE = "/reschedule";

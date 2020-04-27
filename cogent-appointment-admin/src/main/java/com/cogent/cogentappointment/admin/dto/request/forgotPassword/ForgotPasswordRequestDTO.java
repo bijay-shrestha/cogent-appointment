@@ -16,7 +16,7 @@ public class ForgotPasswordRequestDTO implements Serializable {
 
     @NotNull
     @NotEmpty
-    private String username;
+    private String email;
 
     @NotNull
     @NotEmpty

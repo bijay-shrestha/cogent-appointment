@@ -107,7 +107,7 @@ public class QualificationAliasServiceImpl implements QualificationAliasService 
 
         log.info(FETCHING_PROCESS_STARTED, QUALIFICATION_ALIAS);
 
-        QualificationAlias qualificationAlias = qualificationAliasRepository.fetchActiveQualificationAliasById(id)
+        QualificationAlias qualificationAlias = qualificationAliasRepository.fetchQualificationAliasById(id)
                 .orElseThrow(() -> QUALIFICATION_ALIAS_WITH_GIVEN_ID_NOT_FOUND.apply(id));
 
         log.info(FETCHING_PROCESS_COMPLETED, QUALIFICATION_ALIAS, getDifferenceBetweenTwoTime(startTime));

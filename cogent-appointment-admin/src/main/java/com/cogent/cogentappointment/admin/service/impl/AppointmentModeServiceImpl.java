@@ -7,6 +7,7 @@ import com.cogent.cogentappointment.admin.dto.request.appointmentMode.Appointmen
 import com.cogent.cogentappointment.admin.dto.request.appointmentMode.AppointmentModeUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentMode.AppointmentModeMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentMode.AppointmentModeResponseDTO;
+import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.AppointmentModeRepository;
@@ -20,9 +21,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AppointmentModeMessages.APPOINTMENT_MODE_NOT_EDITABLE;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AppointmentModeMessages.APPOINTMENT_MODE_NOT_EDITABLE_DEBUG_MESSAGE;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NAME_DUPLICATION_MESSAGE;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentModeLog.APPOINTMENT_MODE;
+import static com.cogent.cogentappointment.admin.log.constants.AppointmentModeLog.APPOINTMENT_MODE_NOT_EDITABLE_ERROR;
 import static com.cogent.cogentappointment.admin.utils.AppointmentModeUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
@@ -66,11 +70,17 @@ public class AppointmentModeServiceImpl implements AppointmentModeService {
 
         AppointmentMode appointmentMode = fetchAppointmentModeById(requestDTO.getId());
 
-        Long count = repository.validateDuplicity(requestDTO.getId(), requestDTO.getName());
+        if (appointmentMode.getIsEditable().equals('Y')) {
 
-        validateName(count, requestDTO.getName());
+            Long count = repository.validateDuplicity(requestDTO.getId(), requestDTO.getName());
 
-        parseToUpdatedAppointmentMode(requestDTO,appointmentMode);
+            validateName(count, requestDTO.getName());
+
+            parseToUpdatedAppointmentMode(requestDTO, appointmentMode);
+        } else {
+            log.error(APPOINTMENT_MODE_NOT_EDITABLE_ERROR);
+            throw new BadRequestException(APPOINTMENT_MODE_NOT_EDITABLE,APPOINTMENT_MODE_NOT_EDITABLE_DEBUG_MESSAGE);
+        }
 
         log.info(UPDATING_PROCESS_COMPLETED, APPOINTMENT_MODE, getDifferenceBetweenTwoTime(startTime));
     }
@@ -135,7 +145,7 @@ public class AppointmentModeServiceImpl implements AppointmentModeService {
         }
     }
 
-    private void saveAppointmentMode(AppointmentMode appointmentMode){
+    private void saveAppointmentMode(AppointmentMode appointmentMode) {
         repository.save(appointmentMode);
     }
 

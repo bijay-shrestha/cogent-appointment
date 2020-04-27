@@ -14,7 +14,7 @@ public class AdminLoggedInInfoResponseDTO implements Serializable {
 
     private Long adminId;
 
-    private String username;
+    private String email;
 
     private String fullName;
 
@@ -31,4 +31,6 @@ public class AdminLoggedInInfoResponseDTO implements Serializable {
     private String hospitalName;
 
     private Character isAllRoleAssigned;
+
+    private Character isSideBarCollapse;
 }

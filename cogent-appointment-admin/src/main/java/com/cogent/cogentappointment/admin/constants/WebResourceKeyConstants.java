@@ -13,10 +13,15 @@ public class WebResourceKeyConstants {
         String BASE_ADMIN = "/admin";
         String AVATAR = "/avatar";
         String ADMIN_META_INFO = "/metaInfo";
-        String CHANGE_PASSWORD = "/changePassword";
+        String ADMIN_META_INFO_BY_COMPANY_ID = "/company/metaInfo";
+        String ADMIN_META_INFO_BY_CLIENT_ID = "/client/metaInfo";
         String RESET_PASSWORD = "/resetPassword";
-        String INFO = "/info";
         String VERIFY = "/verify";
+        String EMAIL = "/email";
+    }
+
+    public interface AdminFeatureConstants {
+        String BASE_ADMIN_FEATURE = "/adminFeature";
     }
 
     public interface AppointmentConstants {
@@ -28,7 +33,6 @@ public class WebResourceKeyConstants {
         String STATUS = "/status";
         String LOG = "/log";
         String PENDING_APPROVAL = "/pending-approval";
-        String RESCHEDULE = "/reschedule";
         String RESCHEDULE_LOG = "/reschedule-log";
         String DETAILS = "/detail";
         String TRANSACTION_LOG = "/transaction-log";
@@ -36,6 +40,7 @@ public class WebResourceKeyConstants {
 
     public interface AppointmentModeConstants {
         String BASE_APPOINTMENT_MODE = "/appointmentMode";
+
     }
 
     //B

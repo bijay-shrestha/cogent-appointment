@@ -6,18 +6,27 @@ package com.cogent.cogentappointment.admin.constants;
 public class ErrorMessageConstants {
 
     //A
+    public static final String ALIAS_NOT_FOUND = "Alias not found";
+
+    public static final String ALIAS_DUPLICATION_MESSAGE = "%s already exists with alias '%s' ";
 
 
     public interface AdminServiceMessages {
 
-        String ADMIN_DUPLICATION_MESSAGE = "Admin with given username, email and mobile number" +
-                " already exists.";
+        String ADMIN_DUPLICATION_MESSAGE = "Admin with email '%s' and mobile number" +
+                " '%s' already exists.";
 
-        String USERNAME_DUPLICATION_MESSAGE = "%s already exists with username '%s'";
+        String ADMIN_DUPLICATION_IN_DIFFERENT_HOSPITAL_MESSAGE = "Cannot create Admin with email '%s'" +
+                " and mobile number '%s'.";
 
-        String EMAIL_DUPLICATION_MESSAGE = "%s already exists with email '%s'";
+        String EMAIL_DUPLICATION_MESSAGE = "Admin already exists with email '%s'.";
 
-        String MOBILE_NUMBER_DUPLICATION_MESSAGE = "%s already exists with mobile number '%s'";
+        String EMAIL_DUPLICATION_IN_DIFFERENT_HOSPITAL_MESSAGE = "Cannot create Admin with email '%s'.";
+
+        String MOBILE_NUMBER_DUPLICATION_MESSAGE = "Admin already exists with mobile number '%s'.";
+
+        String MOBILE_NUMBER_DUPLICATION_IN_DIFFERENT_HOSPITAL_MESSAGE = "Cannot create Admin with" +
+                " and mobile number '%s'.";
 
         String ADMIN_NOT_FOUND = "Admin '%s' doesn't exist";
 
@@ -43,6 +52,10 @@ public class ErrorMessageConstants {
         String ACCOUNT_NOT_ACTIVATED_DEBUG_MESSAGE = "'isAccountActivated' flag is 'N'";
     }
 
+    public interface AppointmentModeMessages {
+        String APPOINTMENT_MODE_NOT_EDITABLE = "Appointment Mode cannot be updated'";
+        String APPOINTMENT_MODE_NOT_EDITABLE_DEBUG_MESSAGE = "Appointment Mode having is_editable 'N' cannot be updated";
+    }
 
     //B
 

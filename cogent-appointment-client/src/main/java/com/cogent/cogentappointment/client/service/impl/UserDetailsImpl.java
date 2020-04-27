@@ -1,7 +1,9 @@
 package com.cogent.cogentappointment.client.service.impl;
 
+import com.cogent.cogentappointment.client.dto.response.admin.LoggedInAdminDTO;
 import com.cogent.cogentappointment.persistence.model.Admin;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -11,31 +13,53 @@ import java.util.Objects;
 /**
  * @author Sauravi Thapa २०/१/१६
  */
+@Getter
 public class UserDetailsImpl implements UserDetails {
-
     private Long id;
 
-    private String username;
-
     private String email;
+
+    private Character isCompany;
 
     @JsonIgnore
     private String password;
 
+    private String hospitalCode;
 
-    public UserDetailsImpl(Long id, String username, String email, String password) {
+    private Long hospitalId;
+
+    private String apiKey;
+
+    private String apiSecret;
+
+    public UserDetailsImpl(Long id,
+                           String email,
+                           Character isCompany,
+                           String password,
+                           String hospitalCode,
+                           Long hospitalId,
+                           String apiKey,
+                           String apiSecret) {
         this.id = id;
-        this.username = username;
         this.email = email;
+        this.isCompany = isCompany;
         this.password = password;
+        this.hospitalCode = hospitalCode;
+        this.hospitalId = hospitalId;
+        this.apiKey = apiKey;
+        this.apiSecret = apiSecret;
     }
 
-    public static UserDetailsImpl build(Admin admin) {
+    public static UserDetailsImpl build(LoggedInAdminDTO admin) {
         return new UserDetailsImpl(
                 admin.getId(),
-                admin.getUsername(),
                 admin.getEmail(),
-                admin.getPassword());
+                admin.getIsCompany(),
+                admin.getPassword(),
+                admin.getHospitalCode(),
+                admin.getHospitalId(),
+                admin.getApiKey(),
+                admin.getApiSecret());
     }
 
     @Override
@@ -50,7 +74,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @Override

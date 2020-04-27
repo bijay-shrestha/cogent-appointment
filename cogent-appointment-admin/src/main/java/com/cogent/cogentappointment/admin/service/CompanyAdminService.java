@@ -43,6 +43,8 @@ public interface CompanyAdminService {
 
     void verifyConfirmationToken(String token);
 
+    void verifyConfirmationTokenForEmail(String token);
+
     void savePassword(AdminPasswordRequestDTO requestDTO);
 
     CompanyAdminLoggedInInfoResponseDTO fetchLoggedInCompanyAdminInfo(CompanyAdminInfoRequestDTO requestDTO);

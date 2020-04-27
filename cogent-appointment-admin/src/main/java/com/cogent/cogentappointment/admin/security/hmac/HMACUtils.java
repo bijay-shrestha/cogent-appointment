@@ -16,8 +16,8 @@ public class HMACUtils {
 
     public String getHash(Authentication authentication) {
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
-        Integer adminId=Math.toIntExact(userPrincipal.getId());
-        String username = userPrincipal.getUsername();
+        Integer id= Math.toIntExact(userPrincipal.getId());
+        String email = userPrincipal.getEmail();
         String companyCode = userPrincipal.getCompanyCode();
         String apiKey = userPrincipal.getApiKey();
         String apiSecret = userPrincipal.getApiSecret();
@@ -26,22 +26,22 @@ public class HMACUtils {
 
         final HMACBuilder signatureBuilder = new HMACBuilder()
                 .algorithm(HMAC_ALGORITHM)
-                .id(adminId)
-                .nonce(nonce)
-                .apiKey(apiKey)
+                .id(id)
+                .email(email)
                 .companyCode(companyCode)
                 .companyId(companyId)
-                .username(username)
-                .apiSecret(apiSecret);;
+                .apiKey(apiKey)
+                .apiSecret(apiSecret)
+                .nonce(nonce);
 
         final String signature = signatureBuilder
                 .buildAsBase64String();
 
         String hash = HMAC_ALGORITHM +
                 SPACE +
-                adminId+
-                COLON+
-                username +
+                id +
+                COLON +
+                email +
                 COLON +
                 companyId +
                 COLON +
@@ -52,7 +52,6 @@ public class HMACUtils {
                 nonce +
                 COLON +
                 signature;
-
 
         return hash;
     }

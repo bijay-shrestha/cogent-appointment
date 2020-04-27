@@ -381,7 +381,7 @@ Sizes: [
 																						http://kb.mailchimp.com/templates/code/create-editable-content-areas-with-mailchimps-template-language
 																					-->
 																					<h3 mc:edit="header" style="color:#5F5F5F;line-height:125%;font-family:Helvetica,Arial,sans-serif;font-size:20px;font-weight:normal;margin-top:0;margin-bottom:10px;text-align:left;">Dear <b>${username}</b>,</h3>
-																					<div mc:edit="body" style="text-align:left;font-family:Helvetica,Arial,sans-serif;font-size:15px;margin-bottom:0;color:#5F5F5F;line-height:135%;">We received a request to reset your password. Enter the following password  reset code :</div>
+																					<div mc:edit="body" style="text-align:left;font-family:Helvetica,Arial,sans-serif;font-size:15px;margin-bottom:0;color:#5F5F5F;line-height:135%;">We received a request to reset your password. Enter the following <b> verification token </b> in your Verify Password reset screen :</div>
 
 																				</td>
 																			</tr>

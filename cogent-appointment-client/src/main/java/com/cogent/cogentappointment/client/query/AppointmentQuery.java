@@ -228,7 +228,7 @@ public class AppointmentQuery {
                 "  d.name as doctorName," +
                 "  s.name as specializationName," +
                 "  atd.transactionNumber as transactionNumber," +
-                "  DATE_FORMAT(ard.cancelledDate,'%Y-%m-%d') as cancelledDate," +
+                "  DATE_FORMAT(ard.cancelledDate,'%M %d %Y') as cancelledDate," +
                 "  p.gender as gender," +
                 " ard.refundAmount as refundAmount," +
                 " a.appointmentModeId.name as appointmentMode, " +
@@ -305,7 +305,8 @@ public class AppointmentQuery {
                             " p.mobileNumber as mobileNumber," +                                        //[6]
                             " sp.name as specializationName," +                                         //[7]
                             " d.name as doctorName," +
-                            " a.appointmentModeId.name as appointmentMode" +                                                  //[8]
+                            " a.appointmentModeId.name as appointmentMode," +
+                            " atd.appointmentAmount as appointmentAmount" +                                                  //[8]
                             " FROM Appointment a" +
                             " LEFT JOIN Patient p ON a.patientId=p.id" +
                             " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +

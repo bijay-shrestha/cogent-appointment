@@ -55,23 +55,12 @@ public class HmacApiInfoRepositoryCustomImpl implements HmacApiInfoRepositoryCus
         }
     }
 
-    @Override
-    public AdminMinDetails verifyLoggedInAdmin(String username, String hospitalCode) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_VERIFY_LOGGED_IN_ADMIN)
-                .setParameter(USERNAME, username)
-                .setParameter(HOSPITAL_CODE, hospitalCode);
-        try {
-            return transformQueryToSingleResult(query, AdminMinDetails.class);
-        } catch (NoResultException e) {
-            log.error(INVALID_USERNAME_OR_ACCESS_KEY);
-            throw new NoContentFoundException(INVALID_USERNAME_OR_ACCESS_KEY);
-        }
-    }
+
 
     @Override
-    public AdminMinDetails getAdminDetailForAuthentication(String username, String hospitalCode, String apiKey) {
+    public AdminMinDetails getAdminDetailForAuthentication(String email, String hospitalCode, String apiKey) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FECTH_ADMIN_FOR_AUTHENTICATION)
-                .setParameter(USERNAME, username)
+                .setParameter(EMAIL, email)
                 .setParameter(HOSPITAL_CODE, hospitalCode)
                 .setParameter(API_KEY, apiKey);
         try {

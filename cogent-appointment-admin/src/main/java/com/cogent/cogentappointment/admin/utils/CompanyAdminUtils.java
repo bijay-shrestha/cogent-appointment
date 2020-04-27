@@ -16,8 +16,10 @@ import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.EmailConstants.SUBJECT_FOR_ADMIN_VERIFICATION;
+import static com.cogent.cogentappointment.admin.constants.EmailConstants.SUBJECT_FOR_EMAIL_VERIFICATION;
 import static com.cogent.cogentappointment.admin.constants.EmailConstants.SUBJECT_FOR_UPDATE_ADMIN;
 import static com.cogent.cogentappointment.admin.constants.EmailTemplates.ADMIN_VERIFICATION;
+import static com.cogent.cogentappointment.admin.constants.EmailTemplates.EMAIL_VERIFICATION;
 import static com.cogent.cogentappointment.admin.constants.EmailTemplates.UPDATE_ADMIN;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
@@ -37,7 +39,6 @@ public class CompanyAdminUtils {
                                                  Gender gender,
                                                  Profile profile) {
         Admin admin = new Admin();
-        admin.setUsername(getUsername(requestDTO.getEmail()));
         admin.setFullName(convertToNormalCase(requestDTO.getFullName()));
         admin.setEmail(requestDTO.getEmail());
         admin.setMobileNumber(requestDTO.getMobileNumber());
@@ -53,13 +54,13 @@ public class CompanyAdminUtils {
     public static void convertCompanyAdminUpdateRequestDTOToAdmin(Admin admin,
                                                                   CompanyAdminUpdateRequestDTO updateRequestDTO,
                                                                   Gender gender,
-                                                                  Profile profile) {
+                                                                  Profile profile,
+                                                                  Character status) {
 
         admin.setEmail(updateRequestDTO.getEmail());
-        admin.setUsername(getUsername(admin.getEmail()));
         admin.setFullName(convertToNormalCase(updateRequestDTO.getFullName()));
         admin.setMobileNumber(updateRequestDTO.getMobileNumber());
-        admin.setStatus(updateRequestDTO.getStatus());
+        admin.setStatus(status);
         admin.setHasMacBinding(updateRequestDTO.getHasMacBinding());
         admin.setRemarks(updateRequestDTO.getRemarks());
 
@@ -70,11 +71,6 @@ public class CompanyAdminUtils {
     private static void parseCompanyAdminDetails(Gender gender, Profile profile, Admin admin) {
         admin.setGender(gender);
         admin.setProfileId(profile);
-    }
-
-    public static String getUsername(String email){
-        StringTokenizer token = new StringTokenizer(email, "@");
-        return token.nextToken();
     }
 
     public static String parseUpdatedCompanyAdminValues(Admin admin,
@@ -127,7 +123,7 @@ public class CompanyAdminUtils {
                 ? StringUtils.join(macAddress, COMMA_SEPARATED) : "N/A";
     }
 
-    public static EmailRequestDTO parseToEmailRequestDTOForCompanyAdmin(String username,
+    public static EmailRequestDTO parseToEmailRequestDTOForCompanyAdmin(String fullName,
                                                                         CompanyAdminUpdateRequestDTO updateRequestDTO,
                                                                         String paramValues,
                                                                         String updatedMacAddress) {
@@ -135,7 +131,7 @@ public class CompanyAdminUtils {
                 .receiverEmailAddress(updateRequestDTO.getEmail())
                 .subject(SUBJECT_FOR_UPDATE_ADMIN)
                 .templateName(UPDATE_ADMIN)
-                .paramValue(username + HYPHEN + paramValues + HYPHEN +
+                .paramValue(fullName + HYPHEN + paramValues + HYPHEN +
                         updateRequestDTO.getHasMacBinding() + HYPHEN + updatedMacAddress)
                 .build();
     }
@@ -153,7 +149,23 @@ public class CompanyAdminUtils {
                 .receiverEmailAddress(adminRequestDTO.getEmail())
                 .subject(SUBJECT_FOR_ADMIN_VERIFICATION)
                 .templateName(ADMIN_VERIFICATION)
-                .paramValue(admin.getUsername() + COMMA_SEPARATED + confirmationUrl)
+                .paramValue(admin.getFullName() + COMMA_SEPARATED + confirmationUrl)
+                .build();
+    }
+
+    public static EmailRequestDTO convertCompanyAdminUpdateRequestToEmailRequestDTO(CompanyAdminUpdateRequestDTO adminRequestDTO,
+                                                                             String confirmationToken) {
+
+//        String origin = httpServletRequest.getHeader("origin");
+//        String confirmationUrl = origin + "/#" + "/savePassword" + "?token =" + confirmationToken;
+
+        String confirmationUrl = adminRequestDTO.getBaseUrl() + "/#" + "/verify/email"  + "?token =" + confirmationToken;
+
+        return EmailRequestDTO.builder()
+                .receiverEmailAddress(adminRequestDTO.getEmail())
+                .subject(SUBJECT_FOR_EMAIL_VERIFICATION)
+                .templateName(EMAIL_VERIFICATION)
+                .paramValue(adminRequestDTO.getFullName() + COMMA_SEPARATED + confirmationUrl)
                 .build();
     }
 

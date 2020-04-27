@@ -58,14 +58,14 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     }
 
     @Override
-    public void forgotPassword(String username) {
+    public void forgotPassword(String email) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FORGOT_PASSWORD_PROCESS_STARTED);
 
-        Admin admin = adminRepository.fetchAdminByUsernameOrEmail(username);
+        Admin admin = adminRepository.fetchAdminByEmail(email);
 
-        validateAdmin(admin, username);
+        validateAdmin(admin, email);
 
         ForgotPasswordVerification forgotPasswordVerification = verificationRepository.findByAdminId(admin.getId());
 
@@ -78,7 +78,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
         EmailRequestDTO emailRequestDTO = parseToEmailRequestDTO(
                 admin.getEmail(),
-                admin.getUsername(),
+                admin.getFullName(),
                 forgotPasswordVerification.getResetCode());
 
         emailService.sendEmail(emailRequestDTO);
@@ -105,7 +105,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
         log.info(UPDATING_PASSWORD_PROCESS_STARTED);
 
-        Admin admin = adminRepository.fetchAdminByUsernameOrEmail(requestDTO.getUsername());
+        Admin admin = adminRepository.fetchAdminByEmail(requestDTO.getEmail());
 
         ForgotPasswordVerification forgotPasswordVerification = verificationRepository.findByAdminId(admin.getId());
 
@@ -129,6 +129,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     private void updateForgotPasswordVerification(Long adminId) {
         ForgotPasswordVerification forgotPasswordVerification = verificationRepository.findByAdminId(adminId);
         forgotPasswordVerification.setStatus(INACTIVE);
+        save(forgotPasswordVerification);
     }
 
     private void validateExpirationTime(Object expirationTime) {
@@ -142,9 +143,9 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
         verificationRepository.save(forgotPasswordVerification);
     }
 
-    private void validateAdmin(Admin admin, String username) {
-        validateAdminStatus(admin, username);
-        validateIfAdminIsActivated(admin, username);
+    private void validateAdmin(Admin admin, String email) {
+        validateAdminStatus(admin, email);
+        validateIfAdminIsActivated(admin, email);
     }
 
     private void validateAdminStatus(Admin admin, String username) {

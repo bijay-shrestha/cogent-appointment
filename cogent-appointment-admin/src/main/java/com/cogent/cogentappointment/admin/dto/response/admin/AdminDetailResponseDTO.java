@@ -20,8 +20,6 @@ public class AdminDetailResponseDTO implements Serializable {
 
     private String fullName;
 
-    private String username;
-
     private String email;
 
     private String mobileNumber;
@@ -47,6 +45,8 @@ public class AdminDetailResponseDTO implements Serializable {
     private String fileUri;
 
     private String remarks;
+
+    private String hospitalAlias;
 
     private List<AdminMacAddressInfoResponseDTO> adminMacAddressInfo;
 }

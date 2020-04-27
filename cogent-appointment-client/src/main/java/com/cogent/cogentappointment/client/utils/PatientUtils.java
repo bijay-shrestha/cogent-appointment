@@ -2,7 +2,10 @@ package com.cogent.cogentappointment.client.utils;
 
 import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateDTOForOthers;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientUpdateRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.patient.*;
+import com.cogent.cogentappointment.client.dto.response.patient.PatientDetailResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.patient.PatientDetailResponseDTOWithStatus;
+import com.cogent.cogentappointment.client.dto.response.patient.PatientResponseDTOForOthers;
+import com.cogent.cogentappointment.client.dto.response.patient.PatientResponseDTOForOthersWithStatus;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.HospitalPatientInfo;
 import com.cogent.cogentappointment.persistence.model.Patient;
@@ -81,12 +84,12 @@ public class PatientUtils {
     }
 
     /*REGISTRATION NUMBER IS GENERATED IN FORMAT :
-    * FOR FIRST RECORD : YY + MM + DD + 0001
-    *  eg.2002130001
-    * THEN 0001 INCREMENTS BY 1
-    *  NEXT REGISTRATION NUMBER = 2002130002
-    *  NOTE THAT REGISTRATION NUMBER IS UNIQUELY GENERATED ONLY ONCE FOR THE PATIENT IN SPECIFIC HOSPITAL
-    *  */
+     * FOR FIRST RECORD : YY + MM + DD + 0001
+     *  eg.2002130001
+     * THEN 0001 INCREMENTS BY 1
+     *  NEXT REGISTRATION NUMBER = 2002130002
+     *  NOTE THAT REGISTRATION NUMBER IS UNIQUELY GENERATED ONLY ONCE FOR THE PATIENT IN SPECIFIC HOSPITAL
+     *  */
     private static String generateRegistrationNumber(String latestRegistrationNumber) {
 
         LocalDateTime date = LocalDateTime.now();

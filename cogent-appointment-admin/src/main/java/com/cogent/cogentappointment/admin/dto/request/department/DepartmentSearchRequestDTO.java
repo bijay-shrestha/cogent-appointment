@@ -13,8 +13,6 @@ import java.io.Serializable;
 public class DepartmentSearchRequestDTO implements Serializable {
     private Long id;
 
-    private String name;
-
     private String departmentCode;
 
     private Long hospitalId;

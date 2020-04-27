@@ -74,8 +74,8 @@ public class DashBoardQuery {
             "SELECT" +
                     " COUNT(ast.id)" +
                     " FROM AppointmentStatistics ast" +
-                    " LEFT JOIN Appointment a ON a.id=ast.appointmentId.id"+
-                    " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
+                    " LEFT JOIN Appointment a ON a.id=ast.appointmentId.id AND (a.status!='C' AND a.status!='RE')"+
+                    " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id" +
                     " WHERE " +
                     " (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
                     " AND a.hospitalId.id=:hospitalId";
@@ -84,7 +84,7 @@ public class DashBoardQuery {
             "SELECT" +
                     " COUNT(ast.id)" +
                     " FROM AppointmentStatistics ast" +
-                    " LEFT JOIN Appointment a ON a.id=ast.appointmentId.id"+
+                    " LEFT JOIN Appointment a ON a.id=ast.appointmentId.id AND (a.status!='C' AND a.status!='RE')"+
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
                     " WHERE" +
                     " ast.isRegistered='Y' " +
@@ -95,7 +95,7 @@ public class DashBoardQuery {
             "SELECT" +
                     " COUNT(ast.id)" +
                     " FROM AppointmentStatistics ast" +
-                    " LEFT JOIN Appointment a ON a.id=ast.appointmentId.id"+
+                    " LEFT JOIN Appointment a ON a.id=ast.appointmentId.id AND (a.status!='C' AND a.status!='RE')"+
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
                     " WHERE" +
                     " ast.isNew='Y' " +
@@ -222,6 +222,9 @@ public class DashBoardQuery {
         return whereClause;
     }
 
+
+
+
     public static String QUERY_TO_GENERATE_DOCTOR_REVENUE_LIST(DoctorRevenueRequestDTO requestDTO) {
 
 
@@ -242,7 +245,20 @@ public class DashBoardQuery {
                 GET_WHERE_CLAUSE_GENERATE_DOCTOR_REVENUE_LIST(requestDTO);
     }
 
-    private static String GET_WHERE_CLAUSE_GENERATE_DOCTOR_REVENUE_LIST(DoctorRevenueRequestDTO requestDTO) {
+    public static String QUERY_TO_GET_FOLLOW_UP_COUNT_FOR_DOCTOR(DoctorRevenueRequestDTO requestDTO) {
+        return "SELECT" +
+                " COUNT(a.id) " +
+                " FROM Appointment a" +
+                " LEFT JOIN Doctor d ON d.id= a.doctorId.id" +
+                " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId.id" +
+                " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
+                " LEFT JOIN Specialization s ON s.id=a.specializationId.id" +
+                " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
+                " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
+                GET_WHERE_CLAUSE_GENERATE_DOCTOR_REVENUE_LIST(requestDTO);
+    }
+
+    public static String GET_WHERE_CLAUSE_GENERATE_DOCTOR_REVENUE_LIST(DoctorRevenueRequestDTO requestDTO) {
         String whereClause = " WHERE h.id=:hospitalId";
 
         if (requestDTO.getSpecializationId() > 0)

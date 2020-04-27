@@ -92,7 +92,7 @@ public class DashBoardQuery {
         return "SELECT" +
                 " COUNT(ast.id)" +
                 " FROM AppointmentStatistics ast" +
-                " LEFT JOIN Appointment a ON a.id=ast.appointmentId.id" +
+                " LEFT JOIN Appointment a ON a.id=ast.appointmentId.id AND (a.status!='C' AND a.status!='RE')" +
                 " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
                 " WHERE " +
                 " (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
@@ -103,7 +103,7 @@ public class DashBoardQuery {
         return "SELECT" +
                 " COUNT(ast.id)" +
                 " FROM AppointmentStatistics ast" +
-                " LEFT JOIN Appointment a ON a.id=ast.appointmentId.id"+
+                " LEFT JOIN Appointment a ON a.id=ast.appointmentId.id AND (a.status!='C' AND a.status!='RE')"+
                 " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
                 " WHERE" +
                 " ast.isRegistered='Y' " +
@@ -116,7 +116,7 @@ public class DashBoardQuery {
         return "SELECT" +
                 " COUNT(ast.id)" +
                 " FROM AppointmentStatistics ast" +
-                " LEFT JOIN Appointment a ON a.id=ast.appointmentId.id"+
+                " LEFT JOIN Appointment a ON a.id=ast.appointmentId.id AND (a.status!='C' AND a.status!='RE')"+
                 " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
                 " WHERE" +
                 " ast.isNew='Y' " +

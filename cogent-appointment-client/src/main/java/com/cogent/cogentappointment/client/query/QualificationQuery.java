@@ -60,7 +60,7 @@ public class QualificationQuery {
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
             whereClause += " AND q.status='" + searchRequestDTO.getStatus() + "'";
 
-        return whereClause;
+        return whereClause  + " ORDER BY q.id DESC";
     }
 
     public static final String QUERY_TO_FETCH_QUALIFICATION_DETAILS =

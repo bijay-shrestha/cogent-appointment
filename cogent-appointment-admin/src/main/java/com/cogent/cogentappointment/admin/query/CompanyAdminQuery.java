@@ -169,7 +169,7 @@ public class CompanyAdminQuery {
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                     " WHERE ami.status !='D'" +
                     " AND p.isCompanyProfile='Y'" +
-                    " ORDER BY ami.id DESC";
+                    " ORDER BY metaInfo ASC";
 
     public static final String QUERY_TO_GET_LOGGED_COMPANY_ADMIN_INFO =
             "SELECT" +

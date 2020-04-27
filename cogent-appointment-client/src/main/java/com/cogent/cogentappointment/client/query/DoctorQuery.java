@@ -239,7 +239,8 @@ public class DoctorQuery {
                     " WHERE cs.specializationId = :id" +
                     " AND cs.status = 'Y'" +
                     " AND d.status = 'Y'" +
-                    " AND d.hospital.id= :hospitalId";
+                    " AND d.hospital.id= :hospitalId" +
+                    " ORDER BY label ASC";
 
     public static final String QUERY_TO_FETCH_DOCTOR_BY_HOSPITAL_ID =
             " SELECT" +
@@ -256,7 +257,8 @@ public class DoctorQuery {
                     " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId" +
                     " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE d.status ='Y'" +
-                    " AND h.id=:hospitalId ";
+                    " AND h.id=:hospitalId "+
+                    " ORDER BY label ASC";
 
     public static final String QUERY_TO_FETCH_MIN_DOCTOR_INFO =
             " SELECT" +

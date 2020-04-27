@@ -63,7 +63,8 @@ public class AdminQuery {
                     " LEFT JOIN Department d ON d.id = p.department.id" +
                     " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE a.status ='Y'" +
-                    " AND h.id=:hospitalId";
+                    " AND h.id=:hospitalId" +
+                    " ORDER BY label ASC";
 
     public static String QUERY_TO_SEARCH_ADMIN(AdminSearchRequestDTO searchRequestDTO) {
 
@@ -193,7 +194,8 @@ public class AdminQuery {
                     " LEFT JOIN Department d ON d.id=p.department.id" +
                     " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
                     " WHERE ami.status !='D'" +
-                    " AND h.id=:hospitalId";
+                    " AND h.id=:hospitalId" +
+                    " ORDER BY metaInfo ASC";
 
     public static final String QUERY_TO_GET_LOGGED_ADMIN_INFO =
             "SELECT" +

@@ -72,6 +72,7 @@ public class PatientQuery {
                     " hpi.address as address," +
                     " hpi.isRegistered as isRegistered," +
                     " h.id as hospitalId," +
+                    " hpi.remarks as remarks,"+
                     QUERY_TO_CALCULATE_PATIENT_AGE +
                     " FROM Patient p " +
                     " LEFT JOIN HospitalPatientInfo hpi On p.id=hpi.patient.id" +

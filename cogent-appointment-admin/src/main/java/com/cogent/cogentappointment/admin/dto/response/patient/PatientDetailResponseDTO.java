@@ -48,4 +48,6 @@ public class PatientDetailResponseDTO implements Serializable {
 
     private Long hospitalId;
 
+    private String remarks;
+
 }

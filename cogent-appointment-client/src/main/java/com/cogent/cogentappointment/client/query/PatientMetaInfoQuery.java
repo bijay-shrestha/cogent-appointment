@@ -15,9 +15,11 @@ public class PatientMetaInfoQuery {
 
     public static final String QUERY_TO_FETCH_ACTIVE_PATIENT_META_INFO_FOR_DROP_DOWN =
             SELECT_CLAUSE_TO_FETCH_MIN_PATIENT_META_INFO +
-                    " AND pmi.status='Y'";
+                    " AND pmi.status='Y'" +
+                    " ORDER BY value ASC";
 
     public static final String QUERY_TO_FETCH_PATIENT_META_INFO_FOR_DROP_DOWN =
             SELECT_CLAUSE_TO_FETCH_MIN_PATIENT_META_INFO +
-                    " AND pmi.status!='D'";
+                    " AND pmi.status!='D'" +
+                    " ORDER BY label ASC";
 }

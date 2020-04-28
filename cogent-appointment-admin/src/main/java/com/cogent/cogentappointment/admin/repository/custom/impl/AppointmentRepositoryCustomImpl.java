@@ -432,7 +432,6 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         List<Object[]> results = query.getResultList();
 
-
         parseBookedAppointmentDetails(results.get(0), responseDTO);
     }
 

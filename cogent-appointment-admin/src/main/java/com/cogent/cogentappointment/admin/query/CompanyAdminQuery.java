@@ -14,11 +14,13 @@ public class CompanyAdminQuery {
             "SELECT " +
                     " a.email," +                               //[0]
                     " a.mobileNumber," +                        //[1]
-                    " h.id" +                                   //[2]
+                    " COALESCE(h.id, ho.id)" +                 //[2]
                     " FROM" +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id = a.profileId.id" +
-                    " LEFT JOIN Hospital h ON h.id = p.company.id" +
+                    " LEFT JOIN Department d ON d.id = p.department.id" +
+                    " LEFT JOIN Hospital ho ON ho.id = p.company.id" +
+                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE" +
                     " a.status != 'D'" +
                     " AND" +
@@ -28,11 +30,13 @@ public class CompanyAdminQuery {
             "SELECT " +
                     " a.email," +                               //[0]
                     " a.mobileNumber," +                        //[1]
-                    " h.id" +                                   //[2]
+                    " COALESCE(h.id, ho.id)" +                 //[2]
                     " FROM" +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id = a.profileId.id" +
-                    " LEFT JOIN Hospital h ON h.id = p.company.id" +
+                    " LEFT JOIN Department d ON d.id = p.department.id" +
+                    " LEFT JOIN Hospital ho ON ho.id = p.company.id" +
+                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE" +
                     " a.status != 'D'" +
                     " AND a.id !=:id" +
@@ -42,7 +46,7 @@ public class CompanyAdminQuery {
     public static final String QUERY_TO_FETCH_ACTIVE_COMPANY_ADMIN_FOR_DROPDOWN =
             " SELECT" +
                     " a.id as value," +                     //[0]
-                    " a.email as label" +               //[1]
+                    " a.email as label" +                   //[1]
                     " FROM" +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +

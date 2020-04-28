@@ -192,6 +192,7 @@ public class AppointmentUtils {
             final int PATIENT_ADDRESS_INDEX = 17;
             final int TRANSACTION_DATE_INDEX = 18;
             final int APPOINTMENT_MODE_INDEX = 19;
+            final int IS_FOLLOW_UP_INDEX = 20;
 
             Date appointmentDate = (Date) result[APPOINTMENT_DATE_INDEX];
             Date patientDob = (Date) result[PATIENT_DOB_INDEX];
@@ -227,9 +228,11 @@ public class AppointmentUtils {
                             .doctorName(result[DOCTOR_NAME_INDEX].toString())
                             .status(result[APPOINTMENT_STATUS_INDEX].toString())
                             .refundAmount(refundAmount)
-                            .patientAddress(result[PATIENT_ADDRESS_INDEX].toString())
+                            .patientAddress(Objects.isNull(result[PATIENT_ADDRESS_INDEX]) ? "" :
+                                    result[PATIENT_ADDRESS_INDEX].toString())
                             .transactionDate((Date) result[TRANSACTION_DATE_INDEX])
                             .appointmentMode(result[APPOINTMENT_MODE_INDEX].toString())
+                            .isFollowUp(result[IS_FOLLOW_UP_INDEX].toString().charAt(0))
                             .build();
 
             appointmentLogSearchDTOS.add(appointmentLogDTO);

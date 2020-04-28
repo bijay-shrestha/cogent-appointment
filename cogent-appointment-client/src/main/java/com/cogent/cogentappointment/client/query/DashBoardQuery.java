@@ -89,7 +89,20 @@ public class DashBoardQuery {
                     " WHERE" +
                     " ast.isRegistered='Y' " +
                     " AND (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
-                    " AND a.hospitalId.id=:hospitalId";
+                    " AND a.hospitalId.id=:hospitalId" +
+                    " AND a.isFollowUp='N'";
+
+    public static String QUERY_TO_COUNT_FOLLOW_UP_APPOINTMENT =
+            "SELECT" +
+                    " COUNT(ast.id)" +
+                    " FROM AppointmentStatistics ast" +
+                    " LEFT JOIN Appointment a ON a.id=ast.appointmentId.id AND (a.status!='C' AND a.status!='RE')"+
+                    " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
+                    " WHERE" +
+                    " ast.isRegistered='Y' " +
+                    " AND (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
+                    " AND a.hospitalId.id=:hospitalId" +
+                    " AND a.isFollowUp='Y'";
 
     public static String QUERY_TO_COUNT_NEW_PATIENT_APPOINTMENT =
             "SELECT" +

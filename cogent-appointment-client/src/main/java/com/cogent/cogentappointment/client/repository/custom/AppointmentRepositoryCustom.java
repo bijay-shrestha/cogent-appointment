@@ -64,6 +64,8 @@ public interface AppointmentRepositoryCustom {
 
     Long countRegisteredPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO, Long hospitalId);
 
+    Long countFollowUpPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO, Long hospitalId);
+
     Long countNewPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO, Long hospitalId);
 
     Long countOverAllAppointment(DashBoardRequestDTO dashBoardRequestDTO, Long hospitalId);

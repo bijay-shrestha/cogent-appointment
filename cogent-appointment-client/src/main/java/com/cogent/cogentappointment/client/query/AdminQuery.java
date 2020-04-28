@@ -26,11 +26,12 @@ public class AdminQuery {
             "SELECT " +
                     " a.email," +                               //[0]
                     " a.mobileNumber," +                        //[1]
-                    " h.id" +                                    //[2]
+                    " COALESCE(h.id, ho.id)" +                 //[2]
                     " FROM" +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id = a.profileId.id" +
                     " LEFT JOIN Department d ON d.id = p.department.id" +
+                    " LEFT JOIN Hospital ho ON ho.id = p.company.id" +
                     " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE" +
                     " a.status != 'D'" +
@@ -41,11 +42,12 @@ public class AdminQuery {
             "SELECT " +
                     " a.email," +                               //[0]
                     " a.mobileNumber," +                         //[1]
-                    " h.id" +                                    //[2]
+                    " COALESCE(h.id, ho.id)" +                 //[2]
                     " FROM" +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id = a.profileId.id" +
                     " LEFT JOIN Department d ON d.id = p.department.id" +
+                    " LEFT JOIN Hospital ho ON ho.id = p.company.id" +
                     " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE" +
                     " a.status != 'D'" +

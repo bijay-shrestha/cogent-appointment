@@ -60,4 +60,6 @@ public class AppointmentLogDTO implements Serializable {
 
     private String appointmentMode;
 
+    private Character isFollowUp;
+
 }

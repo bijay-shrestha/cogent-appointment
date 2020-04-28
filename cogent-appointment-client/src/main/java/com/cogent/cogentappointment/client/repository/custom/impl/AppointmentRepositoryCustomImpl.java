@@ -185,6 +185,16 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
+    public Long countFollowUpPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO, Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_COUNT_FOLLOW_UP_APPOINTMENT)
+                .setParameter(FROM_DATE, utilDateToSqlDate(dashBoardRequestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(dashBoardRequestDTO.getToDate()))
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        return (Long) query.getSingleResult();
+    }
+
+    @Override
     public Long countNewPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO, Long hospitalId) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_COUNT_NEW_PATIENT_APPOINTMENT)
@@ -376,12 +386,11 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         List<Object[]> objects = query.getResultList();
 
-        AppointmentLogResponseDTO results = parseQueryResultToAppointmentLogResponse(objects);
-
-        if (results.getAppointmentLogs().isEmpty()) {
+        if (objects.isEmpty()) {
             error();
             throw APPOINTMENT_NOT_FOUND.get();
         } else {
+            AppointmentLogResponseDTO results = parseQueryResultToAppointmentLogResponse(objects);
             results.setTotalItems(totalItems);
             results.setAppointmentStatistics(calculateAppointmentStatistics(searchRequestDTO, hospitalId));
             return results;

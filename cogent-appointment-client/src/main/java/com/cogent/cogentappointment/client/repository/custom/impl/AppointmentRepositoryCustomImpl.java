@@ -376,12 +376,11 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         List<Object[]> objects = query.getResultList();
 
-        AppointmentLogResponseDTO results = parseQueryResultToAppointmentLogResponse(objects);
-
-        if (results.getAppointmentLogs().isEmpty()) {
+        if (objects.isEmpty()) {
             error();
             throw APPOINTMENT_NOT_FOUND.get();
         } else {
+            AppointmentLogResponseDTO results = parseQueryResultToAppointmentLogResponse(objects);
             results.setTotalItems(totalItems);
             results.setAppointmentStatistics(calculateAppointmentStatistics(searchRequestDTO, hospitalId));
             return results;

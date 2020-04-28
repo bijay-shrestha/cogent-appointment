@@ -375,9 +375,10 @@ public class AppointmentQuery {
                             " d.name as doctorName," +                                             //[13]
                             " a.status as status," +                                               //[14]
                             " ard.refundAmount as refundAmount," +                                 //[15]
-                            " hpi.address as patientAddress," +                                     //[16]
-                            " atd.transactionDate as transactionDate," +                              //[17]
-                            " am.name as appointmentMode" +                                          //[18]
+                            " hpi.address as patientAddress," +                                    //[16]
+                            " atd.transactionDate as transactionDate," +                           //[17]
+                            " am.name as appointmentMode," +                                        //[18]
+                            " a.isFollowUp as isFollowUp" +                                        //[19]
                             " FROM Appointment a" +
                             " LEFT JOIN AppointmentMode am ON am.id=a.appointmentModeId.id" +
                             " LEFT JOIN Patient p ON a.patientId.id=p.id" +
@@ -389,7 +390,6 @@ public class AppointmentQuery {
                             " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
                             " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'"
                             + GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_LOG_DETAILS(appointmentLogSearchDTO);
-
 
     private static String GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_LOG_DETAILS(
             AppointmentLogSearchDTO appointmentLogSearchDTO) {

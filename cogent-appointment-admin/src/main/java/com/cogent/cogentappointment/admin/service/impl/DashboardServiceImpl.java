@@ -109,12 +109,15 @@ public class DashboardServiceImpl implements DashboardService {
 
         Long registeredPatient = appointmentRepository.countRegisteredPatientByHospitalId(dashBoardRequestDTO);
 
+        Long followUpPatient = appointmentRepository.countFollowUpPatientByHospitalId(
+                dashBoardRequestDTO);
+
         Character pillType = dateDifference(dashBoardRequestDTO.getToDate(),
                 dashBoardRequestDTO.getFromDate());
 
         log.info(FETCHING_PROCESS_COMPLETED, OVER_ALL_APPOINTMETS, getDifferenceBetweenTwoTime(startTime));
 
-        return parseToAppointmentCountResponseDTO(overAllAppointment, newPatient, registeredPatient, pillType);
+        return parseToAppointmentCountResponseDTO(overAllAppointment, newPatient, registeredPatient,followUpPatient, pillType);
     }
 
     @Override

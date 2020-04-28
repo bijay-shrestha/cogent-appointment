@@ -165,6 +165,16 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
+    public Long countFollowUpPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_COUNT_FOLLOW_UP_APPOINTMENT(
+                dashBoardRequestDTO.getHospitalId()))
+                .setParameter(FROM_DATE, utilDateToSqlDate(dashBoardRequestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(dashBoardRequestDTO.getToDate()));
+
+        return (Long) query.getSingleResult();
+    }
+
+    @Override
     public Long countNewPatientByHospitalId(DashBoardRequestDTO dashBoardRequestDTO) {
         Query query = createQuery.apply(entityManager, QUERY_TO_COUNT_NEW_PATIENT_APPOINTMENT(
                 dashBoardRequestDTO.getHospitalId()))

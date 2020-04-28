@@ -18,5 +18,7 @@ public class AppointmentCountResponseDTO implements Serializable {
 
     private Long registeredPatient;
 
+    private Long followUpPatient;
+
     private Character pillType;
 }

@@ -203,7 +203,8 @@ public class PatientQuery {
                     " a.isSelf as isSelf," +                                    //[9]
                     " atd.appointmentAmount as appointmentAmount," +            //[10]
                     " a.appointmentModeId.name as appointmentMode," +          //[11]
-                    QUERY_TO_CALCULATE_PATIENT_AGE +                            //[12]
+                    QUERY_TO_CALCULATE_PATIENT_AGE +","+                       //[12]
+                    " a.isFollowUp as isFollowUp"+                             //[13]
                     " FROM Appointment a" +
                     " LEFT JOIN Patient p ON p.id=a.patientId.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +

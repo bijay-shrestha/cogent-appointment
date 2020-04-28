@@ -85,5 +85,13 @@ public class AdminLogResource {
         return ok().body(clientLogService.fetchUserMenuLogsStaticsforDiagramByClientId(searchRequestDTO));
     }
 
+    @GetMapping("test")
+    public String testController(){
+
+        System.out.println("This is logging profile...");
+
+        return "This is logging profile....";
+    }
+
 
 }

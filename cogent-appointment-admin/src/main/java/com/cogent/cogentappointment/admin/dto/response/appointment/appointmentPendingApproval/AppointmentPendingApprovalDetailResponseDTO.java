@@ -22,7 +22,7 @@ public class AppointmentPendingApprovalDetailResponseDTO implements Serializable
 
     private String hospitalName;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd YYYY",timezone = "Asia/Kathmandu")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd,YYYY",timezone = "Asia/Kathmandu")
     private Date appointmentDate;
 
     private String appointmentNumber;
@@ -39,7 +39,7 @@ public class AppointmentPendingApprovalDetailResponseDTO implements Serializable
 
     private String patientAge;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd YYYY",timezone = "Asia/Kathmandu")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd,YYYY",timezone = "Asia/Kathmandu")
     private Date patientDob;
 
     private Character isRegistered;

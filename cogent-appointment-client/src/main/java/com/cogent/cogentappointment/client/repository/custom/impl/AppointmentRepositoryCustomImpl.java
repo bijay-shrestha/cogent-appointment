@@ -506,6 +506,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         getRevenueFromRefundedAppointmentDetails(searchRequestDTO, hospitalId, responseDTO);
 
+        getFollowUpAppointmentDetails(searchRequestDTO, hospitalId, responseDTO);
+
         calculateTotalAppointmentAmount(searchRequestDTO, hospitalId, responseDTO);
 
         calculateTotalAmountExcludingBooked(searchRequestDTO, hospitalId, responseDTO);
@@ -612,7 +614,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                                                      Long hospitalId,
                                                      AppointmentRevenueStatisticsResponseDTO responseDTO) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TOTAL_APPOINTMENT_AMOUNT_EXCLUDING_BOOKED(searchRequestDTO))
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_TOTAL_APPOINTMENT_AMOUNT_EXCLUDING_BOOKED(searchRequestDTO))
                 .setParameter(HOSPITAL_ID, hospitalId);
 
         Double totalAppointmentAmount = (Double) query.getSingleResult();
@@ -693,6 +696,19 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         List<Object[]> results = query.getResultList();
 
         parseRevenueFromRefundedAppointmentDetails(results.get(0), responseDTO);
+    }
+
+    private void getFollowUpAppointmentDetails(AppointmentLogSearchDTO searchRequestDTO,
+                                               Long hospitalId,
+                                               AppointmentRevenueStatisticsResponseDTO responseDTO) {
+
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_FOLLOW_UP_DETAILS(searchRequestDTO))
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        List<Object[]> results = query.getResultList();
+
+        parseFollowUpAppointmentDetails(results.get(0), responseDTO);
     }
 
     private void calculateTotalAppointmentAmount(TransactionLogSearchDTO searchRequestDTO,

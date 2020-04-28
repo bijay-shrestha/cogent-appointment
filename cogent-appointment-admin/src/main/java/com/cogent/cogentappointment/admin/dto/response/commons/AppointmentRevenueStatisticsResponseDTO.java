@@ -14,27 +14,31 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class AppointmentRevenueStatisticsResponseDTO implements Serializable {
 
-    private Double totalAmount;
-
-    private Double totalAmountExcludingBooked;
+    private Long bookedAppointmentsCount;
 
     private Double bookedAmount;
 
-    private Double checkedInAmount;
-
-    private Double refundedAmount;
-
-    private Double cancelAmount;
-
-    private Double revenueFromRefundedAmount;
-
-    private Long bookedAppointmentsCount;
-
     private Long checkedInAppointmentsCount;
+
+    private Double checkedInAmount;
 
     private Long refundedAppointmentsCount;
 
+    private Double refundedAmount;
+
     private Long cancelAppointmentsCount;
 
+    private Double cancelAmount;
+
     private Long revenueFromRefundedAppointmentsCount;
+
+    private Double revenueFromRefundedAmount;
+
+    private Long followUpCount;
+
+    private Double followUpAmount;
+
+    private Double totalAmount;
+
+    private Double totalAmountExcludingBooked;
 }

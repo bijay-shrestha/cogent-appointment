@@ -628,7 +628,7 @@ public class AppointmentQuery {
 
     public static String QUERY_TO_FETCH_FOLLOW_UP_DETAILS(AppointmentLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
-                " AND a.isFollowUp='Y'";
+                " a.isFollowUp='Y'";
 
         return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
     }

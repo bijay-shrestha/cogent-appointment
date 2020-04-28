@@ -92,6 +92,18 @@ public class DashBoardQuery {
                     " AND a.hospitalId.id=:hospitalId" +
                     " AND a.isFollowUp='N'";
 
+    public static String QUERY_TO_COUNT_FOLLOW_UP_APPOINTMENT =
+            "SELECT" +
+                    " COUNT(ast.id)" +
+                    " FROM AppointmentStatistics ast" +
+                    " LEFT JOIN Appointment a ON a.id=ast.appointmentId.id AND (a.status!='C' AND a.status!='RE')" +
+                    " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
+                    " WHERE" +
+                    " ast.isRegistered='Y' " +
+                    " AND (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
+                    " AND a.hospitalId.id=:hospitalId" +
+                    " AND a.isFollowUp='Y'";
+
     public static String QUERY_TO_COUNT_NEW_PATIENT_APPOINTMENT =
             "SELECT" +
                     " COUNT(ast.id)" +
@@ -246,7 +258,8 @@ public class DashBoardQuery {
                 " LEFT JOIN Specialization s ON s.id=a.specializationId.id" +
                 " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
                 " WHERE" +
-                " a.status !='RE'" +
+                " (a.status !='RE' OR a.status !='C')" +
+                " AND a.isFollowUp='N'" +
                 GET_WHERE_CLAUSE_TO_CALCULATE_DOCTOR_REVENUE(requestDTO);
     }
 
@@ -275,10 +288,27 @@ public class DashBoardQuery {
                 " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
                 " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
                 " WHERE" +
-                " a.status ='RE'" +
-                " AND ard.status='A'" +
+                " (a.status ='RE' OR a.status='C')" +
                 GET_WHERE_CLAUSE_TO_CALCULATE_DOCTOR_REVENUE(requestDTO);
     }
+
+    public static String QUERY_TO_GET_FOLLOW_UP =
+            "SELECT" +
+                    " Count(a.id) as followUpCount," +
+                    " COALESCE(SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 ) as followUpAmount" +
+                    " FROM Appointment a" +
+                    " LEFT JOIN Doctor d ON d.id= a.doctorId.id" +
+                    " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId.id" +
+                    " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
+                    " LEFT JOIN Specialization s ON s.id=a.specializationId.id" +
+                    " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
+                    " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
+                    " WHERE" +
+                    " (a.status !='RE' OR a.status !='C')" +
+                    " AND a.isFollowUp='Y'" +
+                    " AND a.doctorId.id=:doctorId" +
+                    " AND atd.transactionDate BETWEEN :fromDate AND :toDate";
+
 
     private static String GET_WHERE_CLAUSE_TO_CALCULATE_DOCTOR_REVENUE(DoctorRevenueRequestDTO requestDTO) {
         String whereClause = " AND h.id=:hospitalId ";

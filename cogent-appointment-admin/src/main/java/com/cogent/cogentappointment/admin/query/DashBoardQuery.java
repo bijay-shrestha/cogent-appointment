@@ -112,6 +112,18 @@ public class DashBoardQuery {
                 CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId);
     }
 
+    public static String QUERY_TO_COUNT_FOLLOW_UP_APPOINTMENT(Long hospitalId) {
+        return "SELECT" +
+                " COUNT(ast.id)" +
+                " FROM AppointmentStatistics ast" +
+                " LEFT JOIN Appointment a ON a.id=ast.appointmentId.id AND (a.status!='C' AND a.status!='RE')"+
+                " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
+                " WHERE" +
+                " ast.isRegistered='Y' " +
+                " AND (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
+                " AND a.isFollowUp='Y'"+
+                CLAUSE_TO_FIND_BY_HOSPITAL_ID(hospitalId);
+    }
 
     public static String QUERY_TO_COUNT_NEW_PATIENT_APPOINTMENT(Long hospitalId) {
         return "SELECT" +

@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.client.repository.custom.impl;
 import com.cogent.cogentappointment.client.dto.request.DoctorRevenueRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.commons.AppointmentRevenueStatisticsResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.dashboard.DoctorFollowUpResponse;
 import com.cogent.cogentappointment.client.dto.response.dashboard.DoctorRevenueDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.RevenueTrendResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
@@ -28,6 +29,7 @@ import static com.cogent.cogentappointment.client.utils.DashboardUtils.revenueSt
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.transformQueryToResultList;
+import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.transformQueryToSingleResult;
 
 /**
  * @author Sauravi Thapa २०/२/१०
@@ -199,7 +201,21 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
                 .setParameter(TO_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getToDate()))
                 .setParameter(HOSPITAL_ID, doctorRevenueRequestDTO.getHospitalId());
 
-        return transformQueryToResultList(query, DoctorRevenueDTO.class);
+        List<DoctorRevenueDTO> doctorRevenueDTOList = transformQueryToResultList(query, DoctorRevenueDTO.class);
+
+        doctorRevenueDTOList.forEach(doctorRevenueDTO -> {
+            Query queryToGetFollowUp = createQuery.apply(entityManager, QUERY_TO_GET_FOLLOW_UP)
+                    .setParameter(FROM_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getFromDate()))
+                    .setParameter(TO_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getToDate()))
+                    .setParameter(DOCTOR_ID, doctorRevenueDTO.getDoctorId());
+            DoctorFollowUpResponse doctorFollowUpResponse= transformQueryToSingleResult(queryToGetFollowUp,
+                    DoctorFollowUpResponse.class);
+            doctorRevenueDTO.setTotalFollowUp(doctorFollowUpResponse.getFollowUpCount());
+            doctorRevenueDTO.setTotalRevenue(doctorRevenueDTO.getTotalRevenue()+doctorFollowUpResponse.getFollowUpAmount());
+        });
+
+
+        return doctorRevenueDTOList;
     }
 
     @Override

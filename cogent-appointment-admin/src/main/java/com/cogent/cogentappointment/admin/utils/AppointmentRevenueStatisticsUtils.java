@@ -57,4 +57,14 @@ public class AppointmentRevenueStatisticsUtils {
         responseDTO.setRevenueFromRefundedAmount(Double.parseDouble(result[AMOUNT_INDEX].toString()));
     }
 
+    public static void parseFollowUpAppointmentDetails(Object[] result,
+                                                       AppointmentRevenueStatisticsResponseDTO responseDTO) {
+
+        final int COUNT_INDEX = 0;
+        final int AMOUNT_INDEX = 1;
+
+        responseDTO.setFollowUpCount(Long.parseLong(result[COUNT_INDEX].toString()));
+        responseDTO.setFollowUpAmount(Double.parseDouble(result[AMOUNT_INDEX].toString()));
+    }
+
 }

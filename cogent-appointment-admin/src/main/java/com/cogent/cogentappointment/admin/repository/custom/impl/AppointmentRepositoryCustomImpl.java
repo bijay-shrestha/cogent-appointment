@@ -353,6 +353,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         getRevenueFromRefundedAppointmentDetails(searchRequestDTO, responseDTO);
 
+        getFollowUpAppointmentDetails(searchRequestDTO, responseDTO);
+
         calculateTotalAppointmentAmount(searchRequestDTO, responseDTO);
 
         calculateTotalAmountExcludingBooked(searchRequestDTO, responseDTO);
@@ -543,5 +545,16 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         List<Object[]> results = query.getResultList();
 
         parseRevenueFromRefundedAppointmentDetails(results.get(0), responseDTO);
+    }
+
+    private void getFollowUpAppointmentDetails(AppointmentLogSearchDTO searchRequestDTO,
+                                               AppointmentRevenueStatisticsResponseDTO responseDTO) {
+
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_FOLLOW_UP_DETAILS(searchRequestDTO));
+
+        List<Object[]> results = query.getResultList();
+
+        parseFollowUpAppointmentDetails(results.get(0), responseDTO);
     }
 }

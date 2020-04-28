@@ -142,11 +142,12 @@ public class PatientQuery {
                 " hpi.email as email," +                                         //[4]
                 " p.mobileNumber as mobileNumber," +                             //[5]
                 " hpi.registrationNumber as registrationNumber," +               //[6]
-                " p.eSewaId as eSewaId," +
-                " p.gender as gender," +                                       //[7]
-                " hpi.status as status," +                                       //[8]
-                " hpi.hospitalNumber as hospitalNumber," +                       //[9]
-                QUERY_TO_CALCULATE_PATIENT_AGE +                                //[10]
+                " p.eSewaId as eSewaId," +                                       //[7]
+                " p.gender as gender," +                                         //[8]
+                " hpi.status as status," +                                       //[9]
+                " hpi.hospitalNumber as hospitalNumber," +                       //[10]
+                " hpi.isRegistered as isRegistered," +                           //[11]
+                QUERY_TO_CALCULATE_PATIENT_AGE +                                //[12]
                 " FROM Patient p" +
                 " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id" +
                 " LEFT JOIN Hospital h ON h.id=hpi.hospital.id" +

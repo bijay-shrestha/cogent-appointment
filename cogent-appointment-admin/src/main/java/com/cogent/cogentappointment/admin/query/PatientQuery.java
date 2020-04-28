@@ -93,17 +93,18 @@ public class PatientQuery {
         return "SELECT" +
                 " hpi.id as id," +
                 " p.name as name," +                                             //[0]
-                " hpi.address as address," +                                       //[1]
-                " hpi.email as email," +                                           //[2]
+                " hpi.address as address," +                                     //[1]
+                " hpi.email as email," +                                         //[2]
                 " p.mobileNumber as mobileNumber," +                             //[3]
-                " hpi.registrationNumber as registrationNumber," +                 //[4]
-                " p.eSewaId as eSewaId," +
-                " p.gender as gender," +
-                " hpi.status as status," +                                         //[6]
-                " p.dateOfBirth as dateOfBirth," +                               //[7]
-                " hpi.hospitalNumber as hospitalNumber," +                         //[8]
-                " h.name as hospitalName," +                                        //[9]
-                QUERY_TO_CALCULATE_PATIENT_AGE +                                    //[10]
+                " hpi.registrationNumber as registrationNumber," +               //[4]
+                " p.eSewaId as eSewaId," +                                       //[5]
+                " p.gender as gender," +                                         //[6]
+                " hpi.status as status," +                                       //[7]
+                " p.dateOfBirth as dateOfBirth," +                               //[8]
+                " hpi.hospitalNumber as hospitalNumber," +                       //[9]
+                " h.name as hospitalName," +                                     //[10]
+                " hpi.isRegistered as isRegistered," +                           //[11]
+                QUERY_TO_CALCULATE_PATIENT_AGE +                                 //[12]
                 " FROM Patient p" +
                 " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id" +
                 " LEFT JOIN Hospital h ON h.id=hpi.hospital.id" +

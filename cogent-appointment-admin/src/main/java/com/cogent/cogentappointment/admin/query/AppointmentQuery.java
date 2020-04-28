@@ -514,7 +514,6 @@ public class AppointmentQuery {
                     " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
                     " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
-                    " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
                     " WHERE";
 
     public static String QUERY_TO_FETCH_TOTAL_APPOINTMENT_AMOUNT(AppointmentLogSearchDTO searchRequestDTO) {
@@ -591,7 +590,7 @@ public class AppointmentQuery {
         return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
     }
 
-    public static String QUERY_TO_SEARCH_BY_DATES(String query, AppointmentLogSearchDTO searchRequestDTO) {
+    private static String QUERY_TO_SEARCH_BY_DATES(String query, AppointmentLogSearchDTO searchRequestDTO) {
 
         if (!Objects.isNull(searchRequestDTO.getHospitalId()))
             query += " AND h.id = " + searchRequestDTO.getHospitalId();
@@ -627,4 +626,10 @@ public class AppointmentQuery {
         return query;
     }
 
+    public static String QUERY_TO_FETCH_FOLLOW_UP_DETAILS(AppointmentLogSearchDTO searchRequestDTO) {
+        String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
+                " a.isFollowUp='Y'";
+
+        return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
+    }
 }

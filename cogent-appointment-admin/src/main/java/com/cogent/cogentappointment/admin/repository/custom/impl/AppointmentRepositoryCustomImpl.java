@@ -305,7 +305,9 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
-    public TransactionLogResponseDTO searchTransactionLogs(TransactionLogSearchDTO searchRequestDTO, Pageable pageable) {
+    public TransactionLogResponseDTO searchTransactionLogs(TransactionLogSearchDTO searchRequestDTO,
+                                                           Pageable pageable) {
+
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TRANSACTION_LOGS.apply(searchRequestDTO));
 
         int totalItems = query.getResultList().size();
@@ -387,13 +389,14 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         getRevenueFromRefundedAppointmentDetails(searchRequestDTO, responseDTO);
 
+        getFollowUpAppointmentDetails(searchRequestDTO, responseDTO);
+
         calculateTotalAppointmentAmount(searchRequestDTO, responseDTO);
 
         calculateTotalAmountExcludingBooked(searchRequestDTO, responseDTO);
 
         return responseDTO;
     }
-
 
     private void calculateTotalAppointmentAmount(AppointmentLogSearchDTO searchRequestDTO,
                                                  AppointmentRevenueStatisticsResponseDTO responseDTO) {
@@ -550,7 +553,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     private void getRevenueFromRefundedAppointmentDetails(AppointmentLogSearchDTO searchRequestDTO,
                                                           AppointmentRevenueStatisticsResponseDTO responseDTO) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_REVENUE_REFUNDED_APPOINTMENT_AMOUNT(searchRequestDTO));
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_REVENUE_REFUNDED_APPOINTMENT_AMOUNT(searchRequestDTO));
 
         List<Object[]> results = query.getResultList();
 
@@ -558,6 +562,17 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     private void getFollowUpAppointmentDetails(AppointmentLogSearchDTO searchRequestDTO,
+                                               AppointmentRevenueStatisticsResponseDTO responseDTO) {
+
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_FOLLOW_UP_DETAILS(searchRequestDTO));
+
+        List<Object[]> results = query.getResultList();
+
+        parseFollowUpAppointmentDetails(results.get(0), responseDTO);
+    }
+
+    private void getFollowUpAppointmentDetails(TransactionLogSearchDTO searchRequestDTO,
                                                AppointmentRevenueStatisticsResponseDTO responseDTO) {
 
         Query query = createQuery.apply(entityManager,

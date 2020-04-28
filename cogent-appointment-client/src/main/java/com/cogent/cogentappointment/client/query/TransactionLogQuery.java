@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.query;
 
 
+import com.cogent.cogentappointment.client.dto.request.appointment.log.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.log.TransactionLogSearchDTO;
 import org.springframework.util.ObjectUtils;
 
@@ -15,7 +16,7 @@ import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDa
  */
 public class TransactionLogQuery {
 
-    public static String SELECT_CLAUSE_FOR_LOGS =
+    private static String SELECT_CLAUSE_FOR_LOGS =
             "SELECT" +
                     " a.appointmentDate as appointmentDate," +                      //[0]
                     " a.appointmentNumber as appointmentNumber," +                  //[1]
@@ -34,7 +35,8 @@ public class TransactionLogQuery {
                     " a.status as status," +                                       //[14]
                     " ard.refundAmount as refundAmount," +                         //[15]
                     " atd.transactionDate as transactionDate," +                    //[16]
-                    " am.name as appointmentMode" +                                //[17]
+                    " am.name as appointmentMode," +                                //[17]
+                    " a.isFollowUp as isFollowUp" +                                //[18]
                     " FROM Appointment a" +
                     " LEFT JOIN AppointmentMode am On am.id=a.appointmentModeId.id" +
                     " LEFT JOIN Patient p ON a.patientId.id=p.id" +
@@ -135,14 +137,16 @@ public class TransactionLogQuery {
     }
 
 
-    public static String QUERY_TO_FETCH_BOOKED_APPOINTMENT_AMOUNT_FOR_TRANSACTION_LOG(TransactionLogSearchDTO searchRequestDTO) {
+    public static String QUERY_TO_FETCH_BOOKED_APPOINTMENT_AMOUNT_FOR_TRANSACTION_LOG
+            (TransactionLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
                 " AND a.status='PA'";
 
         return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
     }
 
-    public static String QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_AMOUNT_FOR_TRANSACTION_LOG(TransactionLogSearchDTO searchRequestDTO) {
+    public static String QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_AMOUNT_FOR_TRANSACTION_LOG
+            (TransactionLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
                 " AND a.status='A'";
 
@@ -231,5 +235,10 @@ public class TransactionLogQuery {
         return query;
     }
 
+    public static String QUERY_TO_FETCH_FOLLOW_UP_DETAILS(TransactionLogSearchDTO searchRequestDTO) {
+        String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
+                " AND a.isFollowUp='Y'";
 
+        return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
+    }
 }

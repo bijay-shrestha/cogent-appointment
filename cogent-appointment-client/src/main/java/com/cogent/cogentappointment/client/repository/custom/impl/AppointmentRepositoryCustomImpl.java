@@ -52,10 +52,12 @@ import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.APPOINTMENT;
 import static com.cogent.cogentappointment.client.query.AppointmentQuery.*;
+import static com.cogent.cogentappointment.client.query.AppointmentQuery.QUERY_TO_FETCH_FOLLOW_UP_DETAILS;
 import static com.cogent.cogentappointment.client.query.AppointmentQuery.QUERY_TO_FETCH_REFUNDED_APPOINTMENT_AMOUNT;
 import static com.cogent.cogentappointment.client.query.AppointmentQuery.QUERY_TO_FETCH_REFUND_AMOUNT;
 import static com.cogent.cogentappointment.client.query.DashBoardQuery.*;
 import static com.cogent.cogentappointment.client.query.TransactionLogQuery.*;
+import static com.cogent.cogentappointment.client.query.TransactionLogQuery.QUERY_TO_FETCH_FOLLOW_UP_DETAILS;
 import static com.cogent.cogentappointment.client.utils.AppointmentRevenueStatisticsUtils.*;
 import static com.cogent.cogentappointment.client.utils.AppointmentUtils.*;
 import static com.cogent.cogentappointment.client.utils.TransactionLogUtils.parseQueryResultToTransactionLogResponse;
@@ -398,7 +400,10 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
-    public TransactionLogResponseDTO searchTransactionLogs(TransactionLogSearchDTO searchRequestDTO, Pageable pageable, Long hospitalId) {
+    public TransactionLogResponseDTO searchTransactionLogs(TransactionLogSearchDTO searchRequestDTO,
+                                                           Pageable pageable,
+                                                           Long hospitalId) {
+
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TRANSACTION_LOGS.apply(searchRequestDTO))
                 .setParameter(HOSPITAL_ID, hospitalId);
 
@@ -530,6 +535,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         getRefundedAppointmentDetails(searchRequestDTO, hospitalId, responseDTO);
 
         getRevenueFromRefundedAppointmentDetails(searchRequestDTO, hospitalId, responseDTO);
+
+        getFollowUpAppointmentDetails(searchRequestDTO, hospitalId, responseDTO);
 
         calculateTotalAppointmentAmount(searchRequestDTO, hospitalId, responseDTO);
 
@@ -699,6 +706,19 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     private void getFollowUpAppointmentDetails(AppointmentLogSearchDTO searchRequestDTO,
+                                               Long hospitalId,
+                                               AppointmentRevenueStatisticsResponseDTO responseDTO) {
+
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_FOLLOW_UP_DETAILS(searchRequestDTO))
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        List<Object[]> results = query.getResultList();
+
+        parseFollowUpAppointmentDetails(results.get(0), responseDTO);
+    }
+
+    private void getFollowUpAppointmentDetails(TransactionLogSearchDTO searchRequestDTO,
                                                Long hospitalId,
                                                AppointmentRevenueStatisticsResponseDTO responseDTO) {
 

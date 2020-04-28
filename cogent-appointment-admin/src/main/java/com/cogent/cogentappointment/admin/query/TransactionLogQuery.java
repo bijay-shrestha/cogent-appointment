@@ -13,7 +13,7 @@ import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDat
  */
 public class TransactionLogQuery {
 
-    public static String SELECT_CLAUSE_FOR_LOGS =
+    private static String SELECT_CLAUSE_FOR_LOGS =
             "SELECT" +
                     " h.name as hospitalName," +                                    //[0]
                     " a.appointmentDate as appointmentDate," +                      //[1]
@@ -33,7 +33,8 @@ public class TransactionLogQuery {
                     " a.status as status," +                                       //[15]
                     " ard.refundAmount as refundAmount," +                         //[16]
                     " atd.transactionDate as transactionDate," +                    //[17]
-                    " am.name as appointmentMode" +                                //[18]
+                    " am.name as appointmentMode," +                                //[18]
+                    " a.isFollowUp as isFollowUp" +                                //[19]
                     " FROM Appointment a" +
                     " LEFT JOIN AppointmentMode am On am.id=a.appointmentModeId.id" +
                     " LEFT JOIN Patient p ON a.patientId.id=p.id" +
@@ -195,7 +196,7 @@ public class TransactionLogQuery {
         return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
     }
 
-    public static String QUERY_TO_SEARCH_BY_DATES(String query, TransactionLogSearchDTO searchRequestDTO) {
+    private static String QUERY_TO_SEARCH_BY_DATES(String query, TransactionLogSearchDTO searchRequestDTO) {
 
         if (!Objects.isNull(searchRequestDTO.getHospitalId()))
             query += " AND h.id = " + searchRequestDTO.getHospitalId();
@@ -232,5 +233,10 @@ public class TransactionLogQuery {
         return query;
     }
 
+    public static String QUERY_TO_FETCH_FOLLOW_UP_DETAILS(TransactionLogSearchDTO searchRequestDTO) {
+        String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
+                " a.isFollowUp='Y'";
 
+        return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
+    }
 }

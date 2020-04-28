@@ -42,6 +42,7 @@ public class TransactionLogUtils {
             final int REFUND_AMOUNT_INDEX = 16;
             final int TRANSACTION_DATE_INDEX = 17;
             final int APPOINTMENT_MODE_INDEX = 18;
+            final int IS_FOLLOW_UP_INDEX = 19;
 
             Date appointmentDate = (Date) result[APPOINTMENT_DATE_INDEX];
             Date patientDob = (Date) result[PATIENT_DOB_INDEX];
@@ -79,6 +80,7 @@ public class TransactionLogUtils {
                             .refundAmount(refundAmount)
                             .transactionDate((Date) result[TRANSACTION_DATE_INDEX])
                             .appointmentMode(result[APPOINTMENT_MODE_INDEX].toString())
+                            .isFollowUp(result[IS_FOLLOW_UP_INDEX].toString().charAt(0))
                             .build();
 
             appointmentLogSearchDTOS.add(appointmentLogDTO);

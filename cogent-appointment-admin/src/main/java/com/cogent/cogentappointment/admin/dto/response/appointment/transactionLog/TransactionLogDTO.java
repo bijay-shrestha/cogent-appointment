@@ -60,4 +60,6 @@ public class TransactionLogDTO implements Serializable{
 
     private String appointmentMode;
 
+    private Character isFollowUp;
+
 }

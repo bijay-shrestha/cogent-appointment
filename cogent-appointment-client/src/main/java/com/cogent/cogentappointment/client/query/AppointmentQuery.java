@@ -232,6 +232,7 @@ public class AppointmentQuery {
                 "  p.gender as gender," +
                 " ard.refundAmount as refundAmount," +
                 " a.appointmentModeId.name as appointmentMode, " +
+                " hpi.isRegistered as isRegistered," +
                 QUERY_TO_CALCULATE_PATIENT_AGE +
                 " FROM Appointment a" +
                 " LEFT JOIN Patient p ON p.id = a.patientId.id" +
@@ -547,6 +548,7 @@ public class AppointmentQuery {
                     " ard.refundAmount as refundAmount," +
                     " atd.appointmentAmount as appointmentCharge," +
                     " a.appointmentModeId.name as appointmentMode," +
+                    " hpi.isRegistered as isRegistered," +
                     QUERY_TO_CALCULATE_PATIENT_AGE +
                     " FROM" +
                     " AppointmentRefundDetail ard" +

@@ -15,7 +15,7 @@ import java.util.Date;
 @Setter
 public class AppointmentRefundDetailResponseDTO implements Serializable {
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd,YYYY",timezone = "Asia/Kathmandu")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd,YYYY", timezone = "Asia/Kathmandu")
     private Date appointmentDate;
 
     private String appointmentTime;
@@ -49,4 +49,6 @@ public class AppointmentRefundDetailResponseDTO implements Serializable {
     private Double appointmentCharge;
 
     private String appointmentMode;
+
+    private Character isRegistered;
 }

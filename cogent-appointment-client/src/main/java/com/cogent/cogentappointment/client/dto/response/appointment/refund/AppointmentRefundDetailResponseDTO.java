@@ -49,4 +49,6 @@ public class AppointmentRefundDetailResponseDTO implements Serializable {
     private Double appointmentCharge;
 
     private String appointmentMode;
+
+    private Character isRegistered;
 }

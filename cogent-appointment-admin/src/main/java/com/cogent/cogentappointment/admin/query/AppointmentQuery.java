@@ -63,7 +63,8 @@ public class AppointmentQuery {
                 "  DATE_FORMAT(ard.cancelledDate,'%M %d %Y') as cancelledDate," +
                 "  p.gender as gender," +
                 " ard.refundAmount as refundAmount," +
-                " a.appointmentModeId.name as appointmentMode, " +
+                " a.appointmentModeId.name as appointmentMode," +
+                " hpi.isRegistered as isRegistered," +
                 QUERY_TO_CALCULATE_PATIENT_AGE +
                 " FROM Appointment a" +
                 " LEFT JOIN Patient p ON p.id = a.patientId.id" +
@@ -474,6 +475,7 @@ public class AppointmentQuery {
                     " atd.appointmentAmount as appointmentCharge," +
                     " DATE_FORMAT(ard.cancelledDate,'%Y-%m-%d') as cancelledDate," +
                     " a.appointmentModeId.name as appointmentMode," +
+                    " hpi.isRegistered as isRegistered," +
                     QUERY_TO_CALCULATE_PATIENT_AGE +
                     " FROM" +
                     " AppointmentRefundDetail ard" +

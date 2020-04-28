@@ -266,7 +266,7 @@ public class DoctorUtils {
             doctorRevenueResponseDTOS.add(doctorRevenueResponseDTO);
 
             totalRefundAmount.updateAndGet(v -> v + refundAmount);
-            totalAppointmentCount.updateAndGet(v -> v + appointmentCount);
+//            totalAppointmentCount.updateAndGet(v -> v + appointmentCount);
 
         });
 
@@ -274,7 +274,7 @@ public class DoctorUtils {
         doctorRevenueResponseListDTO.setTotalItems(doctorRevenueResponseDTOS.size());
 
         doctorRevenueResponseListDTO.setTotalRevenueAmount(totalRefundAmount.get());
-        doctorRevenueResponseListDTO.setOverallAppointmentCount(totalAppointmentCount.get());
+//        doctorRevenueResponseListDTO.setOverallAppointmentCount(totalAppointmentCount.get());
 
         return doctorRevenueResponseListDTO;
     }

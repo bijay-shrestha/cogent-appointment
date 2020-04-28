@@ -258,18 +258,13 @@ public class DashBoardQuery {
                 GET_WHERE_CLAUSE_GENERATE_DOCTOR_REVENUE_LIST(requestDTO);
     }
 
-    public static String QUERY_TO_GET_FOLLOW_UP_COUNT_FOR_DOCTOR(DoctorRevenueRequestDTO requestDTO) {
-        return "SELECT" +
+    public static String QUERY_TO_GET_FOLLOW_UP_COUNT_FOR_DOCTOR =
+            "SELECT" +
                 " COUNT(a.id) " +
                 " FROM Appointment a" +
-                " LEFT JOIN Doctor d ON d.id= a.doctorId.id" +
-                " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId.id" +
-                " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
-                " LEFT JOIN Specialization s ON s.id=a.specializationId.id" +
-                " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
-                " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
-                GET_WHERE_CLAUSE_GENERATE_DOCTOR_REVENUE_LIST(requestDTO);
-    }
+                " WHERE a.isFollowUp='Y'" +
+                " AND a.doctorId.id=:doctorId";
+
 
     public static String GET_WHERE_CLAUSE_GENERATE_DOCTOR_REVENUE_LIST(DoctorRevenueRequestDTO requestDTO) {
         String whereClause = " WHERE h.id=:hospitalId";

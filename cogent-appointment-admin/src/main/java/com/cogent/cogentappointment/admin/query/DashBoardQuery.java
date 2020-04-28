@@ -266,6 +266,13 @@ public class DashBoardQuery {
                 GET_WHERE_CLAUSE_GENERATE_DOCTOR_REVENUE_LIST(requestDTO);
     }
 
+    public static String QUERY_TO_GET_FOLLOW_UP_COUNT_FOR_DOCTOR =
+            "SELECT" +
+                    " COUNT(a.id) " +
+                    " FROM Appointment a" +
+                    " WHERE a.isFollowUp='Y'" +
+                    " AND a.doctorId.id=:doctorId";
+
     private static String GET_WHERE_CLAUSE_GENERATE_DOCTOR_REVENUE_LIST(DoctorRevenueRequestDTO requestDTO) {
         String whereClause = " WHERE h.id=:hospitalId ";
 

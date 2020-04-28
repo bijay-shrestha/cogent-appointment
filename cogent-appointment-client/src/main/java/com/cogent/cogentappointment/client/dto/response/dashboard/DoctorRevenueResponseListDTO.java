@@ -18,6 +18,8 @@ public class DoctorRevenueResponseListDTO {
 
     private Long overallAppointmentCount;
 
+    private Long overallFollowUpCount;
+
     private int totalItems;
 
     private Double totalRevenueAmount;

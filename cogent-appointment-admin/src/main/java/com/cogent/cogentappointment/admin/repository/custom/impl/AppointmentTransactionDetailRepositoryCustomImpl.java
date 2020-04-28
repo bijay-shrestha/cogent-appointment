@@ -4,6 +4,7 @@ package com.cogent.cogentappointment.admin.repository.custom.impl;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.DashBoardRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.DoctorRevenueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.commons.AppointmentRevenueStatisticsResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.dashboard.DoctorRevenueResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.DoctorRevenueResponseListDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueTrendResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
@@ -22,6 +23,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
@@ -205,6 +207,25 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
         List<Object[]> objects = query.getResultList();
 
         DoctorRevenueResponseListDTO responseListDTO = parseTodoctorRevenueResponseListDTO(objects);
+        AtomicReference<Long> totalFollowUp = new AtomicReference<>(0L);
+        AtomicReference<Long> totalAppointmentCount = new AtomicReference<>(0L);
+
+        List<DoctorRevenueResponseDTO> doctorRevenueResponseDTOList=responseListDTO.getDoctorRevenueResponseDTOList();
+
+        doctorRevenueResponseDTOList.forEach(doctorRevenueResponseDTO -> {
+            Long doctorId=doctorRevenueResponseDTO.getDoctorId();
+            Query queryTogetFollowUP = createQuery.apply(entityManager, QUERY_TO_GET_FOLLOW_UP_COUNT_FOR_DOCTOR)
+                    .setParameter(DOCTOR_ID, doctorId);
+            Long followUp= (Long) queryTogetFollowUP.getResultList().get(0);
+            Long appointmentCount=doctorRevenueResponseDTO.getTotalAppointmentCount();
+            doctorRevenueResponseDTO.setTotalFollowUpCount(followUp);
+            doctorRevenueResponseDTO.setTotalAppointmentCount(appointmentCount-followUp);
+            totalFollowUp.updateAndGet(v -> v + doctorRevenueResponseDTO.getTotalFollowUpCount());
+            totalAppointmentCount.updateAndGet(v -> v + doctorRevenueResponseDTO.getTotalAppointmentCount());
+        });
+
+        responseListDTO.setOverallAppointmentCount(totalAppointmentCount.get());
+        responseListDTO.setOverallFollowUpCount(totalFollowUp.get());
 
         if (responseListDTO.getDoctorRevenueResponseDTOList().isEmpty()) {
             error();

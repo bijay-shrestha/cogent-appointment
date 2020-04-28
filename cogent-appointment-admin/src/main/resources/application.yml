@@ -6,10 +6,10 @@
 #  home: Path/to/your/external/tomcat
 
 catalina:
-  home: /home/f1soft/Softwares/tomcat
+  home: /Users/bijayshrestha/Dropbox/Workspaces/Backend/tomcat
 
 ##### [END] CATALINA HOME CONFIG [/END] #########
 
 spring:
   profiles:
-    active: dev
+    active: uat

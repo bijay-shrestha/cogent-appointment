@@ -426,6 +426,7 @@ public class AppointmentUtils {
             final int MOBILE_NUMBER_INDEX = 7;
             final int AGE_INDEX = 8;
             final int APPOINTMENT_ID_INDEX = 9;
+            final int IS_FOLLOW_UP_INDEX = 10;
 
             Date appointmentDate = (Date) result[APPOINTMENT_DATE_INDEX];
 
@@ -442,6 +443,7 @@ public class AppointmentUtils {
                     .age(result[AGE_INDEX].toString())
                     .gender(result[GENDER_INDEX].toString())
                     .appointmentId(Long.parseLong(result[APPOINTMENT_ID_INDEX].toString()))
+                    .isFollowUp((Character) result[IS_FOLLOW_UP_INDEX])
                     .build();
 
             appointmentStatusResponseDTOS.add(appointmentStatusResponseDTO);

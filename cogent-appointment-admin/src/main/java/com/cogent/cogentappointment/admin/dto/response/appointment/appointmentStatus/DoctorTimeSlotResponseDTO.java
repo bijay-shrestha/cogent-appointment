@@ -31,4 +31,6 @@ public class DoctorTimeSlotResponseDTO implements Serializable {
     private Long appointmentId;
 
     private boolean hasTimePassed;
+
+    private Character isFollowUp;
 }

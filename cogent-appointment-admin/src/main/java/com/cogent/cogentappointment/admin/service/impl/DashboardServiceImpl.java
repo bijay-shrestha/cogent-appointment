@@ -7,20 +7,21 @@ import com.cogent.cogentappointment.admin.dto.request.dashboard.GenerateRevenueR
 import com.cogent.cogentappointment.admin.dto.request.dashboard.RefundAmountRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.commons.AppointmentRevenueStatisticsResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.*;
+import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.DashboardService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import javax.transaction.Transactional;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.DashboardMessages.DOCTOR_REVENUE_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.DashboardConstants.DYNAMIC_DASHBOARD_FEATURE;
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.DashboardLog.*;
 import static com.cogent.cogentappointment.admin.utils.AppointmentUtils.parseToAppointmentCountResponseDTO;
 import static com.cogent.cogentappointment.admin.utils.DashboardUtils.*;
@@ -177,24 +178,37 @@ public class DashboardServiceImpl implements DashboardService {
         return totalRefundedAmount;
     }
 
+    /* 1. CALCULATE ACTUAL DOCTOR REVENUE i.e. APPOINTMENT WITH STATUS EXCEPT REFUNDED ('RE')
+     * 2. CALCULATE CANCELLED/COMPANY REVENUE i.e. APPOINTMENT WITH TRANSACTION STATUS 'A' AND
+     * APPOINTMENT WITH STATUS 'RE'
+     * 3. UNION (1) & (2).
+      * ADD TO FINAL LIST CONSIDERING DISTINCT ELEMENTS NEEDS TO BE ADDED AND
+      * BASED ON CONDITION-> SAME DOCTOR ID & SPECIALIZATION ID
+      * */
     @Override
-    public DoctorRevenueResponseListDTO getDoctorRevenueList(Date toDate,
-                                                             Date fromDate,
-                                                             DoctorRevenueRequestDTO doctorRevenueRequestDTO,
-                                                             Pageable pageable) {
+    public DoctorRevenueResponseDTO calculateOverallDoctorRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO,
+                                                                  Pageable pageable) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, DOCTOR_REVENUE);
 
-        DoctorRevenueResponseListDTO doctorRevenueResponseListDTO = appointmentTransactionDetailRepository
-                .getDoctorRevenue(toDate, fromDate, doctorRevenueRequestDTO, pageable);
+        List<DoctorRevenueDTO> doctorRevenue =
+                appointmentTransactionDetailRepository.calculateDoctorRevenue(doctorRevenueRequestDTO);
+
+        List<DoctorRevenueDTO> cancelledRevenue =
+                appointmentTransactionDetailRepository.calculateCancelledRevenue(doctorRevenueRequestDTO);
+
+        validateDoctorRevenue(doctorRevenue, cancelledRevenue);
+
+        List<DoctorRevenueDTO> mergedList = mergeDoctorAndCancelledRevenue(doctorRevenue, cancelledRevenue);
+
+        DoctorRevenueResponseDTO responseDTO = parseToDoctorRevenueResponseDTO(mergedList);
 
         log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_REVENUE, getDifferenceBetweenTwoTime(startTime));
 
-        return doctorRevenueResponseListDTO;
+        return responseDTO;
     }
-
 
     @Override
     public List<DashboardFeatureResponseDTO> getDashboardFeaturesByAdmin(Long adminId) {
@@ -222,5 +236,13 @@ public class DashboardServiceImpl implements DashboardService {
         log.info(FETCHING_PROCESS_COMPLETED, DYNAMIC_DASHBOARD_FEATURE, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
+    }
+
+    private void validateDoctorRevenue(List<DoctorRevenueDTO> doctorRevenue,
+                                       List<DoctorRevenueDTO> cancelledRevenue) {
+        if (ObjectUtils.isEmpty(doctorRevenue) && ObjectUtils.isEmpty(cancelledRevenue)) {
+            log.error(CONTENT_NOT_FOUND, DOCTOR_REVENUE);
+            throw new NoContentFoundException(DOCTOR_REVENUE_NOT_FOUND);
+        }
     }
 }

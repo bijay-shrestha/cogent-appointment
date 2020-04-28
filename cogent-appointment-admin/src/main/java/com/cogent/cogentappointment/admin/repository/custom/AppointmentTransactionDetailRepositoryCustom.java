@@ -4,13 +4,13 @@ package com.cogent.cogentappointment.admin.repository.custom;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.DashBoardRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.dashboard.DoctorRevenueRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.commons.AppointmentRevenueStatisticsResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.dashboard.DoctorRevenueResponseListDTO;
+import com.cogent.cogentappointment.admin.dto.response.dashboard.DoctorRevenueDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueTrendResponseDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author smriti on 2019-10-22
@@ -25,9 +25,7 @@ public interface AppointmentTransactionDetailRepositoryCustom {
 
     RevenueTrendResponseDTO getRevenueTrend(DashBoardRequestDTO dashBoardRequestDTO, Character filter);
 
-    DoctorRevenueResponseListDTO getDoctorRevenue(Date toDate, Date fromDate,
-                                                  DoctorRevenueRequestDTO doctorRevenueRequestDTO, Pageable pageable);
+    List<DoctorRevenueDTO> calculateDoctorRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO);
 
-
-
+    List<DoctorRevenueDTO> calculateCancelledRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO);
 }

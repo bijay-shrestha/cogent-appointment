@@ -7,8 +7,6 @@ import com.cogent.cogentappointment.admin.dto.request.doctor.DoctorQualification
 import com.cogent.cogentappointment.admin.dto.request.doctor.DoctorRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctor.DoctorSpecializationUpdateDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctor.DoctorUpdateDTO;
-import com.cogent.cogentappointment.admin.dto.response.dashboard.DoctorRevenueResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.dashboard.DoctorRevenueResponseListDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorQualificationResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorSpecializationResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorUpdateResponseDTO;
@@ -16,10 +14,8 @@ import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseD
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -227,55 +223,5 @@ public class DoctorUtils {
                         .qualificationName(qualificationNames[i])
                         .build())
                 .collect(Collectors.toList());
-    }
-
-
-    public static DoctorRevenueResponseListDTO parseTodoctorRevenueResponseListDTO(List<Object[]> results) {
-
-        DoctorRevenueResponseListDTO doctorRevenueResponseListDTO = new DoctorRevenueResponseListDTO();
-
-        List<DoctorRevenueResponseDTO> doctorRevenueResponseDTOS = new ArrayList<>();
-
-        AtomicReference<Double> totalRefundAmount = new AtomicReference<>(0D);
-        AtomicReference<Long> totalAppointmentCount = new AtomicReference<>(0L);
-
-        results.forEach(result -> {
-            final int DOCTOR_ID_INDEX = 0;
-            final int DOCTOR_NAME_INDEX = 1;
-            final int FILE_URI_INDEX = 2;
-            final int SPECIALIZATION_NAME_INDEX = 3;
-            final int TOTAL_APPOINTMENT_COUNT_INDEX = 4;
-            final int REVENUE_AMOUNT_INDEX = 5;
-
-            Double refundAmount = Objects.isNull(result[REVENUE_AMOUNT_INDEX]) ?
-                    0D : Double.parseDouble(result[REVENUE_AMOUNT_INDEX].toString());
-
-            Long appointmentCount = Objects.isNull(result[TOTAL_APPOINTMENT_COUNT_INDEX]) ?
-                    0L : Long.parseLong(result[TOTAL_APPOINTMENT_COUNT_INDEX].toString());
-
-            DoctorRevenueResponseDTO doctorRevenueResponseDTO =
-                    DoctorRevenueResponseDTO.builder()
-                            .doctorId(Long.parseLong(result[DOCTOR_ID_INDEX].toString()))
-                            .doctorName(result[DOCTOR_NAME_INDEX].toString())
-                            .fileUri(result[FILE_URI_INDEX].toString())
-                            .specialization(result[SPECIALIZATION_NAME_INDEX].toString())
-                            .totalAppointmentCount(Long.parseLong(result[TOTAL_APPOINTMENT_COUNT_INDEX].toString()))
-                            .revenueAmount(refundAmount)
-                            .build();
-
-            doctorRevenueResponseDTOS.add(doctorRevenueResponseDTO);
-
-            totalRefundAmount.updateAndGet(v -> v + refundAmount);
-//            totalAppointmentCount.updateAndGet(v -> v + appointmentCount);
-
-        });
-
-        doctorRevenueResponseListDTO.setDoctorRevenueResponseDTOList(doctorRevenueResponseDTOS);
-        doctorRevenueResponseListDTO.setTotalItems(doctorRevenueResponseDTOS.size());
-
-        doctorRevenueResponseListDTO.setTotalRevenueAmount(totalRefundAmount.get());
-//        doctorRevenueResponseListDTO.setOverallAppointmentCount(totalAppointmentCount.get());
-
-        return doctorRevenueResponseListDTO;
     }
 }

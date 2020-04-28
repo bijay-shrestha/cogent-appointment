@@ -3,16 +3,12 @@ package com.cogent.cogentappointment.client.repository.custom.impl;
 import com.cogent.cogentappointment.client.dto.request.DoctorRevenueRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.commons.AppointmentRevenueStatisticsResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.dashboard.DoctorRevenueResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.dashboard.DoctorRevenueResponseListDTO;
+import com.cogent.cogentappointment.client.dto.response.dashboard.DoctorRevenueDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.RevenueTrendResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.AppointmentTransactionDetailRepositoryCustom;
-import com.cogent.cogentappointment.client.utils.DoctorUtils;
 import com.cogent.cogentappointment.persistence.model.AppointmentTransactionDetail;
-import com.cogent.cogentappointment.persistence.model.Doctor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,17 +19,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
-import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.client.query.DashBoardQuery.*;
 import static com.cogent.cogentappointment.client.utils.AppointmentRevenueStatisticsUtils.*;
 import static com.cogent.cogentappointment.client.utils.DashboardUtils.revenueStatisticsResponseDTO;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
-import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
+import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.transformQueryToResultList;
 
 /**
  * @author Sauravi Thapa २०/२/१०
@@ -198,52 +192,26 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
     }
 
     @Override
-    public DoctorRevenueResponseListDTO getDoctorRevenue(Date toDate,
-                                                         Date fromDate,
-                                                         DoctorRevenueRequestDTO requestDTO,
-                                                         Pageable pageable) {
+    public List<DoctorRevenueDTO> calculateDoctorRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_GENERATE_DOCTOR_REVENUE_LIST(requestDTO))
-                .setParameter(TO_DATE, utilDateToSqlDate(toDate))
-                .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))
-                .setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
+        Query query = createQuery.apply(entityManager, QUERY_TO_CALCULATE_DOCTOR_REVENUE(doctorRevenueRequestDTO))
+                .setParameter(FROM_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getToDate()))
+                .setParameter(HOSPITAL_ID, doctorRevenueRequestDTO.getHospitalId());
 
-        int totalItems = query.getResultList().size();
-
-        addPagination.accept(pageable, query);
-
-        List<Object[]> objects = query.getResultList();
-
-        DoctorRevenueResponseListDTO responseListDTO = DoctorUtils.parseTodoctorRevenueResponseListDTO(objects);
-        AtomicReference<Long> totalFollowUp = new AtomicReference<>(0L);
-        AtomicReference<Long> totalAppointmentCount = new AtomicReference<>(0L);
-
-        List<DoctorRevenueResponseDTO> doctorRevenueResponseDTOList=responseListDTO.getDoctorRevenueResponseDTOList();
-
-        doctorRevenueResponseDTOList.forEach(doctorRevenueResponseDTO -> {
-            Long doctorId=doctorRevenueResponseDTO.getDoctorId();
-            Query queryTogetFollowUP = createQuery.apply(entityManager, QUERY_TO_GET_FOLLOW_UP_COUNT_FOR_DOCTOR)
-                    .setParameter(DOCTOR_ID, doctorId);
-            Long followUp= (Long) queryTogetFollowUP.getResultList().get(0);
-            Long appointmentCount=doctorRevenueResponseDTO.getTotalAppointmentCount();
-            doctorRevenueResponseDTO.setTotalFollowUpCount(followUp);
-            doctorRevenueResponseDTO.setTotalAppointmentCount(appointmentCount-followUp);
-            totalFollowUp.updateAndGet(v -> v + doctorRevenueResponseDTO.getTotalFollowUpCount());
-            totalAppointmentCount.updateAndGet(v -> v + doctorRevenueResponseDTO.getTotalAppointmentCount());
-        });
-
-        responseListDTO.setOverallAppointmentCount(totalAppointmentCount.get());
-        responseListDTO.setOverallFollowUpCount(totalFollowUp.get());
-
-
-        if (responseListDTO.getDoctorRevenueResponseDTOList().isEmpty()) {
-            log.error(CONTENT_NOT_FOUND, AppointmentTransactionDetail.class.getSimpleName());
-            throw DOCTOR_REVENUE_NOT_FOUND.get();
-        }
-
-        return responseListDTO;
+        return transformQueryToResultList(query, DoctorRevenueDTO.class);
     }
 
+    @Override
+    public List<DoctorRevenueDTO> calculateCancelledRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_CALCULATE_COMPANY_REVENUE(doctorRevenueRequestDTO))
+                .setParameter(FROM_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getToDate()))
+                .setParameter(HOSPITAL_ID, doctorRevenueRequestDTO.getHospitalId());
+
+        return transformQueryToResultList(query, DoctorRevenueDTO.class);
+    }
 
     private String getQueryByFilter(Character filter) {
         Map<Character, String> queriesWithFilterAsKey = new HashMap<>();
@@ -254,9 +222,6 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
 
         return queriesWithFilterAsKey.get(filter);
     }
-
-    private Supplier<NoContentFoundException> DOCTOR_NOT_FOUND = () ->
-            new NoContentFoundException(Doctor.class);
 
     private Supplier<NoContentFoundException> DOCTOR_REVENUE_NOT_FOUND = () ->
             new NoContentFoundException(AppointmentTransactionDetail.class);

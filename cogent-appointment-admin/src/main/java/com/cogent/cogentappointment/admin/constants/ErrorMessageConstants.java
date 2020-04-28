@@ -76,6 +76,10 @@ public class ErrorMessageConstants {
                 " exists within the selected date range '%s'.";
     }
 
+    public interface DashboardMessages {
+        String DOCTOR_REVENUE_NOT_FOUND = "Doctor Revenue(s) not found";
+    }
+
     //E
 
     //F

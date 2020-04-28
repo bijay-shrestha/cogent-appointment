@@ -3,7 +3,11 @@ package com.cogent.cogentappointment.admin.dto.response.dashboard;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.List;
 
+/**
+ * @author Rupak
+ */
 @Getter
 @Setter
 @AllArgsConstructor
@@ -11,17 +15,12 @@ import java.io.Serializable;
 @Builder
 public class DoctorRevenueResponseDTO implements Serializable {
 
-    private Long doctorId;
-
-    private String doctorName;
-
-    private String fileUri;
-
-    private String specialization;
+    private List<DoctorRevenueDTO> doctorRevenueInfo;
 
     private Long totalAppointmentCount;
 
-    private Long totalFollowUpCount;
+    private Double totalRevenueAmount;
 
-    private Double revenueAmount;
+    private int totalItems;
+
 }

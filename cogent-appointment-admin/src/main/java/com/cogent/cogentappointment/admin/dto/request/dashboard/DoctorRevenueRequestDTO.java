@@ -21,7 +21,7 @@ public class DoctorRevenueRequestDTO implements Serializable {
 
     private Long specializationId;
 
-//    private Date fromDate;
-//
-//    private Date toDate;
+    private Date fromDate;
+
+    private Date toDate;
 }

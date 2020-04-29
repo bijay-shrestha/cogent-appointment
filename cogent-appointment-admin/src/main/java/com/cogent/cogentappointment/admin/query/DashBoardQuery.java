@@ -260,16 +260,17 @@ public class DashBoardQuery {
                 " END as fileUri," +                                                             //[2]
                 " s.id as specializationId," +                                                   //[3]
                 " s.name as specializationName," +                                               //[4]
-                " COUNT(d.id) as successfulAppointments," +                                      //[5]
+                " COUNT(a.id) as successfulAppointments," +                                      //[5]
                 " COALESCE(SUM(atd.appointmentAmount),0) as doctorRevenue" +                     //[6]
                 " FROM Appointment a" +
                 " LEFT JOIN Doctor d ON d.id= a.doctorId.id" +
                 " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId.id" +
                 " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
+                " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
                 " LEFT JOIN Specialization s ON s.id=a.specializationId.id" +
                 " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
                 " WHERE" +
-                " (a.status !='RE' OR a.status !='C')" +
+                " (a.status !='RE' AND a.status !='C')" +
                 " AND a.isFollowUp='N'" +
                 GET_WHERE_CLAUSE_TO_CALCULATE_DOCTOR_REVENUE(requestDTO);
     }
@@ -299,14 +300,32 @@ public class DashBoardQuery {
                 " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
                 " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
                 " WHERE" +
-                " (a.status ='RE' OR a.status='C')" +
+                " a.status ='RE'" +
+                " AND ard.status='A'" +
                 GET_WHERE_CLAUSE_TO_CALCULATE_DOCTOR_REVENUE(requestDTO);
     }
 
+    public static String QUERY_TO_CALCULATE_COMPANY_REVENUE_CANCELLED =
+            "SELECT" +
+                    " COUNT(a.id) as count," +                      //[5]
+                    " COALESCE(SUM(atd.appointmentAmount ),0) as amount" +  //[6]
+                    " FROM Appointment a" +
+                    " LEFT JOIN Doctor d ON d.id= a.doctorId.id" +
+                    " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId.id" +
+                    " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
+                    " LEFT JOIN Specialization s ON s.id=a.specializationId.id" +
+                    " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
+                    " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
+                    " WHERE" +
+                    " a.status ='C'" +
+                    " AND a.doctorId.id=:doctorId" +
+                    " AND a.specializationId.id=:specializationId" +
+                    " AND atd.transactionDate BETWEEN :fromDate AND :toDate";
+
     public static String QUERY_TO_GET_FOLLOW_UP =
             "SELECT" +
-                    " Count(a.id) as followUpCount," +
-                    " COALESCE(SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 ) as followUpAmount" +
+                    " Count(a.id) as count," +
+                    " COALESCE(SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 ) as amount" +
                     " FROM Appointment a" +
                     " LEFT JOIN Doctor d ON d.id= a.doctorId.id" +
                     " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId.id" +

@@ -278,7 +278,7 @@ public class DashBoardQuery {
                 " END as fileUri," +                                            //[2]
                 " s.id as specializationId," +                                  //[3]
                 " s.name as specializationName," +                              //[4]
-                " COUNT(d.id) as cancelledAppointments," +                      //[5]
+                " COUNT(a.id) as cancelledAppointments," +                      //[5]
                 " COALESCE(SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 )" +
                 " as cancelledRevenue" +                                       //[6]
                 " FROM Appointment a" +

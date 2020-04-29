@@ -200,8 +200,8 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
                     .setParameter(DOCTOR_ID, doctorRevenueDTO.getDoctorId());
             DoctorFollowUpResponse doctorFollowUpResponse= transformQueryToSingleResult(queryToGetFollowUp,
                     DoctorFollowUpResponse.class);
-            doctorRevenueDTO.setTotalFollowUp(doctorFollowUpResponse.getFollowUpCount());
-            doctorRevenueDTO.setTotalRevenue(doctorRevenueDTO.getTotalRevenue()+doctorFollowUpResponse.getFollowUpAmount());
+            doctorRevenueDTO.setTotalFollowUp(doctorFollowUpResponse.getCount());
+            doctorRevenueDTO.setTotalRevenue(doctorRevenueDTO.getTotalRevenue()+doctorFollowUpResponse.getAmount());
         });
 
 
@@ -216,7 +216,20 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
                 .setParameter(TO_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getToDate()))
                 .setParameter(HOSPITAL_ID, doctorRevenueRequestDTO.getHospitalId());
 
-        return transformQueryToResultList(query, DoctorRevenueDTO.class);
+        List<DoctorRevenueDTO> doctorRevenueDTOList=transformQueryToResultList(query, DoctorRevenueDTO.class);
+        doctorRevenueDTOList.forEach(doctorRevenueDTO -> {
+            Query queryToGetCancelled = createQuery.apply(entityManager, QUERY_TO_CALCULATE_COMPANY_REVENUE_CANCELLED)
+                    .setParameter(FROM_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getFromDate()))
+                    .setParameter(TO_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getToDate()))
+                    .setParameter(DOCTOR_ID, doctorRevenueDTO.getDoctorId())
+                    .setParameter(SPECIALIZATION_ID, doctorRevenueDTO.getSpecializationId());
+            DoctorFollowUpResponse doctorFollowUpResponse= transformQueryToSingleResult(queryToGetCancelled,
+                    DoctorFollowUpResponse.class);
+            doctorRevenueDTO.setCancelledAppointments(doctorRevenueDTO.getCancelledAppointments()+doctorFollowUpResponse.getCount());
+            doctorRevenueDTO.setCancelledRevenue(doctorRevenueDTO.getCancelledRevenue()+doctorFollowUpResponse.getAmount());
+        });
+
+        return doctorRevenueDTOList;
     }
 
     private String getQueryByFilter(Long hospitalId, Character filter) {

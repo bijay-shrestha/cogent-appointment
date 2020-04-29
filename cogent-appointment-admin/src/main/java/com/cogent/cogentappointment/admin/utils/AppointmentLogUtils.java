@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.admin.utils;
 
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.*;
-import com.cogent.cogentappointment.persistence.model.Appointment;
+import com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog.TransactionLogResponseDTO;
 
 /**
  * @author smriti on 16/04/20
@@ -70,6 +70,20 @@ public class AppointmentLogUtils {
                                                         CancelledAppointmentResponseDTO cancelledAppointmentResponseDTO,
                                                         RefundAppointmentResponseDTO refundAppointmentResponseDTO,
                                                         RevenueFromRefundAppointmentResponseDTO revenueFromRefundAppointmentResponseDTO) {
+
+        responseDTO.setBookedInfo(bookedAppointmentResponseDTO);
+        responseDTO.setCheckedInInfo(checkedInAppointmentResponseDTO);
+        responseDTO.setCancelledInfo(cancelledAppointmentResponseDTO);
+        responseDTO.setRefundInfo(refundAppointmentResponseDTO);
+        responseDTO.setRevenueFromRefundInfo(revenueFromRefundAppointmentResponseDTO);
+    }
+
+    public static void parseToTxnLogResponseDTO(TransactionLogResponseDTO responseDTO,
+                                                BookedAppointmentResponseDTO bookedAppointmentResponseDTO,
+                                                CheckedInAppointmentResponseDTO checkedInAppointmentResponseDTO,
+                                                CancelledAppointmentResponseDTO cancelledAppointmentResponseDTO,
+                                                RefundAppointmentResponseDTO refundAppointmentResponseDTO,
+                                                RevenueFromRefundAppointmentResponseDTO revenueFromRefundAppointmentResponseDTO) {
 
         responseDTO.setBookedInfo(bookedAppointmentResponseDTO);
         responseDTO.setCheckedInInfo(checkedInAppointmentResponseDTO);

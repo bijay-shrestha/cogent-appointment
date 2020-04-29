@@ -162,7 +162,8 @@ public class AppointmentQuery {
                             " d.name as doctorName," +                                                  //[10]
                             " atd.transactionNumber as transactionNumber," +                            //[11]
                             " atd.appointmentAmount as appointmentAmount," +                            //[12]
-                            " arl.remarks as remarks" +                                                 //[13]
+                            " arl.remarks as remarks," +                                                 //[13]
+                            " DATE_FORMAT(a.appointmentTime, '%h:%i %p') as appointmentTime" +           //[14]
                             " from AppointmentRescheduleLog arl" +
                             " LEFT JOIN Appointment a ON a.id=arl.appointmentId.id" +
                             " LEFT JOIN Patient p ON p.id=a.patientId" +
@@ -379,7 +380,8 @@ public class AppointmentQuery {
                             " hpi.address as patientAddress," +                                    //[16]
                             " atd.transactionDate as transactionDate," +                           //[17]
                             " am.name as appointmentMode," +                                        //[18]
-                            " a.isFollowUp as isFollowUp" +                                        //[19]
+                            " a.isFollowUp as isFollowUp," +                                        //[19]
+                            " (atd.appointmentAmount - COALESCE(ard.refundAmount,0)) as revenueAmount" + //[20]
                             " FROM Appointment a" +
                             " LEFT JOIN AppointmentMode am ON am.id=a.appointmentModeId.id" +
                             " LEFT JOIN Patient p ON a.patientId.id=p.id" +

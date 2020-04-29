@@ -119,7 +119,7 @@ public class AppointmentUtils {
             final int TRANSACTION_NUMBER_INDEX = 12;
             final int APPOINTMENT_AMOUNT_INDEX = 13;
             final int REMARKS_INDEX = 14;
-
+            final int APPOINTMENT_TIME_INDEX = 15;
 
             Date previosAppointmentDate = (Date) result[PREVIOUS_APPOINTMENT_DATE_INDEX];
             Date rescheduledAppointmentDate = (Date) result[APPOINTMENT_RESCHEDULED_DATE_INDEX];
@@ -152,6 +152,7 @@ public class AppointmentUtils {
                             .appointmentAmount(appointmentAmount)
                             .doctorName(result[DOCTOR_NAME_INDEX].toString())
                             .remarks(remarks)
+                            .appointmentTime(result[APPOINTMENT_TIME_INDEX].toString())
                             .build();
 
             appointmentLogSearchDTOS.add(appointmentRescheduleLogDTO);
@@ -195,6 +196,7 @@ public class AppointmentUtils {
             final int TRANSACTION_DATE_INDEX = 18;
             final int APPOINTMENT_MODE_INDEX = 19;
             final int IS_FOLLOW_UP_INDEX = 20;
+            final int REVENUE_AMOUNT_INDEX = 21;
 
             Date appointmentDate = (Date) result[APPOINTMENT_DATE_INDEX];
             Date patientDob = (Date) result[PATIENT_DOB_INDEX];
@@ -235,6 +237,7 @@ public class AppointmentUtils {
                             .transactionDate((Date) result[TRANSACTION_DATE_INDEX])
                             .appointmentMode(result[APPOINTMENT_MODE_INDEX].toString())
                             .isFollowUp(result[IS_FOLLOW_UP_INDEX].toString().charAt(0))
+                            .revenueAmount(Double.parseDouble(result[REVENUE_AMOUNT_INDEX].toString()))
                             .build();
 
             appointmentLogSearchDTOS.add(appointmentLogDTO);

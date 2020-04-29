@@ -45,6 +45,7 @@ public class TransactionLogUtils {
             final int APPOINTMENT_MODE_INDEX = 18;
             final int IS_FOLLOW_UP_INDEX = 19;
             final int TRANSACTION_TIME_INDEX = 20;
+            final int REVENUE_AMOUNT_INDEX = 21;
 
             Date appointmentDate = (Date) result[APPOINTMENT_DATE_INDEX];
             Date patientDob = (Date) result[PATIENT_DOB_INDEX];
@@ -86,6 +87,7 @@ public class TransactionLogUtils {
                                     ? "" : result[PATIENT_ADDRESS_INDEX].toString())
                             .transactionTime(Objects.isNull(result[TRANSACTION_TIME_INDEX]) ? "" :
                                     result[TRANSACTION_TIME_INDEX].toString())
+                            .revenueAmount(Double.parseDouble(result[REVENUE_AMOUNT_INDEX].toString()))
                             .build();
 
             appointmentLogSearchDTOS.add(appointmentLogDTO);

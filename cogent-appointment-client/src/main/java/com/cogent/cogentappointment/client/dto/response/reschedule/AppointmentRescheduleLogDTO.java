@@ -18,11 +18,13 @@ public class AppointmentRescheduleLogDTO {
 
     private String esewaId;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd YYYY")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd,YYYY",timezone = "Asia/Kathmandu")
     private Date previousAppointmentDate;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd YYYY")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd,YYYY",timezone = "Asia/Kathmandu")
     private Date rescheduleAppointmentDate;
+
+    private String appointmentTime;
 
     private String appointmentNumber;
 

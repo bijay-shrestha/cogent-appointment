@@ -41,6 +41,7 @@ import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.AdminLog.*;
 import static com.cogent.cogentappointment.admin.utils.AdminUtils.*;
 import static com.cogent.cogentappointment.admin.utils.DashboardFeatureUtils.parseToAdminDashboardFeature;
+import static com.cogent.cogentappointment.admin.utils.DashboardFeatureUtils.parseToUpdateAdminDashboardFeature;
 import static com.cogent.cogentappointment.admin.utils.GenderUtils.fetchGenderByCode;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
@@ -319,7 +320,8 @@ public class AdminServiceImpl implements AdminService {
                     );
 
             if (adminDashboardFeature == null) {
-                saveAdminDashboardFeature(result.getId(), admin);
+                Character status= result.getStatus();
+                updateAdminDashboardFeature(result.getId(), result.getStatus(),admin);
             }
 
             if (adminDashboardFeature != null) {
@@ -333,13 +335,25 @@ public class AdminServiceImpl implements AdminService {
 
     }
 
-    private void saveAdminDashboardFeature(Long id, Admin admin) {
+    private void saveAdminDashboardFeature(Long id,Admin admin) {
+
+        DashboardFeature dashboardFeature = dashboardFeatureRepository.findActiveDashboardFeatureById(id)
+                .orElseThrow(() -> new NoContentFoundException(DashboardFeature.class));
+
+
+
+        List<DashboardFeature> dashboardFeatureList = Arrays.asList(dashboardFeature);
+        adminDashboardFeatureRepository.saveAll(parseToAdminDashboardFeature(dashboardFeatureList, admin));
+
+    }
+
+    private void updateAdminDashboardFeature(Long id,Character status, Admin admin) {
 
         DashboardFeature dashboardFeature = dashboardFeatureRepository.findActiveDashboardFeatureById(id)
                 .orElseThrow(() -> new NoContentFoundException(DashboardFeature.class));
 
         List<DashboardFeature> dashboardFeatureList = Arrays.asList(dashboardFeature);
-        adminDashboardFeatureRepository.saveAll(parseToAdminDashboardFeature(dashboardFeatureList, admin));
+        adminDashboardFeatureRepository.saveAll(parseToUpdateAdminDashboardFeature(dashboardFeatureList,status, admin));
 
     }
 

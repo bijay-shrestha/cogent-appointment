@@ -33,9 +33,11 @@ public class TransactionLogQuery {
                     " d.name as doctorName," +                                     //[13]
                     " a.status as status," +                                       //[14]
                     " ard.refundAmount as refundAmount," +                         //[15]
-                    " atd.transactionDate as transactionDate," +                    //[16]
-                    " am.name as appointmentMode," +                                //[17]
-                    " a.isFollowUp as isFollowUp" +                                //[18]
+                    " hpi.address as patientAddress," +                            //[16]
+                    " atd.transactionDate as transactionDate," +                    //[17]
+                    " am.name as appointmentMode," +                                //[18]
+                    " a.isFollowUp as isFollowUp," +                                //[19]
+                    " DATE_FORMAT(atd.transactionDateTime, '%h:%i %p') as appointmentTime" + //[20]
                     " FROM Appointment a" +
                     " LEFT JOIN AppointmentMode am On am.id=a.appointmentModeId.id" +
                     " LEFT JOIN Patient p ON a.patientId.id=p.id" +
@@ -130,7 +132,7 @@ public class TransactionLogQuery {
 
     public static String QUERY_TO_FETCH_BOOKED_APPOINTMENT_FOR_TXN_LOG(TransactionLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
-                " a.status='PA' AND a.isFollowUp = 'N'";
+                " AND a.status='PA' AND a.isFollowUp = 'N'";
 
         return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
     }
@@ -139,35 +141,35 @@ public class TransactionLogQuery {
             (TransactionLogSearchDTO searchRequestDTO) {
 
         String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
-                " a.status='PA' AND a.isFollowUp = 'Y'";
+                " AND a.status='PA' AND a.isFollowUp = 'Y'";
 
         return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
     }
 
     public static String QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_FOR_TXN_LOG(TransactionLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
-                " a.status='A' AND a.isFollowUp = 'N'";
+                " AND a.status='A' AND a.isFollowUp = 'N'";
 
         return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
     }
 
     public static String QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_WITH_FOLLOW_UP_FOR_TXN_LOG(TransactionLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
-                " a.status='A' AND a.isFollowUp = 'Y'";
+                " AND a.status='A' AND a.isFollowUp = 'Y'";
 
         return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
     }
 
     public static String QUERY_TO_FETCH_CANCELLED_APPOINTMENT_FOR_TXN_LOG(TransactionLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
-                " a.status='C' AND a.isFollowUp = 'N'";
+                " AND a.status='C' AND a.isFollowUp = 'N'";
 
         return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
     }
 
     public static String QUERY_TO_FETCH_CANCELLED_APPOINTMENT_WITH_FOLLOW_UP_FOR_TXN_LOG(TransactionLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
-                " a.status='C' AND a.isFollowUp = 'Y'";
+                " AND a.status='C' AND a.isFollowUp = 'Y'";
 
         return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
     }

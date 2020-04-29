@@ -404,18 +404,6 @@ public class AppointmentQuery {
             whereClause += " AND (a.appointmentDate BETWEEN '" + utilDateToSqlDate(appointmentLogSearchDTO.getFromDate())
                     + "' AND '" + utilDateToSqlDate(appointmentLogSearchDTO.getToDate()) + "')";
 
-        if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getTransactionFromDate())
-                && !ObjectUtils.isEmpty(appointmentLogSearchDTO.getTransactionToDate()))
-            whereClause += " AND (atd.transactionDate BETWEEN '" +
-                    utilDateToSqlDate(appointmentLogSearchDTO.getTransactionFromDate())
-                    + "' AND '" + utilDateToSqlDate(appointmentLogSearchDTO.getTransactionToDate()) + "')";
-
-        if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getAppointmentNumber()))
-            whereClause += " AND a.appointmentNumber LIKE '%" + appointmentLogSearchDTO.getAppointmentNumber() + "%'"
-                    ;
-        if (!ObjectUtils.isEmpty(appointmentLogSearchDTO.getTransactionNumber()))
-            whereClause += " AND atd.transactionNumber LIKE '%" + appointmentLogSearchDTO.getTransactionNumber() + "%'";
-
         if (!Objects.isNull(appointmentLogSearchDTO.getStatus()) && !appointmentLogSearchDTO.getStatus().equals(""))
             whereClause += " AND a.status = '" + appointmentLogSearchDTO.getStatus() + "'";
 
@@ -602,7 +590,7 @@ public class AppointmentQuery {
 
     public static String QUERY_TO_FETCH_BOOKED_APPOINTMENT(AppointmentLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
-                " a.status='PA' AND a.isFollowUp = 'N'";
+                " AND a.status='PA' AND a.isFollowUp = 'N'";
 
         return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
     }
@@ -611,35 +599,35 @@ public class AppointmentQuery {
             (AppointmentLogSearchDTO searchRequestDTO) {
 
         String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
-                " a.status='PA' AND a.isFollowUp = 'Y'";
+                " AND a.status='PA' AND a.isFollowUp = 'Y'";
 
         return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
     }
 
     public static String QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT(AppointmentLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
-                " a.status='A' AND a.isFollowUp = 'N'";
+                " AND a.status='A' AND a.isFollowUp = 'N'";
 
         return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
     }
 
     public static String QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_WITH_FOLLOW_UP(AppointmentLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
-                " a.status='A' AND a.isFollowUp = 'Y'";
+                " AND a.status='A' AND a.isFollowUp = 'Y'";
 
         return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
     }
 
     public static String QUERY_TO_FETCH_CANCELLED_APPOINTMENT(AppointmentLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
-                " a.status='C' AND a.isFollowUp = 'N'";
+                " AND a.status='C' AND a.isFollowUp = 'N'";
 
         return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
     }
 
     public static String QUERY_TO_FETCH_CANCELLED_APPOINTMENT_WITH_FOLLOW_UP(AppointmentLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
-                " a.status='C' AND a.isFollowUp = 'Y'";
+                " AND a.status='C' AND a.isFollowUp = 'Y'";
 
         return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
     }
@@ -712,18 +700,6 @@ public class AppointmentQuery {
                 && !ObjectUtils.isEmpty(searchRequestDTO.getToDate()))
             query += " AND (a.appointmentDate BETWEEN '" + utilDateToSqlDate(searchRequestDTO.getFromDate())
                     + "' AND '" + utilDateToSqlDate(searchRequestDTO.getToDate()) + "')";
-
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getTransactionFromDate())
-                && !ObjectUtils.isEmpty(searchRequestDTO.getTransactionToDate()))
-            query += " AND (atd.transactionDate BETWEEN '" +
-                    utilDateToSqlDate(searchRequestDTO.getTransactionFromDate())
-                    + "' AND '" + utilDateToSqlDate(searchRequestDTO.getTransactionToDate()) + "')";
-
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getAppointmentNumber()))
-            query += " AND a.appointmentNumber LIKE '%" + searchRequestDTO.getAppointmentNumber() + "%'";
-
-        if (!ObjectUtils.isEmpty(searchRequestDTO.getTransactionNumber()))
-            query += " AND atd.transactionNumber LIKE '%" + searchRequestDTO.getTransactionNumber() + "%'";
 
         if (!Objects.isNull(searchRequestDTO.getStatus()) && !searchRequestDTO.getStatus().equals(""))
             query += " AND a.status = '" + searchRequestDTO.getStatus() + "'";

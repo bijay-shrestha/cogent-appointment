@@ -43,6 +43,7 @@ import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.AdminLog.*;
 import static com.cogent.cogentappointment.client.utils.AdminUtils.*;
 import static com.cogent.cogentappointment.client.utils.DashboardFeatureUtils.parseToAdminDashboardFeature;
+import static com.cogent.cogentappointment.client.utils.DashboardFeatureUtils.parseToUpdateAdminDashboardFeature;
 import static com.cogent.cogentappointment.client.utils.GenderUtils.fetchGenderByCode;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
@@ -428,8 +429,11 @@ public class AdminServiceImpl implements AdminService {
                     adminDashboardFeatureRepository.findAdminDashboardFeatureBydashboardFeatureId(
                             result.getId(), admin.getId());
 
-            if (adminDashboardFeature == null)
-                saveAdminDashboardFeature(result.getId(), admin);
+            if (adminDashboardFeature == null) {
+                Character status= result.getStatus();
+                updateAdminDashboardFeature(result.getId(), result.getStatus(),admin);
+            }
+
 
             if (adminDashboardFeature != null) {
                 adminDashboardFeature.setStatus(result.getStatus());
@@ -448,6 +452,17 @@ public class AdminServiceImpl implements AdminService {
         List<DashboardFeature> dashboardFeatureList = Arrays.asList(dashboardFeature);
         adminDashboardFeatureRepository.saveAll(parseToAdminDashboardFeature(dashboardFeatureList, admin));
     }
+
+    private void updateAdminDashboardFeature(Long id,Character status, Admin admin) {
+
+        DashboardFeature dashboardFeature = dashboardFeatureRepository.findActiveDashboardFeatureById(id)
+                .orElseThrow(() -> new NoContentFoundException(DashboardFeature.class));
+
+        List<DashboardFeature> dashboardFeatureList = Arrays.asList(dashboardFeature);
+        adminDashboardFeatureRepository.saveAll(parseToUpdateAdminDashboardFeature(dashboardFeatureList,status, admin));
+
+    }
+
 
     private void saveAllAdminDashboardFeature(List<AdminDashboardRequestDTO> dashboardRequestDTOList, Admin admin) {
 

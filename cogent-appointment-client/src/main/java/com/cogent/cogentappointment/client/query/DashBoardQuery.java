@@ -230,7 +230,7 @@ public class DashBoardQuery {
         if (!Objects.isNull(appointmentQueueRequestDTO.getDoctorId()))
             whereClause += " AND d.id = " + appointmentQueueRequestDTO.getDoctorId();
 
-        whereClause += " ORDER BY a.appointmentTime DESC";
+        whereClause += " ORDER BY a.appointmentTime ASC";
 
         return whereClause;
     }

@@ -281,6 +281,10 @@ public class DashboardUtils {
                 .mapToLong(DoctorRevenueDTO::getTotalAppointments)
                 .sum();
 
+        Long overallFollowUpCount = revenueDTOList.stream()
+                .mapToLong(DoctorRevenueDTO::getTotalFollowUp)
+                .sum();
+
         Double totalRevenueAmount = revenueDTOList.stream()
                 .mapToDouble(DoctorRevenueDTO::getTotalRevenue)
                 .sum();
@@ -291,6 +295,7 @@ public class DashboardUtils {
                 .doctorRevenueInfo(revenueDTOList)
                 .totalAppointmentCount(overallAppointmentCount)
                 .totalRevenueAmount(totalRevenueAmount)
+                .totalFollowUpCount(overallFollowUpCount)
                 .build();
     }
 }

@@ -23,6 +23,7 @@ public class PatientRequestByDTO implements Serializable {
 
     @NotNull
     @NotEmpty
+    @NotBlank
     private String mobileNumber;
 
     @NotNull
@@ -30,6 +31,7 @@ public class PatientRequestByDTO implements Serializable {
 
     @NotNull
     @NotEmpty
+    @NotBlank
     private Date dateOfBirth;
 
     private String email;

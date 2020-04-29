@@ -198,10 +198,12 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
                     .setParameter(FROM_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getFromDate()))
                     .setParameter(TO_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getToDate()))
                     .setParameter(DOCTOR_ID, doctorRevenueDTO.getDoctorId());
+
             DoctorFollowUpResponse doctorFollowUpResponse= transformQueryToSingleResult(queryToGetFollowUp,
                     DoctorFollowUpResponse.class);
+
             doctorRevenueDTO.setTotalFollowUp(doctorFollowUpResponse.getCount());
-            doctorRevenueDTO.setTotalRevenue(doctorRevenueDTO.getTotalRevenue()+doctorFollowUpResponse.getAmount());
+            doctorRevenueDTO.setDoctorRevenue(doctorRevenueDTO.getDoctorRevenue()+doctorFollowUpResponse.getAmount());
         });
 
 

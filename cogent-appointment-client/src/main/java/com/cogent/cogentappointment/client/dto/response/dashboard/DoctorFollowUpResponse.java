@@ -13,7 +13,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Builder
 public class DoctorFollowUpResponse implements Serializable {
-    private Long followUpCount;
+    private Long count;
 
-    private Double followUpAmount;
+    private Double amount;
 }

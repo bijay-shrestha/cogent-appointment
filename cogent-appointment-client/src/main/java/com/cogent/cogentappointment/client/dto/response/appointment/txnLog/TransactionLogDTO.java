@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.dto.response.appointment.log;
+package com.cogent.cogentappointment.client.dto.response.appointment.txnLog;
 
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.fasterxml.jackson.annotation.JsonFormat;

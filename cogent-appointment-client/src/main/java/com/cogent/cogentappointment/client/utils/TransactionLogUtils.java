@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.client.utils;
 
-import com.cogent.cogentappointment.client.dto.response.appointment.log.TransactionLogDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.log.TransactionLogResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.txnLog.TransactionLogDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.txnLog.TransactionLogResponseDTO;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 
 import java.util.ArrayList;

@@ -425,7 +425,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         List<Object[]> bookedWithFollowUpResult = query1.getResultList();
 
-        return AppointmentLogUtils.parseBookedAppointmentDetails(bookedResult.get(0), bookedWithFollowUpResult.get(0));
+        return parseBookedAppointmentDetails(bookedResult.get(0), bookedWithFollowUpResult.get(0));
     }
 
     private CheckedInAppointmentResponseDTO getCheckedInAppointmentDetails(TransactionLogSearchDTO searchRequestDTO) {
@@ -535,7 +535,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         List<Object[]> bookedWithFollowUpResult = query1.getResultList();
 
-        return AppointmentLogUtils.parseBookedAppointmentDetails(bookedResult.get(0), bookedWithFollowUpResult.get(0));
+        return parseBookedAppointmentDetails(bookedResult.get(0), bookedWithFollowUpResult.get(0));
     }
 
     private CheckedInAppointmentResponseDTO getCheckedInAppointmentDetails(AppointmentLogSearchDTO searchRequestDTO) {

@@ -35,7 +35,9 @@ public class TransactionLogQuery {
                     " ard.refundAmount as refundAmount," +                         //[16]
                     " atd.transactionDate as transactionDate," +                    //[17]
                     " am.name as appointmentMode," +                                //[18]
-                    " a.isFollowUp as isFollowUp" +                                //[19]
+                    " a.isFollowUp as isFollowUp," +                                //[19]
+                    " hpi.address as patientAddress," +                            //[20]
+                    " DATE_FORMAT(atd.transactionDateTime, '%h:%i %p') as appointmentTime" + //[21]
                     " FROM Appointment a" +
                     " LEFT JOIN AppointmentMode am On am.id=a.appointmentModeId.id" +
                     " LEFT JOIN Patient p ON a.patientId.id=p.id" +

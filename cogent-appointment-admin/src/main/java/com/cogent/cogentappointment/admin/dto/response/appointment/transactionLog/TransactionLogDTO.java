@@ -62,4 +62,7 @@ public class TransactionLogDTO implements Serializable{
 
     private Character isFollowUp;
 
+    private String patientAddress;
+
+    private String transactionTime;
 }

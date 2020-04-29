@@ -39,6 +39,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.Valid;
+import javax.validation.Validator;
 import java.util.*;
 import java.util.function.Function;
 
@@ -49,6 +51,7 @@ import static com.cogent.cogentappointment.client.constants.ErrorMessageConstant
 import static com.cogent.cogentappointment.client.constants.StatusConstants.*;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.APPROVED;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.REFUNDED;
+import static com.cogent.cogentappointment.client.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.*;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentMode.APPOINTMENT_MODE;
@@ -115,6 +118,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final HospitalPatientInfoRepository hospitalPatientInfoRepository;
 
+    private final Validator validator;
 
     public AppointmentServiceImpl(PatientService patientService,
                                   DoctorService doctorService,
@@ -137,7 +141,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   AppointmentTransactionRequestLogService appointmentTransactionRequestLogService,
                                   AppointmentModeRepository appointmentModeRepository,
                                   AppointmentStatisticsRepository appointmentStatisticsRepository,
-                                  HospitalPatientInfoRepository hospitalPatientInfoRepository) {
+                                  HospitalPatientInfoRepository hospitalPatientInfoRepository,
+                                  Validator validator) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -160,6 +165,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.appointmentModeRepository = appointmentModeRepository;
         this.appointmentStatisticsRepository = appointmentStatisticsRepository;
         this.hospitalPatientInfoRepository = hospitalPatientInfoRepository;
+        this.validator = validator;
     }
 
     @Override
@@ -230,16 +236,15 @@ public class AppointmentServiceImpl implements AppointmentService {
     * */
     //todo: change requestDTO in esewa-module
     @Override
-    public AppointmentSuccessResponseDTO saveAppointmentForSelf(AppointmentRequestDTOForSelf requestDTO) {
+    public AppointmentSuccessResponseDTO saveAppointmentForSelf(@Valid AppointmentRequestDTOForSelf requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, APPOINTMENT);
 
-        AppointmentRequestDTO appointmentInfo = requestDTO.getAppointmentInfo();
+        validateConstraintViolation(validator.validate(requestDTO));
 
-        AppointmentMode appointmentMode = fetchActiveAppointmentModeIdByCode
-                (requestDTO.getTransactionInfo().getAppointmentModeCode());
+        AppointmentRequestDTO appointmentInfo = requestDTO.getAppointmentInfo();
 
         AppointmentTransactionRequestLog transactionRequestLog =
                 appointmentTransactionRequestLogService.save(
@@ -247,6 +252,9 @@ public class AppointmentServiceImpl implements AppointmentService {
                         requestDTO.getTransactionInfo().getTransactionNumber(),
                         requestDTO.getPatientInfo().getName()
                 );
+
+        AppointmentMode appointmentMode = fetchActiveAppointmentModeIdByCode
+                (requestDTO.getTransactionInfo().getAppointmentModeCode());
 
         AppointmentReservationLog appointmentReservationLog =
                 validateAppointmentReservationIsActive(appointmentInfo.getAppointmentReservationId());
@@ -307,11 +315,13 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentSuccessResponseDTO saveAppointmentForOthers(AppointmentRequestDTOForOthers requestDTO) {
+    public AppointmentSuccessResponseDTO saveAppointmentForOthers(@Valid AppointmentRequestDTOForOthers requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, APPOINTMENT);
+
+        validateConstraintViolation(validator.validate(requestDTO));
 
         AppointmentRequestDTO appointmentInfo = requestDTO.getAppointmentInfo();
 

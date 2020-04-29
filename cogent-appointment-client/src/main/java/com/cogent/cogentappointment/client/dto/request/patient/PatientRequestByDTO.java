@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.dto.request.patient;
 
+import com.cogent.cogentappointment.client.constraintvalidator.Gender;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,11 +28,11 @@ public class PatientRequestByDTO implements Serializable {
     private String mobileNumber;
 
     @NotNull
+    @Gender
     private Character gender;
 
     @NotNull
-    @NotEmpty
-    @NotBlank
+//    @DateFormat
     private Date dateOfBirth;
 
     private String email;

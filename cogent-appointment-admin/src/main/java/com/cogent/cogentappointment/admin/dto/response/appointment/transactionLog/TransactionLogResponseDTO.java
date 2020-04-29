@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.dto.response.appointment.transactionLog;
 
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentLog.*;
 import com.cogent.cogentappointment.admin.dto.response.commons.AppointmentRevenueStatisticsResponseDTO;
 import lombok.*;
 
@@ -18,7 +19,17 @@ public class TransactionLogResponseDTO implements Serializable {
 
     private List<TransactionLogDTO> transactionLogs;
 
-    private AppointmentRevenueStatisticsResponseDTO appointmentStatistics;
+    private BookedAppointmentResponseDTO bookedInfo;
+
+    private CheckedInAppointmentResponseDTO checkedInInfo;
+
+    private CancelledAppointmentResponseDTO cancelledInfo;
+
+    private RefundAppointmentResponseDTO refundInfo;
+
+    private RevenueFromRefundAppointmentResponseDTO revenueFromRefundInfo;
+
+    private Double totalAmount;
 
     private int totalItems;
 }

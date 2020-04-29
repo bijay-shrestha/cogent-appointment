@@ -1,21 +1,22 @@
-package com.cogent.cogentappointment.client.dto.response.appointment.log;
+package com.cogent.cogentappointment.client.dto.response.appointment.txnLog;
 
+import com.cogent.cogentappointment.client.dto.response.appointment.log.*;
 import lombok.*;
 
 import java.io.Serializable;
 import java.util.List;
 
 /**
- * @author Rupak
+ * @author Sauravi Thapa ON 4/19/20
  */
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AppointmentLogResponseDTO implements Serializable {
+public class TransactionLogResponseDTO implements Serializable {
 
-    private List<AppointmentLogDTO> appointmentLogs;
+    private List<TransactionLogDTO> transactionLogs;
 
     private BookedAppointmentResponseDTO bookedInfo;
 

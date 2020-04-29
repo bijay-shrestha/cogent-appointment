@@ -64,4 +64,6 @@ public class AppointmentLogDTO implements Serializable {
 
     private Character isFollowUp;
 
+    private Double revenueAmount;
+
 }

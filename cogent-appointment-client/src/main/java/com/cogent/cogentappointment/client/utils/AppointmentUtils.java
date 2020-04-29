@@ -88,7 +88,7 @@ public class AppointmentUtils {
                                                  Specialization specialization,
                                                  Doctor doctor,
                                                  Hospital hospital,
-                                                 AppointmentMode  appointmentMode) {
+                                                 AppointmentMode appointmentMode) {
 
         Appointment appointment = new Appointment();
         appointment.setAppointmentDate(appointmentReservationLog.getAppointmentDate());
@@ -241,7 +241,7 @@ public class AppointmentUtils {
     }
 
     public static AppointmentCountResponseDTO parseToAppointmentCountResponseDTO(Long overAllAppointment, Long newPatient,
-                                                                                 Long registeredPatient,Long followUp,
+                                                                                 Long registeredPatient, Long followUp,
                                                                                  Character pillType) {
         AppointmentCountResponseDTO countResponseDTO = new AppointmentCountResponseDTO();
         countResponseDTO.setTotalAppointment(overAllAppointment);
@@ -364,6 +364,7 @@ public class AppointmentUtils {
             final int TRANSACTION_DATE_INDEX = 17;
             final int APPOINTMENT_MODE_INDEX = 18;
             final int IS_FOLLOW_UP_INDEX = 19;
+            final int REVENUE_AMOUNT_INDEX = 20;
 
             Date appointmentDate = (Date) result[APPOINTMENT_DATE_INDEX];
             Date patientDob = (Date) result[PATIENT_DOB_INDEX];
@@ -402,6 +403,7 @@ public class AppointmentUtils {
                             .transactionDate((Date) result[TRANSACTION_DATE_INDEX])
                             .appointmentMode(result[APPOINTMENT_MODE_INDEX].toString())
                             .isFollowUp(result[IS_FOLLOW_UP_INDEX].toString().charAt(0))
+                            .revenueAmount(Double.parseDouble(result[REVENUE_AMOUNT_INDEX].toString()))
                             .build();
 
             appointmentLogSearchDTOS.add(appointmentLogDTO);

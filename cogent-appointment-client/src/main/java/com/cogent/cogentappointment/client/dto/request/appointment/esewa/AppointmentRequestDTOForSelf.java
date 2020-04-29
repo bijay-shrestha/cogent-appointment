@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestByD
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.Valid;
 import java.io.Serializable;
 
 /**
@@ -13,9 +14,12 @@ import java.io.Serializable;
 @Setter
 public class AppointmentRequestDTOForSelf implements Serializable {
 
+    @Valid
     private PatientRequestByDTO patientInfo;
 
+    @Valid
     private AppointmentTransactionRequestDTO transactionInfo;
 
+    @Valid
     private AppointmentRequestDTO appointmentInfo;
 }

@@ -24,6 +24,8 @@ public class AppointmentRescheduleLogDTO {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd,YYYY",timezone = "Asia/Kathmandu")
     private Date rescheduleAppointmentDate;
 
+    private Character isFollowUp;
+
     private String appointmentTime;
 
     private String appointmentNumber;

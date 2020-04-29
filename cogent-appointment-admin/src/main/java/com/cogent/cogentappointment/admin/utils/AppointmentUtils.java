@@ -120,6 +120,7 @@ public class AppointmentUtils {
             final int APPOINTMENT_AMOUNT_INDEX = 13;
             final int REMARKS_INDEX = 14;
             final int APPOINTMENT_TIME_INDEX = 15;
+            final int IS_FOLLOW_UP_INDEX = 16;
 
             Date previosAppointmentDate = (Date) result[PREVIOUS_APPOINTMENT_DATE_INDEX];
             Date rescheduledAppointmentDate = (Date) result[APPOINTMENT_RESCHEDULED_DATE_INDEX];
@@ -153,6 +154,7 @@ public class AppointmentUtils {
                             .doctorName(result[DOCTOR_NAME_INDEX].toString())
                             .remarks(remarks)
                             .appointmentTime(result[APPOINTMENT_TIME_INDEX].toString())
+                            .isFollowUp((Character) result[IS_FOLLOW_UP_INDEX])
                             .build();
 
             appointmentLogSearchDTOS.add(appointmentRescheduleLogDTO);

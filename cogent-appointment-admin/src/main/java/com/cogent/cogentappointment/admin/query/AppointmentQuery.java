@@ -327,7 +327,8 @@ public class AppointmentQuery {
                             " atd.transactionNumber as transactionNumber," +                            //[12]
                             " atd.appointmentAmount as appointmentAmount," +                            //[13]
                             " arl.remarks as remarks," +                                                 //[14]
-                            " DATE_FORMAT(a.appointmentTime, '%h:%i %p') as appointmentTime" +                                   //[15]
+                            " DATE_FORMAT(a.appointmentTime, '%h:%i %p') as appointmentTime," +           //[15]
+                            " a.isFollowUp as isFollowUp"+                                               // [16]
                             " from AppointmentRescheduleLog arl" +
                             " LEFT JOIN Appointment a ON a.id=arl.appointmentId.id" +
                             " LEFT JOIN Patient p ON p.id=a.patientId" +

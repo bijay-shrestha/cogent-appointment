@@ -28,6 +28,8 @@ public class AppointmentRescheduleLogDTO {
 
     private String appointmentTime;
 
+    private Character isFollowUp;
+
     private String appointmentNumber;
 
     private String registrationNumber;

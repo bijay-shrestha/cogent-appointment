@@ -302,6 +302,7 @@ public class DashboardUtils {
                 .totalAppointmentCount(overallAppointmentCount)
                 .totalRevenueAmount(totalRevenueAmount)
                 .totalFollowUpCount(overallFollowUpCount)
+                .totalItems(revenueDTOList.size())
                 .build();
     }
 }

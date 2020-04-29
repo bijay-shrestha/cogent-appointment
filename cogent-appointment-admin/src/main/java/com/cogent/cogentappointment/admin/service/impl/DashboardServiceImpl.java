@@ -194,10 +194,10 @@ public class DashboardServiceImpl implements DashboardService {
         log.info(FETCHING_PROCESS_STARTED, DOCTOR_REVENUE);
 
         List<DoctorRevenueDTO> doctorRevenue =
-                appointmentTransactionDetailRepository.calculateDoctorRevenue(doctorRevenueRequestDTO);
+                appointmentTransactionDetailRepository.calculateDoctorRevenue(doctorRevenueRequestDTO,pageable);
 
         List<DoctorRevenueDTO> cancelledRevenue =
-                appointmentTransactionDetailRepository.calculateCancelledRevenue(doctorRevenueRequestDTO);
+                appointmentTransactionDetailRepository.calculateCancelledRevenue(doctorRevenueRequestDTO,pageable);
 
         validateDoctorRevenue(doctorRevenue, cancelledRevenue);
 

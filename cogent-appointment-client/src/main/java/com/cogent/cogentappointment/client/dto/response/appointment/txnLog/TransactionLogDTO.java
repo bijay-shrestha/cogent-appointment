@@ -63,4 +63,6 @@ public class TransactionLogDTO implements Serializable{
     private String patientAddress;
 
     private String transactionTime;
+
+    private Double revenueAmount;
 }

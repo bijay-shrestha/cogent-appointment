@@ -253,7 +253,8 @@ public class AppointmentQuery {
                             " hpi.address as patientAddress," +                            //[17]
                             " atd.transactionDate as transactionDate," +                    //[18]
                             " am.name as appointmentMode," +                                //[19]
-                            " a.isFollowUp as isFollowUp" +                                //[20]
+                            " a.isFollowUp as isFollowUp," +                                //[20]
+                            " (atd.appointmentAmount - COALESCE(ard.refundAmount,0)) as revenueAmount" + //[21]
                             " FROM Appointment a" +
                             " LEFT JOIN AppointmentMode am On am.id=a.appointmentModeId.id" +
                             " LEFT JOIN Patient p ON a.patientId.id=p.id" +

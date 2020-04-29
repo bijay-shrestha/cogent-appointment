@@ -15,4 +15,8 @@ public class PatternConstants {
     public static final String AUTHORIZATION_HEADER_PATTERN = "^(\\w+) (\\S+):(\\S+):(\\S+):(\\S+):(\\S+):(\\S+):([\\S]+)$";
 
     public static final String AUTHORIZATION_HEADER_PATTERN_FOR_ESEWA = "^(\\w+) (\\S+):(\\S+):(\\S+):([\\S]+)$";
+
+    /*yyyy-mm-dd*/
+    public static final String DATE_PATTERN = "^(1[0-2]|0[1-9])/(3[01]|[12][0-9]|0[1-9])/[0-9]{4}-(3[01]|[12][0-9]|0[1-9])-(1[0-2]|0[1-9])$";
+
 }

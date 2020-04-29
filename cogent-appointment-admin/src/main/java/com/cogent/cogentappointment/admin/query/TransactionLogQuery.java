@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.query;
 
+import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.TransactionLogSearchDTO;
 import org.springframework.util.ObjectUtils;
 
@@ -34,7 +35,9 @@ public class TransactionLogQuery {
                     " ard.refundAmount as refundAmount," +                         //[16]
                     " atd.transactionDate as transactionDate," +                    //[17]
                     " am.name as appointmentMode," +                                //[18]
-                    " a.isFollowUp as isFollowUp" +                                //[19]
+                    " a.isFollowUp as isFollowUp," +                                //[19]
+                    " hpi.address as patientAddress," +                            //[20]
+                    " DATE_FORMAT(atd.transactionDateTime, '%h:%i %p') as appointmentTime" + //[21]
                     " FROM Appointment a" +
                     " LEFT JOIN AppointmentMode am On am.id=a.appointmentModeId.id" +
                     " LEFT JOIN Patient p ON a.patientId.id=p.id" +
@@ -128,70 +131,106 @@ public class TransactionLogQuery {
         return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
     }
 
-    public static String QUERY_TO_FETCH_TOTAL_APPOINTMENT_AMOUNT_EXCLUDING_BOOKED_FOR_TRANSACTION_LOG(TransactionLogSearchDTO searchRequestDTO) {
-        String query = SELECT_CLAUSE_TO_GET_TOTAL_AMOUNT +
-                " AND a.status!='PA'";
-
-        return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
-    }
-
-
-    public static String QUERY_TO_FETCH_BOOKED_APPOINTMENT_AMOUNT_FOR_TRANSACTION_LOG(TransactionLogSearchDTO searchRequestDTO) {
+    public static String QUERY_TO_FETCH_BOOKED_APPOINTMENT_FOR_TXN_LOG(TransactionLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
-                " a.status='PA'";
+                " a.status='PA' AND a.isFollowUp = 'N'";
 
         return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
     }
 
-    public static String QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_AMOUNT_FOR_TRANSACTION_LOG(TransactionLogSearchDTO searchRequestDTO) {
+    public static String QUERY_TO_FETCH_BOOKED_APPOINTMENT_WITH_FOLLOW_UP_FOR_TXN_LOG
+            (TransactionLogSearchDTO searchRequestDTO) {
+
         String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
-                " a.status='A'";
+                " a.status='PA' AND a.isFollowUp = 'Y'";
 
         return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
     }
 
-    public static String QUERY_TO_FETCH_CANCELLED_APPOINTMENT_AMOUNT_FOR_TRANSACTION_LOG(TransactionLogSearchDTO searchRequestDTO) {
+    public static String QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_FOR_TXN_LOG(TransactionLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
-                " a.status='C'";
+                " a.status='A' AND a.isFollowUp = 'N'";
 
         return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
     }
 
-    public static String QUERY_TO_FETCH_REFUNDED_APPOINTMENT_AMOUNT_FOR_TRANSACTION_LOG(TransactionLogSearchDTO searchRequestDTO) {
-        String query = "SELECT" +
-                " COUNT(a.id)," +
-                " COALESCE (SUM(ard.refundAmount ),0) as amount" +
-                " FROM Appointment a" +
-                " LEFT JOIN Patient p ON a.patientId.id=p.id" +
-                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
-                " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
-                " LEFT JOIN Specialization sp ON a.specializationId.id=sp.id" +
-                " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
-                " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
-                " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
-                " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
-                " WHERE" +
-                " a.status='RE'";
-
+    public static String QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_WITH_FOLLOW_UP_FOR_TXN_LOG(TransactionLogSearchDTO searchRequestDTO) {
+        String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
+                " a.status='A' AND a.isFollowUp = 'Y'";
 
         return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
     }
 
-    public static String QUERY_TO_FETCH_REVENUE_REFUNDED_APPOINTMENT_AMOUNT_FOR_TRANSACTION_LOG(TransactionLogSearchDTO searchRequestDTO) {
-        String query = "SELECT" +
-                " COUNT(a.id)," +
-                " (COALESCE(SUM(atd.appointmentAmount ),0) - COALESCE(SUM(ard.refundAmount ),0)) as amount" +
-                " FROM Appointment a" +
-                " LEFT JOIN Patient p ON a.patientId.id=p.id" +
-                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
-                " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
-                " LEFT JOIN Specialization sp ON a.specializationId.id=sp.id" +
-                " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
-                " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
-                " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
-                " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
-                " WHERE" +
-                " a.status='RE'";
+    public static String QUERY_TO_FETCH_CANCELLED_APPOINTMENT_FOR_TXN_LOG(TransactionLogSearchDTO searchRequestDTO) {
+        String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
+                " a.status='C' AND a.isFollowUp = 'N'";
+
+        return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
+    }
+
+    public static String QUERY_TO_FETCH_CANCELLED_APPOINTMENT_WITH_FOLLOW_UP_FOR_TXN_LOG(TransactionLogSearchDTO searchRequestDTO) {
+        String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
+                " a.status='C' AND a.isFollowUp = 'Y'";
+
+        return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
+    }
+
+    private static String SELECT_CLAUSE_TO_FETCH_REFUNDED_APPOINTMENT =
+            "SELECT" +
+                    " COUNT(a.id)," +
+                    " COALESCE (SUM(ard.refundAmount ),0) as amount" +
+                    " FROM Appointment a" +
+                    " LEFT JOIN Patient p ON a.patientId.id=p.id" +
+                    " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
+                    " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
+                    " LEFT JOIN Specialization sp ON a.specializationId.id=sp.id" +
+                    " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
+                    " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
+                    " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
+                    " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
+                    " WHERE" +
+                    " a.status='RE'";
+
+    public static String QUERY_TO_FETCH_REFUNDED_APPOINTMENT_FOR_TXN_LOG(TransactionLogSearchDTO searchRequestDTO) {
+        String query = SELECT_CLAUSE_TO_FETCH_REFUNDED_APPOINTMENT +
+                " AND a.isFollowUp = 'N'";
+
+        return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
+    }
+
+    public static String QUERY_TO_FETCH_REFUNDED_APPOINTMENT_WITH_FOLLOW_UP_FOR_TXN_LOG(TransactionLogSearchDTO searchRequestDTO) {
+        String query = SELECT_CLAUSE_TO_FETCH_REFUNDED_APPOINTMENT +
+                " AND a.isFollowUp = 'Y'";
+
+        return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
+    }
+
+    private static String SELECT_CLAUSE_TO_FETCH_REVENUE_REFUNDED_APPOINTMENT =
+            "SELECT" +
+                    " COUNT(a.id)," +
+                    " (COALESCE(SUM(atd.appointmentAmount ),0) - COALESCE(SUM(ard.refundAmount ),0)) as amount" +
+                    " FROM Appointment a" +
+                    " LEFT JOIN Patient p ON a.patientId.id=p.id" +
+                    " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
+                    " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
+                    " LEFT JOIN Specialization sp ON a.specializationId.id=sp.id" +
+                    " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
+                    " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
+                    " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
+                    " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
+                    " WHERE" +
+                    " a.status='RE'";
+
+    public static String QUERY_TO_FETCH_REVENUE_REFUNDED_APPOINTMENT_FOR_TXN_LOG(TransactionLogSearchDTO searchRequestDTO) {
+        String query = SELECT_CLAUSE_TO_FETCH_REVENUE_REFUNDED_APPOINTMENT +
+                " AND a.isFollowUp = 'N'";
+
+        return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
+    }
+
+    public static String QUERY_TO_FETCH_REVENUE_REFUNDED_APPOINTMENT_WITH_FOLLOW_UP_FOR_TXN_LOG(TransactionLogSearchDTO searchRequestDTO) {
+        String query = SELECT_CLAUSE_TO_FETCH_REVENUE_REFUNDED_APPOINTMENT +
+                " AND a.isFollowUp = 'Y'";
 
         return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
     }
@@ -231,12 +270,5 @@ public class TransactionLogQuery {
         query += " ORDER BY a.appointmentDate DESC ";
 
         return query;
-    }
-
-    public static String QUERY_TO_FETCH_FOLLOW_UP_DETAILS(TransactionLogSearchDTO searchRequestDTO) {
-        String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
-                " a.isFollowUp='Y'";
-
-        return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
     }
 }

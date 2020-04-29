@@ -17,7 +17,7 @@ import com.cogent.cogentappointment.client.dto.response.appointment.approval.App
 import com.cogent.cogentappointment.client.dto.response.appointment.approval.AppointmentPendingApprovalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.esewa.*;
 import com.cogent.cogentappointment.client.dto.response.appointment.log.AppointmentLogResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.log.TransactionLogResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.txnLog.TransactionLogResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;

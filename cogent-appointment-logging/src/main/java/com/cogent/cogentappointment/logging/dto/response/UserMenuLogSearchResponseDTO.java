@@ -19,7 +19,7 @@ import java.util.Locale;
 @NoArgsConstructor
 public class UserMenuLogSearchResponseDTO implements Serializable {
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd YYYY",timezone = "Asia/Kathmandu")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd, YYYY",timezone = "Asia/Kathmandu")
     private Date logDate;
 
     private String logTime;

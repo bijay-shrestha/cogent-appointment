@@ -99,7 +99,6 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             filterChain.doFilter(request, response);
-            System.out.println("test");
         } finally {
             SecurityContextHolder.clearContext();
         }

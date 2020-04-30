@@ -5,7 +5,7 @@
 #catalina:
 #  home: Path/to/your/external/tomcat
 catalina:
-  home:  /Users/bijayshrestha/Dropbox/Workspaces/Backend/tomcat
+  home: /home/f1soft/Softwares/tomcat
 
 ##### [END] CATALINA HOME CONFIG [/END] #########
 

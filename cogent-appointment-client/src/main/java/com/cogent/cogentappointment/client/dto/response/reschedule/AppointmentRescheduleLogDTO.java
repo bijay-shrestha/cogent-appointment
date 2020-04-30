@@ -44,6 +44,8 @@ public class AppointmentRescheduleLogDTO {
 
     private String doctorName;
 
+    private String fileUri;
+
     private String specializationName;
 
     private String transactionNumber;

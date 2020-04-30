@@ -38,12 +38,14 @@ public class TransactionLogQuery {
                     " a.isFollowUp as isFollowUp," +                                //[19]
                     " hpi.address as patientAddress," +                            //[20]
                     " DATE_FORMAT(atd.transactionDateTime, '%h:%i %p') as appointmentTime," + //[21]
-                    " (atd.appointmentAmount - COALESCE(ard.refundAmount,0)) as revenueAmount" + //[22]
+                    " (atd.appointmentAmount - COALESCE(ard.refundAmount,0)) as revenueAmount," + //[22]
+                    " da.fileUri as fileUri"+
                     " FROM Appointment a" +
                     " LEFT JOIN AppointmentMode am On am.id=a.appointmentModeId.id" +
                     " LEFT JOIN Patient p ON a.patientId.id=p.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                     " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
+                    " LEFT JOIN DoctorAvatar da ON da.doctorId.id = d.id" +
                     " LEFT JOIN Specialization sp ON a.specializationId=sp.id" +
                     " LEFT JOIN Hospital h ON a.hospitalId.id=h.id" +
                     " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id" +

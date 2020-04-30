@@ -20,6 +20,8 @@ public class DoctorDutyRosterMinimalResponseDTO implements Serializable {
 
     private String doctorName;
 
+    private String fileUri;
+
     private String specializationName;
 
     private Integer rosterGapDuration;

@@ -125,7 +125,8 @@ public class PatientQuery {
                     " hpi.address as address," +
                     " hpi.isRegistered as isRegistered," +
                     " hpi.remarks as remarks,"+
-                    QUERY_TO_CALCULATE_PATIENT_AGE +
+                    QUERY_TO_CALCULATE_PATIENT_AGE+"," +
+                    PATIENT_AUDITABLE_QUERY()+
                     " FROM Patient p " +
                     " LEFT JOIN HospitalPatientInfo hpi ON p.id=hpi.patient.id" +
                     " LEFT JOIN Hospital h ON h.id=hpi.hospital.id" +
@@ -222,5 +223,11 @@ public class PatientQuery {
                     " WHERE hpi.id=:hospitalPatientInfoId" +
                     " AND h.id=:hospitalId";
 
+    public static String PATIENT_AUDITABLE_QUERY() {
+        return " p.createdBy as createdBy," +
+                " p.createdDate as createdDate," +
+                " p.lastModifiedBy as lastModifiedBy," +
+                " p.lastModifiedDate as lastModifiedDate";
+    }
 
 }

@@ -18,7 +18,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
         "com.cogent.cogentappointment.persistence.history"})
 @EnableJpaRepositories
 @PropertySource(
-        factory= YamlPropertySourceFactory.class,
+        factory = YamlPropertySourceFactory.class,
         value =
                 {
                         "file:${catalina.home}/conf/client/application-${spring.profiles.active}.yml"

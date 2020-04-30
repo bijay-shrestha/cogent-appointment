@@ -12,10 +12,7 @@ import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.HospitalContactNumber;
 import com.cogent.cogentappointment.persistence.model.HospitalLogo;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
@@ -115,6 +112,11 @@ public class CompanyUtils {
         final int IS_COMPANY_INDEX = 9;
         final int ALIAS_INDEX = 10;
 
+        final int CREATED_BY_INDEX = 11;
+        final int CREATED_DATE_INDEX = 12;
+        final int LAST_MODIFIED_BY_INDEX=13;
+        final int LAST_MODIFIED_DATE=14;
+
         return CompanyResponseDTO.builder()
                 .id(Long.parseLong(results[COMPANY_ID_INDEX].toString()))
                 .name(results[NAME_INDEX].toString())
@@ -128,6 +130,10 @@ public class CompanyUtils {
                         new ArrayList<>() : parseToCompanyContactNumberResponseDTOS(results))
                 .isCompany(results[IS_COMPANY_INDEX].toString().charAt(0))
                 .alias(results[ALIAS_INDEX].toString())
+                .createdBy(results[CREATED_BY_INDEX].toString())
+                .createdDate((Date) results[CREATED_DATE_INDEX])
+                .lastModifiedBy(results[LAST_MODIFIED_BY_INDEX].toString())
+                .lastModifiedDate((Date) results[LAST_MODIFIED_DATE])
                 .build();
     }
 

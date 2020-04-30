@@ -1,5 +1,7 @@
 package com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster;
 
+import com.cogent.cogentappointment.admin.dto.response.commons.AuditableResponseDTO;
+import com.cogent.cogentappointment.persistence.audit.Auditable;
 import lombok.*;
 
 import java.io.Serializable;
@@ -12,7 +14,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DoctorDutyRosterResponseDTO implements Serializable {
+public class DoctorDutyRosterResponseDTO extends AuditableResponseDTO implements Serializable {
 
     private Long id;
 

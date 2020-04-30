@@ -66,6 +66,7 @@ public class AdminQuery {
     public static String QUERY_TO_SEARCH_ADMIN(AdminSearchRequestDTO searchRequestDTO) {
 
         return SELECT_CLAUSE_TO_FETCH_ADMIN +
+
                 " FROM" +
                 " Admin a" +
                 " LEFT JOIN AdminMetaInfo ami ON a.id = ami.admin.id" +
@@ -132,7 +133,8 @@ public class AdminQuery {
                     " p.id as profileId," +                                         //[12]
                     " d.id as departmentId," +                                      //[13]
                     " d.name as departmentName," +                                  //[14]
-                    " h.alias as hospitalAlias" +                                    //[15]
+                    " h.alias as hospitalAlias," +
+                    ADMIN_AUDITABLE_QUERY() +//[15]
                     " FROM" +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id = a.profileId.id" +
@@ -184,4 +186,11 @@ public class AdminQuery {
                     " WHERE a.status !='D'" +
                     " AND h.id=:hospitalId" +
                     " ORDER BY metaInfo ASC";
+
+    public static String ADMIN_AUDITABLE_QUERY() {
+        return " a.createdBy as createdBy," +
+                " a.createdDate as createdDate," +
+                " a.lastModifiedBy as lastModifiedBy," +
+                " a.lastModifiedDate as lastModifiedDate";
+    }
 }

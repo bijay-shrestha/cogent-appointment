@@ -60,7 +60,7 @@ public class QualificationQuery {
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
             whereClause += " AND q.status='" + searchRequestDTO.getStatus() + "'";
 
-        return whereClause  + " ORDER BY q.id DESC";
+        return whereClause + " ORDER BY q.id DESC";
     }
 
     public static final String QUERY_TO_FETCH_QUALIFICATION_DETAILS =
@@ -71,7 +71,8 @@ public class QualificationQuery {
                     " qa.id as qualificationAliasId," +                         //[3]
                     " qa.name as qualificationAliasName," +                     //[4]
                     " q.status as status," +                                    //[5]
-                    " q.remarks as remarks" +                                  //[6]
+                    " q.remarks as remarks," +                                  //[6]
+                    QUALIFICATION_AUDITABLE_QUERY() +
                     " FROM Qualification q " +
                     " LEFT JOIN University u ON u.id = q.university.id" +
                     " LEFT JOIN QualificationAlias qa ON qa.id = q.qualificationAlias.id" +
@@ -94,4 +95,12 @@ public class QualificationQuery {
                     " FROM Qualification q " +
                     " WHERE q.status != 'D'" +
                     " ORDER BY label ASC";
+
+    public static String QUALIFICATION_AUDITABLE_QUERY() {
+        return " q.createdBy as createdBy," +
+                " q.createdDate as createdDate," +
+                " q.lastModifiedBy as lastModifiedBy," +
+                " q.lastModifiedDate as lastModifiedDate";
+    }
+
 }

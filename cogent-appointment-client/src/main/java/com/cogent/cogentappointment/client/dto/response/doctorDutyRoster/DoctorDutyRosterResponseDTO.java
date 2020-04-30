@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.client.dto.response.doctorDutyRoster;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.cogent.cogentappointment.client.dto.response.common.AuditableResponseDTO;
 import lombok.*;
 
 import java.io.Serializable;
@@ -14,7 +14,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DoctorDutyRosterResponseDTO implements Serializable {
+public class DoctorDutyRosterResponseDTO extends AuditableResponseDTO implements Serializable {
 
     private Long id;
 

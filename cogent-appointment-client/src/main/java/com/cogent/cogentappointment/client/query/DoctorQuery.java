@@ -131,7 +131,7 @@ public class DoctorQuery {
                     " d.remarks as remarks," +                                            //[7]
                     " d.gender as gender," +                                              //[8]
                     " dac.appointment_charge as appointmentCharge," +                     //[9]
-                    " dac.appointment_follow_up_charge as appointmentFollowUpCharge";    //[10]
+                    " dac.appointment_follow_up_charge as appointmentFollowUpCharge";     //[10]
 
     private static String QUERY_TO_FETCH_DOCTOR_AVATAR =
             " SELECT" +
@@ -146,7 +146,8 @@ public class DoctorQuery {
                     SELECT_CLAUSE_TO_FETCH_DOCTOR_DETAILS + "," +
                     " tbl1.specialization_name as specializationName," +                 //[11]
                     " tbl2.qualification_name as qualificationName," +                   //[12]
-                    " tbl3.file_uri as fileUri" +                                        //[13]
+                    " tbl3.file_uri as fileUri," +                                        //[13]
+                    DOCTOR_AUDITABLE_QUERY() +
                     " FROM doctor d" +
                     " LEFT JOIN hospital h ON h.id = d.hospital_id" +
                     " LEFT JOIN doctor_appointment_charge dac ON dac.doctor_id= d.id" +
@@ -338,4 +339,12 @@ public class DoctorQuery {
 
         return sql;
     }
+
+    public static String DOCTOR_AUDITABLE_QUERY() {
+        return " d.created_by as createdBy," +
+                " d.created_date as createdDate," +
+                " d.last_modified_by as lastModifiedBy," +
+                " d.last_modified_date as lastModifiedDate";
+    }
+
 }

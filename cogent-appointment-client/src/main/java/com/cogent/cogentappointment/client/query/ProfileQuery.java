@@ -75,7 +75,8 @@ public class ProfileQuery {
                     " p.remarks as remarks," +                             //[3]
                     " d.id as departmentId," +                             //[4]
                     " d.name as departmentName," +                         //[5]
-                    " p.isAllRoleAssigned as isAllRoleAssigned"+           //[6]
+                    " p.isAllRoleAssigned as isAllRoleAssigned," +
+                    PROFILE_AUDITABLE_QUERY() +         //[6]
                     " FROM" +
                     " Profile p" +
                     " LEFT JOIN Department d ON d.id = p.department.id" +
@@ -137,4 +138,11 @@ public class ProfileQuery {
                     " AND a.status ='Y'" +
                     " AND (a.email=:email OR a.mobile_number=:email)" +
                     " GROUP BY pm.parent_id, pm.user_menu_id, pm.profile_id";
+
+    private static String PROFILE_AUDITABLE_QUERY() {
+        return " d.createdBy as createdBy," +
+                " d.createdDate as createdDate," +
+                " d.lastModifiedBy as lastModifiedBy," +
+                " d.lastModifiedDate as lastModifiedDate";
+    }
 }

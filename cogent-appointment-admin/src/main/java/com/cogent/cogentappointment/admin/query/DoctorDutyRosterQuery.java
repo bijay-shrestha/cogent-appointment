@@ -69,7 +69,8 @@ public class DoctorDutyRosterQuery {
                     " ddr.remarks as remarks," +                                        //[9]
                     " ddr.hasOverrideDutyRoster as hasOverrideDutyRoster," +            //[10]
                     " h.name as hospitalName," +                                        //[11]
-                    " h.id as hospitalId" +                                              //[12]
+                    " h.id as hospitalId," +                                              //[12]
+                    DOCTOR_DUTY_ROSTERS_AUDITABLE_QUERY() +
                     " FROM DoctorDutyRoster ddr" +
                     " LEFT JOIN Doctor d ON ddr.doctorId.id = d.id" +
                     " LEFT JOIN Specialization s ON ddr.specializationId.id = s.id" +
@@ -151,4 +152,11 @@ public class DoctorDutyRosterQuery {
                     " FROM DoctorDutyRoster dd" +
                     " WHERE dd.status !='D'" +
                     " AND dd.id = :id";
+
+    public static String DOCTOR_DUTY_ROSTERS_AUDITABLE_QUERY() {
+        return " ddr.createdBy as createdBy," +
+                " ddr.createdDate as createdDate," +
+                " ddr.lastModifiedBy as lastModifiedBy," +
+                " ddr.lastModifiedDate as lastModifiedDate";
+    }
 }

@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.dto.response.hospital;
 
+import com.cogent.cogentappointment.admin.dto.response.commons.AuditableResponseDTO;
 import lombok.*;
 
 import java.io.Serializable;
@@ -10,7 +11,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class HospitalResponseDTO implements Serializable {
+public class HospitalResponseDTO extends AuditableResponseDTO implements Serializable {
 
     private Long id;
 

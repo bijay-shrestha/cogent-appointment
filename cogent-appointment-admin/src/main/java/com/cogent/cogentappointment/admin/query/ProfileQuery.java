@@ -85,7 +85,8 @@ public class ProfileQuery {
                     " d.name as departmentName," +                         //[5]
                     " h.id as hospitalId," +                               //[6]
                     " h.name as hospitalName," +                           //[7]
-                    " h.alias as hospitalAlias" +                          //[8]
+                    " h.alias as hospitalAlias," +
+                    PROFILE_AUDITABLE_QUERY() +//[8]
                     " FROM" +
                     " Profile p" +
                     " LEFT JOIN Department d ON d.id = p.department.id" +
@@ -152,4 +153,19 @@ public class ProfileQuery {
                     " a.email =:email " +
                     " AND h.is_company ='Y'" +
                     " GROUP BY pm.parent_id, pm.user_menu_id, pm.profile_id";
+
+    public static String PROFILE_AUDITABLE_QUERY() {
+        return " p.createdBy as createdBy," +
+                " p.createdDate as createdDate," +
+                " p.lastModifiedBy as lastModifiedBy," +
+                " p.lastModifiedDate as lastModifiedDate";
+    }
+
+    public static String PROFILE_MENUS_AUDITABLE_QUERY() {
+        return " pm.createdBy as createdBy," +
+                " pm.createdDate as createdDate," +
+                " pm.lastModifiedBy as lastModifiedBy," +
+                " pm.lastModifiedDate as lastModifiedDate";
+    }
+
 }

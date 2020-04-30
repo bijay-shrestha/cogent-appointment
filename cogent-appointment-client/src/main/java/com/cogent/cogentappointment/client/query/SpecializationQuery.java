@@ -47,7 +47,8 @@ public class SpecializationQuery {
             " SELECT s.name as name," +                                     //[0]
                     " s.code as code," +                                     //[1]
                     " s.status as status," +                                //[2]
-                    " s.remarks as remarks" +                               //[3]
+                    " s.remarks as remarks," +                               //[3]
+                    SPECIALIZATION_AUDITABLE_QUERY()+
                     " FROM" +
                     " Specialization s" +
                     " WHERE s.id = :id" +
@@ -109,4 +110,11 @@ public class SpecializationQuery {
                     " AND h.status = 'Y'" +
                     " AND h.id =:hospitalId" +
                     " ORDER BY s.name";
+
+    public static String SPECIALIZATION_AUDITABLE_QUERY() {
+        return " s.createdBy as createdBy," +
+                " s.createdDate as createdDate," +
+                " s.lastModifiedBy as lastModifiedBy," +
+                " s.lastModifiedDate as lastModifiedDate";
+    }
 }

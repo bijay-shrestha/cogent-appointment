@@ -68,7 +68,8 @@ public class UniversityQuery {
                     " u.status as status," +                                      //[2]
                     " u.remarks as remarks," +                                    //[3]
                     " c.name as countryName," +                                   //[4]
-                    " c.id as countryId" +                                       //[5]
+                    " c.id as countryId," +                                       //[5]
+                    UNIVERSITY_AUDITABLE_QUERY() +
                     " FROM University u " +
                     " LEFT JOIN Country c ON c.id = u.country.id" +
                     " WHERE u.status != 'D'" +
@@ -81,4 +82,11 @@ public class UniversityQuery {
                     " FROM University u" +
                     " WHERE u.status = 'Y' " +
                     " ORDER BY label ASC";
+
+    public static String UNIVERSITY_AUDITABLE_QUERY() {
+        return " u.createdBy as createdBy," +
+                " u.createdDate as createdDate," +
+                " u.lastModifiedBy as lastModifiedBy," +
+                " u.lastModifiedDate as lastModifiedDate";
+    }
 }

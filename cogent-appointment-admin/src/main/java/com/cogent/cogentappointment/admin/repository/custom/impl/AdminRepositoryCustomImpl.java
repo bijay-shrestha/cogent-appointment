@@ -42,6 +42,7 @@ import static com.cogent.cogentappointment.admin.log.constants.AdminLog.ADMIN_NO
 import static com.cogent.cogentappointment.admin.query.AdminQuery.QUERY_FO_FETCH_MAC_ADDRESS_INFO;
 import static com.cogent.cogentappointment.admin.query.AdminQuery.*;
 import static com.cogent.cogentappointment.admin.query.CompanyAdminQuery.*;
+import static com.cogent.cogentappointment.admin.query.CompanyAdminQuery.QUERY_TO_FETCH_ADMIN_BY_EMAIL;
 import static com.cogent.cogentappointment.admin.query.DashBoardQuery.QUERY_TO_FETCH_DASHBOARD_FEATURES;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;

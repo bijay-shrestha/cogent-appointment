@@ -20,9 +20,9 @@ import com.cogent.cogentappointment.client.dto.response.appointment.approval.App
 import com.cogent.cogentappointment.client.dto.response.appointment.approval.AppointmentPendingApprovalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.esewa.*;
 import com.cogent.cogentappointment.client.dto.response.appointment.log.AppointmentLogResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointment.txnLog.TransactionLogResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.txnLog.TransactionLogResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
@@ -430,6 +430,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         return parseToStatusResponseDTO();
     }
 
+    //todo:update in esewa-module
     @Override
     public StatusResponseDTO rescheduleAppointment(AppointmentRescheduleRequestDTO rescheduleRequestDTO) {
 
@@ -439,17 +440,11 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Appointment appointment = findPendingAppointmentById(rescheduleRequestDTO.getAppointmentId());
 
-        Long appointmentCount = appointmentRepository.validateIfAppointmentExists(
-                rescheduleRequestDTO.getRescheduleDate(),
-                rescheduleRequestDTO.getRescheduleTime(),
-                appointment.getDoctorId().getId(),
-                appointment.getSpecializationId().getId());
-
-        validateAppointmentExists(appointmentCount, rescheduleRequestDTO.getRescheduleTime());
+        validateRequestedRescheduleInfo(rescheduleRequestDTO, appointment);
 
         saveAppointmentRescheduleLog(appointment, rescheduleRequestDTO);
 
-        parseToRescheduleAppointment(appointment, rescheduleRequestDTO);
+        updateAppointmentDetails(appointment, rescheduleRequestDTO);
 
         log.info(RESCHEDULE_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
 
@@ -983,8 +978,14 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private void saveAppointmentRescheduleLog(Appointment appointment,
                                               AppointmentRescheduleRequestDTO rescheduleRequestDTO) {
-        AppointmentRescheduleLog appointmentRescheduleLog = parseToAppointmentRescheduleLog(
-                appointment, rescheduleRequestDTO);
+
+        AppointmentRescheduleLog appointmentRescheduleLog =
+                appointmentRescheduleLogRepository.findByAppointmentId(appointment.getId());
+
+        appointmentRescheduleLog = Objects.isNull(appointmentRescheduleLog)
+                ? parseToAppointmentRescheduleLog(appointment, rescheduleRequestDTO, new AppointmentRescheduleLog())
+                : parseToAppointmentRescheduleLog(appointment, rescheduleRequestDTO, appointmentRescheduleLog);
+
         appointmentRescheduleLogRepository.save(appointmentRescheduleLog);
     }
 
@@ -1161,5 +1162,38 @@ public class AppointmentServiceImpl implements AppointmentService {
     private void saveRefundDetails(AppointmentRefundDetail appointmentRefundDetail) {
         appointmentRefundDetailRepository.save(appointmentRefundDetail);
     }
+
+    private void validateRequestedRescheduleInfo(AppointmentRescheduleRequestDTO rescheduleRequestDTO,
+                                                 Appointment appointment) {
+
+        validateIfRequestIsBeforeCurrentDateTime(
+                rescheduleRequestDTO.getRescheduleDate(), rescheduleRequestDTO.getRescheduleTime());
+
+        Long appointmentCount = appointmentRepository.validateIfAppointmentExists(
+                rescheduleRequestDTO.getRescheduleDate(),
+                rescheduleRequestDTO.getRescheduleTime(),
+                appointment.getDoctorId().getId(),
+                appointment.getSpecializationId().getId()
+        );
+
+        validateAppointmentExists(appointmentCount, rescheduleRequestDTO.getRescheduleTime());
+
+        DoctorDutyRosterTimeResponseDTO doctorDutyRosterInfo =
+                fetchDoctorDutyRosterInfo(rescheduleRequestDTO.getRescheduleDate(),
+                        appointment.getDoctorId().getId(),
+                        appointment.getSpecializationId().getId()
+                );
+
+        boolean isTimeValid = validateIfRequestedAppointmentTimeIsValid(
+                doctorDutyRosterInfo, rescheduleRequestDTO.getRescheduleTime()
+        );
+
+        if (!isTimeValid) {
+            log.error(INVALID_APPOINTMENT_TIME, convert24HourTo12HourFormat(rescheduleRequestDTO.getRescheduleTime()));
+            throw new NoContentFoundException(String.format(INVALID_APPOINTMENT_TIME,
+                    convert24HourTo12HourFormat(rescheduleRequestDTO.getRescheduleTime())));
+        }
+    }
+
 }
 

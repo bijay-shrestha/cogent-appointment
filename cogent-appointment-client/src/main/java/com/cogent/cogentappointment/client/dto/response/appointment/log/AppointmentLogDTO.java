@@ -47,6 +47,8 @@ public class AppointmentLogDTO implements Serializable {
 
     private String doctorName;
 
+    private String fileUri;
+
     private String specializationName;
 
     private String transactionNumber;

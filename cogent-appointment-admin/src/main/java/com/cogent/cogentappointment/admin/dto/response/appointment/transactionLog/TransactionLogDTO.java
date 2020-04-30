@@ -34,6 +34,8 @@ public class TransactionLogDTO implements Serializable{
 
     private String patientName;
 
+    private String fileUri;
+
     private Gender patientGender;
 
     private String patientAge;

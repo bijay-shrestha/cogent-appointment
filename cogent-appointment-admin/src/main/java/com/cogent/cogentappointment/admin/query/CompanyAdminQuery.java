@@ -122,7 +122,8 @@ public class CompanyAdminQuery {
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id = a.profileId.id" +
                     " LEFT JOIN AdminAvatar av ON a.id = av.admin.id" +
-                    " LEFT JOIN Hospital h ON h.id = p.company.id" +
+                    " LEFT JOIN Hospital h ON h.id = p.company.id," +
+                    COMPANY_ADMIN_AUDITABLE_QUERY()+
                     GET_WHERE_CLAUSE_TO_FETCH_ADMIN +
                     " AND a.id = :id";
 
@@ -194,5 +195,12 @@ public class CompanyAdminQuery {
                     " (a.mobileNumber=:email OR a.email=:email)" +
                     " AND a.status = 'Y'" +
                     " AND h.isCompany='Y'";
+
+    public static String COMPANY_ADMIN_AUDITABLE_QUERY() {
+        return " a.createdBy as createdBy," +
+                " a.createdDate as createdDate," +
+                " a.lastModifiedBy as lastModifiedBy," +
+                " a.lastModifiedDate as lastModifiedDate";
+    }
 
 }

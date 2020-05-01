@@ -18,13 +18,11 @@ public class AuditableResponseDTO {
 
     private String createdBy;
 
-    @Temporal(TemporalType.DATE)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd, YYYY hh:MM a",timezone = "Asia/Kathmandu")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd, YYYY hh:mm a",timezone = "Asia/Kathmandu")
     private Date createdDate;
 
     private String lastModifiedBy;
 
-    @Temporal(TemporalType.DATE)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd, YYYY hh:MM a",timezone = "Asia/Kathmandu+05:45")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd, YYYY hh:mm a",timezone = "Asia/Kathmandu")
     private Date lastModifiedDate;
 }

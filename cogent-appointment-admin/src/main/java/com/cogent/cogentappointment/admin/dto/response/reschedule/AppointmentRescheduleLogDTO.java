@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -14,7 +15,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppointmentRescheduleLogDTO {
+public class AppointmentRescheduleLogDTO implements Serializable {
 
     private String esewaId;
 
@@ -26,7 +27,9 @@ public class AppointmentRescheduleLogDTO {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd,YYYY",timezone = "Asia/Kathmandu")
     private Date rescheduleAppointmentDate;
 
-    private String appointmentTime;
+    private String previousAppointmentTime;
+
+    private String rescheduleAppointmentTime;
 
     private Character isFollowUp;
 
@@ -40,7 +43,7 @@ public class AppointmentRescheduleLogDTO {
 
     private Gender patientGender;
 
-    private String patientAge;
+    private String age;
 
     private String mobileNumber;
 

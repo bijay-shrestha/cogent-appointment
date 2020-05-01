@@ -149,23 +149,24 @@ public class AppointmentQuery {
     public static Function<AppointmentRescheduleLogSearchDTO, String> QUERY_TO_RESCHEDULE_APPOINTMENT_LOGS =
             (appointmentRescheduleLogSearchDTO) ->
                     " SELECT" +
-                            " p.eSewaId as eSewaId," +                                                   //[0]
-                            " arl.previousAppointmentDate as previousAppointmentDate," +                 //[1]
-                            " arl.rescheduleDate as rescheduleDate," +                                   //[2]
-                            " a.appointmentNumber as appointmentNumber," +                               //[3]
-                            " hpi.registrationNumber as registeredNumber," +                             //[4]
-                            " p.name as patientName," +                                                  //[5]
-                            " p.dateOfBirth as dateOfBirth," +                                           //[6]
-                            " p.gender as gender," +                                                     //[7]
-                            " p.mobileNumber as mobileNumber," +                                         //[8]
-                            " sp.name as specializationName," +                                         //[9]
-                            " d.name as doctorName," +                                                  //[10]
-                            " atd.transactionNumber as transactionNumber," +                            //[11]
-                            " atd.appointmentAmount as appointmentAmount," +                            //[12]
-                            " arl.remarks as remarks," +                                                 //[13]
-                            " DATE_FORMAT(a.appointmentTime, '%h:%i %p') as appointmentTime," +           //[14]
-                            " a.isFollowUp as isFollowUp"+                                               // [15]
-                            " from AppointmentRescheduleLog arl" +
+                            " p.eSewaId as esewaId," +                                                               //[0]
+                            " arl.previousAppointmentDate as previousAppointmentDate," +                            //[1]
+                            " DATE_FORMAT(arl.previousAppointmentDate, '%h:%i %p') as previousAppointmentTime," +   //[2]
+                            " arl.rescheduleDate as rescheduleAppointmentDate," +                                   //[3]
+                            " DATE_FORMAT(arl.rescheduleDate, '%h:%i %p') as rescheduleAppointmentTime," +          //[4]
+                            " a.appointmentNumber as appointmentNumber," +                                          //[5]
+                            " hpi.registrationNumber as registrationNumber," +                                     //[6]
+                            " p.name as patientName," +                                                  //[7]
+                            QUERY_TO_CALCULATE_PATIENT_AGE + "," +                                       //[8]
+                            " p.gender as patientGender," +                                               //[9]
+                            " p.mobileNumber as mobileNumber," +                                         //[10]
+                            " sp.name as specializationName," +                                         //[11]
+                            " d.name as doctorName," +                                                  //[12]
+                            " atd.transactionNumber as transactionNumber," +                            //[13]
+                            " atd.appointmentAmount as appointmentAmount," +                            //[14]
+                            " arl.remarks as remarks," +                                               //[15]
+                            " a.isFollowUp as isFollowUp" +                                            //[16]
+                            " FROM AppointmentRescheduleLog arl" +
                             " LEFT JOIN Appointment a ON a.id=arl.appointmentId.id" +
                             " LEFT JOIN Patient p ON p.id=a.patientId" +
                             " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id" +
@@ -209,6 +210,22 @@ public class AppointmentQuery {
         whereClause += " ORDER BY arl.rescheduleDate";
 
         return whereClause;
+    }
+
+    public static String QUERY_TO_CALCULATE_TOTAL_RESCHEDULE_AMOUNT(AppointmentRescheduleLogSearchDTO searchDTO) {
+        return
+                "SELECT" +
+                        " COALESCE(SUM(atd.appointmentAmount),0)" +
+                        " FROM AppointmentRescheduleLog arl" +
+                        " LEFT JOIN Appointment a ON a.id=arl.appointmentId.id" +
+                        " LEFT JOIN Patient p ON p.id=a.patientId" +
+                        " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id" +
+                        " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
+                        " LEFT JOIN Hospital h ON h.id=a.hospitalId" +
+                        " LEFT JOIN Specialization sp ON sp.id=a.specializationId" +
+                        " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id" +
+                        " LEFT JOIN Doctor d ON d.id=a.doctorId.id" +
+                        GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_RESCHEDULE_LOG_DETAILS(searchDTO);
     }
 
     /*admin*/

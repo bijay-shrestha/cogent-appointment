@@ -98,7 +98,8 @@ public class PatientQuery {
                 " p.gender as gender," +                                //[4]
                 " hpi.address as address," +                            //[5]
                 " hpi.registrationNumber as registrationNumber," +      //[6]
-                QUERY_TO_CALCULATE_PATIENT_AGE +                        //[7]
+                " hpi.hospital.name as hospitalName," +                  //[7]
+                QUERY_TO_CALCULATE_PATIENT_AGE +                        //[8]
                 " FROM Patient p" +
                 " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = p.id" +
                 " WHERE p.id IN (" + childPatientIds + ")";
@@ -232,18 +233,40 @@ public class PatientQuery {
                     " p.dateOfBirth as dateOfBirth," +                      //[4]
                     QUERY_TO_CALCULATE_PATIENT_AGE +
                     " FROM Patient p" +
-                    " WHERE p.name=:name" +
-                    " AND p.mobileNumber=:mobileNumber" +
-                    " AND p.dateOfBirth =:dateOfBirth";
+                    GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS;
 
-    public static final String QUERY_TO_FETCH_PATIENT_HOSPITAL_WISE_INFO =
-            " SELECT " +
-                    " hpi.address as address," +                             //[0]
-                    " hpi.email as email," +                                 //[1]
-                    " hpi.registrationNumber as registrationNumber" +        //[2]
-                    " FROM Patient p" +
-                    " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = p.id" +
-                    " WHERE p.id =:patientId" +
-                    " AND hpi.hospital.id =:hospitalId";
+    public static String QUERY_TO_FETCH_PATIENT_HOSPITAL_WISE_INFO(Long hospitalId) {
+
+        String query = " SELECT " +
+                " hpi.address as address," +                             //[0]
+                " hpi.email as email," +                                 //[1]
+                " hpi.registrationNumber as registrationNumber" +        //[2]
+                " FROM Patient p" +
+                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = p.id" +
+                " WHERE p.id =:patientId";
+
+        if (!Objects.isNull(hospitalId) && hospitalId != 0)
+            query += " AND hpi.hospital.id =" + hospitalId;
+
+        return query;
+    }
+
+    /*FOR OTHERS -> HOSPITAL WISE*/
+    public static String QUERY_TO_FETCH_CHILD_PATIENT_IDS(Long hospitalId) {
+
+        String query = " SELECT " +
+                " pm.parentPatientId.id as parentPatientId," +                 //[0]
+                " pm.childPatientId.id as childPatientId" +                   //[1]
+                " FROM Patient p" +
+                " LEFT JOIN PatientRelationInfo pm ON pm.parentPatientId.id= p.id" +
+                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = pm.childPatientId.id" +
+                GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS +
+                " AND pm.status = 'Y'";
+
+        if (!Objects.isNull(hospitalId) && hospitalId != 0)
+            query += " AND hpi.hospital.id=" + hospitalId;
+
+        return query;
+    }
 
 }

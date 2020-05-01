@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.client.repository.custom.impl;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientMinSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.*;
+import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.PatientRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Patient;
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -17,9 +19,11 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.HOSPITAL_NULL_MESSAGE;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.AppointmentConstants.APPOINTMENT_ID;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.PatientQueryConstants.HOSPITAL_PATIENT_INFO_ID;
@@ -79,13 +83,13 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
     * FETCH ITS INFO HOSPITAL WISE*/
     @Override
     public PatientDetailResponseDTO searchForSelfHospitalWise(PatientMinSearchRequestDTO searchRequestDTO) {
-        Query query1 = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_INFO_FOR_SELF)
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_INFO_FOR_SELF)
                 .setParameter(NAME, searchRequestDTO.getName())
                 .setParameter(MOBILE_NUMBER, searchRequestDTO.getMobileNumber())
                 .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(searchRequestDTO.getDateOfBirth()));
 
         try {
-            PatientDetailResponseDTO patientInfo = transformQueryToSingleResult(query1, PatientDetailResponseDTO.class);
+            PatientDetailResponseDTO patientInfo = transformQueryToSingleResult(query, PatientDetailResponseDTO.class);
 
             searchPatientHospitalWiseInfo(searchRequestDTO.getHospitalId(), patientInfo);
 
@@ -101,6 +105,24 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
             PatientMinSearchRequestDTO searchRequestDTO) {
 
         Query query = entityManager.createQuery(QUERY_TO_FETCH_CHILD_PATIENT_IDS)
+                .setParameter(NAME, searchRequestDTO.getName())
+                .setParameter(MOBILE_NUMBER, searchRequestDTO.getMobileNumber())
+                .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(searchRequestDTO.getDateOfBirth()));
+
+        List<PatientRelationInfoResponseDTO> results =
+                transformQueryToResultList(query, PatientRelationInfoResponseDTO.class);
+
+        if (results.isEmpty())
+            PATIENT_NOT_FOUND.get();
+
+        return results;
+    }
+
+    @Override
+    public List<PatientRelationInfoResponseDTO> fetchPatientRelationInfoHospitalWise(
+            PatientMinSearchRequestDTO searchRequestDTO) {
+
+        Query query = entityManager.createQuery(QUERY_TO_FETCH_CHILD_PATIENT_IDS(searchRequestDTO.getHospitalId()))
                 .setParameter(NAME, searchRequestDTO.getName())
                 .setParameter(MOBILE_NUMBER, searchRequestDTO.getMobileNumber())
                 .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(searchRequestDTO.getDateOfBirth()));
@@ -131,7 +153,6 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
 
     private List<PatientMinResponseDTOForOthers> fetchPatientInfo(Pageable pageable,
                                                                   String childPatientIds) {
-
 
         Query query = entityManager.createQuery(QUERY_TO_FETCH_MIN_PATIENT_INFO_FOR_OTHERS(childPatientIds));
 
@@ -261,13 +282,16 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
     private void searchPatientHospitalWiseInfo(Long hospitalId,
                                                PatientDetailResponseDTO patientInfo) {
 
-        Query query2 = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_HOSPITAL_WISE_INFO)
-                .setParameter(PATIENT_ID, patientInfo.getPatientId())
-                .setParameter(HOSPITAL_ID, hospitalId);
+        if (Objects.isNull(hospitalId))
+            throw new BadRequestException(HOSPITAL_NULL_MESSAGE);
 
-        List<Object[]> result = query2.getResultList();
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_PATIENT_HOSPITAL_WISE_INFO(hospitalId))
+                .setParameter(PATIENT_ID, patientInfo.getPatientId());
 
-        parseHospitalWisePatientInfo(patientInfo, result.get(0));
+        List<Object[]> result = query.getResultList();
+
+        if (!ObjectUtils.isEmpty(result))
+            parseHospitalWisePatientInfo(patientInfo, result.get(0));
     }
 
 

@@ -154,6 +154,25 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
+    public PatientResponseDTOForOthersWithStatus searchForOthersHospitalWise(PatientMinSearchRequestDTO searchRequestDTO,
+                                                                             Pageable pageable) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SEARCHING_PROCESS_STARTED, PATIENT);
+
+        List<PatientRelationInfoResponseDTO> patientRelationInfo =
+                patientRepository.fetchPatientRelationInfoHospitalWise(searchRequestDTO);
+
+        PatientResponseDTOForOthers patientMinInfo =
+                patientRepository.fetchMinPatientInfoForOthers(patientRelationInfo, pageable);
+
+        log.info(SEARCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
+
+        return parseToPatientMinResponseDTOForOthersWithStatus(patientMinInfo);
+    }
+
+    @Override
     public PatientDetailResponseDTO fetchMinPatientDetailsOfOthers(Long hospitalPatientInfoId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 

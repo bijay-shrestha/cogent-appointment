@@ -30,6 +30,9 @@ public interface PatientService {
     PatientResponseDTOForOthersWithStatus searchForOthers(PatientMinSearchRequestDTO searchRequestDTO,
                                                           Pageable pageable);
 
+    PatientResponseDTOForOthersWithStatus searchForOthersHospitalWise(PatientMinSearchRequestDTO searchRequestDTO,
+                                                                      Pageable pageable);
+
     PatientDetailResponseDTO fetchMinPatientDetailsOfOthers(Long hospitalPatientId);
 
     void updateOtherPatientDetails(PatientUpdateDTOForOthers requestDTO);

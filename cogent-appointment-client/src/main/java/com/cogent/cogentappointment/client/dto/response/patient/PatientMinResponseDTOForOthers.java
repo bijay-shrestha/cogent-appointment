@@ -31,5 +31,7 @@ public class PatientMinResponseDTOForOthers implements Serializable {
 
     private Gender gender;
 
+    private String hospitalName;
+
     private Integer totalItems;
 }

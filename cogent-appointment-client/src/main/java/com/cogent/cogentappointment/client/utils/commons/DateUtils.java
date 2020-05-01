@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
+import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -96,6 +97,10 @@ public class DateUtils {
         return new SimpleDateFormat("yyyy-MM-dd").parse(date);
     }
 
+    public static String convertDateToString(Date date) throws ParseException {
+        Format formatter = new SimpleDateFormat("yyyy-MM-dd");
+        return formatter.format(date);
+    }
 
     public static int getYearFromNepaliDate(String nepaliDate) {
         return Integer.parseInt(nepaliDate.split(HYPHEN)[0]);

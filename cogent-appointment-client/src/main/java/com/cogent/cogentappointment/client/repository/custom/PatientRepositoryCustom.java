@@ -21,6 +21,8 @@ public interface PatientRepositoryCustom {
     /*esewa*/
     PatientDetailResponseDTO searchForSelf(PatientMinSearchRequestDTO searchRequestDTO);
 
+    PatientDetailResponseDTO searchForSelfHospitalWise(PatientMinSearchRequestDTO searchRequestDTO);
+
     List<PatientRelationInfoResponseDTO> fetchPatientRelationInfo(PatientMinSearchRequestDTO searchRequestDTO);
 
     PatientResponseDTOForOthers fetchMinPatientInfoForOthers(List<PatientRelationInfoResponseDTO> patientRelationInfo,

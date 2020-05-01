@@ -151,4 +151,17 @@ public class PatientUtils {
                 .responseCode(OK.value())
                 .build();
     }
+
+    public static void parseHospitalWisePatientInfo(PatientDetailResponseDTO responseDTO,
+                                                    Object[] result) {
+
+        final int ADDRESS_INDEX = 0;
+        final int EMAIL_INDEX = 1;
+        final int REGISTRATION_NUMBER_INDEX = 2;
+
+        responseDTO.setAddress(Objects.isNull(result[ADDRESS_INDEX]) ? null : result[ADDRESS_INDEX].toString());
+        responseDTO.setEmail(Objects.isNull(result[EMAIL_INDEX]) ? null : result[EMAIL_INDEX].toString());
+        responseDTO.setRegistrationNumber(Objects.isNull(result[REGISTRATION_NUMBER_INDEX])
+                ? null : result[REGISTRATION_NUMBER_INDEX].toString());
+    }
 }

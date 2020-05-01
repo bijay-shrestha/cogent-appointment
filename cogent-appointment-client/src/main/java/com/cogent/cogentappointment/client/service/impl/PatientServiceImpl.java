@@ -122,6 +122,19 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
+    public PatientDetailResponseDTOWithStatus searchForSelfHospitalWise(PatientMinSearchRequestDTO searchRequestDTO) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SEARCHING_PROCESS_STARTED, PATIENT);
+
+        PatientDetailResponseDTO responseDTO = patientRepository.searchForSelfHospitalWise(searchRequestDTO);
+
+        log.info(SEARCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
+
+        return parseToPatientDetailResponseDTOWithStatus(responseDTO);
+    }
+
+    @Override
     public PatientResponseDTOForOthersWithStatus searchForOthers(PatientMinSearchRequestDTO searchRequestDTO,
                                                                  Pageable pageable) {
 

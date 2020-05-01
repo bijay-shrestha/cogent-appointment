@@ -3,7 +3,7 @@
 ######___ ***** ENTER PATH TO YOUR STAND-ALONE TOMCAT SERVER ***** ____ ############
 
 catalina:
-  home: /home/rupak/Softwares/tomcat
+  home: /home/f1soft/Softwares/tomcat
 
 ##### [END] CATALINA HOME CONFIG [/END] #########
 

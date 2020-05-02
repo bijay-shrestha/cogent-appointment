@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.admin.loghandler;
 
 import com.cogent.cogentappointment.admin.dto.commons.AdminLogRequestDTO;
 import com.cogent.cogentappointment.admin.service.AdminLogService;
+import com.cogent.cogentappointment.admin.utils.commons.SecurityContextUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -12,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.LOGIN;
 import static com.cogent.cogentappointment.admin.loghandler.LogDescription.getFailedLogDescription;
 import static com.cogent.cogentappointment.admin.loghandler.LogDescription.getSuccessLogDescription;
 
@@ -24,6 +27,20 @@ public class UserLogInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
                                 Exception exception) throws Exception {
+
+        String uri=request.getRequestURI();
+        if(uri.contains(API_V1+LOGIN)){
+
+            AdminLogRequestDTO adminLogRequestDTO= AdminLogRequestDTO.
+                    builder()
+                    .feature("Login")
+                    .actionType("Login")
+                    .adminEmail(SecurityContextUtils.getLoggedInAdminEmail())
+                    .build();
+
+            checkExceptionAndSave(exception,adminLogRequestDTO);
+
+        }
 
         String userLog = RequestHeader.getUserLogs(request);
 
@@ -39,21 +56,28 @@ public class UserLogInterceptor implements HandlerInterceptor {
             adminLogRequestDTO.setOperatingSystem(clientOS);
             adminLogRequestDTO.setIpAddress(clientIpAddr);
 
-            if (exception == null) {
+            checkExceptionAndSave(exception,adminLogRequestDTO);
 
-                adminLogRequestDTO.setLogDescription(getSuccessLogDescription(adminLogRequestDTO.getFeature(), adminLogRequestDTO.getActionType()));
-                saveSuccessLogs(adminLogRequestDTO);
-            }
-
-            if (exception != null) {
-
-                adminLogRequestDTO.setLogDescription(getFailedLogDescription());
-                saveFailedLogs(adminLogRequestDTO);
-            }
 
         }
 
     }
+
+    private void checkExceptionAndSave(Exception exception,AdminLogRequestDTO adminLogRequestDTO){
+        if (exception == null) {
+
+            adminLogRequestDTO.setLogDescription(getSuccessLogDescription(adminLogRequestDTO.getFeature(), adminLogRequestDTO.getActionType()));
+            saveSuccessLogs(adminLogRequestDTO);
+        }
+
+        if (exception != null) {
+
+            adminLogRequestDTO.setLogDescription(getFailedLogDescription());
+            saveFailedLogs(adminLogRequestDTO);
+        }
+    }
+
+
 
     private void saveSuccessLogs(AdminLogRequestDTO adminLogRequestDTO) {
 

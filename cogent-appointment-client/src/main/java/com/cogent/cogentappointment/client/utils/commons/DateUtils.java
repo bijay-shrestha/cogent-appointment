@@ -114,17 +114,48 @@ public class DateUtils {
         return nepaliDate.split(HYPHEN)[2];
     }
 
-    public static String fetchStartingFiscalYear(int year, int month) {
 
-        return (month < APPLICATION_STARTING_FISCAL_MONTH)
-                ? (year - 1 + APPLICATION_STARTING_FISCAL_DAY)
-                : (year + APPLICATION_ENDING_FISCAL_DAY);
+    /*IF REQUESTED YEAR IS ODD,
+    *   IF MONTH <4
+    *       S = YEAR - 1 + START_FISCAL_DAY
+    *       E = YEAR + END_FISCAL_DAY
+    *   ELSE
+    *       S = YEAR + END_FISCAL_DAY
+    *       E = YEAR + 1 + START_FISCAL-DAY
+    * ELSE
+    *   IF MONTH <4
+    *       S = YEAR - 1 + END_FISCAL_DAY
+    *       E = YEAR + START_FISCAL_DAY
+    *   ELSE
+    *       S = YEAR + START_FISCAL_DAY
+    *       E = YEAR + 1 + END_FISCAL_DAY
+    * */
+    public static String fetchStartingFiscalYear(int year, int month) {
+        if (year % 2 == 0) {
+            //selected year is even
+            return (month < APPLICATION_STARTING_FISCAL_MONTH)
+                    ? (year - 1 + APPLICATION_ENDING_FISCAL_DAY)
+                    : (year + APPLICATION_STARTING_FISCAL_DAY);
+        } else {
+            //selected year is odd
+            return (month < APPLICATION_STARTING_FISCAL_MONTH)
+                    ? (year - 1 + APPLICATION_STARTING_FISCAL_DAY)
+                    : (year + APPLICATION_ENDING_FISCAL_DAY);
+        }
     }
 
     public static String fetchEndingFiscalYear(int year, int month) {
-        return (month < APPLICATION_STARTING_FISCAL_MONTH)
-                ? (year + APPLICATION_ENDING_FISCAL_DAY)
-                : (year + 1 + APPLICATION_STARTING_FISCAL_DAY);
+        if (year % 2 == 0) {
+            //selected year is even
+            return (month < APPLICATION_STARTING_FISCAL_MONTH)
+                    ? (year + APPLICATION_STARTING_FISCAL_DAY)
+                    : (year + 1 + APPLICATION_ENDING_FISCAL_DAY);
+        } else {
+            //selected year is odd
+            return (month < APPLICATION_STARTING_FISCAL_MONTH)
+                    ? (year + APPLICATION_ENDING_FISCAL_DAY)
+                    : (year + 1 + APPLICATION_STARTING_FISCAL_DAY);
+        }
     }
 
     public static String getTimeIn12HourFormat(Date date) {

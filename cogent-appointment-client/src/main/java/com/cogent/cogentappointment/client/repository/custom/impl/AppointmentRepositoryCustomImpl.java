@@ -106,12 +106,15 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         int year = getYearFromNepaliDate(nepaliCreatedDate);
         int month = getMonthFromNepaliDate(nepaliCreatedDate);
 
+        String startingFiscalYear = fetchStartingFiscalYear(year, month);
+        String endingFiscalYear = fetchEndingFiscalYear(year, month);
+
         Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_LATEST_APPOINTMENT_NUMBER)
-                .setParameter(FROM_DATE, fetchStartingFiscalYear(year, month))
-                .setParameter(TO_DATE, fetchEndingFiscalYear(year, month))
+                .setParameter(FROM_DATE, startingFiscalYear)
+                .setParameter(TO_DATE, endingFiscalYear)
                 .setParameter(HOSPITAL_ID, hospitalId);
 
-        return AppointmentUtils.generateAppointmentNumber(query.getResultList());
+        return AppointmentUtils.generateAppointmentNumber(query.getResultList(), startingFiscalYear, endingFiscalYear);
     }
 
     @Override

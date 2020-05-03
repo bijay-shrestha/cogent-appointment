@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.client.utils;
 
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentRejectDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.save.AppointmentRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedTimeResponseDTO;
@@ -13,14 +13,14 @@ import com.cogent.cogentappointment.client.dto.response.appointment.log.Appointm
 import com.cogent.cogentappointment.client.dto.response.appointment.log.AppointmentLogResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.AppointmentCountResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRescheduleLogDTO;
-import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
+import org.joda.time.Minutes;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -78,6 +78,34 @@ public class AppointmentUtils {
         Date currentDate = new Date();
 
         return availableDateTime.before(currentDate);
+    }
+
+    /*VALIDATE IF REQUESTED APPOINTMENT TIME LIES BETWEEN DOCTOR DUTY ROSTER TIME SCHEDULES
+  * IF IT MATCHES, THEN DO NOTHING
+  * ELSE REQUESTED TIME IS INVALID AND THUS CANNOT TAKE AN APPOINTMENT*/
+    public static boolean validateIfRequestedAppointmentTimeIsValid(DoctorDutyRosterTimeResponseDTO doctorDutyRosterInfo,
+                                                             String appointmentTime) {
+
+        final DateTimeFormatter FORMAT = DateTimeFormat.forPattern("HH:mm");
+
+        String doctorStartTime = getTimeFromDate(doctorDutyRosterInfo.getStartTime());
+        String doctorEndTime = getTimeFromDate(doctorDutyRosterInfo.getEndTime());
+
+        DateTime startDateTime = new DateTime(FORMAT.parseDateTime(doctorStartTime));
+
+        do {
+            String date = FORMAT.print(startDateTime);
+
+            final Duration rosterGapDuration = Minutes.minutes(doctorDutyRosterInfo.getRosterGapDuration())
+                    .toStandardDuration();
+
+            if (date.equals(appointmentTime))
+                return true;
+
+            startDateTime = startDateTime.plus(rosterGapDuration);
+        } while (startDateTime.compareTo(FORMAT.parseDateTime(doctorEndTime)) <= 0);
+
+        return false;
     }
 
     public static Appointment parseToAppointment(AppointmentRequestDTO requestDTO,
@@ -252,26 +280,37 @@ public class AppointmentUtils {
                 .anyMatch(bookedAppointment -> bookedAppointment.getAppointmentTime().equals(date));
     }
 
-    public static void parseToRescheduleAppointment(Appointment appointment,
-                                                    AppointmentRescheduleRequestDTO rescheduleRequestDTO) {
+    public static void updateAppointmentDetails(Appointment appointment,
+                                                AppointmentRescheduleRequestDTO rescheduleRequestDTO) {
 
         appointment.setAppointmentDate(rescheduleRequestDTO.getRescheduleDate());
+
         appointment.setAppointmentTime(parseAppointmentTime(
                 rescheduleRequestDTO.getRescheduleDate(),
-                rescheduleRequestDTO.getRescheduleTime()));
+                rescheduleRequestDTO.getRescheduleTime())
+        );
+
         appointment.setRemarks(rescheduleRequestDTO.getRemarks());
     }
 
     public static AppointmentRescheduleLog parseToAppointmentRescheduleLog(
             Appointment appointment,
-            AppointmentRescheduleRequestDTO rescheduleRequestDTO) {
+            AppointmentRescheduleRequestDTO rescheduleRequestDTO,
+            AppointmentRescheduleLog appointmentRescheduleLog) {
 
-        AppointmentRescheduleLog appointmentRescheduleLog = new AppointmentRescheduleLog();
         appointmentRescheduleLog.setAppointmentId(appointment);
-        appointmentRescheduleLog.setPreviousAppointmentDate(appointment.getAppointmentDate());
-        appointmentRescheduleLog.setRescheduleDate(rescheduleRequestDTO.getRescheduleDate());
+
+        appointmentRescheduleLog.setPreviousAppointmentDate(appointment.getAppointmentTime());
+
+        appointmentRescheduleLog.setRescheduleDate(parseAppointmentTime(
+                rescheduleRequestDTO.getRescheduleDate(),
+                rescheduleRequestDTO.getRescheduleTime())
+        );
+
         appointmentRescheduleLog.setRemarks(rescheduleRequestDTO.getRemarks());
+
         appointmentRescheduleLog.setStatus(RESCHEDULED);
+
         return appointmentRescheduleLog;
     }
 
@@ -298,80 +337,6 @@ public class AppointmentUtils {
                                                      Appointment appointment) {
         appointment.setStatus(REJECTED);
         appointment.setRemarks(rejectDTO.getRemarks());
-    }
-
-    public static AppointmentRescheduleLogResponseDTO parseQueryResultToAppointmentRescheduleLogResponse
-            (List<Object[]> results) {
-
-        AppointmentRescheduleLogResponseDTO rescheduleLogResponseDTO = new AppointmentRescheduleLogResponseDTO();
-
-        List<AppointmentRescheduleLogDTO> appointmentLogSearchDTOS = new ArrayList<>();
-
-        AtomicReference<Double> totalAmount = new AtomicReference<>(0D);
-
-        results.forEach(result -> {
-
-            final int ESEWA_ID_INDEX = 0;
-            final int PREVIOUS_APPOINTMENT_DATE_INDEX = 1;
-            final int APPOINTMENT_RESCHEDULED_DATE_INDEX = 2;
-            final int APPOINTMENT_NUMBER_INDEX = 3;
-            final int REGISTRATION_NUMBER_INDEX = 4;
-            final int PATIENT_NAME_INDEX = 5;
-            final int PATIENT_DOB_INDEX = 6;
-            final int PATIENT_GENDER_INDEX = 7;
-            final int PATIENT_MOBILE_NUMBER_INDEX = 8;
-            final int SPECIALIZATION_NAME_INDEX = 9;
-            final int DOCTOR_NAME_INDEX = 10;
-            final int TRANSACTION_NUMBER_INDEX = 11;
-            final int APPOINTMENT_AMOUNT_INDEX = 12;
-            final int REMARKS_INDEX = 13;
-            final int APPOINTMENT_TIME_INDEX = 14;
-            final int IS_FOLLOW_UP_INDEX = 15;
-
-            Date previosAppointmentDate = (Date) result[PREVIOUS_APPOINTMENT_DATE_INDEX];
-            Date rescheduledAppointmentDate = (Date) result[APPOINTMENT_RESCHEDULED_DATE_INDEX];
-            Date patientDob = (Date) result[PATIENT_DOB_INDEX];
-
-            Double appointmentAmount = Objects.isNull(result[APPOINTMENT_AMOUNT_INDEX]) ?
-                    0D : Double.parseDouble(result[APPOINTMENT_AMOUNT_INDEX].toString());
-
-            String registrationNumber = Objects.isNull(result[REGISTRATION_NUMBER_INDEX]) ?
-                    "" : result[REGISTRATION_NUMBER_INDEX].toString();
-
-            String remarks = Objects.isNull(result[REMARKS_INDEX]) ?
-                    null : result[REMARKS_INDEX].toString();
-
-            AppointmentRescheduleLogDTO appointmentRescheduleLogDTO =
-                    AppointmentRescheduleLogDTO.builder()
-                            .previousAppointmentDate(previosAppointmentDate)
-                            .rescheduleAppointmentDate(rescheduledAppointmentDate)
-                            .appointmentNumber(result[APPOINTMENT_NUMBER_INDEX].toString())
-                            .esewaId(Objects.isNull(result[ESEWA_ID_INDEX]) ? null : result[ESEWA_ID_INDEX].toString())
-                            .registrationNumber(registrationNumber)
-                            .patientName(result[PATIENT_NAME_INDEX].toString())
-                            .patientGender((Gender) result[PATIENT_GENDER_INDEX])
-                            .patientAge(calculateAge(patientDob))
-                            .mobileNumber(result[PATIENT_MOBILE_NUMBER_INDEX].toString())
-                            .specializationName(result[SPECIALIZATION_NAME_INDEX].toString())
-                            .transactionNumber(Objects.isNull(result[TRANSACTION_NUMBER_INDEX])
-                                    ? null : result[TRANSACTION_NUMBER_INDEX].toString())
-                            .appointmentAmount(appointmentAmount)
-                            .doctorName(result[DOCTOR_NAME_INDEX].toString())
-                            .remarks(remarks)
-                            .appointmentTime(result[APPOINTMENT_TIME_INDEX].toString())
-                            .isFollowUp((Character) result[IS_FOLLOW_UP_INDEX])
-                            .build();
-
-            appointmentLogSearchDTOS.add(appointmentRescheduleLogDTO);
-
-            totalAmount.updateAndGet(v -> v + appointmentAmount);
-        });
-
-        rescheduleLogResponseDTO.setAppointmentRescheduleLogDTOS(appointmentLogSearchDTOS);
-        rescheduleLogResponseDTO.setTotalAmount(totalAmount.get());
-
-        return rescheduleLogResponseDTO;
-
     }
 
     public static AppointmentLogResponseDTO parseQueryResultToAppointmentLogResponse(List<Object[]> results) {

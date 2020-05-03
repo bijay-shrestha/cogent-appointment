@@ -24,6 +24,7 @@ import com.cogent.cogentappointment.client.dto.response.appointment.refund.Appoi
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.txnLog.TransactionLogResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRescheduleLogDTO;
 import com.cogent.cogentappointment.client.dto.response.reschedule.AppointmentRescheduleLogResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.AppointmentRepositoryCustom;
@@ -126,10 +127,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         List<AppointmentMinResponseDTO> pendingAppointments =
                 transformQueryToResultList(query, AppointmentMinResponseDTO.class);
 
-        if (pendingAppointments.isEmpty()) {
-            error();
+        if (pendingAppointments.isEmpty())
             throw APPOINTMENT_NOT_FOUND.get();
-        }
 
         return pendingAppointments;
     }
@@ -239,10 +238,8 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         List<AppointmentMinResponseDTO> appointmentHistory =
                 transformQueryToResultList(query, AppointmentMinResponseDTO.class);
 
-        if (appointmentHistory.isEmpty()) {
-            error();
+        if (appointmentHistory.isEmpty())
             throw APPOINTMENT_NOT_FOUND.get();
-        }
 
         return appointmentHistory;
     }
@@ -252,7 +249,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                                                                           Pageable pageable,
                                                                           Long hospitalId) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_RESCHEDULE_APPOINTMENT_LOGS.apply(rescheduleDTO))
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_RESCHEDULE_APPOINTMENT_LOGS.apply(rescheduleDTO))
                 .setParameter(FROM_DATE, utilDateToSqlDate(rescheduleDTO.getFromDate()))
                 .setParameter(TO_DATE, utilDateToSqlDate(rescheduleDTO.getToDate()))
                 .setParameter(HOSPITAL_ID, hospitalId);
@@ -261,16 +258,20 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         addPagination.accept(pageable, query);
 
-        List<Object[]> objects = query.getResultList();
+        List<AppointmentRescheduleLogDTO> rescheduleAppointments =
+                transformQueryToResultList(query, AppointmentRescheduleLogDTO.class);
 
-        AppointmentRescheduleLogResponseDTO results = parseQueryResultToAppointmentRescheduleLogResponse(objects);
-
-        if (results.getAppointmentRescheduleLogDTOS().isEmpty()) {
-            error();
+        if (rescheduleAppointments.isEmpty())
             throw APPOINTMENT_NOT_FOUND.get();
-        } else {
-            results.setTotalItems(totalItems);
-            return results;
+
+        else {
+            Double totalRescheduleAmount = calculateTotalRescheduleAmount(rescheduleDTO, hospitalId);
+
+            return AppointmentRescheduleLogResponseDTO.builder()
+                    .appointmentRescheduleLogDTOS(rescheduleAppointments)
+                    .totalItems(totalItems)
+                    .totalAmount(totalRescheduleAmount)
+                    .build();
         }
     }
 
@@ -287,10 +288,10 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         List<AppointmentRefundDTO> refundAppointments = transformQueryToResultList(query, AppointmentRefundDTO.class);
 
-        if (refundAppointments.isEmpty()) {
-            error();
+        if (refundAppointments.isEmpty())
             throw APPOINTMENT_NOT_FOUND.get();
-        } else {
+
+        else {
             Double totalRefundAmount = calculateTotalRefundAmount(searchDTO, hospitalId);
 
             return AppointmentRefundResponseDTO.builder()
@@ -331,10 +332,9 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         List<AppointmentPendingApprovalDTO> appointmentPendingApprovalDTOS =
                 transformQueryToResultList(query, AppointmentPendingApprovalDTO.class);
 
-        if (appointmentPendingApprovalDTOS.isEmpty()) {
-            error();
+        if (appointmentPendingApprovalDTOS.isEmpty())
             throw APPOINTMENT_NOT_FOUND.get();
-        } else {
+        else {
             appointmentPendingApprovalResponseDTO.setPendingAppointmentApprovals(appointmentPendingApprovalDTOS);
             appointmentPendingApprovalResponseDTO.setTotalItems(totalItems);
             return appointmentPendingApprovalResponseDTO;
@@ -387,10 +387,10 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         List<Object[]> objects = query.getResultList();
 
-        if (objects.isEmpty()) {
-            error();
+        if (objects.isEmpty())
             throw APPOINTMENT_NOT_FOUND.get();
-        } else {
+
+        else {
             AppointmentLogResponseDTO results = parseQueryResultToAppointmentLogResponse(objects);
             results.setTotalItems(totalItems);
             calculateAppointmentStatistics(searchRequestDTO, results, hospitalId);
@@ -414,10 +414,10 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         TransactionLogResponseDTO results = parseQueryResultToTransactionLogResponse(objects);
 
-        if (results.getTransactionLogs().isEmpty()) {
-            error();
+        if (results.getTransactionLogs().isEmpty())
             throw APPOINTMENT_NOT_FOUND.get();
-        } else {
+
+        else {
             results.setTotalItems(totalItems);
             calculateAppointmentStatisticsForTransactionLog(searchRequestDTO, results, hospitalId);
             return results;
@@ -440,10 +440,10 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         List<AppointmentQueueDTO> results = transformQueryToResultList(query, AppointmentQueueDTO.class);
 
-        if (results.isEmpty()) {
-            error();
+        if (results.isEmpty())
             throw APPOINTMENT_NOT_FOUND.get();
-        } else {
+
+        else {
             results.get(0).setTotalItems(totalItems);
             return results;
         }
@@ -474,8 +474,10 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         throw new NoContentFoundException(Appointment.class, "id", id.toString());
     };
 
-    private Supplier<NoContentFoundException> APPOINTMENT_NOT_FOUND = ()
-            -> new NoContentFoundException(Appointment.class);
+    private Supplier<NoContentFoundException> APPOINTMENT_NOT_FOUND = () -> {
+        log.error(CONTENT_NOT_FOUND, APPOINTMENT);
+        throw new NoContentFoundException(Appointment.class);
+    };
 
     private Query getQueryToFetchRefundAppointments(AppointmentRefundSearchDTO searchDTO,
                                                     Long hospitalId) {
@@ -661,10 +663,6 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                 (AppointmentPendingApprovalDetailResponseDTO.class, "appointmentId", appointmentId.toString());
     };
 
-    private void error() {
-        log.error(CONTENT_NOT_FOUND, APPOINTMENT);
-    }
-
     private BookedAppointmentResponseDTO getBookedAppointmentDetails(TransactionLogSearchDTO searchRequestDTO,
                                                                      Long hospitalId) {
 
@@ -774,4 +772,16 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
         responseDTO.setTotalAmount(totalAppointmentAmount);
     }
+
+    private Double calculateTotalRescheduleAmount(AppointmentRescheduleLogSearchDTO searchDTO,
+                                                  Long hospitalId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_CALCULATE_TOTAL_RESCHEDULE_AMOUNT(searchDTO))
+                .setParameter(FROM_DATE, utilDateToSqlDate(searchDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(searchDTO.getToDate()))
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        return (Double) query.getSingleResult();
+    }
+
 }

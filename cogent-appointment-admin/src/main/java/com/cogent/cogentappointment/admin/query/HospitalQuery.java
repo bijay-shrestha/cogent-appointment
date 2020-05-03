@@ -109,7 +109,8 @@ public class HospitalQuery {
                     " h.number_of_follow_ups as numberOfFollowUps," +           //[12]
                     " h.follow_up_interval_days as followUpIntervalDays," +     //[13]
                     " h.is_company as isCompany," +                             //[14]
-                    " h.alias as alias" +                                       //[15]
+                    " h.alias as alias," +                                       //[15]
+                    HOSPITAL_AUDITABLE_QUERY()+
                     " FROM" +
                     " hospital h" +
                     " LEFT JOIN hospital_logo hl ON h.id =hl.hospital_id " +
@@ -135,4 +136,11 @@ public class HospitalQuery {
             " SELECT h.followUpIntervalDays as followUpIntervalDays" +
                     " FROM Hospital h" +
                     " WHERE h.id =:hospitalId";
+
+    public static String HOSPITAL_AUDITABLE_QUERY() {
+        return " h.created_by as createdBy," +
+                " h.created_date as createdDate," +
+                " h.last_modified_by as lastModifiedBy," +
+                " h.last_modified_date as lastModifiedDate";
+    }
 }

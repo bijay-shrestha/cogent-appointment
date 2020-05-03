@@ -83,7 +83,7 @@ public class CompanyAdminQuery {
                     " THEN null" +
                     " ELSE" +
                     " av.fileUri" +
-                    " END as fileUri";                                           //[9]
+                    " END as fileUri";                                         //[9]
 
     private static final String GET_WHERE_CLAUSE_TO_FETCH_ADMIN =
             " WHERE a.status != 'D' AND h.status !='D' AND p.status !='D' AND h.isCompany='Y'";
@@ -117,13 +117,13 @@ public class CompanyAdminQuery {
             SELECT_CLAUSE_TO_FETCH_COMPANY_ADMIN + "," +
                     " a.remarks as remarks," +                                      //[10]
                     " h.id as companyId," +                                        //[11]
-                    " p.id as profileId" +                                         //[12]
+                    " p.id as profileId," +                                         //[12]
+                    COMPANY_ADMIN_AUDITABLE_QUERY()+
                     " FROM" +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id = a.profileId.id" +
                     " LEFT JOIN AdminAvatar av ON a.id = av.admin.id" +
-                    " LEFT JOIN Hospital h ON h.id = p.company.id," +
-                    COMPANY_ADMIN_AUDITABLE_QUERY()+
+                    " LEFT JOIN Hospital h ON h.id = p.company.id" +
                     GET_WHERE_CLAUSE_TO_FETCH_ADMIN +
                     " AND a.id = :id";
 

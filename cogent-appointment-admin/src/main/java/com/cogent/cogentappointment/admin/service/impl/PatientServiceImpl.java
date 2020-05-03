@@ -179,6 +179,20 @@ public class PatientServiceImpl implements PatientService {
         return patientInfo;
     }
 
+    @Override
+    public List<DropDownResponseDTO> fetchPatientEsewaId(Long hospitalId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, PATIENT_ESEWA_ID);
+
+        List<DropDownResponseDTO> patientEsewaId =
+                patientRepository.fetchPatientEsewaId(hospitalId);
+
+        log.info(FETCHING_PROCESS_COMPLETED, PATIENT_ESEWA_ID, getDifferenceBetweenTwoTime(startTime));
+
+        return patientEsewaId;
+    }
+
     private void savePatientMetaInfo(PatientMetaInfo patientMetaInfo) {
         patientMetaInfoRepository.save(patientMetaInfo);
     }

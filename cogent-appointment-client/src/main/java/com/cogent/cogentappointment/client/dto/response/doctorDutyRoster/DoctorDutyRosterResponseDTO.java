@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.dto.response.doctorDutyRoster;
 
 import com.cogent.cogentappointment.client.dto.response.common.AuditableResponseDTO;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.io.Serializable;
@@ -28,8 +29,10 @@ public class DoctorDutyRosterResponseDTO extends AuditableResponseDTO implements
 
     private Integer rosterGapDuration;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd, YYYY", timezone = "Asia/Kathmandu")
     private Date fromDate;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd, YYYY", timezone = "Asia/Kathmandu")
     private Date toDate;
 
     private Character status;

@@ -18,10 +18,10 @@ public class DoctorExistingDutyRosterResponseDTO implements Serializable {
 
     private Long doctorDutyRosterId;
 
-//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd YYYY")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd, YYYY", timezone = "Asia/Kathmandu")
     private Date fromDate;
 
-//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd YYYY")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd, YYYY", timezone = "Asia/Kathmandu")
     private Date toDate;
 
     private Integer rosterGapDuration;

@@ -29,4 +29,6 @@ public interface PatientService {
     void registerPatient(Long patientId, Long hospitalId);
 
     PatientMinDetailResponseDTO fetchDetailByAppointmentId(Long appointmentId);
+
+    List<DropDownResponseDTO> fetchPatientEsewaId(Long hospitalId);
 }

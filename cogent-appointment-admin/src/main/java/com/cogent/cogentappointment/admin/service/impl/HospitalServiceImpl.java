@@ -125,13 +125,13 @@ public class HospitalServiceImpl implements HospitalService {
                 updateRequestDTO.getId(),
                 updateRequestDTO.getName(),
                 updateRequestDTO.getHospitalCode(),
-                updateRequestDTO.getAlias()
+                hospital.getAlias()
         );
 
         HospitalUtils.validateDuplicity(hospitals,
                 updateRequestDTO.getName(),
                 updateRequestDTO.getHospitalCode(),
-                updateRequestDTO.getAlias(),
+                hospital.getAlias(),
                 Hospital.class.getSimpleName());
 
         HmacApiInfo hmacApiInfo = hmacApiInfoRepository.getHmacApiInfoByHospitalId(updateRequestDTO.getId());

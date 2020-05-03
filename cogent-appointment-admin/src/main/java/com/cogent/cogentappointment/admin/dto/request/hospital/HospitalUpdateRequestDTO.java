@@ -64,11 +64,6 @@ public class HospitalUpdateRequestDTO implements Serializable {
     @NotEmpty
     private List<HospitalContactNumberUpdateRequestDTO> contactNumberUpdateRequestDTOS;
 
-    @NotNull
-    @NotEmpty
-    @NotBlank
-    private String alias;
-
     /*Y-> NEW LOGO IS UPDATED
     * N-> LOGO IS SAME AS BEFORE. SO IF IT IS 'N', THEN NO NEED TO UPDATE LOGO
     */

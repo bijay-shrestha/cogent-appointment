@@ -147,7 +147,7 @@ public class AppointmentQuery {
                     " ORDER BY a.appointmentDate DESC";
 
     /*esewa*/
-    public static String QUERY_TO_FETCH_APPOINTMENT_HISTORY_ESEWA(AppointmentSearchDTO searchDTO) {
+    public static String QUERY_TO_FETCH_APPOINTMENT_HISTORY_FOR_SELF(AppointmentSearchDTO searchDTO) {
 
         String query = " SELECT" +
                 " a.id as appointmentId," +                                             //[0]
@@ -184,6 +184,8 @@ public class AppointmentQuery {
 
         return query + " ORDER BY a.appointmentDate DESC";
     }
+
+
 
     /*admin*/
     public static Function<AppointmentRescheduleLogSearchDTO, String> QUERY_TO_FETCH_RESCHEDULE_APPOINTMENT_LOGS =

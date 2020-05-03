@@ -248,7 +248,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
     @Override
     public AppointmentResponseWithStatusDTO searchAppointments(AppointmentSearchDTO searchDTO) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_HISTORY_ESEWA(searchDTO))
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_HISTORY_FOR_SELF(searchDTO))
                 .setParameter(FROM_DATE, utilDateToSqlDate(searchDTO.getFromDate()))
                 .setParameter(TO_DATE, utilDateToSqlDate(searchDTO.getToDate()))
                 .setParameter(NAME, searchDTO.getName())

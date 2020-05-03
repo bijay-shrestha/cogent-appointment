@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.client.utils;
 
-import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentTransactionRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.save.AppointmentTransactionRequestDTO;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.AppointmentTransactionDetail;
 

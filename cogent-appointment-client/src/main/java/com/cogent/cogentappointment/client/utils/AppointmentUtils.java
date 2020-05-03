@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.client.utils;
 
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentRejectDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.save.AppointmentRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedTimeResponseDTO;

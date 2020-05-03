@@ -4,7 +4,13 @@ import com.cogent.cogentappointment.client.dto.request.appointment.appointmentQu
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.cancel.AppointmentCancelRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.esewa.*;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentCheckAvailabilityRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentTransactionStatusRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.save.AppointmentRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.save.AppointmentRequestDTOForOthers;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.save.AppointmentRequestDTOForSelf;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.save.AppointmentTransactionRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.log.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.log.TransactionLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;

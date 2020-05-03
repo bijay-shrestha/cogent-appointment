@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.query;
 
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentPendingApprovalSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.history.AppointmentHistorySearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.log.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
@@ -144,6 +145,45 @@ public class AppointmentQuery {
                     " WHERE a.status = 'A'" +
                     " AND a.appointmentDate BETWEEN :fromDate AND :toDate" +
                     " ORDER BY a.appointmentDate DESC";
+
+    /*esewa*/
+    public static String QUERY_TO_FETCH_APPOINTMENT_HISTORY_ESEWA(AppointmentHistorySearchDTO searchDTO) {
+
+        String query = " SELECT" +
+                " a.id as appointmentId," +                                             //[0]
+                " h.name as hospitalName," +                                            //[1]
+                " p.name as patientName," +                                             //[2]
+                " p.mobileNumber as mobileNumber," +                                    //[3]
+                " p.gender as gender," +                                                //[4]
+                QUERY_TO_CALCULATE_PATIENT_AGE + "," +                                  //[5]
+                " a.appointmentDate as appointmentDate," +                              //[6]
+                " DATE_FORMAT(a.appointmentTime,'%h:%i %p') as appointmentTime," +      //[7]
+                " a.appointmentNumber as appointmentNumber," +                          //[8]
+                " atd.appointmentAmount as appointmentAmount," +                        //[9]
+                " d.id as doctorId," +                                                  //[10]
+                " d.name as doctorName," +                                              //[11]
+                " s.id as specializationId," +                                          //[12]
+                " s.name as specializationName" +                                       //[13]
+                " FROM Appointment a" +
+                " LEFT JOIN Patient p ON p.id = a.patientId.id" +
+                " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
+                " LEFT JOIN Specialization s ON s.id = a.specializationId.id" +
+                " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +
+                " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
+                " WHERE" +
+                " (a.appointmentDate BETWEEN :fromDate AND :toDate)" +
+                " AND p.name =:name" +
+                " AND p.mobileNumber = :mobileNumber" +
+                " AND p.dateOfBirth =: dateOfBirth";
+
+        if (!ObjectUtils.isEmpty(searchDTO.getStatus()))
+            query += " AND a.status = '" + searchDTO.getStatus() + "'";
+
+        if (!Objects.isNull(searchDTO.getHospitalId()))
+            query += " AND h.id =" + searchDTO.getHospitalId();
+
+        return query + " ORDER BY a.appointmentDate DESC";
+    }
 
     /*admin*/
     public static Function<AppointmentRescheduleLogSearchDTO, String> QUERY_TO_FETCH_RESCHEDULE_APPOINTMENT_LOGS =

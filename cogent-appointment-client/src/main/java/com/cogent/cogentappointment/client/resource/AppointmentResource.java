@@ -3,7 +3,12 @@ package com.cogent.cogentappointment.client.resource;
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.cancel.AppointmentCancelRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.esewa.*;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentCheckAvailabilityRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentHistorySearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentTransactionStatusRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.history.AppointmentSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.save.AppointmentRequestDTOForOthers;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.save.AppointmentRequestDTOForSelf;
 import com.cogent.cogentappointment.client.dto.request.appointment.log.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.log.TransactionLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;
@@ -73,7 +78,7 @@ public class AppointmentResource {
     /*esewa*/
     @PutMapping(PENDING_APPOINTMENT)
     @ApiOperation((FETCH_PENDING_APPOINTMENT))
-    public ResponseEntity<?> fetchPendingAppointments(@RequestBody AppointmentSearchDTO searchDTO) {
+    public ResponseEntity<?> fetchPendingAppointments(@RequestBody AppointmentHistorySearchDTO searchDTO) {
         return ok(appointmentService.fetchPendingAppointments(searchDTO));
     }
 
@@ -100,8 +105,15 @@ public class AppointmentResource {
     /*esewa*/
     @PutMapping(HISTORY)
     @ApiOperation(FETCH_APPOINTMENT_HISTORY)
-    public ResponseEntity<?> fetchAppointmentHistory(@RequestBody AppointmentSearchDTO searchDTO) {
-        return ok(appointmentService.fetchAppointmentHistory(searchDTO));
+    public ResponseEntity<?> fetchAppointmentHistory(@RequestBody AppointmentHistorySearchDTO searchDTO) {
+        return ok(appointmentService.searchAppointments(searchDTO));
+    }
+
+    /*SEARCH APPOINTMENTS FOR SELF/OTHERS*/
+    @PutMapping(SEARCH)
+    @ApiOperation(SEARCH_APPOINTMENT)
+    public ResponseEntity<?> searchAppointments(@RequestBody AppointmentSearchDTO searchDTO) {
+        return ok(appointmentService.searchAppointments(searchDTO));
     }
 
     /*esewa*/
@@ -191,7 +203,7 @@ public class AppointmentResource {
                                                  @RequestParam("page") int page,
                                                  @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return ok().body(appointmentService.searchTransactionLogs(searchRequestDTO,pageable));
+        return ok().body(appointmentService.searchTransactionLogs(searchRequestDTO, pageable));
     }
 
     @PutMapping(RESCHEDULE_LOG)

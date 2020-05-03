@@ -47,6 +47,7 @@ public class SwaggerConstants {
         String CANCEL_REGISTRATION_OPERATION = "Delete Appointment Reservation when user cancels registration process";
         String FETCH_APPOINTMENT_TRANSACTION_STATUS = "Fetch Appointment Transaction Status." +
                 " If 'Y', then it is successful appointment, else it is failed appointment";
+        String SEARCH_APPOINTMENT = " Search appointment history for myself/others";
 
         /*admin*/
         String FETCH_REFUND_APPOINTMENTS = "Fetch Refund Appointment Request List";

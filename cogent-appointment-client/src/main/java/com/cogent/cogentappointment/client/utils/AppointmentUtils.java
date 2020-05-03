@@ -9,6 +9,8 @@ import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQ
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueSearchByTimeDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentTimeDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.esewa.*;
+import com.cogent.cogentappointment.client.dto.response.appointment.esewa.history.AppointmentResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.esewa.history.AppointmentResponseWithStatusDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.log.AppointmentLogDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.log.AppointmentLogResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
@@ -84,7 +86,7 @@ public class AppointmentUtils {
   * IF IT MATCHES, THEN DO NOTHING
   * ELSE REQUESTED TIME IS INVALID AND THUS CANNOT TAKE AN APPOINTMENT*/
     public static boolean validateIfRequestedAppointmentTimeIsValid(DoctorDutyRosterTimeResponseDTO doctorDutyRosterInfo,
-                                                             String appointmentTime) {
+                                                                    String appointmentTime) {
 
         final DateTimeFormatter FORMAT = DateTimeFormat.forPattern("HH:mm");
 
@@ -548,6 +550,16 @@ public class AppointmentUtils {
         appointmentStatistics.setIsRegistered(YES);
 
         return appointmentStatistics;
+    }
+
+    public static AppointmentResponseWithStatusDTO parseToAppointmentHistory(
+            List<AppointmentResponseDTO> appointmentHistory) {
+
+        return AppointmentResponseWithStatusDTO.builder()
+                .appointments(appointmentHistory)
+                .responseStatus(OK)
+                .responseCode(OK.value())
+                .build();
     }
 
 }

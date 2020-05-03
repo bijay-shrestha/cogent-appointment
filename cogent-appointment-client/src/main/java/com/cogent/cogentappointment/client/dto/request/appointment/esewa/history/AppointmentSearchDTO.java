@@ -15,7 +15,7 @@ import java.util.Date;
  */
 @Getter
 @Setter
-public class AppointmentHistorySearchDTO implements Serializable {
+public class AppointmentSearchDTO implements Serializable {
 
     @NotNull
     private Date fromDate;

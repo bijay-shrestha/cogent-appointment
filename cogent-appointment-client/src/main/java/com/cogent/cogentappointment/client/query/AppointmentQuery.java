@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.client.query;
 
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentPendingApprovalSearchDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.esewa.history.AppointmentHistorySearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.history.AppointmentSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.log.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
@@ -147,7 +147,7 @@ public class AppointmentQuery {
                     " ORDER BY a.appointmentDate DESC";
 
     /*esewa*/
-    public static String QUERY_TO_FETCH_APPOINTMENT_HISTORY_ESEWA(AppointmentHistorySearchDTO searchDTO) {
+    public static String QUERY_TO_FETCH_APPOINTMENT_HISTORY_ESEWA(AppointmentSearchDTO searchDTO) {
 
         String query = " SELECT" +
                 " a.id as appointmentId," +                                             //[0]
@@ -170,8 +170,8 @@ public class AppointmentQuery {
                 " LEFT JOIN Specialization s ON s.id = a.specializationId.id" +
                 " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +
                 " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
-                " WHERE" +
-                " (a.appointmentDate BETWEEN :fromDate AND :toDate)" +
+                " WHERE a.isSelf = 'Y'" +
+                " AND (a.appointmentDate BETWEEN :fromDate AND :toDate)" +
                 " AND p.name =:name" +
                 " AND p.mobileNumber = :mobileNumber" +
                 " AND p.dateOfBirth =: dateOfBirth";

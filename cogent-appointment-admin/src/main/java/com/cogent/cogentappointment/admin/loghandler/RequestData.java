@@ -1,7 +1,12 @@
 package com.cogent.cogentappointment.admin.loghandler;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 
@@ -9,32 +14,39 @@ import static com.cogent.cogentappointment.admin.loghandler.RequestHeader.getUse
 
 public class RequestData {
 
-    public static String getClientIpAddr(HttpServletRequest request) throws UnknownHostException {
-        String ip = RequestHeader.getXForwardedFor(request);
+//    public static String getClientIpAddr(HttpServletRequest request) throws IOException {
+        public static String getClientIpAddr() throws IOException {
+//        String ip = RequestHeader.getXForwardedFor(request);
+//
+//        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+//            ip = request.getHeader("Proxy-Client-IP");
+//        }
+//        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+//            ip = request.getHeader("WL-Proxy-Client-IP");
+//        }
+//        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+//            ip = request.getHeader("HTTP_CLIENT_IP");
+//        }
+//        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+//            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+//        }
+//        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+//            ip = request.getRemoteAddr();
+//        }
+//
+//        ip = request.getRemoteAddr();
+//
+//        if (ip.equalsIgnoreCase("0:0:0:0:0:0:0:1")) {
+//            InetAddress inetAddress = InetAddress.getLocalHost();
+//            String ipAddress = inetAddress.getHostAddress();
+//            ip = ipAddress;
+//        }
 
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("WL-Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("HTTP_CLIENT_IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getRemoteAddr();
-        }
+        URL whatismyip = new URL("http://checkip.amazonaws.com");
+        BufferedReader in = new BufferedReader(new InputStreamReader(
+                whatismyip.openStream()));
 
-        ip = request.getRemoteAddr();
-
-        if (ip.equalsIgnoreCase("0:0:0:0:0:0:0:1")) {
-            InetAddress inetAddress = InetAddress.getLocalHost();
-            String ipAddress = inetAddress.getHostAddress();
-            ip = ipAddress;
-        }
+        String ip = in.readLine(); //you get the IP as a String
 
 
         return ip;

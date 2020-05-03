@@ -11,12 +11,19 @@ import org.springframework.web.util.ContentCachingRequestWrapper;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.URL;
+
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.LOGIN;
 import static com.cogent.cogentappointment.admin.loghandler.LogDescription.getFailedLogDescription;
 import static com.cogent.cogentappointment.admin.loghandler.LogDescription.getSuccessLogDescription;
+import static com.cogent.cogentappointment.admin.loghandler.RequestHandler.location;
 
 @Component
 public class UserLogInterceptor implements HandlerInterceptor {
@@ -31,12 +38,24 @@ public class UserLogInterceptor implements HandlerInterceptor {
         String uri=request.getRequestURI();
         if(uri.contains(API_V1+LOGIN)){
 
+            String email="from api";
+
+
             AdminLogRequestDTO adminLogRequestDTO= AdminLogRequestDTO.
                     builder()
+
                     .feature("Login")
                     .actionType("Login")
                     .adminEmail(SecurityContextUtils.getLoggedInAdminEmail())
                     .build();
+
+            String clientBrowser = RequestData.getClientBrowser(request);
+            String clientOS = RequestData.getClientOS(request);
+            String clientIpAddr = RequestData.getClientIpAddr();
+
+            adminLogRequestDTO.setBrowser(clientBrowser);
+            adminLogRequestDTO.setOperatingSystem(clientOS);
+            adminLogRequestDTO.setIpAddress(clientIpAddr);
 
             checkExceptionAndSave(exception,adminLogRequestDTO);
 
@@ -50,8 +69,13 @@ public class UserLogInterceptor implements HandlerInterceptor {
 
             String clientBrowser = RequestData.getClientBrowser(request);
             String clientOS = RequestData.getClientOS(request);
-            String clientIpAddr = RequestData.getClientIpAddr(request);
+            String clientIpAddr = RequestData.getClientIpAddr();
 
+            System.out.println(clientIpAddr);
+
+            String location=location(clientIpAddr);
+
+            adminLogRequestDTO.setLocation(location);
             adminLogRequestDTO.setBrowser(clientBrowser);
             adminLogRequestDTO.setOperatingSystem(clientOS);
             adminLogRequestDTO.setIpAddress(clientIpAddr);

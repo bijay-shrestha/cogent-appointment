@@ -49,6 +49,7 @@ public class AdminLogQuery {
                 " DATE_FORMAT(al.logDateTime,'%h:%i %p') as logTime," +
                 " al.browser as browser," +
                 " al.operatingSystem as os," +
+                " al.location as location," +
                 " a.email as email," +
                 " a.mobileNumber as mobileNumber," +
                 " al.ipAddress as ipAddress," +

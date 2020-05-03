@@ -146,7 +146,7 @@ public class AppointmentQuery {
                     " ORDER BY a.appointmentDate DESC";
 
     /*admin*/
-    public static Function<AppointmentRescheduleLogSearchDTO, String> QUERY_TO_RESCHEDULE_APPOINTMENT_LOGS =
+    public static Function<AppointmentRescheduleLogSearchDTO, String> QUERY_TO_FETCH_RESCHEDULE_APPOINTMENT_LOGS =
             (appointmentRescheduleLogSearchDTO) ->
                     " SELECT" +
                             " p.eSewaId as esewaId," +                                                               //[0]
@@ -156,8 +156,20 @@ public class AppointmentQuery {
                             " DATE_FORMAT(arl.rescheduleDate, '%h:%i %p') as rescheduleAppointmentTime," +          //[4]
                             " a.appointmentNumber as appointmentNumber," +                                          //[5]
                             " hpi.registrationNumber as registrationNumber," +                                     //[6]
-                            " p.name as patientName," +                                                  //[7]
-                            QUERY_TO_CALCULATE_PATIENT_AGE + "," +                                       //[8]
+                            " p.name as patientName," +                                                            //[7]
+                            " CASE" +
+                            " WHEN" +
+                            " (((TIMESTAMPDIFF(YEAR, p.dateOfBirth, CURDATE()))<=0) AND" +
+                            " ((TIMESTAMPDIFF(MONTH, p.dateOfBirth, CURDATE()) % 12)<=0))" +
+                            " THEN" +
+                            " CONCAT((FLOOR(TIMESTAMPDIFF(DAY, p.dateOfBirth, CURDATE()) % 30.4375)), ' days')" +
+                            " WHEN" +
+                            " ((TIMESTAMPDIFF(YEAR, p.dateOfBirth ,CURDATE()))<=0)" +
+                            " THEN" +
+                            " CONCAT(((TIMESTAMPDIFF(MONTH, p.dateOfBirth, CURDATE()) % 12)), ' months')" +
+                            " ELSE" +
+                            " CONCAT(((TIMESTAMPDIFF(YEAR, p.dateOfBirth ,CURDATE()))), ' years')" +
+                            " END AS patientAge," +                                                       //[8]
                             " p.gender as patientGender," +                                               //[9]
                             " p.mobileNumber as mobileNumber," +                                         //[10]
                             " sp.name as specializationName," +                                         //[11]

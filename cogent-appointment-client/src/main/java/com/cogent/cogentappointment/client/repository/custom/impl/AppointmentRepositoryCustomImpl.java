@@ -246,7 +246,7 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                                                                           Pageable pageable,
                                                                           Long hospitalId) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_RESCHEDULE_APPOINTMENT_LOGS.apply(rescheduleDTO))
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_RESCHEDULE_APPOINTMENT_LOGS.apply(rescheduleDTO))
                 .setParameter(FROM_DATE, utilDateToSqlDate(rescheduleDTO.getFromDate()))
                 .setParameter(TO_DATE, utilDateToSqlDate(rescheduleDTO.getToDate()))
                 .setParameter(HOSPITAL_ID, hospitalId);

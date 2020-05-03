@@ -309,7 +309,7 @@ public class AppointmentQuery {
     }
 
 
-    public static Function<AppointmentRescheduleLogSearchDTO, String> QUERY_TO_RESCHEDULE_APPOINTMENT_LOGS =
+    public static Function<AppointmentRescheduleLogSearchDTO, String> QUERY_TO_FETCH_RESCHEDULE_APPOINTMENT_LOGS =
             (appointmentRescheduleLogSearchDTO) ->
                     " SELECT" +
                             " h.name as hospitalName," +                                                 //[0]
@@ -321,7 +321,19 @@ public class AppointmentQuery {
                             " a.appointmentNumber as appointmentNumber," +                               //[6]
                             " hpi.registrationNumber as registrationNumber," +                           //[7]
                             " p.name as patientName," +                                                  //[8]
-                            QUERY_TO_CALCULATE_PATIENT_AGE + "," +                                       //[9]
+                            " CASE" +
+                            " WHEN" +
+                            " (((TIMESTAMPDIFF(YEAR, p.dateOfBirth, CURDATE()))<=0) AND" +
+                            " ((TIMESTAMPDIFF(MONTH, p.dateOfBirth, CURDATE()) % 12)<=0))" +
+                            " THEN" +
+                            " CONCAT((FLOOR(TIMESTAMPDIFF(DAY, p.dateOfBirth, CURDATE()) % 30.4375)), ' days')" +
+                            " WHEN" +
+                            " ((TIMESTAMPDIFF(YEAR, p.dateOfBirth ,CURDATE()))<=0)" +
+                            " THEN" +
+                            " CONCAT(((TIMESTAMPDIFF(MONTH, p.dateOfBirth, CURDATE()) % 12)), ' months')" +
+                            " ELSE" +
+                            " CONCAT(((TIMESTAMPDIFF(YEAR, p.dateOfBirth ,CURDATE()))), ' years')" +
+                            " END AS patientAge," +                                                     //[9]
                             " p.gender as patientGender," +                                             //[10]
                             " p.mobileNumber as mobileNumber," +                                         //[11]
                             " sp.name as specializationName," +                                         //[12]

@@ -43,7 +43,7 @@ public class AppointmentRescheduleLogDTO implements Serializable {
 
     private Gender patientGender;
 
-    private String age;
+    private String patientAge;
 
     private String mobileNumber;
 

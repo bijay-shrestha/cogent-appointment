@@ -189,7 +189,6 @@ public class AppointmentQuery {
         return query + " ORDER BY a.appointmentDate DESC";
     }
 
-
     public static String QUERY_TO_FETCH_SEARCH_APPOINTMENT_FOR_OTHERS(AppointmentSearchDTO searchDTO,
                                                                       String childPatientIds) {
 

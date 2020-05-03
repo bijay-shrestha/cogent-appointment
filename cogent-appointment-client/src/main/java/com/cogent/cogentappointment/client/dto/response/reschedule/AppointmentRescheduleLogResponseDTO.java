@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.client.dto.response.reschedule;
 
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -12,7 +13,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppointmentRescheduleLogResponseDTO {
+public class AppointmentRescheduleLogResponseDTO implements Serializable{
 
     private List<AppointmentRescheduleLogDTO> appointmentRescheduleLogDTOS;
 

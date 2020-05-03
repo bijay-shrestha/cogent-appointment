@@ -11,6 +11,8 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
+import static javax.persistence.TemporalType.TIMESTAMP;
+
 /**
  * @author smriti ON 12/02/2020
  *
@@ -34,11 +36,11 @@ public class AppointmentRescheduleLog extends Auditable<String> implements Seria
     @JoinColumn(name = "appointment_id")
     private Appointment appointmentId;
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TIMESTAMP)
     @Column(name = "previous_appointment_date")
     private Date previousAppointmentDate;
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TIMESTAMP)
     @Column(name = "reschedule_date")
     private Date rescheduleDate;
 

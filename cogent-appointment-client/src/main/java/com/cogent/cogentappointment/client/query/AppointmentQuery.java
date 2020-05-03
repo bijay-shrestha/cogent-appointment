@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.query;
 
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentPendingApprovalSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.history.AppointmentHistorySearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.log.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
@@ -145,27 +146,79 @@ public class AppointmentQuery {
                     " AND a.appointmentDate BETWEEN :fromDate AND :toDate" +
                     " ORDER BY a.appointmentDate DESC";
 
+    /*esewa*/
+    public static String QUERY_TO_FETCH_APPOINTMENT_HISTORY_ESEWA(AppointmentHistorySearchDTO searchDTO) {
+
+        String query = " SELECT" +
+                " a.id as appointmentId," +                                             //[0]
+                " h.name as hospitalName," +                                            //[1]
+                " p.name as patientName," +                                             //[2]
+                " p.mobileNumber as mobileNumber," +                                    //[3]
+                " p.gender as gender," +                                                //[4]
+                QUERY_TO_CALCULATE_PATIENT_AGE + "," +                                  //[5]
+                " a.appointmentDate as appointmentDate," +                              //[6]
+                " DATE_FORMAT(a.appointmentTime,'%h:%i %p') as appointmentTime," +      //[7]
+                " a.appointmentNumber as appointmentNumber," +                          //[8]
+                " atd.appointmentAmount as appointmentAmount," +                        //[9]
+                " d.id as doctorId," +                                                  //[10]
+                " d.name as doctorName," +                                              //[11]
+                " s.id as specializationId," +                                          //[12]
+                " s.name as specializationName" +                                       //[13]
+                " FROM Appointment a" +
+                " LEFT JOIN Patient p ON p.id = a.patientId.id" +
+                " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
+                " LEFT JOIN Specialization s ON s.id = a.specializationId.id" +
+                " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +
+                " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
+                " WHERE" +
+                " (a.appointmentDate BETWEEN :fromDate AND :toDate)" +
+                " AND p.name =:name" +
+                " AND p.mobileNumber = :mobileNumber" +
+                " AND p.dateOfBirth =: dateOfBirth";
+
+        if (!ObjectUtils.isEmpty(searchDTO.getStatus()))
+            query += " AND a.status = '" + searchDTO.getStatus() + "'";
+
+        if (!Objects.isNull(searchDTO.getHospitalId()))
+            query += " AND h.id =" + searchDTO.getHospitalId();
+
+        return query + " ORDER BY a.appointmentDate DESC";
+    }
+
     /*admin*/
-    public static Function<AppointmentRescheduleLogSearchDTO, String> QUERY_TO_RESCHEDULE_APPOINTMENT_LOGS =
+    public static Function<AppointmentRescheduleLogSearchDTO, String> QUERY_TO_FETCH_RESCHEDULE_APPOINTMENT_LOGS =
             (appointmentRescheduleLogSearchDTO) ->
                     " SELECT" +
-                            " p.eSewaId as eSewaId," +                                                   //[0]
-                            " arl.previousAppointmentDate as previousAppointmentDate," +                 //[1]
-                            " arl.rescheduleDate as rescheduleDate," +                                   //[2]
-                            " a.appointmentNumber as appointmentNumber," +                               //[3]
-                            " hpi.registrationNumber as registeredNumber," +                             //[4]
-                            " p.name as patientName," +                                                  //[5]
-                            " p.dateOfBirth as dateOfBirth," +                                           //[6]
-                            " p.gender as gender," +                                                     //[7]
-                            " p.mobileNumber as mobileNumber," +                                         //[8]
-                            " sp.name as specializationName," +                                         //[9]
-                            " d.name as doctorName," +                                                  //[10]
-                            " atd.transactionNumber as transactionNumber," +                            //[11]
-                            " atd.appointmentAmount as appointmentAmount," +                            //[12]
-                            " arl.remarks as remarks," +                                                 //[13]
-                            " DATE_FORMAT(a.appointmentTime, '%h:%i %p') as appointmentTime," +           //[14]
-                            " a.isFollowUp as isFollowUp"+                                               // [15]
-                            " from AppointmentRescheduleLog arl" +
+                            " p.eSewaId as esewaId," +                                                               //[0]
+                            " arl.previousAppointmentDate as previousAppointmentDate," +                            //[1]
+                            " DATE_FORMAT(arl.previousAppointmentDate, '%h:%i %p') as previousAppointmentTime," +   //[2]
+                            " arl.rescheduleDate as rescheduleAppointmentDate," +                                   //[3]
+                            " DATE_FORMAT(arl.rescheduleDate, '%h:%i %p') as rescheduleAppointmentTime," +          //[4]
+                            " a.appointmentNumber as appointmentNumber," +                                          //[5]
+                            " hpi.registrationNumber as registrationNumber," +                                     //[6]
+                            " p.name as patientName," +                                                            //[7]
+                            " CASE" +
+                            " WHEN" +
+                            " (((TIMESTAMPDIFF(YEAR, p.dateOfBirth, CURDATE()))<=0) AND" +
+                            " ((TIMESTAMPDIFF(MONTH, p.dateOfBirth, CURDATE()) % 12)<=0))" +
+                            " THEN" +
+                            " CONCAT((FLOOR(TIMESTAMPDIFF(DAY, p.dateOfBirth, CURDATE()) % 30.4375)), ' days')" +
+                            " WHEN" +
+                            " ((TIMESTAMPDIFF(YEAR, p.dateOfBirth ,CURDATE()))<=0)" +
+                            " THEN" +
+                            " CONCAT(((TIMESTAMPDIFF(MONTH, p.dateOfBirth, CURDATE()) % 12)), ' months')" +
+                            " ELSE" +
+                            " CONCAT(((TIMESTAMPDIFF(YEAR, p.dateOfBirth ,CURDATE()))), ' years')" +
+                            " END AS patientAge," +                                                       //[8]
+                            " p.gender as patientGender," +                                               //[9]
+                            " p.mobileNumber as mobileNumber," +                                         //[10]
+                            " sp.name as specializationName," +                                         //[11]
+                            " d.name as doctorName," +                                                  //[12]
+                            " atd.transactionNumber as transactionNumber," +                            //[13]
+                            " atd.appointmentAmount as appointmentAmount," +                            //[14]
+                            " arl.remarks as remarks," +                                               //[15]
+                            " a.isFollowUp as isFollowUp" +                                            //[16]
+                            " FROM AppointmentRescheduleLog arl" +
                             " LEFT JOIN Appointment a ON a.id=arl.appointmentId.id" +
                             " LEFT JOIN Patient p ON p.id=a.patientId" +
                             " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id" +
@@ -209,6 +262,22 @@ public class AppointmentQuery {
         whereClause += " ORDER BY arl.rescheduleDate";
 
         return whereClause;
+    }
+
+    public static String QUERY_TO_CALCULATE_TOTAL_RESCHEDULE_AMOUNT(AppointmentRescheduleLogSearchDTO searchDTO) {
+        return
+                "SELECT" +
+                        " COALESCE(SUM(atd.appointmentAmount),0)" +
+                        " FROM AppointmentRescheduleLog arl" +
+                        " LEFT JOIN Appointment a ON a.id=arl.appointmentId.id" +
+                        " LEFT JOIN Patient p ON p.id=a.patientId" +
+                        " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id" +
+                        " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
+                        " LEFT JOIN Hospital h ON h.id=a.hospitalId" +
+                        " LEFT JOIN Specialization sp ON sp.id=a.specializationId" +
+                        " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id" +
+                        " LEFT JOIN Doctor d ON d.id=a.doctorId.id" +
+                        GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_RESCHEDULE_LOG_DETAILS(searchDTO);
     }
 
     /*admin*/

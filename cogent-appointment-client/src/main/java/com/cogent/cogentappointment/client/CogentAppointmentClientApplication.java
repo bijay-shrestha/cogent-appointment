@@ -16,9 +16,11 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication
 @EntityScan(basePackages = {"com.cogent.cogentappointment.persistence.model",
         "com.cogent.cogentappointment.persistence.history"})
+//@ComponentScan(basePackages = {"com.cogent.cogentappointment.scheduler.scheduler"})
+//@EnableScheduling
 @EnableJpaRepositories
 @PropertySource(
-        factory= YamlPropertySourceFactory.class,
+        factory = YamlPropertySourceFactory.class,
         value =
                 {
                         "file:${catalina.home}/conf/client/application-${spring.profiles.active}.yml"

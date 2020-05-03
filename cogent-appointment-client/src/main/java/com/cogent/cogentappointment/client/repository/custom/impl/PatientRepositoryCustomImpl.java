@@ -119,13 +119,15 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
     }
 
     @Override
-    public List<PatientRelationInfoResponseDTO> fetchPatientRelationInfoHospitalWise(
-            PatientMinSearchRequestDTO searchRequestDTO) {
+    public List<PatientRelationInfoResponseDTO> fetchPatientRelationInfoHospitalWise(String name,
+                                                                                     String mobileNumber,
+                                                                                     Date dateOfBirth,
+                                                                                     Long hospitalId) {
 
-        Query query = entityManager.createQuery(QUERY_TO_FETCH_CHILD_PATIENT_IDS(searchRequestDTO.getHospitalId()))
-                .setParameter(NAME, searchRequestDTO.getName())
-                .setParameter(MOBILE_NUMBER, searchRequestDTO.getMobileNumber())
-                .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(searchRequestDTO.getDateOfBirth()));
+        Query query = entityManager.createQuery(QUERY_TO_FETCH_CHILD_PATIENT_IDS(hospitalId))
+                .setParameter(NAME, name)
+                .setParameter(MOBILE_NUMBER, mobileNumber)
+                .setParameter(DATE_OF_BIRTH, utilDateToSqlDate(dateOfBirth));
 
         List<PatientRelationInfoResponseDTO> results =
                 transformQueryToResultList(query, PatientRelationInfoResponseDTO.class);

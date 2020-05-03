@@ -106,7 +106,7 @@ public class AppointmentResource {
     @PutMapping(HISTORY)
     @ApiOperation(FETCH_APPOINTMENT_HISTORY)
     public ResponseEntity<?> fetchAppointmentHistory(@RequestBody AppointmentHistorySearchDTO searchDTO) {
-        return ok(appointmentService.searchAppointments(searchDTO));
+        return ok(appointmentService.fetchAppointmentHistory(searchDTO));
     }
 
     /*SEARCH APPOINTMENTS FOR SELF/OTHERS*/

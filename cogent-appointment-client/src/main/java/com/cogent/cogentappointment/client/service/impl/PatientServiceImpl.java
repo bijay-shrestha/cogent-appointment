@@ -162,7 +162,12 @@ public class PatientServiceImpl implements PatientService {
         log.info(SEARCHING_PROCESS_STARTED, PATIENT);
 
         List<PatientRelationInfoResponseDTO> patientRelationInfo =
-                patientRepository.fetchPatientRelationInfoHospitalWise(searchRequestDTO);
+                patientRepository.fetchPatientRelationInfoHospitalWise(
+                        searchRequestDTO.getName(),
+                        searchRequestDTO.getMobileNumber(),
+                        searchRequestDTO.getDateOfBirth(),
+                        searchRequestDTO.getHospitalId()
+                );
 
         PatientResponseDTOForOthers patientMinInfo =
                 patientRepository.fetchMinPatientInfoForOthers(patientRelationInfo, pageable);

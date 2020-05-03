@@ -18,6 +18,8 @@ public class AppointmentResponseDTO implements Serializable {
 
     private Long appointmentId;
 
+    private Long hospitalId;
+
     private String hospitalName;
 
     private String patientName;

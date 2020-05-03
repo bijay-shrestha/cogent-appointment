@@ -55,7 +55,7 @@ public interface AppointmentService {
 
     AppointmentDetailResponseWithStatusDTO fetchAppointmentDetails(Long appointmentId);
 
-    AppointmentMinResponseWithStatusDTO searchAppointments(AppointmentHistorySearchDTO searchDTO);
+    AppointmentMinResponseWithStatusDTO fetchAppointmentHistory(AppointmentHistorySearchDTO searchDTO);
 
     AppointmentResponseWithStatusDTO searchAppointments(AppointmentSearchDTO searchDTO);
 

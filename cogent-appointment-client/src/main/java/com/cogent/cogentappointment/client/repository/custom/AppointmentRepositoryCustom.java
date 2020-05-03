@@ -54,7 +54,9 @@ public interface AppointmentRepositoryCustom {
 
     List<AppointmentMinResponseDTO> fetchAppointmentHistory(AppointmentHistorySearchDTO searchDTO);
 
-    AppointmentResponseWithStatusDTO searchAppointments(AppointmentSearchDTO searchDTO);
+    AppointmentResponseWithStatusDTO searchAppointmentsForSelf(AppointmentSearchDTO searchDTO);
+
+    AppointmentResponseWithStatusDTO searchAppointmentsForOthers(AppointmentSearchDTO searchDTO);
 
     /*admin*/
     List<AppointmentBookedTimeResponseDTO> fetchBookedAppointments(AppointmentCheckAvailabilityRequestDTO requestDTO);

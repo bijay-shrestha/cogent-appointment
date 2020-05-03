@@ -5,6 +5,7 @@ import com.cogent.cogentappointment.client.dto.request.appointment.approval.Appo
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.cancel.AppointmentCancelRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentCheckAvailabilityRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentHistorySearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentTransactionStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.esewa.history.AppointmentSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.esewa.save.AppointmentRequestDTO;
@@ -402,7 +403,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentMinResponseWithStatusDTO fetchPendingAppointments(com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentHistorySearchDTO searchDTO) {
+    public AppointmentMinResponseWithStatusDTO fetchPendingAppointments(AppointmentHistorySearchDTO searchDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, PENDING_APPOINTMENTS);
@@ -473,7 +474,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentMinResponseWithStatusDTO searchAppointments(com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentHistorySearchDTO searchDTO) {
+    public AppointmentMinResponseWithStatusDTO fetchAppointmentHistory(AppointmentHistorySearchDTO searchDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, APPOINTMENT);
@@ -492,8 +493,9 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         log.info(FETCHING_PROCESS_STARTED, APPOINTMENT);
 
-        AppointmentResponseWithStatusDTO appointments =
-                appointmentRepository.searchAppointments(searchDTO);
+        AppointmentResponseWithStatusDTO appointments = searchDTO.getIsSelf().equals(YES)
+                ? appointmentRepository.searchAppointmentsForSelf(searchDTO)
+                : appointmentRepository.searchAppointmentsForOthers(searchDTO);
 
         log.info(FETCHING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
 

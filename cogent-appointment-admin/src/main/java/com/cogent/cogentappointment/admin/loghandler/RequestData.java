@@ -86,6 +86,23 @@ public class RequestData {
                         "-")).replace(
                         "OPR", "Opera");
 
+        } else if (user.contains("chromium")) {
+            browser = (browserDetails.substring(browserDetails.indexOf("Chromium")).split(" ")[0]).replace("/", "-");
+
+        } else if (user.contains("edg") || user.contains("edge")) {
+
+            if (user.contains("edge"))
+                browser = (browserDetails.substring(browserDetails.indexOf("Edge")).split(" ")[0]).split(
+                        "/")[0] + "-" + (browserDetails.substring(
+                        browserDetails.indexOf("Version")).split(" ")[0]).split("/")[1];
+            else if (user.contains("edg"))
+                browser = ((browserDetails.substring(browserDetails.indexOf("Edg")).split(" ")[0]).replace("/",
+                        "-")).replace(
+                        "Edg", "Edge");
+
+        } else if (user.contains("UCBrowser")) {
+            browser = (browserDetails.substring(browserDetails.indexOf("UCBrowser")).split(" ")[0]).replace("/", "-");
+
         } else if (user.contains("chrome")) {
             browser = (browserDetails.substring(browserDetails.indexOf("Chrome")).split(" ")[0]).replace("/", "-");
 

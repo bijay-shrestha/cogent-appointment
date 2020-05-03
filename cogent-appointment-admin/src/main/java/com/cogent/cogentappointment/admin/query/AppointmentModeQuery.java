@@ -63,9 +63,9 @@ public class AppointmentModeQuery {
                     " am.status as status," +
                     " am.remarks as remarks," +
                     " am.description as description," +
-                    " DATE_FORMAT(am.created_date,'%Y-%m-%d') as createdDate," +
+                    " DATE_FORMAT(am.created_date,'%d %M, %Y, %h:%i %p') as createdDate," +
                     " am.created_by as createdBy," +
-                    " DATE_FORMAT(am.last_modified_date,'%Y-%m-%d') as modifiedDate," +
+                    " DATE_FORMAT(am.last_modified_date,'%d %M, %Y, %h:%i %p') as modifiedDate," +
                     " am.last_modified_by as modifiedBy" +
                     " FROM appointment_mode am " +
                     " WHERE am.status != 'D'" +

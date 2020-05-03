@@ -14,10 +14,7 @@ import com.cogent.cogentappointment.persistence.model.HospitalContactNumber;
 import com.cogent.cogentappointment.persistence.model.HospitalLogo;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.*;
@@ -199,6 +196,11 @@ public class HospitalUtils {
         final int IS_COMPANY_INDEX = 14;
         final int ALIAS_INDEX = 15;
 
+        final int CREATED_BY_INDEX = 16;
+        final int CREATED_DATE_INDEX = 17;
+        final int LAST_MODIFIED_BY_INDEX = 18;
+        final int LAST_MODIFIED_DATE_INDEX = 19;
+
         return HospitalResponseDTO.builder()
                 .id(Long.parseLong(results[HOSPITAL_ID_INDEX].toString()))
                 .name(results[NAME_INDEX].toString())
@@ -221,6 +223,10 @@ public class HospitalUtils {
                 .isCompany(Objects.isNull(results[IS_COMPANY_INDEX]) ? 'N' :
                         results[IS_COMPANY_INDEX].toString().charAt(0))
                 .alias(Objects.isNull(results[ALIAS_INDEX]) ? null : results[ALIAS_INDEX].toString())
+                .createdBy(results[CREATED_BY_INDEX].toString())
+                .createdDate((Date) results[CREATED_DATE_INDEX])
+                .lastModifiedBy(results[LAST_MODIFIED_BY_INDEX].toString())
+                .lastModifiedDate((Date) results[LAST_MODIFIED_DATE_INDEX])
                 .build();
     }
 

@@ -16,11 +16,11 @@ public class AuditableResponseDTO {
 
     private String createdBy;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd, YYYY hh:MM a",timezone = "Asia/Kathmandu")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd, YYYY, hh:MM a",timezone = "Asia/Kathmandu")
     private Date createdDate;
 
     private String lastModifiedBy;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd, YYYY hh:MM a",timezone = "Asia/Kathmandu")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd, YYYY, hh:MM a",timezone = "Asia/Kathmandu")
     private Date lastModifiedDate;
 }

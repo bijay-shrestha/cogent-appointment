@@ -23,4 +23,12 @@ public class AvailableDoctorWithSpecialization implements Serializable {
     private String specializationName;
 
     private Character dayOffStatus;
+
+    private String fileUri;
+
+    private String qualificationAlias;
+
+    private String nmcNumber;
+
+
 }

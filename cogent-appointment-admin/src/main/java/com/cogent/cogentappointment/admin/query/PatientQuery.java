@@ -72,9 +72,9 @@ public class PatientQuery {
                     " hpi.address as address," +
                     " hpi.isRegistered as isRegistered," +
                     " h.id as hospitalId," +
-                    " hpi.remarks as remarks,"+
-                    QUERY_TO_CALCULATE_PATIENT_AGE+"," +
-                    PATIENT_AUDITABLE_QUERY()+
+                    " hpi.remarks as remarks," +
+                    QUERY_TO_CALCULATE_PATIENT_AGE + "," +
+                    PATIENT_AUDITABLE_QUERY() +
                     " FROM Patient p " +
                     " LEFT JOIN HospitalPatientInfo hpi On p.id=hpi.patient.id" +
                     " LEFT JOIN Hospital h ON h.id=hpi.hospital.id" +
@@ -156,8 +156,8 @@ public class PatientQuery {
                     " a.isSelf as isSelf," +                                    //[10]
                     " atd.appointmentAmount as appointmentAmount," +            //[11]
                     " a.appointmentModeId.name as appointmentMode," +            //[12]
-                    QUERY_TO_CALCULATE_PATIENT_AGE+","+                            //[13]
-                    " a.isFollowUp as isFollowUp"+
+                    QUERY_TO_CALCULATE_PATIENT_AGE + "," +                            //[13]
+                    " a.isFollowUp as isFollowUp" +
                     " FROM Appointment a" +
                     " LEFT JOIN Patient p ON p.id=a.patientId.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
@@ -171,4 +171,12 @@ public class PatientQuery {
                 " p.lastModifiedBy as lastModifiedBy," +
                 " p.lastModifiedDate as lastModifiedDate";
     }
+
+    public static final String QUERY_TO_FETCH_ESEWA_ID =
+            " SELECT p.id as value," +                                      //[0]
+                    " p.eSewaId as label" +                                 //[1]
+                    " FROM Patient p " +
+                    " LEFT JOIN HospitalPatientInfo hp ON p.id = hp.patient.id" +
+                    " WHERE p.eSewaId IS NOT NULL" +
+                    " AND hp.hospital.id =:hospitalId";
 }

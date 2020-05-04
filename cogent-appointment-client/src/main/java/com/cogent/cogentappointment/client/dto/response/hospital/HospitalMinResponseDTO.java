@@ -14,7 +14,7 @@ import java.math.BigInteger;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class HospitalMinResponseDTO extends AuditableResponseDTO implements Serializable {
+public class HospitalMinResponseDTO implements Serializable {
 
     private BigInteger hospitalId;
 

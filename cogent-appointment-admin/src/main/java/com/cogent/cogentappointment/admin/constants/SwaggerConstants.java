@@ -318,6 +318,7 @@ public class SwaggerConstants {
         String SEARCH_OPERATION = "Search University according to given request parameters";
         String DETAILS_OPERATION = "Fetch University details by its id";
         String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal University details for dropdown";
+        String FETCH_ACTIVE_DETAILS_FOR_DROPDOWN = "Fetch minimal active University details for dropdown";
     }
 
 

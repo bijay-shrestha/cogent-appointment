@@ -83,6 +83,14 @@ public class UniversityQuery {
                     " WHERE u.status = 'Y' " +
                     " ORDER BY label ASC";
 
+    public static final String QUERY_TO_FETCH_UNIVERSITY =
+            "SELECT" +
+                    " u.id as value," +                 //[0]
+                    " u.name as label" +                //[1]
+                    " FROM University u" +
+                    " WHERE u.status != 'D' " +
+                    " ORDER BY label ASC";
+
     public static String UNIVERSITY_AUDITABLE_QUERY() {
         return " u.createdBy as createdBy," +
                 " u.createdDate as createdDate," +

@@ -36,6 +36,7 @@ public class HospitalResource {
         this.hospitalService = hospitalService;
     }
 
+    /*esewa*/
     @PutMapping(SEARCH + MIN)
     @ApiOperation(FETCH_MIN_DETAILS)
     public ResponseEntity<?> fetchMinDetails(@RequestBody HospitalMinSearchRequestDTO searchRequestDTO) {

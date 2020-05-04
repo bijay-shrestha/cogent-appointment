@@ -17,7 +17,7 @@ import java.util.Date;
 @Builder
 public class PatientDetailResponseDTOWithStatus implements Serializable {
 
-    PatientDetailResponseDTO detailResponseDTO;
+    private PatientDetailResponseDTO detailResponseDTO;
 
     private int responseCode;
 

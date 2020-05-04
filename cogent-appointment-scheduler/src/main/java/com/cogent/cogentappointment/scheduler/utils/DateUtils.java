@@ -1,4 +1,4 @@
-package com.cogentappointment.scheduler.utils;
+package com.cogent.cogentappointment.scheduler.utils;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;

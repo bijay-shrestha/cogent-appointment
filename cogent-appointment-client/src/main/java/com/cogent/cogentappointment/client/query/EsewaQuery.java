@@ -153,21 +153,43 @@ public class EsewaQuery {
                 " d.name AS doctorName," +                              //[1]
                 " s.id AS specializationId," +                          //[2]
                 " s.name AS specializationName," +                      //[3]
-                " ddro.dayOffStatus AS dayOffStatus" +                  //[4]
-                " FROM DoctorDutyRosterOverride ddro" +
-                " LEFT JOIN DoctorDutyRoster ddr ON ddr.id = ddro.doctorDutyRosterId.id" +
-                " LEFT JOIN Doctor d ON d.id = ddr.doctorId.id" +
-                " LEFT JOIN Specialization s ON s.id = ddr.specializationId.id" +
+                " ddro.day_off_status AS dayOffStatus," +               //[4]
+                " d.nmc_number AS nmcNumber," +                         //[5]
+                " CASE WHEN" +
+                " (da.status IS NULL" +
+                " OR da.status = 'N')" +
+                " THEN NULL" +
+                " ELSE" +
+                " da.file_uri" +
+                " END as fileUri" +                                     //[6]
+                " FROM doctor_duty_roster_override ddro" +
+                " LEFT JOIN doctor_duty_roster ddr ON ddr.id = ddro.doctor_duty_roster_id" +
+                " LEFT JOIN doctor d ON d.id = ddr.doctor_id" +
+                " LEFT JOIN specialization s ON s.id = ddr.specialization_id" +
+                " LEFT JOIN doctor_avatar da ON d.id = da.doctor_id" +
+                " LEFT JOIN(" +
+                " SELECT" +
+                " GROUP_CONCAT(qa.name) as qualificationAlias," +
+                " dq.doctor_id as doctorId" +
+                " FROM" +
+                " doctor_qualification dq" +
+                " LEFT JOIN qualification q ON q.id = dq.qualification_id" +
+                " LEFT JOIN qualification_alias qa ON qa.id = q.qualification_alias" +
+                " WHERE" +
+                " dq.status = 'Y'" +
+                " GROUP BY" +
+                " dq.doctor_id" +
+                " )tbl1 ON tbl1.doctorId = d.id" +
                 " WHERE" +
                 " ddr.status = 'Y'" +
                 " AND ddro.status = 'Y'" +
                 " AND d.status = 'Y'" +
                 " AND s.status = 'Y'" +
-                " AND ddr.hospitalId.id =:hospitalId";
+                " AND ddr.hospital_id =:hospitalId";
 
         if (!Objects.isNull(requestDTO.getFromDate()) && !Objects.isNull(requestDTO.getToDate()))
-            query += " AND ddro.toDate >=:fromDate" +
-                    " AND ddro.fromDate <=:toDate";
+            query += " AND ddro.to_date >=:fromDate" +
+                    " AND ddro.from_date <=:toDate";
 
         if (!Objects.isNull(requestDTO.getSpecializationId()))
             query += " AND s.id =:specializationId";
@@ -216,21 +238,42 @@ public class EsewaQuery {
                 " d.name AS doctorName," +                       //[1]
                 " s.id AS specializationId," +                   //[2]
                 " s.name AS specializationName," +               //[3]
-                " dw.dayOffStatus AS dayOffStatus" +             //[4]
-                " FROM DoctorDutyRoster ddr" +
-                " LEFT JOIN DoctorWeekDaysDutyRoster dw ON dw.doctorDutyRosterId.id = ddr.id" +
-                " LEFT JOIN Doctor d ON d.id = ddr.doctorId.id" +
-                " LEFT JOIN Specialization s ON s.id = ddr.specializationId.id" +
+                " d.nmc_number AS nmcNumber," +                  //[4]
+                " CASE WHEN" +
+                " (da.status IS NULL" +
+                " OR da.status = 'N')" +
+                " THEN NULL" +
+                " ELSE" +
+                " da.file_uri" +
+                " END as fileUri," +                             //[5]
+                " tbl1.qualificationAlias as qualificationAlias" +  //[6]
+                " FROM doctor_duty_roster ddr" +
+                " LEFT JOIN doctor_week_days_duty_roster dw ON dw.doctor_duty_roster_id = ddr.id" +
+                " LEFT JOIN doctor d ON d.id = ddr.doctor_id" +
+                " LEFT JOIN specialization s ON s.id = ddr.specialization_id" +
+                " LEFT JOIN doctor_avatar da ON d.id = da.doctor_id" +
+                " LEFT JOIN(" +
+                " SELECT" +
+                " GROUP_CONCAT(qa.name) as qualificationAlias," +
+                " dq.doctor_id as doctorId" +
+                " FROM" +
+                " doctor_qualification dq" +
+                " LEFT JOIN qualification q ON q.id = dq.qualification_id" +
+                " LEFT JOIN qualification_alias qa ON qa.id = q.qualification_alias" +
+                " WHERE" +
+                " dq.status = 'Y'" +
+                " GROUP BY" +
+                " dq.doctor_id" +
+                " )tbl1 ON tbl1.doctorId = d.id" +
                 " WHERE" +
                 " ddr.status = 'Y'" +
                 " AND d.status = 'Y'" +
                 " AND s.status = 'Y'" +
-                " AND dw.dayOffStatus = 'N'" +
-                " AND ddr.hospitalId.id =:hospitalId";
+                " AND ddr.hospital_id =:hospitalId";
 
         if (!Objects.isNull(requestDTO.getFromDate()) && !Objects.isNull(requestDTO.getToDate()))
-            query += " AND ddr.toDate >=:fromDate" +
-                    " AND ddr.fromDate <=:toDate";
+            query += " AND ddr.to_date >=:fromDate" +
+                    " AND ddr.from_date <=:toDate";
 
         if (!Objects.isNull(requestDTO.getSpecializationId()))
             query += " AND s.id =:specializationId";

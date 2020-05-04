@@ -1,4 +1,4 @@
-package com.cogentappointment.scheduler.service;
+package com.cogent.cogentappointment.scheduler.service;
 
 /**
  * @author smriti on 18/02/20

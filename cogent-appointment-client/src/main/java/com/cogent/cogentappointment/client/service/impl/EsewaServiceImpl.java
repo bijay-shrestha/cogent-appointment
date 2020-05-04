@@ -9,7 +9,6 @@ import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.DoctorDutyRosterOverrideRepository;
 import com.cogent.cogentappointment.client.repository.DoctorDutyRosterRepository;
 import com.cogent.cogentappointment.client.service.EsewaService;
-import com.cogent.cogentappointment.client.utils.EsewaUtils;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.Doctor;
 import lombok.extern.slf4j.Slf4j;
@@ -94,7 +93,43 @@ public class EsewaServiceImpl implements EsewaService {
         return getAvailableDoctorWithSpecializationResponseDTO(mergedList);
     }
 
-    /*ALL AVAILABLE DOCTORS AND THEIR SPECIALIZATION ON THE SELECTED DATE RANGE*/
+    /*ALL AVAILABLE DOCTORS AND THEIR SPECIALIZATION ON THE SELECTED DATE RANGE
+    *  DDR   DDR_OVERRIDE   RESULT
+    *  Y       Y               Y
+    *  Y       N               N
+    *  N       Y               Y
+    *  N       N               N
+    *
+    *  HERE, Y= AVAILABLE
+    *        N = NOT AVAILABLE*/
+//    @Override
+//    public AvailableDoctorWithSpecializationResponseDTO fetchAvailableDoctorWithSpecialization(
+//            AvailableDoctorRequestDTO requestDTO) {
+//
+//        Long startTime = getTimeInMillisecondsFromLocalDate();
+//
+//        log.info(FETCHING_PROCESS_STARTED, AVAILABLE_DOCTOR_LIST);
+//
+//        if (conditionOfBothDateProvided(requestDTO.getFromDate(), requestDTO.getToDate()))
+//            validateIsFirstDateGreater(requestDTO.getFromDate(), requestDTO.getToDate());
+//
+////        List<AvailableDoctorWithSpecialization> availableDoctorFromDDROverride =
+////                dutyRosterOverrideRepository.fetchAvailableDoctor(requestDTO);
+//
+//        List<AvailableDoctorWithSpecialization> availableDoctorFromDDR =
+//                dutyRosterRepository.fetchAvailableDoctor(requestDTO);
+//
+////        List<AvailableDoctorWithSpecialization> mergedList =
+////                mergeOverrideAndActualDoctorList(availableDoctorFromDDROverride, availableDoctorFromDDR);
+//
+//        if (ObjectUtils.isEmpty(availableDoctorFromDDR))
+//            throw DOCTORS_NOT_AVAILABLE.get();
+//
+//        log.info(FETCHING_PROCESS_COMPLETED, AVAILABLE_DOCTOR_LIST, getDifferenceBetweenTwoTime(startTime));
+//
+//        return getAvailableDoctorWithSpecializationResponseDTO(availableDoctorFromDDR);
+//    }
+
     @Override
     public AvailableDoctorWithSpecializationResponseDTO fetchAvailableDoctorWithSpecialization(
             AvailableDoctorRequestDTO requestDTO) {
@@ -106,21 +141,15 @@ public class EsewaServiceImpl implements EsewaService {
         if (conditionOfBothDateProvided(requestDTO.getFromDate(), requestDTO.getToDate()))
             validateIsFirstDateGreater(requestDTO.getFromDate(), requestDTO.getToDate());
 
-        List<AvailableDoctorWithSpecialization> availableDoctorFromDDROverride =
-                dutyRosterOverrideRepository.fetchAvailableDoctor(requestDTO);
-
         List<AvailableDoctorWithSpecialization> availableDoctorFromDDR =
                 dutyRosterRepository.fetchAvailableDoctor(requestDTO);
 
-        List<AvailableDoctorWithSpecialization> mergedList =
-                mergeOverrideAndActualDoctorList(availableDoctorFromDDROverride, availableDoctorFromDDR);
-
-        if (ObjectUtils.isEmpty(mergedList))
+        if (ObjectUtils.isEmpty(availableDoctorFromDDR))
             throw DOCTORS_NOT_AVAILABLE.get();
 
         log.info(FETCHING_PROCESS_COMPLETED, AVAILABLE_DOCTOR_LIST, getDifferenceBetweenTwoTime(startTime));
 
-        return getAvailableDoctorWithSpecializationResponseDTO(mergedList);
+        return getAvailableDoctorWithSpecializationResponseDTO(availableDoctorFromDDR);
     }
 
     /*RETURNS ALL THE AVAILABLE APPOINTMENT DATES AND TIME BY DOCTORID and SPECIALIZATIONID*/

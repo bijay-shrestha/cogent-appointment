@@ -37,8 +37,7 @@ import static com.cogent.cogentappointment.client.utils.DoctorDutyRosterOverride
 import static com.cogent.cogentappointment.client.utils.EsewaUtils.parseToDoctorAvailabilityStatusResponseDTO;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.conditionOfBothDateProvided;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
-import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
-import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.transformQueryToResultList;
+import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
 
 @Repository
 @Transactional(readOnly = true)
@@ -192,7 +191,7 @@ public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyR
     @Override
     public List<AvailableDoctorWithSpecialization> fetchAvailableDoctor(AvailableDoctorRequestDTO requestDTO) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_AVAILABLE_DOCTORS_FROM_DDR_OVERRIDE(requestDTO))
+        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_AVAILABLE_DOCTORS_FROM_DDR_OVERRIDE(requestDTO))
                 .setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
 
         if (conditionOfBothDateProvided(requestDTO.getFromDate(), requestDTO.getToDate())) {
@@ -206,7 +205,7 @@ public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyR
         if (!Objects.isNull(requestDTO.getDoctorId()))
             query.setParameter(DOCTOR_ID, requestDTO.getDoctorId());
 
-        return transformQueryToResultList(query, AvailableDoctorWithSpecialization.class);
+        return transformNativeQueryToResultList(query, AvailableDoctorWithSpecialization.class);
     }
 
     @Override

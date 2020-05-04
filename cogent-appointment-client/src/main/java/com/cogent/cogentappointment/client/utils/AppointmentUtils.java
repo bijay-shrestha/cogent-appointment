@@ -9,6 +9,8 @@ import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQ
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentQueueSearchByTimeDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appointmentQueue.AppointmentTimeDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.esewa.*;
+import com.cogent.cogentappointment.client.dto.response.appointment.esewa.history.AppointmentResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.esewa.history.AppointmentResponseWithStatusDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.log.AppointmentLogDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.log.AppointmentLogResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentStatus.AppointmentStatusResponseDTO;
@@ -84,7 +86,7 @@ public class AppointmentUtils {
   * IF IT MATCHES, THEN DO NOTHING
   * ELSE REQUESTED TIME IS INVALID AND THUS CANNOT TAKE AN APPOINTMENT*/
     public static boolean validateIfRequestedAppointmentTimeIsValid(DoctorDutyRosterTimeResponseDTO doctorDutyRosterInfo,
-                                                             String appointmentTime) {
+                                                                    String appointmentTime) {
 
         final DateTimeFormatter FORMAT = DateTimeFormat.forPattern("HH:mm");
 
@@ -175,9 +177,44 @@ public class AppointmentUtils {
         return refundDetail;
     }
 
-    public static String generateAppointmentNumber(List results) {
-        return results.isEmpty() ? "0001" :
-                String.format("%04d", Integer.parseInt(results.get(0).toString()) + 1);
+    /*startingFiscalYear = 2076-04-01
+    * startingYear = 2076
+    * splitStartingYear = 76
+    *
+    * endingFiscalYear = 2077-03-01
+    * endingYear = 2077
+    * splitEndingYear = 77
+    *
+    * APPOINTMENT NUMBER IS GENERATED IN FORMAT : 76-77-0001
+    * (fiscal year start- fiscal year end – unique appointment no)
+    * appointment number starts with ‘0001’ and increments by 1 & starts with ‘0001’ again in next
+    * fiscal year.
+    *
+    * results[0] = start fiscal year
+    * results[1] = end fiscal year
+    * results[2] = appointment number*/
+    public static String generateAppointmentNumber(List results,
+                                                   String startingFiscalYear,
+                                                   String endingFiscalYear) {
+
+        String startingYear = startingFiscalYear.split(HYPHEN)[0];
+        String splitStartingYear = startingYear.substring(startingYear.length() - 2);
+
+        String endingYear = endingFiscalYear.split(HYPHEN)[0];
+        String splitEndingYear = endingYear.substring(endingYear.length() - 2);
+
+        String appointmentNumber;
+
+        if (results.isEmpty())
+            appointmentNumber = "0001";
+        else
+            appointmentNumber = results.get(0).toString().contains(HYPHEN) ?
+                    String.format("%04d", Integer.parseInt(results.get(0).toString().split(HYPHEN)[2]) + 1)
+                    : String.format("%04d", Integer.parseInt(results.get(0).toString()) + 1);
+
+        appointmentNumber = splitStartingYear + HYPHEN + splitEndingYear + HYPHEN + appointmentNumber;
+
+        return appointmentNumber;
     }
 
     public static List<String> calculateAvailableTimeSlots(String startTime,
@@ -513,6 +550,16 @@ public class AppointmentUtils {
         appointmentStatistics.setIsRegistered(YES);
 
         return appointmentStatistics;
+    }
+
+    public static AppointmentResponseWithStatusDTO parseToAppointmentHistory(
+            List<AppointmentResponseDTO> appointmentHistory) {
+
+        return AppointmentResponseWithStatusDTO.builder()
+                .appointments(appointmentHistory)
+                .responseStatus(OK)
+                .responseCode(OK.value())
+                .build();
     }
 
 }

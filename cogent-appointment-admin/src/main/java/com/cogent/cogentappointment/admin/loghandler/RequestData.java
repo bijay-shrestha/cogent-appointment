@@ -14,33 +14,42 @@ import static com.cogent.cogentappointment.admin.loghandler.RequestHeader.getUse
 
 public class RequestData {
 
-//    public static String getClientIpAddr(HttpServletRequest request) throws IOException {
-        public static String getClientIpAddr() throws IOException {
-//        String ip = RequestHeader.getXForwardedFor(request);
-//
-//        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-//            ip = request.getHeader("Proxy-Client-IP");
-//        }
-//        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-//            ip = request.getHeader("WL-Proxy-Client-IP");
-//        }
-//        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-//            ip = request.getHeader("HTTP_CLIENT_IP");
-//        }
-//        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-//            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
-//        }
-//        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-//            ip = request.getRemoteAddr();
-//        }
-//
-//        ip = request.getRemoteAddr();
-//
-//        if (ip.equalsIgnoreCase("0:0:0:0:0:0:0:1")) {
-//            InetAddress inetAddress = InetAddress.getLocalHost();
-//            String ipAddress = inetAddress.getHostAddress();
-//            ip = ipAddress;
-//        }
+    public static String getClientIpAddr(HttpServletRequest request) throws IOException {
+
+        String ip = RequestHeader.getXForwardedFor(request);
+
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_CLIENT_IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+        }
+
+        ip = request.getRemoteAddr();
+
+        if (ip.equalsIgnoreCase("0:0:0:0:0:0:0:1")) {
+            InetAddress inetAddress = InetAddress.getLocalHost();
+            String ipAddress = inetAddress.getHostAddress();
+            ip = ipAddress;
+        }
+
+
+
+        return ip;
+    }
+
+
+    public static String getClientPublicIpAddr() throws IOException {
+
 
         URL whatismyip = new URL("http://checkip.amazonaws.com");
         BufferedReader in = new BufferedReader(new InputStreamReader(

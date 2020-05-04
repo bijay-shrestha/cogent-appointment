@@ -9,6 +9,7 @@ import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.maxmind.geoip2.model.CityResponse;
 import com.maxmind.geoip2.record.Location;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
@@ -25,13 +26,46 @@ import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.splitB
  */
 public class RequestHandler {
     
-    public static AdminLogRequestDTO convertToAdminLogRequestDTO(String userLog) throws IOException {
+    public static AdminLogRequestDTO convertToAdminLogRequestDTO(String userLog,HttpServletRequest request) throws IOException, GeoIp2Exception {
 
         AdminLogRequestDTO adminLogRequestDTO = ObjectMapperUtils.map(userLog, AdminLogRequestDTO.class);
 
-        //to do: rupak
         adminLogRequestDTO.setAdminEmail(SecurityContextUtils.getLoggedInAdminEmail());
         adminLogRequestDTO.setFeature(convertToNormalCase(splitByCharacterTypeCamelCase(adminLogRequestDTO.getFeature())));
+
+        getUserDetails(adminLogRequestDTO,request);
+
+        return adminLogRequestDTO;
+    }
+
+    public static AdminLogRequestDTO getUserDetails(AdminLogRequestDTO adminLogRequestDTO, HttpServletRequest request) throws IOException, GeoIp2Exception {
+
+        String clientBrowser = RequestData.getClientBrowser(request);
+        String clientOS = RequestData.getClientOS(request);
+        String clientIpAddr = RequestData.getClientIpAddr(request);
+        String location=location(RequestData.getClientPublicIpAddr());
+
+        adminLogRequestDTO.setLocation(location);
+        adminLogRequestDTO.setBrowser(clientBrowser);
+        adminLogRequestDTO.setOperatingSystem(clientOS);
+        adminLogRequestDTO.setIpAddress(clientIpAddr);
+
+        return adminLogRequestDTO;
+    }
+
+    public static AdminLogRequestDTO forgotPasswordLogging( HttpServletRequest request) throws IOException, GeoIp2Exception {
+
+        ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper((HttpServletRequest) request);
+        String requestedEmail = new String(requestWrapper.getParameter("email"));
+
+        AdminLogRequestDTO adminLogRequestDTO= AdminLogRequestDTO.
+                builder()
+                .feature("Forgot Password")
+                .actionType("Forgot Password")
+                .adminEmail(requestedEmail)
+                .build();
+
+        getUserDetails(adminLogRequestDTO,request);
 
         return adminLogRequestDTO;
     }
@@ -61,11 +95,11 @@ public class RequestHandler {
 
                 System.out.println(lat+","+longitude);
 
-            }catch(Exception e){
+            }catch(IOException e){
                 address= "N/A";
             }
 
-            address= countryName + ", " + cityName;
+            address= cityName + ", " + countryName;
 
         return address;
 

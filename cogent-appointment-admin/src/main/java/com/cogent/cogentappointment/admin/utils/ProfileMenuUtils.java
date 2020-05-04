@@ -16,9 +16,34 @@ public class ProfileMenuUtils {
 
     public static List<ProfileMenu> convertToProfileMenu(Profile profile,
                                                          List<ProfileMenuRequestDTO> requestDTO) {
-        return requestDTO.stream()
+
+        List<ProfileMenu> profileMenuList=requestDTO.stream()
                 .map(profileMenu -> convertToProfileMenuResponse.apply(profile, profileMenu))
                 .collect(Collectors.toList());
+        setLoginAndForgotPasswordMenu(profile,profileMenuList);
+
+
+        return profileMenuList;
+    }
+
+    private static void setLoginAndForgotPasswordMenu(Profile profile,List<ProfileMenu> profileMenuList){
+        ProfileMenu loginMenu=new ProfileMenu();
+        loginMenu.setProfile(profile);
+        loginMenu.setParentId(8080l);
+        loginMenu.setRoleId(3001l);
+        loginMenu.setStatus('Y');
+
+        profileMenuList.add(loginMenu);
+
+        ProfileMenu forgotPassword=new ProfileMenu();
+        loginMenu.setProfile(profile);
+        loginMenu.setParentId(8081l);
+        loginMenu.setRoleId(3002l);
+        loginMenu.setStatus('Y');
+
+        profileMenuList.add(forgotPassword);
+
+
     }
 
     private static BiFunction<Profile, ProfileMenuRequestDTO, ProfileMenu> convertToProfileMenuResponse =

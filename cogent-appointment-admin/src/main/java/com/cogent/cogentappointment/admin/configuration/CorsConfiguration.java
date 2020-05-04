@@ -38,7 +38,12 @@ public class CorsConfiguration {
                 "x-xsrf-token",
                 "log-header",
                 "X-FORWARDED-FOR",
-                "User-Agent"));
+                "User-Agent",
+                "Proxy-Client-IP",
+                "WL-Proxy-Client-IP",
+                "HTTP_CLIENT_IP",
+                "HTTP_X_FORWARDED_FOR"
+                ));
 
         // This allow us to expose the headers
         corsConfig.setExposedHeaders(

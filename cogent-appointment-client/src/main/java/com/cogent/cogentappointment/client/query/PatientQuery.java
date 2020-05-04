@@ -95,11 +95,12 @@ public class PatientQuery {
                 " p.id as patientId," +                                 //[1]
                 " p.name as name," +                                    //[2]
                 " p.mobileNumber as mobileNumber," +                    //[3]
-                " p.gender as gender," +                                //[4]
-                " hpi.address as address," +                            //[5]
-                " hpi.registrationNumber as registrationNumber," +      //[6]
-                " hpi.hospital.name as hospitalName," +                  //[7]
-                QUERY_TO_CALCULATE_PATIENT_AGE +                        //[8]
+                " p.dateOfBirth as dateOfBirth," +                       //[4]
+                " p.gender as gender," +                                //[5]
+                " hpi.address as address," +                            //[6]
+                " hpi.registrationNumber as registrationNumber," +      //[7]
+                " hpi.hospital.name as hospitalName," +                  //[8]
+                QUERY_TO_CALCULATE_PATIENT_AGE +                        //[9]
                 " FROM Patient p" +
                 " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = p.id" +
                 " WHERE p.id IN (" + childPatientIds + ")";

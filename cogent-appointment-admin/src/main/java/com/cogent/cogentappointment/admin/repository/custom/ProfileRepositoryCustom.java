@@ -31,5 +31,7 @@ public interface ProfileRepositoryCustom {
 
     List<DropDownResponseDTO> fetchProfileByDepartmentId(Long departmentId);
 
+    List<DropDownResponseDTO> fetchAllProfileByDepartmentId(Long departmentId);
+
     AssignedProfileResponseDTO fetchAssignedProfileResponseDto(ProfileMenuSearchRequestDTO profileMenuSearchRequestDTO);
 }

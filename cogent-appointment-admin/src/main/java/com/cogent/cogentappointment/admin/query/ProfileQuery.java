@@ -135,6 +135,18 @@ public class ProfileQuery {
                     " AND p.isCompanyProfile= 'N'" +
                     " ORDER BY label ASC ";
 
+    public static final String QUERY_TO_FETCH_ALL_PROFILE_BY_DEPARTMENT_ID =
+            " SELECT p.id as value," +                                         //[0]
+                    " CONCAT(h.alias,'-',p.name) as label" +                   //[1]
+                    " FROM Profile p" +
+                    " LEFT JOIN Department d ON d.id = p.department.id" +
+                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
+                    " WHERE p.status !='D'" +
+                    " AND d.status ='Y'" +
+                    " AND d.id =:id" +
+                    " AND p.isCompanyProfile= 'N'" +
+                    " ORDER BY label ASC ";
+
     public static final String QUERY_TO_FETCH_ASSIGNED_PROFILE_RESPONSE =
             "SELECT" +
                     " pm.parent_id as parentId," +                                      //[0]

@@ -132,6 +132,19 @@ public class ProfileRepositoryCustomImpl implements ProfileRepositoryCustom {
     }
 
     @Override
+    public List<DropDownResponseDTO> fetchAllProfileByDepartmentId(Long departmentId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ALL_PROFILE_BY_DEPARTMENT_ID)
+                .setParameter(ID, departmentId);
+
+        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
+
+        if (results.isEmpty()) {
+            error(PROFILE);
+            throw PROFILES_NOT_FOUND.get();
+        } else return results;
+    }
+
+    @Override
     public AssignedProfileResponseDTO fetchAssignedProfileResponseDto(ProfileMenuSearchRequestDTO searchRequestDTO) {
 
         Query query = entityManager.createNativeQuery(QUERY_TO_FETCH_ASSIGNED_PROFILE_RESPONSE)

@@ -176,6 +176,21 @@ public class SpecializationServiceImpl implements SpecializationService {
     }
 
     @Override
+    public List<DropDownResponseDTO> fetchActiveSpecializationByHospitalId(Long hospitalId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_ACTIVE_DROPDOWN, SPECIALIZATION);
+
+        List<DropDownResponseDTO> responseDTOS =
+                specializationRepository.fetchActiveSpecializationByHospitalId(hospitalId);
+
+        log.info(FETCHING_PROCESS_FOR_ACTIVE_DROPDOWN_COMPLETED, SPECIALIZATION,
+                getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
     public List<DropDownResponseDTO> fetchSpecializationByHospitalId(Long hospitalId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 

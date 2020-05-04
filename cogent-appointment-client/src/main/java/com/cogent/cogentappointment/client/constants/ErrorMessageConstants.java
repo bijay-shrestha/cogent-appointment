@@ -60,6 +60,9 @@ public class ErrorMessageConstants {
 
         String ACCOUNT_NOT_ACTIVATED_MESSAGE = "Sorry '%s', please activate your account first.";
         String ACCOUNT_NOT_ACTIVATED_DEBUG_MESSAGE = "'status' flag in Admin entity is 'N'";
+
+        String BAD_UPDATE_MESSAGE = "Operation failed, save password pending.";
+        String BAD_UPDATE_DEBUG_MESSAGE = "Admin hasn't saved its password yet and is still inactive.";
     }
 
 

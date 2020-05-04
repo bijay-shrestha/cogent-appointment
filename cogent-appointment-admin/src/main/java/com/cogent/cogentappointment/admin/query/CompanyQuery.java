@@ -32,7 +32,7 @@ public class CompanyQuery {
                     " AND h.status != 'D'" +
                     " AND h.isCompany='Y'";
 
-    public static final String QUERY_TO_FETCH_COMPANY_FOR_DROPDOWN =
+    public static final String QUERY_TO_FETCH_ACTIVE_COMPANY_FOR_DROPDOWN =
             " SELECT" +
                     " h.id as value," +                     //[0]
                     " h.name as label," +
@@ -40,6 +40,17 @@ public class CompanyQuery {
                     " FROM" +
                     " Hospital h" +
                     " WHERE h.status ='Y'" +
+                    " AND h.isCompany='Y'" +
+                    " ORDER by h.name ASC";
+
+    public static final String QUERY_TO_FETCH_COMPANY_FOR_DROPDOWN =
+            " SELECT" +
+                    " h.id as value," +                     //[0]
+                    " h.name as label," +
+                    " h.isCompany as isCompany" +                    //[1]
+                    " FROM" +
+                    " Hospital h" +
+                    " WHERE h.status !='D'" +
                     " AND h.isCompany='Y'" +
                     " ORDER by h.name ASC";
 

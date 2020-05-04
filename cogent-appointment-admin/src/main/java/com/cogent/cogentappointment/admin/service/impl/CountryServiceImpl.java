@@ -35,9 +35,22 @@ public class CountryServiceImpl implements CountryService {
     public List<DropDownResponseDTO> fetchActiveCountry() {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, COUNTRY);
+        log.info(FETCHING_PROCESS_STARTED_FOR_ACTIVE_DROPDOWN, COUNTRY);
 
         List<DropDownResponseDTO> responseDTOS = countryRepository.fetchActiveCountry();
+
+        log.info(FETCHING_PROCESS_FOR_ACTIVE_DROPDOWN_COMPLETED, COUNTRY, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public List<DropDownResponseDTO> fetchCountry() {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, COUNTRY);
+
+        List<DropDownResponseDTO> responseDTOS = countryRepository.fetchCountry();
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, COUNTRY, getDifferenceBetweenTwoTime(startTime));
 

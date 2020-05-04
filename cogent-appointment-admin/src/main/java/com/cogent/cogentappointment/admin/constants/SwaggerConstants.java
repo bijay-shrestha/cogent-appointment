@@ -109,6 +109,7 @@ public class SwaggerConstants {
     public interface CountryConstant {
         String BASE_API_VALUE = "This is Country Resource.";
         String FETCH_ACTIVE_COUNTRY = "Fetch active country for dropdown.";
+        String FETCH_COUNTRY = "Fetch country for dropdown.";
     }
 
     public interface CompanyConstant {

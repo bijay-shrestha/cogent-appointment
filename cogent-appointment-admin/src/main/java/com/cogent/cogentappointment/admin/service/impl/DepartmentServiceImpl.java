@@ -166,12 +166,27 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DEPARTMENT);
+        log.info(FETCHING_PROCESS_STARTED_FOR_ACTIVE_DROPDOWN, DEPARTMENT);
 
         List<DropDownResponseDTO> responseDTOS = departmentRepository.fetchDepartmentByHospitalId(hospitalId)
                 .orElseThrow(() -> DEPARTMENT_BY_GIVEN_HOSPITAL_ID_NOT_FOUND.apply(hospitalId));
 
-        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_FOR_ACTIVE_DROPDOWN_COMPLETED, DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public List<DropDownResponseDTO> fetchAllDepartmentByHospitalId(Long hospitalId) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_ACTIVE_DROPDOWN, DEPARTMENT);
+
+        List<DropDownResponseDTO> responseDTOS = departmentRepository.fetchAllDepartmentByHospitalId(hospitalId)
+                .orElseThrow(() -> DEPARTMENT_BY_GIVEN_HOSPITAL_ID_NOT_FOUND.apply(hospitalId));
+
+        log.info(FETCHING_PROCESS_FOR_ACTIVE_DROPDOWN_COMPLETED, DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
     }

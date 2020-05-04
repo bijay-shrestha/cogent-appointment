@@ -128,6 +128,16 @@ public class DepartmentRepositoryCustomImpl implements DepartmentRepositoryCusto
         return dropDownDTOS.isEmpty() ? Optional.empty() : Optional.of(dropDownDTOS);
     }
 
+    @Override
+    public Optional<List<DropDownResponseDTO>> fetchAllDepartmentByHospitalId(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ALL_DEPARTMENT_BY_HOSPITAL_ID)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        List<DropDownResponseDTO> dropDownDTOS = transformQueryToResultList(query, DropDownResponseDTO.class);
+
+        return dropDownDTOS.isEmpty() ? Optional.empty() : Optional.of(dropDownDTOS);
+    }
+
     private void error() {
         log.error(CONTENT_NOT_FOUND, DEPARTMENT);
     }

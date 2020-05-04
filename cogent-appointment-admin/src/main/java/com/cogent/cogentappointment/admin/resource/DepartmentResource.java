@@ -87,7 +87,13 @@ public class DepartmentResource {
 
     @GetMapping(ACTIVE + MIN + HOSPITAL_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_DEPARTMENT_BY_HOSPITAL_OPERATION)
-    public ResponseEntity<?> fetchDepartmentByHospitalId(@PathVariable("hospitalId") Long hospitalId) {
+    public ResponseEntity<?> fetchActiveDepartmentByHospitalId(@PathVariable("hospitalId") Long hospitalId) {
         return ok(departmentService.fetchDepartmentByHospitalId(hospitalId));
+    }
+
+    @GetMapping(MIN + HOSPITAL_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_DEPARTMENT_BY_HOSPITAL_OPERATION)
+    public ResponseEntity<?> fetchDepartmentByHospitalId(@PathVariable("hospitalId") Long hospitalId) {
+        return ok(departmentService.fetchAllDepartmentByHospitalId(hospitalId));
     }
 }

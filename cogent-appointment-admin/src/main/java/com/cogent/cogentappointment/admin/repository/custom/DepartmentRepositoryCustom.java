@@ -33,4 +33,6 @@ public interface DepartmentRepositoryCustom {
     Optional<List<DropDownResponseDTO>> fetchActiveDropDownList();
 
     Optional<List<DropDownResponseDTO>> fetchDepartmentByHospitalId(Long hospitalId);
+
+    Optional<List<DropDownResponseDTO>> fetchAllDepartmentByHospitalId(Long hospitalId);
 }

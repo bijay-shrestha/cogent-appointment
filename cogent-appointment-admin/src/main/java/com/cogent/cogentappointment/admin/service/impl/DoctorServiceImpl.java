@@ -274,6 +274,20 @@ public class DoctorServiceImpl implements DoctorService {
         return responseDTOS;
     }
 
+    @Override
+    public List<DoctorDropdownDTO> fetchActiveDoctorByHospitalId(Long hospitalId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_ACTIVE_DROPDOWN, DOCTOR);
+
+        List<DoctorDropdownDTO> responseDTOS =
+                doctorRepository.fetchActiveDoctorByHospitalId(hospitalId);
+
+        log.info(FETCHING_PROCESS_FOR_ACTIVE_DROPDOWN_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
 
     private Gender fetchGender(Character genderCode) {
         return GenderUtils.fetchGenderByCode(genderCode);

@@ -103,6 +103,12 @@ public class DoctorResource {
 
     @GetMapping(HOSPITAL_WISE + HOSPITAL_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_BY_HOSPITAL_ID)
+    public ResponseEntity<?> fetchAvtiveDoctorByHospitalId(@PathVariable("hospitalId") Long hospitalId) {
+        return ok(doctorService.fetchActiveDoctorByHospitalId(hospitalId));
+    }
+
+    @GetMapping(HOSPITAL_WISE + MIN + HOSPITAL_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_BY_HOSPITAL_ID)
     public ResponseEntity<?> fetchDoctorByHospitalId(@PathVariable("hospitalId") Long hospitalId) {
         return ok(doctorService.fetchDoctorByHospitalId(hospitalId));
     }

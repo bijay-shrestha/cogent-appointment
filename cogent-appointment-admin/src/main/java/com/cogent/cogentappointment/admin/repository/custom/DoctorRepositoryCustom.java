@@ -30,6 +30,8 @@ public interface DoctorRepositoryCustom {
 
     List<DoctorDropdownDTO> fetchDoctorBySpecializationId(Long specializationId);
 
+    List<DoctorDropdownDTO> fetchActiveDoctorByHospitalId(Long hospitalId);
+
     List<DoctorDropdownDTO> fetchDoctorByHospitalId(Long hospitalId);
 
     DoctorUpdateResponseDTO fetchDetailsForUpdate(Long id);

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.CountryConstant.BASE_API_VALUE;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.CountryConstant.FETCH_ACTIVE_COUNTRY;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.CountryConstant.FETCH_COUNTRY;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.ACTIVE;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.CountryConstants.BASE_COUNTRY;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.MIN;
@@ -30,7 +31,7 @@ public class CountryResource {
         this.countryService = countryService;
     }
 
-    @GetMapping
+    @GetMapping(ACTIVE + MIN)
     @ApiOperation(FETCH_ACTIVE_COUNTRY)
     public ResponseEntity<?> fetchActiveCountry() {
         return ok(countryService.fetchActiveCountry());

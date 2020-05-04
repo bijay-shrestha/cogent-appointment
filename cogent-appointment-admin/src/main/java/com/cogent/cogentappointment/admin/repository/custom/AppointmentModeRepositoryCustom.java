@@ -28,4 +28,6 @@ public interface AppointmentModeRepositoryCustom {
 
     List<DropDownResponseDTO> fetchActiveMinAppointmentMode();
 
+    List<DropDownResponseDTO> fetchMinAppointmentMode();
+
 }

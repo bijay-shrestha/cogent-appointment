@@ -53,6 +53,8 @@ public class AppointmentModeQuery {
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
             whereClause += " AND am.status='" + searchRequestDTO.getStatus() + "'";
 
+        whereClause += " ORDER BY am.id DESC";
+
         return whereClause;
     }
 
@@ -76,5 +78,14 @@ public class AppointmentModeQuery {
                     " am.id as value," +
                     " am.name as label" +
                     " FROM AppointmentMode am " +
-                    " WHERE am.status = 'Y'";
+                    " WHERE am.status = 'Y'" +
+                    " ORDER BY am.id DESC";
+
+    public static final String QUERY_TO_FETCH_APPOINTMENT_MODE =
+            "SELECT" +
+                    " am.id as value," +
+                    " am.name as label" +
+                    " FROM AppointmentMode am " +
+                    " WHERE am.status != 'D'" +
+                    " ORDER BY am.id DESC";
 }

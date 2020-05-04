@@ -77,6 +77,7 @@ public class SwaggerConstants {
         String SEARCH_OPERATION = "Search Appointment Mode according to given request parameters";
         String DETAILS_OPERATION = "Fetch Appointment Mode details by its id";
         String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal Appointment Mode details for dropdown";
+        String FETCH_ACTIVE_DETAILS_FOR_DROPDOWN = "Fetch minimal active Appointment Mode details for dropdown";
     }
 
     //B

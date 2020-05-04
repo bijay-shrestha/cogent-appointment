@@ -89,6 +89,12 @@ public class SpecializationResource {
 
     @GetMapping(DOCTOR_WISE + DOCTOR_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_BY_DOCTOR_ID)
+    public ResponseEntity<?> fetchActiveSpecializationByDoctorId(@PathVariable("doctorId") Long doctorId) {
+        return ok(specializationService.fetchActiveSpecializationByDoctorId(doctorId));
+    }
+
+    @GetMapping(DOCTOR_WISE + MIN + DOCTOR_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_BY_DOCTOR_ID)
     public ResponseEntity<?> fetchSpecializationByDoctorId(@PathVariable("doctorId") Long doctorId) {
         return ok(specializationService.fetchSpecializationByDoctorId(doctorId));
     }

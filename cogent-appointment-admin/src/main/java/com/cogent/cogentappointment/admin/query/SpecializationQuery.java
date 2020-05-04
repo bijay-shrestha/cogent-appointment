@@ -100,7 +100,7 @@ public class SpecializationQuery {
         return whereClause;
     };
 
-    public static String QUERY_TO_FETCH_SPECIALIZATION_BY_DOCTOR_ID =
+    public static String QUERY_TO_FETCH_ACTIVE_SPECIALIZATION_BY_DOCTOR_ID =
             "SELECT" +
                     " s.id as value," +                                                   //[0]
                     " s.name as label" +                                                 //[1]
@@ -110,6 +110,18 @@ public class SpecializationQuery {
                     " cs.doctorId =:id" +
                     " AND cs.status = 'Y'" +
                     " AND s.status = 'Y'" +
+                    " ORDER BY label ASC";
+
+    public static String QUERY_TO_FETCH_SPECIALIZATION_BY_DOCTOR_ID =
+            "SELECT" +
+                    " s.id as value," +                                                   //[0]
+                    " s.name as label" +                                                 //[1]
+                    " FROM DoctorSpecialization cs" +
+                    " LEFT JOIN Specialization s ON s.id = cs.specializationId" +
+                    " WHERE" +
+                    " cs.doctorId =:id" +
+                    " AND cs.status = 'Y'" +
+                    " AND s.status != 'D'" +
                     " ORDER BY label ASC";
 
     public static final String QUERY_TO_FETCH_ACTIVE_SPECIALIZATION_BY_HOSPITAL_ID =

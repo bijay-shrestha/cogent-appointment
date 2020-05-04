@@ -269,6 +269,9 @@ public class AdminServiceImpl implements AdminService {
 
         Admin admin = findAdminByIdAndHospitalId(updateRequestDTO.getId(), hospitalId);
 
+        if (Objects.isNull(admin.getPassword()))
+            throw new BadRequestException(BAD_UPDATE_MESSAGE, BAD_UPDATE_DEBUG_MESSAGE);
+
         List<Object[]> admins = adminRepository.validateDuplicity(updateRequestDTO);
 
         validateAdminDuplicity(admins,
@@ -430,8 +433,8 @@ public class AdminServiceImpl implements AdminService {
                             result.getId(), admin.getId());
 
             if (adminDashboardFeature == null) {
-                Character status= result.getStatus();
-                updateAdminDashboardFeature(result.getId(), result.getStatus(),admin);
+                Character status = result.getStatus();
+                updateAdminDashboardFeature(result.getId(), result.getStatus(), admin);
             }
 
 
@@ -453,13 +456,13 @@ public class AdminServiceImpl implements AdminService {
         adminDashboardFeatureRepository.saveAll(parseToAdminDashboardFeature(dashboardFeatureList, admin));
     }
 
-    private void updateAdminDashboardFeature(Long id,Character status, Admin admin) {
+    private void updateAdminDashboardFeature(Long id, Character status, Admin admin) {
 
         DashboardFeature dashboardFeature = dashboardFeatureRepository.findActiveDashboardFeatureById(id)
                 .orElseThrow(() -> new NoContentFoundException(DashboardFeature.class));
 
         List<DashboardFeature> dashboardFeatureList = Arrays.asList(dashboardFeature);
-        adminDashboardFeatureRepository.saveAll(parseToUpdateAdminDashboardFeature(dashboardFeatureList,status, admin));
+        adminDashboardFeatureRepository.saveAll(parseToUpdateAdminDashboardFeature(dashboardFeatureList, status, admin));
 
     }
 

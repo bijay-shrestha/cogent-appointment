@@ -18,7 +18,8 @@ import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.EmailConstants.*;
 import static com.cogent.cogentappointment.admin.constants.EmailTemplates.*;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.*;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.*;
 import static com.cogent.cogentappointment.admin.utils.commons.NumberFormatterUtils.generateRandomToken;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.convertToNormalCase;
@@ -35,7 +36,7 @@ public class AdminUtils {
         admin.setFullName(convertToNormalCase(adminRequestDTO.getFullName()));
         admin.setEmail(adminRequestDTO.getEmail());
         admin.setMobileNumber(adminRequestDTO.getMobileNumber());
-        admin.setStatus(NO);
+        admin.setStatus(INACTIVE);
         admin.setHasMacBinding(adminRequestDTO.getHasMacBinding());
 
         parseAdminDetails(gender, profile, admin);
@@ -164,7 +165,7 @@ public class AdminUtils {
     public static Admin updateAdminPassword(String password, String remarks, Admin admin) {
         admin.setPassword(BCrypt.hashpw(password, BCrypt.gensalt()));
         admin.setRemarks(remarks);
-
+        admin.setStatus(ACTIVE);
         return admin;
     }
 
@@ -255,7 +256,7 @@ public class AdminUtils {
                                           Admin admin) {
 
         admin.setPassword(BCrypt.hashpw(requestDTO.getPassword(), BCrypt.gensalt()));
-        admin.setStatus(YES);
+        admin.setStatus(ACTIVE);
         return admin;
     }
 

@@ -35,6 +35,8 @@ public interface HospitalRepositoryCustom {
 
     List<HospitalDropdownResponseDTO> fetchActiveHospitalForDropDown();
 
+    List<HospitalDropdownResponseDTO> fetchHospitalForDropDown();
+
     List<CompanyDropdownResponseDTO> fetchActiveCompanyForDropDown();
 
     List<CompanyDropdownResponseDTO> fetchCompanyForDropDown();

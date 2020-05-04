@@ -8,16 +8,13 @@ import com.maxmind.geoip2.DatabaseReader;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.maxmind.geoip2.model.CityResponse;
 import com.maxmind.geoip2.record.Location;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 
-import static com.cogent.cogentappointment.admin.constants.EmailConstants.LOGO_LOCATION;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.convertToNormalCase;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.splitByCharacterTypeCamelCase;
 
@@ -25,15 +22,15 @@ import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.splitB
  * @author Rupak
  */
 public class RequestHandler {
-    
-    public static AdminLogRequestDTO convertToAdminLogRequestDTO(String userLog,HttpServletRequest request) throws IOException, GeoIp2Exception {
+
+    public static AdminLogRequestDTO convertToAdminLogRequestDTO(String userLog, HttpServletRequest request) throws IOException, GeoIp2Exception {
 
         AdminLogRequestDTO adminLogRequestDTO = ObjectMapperUtils.map(userLog, AdminLogRequestDTO.class);
 
         adminLogRequestDTO.setAdminEmail(SecurityContextUtils.getLoggedInAdminEmail());
         adminLogRequestDTO.setFeature(convertToNormalCase(splitByCharacterTypeCamelCase(adminLogRequestDTO.getFeature())));
 
-        getUserDetails(adminLogRequestDTO,request);
+        getUserDetails(adminLogRequestDTO, request);
 
         return adminLogRequestDTO;
     }
@@ -43,7 +40,7 @@ public class RequestHandler {
         String clientBrowser = RequestData.getClientBrowser(request);
         String clientOS = RequestData.getClientOS(request);
         String clientIpAddr = RequestData.getClientIpAddr(request);
-        String location=location(RequestData.getClientPublicIpAddr());
+        String location = location(RequestData.getClientPublicIpAddr());
 
         adminLogRequestDTO.setLocation(location);
         adminLogRequestDTO.setBrowser(clientBrowser);
@@ -53,53 +50,53 @@ public class RequestHandler {
         return adminLogRequestDTO;
     }
 
-    public static AdminLogRequestDTO forgotPasswordLogging( HttpServletRequest request) throws IOException, GeoIp2Exception {
+    public static AdminLogRequestDTO forgotPasswordLogging(HttpServletRequest request) throws IOException, GeoIp2Exception {
 
         ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper((HttpServletRequest) request);
         String requestedEmail = new String(requestWrapper.getParameter("email"));
 
-        AdminLogRequestDTO adminLogRequestDTO= AdminLogRequestDTO.
+        AdminLogRequestDTO adminLogRequestDTO = AdminLogRequestDTO.
                 builder()
                 .feature("Forgot Password")
                 .actionType("Forgot Password")
                 .adminEmail(requestedEmail)
                 .build();
 
-        getUserDetails(adminLogRequestDTO,request);
+        getUserDetails(adminLogRequestDTO, request);
 
         return adminLogRequestDTO;
     }
 
     public static String location(String ip) throws IOException, GeoIp2Exception {
 
-        String address="";
+        String address = "";
         String countryName = "";
         String cityName = "";
 
-            try {
+        try {
 
-                String name = "./location/GeoLite2-City.mmdb";
+            String name = "./location/GeoLite2-City.mmdb";
 
-                File database = (new FileResourceUtils().convertResourcesFileIntoFile(name));
-                DatabaseReader dbReader = new DatabaseReader.Builder(database).build();
+            File database = (new FileResourceUtils().convertResourcesFileIntoFile(name));
+            DatabaseReader dbReader = new DatabaseReader.Builder(database).build();
 
-                InetAddress ipAddress = InetAddress.getByName(ip);
-                CityResponse response = dbReader.city(ipAddress);
+            InetAddress ipAddress = InetAddress.getByName(ip);
+            CityResponse response = dbReader.city(ipAddress);
 
-                 countryName = response.getCountry().getName();
-                 cityName = response.getCity().getName();
+            countryName = response.getCountry().getName();
+            cityName = response.getCity().getName();
 
-                 Location location=response.getLocation();
-                 Double lat=location.getLatitude();
-                 Double longitude=location.getLongitude();
+            Location location = response.getLocation();
+            Double lat = location.getLatitude();
+            Double longitude = location.getLongitude();
 
-                System.out.println(lat+","+longitude);
+            System.out.println(lat + "," + longitude);
 
-            }catch(IOException e){
-                address= "N/A";
-            }
+        } catch (IOException e) {
+            address = "N/A";
+        }
 
-            address= cityName + ", " + countryName;
+        address = cityName + ", " + countryName;
 
         return address;
 

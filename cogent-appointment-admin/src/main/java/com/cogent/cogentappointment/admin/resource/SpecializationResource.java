@@ -75,6 +75,12 @@ public class SpecializationResource {
         return ok(specializationService.fetchActiveSpecializationForDropDown());
     }
 
+    @GetMapping(MIN)
+    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
+    public ResponseEntity<?> fetchSpecializationForDropDown() {
+        return ok(specializationService.fetchSpecializationForDropDown());
+    }
+
     @GetMapping(DETAIL + ID_PATH_VARIABLE_BASE)
     @ApiOperation(DETAILS_OPERATION)
     public ResponseEntity<?> fetchDetailsById(@PathVariable("id") Long id) {

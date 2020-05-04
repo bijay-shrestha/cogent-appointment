@@ -43,6 +43,15 @@ public class SpecializationQuery {
                     " WHERE s.status ='Y'" +
                     " ORDER BY label ASC";
 
+    public static final String QUERY_TO_FETCH_SPECIALIZATION_FOR_DROPDOWN =
+            " SELECT" +
+                    " s.id as value," +                                      //[0]
+                    " s.name as label" +                                     //[1]
+                    " FROM" +
+                    " Specialization s" +
+                    " WHERE s.status !='D'" +
+                    " ORDER BY label ASC";
+
     public static final String QUERY_TO_FETCH_SPECIALIZATION_DETAILS =
             " SELECT s.name as name," +                                     //[0]
                     " s.code as code," +                                     //[1]

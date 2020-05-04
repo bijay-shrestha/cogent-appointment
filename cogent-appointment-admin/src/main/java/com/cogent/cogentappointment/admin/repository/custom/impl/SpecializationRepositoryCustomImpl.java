@@ -95,6 +95,18 @@ public class SpecializationRepositoryCustomImpl implements SpecializationReposit
     }
 
     @Override
+    public List<DropDownResponseDTO> fetchSpecializationForDropDown() {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_SPECIALIZATION_FOR_DROPDOWN);
+
+        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
+
+        if (results.isEmpty()) {
+            error();
+            throw SPECIALIZATION_NOT_FOUND.get();
+        } else return results;
+    }
+
+    @Override
     public SpecializationResponseDTO fetchDetailsById(Long id) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_SPECIALIZATION_DETAILS)
                 .setParameter(ID, id);

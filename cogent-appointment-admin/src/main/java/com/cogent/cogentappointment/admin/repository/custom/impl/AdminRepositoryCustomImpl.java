@@ -227,6 +227,17 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     }
 
     @Override
+    public Admin fetchActiveAdminByEmail(String email) {
+        try {
+            return entityManager.createQuery(QUERY_TO_FETCH_ACTIVE_ADMIN_BY_EMAIL, Admin.class)
+                    .setParameter(EMAIL, email)
+                    .getSingleResult();
+        } catch (NoResultException ex) {
+            throw ADMIN_NOT_FOUND.apply(email);
+        }
+    }
+
+    @Override
     public List<DashboardFeatureResponseDTO> fetchDashboardFeaturesByAdmin(Long adminId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DASHBOARD_FEATURES(adminId));
 

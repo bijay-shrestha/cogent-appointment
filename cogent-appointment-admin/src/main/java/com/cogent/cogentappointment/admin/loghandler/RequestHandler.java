@@ -5,6 +5,7 @@ import com.cogent.cogentappointment.admin.utils.commons.FileResourceUtils;
 import com.cogent.cogentappointment.admin.utils.commons.ObjectMapperUtils;
 import com.cogent.cogentappointment.admin.utils.commons.SecurityContextUtils;
 import com.maxmind.geoip2.DatabaseReader;
+import com.maxmind.geoip2.exception.AddressNotFoundException;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.maxmind.geoip2.model.CityResponse;
 import com.maxmind.geoip2.record.Location;
@@ -69,36 +70,26 @@ public class RequestHandler {
 
     public static String location(String ip) throws IOException, GeoIp2Exception {
 
-        String address = "";
         String countryName = "";
         String cityName = "";
-
         try {
 
             String name = "./location/GeoLite2-City.mmdb";
-
             File database = (new FileResourceUtils().convertResourcesFileIntoFile(name));
             DatabaseReader dbReader = new DatabaseReader.Builder(database).build();
 
-            InetAddress ipAddress = InetAddress.getByName(ip);
+            InetAddress ipAddress = InetAddress.getByName("127.0.1.1");
             CityResponse response = dbReader.city(ipAddress);
 
             countryName = response.getCountry().getName();
             cityName = response.getCity().getName();
 
-            Location location = response.getLocation();
-            Double lat = location.getLatitude();
-            Double longitude = location.getLongitude();
+            return cityName + ", " + countryName;
 
-            System.out.println(lat + "," + longitude);
-
-        } catch (IOException e) {
-            address = "N/A";
+        } catch (IOException | AddressNotFoundException e) {
+            return "N/A";
         }
 
-        address = cityName + ", " + countryName;
-
-        return address;
 
     }
 

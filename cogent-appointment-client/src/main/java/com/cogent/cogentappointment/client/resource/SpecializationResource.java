@@ -84,7 +84,13 @@ public class SpecializationResource {
         return ok(specializationService.fetchSpecializationByDoctorId(doctorId));
     }
 
-    @GetMapping(HOSPITAL_WISE)
+    @GetMapping(HOSPITAL_WISE + ACTIVE + MIN)
+    @ApiOperation(FETCH_BY_HOSPITAL_ID)
+    public ResponseEntity<?> fetchActiveSpecializationByHospitalId() {
+        return ok(specializationService.fetchActiveSpecializationByHospitalId());
+    }
+
+    @GetMapping(HOSPITAL_WISE + MIN)
     @ApiOperation(FETCH_BY_HOSPITAL_ID)
     public ResponseEntity<?> fetchSpecializationByHospitalId() {
         return ok(specializationService.fetchSpecializationByHospitalId());

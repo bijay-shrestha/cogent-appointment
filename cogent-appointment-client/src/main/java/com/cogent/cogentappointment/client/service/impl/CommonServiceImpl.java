@@ -7,7 +7,6 @@ import com.cogent.cogentappointment.client.repository.DoctorRepository;
 import com.cogent.cogentappointment.client.repository.SpecializationRepository;
 import com.cogent.cogentappointment.client.service.CommonService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,7 +47,7 @@ public class CommonServiceImpl implements CommonService {
         List<DoctorMinResponseDTO> doctorInfo = doctorRepository.fetchDoctorMinInfo(hospitalId);
 
         List<DropDownResponseDTO> specializationInfo =
-                specializationRepository.fetchSpecializationByHospitalId(hospitalId);
+                specializationRepository.fetchActiveSpecializationByHospitalId(hospitalId);
 
         DoctorSpecializationResponseDTO commonInfo = DoctorSpecializationResponseDTO.builder()
                 .doctorInfo(doctorInfo)

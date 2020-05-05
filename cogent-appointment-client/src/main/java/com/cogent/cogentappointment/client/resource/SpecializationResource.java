@@ -67,9 +67,15 @@ public class SpecializationResource {
     }
 
     @GetMapping(ACTIVE + MIN)
-    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
-    public ResponseEntity<?> fetchActiveSpecializationForDropDown() {
+    @ApiOperation(FETCH_ACTIVE_DETAILS_FOR_DROPDOWN)
+    public ResponseEntity<?> fetchActiveMinSpecializationForDropDown() {
         return ok(specializationService.fetchActiveMinSpecialization());
+    }
+
+    @GetMapping(MIN)
+    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
+    public ResponseEntity<?> fetchMinSpecializationByHospitalId() {
+        return ok(specializationService.fetchMinSpecialization());
     }
 
     @GetMapping(DETAIL + ID_PATH_VARIABLE_BASE)
@@ -84,15 +90,9 @@ public class SpecializationResource {
         return ok(specializationService.fetchSpecializationByDoctorId(doctorId));
     }
 
-    @GetMapping(HOSPITAL_WISE + ACTIVE + MIN)
+    @GetMapping(HOSPITAL_WISE)
     @ApiOperation(FETCH_BY_HOSPITAL_ID)
     public ResponseEntity<?> fetchActiveSpecializationByHospitalId() {
         return ok(specializationService.fetchActiveSpecializationByHospitalId());
-    }
-
-    @GetMapping(HOSPITAL_WISE + MIN)
-    @ApiOperation(FETCH_BY_HOSPITAL_ID)
-    public ResponseEntity<?> fetchSpecializationByHospitalId() {
-        return ok(specializationService.fetchSpecializationByHospitalId());
     }
 }

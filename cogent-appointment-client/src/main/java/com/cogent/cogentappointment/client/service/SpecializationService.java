@@ -27,13 +27,14 @@ public interface SpecializationService {
 
     List<DropDownResponseDTO> fetchActiveMinSpecialization();
 
+    List<DropDownResponseDTO> fetchMinSpecialization();
+
     SpecializationResponseDTO fetchDetailsById(Long id);
 
     List<DropDownResponseDTO> fetchSpecializationByDoctorId(Long doctorId);
 
     List<DropDownResponseDTO> fetchActiveSpecializationByHospitalId();
 
-    List<DropDownResponseDTO> fetchSpecializationByHospitalId();
 
     Specialization fetchActiveSpecializationByIdAndHospitalId(Long specializationId, Long hospitalId);
 }

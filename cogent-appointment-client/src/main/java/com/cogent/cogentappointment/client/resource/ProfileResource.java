@@ -73,7 +73,7 @@ public class ProfileResource {
     }
 
     @GetMapping(ACTIVE + MIN)
-    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
+    @ApiOperation(FETCH_ACTIVE_DETAILS_FOR_DROPDOWN)
     public ResponseEntity<?> fetchActiveMinProfile() {
         return ok(profileService.fetchActiveMinProfile());
     }

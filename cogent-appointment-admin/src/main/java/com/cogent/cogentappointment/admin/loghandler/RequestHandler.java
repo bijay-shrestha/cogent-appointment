@@ -78,7 +78,7 @@ public class RequestHandler {
             File database = (new FileResourceUtils().convertResourcesFileIntoFile(name));
             DatabaseReader dbReader = new DatabaseReader.Builder(database).build();
 
-            InetAddress ipAddress = InetAddress.getByName("127.0.1.1");
+            InetAddress ipAddress = InetAddress.getByName(ip);
             CityResponse response = dbReader.city(ipAddress);
 
             countryName = response.getCountry().getName();

@@ -110,6 +110,16 @@ public class CompanyProfileQuery {
                     " AND p.isCompanyProfile= 'Y'" +
                     " ORDER BY p.name ASC";
 
+    public static final String QUERY_TO_FETCH_COMPANY_PROFILES_FOR_DROPDOWN =
+            " SELECT" +
+                    " p.id as value," +                             //[0]
+                    " p.name as label" +                            //[1]
+                    " FROM Profile p" +
+                    " WHERE" +
+                    " p.status !='D'" +
+                    " AND p.isCompanyProfile= 'Y'" +
+                    " ORDER BY p.name ASC";
+
     public static final String QUERY_TO_FETCH_ACTIVE_COMPANY_PROFILES_BY_COMPANY_ID =
             " SELECT" +
                     " p.id as value," +                             //[0]
@@ -117,6 +127,17 @@ public class CompanyProfileQuery {
                     " FROM Profile p" +
                     " WHERE" +
                     " p.status ='Y'" +
+                    " AND p.isCompanyProfile= 'Y'" +
+                    " AND p.company.id =:companyId" +
+                    " ORDER BY p.name ASC";
+
+    public static final String QUERY_TO_FETCH_COMPANY_PROFILES_BY_COMPANY_ID =
+            " SELECT" +
+                    " p.id as value," +                             //[0]
+                    " p.name as label" +                            //[1]
+                    " FROM Profile p" +
+                    " WHERE" +
+                    " p.status !='D'" +
                     " AND p.isCompanyProfile= 'Y'" +
                     " AND p.company.id =:companyId" +
                     " ORDER BY p.name ASC";

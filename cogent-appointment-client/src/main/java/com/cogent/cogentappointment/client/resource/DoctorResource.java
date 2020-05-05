@@ -81,6 +81,12 @@ public class DoctorResource {
         return ok(doctorService.fetchActiveMinDoctor());
     }
 
+    @GetMapping(MIN)
+    @ApiOperation(FETCH_BY_HOSPITAL_ID)
+    public ResponseEntity<?> fetchMinDoctorByHospitalId() {
+        return ok(doctorService.fetchMinDoctor());
+    }
+
     @GetMapping(DETAIL + ID_PATH_VARIABLE_BASE)
     @ApiOperation(DETAILS_OPERATION)
     public ResponseEntity<?> fetchDetailsById(@PathVariable("id") Long id) {
@@ -105,10 +111,6 @@ public class DoctorResource {
         return ok(doctorService.fetchDoctorByHospitalId());
     }
 
-    @GetMapping(HOSPITAL_WISE + MIN)
-    @ApiOperation(FETCH_BY_HOSPITAL_ID)
-    public ResponseEntity<?> fetchMinDoctorByHospitalId() {
-        return ok(doctorService.fetchMinDoctorByHospitalId());
-    }
+
 
 }

@@ -40,19 +40,16 @@ public class RequestData {
             ip = ipAddress;
         }
 
-
         return ip;
     }
 
     public static String getClientPublicIpAddr() throws IOException {
-
 
         URL whatismyip = new URL("http://checkip.amazonaws.com");
         BufferedReader in = new BufferedReader(new InputStreamReader(
                 whatismyip.openStream()));
 
         String ip = in.readLine(); //you get the IP as a String
-
 
         return ip;
     }
@@ -127,7 +124,6 @@ public class RequestData {
         } else if ((user.indexOf("mozilla/7.0") > -1) || (user.indexOf("netscape6") != -1) || (user.indexOf(
                 "mozilla/4.7") != -1) || (user.indexOf("mozilla/4.78") != -1) || (user.indexOf(
                 "mozilla/4.08") != -1) || (user.indexOf("mozilla/3") != -1)) {
-            //browser=(userAgent.substring(userAgent.indexOf("MSIE")).split(" ")[0]).replace("/", "-");
             browser = "Netscape-?";
 
         } else if (user.contains("firefox")) {

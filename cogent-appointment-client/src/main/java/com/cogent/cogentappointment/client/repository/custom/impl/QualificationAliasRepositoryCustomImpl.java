@@ -51,6 +51,19 @@ public class QualificationAliasRepositoryCustomImpl implements QualificationAlia
         else return results;
     }
 
+    @Override
+    public List<DropDownResponseDTO> fetchQualificationAlias() {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_QUALIFICATION_ALIAS);
+
+        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
+
+        if (results.isEmpty()){
+            error();
+            throw QUALIFICATION_ALIAS_NOT_FOUND.get();
+        }
+        else return results;
+    }
+
 
     @Override
     public Long validateDuplicity(String name) {

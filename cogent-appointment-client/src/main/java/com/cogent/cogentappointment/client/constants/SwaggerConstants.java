@@ -266,6 +266,7 @@ public class SwaggerConstants {
         String DELETE_OPERATION = "Set Qualification Alias Resource status as 'D' when deleted";
         String SEARCH_OPERATION = "Search Qualification Alias Resource according to given request parameters";
         String FETCH_ACTIVE_QUALIFICATION_ALIAS = "Fetch active Qualification Alias like M.D.,M.B.B.S, etc";
+        String FETCH_QUALIFICATION_ALIAS = "Fetch Qualification Alias like M.D.,M.B.B.S, etc";
     }
 
     //R

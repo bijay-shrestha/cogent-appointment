@@ -102,6 +102,19 @@ public class QualificationAliasServiceImpl implements QualificationAliasService 
     }
 
     @Override
+    public List<DropDownResponseDTO> fetchQualificationAlias() {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, QUALIFICATION_ALIAS);
+
+        List<DropDownResponseDTO> responseDTOS = qualificationAliasRepository.fetchQualificationAlias();
+
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, QUALIFICATION_ALIAS, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
     public QualificationAlias fetchQualificationAliasById(Long id) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 

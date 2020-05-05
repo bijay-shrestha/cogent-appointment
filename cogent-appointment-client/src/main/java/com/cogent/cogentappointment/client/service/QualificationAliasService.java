@@ -24,6 +24,8 @@ public interface QualificationAliasService {
 
     List<DropDownResponseDTO> fetchActiveQualificationAlias();
 
+    List<DropDownResponseDTO> fetchQualificationAlias();
+
     QualificationAlias fetchQualificationAliasById(Long id);
 
     List<QualificationAliasMinimalResponseDTO> search(QualificationAliasSearchRequestDTO searchRequestDTO,

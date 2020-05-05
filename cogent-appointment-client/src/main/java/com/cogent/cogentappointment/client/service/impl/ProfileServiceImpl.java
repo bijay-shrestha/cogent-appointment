@@ -212,20 +212,6 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchProfileByDepartmentId(Long departmentId) {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, PROFILE);
-
-        List<DropDownResponseDTO> responseDTOS =
-                profileRepository.fetchProfileByDepartmentAndHospitalId(departmentId, getLoggedInHospitalId());
-
-        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
-
-        return responseDTOS;
-    }
-
-    @Override
     public AssignedProfileResponseDTO fetchAssignedProfile(ProfileMenuSearchRequestDTO searchRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();

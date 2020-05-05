@@ -99,7 +99,7 @@ public class DoctorResource {
         return ok(doctorService.fetchDoctorBySpecializationId(specializationId));
     }
 
-    @GetMapping(HOSPITAL_WISE + ACTIVE + MIN)
+    @GetMapping(HOSPITAL_WISE)
     @ApiOperation(FETCH_ACTIVE_DOCTOR_BY_HOSPITAL_ID)
     public ResponseEntity<?> fetchDoctorByHospitalId() {
         return ok(doctorService.fetchDoctorByHospitalId());

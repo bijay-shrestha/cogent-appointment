@@ -169,9 +169,22 @@ public class ProfileServiceImpl implements ProfileService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, PROFILE);
+        log.info(FETCHING_PROCESS_STARTED_FOR_ACTIVE_DROPDOWN, PROFILE);
 
         List<DropDownResponseDTO> responseDTOS = profileRepository.fetchActiveMinProfile(getLoggedInHospitalId());
+
+        log.info(FETCHING_PROCESS_FOR_ACTIVE_DROPDOWN_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public List<DropDownResponseDTO> fetchMinProfile() {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, PROFILE);
+
+        List<DropDownResponseDTO> responseDTOS = profileRepository.fetchMinProfile(getLoggedInHospitalId());
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, PROFILE, getDifferenceBetweenTwoTime(startTime));
 

@@ -17,6 +17,7 @@ import javax.validation.Valid;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.ProfileConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.DepartmentConstants.DEPARTMENT_ID_PATH_VARIABLE_BASE;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.HospitalConstants.HOSPITAL_ID_PATH_VARIABLE_BASE;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.ProfileSetupConstants.BASE_PROFILE;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
@@ -73,13 +74,19 @@ public class ProfileResource {
     }
 
     @GetMapping(ACTIVE + MIN)
-    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
-    public ResponseEntity<?> fetchProfilesForDropdown() {
+    @ApiOperation(FETCH_ACTIVE_DETAILS_FOR_DROPDOWN)
+    public ResponseEntity<?> fetchActiveProfilesForDropdown() {
         return ok(profileService.fetchActiveProfilesForDropdown());
     }
 
+    @GetMapping(MIN)
+    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
+    public ResponseEntity<?> fetchProfilesForDropdown() {
+        return ok(profileService.fetchProfilesForDropdown());
+    }
+
     @GetMapping(ACTIVE + MIN + DEPARTMENT_ID_PATH_VARIABLE_BASE)
-    @ApiOperation(FETCH_PROFILE_BY_DEPARTMENT_ID)
+    @ApiOperation(FETCH_ACTIVE_PROFILE_BY_DEPARTMENT_ID)
     public ResponseEntity<?> fetchActiveProfilesForDropdown(@PathVariable("departmentId") Long departmentId) {
         return ok(profileService.fetchProfileByDepartmentId(departmentId));
     }
@@ -88,5 +95,17 @@ public class ProfileResource {
     @ApiOperation(FETCH_PROFILE_BY_DEPARTMENT_ID)
     public ResponseEntity<?> fetchProfilesForDropdown(@PathVariable("departmentId") Long departmentId) {
         return ok(profileService.fetchAllProfileByDepartmentId(departmentId));
+    }
+
+    @GetMapping(ACTIVE + MIN + HOSPITAL_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_ACTIVE_PROFILE_BY_HOSPITAL_ID)
+    public ResponseEntity<?> fetchActiveProfilesForDropdownByHospitalId(@PathVariable("hospitalId") Long hospitalId) {
+        return ok(profileService.fetchActiveProfileByHospitalId(hospitalId));
+    }
+
+    @GetMapping(MIN + HOSPITAL_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_PROFILE_BY_HOSPITAL_ID)
+    public ResponseEntity<?> fetchProfilesForDropdownByHospitalId(@PathVariable("hospitalId") Long hospitalId) {
+        return ok(profileService.fetchProfileByHospitalId(hospitalId));
     }
 }

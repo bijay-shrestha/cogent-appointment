@@ -161,6 +161,8 @@ public class SwaggerConstants {
         String FETCH_DEPARTMENT_FOR_DROP_DOWN_OPERATION = "Fetch minimal department details (id and name) for dropdown";
         String FETCH_ACTIVE_DEPARTMENT_FOR_DROP_DOWN_OPERATION = "Fetch minimal active department details (id and name)" +
                 " for dropdown";
+        String FETCH_ACTIVE_DEPARTMENT_BY_HOSPITAL_OPERATION = "Fetch active department by hospital id";
+
         String FETCH_DEPARTMENT_BY_HOSPITAL_OPERATION = "Fetch department by hospital id";
     }
 
@@ -262,7 +264,11 @@ public class SwaggerConstants {
         String DETAILS_OPERATION = "Fetch profile details by its id. Group profile-menu response by parent-id";
         String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal profile details (id and name) for dropdown";
         String FETCH_ACTIVE_DETAILS_FOR_DROPDOWN = "Fetch minimal active profile details (id and name) for dropdown";
-        String FETCH_PROFILE_BY_DEPARTMENT_ID = "Fetch active profiles by department id";
+        String FETCH_ACTIVE_PROFILE_BY_DEPARTMENT_ID = "Fetch active profiles by department id";
+        String FETCH_PROFILE_BY_DEPARTMENT_ID = "Fetch  profiles by department id";
+        String FETCH_ACTIVE_PROFILE_BY_HOSPITAL_ID = "Fetch active profiles by hospital id";
+        String FETCH_PROFILE_BY_HOSPITAL_ID = "Fetch  profiles by hospital id";
+
     }
 
 

@@ -99,7 +99,7 @@ public class SpecializationResource {
         return ok(specializationService.fetchSpecializationByDoctorId(doctorId));
     }
 
-    @GetMapping(HOSPITAL_WISE + ACTIVE + HOSPITAL_ID_PATH_VARIABLE_BASE)
+    @GetMapping(HOSPITAL_WISE + HOSPITAL_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_BY_HOSPITAL_ID)
     public ResponseEntity<?> fetchActiveSpecializationByHospitalId(@PathVariable("hospitalId") Long hospitalId) {
         return ok(specializationService.fetchActiveSpecializationByHospitalId(hospitalId));

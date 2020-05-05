@@ -72,7 +72,7 @@ public class QualificationAliasResource {
     }
 
     @GetMapping(MIN)
-    @ApiOperation(FETCH_ACTIVE_QUALIFICATION_ALIAS)
+    @ApiOperation(FETCH_QUALIFICATION_ALIAS)
     public ResponseEntity<?> fetchQualificationAlias() {
         return ok(qualificationAliasService.fetchQualificationAlias());
     }

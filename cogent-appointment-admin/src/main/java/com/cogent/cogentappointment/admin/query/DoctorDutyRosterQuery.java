@@ -72,9 +72,11 @@ public class DoctorDutyRosterQuery {
                     " ddr.hasOverrideDutyRoster as hasOverrideDutyRoster," +            //[10]
                     " h.name as hospitalName," +                                        //[11]
                     " h.id as hospitalId," +                                              //[12]
+                    " dv.fileUri as fileUri,"+
                     DOCTOR_DUTY_ROSTERS_AUDITABLE_QUERY() +
                     " FROM DoctorDutyRoster ddr" +
                     " LEFT JOIN Doctor d ON ddr.doctorId.id = d.id" +
+                    " LEFT JOIN DoctorAvatar dv ON dv.doctorId.id = d.id" +
                     " LEFT JOIN Specialization s ON ddr.specializationId.id = s.id" +
                     " LEFT JOIN Hospital h ON ddr.hospitalId.id = h.id" +
                     " WHERE ddr.status !='D'" +

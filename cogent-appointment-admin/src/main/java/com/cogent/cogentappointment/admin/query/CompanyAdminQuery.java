@@ -118,7 +118,7 @@ public class CompanyAdminQuery {
                     " a.remarks as remarks," +                                      //[10]
                     " h.id as companyId," +                                        //[11]
                     " p.id as profileId," +                                         //[12]
-                    COMPANY_ADMIN_AUDITABLE_QUERY()+
+                    COMPANY_ADMIN_AUDITABLE_QUERY() +
                     " FROM" +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id = a.profileId.id" +
@@ -140,6 +140,15 @@ public class CompanyAdminQuery {
                     " WHERE" +
                     " (a.email =:email)" +
                     " AND a.status != 'D'";
+
+    public static final String QUERY_TO_FETCH_ACTIVE_ADMIN_BY_EMAIL =
+            " SELECT a from Admin a" +
+                    " LEFT JOIN Profile p on p.id=a.profileId.id" +
+                    " LEFT JOIN Hospital h on h.id=p.company.id" +
+                    " WHERE a.email =:email" +
+                    " AND a.status !='D'" +
+                    " AND h.isCompany='Y'"+
+                    " AND h.status='Y'";
 
     public static final String QUERY_TO_FETCH_COMPANY_ADMIN_INFO =
             " SELECT" +
@@ -194,7 +203,8 @@ public class CompanyAdminQuery {
                     " WHERE" +
                     " (a.mobileNumber=:email OR a.email=:email)" +
                     " AND a.status = 'Y'" +
-                    " AND h.isCompany='Y'";
+                    " AND h.isCompany='Y'"+
+                    " AND h.status='Y'";
 
     public static String COMPANY_ADMIN_AUDITABLE_QUERY() {
         return " a.createdBy as createdBy," +

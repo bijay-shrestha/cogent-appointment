@@ -35,6 +35,8 @@ public interface ProfileService {
 
     Profile findActiveProfileByIdAndHospitalId(Long id, Long hospitalId);
 
+    List<DropDownResponseDTO> fetchActiveProfileByDepartmentId(Long departmentId);
+
     List<DropDownResponseDTO> fetchProfileByDepartmentId(Long departmentId);
 
     AssignedProfileResponseDTO fetchAssignedProfile(ProfileMenuSearchRequestDTO profileMenuSearchRequestDTO);

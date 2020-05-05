@@ -119,12 +119,22 @@ public class ProfileQuery {
                     " WHERE p.status !='D'" +
                     " AND d.hospital.id=:hospitalId";
 
-    public static final String QUERY_TO_FETCH_PROFILE_BY_DEPARTMENT_AND_HOSPITAL_ID =
+    public static final String QUERY_TO_FETCH_ACTIVE_PROFILE_BY_DEPARTMENT_AND_HOSPITAL_ID =
             " SELECT p.id as value," +
                     " p.name as label" +
                     " FROM Profile p" +
                     " LEFT JOIN Department d ON d.id = p.department.id" +
                     " WHERE p.status ='Y'" +
+                    " AND d.status ='Y'" +
+                    " AND d.id =:id" +
+                    " AND d.hospital.id=:hospitalId";
+
+    public static final String QUERY_TO_FETCH_PROFILE_BY_DEPARTMENT_AND_HOSPITAL_ID =
+            " SELECT p.id as value," +
+                    " p.name as label" +
+                    " FROM Profile p" +
+                    " LEFT JOIN Department d ON d.id = p.department.id" +
+                    " WHERE p.status !='D'" +
                     " AND d.status ='Y'" +
                     " AND d.id =:id" +
                     " AND d.hospital.id=:hospitalId";

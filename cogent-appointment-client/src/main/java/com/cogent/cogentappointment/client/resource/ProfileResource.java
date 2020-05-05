@@ -85,7 +85,13 @@ public class ProfileResource {
         return ok(profileService.fetchMinProfile());
     }
 
-    @GetMapping(DEPARTMENT_ID_PATH_VARIABLE_BASE)
+    @GetMapping(ACTIVE + MIN + DEPARTMENT_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_PROFILE_BY_DEPARTMENT_ID)
+    public ResponseEntity<?> fetchActiveProfileByDepartmentId(@PathVariable("departmentId") Long departmentId) {
+        return ok(profileService.fetchActiveProfileByDepartmentId(departmentId));
+    }
+
+    @GetMapping(MIN + DEPARTMENT_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_PROFILE_BY_DEPARTMENT_ID)
     public ResponseEntity<?> fetchProfileByDepartmentId(@PathVariable("departmentId") Long departmentId) {
         return ok(profileService.fetchProfileByDepartmentId(departmentId));

@@ -270,7 +270,21 @@ public class DoctorServiceImpl implements DoctorService {
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DOCTOR);
 
         List<DoctorDropdownDTO> responseDTOS =
-                doctorRepository.fetchDoctorByHospitalId(getLoggedInHospitalId());
+                doctorRepository.fetchActiveDoctorByHospitalId(getLoggedInHospitalId());
+
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public List<DoctorDropdownDTO> fetchMinDoctorByHospitalId() {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, DOCTOR);
+
+        List<DoctorDropdownDTO> responseDTOS =
+                doctorRepository.fetchMinDoctorByHospitalId(getLoggedInHospitalId());
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 

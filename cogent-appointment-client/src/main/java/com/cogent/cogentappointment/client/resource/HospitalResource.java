@@ -1,25 +1,19 @@
 package com.cogent.cogentappointment.client.resource;
 
-import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospital.HospitalMinSearchRequestDTO;
 import com.cogent.cogentappointment.client.service.HospitalService;
-import com.cogent.cogentappointment.client.utils.commons.ObjectMapperUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.io.IOException;
-
-import static com.cogent.cogentappointment.client.constants.SwaggerConstants.HospitalConstant.*;
+import static com.cogent.cogentappointment.client.constants.SwaggerConstants.HospitalConstant.BASE_API_VALUE;
+import static com.cogent.cogentappointment.client.constants.SwaggerConstants.HospitalConstant.FETCH_MIN_DETAILS;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.HospitalConstants.BASE_HOSPITAL;
-import static java.net.URI.create;
-import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**

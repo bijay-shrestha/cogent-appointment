@@ -1,4 +1,4 @@
-package com.cogentappointment.scheduler.log;
+package com.cogent.cogentappointment.scheduler.log;
 
 /**
  * @author smriti on 18/02/20

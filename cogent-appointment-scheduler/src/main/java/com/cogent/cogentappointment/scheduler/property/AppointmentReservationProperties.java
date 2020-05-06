@@ -1,4 +1,4 @@
-package com.cogentappointment.scheduler.property;
+package com.cogent.cogentappointment.scheduler.property;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,9 +1,9 @@
-package com.cogentappointment.scheduler.service.impl;
+package com.cogent.cogentappointment.scheduler.service.impl;
 
 import com.cogent.cogentappointment.persistence.model.AppointmentReservationLog;
-import com.cogentappointment.scheduler.property.AppointmentReservationProperties;
-import com.cogentappointment.scheduler.repository.AppointmentReservationRepository;
-import com.cogentappointment.scheduler.service.AppointmentReservationService;
+import com.cogent.cogentappointment.scheduler.property.AppointmentReservationProperties;
+import com.cogent.cogentappointment.scheduler.repository.AppointmentReservationRepository;
+import com.cogent.cogentappointment.scheduler.service.AppointmentReservationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,11 +12,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static com.cogentappointment.scheduler.log.AppointmentReservation.APPOINTMENT_RESERVATION;
-import static com.cogentappointment.scheduler.log.CommonLogConstant.DELETING_PROCESS_COMPLETED;
-import static com.cogentappointment.scheduler.log.CommonLogConstant.DELETING_PROCESS_STARTED;
-import static com.cogentappointment.scheduler.utils.DateUtils.getDifferenceBetweenTwoTime;
-import static com.cogentappointment.scheduler.utils.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.scheduler.log.AppointmentReservation.APPOINTMENT_RESERVATION;
+import static com.cogent.cogentappointment.scheduler.log.CommonLogConstant.DELETING_PROCESS_COMPLETED;
+import static com.cogent.cogentappointment.scheduler.log.CommonLogConstant.DELETING_PROCESS_STARTED;
+import static com.cogent.cogentappointment.scheduler.utils.DateUtils.getDifferenceBetweenTwoTime;
+import static com.cogent.cogentappointment.scheduler.utils.DateUtils.getTimeInMillisecondsFromLocalDate;
 
 /**
  * @author smriti on 18/02/20

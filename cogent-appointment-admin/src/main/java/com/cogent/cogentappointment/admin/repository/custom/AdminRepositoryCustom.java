@@ -61,5 +61,7 @@ public interface AdminRepositoryCustom {
     CompanyAdminDetailResponseDTO fetchCompanyAdminDetailsById(Long id);
 
     CompanyAdminLoggedInInfoResponseDTO fetchLoggedInCompanyAdminInfo(CompanyAdminInfoRequestDTO requestDTO);
+
+    Admin fetchActiveAdminByEmail(String email);
 }
 

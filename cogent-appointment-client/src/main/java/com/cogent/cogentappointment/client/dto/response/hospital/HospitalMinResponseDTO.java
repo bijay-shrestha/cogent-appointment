@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.client.dto.response.hospital;
 
-import com.cogent.cogentappointment.client.dto.response.common.AuditableResponseDTO;
 import lombok.*;
 
 import java.io.Serializable;

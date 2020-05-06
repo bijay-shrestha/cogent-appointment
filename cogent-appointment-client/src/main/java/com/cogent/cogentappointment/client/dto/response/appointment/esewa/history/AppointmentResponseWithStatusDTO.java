@@ -14,9 +14,9 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppointmentHistoryResponseWithStatusDTO implements Serializable {
+public class AppointmentResponseWithStatusDTO implements Serializable {
 
-    private List<AppointmentHistoryResponseDTO> appointments;
+    private List<AppointmentResponseDTO> appointments;
 
     private int responseCode;
 

@@ -186,14 +186,14 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
     }
 
     @Override
-    public List<DoctorRevenueDTO> calculateDoctorRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO,Pageable pageable) {
+    public List<DoctorRevenueDTO> calculateDoctorRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO, Pageable pageable) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_CALCULATE_DOCTOR_REVENUE(doctorRevenueRequestDTO))
                 .setParameter(FROM_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getFromDate()))
                 .setParameter(TO_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getToDate()))
                 .setParameter(HOSPITAL_ID, doctorRevenueRequestDTO.getHospitalId());
 
-        addPagination.accept(pageable,query);
+        addPagination.accept(pageable, query);
 
         List<DoctorRevenueDTO> doctorRevenueDTOList = transformQueryToResultList(query, DoctorRevenueDTO.class);
 
@@ -203,11 +203,11 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
                     .setParameter(TO_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getToDate()))
                     .setParameter(DOCTOR_ID, doctorRevenueDTO.getDoctorId());
 
-            DoctorFollowUpResponse doctorFollowUpResponse= transformQueryToSingleResult(queryToGetFollowUp,
+            DoctorFollowUpResponse doctorFollowUpResponse = transformQueryToSingleResult(queryToGetFollowUp,
                     DoctorFollowUpResponse.class);
 
             doctorRevenueDTO.setTotalFollowUp(doctorFollowUpResponse.getCount());
-            doctorRevenueDTO.setDoctorRevenue(doctorRevenueDTO.getDoctorRevenue()+doctorFollowUpResponse.getAmount());
+            doctorRevenueDTO.setDoctorRevenue(doctorRevenueDTO.getDoctorRevenue() + doctorFollowUpResponse.getAmount());
         });
 
 
@@ -215,26 +215,26 @@ public class AppointmentTransactionDetailRepositoryCustomImpl implements Appoint
     }
 
     @Override
-    public List<DoctorRevenueDTO> calculateCancelledRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO,Pageable pageable) {
+    public List<DoctorRevenueDTO> calculateCancelledRevenue(DoctorRevenueRequestDTO doctorRevenueRequestDTO, Pageable pageable) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_CALCULATE_COMPANY_REVENUE(doctorRevenueRequestDTO))
                 .setParameter(FROM_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getFromDate()))
                 .setParameter(TO_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getToDate()))
                 .setParameter(HOSPITAL_ID, doctorRevenueRequestDTO.getHospitalId());
 
-        addPagination.accept(pageable,query);
+        addPagination.accept(pageable, query);
 
-        List<DoctorRevenueDTO> doctorRevenueDTOList=transformQueryToResultList(query, DoctorRevenueDTO.class);
+        List<DoctorRevenueDTO> doctorRevenueDTOList = transformQueryToResultList(query, DoctorRevenueDTO.class);
         doctorRevenueDTOList.forEach(doctorRevenueDTO -> {
             Query queryToGetCancelled = createQuery.apply(entityManager, QUERY_TO_CALCULATE_COMPANY_REVENUE_CANCELLED)
                     .setParameter(FROM_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getFromDate()))
                     .setParameter(TO_DATE, utilDateToSqlDate(doctorRevenueRequestDTO.getToDate()))
                     .setParameter(DOCTOR_ID, doctorRevenueDTO.getDoctorId())
                     .setParameter(SPECIALIZATION_ID, doctorRevenueDTO.getSpecializationId());
-            DoctorFollowUpResponse doctorFollowUpResponse= transformQueryToSingleResult(queryToGetCancelled,
+            DoctorFollowUpResponse doctorFollowUpResponse = transformQueryToSingleResult(queryToGetCancelled,
                     DoctorFollowUpResponse.class);
-            doctorRevenueDTO.setCancelledAppointments(doctorRevenueDTO.getCancelledAppointments()+doctorFollowUpResponse.getCount());
-            doctorRevenueDTO.setCancelledRevenue(doctorRevenueDTO.getCancelledRevenue()+doctorFollowUpResponse.getAmount());
+            doctorRevenueDTO.setCancelledAppointments(doctorRevenueDTO.getCancelledAppointments() + doctorFollowUpResponse.getCount());
+            doctorRevenueDTO.setCancelledRevenue(doctorRevenueDTO.getCancelledRevenue() + doctorFollowUpResponse.getAmount());
         });
 
         return doctorRevenueDTOList;

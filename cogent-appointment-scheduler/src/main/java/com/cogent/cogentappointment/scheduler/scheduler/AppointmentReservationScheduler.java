@@ -1,14 +1,14 @@
-package com.cogentappointment.scheduler.scheduler;
+package com.cogent.cogentappointment.scheduler.scheduler;
 
-import com.cogentappointment.scheduler.service.AppointmentReservationService;
+import com.cogent.cogentappointment.scheduler.service.AppointmentReservationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import static com.cogentappointment.scheduler.constants.SchedulerConstants.APPOINTMENT_RESERVATION_SCHEDULER;
-import static com.cogentappointment.scheduler.log.AppointmentReservation.APPOINTMENT_RESERVATION;
-import static com.cogentappointment.scheduler.log.CommonLogConstant.SCHEDULER_RUNNING;
+import static com.cogent.cogentappointment.scheduler.constants.SchedulerConstants.APPOINTMENT_RESERVATION_SCHEDULER;
+import static com.cogent.cogentappointment.scheduler.log.AppointmentReservation.APPOINTMENT_RESERVATION;
+import static com.cogent.cogentappointment.scheduler.log.CommonLogConstant.SCHEDULER_RUNNING;
 
 /**
  * @author smriti on 18/02/20

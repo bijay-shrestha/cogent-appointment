@@ -63,7 +63,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
         log.info(FORGOT_PASSWORD_PROCESS_STARTED);
 
-        Admin admin = adminRepository.fetchAdminByEmail(email);
+        Admin admin = adminRepository.fetchActiveAdminByEmail(email);
 
         validateAdmin(admin, email);
 

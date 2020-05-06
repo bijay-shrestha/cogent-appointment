@@ -1,4 +1,4 @@
-package com.cogentappointment.scheduler.constants;
+package com.cogent.cogentappointment.scheduler.constants;
 
 /**
  * @author smriti on 12/04/20

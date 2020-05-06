@@ -60,6 +60,9 @@ public class ErrorMessageConstants {
 
         String ACCOUNT_NOT_ACTIVATED_MESSAGE = "Sorry '%s', please activate your account first.";
         String ACCOUNT_NOT_ACTIVATED_DEBUG_MESSAGE = "'status' flag in Admin entity is 'N'";
+
+        String BAD_UPDATE_MESSAGE = "Operation failed, save password pending.";
+        String BAD_UPDATE_DEBUG_MESSAGE = "Admin hasn't saved its password yet and is still inactive.";
     }
 
 
@@ -114,6 +117,7 @@ public class ErrorMessageConstants {
     public static final String INVALID_GENDER_CODE_DEBUG_MESSAGE = "Gender enum doesn't have the requested code.";
 
     //H
+    public static final String HOSPITAL_NULL_MESSAGE = " Hospital id must not be null";
 
 
     //I
@@ -148,6 +152,7 @@ public class ErrorMessageConstants {
     public interface PatientServiceMessages {
         String DUPLICATE_PATIENT_MESSAGE = "Patient already exists with name '%s', mobile number '%s' and date of birth " +
                 "'%s'";
+
     }
 
     public interface ProfileServiceMessages {

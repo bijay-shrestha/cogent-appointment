@@ -159,7 +159,9 @@ public class AdminQuery {
                     " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE" +
                     " (a.email =:email)" +
-                    " AND a.status != 'D'";
+                    " AND a.status != 'D'" +
+                    " AND h.isCompany='N'" +
+                    " AND h.status='Y'";
 
     public static final String QUERY_TO_FETCH_ADMIN_INFO =
             " SELECT" +
@@ -219,7 +221,8 @@ public class AdminQuery {
                     " WHERE" +
                     " (a.mobileNumber=:email OR a.email=:email)" +
                     " AND a.status = 'Y'" +
-                    " AND h.isCompany='N'";
+                    " AND h.isCompany='N'" +
+                    " AND h.status='Y'";
 
     public static String ADMIN_AUDITABLE_QUERY() {
         return " a.createdBy as createdBy," +

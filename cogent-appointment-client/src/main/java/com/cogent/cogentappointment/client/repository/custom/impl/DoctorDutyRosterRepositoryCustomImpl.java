@@ -44,9 +44,7 @@ import static com.cogent.cogentappointment.client.query.EsewaQuery.*;
 import static com.cogent.cogentappointment.client.query.EsewaQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_STATUS;
 import static com.cogent.cogentappointment.client.utils.DoctorDutyRosterUtils.*;
 import static com.cogent.cogentappointment.client.utils.EsewaUtils.parseDoctorAvailabilityResponseStatus;
-import static com.cogent.cogentappointment.client.utils.commons.DateUtils.conditionOfBothDateProvided;
-import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDayCodeFromDate;
-import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
 
@@ -262,7 +260,7 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
     @Override
     public List<AvailableDoctorWithSpecialization> fetchAvailableDoctor(AvailableDoctorRequestDTO requestDTO) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_AVAILABLE_DOCTORS_FROM_DDR(requestDTO))
+        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_AVAILABLE_DOCTORS_FROM_DDR(requestDTO))
                 .setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
 
         if (conditionOfBothDateProvided(requestDTO.getFromDate(), requestDTO.getToDate())) {
@@ -276,7 +274,7 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
         if (!Objects.isNull(requestDTO.getDoctorId()))
             query.setParameter(DOCTOR_ID, requestDTO.getDoctorId());
 
-        return transformQueryToResultList(query, AvailableDoctorWithSpecialization.class);
+        return transformNativeQueryToResultList(query, AvailableDoctorWithSpecialization.class);
     }
 
     @Override

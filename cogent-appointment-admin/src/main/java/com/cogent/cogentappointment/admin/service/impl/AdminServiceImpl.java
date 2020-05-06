@@ -33,8 +33,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.*;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.*;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
@@ -244,6 +243,9 @@ public class AdminServiceImpl implements AdminService {
 
         Admin admin = findById(updateRequestDTO.getId());
 
+        if (Objects.isNull(admin.getPassword()))
+            throw new BadRequestException(BAD_UPDATE_MESSAGE, BAD_UPDATE_DEBUG_MESSAGE);
+
         List<Object[]> admins = adminRepository.validateDuplicity(updateRequestDTO);
 
         validateAdminDuplicity(admins,
@@ -261,6 +263,7 @@ public class AdminServiceImpl implements AdminService {
 
     private void emailIsNotUpdated(AdminUpdateRequestDTO updateRequestDTO,
                                    Admin admin, MultipartFile files) {
+
         if (updateRequestDTO.getEmail().equals(admin.getEmail())) {
 
             EmailRequestDTO emailRequestDTO = parseUpdatedInfo(updateRequestDTO, admin);
@@ -282,6 +285,7 @@ public class AdminServiceImpl implements AdminService {
 
     private void emailIsUpdated(AdminUpdateRequestDTO updateRequestDTO,
                                 Admin admin, MultipartFile files) {
+
         if (!updateRequestDTO.getEmail().equals(admin.getEmail())) {
 
             EmailRequestDTO emailRequestDTO = parseUpdatedInfo(updateRequestDTO, admin);
@@ -320,8 +324,8 @@ public class AdminServiceImpl implements AdminService {
                     );
 
             if (adminDashboardFeature == null) {
-                Character status= result.getStatus();
-                updateAdminDashboardFeature(result.getId(), result.getStatus(),admin);
+                Character status = result.getStatus();
+                updateAdminDashboardFeature(result.getId(), result.getStatus(), admin);
             }
 
             if (adminDashboardFeature != null) {
@@ -335,11 +339,10 @@ public class AdminServiceImpl implements AdminService {
 
     }
 
-    private void saveAdminDashboardFeature(Long id,Admin admin) {
+    private void saveAdminDashboardFeature(Long id, Admin admin) {
 
         DashboardFeature dashboardFeature = dashboardFeatureRepository.findActiveDashboardFeatureById(id)
                 .orElseThrow(() -> new NoContentFoundException(DashboardFeature.class));
-
 
 
         List<DashboardFeature> dashboardFeatureList = Arrays.asList(dashboardFeature);
@@ -347,13 +350,13 @@ public class AdminServiceImpl implements AdminService {
 
     }
 
-    private void updateAdminDashboardFeature(Long id,Character status, Admin admin) {
+    private void updateAdminDashboardFeature(Long id, Character status, Admin admin) {
 
         DashboardFeature dashboardFeature = dashboardFeatureRepository.findActiveDashboardFeatureById(id)
                 .orElseThrow(() -> new NoContentFoundException(DashboardFeature.class));
 
         List<DashboardFeature> dashboardFeatureList = Arrays.asList(dashboardFeature);
-        adminDashboardFeatureRepository.saveAll(parseToUpdateAdminDashboardFeature(dashboardFeatureList,status, admin));
+        adminDashboardFeatureRepository.saveAll(parseToUpdateAdminDashboardFeature(dashboardFeatureList, status, admin));
 
     }
 
@@ -553,7 +556,7 @@ public class AdminServiceImpl implements AdminService {
 
               /*THIS MEANS ADMIN WITH SAME EMAIL/ MOBILE NUMBER ALREADY EXISTS IN REQUESTED HOSPITAL*/
             if (hospitalId.equals(requestedHospitalId)) {
-                if (isEmailExists && isMobileNumberExists){
+                if (isEmailExists && isMobileNumberExists) {
                     log.error(String.format(ADMIN_DUPLICATION_MESSAGE, requestEmail, requestMobileNumber));
                     ADMIN_DUPLICATION(requestEmail, requestMobileNumber);
                 }

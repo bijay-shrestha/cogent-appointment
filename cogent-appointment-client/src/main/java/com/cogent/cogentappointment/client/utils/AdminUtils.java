@@ -18,7 +18,8 @@ import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.client.constants.EmailConstants.*;
 import static com.cogent.cogentappointment.client.constants.EmailTemplates.*;
-import static com.cogent.cogentappointment.client.constants.StatusConstants.*;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.ACTIVE;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.INACTIVE;
 import static com.cogent.cogentappointment.client.constants.StringConstant.*;
 import static com.cogent.cogentappointment.client.utils.commons.NumberFormatterUtils.generateRandomToken;
 import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toNormalCase;
@@ -35,7 +36,7 @@ public class AdminUtils {
         admin.setFullName(toNormalCase(adminRequestDTO.getFullName()));
         admin.setEmail(adminRequestDTO.getEmail());
         admin.setMobileNumber(adminRequestDTO.getMobileNumber());
-        admin.setStatus(NO);
+        admin.setStatus(INACTIVE);
         admin.setHasMacBinding(adminRequestDTO.getHasMacBinding());
 
         parseAdminDetails(gender, profile, admin);
@@ -88,7 +89,7 @@ public class AdminUtils {
         return adminMetaInfo;
     }
 
-    public static AdminMetaInfo deleteMetaInfo(AdminMetaInfo adminMetaInfo,DeleteRequestDTO requestDTO) {
+    public static AdminMetaInfo deleteMetaInfo(AdminMetaInfo adminMetaInfo, DeleteRequestDTO requestDTO) {
         adminMetaInfo.setStatus(requestDTO.getStatus());
         adminMetaInfo.setRemarks(requestDTO.getRemarks());
 
@@ -162,7 +163,7 @@ public class AdminUtils {
     public static Admin updateAdminPassword(String password, String remarks, Admin admin) {
         admin.setPassword(BCrypt.hashpw(password, BCrypt.gensalt()));
         admin.setRemarks(remarks);
-
+        admin.setStatus(ACTIVE);
         return admin;
     }
 
@@ -252,18 +253,18 @@ public class AdminUtils {
     public static void saveAdminPassword(AdminPasswordRequestDTO requestDTO,
                                          Admin admin) {
         admin.setPassword(BCrypt.hashpw(requestDTO.getPassword(), BCrypt.gensalt()));
-        admin.setStatus(YES);
+        admin.setStatus(ACTIVE);
     }
 
     public static EmailRequestDTO parseToResetPasswordEmailRequestDTO(AdminResetPasswordRequestDTO requestDTO,
                                                                       String emailAddress,
-                                                                      String fullname) {
+                                                                      String fullName) {
 
         return EmailRequestDTO.builder()
                 .receiverEmailAddress(emailAddress)
                 .subject(SUBJECT_FOR_ADMIN_RESET_PASSWORD)
                 .templateName(ADMIN_RESET_PASSWORD)
-                .paramValue(fullname + COMMA_SEPARATED
+                .paramValue(fullName + COMMA_SEPARATED
                         + requestDTO.getPassword() + COMMA_SEPARATED + requestDTO.getRemarks())
                 .build();
     }

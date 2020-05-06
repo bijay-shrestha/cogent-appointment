@@ -1,4 +1,4 @@
-package com.cogentappointment.scheduler.repository;
+package com.cogent.cogentappointment.scheduler.repository;
 
 import com.cogent.cogentappointment.persistence.model.AppointmentReservationLog;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -265,6 +265,9 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         Admin admin = findById(updateRequestDTO.getId());
 
+        if (Objects.isNull(admin.getPassword()))
+            throw new BadRequestException(BAD_UPDATE_MESSAGE, BAD_UPDATE_DEBUG_MESSAGE);
+
         List<Object[]> admins = adminRepository.validateCompanyAdminDuplicity(updateRequestDTO);
 
         validateCompanyAdminDuplicity(

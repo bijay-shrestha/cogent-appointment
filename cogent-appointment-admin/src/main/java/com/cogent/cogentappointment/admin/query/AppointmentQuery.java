@@ -80,7 +80,9 @@ public class AppointmentQuery {
     }
 
     private static String GET_WHERE_CLAUSE_TO_FETCH_REFUND_APPOINTMENTS(AppointmentRefundSearchDTO searchDTO) {
-        String whereClause = " WHERE ard.status = 'PA'";
+        String whereClause = " WHERE ard.status = 'PA'" +
+                " AND s.status!='D'" +
+                " AND d.status!='D'";
 
         if (!ObjectUtils.isEmpty(searchDTO.getFromDate()) && !ObjectUtils.isEmpty(searchDTO.getToDate()))
             whereClause += " AND (a.appointmentDate BETWEEN '" + utilDateToSqlDate(searchDTO.getFromDate())

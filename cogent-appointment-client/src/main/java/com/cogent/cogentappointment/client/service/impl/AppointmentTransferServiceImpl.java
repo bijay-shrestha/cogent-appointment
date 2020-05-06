@@ -56,6 +56,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
         });
 
         log.info(FETCHING_AVAILABLE_DATES_BY_DOCTOR_ID_PROCESS_COMPLETED, APPOINTMENT_TRANSFER, getDifferenceBetweenTwoTime(startTime));
+
         return utilDateListToSqlDateList(mergeOverrideAndActualDoctorList(overrideDate, actualDate));
     }
 

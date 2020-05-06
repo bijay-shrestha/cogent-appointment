@@ -68,6 +68,10 @@ public class SwaggerConstants {
         String FETCH_APPOINTMENT_STATUS = "Fetch appointment status.";
     }
 
+    public interface AppointmentTransferConstant {
+        String BASE_API_VALUE = "Resource used for Appointment Transfer Scenario.";
+    }
+
     public interface AuthenticateConstant {
         String BASE_API_VALUE = "This is Login and SignUp Resource.";
         String LOGIN_OPERATION = "Login User";

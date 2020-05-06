@@ -29,12 +29,11 @@ public class UserLogInterceptor implements HandlerInterceptor {
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
                                 Exception exception) throws Exception {
 
+        int status = Checkpoint.checkResponseStatus(response);
+
         if (request.getRequestURI().contains(API_V1 + BASE_PASSWORD + FORGOT)) {
 
             ClientLogRequestDTO requestDTO = forgotPasswordLogging(request);
-
-            int status = Checkpoint.checkResponseStatus(response);
-
             checkExceptionAndSave(status, requestDTO);
 
         }
@@ -42,8 +41,6 @@ public class UserLogInterceptor implements HandlerInterceptor {
         String userLog = RequestHeader.getUserLogs(request);
 
         if (userLog != null) {
-
-            int status = Checkpoint.checkResponseStatus(response);
 
             ClientLogRequestDTO clientLogRequestDTO = convertToClientLogRequestDTO(userLog, request);
             checkExceptionAndSave(status, clientLogRequestDTO);

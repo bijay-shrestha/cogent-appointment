@@ -15,6 +15,7 @@ import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACT
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.BASE_PASSWORD;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.ForgotPasswordConstants.FORGOT;
+import static com.cogent.cogentappointment.admin.loghandler.Checkpoint.checkResponseStatus;
 import static com.cogent.cogentappointment.admin.loghandler.LogDescription.getFailedLogDescription;
 import static com.cogent.cogentappointment.admin.loghandler.LogDescription.getSuccessLogDescription;
 import static com.cogent.cogentappointment.admin.loghandler.RequestHandler.convertToAdminLogRequestDTO;
@@ -31,11 +32,9 @@ public class UserLogInterceptor implements HandlerInterceptor {
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
                                 Exception exception) throws Exception {
 
-//        String xForwarded = RequestHeader.getXForwardedFor(request);
+        int status = checkResponseStatus(response);
 
         if (request.getRequestURI().contains(API_V1 + BASE_PASSWORD + FORGOT)) {
-
-            int status = Checkpoint.checkResponseStatus(response);
 
             AdminLogRequestDTO requestDTO = forgotPasswordLogging(request);
             checkStatusAndSave(status, requestDTO);
@@ -45,8 +44,6 @@ public class UserLogInterceptor implements HandlerInterceptor {
         String userLog = RequestHeader.getUserLogs(request);
 
         if (userLog != null) {
-
-            int status = Checkpoint.checkResponseStatus(response);
 
             AdminLogRequestDTO adminLogRequestDTO = convertToAdminLogRequestDTO(userLog, request);
             checkStatusAndSave(status, adminLogRequestDTO);

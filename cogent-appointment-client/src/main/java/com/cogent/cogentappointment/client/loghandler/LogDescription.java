@@ -62,7 +62,7 @@ public class LogDescription {
         String log = "";
         switch (status) {
             case 401:
-                log = feature + " Invalid Credentials...";
+                log = " Invalid Credentials...";
                 break;
             case 400:
                 log = " Invalid Inputs...";

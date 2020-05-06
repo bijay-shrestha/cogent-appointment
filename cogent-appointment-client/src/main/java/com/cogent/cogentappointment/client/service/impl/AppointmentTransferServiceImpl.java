@@ -11,13 +11,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static com.cogent.cogentappointment.client.log.CommonLogConstant.SAVING_PROCESS_COMPLETED;
-import static com.cogent.cogentappointment.client.log.CommonLogConstant.SAVING_PROCESS_STARTED;
-import static com.cogent.cogentappointment.client.log.constants.AppointmentTransferLog.APPOINTMENT_TRANSFER;
-import static com.cogent.cogentappointment.client.log.constants.AppointmentTransferLog.FETCHING_AVAILABLE_DATES_BY_DOCTOR_ID_PROCESS_COMPLETED;
-import static com.cogent.cogentappointment.client.log.constants.AppointmentTransferLog.FETCHING_AVAILABLE_DATES_BY_DOCTOR_ID_PROCESS_STARTED;
-import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
-import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.client.log.constants.AppointmentTransferLog.*;
+import static com.cogent.cogentappointment.client.utils.AppointmentTransferUtils.getActualdate;
+import static com.cogent.cogentappointment.client.utils.AppointmentTransferUtils.mergeOverrideAndActualDoctorList;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 
 /**
  * @author Sauravi Thapa ON 5/6/20
@@ -25,7 +22,7 @@ import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTim
 @Service
 @Slf4j
 @Transactional
-public class AppointmentTransferServiceImpl implements AppointmentTransferService{
+public class AppointmentTransferServiceImpl implements AppointmentTransferService {
 
     private final AppointmentTransferRepository repository;
 
@@ -38,14 +35,29 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_AVAILABLE_DATES_BY_DOCTOR_ID_PROCESS_STARTED, APPOINTMENT_TRANSFER);
-        List<Date> response=new ArrayList<>();
-        List<DoctorDatesResponseDTO> rosterDates=repository.getDatesByDoctorId(doctorId);
-        rosterDates.forEach(rosterId->{
-            List<String> dayOffDay=repository.getDayOffDaysByRosterId(rosterId.getId());
+
+        List<Date> actualDate = new ArrayList<>();
+
+        List<Date> overrideDate = new ArrayList<>();
+
+        List<DoctorDatesResponseDTO> rosterDates = repository.getDatesByDoctorId(doctorId);
+
+        rosterDates.forEach(rosterId -> {
+            List<Date> dates = getActualdate(repository.getDayOffDaysByRosterId(rosterId.getId()),
+                    getDates(rosterId.getFromDate(), rosterId.getToDate()));
+
+            actualDate.addAll(dates);
         });
-        List<DoctorDatesResponseDTO> overrideDates=repository.getOverrideDatesByDoctorId(doctorId);
+
+        List<DoctorDatesResponseDTO> overrideDates = repository.getOverrideDatesByDoctorId(doctorId);
+
+        overrideDates.forEach(date -> {
+            overrideDate.addAll(getDates(date.getFromDate(), date.getToDate()));
+        });
 
         log.info(FETCHING_AVAILABLE_DATES_BY_DOCTOR_ID_PROCESS_COMPLETED, APPOINTMENT_TRANSFER, getDifferenceBetweenTwoTime(startTime));
-        return response;
+        return utilDateListToSqlDateList(mergeOverrideAndActualDoctorList(overrideDate, actualDate));
     }
+
+
 }

@@ -22,6 +22,9 @@ import java.util.Date;
 @NoArgsConstructor
 @EntityListeners(AppointmentTransferEntityListener.class)
 public class AppointmentTransfer extends Auditable<String> implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "appointment_id")
@@ -44,4 +47,16 @@ public class AppointmentTransfer extends Auditable<String> implements Serializab
 
     @Column(name = "remarks")
     private String remarks;
+
+    @Override
+    public String toString() {
+        return "AppointmentTransfer{" +
+                "appointment=" + appointment.getAppointmentNumber() +
+                ", previousDoctorId=" + previousDoctorId +
+                ", previousSpecializationId=" + previousSpecializationId +
+                ", previousAppointmentDate=" + previousAppointmentDate +
+                ", previousAppointmentTime=" + previousAppointmentTime +
+                ", remarks='" + remarks + '\'' +
+                '}';
+    }
 }

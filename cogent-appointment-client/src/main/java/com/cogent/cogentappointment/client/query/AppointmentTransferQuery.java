@@ -16,7 +16,7 @@ public class AppointmentTransferQuery {
 
     public static String QUERY_TO_GET_DAY_OFF_WEEKS_BY_DUTY_ROSTER_ID=
             "SELECT" +
-                    " wd.name " +
+                    " wd.code " +
                     " FROM" +
                     " DoctorWeekDaysDutyRoster dwddr" +
                     " LEFT JOIN WeekDays wd ON" +

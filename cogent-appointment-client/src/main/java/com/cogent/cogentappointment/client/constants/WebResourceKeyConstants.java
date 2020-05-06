@@ -45,6 +45,10 @@ public class WebResourceKeyConstants {
         String TRANSACTION_LOG = "/transaction-log";
     }
 
+    public interface AppointmentTransferConstants{
+        String BASE_APPOINTMENT_TRANSFER = "/appointment-transfer";
+    }
+
 
     //B
     public static final String BASE_PASSWORD = "/password";

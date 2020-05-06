@@ -366,7 +366,9 @@ public class AppointmentQuery {
 
         String whereClause = " WHERE " +
                 " hpi.status='Y' " +
-                " AND arl.status='RES' " +
+                " AND arl.status='RES'" +
+                " AND sp.status!='D'" +
+                " AND d.status!='D'" +
                 " AND arl.rescheduleDate BETWEEN :fromDate AND :toDate";
 
         if (!ObjectUtils.isEmpty(appointmentRescheduleLogSearchDTO.getAppointmentNumber()))
@@ -479,7 +481,7 @@ public class AppointmentQuery {
                     " a.isSelf as isSelf," +                                                    //[15]
                     " h.name as hospitalName," +
                     " a.appointmentModeId.name as appointmentMode," +                           //[16]
-                    " da.fileUri as fileUri"+                                                   //[17]
+                    " da.fileUri as fileUri" +                                                   //[17]
                     " FROM Appointment a" +
                     " LEFT JOIN Patient p ON a.patientId=p.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
@@ -519,8 +521,8 @@ public class AppointmentQuery {
                     " DATE_FORMAT(ard.cancelledDate,'%Y-%m-%d') as cancelledDate," +
                     " a.appointmentModeId.name as appointmentMode," +
                     " hpi.isRegistered as isRegistered," +
-                    QUERY_TO_CALCULATE_PATIENT_AGE+"," +
-                    " dv.fileUri as fileUri"+
+                    QUERY_TO_CALCULATE_PATIENT_AGE + "," +
+                    " dv.fileUri as fileUri" +
                     " FROM" +
                     " AppointmentRefundDetail ard" +
                     " LEFT JOIN Appointment a ON a.id=ard.appointmentId.id" +

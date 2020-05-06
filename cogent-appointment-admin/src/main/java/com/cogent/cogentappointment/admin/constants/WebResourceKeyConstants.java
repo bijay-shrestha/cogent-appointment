@@ -46,6 +46,10 @@ public class WebResourceKeyConstants {
     //B
     public static final String BASE_PASSWORD = "/password";
 
+    public interface BreakTypeConstants {
+        String BASE_BREAK_TYPE = "/breakType";
+    }
+
     //C
     public interface CountryConstants {
         String BASE_COUNTRY = "/country";

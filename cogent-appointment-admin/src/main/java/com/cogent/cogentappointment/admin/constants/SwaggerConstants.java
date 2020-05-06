@@ -80,6 +80,16 @@ public class SwaggerConstants {
     }
 
     //B
+    public interface BreakTypeConstant{
+        String BASE_API_VALUE = "This is Break Type Resource";
+        String SAVE_OPERATION = "Save new Break Type";
+        String UPDATE_OPERATION = "Update existing Break Type";
+        String DELETE_OPERATION = "Set Break Type status as 'D' when deleted";
+        String SEARCH_OPERATION = "Search Break Type according to given request parameters";
+        String DETAILS_OPERATION = "Fetch Break Type details by its id";
+        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal Break Type details for dropdown";
+        String FETCH_BREAK_TYPE_BY_HOSPITAL_OPERATION = "Fetch active Break Type by hospital id";
+    }
 
     //C
     public interface CompanyAdminConstant {
@@ -191,7 +201,6 @@ public class SwaggerConstants {
         String REVERT_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION = "Revert doctor duty roster." +
                 " In case, user 'Cancel' roster while updating doctor duty roster." +
                 " If 'isOriginal' flag is true, then update all override details else simply update status and remarks.";
-        String FETCH_DOCTOR_DUTY_ROSTER_STATUS_OPERATION = "Fetch doctor duty roster status (used in Appointment status)";
     }
 
 

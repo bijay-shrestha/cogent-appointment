@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.admin.dto.commons.AdminLogRequestDTO;
 import com.cogent.cogentappointment.admin.service.AdminLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +21,7 @@ import static com.cogent.cogentappointment.admin.loghandler.RequestHandler.conve
 import static com.cogent.cogentappointment.admin.loghandler.RequestHandler.forgotPasswordLogging;
 
 @Component
+@RestControllerAdvice
 public class UserLogInterceptor implements HandlerInterceptor {
 
     @Autowired
@@ -33,8 +35,10 @@ public class UserLogInterceptor implements HandlerInterceptor {
 
         if (request.getRequestURI().contains(API_V1 + BASE_PASSWORD + FORGOT)) {
 
+            int status = Checkpoint.checkResponseStatus(response);
+
             AdminLogRequestDTO requestDTO = forgotPasswordLogging(request);
-            checkExceptionAndSave(exception, requestDTO);
+            checkStatusAndSave(status, requestDTO);
 
         }
 
@@ -42,24 +46,31 @@ public class UserLogInterceptor implements HandlerInterceptor {
 
         if (userLog != null) {
 
+            int status = Checkpoint.checkResponseStatus(response);
+
             AdminLogRequestDTO adminLogRequestDTO = convertToAdminLogRequestDTO(userLog, request);
-            checkExceptionAndSave(exception, adminLogRequestDTO);
+            checkStatusAndSave(status, adminLogRequestDTO);
 
         }
 
     }
 
-    private void checkExceptionAndSave(Exception exception, AdminLogRequestDTO adminLogRequestDTO) {
+    private void checkStatusAndSave(int status, AdminLogRequestDTO adminLogRequestDTO) {
 
-        if (exception == null) {
+        if (status >= 400 && status < 600) {
+            adminLogRequestDTO.setLogDescription(
+                    getFailedLogDescription(adminLogRequestDTO.getFeature(),
+                            adminLogRequestDTO.getActionType(),
+                            status));
+            saveFailedLogs(adminLogRequestDTO);
+        }
+
+        if (status >= 200 && status < 300) {
             adminLogRequestDTO.setLogDescription(getSuccessLogDescription(adminLogRequestDTO.getFeature(), adminLogRequestDTO.getActionType()));
             saveSuccessLogs(adminLogRequestDTO);
         }
 
-        if (exception != null) {
-            adminLogRequestDTO.setLogDescription(getFailedLogDescription());
-            saveFailedLogs(adminLogRequestDTO);
-        }
+
     }
 
 

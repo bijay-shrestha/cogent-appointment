@@ -41,9 +41,8 @@ public class RequestHandler {
         String clientBrowser = RequestData.getClientBrowser(request);
         String clientOS = RequestData.getClientOS(request);
         String clientIpAddr = RequestData.getClientIpAddr(request);
-        String location = location(RequestData.getClientPublicIpAddr());
 
-        adminLogRequestDTO.setLocation(location);
+        adminLogRequestDTO.setLocation(location(clientIpAddr));
         adminLogRequestDTO.setBrowser(clientBrowser);
         adminLogRequestDTO.setOperatingSystem(clientOS);
         adminLogRequestDTO.setIpAddress(clientIpAddr);
@@ -69,6 +68,8 @@ public class RequestHandler {
     }
 
     public static String location(String ip) throws IOException, GeoIp2Exception {
+
+        System.out.println("***********************************public ip="+ip);
 
         String countryName = "";
         String cityName = "";

@@ -60,11 +60,27 @@ public class LogDescription {
     }
 
 
-    public static String getFailedLogDescription() {
+    public static String getFailedLogDescription(String feature, String action, int status) {
 
-        return "Process cannot be completed due to exception...";
+        String log = "";
+        switch (status) {
+            case 401:
+                log = feature + " Invalid Credentials...";
+                break;
+            case 404:
+                log = feature + " with details not found...";
+                break;
+            case 409:
+                log = feature + " already exist with given details...";
+                break;
+            case 500:
+                log = "Internal Server error...";
+                break;
+            default:
+                log="Process cannot be completed due to exception...";
+        }
+
+        return log;
 
     }
-
-
 }

@@ -34,7 +34,10 @@ public class UserLogInterceptor implements HandlerInterceptor {
         if (request.getRequestURI().contains(API_V1 + BASE_PASSWORD + FORGOT)) {
 
             ClientLogRequestDTO requestDTO = forgotPasswordLogging(request);
-            checkExceptionAndSave(exception, requestDTO);
+
+            int status = Checkpoint.checkResponseStatus(response);
+
+            checkExceptionAndSave(status, requestDTO);
 
         }
 
@@ -42,23 +45,27 @@ public class UserLogInterceptor implements HandlerInterceptor {
 
         if (userLog != null) {
 
-            ClientLogRequestDTO adminLogRequestDTO = convertToClientLogRequestDTO(userLog, request);
-            checkExceptionAndSave(exception, adminLogRequestDTO);
+            int status = Checkpoint.checkResponseStatus(response);
+
+            ClientLogRequestDTO clientLogRequestDTO = convertToClientLogRequestDTO(userLog, request);
+            checkExceptionAndSave(status, clientLogRequestDTO);
         }
 
     }
 
-    private void checkExceptionAndSave(Exception exception, ClientLogRequestDTO clientLogRequestDTO) {
+    private void checkExceptionAndSave(int status, ClientLogRequestDTO clientLogRequestDTO) {
 
-        if (exception == null) {
+        if (status >= 400 && status < 600) {
+            clientLogRequestDTO.setLogDescription(getFailedLogDescription(clientLogRequestDTO.getFeature(), clientLogRequestDTO.getActionType(), status));
+            saveFailedLogs(clientLogRequestDTO);
+        }
+
+        if (status >= 200 && status < 300) {
             clientLogRequestDTO.setLogDescription(getSuccessLogDescription(clientLogRequestDTO.getFeature(), clientLogRequestDTO.getActionType()));
             saveSuccessLogs(clientLogRequestDTO);
         }
 
-        if (exception != null) {
-            clientLogRequestDTO.setLogDescription(getFailedLogDescription());
-            saveFailedLogs(clientLogRequestDTO);
-        }
+
     }
 
 

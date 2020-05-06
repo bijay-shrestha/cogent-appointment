@@ -60,6 +60,8 @@ public class RequestHandler {
                 builder()
                 .feature("Forgot Password")
                 .actionType("Forgot Password")
+                .parentId(8001l)
+                .roleId(3002l)
                 .adminEmail(requestedEmail)
                 .build();
 

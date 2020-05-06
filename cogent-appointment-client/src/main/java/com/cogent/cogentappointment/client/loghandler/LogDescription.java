@@ -57,16 +57,18 @@ public class LogDescription {
 
     public static String getFailedLogDescription(String feature, String action, int status) {
 
+        String[] featureName = feature.split("\\s+");
+
         String log = "";
         switch (status) {
             case 401:
                 log = feature + " Invalid Credentials...";
                 break;
             case 404:
-                log = feature + " with details not found...";
+                log = featureName[0] + " with details not found...";
                 break;
             case 409:
-                log = feature + " already exist with given details...";
+                log = featureName[0]  + " already exist with given details...";
                 break;
             case 500:
                 log = "Internal Server error...";

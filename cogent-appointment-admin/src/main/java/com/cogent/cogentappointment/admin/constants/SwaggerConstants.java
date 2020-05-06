@@ -300,6 +300,16 @@ public class SwaggerConstants {
         String FETCH_ASSIGNED_PROFILE_RESPONSE = "Fetch assigned profile response";
     }
 
+    public interface ShiftConstant{
+        String BASE_API_VALUE = "This is Shift Resource";
+        String SAVE_OPERATION = "Save new Shift";
+        String UPDATE_OPERATION = "Update existing Shift";
+        String DELETE_OPERATION = "Set Shift status as 'D' when deleted";
+        String SEARCH_OPERATION = "Search Shift according to given request parameters";
+        String DETAILS_OPERATION = "Fetch Shift details by its id";
+        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal Shift details for dropdown";
+        String FETCH_SHIFT_BY_HOSPITAL_OPERATION = "Fetch active shift by hospital id";
+    }
 
     //T
     public interface TestConstant {

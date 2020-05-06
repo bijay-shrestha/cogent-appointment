@@ -112,7 +112,7 @@ public class DepartmentQuery {
                     " AND h.id=:hospitalId" +
                     " ORDER BY label ASC";
 
-    public static String DEPARTMENT_AUDITABLE_QUERY() {
+    private static String DEPARTMENT_AUDITABLE_QUERY() {
         return " d.createdBy as createdBy," +
                 " d.createdDate as createdDate," +
                 " d.lastModifiedBy as lastModifiedBy," +

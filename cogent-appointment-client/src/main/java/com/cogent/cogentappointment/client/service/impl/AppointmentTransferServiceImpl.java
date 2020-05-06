@@ -43,6 +43,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
         List<DoctorDatesResponseDTO> rosterDates = repository.getDatesByDoctorId(doctorId);
 
         rosterDates.forEach(rosterId -> {
+
             List<Date> dates = getActualdate(repository.getDayOffDaysByRosterId(rosterId.getId()),
                     getDates(rosterId.getFromDate(), rosterId.getToDate()));
 

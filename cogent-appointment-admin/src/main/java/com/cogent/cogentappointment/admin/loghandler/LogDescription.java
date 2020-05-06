@@ -69,6 +69,9 @@ public class LogDescription {
             case 401:
                 log = feature + " Invalid Credentials...";
                 break;
+            case 400:
+                log = " Invalid Inputs...";
+                break;
             case 404:
                 log = featureName[0] + " with details not found...";
                 break;

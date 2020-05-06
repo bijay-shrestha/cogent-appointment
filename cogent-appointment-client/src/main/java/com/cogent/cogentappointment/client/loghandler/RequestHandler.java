@@ -41,7 +41,7 @@ public class RequestHandler {
         String clientBrowser = RequestData.getClientBrowser(request);
         String clientOS = RequestData.getClientOS(request);
         String clientIpAddr = RequestData.getClientIpAddr(request);
-        String location = location(RequestData.getClientPublicIpAddr());
+        String location=location(clientIpAddr);
 
         clientLogRequestDTO.setLocation(location);
         clientLogRequestDTO.setBrowser(clientBrowser);

@@ -31,7 +31,7 @@ public class UserLogInterceptor implements HandlerInterceptor {
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
                                 Exception exception) throws Exception {
 
-        String xForwarded = RequestHeader.getXForwardedFor(request);
+//        String xForwarded = RequestHeader.getXForwardedFor(request);
 
         if (request.getRequestURI().contains(API_V1 + BASE_PASSWORD + FORGOT)) {
 

@@ -51,6 +51,7 @@ public class ClientLogQuery {
                 " DATE_FORMAT(cl.logDateTime,'%h:%i %p') as logTime," +
                 " cl.browser as browser," +
                 " cl.operatingSystem as os," +
+                " cl.location as location," +
                 " a.email as email," +
                 " a.mobileNumber as mobileNumber," +
                 " cl.ipAddress as ipAddress," +

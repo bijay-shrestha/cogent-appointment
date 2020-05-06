@@ -36,13 +36,18 @@ public class RequestHandler {
         return adminLogRequestDTO;
     }
 
-    public static AdminLogRequestDTO getUserDetails(AdminLogRequestDTO adminLogRequestDTO, HttpServletRequest request) throws IOException, GeoIp2Exception {
+    public static AdminLogRequestDTO getUserDetails(
+            AdminLogRequestDTO adminLogRequestDTO,
+            HttpServletRequest request
+
+    ) throws IOException, GeoIp2Exception {
 
         String clientBrowser = RequestData.getClientBrowser(request);
         String clientOS = RequestData.getClientOS(request);
         String clientIpAddr = RequestData.getClientIpAddr(request);
+        String location=location(clientIpAddr);
 
-        adminLogRequestDTO.setLocation(location(clientIpAddr));
+        adminLogRequestDTO.setLocation(location);
         adminLogRequestDTO.setBrowser(clientBrowser);
         adminLogRequestDTO.setOperatingSystem(clientOS);
         adminLogRequestDTO.setIpAddress(clientIpAddr);

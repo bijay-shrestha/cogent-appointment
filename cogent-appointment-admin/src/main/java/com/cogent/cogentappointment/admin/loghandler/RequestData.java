@@ -15,6 +15,8 @@ public class RequestData {
 
         String ip = RequestHeader.getXForwardedFor(request);
 
+        System.out.println(ip);
+
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getHeader("Proxy-Client-IP");
         }
@@ -29,16 +31,13 @@ public class RequestData {
         }
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getRemoteAddr();
+
+            if (ip.equalsIgnoreCase("0:0:0:0:0:0:0:1")) {
+                InetAddress inetAddress = InetAddress.getLocalHost();
+                String ipAddress = inetAddress.getHostAddress();
+                ip = ipAddress;
+            }
         }
-
-        ip = request.getRemoteAddr();
-
-        if (ip.equalsIgnoreCase("0:0:0:0:0:0:0:1")) {
-            InetAddress inetAddress = InetAddress.getLocalHost();
-            String ipAddress = inetAddress.getHostAddress();
-            ip = ipAddress;
-        }
-
 
         return ip;
     }

@@ -11,13 +11,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import static com.cogent.cogentappointment.client.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.INACTIVE;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.BASE_PASSWORD;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.ForgotPasswordConstants.FORGOT;
 import static com.cogent.cogentappointment.client.loghandler.LogDescription.getFailedLogDescription;
 import static com.cogent.cogentappointment.client.loghandler.LogDescription.getSuccessLogDescription;
-import static com.cogent.cogentappointment.client.loghandler.RequestHandler.convertToClientLogRequestDTO;
-import static com.cogent.cogentappointment.client.loghandler.RequestHandler.forgotPasswordLogging;
+import static com.cogent.cogentappointment.client.loghandler.RequestHandler.*;
 
 @Component
 public class UserLogInterceptor implements HandlerInterceptor {
@@ -34,7 +32,14 @@ public class UserLogInterceptor implements HandlerInterceptor {
         if (request.getRequestURI().contains(API_V1 + BASE_PASSWORD + FORGOT)) {
 
             ClientLogRequestDTO requestDTO = forgotPasswordLogging(request);
-            checkExceptionAndSave(status, requestDTO);
+            checkStatusAndSave(status, requestDTO);
+
+        }
+
+        if (request.getRequestURI().contains(API_V1 + LOGIN)) {
+
+            ClientLogRequestDTO requestDTO = userLoginLogging(request);
+            checkStatusAndSave(status, requestDTO);
 
         }
 
@@ -43,12 +48,12 @@ public class UserLogInterceptor implements HandlerInterceptor {
         if (userLog != null) {
 
             ClientLogRequestDTO clientLogRequestDTO = convertToClientLogRequestDTO(userLog, request);
-            checkExceptionAndSave(status, clientLogRequestDTO);
+            checkStatusAndSave(status, clientLogRequestDTO);
         }
 
     }
 
-    private void checkExceptionAndSave(int status, ClientLogRequestDTO clientLogRequestDTO) {
+    private void checkStatusAndSave(int status, ClientLogRequestDTO clientLogRequestDTO) {
 
         if (status >= 400 && status < 600) {
             clientLogRequestDTO.setLogDescription(getFailedLogDescription(clientLogRequestDTO.getFeature(), clientLogRequestDTO.getActionType(), status));

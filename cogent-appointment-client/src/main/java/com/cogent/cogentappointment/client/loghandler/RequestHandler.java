@@ -1,13 +1,13 @@
 package com.cogent.cogentappointment.client.loghandler;
 
 import com.cogent.cogentappointment.client.dto.commons.ClientLogRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.login.LoginRequestDTO;
 import com.cogent.cogentappointment.client.utils.commons.FileResourceUtils;
 import com.cogent.cogentappointment.client.utils.commons.ObjectMapperUtils;
 import com.maxmind.geoip2.DatabaseReader;
 import com.maxmind.geoip2.exception.AddressNotFoundException;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.maxmind.geoip2.model.CityResponse;
-import com.maxmind.geoip2.record.Location;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,7 +41,7 @@ public class RequestHandler {
         String clientBrowser = RequestData.getClientBrowser(request);
         String clientOS = RequestData.getClientOS(request);
         String clientIpAddr = RequestData.getClientIpAddr(request);
-        String location=location(clientIpAddr);
+        String location = location(clientIpAddr);
 
         clientLogRequestDTO.setLocation(location);
         clientLogRequestDTO.setBrowser(clientBrowser);
@@ -63,6 +63,27 @@ public class RequestHandler {
                 .parentId(8001l)
                 .roleId(3002l)
                 .adminEmail(requestedEmail)
+                .build();
+
+        getUserDetails(clientLogRequestDTO, request);
+
+        return clientLogRequestDTO;
+    }
+
+    public static ClientLogRequestDTO userLoginLogging(HttpServletRequest request) throws IOException, GeoIp2Exception {
+
+        ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper((HttpServletRequest) request);
+        String login = new String(requestWrapper.getContentAsByteArray());
+
+        LoginRequestDTO loginRequestDTO = ObjectMapperUtils.map(login, LoginRequestDTO.class);
+
+        ClientLogRequestDTO clientLogRequestDTO = ClientLogRequestDTO.
+                builder()
+                .feature("Login")
+                .actionType("Login")
+                .parentId(8002l)
+                .roleId(3001l)
+                .adminEmail(loginRequestDTO.getEmail())
                 .build();
 
         getUserDetails(clientLogRequestDTO, request);

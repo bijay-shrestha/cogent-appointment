@@ -1,25 +1,27 @@
 package com.cogent.cogentappointment.admin.loghandler;
 
 import com.cogent.cogentappointment.admin.dto.commons.AdminLogRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.login.LoginRequestDTO;
 import com.cogent.cogentappointment.admin.service.AdminLogService;
+import com.cogent.cogentappointment.admin.utils.commons.ObjectMapperUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.BASE_PASSWORD;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.ForgotPasswordConstants.FORGOT;
 import static com.cogent.cogentappointment.admin.loghandler.Checkpoint.checkResponseStatus;
 import static com.cogent.cogentappointment.admin.loghandler.LogDescription.getFailedLogDescription;
 import static com.cogent.cogentappointment.admin.loghandler.LogDescription.getSuccessLogDescription;
-import static com.cogent.cogentappointment.admin.loghandler.RequestHandler.convertToAdminLogRequestDTO;
-import static com.cogent.cogentappointment.admin.loghandler.RequestHandler.forgotPasswordLogging;
+import static com.cogent.cogentappointment.admin.loghandler.RequestHandler.*;
 
 @Component
 @RestControllerAdvice
@@ -38,6 +40,19 @@ public class UserLogInterceptor implements HandlerInterceptor {
 
             AdminLogRequestDTO requestDTO = forgotPasswordLogging(request);
             checkStatusAndSave(status, requestDTO);
+
+        }
+
+        if (request.getRequestURI().contains(API_V1 + LOGIN) && request.getMethod().equalsIgnoreCase("POST")) {
+
+            ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper((HttpServletRequest) request);
+
+            String body = requestWrapper.getReader().lines().collect(Collectors.joining());
+
+            LoginRequestDTO requestDTO = ObjectMapperUtils.map(body, LoginRequestDTO.class);
+            AdminLogRequestDTO adminLogRequestDTO = userLoginLogging(request, requestDTO.getEmail());
+            checkStatusAndSave(status, adminLogRequestDTO);
+
 
         }
 

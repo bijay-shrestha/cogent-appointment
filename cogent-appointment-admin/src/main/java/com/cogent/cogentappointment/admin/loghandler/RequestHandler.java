@@ -1,6 +1,8 @@
 package com.cogent.cogentappointment.admin.loghandler;
 
 import com.cogent.cogentappointment.admin.dto.commons.AdminLogRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.admin.AdminRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.login.LoginRequestDTO;
 import com.cogent.cogentappointment.admin.utils.commons.FileResourceUtils;
 import com.cogent.cogentappointment.admin.utils.commons.ObjectMapperUtils;
 import com.cogent.cogentappointment.admin.utils.commons.SecurityContextUtils;
@@ -67,6 +69,22 @@ public class RequestHandler {
                 .parentId(8001l)
                 .roleId(3002l)
                 .adminEmail(requestedEmail)
+                .build();
+
+        getUserDetails(adminLogRequestDTO, request);
+
+        return adminLogRequestDTO;
+    }
+
+    public static AdminLogRequestDTO userLoginLogging(HttpServletRequest request,String email) throws IOException, GeoIp2Exception {
+
+        AdminLogRequestDTO adminLogRequestDTO = AdminLogRequestDTO.
+                builder()
+                .feature("Login")
+                .actionType("Login")
+                .parentId(8002l)
+                .roleId(3001l)
+                .adminEmail(email)
                 .build();
 
         getUserDetails(adminLogRequestDTO, request);

@@ -56,9 +56,13 @@ public class LogDescription {
             logDescription = feature + " is requested...";
         }
 
+        if (action.equalsIgnoreCase("Login")) {
+            logDescription = "Successfully login...";
+        }
+
+
         return logDescription;
     }
-
 
     public static String getFailedLogDescription(String feature, String action, int status) {
 
@@ -84,7 +88,6 @@ public class LogDescription {
             default:
                 log="Process cannot be completed due to exception...";
         }
-
         return log;
 
     }

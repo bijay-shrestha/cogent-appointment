@@ -52,6 +52,14 @@ public class LogDescription {
             logDescription = feature + " is refunded successfully...";
         }
 
+        if (action.equalsIgnoreCase("Forgot Password")) {
+            logDescription = feature + " is requested...";
+        }
+
+        if (action.equalsIgnoreCase("Login")) {
+            logDescription = "Successfully login...";
+        }
+
         return logDescription;
     }
 

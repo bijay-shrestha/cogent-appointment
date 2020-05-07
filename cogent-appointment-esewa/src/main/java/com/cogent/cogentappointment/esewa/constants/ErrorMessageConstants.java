@@ -37,12 +37,6 @@ public class ErrorMessageConstants {
         String DOCTOR_NOT_AVAILABLE = "Sorry, Doctor is not available in selected date '%s'.";
     }
 
-
-    public interface DoctorDutyRosterServiceMessages {
-        String APPOINTMENT_EXISTS_ON_WEEK_DAY_MESSAGE = "Cannot update doctor duty roster because appointment" +
-                " exists within the selected date range '%s'.";
-    }
-
     //E
 
     //F
@@ -53,6 +47,7 @@ public class ErrorMessageConstants {
     public static final String INVALID_GENDER_CODE_DEBUG_MESSAGE = "Gender enum doesn't have the requested code.";
 
     //H
+    public static final String HOSPITAL_NULL_MESSAGE = " Hospital id must not be null";
 
 
     //I

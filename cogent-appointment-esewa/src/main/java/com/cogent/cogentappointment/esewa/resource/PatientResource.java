@@ -32,18 +32,35 @@ public class PatientResource {
         this.patientService = patientService;
     }
 
+    //    /*WITHOUT HOSPITAL WISE*/
+//    @PutMapping(SEARCH + SELF)
+//    @ApiOperation(SEARCH_PATIENT_WITH_SELF_TYPE_OPERATION)
+//    public ResponseEntity<?> searchForSelf(@Valid @RequestBody PatientMinSearchRequestDTO searchRequestDTO) {
+//        return ok(patientService.searchForSelf(searchRequestDTO));
+//    }
+
+    /*HOSPITAL WISE*/
     @PutMapping(SEARCH + SELF)
     @ApiOperation(SEARCH_PATIENT_WITH_SELF_TYPE_OPERATION)
     public ResponseEntity<?> searchForSelf(@Valid @RequestBody PatientMinSearchRequestDTO searchRequestDTO) {
-        return ok(patientService.searchForSelf(searchRequestDTO));
+        return ok(patientService.searchForSelfHospitalWise(searchRequestDTO));
     }
 
+//    @PutMapping(SEARCH + OTHERS)
+//    @ApiOperation(SEARCH_PATIENT_WITH_OTHERS_TYPE_OPERATION)
+//    public ResponseEntity<?> search(@Valid @RequestBody PatientMinSearchRequestDTO searchRequestDTO,
+//                                    @RequestParam("page") int page,
+//                                    @RequestParam("size") int size) {
+//        return ok(patientService.searchForOthers(searchRequestDTO, getPageable(page, size)));
+//    }
+
+    /*HOSPITAL WISE*/
     @PutMapping(SEARCH + OTHERS)
     @ApiOperation(SEARCH_PATIENT_WITH_OTHERS_TYPE_OPERATION)
     public ResponseEntity<?> search(@Valid @RequestBody PatientMinSearchRequestDTO searchRequestDTO,
                                     @RequestParam("page") int page,
                                     @RequestParam("size") int size) {
-        return ok(patientService.searchForOthers(searchRequestDTO, getPageable(page, size)));
+        return ok(patientService.searchForOthersHospitalWise(searchRequestDTO, getPageable(page, size)));
     }
 
     @GetMapping(DETAIL + OTHERS + HOSPITAL_PATIENT_INFO_ID_PATH_VARIABLE_BASE)

@@ -1,5 +1,7 @@
 package com.cogent.cogentappointment.esewa.query;
 
+import java.util.Objects;
+
 /**
  * @author smriti ON 16/01/2020
  */
@@ -90,10 +92,12 @@ public class PatientQuery {
                 " p.id as patientId," +                                 //[1]
                 " p.name as name," +                                    //[2]
                 " p.mobileNumber as mobileNumber," +                    //[3]
-                " p.gender as gender," +                                //[4]
-                " hpi.address as address," +                            //[5]
-                " hpi.registrationNumber as registrationNumber," +      //[6]
-                QUERY_TO_CALCULATE_PATIENT_AGE +                        //[7]
+                " p.dateOfBirth as dateOfBirth," +                       //[4]
+                " p.gender as gender," +                                //[5]
+                " hpi.address as address," +                            //[6]
+                " hpi.registrationNumber as registrationNumber," +      //[7]
+                " hpi.hospital.name as hospitalName," +                  //[8]
+                QUERY_TO_CALCULATE_PATIENT_AGE +                        //[9]
                 " FROM Patient p" +
                 " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = p.id" +
                 " WHERE p.id IN (" + childPatientIds + ")";
@@ -111,4 +115,50 @@ public class PatientQuery {
                     " p.name =:name" +
                     " AND p.mobileNumber =:mobileNumber" +
                     " AND p.dateOfBirth =:dateOfBirth";
+
+    /*PATIENT INFO HOSPITAL WISE*/
+    /*FOR SELF*/
+    public static final String QUERY_TO_FETCH_PATIENT_INFO_FOR_SELF =
+            " SELECT p.id as patientId," +                                  //[0]
+                    " p.name as name," +                                    //[1]
+                    " p.mobileNumber as mobileNumber," +                    //[2]
+                    " p.gender as gender," +                                //[3]
+                    " p.dateOfBirth as dateOfBirth," +                      //[4]
+                    QUERY_TO_CALCULATE_PATIENT_AGE +
+                    " FROM Patient p" +
+                    GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS;
+
+    public static String QUERY_TO_FETCH_PATIENT_HOSPITAL_WISE_INFO(Long hospitalId) {
+
+        String query = " SELECT " +
+                " hpi.address as address," +                             //[0]
+                " hpi.email as email," +                                 //[1]
+                " hpi.registrationNumber as registrationNumber" +        //[2]
+                " FROM Patient p" +
+                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = p.id" +
+                " WHERE p.id =:patientId";
+
+        if (!Objects.isNull(hospitalId) && hospitalId != 0)
+            query += " AND hpi.hospital.id =" + hospitalId;
+
+        return query;
+    }
+
+    /*FOR OTHERS -> HOSPITAL WISE*/
+    public static String QUERY_TO_FETCH_CHILD_PATIENT_IDS(Long hospitalId) {
+
+        String query = " SELECT " +
+                " pm.parentPatientId.id as parentPatientId," +                 //[0]
+                " pm.childPatientId.id as childPatientId" +                   //[1]
+                " FROM Patient p" +
+                " LEFT JOIN PatientRelationInfo pm ON pm.parentPatientId.id= p.id" +
+                " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = pm.childPatientId.id" +
+                GET_WHERE_CLAUSE_TO_FETCH_PATIENT_DETAILS +
+                " AND pm.status = 'Y'";
+
+        if (!Objects.isNull(hospitalId) && hospitalId != 0)
+            query += " AND hpi.hospital.id=" + hospitalId;
+
+        return query;
+    }
 }

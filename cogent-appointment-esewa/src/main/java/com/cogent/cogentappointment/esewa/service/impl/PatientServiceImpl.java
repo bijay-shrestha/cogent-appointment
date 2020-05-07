@@ -112,6 +112,19 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
+    public PatientDetailResponseDTOWithStatus searchForSelfHospitalWise(PatientMinSearchRequestDTO searchRequestDTO) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SEARCHING_PROCESS_STARTED, PATIENT);
+
+        PatientDetailResponseDTO responseDTO = patientRepository.searchForSelfHospitalWise(searchRequestDTO);
+
+        log.info(SEARCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
+
+        return parseToPatientDetailResponseDTOWithStatus(responseDTO);
+    }
+
+    @Override
     public PatientResponseDTOForOthersWithStatus searchForOthers(PatientMinSearchRequestDTO searchRequestDTO,
                                                                  Pageable pageable) {
 
@@ -128,6 +141,30 @@ public class PatientServiceImpl implements PatientService {
         log.info(SEARCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
 
         return parseToPatientMinResponseDTOForOthersWithStatus(infoForOthers);
+    }
+
+    @Override
+    public PatientResponseDTOForOthersWithStatus searchForOthersHospitalWise(PatientMinSearchRequestDTO searchRequestDTO,
+                                                                             Pageable pageable) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SEARCHING_PROCESS_STARTED, PATIENT);
+
+        List<PatientRelationInfoResponseDTO> patientRelationInfo =
+                patientRepository.fetchPatientRelationInfoHospitalWise(
+                        searchRequestDTO.getName(),
+                        searchRequestDTO.getMobileNumber(),
+                        searchRequestDTO.getDateOfBirth(),
+                        searchRequestDTO.getHospitalId()
+                );
+
+        PatientResponseDTOForOthers patientMinInfo =
+                patientRepository.fetchMinPatientInfoForOthers(patientRelationInfo, pageable);
+
+        log.info(SEARCHING_PROCESS_COMPLETED, PATIENT, getDifferenceBetweenTwoTime(startTime));
+
+        return parseToPatientMinResponseDTOForOthersWithStatus(patientMinInfo);
     }
 
     @Override

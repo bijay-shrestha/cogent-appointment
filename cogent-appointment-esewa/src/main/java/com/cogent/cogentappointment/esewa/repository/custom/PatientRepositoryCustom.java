@@ -24,7 +24,14 @@ public interface PatientRepositoryCustom {
 
     PatientDetailResponseDTO searchForSelf(PatientMinSearchRequestDTO searchRequestDTO);
 
+    PatientDetailResponseDTO searchForSelfHospitalWise(PatientMinSearchRequestDTO searchRequestDTO);
+
     List<PatientRelationInfoResponseDTO> fetchPatientRelationInfo(PatientMinSearchRequestDTO searchRequestDTO);
+
+    List<PatientRelationInfoResponseDTO> fetchPatientRelationInfoHospitalWise(String name,
+                                                                              String mobileNumber,
+                                                                              Date dateOfBirth,
+                                                                              Long hospitalId);
 
     PatientResponseDTOForOthers fetchMinPatientInfoForOthers(List<PatientRelationInfoResponseDTO> patientRelationInfo,
                                                              Pageable pageable);

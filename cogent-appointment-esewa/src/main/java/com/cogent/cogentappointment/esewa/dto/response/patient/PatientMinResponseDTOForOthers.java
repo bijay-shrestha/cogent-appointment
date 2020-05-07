@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.persistence.enums.Gender;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @author smriti ON 18/01/2020
@@ -25,11 +26,15 @@ public class PatientMinResponseDTOForOthers implements Serializable {
 
     private String mobileNumber;
 
+    private Date dateOfBirth;
+
     private String age;
 
     private String registrationNumber;
 
     private Gender gender;
+
+    private String hospitalName;
 
     private Integer totalItems;
 }

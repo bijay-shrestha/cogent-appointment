@@ -10,6 +10,7 @@ import com.cogent.cogentappointment.persistence.model.HospitalPatientInfo;
 import com.cogent.cogentappointment.persistence.model.Patient;
 
 import java.util.Date;
+import java.util.Objects;
 
 import static com.cogent.cogentappointment.esewa.utils.GenderUtils.fetchGenderByCode;
 import static com.cogent.cogentappointment.esewa.utils.commons.NumberFormatterUtils.generateRandomNumber;
@@ -69,5 +70,18 @@ public class PatientUtils {
                 .responseStatus(OK)
                 .responseCode(OK.value())
                 .build();
+    }
+
+    public static void parseHospitalWisePatientInfo(PatientDetailResponseDTO responseDTO,
+                                                    Object[] result) {
+
+        final int ADDRESS_INDEX = 0;
+        final int EMAIL_INDEX = 1;
+        final int REGISTRATION_NUMBER_INDEX = 2;
+
+        responseDTO.setAddress(Objects.isNull(result[ADDRESS_INDEX]) ? null : result[ADDRESS_INDEX].toString());
+        responseDTO.setEmail(Objects.isNull(result[EMAIL_INDEX]) ? null : result[EMAIL_INDEX].toString());
+        responseDTO.setRegistrationNumber(Objects.isNull(result[REGISTRATION_NUMBER_INDEX])
+                ? null : result[REGISTRATION_NUMBER_INDEX].toString());
     }
 }

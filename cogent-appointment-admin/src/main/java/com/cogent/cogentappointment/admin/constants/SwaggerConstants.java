@@ -180,6 +180,7 @@ public class SwaggerConstants {
         String FETCH_BY_SPECIALIZATION_ID = "Fetch active doctors by specialization id";
         String FETCH_BY_HOSPITAL_ID = "Fetch active doctors by hospital id";
         String FETCH_ASSIGNED_DOCTOR_SHIFTS = "Fetch shifts assigned to doctor";
+        String ASSIGN_DOCTOR_SHIFTS = "Assign shifts to doctor";
     }
 
     public interface DoctorDutyRosterConstant {

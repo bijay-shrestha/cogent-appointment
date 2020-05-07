@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.persistence.model;
 
 import com.cogent.cogentappointment.persistence.audit.Auditable;
 import com.cogent.cogentappointment.persistence.listener.DoctorQualificationEntityListener;
+import com.cogent.cogentappointment.persistence.listener.DoctorShiftEntityListener;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +20,7 @@ import java.io.Serializable;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EntityListeners(DoctorQualificationEntityListener.class)
+@EntityListeners(DoctorShiftEntityListener.class)
 public class DoctorShift extends Auditable<String> implements Serializable {
 
     @Id

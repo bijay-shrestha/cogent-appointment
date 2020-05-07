@@ -173,6 +173,14 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
         return results;
     }
 
+    @Override
+    public List<Long> fetchActiveAssignedDoctorShiftIds(Long doctorId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ASSIGNED_DOCTOR_SHIFTS)
+                .setParameter(DOCTOR_ID, doctorId);
+
+        return query.getResultList();
+    }
+
     private Supplier<NoContentFoundException> DOCTOR_NOT_FOUND = () -> {
         log.error(CONTENT_NOT_FOUND, DOCTOR);
         throw new NoContentFoundException(Doctor.class);

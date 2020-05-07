@@ -16,6 +16,7 @@ import com.cogent.cogentappointment.admin.utils.GenderUtils;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,9 +29,10 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.DoctorMessages.SHIFT_DUPLICATION_MESSAGE;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NAME_AND_MOBILE_NUMBER_DUPLICATION_MESSAGE;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.*;
+import static com.cogent.cogentappointment.admin.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
@@ -67,6 +69,10 @@ public class DoctorServiceImpl implements DoctorService {
 
     private final Validator validator;
 
+    private final ShiftRepository shiftRepository;
+
+    private final DoctorShiftRepository doctorShiftRepository;
+
     public DoctorServiceImpl(DoctorRepository doctorRepository,
                              DoctorSpecializationRepository doctorSpecializationRepository,
                              SpecializationService specializationService,
@@ -76,7 +82,9 @@ public class DoctorServiceImpl implements DoctorService {
                              DoctorAppointmentChargeRepository doctorAppointmentChargeRepository,
                              MinioFileService minioFileService,
                              DoctorAvatarRepository doctorAvatarRepository,
-                             Validator validator) {
+                             Validator validator,
+                             ShiftRepository shiftRepository,
+                             DoctorShiftRepository doctorShiftRepository) {
         this.doctorRepository = doctorRepository;
         this.doctorSpecializationRepository = doctorSpecializationRepository;
         this.specializationService = specializationService;
@@ -87,6 +95,8 @@ public class DoctorServiceImpl implements DoctorService {
         this.minioFileService = minioFileService;
         this.doctorAvatarRepository = doctorAvatarRepository;
         this.validator = validator;
+        this.shiftRepository = shiftRepository;
+        this.doctorShiftRepository = doctorShiftRepository;
     }
 
     @Override
@@ -250,13 +260,42 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
+    public void assignShiftsToDoctor(DoctorShiftRequestDTO requestDTO) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SAVING_PROCESS_STARTED, DOCTOR_SHIFT);
+
+        validateShiftDuplicity(requestDTO);
+
+        Doctor doctor = fetchDoctor(requestDTO.getDoctorId());
+
+        List<DoctorShift> doctorShifts = requestDTO.getShiftIds().stream()
+                .map(shiftId -> {
+                    DoctorShift doctorShift =
+                            doctorShiftRepository.fetchByDoctorIdAndShiftId(requestDTO.getDoctorId(), shiftId);
+
+                    if (Objects.isNull(doctorShift)) {
+                        Shift shift = fetchShiftById(shiftId);
+
+                        return parseToDoctorShift(doctor, shift, new DoctorShift());
+                    } else
+                        doctorShift.setStatus(ACTIVE);
+
+                    return doctorShift;
+                }).collect(Collectors.toList());
+
+        saveDoctorShifts(doctorShifts);
+
+        log.info(SAVING_PROCESS_COMPLETED, DOCTOR_SHIFT, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    @Override
     public Doctor fetchDoctorById(Long id) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, DOCTOR);
 
-        Doctor doctor = doctorRepository.findActiveDoctorById(id)
-                .orElseThrow(() -> DOCTOR_WITH_GIVEN_ID_NOT_FOUND.apply(id));
+        Doctor doctor = fetchDoctor(id);
 
         log.info(FETCHING_PROCESS_COMPLETED, doctor, getDifferenceBetweenTwoTime(startTime));
 
@@ -496,6 +535,48 @@ public class DoctorServiceImpl implements DoctorService {
         log.error(DOCTOR_APPOINTMENT_CHARGE_NOT_FOUND, DoctorAppointmentCharge.class.getSimpleName(), doctorId);
         throw new NoContentFoundException(DoctorAppointmentCharge.class, "doctorId", doctorId.toString());
     };
+
+    private Doctor fetchDoctor(Long doctorId){
+       return doctorRepository.findActiveDoctorById(doctorId)
+                .orElseThrow(() -> DOCTOR_WITH_GIVEN_ID_NOT_FOUND.apply(doctorId));
+    }
+
+    /*1. FETCH ORIGINAL ACTIVE DOCTOR SHIFTS
+    * EG. ORIGINAL = MORNING
+    * REQUEST = MORNING, NIGHT
+    *
+    * 2. IF ORIGINAL SHIFTS IS NOT EMPTY, THEN
+    * FILTER OUT COMMON SHIFTS BETWEEN ORIGINAL & REQUEST
+    *   COMMON = MORNING
+    *   IF COMMON EXISTS, THEN THROW EXCEPTION
+    * */
+    private void validateShiftDuplicity(DoctorShiftRequestDTO requestDTO) {
+
+        List<Long> assignedShifts = doctorRepository.fetchActiveAssignedDoctorShiftIds(requestDTO.getDoctorId());
+
+        if (!assignedShifts.isEmpty()) {
+            List<Long> common = assignedShifts.stream()
+                    .filter(shift -> requestDTO.getShiftIds().contains(shift))
+                    .collect(Collectors.toList());
+
+            if (!common.isEmpty()) {
+                String commonIds = StringUtils.join(common, COMMA_SEPARATED);
+                String commonNames = shiftRepository.fetchNameByIds(commonIds);
+
+                throw new DataDuplicationException(String.format(SHIFT_DUPLICATION_MESSAGE, commonNames));
+            }
+        }
+    }
+
+    private Shift fetchShiftById(Long shiftId) {
+        return shiftRepository.fetchShiftById(shiftId)
+                .orElseThrow(() -> new NoContentFoundException(Shift.class, "shiftId", shiftId.toString()));
+    }
+
+    private void saveDoctorShifts(List<DoctorShift> doctorShifts) {
+        doctorShiftRepository.saveAll(doctorShifts);
+    }
+
 }
 
 

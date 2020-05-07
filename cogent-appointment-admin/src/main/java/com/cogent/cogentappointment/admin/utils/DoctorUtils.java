@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.admin.utils;
 
-import com.cogent.cogentappointment.admin.constants.StatusConstants;
 import com.cogent.cogentappointment.admin.constants.StringConstant;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctor.DoctorQualificationUpdateDTO;
@@ -19,6 +18,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.admin.utils.commons.NumberFormatterUtils.formatDoubleTo2DecimalPlaces;
 import static com.cogent.cogentappointment.admin.utils.commons.NumberFormatterUtils.generateRandomNumber;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.convertToNormalCase;
@@ -47,7 +47,7 @@ public class DoctorUtils {
                                                                    Long specializationId) {
         DoctorSpecialization doctorSpecialization =
                 convertToDoctorSpecialization(doctorId, specializationId);
-        doctorSpecialization.setStatus(StatusConstants.ACTIVE);
+        doctorSpecialization.setStatus(ACTIVE);
         return doctorSpecialization;
     }
 
@@ -63,7 +63,7 @@ public class DoctorUtils {
                                                                  Long qualificationId) {
         DoctorQualification doctorQualification =
                 convertToDoctorQualification(doctorId, qualificationId);
-        doctorQualification.setStatus(StatusConstants.ACTIVE);
+        doctorQualification.setStatus(ACTIVE);
         return doctorQualification;
     }
 
@@ -98,7 +98,7 @@ public class DoctorUtils {
         doctorAvatar.setFileSize(uploadResponseDTO.getFileSize());
         doctorAvatar.setFileUri(uploadResponseDTO.getFileUri());
         doctorAvatar.setFileType(uploadResponseDTO.getFileType());
-        doctorAvatar.setStatus(StatusConstants.ACTIVE);
+        doctorAvatar.setStatus(ACTIVE);
     }
 
     public static void parseDoctorAppointmentChargeDetails(DoctorAppointmentCharge doctorAppointmentCharge,
@@ -223,5 +223,15 @@ public class DoctorUtils {
                         .qualificationName(qualificationNames[i])
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    public static DoctorShift parseToDoctorShift(Doctor doctor,
+                                                 Shift shift,
+                                                 DoctorShift doctorShift) {
+
+        doctorShift.setDoctor(doctor);
+        doctorShift.setShift(shift);
+        doctorShift.setStatus(ACTIVE);
+        return doctorShift;
     }
 }

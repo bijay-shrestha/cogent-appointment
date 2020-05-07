@@ -38,4 +38,6 @@ public interface DoctorRepositoryCustom {
     List<DoctorDropdownDTO> fetchDoctorAvatarInfo(Long hospitalId, Long doctorId);
 
     List<DropDownResponseDTO> fetchAssignedDoctorShifts(Long doctorId);
+
+    List<Long> fetchActiveAssignedDoctorShiftIds(Long doctorId);
 }

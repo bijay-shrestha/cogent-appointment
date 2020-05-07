@@ -15,4 +15,12 @@ public class ShiftQuery {
                     " AND h.status = 'Y'" +
                     " AND h.id=:hospitalId" +
                     " ORDER BY label ASC";
+
+    public static String QUERY_TO_FETCH_NAME_BY_IDS(String shiftIds) {
+        return " SELECT" +
+                " GROUP_CONCAT(s.name)" +
+                " FROM " +
+                " shift s" +
+                " WHERE id IN (" + shiftIds + ")";
+    }
 }

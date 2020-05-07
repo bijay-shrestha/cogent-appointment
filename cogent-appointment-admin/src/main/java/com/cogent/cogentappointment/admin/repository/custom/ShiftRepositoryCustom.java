@@ -14,4 +14,6 @@ import java.util.List;
 public interface ShiftRepositoryCustom {
 
     List<DropDownResponseDTO> fetchShiftByHospitalId(Long hospitalId);
+
+    String fetchNameByIds(String shiftIds);
 }

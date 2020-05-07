@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.admin.resource;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctor.DoctorRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctor.DoctorSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.doctor.DoctorShiftRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctor.DoctorUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.service.DoctorService;
 import com.cogent.cogentappointment.admin.utils.commons.ObjectMapperUtils;
@@ -111,5 +112,12 @@ public class DoctorResource {
     @ApiOperation(FETCH_ASSIGNED_DOCTOR_SHIFTS)
     public ResponseEntity<?> fetchAssignedDoctorShifts(@PathVariable("doctorId") Long doctorId) {
         return ok(doctorService.fetchAssignedDoctorShifts(doctorId));
+    }
+
+    @PutMapping(BASE_SHIFT)
+    @ApiOperation(ASSIGN_DOCTOR_SHIFTS)
+    public ResponseEntity<?> assignShiftsToDoctor(@RequestBody DoctorShiftRequestDTO requestDTO){
+        doctorService.assignShiftsToDoctor(requestDTO);
+        return ok().build();
     }
 }

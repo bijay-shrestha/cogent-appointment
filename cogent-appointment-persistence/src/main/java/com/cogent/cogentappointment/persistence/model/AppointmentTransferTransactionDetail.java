@@ -29,7 +29,7 @@ public class AppointmentTransferTransactionDetail extends Auditable<String> impl
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "appointment_transfer_transaction_id")
+    @JoinColumn(name = "appointment_transaction_detail_id")
     private AppointmentTransactionDetail appointmentTransactionDetail;
 
     @Temporal(TemporalType.DATE)

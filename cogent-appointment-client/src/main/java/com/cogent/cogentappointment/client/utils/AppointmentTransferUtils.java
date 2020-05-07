@@ -1,16 +1,25 @@
 package com.cogent.cogentappointment.client.utils;
 
-import com.cogent.cogentappointment.client.dto.response.eSewa.AvailableDoctorWithSpecialization;
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
+import org.joda.time.Minutes;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.convert24HourTo12HourFormat;
 
 /**
  * @author Sauravi Thapa ON 5/6/20
  */
 public class AppointmentTransferUtils {
-    public static List<Date> mergeOverrideAndActualDoctorList(
+    private static final DateTimeFormatter FORMAT = DateTimeFormat.forPattern("HH:mm");
+
+    public static List<Date> mergeOverrideAndActualDateList(
             List<Date> overrideList,
             List<Date> actualList) {
 
@@ -29,13 +38,39 @@ public class AppointmentTransferUtils {
         return overrideList;
     }
 
-    public static List<Date> getActualdate( List<String> dayOffDay,List<Date>  dates){
+    public static List<Date> getActualdate(List<String> dayOffDay, List<Date> dates) {
         List<Date> unmatched = dates.stream()
-                .filter(test -> dayOffDay.stream()
-                        .filter(weekDay -> weekDay.equals(test.toString().substring(0, 3).toUpperCase()))
+                .filter(actualDate -> dayOffDay.stream()
+                        .filter(weekDay -> weekDay.equals(actualDate.toString().substring(0, 3).toUpperCase()))
                         .count() < 1)
                 .collect(Collectors.toList());
         return unmatched;
+    }
+
+    public static List<String> getGapDuration(String startTime, String endTime, Integer gapDuration) {
+        final Duration duration = Minutes.minutes(gapDuration).toStandardDuration();
+        DateTime dateTime = new DateTime(FORMAT.parseDateTime(startTime));
+        List<String> response = new ArrayList<>();
+
+        do {
+            response.add(convert24HourTo12HourFormat(FORMAT.print(dateTime)));
+            dateTime = dateTime.plus(duration);
+        } while (dateTime.compareTo(FORMAT.parseDateTime(endTime)) <= 0);
+
+        return response;
+    }
+
+    public static List<String> getVacantTime(List<String> allTimeSlot,List<String> unavailableTimeSlot){
+
+        List<String> unmatchedList = allTimeSlot.stream()
+                .filter(actual -> (unavailableTimeSlot.stream()
+                        .filter(override -> (override.equals(actual))
+                                && (override.equals(actual))
+                        )
+                        .count()) < 1)
+                .collect(Collectors.toList());
+
+        return unmatchedList;
     }
 
 

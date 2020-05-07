@@ -71,6 +71,7 @@ public class SwaggerConstants {
     public interface AppointmentTransferConstant {
         String BASE_API_VALUE = "Resource used for Appointment Transfer Scenario.";
         String FETCH_AVAILABLE_DATES="Fetch available dates by doctor id";
+        String FETCH_AVAILABLE_TIME="Fetch available time by available date and doctor id";
     }
 
     public interface AuthenticateConstant {

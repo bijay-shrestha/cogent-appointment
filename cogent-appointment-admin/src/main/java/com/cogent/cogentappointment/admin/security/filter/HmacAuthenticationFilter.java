@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.HMAC_BAD_SIGNATURE;
 import static com.cogent.cogentappointment.admin.constants.PatternConstants.AUTHORIZATION_HEADER_PATTERN;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 
 /**
  * @author Sauravi Thapa २०/१/१९
@@ -50,16 +51,17 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
             final HMACBuilder signatureBuilder;
 
-            UserDetailsImpl userDetails = userDetailsService.loadUserByUsername(authHeader.getUsername());
+            UserDetailsImpl userDetails = userDetailsService.loadUserByUsername(authHeader.getEmail());
 
-            if (userDetails.getIsCompany().equals('Y')) {
+            if (userDetails.getIsCompany().equals(YES)) {
                 signatureBuilder = new HMACBuilder()
                         .algorithm(authHeader.getAlgorithm())
-                        .nonce(authHeader.getNonce())
-                        .username(userDetails.getUsername())
+                        .id(authHeader.getId())
+                        .email(authHeader.getEmail())
                         .companyId(Math.toIntExact(authHeader.getCompanyId()))
                         .companyCode(authHeader.getCompanyCode())
                         .apiKey(authHeader.getApiKey())
+                        .nonce(authHeader.getNonce())
                         .apiSecret(userDetails.getApiSecret());
 
             } else {
@@ -68,7 +70,7 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
             compareSignature(signatureBuilder, authHeader.getDigest());
 
-            SecurityContextHolder.getContext().setAuthentication(getAuthenticationForCompany(userDetails.getUsername(),
+            SecurityContextHolder.getContext().setAuthentication(getAuthenticationForCompany(authHeader.getEmail(),
                     userDetails.getCompanyId()));
         }
 
@@ -91,12 +93,13 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
         }
 
         return new AuthHeader(authHeaderMatcher.group(1),
-                authHeaderMatcher.group(2),
-                Integer.parseInt(authHeaderMatcher.group(3)),
-                authHeaderMatcher.group(4),
+                Integer.parseInt(authHeaderMatcher.group(2)),
+                authHeaderMatcher.group(3),
+                Integer.parseInt(authHeaderMatcher.group(4)),
                 authHeaderMatcher.group(5),
                 authHeaderMatcher.group(6),
-                DatatypeConverter.parseBase64Binary(authHeaderMatcher.group(7)));
+                authHeaderMatcher.group(7),
+                DatatypeConverter.parseBase64Binary(authHeaderMatcher.group(8)));
     }
 
     public void compareSignature(HMACBuilder signatureBuilder, byte[] digest) {
@@ -104,16 +107,9 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
             throw new BadCredentialsException(HMAC_BAD_SIGNATURE);
     }
 
-    public PreAuthenticatedAuthenticationToken getAuthentication(UserDetails userDetails) {
+    public PreAuthenticatedAuthenticationToken getAuthenticationForCompany(String email, Long companyId) {
         return new PreAuthenticatedAuthenticationToken(
-                userDetails,
-                null,
-                null);
-    }
-
-    public PreAuthenticatedAuthenticationToken getAuthenticationForCompany(String username, Long companyId) {
-        return new PreAuthenticatedAuthenticationToken(
-                username,
+                email,
                 companyId,
                 null);
     }

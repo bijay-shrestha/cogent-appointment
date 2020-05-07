@@ -25,11 +25,19 @@ public class SwaggerConstants {
         String FETCH_LOGGED_IN_ADMIN_INFO = "Fetch logged in admin information." +
                 " Used to show in top-bar and to validate if the admin updates its own profile";
         String FETCH_ADMIN_META_INFO = "Fetch active admin meta info for dropdown";
+        String VERIFY_EMAIL_ADMIN = "Verify if the confirmation token sent in email (after successful email update by admin) is valid.";
+    }
+
+    public interface AdminFeatureConstant {
+        String BASE_API_VALUE = "This is Admin Feature Resource";
+        String UPDATE_OPERATION = "Update 'isSideBarCollapse' flag of corresponding admin";
     }
 
     public interface AppointmentConstant {
         String BASE_API_VALUE = "This is Appointment Resource";
         String CHECK_APPOINTMENT_AVAILABILITY = "Check available time schedules in requested date" +
+                " for specific doctor and specialization";
+        String CHECK_CURRENT_APPOINTMENT_AVAILABILITY = "Check current available time schedules in requested date" +
                 " for specific doctor and specialization";
         String SAVE_OPERATION = "Save new appointment";
         String FETCH_PENDING_APPOINTMENT = "Fetch pending appointments";
@@ -39,9 +47,11 @@ public class SwaggerConstants {
         String CANCEL_REGISTRATION_OPERATION = "Delete Appointment Reservation when user cancels registration process";
         String FETCH_APPOINTMENT_TRANSACTION_STATUS = "Fetch Appointment Transaction Status." +
                 " If 'Y', then it is successful appointment, else it is failed appointment";
+        String SEARCH_APPOINTMENT = " Search appointment history for myself/others";
 
         /*admin*/
         String FETCH_REFUND_APPOINTMENTS = "Fetch Refund Appointment Request List";
+        String FETCH_REFUND_APPOINTMENTS_DETAIL = "Fetch Refund Appointment Detail By appointmentId";
         String APPROVE_REFUND_APPOINTMENT = "Approve Refund Request Appointment";
         String REJECT_REFUND_APPOINTMENT = "Reject Refund Request Appointment";
         String FETCH_PENDING_APPOINTMENT_APPROVAL = "Fetch pending appointment approvals";
@@ -50,6 +60,7 @@ public class SwaggerConstants {
         String REJECT_APPOINTMENT = "Reject Appointment and set status as 'R'.";
         String FETCH_APPOINTMENT_LOG = "Fetch Appointment Log";
         String FETCH_APPOINTMENT_RESCHEDULE_LOG = "Fetch Appointment Reschedule Log";
+        String FETCH_TRANSACTION_LOG = "Fetch Transaction Log";
     }
 
     public interface AppointmentStatusConstant {
@@ -92,9 +103,9 @@ public class SwaggerConstants {
 
     public interface DashboardConstant {
         String BASE_API_VALUE = "This is Dashboard Resource";
-        String FETCH_DYNAMIC_DASHBOARD_FEATURE=" Fetch Dynamic Dashboard feature";
+        String FETCH_DYNAMIC_DASHBOARD_FEATURE = " Fetch Dynamic Dashboard feature";
         String GENERATE_REVENUE_OPERATION = "Fetch revenue generated.";
-        String  OVER_ALL_DASHBOARD_FEATURE=" Fetch Over all Dashboard feature";
+        String OVER_ALL_DASHBOARD_FEATURE = " Fetch Over all Dashboard feature";
         String OVER_ALL_APPOINTMENT_OPERATION = "Fetch over all appointments.";
         String COUNT_REGISTERED_PATIENTS_OPERATION = "Count no. of registered patients.";
         String REVENUE_STATISTICS_OPERATION = "Revenue statistics as per the filter.";
@@ -163,6 +174,8 @@ public class SwaggerConstants {
                 " (Case V/Case VIII)";
         String FETCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION_OPERATION = "Fetch all available doctors and " +
                 "their specialization on the choosen date (Case II/Case IV)";
+        String SEARCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION_OPERATION = "Fetch all available doctors and " +
+                "their specialization on the selected date range(Case II/Case IV)";
 
     }
 
@@ -277,6 +290,11 @@ public class SwaggerConstants {
 
 
     //T
+
+    public interface TestConstant {
+        String BASE_API_VALUE = "This is Test Resource";
+        String TEST_OPERATION = "This is Test Operation";
+    }
 
 
     //U

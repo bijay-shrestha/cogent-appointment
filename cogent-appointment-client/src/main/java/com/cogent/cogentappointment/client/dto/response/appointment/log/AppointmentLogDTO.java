@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.dto.response.appointment.log;
 
 import com.cogent.cogentappointment.persistence.enums.Gender;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.io.Serializable;
@@ -18,6 +19,7 @@ public class AppointmentLogDTO implements Serializable {
 
     private String status;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd,YYYY",timezone = "Asia/Kathmandu")
     private Date appointmentDate;
 
     private String appointmentNumber;
@@ -36,6 +38,7 @@ public class AppointmentLogDTO implements Serializable {
 
     private String patientAge;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd,YYYY",timezone = "Asia/Kathmandu")
     private Date patientDob;
 
     private Character isRegistered;
@@ -44,6 +47,8 @@ public class AppointmentLogDTO implements Serializable {
 
     private String doctorName;
 
+    private String fileUri;
+
     private String specializationName;
 
     private String transactionNumber;
@@ -51,5 +56,14 @@ public class AppointmentLogDTO implements Serializable {
     private Double appointmentAmount;
 
     private Double refundAmount;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd,YYYY",timezone = "Asia/Kathmandu")
+    private Date transactionDate;
+
+    private String appointmentMode;
+
+    private Character isFollowUp;
+
+    private Double revenueAmount;
 
 }

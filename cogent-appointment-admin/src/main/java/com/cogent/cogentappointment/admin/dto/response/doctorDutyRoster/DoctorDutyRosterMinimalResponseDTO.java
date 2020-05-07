@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.io.Serializable;
@@ -20,12 +21,16 @@ public class DoctorDutyRosterMinimalResponseDTO implements Serializable {
 
     private String doctorName;
 
+    private String fileUri;
+
     private String specializationName;
 
     private Integer rosterGapDuration;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd, YYYY", timezone = "Asia/Kathmandu")
     private Date fromDate;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd, YYYY", timezone = "Asia/Kathmandu")
     private Date toDate;
 
     private Character status;

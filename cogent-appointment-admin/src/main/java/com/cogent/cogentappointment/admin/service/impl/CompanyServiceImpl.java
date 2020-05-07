@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import javax.validation.Validator;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -34,6 +35,8 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.ALIAS_NOT_FOUND;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.CompanyLog.COMPANY;
@@ -78,7 +81,7 @@ public class CompanyServiceImpl implements CompanyService {
 
 
     @Override
-    public void save(CompanyRequestDTO requestDTO, MultipartFile logo) throws NoSuchAlgorithmException {
+    public void save(@Valid CompanyRequestDTO requestDTO, MultipartFile logo) throws NoSuchAlgorithmException {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, COMPANY);
@@ -104,10 +107,14 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public void update(CompanyUpdateRequestDTO updateRequestDTO, MultipartFile logo) throws NoSuchAlgorithmException {
+    public void update(@Valid CompanyUpdateRequestDTO updateRequestDTO,
+                       MultipartFile logo) throws NoSuchAlgorithmException {
+
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(UPDATING_PROCESS_STARTED, COMPANY);
+
+        validateConstraintViolation(validator.validate(updateRequestDTO));
 
         Hospital company = findById(updateRequestDTO.getId());
 
@@ -119,12 +126,12 @@ public class CompanyServiceImpl implements CompanyService {
 
         HmacApiInfo hmacApiInfo = hmacApiInfoRepository.getHmacApiInfoByCompanyId(updateRequestDTO.getId());
 
-
-        parseToUpdatedCompany(updateRequestDTO, company);
+        save(parseToUpdatedCompany(updateRequestDTO, company));
 
         updateCompanyContactNumber(company.getId(), updateRequestDTO.getContactNumberUpdateRequestDTOS());
 
-        updateCompanyLogo(company, logo);
+        if (updateRequestDTO.getIsLogoUpdate().equals(YES))
+            updateCompanyLogo(company, logo);
 
         updateHmacApiInfo(hmacApiInfo, updateRequestDTO.getStatus(), updateRequestDTO.getRemarks());
 
@@ -141,7 +148,7 @@ public class CompanyServiceImpl implements CompanyService {
 
         HmacApiInfo hmacApiInfo = hmacApiInfoRepository.getHmacApiInfoByCompanyId(deleteRequestDTO.getId());
 
-        parseToDeletedCompany(company, deleteRequestDTO);
+        save(parseToDeletedCompany(company, deleteRequestDTO));
 
         updateHmacApiInfo(hmacApiInfo, deleteRequestDTO.getStatus(), deleteRequestDTO.getRemarks());
 
@@ -193,7 +200,8 @@ public class CompanyServiceImpl implements CompanyService {
 
         log.info(FETCHING_ALIAS_PROCESS_STARTED, HOSPITAL);
 
-        String responseDTO = hospitalRepository.getAliasById(companyId);
+        String responseDTO = hospitalRepository.fetchAliasById(companyId)
+                .orElseThrow(() -> new NoContentFoundException(ALIAS_NOT_FOUND));
 
         log.info(FETCHING_ALIAS_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
 
@@ -282,7 +290,7 @@ public class CompanyServiceImpl implements CompanyService {
 
 
     private Function<Long, NoContentFoundException> COMPANY_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        log.error(CONTENT_NOT_FOUND_BY_ID,COMPANY, id);
+        log.error(CONTENT_NOT_FOUND_BY_ID, COMPANY, id);
         throw new NoContentFoundException("Company Doesn't Exists");
     };
 }

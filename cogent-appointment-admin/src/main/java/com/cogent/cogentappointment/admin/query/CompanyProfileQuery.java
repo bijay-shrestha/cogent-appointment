@@ -74,7 +74,9 @@ public class CompanyProfileQuery {
                     " p.description as description," +                      //[2]
                     " p.remarks as remarks," +                              //[3]
                     " h.id as companyId," +                                 //[4]
-                    " h.name as companyName" +                              //[5]
+                    " h.name as companyName," +                             //[5]
+                    " p.isAllRoleAssigned as isAllRoleAssigned," +
+                    COMPANY_PROFILES_AUDITABLE_QUERY() +            //[6]
                     " FROM" +
                     " Profile p" +
                     " LEFT JOIN Hospital h ON h.id = p.company.id" +
@@ -105,7 +107,8 @@ public class CompanyProfileQuery {
                     " FROM Profile p" +
                     " WHERE" +
                     " p.status ='Y'" +
-                    " AND p.isCompanyProfile= 'Y'";
+                    " AND p.isCompanyProfile= 'Y'" +
+                    " ORDER BY p.name ASC";
 
     public static final String QUERY_TO_FETCH_ACTIVE_COMPANY_PROFILES_BY_COMPANY_ID =
             " SELECT" +
@@ -115,5 +118,21 @@ public class CompanyProfileQuery {
                     " WHERE" +
                     " p.status ='Y'" +
                     " AND p.isCompanyProfile= 'Y'" +
-                    " AND p.company.id =:companyId";
+                    " AND p.company.id =:companyId" +
+                    " ORDER BY p.name ASC";
+
+    public static String COMPANY_PROFILES_AUDITABLE_QUERY() {
+        return " p.createdBy as createdBy," +
+                " p.createdDate as createdDate," +
+                " p.lastModifiedBy as lastModifiedBy," +
+                " p.lastModifiedDate as lastModifiedDate";
+    }
+
+    public static String COMPANY_PROFILE_MENU_AUDITABLE_QUERY() {
+        return " pm.createdBy as createdBy," +
+                " pm.createdDate as createdDate," +
+                " pm.lastModifiedBy as lastModifiedBy," +
+                " pm.lastModifiedDate as lastModifiedDate";
+    }
+
 }

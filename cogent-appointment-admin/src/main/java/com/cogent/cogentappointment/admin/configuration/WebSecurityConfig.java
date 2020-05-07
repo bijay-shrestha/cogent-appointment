@@ -42,7 +42,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         this.hmacAuthenticationFilter = hmacAuthenticationFilter;
     }
 
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
@@ -60,8 +59,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/api/v1/password/forgot").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/password/verify").permitAll()
                 .antMatchers(HttpMethod.PUT, "/api/v1/password").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/v1/hello/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/v1/hello").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/test").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/admin/verify/email").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/companyAdmin/verify/email").permitAll()
                 .anyRequest().authenticated();
     }
 

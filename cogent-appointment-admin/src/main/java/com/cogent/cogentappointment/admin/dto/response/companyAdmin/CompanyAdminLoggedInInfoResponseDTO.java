@@ -14,7 +14,7 @@ public class CompanyAdminLoggedInInfoResponseDTO implements Serializable {
 
     private Long adminId;
 
-    private String username;
+    private String email;
 
     private String fullName;
 
@@ -29,4 +29,8 @@ public class CompanyAdminLoggedInInfoResponseDTO implements Serializable {
     private String hospitalName;
 
     private Character isCompany;
+
+    private Character isAllRoleAssigned;
+
+    private Character isSideBarCollapse;
 }

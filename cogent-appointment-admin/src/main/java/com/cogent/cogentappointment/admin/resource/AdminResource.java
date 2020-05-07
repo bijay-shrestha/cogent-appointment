@@ -12,13 +12,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AdminConstant.*;
+import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.CompanyAdminConstant.FETCH_LOGGED_IN_ADMIN_INFO;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AdminConstants.*;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.CompanyAdminConstants.INFO;
 import static java.net.URI.create;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 import static org.springframework.http.ResponseEntity.created;
@@ -38,11 +39,10 @@ public class AdminResource {
     @PostMapping(consumes = MULTIPART_FORM_DATA_VALUE)
     @ApiOperation(SAVE_OPERATION)
     public ResponseEntity<?> save(@RequestParam(value = "file", required = false) MultipartFile file,
-                                  @RequestParam("request") String request,
-                                  HttpServletRequest httpServletRequest) throws IOException {
+                                  @RequestParam("request") String request) throws IOException {
 
         AdminRequestDTO adminRequestDTO = ObjectMapperUtils.map(request, AdminRequestDTO.class);
-        adminService.save(adminRequestDTO, file, httpServletRequest);
+        adminService.save(adminRequestDTO, file);
         return created(create(API_V1 + BASE_ADMIN)).build();
     }
 
@@ -74,13 +74,6 @@ public class AdminResource {
         return ok().build();
     }
 
-    @PutMapping(CHANGE_PASSWORD)
-    @ApiOperation(CHANGE_PASSWORD_OPERATION)
-    public ResponseEntity<?> changePassword(@Valid @RequestBody AdminChangePasswordRequestDTO requestDTO) {
-        adminService.changePassword(requestDTO);
-        return ok().build();
-    }
-
     @PutMapping(RESET_PASSWORD)
     @ApiOperation(RESET_PASSWORD_OPERATION)
     public ResponseEntity<?> resetPassword(@Valid @RequestBody AdminResetPasswordRequestDTO requestDTO) {
@@ -106,29 +99,23 @@ public class AdminResource {
         return ok().build();
     }
 
-    @GetMapping(VERIFY)
-    @ApiOperation(VERIFY_ADMIN)
-    public ResponseEntity<?> verify(@RequestParam(name = "token") String token) {
-        adminService.verifyConfirmationToken(token);
-        return ok().build();
-    }
-
-    @PostMapping(BASE_PASSWORD)
-    @ApiOperation(SAVE_PASSWORD_OPERATION)
-    public ResponseEntity<?> savePassword(@Valid @RequestBody AdminPasswordRequestDTO requestDTO) {
-        adminService.savePassword(requestDTO);
-        return ok().build();
-    }
-
     @GetMapping(ADMIN_META_INFO)
     @ApiOperation(FETCH_ADMIN_META_INFO)
     public ResponseEntity<?> fetchAdminMetaInfoDropdown() {
         return ok(adminService.fetchAdminMetaInfoResponseDto());
     }
 
-    @PutMapping(INFO)
-    @ApiOperation(FETCH_LOGGED_IN_ADMIN_INFO)
-    public ResponseEntity<?> fetchLoggedInAdminInfo(@Valid @RequestBody AdminInfoRequestDTO requestDTO) {
-        return ok(adminService.fetchLoggedInAdminInfo(requestDTO));
+    @GetMapping(ADMIN_META_INFO_BY_COMPANY_ID + ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_ADMIN_META_INFO_BY_COMPANY_ID)
+    public ResponseEntity<?> fetchAdminMetaInfoDropdownByCompanyId(@PathVariable("id") Long id) {
+
+        return ok(adminService.fetchAdminMetaInfoByCompanyIdResponseDto(id));
+    }
+
+    @GetMapping(ADMIN_META_INFO_BY_CLIENT_ID + ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_ADMIN_META_INFO_BY_COMPANY_ID)
+    public ResponseEntity<?> fetchAdminMetaInfoDropdownByClientId(@PathVariable("id") Long id) {
+
+        return ok(adminService.fetchAdminMetaInfoByClientIdResponseDto(id));
     }
 }

@@ -64,9 +64,9 @@ public class ProfileQuery {
     public static Function<ProfileSearchRequestDTO, String> QUERY_TO_SEARCH_PROFILE = (searchRequestDTO) -> {
         return " SELECT" +
                 " p.id as id," +                                             //[0]
-                " p.name as name," +                                        //[1]
+                " CONCAT(h.alias, '-', p.name) as name," +                    //[1]
                 " p.status as status," +                                    //[2]
-                " d.name as departmentName," +                              //[3]
+                " CONCAT(h.alias, '-', d.name) as departmentName," +         //[3]
                 " h.name as hospitalName" +                                 //[4]
                 " FROM" +
                 " Profile p" +
@@ -77,14 +77,16 @@ public class ProfileQuery {
 
     public static final String QUERY_TO_FETCH_PROFILE_DETAILS =
             " SELECT" +
-                    " p.name as name," +                                    //[0]
+                    " p.name as name," +                                   //[0]
                     " p.status as status," +                               //[1]
                     " p.description as description," +                     //[2]
                     " p.remarks as remarks," +                             //[3]
                     " d.id as departmentId," +                             //[4]
                     " d.name as departmentName," +                         //[5]
                     " h.id as hospitalId," +                               //[6]
-                    " h.name as hospitalName" +                            //[7]
+                    " h.name as hospitalName," +                           //[7]
+                    " h.alias as hospitalAlias," +
+                    PROFILE_AUDITABLE_QUERY() +//[8]
                     " FROM" +
                     " Profile p" +
                     " LEFT JOIN Department d ON d.id = p.department.id" +
@@ -111,23 +113,27 @@ public class ProfileQuery {
 
     public static final String QUERY_TO_FETCH_ACTIVE_PROFILES_FOR_DROPDOWN =
             " SELECT" +
-                    " p.id as value," +                                 //[0]
-                    " p.name as label" +                                //[1]
+                    " p.id as value," +                                         //[0]
+                    " CONCAT(h.alias,'-',p.name) as label" +                   //[1]
                     " FROM Profile p" +
+                    " LEFT JOIN Department d ON d.id = p.department.id" +
+                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE" +
                     " p.status ='Y'" +
                     " AND p.isCompanyProfile= 'N'" +
-                    " ORDER BY p.name ASC ";
+                    " ORDER BY label ASC ";
 
     public static final String QUERY_TO_FETCH_PROFILE_BY_DEPARTMENT_ID =
-            " SELECT p.id as value," +
-                    " p.name as label" +
+            " SELECT p.id as value," +                                         //[0]
+                    " CONCAT(h.alias,'-',p.name) as label" +                   //[1]
                     " FROM Profile p" +
                     " LEFT JOIN Department d ON d.id = p.department.id" +
+                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE p.status ='Y'" +
                     " AND d.status ='Y'" +
                     " AND d.id =:id" +
-                    " AND p.isCompanyProfile= 'N'";
+                    " AND p.isCompanyProfile= 'N'" +
+                    " ORDER BY label ASC ";
 
     public static final String QUERY_TO_FETCH_ASSIGNED_PROFILE_RESPONSE =
             "SELECT" +
@@ -144,10 +150,22 @@ public class ProfileQuery {
                     " AND p.status = 'Y'" +
                     " AND a.status ='Y'" +
                     " AND " +
-                    " (" +
-                    " a.email =:username OR" +
-                    " a.username =:username" +
-                    " )" +
+                    " a.email =:email " +
                     " AND h.is_company ='Y'" +
                     " GROUP BY pm.parent_id, pm.user_menu_id, pm.profile_id";
+
+    public static String PROFILE_AUDITABLE_QUERY() {
+        return " p.createdBy as createdBy," +
+                " p.createdDate as createdDate," +
+                " p.lastModifiedBy as lastModifiedBy," +
+                " p.lastModifiedDate as lastModifiedDate";
+    }
+
+    public static String PROFILE_MENUS_AUDITABLE_QUERY() {
+        return " pm.createdBy as createdBy," +
+                " pm.createdDate as createdDate," +
+                " pm.lastModifiedBy as lastModifiedBy," +
+                " pm.lastModifiedDate as lastModifiedDate";
+    }
+
 }

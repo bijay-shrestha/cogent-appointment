@@ -13,32 +13,36 @@ public class HospitalQuery {
     public static final String QUERY_TO_VALIDATE_DUPLICITY =
             "SELECT " +
                     " h.name," +                        //[0]
-                    " h.code" +                         //[1]
+                    " h.code," +                         //[1]
+                    " h.alias" +                         //[2]
                     " FROM Hospital h" +
                     " WHERE " +
-                    " (h.name =:name OR h.code =:code)" +
+                    " (h.name =:name OR h.code =:code OR h.alias =:alias)" +
                     " AND h.status != 'D'";
 
     public static final String QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE =
             "SELECT " +
                     " h.name," +                        //[0]
-                    " h.code" +                         //[1]
+                    " h.code," +                         //[1]
+                    " h.alias" +                         //[2]
                     " FROM Hospital h" +
                     " WHERE " +
                     " h.id!=:id" +
                     " AND" +
-                    " (h.name =:name OR h.code =:code)" +
+                    " (h.name =:name OR h.code =:code OR h.alias = :alias)" +
                     " AND h.status != 'D'";
 
     public static final String QUERY_TO_FETCH_HOSPITAL_FOR_DROPDOWN =
             " SELECT" +
                     " h.id as value," +                     //[0]
-                    " h.name as label," +
-                    " h.isCompany as isCompany" +                    //[1]
+                    " h.name as label," +                   //[1]
+                    " h.isCompany as isCompany," +          //[2]
+                    " h.alias as alias" +                    //[3]
                     " FROM" +
                     " Hospital h" +
                     " WHERE h.status ='Y'" +
-                    " AND h.isCompany='N'";
+                    " AND h.isCompany='N'" +
+                    " ORDER BY h.name ASC ";
 
     public static String QUERY_TO_SEARCH_HOSPITAL(HospitalSearchRequestDTO searchRequestDTO) {
         return "SELECT" +
@@ -105,7 +109,8 @@ public class HospitalQuery {
                     " h.number_of_follow_ups as numberOfFollowUps," +           //[12]
                     " h.follow_up_interval_days as followUpIntervalDays," +     //[13]
                     " h.is_company as isCompany," +                             //[14]
-                    " h.alias as alias"+                                        //[15]
+                    " h.alias as alias," +                                       //[15]
+                    HOSPITAL_AUDITABLE_QUERY()+
                     " FROM" +
                     " hospital h" +
                     " LEFT JOIN hospital_logo hl ON h.id =hl.hospital_id " +
@@ -113,7 +118,7 @@ public class HospitalQuery {
                     " LEFT JOIN " +
                     " (" +
                     " SELECT hc.hospital_id as hospitalId," +
-                    " GROUP_CONCAT((CONCAT(hc.id, '-', hc.contact_number, '-', hc.status))) as contact_details" +
+                    " GROUP_CONCAT((CONCAT(hc.id, '/', hc.contact_number, '/', hc.status))) as contact_details" +
                     " FROM hospital_contact_number hc" +
                     " WHERE hc.status = 'Y'" +
                     " GROUP by hc.hospital_id" +
@@ -131,4 +136,11 @@ public class HospitalQuery {
             " SELECT h.followUpIntervalDays as followUpIntervalDays" +
                     " FROM Hospital h" +
                     " WHERE h.id =:hospitalId";
+
+    public static String HOSPITAL_AUDITABLE_QUERY() {
+        return " h.created_by as createdBy," +
+                " h.created_date as createdDate," +
+                " h.last_modified_by as lastModifiedBy," +
+                " h.last_modified_date as lastModifiedDate";
+    }
 }

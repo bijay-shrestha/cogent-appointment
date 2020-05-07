@@ -7,4 +7,8 @@ public class SecurityContextUtils {
     public static Long getLoggedInHospitalId() {
         return (Long) SecurityContextHolder.getContext().getAuthentication().getCredentials();
     }
+
+    public static String getLoggedInAdminEmail() {
+        return (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    }
 }

@@ -68,12 +68,13 @@ public class QueryConstants {
 
     //P
     public interface PatientQueryConstants {
+
+        String PATIENT_ID = "patientId";
         String PARENT_PATIENT_ID = "parentPatientId";
         String CHILD_PATIENT_ID = "childPatientId";
         String HOSPITAL_PATIENT_INFO_ID = "hospitalPatientInfoId";
     }
 
-    public static final String PATIENT_ID = "patientId";
 
     //Q
 

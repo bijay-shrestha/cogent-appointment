@@ -65,4 +65,5 @@ public class HospitalQuery {
                     " FROM Hospital h" +
                     " WHERE h.id =:hospitalId" +
                     " AND h.status = 'Y' AND h.isCompany = 'N'";
+
 }

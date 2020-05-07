@@ -38,11 +38,14 @@ public class Country extends Auditable<String> implements Serializable {
     @Column(name = "iso_3")
     private String iso3;
 
+    /*NOTE :The primitive data type 'int' isn't nullable.
+     You need to use the Wrapper class 'Integer' in this case.
+     */
     @Column(name = "num_code")
-    private int numCode;
+    private Integer numCode;
 
     @Column(name = "phone_code")
-    private int phoneCode;
+    private Integer phoneCode;
 
     @Column(name = "status")
     private Character status;
@@ -51,10 +54,10 @@ public class Country extends Auditable<String> implements Serializable {
     public String toString() {
         return "Country{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
-                ", niceName='" + niceName + '\'' +
-                ", iso='" + iso + '\'' +
-                ", iso3='" + iso3 + '\'' +
+                ", name=" + name +
+                ", niceName=" + niceName +
+                ", iso=" + iso +
+                ", iso3=" + iso3 +
                 ", numCode=" + numCode +
                 ", phoneCode=" + phoneCode +
                 ", status=" + status +

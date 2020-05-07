@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.dto.response.admin;
 
+import com.cogent.cogentappointment.admin.dto.response.commons.AuditableResponseDTO;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import lombok.*;
 
@@ -14,13 +15,11 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AdminDetailResponseDTO implements Serializable {
+public class AdminDetailResponseDTO extends AuditableResponseDTO implements Serializable {
 
     private Long id;
 
     private String fullName;
-
-    private String username;
 
     private String email;
 
@@ -47,6 +46,8 @@ public class AdminDetailResponseDTO implements Serializable {
     private String fileUri;
 
     private String remarks;
+
+    private String hospitalAlias;
 
     private List<AdminMacAddressInfoResponseDTO> adminMacAddressInfo;
 }

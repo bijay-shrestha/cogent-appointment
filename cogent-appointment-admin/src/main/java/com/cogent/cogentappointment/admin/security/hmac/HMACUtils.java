@@ -11,13 +11,13 @@ import static com.cogent.cogentappointment.admin.utils.HMACKeyGenerator.generate
 /**
  * @author Sauravi Thapa २०/१/१९
  */
-
 @Component
 public class HMACUtils {
 
-    public String getAuthToken(Authentication authentication) {
+    public String getHash(Authentication authentication) {
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
-        String username = userPrincipal.getUsername();
+        Integer id= Math.toIntExact(userPrincipal.getId());
+        String email = userPrincipal.getEmail();
         String companyCode = userPrincipal.getCompanyCode();
         String apiKey = userPrincipal.getApiKey();
         String apiSecret = userPrincipal.getApiSecret();
@@ -26,19 +26,22 @@ public class HMACUtils {
 
         final HMACBuilder signatureBuilder = new HMACBuilder()
                 .algorithm(HMAC_ALGORITHM)
-                .nonce(nonce)
-                .apiKey(apiKey)
+                .id(id)
+                .email(email)
                 .companyCode(companyCode)
                 .companyId(companyId)
-                .username(username)
-                .apiSecret(apiSecret);;
+                .apiKey(apiKey)
+                .apiSecret(apiSecret)
+                .nonce(nonce);
 
         final String signature = signatureBuilder
                 .buildAsBase64String();
 
-        String authToken = HMAC_ALGORITHM +
+        String hash = HMAC_ALGORITHM +
                 SPACE +
-                username +
+                id +
+                COLON +
+                email +
                 COLON +
                 companyId +
                 COLON +
@@ -50,8 +53,7 @@ public class HMACUtils {
                 COLON +
                 signature;
 
-
-        return authToken;
+        return hash;
     }
 
 }

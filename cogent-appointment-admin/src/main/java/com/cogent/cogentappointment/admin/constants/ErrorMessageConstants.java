@@ -6,18 +6,27 @@ package com.cogent.cogentappointment.admin.constants;
 public class ErrorMessageConstants {
 
     //A
+    public static final String ALIAS_NOT_FOUND = "Alias not found";
+
+    public static final String ALIAS_DUPLICATION_MESSAGE = "%s already exists with alias '%s' ";
 
 
     public interface AdminServiceMessages {
 
-        String ADMIN_DUPLICATION_MESSAGE = "Admin with given username, email and mobile number" +
-                " already exists.";
+        String ADMIN_DUPLICATION_MESSAGE = "Admin with email '%s' and mobile number" +
+                " '%s' already exists.";
 
-        String USERNAME_DUPLICATION_MESSAGE = "%s already exists with username '%s'";
+        String ADMIN_DUPLICATION_IN_DIFFERENT_HOSPITAL_MESSAGE = "Cannot create Admin with email '%s'" +
+                " and mobile number '%s'.";
 
-        String EMAIL_DUPLICATION_MESSAGE = "%s already exists with email '%s'";
+        String EMAIL_DUPLICATION_MESSAGE = "Admin with email '%s' already exists.";
 
-        String MOBILE_NUMBER_DUPLICATION_MESSAGE = "%s already exists with mobile number '%s'";
+        String EMAIL_DUPLICATION_IN_DIFFERENT_HOSPITAL_MESSAGE = "Cannot create Admin with email '%s'.";
+
+        String MOBILE_NUMBER_DUPLICATION_MESSAGE = "Admin with mobile number '%s' already exists.";
+
+        String MOBILE_NUMBER_DUPLICATION_IN_DIFFERENT_HOSPITAL_MESSAGE = "Cannot create Admin with" +
+                " and mobile number '%s'.";
 
         String ADMIN_NOT_FOUND = "Admin '%s' doesn't exist";
 
@@ -38,8 +47,18 @@ public class ErrorMessageConstants {
         String ADMIN_CANNOT_BE_REGISTERED_DEBUG_MESSAGE = "Admin count is equal to hospital's allowed number of admins";
 
         String INVALID_DELETE_REQUEST = "Sorry! Cannot delete this admin since it has Super Admin Profile";
+
+        String ACCOUNT_NOT_ACTIVATED_MESSAGE = "Sorry '%s', please activate your account first.";
+        String ACCOUNT_NOT_ACTIVATED_DEBUG_MESSAGE = "'status' flag in Admin entity is 'N'";
+
+        String BAD_UPDATE_MESSAGE = "Operation failed, save password pending.";
+        String BAD_UPDATE_DEBUG_MESSAGE = "Admin hasn't saved its password yet and is still inactive.";
     }
 
+    public interface AppointmentModeMessages {
+        String APPOINTMENT_MODE_NOT_EDITABLE = "Appointment Mode cannot be updated'";
+        String APPOINTMENT_MODE_NOT_EDITABLE_DEBUG_MESSAGE = "Appointment Mode having is_editable 'N' cannot be updated";
+    }
 
     //B
 
@@ -58,6 +77,10 @@ public class ErrorMessageConstants {
 
         String APPOINTMENT_EXISTS_ON_WEEK_DAY_MESSAGE = "Cannot update doctor duty roster because appointment" +
                 " exists within the selected date range '%s'.";
+    }
+
+    public interface DashboardMessages {
+        String DOCTOR_REVENUE_NOT_FOUND = "Doctor Revenue(s) not found";
     }
 
     //E

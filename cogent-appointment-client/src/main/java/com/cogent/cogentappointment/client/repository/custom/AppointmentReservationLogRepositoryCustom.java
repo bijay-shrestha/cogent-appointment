@@ -12,13 +12,7 @@ public interface AppointmentReservationLogRepositoryCustom {
 
     List<String> fetchBookedAppointmentReservations(AppointmentCheckAvailabilityRequestDTO requestDTO);
 
-    Long validateDuplicityExceptCurrentReservationId(Date appointmentDate,
-                                                     String appointmentTime,
-                                                     Long doctorId,
-                                                     Long specializationId,
-                                                     Long appointmentReservationId);
-
     Long fetchAppointmentReservationLogId(Date appointmentDate, String appointmentTime,
-                                          Long doctorId, Long specializationId);
+                                          Long doctorId, Long specializationId, Long hospitalId);
 
 }

@@ -30,13 +30,13 @@ public class ForgotPasswordUtils {
     }
 
     public static EmailRequestDTO parseToEmailRequestDTO(String emailAddress,
-                                                         String username,
+                                                         String fullname,
                                                          String resetCode) {
         return EmailRequestDTO.builder()
                 .receiverEmailAddress(emailAddress)
                 .subject(SUBJECT_FOR_FORGOT_PASSWORD)
                 .templateName(FORGOT_PASSWORD)
-                .paramValue(username + COMMA_SEPARATED + resetCode)
+                .paramValue(fullname + COMMA_SEPARATED + resetCode)
                 .build();
     }
 

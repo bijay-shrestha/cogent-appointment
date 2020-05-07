@@ -4,7 +4,7 @@ import com.cogent.cogentappointment.admin.dto.request.email.EmailRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.forgotPassword.ForgotPasswordRequestDTO;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.property.ExpirationTimeProperties;
+import com.cogent.cogentappointment.admin.property.ForgotPasswordProperties;
 import com.cogent.cogentappointment.admin.repository.AdminRepository;
 import com.cogent.cogentappointment.admin.repository.ForgotPasswordRepository;
 import com.cogent.cogentappointment.admin.service.EmailService;
@@ -19,11 +19,10 @@ import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.ADMIN_NOT_ACTIVE;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.*;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.ForgotPasswordMessages.RESET_CODE_EXPIRED;
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INVALID_VERIFICATION_TOKEN;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.INVALID_VERIFICATION_TOKEN_ERROR;
 import static com.cogent.cogentappointment.admin.log.constants.AdminLog.*;
 import static com.cogent.cogentappointment.admin.utils.ForgotPasswordUtils.convertToForgotPasswordVerification;
@@ -42,44 +41,44 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
     private final AdminRepository adminRepository;
 
-    private final ExpirationTimeProperties expirationTimeProperties;
+    private final ForgotPasswordProperties forgotPasswordProperties;
 
     private final ForgotPasswordRepository verificationRepository;
 
     private final EmailService emailService;
 
     public ForgotPasswordServiceImpl(AdminRepository adminRepository,
-                                     ExpirationTimeProperties expirationTimeProperties,
+                                     ForgotPasswordProperties forgotPasswordProperties,
                                      ForgotPasswordRepository verificationRepository,
                                      EmailService emailService) {
         this.adminRepository = adminRepository;
-        this.expirationTimeProperties = expirationTimeProperties;
+        this.forgotPasswordProperties = forgotPasswordProperties;
         this.verificationRepository = verificationRepository;
         this.emailService = emailService;
     }
 
     @Override
-    public void forgotPassword(String username) {
+    public void forgotPassword(String email) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FORGOT_PASSWORD_PROCESS_STARTED);
 
-        Admin admin = adminRepository.fetchAdminByUsernameOrEmail(username);
+        Admin admin = adminRepository.fetchActiveAdminByEmail(email);
 
-        validateAdmin(admin, username);
+        validateAdmin(admin, email);
 
         ForgotPasswordVerification forgotPasswordVerification = verificationRepository.findByAdminId(admin.getId());
 
         forgotPasswordVerification = convertToForgotPasswordVerification(
                 admin,
-                expirationTimeProperties.getForgotPassword(),
+                forgotPasswordProperties.getExpiryTime(),
                 isNull(forgotPasswordVerification) ? new ForgotPasswordVerification() : forgotPasswordVerification);
 
         save(forgotPasswordVerification);
 
         EmailRequestDTO emailRequestDTO = parseToEmailRequestDTO(
                 admin.getEmail(),
-                admin.getUsername(),
+                admin.getFullName(),
                 forgotPasswordVerification.getResetCode());
 
         emailService.sendEmail(emailRequestDTO);
@@ -106,7 +105,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
 
         log.info(UPDATING_PASSWORD_PROCESS_STARTED);
 
-        Admin admin = adminRepository.fetchAdminByUsernameOrEmail(requestDTO.getUsername());
+        Admin admin = adminRepository.fetchAdminByEmail(requestDTO.getEmail());
 
         ForgotPasswordVerification forgotPasswordVerification = verificationRepository.findByAdminId(admin.getId());
 
@@ -130,6 +129,7 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
     private void updateForgotPasswordVerification(Long adminId) {
         ForgotPasswordVerification forgotPasswordVerification = verificationRepository.findByAdminId(adminId);
         forgotPasswordVerification.setStatus(INACTIVE);
+        save(forgotPasswordVerification);
     }
 
     private void validateExpirationTime(Object expirationTime) {
@@ -143,10 +143,23 @@ public class ForgotPasswordServiceImpl implements ForgotPasswordService {
         verificationRepository.save(forgotPasswordVerification);
     }
 
-    private void validateAdmin(Admin admin, String username) {
+    private void validateAdmin(Admin admin, String email) {
+        validateAdminStatus(admin, email);
+        validateIfAdminIsActivated(admin, email);
+    }
+
+    private void validateAdminStatus(Admin admin, String username) {
         if (!admin.getStatus().equals(ACTIVE)) {
             log.error(ADMIN_NOT_ACTIVE_ERROR, username);
             throw new NoContentFoundException(String.format(ADMIN_NOT_ACTIVE, username), "username/email", username);
+        }
+    }
+
+    private void validateIfAdminIsActivated(Admin admin, String username) {
+        if (admin.getStatus().equals(NO)) {
+            log.error(String.format(ACCOUNT_NOT_ACTIVATED_MESSAGE, username));
+            throw new BadRequestException(
+                    String.format(ACCOUNT_NOT_ACTIVATED_MESSAGE, username), ACCOUNT_NOT_ACTIVATED_DEBUG_MESSAGE);
         }
     }
 

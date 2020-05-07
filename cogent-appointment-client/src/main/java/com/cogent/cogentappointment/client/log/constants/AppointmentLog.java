@@ -25,6 +25,8 @@ public class AppointmentLog {
 
     public static String APPOINTMENT_LOG = "APPOINTMENT LOG";
 
+    public final static String TRANSACTION_LOG = "TRANSACTION LOG";
+
     public static String PENDING_APPOINTMENTS = "PENDING APPOINTMENTS";
 
     public static String APPOINTMENT_RESCHEDULE_LOG = "APPOINTMENT RESCHEDULE LOG";

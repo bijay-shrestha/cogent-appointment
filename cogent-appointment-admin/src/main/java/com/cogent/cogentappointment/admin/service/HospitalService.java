@@ -33,4 +33,6 @@ public interface HospitalService {
     List<HospitalDropdownResponseDTO> fetchHospitalForDropDown();
 
     HospitalResponseDTO fetchDetailsById(Long hospitalId);
+
+    String fetchAliasById(Long hospitalId);
 }

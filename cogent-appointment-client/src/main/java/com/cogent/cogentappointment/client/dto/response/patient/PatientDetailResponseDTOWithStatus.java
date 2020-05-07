@@ -15,7 +15,7 @@ import java.io.Serializable;
 @Builder
 public class PatientDetailResponseDTOWithStatus implements Serializable {
 
-    PatientDetailResponseDTO detailResponseDTO;
+    private PatientDetailResponseDTO detailResponseDTO;
 
     private int responseCode;
 

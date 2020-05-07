@@ -13,10 +13,15 @@ public class WebResourceKeyConstants {
         String BASE_ADMIN = "/admin";
         String AVATAR = "/avatar";
         String ADMIN_META_INFO = "/metaInfo";
-        String CHANGE_PASSWORD = "/changePassword";
+        String ADMIN_META_INFO_BY_COMPANY_ID = "/company/metaInfo";
+        String ADMIN_META_INFO_BY_CLIENT_ID = "/client/metaInfo";
         String RESET_PASSWORD = "/resetPassword";
-        String INFO = "/info";
         String VERIFY = "/verify";
+        String EMAIL = "/email";
+    }
+
+    public interface AdminFeatureConstants {
+        String BASE_ADMIN_FEATURE = "/adminFeature";
     }
 
     public interface AppointmentConstants {
@@ -28,10 +33,13 @@ public class WebResourceKeyConstants {
         String STATUS = "/status";
         String LOG = "/log";
         String PENDING_APPROVAL = "/pending-approval";
-        String RESCHEDULE = "/reschedule";
         String RESCHEDULE_LOG = "/reschedule-log";
         String DETAILS = "/detail";
+        String TRANSACTION_LOG = "/transaction-log";
+    }
 
+    public interface AppointmentModeConstants {
+        String BASE_APPOINTMENT_MODE = "/appointmentMode";
 
     }
 
@@ -147,6 +155,7 @@ public class WebResourceKeyConstants {
     //P
     public interface PatientConstant {
         String BASE_PATIENT = "/patient";
+        String ESEWA_ID = "/eSewaId";
     }
 
     public interface ProfileSetupConstants {
@@ -182,6 +191,10 @@ public class WebResourceKeyConstants {
 
 
     //T
+    public interface TestResourceConstant {
+        String BASE_TEST_RESOURCE = "/test";
+    }
+
 
     //U
     public static final String USERNAME_VARIABLE_BASE = "/{username}";

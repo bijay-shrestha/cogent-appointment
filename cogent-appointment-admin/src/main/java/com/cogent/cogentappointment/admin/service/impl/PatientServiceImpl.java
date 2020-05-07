@@ -11,6 +11,7 @@ import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.HospitalPatientInfoRepository;
 import com.cogent.cogentappointment.admin.repository.PatientMetaInfoRepository;
 import com.cogent.cogentappointment.admin.repository.PatientRepository;
+import com.cogent.cogentappointment.admin.service.HospitalService;
 import com.cogent.cogentappointment.admin.service.PatientService;
 import com.cogent.cogentappointment.persistence.model.HospitalPatientInfo;
 import com.cogent.cogentappointment.persistence.model.Patient;
@@ -45,12 +46,16 @@ public class PatientServiceImpl implements PatientService {
 
     private final HospitalPatientInfoRepository hospitalPatientInfoRepository;
 
+    private final HospitalService hospitalService;
+
     public PatientServiceImpl(PatientRepository patientRepository,
                               PatientMetaInfoRepository patientMetaInfoRepository,
-                              HospitalPatientInfoRepository hospitalPatientInfoRepository) {
+                              HospitalPatientInfoRepository hospitalPatientInfoRepository,
+                              HospitalService hospitalService) {
         this.patientRepository = patientRepository;
         this.patientMetaInfoRepository = patientMetaInfoRepository;
         this.hospitalPatientInfoRepository = hospitalPatientInfoRepository;
+        this.hospitalService = hospitalService;
     }
 
     @Override
@@ -91,7 +96,7 @@ public class PatientServiceImpl implements PatientService {
         HospitalPatientInfo hospitalPatientInfoToBeUpdated = hospitalPatientInfoRepository
                 .fetchHospitalPatientInfoByPatientId(updateRequestDTO.getId());
 
-        Long patientCount = patientRepository.validatePatientDuplicity(updateRequestDTO,patientToBeUpdated.getId());
+        Long patientCount = patientRepository.validatePatientDuplicity(updateRequestDTO, patientToBeUpdated.getId());
 
         validatePatientDuplicity(patientCount, updateRequestDTO.getName(),
                 updateRequestDTO.getMobileNumber(), updateRequestDTO.getDateOfBirth());
@@ -174,6 +179,20 @@ public class PatientServiceImpl implements PatientService {
         return patientInfo;
     }
 
+    @Override
+    public List<DropDownResponseDTO> fetchPatientEsewaId(Long hospitalId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, PATIENT_ESEWA_ID);
+
+        List<DropDownResponseDTO> patientEsewaId =
+                patientRepository.fetchPatientEsewaId(hospitalId);
+
+        log.info(FETCHING_PROCESS_COMPLETED, PATIENT_ESEWA_ID, getDifferenceBetweenTwoTime(startTime));
+
+        return patientEsewaId;
+    }
+
     private void savePatientMetaInfo(PatientMetaInfo patientMetaInfo) {
         patientMetaInfoRepository.save(patientMetaInfo);
     }
@@ -193,7 +212,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     private Function<Long, NoContentFoundException> PATIENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        log.error(CONTENT_NOT_FOUND_BY_ID,PATIENT,id);
+        log.error(CONTENT_NOT_FOUND_BY_ID, PATIENT, id);
         throw new NoContentFoundException(Patient.class, "patientId", id.toString());
     };
 

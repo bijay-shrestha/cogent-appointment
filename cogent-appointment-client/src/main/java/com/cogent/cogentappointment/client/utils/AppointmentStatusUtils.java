@@ -169,6 +169,7 @@ public class AppointmentStatusUtils {
             responseDTO.setGender(appointmentStatusResponseDTO.getGender());
             responseDTO.setAppointmentId(appointmentStatusResponseDTO.getAppointmentId());
             responseDTO.setHasTimePassed(hasTimeHasPassed(appointmentStatusResponseDTO.getDate(), appointmentTime));
+            responseDTO.setIsFollowUp(appointmentStatusResponseDTO.getIsFollowUp());
         }
 
         doctorTimeSlotResponseDTOS.add(responseDTO);

@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.request.login.LoginRequestDTO;
-import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.security.hmac.HMACUtils;
 import com.cogent.cogentappointment.admin.service.AuthenticateService;
 import lombok.extern.slf4j.Slf4j;
@@ -31,8 +30,8 @@ public class AuthenticateServiceImpl implements AuthenticateService {
     @Override
     public String loginUser(LoginRequestDTO requestDTO) {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(requestDTO.getUsername(), requestDTO.getPassword()));
-            return hmacUtils.getAuthToken(authentication);
+                new UsernamePasswordAuthenticationToken(requestDTO.getEmail(), requestDTO.getPassword()));
+            return hmacUtils.getHash(authentication);
 
     }
 }

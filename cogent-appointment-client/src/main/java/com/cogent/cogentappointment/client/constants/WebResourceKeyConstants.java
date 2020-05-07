@@ -16,13 +16,19 @@ public class WebResourceKeyConstants {
         String CHANGE_PASSWORD = "/changePassword";
         String RESET_PASSWORD = "/resetPassword";
         String VERIFY = "/verify";
+        String EMAIL = "/email";
+    }
+
+    public interface AdminFeatureConstants {
+        String BASE_ADMIN_FEATURE = "/adminFeature";
     }
 
     public interface AppointmentConstants {
         String BASE_APPOINTMENT = "/appointment";
         String APPOINTMENT_ID_PATH_VARIABLE_BASE = "/{appointmentId}";
         String APPOINTMENT_RESERVATION_ID_PATH_VARIABLE_BASE = "/{appointmentReservationId}";
-        String CHECK_AVAILABILITY = "/checkAvailability";
+        String FETCH_AVAILABLE_TIMESLOTS = "/availableTimeSlots";
+        String FETCH_CURRENT_AVAILABLE_TIMESLOTS = "/availableTimeSlots/current";
         String PENDING_APPOINTMENT = "/pending-appointment";
         String CANCEL = "/cancel";
         String RESCHEDULE = "/reschedule";
@@ -36,7 +42,9 @@ public class WebResourceKeyConstants {
         String LOG = "/log";
         String RESCHEDULE_LOG = "/reschedule-log";
         String TRANSACTION_STATUS = "/transaction-status";
+        String TRANSACTION_LOG = "/transaction-log";
     }
+
 
     //B
     public static final String BASE_PASSWORD = "/password";
@@ -101,7 +109,7 @@ public class WebResourceKeyConstants {
         String DOCTOR_AVAILABLE_DATES = "/doctorAvailableDates";
         String SPECIALIZATION_AVAILABLE_DATES = "/specializationAvailableDates";
         String DOCTOR_WITH_SPECIALIZATION_AVAILABLE_DATES = "/doctorWithSpecializationAvailableDates";
-        String FETCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION = "/available-doctors-with-specialization";
+        String FETCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION = "/availableDoctorsWithSpecialization";
 
     }
 
@@ -191,6 +199,10 @@ public class WebResourceKeyConstants {
 
 
     //T
+    public interface TestResourceConstant {
+        String BASE_TEST_RESOURCE = "/test";
+    }
+
 
     //U
     public static final String UPDATE = "/update";

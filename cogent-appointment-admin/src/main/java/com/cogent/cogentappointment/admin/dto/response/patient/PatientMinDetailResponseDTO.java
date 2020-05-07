@@ -27,6 +27,8 @@ public class PatientMinDetailResponseDTO implements Serializable {
 
     private Gender gender;
 
+    private Character isFollowUp;
+
     private Character isSelf;
 
     private String hospitalName;
@@ -40,5 +42,7 @@ public class PatientMinDetailResponseDTO implements Serializable {
     private String transactionNumber;
 
     private Double appointmentAmount;
+
+    private String appointmentMode;
 
 }

@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.dto.response.profile;
 
+import com.cogent.cogentappointment.client.dto.response.common.AuditableResponseDTO;
 import lombok.*;
 
 import java.io.Serializable;
@@ -12,7 +13,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ProfileResponseDTO implements Serializable{
+public class ProfileResponseDTO extends AuditableResponseDTO implements Serializable {
 
     private String name;
 
@@ -25,4 +26,6 @@ public class ProfileResponseDTO implements Serializable{
     private String departmentName;
 
     private String remarks;
+
+    private Character isAllRoleAssigned;
 }

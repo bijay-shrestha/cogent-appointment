@@ -13,11 +13,9 @@ import org.springframework.stereotype.Repository;
 public interface HmacApiInfoRepositoryCustom {
     ThirdPartyDetail getDetailForAuthentication(String hospitalCode, String apiKey);
 
-    ThirdPartyDetail getDetailsByHospitalCode(String hospitalCode);
+    ThirdPartyDetail getDetailsByHospitalCode(String companyCode);
 
-    AdminMinDetails verifyLoggedInAdmin(String username, String hospitalCode);
-
-    AdminMinDetails getAdminDetailForAuthentication(String username,
+    AdminMinDetails getAdminDetailForAuthentication(String email,
                                                     String hospitalCode,
                                                     String apiKey);
 

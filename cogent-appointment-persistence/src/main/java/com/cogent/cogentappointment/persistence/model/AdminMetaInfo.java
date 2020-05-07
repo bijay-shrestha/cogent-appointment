@@ -33,12 +33,20 @@ public class AdminMetaInfo extends Auditable<String> implements Serializable {
     @JoinColumn(name = "admin_id")
     private Admin admin;
 
+    @Column(name = "status")
+    private Character status;
+
+    @Column(name = "remarks")
+    private String remarks;
+
     @Override
     public String toString() {
         return "AdminMetaInfo{" +
                 "id=" + id +
                 ", metaInfo='" + metaInfo + '\'' +
-                ", admin=" + admin.getUsername() +
+                ", admin=" + admin.getFullName() +
+                ", status=" + status +
+                ", remarks='" + remarks + '\'' +
                 '}';
     }
 }

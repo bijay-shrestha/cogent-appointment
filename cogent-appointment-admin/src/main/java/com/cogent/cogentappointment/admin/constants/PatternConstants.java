@@ -8,6 +8,6 @@ public class PatternConstants {
 
     public static final String SPECIAL_CHARACTER_PATTERN = "^[~@&!~#%*(){}+=.,]$";
 
-    public static final String AUTHORIZATION_HEADER_PATTERN = "^(\\w+) (\\S+):(\\S+):(\\S+):(\\S+):(\\S+):([\\S]+)$";
+    public static final String AUTHORIZATION_HEADER_PATTERN = "^(\\w+) (\\S+):(\\S+):(\\S+):(\\S+):(\\S+):(\\S+):([\\S]+)$";
 
 }

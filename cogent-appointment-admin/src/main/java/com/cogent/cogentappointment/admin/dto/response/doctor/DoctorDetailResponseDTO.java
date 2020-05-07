@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.dto.response.doctor;
 
+import com.cogent.cogentappointment.admin.dto.response.commons.AuditableResponseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +16,7 @@ import java.math.BigInteger;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class DoctorDetailResponseDTO implements Serializable {
+public class DoctorDetailResponseDTO extends AuditableResponseDTO implements Serializable {
 
     private BigInteger id;
 

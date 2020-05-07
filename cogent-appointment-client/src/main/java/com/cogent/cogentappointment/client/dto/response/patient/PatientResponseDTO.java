@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.dto.response.patient;
 
+import com.cogent.cogentappointment.client.dto.response.common.AuditableResponseDTO;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +17,7 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PatientResponseDTO implements Serializable {
+public class PatientResponseDTO extends AuditableResponseDTO implements Serializable {
 
     private Long id;
 
@@ -43,5 +44,7 @@ public class PatientResponseDTO implements Serializable {
     private Date dateOfBirth;
 
     private Character isRegistered;
+
+    private String remarks;
 
 }

@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.admin.dto.response.appointment.appointmentP
 
 
 import com.cogent.cogentappointment.persistence.enums.Gender;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.io.Serializable;
@@ -21,6 +22,7 @@ public class AppointmentPendingApprovalDetailResponseDTO implements Serializable
 
     private String hospitalName;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd,YYYY",timezone = "Asia/Kathmandu")
     private Date appointmentDate;
 
     private String appointmentNumber;
@@ -37,6 +39,7 @@ public class AppointmentPendingApprovalDetailResponseDTO implements Serializable
 
     private String patientAge;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd,YYYY",timezone = "Asia/Kathmandu")
     private Date patientDob;
 
     private Character isRegistered;
@@ -45,6 +48,8 @@ public class AppointmentPendingApprovalDetailResponseDTO implements Serializable
 
     private String doctorName;
 
+    private String fileUri;
+
     private String specializationName;
 
     private String transactionNumber;
@@ -52,4 +57,6 @@ public class AppointmentPendingApprovalDetailResponseDTO implements Serializable
     private Double appointmentAmount;
 
     private Character isSelf;
+
+    private String appointmentMode;
 }

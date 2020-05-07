@@ -41,7 +41,7 @@ public class CompanyQuery {
                     " Hospital h" +
                     " WHERE h.status ='Y'" +
                     " AND h.isCompany='Y'" +
-                    " ORDER by h.id  DESC  ";
+                    " ORDER by h.name ASC";
 
     public static String QUERY_TO_SEARCH_COMPANY(CompanySearchRequestDTO searchRequestDTO) {
         return "SELECT" +
@@ -98,7 +98,8 @@ public class CompanyQuery {
                     " h.code as companyCode," +                                //[7]
                     " tbl1.contact_details as contact_details," +               //[8]
                     " h.is_company as isCompany," +                             //[9]
-                    " h.alias as alias" +                                       //10]
+                    " h.alias as alias," +                                       //10]
+                    COMPANY_DETAILS_AUDITABLE_QUERY()+
                     " FROM" +
                     " hospital h" +
                     " LEFT JOIN hospital_logo hl ON h.id =hl.hospital_id " +
@@ -106,7 +107,7 @@ public class CompanyQuery {
                     " LEFT JOIN " +
                     " (" +
                     " SELECT hc.hospital_id as hospitalId," +
-                    " GROUP_CONCAT((CONCAT(hc.id, '-', hc.contact_number, '-', hc.status))) as contact_details" +
+                    " GROUP_CONCAT((CONCAT(hc.id, '/', hc.contact_number, '/', hc.status))) as contact_details" +
                     " FROM hospital_contact_number hc" +
                     " WHERE hc.status = 'Y'" +
                     " GROUP by hc.hospital_id" +
@@ -115,6 +116,13 @@ public class CompanyQuery {
                     " AND h.is_company='Y'" +
                     " AND h.status !='D'" +
                     " AND h.is_company='Y'";
+
+    public static String COMPANY_DETAILS_AUDITABLE_QUERY() {
+        return " h.created_by as createdBy," +
+                " h.created_date as createdDate," +
+                " h.last_modified_by as lastModifiedBy," +
+                " h.last_modified_date as lastModifiedDate";
+    }
 
 
 }

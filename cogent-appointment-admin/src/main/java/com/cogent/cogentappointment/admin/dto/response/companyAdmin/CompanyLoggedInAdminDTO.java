@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Builder
 public class CompanyLoggedInAdminDTO implements Serializable{
     private Long id;
-    private String username;
+    private String email;
     private String password;
     private Character isCompany;
 }

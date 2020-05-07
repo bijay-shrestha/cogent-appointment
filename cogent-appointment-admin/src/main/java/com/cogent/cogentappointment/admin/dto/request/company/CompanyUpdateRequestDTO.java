@@ -5,6 +5,7 @@ import com.cogent.cogentappointment.admin.constraintvalidator.Status;
 import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalContactNumberUpdateRequestDTO;
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -23,18 +24,24 @@ public class CompanyUpdateRequestDTO implements Serializable {
     @NotNull
     @NotEmpty
     @SpecialCharacters
+    @NotBlank
     private String name;
 
+    @NotNull
+    @NotEmpty
+    @NotBlank
     private String companyCode;
 
     @NotNull
     @NotEmpty
     @SpecialCharacters
+    @NotBlank
     private String address;
 
     @NotNull
     @NotEmpty
     @SpecialCharacters
+    @NotBlank
     private String panNumber;
 
     @Status
@@ -42,12 +49,21 @@ public class CompanyUpdateRequestDTO implements Serializable {
 
     @NotNull
     @NotEmpty
+    @NotBlank
     private String remarks;
+
+    /*Y-> NEW LOGO IS UPDATED
+   * N-> LOGO IS SAME AS BEFORE. SO IF IT IS 'N', THEN NO NEED TO UPDATE LOGO
+   */
+    @NotNull
+    @Status
+    private Character isLogoUpdate;
 
     @NotEmpty
     private List<CompanyContactNumberUpdateRequestDTO> contactNumberUpdateRequestDTOS;
 
     @NotNull
     @NotEmpty
+    @NotBlank
     private String alias;
 }

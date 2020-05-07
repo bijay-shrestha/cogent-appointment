@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.client.query;
 
-
 import com.cogent.cogentappointment.client.dto.request.DoctorRevenueRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.appointmentQueue.AppointmentQueueRequestDTO;
 
@@ -12,43 +11,109 @@ import java.util.function.Function;
  */
 public class DashBoardQuery {
 
+    /*REVENUE STATISTICS*/
     public static String QUERY_TO_GET_REVENUE_BY_DATE =
             "SELECT" +
-                    " SUM(atd.appointmentAmount)" +
+                    " COALESCE(SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 ) as totalAmount" +
                     " FROM AppointmentTransactionDetail atd" +
                     " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
+                    " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
                     " WHERE " +
                     " (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
-                    " AND (a.status='PA' OR a.status= 'A')" +
                     " AND a.hospitalId.id=:hospitalId";
+
+    private static String SELECT_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS =
+            " SELECT " +
+                    " COUNT(a.id)," +                                   //[0]
+                    " COALESCE(SUM(atd.appointmentAmount ),0)" +        //[1]
+                    " FROM AppointmentTransactionDetail atd" +
+                    " LEFT JOIN Appointment a ON a.id=atd.appointment.id";
+
+    private static String GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS =
+            " WHERE " +
+                    " (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
+                    " AND a.hospitalId.id=:hospitalId";
+
+    public static String QUERY_TO_FETCH_BOOKED_APPOINTMENT_REVENUE =
+            SELECT_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS +
+                    GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS +
+                    " AND a.status='PA'";
+
+    public static String QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_REVENUE =
+            SELECT_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS +
+                    GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS +
+                    " AND a.status='A'";
+
+    public static String QUERY_TO_FETCH_CANCELLED_APPOINTMENT_REVENUE =
+            SELECT_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS +
+                    GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS +
+                    " AND a.status='C'";
+
+    public static String QUERY_TO_FETCH_REFUNDED_APPOINTMENT_AMOUNT =
+            "SELECT" +
+                    " COUNT(a.id)," +                                       //[0]
+                    " COALESCE (SUM(ard.refundAmount ),0)" +                //[1]
+                    " FROM AppointmentTransactionDetail atd" +
+                    " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
+                    " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
+                    GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS +
+                    " AND a.status='RE' AND ard.status = 'A'";
+
+    public static String QUERY_TO_FETCH_REVENUE_FROM_REFUNDED_APPOINTMENT =
+            "SELECT" +
+                    " COUNT(a.id)," +
+                    " (COALESCE(SUM(atd.appointmentAmount ),0) - COALESCE(SUM(ard.refundAmount ),0))" +
+                    " FROM AppointmentTransactionDetail atd" +
+                    " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
+                    " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
+                    GET_WHERE_CLAUSE_TO_CALCULATE_REVENUE_STATISTICS +
+                    " AND a.status='RE' AND ard.status = 'A'";
+
 
     public static String QUERY_TO_OVER_ALL_APPOINTMENTS =
             "SELECT" +
-                    " COUNT(a.id)" +
-                    " FROM Appointment a" +
+                    " COUNT(ast.id)" +
+                    " FROM AppointmentStatistics ast" +
+                    " LEFT JOIN Appointment a ON a.id=ast.appointmentId.id AND (a.status!='C' AND a.status!='RE')" +
+                    " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id" +
                     " WHERE " +
-                    " (a.appointmentDate BETWEEN :fromDate AND :toDate)" +
+                    " (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
                     " AND a.hospitalId.id=:hospitalId";
 
     public static String QUERY_TO_COUNT_REGISTERED_APPOINTMENT =
             "SELECT" +
-                    " COUNT(a.id)" +
-                    " FROM Appointment a" +
-                    " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =a.patientId.id" +
-                    " AND hpi.hospital.id = a.hospitalId.id" +
-                    " WHERE hpi.isRegistered='Y'" +
-                    " AND (a.appointmentDate BETWEEN :fromDate AND :toDate)" +
-                    " AND a.hospitalId.id=:hospitalId";
+                    " COUNT(ast.id)" +
+                    " FROM AppointmentStatistics ast" +
+                    " LEFT JOIN Appointment a ON a.id=ast.appointmentId.id AND (a.status!='C' AND a.status!='RE')" +
+                    " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
+                    " WHERE" +
+                    " ast.isRegistered='Y' " +
+                    " AND (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
+                    " AND a.hospitalId.id=:hospitalId" +
+                    " AND a.isFollowUp='N'";
+
+    public static String QUERY_TO_COUNT_FOLLOW_UP_APPOINTMENT =
+            "SELECT" +
+                    " COUNT(ast.id)" +
+                    " FROM AppointmentStatistics ast" +
+                    " LEFT JOIN Appointment a ON a.id=ast.appointmentId.id AND (a.status!='C' AND a.status!='RE')" +
+                    " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
+                    " WHERE" +
+                    " ast.isRegistered='Y' " +
+                    " AND (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
+                    " AND a.hospitalId.id=:hospitalId" +
+                    " AND a.isFollowUp='Y'";
 
     public static String QUERY_TO_COUNT_NEW_PATIENT_APPOINTMENT =
             "SELECT" +
-                    " COUNT(a.id)" +
-                    " FROM Appointment a" +
-                    " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =a.patientId.id" +
-                    " AND hpi.hospital.id = a.hospitalId.id" +
-                    " WHERE hpi.isRegistered='N'" +
-                    " AND (a.appointmentDate BETWEEN :fromDate AND :toDate)" +
-                    " AND  a.hospitalId.id=:hospitalId";
+                    " COUNT(ast.id)" +
+                    " FROM AppointmentStatistics ast" +
+                    " LEFT JOIN Appointment a ON a.id=ast.appointmentId.id AND (a.status!='C' AND a.status!='RE')" +
+                    " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
+                    " WHERE" +
+                    " ast.isNew='Y' " +
+                    " AND (atd.transactionDate BETWEEN :fromDate AND :toDate)" +
+                    " AND a.hospitalId.id=:hospitalId";
 
     public static String QUERY_TO_COUNT_OVERALL_REGISTERED_PATIENTS =
             "SELECT" +
@@ -76,12 +141,12 @@ public class DashBoardQuery {
                     "  WHEN DAYOFWEEK(atd.transactionDate) = 7" +
                     "    THEN CONCAT('SAT,',DATE_FORMAT(atd.transactionDate, '%b %e'))" +
                     "  END AS day," +
-                    "  COALESCE(SUM(atd.appointmentAmount),0) AS revenue" +
+                    " COALESCE(SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 ) AS revenue" +
                     " FROM AppointmentTransactionDetail atd" +
                     " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
+                    " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
                     " WHERE " +
                     " atd.transactionDate BETWEEN :fromDate AND :toDate" +
-                    " AND (a.status='PA' OR a.status= 'A')" +
                     " AND a.hospitalId.id=:hospitalId" +
                     " GROUP BY atd.transactionDate" +
                     " ORDER BY atd.transactionDate";
@@ -90,12 +155,12 @@ public class DashBoardQuery {
     public static String QUERY_TO_FETCH_REVENUE_YEARLY =
             " SELECT" +
                     " DATE_FORMAT(atd.transactionDate, '%b,%Y')," +
-                    " COALESCE(SUM(atd.appointmentAmount),0) AS revenue" +
+                    " COALESCE(SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 ) AS revenue" +
                     " FROM AppointmentTransactionDetail atd" +
                     " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
+                    " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
                     " WHERE" +
                     " atd.transactionDate BETWEEN :fromDate AND :toDate" +
-                    " AND (a.status='PA' OR a.status= 'A')" +
                     " AND a.hospitalId.id=:hospitalId" +
                     " GROUP BY DATE_FORMAT(atd.transactionDate, '%b,%Y')" +
                     " ORDER BY DATE_FORMAT(atd.transactionDate, '%b,%Y')";
@@ -103,12 +168,12 @@ public class DashBoardQuery {
     public static String QUERY_TO_FETCH_REVENUE_MONTHLY =
             "SELECT" +
                     " DATE_FORMAT(atd.transactionDate , '%e %b') As transactionDate," +
-                    " COALESCE(SUM(atd.appointmentAmount),0) AS revenue" +
+                    " COALESCE(SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 ) AS revenue" +
                     " FROM AppointmentTransactionDetail atd" +
                     " LEFT JOIN Appointment a ON a.id=atd.appointment.id" +
+                    " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
                     " WHERE" +
                     " atd.transactionDate BETWEEN :fromDate AND :toDate" +
-                    " AND (a.status='PA' OR a.status= 'A')" +
                     " AND a.hospitalId.id=:hospitalId" +
                     " GROUP BY atd.transactionDate" +
                     " ORDER BY atd.transactionDate";
@@ -116,16 +181,16 @@ public class DashBoardQuery {
     public static String QUERY_TO_FETCH_REVENUE_DAILY =
             "SELECT" +
                     " DATE_FORMAT(atd.transactionDate , '%e %b,%Y') As transactionDate," +
-                    " COALESCE(SUM(atd.appointmentAmount),0) as revenue" +
+                    " COALESCE(SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 ) AS revenue" +
                     " FROM" +
                     " AppointmentTransactionDetail atd" +
                     " LEFT JOIN Appointment a ON" +
                     " a.id = atd.appointment.id" +
                     " LEFT JOIN Hospital h ON" +
                     " h.id = a.hospitalId.id" +
+                    " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
                     " WHERE" +
                     " atd.transactionDate BETWEEN :fromDate AND :toDate" +
-                    " AND (a.status='PA' OR a.status= 'A')" +
                     " AND a.hospitalId.id =:hospitalId" +
                     " GROUP BY" +
                     " atd.transactionDate" +
@@ -135,7 +200,7 @@ public class DashBoardQuery {
     public static Function<AppointmentQueueRequestDTO, String> QUERY_TO_FETCH_APPOINTMENT_QUEUE =
             (searchDTO) ->
                     "SELECT" +
-                            " DATE_FORMAT(a.appointmentTime,'%H:%i %p') as appointmentTime," +
+                            " DATE_FORMAT(a.appointmentTime,'%h:%i %p') as appointmentTime," +
                             " d.name as doctorName," +
                             " p.name as patientName," +
                             " p.mobileNumber as patientMobileNumber," +
@@ -151,63 +216,152 @@ public class DashBoardQuery {
                             " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
                             " LEFT JOIN DoctorSpecialization ds ON ds.doctorId.id = d.id" +
                             " LEFT JOIN DoctorAvatar dv ON dv.doctorId.id = d.id" +
-                            " LEFT JOIN Specialization s ON s.id = ds.specializationId.id" +
+                            " LEFT JOIN Specialization s ON s.id = a.specializationId.id AND s.status='Y'" +
                             " LEFT JOIN Hospital h ON h.id = a.hospitalId.id"
                             + GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_QUEUE(searchDTO);
 
     private static String GET_WHERE_CLAUSE_TO_SEARCH_APPOINTMENT_QUEUE(AppointmentQueueRequestDTO appointmentQueueRequestDTO) {
 
         String whereClause = " WHERE " +
-                " s.status='Y' " +
-                " AND a.status='PA'" +
+                " a.status='PA'" +
                 " AND DATE(a.appointmentDate) = :date" +
                 " AND h.id= :hospitalId";
 
         if (!Objects.isNull(appointmentQueueRequestDTO.getDoctorId()))
             whereClause += " AND d.id = " + appointmentQueueRequestDTO.getDoctorId();
 
-        whereClause += " ORDER BY a.appointmentTime DESC";
+        whereClause += " ORDER BY a.appointmentTime ASC";
 
         return whereClause;
     }
 
-    public static String QUERY_TO_GENERATE_DOCTOR_REVENUE_LIST(DoctorRevenueRequestDTO requestDTO) {
-
+    /*APPOINTMENT EXCEPT REFUNDED ONES (i.e APPOINTMENT STATUS != 'RE')*/
+    public static String QUERY_TO_CALCULATE_DOCTOR_REVENUE(DoctorRevenueRequestDTO requestDTO) {
 
         return "SELECT" +
-                " d.id as doctorId," +
-                " d.name as doctorName," +
-                " da.fileUri as fileUri," +
-                " s.name as specialization," +
-                " COUNT(d.id) as totalAppointmentCount," +
-                " COALESCE(SUM(atd.appointmentAmount),0) as revenueAmount" +
+                " d.id as doctorId," +                                                           //[0]
+                " d.name as doctorName," +                                                       //[1]
+                " CASE WHEN" +
+                " (da.status is null OR da.status = 'N')" +
+                " THEN null" +
+                " ELSE" +
+                " da.fileUri" +
+                " END as fileUri," +                                                             //[2]
+                " s.id as specializationId," +                                                   //[3]
+                " s.name as specializationName," +                                               //[4]
+                " COUNT(a.id) as successfulAppointments," +                                      //[5]
+                " COALESCE(SUM(atd.appointmentAmount),0) as doctorRevenue" +                     //[6]
+                " FROM Appointment a" +
+                " LEFT JOIN Doctor d ON d.id= a.doctorId.id" +
+                " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId.id" +
+                " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
+                " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
+                " LEFT JOIN Specialization s ON s.id=a.specializationId.id" +
+                " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
+                " WHERE" +
+                " (a.status !='RE' AND a.status !='C')" +
+                " AND a.isFollowUp='N'" +
+                GET_WHERE_CLAUSE_TO_CALCULATE_DOCTOR_REVENUE(requestDTO);
+    }
+
+    /*REFUNDED APPOINTMENTS(i.e APPOINTMENT STATUS = 'RE')*/
+    public static String QUERY_TO_CALCULATE_COMPANY_REVENUE(DoctorRevenueRequestDTO requestDTO) {
+
+        return "SELECT" +
+                " d.id as doctorId," +                                          //[0]
+                " d.name as doctorName," +                                      //[1]
+                " CASE WHEN" +
+                " (da.status is null OR da.status = 'N')" +
+                " THEN null" +
+                " ELSE" +
+                " da.fileUri" +
+                " END as fileUri," +                                            //[2]
+                " s.id as specializationId," +                                  //[3]
+                " s.name as specializationName," +                              //[4]
+                " COUNT(a.id) as cancelledAppointments," +                      //[5]
+                " COALESCE(SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 )" +
+                " as cancelledRevenue" +                                       //[6]
                 " FROM Appointment a" +
                 " LEFT JOIN Doctor d ON d.id= a.doctorId.id" +
                 " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId.id" +
                 " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
                 " LEFT JOIN Specialization s ON s.id=a.specializationId.id" +
+                " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
                 " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
-                GET_WHERE_CLAUSE_GENERATE_DOCTOR_REVENUE_LIST(requestDTO);
+                " WHERE" +
+                " a.status ='RE'" +
+                " AND ard.status='A'" +
+                GET_WHERE_CLAUSE_TO_CALCULATE_DOCTOR_REVENUE(requestDTO);
     }
 
-    private static String GET_WHERE_CLAUSE_GENERATE_DOCTOR_REVENUE_LIST(DoctorRevenueRequestDTO requestDTO) {
-        String whereClause = " WHERE h.id=:hospitalId ";
+    public static String QUERY_TO_CALCULATE_COMPANY_REVENUE_CANCELLED =
+            "SELECT" +
+                    " COUNT(a.id) as count," +                      //[5]
+                    " COALESCE(SUM(atd.appointmentAmount ),0) as amount" +  //[6]
+                    " FROM Appointment a" +
+                    " LEFT JOIN Doctor d ON d.id= a.doctorId.id" +
+                    " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId.id" +
+                    " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
+                    " LEFT JOIN Specialization s ON s.id=a.specializationId.id" +
+                    " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
+                    " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
+                    " WHERE" +
+                    " a.status ='C'" +
+                    " AND a.doctorId.id=:doctorId" +
+                    " AND a.specializationId.id=:specializationId" +
+                    " AND atd.transactionDate BETWEEN :fromDate AND :toDate";
 
-        if (requestDTO.getSpecializationId() > 0)
+
+    public static String QUERY_TO_GET_FOLLOW_UP =
+            "SELECT" +
+                    " Count(a.id) as count," +
+                    " COALESCE(SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 ) as amount" +
+                    " FROM Appointment a" +
+                    " LEFT JOIN Doctor d ON d.id= a.doctorId.id" +
+                    " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId.id" +
+                    " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
+                    " LEFT JOIN Specialization s ON s.id=a.specializationId.id" +
+                    " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
+                    " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
+                    " WHERE" +
+                    " (a.status !='RE' AND a.status !='C')" +
+                    " AND a.isFollowUp='Y'" +
+                    " AND a.doctorId.id=:doctorId" +
+                    " AND a.specializationId.id=:specializationId" +
+                    " AND atd.transactionDate BETWEEN :fromDate AND :toDate";
+
+    public static String QUERY_TO_GET_FOLLOW_UP_CANCELLED =
+            "SELECT" +
+                    " Count(a.id) as count," +
+                    " COALESCE(SUM(atd.appointmentAmount),0) - COALESCE(SUM(ard.refundAmount),0 ) as amount" +
+                    " FROM Appointment a" +
+                    " LEFT JOIN Doctor d ON d.id= a.doctorId.id" +
+                    " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId.id" +
+                    " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
+                    " LEFT JOIN Specialization s ON s.id=a.specializationId.id" +
+                    " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id" +
+                    " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
+                    " WHERE" +
+                    " (a.status ='RE' OR a.status ='C')" +
+                    " AND a.isFollowUp='Y'" +
+                    " AND a.doctorId.id=:doctorId" +
+                    " AND a.specializationId.id=:specializationId" +
+                    " AND atd.transactionDate BETWEEN :fromDate AND :toDate";
+
+    private static String GET_WHERE_CLAUSE_TO_CALCULATE_DOCTOR_REVENUE(DoctorRevenueRequestDTO requestDTO) {
+        String whereClause = " AND h.id=:hospitalId ";
+
+        if (requestDTO.getSpecializationId() != 0 && !Objects.isNull(requestDTO.getSpecializationId()))
             whereClause += " AND s.id=" + requestDTO.getSpecializationId();
 
-        if (requestDTO.getDoctorId() > 0)
+        if (requestDTO.getDoctorId() != 0 && !Objects.isNull(requestDTO.getDoctorId()))
             whereClause += " AND d.id=" + requestDTO.getDoctorId();
 
-        whereClause +=
-                " AND atd.transactionDate BETWEEN :fromDate AND :toDate" +
-                        " GROUP BY d.id,da.id,s.id " +
-                        " ORDER BY SUM(atd.appointmentAmount) DESC ";
-
+        whereClause += " AND atd.transactionDate BETWEEN :fromDate AND :toDate" +
+                " GROUP BY d.id,da.id,s.id ";
 
         return whereClause;
     }
-
 
     public static String QUERY_TO_FETCH_REFUND_AMOUNT(Long doctorId, Long specializationId) {
         String query = "SELECT" +

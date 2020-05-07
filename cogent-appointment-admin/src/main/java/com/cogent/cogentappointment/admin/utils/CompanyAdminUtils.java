@@ -1,31 +1,25 @@
 package com.cogent.cogentappointment.admin.utils;
 
-import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminUpdateRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.admin.*;
 import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.admin.AdminMacAddressInfoUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.email.EmailRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.Admin;
-import com.cogent.cogentappointment.persistence.model.*;
+import com.cogent.cogentappointment.persistence.model.Profile;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.EmailConstants.*;
 import static com.cogent.cogentappointment.admin.constants.EmailTemplates.*;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
-import static com.cogent.cogentappointment.admin.constants.StringConstant.*;
-import static com.cogent.cogentappointment.admin.utils.commons.NumberFormatterUtils.generateRandomToken;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
+import static com.cogent.cogentappointment.admin.constants.StringConstant.COMMA_SEPARATED;
+import static com.cogent.cogentappointment.admin.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.convertToNormalCase;
 
 /**
@@ -37,29 +31,25 @@ public class CompanyAdminUtils {
                                                  Gender gender,
                                                  Profile profile) {
         Admin admin = new Admin();
-        admin.setUsername(getUsername(requestDTO.getEmail()));
         admin.setFullName(convertToNormalCase(requestDTO.getFullName()));
         admin.setEmail(requestDTO.getEmail());
         admin.setMobileNumber(requestDTO.getMobileNumber());
-        admin.setStatus(requestDTO.getStatus());
+        admin.setStatus(INACTIVE);
         admin.setHasMacBinding(requestDTO.getHasMacBinding());
-        admin.setIsFirstLogin(YES);
-
         parseCompanyAdminDetails(gender, profile, admin);
         return admin;
     }
 
-
     public static void convertCompanyAdminUpdateRequestDTOToAdmin(Admin admin,
                                                                   CompanyAdminUpdateRequestDTO updateRequestDTO,
                                                                   Gender gender,
-                                                                  Profile profile) {
+                                                                  Profile profile,
+                                                                  Character status) {
 
         admin.setEmail(updateRequestDTO.getEmail());
-        admin.setUsername(getUsername(admin.getEmail()));
         admin.setFullName(convertToNormalCase(updateRequestDTO.getFullName()));
         admin.setMobileNumber(updateRequestDTO.getMobileNumber());
-        admin.setStatus(updateRequestDTO.getStatus());
+        admin.setStatus(status);
         admin.setHasMacBinding(updateRequestDTO.getHasMacBinding());
         admin.setRemarks(updateRequestDTO.getRemarks());
 
@@ -70,11 +60,6 @@ public class CompanyAdminUtils {
     private static void parseCompanyAdminDetails(Gender gender, Profile profile, Admin admin) {
         admin.setGender(gender);
         admin.setProfileId(profile);
-    }
-
-    public static String getUsername(String email){
-        StringTokenizer token = new StringTokenizer(email, "@");
-        return token.nextToken();
     }
 
     public static String parseUpdatedCompanyAdminValues(Admin admin,
@@ -127,7 +112,7 @@ public class CompanyAdminUtils {
                 ? StringUtils.join(macAddress, COMMA_SEPARATED) : "N/A";
     }
 
-    public static EmailRequestDTO parseToEmailRequestDTOForCompanyAdmin(String username,
+    public static EmailRequestDTO parseToEmailRequestDTOForCompanyAdmin(String fullName,
                                                                         CompanyAdminUpdateRequestDTO updateRequestDTO,
                                                                         String paramValues,
                                                                         String updatedMacAddress) {
@@ -135,15 +120,14 @@ public class CompanyAdminUtils {
                 .receiverEmailAddress(updateRequestDTO.getEmail())
                 .subject(SUBJECT_FOR_UPDATE_ADMIN)
                 .templateName(UPDATE_ADMIN)
-                .paramValue(username + HYPHEN + paramValues + HYPHEN +
+                .paramValue(fullName + HYPHEN + paramValues + HYPHEN +
                         updateRequestDTO.getHasMacBinding() + HYPHEN + updatedMacAddress)
                 .build();
     }
 
     public static EmailRequestDTO convertCompanyAdminRequestToEmailRequestDTO(CompanyAdminRequestDTO adminRequestDTO,
-                                                                       Admin admin,
-                                                                       String confirmationToken,
-                                                                       HttpServletRequest httpServletRequest) {
+                                                                              Admin admin,
+                                                                              String confirmationToken) {
 
 //        String origin = httpServletRequest.getHeader("origin");
 //        String confirmationUrl = origin + "/#" + "/savePassword" + "?token =" + confirmationToken;
@@ -154,7 +138,23 @@ public class CompanyAdminUtils {
                 .receiverEmailAddress(adminRequestDTO.getEmail())
                 .subject(SUBJECT_FOR_ADMIN_VERIFICATION)
                 .templateName(ADMIN_VERIFICATION)
-                .paramValue(admin.getUsername() + COMMA_SEPARATED + confirmationUrl)
+                .paramValue(admin.getFullName() + COMMA_SEPARATED + confirmationUrl)
+                .build();
+    }
+
+    public static EmailRequestDTO convertCompanyAdminUpdateRequestToEmailRequestDTO(CompanyAdminUpdateRequestDTO adminRequestDTO,
+                                                                                    String confirmationToken) {
+
+//        String origin = httpServletRequest.getHeader("origin");
+//        String confirmationUrl = origin + "/#" + "/savePassword" + "?token =" + confirmationToken;
+
+        String confirmationUrl = adminRequestDTO.getBaseUrl() + "/#" + "/verify/email" + "?token =" + confirmationToken;
+
+        return EmailRequestDTO.builder()
+                .receiverEmailAddress(adminRequestDTO.getEmail())
+                .subject(SUBJECT_FOR_EMAIL_VERIFICATION)
+                .templateName(EMAIL_VERIFICATION)
+                .paramValue(adminRequestDTO.getFullName() + COMMA_SEPARATED + confirmationUrl)
                 .build();
     }
 

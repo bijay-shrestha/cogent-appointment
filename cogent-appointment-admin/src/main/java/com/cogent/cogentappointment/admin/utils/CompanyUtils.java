@@ -12,10 +12,7 @@ import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.HospitalContactNumber;
 import com.cogent.cogentappointment.persistence.model.HospitalLogo;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
@@ -61,7 +58,7 @@ public class CompanyUtils {
         companyLogo.setStatus(ACTIVE);
     }
 
-    public static void parseToUpdatedCompany(CompanyUpdateRequestDTO updateRequestDTO,
+    public static Hospital parseToUpdatedCompany(CompanyUpdateRequestDTO updateRequestDTO,
                                              Hospital company) {
 
         company.setName(StringUtil.convertToNormalCase(updateRequestDTO.getName()));
@@ -71,6 +68,8 @@ public class CompanyUtils {
         company.setRemarks(StringUtil.convertToNormalCase(updateRequestDTO.getRemarks()));
         company.setIsCompany(company.getIsCompany());
         company.setAlias(updateRequestDTO.getAlias());
+
+        return company;
     }
 
     public static HospitalContactNumber parseToUpdatedCompanyContactNumber(
@@ -93,9 +92,11 @@ public class CompanyUtils {
         companyContactNumber.setStatus(status);
     }
 
-    public static void parseToDeletedCompany(Hospital company, DeleteRequestDTO deleteRequestDTO) {
+    public static Hospital parseToDeletedCompany(Hospital company, DeleteRequestDTO deleteRequestDTO) {
         company.setStatus(deleteRequestDTO.getStatus());
         company.setRemarks(deleteRequestDTO.getRemarks());
+
+        return company;
     }
 
     public static CompanyResponseDTO parseToCompanyResponseDTO(Object[] results) {
@@ -111,6 +112,11 @@ public class CompanyUtils {
         final int IS_COMPANY_INDEX = 9;
         final int ALIAS_INDEX = 10;
 
+        final int CREATED_BY_INDEX = 11;
+        final int CREATED_DATE_INDEX = 12;
+        final int LAST_MODIFIED_BY_INDEX=13;
+        final int LAST_MODIFIED_DATE=14;
+
         return CompanyResponseDTO.builder()
                 .id(Long.parseLong(results[COMPANY_ID_INDEX].toString()))
                 .name(results[NAME_INDEX].toString())
@@ -124,6 +130,10 @@ public class CompanyUtils {
                         new ArrayList<>() : parseToCompanyContactNumberResponseDTOS(results))
                 .isCompany(results[IS_COMPANY_INDEX].toString().charAt(0))
                 .alias(results[ALIAS_INDEX].toString())
+                .createdBy(results[CREATED_BY_INDEX].toString())
+                .createdDate((Date) results[CREATED_DATE_INDEX])
+                .lastModifiedBy(results[LAST_MODIFIED_BY_INDEX].toString())
+                .lastModifiedDate((Date) results[LAST_MODIFIED_DATE])
                 .build();
     }
 
@@ -134,7 +144,7 @@ public class CompanyUtils {
         String[] contactWithIdAndNumber = results[CONTACT_DETAILS_INDEX].toString().split(COMMA_SEPARATED);
 
         return Arrays.stream(contactWithIdAndNumber)
-                .map(contact -> contact.split(HYPHEN))
+                .map(contact -> contact.split(FORWARD_SLASH))
                 .map(contactDetails -> CompanyContactNumberResponseDTO.builder()
                         .companyContactNumberId(Long.parseLong(contactDetails[0]))
                         .contactNumber(contactDetails[1])

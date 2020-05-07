@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.admin.query;
 
 import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminSearchRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.admin.AdminSearchRequestDTO;
 import com.cogent.cogentappointment.admin.utils.GenderUtils;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import org.springframework.util.ObjectUtils;
@@ -14,48 +13,47 @@ public class CompanyAdminQuery {
     public static final String QUERY_TO_FIND_COMPANY_ADMIN_FOR_VALIDATION =
             "SELECT " +
                     " a.email," +                               //[0]
-                    " a.mobileNumber" +                        //[1]
+                    " a.mobileNumber," +                        //[1]
+                    " COALESCE(h.id, ho.id)" +                 //[2]
                     " FROM" +
                     " Admin a" +
-                    " LEFT JOIN Profile p ON p.id = a.profileId" +
-                    " LEFT JOIN Hospital h ON h.id = p.company.id" +
+                    " LEFT JOIN Profile p ON p.id = a.profileId.id" +
+                    " LEFT JOIN Department d ON d.id = p.department.id" +
+                    " LEFT JOIN Hospital ho ON ho.id = p.company.id" +
+                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE" +
                     " a.status != 'D'" +
-                    " AND h.status!='D'" +
                     " AND" +
-                    " (a.email =:email OR a.mobileNumber = :mobileNumber)" +
-                    " AND h.isCompany='Y'";
-
+                    " (a.email =:email OR a.mobileNumber =:mobileNumber)";
 
     public static final String QUERY_TO_FIND_COMPANY_ADMIN_EXCEPT_CURRENT_COMPANY_ADMIN =
             "SELECT " +
                     " a.email," +                               //[0]
-                    " a.mobileNumber" +                        //[1]
+                    " a.mobileNumber," +                        //[1]
+                    " COALESCE(h.id, ho.id)" +                 //[2]
                     " FROM" +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id = a.profileId.id" +
-                    " LEFT JOIN Hospital h ON h.id = p.company.id" +
+                    " LEFT JOIN Department d ON d.id = p.department.id" +
+                    " LEFT JOIN Hospital ho ON ho.id = p.company.id" +
+                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE" +
                     " a.status != 'D'" +
-                    " AND h.status!='D'" +
-                    " AND h.isCompany='Y'" +
                     " AND a.id !=:id" +
                     " AND" +
-                    " (a.email =:email OR a.mobileNumber = :mobileNumber)" +
-                    " AND h.id=:companyId";
+                    " (a.email =:email OR a.mobileNumber = :mobileNumber)";
 
     public static final String QUERY_TO_FETCH_ACTIVE_COMPANY_ADMIN_FOR_DROPDOWN =
             " SELECT" +
                     " a.id as value," +                     //[0]
-                    " a.username as label" +               //[1]
+                    " a.email as label" +                   //[1]
                     " FROM" +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                     " WHERE a.status ='Y'" +
                     " AND p.isCompanyProfile='Y'" +
                     " AND p.status='Y'" +
-                    " ORDER by a.id  DESC  ";
-
+                    " ORDER by label ASC";
 
     public static String QUERY_TO_SEARCH_COMPANY_ADMIN(CompanyAdminSearchRequestDTO searchRequestDTO) {
 
@@ -73,7 +71,6 @@ public class CompanyAdminQuery {
             " SELECT" +
                     " a.id as id," +                                            //[0]
                     " a.fullName as fullName," +                                //[1]
-                    " a.username as username," +                                //[2]
                     " a.email as email," +                                      //[3]
                     " a.mobileNumber as mobileNumber," +                        //[4]
                     " a.status as status," +                                    //[5]
@@ -86,7 +83,7 @@ public class CompanyAdminQuery {
                     " THEN null" +
                     " ELSE" +
                     " av.fileUri" +
-                    " END as fileUri";                                           //[9]
+                    " END as fileUri";                                         //[9]
 
     private static final String GET_WHERE_CLAUSE_TO_FETCH_ADMIN =
             " WHERE a.status != 'D' AND h.status !='D' AND p.status !='D' AND h.isCompany='Y'";
@@ -120,7 +117,8 @@ public class CompanyAdminQuery {
             SELECT_CLAUSE_TO_FETCH_COMPANY_ADMIN + "," +
                     " a.remarks as remarks," +                                      //[10]
                     " h.id as companyId," +                                        //[11]
-                    " p.id as profileId" +                                         //[12]
+                    " p.id as profileId," +                                         //[12]
+                    COMPANY_ADMIN_AUDITABLE_QUERY() +
                     " FROM" +
                     " Admin a" +
                     " LEFT JOIN Profile p ON p.id = a.profileId.id" +
@@ -137,16 +135,25 @@ public class CompanyAdminQuery {
                     " am.status = 'Y'" +
                     " AND am.admin.id = :id";
 
-    public static final String QUERY_TO_FETCH_ADMIN_BY_USERNAME_OR_EMAIL =
+    public static final String QUERY_TO_FETCH_ADMIN_BY_EMAIL =
             " SELECT a FROM Admin a" +
                     " WHERE" +
-                    " (a.username=:username OR a.email =:email)" +
+                    " (a.email =:email)" +
                     " AND a.status != 'D'";
+
+    public static final String QUERY_TO_FETCH_ACTIVE_ADMIN_BY_EMAIL =
+            " SELECT a from Admin a" +
+                    " LEFT JOIN Profile p on p.id=a.profileId.id" +
+                    " LEFT JOIN Hospital h on h.id=p.company.id" +
+                    " WHERE a.email =:email" +
+                    " AND a.status !='D'" +
+                    " AND h.isCompany='Y'"+
+                    " AND h.status='Y'";
 
     public static final String QUERY_TO_FETCH_COMPANY_ADMIN_INFO =
             " SELECT" +
                     " a.id as adminId," +                                                   //[0]
-                    " a.username as username," +                                            //[1]
+                    " a.email as email," +                                                //[1]
                     " a.fullName as fullName," +
                     " CASE " +
                     "    WHEN (av.status = 'N' OR  av.status IS NULL) THEN null" +
@@ -154,14 +161,17 @@ public class CompanyAdminQuery {
                     " p.id as profileId," +                                                 //[3]
                     " p.name as profileName," +                                             //[4]
                     " h.id as hospitalId," +                                                //[5]
-                    " h.name as hospitalName," +                                             //[6]
-                    " h.isCompany as isCompany" +                                            //[7]
+                    " h.name as hospitalName," +                                            //[6]
+                    " h.isCompany as isCompany," +                                          //[7]
+                    " p.isAllRoleAssigned as isAllRoleAssigned," +                          //[8]
+                    " af.isSideBarCollapse as isSideBarCollapse" +                           //[9]
                     " FROM Admin a" +
                     " LEFT JOIN AdminAvatar av ON av.admin.id=a.id" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                     " LEFT JOIN Hospital h ON h.id=p.company.id" +
+                    " LEFT JOIN AdminFeature af ON a.id = af.admin.id" +
                     " WHERE " +
-                    " (a.username=:username OR a.email =:email OR a.mobileNumber=:username)" +
+                    " (a.email =:email OR a.mobileNumber=:email)" +
                     " AND a.status='Y'" +
                     " AND h.isCompany='Y'";
 
@@ -171,14 +181,14 @@ public class CompanyAdminQuery {
                     " FROM AdminMetaInfo ami" +
                     " LEFT JOIN Admin a ON a.id=ami.admin.id" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
-                    " WHERE a.status !='D'" +
+                    " WHERE ami.status !='D'" +
                     " AND p.isCompanyProfile='Y'" +
-                    " ORDER BY ami.id DESC";
+                    " ORDER BY metaInfo ASC";
 
     public static final String QUERY_TO_GET_LOGGED_COMPANY_ADMIN_INFO =
             "SELECT" +
                     " a.id as id," +
-                    " a.username as username," +
+                    " a.email as email," +
                     " a.password as password," +
                     " h.isCompany as isCompany," +
                     " h.code as companyCode," +
@@ -191,8 +201,16 @@ public class CompanyAdminQuery {
                     " LEFT JOIN Hospital h ON h.id=p.company.id" +
                     " LEFT JOIN HmacApiInfo hai ON hai.hospital.id=h.id" +
                     " WHERE" +
-                    " (a.username =:username OR a.mobileNumber=:username OR a.email=:username)" +
+                    " (a.mobileNumber=:email OR a.email=:email)" +
                     " AND a.status = 'Y'" +
-                    " AND h.isCompany='Y'";
+                    " AND h.isCompany='Y'"+
+                    " AND h.status='Y'";
+
+    public static String COMPANY_ADMIN_AUDITABLE_QUERY() {
+        return " a.createdBy as createdBy," +
+                " a.createdDate as createdDate," +
+                " a.lastModifiedBy as lastModifiedBy," +
+                " a.lastModifiedDate as lastModifiedDate";
+    }
 
 }

@@ -5,6 +5,7 @@ import com.cogent.cogentappointment.admin.constants.UtilityConfigConstants;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
+import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -47,6 +48,16 @@ public class DateUtils {
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
         return cal.getTime();
+    }
+
+    public static java.sql.Date utilDateToSqlDateTime(Date uDate) {
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            return java.sql.Date.valueOf(formatter.format(uDate));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static Date addDays(Date oldDate, int days) {
@@ -180,5 +191,15 @@ public class DateUtils {
                 .atZone(ZoneId.systemDefault())
                 .toInstant());
     }
+
+    public static String getCurrentDateTime() {
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date(System.currentTimeMillis());
+
+        return formatter.format(date);
+
+    }
+
 
 }

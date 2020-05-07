@@ -1,6 +1,9 @@
 package com.cogent.cogentappointment.admin.utils;
 
 
+import com.cogent.cogentappointment.admin.dto.response.commons.AppointmentRevenueStatisticsResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.dashboard.DoctorRevenueDTO;
+import com.cogent.cogentappointment.admin.dto.response.dashboard.DoctorRevenueResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueStatisticsResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.dashboard.RevenueTrendResponseDTO;
 
@@ -19,26 +22,29 @@ import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.convert
  */
 public class DashboardUtils {
 
-    public static int getNumberOfDaysInMonth(int year, int month) {
+    private static int getNumberOfDaysInMonth(int year, int month) {
         YearMonth yearMonth = YearMonth.of(year, month);
         return yearMonth.lengthOfMonth();
     }
 
-    public static List<Integer> getDatesOfMonth(int year, int month) {
+    private static List<Integer> getDatesOfMonth(int year, int month) {
         Integer numberOfDays = getNumberOfDaysInMonth(year, month);
         return IntStream.rangeClosed(1, numberOfDays).boxed().collect(Collectors.toList());
     }
 
-    public static RevenueStatisticsResponseDTO parseToGenerateRevenueResponseDTO(Double currentTransaction,
-                                                                                 Double growthPercent,
-                                                                                 Character filterType) {
-        RevenueStatisticsResponseDTO revenueStatisticsResponseDTO = new RevenueStatisticsResponseDTO();
-        revenueStatisticsResponseDTO.setAmount(currentTransaction);
-        revenueStatisticsResponseDTO.setGrowthPercent(growthPercent);
-        revenueStatisticsResponseDTO.setFiscalYear(getFiscalYear());
-        revenueStatisticsResponseDTO.setFilterType(filterType);
+    public static RevenueStatisticsResponseDTO parseToGenerateRevenueResponseDTO(
+            Double currentTransaction,
+            Double growthPercent,
+            Character filterType,
+            AppointmentRevenueStatisticsResponseDTO appointmentStatistics) {
 
-        return revenueStatisticsResponseDTO;
+        return RevenueStatisticsResponseDTO.builder()
+                .amount(currentTransaction)
+                .growthPercent(growthPercent)
+                .fiscalYear(getFiscalYear())
+                .filterType(filterType)
+                .appointmentStatistics(appointmentStatistics)
+                .build();
     }
 
     public static RevenueTrendResponseDTO revenueStatisticsResponseDTO(List<Object[]> resultList, Character filter) {
@@ -49,7 +55,7 @@ public class DashboardUtils {
         return revenueTrendResponseDTO;
     }
 
-    public static Map<String, String> getMapFromObject(List<Object[]> resultList) {
+    private static Map<String, String> getMapFromObject(List<Object[]> resultList) {
         final int WEEK_MONTH_YEAR_INDEX = 0;
         final int TOTAL_REVENUE = 1;
         Map<String, String> map = new LinkedHashMap<>();
@@ -130,7 +136,7 @@ public class DashboardUtils {
         return map;
     }
 
-    public static List<String> getDateBetweenLocalDates(LocalDate previous, LocalDate current) {
+    private static List<String> getDateBetweenLocalDates(LocalDate previous, LocalDate current) {
         List<String> dateBetweenLocalDates = new ArrayList<>();
         for (LocalDate localDate = previous; localDate.isBefore(current) ||
                 localDate.isEqual(current); localDate = localDate.plusDays(1)) {
@@ -141,7 +147,7 @@ public class DashboardUtils {
         return dateBetweenLocalDates;
     }
 
-    public static List<String> getDaysOfWeekBetweenLocalDates(LocalDate previous, LocalDate current) {
+    private static List<String> getDaysOfWeekBetweenLocalDates(LocalDate previous, LocalDate current) {
         List<String> daysOfWeek = new ArrayList<>();
         final Integer ONE = 1;
         for (LocalDate localDate = previous; localDate.isBefore(current) ||
@@ -155,7 +161,7 @@ public class DashboardUtils {
         return daysOfWeek;
     }
 
-    public static List<String> getMonthsBetweenLocalDates(LocalDate previous, LocalDate current) {
+    private static List<String> getMonthsBetweenLocalDates(LocalDate previous, LocalDate current) {
         List<String> monthsOfYear = new ArrayList<>();
         final Integer ONE = 1;
         for (LocalDate localDate = previous;
@@ -167,7 +173,7 @@ public class DashboardUtils {
         return monthsOfYear;
     }
 
-    public static String toTitleCase(String input) {
+    private static String toTitleCase(String input) {
         StringBuilder titleCase = new StringBuilder();
         boolean nextTitleCase = true;
         for (char c : input.toCharArray()) {
@@ -182,14 +188,115 @@ public class DashboardUtils {
         return titleCase.toString();
     }
 
-    public static LocalDate convertToLocalDateViaInstant(Date dateToConvert) {
+    private static LocalDate convertToLocalDateViaInstant(Date dateToConvert) {
         return dateToConvert.toInstant()
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate();
     }
 
-    public static String trimName(String name) {
+    private static String trimName(String name) {
         return name.substring(0, 3);
     }
 
+    public static List<DoctorRevenueDTO> mergeDoctorAndCancelledRevenue(List<DoctorRevenueDTO> doctorRevenueResponse,
+                                                                        List<DoctorRevenueDTO> cancelledRevenueResponse) {
+
+        List<DoctorRevenueDTO> combinedDoctorRevenueResponse =
+                combineDoctorAndCancelledRevenue(doctorRevenueResponse, cancelledRevenueResponse);
+
+        List<DoctorRevenueDTO> finalRevenueResponse = new ArrayList<>();
+
+        combinedDoctorRevenueResponse.forEach(combinedInfo -> {
+
+                    DoctorRevenueDTO doctorRevenueDTO = finalRevenueResponse.stream()
+                            .filter(finalRevenue ->
+                                    isDoctorRevenueConditionMatched(combinedInfo, finalRevenue)
+                            ).findAny().orElse(null);
+
+                    //means finalRevenueResponse already contains details of same doctor & specialization
+                    if (!Objects.isNull(doctorRevenueDTO)) {
+                        calculateMatchedRevenueDetails(doctorRevenueDTO, combinedInfo);
+                    } else {
+                        //means this is new record of doctor & specialization
+                        calculateUnmatchedMatchedRevenueDetails(combinedInfo);
+
+                        finalRevenueResponse.add(combinedInfo);
+                    }
+                }
+        );
+
+        return finalRevenueResponse;
+    }
+
+    private static boolean isDoctorRevenueConditionMatched(DoctorRevenueDTO doctorRevenue,
+                                                           DoctorRevenueDTO cancelledRevenue) {
+        return doctorRevenue.getDoctorId().equals(cancelledRevenue.getDoctorId())
+                && (doctorRevenue.getSpecializationId().equals(cancelledRevenue.getSpecializationId()));
+
+    }
+
+    private static List<DoctorRevenueDTO> combineDoctorAndCancelledRevenue(List<DoctorRevenueDTO> doctorRevenueResponse,
+                                                                           List<DoctorRevenueDTO> cancelledRevenueResponse) {
+
+        List<DoctorRevenueDTO> combinedDoctorRevenueResponse = new ArrayList<>();
+        combinedDoctorRevenueResponse.addAll(doctorRevenueResponse);
+        combinedDoctorRevenueResponse.addAll(cancelledRevenueResponse);
+
+        return combinedDoctorRevenueResponse;
+    }
+
+    private static void calculateMatchedRevenueDetails(DoctorRevenueDTO doctorRevenueDTO,
+                                                       DoctorRevenueDTO combinedInfo) {
+
+        doctorRevenueDTO.setSuccessfulAppointments(
+                combinedInfo.getSuccessfulAppointments() + doctorRevenueDTO.getSuccessfulAppointments());
+
+        doctorRevenueDTO.setCancelledAppointments(
+                combinedInfo.getCancelledAppointments() + doctorRevenueDTO.getCancelledAppointments());
+
+        doctorRevenueDTO.setTotalAppointments(doctorRevenueDTO.getSuccessfulAppointments() +
+                doctorRevenueDTO.getCancelledAppointments());
+
+        doctorRevenueDTO.setDoctorRevenue(
+                combinedInfo.getDoctorRevenue() + doctorRevenueDTO.getDoctorRevenue());
+
+        doctorRevenueDTO.setCancelledRevenue(
+                combinedInfo.getCancelledRevenue() + doctorRevenueDTO.getCancelledRevenue());
+
+        doctorRevenueDTO.setTotalRevenue(
+                doctorRevenueDTO.getDoctorRevenue() + doctorRevenueDTO.getCancelledRevenue());
+    }
+
+    private static void calculateUnmatchedMatchedRevenueDetails(DoctorRevenueDTO combinedInfo) {
+
+        combinedInfo.setTotalAppointments(combinedInfo.getSuccessfulAppointments() +
+                combinedInfo.getCancelledAppointments());
+
+        combinedInfo.setTotalRevenue(combinedInfo.getDoctorRevenue() + combinedInfo.getCancelledRevenue());
+    }
+
+    public static DoctorRevenueResponseDTO parseToDoctorRevenueResponseDTO(List<DoctorRevenueDTO> revenueDTOList) {
+
+        Long overallAppointmentCount = revenueDTOList.stream()
+                .mapToLong(DoctorRevenueDTO::getTotalAppointments)
+                .sum();
+
+        Long overallFollowUpCount = revenueDTOList.stream()
+                .mapToLong(DoctorRevenueDTO::getTotalFollowUp)
+                .sum();
+
+        Double totalRevenueAmount = revenueDTOList.stream()
+                .mapToDouble(DoctorRevenueDTO::getTotalRevenue)
+                .sum();
+
+        revenueDTOList.sort((o1, o2) -> Double.compare(o2.getTotalRevenue(), o1.getTotalRevenue()));
+
+        return DoctorRevenueResponseDTO.builder()
+                .doctorRevenueInfo(revenueDTOList)
+                .totalAppointmentCount(overallAppointmentCount)
+                .totalRevenueAmount(totalRevenueAmount)
+                .totalFollowUpCount(overallFollowUpCount)
+                .totalItems(revenueDTOList.size())
+                .build();
+    }
 }

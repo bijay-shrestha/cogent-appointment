@@ -1,7 +1,11 @@
 package com.cogent.cogentappointment.client.utils.commons;
 
+import com.cogent.cogentappointment.client.exception.BadRequestException;
+import lombok.extern.slf4j.Slf4j;
+
 import java.sql.Timestamp;
 import java.text.DateFormat;
+import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -9,6 +13,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.INVALID_DATE_DEBUG_MESSAGE;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.INVALID_DATE_MESSAGE;
 import static com.cogent.cogentappointment.client.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.client.constants.UtilityConfigConstants.*;
 import static java.util.Calendar.MONTH;
@@ -17,6 +23,7 @@ import static java.util.Calendar.YEAR;
 /**
  * @author smriti on 2019-07-30
  */
+@Slf4j
 public class DateUtils {
     public static Long getTimeInMillisecondsFromLocalDate() {
         LocalDateTime localDate = LocalDateTime.now();
@@ -90,6 +97,10 @@ public class DateUtils {
         return new SimpleDateFormat("yyyy-MM-dd").parse(date);
     }
 
+    public static String convertDateToString(Date date) throws ParseException {
+        Format formatter = new SimpleDateFormat("yyyy-MM-dd");
+        return formatter.format(date);
+    }
 
     public static int getYearFromNepaliDate(String nepaliDate) {
         return Integer.parseInt(nepaliDate.split(HYPHEN)[0]);
@@ -103,16 +114,48 @@ public class DateUtils {
         return nepaliDate.split(HYPHEN)[2];
     }
 
+
+    /*IF REQUESTED YEAR IS ODD,
+    *   IF MONTH <4
+    *       S = YEAR - 1 + START_FISCAL_DAY
+    *       E = YEAR + END_FISCAL_DAY
+    *   ELSE
+    *       S = YEAR + END_FISCAL_DAY
+    *       E = YEAR + 1 + START_FISCAL-DAY
+    * ELSE
+    *   IF MONTH <4
+    *       S = YEAR - 1 + END_FISCAL_DAY
+    *       E = YEAR + START_FISCAL_DAY
+    *   ELSE
+    *       S = YEAR + START_FISCAL_DAY
+    *       E = YEAR + 1 + END_FISCAL_DAY
+    * */
     public static String fetchStartingFiscalYear(int year, int month) {
-        return (month < APPLICATION_STARTING_FISCAL_MONTH)
-                ? (year + 1 + APPLICATION_STARTING_FISCAL_DAY)
-                : (year + APPLICATION_STARTING_FISCAL_DAY);
+        if (year % 2 == 0) {
+            //selected year is even
+            return (month < APPLICATION_STARTING_FISCAL_MONTH)
+                    ? (year - 1 + APPLICATION_ENDING_FISCAL_DAY)
+                    : (year + APPLICATION_STARTING_FISCAL_DAY);
+        } else {
+            //selected year is odd
+            return (month < APPLICATION_STARTING_FISCAL_MONTH)
+                    ? (year - 1 + APPLICATION_STARTING_FISCAL_DAY)
+                    : (year + APPLICATION_ENDING_FISCAL_DAY);
+        }
     }
 
     public static String fetchEndingFiscalYear(int year, int month) {
-        return (month < APPLICATION_STARTING_FISCAL_MONTH)
-                ? (year + APPLICATION_ENDING_FISCAL_DAY)
-                : (year + 1 + APPLICATION_ENDING_FISCAL_DAY);
+        if (year % 2 == 0) {
+            //selected year is even
+            return (month < APPLICATION_STARTING_FISCAL_MONTH)
+                    ? (year + APPLICATION_STARTING_FISCAL_DAY)
+                    : (year + 1 + APPLICATION_ENDING_FISCAL_DAY);
+        } else {
+            //selected year is odd
+            return (month < APPLICATION_STARTING_FISCAL_MONTH)
+                    ? (year + APPLICATION_ENDING_FISCAL_DAY)
+                    : (year + 1 + APPLICATION_STARTING_FISCAL_DAY);
+        }
     }
 
     public static String getTimeIn12HourFormat(Date date) {
@@ -204,6 +247,19 @@ public class DateUtils {
         return java.util.Date.from(requestedDate.atStartOfDay()
                 .atZone(ZoneId.systemDefault())
                 .toInstant());
+    }
+
+    public static boolean conditionOfBothDateProvided(Date fromDate, Date toDate) {
+        return !Objects.isNull(fromDate) && !Objects.isNull(toDate);
+    }
+
+    public static void validateIsFirstDateGreater(Date fromDate, Date toDate) {
+        boolean fromDateGreaterThanToDate = isFirstDateGreater(fromDate, toDate);
+
+        if (fromDateGreaterThanToDate) {
+            log.error(INVALID_DATE_DEBUG_MESSAGE);
+            throw new BadRequestException(INVALID_DATE_MESSAGE, INVALID_DATE_DEBUG_MESSAGE);
+        }
     }
 
 }

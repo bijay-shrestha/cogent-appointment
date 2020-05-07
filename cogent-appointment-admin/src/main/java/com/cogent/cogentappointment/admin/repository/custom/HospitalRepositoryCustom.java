@@ -21,11 +21,11 @@ import java.util.List;
 @Qualifier("hospitalRepositoryCustom")
 public interface HospitalRepositoryCustom {
 
-    List<Object[]> validateHospitalDuplicity(String name, String code);
+    List<Object[]> validateHospitalDuplicity(String name, String code, String alias);
 
     List<Object[]> validateCompanyDuplicity(String name, String code);
 
-    List<Object[]> validateHospitalDuplicityForUpdate(Long id, String name, String code);
+    List<Object[]> validateHospitalDuplicityForUpdate(Long id, String name, String code, String alias);
 
     List<Object[]> validateCompanyDuplicityForUpdate(Long id, String name, String code);
 

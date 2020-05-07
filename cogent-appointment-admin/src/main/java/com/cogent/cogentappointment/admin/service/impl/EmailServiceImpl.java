@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.request.email.EmailRequestDTO;
+import com.cogent.cogentappointment.admin.property.EmailProperties;
 import com.cogent.cogentappointment.admin.repository.EmailToSendRepository;
 import com.cogent.cogentappointment.admin.service.EmailService;
 import com.cogent.cogentappointment.admin.utils.commons.FileResourceUtils;
@@ -9,9 +10,8 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.Resource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -22,22 +22,20 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.io.*;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.io.IOException;
+import java.util.*;
 
 import static com.cogent.cogentappointment.admin.constants.EmailConstants.Admin.*;
 import static com.cogent.cogentappointment.admin.constants.EmailConstants.ForgotPassword.RESET_CODE;
 import static com.cogent.cogentappointment.admin.constants.EmailConstants.*;
 import static com.cogent.cogentappointment.admin.constants.EmailTemplates.*;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.constants.StringConstant.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.SAVING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.SAVING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.admin.log.constants.EmailLog.*;
 import static com.cogent.cogentappointment.admin.utils.EmailUtils.convertDTOToEmailToSend;
-import static com.cogent.cogentappointment.admin.utils.EmailUtils.convertToUpdateEmailToSend;
+import static com.cogent.cogentappointment.admin.utils.EmailUtils.updateEmailToSendStatus;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
@@ -56,7 +54,7 @@ public class EmailServiceImpl implements EmailService {
     private final Configuration configuration;
 
     public EmailServiceImpl(EmailToSendRepository emailToSendRepository,
-                            JavaMailSender javaMailSender,
+                            @Qualifier("getMailSender") JavaMailSender javaMailSender,
                             Configuration configuration) {
         this.emailToSendRepository = emailToSendRepository;
         this.javaMailSender = javaMailSender;
@@ -64,13 +62,7 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public void sendEmail(EmailRequestDTO emailRequestDTO) {
-        EmailToSend emailToSend = saveEmailToSend(emailRequestDTO);
-        send(emailToSend);
-        updateEmailToSend(emailToSend);
-    }
-
-    private EmailToSend saveEmailToSend(EmailRequestDTO emailRequestDTO) {
+    public EmailToSend saveEmailToSend(EmailRequestDTO emailRequestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, EMAIL_TO_SEND);
@@ -82,12 +74,31 @@ public class EmailServiceImpl implements EmailService {
         return emailToSend;
     }
 
-    private void send(EmailToSend emailToSend) {
+    @Override
+    public void sendEmail(EmailRequestDTO emailRequestDTO) {
+        EmailToSend emailToSend = saveEmailToSend(emailRequestDTO);
+        send(emailToSend);
+        updateEmailToSendStatus(emailToSend);
+    }
+
+    @Override
+    public void sendEmail() {
+
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SENDING_EMAIL_PROCESS_STARTED);
 
-        System.out.println(LOGO_LOCATION);
+        List<EmailToSend> unsentEmails = emailToSendRepository.fetchUnsentEmails();
+
+        unsentEmails.forEach(unsentEmail -> {
+            sendForAddAndUpdate(unsentEmail);
+            updateEmailToSendStatus(unsentEmail);
+        });
+
+        log.info(SENDING_EMAIL_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    private void send(EmailToSend emailToSend) {
 
         try {
             MimeMessage message = getMimeMessage(emailToSend);
@@ -100,6 +111,12 @@ public class EmailServiceImpl implements EmailService {
                 case ADMIN_VERIFICATION: {
                     parseToAdminVerificationTemplate(emailToSend, model);
                     html = getFreeMarkerContent(model, ADMIN_VERIFICATION_TEMPLATE, html);
+                    break;
+                }
+
+                case EMAIL_VERIFICATION: {
+                    parseToAdminVerificationTemplate(emailToSend, model);
+                    html = getFreeMarkerContent(model, EMAIL_VERIFICATION_TEMPLATE, html);
                     break;
                 }
 
@@ -127,11 +144,53 @@ public class EmailServiceImpl implements EmailService {
 
             helper.setText(html, true);
 
-            helper.addInline(LOGO_FILE_NAME,new FileSystemResource(new FileResourceUtils().convertResourcesFileIntoFile(LOGO_LOCATION)));
+            helper.addInline(LOGO_FILE_NAME, new FileSystemResource
+                    (new FileResourceUtils().convertResourcesFileIntoFile(LOGO_LOCATION)));
 
             javaMailSender.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
 
-            log.info(SENDING_EMAIL_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
+    private void sendForAddAndUpdate(EmailToSend emailToSend) {
+
+        try {
+            MimeMessage message = getMimeMessage(emailToSend);
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+            Map<String, Object> model = new HashMap<>();
+            String html = "";
+
+            switch (emailToSend.getTemplateName()) {
+                case ADMIN_VERIFICATION: {
+                    parseToAdminVerificationTemplate(emailToSend, model);
+                    html = getFreeMarkerContent(model, ADMIN_VERIFICATION_TEMPLATE, html);
+                    break;
+                }
+
+                case EMAIL_VERIFICATION: {
+                    parseToAdminVerificationTemplate(emailToSend, model);
+                    html = getFreeMarkerContent(model, EMAIL_VERIFICATION_TEMPLATE, html);
+                    break;
+                }
+
+                case UPDATE_ADMIN: {
+                    parseToUpdateAdminTemplate(emailToSend, model);
+                    html = getFreeMarkerContent(model, UPDATE_ADMIN_TEMPLATE, html);
+                    break;
+                }
+
+                default:
+                    break;
+            }
+
+            helper.setText(html, true);
+
+            helper.addInline(LOGO_FILE_NAME, new FileSystemResource
+                    (new FileResourceUtils().convertResourcesFileIntoFile(LOGO_LOCATION)));
+
+            javaMailSender.send(message);
         } catch (MessagingException e) {
             e.printStackTrace();
         }
@@ -152,10 +211,6 @@ public class EmailServiceImpl implements EmailService {
             e.printStackTrace();
         }
         return html;
-    }
-
-    private void updateEmailToSend(EmailToSend emailToSend) {
-        emailToSendRepository.save(convertToUpdateEmailToSend(emailToSend));
     }
 
     private void parseToAdminVerificationTemplate(EmailToSend emailToSend,

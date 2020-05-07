@@ -2,6 +2,8 @@ package com.cogent.cogentappointment.client.security.hmac;
 
 import com.cogent.cogentappointment.client.dto.request.admin.AdminMinDetails;
 import com.cogent.cogentappointment.client.dto.request.login.ThirdPartyDetail;
+import com.cogent.cogentappointment.client.service.impl.UserDetailsImpl;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import static com.cogent.cogentappointment.client.constants.HMACConstant.*;
@@ -14,29 +16,34 @@ import static com.cogent.cogentappointment.client.utils.HMACKeyGenerator.generat
 @Component
 public class HMACUtils {
 
-    public String getAuthToken(AdminMinDetails admin) {
+    public String getHash(Authentication authentication) {
+        UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
+        Integer id= Math.toIntExact(userPrincipal.getId());
+        String email = userPrincipal.getEmail();
+        String hospitalCode = userPrincipal.getHospitalCode();
+        String apiKey = userPrincipal.getApiKey();
+        String apiSecret = userPrincipal.getApiSecret();
+        Integer hospitalId= Math.toIntExact(userPrincipal.getHospitalId());
         final String nonce = generateNonce();
-        String username = admin.getUsername();
-        String hospitalCode = admin.getHospitalCode();
-        String apiKey = admin.getApiKey();
-        String apiSecret = admin.getApiSecret();
-        Integer hospitalId= Math.toIntExact(admin.getHospitalId());
 
         final HMACBuilder signatureBuilder = new HMACBuilder()
                 .algorithm(HMAC_ALGORITHM)
+                .id(id)
                 .nonce(nonce)
                 .apiKey(apiKey)
                 .hospitalCode(hospitalCode)
                 .hospitalId(hospitalId)
-                .username(username)
+                .email(email)
                 .apiSecret(apiSecret);
 
         final String signature = signatureBuilder
                 .buildAsBase64String();
 
-        String authToken = HMAC_ALGORITHM +
+        String hash = HMAC_ALGORITHM +
                 SPACE +
-                username +
+                id +
+                COLON +
+                email +
                 COLON +
                 hospitalId +
                 COLON +
@@ -48,7 +55,7 @@ public class HMACUtils {
                 COLON +
                 signature;
 
-        return authToken;
+        return hash;
     }
 
     public String getAuthTokenForEsewa(ThirdPartyDetail thirdPartyDetail) {

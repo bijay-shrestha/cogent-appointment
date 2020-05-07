@@ -21,6 +21,8 @@ public class DoctorDutyRosterSearchRequestDTO implements Serializable {
     private Date fromDate;
 
     private Date toDate;
+
+    private Character status;
 }
 
 

@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.query;
 
 import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentDetailRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AvailableDoctorRequestDTO;
 
 import java.util.Objects;
 
@@ -58,7 +59,7 @@ public class EsewaQuery {
 
         String query = "SELECT" +
                 " d.name AS doctorName," +                                  //[0]
-                " ddro.dayOffStatus AS dayOffStatus"+                       //[1]
+                " ddro.dayOffStatus AS dayOffStatus" +                       //[1]
                 " FROM DoctorDutyRoster ddr" +
                 " LEFT JOIN DoctorDutyRosterOverride ddro ON ddr.id = ddro.doctorDutyRosterId.id" +
                 " LEFT JOIN Doctor d ON d.id = ddr.doctorId.id" +
@@ -132,11 +133,69 @@ public class EsewaQuery {
                 " WHERE" +
                 " ddr.status = 'Y'" +
                 " AND ddro.status = 'Y'" +
+                " AND d.status = 'Y'" +
+                " AND s.status = 'Y'" +
                 " AND ddr.hospitalId.id =:hospitalId" +
                 " AND :date BETWEEN ddro.fromDate AND ddro.toDate";
 
         if (!Objects.isNull(requestDTO.getSpecializationId()))
             query += " AND s.id =:specializationId";
+
+        return query;
+    }
+
+    /*SMRITI*/
+    /*FETCH AVAILABLE DOCTORS AND THEIR SPECIALIZATION ON THE SELECTED DATE RANGE*/
+    public static String QUERY_TO_FETCH_AVAILABLE_DOCTORS_FROM_DDR_OVERRIDE(AvailableDoctorRequestDTO requestDTO) {
+
+        String query = "SELECT" +
+                " DISTINCT(d.id) AS doctorId," +                        //[0]
+                " d.name AS doctorName," +                              //[1]
+                " s.id AS specializationId," +                          //[2]
+                " s.name AS specializationName," +                      //[3]
+                " ddro.day_off_status AS dayOffStatus," +               //[4]
+                " d.nmc_number AS nmcNumber," +                         //[5]
+                " CASE WHEN" +
+                " (da.status IS NULL" +
+                " OR da.status = 'N')" +
+                " THEN NULL" +
+                " ELSE" +
+                " da.file_uri" +
+                " END as fileUri" +                                     //[6]
+                " FROM doctor_duty_roster_override ddro" +
+                " LEFT JOIN doctor_duty_roster ddr ON ddr.id = ddro.doctor_duty_roster_id" +
+                " LEFT JOIN doctor d ON d.id = ddr.doctor_id" +
+                " LEFT JOIN specialization s ON s.id = ddr.specialization_id" +
+                " LEFT JOIN doctor_avatar da ON d.id = da.doctor_id" +
+                " LEFT JOIN(" +
+                " SELECT" +
+                " GROUP_CONCAT(qa.name) as qualificationAlias," +
+                " dq.doctor_id as doctorId" +
+                " FROM" +
+                " doctor_qualification dq" +
+                " LEFT JOIN qualification q ON q.id = dq.qualification_id" +
+                " LEFT JOIN qualification_alias qa ON qa.id = q.qualification_alias" +
+                " WHERE" +
+                " dq.status = 'Y'" +
+                " GROUP BY" +
+                " dq.doctor_id" +
+                " )tbl1 ON tbl1.doctorId = d.id" +
+                " WHERE" +
+                " ddr.status = 'Y'" +
+                " AND ddro.status = 'Y'" +
+                " AND d.status = 'Y'" +
+                " AND s.status = 'Y'" +
+                " AND ddr.hospital_id =:hospitalId";
+
+        if (!Objects.isNull(requestDTO.getFromDate()) && !Objects.isNull(requestDTO.getToDate()))
+            query += " AND ddro.to_date >=:fromDate" +
+                    " AND ddro.from_date <=:toDate";
+
+        if (!Objects.isNull(requestDTO.getSpecializationId()))
+            query += " AND s.id =:specializationId";
+
+        if (!Objects.isNull(requestDTO.getDoctorId()))
+            query += " AND d.id =:doctorId";
 
         return query;
     }
@@ -150,20 +209,77 @@ public class EsewaQuery {
                 " d.name AS doctorName," +                       //[1]
                 " s.id AS specializationId," +                   //[2]
                 " s.name AS specializationName," +               //[3]
-                " dw.dayOffStatus AS dayOffStatus" +              //[4]
+                " dw.dayOffStatus AS dayOffStatus" +             //[4]
                 " FROM DoctorDutyRoster ddr" +
                 " LEFT JOIN DoctorWeekDaysDutyRoster dw ON dw.doctorDutyRosterId.id = ddr.id" +
                 " LEFT JOIN Doctor d ON d.id = ddr.doctorId.id" +
                 " LEFT JOIN Specialization s ON s.id = ddr.specializationId.id" +
                 " LEFT JOIN WeekDays w ON w.id = dw.weekDaysId.id" +
                 " WHERE" +
-                "  ddr.status = 'Y'" +
+                " ddr.status = 'Y'" +
+                " AND d.status = 'Y'" +
+                " AND s.status = 'Y'" +
                 " AND w.code = :code" +
                 " AND ddr.hospitalId.id =:hospitalId" +
                 " AND :date BETWEEN ddr.fromDate AND ddr.toDate";
 
         if (!Objects.isNull(requestDTO.getSpecializationId()))
             query += " AND s.id =:specializationId";
+
+        return query;
+    }
+
+    /*SMRITI*/
+    /*FETCH AVAILABLE DOCTORS AND THEIR SPECIALIZATION ON THE SELECTED DATE RANGE FROM DDR*/
+    public static String QUERY_TO_FETCH_AVAILABLE_DOCTORS_FROM_DDR(AvailableDoctorRequestDTO requestDTO) {
+
+        String query = "SELECT" +
+                " DISTINCT(d.id) AS doctorId," +                 //[0]
+                " d.name AS doctorName," +                       //[1]
+                " s.id AS specializationId," +                   //[2]
+                " s.name AS specializationName," +               //[3]
+                " d.nmc_number AS nmcNumber," +                  //[4]
+                " CASE WHEN" +
+                " (da.status IS NULL" +
+                " OR da.status = 'N')" +
+                " THEN NULL" +
+                " ELSE" +
+                " da.file_uri" +
+                " END as fileUri," +                             //[5]
+                " tbl1.qualificationAlias as qualificationAlias" +  //[6]
+                " FROM doctor_duty_roster ddr" +
+                " LEFT JOIN doctor_week_days_duty_roster dw ON dw.doctor_duty_roster_id = ddr.id" +
+                " LEFT JOIN doctor d ON d.id = ddr.doctor_id" +
+                " LEFT JOIN specialization s ON s.id = ddr.specialization_id" +
+                " LEFT JOIN doctor_avatar da ON d.id = da.doctor_id" +
+                " LEFT JOIN(" +
+                " SELECT" +
+                " GROUP_CONCAT(qa.name) as qualificationAlias," +
+                " dq.doctor_id as doctorId" +
+                " FROM" +
+                " doctor_qualification dq" +
+                " LEFT JOIN qualification q ON q.id = dq.qualification_id" +
+                " LEFT JOIN qualification_alias qa ON qa.id = q.qualification_alias" +
+                " WHERE" +
+                " dq.status = 'Y'" +
+                " GROUP BY" +
+                " dq.doctor_id" +
+                " )tbl1 ON tbl1.doctorId = d.id" +
+                " WHERE" +
+                " ddr.status = 'Y'" +
+                " AND d.status = 'Y'" +
+                " AND s.status = 'Y'" +
+                " AND ddr.hospital_id =:hospitalId";
+
+        if (!Objects.isNull(requestDTO.getFromDate()) && !Objects.isNull(requestDTO.getToDate()))
+            query += " AND ddr.to_date >=:fromDate" +
+                    " AND ddr.from_date <=:toDate";
+
+        if (!Objects.isNull(requestDTO.getSpecializationId()))
+            query += " AND s.id =:specializationId";
+
+        if (!Objects.isNull(requestDTO.getDoctorId()))
+            query += " AND d.id =:doctorId";
 
         return query;
     }

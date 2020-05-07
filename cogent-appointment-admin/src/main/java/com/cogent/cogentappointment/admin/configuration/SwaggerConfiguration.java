@@ -42,8 +42,8 @@ public class SwaggerConfiguration {
     private ApiInfo metaData() {
         return new ApiInfo(
                 "Cogent Appointment System with esewa Integration (Admin)",
-                "This is the RESTful API collections of all resources with HMAC code for default admin:" +
-                        " HmacSHA512 admin:2:COGENT01:649a8184-03f5-4cad-8dfe-e1fef82ce436:595738178145738:hDVoLmhpzlgxvYEd0aeJa2WaFtAcEPO9YAcH5CDgZnAIAEI6Efg0YL7QiwNndQf0HBIt8j+MdnIC3GoHvbqlWw==",
+                "HMAC CODE : " +
+                        "HmacSHA512 1:admin@gmail.com:1:COGENT:649a8184-03f5-4cad-8dfe-e1fef82ce436:046989728535027:aknsTQkwFPDS3Ku/Zqnd1Jmbc7COzck3oESD8F4mSaAdyW2gTPoPuOwMsZqogzDlTpmVl8hVEi/GpgdA8Ge/Mg==",
                 "V1",
                 "http://www.cogenthealth.com.np/",
                 new Contact(

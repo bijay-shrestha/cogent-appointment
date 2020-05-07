@@ -13,7 +13,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.INVALID_USERNAME_OR_HOSPITAL_CODE;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.INVALID_USERNAME_OR_ACCESS_KEY;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.query.HmacApiInfoQuery.*;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
@@ -38,8 +38,8 @@ public class HmacApiInfoRepositoryCustomImpl implements HmacApiInfoRepositoryCus
         try {
             return transformQueryToSingleResult(query, ThirdPartyDetail.class);
         } catch (NoResultException e) {
-            log.error(INVALID_USERNAME_OR_HOSPITAL_CODE);
-            throw new NoContentFoundException(INVALID_USERNAME_OR_HOSPITAL_CODE);
+            log.error(INVALID_USERNAME_OR_ACCESS_KEY);
+            throw new NoContentFoundException(INVALID_USERNAME_OR_ACCESS_KEY);
         }
     }
 
@@ -50,35 +50,24 @@ public class HmacApiInfoRepositoryCustomImpl implements HmacApiInfoRepositoryCus
         try {
             return transformQueryToSingleResult(query, ThirdPartyDetail.class);
         } catch (NoResultException e) {
-            log.error(INVALID_USERNAME_OR_HOSPITAL_CODE);
-            throw new NoContentFoundException(INVALID_USERNAME_OR_HOSPITAL_CODE);
+            log.error(INVALID_USERNAME_OR_ACCESS_KEY);
+            throw new NoContentFoundException(INVALID_USERNAME_OR_ACCESS_KEY);
         }
     }
 
-    @Override
-    public AdminMinDetails verifyLoggedInAdmin(String username, String hospitalCode) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_VERIFY_LOGGED_IN_ADMIN)
-                .setParameter(USERNAME, username)
-                .setParameter(HOSPITAL_CODE, hospitalCode);
-        try {
-            return transformQueryToSingleResult(query, AdminMinDetails.class);
-        } catch (NoResultException e) {
-            log.error(INVALID_USERNAME_OR_HOSPITAL_CODE);
-            throw new NoContentFoundException(INVALID_USERNAME_OR_HOSPITAL_CODE);
-        }
-    }
+
 
     @Override
-    public AdminMinDetails getAdminDetailForAuthentication(String username, String hospitalCode, String apiKey) {
+    public AdminMinDetails getAdminDetailForAuthentication(String email, String hospitalCode, String apiKey) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FECTH_ADMIN_FOR_AUTHENTICATION)
-                .setParameter(USERNAME, username)
+                .setParameter(EMAIL, email)
                 .setParameter(HOSPITAL_CODE, hospitalCode)
                 .setParameter(API_KEY, apiKey);
         try {
             return transformQueryToSingleResult(query, AdminMinDetails.class);
         } catch (NoResultException e) {
-            log.error(INVALID_USERNAME_OR_HOSPITAL_CODE);
-            throw new NoContentFoundException(INVALID_USERNAME_OR_HOSPITAL_CODE);
+            log.error(INVALID_USERNAME_OR_ACCESS_KEY);
+            throw new NoContentFoundException(INVALID_USERNAME_OR_ACCESS_KEY);
         }
     }
 }

@@ -7,6 +7,7 @@ import com.cogent.cogentappointment.client.dto.request.admin.AdminUpdateRequestD
 import com.cogent.cogentappointment.client.dto.response.admin.AdminDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.admin.AdminLoggedInInfoResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.admin.AdminMinimalResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.admin.LoggedInAdminDTO;
 import com.cogent.cogentappointment.client.dto.response.dashboard.DashboardFeatureResponseDTO;
 import com.cogent.cogentappointment.persistence.model.Admin;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -24,7 +25,7 @@ public interface AdminRepositoryCustom {
 
     Object[] validateAdminCount(Long hospitalId);
 
-    List<Object[]> validateDuplicity(String username, String email, String mobileNumber, Long hospitalId);
+    List<Object[]> validateDuplicity(String email, String mobileNumber);
 
     List<DropDownResponseDTO> fetchActiveMinAdmin(Long hospitalId);
 
@@ -32,14 +33,16 @@ public interface AdminRepositoryCustom {
 
     AdminDetailResponseDTO fetchDetailsById(Long id, Long hospitalId);
 
-    List<Object[]> validateDuplicity(AdminUpdateRequestDTO updateRequestDTO, Long hospitalId);
+    List<Object[]> validateDuplicity(AdminUpdateRequestDTO updateRequestDTO);
 
-    Admin fetchAdminByUsernameOrEmail(String username, String hospitalCode);
+    Admin fetchAdminByEmail(String email);
 
     AdminLoggedInInfoResponseDTO fetchLoggedInAdminInfo(AdminInfoRequestDTO requestDTO, Long hospitalId);
 
     List<DashboardFeatureResponseDTO> fetchDashboardFeaturesByAdmin(Long adminId);
 
     List<DashboardFeatureResponseDTO> fetchOverAllDashboardFeature();
+
+    LoggedInAdminDTO getLoggedInAdmin(String email);
 }
 

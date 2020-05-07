@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.resource;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.TransactionLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPendingApproval.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentPendingApproval.AppointmentRejectDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.refund.AppointmentRefundRejectDTO;
@@ -19,6 +20,7 @@ import javax.validation.Valid;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.*;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.DETAIL;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -42,6 +44,12 @@ public class AppointmentResource {
                                                      @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ok().body(appointmentService.fetchRefundAppointments(searchDTO, pageable));
+    }
+
+    @GetMapping(REFUND + DETAIL + APPOINTMENT_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_REFUND_APPOINTMENTS_DETAIL)
+    public ResponseEntity<?> fetchRefundDetailsById(@PathVariable("appointmentId") Long appointmentId) {
+        return ok().body(appointmentService.fetchRefundDetailsById(appointmentId));
     }
 
     @GetMapping(REFUND + APPROVE + APPOINTMENT_ID_PATH_VARIABLE_BASE)
@@ -94,6 +102,15 @@ public class AppointmentResource {
                                                  @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ok().body(appointmentService.searchAppointmentLogs(searchRequestDTO, pageable));
+    }
+
+    @PutMapping(TRANSACTION_LOG)
+    @ApiOperation(FETCH_TRANSACTION_LOG)
+    public ResponseEntity<?> fetchTransactionLog(@RequestBody TransactionLogSearchDTO searchRequestDTO,
+                                                 @RequestParam("page") int page,
+                                                 @RequestParam("size") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ok().body(appointmentService.searchTransactionLogs(searchRequestDTO,pageable));
     }
 
     @PutMapping(RESCHEDULE_LOG)

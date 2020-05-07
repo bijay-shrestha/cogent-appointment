@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.client.resource;
 
 import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentDatesRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentDetailRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AvailableDoctorRequestDTO;
 import com.cogent.cogentappointment.client.service.EsewaService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -9,10 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.EsewaConstant.*;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.DOCTOR_ID_PATH_VARIABLE_BASE;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.EsewaConstants.*;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.SPECIALIZATION_ID_PATH_VARIABLE_BASE;
 import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
@@ -56,11 +55,17 @@ public class EsewaResource {
         return ok(esewaService.fetchAvailableDates(requestDTO));
     }
 
+//    /*difference is to fetch available doctors within a choosen date VS multiple from date/to date*/
+//    @PutMapping(FETCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION)
+//    @ApiOperation(FETCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION_OPERATION)
+//    public ResponseEntity<?> fetchAvailableDoctorWithSpecialization(@RequestBody AppointmentDetailRequestDTO requestDTO) {
+//        return ok(esewaService.fetchAvailableDoctorWithSpecialization(requestDTO));
+//    }
+
+    //todo :update in esewa-module
     @PutMapping(FETCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION)
-    @ApiOperation(FETCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION_OPERATION)
-    public ResponseEntity<?> fetchAvailableDoctorWithSpecialization(@RequestBody AppointmentDetailRequestDTO requestDTO) {
+    @ApiOperation(SEARCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION_OPERATION)
+    public ResponseEntity<?> fetchAvailableDoctorWithSpecialization(@RequestBody AvailableDoctorRequestDTO requestDTO) {
         return ok(esewaService.fetchAvailableDoctorWithSpecialization(requestDTO));
     }
-
-
 }

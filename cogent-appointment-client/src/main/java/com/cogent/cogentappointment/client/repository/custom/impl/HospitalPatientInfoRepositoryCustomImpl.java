@@ -12,7 +12,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.HOSPITAL_ID;
-import static com.cogent.cogentappointment.client.constants.QueryConstants.PATIENT_ID;
+import static com.cogent.cogentappointment.client.constants.QueryConstants.PatientQueryConstants.PATIENT_ID;
 import static com.cogent.cogentappointment.client.query.HospitalPatientInfoQuery.QUERY_TO_FETCH_HOSPITAL_PATIENT_INFO;
 import static com.cogent.cogentappointment.client.query.HospitalPatientInfoQuery.QUERY_TO_FETCH_HOSPITAL_PATIENT_INFO_COUNT;
 

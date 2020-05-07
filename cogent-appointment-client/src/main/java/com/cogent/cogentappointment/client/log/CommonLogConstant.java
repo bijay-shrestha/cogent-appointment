@@ -10,6 +10,7 @@ public class CommonLogConstant {
     private final static String BOLD = "\033[0;1m";
 
     //C
+    public final static String CONTENT_NOT_FOUND_BY_CODE = BOLD + ":::: {} WITH CODE : {} NOT FOUND ::::";
     public final static String CONTENT_NOT_FOUND_BY_ID = BOLD + ":::: {} WITH ID : {} NOT FOUND ::::";
     public final static String CONTENT_NOT_FOUND = BOLD + ":::: {} NOT FOUND ::::";
 
@@ -31,6 +32,9 @@ public class CommonLogConstant {
 
     public static String FETCHING_PROCESS_STARTED_FOR_DROPDOWN = ":::: FETCHING {} FOR DROPDOWN STARTED ::::";
     public static String FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED = ":::: FETCHING {} FOR DROPDOWN COMPLETED IN :::: {} ms";
+
+    public static String FETCHING_PROCESS_STARTED_FOR_ACTIVE_DROPDOWN = ":::: FETCHING {} FOR DROPDOWN STARTED ::::";
+    public static String FETCHING_PROCESS_FOR_ACTIVE_DROPDOWN_COMPLETED = ":::: FETCHING {} FOR DROPDOWN COMPLETED IN :::: {} ms";
 
 
     //G

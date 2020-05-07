@@ -18,10 +18,7 @@ import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.exception.OperationUnsuccessfulException;
 import com.cogent.cogentappointment.admin.repository.*;
-import com.cogent.cogentappointment.admin.service.CompanyAdminService;
-import com.cogent.cogentappointment.admin.service.EmailService;
-import com.cogent.cogentappointment.admin.service.MinioFileService;
-import com.cogent.cogentappointment.admin.service.ProfileService;
+import com.cogent.cogentappointment.admin.service.*;
 import com.cogent.cogentappointment.admin.validator.LoginValidator;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import com.cogent.cogentappointment.persistence.model.*;
@@ -31,7 +28,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.Validator;
@@ -45,8 +41,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.AdminServiceMessages.*;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.*;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.AdminLog.*;
@@ -88,6 +83,8 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
     private final AdminDashboardFeatureRepository adminDashboardFeatureRepository;
 
+    private final AdminFeatureService adminFeatureService;
+
     public CompanyAdminServiceImpl(Validator validator,
                                    AdminRepository adminRepository,
                                    AdminMacAddressInfoRepository adminMacAddressInfoRepository,
@@ -95,7 +92,10 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                                    AdminAvatarRepository adminAvatarRepository,
                                    AdminConfirmationTokenRepository confirmationTokenRepository,
                                    MinioFileService minioFileService, EmailService emailService,
-                                   ProfileService profileService, DashboardFeatureRepository dashboardFeatureRepository, AdminDashboardFeatureRepository adminDashboardFeatureRepository) {
+                                   ProfileService profileService,
+                                   DashboardFeatureRepository dashboardFeatureRepository,
+                                   AdminDashboardFeatureRepository adminDashboardFeatureRepository,
+                                   AdminFeatureService adminFeatureService) {
         this.validator = validator;
         this.adminRepository = adminRepository;
         this.adminMacAddressInfoRepository = adminMacAddressInfoRepository;
@@ -107,11 +107,11 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         this.profileService = profileService;
         this.dashboardFeatureRepository = dashboardFeatureRepository;
         this.adminDashboardFeatureRepository = adminDashboardFeatureRepository;
+        this.adminFeatureService = adminFeatureService;
     }
 
     @Override
-    public void save(@Valid CompanyAdminRequestDTO adminRequestDTO, MultipartFile files,
-                     HttpServletRequest httpServletRequest) {
+    public void save(@Valid CompanyAdminRequestDTO adminRequestDTO, MultipartFile files) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -119,11 +119,16 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         validateConstraintViolation(validator.validate(adminRequestDTO));
 
-        List<Object[]> admins = adminRepository.validateDuplicityForCompanyAdmin(adminRequestDTO.getEmail(),
-                adminRequestDTO.getMobileNumber());
+        List<Object[]> admins = adminRepository.validateDuplicityForCompanyAdmin(
+                adminRequestDTO.getEmail(),
+                adminRequestDTO.getMobileNumber()
+        );
 
-        validateCompanyAdminDuplicity(admins, adminRequestDTO.getEmail(),
-                adminRequestDTO.getMobileNumber());
+        validateCompanyAdminDuplicity(admins,
+                adminRequestDTO.getEmail(),
+                adminRequestDTO.getMobileNumber(),
+                adminRequestDTO.getCompanyId()
+        );
 
         Admin admin = save(adminRequestDTO);
 
@@ -133,15 +138,17 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         saveAdminMetaInfo(admin);
 
+        saveAdminFeature(admin);
+
         saveAllAdminDashboardFeature(adminRequestDTO.getAdminDashboardRequestDTOS(), admin);
 
         AdminConfirmationToken adminConfirmationToken =
                 saveAdminConfirmationToken(parseInAdminConfirmationToken(admin));
 
         EmailRequestDTO emailRequestDTO = convertCompanyAdminRequestToEmailRequestDTO(adminRequestDTO, admin,
-                adminConfirmationToken.getConfirmationToken(), httpServletRequest);
+                adminConfirmationToken.getConfirmationToken());
 
-        sendEmail(emailRequestDTO);
+        saveEmailToSend(emailRequestDTO);
 
         log.info(SAVING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
     }
@@ -194,7 +201,12 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         Admin admin = findById(deleteRequestDTO.getId());
 
-        convertAdminToDeleted(admin, deleteRequestDTO);
+        if (admin.getProfileId().getIsSuperAdminProfile().equals(YES))
+            throw new BadRequestException(INVALID_DELETE_REQUEST);
+
+        deleteAdminMetaInfo(admin, deleteRequestDTO);
+
+        save(convertAdminToDeleted(admin, deleteRequestDTO));
 
         log.info(DELETING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
     }
@@ -209,7 +221,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         validatePassword(admin, requestDTO);
 
-        updateAdminPassword(requestDTO.getNewPassword(), requestDTO.getRemarks(), admin);
+        save(updateAdminPassword(requestDTO.getNewPassword(), requestDTO.getRemarks(), admin));
 
         log.info(UPDATING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
     }
@@ -222,9 +234,9 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         Admin admin = findById(requestDTO.getId());
 
-        updateAdminPassword(requestDTO.getPassword(), requestDTO.getRemarks(), admin);
+        save(updateAdminPassword(requestDTO.getPassword(), requestDTO.getRemarks(), admin));
 
-        sendEmail(parseToResetPasswordEmailRequestDTO(requestDTO, admin.getEmail(), admin.getUsername()));
+        sendEmail(parseToResetPasswordEmailRequestDTO(requestDTO, admin.getEmail(), admin.getFullName()));
 
         log.info(UPDATING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
     }
@@ -253,29 +265,71 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         Admin admin = findById(updateRequestDTO.getId());
 
+        if (Objects.isNull(admin.getPassword()))
+            throw new BadRequestException(BAD_UPDATE_MESSAGE, BAD_UPDATE_DEBUG_MESSAGE);
+
         List<Object[]> admins = adminRepository.validateCompanyAdminDuplicity(updateRequestDTO);
 
-        validateCompanyAdminDuplicity(admins, updateRequestDTO.getEmail(),
-                updateRequestDTO.getMobileNumber());
+        validateCompanyAdminDuplicity(
+                admins, updateRequestDTO.getEmail(),
+                updateRequestDTO.getMobileNumber(),
+                updateRequestDTO.getCompanyId());
 
-        EmailRequestDTO emailRequestDTO = parseUpdatedInfo(updateRequestDTO, admin);
+        emailIsNotUpdated(updateRequestDTO, admin, files);
 
-        updateCompanyAdmin(updateRequestDTO, admin);
-
-        if (updateRequestDTO.getIsAvatarUpdate().equals(YES))
-            updateAvatar(admin, files);
-
-//        todo:mac cannot be saved
-        if (updateRequestDTO.getHasMacBinding().equals(YES))
-            updateMacAddressInfo(updateRequestDTO.getMacAddressUpdateInfo(), admin);
-
-        updateAdminMetaInfo(admin);
-
-        updateAdminDashboardFeature(updateRequestDTO.getAdminDashboardRequestDTOS(), admin);
-
-        sendEmail(emailRequestDTO);
+        emailIsUpdated(updateRequestDTO, admin, files);
 
         log.info(UPDATING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    private void emailIsNotUpdated(CompanyAdminUpdateRequestDTO updateRequestDTO,
+                                   Admin admin, MultipartFile files) {
+        if (updateRequestDTO.getEmail().equals(admin.getEmail())) {
+
+            EmailRequestDTO emailRequestDTO = parseUpdatedInfo(updateRequestDTO, admin);
+
+            updateCompanyAdmin(updateRequestDTO, updateRequestDTO.getStatus(), admin);
+
+            if (updateRequestDTO.getIsAvatarUpdate().equals(YES))
+                updateAvatar(admin, files);
+
+            updateMacAddressInfo(updateRequestDTO.getMacAddressUpdateInfo(), admin);
+
+            updateAdminDashboardFeature(updateRequestDTO.getAdminDashboardRequestDTOS(), admin);
+
+            updateAdminMetaInfo(admin);
+
+            saveEmailToSend(emailRequestDTO);
+        }
+    }
+
+    private void emailIsUpdated(CompanyAdminUpdateRequestDTO updateRequestDTO,
+                                Admin admin, MultipartFile files) {
+        if (!updateRequestDTO.getEmail().equals(admin.getEmail())) {
+
+            EmailRequestDTO emailRequestDTO = parseUpdatedInfo(updateRequestDTO, admin);
+
+            AdminConfirmationToken adminConfirmationToken =
+                    saveAdminConfirmationToken(parseInAdminConfirmationToken(admin));
+
+            EmailRequestDTO emailRequestDTOForNewEmail = convertCompanyAdminUpdateRequestToEmailRequestDTO(updateRequestDTO,
+                    adminConfirmationToken.getConfirmationToken());
+
+            updateCompanyAdmin(updateRequestDTO, INACTIVE, admin);
+
+            if (updateRequestDTO.getIsAvatarUpdate().equals(YES))
+                updateAvatar(admin, files);
+
+            updateMacAddressInfo(updateRequestDTO.getMacAddressUpdateInfo(), admin);
+
+            updateAdminDashboardFeature(updateRequestDTO.getAdminDashboardRequestDTOS(), admin);
+
+            updateAdminMetaInfo(admin);
+
+            saveEmailToSend(emailRequestDTOForNewEmail);
+
+            saveEmailToSend(emailRequestDTO);
+        }
     }
 
     @Override
@@ -292,6 +346,31 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
     }
 
     @Override
+    public void verifyConfirmationTokenForEmail(String token) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(VERIFY_CONFIRMATION_TOKEN_FOR_EMAIL_PROCESS_STARTED);
+
+        AdminConfirmationToken adminConfirmationToken =
+                confirmationTokenRepository.findAdminConfirmationTokenByToken(token)
+                        .orElseThrow(() -> CONFIRMATION_TOKEN_NOT_FOUND.apply(token));
+
+        validateStatus(adminConfirmationToken.getStatus());
+
+        Admin admin = adminRepository.findAdminByIdForEmailVerification(adminConfirmationToken.getAdmin().getId());
+
+        admin.setStatus(ACTIVE);
+
+        save(admin);
+
+        adminConfirmationToken.setStatus(INACTIVE);
+
+        saveAdminConfirmationToken(adminConfirmationToken);
+
+        log.info(VERIFY_CONFIRMATION_TOKEN_FOR_EMAIL_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    @Override
     public void savePassword(AdminPasswordRequestDTO requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
@@ -302,9 +381,11 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                 confirmationTokenRepository.findAdminConfirmationTokenByToken(requestDTO.getToken())
                         .orElseThrow(() -> CONFIRMATION_TOKEN_NOT_FOUND.apply(requestDTO.getToken()));
 
-        save(saveAdminPassword(requestDTO, adminConfirmationToken));
+        save(saveAdminPassword(requestDTO, adminConfirmationToken.getAdmin()));
 
         adminConfirmationToken.setStatus(INACTIVE);
+
+        saveAdminConfirmationToken(adminConfirmationToken);
 
         log.info(SAVING_PASSWORD_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
     }
@@ -401,45 +482,42 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
     }
 
-
     private void validateStatus(Object status) {
-        if (status.equals(INACTIVE)) throw ADMIN_ALREADY_REGISTERED.get();
+        if (status.equals(INACTIVE)) {
+            log.error(ADMIN_REGISTERED);
+            throw ADMIN_ALREADY_REGISTERED.get();
+        }
     }
 
     private void validateCompanyAdminDuplicity(List<Object[]> adminList, String requestEmail,
-                                               String requestMobileNumber) {
+                                               String requestMobileNumber, Long requestedCompanyId) {
 
         final int EMAIL = 0;
         final int MOBILE_NUMBER = 1;
+        final int COMPANY_ID = 2;
 
         adminList.forEach(admin -> {
             boolean isEmailExists = requestEmail.equalsIgnoreCase((String) get(admin, EMAIL));
             boolean isMobileNumberExists = requestMobileNumber.equalsIgnoreCase((String) get(admin, MOBILE_NUMBER));
+            Long companyId = (Long) get(admin, COMPANY_ID);
 
-            if (isEmailExists && isMobileNumberExists)
-                throw ADMIN_DUPLICATION.get();
+            /*THIS MEANS ADMIN WITH SAME EMAIL/ MOBILE NUMBER ALREADY EXISTS IN REQUESTED COMPANY*/
+            if (companyId.equals(requestedCompanyId)) {
+                if (isEmailExists && isMobileNumberExists)
+                    ADMIN_DUPLICATION(requestEmail, requestMobileNumber);
 
-            validateEmail(isEmailExists, requestEmail);
-            validateMobileNumber(isMobileNumberExists, requestMobileNumber);
+                validateEmail(isEmailExists, requestEmail);
+                validateMobileNumber(isMobileNumberExists, requestMobileNumber);
+            }
+              /*THIS MEANS ADMIN WITH SAME EMAIL/ MOBILE NUMBER ALREADY EXISTS IN ANOTHER COMPANY*/
+            else {
+                if (isEmailExists && isMobileNumberExists)
+                    ADMIN_DUPLICATION_IN_DIFFERENT_HOSPITAL(requestEmail, requestMobileNumber);
+
+                validateEmailInDifferentHospital(isEmailExists, requestEmail);
+                validateMobileNumberInDifferentHospital(isMobileNumberExists, requestMobileNumber);
+            }
         });
-    }
-
-    private void validateUsername(boolean isUsernameExists, String username) {
-        if (isUsernameExists)
-            throw new DataDuplicationException(
-                    String.format(USERNAME_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), username));
-    }
-
-    private void validateEmail(boolean isEmailExists, String email) {
-        if (isEmailExists)
-            throw new DataDuplicationException(
-                    String.format(EMAIL_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), email));
-    }
-
-    private void validateMobileNumber(boolean isMobileNumberExists, String mobileNumber) {
-        if (isMobileNumberExists)
-            throw new DataDuplicationException(
-                    String.format(MOBILE_NUMBER_DUPLICATION_MESSAGE, Admin.class.getSimpleName(), mobileNumber));
     }
 
     private Admin save(CompanyAdminRequestDTO adminRequestDTO) {
@@ -460,7 +538,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
     }
 
     private List<FileUploadResponseDTO> uploadFiles(Admin admin, MultipartFile[] files) {
-        String subDirectory = admin.getUsername();
+        String subDirectory = admin.getEmail();
 
         return minioFileService.addAttachmentIntoSubDirectory(subDirectory, files);
     }
@@ -502,11 +580,22 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         adminMetaInfoRepository.save(parseInAdminMetaInfo(admin));
     }
 
+    private void saveAdminFeature(Admin admin) {
+        adminFeatureService.save(admin);
+    }
+
     private void updateAdminMetaInfo(Admin admin) {
         AdminMetaInfo adminMetaInfo = adminMetaInfoRepository.findAdminMetaInfoByAdminId(admin.getId())
                 .orElseThrow(() -> new NoContentFoundException(AdminMetaInfo.class));
 
-        parseMetaInfo(admin, adminMetaInfo);
+        adminMetaInfoRepository.save(parseMetaInfo(admin, adminMetaInfo));
+    }
+
+    private void deleteAdminMetaInfo(Admin admin, DeleteRequestDTO deleteRequestDTO) {
+        AdminMetaInfo adminMetaInfo = adminMetaInfoRepository.findAdminMetaInfoByAdminId(admin.getId())
+                .orElseThrow(() -> new NoContentFoundException(AdminMetaInfo.class));
+
+        adminMetaInfoRepository.save(deleteMetaInfo(adminMetaInfo, deleteRequestDTO));
     }
 
     private AdminConfirmationToken saveAdminConfirmationToken(AdminConfirmationToken adminConfirmationToken) {
@@ -515,6 +604,10 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
     private void sendEmail(EmailRequestDTO emailRequestDTO) {
         emailService.sendEmail(emailRequestDTO);
+    }
+
+    private void saveEmailToSend(EmailRequestDTO emailRequestDTO) {
+        emailService.saveEmailToSend(emailRequestDTO);
     }
 
     private Admin findById(Long adminId) {
@@ -529,12 +622,12 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         else updateAdminAvatar(admin, adminAvatar, files);
     }
 
-    private void updateCompanyAdmin(CompanyAdminUpdateRequestDTO adminRequestDTO, Admin admin) {
+    private void updateCompanyAdmin(CompanyAdminUpdateRequestDTO adminRequestDTO, Character status, Admin admin) {
         Gender gender = fetchGender(adminRequestDTO.getGenderCode());
 
         Profile profile = fetchProfile(adminRequestDTO.getProfileId());
 
-        convertCompanyAdminUpdateRequestDTOToAdmin(admin, adminRequestDTO, gender, profile);
+        convertCompanyAdminUpdateRequestDTOToAdmin(admin, adminRequestDTO, gender, profile, status);
     }
 
     private void updateMacAddressInfo(List<AdminMacAddressInfoUpdateRequestDTO> adminMacAddressInfoUpdateRequestDTOS,
@@ -547,7 +640,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
     }
 
     private EmailRequestDTO parseUpdatedInfo(CompanyAdminUpdateRequestDTO adminRequestDTO, Admin admin) {
-        return parseToEmailRequestDTOForCompanyAdmin(admin.getUsername(), adminRequestDTO,
+        return parseToEmailRequestDTOForCompanyAdmin(admin.getFullName(), adminRequestDTO,
                 parseUpdatedCompanyAdminValues(admin, adminRequestDTO),
                 parseUpdatedMacAddressForCompanyAdmin(adminRequestDTO));
     }
@@ -556,6 +649,42 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         if (ObjectUtils.isEmpty(macInfos))
             throw new NoContentFoundException(AdminMacAddressInfo.class);
     };
+
+    private void ADMIN_DUPLICATION(String email, String mobileNumber) {
+        throw new DataDuplicationException(String.format(ADMIN_DUPLICATION_MESSAGE, email, mobileNumber));
+    }
+
+    private void ADMIN_DUPLICATION_IN_DIFFERENT_HOSPITAL(String email, String mobileNumber) {
+        throw new DataDuplicationException(String.format(ADMIN_DUPLICATION_IN_DIFFERENT_HOSPITAL_MESSAGE, email, mobileNumber));
+    }
+
+    private void validateEmail(boolean isEmailExists, String email) {
+        if (isEmailExists) {
+            log.error(DUPLICATION_ERROR, ADMIN, email);
+            throw new DataDuplicationException(String.format(EMAIL_DUPLICATION_MESSAGE, email));
+        }
+    }
+
+    private void validateEmailInDifferentHospital(boolean isEmailExists, String email) {
+        if (isEmailExists) {
+            log.error(DUPLICATION_ERROR, ADMIN, email);
+            throw new DataDuplicationException(String.format(EMAIL_DUPLICATION_IN_DIFFERENT_HOSPITAL_MESSAGE, email));
+        }
+    }
+
+    private void validateMobileNumber(boolean isMobileNumberExists, String mobileNumber) {
+        if (isMobileNumberExists) {
+            log.error(DUPLICATION_ERROR, ADMIN, mobileNumber);
+            throw new DataDuplicationException(String.format(MOBILE_NUMBER_DUPLICATION_MESSAGE, mobileNumber));
+        }
+    }
+
+    private void validateMobileNumberInDifferentHospital(boolean isMobileNumberExists, String mobileNumber) {
+        if (isMobileNumberExists) {
+            log.error(DUPLICATION_ERROR, ADMIN, mobileNumber);
+            throw new DataDuplicationException(String.format(MOBILE_NUMBER_DUPLICATION_IN_DIFFERENT_HOSPITAL_MESSAGE, mobileNumber));
+        }
+    }
 
     private void validatePassword(Admin admin, AdminChangePasswordRequestDTO requestDTO) {
 
@@ -566,8 +695,6 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
             throw new DataDuplicationException(DUPLICATE_PASSWORD_MESSAGE);
     }
 
-    private Supplier<DataDuplicationException> ADMIN_DUPLICATION = () ->
-            new DataDuplicationException(ADMIN_DUPLICATION_MESSAGE);
 
     private Function<Long, NoContentFoundException> ADMIN_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         throw new NoContentFoundException(Admin.class, "id", id.toString());

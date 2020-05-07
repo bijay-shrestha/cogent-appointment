@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.io.Serializable;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class AppointmentStatusResponseDTO implements Serializable {
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd,YYYY",timezone = "Asia/Kathmandu")
     private LocalDate date;
 
     private Long doctorId;
@@ -34,4 +36,6 @@ public class AppointmentStatusResponseDTO implements Serializable {
     private String patientName;
 
     private Long appointmentId;
+
+    private Character isFollowUp;
 }

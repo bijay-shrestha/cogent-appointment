@@ -88,4 +88,10 @@ public class HospitalResource {
     public ResponseEntity<?> fetchDetailsById(@PathVariable("id") Long id) {
         return ok(hospitalService.fetchDetailsById(id));
     }
+
+    @GetMapping(ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_ALIAS_BY_ID)
+    public ResponseEntity<?> fetchAliasById(@PathVariable("id") Long id) {
+        return ok(hospitalService.fetchAliasById(id));
+    }
 }

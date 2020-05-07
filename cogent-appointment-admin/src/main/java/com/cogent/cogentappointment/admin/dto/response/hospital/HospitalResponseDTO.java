@@ -1,8 +1,11 @@
 package com.cogent.cogentappointment.admin.dto.response.hospital;
 
+import com.cogent.cogentappointment.admin.dto.response.commons.AuditableResponseDTO;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -43,4 +46,14 @@ public class HospitalResponseDTO implements Serializable {
     private Integer followUpIntervalDays;
 
     private String alias;
+
+    private String createdBy;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd, YYYY, hh:mm a", timezone = "Asia/Kathmandu")
+    private Date createdDate;
+
+    private String lastModifiedBy;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd, YYYY, hh:mm a", timezone = "Asia/Kathmandu")
+    private Date lastModifiedDate;
 }

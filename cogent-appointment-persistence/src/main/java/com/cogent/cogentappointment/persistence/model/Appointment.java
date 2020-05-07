@@ -1,4 +1,3 @@
-
 package com.cogent.cogentappointment.persistence.model;
 
 import com.cogent.cogentappointment.persistence.audit.Auditable;
@@ -99,7 +98,7 @@ public class Appointment extends Auditable<String> implements Serializable {
                 ", specializationId=" + specializationId.getName() +
                 ", doctorId=" + doctorId.getName() +
                 ", patientId=" + patientId.getName() +
-                ", appointmentModeId=" + appointmentModeId.getName() +
+                ", appointmentMode=" + appointmentModeId.getName() +
                 ", appointmentDate=" + appointmentDate +
                 ", appointmentTime=" + appointmentTime +
                 ", appointmentNumber='" + appointmentNumber + '\'' +

@@ -17,6 +17,16 @@ public class AppointmentLogResponseDTO implements Serializable {
 
     private List<AppointmentLogDTO> appointmentLogs;
 
+    private BookedAppointmentResponseDTO bookedInfo;
+
+    private CheckedInAppointmentResponseDTO checkedInInfo;
+
+    private CancelledAppointmentResponseDTO cancelledInfo;
+
+    private RefundAppointmentResponseDTO refundInfo;
+
+    private RevenueFromRefundAppointmentResponseDTO revenueFromRefundInfo;
+
     private Double totalAmount;
 
     private int totalItems;

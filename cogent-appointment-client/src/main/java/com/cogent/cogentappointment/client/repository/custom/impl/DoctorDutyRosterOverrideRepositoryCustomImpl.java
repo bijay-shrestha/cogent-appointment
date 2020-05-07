@@ -1,8 +1,9 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentDetailRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AvailableDoctorRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.DoctorDutyRosterOverrideUpdateRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.esewa.AppointmentDetailRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.appoinmentDateAndTime.DoctorDutyRosterOverrideAppointmentDate;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
@@ -34,9 +35,9 @@ import static com.cogent.cogentappointment.client.query.EsewaQuery.*;
 import static com.cogent.cogentappointment.client.query.EsewaQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_OVERRIDE_STATUS;
 import static com.cogent.cogentappointment.client.utils.DoctorDutyRosterOverrideUtils.parseQueryResultToDoctorDutyRosterStatusResponseDTO;
 import static com.cogent.cogentappointment.client.utils.EsewaUtils.parseToDoctorAvailabilityStatusResponseDTO;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.conditionOfBothDateProvided;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
-import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
-import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.transformQueryToResultList;
+import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
 
 @Repository
 @Transactional(readOnly = true)
@@ -98,7 +99,7 @@ public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyR
                         DoctorDutyRosterOverride.class)
                         .getResultList();
 
-        if (doctorDutyRosterOverrides.isEmpty()){
+        if (doctorDutyRosterOverrides.isEmpty()) {
             error();
             throw DOCTOR_DUTY_ROSTER_OVERRIDE_NOT_FOUND.get();
         }
@@ -178,13 +179,33 @@ public class DoctorDutyRosterOverrideRepositoryCustomImpl implements DoctorDutyR
     public List<AvailableDoctorWithSpecialization> fetchAvailableDoctor(AppointmentDetailRequestDTO requestDTO) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_AVAILABLE_DOCTORS_FROM_DDR_OVERRIDE(requestDTO))
-                .setParameter(DATE, requestDTO.getDate())
+                .setParameter(DATE, utilDateToSqlDate(requestDTO.getDate()))
                 .setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
 
         if (!Objects.isNull(requestDTO.getSpecializationId()))
             query.setParameter(SPECIALIZATION_ID, requestDTO.getSpecializationId());
 
         return transformQueryToResultList(query, AvailableDoctorWithSpecialization.class);
+    }
+
+    @Override
+    public List<AvailableDoctorWithSpecialization> fetchAvailableDoctor(AvailableDoctorRequestDTO requestDTO) {
+
+        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_AVAILABLE_DOCTORS_FROM_DDR_OVERRIDE(requestDTO))
+                .setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
+
+        if (conditionOfBothDateProvided(requestDTO.getFromDate(), requestDTO.getToDate())) {
+            query.setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()));
+            query.setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()));
+        }
+
+        if (!Objects.isNull(requestDTO.getSpecializationId()))
+            query.setParameter(SPECIALIZATION_ID, requestDTO.getSpecializationId());
+
+        if (!Objects.isNull(requestDTO.getDoctorId()))
+            query.setParameter(DOCTOR_ID, requestDTO.getDoctorId());
+
+        return transformNativeQueryToResultList(query, AvailableDoctorWithSpecialization.class);
     }
 
     @Override

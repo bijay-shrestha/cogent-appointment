@@ -21,7 +21,9 @@ import static com.cogent.cogentappointment.client.constants.HMACConstant.HMAC_AL
 @Component
 public class HMACBuilder {
 
-    private String username;
+    private Integer id;
+
+    private String email;
 
     private String hospitalCode;
 
@@ -35,9 +37,13 @@ public class HMACBuilder {
 
     private String apiSecret;
 
+    public HMACBuilder id(Integer id) {
+        this.id = id;
+        return this;
+    }
 
-    public HMACBuilder username(String username) {
-        this.username = username;
+    public HMACBuilder email(String email) {
+        this.email = email;
         return this;
     }
 
@@ -80,7 +86,11 @@ public class HMACBuilder {
             digest.init(secretKey);
             digest.update(algorithm.getBytes(StandardCharsets.UTF_8));
             digest.update(DELIMITER);
-            digest.update((username != null) ? username.getBytes(StandardCharsets.UTF_8) : null);
+            digest.update(ByteBuffer.allocateDirect(id));
+            digest.update(DELIMITER);
+            digest.update(email.getBytes(StandardCharsets.UTF_8));
+            digest.update(DELIMITER);
+            digest.update(ByteBuffer.allocateDirect(hospitalId));
             digest.update(DELIMITER);
             digest.update( hospitalCode.getBytes(StandardCharsets.UTF_8));
             digest.update(DELIMITER);

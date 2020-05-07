@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
-import com.cogent.cogentappointment.admin.constants.QueryConstants;
 import com.cogent.cogentappointment.admin.dto.request.company.CompanySearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.company.CompanyDropdownResponseDTO;
@@ -25,8 +24,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.admin.constants.QueryConstants.HOSPITAL_ID;
-import static com.cogent.cogentappointment.admin.constants.QueryConstants.ID;
+import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.HOSPITAL;
@@ -48,10 +46,11 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
     private EntityManager entityManager;
 
     @Override
-    public List<Object[]> validateHospitalDuplicity(String name, String code) {
+    public List<Object[]> validateHospitalDuplicity(String name, String code, String alias) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY)
-                .setParameter(QueryConstants.NAME, name)
-                .setParameter(QueryConstants.CODE, code);
+                .setParameter(NAME, name)
+                .setParameter(CODE, code)
+                .setParameter(ALIAS, alias);
 
         return query.getResultList();
     }
@@ -59,18 +58,19 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
     @Override
     public List<Object[]> validateCompanyDuplicity(String name, String code) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_COMPANY_DUPLICITY)
-                .setParameter(QueryConstants.NAME, name)
-                .setParameter(QueryConstants.CODE, code);
+                .setParameter(NAME, name)
+                .setParameter(CODE, code);
 
         return query.getResultList();
     }
 
     @Override
-    public List<Object[]> validateHospitalDuplicityForUpdate(Long id, String name, String code) {
+    public List<Object[]> validateHospitalDuplicityForUpdate(Long id, String name, String code, String alias) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE)
                 .setParameter(ID, id)
-                .setParameter(QueryConstants.NAME, name)
-                .setParameter(QueryConstants.CODE, code);
+                .setParameter(NAME, name)
+                .setParameter(CODE, code)
+                .setParameter(ALIAS, alias);
 
         return query.getResultList();
     }
@@ -80,8 +80,8 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_COMPANY_DUPLICITY_FOR_UPDATE)
                 .setParameter(ID, id)
-                .setParameter(QueryConstants.NAME, name)
-                .setParameter(QueryConstants.CODE, code);
+                .setParameter(NAME, name)
+                .setParameter(CODE, code);
 
         return query.getResultList();
     }

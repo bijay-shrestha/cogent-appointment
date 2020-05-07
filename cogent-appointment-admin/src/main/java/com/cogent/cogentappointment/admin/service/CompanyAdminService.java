@@ -16,7 +16,6 @@ import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdmin
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -24,7 +23,7 @@ import java.util.List;
  */
 public interface CompanyAdminService {
 
-    void save(CompanyAdminRequestDTO adminRequestDTO, MultipartFile files, HttpServletRequest httpServletRequest);
+    void save(CompanyAdminRequestDTO adminRequestDTO, MultipartFile files);
 
     List<DropDownResponseDTO> fetchActiveCompanyAdminsForDropdown();
 
@@ -43,6 +42,8 @@ public interface CompanyAdminService {
     void update(CompanyAdminUpdateRequestDTO updateRequestDTO, MultipartFile files);
 
     void verifyConfirmationToken(String token);
+
+    void verifyConfirmationTokenForEmail(String token);
 
     void savePassword(AdminPasswordRequestDTO requestDTO);
 

@@ -2,10 +2,12 @@ package com.cogent.cogentappointment.admin.resource;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminInfoRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminUpdateRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.admin.*;
-import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.admin.AdminChangePasswordRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.admin.AdminPasswordRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.admin.AdminResetPasswordRequestDTO;
 import com.cogent.cogentappointment.admin.service.CompanyAdminService;
 import com.cogent.cogentappointment.admin.utils.commons.ObjectMapperUtils;
 import io.swagger.annotations.Api;
@@ -16,12 +18,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 
+import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AdminConstant.VERIFY_EMAIL_ADMIN;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.CompanyAdminConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AdminConstants.EMAIL;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.CompanyAdminConstants.*;
 import static java.net.URI.create;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
@@ -42,11 +45,10 @@ public class CompanyAdminResource {
     @PostMapping(consumes = MULTIPART_FORM_DATA_VALUE)
     @ApiOperation(SAVE_OPERATION)
     public ResponseEntity<?> save(@RequestParam(value = "file", required = false) MultipartFile file,
-                                  @RequestParam("request") String request,
-                                  HttpServletRequest httpServletRequest) throws IOException {
+                                  @RequestParam("request") String request) throws IOException {
 
         CompanyAdminRequestDTO adminRequestDTO = ObjectMapperUtils.map(request, CompanyAdminRequestDTO.class);
-        companyAdminService.save(adminRequestDTO, file, httpServletRequest);
+        companyAdminService.save(adminRequestDTO, file);
         return created(create(API_V1 + BASE_COMPANY_ADMIN)).build();
     }
 
@@ -114,6 +116,13 @@ public class CompanyAdminResource {
     @ApiOperation(VERIFY_ADMIN)
     public ResponseEntity<?> verify(@RequestParam(name = "token") String token) {
         companyAdminService.verifyConfirmationToken(token);
+        return ok().build();
+    }
+
+    @GetMapping(VERIFY+EMAIL)
+    @ApiOperation(VERIFY_EMAIL_ADMIN)
+    public ResponseEntity<?> verifyUpdatedEmail(@RequestParam(name = "token") String token) {
+        companyAdminService.verifyConfirmationTokenForEmail(token);
         return ok().build();
     }
 

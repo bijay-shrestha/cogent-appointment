@@ -10,12 +10,14 @@
     <description>Cogent Appointment System with eSewa Integration</description>
     <packaging>pom</packaging>
 
-<modules>
-    <module>cogent-appointment-persistence</module>
-    <module>cogent-appointment-admin</module>
-    <module>cogent-appointment-client</module>
-    <module>cogent-appointment-esewa</module>
-    <module>cogent-appointment-scheduler</module>
-</modules>
+    <modules>
+        <module>cogent-appointment-persistence</module>
+        <module>cogent-appointment-admin</module>
+        <module>cogent-appointment-client</module>
+        <module>cogent-appointment-scheduler</module>
+        <module>cogent-appointment-logging</module>
+        <module>cogent-appointment-esewa</module>
+
+    </modules>
 
 </project>

@@ -26,22 +26,26 @@ public class SwaggerConstants {
         String SEARCH_OPERATION = "Search admin according to given request parameters";
         String DETAILS_OPERATION = "Fetch admin details by its id";
         String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal admin details (id and name) for dropdown";
-        String CHANGE_PASSWORD_OPERATION = "Validate the requested password with original and update it accordingly" +
-                " (Change password).";
         String RESET_PASSWORD_OPERATION = "Reset password of any admin. This can be done only by those admin who has privilege to do so";
         String UPDATE_AVATAR_OPERATION = "Update admin avatar and if the file size is empty " +
                 "then change the isDefaultImage status as 'Y' else update accordingly.";
-        String VERIFY_ADMIN = "Verify if the confirmation token sent in email (after successful save) is valid" +
-                " and admin has not been registered.";
-        String SAVE_PASSWORD_OPERATION = "Save admin password";
-        String FETCH_LOGGED_IN_ADMIN_INFO = "Fetch logged in admin information." +
-                " Used to show in top-bar and to validate if the admin updates its own profile";
         String FETCH_ADMIN_META_INFO = "Fetch active admin meta info for dropdown";
+        String VERIFY_EMAIL_ADMIN = "Verify if the confirmation token sent in email (after successful email update by admin) is valid.";
+
+        String FETCH_ADMIN_META_INFO_BY_COMPANY_ID = "Fetch active admin meta info by company for dropdown";
+        String FETCH_ADMIN_META_INFO_BY_CLIENT_ID = "Fetch active admin meta info by client for dropdown";
+    }
+
+    public interface AdminFeatureConstant {
+        String BASE_API_VALUE = "This is Admin Feature Resource";
+        String UPDATE_OPERATION = "Update 'isSideBarCollapse' flag of corresponding admin";
+
     }
 
     public interface AppointmentConstant {
         String BASE_API_VALUE = "This is Appointment Resource";
         String FETCH_REFUND_APPOINTMENTS = "Fetch Refund Appointment Request List";
+        String FETCH_REFUND_APPOINTMENTS_DETAIL = "Fetch Refund Appointment Detail By appointmentId";
         String APPROVE_REFUND_APPOINTMENT = "Approve Refund Request Appointment";
         String REJECT_REFUND_APPOINTMENT = "Reject Refund Request Appointment";
         String FETCH_PENDING_APPOINTMENT_APPROVAL = "Fetch pending appointment approvals";
@@ -52,6 +56,7 @@ public class SwaggerConstants {
         String FETCH_APPOINTMENT_QUEUE = "Fetch Appointment Queue of Today for Dashboard";
         String FETCH_APPOINTMENT_RESCHEDULE_LOG = "Fetch Appointment Reschedule Log";
         String DETAILS_APPROVAL_VISIT_OPERATION = "Fetch appointment visit approval details by its id";
+        String FETCH_TRANSACTION_LOG = "Fetch Transaction Log";
     }
 
     public interface AppointmentStatusConstant {
@@ -62,6 +67,16 @@ public class SwaggerConstants {
     public interface AuthenticateConstant {
         String BASE_API_VALUE = "This is Login and SignUp Resource.";
         String LOGIN_OPERATION = "Login User";
+    }
+
+    public interface AppointmentModeConstant {
+        String BASE_API_VALUE = "This is Appointment Mode Resource.";
+        String SAVE_OPERATION = "Save new Appointment Mode";
+        String UPDATE_OPERATION = "Update existing Appointment Mode";
+        String DELETE_OPERATION = "Set Appointment Mode status as 'D' when deleted";
+        String SEARCH_OPERATION = "Search Appointment Mode according to given request parameters";
+        String DETAILS_OPERATION = "Fetch Appointment Mode details by its id";
+        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal Appointment Mode details for dropdown";
     }
 
     //B
@@ -203,6 +218,7 @@ public class SwaggerConstants {
         String SEARCH_OPERATION = "Search hospital according to given request parameters";
         String DETAILS_OPERATION = "Fetch hospital details by id";
         String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal hospital details (id and name) for dropdown";
+        String FETCH_ALIAS_BY_ID = "Fetch alias by hospital id";
     }
 
     //I
@@ -228,6 +244,7 @@ public class SwaggerConstants {
         String SEARCH_OPERATION = "Search Patient Info";
         String FETCH_DETAILS_BY_ID = " Fetch patient(with type 'OTHERS') details by id";
         String FETCH_PATIENT_MIN_DETAIL_BY_APPOINTMENT_ID = "Fetch min patient detail by appointment id.";
+        String FETCH_PATIENT_ESEWA_ID = "Fetch patient esewa id";
     }
 
     public interface ProfileConstant {
@@ -285,6 +302,10 @@ public class SwaggerConstants {
 
 
     //T
+    public interface TestConstant {
+        String BASE_API_VALUE = "This is Test Resource";
+        String TEST_OPERATION = "This is Test Operation";
+    }
 
 
     //U

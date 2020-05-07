@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.dto.response.companyProfile;
 
+import com.cogent.cogentappointment.admin.dto.response.commons.AuditableResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.profile.ProfileMenuResponseDTO;
 import lombok.*;
 

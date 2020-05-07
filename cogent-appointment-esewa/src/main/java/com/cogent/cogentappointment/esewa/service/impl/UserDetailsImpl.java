@@ -33,7 +33,7 @@ public class UserDetailsImpl implements UserDetails {
     public static UserDetailsImpl build(Admin admin) {
         return new UserDetailsImpl(
                 admin.getId(),
-                admin.getUsername(),
+                admin.getEmail(),
                 admin.getEmail(),
                 admin.getPassword());
     }

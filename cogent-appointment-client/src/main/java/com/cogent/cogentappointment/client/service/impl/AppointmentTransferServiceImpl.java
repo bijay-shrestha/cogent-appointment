@@ -90,7 +90,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
                     List<String> overrideTime = getGapDuration(overrideResponse.getStartTime(),
                             overrideResponse.getEndTime(),
                             actualResponse.getGapDuration());
-                    time = getVacantTime(overrideTime, unavailableTime);
+                    time = getVacantTime(overrideTime, unavailableTime,responseDate);
                 }
             } else {
                 String code = requestDTO.getDate().toString().substring(0, 3);
@@ -101,7 +101,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
                 List<String> actualTime = getGapDuration(codeAndTime.getStartTime(),
                         codeAndTime.getEndTime(),
                         actualResponse.getGapDuration());
-                time= getVacantTime(actualTime, unavailableTime);
+                time= getVacantTime(actualTime, unavailableTime,requestDTO.getDate());
             }
         }
 

@@ -2,16 +2,20 @@ package com.cogent.cogentappointment.client.utils;
 
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
+import org.joda.time.LocalTime;
 import org.joda.time.Minutes;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.convert24HourTo12HourFormat;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
 /**
  * @author Sauravi Thapa ON 5/6/20
@@ -60,7 +64,13 @@ public class AppointmentTransferUtils {
         return response;
     }
 
-    public static List<String> getVacantTime(List<String> allTimeSlot,List<String> unavailableTimeSlot){
+    public static List<String> getVacantTime(List<String> allTimeSlot,
+                                             List<String> unavailableTimeSlot,
+                                             Date requestedDate){
+
+        Date time = new java.util.Date(System.currentTimeMillis());
+        String dateFormat=new SimpleDateFormat("HH:mm:ss").format(time);
+        LocalTime localTime=LocalTime.parse(dateFormat);
 
         List<String> unmatchedList = allTimeSlot.stream()
                 .filter(actual -> (unavailableTimeSlot.stream()

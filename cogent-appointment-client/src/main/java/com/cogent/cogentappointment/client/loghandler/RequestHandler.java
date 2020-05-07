@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.client.loghandler;
 
 import com.cogent.cogentappointment.client.dto.commons.ClientLogRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.login.LoginRequestDTO;
 import com.cogent.cogentappointment.client.utils.commons.FileResourceUtils;
 import com.cogent.cogentappointment.client.utils.commons.ObjectMapperUtils;
 import com.maxmind.geoip2.DatabaseReader;
@@ -56,11 +55,12 @@ public class RequestHandler {
         ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper((HttpServletRequest) request);
         String requestedEmail = new String(requestWrapper.getParameter("email"));
 
+
         ClientLogRequestDTO clientLogRequestDTO = ClientLogRequestDTO.
                 builder()
                 .feature("Forgot Password")
                 .actionType("Forgot Password")
-                .parentId(8001l)
+                .parentId(8081l)
                 .roleId(3002l)
                 .adminEmail(requestedEmail)
                 .build();
@@ -70,20 +70,15 @@ public class RequestHandler {
         return clientLogRequestDTO;
     }
 
-    public static ClientLogRequestDTO userLoginLogging(HttpServletRequest request) throws IOException, GeoIp2Exception {
-
-        ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper((HttpServletRequest) request);
-        String login = new String(requestWrapper.getContentAsByteArray());
-
-        LoginRequestDTO loginRequestDTO = ObjectMapperUtils.map(login, LoginRequestDTO.class);
+    public static ClientLogRequestDTO userLoginLogging(HttpServletRequest request, String email) throws IOException, GeoIp2Exception {
 
         ClientLogRequestDTO clientLogRequestDTO = ClientLogRequestDTO.
                 builder()
                 .feature("Login")
                 .actionType("Login")
-                .parentId(8002l)
+                .parentId(8080l)
                 .roleId(3001l)
-                .adminEmail(loginRequestDTO.getEmail())
+                .adminEmail(email)
                 .build();
 
         getUserDetails(clientLogRequestDTO, request);

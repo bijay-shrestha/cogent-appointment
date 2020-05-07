@@ -1,23 +1,13 @@
 package com.cogent.cogentappointment.admin.loghandler;
 
 import com.cogent.cogentappointment.admin.dto.commons.AdminLogRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.login.LoginRequestDTO;
 import com.cogent.cogentappointment.admin.service.AdminLogService;
-import com.cogent.cogentappointment.admin.utils.commons.ObjectMapperUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.filter.GenericFilterBean;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.util.ContentCachingRequestWrapper;
-import org.springframework.web.util.ContentCachingResponseWrapper;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
@@ -26,13 +16,20 @@ import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstan
 import static com.cogent.cogentappointment.admin.loghandler.Checkpoint.checkResponseStatus;
 import static com.cogent.cogentappointment.admin.loghandler.LogDescription.getFailedLogDescription;
 import static com.cogent.cogentappointment.admin.loghandler.LogDescription.getSuccessLogDescription;
-import static com.cogent.cogentappointment.admin.loghandler.RequestHandler.forgotPasswordLogging;
+import static com.cogent.cogentappointment.admin.loghandler.RequestHandler.*;
 
 @Component
-public class UserLogInterceptor extends GenericFilterBean implements HandlerInterceptor {
+public class UserLogInterceptor implements HandlerInterceptor {
 
     @Autowired
     private AdminLogService adminLogService;
+
+//    @Override
+//    public boolean preHandle(HttpServletRequest request,
+//                             HttpServletResponse response, Object handler) throws Exception {
+//
+//        return true;
+//    }
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
@@ -40,39 +37,19 @@ public class UserLogInterceptor extends GenericFilterBean implements HandlerInte
 
         String uri = request.getRequestURI();
         String method = request.getMethod();
+        int status = checkResponseStatus(response);
+
         if (uri.contains(API_V1 + LOGIN) && method.equalsIgnoreCase("POST")) {
 
-            ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(request);
-            ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper(response);
+            String email = response.getHeader("email");
 
-            String swaggerJson = new String(requestWrapper.getContentAsByteArray());
-
-            LoginRequestDTO requestDTO = ObjectMapperUtils.map(swaggerJson, LoginRequestDTO.class);
-
-            System.out.println(swaggerJson);
-
-//            ObjectMapper mapper = new ObjectMapper();
-//            try {
-//                String json = mapper.writeValueAsString(cat);
-//                System.out.println("ResultingJSONstring = " + json);
-//                //System.out.println(json);
-//            } catch (JsonProcessingException e) {
-//                e.printStackTrace();
-
-
-//            getInputStream(requestWrapper.getContentAsByteArray());
-
-//            LoginRequestDTO requestDTO = ObjectMapperUtils.map(requestBody, LoginRequestDTO.class);
-//
-//            AdminLogRequestDTO adminLogRequestDTO = userLoginLogging(request, requestDTO.getEmail());
-//            checkStatusAndSave(status, adminLogRequestDTO);
+            AdminLogRequestDTO adminLogRequestDTO = userLoginLogging(request, email);
+            checkStatusAndSave(status, adminLogRequestDTO);
 
 
         }
 
-        int status = checkResponseStatus(response);
-
-        if (request.getRequestURI().contains(API_V1 + BASE_PASSWORD + FORGOT)) {
+        if (uri.contains(API_V1 + BASE_PASSWORD + FORGOT)) {
 
             AdminLogRequestDTO requestDTO = forgotPasswordLogging(request);
             checkStatusAndSave(status, requestDTO);
@@ -82,12 +59,12 @@ public class UserLogInterceptor extends GenericFilterBean implements HandlerInte
 
         String userLog = RequestHeader.getUserLogs(request);
 
-//        if (userLog != null) {
-//
-//            AdminLogRequestDTO adminLogRequestDTO = convertToAdminLogRequestDTO(userLog, request);
-//            checkStatusAndSave(status, adminLogRequestDTO);
-//
-//        }
+        if (userLog != null) {
+
+            AdminLogRequestDTO adminLogRequestDTO = convertToAdminLogRequestDTO(userLog, request);
+            checkStatusAndSave(status, adminLogRequestDTO);
+
+        }
 
     }
 
@@ -118,25 +95,4 @@ public class UserLogInterceptor extends GenericFilterBean implements HandlerInte
         adminLogService.save(adminLogRequestDTO, INACTIVE);
     }
 
-    @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-
-        ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper((HttpServletRequest) servletRequest);
-        ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper((HttpServletResponse) servletResponse);
-
-        try {
-            filterChain.doFilter(requestWrapper, responseWrapper);
-            responseWrapper.copyBodyToResponse();
-
-        } finally {
-            String requestBody = new String(requestWrapper.getContentAsByteArray());
-            System.out.println(requestBody);
-
-            String responseBody = new String(responseWrapper.getContentAsByteArray());
-            System.out.println(responseBody);
-
-            // Do not forget this line after reading response content or actual response will be empty!
-        }
-
-    }
 }

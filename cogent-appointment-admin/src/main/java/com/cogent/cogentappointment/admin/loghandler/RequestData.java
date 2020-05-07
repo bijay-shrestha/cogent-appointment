@@ -1,11 +1,8 @@
 package com.cogent.cogentappointment.admin.loghandler;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.InetAddress;
-import java.net.URL;
 
 import static com.cogent.cogentappointment.admin.loghandler.RequestHeader.getUserAgent;
 

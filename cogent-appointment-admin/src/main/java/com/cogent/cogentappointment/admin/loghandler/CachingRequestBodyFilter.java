@@ -23,21 +23,24 @@ public class CachingRequestBodyFilter extends GenericFilterBean {
         ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper((HttpServletRequest) servletRequest);
         ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper((HttpServletResponse) servletResponse);
 
-        try {
+        chain.doFilter(requestWrapper, responseWrapper);
+        responseWrapper.copyBodyToResponse();
+
+//        try {
             chain.doFilter(requestWrapper, responseWrapper);
             responseWrapper.copyBodyToResponse();
 
-        } finally {
-            String requestBody = new String(requestWrapper.getContentAsByteArray());
-            System.out.println(requestBody);
-
-            String responseBody = new String(responseWrapper.getContentAsByteArray());
-            System.out.println(responseBody);
+//        } finally {
+//            String requestBody = new String(requestWrapper.getContentAsByteArray());
+//            System.out.println(requestBody);
+//
+//            String responseBody = new String(responseWrapper.getContentAsByteArray());
+//            System.out.println(responseBody);
 
             // Do not forget this line after reading response content or actual response will be empty!
 //        }
 
-        }
+//        }
 
     }
 }

@@ -286,11 +286,20 @@ public class DoctorQuery {
         return sql;
     }
 
-    public static String DOCTOR_AUDITABLE_QUERY() {
+    private static String DOCTOR_AUDITABLE_QUERY() {
         return " d.created_by as createdBy," +
                 " d.created_date as createdDate," +
                 " d.last_modified_by as lastModifiedBy," +
                 " d.last_modified_date as lastModifiedDate";
     }
 
+    public static String QUERY_TO_FETCH_DOCTOR_SHIFTS =
+            "SELECT s.id as value," +
+                    " s.name as label" +
+                    " FROM Doctor d" +
+                    " LEFT JOIN DoctorShift ds ON d.id = ds.doctor.id" +
+                    " LEFT JOIN Shift s ON s.id = ds.shift.id" +
+                    " WHERE d.id =:doctorId" +
+                    " AND ds.status  = 'Y'" +
+                    " AND d.status  = 'Y'";
 }

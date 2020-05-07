@@ -44,7 +44,7 @@ public class BreakType extends Auditable<String> implements Serializable {
 
     @Override
     public String toString() {
-        return "Department{" +
+        return "BreakType{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", isDefault='" + isDefault + '\'' +

@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
+import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctor.*;
 import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorDropdownDTO;
@@ -73,8 +74,9 @@ public class DoctorServiceImpl implements DoctorService {
                              DoctorQualificationRepository doctorQualificationRepository,
                              HospitalService hospitalService,
                              DoctorAppointmentChargeRepository doctorAppointmentChargeRepository,
-                             FileService fileService,
-                             MinioFileService minioFileService, DoctorAvatarRepository doctorAvatarRepository, Validator validator) {
+                             MinioFileService minioFileService,
+                             DoctorAvatarRepository doctorAvatarRepository,
+                             Validator validator) {
         this.doctorRepository = doctorRepository;
         this.doctorSpecializationRepository = doctorSpecializationRepository;
         this.specializationService = specializationService;
@@ -107,7 +109,9 @@ public class DoctorServiceImpl implements DoctorService {
 
         saveDoctor(doctor);
 
-        saveDoctorAppointmentCharge(doctor, requestDTO.getAppointmentCharge(), requestDTO.getAppointmentFollowUpCharge());
+        saveDoctorAppointmentCharge(doctor, requestDTO.getAppointmentCharge(),
+                requestDTO.getAppointmentFollowUpCharge()
+        );
 
         saveDoctorSpecialization(doctor.getId(), requestDTO.getSpecializationIds());
 
@@ -231,6 +235,19 @@ public class DoctorServiceImpl implements DoctorService {
         return responseDTO;
     }
 
+    @Override
+    public List<DropDownResponseDTO> fetchAssignedDoctorShifts(Long doctorId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, DOCTOR_SHIFT);
+
+        List<DropDownResponseDTO> doctorShifts =
+                doctorRepository.fetchAssignedDoctorShifts(doctorId);
+
+        log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_SHIFT, getDifferenceBetweenTwoTime(startTime));
+
+        return doctorShifts;
+    }
 
     @Override
     public Doctor fetchDoctorById(Long id) {

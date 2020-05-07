@@ -14,6 +14,8 @@ public class DoctorLog {
 
     public final static String DOCTOR_APPOINTMENT_CHARGE = "DOCTOR APPOINTMENT CHARGE";
 
-    public final static String DOCTOR_APPOINTMENT_CHARGE_NOT_FOUND=":::: DOCTOR APPOINTMENT CHARGE BY" +
+    public final static String DOCTOR_SHIFT = "DOCTOR SHIFT";
+
+    public final static String DOCTOR_APPOINTMENT_CHARGE_NOT_FOUND = ":::: DOCTOR APPOINTMENT CHARGE BY" +
             " DOCTOR ID : {} NOT FOUND ::::";
 }

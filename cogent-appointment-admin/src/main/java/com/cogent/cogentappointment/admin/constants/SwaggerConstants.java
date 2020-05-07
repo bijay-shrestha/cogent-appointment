@@ -80,7 +80,7 @@ public class SwaggerConstants {
     }
 
     //B
-    public interface BreakTypeConstant{
+    public interface BreakTypeConstant {
         String BASE_API_VALUE = "This is Break Type Resource";
         String SAVE_OPERATION = "Save new Break Type";
         String UPDATE_OPERATION = "Update existing Break Type";
@@ -179,6 +179,7 @@ public class SwaggerConstants {
         String FETCH_DETAILS_FOR_DROPDOWN = "Fetch Doctor details (id and name) for dropdown";
         String FETCH_BY_SPECIALIZATION_ID = "Fetch active doctors by specialization id";
         String FETCH_BY_HOSPITAL_ID = "Fetch active doctors by hospital id";
+        String FETCH_ASSIGNED_DOCTOR_SHIFTS = "Fetch shifts assigned to doctor";
     }
 
     public interface DoctorDutyRosterConstant {
@@ -309,7 +310,7 @@ public class SwaggerConstants {
         String FETCH_ASSIGNED_PROFILE_RESPONSE = "Fetch assigned profile response";
     }
 
-    public interface ShiftConstant{
+    public interface ShiftConstant {
         String BASE_API_VALUE = "This is Shift Resource";
         String SAVE_OPERATION = "Save new Shift";
         String UPDATE_OPERATION = "Update existing Shift";

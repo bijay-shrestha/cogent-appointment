@@ -44,7 +44,7 @@ public class Shift extends Auditable<String> implements Serializable {
 
     @Override
     public String toString() {
-        return "Department{" +
+        return "Shift{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", isDefault='" + isDefault + '\'' +

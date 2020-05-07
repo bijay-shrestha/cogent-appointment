@@ -19,10 +19,10 @@ import java.io.IOException;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.DoctorConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.DoctorConstants.BASE_DOCTOR;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.DoctorConstants.UPDATE_DETAILS;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.DoctorConstants.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.HospitalConstants.HOSPITAL_ID_PATH_VARIABLE_BASE;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.HospitalConstants.HOSPITAL_WISE;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.ShiftConstants.BASE_SHIFT;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.SpecializationConstants.SPECIALIZATION_ID_PATH_VARIABLE_BASE;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.SpecializationConstants.SPECIALIZATION_WISE;
 import static java.net.URI.create;
@@ -105,5 +105,11 @@ public class DoctorResource {
     @ApiOperation(FETCH_BY_HOSPITAL_ID)
     public ResponseEntity<?> fetchDoctorByHospitalId(@PathVariable("hospitalId") Long hospitalId) {
         return ok(doctorService.fetchDoctorByHospitalId(hospitalId));
+    }
+
+    @GetMapping(BASE_SHIFT + DOCTOR_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_ASSIGNED_DOCTOR_SHIFTS)
+    public ResponseEntity<?> fetchAssignedDoctorShifts(@PathVariable("doctorId") Long doctorId) {
+        return ok(doctorService.fetchAssignedDoctorShifts(doctorId));
     }
 }

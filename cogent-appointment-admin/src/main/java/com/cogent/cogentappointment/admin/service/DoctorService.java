@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.service;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
+import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctor.DoctorRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctor.DoctorSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctor.DoctorUpdateRequestDTO;
@@ -39,4 +40,6 @@ public interface DoctorService {
     List<DoctorDropdownDTO> fetchDoctorByHospitalId(Long hospitalId);
     
     DoctorUpdateResponseDTO fetchDetailsForUpdate(Long id);
+
+    List<DropDownResponseDTO> fetchAssignedDoctorShifts(Long doctorId);
 }

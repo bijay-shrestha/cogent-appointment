@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.repository.custom;
 
+import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctor.DoctorSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorDropdownDTO;
@@ -35,4 +36,6 @@ public interface DoctorRepositoryCustom {
     DoctorUpdateResponseDTO fetchDetailsForUpdate(Long id);
 
     List<DoctorDropdownDTO> fetchDoctorAvatarInfo(Long hospitalId, Long doctorId);
+
+    List<DropDownResponseDTO> fetchAssignedDoctorShifts(Long doctorId);
 }

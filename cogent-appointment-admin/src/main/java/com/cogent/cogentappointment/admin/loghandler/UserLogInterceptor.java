@@ -4,15 +4,15 @@ import com.cogent.cogentappointment.admin.dto.commons.AdminLogRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.login.LoginRequestDTO;
 import com.cogent.cogentappointment.admin.service.AdminLogService;
 import com.cogent.cogentappointment.admin.utils.commons.ObjectMapperUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.util.ContentCachingRequestWrapper;
 
+import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.stream.Collectors;
+import java.io.BufferedReader;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
@@ -21,10 +21,9 @@ import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstan
 import static com.cogent.cogentappointment.admin.loghandler.Checkpoint.checkResponseStatus;
 import static com.cogent.cogentappointment.admin.loghandler.LogDescription.getFailedLogDescription;
 import static com.cogent.cogentappointment.admin.loghandler.LogDescription.getSuccessLogDescription;
-import static com.cogent.cogentappointment.admin.loghandler.RequestHandler.*;
+import static com.cogent.cogentappointment.admin.loghandler.RequestHandler.forgotPasswordLogging;
 
 @Component
-@RestControllerAdvice
 public class UserLogInterceptor implements HandlerInterceptor {
 
     @Autowired
@@ -33,6 +32,27 @@ public class UserLogInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
                                 Exception exception) throws Exception {
+
+        String uri = request.getRequestURI();
+        String method = request.getMethod();
+        if (uri.contains(API_V1 + LOGIN) && method.equalsIgnoreCase("POST")) {
+
+            ServletInputStream a = request.getInputStream();
+            String requestStr = IOUtils.toString(a);
+            LoginRequestDTO adminRequestDTO = ObjectMapperUtils.map(requestStr, LoginRequestDTO.class);
+
+            System.out.println(adminRequestDTO.toString());
+
+
+//            getInputStream(requestWrapper.getContentAsByteArray());
+
+//            LoginRequestDTO requestDTO = ObjectMapperUtils.map(requestBody, LoginRequestDTO.class);
+//
+//            AdminLogRequestDTO adminLogRequestDTO = userLoginLogging(request, requestDTO.getEmail());
+//            checkStatusAndSave(status, adminLogRequestDTO);
+
+
+        }
 
         int status = checkResponseStatus(response);
 
@@ -43,27 +63,15 @@ public class UserLogInterceptor implements HandlerInterceptor {
 
         }
 
-        if (request.getRequestURI().contains(API_V1 + LOGIN) && request.getMethod().equalsIgnoreCase("POST")) {
-
-            ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper((HttpServletRequest) request);
-
-            String body = requestWrapper.getReader().lines().collect(Collectors.joining());
-
-            LoginRequestDTO requestDTO = ObjectMapperUtils.map(body, LoginRequestDTO.class);
-            AdminLogRequestDTO adminLogRequestDTO = userLoginLogging(request, requestDTO.getEmail());
-            checkStatusAndSave(status, adminLogRequestDTO);
-
-
-        }
 
         String userLog = RequestHeader.getUserLogs(request);
 
-        if (userLog != null) {
-
-            AdminLogRequestDTO adminLogRequestDTO = convertToAdminLogRequestDTO(userLog, request);
-            checkStatusAndSave(status, adminLogRequestDTO);
-
-        }
+//        if (userLog != null) {
+//
+//            AdminLogRequestDTO adminLogRequestDTO = convertToAdminLogRequestDTO(userLog, request);
+//            checkStatusAndSave(status, adminLogRequestDTO);
+//
+//        }
 
     }
 
@@ -93,5 +101,4 @@ public class UserLogInterceptor implements HandlerInterceptor {
     private void saveFailedLogs(AdminLogRequestDTO adminLogRequestDTO) {
         adminLogService.save(adminLogRequestDTO, INACTIVE);
     }
-
 }

@@ -27,6 +27,8 @@ public class UserLogInterceptor implements HandlerInterceptor {
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
                                 Exception exception) throws Exception {
 
+
+
         int status = Checkpoint.checkResponseStatus(response);
 
         if (request.getRequestURI().contains(API_V1 + BASE_PASSWORD + FORGOT)) {

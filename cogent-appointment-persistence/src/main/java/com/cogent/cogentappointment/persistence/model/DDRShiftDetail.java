@@ -1,0 +1,34 @@
+package com.cogent.cogentappointment.persistence.model;
+
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.persistence.*;
+import java.io.Serializable;
+
+/**
+ * @author smriti on 08/05/20
+ */
+@Entity
+@Table(name = "ddr_shift_detail")
+@Getter
+@Setter
+public class DDRShiftDetail implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ddr_shift_wise_id")
+    private DoctorDutyRosterShiftWise ddrShiftWise;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "shift_id")
+    private Shift shift;
+
+    /* Y-> ACTIVE
+    * D-> DELETED*/
+    @Column(name = "status")
+    private Character status;
+}

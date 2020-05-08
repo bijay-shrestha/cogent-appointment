@@ -121,6 +121,11 @@ public class SwaggerConstants {
 
 
     //T
+    public interface TestConstant {
+        String BASE_API_VALUE = "This is Test Resource";
+        String TEST_OPERATION = "This is Test Operation";
+    }
+
 
 
     //U

@@ -116,6 +116,9 @@ public class WebResourceKeyConstants {
 
 
     //T
+    public interface TestResourceConstant {
+        String BASE_TEST_RESOURCE = "/test";
+    }
 
     //U
     public static final String UPDATE = "/update";

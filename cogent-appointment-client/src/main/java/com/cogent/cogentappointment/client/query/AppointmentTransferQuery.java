@@ -82,21 +82,6 @@ public class AppointmentTransferQuery {
                     " AND ddr.specializationId.id=:specializationId"+
                     " AND ddro.dayOffStatus = 'N'";
 
-    public static String QUERY_TO_GET_OVERRIDE_DATES_AND_TIME_BY_ROSTER_ID =
-            "select" +
-                    " ddro.id as id," +
-                    " ddro.fromDate as fromDate," +
-                    " ddro.toDate as toDate," +
-                    " DATE_FORMAT(ddro.startTime, '%H:%i') as startTime,"+
-                    " DATE_FORMAT(ddro.endTime, '%H:%i') as endTime"+
-                    " FROM" +
-                    " DoctorDutyRosterOverride ddro" +
-                    " LEFT JOIN DoctorDutyRoster ddr ON ddr.id=ddro.doctorDutyRosterId.id " +
-                    " LEFT JOIN Doctor d On ddr.doctorId.id=d.id" +
-                    " WHERE" +
-                    " ddro.doctorDutyRosterId.id = :doctorDutyRosterId" +
-                    " AND ddro.dayOffStatus = 'N'";
-
     public static String QUERY_TO_GET_UNAVAILABLE_TIME=
             "SELECT" +
                     " DATE_FORMAT(a.appointmentTime , '%h:%i %p')" +

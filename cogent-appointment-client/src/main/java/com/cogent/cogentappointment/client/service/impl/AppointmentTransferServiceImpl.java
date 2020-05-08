@@ -79,16 +79,6 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
         List<String> time = new ArrayList<>();
 
-        List<String> overrideTimeList = new ArrayList<>();
-
-        List<String> actualTimeList = new ArrayList<>();
-
-        List<ActualDateAndTimeResponseDTO> actualDateAndTime = repository.getActualTimeByDoctorId(requestDTO.getDoctorId(),
-                requestDTO.getSpecializationId());
-
-        List<OverrideDateAndTimeResponseDTO> overrideDateAndTime = repository.getOverideRosterDateAndTime(requestDTO.getDoctorId(),
-                requestDTO.getSpecializationId());
-
         List<String> unavailableTime = repository.getUnavailableTimeByDateAndDoctorId(
                 requestDTO.getDoctorId(),
                 requestDTO.getSpecializationId(),
@@ -96,38 +86,11 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
         Date sqlRequestDate = utilDateToSqlDate(requestDTO.getDate());
 
-            overrideDateAndTime.forEach(override -> {
-                List<Date> overrideDates = utilDateListToSqlDateList(getDates(override.getFromDate(),
-                        override.getToDate()));
-                Date date = compareAndGetDate(overrideDates, sqlRequestDate);
-                if (date != null) {
-                    List<String> overrideTime = getGapDuration(override.getStartTime(),
-                            override.getEndTime(),
-                            override.getGapDuration());
-                    List<String> finalOverridetime = getVacantTime(overrideTime, unavailableTime, date);
-                    overrideTimeList.addAll(finalOverridetime);
-                    time.addAll(overrideTimeList);
-                }
-            });
+        time.addAll(checkOverride(requestDTO,unavailableTime,sqlRequestDate));
 
-            if(time.size()==0) {
-                actualDateAndTime.forEach(actual -> {
-                    List<Date> actualDates = utilDateListToSqlDateList(getDates(actual.getFromDate(),
-                            actual.getToDate()));
-                    for (Date actualDate : actualDates) {
-                        if (actualDate.equals(sqlRequestDate)) {
-                            String code = requestDTO.getDate().toString().substring(0, 3);
-                            WeekDayAndTimeDTO codeAndTime = repository.getWeekDaysByCode(requestDTO.getDoctorId(), code);
-                            List<String> actualTime = getGapDuration(codeAndTime.getStartTime(),
-                                    codeAndTime.getEndTime(),
-                                    actual.getGapDuration());
-                            List<String> finaltime = getVacantTime(actualTime, unavailableTime, actualDate);
-                            actualTimeList.addAll(finaltime);
-                            time.addAll(actualTimeList);
-                        }
-                    }
-                });
-            }
+        if (time.size() == 0) {
+           time.addAll(checkActual(requestDTO,unavailableTime,sqlRequestDate));
+        }
 
         log.info(FETCHING_AVAILABLE_DOCTOR_TIME_PROCESS_COMPLETED, APPOINTMENT_TRANSFER,
                 getDifferenceBetweenTwoTime(startTime));
@@ -151,4 +114,65 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
         return response;
     }
+
+
+    private List<String> checkOverride(AppointmentTransferTimeRequestDTO requestDTO, List<String> unavailableTime,
+                                       Date sqlRequestDate) {
+
+        List<String> finalOverridetime = new ArrayList<>();
+
+        List<OverrideDateAndTimeResponseDTO> overrideDateAndTime = repository.getOverideRosterDateAndTime(
+                requestDTO.getDoctorId(),
+                requestDTO.getSpecializationId());
+
+        for (OverrideDateAndTimeResponseDTO override : overrideDateAndTime) {
+
+            List<Date> overrideDates = utilDateListToSqlDateList(getDates(override.getFromDate(),
+                    override.getToDate()));
+
+            Date date = compareAndGetDate(overrideDates, sqlRequestDate);
+
+            if (date != null) {
+                List<String> overrideTime = getGapDuration(override.getStartTime(),
+                        override.getEndTime(),
+                        override.getGapDuration());
+
+                finalOverridetime = getVacantTime(overrideTime, unavailableTime, date);
+            }
+        }
+        return finalOverridetime;
+    }
+
+
+    private List<String> checkActual(AppointmentTransferTimeRequestDTO requestDTO, List<String> unavailableTime,
+                                       Date sqlRequestDate) {
+
+        List<String> finaltime = new ArrayList<>();
+
+        List<ActualDateAndTimeResponseDTO> actualDateAndTime = repository.getActualTimeByDoctorId(requestDTO.getDoctorId(),
+                requestDTO.getSpecializationId());
+
+        for (ActualDateAndTimeResponseDTO actual : actualDateAndTime) {
+            List<Date> actualDates = utilDateListToSqlDateList(getDates(actual.getFromDate(),
+                    actual.getToDate()));
+
+            for (Date actualDate : actualDates) {
+
+                if (actualDate.equals(sqlRequestDate)) {
+
+                    String code = requestDTO.getDate().toString().substring(0, 3);
+
+                    WeekDayAndTimeDTO codeAndTime = repository.getWeekDaysByCode(requestDTO.getDoctorId(), code);
+
+                    List<String> actualTime = getGapDuration(codeAndTime.getStartTime(), codeAndTime.getEndTime(),
+                            actual.getGapDuration());
+
+                    finaltime = getVacantTime(actualTime, unavailableTime, actualDate);
+                }
+            }
+        }
+        return finaltime;
+    }
+
+
 }

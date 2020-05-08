@@ -27,8 +27,6 @@ public interface AppointmentTransferRepositoryCustom {
 
     List<ActualDateAndTimeResponseDTO> getActualTimeByDoctorId(Long doctorId,Long specializationId);
 
-    List<OverrideDateAndTimeResponseDTO> getOverrideTimeByRosterId(Long doctorDutyRosterId);
-
     List<String> getUnavailableTimeByDateAndDoctorId(Long doctorId,Long specializationId,Date date);
 
     AppointmentChargeResponseDTO getAppointmentChargeByDoctorId(Long doctorId);

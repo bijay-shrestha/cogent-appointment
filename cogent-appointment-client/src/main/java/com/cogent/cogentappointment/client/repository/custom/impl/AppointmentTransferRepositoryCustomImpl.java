@@ -101,16 +101,6 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
     }
 
     @Override
-    public List<OverrideDateAndTimeResponseDTO> getOverrideTimeByRosterId(Long doctorDutyRosterId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_GET_OVERRIDE_DATES_AND_TIME_BY_ROSTER_ID)
-                .setParameter(DOCTOR_DUTY_ROSTER_ID, doctorDutyRosterId);
-
-        List<OverrideDateAndTimeResponseDTO> response = transformQueryToResultList(query, OverrideDateAndTimeResponseDTO.class);
-
-        return response;
-    }
-
-    @Override
     public List<String> getUnavailableTimeByDateAndDoctorId(Long doctorId,Long specializationId, Date date) {
         Query query = createQuery.apply(entityManager, QUERY_TO_GET_UNAVAILABLE_TIME)
                 .setParameter(DOCTOR_ID, doctorId)

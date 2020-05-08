@@ -6,20 +6,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
- * @author Sauravi Thapa ON 5/7/20
+ * @author Sauravi Thapa ON 5/8/20
  */
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppointmentTransferTimeRequestDTO implements Serializable{
+public class AppointmentDateRequestDTO implements Serializable{
 
     private Long doctorId;
 
     private Long specializationId;
-
-    private Date date;
 }

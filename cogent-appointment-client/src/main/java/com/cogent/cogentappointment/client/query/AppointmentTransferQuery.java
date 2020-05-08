@@ -12,7 +12,8 @@ public class AppointmentTransferQuery {
                     " FROM" +
                     " DoctorDutyRoster ddr" +
                     " WHERE" +
-                    " ddr.doctorId.id = :doctorId";
+                    " ddr.doctorId.id = :doctorId" +
+                    " AND ddr.specializationId.id=:specializationId";
 
     public static String QUERY_TO_FETCH_DATE_AND_TIME_BY_DOCTOR_ID=
             "SELECT" +
@@ -24,7 +25,8 @@ public class AppointmentTransferQuery {
                     " FROM" +
                     " DoctorDutyRoster ddr" +
                     " WHERE" +
-                    " ddr.doctorId.id = :doctorId";
+                    " ddr.doctorId.id = :doctorId"+
+                    " AND ddr.specializationId.id=:specializationId";
 
     public static String QUERY_TO_GET_DAY_OFF_WEEKS_BY_DUTY_ROSTER_ID=
             "SELECT" +
@@ -61,7 +63,8 @@ public class AppointmentTransferQuery {
                     " LEFT JOIN DoctorDutyRoster ddr ON ddr.id=ddro.doctorDutyRosterId.id " +
                     " LEFT JOIN Doctor d On ddr.doctorId.id=d.id" +
                     " WHERE" +
-                    " d.id = :doctorId" +
+                    " ddr.doctorId.id = :doctorId" +
+                    " AND ddr.specializationId.id=:specializationId"+
                     " AND ddro.dayOffStatus = 'N'";
 
     public static String QUERY_TO_GET_OVERRIDE_DATES_AND_TIME_BY_ROSTER_ID =
@@ -69,14 +72,14 @@ public class AppointmentTransferQuery {
                     " ddro.id as id," +
                     " ddro.fromDate as fromDate," +
                     " ddro.toDate as toDate," +
-                    " ddro.startTime as startTime," +
-                    " ddro.endTime as endTime" +
+                    " DATE_FORMAT(ddro.startTime, '%H:%i') as startTime,"+
+                    " DATE_FORMAT(ddro.endTime, '%H:%i') as endTime"+
                     " FROM" +
                     " DoctorDutyRosterOverride ddro" +
                     " LEFT JOIN DoctorDutyRoster ddr ON ddr.id=ddro.doctorDutyRosterId.id " +
                     " LEFT JOIN Doctor d On ddr.doctorId.id=d.id" +
                     " WHERE" +
-                    " d.doctorDutyRosterId.id = :doctorDutyRosterId" +
+                    " ddro.doctorDutyRosterId.id = :doctorDutyRosterId" +
                     " AND ddro.dayOffStatus = 'N'";
 
     public static String QUERY_TO_GET_UNAVAILABLE_TIME=
@@ -86,6 +89,7 @@ public class AppointmentTransferQuery {
                     " Appointment a" +
                     " WHERE" +
                     " a.doctorId.id = :doctorId" +
+                    " AND a.specializationId.id = :specializationId" +
                     " AND a.appointmentDate = :date" +
                     " AND (a.status = 'PA'" +
                     " OR a.status = 'A')";

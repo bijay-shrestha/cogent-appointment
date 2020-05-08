@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.resource;
 
+import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.AppointmentDateRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.AppointmentTransferTimeRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.DoctorChargeRequestDTO;
 import com.cogent.cogentappointment.client.service.AppointmentTransferService;
@@ -10,9 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AppointmentTransferConstant.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.AppointmentTransferConstants.APPOINTMENT_CHARGE;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.AppointmentTransferConstants.APPOINTMENT_TIME;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.AppointmentTransferConstants.BASE_APPOINTMENT_TRANSFER;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.AppointmentTransferConstants.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.DOCTOR_ID_PATH_VARIABLE_BASE;
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -31,10 +30,10 @@ public class AppointmentTransferResource  {
         this.appointmentTransferService = appointmentTransferService;
     }
 
-    @GetMapping(DOCTOR_ID_PATH_VARIABLE_BASE)
+    @PutMapping(APPOINTMENT_DATE)
     @ApiOperation(FETCH_AVAILABLE_DATES)
-    public ResponseEntity<?> fetchDoctorAvailableDates(@PathVariable("doctorId") Long doctorId){
-        return ok(appointmentTransferService.fetchAvailableDatesByDoctorId(doctorId));
+    public ResponseEntity<?> fetchDoctorAvailableDates(@RequestBody AppointmentDateRequestDTO requestDTO){
+        return ok(appointmentTransferService.fetchAvailableDatesByDoctorId(requestDTO));
     }
 
     @PutMapping(APPOINTMENT_TIME)

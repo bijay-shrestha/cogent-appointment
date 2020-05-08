@@ -17,19 +17,19 @@ import java.util.List;
 @Repository
 @Qualifier("appointmentTransferRepositoryCustom")
 public interface AppointmentTransferRepositoryCustom {
-    List<DoctorDatesResponseDTO> getDatesByDoctorId(Long doctorId);
+    List<DoctorDatesResponseDTO> getDatesByDoctorId(Long doctorId,Long specializationId);
 
     List<String> getDayOffDaysByRosterId(Long doctorDutyRosterId);
 
     WeekDayAndTimeDTO getWeekDaysByCode(Long doctorId,String code);
 
-    List<DoctorDatesResponseDTO> getOverrideDatesByDoctorId(Long doctorId);
+    List<DoctorDatesResponseDTO> getOverrideDatesByDoctorId(Long doctorId,Long specializationId);
 
-    List<ActualDateAndTimeResponseDTO> getActualTimeByDoctorId(Long doctorId);
+    List<ActualDateAndTimeResponseDTO> getActualTimeByDoctorId(Long doctorId,Long specializationId);
 
     List<OverrideDateAndTimeResponseDTO> getOverrideTimeByRosterId(Long doctorDutyRosterId);
 
-    List<String> getUnavailableTimeByDateAndDoctorId(Long doctorId,Date date);
+    List<String> getUnavailableTimeByDateAndDoctorId(Long doctorId,Long specializationId,Date date);
 
     AppointmentChargeResponseDTO getAppointmentChargeByDoctorId(Long doctorId);
 }

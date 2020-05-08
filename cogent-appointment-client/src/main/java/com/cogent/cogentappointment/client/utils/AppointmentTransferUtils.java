@@ -83,5 +83,27 @@ public class AppointmentTransferUtils {
         return unmatchedList;
     }
 
+    public static Date mergeAndGetMatchedDate(
+            List<Date> overrideList,
+            List<Date> actualList,
+            Date requestedDate) {
+
+        List<Date> matchedList = actualList.stream()
+                .filter(actual -> (overrideList.stream()
+                        .filter(override -> (override.equals(actual))
+                                && (override.equals(actual))
+                        )
+                        .count()) > 1)
+                .collect(Collectors.toList());
+
+//        overrideList.removeIf(override -> override.getDayOffStatus().equals(YES));
+        for (Date date : matchedList) {
+            if (date.equals(requestedDate)) {
+                return date;
+            }
+        }
+        return null;
+    }
+
 
 }

@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.persistence.model;
 
 import com.cogent.cogentappointment.persistence.audit.Auditable;
-import com.cogent.cogentappointment.persistence.listener.DoctorDutyRosterEntityListener;
+import com.cogent.cogentappointment.persistence.listener.DoctorDutyRosterShiftWiseEntityListener;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +20,7 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EntityListeners(DoctorDutyRosterEntityListener.class)
+@EntityListeners(DoctorDutyRosterShiftWiseEntityListener.class)
 public class DoctorDutyRosterShiftWise extends Auditable<String> implements Serializable {
 
     @Id
@@ -28,19 +28,16 @@ public class DoctorDutyRosterShiftWise extends Auditable<String> implements Seri
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "doctor_id", updatable = false)
-    private Doctor doctor;
+    @JoinColumn(name = "hospital_id", updatable = false)
+    private Hospital hospital;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "specialization_id", updatable = false)
     private Specialization specialization;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hospital_id", updatable = false)
-    private Hospital hospital;
-
-    @Column(name = "roster_gap_duration")
-    private Integer rosterGapDuration;
+    @JoinColumn(name = "doctor_id", updatable = false)
+    private Doctor doctor;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "from_date")
@@ -49,6 +46,9 @@ public class DoctorDutyRosterShiftWise extends Auditable<String> implements Seri
     @Temporal(TemporalType.DATE)
     @Column(name = "to_date")
     private Date toDate;
+
+    @Column(name = "roster_gap_duration")
+    private Integer rosterGapDuration;
 
     /*Y-> ACTIVE
     * N-> INACTIVE

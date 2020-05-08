@@ -113,6 +113,15 @@ public class WebResourceKeyConstants {
         String REVERT_DOCTOR_DUTY_ROSTER_OVERRIDE = "/revert";
     }
 
+    public interface DDRShiftWiseConstants {
+        String BASE_DDR_SHIFT_WISE = "/doctorDutyRoster/shiftWise";
+        String DOCTOR_DUTY_ROSTER_OVERRIDE = "/doctorDutyRosterOverride";
+        String EXISTING = "/existing";
+        String REVERT_DOCTOR_DUTY_ROSTER_OVERRIDE = "/revert";
+    }
+
+
+
     //F
 
     public interface ForgotPasswordConstants {

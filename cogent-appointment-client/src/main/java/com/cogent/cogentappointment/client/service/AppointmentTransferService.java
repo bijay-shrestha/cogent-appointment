@@ -14,5 +14,5 @@ public interface AppointmentTransferService {
 
     List<String> fetchAvailableDoctorTime(AppointmentTransferTimeRequestDTO requestDTO);
 
-    Double fetchDoctorChargeByDoctorAndSpecializationId(DoctorChargeRequestDTO requestDTO);
+    Double fetchDoctorChargeByDoctorId(DoctorChargeRequestDTO requestDTO);
 }

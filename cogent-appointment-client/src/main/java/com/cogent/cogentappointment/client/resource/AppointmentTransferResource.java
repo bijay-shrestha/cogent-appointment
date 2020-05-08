@@ -1,17 +1,16 @@
 package com.cogent.cogentappointment.client.resource;
 
 import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.AppointmentTransferTimeRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.DoctorChargeRequestDTO;
 import com.cogent.cogentappointment.client.service.AppointmentTransferService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AdminFeatureConstant.UPDATE_OPERATION;
-import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AppointmentTransferConstant.BASE_API_VALUE;
-import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AppointmentTransferConstant.FETCH_AVAILABLE_DATES;
-import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AppointmentTransferConstant.FETCH_AVAILABLE_TIME;
+import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AppointmentTransferConstant.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.AppointmentTransferConstants.APPOINTMENT_CHARGE;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.AppointmentTransferConstants.APPOINTMENT_TIME;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.AppointmentTransferConstants.BASE_APPOINTMENT_TRANSFER;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.DOCTOR_ID_PATH_VARIABLE_BASE;
@@ -42,5 +41,11 @@ public class AppointmentTransferResource  {
     @ApiOperation(FETCH_AVAILABLE_TIME)
     public ResponseEntity<?> fetchDoctorAvailableTime(@RequestBody AppointmentTransferTimeRequestDTO requestDTO){
         return ok(appointmentTransferService.fetchAvailableDoctorTime(requestDTO));
+    }
+
+    @PutMapping(APPOINTMENT_CHARGE)
+    @ApiOperation(FETCH_DOCTOR_CHARGE)
+    public ResponseEntity<?> fetchDoctorChargeByDoctorId(@RequestBody DoctorChargeRequestDTO requestDTO){
+        return ok(appointmentTransferService.fetchDoctorChargeByDoctorId(requestDTO));
     }
 }

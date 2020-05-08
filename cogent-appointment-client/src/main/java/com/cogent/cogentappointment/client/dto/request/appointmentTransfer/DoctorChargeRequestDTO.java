@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.dto.request.appointmentTransfer;
 
+import jdk.nashorn.internal.runtime.regexp.joni.encoding.CharacterType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,4 +21,6 @@ public class DoctorChargeRequestDTO implements Serializable{
     private Long doctorId;
 
     private Long specializationId;
+
+    private Character followUp;
 }

@@ -80,7 +80,7 @@ public class AppointmentTransferQuery {
                     " AND ddro.dayOffStatus = 'N'";
 
     public static String QUERY_TO_GET_UNAVAILABLE_TIME=
-            "select" +
+            "SELECT" +
                     " DATE_FORMAT(a.appointmentTime , '%h:%i %p')" +
                     " FROM" +
                     " Appointment a" +
@@ -89,4 +89,13 @@ public class AppointmentTransferQuery {
                     " AND a.appointmentDate = :date" +
                     " AND (a.status = 'PA'" +
                     " OR a.status = 'A')";
+
+    public static String QUERY_TO_GET_DOCTOR_CHARGE_BY_DOCTOR_ID=
+            "SELECT" +
+                    " appointmentCharge as actualCharge," +
+                    " appointmentFollowUpCharge  as followUpCharge" +
+                    " FROM " +
+                    " DoctorAppointmentCharge dac" +
+                    " WHERE" +
+                    " dac.doctorId.id =:doctorId";
 }

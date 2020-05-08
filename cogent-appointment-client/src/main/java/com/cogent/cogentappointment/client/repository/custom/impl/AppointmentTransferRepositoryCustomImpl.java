@@ -2,8 +2,9 @@ package com.cogent.cogentappointment.client.repository.custom.impl;
 
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.ActualDateAndTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.OverrideDateAndTimeResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.DoctorDatesResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableDates.DoctorDatesResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.WeekDayAndTimeDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.charge.AppointmentChargeResponseDTO;
 import com.cogent.cogentappointment.client.repository.custom.AppointmentTransferRepositoryCustom;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -101,6 +102,16 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
                 .setParameter(DATE,date);
 
         List<String> response=query.getResultList();
+
+        return response;
+    }
+
+    @Override
+    public AppointmentChargeResponseDTO getAppointmentChargeByDoctorId(Long doctorId) {
+        Query query=createQuery.apply(entityManager, QUERY_TO_GET_DOCTOR_CHARGE_BY_DOCTOR_ID)
+                .setParameter(DOCTOR_ID,doctorId);
+
+        AppointmentChargeResponseDTO response=transformQueryToSingleResult(query,AppointmentChargeResponseDTO.class);
 
         return response;
     }

@@ -3,9 +3,10 @@ package com.cogent.cogentappointment.client.service.impl;
 import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.AppointmentTransferTimeRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.DoctorChargeRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.ActualDateAndTimeResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.DoctorDatesResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableDates.DoctorDatesResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.OverrideDateAndTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.WeekDayAndTimeDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.charge.AppointmentChargeResponseDTO;
 import com.cogent.cogentappointment.client.repository.AppointmentTransferRepository;
 import com.cogent.cogentappointment.client.service.AppointmentTransferService;
 import lombok.extern.slf4j.Slf4j;
@@ -116,16 +117,20 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
     }
 
     @Override
-    public Double fetchDoctorChargeByDoctorAndSpecializationId(DoctorChargeRequestDTO requestDTO) {
+    public Double fetchDoctorChargeByDoctorId(DoctorChargeRequestDTO requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_DOCTOR_CHARGE_PROCESS_STARTED, APPOINTMENT_TRANSFER);
 
+        AppointmentChargeResponseDTO charge=repository.getAppointmentChargeByDoctorId(requestDTO.getDoctorId());
+
+        Double response= requestDTO.getFollowUp().equals('N') ? charge.getActualCharge():charge.getFollowUpCharge();
+
         log.info(FETCHING_DOCTOR_CHARGE_PROCESS_COMPLETED, APPOINTMENT_TRANSFER,
                 getDifferenceBetweenTwoTime(startTime));
 
-        return null;
+        return response;
     }
 
 

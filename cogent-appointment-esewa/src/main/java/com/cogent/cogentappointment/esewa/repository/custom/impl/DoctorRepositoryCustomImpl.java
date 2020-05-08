@@ -40,9 +40,8 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
 
         List<DoctorMinResponseDTO> results = transformNativeQueryToResultList(query, DoctorMinResponseDTO.class);
 
-        if (results.isEmpty()) {
+        if (results.isEmpty())
             throw DOCTOR_NOT_FOUND();
-        }
 
         return results;
     }

@@ -20,7 +20,7 @@ public class DoctorQuery {
                     " s.name as specializationName," +                                  //[4]
                     " tbl1.qualificationAlias as qualificationAlias," +                 //[5]
                     " d.nmc_number as nmcNumber," +                                     //[6]
-                    " dc.appointmentCharge as doctorCharge"+                            //[7]
+                    " dc.appointment_charge as doctorCharge"+                           //[7]
                     " FROM" +
                     " doctor d" +
                     " LEFT JOIN doctor_avatar da ON d.id = da.doctor_id" +
@@ -34,7 +34,6 @@ public class DoctorQuery {
                     " doctor_qualification dq" +
                     " LEFT JOIN qualification q ON q.id = dq.qualification_id" +
                     " LEFT JOIN qualification_alias qa ON qa.id = q.qualification_alias" +
-                    " LEFT JOIN doctor_charge dc ON d.id = dc.doctorId.id"+
                     " WHERE" +
                     " qa.status = 'Y'" +
                     " AND q.status = 'Y'" +
@@ -43,6 +42,7 @@ public class DoctorQuery {
                     " dq.doctor_id" +
                     " )tbl1 ON tbl1.doctorId = d.id" +
                     " LEFT JOIN hospital h ON h.id = d.hospital_id" +
+                    " LEFT JOIN doctor_appointment_charge dc ON d.id = dc.doctor_id"+
                     " WHERE" +
                     " d.status = 'Y'" +
                     " AND ds.status = 'Y'" +

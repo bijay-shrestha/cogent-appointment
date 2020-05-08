@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.esewa.dto.response.appointment.history;
 
-import com.cogent.cogentappointment.esewa.dto.response.appointment.history.AppointmentDetailResponseDTO;
+
 import lombok.*;
 import org.springframework.http.HttpStatus;
 

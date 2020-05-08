@@ -1,8 +1,6 @@
 package com.cogent.cogentappointment.admin.loghandler;
 
 import com.cogent.cogentappointment.admin.dto.commons.AdminLogRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.admin.AdminRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.login.LoginRequestDTO;
 import com.cogent.cogentappointment.admin.utils.commons.FileResourceUtils;
 import com.cogent.cogentappointment.admin.utils.commons.ObjectMapperUtils;
 import com.cogent.cogentappointment.admin.utils.commons.SecurityContextUtils;
@@ -10,7 +8,6 @@ import com.maxmind.geoip2.DatabaseReader;
 import com.maxmind.geoip2.exception.AddressNotFoundException;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.maxmind.geoip2.model.CityResponse;
-import com.maxmind.geoip2.record.Location;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 
+import static com.cogent.cogentappointment.admin.utils.commons.SecurityContextUtils.getLoggedInAdminEmail;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.convertToNormalCase;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.splitByCharacterTypeCamelCase;
 
@@ -30,7 +28,7 @@ public class RequestHandler {
 
         AdminLogRequestDTO adminLogRequestDTO = ObjectMapperUtils.map(userLog, AdminLogRequestDTO.class);
 
-        adminLogRequestDTO.setAdminEmail(SecurityContextUtils.getLoggedInAdminEmail());
+        adminLogRequestDTO.setAdminEmail(getLoggedInAdminEmail());
         adminLogRequestDTO.setFeature(convertToNormalCase(splitByCharacterTypeCamelCase(adminLogRequestDTO.getFeature())));
 
         getUserDetails(adminLogRequestDTO, request);
@@ -85,6 +83,22 @@ public class RequestHandler {
                 .parentId(8002l)
                 .roleId(3001l)
                 .adminEmail(email)
+                .build();
+
+        getUserDetails(adminLogRequestDTO, request);
+
+        return adminLogRequestDTO;
+    }
+
+    public static AdminLogRequestDTO userLogoutLogging(HttpServletRequest request) throws IOException, GeoIp2Exception {
+
+        AdminLogRequestDTO adminLogRequestDTO = AdminLogRequestDTO.
+                builder()
+                .feature("Logout")
+                .actionType("Logout")
+                .parentId(8082l)
+                .roleId(3003l)
+                .adminEmail(getLoggedInAdminEmail())
                 .build();
 
         getUserDetails(adminLogRequestDTO, request);

@@ -70,6 +70,22 @@ public class RequestHandler {
         return clientLogRequestDTO;
     }
 
+    public static ClientLogRequestDTO userLogoutLogging(HttpServletRequest request) throws IOException, GeoIp2Exception {
+
+        ClientLogRequestDTO clientLogRequestDTO = ClientLogRequestDTO.
+                builder()
+                .feature("Logout")
+                .actionType("Logout")
+                .parentId(8082l)
+                .roleId(3003l)
+                .adminEmail(getLoggedInAdminEmail())
+                .build();
+
+        getUserDetails(clientLogRequestDTO, request);
+
+        return clientLogRequestDTO;
+    }
+
     public static ClientLogRequestDTO userLoginLogging(HttpServletRequest request, String email) throws IOException, GeoIp2Exception {
 
         ClientLogRequestDTO clientLogRequestDTO = ClientLogRequestDTO.

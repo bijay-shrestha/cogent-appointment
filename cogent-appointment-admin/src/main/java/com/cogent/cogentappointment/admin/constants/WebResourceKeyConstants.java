@@ -136,6 +136,7 @@ public class WebResourceKeyConstants {
 
     //L
     public static final String LOGIN = "/login";
+    public static final String LOGOUT = "/logout";
 
     //M
     public static final String META_INFO = "/metaInfo";

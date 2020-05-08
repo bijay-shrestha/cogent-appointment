@@ -11,11 +11,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import static com.cogent.cogentappointment.client.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.INACTIVE;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.ForgotPasswordConstants.FORGOT;
+import static com.cogent.cogentappointment.client.loghandler.RequestCheckpoint.checkURI;
 import static com.cogent.cogentappointment.client.loghandler.LogDescription.getFailedLogDescription;
 import static com.cogent.cogentappointment.client.loghandler.LogDescription.getSuccessLogDescription;
-import static com.cogent.cogentappointment.client.loghandler.RequestHandler.*;
+import static com.cogent.cogentappointment.client.loghandler.RequestHandler.convertToClientLogRequestDTO;
+import static java.util.Arrays.asList;
 
 @Component
 public class UserLogInterceptor implements HandlerInterceptor {
@@ -27,22 +27,13 @@ public class UserLogInterceptor implements HandlerInterceptor {
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
                                 Exception exception) throws Exception {
 
-        int status = Checkpoint.checkResponseStatus(response);
+        int status = RequestCheckpoint.checkResponseStatus(response);
+        String uri = request.getServletPath();
 
-        String uri = request.getRequestURI();
-        String method = request.getMethod();
-        if (uri.contains(API_V1 + LOGIN) && method.equalsIgnoreCase("POST")) {
+        if (asList(RequestCheckpoint.URL_TO_LOG).contains(uri)) {
 
-            String email = response.getHeader("email");
-            ClientLogRequestDTO clientLogRequestDTO = userLoginLogging(request, email);
+            ClientLogRequestDTO clientLogRequestDTO = checkURI(request, response);
             checkStatusAndSave(status, clientLogRequestDTO);
-
-        }
-
-        if (request.getRequestURI().contains(API_V1 + BASE_PASSWORD + FORGOT)) {
-
-            ClientLogRequestDTO requestDTO = forgotPasswordLogging(request);
-            checkStatusAndSave(status, requestDTO);
 
         }
 
@@ -58,12 +49,12 @@ public class UserLogInterceptor implements HandlerInterceptor {
 
     private void checkStatusAndSave(int status, ClientLogRequestDTO clientLogRequestDTO) {
 
-        if (status >= 400 && status < 600) {
+        if (status >= 400 && status < 600) {   //error
             clientLogRequestDTO.setLogDescription(getFailedLogDescription(clientLogRequestDTO.getFeature(), clientLogRequestDTO.getActionType(), status));
             saveFailedLogs(clientLogRequestDTO);
         }
 
-        if (status >= 200 && status < 300) {
+        if (status >= 200 && status < 300) {   //success
             clientLogRequestDTO.setLogDescription(getSuccessLogDescription(clientLogRequestDTO.getFeature(), clientLogRequestDTO.getActionType()));
             saveSuccessLogs(clientLogRequestDTO);
         }

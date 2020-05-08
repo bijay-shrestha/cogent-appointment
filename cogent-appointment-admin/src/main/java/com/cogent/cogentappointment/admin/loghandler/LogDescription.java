@@ -60,6 +60,10 @@ public class LogDescription {
             logDescription = "Successfully login...";
         }
 
+        if (action.equalsIgnoreCase("Logout")) {
+            logDescription = "Successfully Logout...";
+        }
+
 
         return logDescription;
     }
@@ -71,10 +75,10 @@ public class LogDescription {
         String log = "";
         switch (status) {
             case 401:
-                log = " Invalid Credentials...";
+                log = " Unauthorized Error...";
                 break;
             case 400:
-                log = " Invalid Inputs...";
+                log = " Bad Request Error...";
                 break;
             case 404:
                 log = featureName[0] + " with details not found...";

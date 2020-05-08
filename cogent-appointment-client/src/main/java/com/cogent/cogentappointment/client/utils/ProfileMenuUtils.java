@@ -24,28 +24,37 @@ public class ProfileMenuUtils {
         return profileMenuList;
     }
 
-    private static void setLoginAndForgotPasswordMenu(Profile profile, List<ProfileMenu> profileMenuList) {
+    private static void setLoginAndForgotPasswordMenu(Profile profile,List<ProfileMenu> profileMenuList){
 
         //login profilemenu
-        ProfileMenu loginMenu = new ProfileMenu();
+        ProfileMenu loginMenu=new ProfileMenu();
         loginMenu.setProfile(profile);
         loginMenu.setParentId(8080l);
         loginMenu.setRoleId(3001l);
-        loginMenu.setUserMenuId(8008l);
+        loginMenu.setUserMenuId(8080l);
         loginMenu.setStatus('Y');
 
         profileMenuList.add(loginMenu);
 
         //forgot password profile menu
-        ProfileMenu forgotPassword = new ProfileMenu();
-        loginMenu.setProfile(profile);
-        loginMenu.setParentId(8081l);
-        loginMenu.setRoleId(3002l);
-        loginMenu.setUserMenuId(8008l);
+        ProfileMenu forgotPasswordMenu=new ProfileMenu();
+        forgotPasswordMenu.setProfile(profile);
+        forgotPasswordMenu.setParentId(8081l);
+        forgotPasswordMenu.setRoleId(3002l);
+        forgotPasswordMenu.setUserMenuId(8081l);
+        forgotPasswordMenu.setStatus('Y');
 
-        loginMenu.setStatus('Y');
+        profileMenuList.add(forgotPasswordMenu);
 
-        profileMenuList.add(forgotPassword);
+        //logout profile menu
+        ProfileMenu logoutMenu=new ProfileMenu();
+        logoutMenu.setProfile(profile);
+        logoutMenu.setParentId(8082l);
+        logoutMenu.setRoleId(3003l);
+        logoutMenu.setUserMenuId(8082l);
+        logoutMenu.setStatus('Y');
+
+        profileMenuList.add(logoutMenu);
 
     }
 

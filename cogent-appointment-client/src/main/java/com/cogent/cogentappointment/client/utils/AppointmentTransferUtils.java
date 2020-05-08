@@ -86,7 +86,7 @@ public class AppointmentTransferUtils {
         return unmatchedList;
     }
 
-    public static Date compareAndgetDate(
+    public static Date compareAndGetDate(
             List<Date> overrideList,
             Date requestedDate) {
 

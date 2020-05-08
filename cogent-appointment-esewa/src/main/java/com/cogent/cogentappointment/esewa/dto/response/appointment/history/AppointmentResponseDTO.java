@@ -45,4 +45,6 @@ public class AppointmentResponseDTO implements Serializable {
     private String appointmentTime;
 
     private Double appointmentAmount;
+
+    private String status;
 }

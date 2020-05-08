@@ -131,7 +131,26 @@ public class AppointmentQuery {
                     " d.id as doctorId," +                                                  //[11]
                     " d.name as doctorName," +                                              //[12]
                     " s.id as specializationId," +                                          //[13]
-                    " s.name as specializationName" +                                       //[14]
+                    " s.name as specializationName," +                                      //[14]
+                    " CASE WHEN " +
+                    " a.status = 'PA' " +
+                    " THEN 'BOOKED'"+
+                    " WHEN" +
+                    " a.status = 'A'"+
+                    " THEN 'CHECKED-IN'"+
+                    " WHEN"+
+                    " a.status = 'C'"+
+                    " THEN 'CANCELLED'"+
+                    " WHEN"+
+                    " a.status = 'C'"+
+                    " THEN 'CANCELLED'"+
+                    " WHEN"+
+                    " a.status = 'RE'"+
+                    " THEN 'REFUNDED'"+
+                    " WHEN"+
+                    " a.status = 'R'"+
+                    " THEN 'REJECTED'"+
+                    " END AS status"+                                                   //[15]
                     " FROM Appointment a" +
                     " LEFT JOIN Patient p ON p.id = a.patientId.id" +
                     " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
@@ -148,7 +167,7 @@ public class AppointmentQuery {
                 " AND p.mobileNumber = :mobileNumber" +
                 " AND p.dateOfBirth =: dateOfBirth";
 
-        if (!ObjectUtils.isEmpty(searchDTO.getStatus()))
+        if (!ObjectUtils.isEmpty(searchDTO.getStatus()) && !Objects.isNull(searchDTO.getStatus()))
             query += " AND a.status = '" + searchDTO.getStatus() + "'";
 
         if (!Objects.isNull(searchDTO.getHospitalId()))

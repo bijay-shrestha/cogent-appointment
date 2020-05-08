@@ -66,11 +66,11 @@ public class HMACBuilder {
             digest.init(secretKey);
             digest.update(algorithm.getBytes(StandardCharsets.UTF_8));
             digest.update(DELIMITER);
-            digest.update(nonce.getBytes(StandardCharsets.UTF_8));
-            digest.update(DELIMITER);
             digest.update(companyCode.getBytes(StandardCharsets.UTF_8));
             digest.update(DELIMITER);
             digest.update(apiKey.getBytes(StandardCharsets.UTF_8));
+            digest.update(DELIMITER);
+            digest.update(nonce.getBytes(StandardCharsets.UTF_8));
             digest.update(DELIMITER);
             final byte[] signatureBytes = digest.doFinal();
             digest.reset();

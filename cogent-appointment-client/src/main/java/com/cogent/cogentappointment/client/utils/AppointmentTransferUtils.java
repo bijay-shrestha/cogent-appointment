@@ -9,13 +9,11 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.convert24HourTo12HourFormat;
-import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
 /**
  * @author Sauravi Thapa ON 5/6/20
@@ -66,11 +64,11 @@ public class AppointmentTransferUtils {
 
     public static List<String> getVacantTime(List<String> allTimeSlot,
                                              List<String> unavailableTimeSlot,
-                                             Date requestedDate){
+                                             Date requestedDate) {
 
         Date time = new java.util.Date(System.currentTimeMillis());
-        String dateFormat=new SimpleDateFormat("HH:mm:ss").format(time);
-        LocalTime localTime=LocalTime.parse(dateFormat);
+        String dateFormat = new SimpleDateFormat("HH:mm:ss").format(time);
+        LocalTime localTime = LocalTime.parse(dateFormat);
 
         List<String> unmatchedList = allTimeSlot.stream()
                 .filter(actual -> (unavailableTimeSlot.stream()
@@ -90,13 +88,10 @@ public class AppointmentTransferUtils {
 
         List<Date> matchedList = actualList.stream()
                 .filter(actual -> (overrideList.stream()
-                        .filter(override -> (override.equals(actual))
-                                && (override.equals(actual))
-                        )
-                        .count()) > 1)
+                        .filter(override -> (override.equals(actual)))
+                        .anyMatch(override -> override.equals(actual))))
                 .collect(Collectors.toList());
 
-//        overrideList.removeIf(override -> override.getDayOffStatus().equals(YES));
         for (Date date : matchedList) {
             if (date.equals(requestedDate)) {
                 return date;

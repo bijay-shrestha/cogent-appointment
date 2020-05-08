@@ -19,7 +19,6 @@ import java.util.Date;
 import java.util.List;
 
 import static com.cogent.cogentappointment.client.constants.StatusConstants.NO;
-import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentTransferLog.*;
 import static com.cogent.cogentappointment.client.utils.AppointmentTransferUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
@@ -95,30 +94,35 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
             List<Date> actual = utilDateListToSqlDateList(getDates(actualResponse.getFromDate(),
                     actualResponse.getToDate()));
 
-                List<OverrideDateAndTimeResponseDTO> overrideDateAndTime = repository.getOverrideTimeByRosterId(
-                        actualResponse.getId());
-                for (OverrideDateAndTimeResponseDTO overrideResponse : overrideDateAndTime) {
-                    List<Date> overrideDates = utilDateListToSqlDateList(getDates(overrideResponse.getFromDate(),
-                            overrideResponse.getToDate()));
-                    Date date = mergeAndGetMatchedDate(overrideDates, actual, sqlRequestDate);
-                    if (date != null) {
-                        List<String> overrideTime = getGapDuration(overrideResponse.getStartTime(),
-                                overrideResponse.getEndTime(),
-                                actualResponse.getGapDuration());
-                        time = getVacantTime(overrideTime, unavailableTime, date);
+            List<OverrideDateAndTimeResponseDTO> overrideDateAndTime = repository.getOverrideTimeByRosterId(
+                    actualResponse.getId());
+            for (OverrideDateAndTimeResponseDTO overrideResponse : overrideDateAndTime) {
+
+                List<Date> overrideDates = utilDateListToSqlDateList(getDates(overrideResponse.getFromDate(),
+                        overrideResponse.getToDate()));
+                Date date = mergeAndGetMatchedDate(overrideDates, actual, sqlRequestDate);
+                if (date != null) {
+                    List<String> overrideTime = getGapDuration(overrideResponse.getStartTime(),
+                            overrideResponse.getEndTime(),
+                            actualResponse.getGapDuration());
+                   List<String> finalOverridetime = getVacantTime(overrideTime, unavailableTime, date);
+                   time.addAll(finalOverridetime);
+                }else {
+                    List<Date> dates = getDates(actualResponse.getFromDate(), actualResponse.getToDate());
+                    for (Date test : dates) {
+                        if (test.equals(sqlRequestDate)) {
+                            String code = requestDTO.getDate().toString().substring(0, 3);
+                            WeekDayAndTimeDTO codeAndTime = repository.getWeekDaysByCode(requestDTO.getDoctorId(), code);
+                            List<String> actualTime = getGapDuration(codeAndTime.getStartTime(),
+                                    codeAndTime.getEndTime(),
+                                    actualResponse.getGapDuration());
+                            List<String> finaltime= getVacantTime(actualTime, unavailableTime, test);
+                            time.addAll(finaltime);
+                        }
                     }
                 }
-                List<Date> dates = getDates(actualResponse.getFromDate(), actualResponse.getToDate());
-                for (Date date : dates) {
-                    if (date.equals(sqlRequestDate)) {
-                        String code = requestDTO.getDate().toString().substring(0, 3);
-                        WeekDayAndTimeDTO codeAndTime = repository.getWeekDaysByCode(requestDTO.getDoctorId(), code);
-                        List<String> actualTime = getGapDuration(codeAndTime.getStartTime(),
-                                codeAndTime.getEndTime(),
-                                actualResponse.getGapDuration());
-                        time = getVacantTime(actualTime, unavailableTime, date);
-                    }
-                }
+            }
+
         }
         log.info(FETCHING_AVAILABLE_DOCTOR_TIME_PROCESS_COMPLETED, APPOINTMENT_TRANSFER,
                 getDifferenceBetweenTwoTime(startTime));

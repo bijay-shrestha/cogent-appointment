@@ -13,10 +13,12 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
@@ -64,9 +66,12 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
                 .setParameter(DOCTOR_ID, doctorId)
                 .setParameter(CODE, code);
 
-        WeekDayAndTimeDTO response = transformQueryToSingleResult(query, WeekDayAndTimeDTO.class);
+        try {
+            return  transformQueryToSingleResult(query, WeekDayAndTimeDTO.class);
+        } catch (NoResultException e) {
+            throw DOCTOR_DUTY_ROSTER_NOT_FOUND.get();
+        }
 
-        return response;
     }
 
     @Override

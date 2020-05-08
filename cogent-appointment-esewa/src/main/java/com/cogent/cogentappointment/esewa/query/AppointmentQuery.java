@@ -134,25 +134,27 @@ public class AppointmentQuery {
                     " s.name as specializationName," +                                      //[14]
                     " CASE WHEN " +
                     " a.status = 'PA' " +
-                    " THEN 'BOOKED'"+
+                    " THEN 'BOOKED'" +
                     " WHEN" +
-                    " a.status = 'A'"+
-                    " THEN 'CHECKED-IN'"+
-                    " WHEN"+
-                    " a.status = 'C'"+
-                    " THEN 'CANCELLED'"+
-                    " WHEN"+
-                    " a.status = 'C'"+
-                    " THEN 'CANCELLED'"+
-                    " WHEN"+
-                    " a.status = 'RE'"+
-                    " THEN 'REFUNDED'"+
-                    " WHEN"+
-                    " a.status = 'R'"+
-                    " THEN 'REJECTED'"+
-                    " END AS status"+                                                   //[15]
+                    " a.status = 'A'" +
+                    " THEN 'CHECKED-IN'" +
+                    " WHEN" +
+                    " a.status = 'C'" +
+                    " THEN 'CANCELLED'" +
+                    " WHEN" +
+                    " a.status = 'C'" +
+                    " THEN 'CANCELLED'" +
+                    " WHEN" +
+                    " a.status = 'RE'" +
+                    " THEN 'REFUNDED'" +
+                    " WHEN" +
+                    " a.status = 'R'" +
+                    " THEN 'REJECTED'" +
+                    " END AS status," +                                                   //[15]
+                    " hpi.registrationNumber AS registrationNumber"+                      //[16]
                     " FROM Appointment a" +
                     " LEFT JOIN Patient p ON p.id = a.patientId.id" +
+                    " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                     " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
                     " LEFT JOIN Specialization s ON s.id = a.specializationId.id" +
                     " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +

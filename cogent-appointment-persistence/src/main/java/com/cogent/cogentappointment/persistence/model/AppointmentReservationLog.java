@@ -41,6 +41,10 @@ public class AppointmentReservationLog implements Serializable {
     @Column(name = "specialization_id")
     private Long specializationId;
 
+    /*(can be mobile number/esewa id that identifies the logged in user)*/
+    @Column(name = "user_id")
+    private String userId;
+
     @Temporal(TemporalType.DATE)
     @Column(name = "appointment_date")
     private Date appointmentDate;

@@ -23,6 +23,7 @@ public class AppointmentReservationLogUtils {
         reservation.setHospitalId(requestDTO.getHospitalId());
         reservation.setDoctorId(requestDTO.getDoctorId());
         reservation.setSpecializationId(requestDTO.getSpecializationId());
+        reservation.setUserId(requestDTO.getUserId());
         reservation.setCreatedDate(new Date());
         return reservation;
     }

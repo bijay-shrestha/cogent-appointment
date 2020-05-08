@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.AppointmentTransferTimeRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.DoctorChargeRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.ActualDateAndTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.DoctorDatesResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.OverrideDateAndTimeResponseDTO;
@@ -93,6 +94,9 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
                     time = getVacantTime(overrideTime, unavailableTime,responseDate);
                 }
             } else {
+                List<Date> dates = getDates(actualResponse.getFromDate(), actualResponse.getToDate());
+                Date responseDate = (Date) dates.stream()
+                        .filter(date -> date.equals(requestDTO.getDate()));
                 String code = requestDTO.getDate().toString().substring(0, 3);
                 WeekDayAndTimeDTO codeAndTime = repository.getWeekDaysByCode(requestDTO.getDoctorId(), code);
                 List<String> unavailableTime = repository.getUnavailableTimeByDateAndDoctorId(
@@ -109,6 +113,19 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
                 getDifferenceBetweenTwoTime(startTime));
 
         return time;
+    }
+
+    @Override
+    public Double fetchDoctorChargeByDoctorAndSpecializationId(DoctorChargeRequestDTO requestDTO) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_DOCTOR_CHARGE_PROCESS_STARTED, APPOINTMENT_TRANSFER);
+
+        log.info(FETCHING_DOCTOR_CHARGE_PROCESS_COMPLETED, APPOINTMENT_TRANSFER,
+                getDifferenceBetweenTwoTime(startTime));
+
+        return null;
     }
 
 

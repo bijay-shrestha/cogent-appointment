@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -18,4 +19,7 @@ public interface AppointmentReservationLogRepository extends JpaRepository<Appoi
 
     @Query("SELECT a FROM AppointmentReservationLog a WHERE a.id=:id")
     AppointmentReservationLog findAppointmentReservationLogById(@Param("id") Long id);
+
+    @Query("SELECT a FROM AppointmentReservationLog a")
+    List<AppointmentReservationLog> fetchAppointmentReservationLog();
 }

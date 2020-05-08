@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.esewa.dto.request.appointment.followup.Appoi
 import com.cogent.cogentappointment.esewa.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import com.cogent.cogentappointment.esewa.exception.DataDuplicationException;
 import com.cogent.cogentappointment.esewa.exception.NoContentFoundException;
+import com.cogent.cogentappointment.esewa.property.AppointmentReservationProperties;
 import com.cogent.cogentappointment.esewa.repository.AppointmentRepository;
 import com.cogent.cogentappointment.esewa.repository.AppointmentReservationLogRepository;
 import com.cogent.cogentappointment.esewa.repository.DoctorDutyRosterOverrideRepository;
@@ -15,14 +16,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.AppointmentServiceMessage.APPOINTMENT_EXISTS;
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.AppointmentServiceMessage.INVALID_APPOINTMENT_TIME;
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.DoctorServiceMessages.DOCTOR_NOT_AVAILABLE;
 import static com.cogent.cogentappointment.esewa.constants.StatusConstants.YES;
-import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.SAVING_PROCESS_COMPLETED;
-import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.SAVING_PROCESS_STARTED;
+import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.esewa.log.constants.AppointmentReservationLog.APPOINTMENT_RESERVATION_LOG;
 import static com.cogent.cogentappointment.esewa.utils.AppointmentReservationLogUtils.parseToAppointmentReservation;
 import static com.cogent.cogentappointment.esewa.utils.AppointmentUtils.validateIfRequestIsBeforeCurrentDateTime;
@@ -45,14 +47,18 @@ public class AppointmentReservationServiceImpl implements AppointmentReservation
 
     private final DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository;
 
+    private final AppointmentReservationProperties reservationProperties;
+
     public AppointmentReservationServiceImpl(AppointmentReservationLogRepository appointmentReservationLogRepository,
                                              AppointmentRepository appointmentRepository,
                                              DoctorDutyRosterRepository doctorDutyRosterRepository,
-                                             DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository) {
+                                             DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository,
+                                             AppointmentReservationProperties reservationProperties) {
         this.appointmentReservationLogRepository = appointmentReservationLogRepository;
         this.appointmentRepository = appointmentRepository;
         this.doctorDutyRosterRepository = doctorDutyRosterRepository;
         this.doctorDutyRosterOverrideRepository = doctorDutyRosterOverrideRepository;
+        this.reservationProperties = reservationProperties;
     }
 
     /*   VALIDATE REQUEST INFO :
@@ -79,6 +85,32 @@ public class AppointmentReservationServiceImpl implements AppointmentReservation
         log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT_RESERVATION_LOG, getDifferenceBetweenTwoTime(startTime));
 
         return appointmentReservationLogId;
+    }
+
+    /*SCHEDULER - 2 MINS
+    * DELETE - 5 MINS*/
+    @Override
+    public void deleteExpiredAppointmentReservation() {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(DELETING_PROCESS_STARTED, APPOINTMENT_RESERVATION_LOG);
+
+        List<AppointmentReservationLog> appointmentReservations =
+                appointmentReservationLogRepository.fetchAppointmentReservationLog();
+
+        appointmentReservations.forEach(appointmentReservation -> {
+
+            long expiryDate = appointmentReservation.getCreatedDate().getTime() +
+                    TimeUnit.MINUTES.toMillis(Long.parseLong(reservationProperties.getDeleteIntervalInMinutes()));
+
+            long currentDateInMillis = new Date().getTime();
+
+            if (expiryDate < currentDateInMillis)
+                appointmentReservationLogRepository.delete(appointmentReservation);
+        });
+
+        log.info(DELETING_PROCESS_COMPLETED, APPOINTMENT_RESERVATION_LOG, getDifferenceBetweenTwoTime(startTime));
     }
 
     private Long save(AppointmentFollowUpRequestDTO requestDTO) {

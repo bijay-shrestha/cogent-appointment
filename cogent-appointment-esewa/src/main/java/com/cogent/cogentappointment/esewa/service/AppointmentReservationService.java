@@ -8,4 +8,6 @@ import com.cogent.cogentappointment.esewa.dto.request.appointment.followup.Appoi
 public interface AppointmentReservationService {
 
     Long saveAppointmentReservationLog(AppointmentFollowUpRequestDTO requestDTO);
+
+    void deleteExpiredAppointmentReservation();
 }

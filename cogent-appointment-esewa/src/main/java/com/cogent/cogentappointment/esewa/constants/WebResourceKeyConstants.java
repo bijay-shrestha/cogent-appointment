@@ -112,6 +112,8 @@ public class WebResourceKeyConstants {
 
     public static final String SPECIALIZATION_ID_PATH_VARIABLE_BASE = "/{specializationId}";
 
+    public static String SCHEDULER_RUNNING = " :::: {} SCHEDULER RUNNING ::::";
+
 
     //T
 

@@ -1,21 +1,32 @@
 package com.cogent.cogentappointment.admin.loghandler;
 
 import com.cogent.cogentappointment.admin.dto.commons.AdminLogRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.admin.AdminRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.login.LoginRequestDTO;
 import com.cogent.cogentappointment.admin.service.AdminLogService;
+import com.cogent.cogentappointment.admin.utils.commons.ObjectMapperUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import javax.servlet.DispatcherType;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
-import static com.cogent.cogentappointment.admin.loghandler.RequestCheckpoint.URL_TO_LOG;
-import static com.cogent.cogentappointment.admin.loghandler.RequestCheckpoint.checkResponseStatus;
 import static com.cogent.cogentappointment.admin.loghandler.LogDescription.getFailedLogDescription;
 import static com.cogent.cogentappointment.admin.loghandler.LogDescription.getSuccessLogDescription;
+import static com.cogent.cogentappointment.admin.loghandler.RequestCheckpoint.*;
 import static com.cogent.cogentappointment.admin.loghandler.RequestHandler.convertToAdminLogRequestDTO;
+import static com.cogent.cogentappointment.admin.utils.commons.ObjectMapperUtils.map;
 import static java.util.Arrays.asList;
 
 @Component
@@ -23,13 +34,6 @@ public class UserLogInterceptor implements HandlerInterceptor {
 
     @Autowired
     private AdminLogService adminLogService;
-
-//    @Override
-//    public boolean preHandle(HttpServletRequest request,
-//                             HttpServletResponse response, Object handler) throws Exception {
-//
-//        return true;
-//    }
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
@@ -40,8 +44,23 @@ public class UserLogInterceptor implements HandlerInterceptor {
 
         if (asList(URL_TO_LOG).contains(uri)) {
 
-            AdminLogRequestDTO requestDTO = RequestCheckpoint.checkURI(request, response);
-            checkStatusAndSave(status, requestDTO);
+
+            String jsonString="";
+            ObjectMapper mapper = new ObjectMapper();
+            //Converting the Object to JSONString
+            try {
+                jsonString = mapper.writeValueAsString(handler);
+                System.out.println(jsonString);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+
+            LoginRequestDTO loginRequestDTO = map(jsonString, LoginRequestDTO.class);
+
+
+
+            AdminLogRequestDTO requestDTO = checkURI(request, response);
+
         }
 
         String userLog = RequestHeader.getUserLogs(request);
@@ -54,6 +73,7 @@ public class UserLogInterceptor implements HandlerInterceptor {
         }
 
     }
+
 
     private void checkStatusAndSave(int status, AdminLogRequestDTO adminLogRequestDTO) {
 

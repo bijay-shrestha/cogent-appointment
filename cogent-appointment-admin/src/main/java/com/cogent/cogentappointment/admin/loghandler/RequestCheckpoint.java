@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.loghandler;
 
 import com.cogent.cogentappointment.admin.dto.commons.AdminLogRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.login.LoginRequestDTO;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,29 +28,37 @@ public class RequestCheckpoint {
     public static AdminLogRequestDTO checkURI(HttpServletRequest request, HttpServletResponse response) throws IOException, GeoIp2Exception {
 
         String method = request.getMethod();
-        AdminLogRequestDTO clientLogRequestDTO = null;
+        AdminLogRequestDTO adminLogRequestDTO = null;
         if (request.getServletPath().contains(LOGIN) && method.equalsIgnoreCase("POST")) {
 
             String email = response.getHeader("email");
-            clientLogRequestDTO = userLoginLogging(request, email);
+            adminLogRequestDTO = userLoginLogging(request, email);
 
         }
 
         if (request.getServletPath().contains(FORGOT)) {
 
-            clientLogRequestDTO = forgotPasswordLogging(request);
+            adminLogRequestDTO = forgotPasswordLogging(request);
 
         }
 
         if (request.getServletPath().contains(LOGOUT)) {
 
-            clientLogRequestDTO = userLogoutLogging(request);
+            adminLogRequestDTO = userLogoutLogging(request);
 
         }
 
-        return clientLogRequestDTO;
+        return adminLogRequestDTO;
 
 
+    }
+
+    public static AdminLogRequestDTO loginTest(HttpServletRequest request, LoginRequestDTO loginRequestDTO) throws IOException, GeoIp2Exception {
+
+        String email = loginRequestDTO.getEmail();
+        AdminLogRequestDTO adminLogRequestDTO = userLoginLogging(request, email);
+
+        return adminLogRequestDTO;
     }
 
 }

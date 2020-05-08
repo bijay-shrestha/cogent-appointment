@@ -3,10 +3,7 @@ package com.cogent.cogentappointment.admin.service.impl;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctor.*;
-import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorDetailResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorDropdownDTO;
-import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorMinimalResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorUpdateResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.doctor.*;
 import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
@@ -246,12 +243,12 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchAssignedDoctorShifts(Long doctorId) {
+    public List<DoctorShiftMinResponseDTO> fetchAssignedDoctorShifts(Long doctorId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, DOCTOR_SHIFT);
 
-        List<DropDownResponseDTO> doctorShifts =
+        List<DoctorShiftMinResponseDTO> doctorShifts =
                 doctorRepository.fetchAssignedDoctorShifts(doctorId);
 
         log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_SHIFT, getDifferenceBetweenTwoTime(startTime));

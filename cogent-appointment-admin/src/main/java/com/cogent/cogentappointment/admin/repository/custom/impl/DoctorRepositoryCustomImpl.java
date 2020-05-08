@@ -1,11 +1,7 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
-import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctor.DoctorSearchRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorDetailResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorDropdownDTO;
-import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorMinimalResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorUpdateResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.doctor.*;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.DoctorRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Doctor;
@@ -161,11 +157,11 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchAssignedDoctorShifts(Long doctorId) {
+    public List<DoctorShiftMinResponseDTO> fetchAssignedDoctorShifts(Long doctorId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_SHIFTS)
                 .setParameter(DOCTOR_ID, doctorId);
 
-        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
+        List<DoctorShiftMinResponseDTO> results = transformQueryToResultList(query, DoctorShiftMinResponseDTO.class);
 
         if (results.isEmpty())
             DOCTOR_SHIFTS_NOT_FOUND.get();

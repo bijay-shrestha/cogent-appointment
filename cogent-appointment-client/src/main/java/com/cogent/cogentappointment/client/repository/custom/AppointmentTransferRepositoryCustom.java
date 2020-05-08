@@ -32,4 +32,6 @@ public interface AppointmentTransferRepositoryCustom {
     List<String> getUnavailableTimeByDateAndDoctorId(Long doctorId,Long specializationId,Date date);
 
     AppointmentChargeResponseDTO getAppointmentChargeByDoctorId(Long doctorId);
+
+    List<OverrideDateAndTimeResponseDTO> getOverideRosterDateAndTime(Long doctorId, Long specializationId);
 }

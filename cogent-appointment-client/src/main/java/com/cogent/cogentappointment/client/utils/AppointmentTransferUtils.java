@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.utils;
 
+import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.ActualDateAndTimeResponseDTO;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.LocalTime;
@@ -8,12 +9,16 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import static com.cogent.cogentappointment.client.utils.commons.DateUtils.convert24HourTo12HourFormat;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 
 /**
  * @author Sauravi Thapa ON 5/6/20
@@ -81,15 +86,17 @@ public class AppointmentTransferUtils {
         return unmatchedList;
     }
 
-    public static Date mergeAndGetMatchedDate(
+    public static Date compareAndgetDate(
             List<Date> overrideList,
-            List<Date> actualList,
             Date requestedDate) {
 
-        List<Date> matchedList = actualList.stream()
-                .filter(actual -> (overrideList.stream()
-                        .filter(override -> (override.equals(actual)))
-                        .anyMatch(override -> override.equals(actual))))
+//        List<Date> matchedList = overrideList.stream()
+//                .filter(actual -> (overrideList.stream()
+//                        .filter(override -> (override.equals(actual)))
+//                        .anyMatch(override -> override.equals(actual))))
+//                .collect(Collectors.toList());
+        List<Date> matchedList=overrideList.stream()
+                .filter(overrideDate->overrideDate.equals(requestedDate))
                 .collect(Collectors.toList());
 
         for (Date date : matchedList) {
@@ -99,6 +106,7 @@ public class AppointmentTransferUtils {
         }
         return null;
     }
+
 
 
 }

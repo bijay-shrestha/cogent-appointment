@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.client.utils.commons;
 
 import com.cogent.cogentappointment.client.exception.BadRequestException;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.format.DateTimeFormat;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -79,6 +80,7 @@ public class DateUtils {
     public static LocalDate convertDateToLocalDate(Date date) {
         return new java.sql.Date(date.getTime()).toLocalDate();
     }
+
 
     public static String getDayCodeFromDate(Date date) {
         DateFormat dateFormat = new SimpleDateFormat("EE");

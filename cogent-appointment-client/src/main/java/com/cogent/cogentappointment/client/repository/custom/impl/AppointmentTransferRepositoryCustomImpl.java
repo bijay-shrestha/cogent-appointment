@@ -132,6 +132,18 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
         return response;
     }
 
+    @Override
+    public List<OverrideDateAndTimeResponseDTO> getOverideRosterDateAndTime(Long doctorId, Long specializationId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_OVERRIDE_DATE_AND_TIME_BY_DOCTOR_ID)
+                .setParameter(DOCTOR_ID, doctorId)
+                .setParameter(SPECIALIZATION_ID, specializationId);
+
+        List<OverrideDateAndTimeResponseDTO> response = transformQueryToResultList(query, OverrideDateAndTimeResponseDTO.class);
+
+        return response;
+
+    }
+
     private Supplier<NoContentFoundException> DOCTOR_DUTY_ROSTER_NOT_FOUND = () -> {
         log.error(CONTENT_NOT_FOUND, DOCTOR_DUTY_ROSTER);
         throw new NoContentFoundException(DoctorDutyRoster.class);

@@ -28,6 +28,21 @@ public class AppointmentTransferQuery {
                     " ddr.doctorId.id = :doctorId"+
                     " AND ddr.specializationId.id=:specializationId";
 
+    public static String QUERY_TO_FETCH_OVERRIDE_DATE_AND_TIME_BY_DOCTOR_ID=
+            "SELECT" +
+                    " ddro.id as id," +
+                    " ddro.fromDate as fromDate," +
+                    " ddro.toDate as toDate," +
+                    " DATE_FORMAT(ddro.startTime, '%H:%i') as startTime,"+
+                    " DATE_FORMAT(ddro.endTime, '%H:%i') as endTime,"+
+                    " ddr.rosterGapDuration as gapDuration" +
+                    " FROM" +
+                    " DoctorDutyRosterOverride ddro " +
+                    " LEFT JOIN DoctorDutyRoster ddr ON ddr.id=ddro.doctorDutyRosterId.id " +
+                    " WHERE" +
+                    " ddr.doctorId.id = :doctorId" +
+                    " AND ddr.specializationId.id =:specializationId";
+
     public static String QUERY_TO_GET_DAY_OFF_WEEKS_BY_DUTY_ROSTER_ID=
             "SELECT" +
                     " wd.code " +

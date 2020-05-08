@@ -21,6 +21,8 @@ public class OverrideDateAndTimeResponseDTO implements Serializable {
 
     private Date toDate;
 
+    private Integer gapDuration;
+
     private String startTime;
 
     private String endTime;

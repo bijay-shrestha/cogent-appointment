@@ -9,6 +9,7 @@ public class CommonLogConstant {
     //B
 
     //C
+    public final static String CONTENT_NOT_FOUND_BY_CODE = ":::: {} WITH CODE : {} NOT FOUND ::::";
     public final static String CONTENT_NOT_FOUND_BY_ID=":::: {} WITH ID : {} NOT FOUND ::::";
     public final static String CONTENT_NOT_FOUND = ":::: {} NOT FOUND ::::";
 
@@ -61,7 +62,6 @@ public class CommonLogConstant {
     public static String SEARCHING_PROCESS_STARTED = ":::: SEARCHING {} PROCESS STARTED ::::";
     public static String SEARCHING_PROCESS_COMPLETED = ":::: SEARCHING {} PROCESS COMPLETED IN :::: {} ms";
 
-    public static String SCHEDULER_RUNNING = " :::: {} SCHEDULER RUNNING ::::";
     //T
 
     //U

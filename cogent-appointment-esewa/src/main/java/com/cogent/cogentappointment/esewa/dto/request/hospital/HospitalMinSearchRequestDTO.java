@@ -11,5 +11,6 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class HospitalMinSearchRequestDTO implements Serializable {
+
     private String name;
 }

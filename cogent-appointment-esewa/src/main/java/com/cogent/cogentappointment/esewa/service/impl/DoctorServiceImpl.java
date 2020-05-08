@@ -45,6 +45,16 @@ public class DoctorServiceImpl implements DoctorService {
         return doctor;
     }
 
+    @Override
+    public Double fetchDoctorAppointmentCharge(Long doctorId, Long hospitalId) {
+        return doctorRepository.fetchDoctorAppointmentCharge(doctorId, hospitalId);
+    }
+
+    @Override
+    public Double fetchDoctorFollowupAppointmentCharge(Long doctorId, Long hospitalId) {
+        return doctorRepository.fetchDoctorAppointmentFollowUpCharge(doctorId, hospitalId);
+    }
+
     private Function<Long, NoContentFoundException> DOCTOR_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID,DOCTOR,id);
         throw new NoContentFoundException(Doctor.class, "id", id.toString());

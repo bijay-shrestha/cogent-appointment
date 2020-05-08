@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.esewa.repository.custom;
 
-import com.cogent.cogentappointment.esewa.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
+import com.cogent.cogentappointment.esewa.dto.request.appointment.checkAvailibility.AppointmentCheckAvailabilityRequestDTO;
 
 import java.util.Date;
 import java.util.List;
@@ -12,15 +12,6 @@ public interface AppointmentReservationLogRepositoryCustom {
 
     List<String> fetchBookedAppointmentReservations(AppointmentCheckAvailabilityRequestDTO requestDTO);
 
-    Long validateDuplicityExceptCurrentReservationId(Date appointmentDate,
-                                                     String appointmentTime,
-                                                     Long doctorId,
-                                                     Long specializationId,
-                                                     Long appointmentReservationId);
-
-    Long validateDuplicity(Date appointmentDate, String appointmentTime,
-                           Long doctorId, Long specializationId);
-
     Long fetchAppointmentReservationLogId(Date appointmentDate, String appointmentTime,
-                                          Long doctorId, Long specializationId);
+                                          Long doctorId, Long specializationId, Long hospitalId);
 }

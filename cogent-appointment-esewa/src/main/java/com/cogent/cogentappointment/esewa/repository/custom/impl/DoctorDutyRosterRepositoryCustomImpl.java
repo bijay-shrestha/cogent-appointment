@@ -1,7 +1,8 @@
 package com.cogent.cogentappointment.esewa.repository.custom.impl;
 
-import com.cogent.cogentappointment.esewa.dto.request.appointment.AppointmentDatesRequestDTO;
-import com.cogent.cogentappointment.esewa.dto.request.eSewa.AppointmentDetailRequestDTO;
+import com.cogent.cogentappointment.esewa.dto.request.appointment.eSewa.AppointmentDatesRequestDTO;
+import com.cogent.cogentappointment.esewa.dto.request.appointment.eSewa.AppointmentDetailRequestDTO;
+import com.cogent.cogentappointment.esewa.dto.request.appointment.eSewa.AvailableDoctorRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.appoinmentDateAndTime.DoctorDutyRosterAppointmentDate;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.appoinmentDateAndTime.DoctorWeekDaysDutyRosterAppointmentDate;
 import com.cogent.cogentappointment.esewa.dto.response.appointmentDetails.AvailableDoctorWithSpecialization;
@@ -30,6 +31,7 @@ import static com.cogent.cogentappointment.esewa.log.constants.DoctorDutyRosterL
 import static com.cogent.cogentappointment.esewa.query.DoctorDutyRosterQuery.QUERY_TO_FETCH_DOCTOR_DUTY_ROSTER_TIME;
 import static com.cogent.cogentappointment.esewa.query.EsewaQuery.*;
 import static com.cogent.cogentappointment.esewa.utils.AppointmentDetailsUtils.parseDoctorAvailabilityResponseStatus;
+import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.conditionOfBothDateProvided;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.getDayCodeFromDate;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.*;
@@ -133,17 +135,17 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
     }
 
     @Override
-    public List<DutyRosterAppointmentDateAndSpecilizationDTO> getAvaliableDatesAndSpecilizationByDoctorId(
+    public List<DutyRosterAppointmentDateAndSpecilizationDTO> getAvailableDatesAndSpecilizationByDoctorId(
             Long doctorId) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_AVALIABLE_DATES_WITH_SPECILIZATION)
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_AVAILABLE_DATES_WITH_SPECIALIZATION)
                 .setParameter(DOCTOR_ID, doctorId);
 
         return transformQueryToResultList(query, DutyRosterAppointmentDateAndSpecilizationDTO.class);
     }
 
     @Override
-    public List<DutyRosterAppointmentDateAndDoctorDTO> getAvaliableDatesAndDoctorBySpecilizationId(Long specilizationId) {
+    public List<DutyRosterAppointmentDateAndDoctorDTO> getAvailableDatesAndDoctorBySpecilizationId(Long specilizationId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_AVALIABLE_DATES_WITH_DOCTOR)
                 .setParameter(SPECIALIZATION_ID, specilizationId);
 
@@ -155,4 +157,23 @@ public class DoctorDutyRosterRepositoryCustomImpl implements DoctorDutyRosterRep
         throw new NoContentFoundException(DoctorDutyRoster.class);
     }
 
+    @Override
+    public List<AvailableDoctorWithSpecialization> fetchAvailableDoctor(AvailableDoctorRequestDTO requestDTO) {
+
+        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_AVAILABLE_DOCTORS_FROM_DDR(requestDTO))
+                .setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
+
+        if (conditionOfBothDateProvided(requestDTO.getFromDate(), requestDTO.getToDate())) {
+            query.setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()));
+            query.setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()));
+        }
+
+        if (!Objects.isNull(requestDTO.getSpecializationId()))
+            query.setParameter(SPECIALIZATION_ID, requestDTO.getSpecializationId());
+
+        if (!Objects.isNull(requestDTO.getDoctorId()))
+            query.setParameter(DOCTOR_ID, requestDTO.getDoctorId());
+
+        return transformNativeQueryToResultList(query, AvailableDoctorWithSpecialization.class);
+    }
 }

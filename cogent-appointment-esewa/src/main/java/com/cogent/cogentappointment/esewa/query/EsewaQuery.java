@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.esewa.query;
 
-import com.cogent.cogentappointment.esewa.dto.request.eSewa.AppointmentDetailRequestDTO;
+import com.cogent.cogentappointment.esewa.dto.request.appointment.eSewa.AppointmentDetailRequestDTO;
+import com.cogent.cogentappointment.esewa.dto.request.appointment.eSewa.AvailableDoctorRequestDTO;
 
 import java.util.Objects;
 
@@ -168,7 +169,62 @@ public class EsewaQuery {
         return query;
     }
 
-    public static String QUERY_TO_FETCH_DOCTOR_AVALIABLE_DATES_WITH_SPECILIZATION =
+    /*SMRITI*/
+    /*FETCH AVAILABLE DOCTORS AND THEIR SPECIALIZATION ON THE SELECTED DATE RANGE FROM DDR*/
+    public static String QUERY_TO_FETCH_AVAILABLE_DOCTORS_FROM_DDR(AvailableDoctorRequestDTO requestDTO) {
+
+        String query = "SELECT" +
+                " DISTINCT(d.id) AS doctorId," +                 //[0]
+                " d.name AS doctorName," +                       //[1]
+                " s.id AS specializationId," +                   //[2]
+                " s.name AS specializationName," +               //[3]
+                " d.nmc_number AS nmcNumber," +                  //[4]
+                " CASE WHEN" +
+                " (da.status IS NULL" +
+                " OR da.status = 'N')" +
+                " THEN NULL" +
+                " ELSE" +
+                " da.file_uri" +
+                " END as fileUri," +                             //[5]
+                " tbl1.qualificationAlias as qualificationAlias" +  //[6]
+                " FROM doctor_duty_roster ddr" +
+                " LEFT JOIN doctor_week_days_duty_roster dw ON dw.doctor_duty_roster_id = ddr.id" +
+                " LEFT JOIN doctor d ON d.id = ddr.doctor_id" +
+                " LEFT JOIN specialization s ON s.id = ddr.specialization_id" +
+                " LEFT JOIN doctor_avatar da ON d.id = da.doctor_id" +
+                " LEFT JOIN(" +
+                " SELECT" +
+                " GROUP_CONCAT(qa.name) as qualificationAlias," +
+                " dq.doctor_id as doctorId" +
+                " FROM" +
+                " doctor_qualification dq" +
+                " LEFT JOIN qualification q ON q.id = dq.qualification_id" +
+                " LEFT JOIN qualification_alias qa ON qa.id = q.qualification_alias" +
+                " WHERE" +
+                " dq.status = 'Y'" +
+                " GROUP BY" +
+                " dq.doctor_id" +
+                " )tbl1 ON tbl1.doctorId = d.id" +
+                " WHERE" +
+                " ddr.status = 'Y'" +
+                " AND d.status = 'Y'" +
+                " AND s.status = 'Y'" +
+                " AND ddr.hospital_id =:hospitalId";
+
+        if (!Objects.isNull(requestDTO.getFromDate()) && !Objects.isNull(requestDTO.getToDate()))
+            query += " AND ddr.to_date >=:fromDate" +
+                    " AND ddr.from_date <=:toDate";
+
+        if (!Objects.isNull(requestDTO.getSpecializationId()))
+            query += " AND s.id =:specializationId";
+
+        if (!Objects.isNull(requestDTO.getDoctorId()))
+            query += " AND d.id =:doctorId";
+
+        return query;
+    }
+
+    public static String QUERY_TO_FETCH_DOCTOR_AVAILABLE_DATES_WITH_SPECIALIZATION =
             "SELECT" +
                     " ddr.id as id," +
                     " ddr.fromDate as fromDate," +

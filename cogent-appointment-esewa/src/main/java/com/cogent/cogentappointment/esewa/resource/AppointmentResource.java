@@ -1,13 +1,15 @@
 package com.cogent.cogentappointment.esewa.resource;
 
-import com.cogent.cogentappointment.esewa.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
-import com.cogent.cogentappointment.esewa.dto.request.appointment.AppointmentRequestDTOForOthers;
-import com.cogent.cogentappointment.esewa.dto.request.appointment.AppointmentRequestDTOForSelf;
-import com.cogent.cogentappointment.esewa.dto.request.appointment.AppointmentSearchDTO;
+import com.cogent.cogentappointment.esewa.dto.request.appointment.checkAvailibility.AppointmentCheckAvailabilityRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.cancel.AppointmentCancelRequestDTO;
+import com.cogent.cogentappointment.esewa.dto.request.appointment.history.AppointmentHistorySearchDTO;
+import com.cogent.cogentappointment.esewa.dto.request.appointment.history.AppointmentSearchDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
-import com.cogent.cogentappointment.esewa.dto.request.eSewa.AppointmentTransactionStatusRequestDTO;
+import com.cogent.cogentappointment.esewa.dto.request.appointment.appointmentTxnStatus.AppointmentTransactionStatusRequestDTO;
+import com.cogent.cogentappointment.esewa.dto.request.appointment.save.AppointmentRequestDTOForOthers;
+import com.cogent.cogentappointment.esewa.dto.request.appointment.save.AppointmentRequestDTOForSelf;
 import com.cogent.cogentappointment.esewa.service.AppointmentService;
+import com.cogent.cogentappointment.persistence.history.AppointmentHistory;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
@@ -36,11 +38,17 @@ public class AppointmentResource {
         this.appointmentService = appointmentService;
     }
 
-
-    @PutMapping(CHECK_AVAILABILITY)
+    @PutMapping(FETCH_AVAILABLE_TIMESLOTS)
     @ApiOperation(CHECK_APPOINTMENT_AVAILABILITY)
-    public ResponseEntity<?> checkAvailability(@Valid @RequestBody AppointmentCheckAvailabilityRequestDTO requestDTO) {
-        return ok(appointmentService.checkAvailability(requestDTO));
+    public ResponseEntity<?> fetchAvailableTimeSlots(@Valid @RequestBody AppointmentCheckAvailabilityRequestDTO requestDTO) {
+        return ok(appointmentService.fetchAvailableTimeSlots(requestDTO));
+    }
+
+    @PutMapping(FETCH_CURRENT_AVAILABLE_TIMESLOTS)
+    @ApiOperation(CHECK_CURRENT_APPOINTMENT_AVAILABILITY)
+    public ResponseEntity<?> fetchCurrentAvailableTimeSlots(
+            @Valid @RequestBody AppointmentCheckAvailabilityRequestDTO requestDTO) {
+        return ok(appointmentService.fetchCurrentAvailableTimeSlots(requestDTO));
     }
 
     @PostMapping(SELF)
@@ -57,7 +65,7 @@ public class AppointmentResource {
 
     @PutMapping(PENDING_APPOINTMENT)
     @ApiOperation((FETCH_PENDING_APPOINTMENT))
-    public ResponseEntity<?> fetchPendingAppointments(@RequestBody AppointmentSearchDTO searchDTO) {
+    public ResponseEntity<?> fetchPendingAppointments(@RequestBody AppointmentHistorySearchDTO searchDTO) {
         return ok(appointmentService.fetchPendingAppointments(searchDTO));
     }
 
@@ -80,8 +88,14 @@ public class AppointmentResource {
 
     @PutMapping(HISTORY)
     @ApiOperation(FETCH_APPOINTMENT_HISTORY)
-    public ResponseEntity<?> fetchAppointmentHistory(@RequestBody AppointmentSearchDTO searchDTO) {
+    public ResponseEntity<?> fetchAppointmentHistory(@RequestBody AppointmentHistorySearchDTO searchDTO) {
         return ok(appointmentService.fetchAppointmentHistory(searchDTO));
+    }
+
+    @PutMapping(SEARCH)
+    @ApiOperation(SEARCH_APPOINTMENT)
+    public ResponseEntity<?> searchAppointments(@RequestBody AppointmentSearchDTO searchDTO) {
+        return ok(appointmentService.searchAppointments(searchDTO));
     }
 
     @GetMapping(CANCEL + APPOINTMENT_RESERVATION_ID_PATH_VARIABLE_BASE)

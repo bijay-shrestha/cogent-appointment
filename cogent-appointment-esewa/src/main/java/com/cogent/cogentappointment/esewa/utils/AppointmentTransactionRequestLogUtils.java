@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.esewa.utils;
 
-import com.cogent.cogentappointment.esewa.dto.response.appointment.AppointmentTransactionStatusResponseDTO;
+import com.cogent.cogentappointment.esewa.dto.response.appointment.appointmentTxnStatus.AppointmentTransactionStatusResponseDTO;
 import com.cogent.cogentappointment.persistence.model.AppointmentTransactionRequestLog;
 
 import java.util.Date;

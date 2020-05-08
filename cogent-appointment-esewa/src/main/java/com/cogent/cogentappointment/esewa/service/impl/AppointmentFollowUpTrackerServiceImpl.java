@@ -1,8 +1,8 @@
 package com.cogent.cogentappointment.esewa.service.impl;
 
-import com.cogent.cogentappointment.esewa.dto.request.appointment.AppointmentFollowUpRequestDTO;
-import com.cogent.cogentappointment.esewa.dto.response.appointment.AppointmentFollowUpResponseDTO;
-import com.cogent.cogentappointment.esewa.dto.response.appointment.AppointmentFollowUpResponseDTOWithStatus;
+import com.cogent.cogentappointment.esewa.dto.request.appointment.followup.AppointmentFollowUpRequestDTO;
+import com.cogent.cogentappointment.esewa.dto.response.appointment.followup.AppointmentFollowUpResponseDTO;
+import com.cogent.cogentappointment.esewa.dto.response.appointment.followup.AppointmentFollowUpResponseDTOWithStatus;
 import com.cogent.cogentappointment.esewa.dto.response.hospital.HospitalFollowUpResponseDTO;
 import com.cogent.cogentappointment.esewa.exception.NoContentFoundException;
 import com.cogent.cogentappointment.esewa.repository.AppointmentFollowUpTrackerRepository;
@@ -17,18 +17,14 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
-import static com.cogent.cogentappointment.esewa.constants.StatusConstants.INACTIVE;
 import static com.cogent.cogentappointment.esewa.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.esewa.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.esewa.log.constants.AppointmentFollowUpTrackerLog.APPOINTMENT_FOLLOW_UP_TRACKER;
-import static com.cogent.cogentappointment.esewa.log.constants.AppointmentFollowUpTrackerLog.APPOINTMENT_FOLLOW_UP_TRACKER_STATUS;
 import static com.cogent.cogentappointment.esewa.utils.AppointmentFollowUpTrackerUtils.parseToAppointmentFollowUpResponseDTO;
 import static com.cogent.cogentappointment.esewa.utils.AppointmentFollowUpTrackerUtils.parseToAppointmentFollowUpResponseDTOWithStatus;
-import static com.cogent.cogentappointment.esewa.utils.AppointmentUtils.validateIfRequestIsBeforeCurrentDateTime;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.*;
 
 /**
@@ -68,12 +64,10 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
 
         log.info(FETCHING_PROCESS_STARTED, APPOINTMENT_FOLLOW_UP_TRACKER);
 
-        validateIfRequestIsBeforeCurrentDateTime(requestDTO.getAppointmentDate(), requestDTO.getAppointmentTime());
-
         /*TEMPORARILY HOLD SELECTED TIME SLOT
-        * PERSIST IN TABLE ONLY IF APPOINTMENT HAS NOT BEEN PREVIOSULY RESERVED FOR
+        * PERSIST IN TABLE ONLY IF APPOINTMENT HAS NOT BEEN PREVIOUSLY RESERVED FOR
         * SELECTED DOCTOR, SPECIALIZATION, DATE AND TIME */
-        Long savedAppointmentReservationId = appointmentReservationService.save(requestDTO);
+        Long savedAppointmentReservationId = appointmentReservationService.saveAppointmentReservationLog(requestDTO);
 
         AppointmentFollowUpTracker appointmentFollowUpTracker =
                 appointmentFollowUpTrackerRepository.fetchAppointmentFollowUpTracker(
@@ -98,32 +92,6 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
         return parseToAppointmentFollowUpResponseDTOWithStatus(responseDTO);
     }
 
-    @Override
-    public void updateFollowUpTrackerStatus() {
-
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(UPDATING_PROCESS_STARTED, APPOINTMENT_FOLLOW_UP_TRACKER_STATUS);
-
-        List<AppointmentFollowUpTracker> followUpTrackers =
-                appointmentFollowUpTrackerRepository.fetchActiveFollowUpTracker();
-
-        followUpTrackers.forEach(followUpTracker -> {
-            int intervalDays = hospitalRepository.fetchHospitalFollowUpIntervalDays(
-                    followUpTracker.getHospitalId().getId());
-
-            Date expiryDate = utilDateToSqlDate(
-                    addDays(followUpTracker.getAppointmentApprovedDate(), intervalDays));
-
-            Date currentDate = utilDateToSqlDate(new Date());
-
-            if ((Objects.requireNonNull(expiryDate).compareTo(Objects.requireNonNull(currentDate))) < 0)
-                followUpTracker.setStatus(INACTIVE);
-
-        });
-
-        log.info(UPDATING_PROCESS_COMPLETED, APPOINTMENT_FOLLOW_UP_TRACKER_STATUS, getDifferenceBetweenTwoTime(startTime));
-    }
 
     @Override
     public Long fetchByParentAppointmentId(Long parentAppointmentId) {

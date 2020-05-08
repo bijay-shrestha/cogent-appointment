@@ -1,5 +1,8 @@
 package com.cogent.cogentappointment.esewa.utils.commons;
 
+import com.cogent.cogentappointment.esewa.exception.BadRequestException;
+import lombok.extern.slf4j.Slf4j;
+
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -8,6 +11,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.INVALID_DATE_DEBUG_MESSAGE;
+import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.INVALID_DATE_MESSAGE;
 import static com.cogent.cogentappointment.esewa.constants.StringConstant.HYPHEN;
 import static com.cogent.cogentappointment.esewa.constants.UtilityConfigConstants.*;
 import static java.util.Calendar.MONTH;
@@ -16,6 +21,7 @@ import static java.util.Calendar.YEAR;
 /**
  * @author smriti on 2019-07-30
  */
+@Slf4j
 public class DateUtils {
     public static Long getTimeInMillisecondsFromLocalDate() {
         LocalDateTime localDate = LocalDateTime.now();
@@ -34,6 +40,16 @@ public class DateUtils {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static Date removeTime(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return cal.getTime();
     }
 
     public static List<Date> utilDateListToSqlDateList(List<Date> uDates) {
@@ -92,16 +108,47 @@ public class DateUtils {
         return nepaliDate.split(HYPHEN)[2];
     }
 
+    /*IF REQUESTED YEAR IS ODD,
+   *   IF MONTH <4
+   *       S = YEAR - 1 + START_FISCAL_DAY
+   *       E = YEAR + END_FISCAL_DAY
+   *   ELSE
+   *       S = YEAR + END_FISCAL_DAY
+   *       E = YEAR + 1 + START_FISCAL-DAY
+   * ELSE
+   *   IF MONTH <4
+   *       S = YEAR - 1 + END_FISCAL_DAY
+   *       E = YEAR + START_FISCAL_DAY
+   *   ELSE
+   *       S = YEAR + START_FISCAL_DAY
+   *       E = YEAR + 1 + END_FISCAL_DAY
+   * */
     public static String fetchStartingFiscalYear(int year, int month) {
-        return (month < APPLICATION_STARTING_FISCAL_MONTH)
-                ? (year + 1 + APPLICATION_STARTING_FISCAL_DAY)
-                : (year + APPLICATION_STARTING_FISCAL_DAY);
+        if (year % 2 == 0) {
+            //selected year is even
+            return (month < APPLICATION_STARTING_FISCAL_MONTH)
+                    ? (year - 1 + APPLICATION_ENDING_FISCAL_DAY)
+                    : (year + APPLICATION_STARTING_FISCAL_DAY);
+        } else {
+            //selected year is odd
+            return (month < APPLICATION_STARTING_FISCAL_MONTH)
+                    ? (year - 1 + APPLICATION_STARTING_FISCAL_DAY)
+                    : (year + APPLICATION_ENDING_FISCAL_DAY);
+        }
     }
 
     public static String fetchEndingFiscalYear(int year, int month) {
-        return (month < APPLICATION_STARTING_FISCAL_MONTH)
-                ? (year + APPLICATION_ENDING_FISCAL_DAY)
-                : (year + 1 + APPLICATION_ENDING_FISCAL_DAY);
+        if (year % 2 == 0) {
+            //selected year is even
+            return (month < APPLICATION_STARTING_FISCAL_MONTH)
+                    ? (year + APPLICATION_STARTING_FISCAL_DAY)
+                    : (year + 1 + APPLICATION_ENDING_FISCAL_DAY);
+        } else {
+            //selected year is odd
+            return (month < APPLICATION_STARTING_FISCAL_MONTH)
+                    ? (year + APPLICATION_ENDING_FISCAL_DAY)
+                    : (year + 1 + APPLICATION_STARTING_FISCAL_DAY);
+        }
     }
 
     public static String getTimeIn12HourFormat(Date date) {
@@ -181,14 +228,27 @@ public class DateUtils {
 
         while (!calendar.after(endCalendar)) {
             Date result = calendar.getTime();
-            if (utilDateToSqlDate(calendar.getTime()).before(today) ) {
+            if (utilDateToSqlDate(calendar.getTime()).before(today)) {
                 calendar.add(Calendar.DATE, 1);
 
-            }else {
+            } else {
                 datesInRange.add(result);
                 calendar.add(Calendar.DATE, 1);
             }
         }
         return datesInRange;
+    }
+
+    public static boolean conditionOfBothDateProvided(Date fromDate, Date toDate) {
+        return !Objects.isNull(fromDate) && !Objects.isNull(toDate);
+    }
+
+    public static void validateIsFirstDateGreater(Date fromDate, Date toDate) {
+        boolean fromDateGreaterThanToDate = isFirstDateGreater(fromDate, toDate);
+
+        if (fromDateGreaterThanToDate) {
+            log.error(INVALID_DATE_DEBUG_MESSAGE);
+            throw new BadRequestException(INVALID_DATE_MESSAGE, INVALID_DATE_DEBUG_MESSAGE);
+        }
     }
 }

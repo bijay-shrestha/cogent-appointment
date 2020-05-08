@@ -11,4 +11,8 @@ import java.util.List;
 public interface DoctorService {
 
     Doctor fetchActiveDoctorByIdAndHospitalId(Long id, Long hospitalId);
+
+    Double fetchDoctorAppointmentCharge(Long doctorId, Long hospitalId);
+
+    Double fetchDoctorFollowupAppointmentCharge(Long doctorId, Long hospitalId);
 }

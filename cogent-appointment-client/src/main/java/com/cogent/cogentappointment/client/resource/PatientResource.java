@@ -38,7 +38,6 @@ public class PatientResource {
 //        return ok(patientService.searchForSelf(searchRequestDTO));
 //    }
 
-    //todo: update in esewa-branch
     /*HOSPITAL WISE*/
     @PutMapping(SEARCH + SELF)
     @ApiOperation(SEARCH_PATIENT_WITH_SELF_TYPE_OPERATION)

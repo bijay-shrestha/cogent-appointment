@@ -6,7 +6,7 @@ package com.cogent.cogentappointment.esewa.constants;
 public class WebResourceKeyConstants {
 
     //A
-    public static final String API_V1 = "/esewa/api/v1";
+    public static final String API_V1 = "/api/v1";
     public static final String ACTIVE = "/active";
 
 
@@ -14,7 +14,8 @@ public class WebResourceKeyConstants {
         String BASE_APPOINTMENT = "/appointment";
         String APPOINTMENT_ID_PATH_VARIABLE_BASE = "/{appointmentId}";
         String APPOINTMENT_RESERVATION_ID_PATH_VARIABLE_BASE = "/{appointmentReservationId}";
-        String CHECK_AVAILABILITY = "/checkAvailability";
+        String FETCH_AVAILABLE_TIMESLOTS = "/availableTimeSlots";
+        String FETCH_CURRENT_AVAILABLE_TIMESLOTS = "/availableTimeSlots/current";
         String PENDING_APPOINTMENT = "/pending-appointment";
         String CANCEL = "/cancel";
         String RESCHEDULE = "/reschedule";
@@ -44,12 +45,13 @@ public class WebResourceKeyConstants {
 
     //E
     public interface EsewaConstants {
+        String BASE_ESEWA = "/esewa";
         String FETCH_DOCTOR_AVAILABLE_STATUS = "/doctor-available-status";
         String AVAILABLE_APPOINTMENT_DATES_AND_TIME = "/availableAppointmentDatesAndTime";
         String DOCTOR_AVAILABLE_DATES = "/doctorAvailableDates";
         String SPECIALIZATION_AVAILABLE_DATES = "/specializationAvailableDates";
         String DOCTOR_WITH_SPECIALIZATION_AVAILABLE_DATES = "/doctorWithSpecializationAvailableDates";
-        String FETCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION = "/available-doctors-with-specialization";
+        String FETCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION = "/availableDoctorsWithSpecialization";
 
     }
 
@@ -103,7 +105,7 @@ public class WebResourceKeyConstants {
 
 
     //S
-    public static final String SAVE = "/save";
+
     public static final String SEARCH = "/search";
 
     public static final String SELF = "/self";

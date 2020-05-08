@@ -1,13 +1,8 @@
 package com.cogent.cogentappointment.esewa.utils;
 
-import com.cogent.cogentappointment.esewa.dto.response.appointment.AppointmentFollowUpResponseDTO;
-import com.cogent.cogentappointment.esewa.dto.response.appointment.AppointmentFollowUpResponseDTOWithStatus;
-import com.cogent.cogentappointment.persistence.model.*;
+import com.cogent.cogentappointment.esewa.dto.response.appointment.followup.AppointmentFollowUpResponseDTO;
+import com.cogent.cogentappointment.esewa.dto.response.appointment.followup.AppointmentFollowUpResponseDTOWithStatus;
 
-import java.util.Date;
-
-import static com.cogent.cogentappointment.esewa.constants.StatusConstants.ACTIVE;
-import static com.cogent.cogentappointment.esewa.constants.StatusConstants.INACTIVE;
 import static org.springframework.http.HttpStatus.OK;
 
 /**

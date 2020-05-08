@@ -12,7 +12,7 @@ import java.util.Optional;
  * @author Sauravi Thapa ON 4/19/20
  */
 @Repository
-public interface AppointmentModeRepository extends JpaRepository<AppointmentMode,Long>{
+public interface AppointmentModeRepository extends JpaRepository<AppointmentMode, Long> {
 
     @Query("SELECT am FROM AppointmentMode am WHERE am.status='Y' AND am.code = :code")
     Optional<AppointmentMode> fetchActiveAppointmentModeByCode(@Param("code") String code);

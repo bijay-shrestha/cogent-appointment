@@ -3,7 +3,7 @@ package com.cogent.cogentappointment.esewa.constants;
 public class SwaggerConstants {
     public static String BASE_PACKAGE = "com.cogent.cogentappointment.esewa.resource";
 
-    public static String PATH_REGEX = "/esewa/api.*";
+    public static String PATH_REGEX = "/api.*";
 
     //A
 
@@ -11,6 +11,8 @@ public class SwaggerConstants {
     public interface AppointmentConstant {
         String BASE_API_VALUE = "This is Appointment Resource";
         String CHECK_APPOINTMENT_AVAILABILITY = "Check available time schedules in requested date" +
+                " for specific doctor and specialization";
+        String CHECK_CURRENT_APPOINTMENT_AVAILABILITY = "Check current available time schedules in requested date" +
                 " for specific doctor and specialization";
         String SAVE_OPERATION = "Save new appointment";
         String FETCH_PENDING_APPOINTMENT = "Fetch pending appointments";
@@ -20,6 +22,7 @@ public class SwaggerConstants {
         String CANCEL_REGISTRATION_OPERATION = "Delete Appointment Reservation when user cancels registration process";
         String FETCH_APPOINTMENT_TRANSACTION_STATUS = "Fetch Appointment Transaction Status." +
                 " If 'Y', then it is successful appointment, else it is failed appointment";
+        String SEARCH_APPOINTMENT = " Search appointment history for myself/others";
     }
 
     public static final String[] AUTH_WHITELIST = {
@@ -47,22 +50,21 @@ public class SwaggerConstants {
 
 
     //E
-    public interface AppointmentDetailsConstant {
-        String BASE_API_VALUE = "This is appointmentDetails Resource";
+    public interface EsewaConstant {
+        String BASE_API_VALUE = "This is esewa Resource";
         String FETCH_AVAILABLE_APPOINTMENT_DATES = "Returns all the avaliable appointment dates and time by doctorId and" +
                 " specializationId";
-        String FETCH_AVAILABLE_DOCTOR_DATES = "Returns all the avaliable appointment dates by doctorId(Case II)";
-        String FETCH_AVAILABLE_SPECIALIZATION_DATES = "Returns all the avaliable appointment dates by specializationId" +
-                "(Case III)";
-        String FETCH_AVAILABLE_DATES = "Returns all the avaliable appointment dates by doctorId and specializationId" +
-                "(Case VI)";
+        String FETCH_AVAILABLE_DOCTOR_DATES = "Returns all the avaliable appointment dates by doctorId";
+        String FETCH_AVAILABLE_SPECIALIZATION_DATES = "Returns all the avaliable appointment dates by specializationId";
+        String FETCH_AVAILABLE_DATES = "Returns all the avaliable appointment dates by doctorId and specializationId";
         String FETCH_DOCTOR_AVAILABLE_STATUS_OPERATION = "Return message if the doctor is available on the date" +
                 " (Case V/Case VIII)";
         String FETCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION_OPERATION = "Fetch all available doctors and " +
                 "their specialization on the choosen date (Case II/Case IV)";
+        String SEARCH_AVAILABLE_DOCTORS_WITH_SPECIALIZATION_OPERATION = "Fetch all available doctors and " +
+                "their specialization on the selected date range(Case II/Case IV)";
 
     }
-
 
     //F
 

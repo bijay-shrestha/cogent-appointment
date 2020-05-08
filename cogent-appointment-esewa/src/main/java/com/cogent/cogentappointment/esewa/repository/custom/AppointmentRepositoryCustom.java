@@ -1,10 +1,12 @@
 package com.cogent.cogentappointment.esewa.repository.custom;
 
-import com.cogent.cogentappointment.esewa.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
-import com.cogent.cogentappointment.esewa.dto.request.appointment.AppointmentSearchDTO;
-import com.cogent.cogentappointment.esewa.dto.response.appointment.AppointmentBookedTimeResponseDTO;
-import com.cogent.cogentappointment.esewa.dto.response.appointment.AppointmentDetailResponseDTO;
-import com.cogent.cogentappointment.esewa.dto.response.appointment.AppointmentMinResponseDTO;
+import com.cogent.cogentappointment.esewa.dto.request.appointment.checkAvailibility.AppointmentCheckAvailabilityRequestDTO;
+import com.cogent.cogentappointment.esewa.dto.request.appointment.history.AppointmentHistorySearchDTO;
+import com.cogent.cogentappointment.esewa.dto.request.appointment.history.AppointmentSearchDTO;
+import com.cogent.cogentappointment.esewa.dto.response.appointment.checkAvailabililty.AppointmentBookedTimeResponseDTO;
+import com.cogent.cogentappointment.esewa.dto.response.appointment.history.AppointmentDetailResponseDTO;
+import com.cogent.cogentappointment.esewa.dto.response.appointment.history.AppointmentMinResponseDTO;
+import com.cogent.cogentappointment.esewa.dto.response.appointment.history.AppointmentResponseWithStatusDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
@@ -23,11 +25,15 @@ public interface AppointmentRepositoryCustom {
 
     String generateAppointmentNumber(String nepaliCreatedDate, Long hospitalId);
 
-    List<AppointmentMinResponseDTO> fetchPendingAppointments(AppointmentSearchDTO searchDTO);
+    List<AppointmentMinResponseDTO> fetchPendingAppointments(AppointmentHistorySearchDTO searchDTO);
 
     AppointmentDetailResponseDTO fetchAppointmentDetails(Long appointmentId);
 
-    List<AppointmentMinResponseDTO> fetchAppointmentHistory(AppointmentSearchDTO searchDTO);
+    List<AppointmentMinResponseDTO> fetchAppointmentHistory(AppointmentHistorySearchDTO searchDTO);
+
+    AppointmentResponseWithStatusDTO searchAppointmentsForSelf(AppointmentSearchDTO searchDTO);
+
+    AppointmentResponseWithStatusDTO searchAppointmentsForOthers(AppointmentSearchDTO searchDTO);
 
     List<AppointmentBookedTimeResponseDTO> fetchBookedAppointments(AppointmentCheckAvailabilityRequestDTO requestDTO);
 

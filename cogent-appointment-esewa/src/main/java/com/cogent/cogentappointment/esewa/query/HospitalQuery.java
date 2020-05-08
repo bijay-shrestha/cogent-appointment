@@ -49,11 +49,6 @@ public class HospitalQuery {
         return query + " ORDER by h.name";
     }
 
-    public static final String QUERY_TO_FETCH_HOSPITAL_FOLLOW_UP_INTERVAL_DAYS =
-            " SELECT h.followUpIntervalDays as followUpIntervalDays" +
-                    " FROM Hospital h" +
-                    " WHERE h.id =:hospitalId AND h.isCompany = 'N'";
-
     public static final String QUERY_TO_FETCH_HOSPITAL_FOLLOW_UP_DETAILS =
             " SELECT h.numberOfFollowUps as numberOfFollowUps," +                   //[0]
                     " h.followUpIntervalDays as followUpIntervalDays" +             //[1]

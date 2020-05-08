@@ -4,20 +4,17 @@ import com.cogent.cogentappointment.esewa.exception.NoContentFoundException;
 import com.cogent.cogentappointment.esewa.repository.AppointmentFollowUpRequestLogRepository;
 import com.cogent.cogentappointment.esewa.service.AppointmentFollowUpRequestLogService;
 import com.cogent.cogentappointment.persistence.model.AppointmentFollowUpRequestLog;
-import com.cogent.cogentappointment.persistence.model.AppointmentFollowUpTracker;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.function.Function;
 
-import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.*;
+import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
+import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.esewa.log.constants.AppointmentFollowUpRequestLogConstant.APPOINTMENT_FOLLOW_UP_REQUEST_LOG;
-import static com.cogent.cogentappointment.esewa.utils.AppointmentFollowUpRequestLogUtils.parseToAppointmentFollowUpRequestLog;
 import static com.cogent.cogentappointment.esewa.utils.AppointmentFollowUpRequestLogUtils.updateAppointmentFollowUpRequestLog;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
-import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.SAVING_PROCESS_COMPLETED;
-import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.SAVING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
 /**
@@ -32,20 +29,6 @@ public class AppointmentFollowUpRequestLogServiceImpl implements AppointmentFoll
 
     public AppointmentFollowUpRequestLogServiceImpl(AppointmentFollowUpRequestLogRepository appointmentFollowUpRequestLogRepository) {
         this.appointmentFollowUpRequestLogRepository = appointmentFollowUpRequestLogRepository;
-    }
-
-    @Override
-    public void save(AppointmentFollowUpTracker appointmentFollowUpTracker) {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(SAVING_PROCESS_STARTED, APPOINTMENT_FOLLOW_UP_REQUEST_LOG);
-
-        AppointmentFollowUpRequestLog appointmentFollowUpRequestLog =
-                parseToAppointmentFollowUpRequestLog(appointmentFollowUpTracker);
-
-        save(appointmentFollowUpRequestLog);
-
-        log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT_FOLLOW_UP_REQUEST_LOG, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
@@ -76,15 +59,9 @@ public class AppointmentFollowUpRequestLogServiceImpl implements AppointmentFoll
         updateAppointmentFollowUpRequestLog(appointmentFollowUpRequestLog);
     }
 
-    private void save(AppointmentFollowUpRequestLog appointmentFollowUpRequestLog) {
-        appointmentFollowUpRequestLogRepository.save(appointmentFollowUpRequestLog);
-    }
-
     private Function<Long, NoContentFoundException> APPOINTMENT_FOLLOW_REQUEST_LOG_WITH_GIVEN_ID_NOT_FOUND =
             (appointmentFollowUpTrackerId) -> {
                 throw new NoContentFoundException(AppointmentFollowUpRequestLog.class,
                         "appointmentFollowUpTrackerId", appointmentFollowUpTrackerId.toString());
             };
-
-
 }

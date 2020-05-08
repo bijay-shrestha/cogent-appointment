@@ -1,28 +1,35 @@
 package com.cogent.cogentappointment.esewa.service;
 
-import com.cogent.cogentappointment.esewa.dto.request.appointment.AppointmentCheckAvailabilityRequestDTO;
-import com.cogent.cogentappointment.esewa.dto.request.appointment.AppointmentRequestDTOForOthers;
-import com.cogent.cogentappointment.esewa.dto.request.appointment.AppointmentRequestDTOForSelf;
-import com.cogent.cogentappointment.esewa.dto.request.appointment.AppointmentSearchDTO;
+import com.cogent.cogentappointment.esewa.dto.request.appointment.checkAvailibility.AppointmentCheckAvailabilityRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.cancel.AppointmentCancelRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
-import com.cogent.cogentappointment.esewa.dto.request.eSewa.AppointmentTransactionStatusRequestDTO;
+import com.cogent.cogentappointment.esewa.dto.request.appointment.appointmentTxnStatus.AppointmentTransactionStatusRequestDTO;
+import com.cogent.cogentappointment.esewa.dto.request.appointment.history.AppointmentHistorySearchDTO;
+import com.cogent.cogentappointment.esewa.dto.request.appointment.history.AppointmentSearchDTO;
+import com.cogent.cogentappointment.esewa.dto.request.appointment.save.AppointmentRequestDTOForOthers;
+import com.cogent.cogentappointment.esewa.dto.request.appointment.save.AppointmentRequestDTOForSelf;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.*;
-
-import java.util.List;
+import com.cogent.cogentappointment.esewa.dto.response.appointment.appointmentTxnStatus.AppointmentTransactionStatusResponseDTO;
+import com.cogent.cogentappointment.esewa.dto.response.appointment.checkAvailabililty.AppointmentCheckAvailabilityResponseDTO;
+import com.cogent.cogentappointment.esewa.dto.response.appointment.history.AppointmentDetailResponseWithStatusDTO;
+import com.cogent.cogentappointment.esewa.dto.response.appointment.history.AppointmentMinResponseWithStatusDTO;
+import com.cogent.cogentappointment.esewa.dto.response.appointment.history.AppointmentResponseWithStatusDTO;
+import com.cogent.cogentappointment.esewa.dto.response.appointment.save.AppointmentSuccessResponseDTO;
 
 /**
  * @author smriti on 2019-10-22
  */
 public interface AppointmentService {
 
-    AppointmentCheckAvailabilityResponseDTO checkAvailability(AppointmentCheckAvailabilityRequestDTO requestDTO);
+    AppointmentCheckAvailabilityResponseDTO fetchAvailableTimeSlots(AppointmentCheckAvailabilityRequestDTO requestDTO);
+
+    AppointmentCheckAvailabilityResponseDTO fetchCurrentAvailableTimeSlots(AppointmentCheckAvailabilityRequestDTO requestDTO);
 
     AppointmentSuccessResponseDTO saveAppointmentForSelf(AppointmentRequestDTOForSelf appointmentRequestDTO);
 
     AppointmentSuccessResponseDTO saveAppointmentForOthers(AppointmentRequestDTOForOthers appointmentRequestDTO);
 
-    AppointmentMinResponseWithStatusDTO fetchPendingAppointments(AppointmentSearchDTO searchDTO);
+    AppointmentMinResponseWithStatusDTO fetchPendingAppointments(AppointmentHistorySearchDTO searchDTO);
 
     StatusResponseDTO cancelAppointment(AppointmentCancelRequestDTO cancelRequestDTO);
 
@@ -30,7 +37,9 @@ public interface AppointmentService {
 
     AppointmentDetailResponseWithStatusDTO fetchAppointmentDetails(Long appointmentId);
 
-    AppointmentMinResponseWithStatusDTO fetchAppointmentHistory(AppointmentSearchDTO searchDTO);
+    AppointmentMinResponseWithStatusDTO fetchAppointmentHistory(AppointmentHistorySearchDTO searchDTO);
+
+    AppointmentResponseWithStatusDTO searchAppointments(AppointmentSearchDTO searchDTO);
 
     StatusResponseDTO cancelRegistration(Long appointmentReservationId);
 

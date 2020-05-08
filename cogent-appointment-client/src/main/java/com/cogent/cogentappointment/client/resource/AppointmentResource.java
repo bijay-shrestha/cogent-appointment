@@ -53,7 +53,6 @@ public class AppointmentResource {
         return ok(appointmentService.fetchAvailableTimeSlots(requestDTO));
     }
 
-    //todo: shift in esewa-module
     /*esewa*/
     @PutMapping(FETCH_CURRENT_AVAILABLE_TIMESLOTS)
     @ApiOperation(CHECK_CURRENT_APPOINTMENT_AVAILABILITY)

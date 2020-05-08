@@ -14,6 +14,8 @@ public class ErrorMessageConstants {
 
         String INVALID_APPOINTMENT_DATE_TIME = "Sorry! Appointment failed because requested date/time has already passed.";
 
+        String INVALID_APPOINTMENT_DATE = "Sorry! Appointment failed because requested date has already passed.";
+
         String APPOINTMENT_FAILED_MESSAGE = "The selected time slot has expired. Please try again!";
 
         String APPOINTMENT_FAILED_DEBUG_MESSAGE = "AppointmentReservationLog(s) is null";
@@ -21,7 +23,6 @@ public class ErrorMessageConstants {
         String INVALID_TRANSACTION_NUMBER = "Transaction number '%s' and patient '%s' not found";
     }
 
-    public final static String AUTH_HEADER_NULL = "AUTH HEADER NULL";
 
 
     public final static String HMAC_BAD_SIGNATURE = "HmacAccessFilter.badSignature";
@@ -35,6 +36,10 @@ public class ErrorMessageConstants {
     //D
     public interface DoctorServiceMessages {
         String DOCTOR_NOT_AVAILABLE = "Sorry, Doctor is not available in selected date '%s'.";
+        String DOCTOR_APPOINTMENT_CHARGE_INVALID = "Sorry, requested appointment amount '%s' doesn't match with " +
+                "actual doctor appointment charge";
+        String DOCTOR_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE = "Appointment amount is not equal to " +
+                "Doctor actual appointment charge/ follow-up appointment charge";
     }
 
     //E
@@ -51,6 +56,8 @@ public class ErrorMessageConstants {
 
 
     //I
+    public static final String INVALID_DATE_MESSAGE = "From date cannot be greater than to date";
+    public static final String INVALID_DATE_DEBUG_MESSAGE = "Failed to complete operation due to invalid from and to date";
 
     public static final String INVALID_COMPANY_CODE = "INVALID COMPANY CODE";
 

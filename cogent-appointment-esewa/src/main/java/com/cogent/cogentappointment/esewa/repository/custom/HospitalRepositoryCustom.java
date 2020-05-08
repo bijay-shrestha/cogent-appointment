@@ -17,7 +17,5 @@ public interface HospitalRepositoryCustom {
 
     List<HospitalMinResponseDTO> fetchMinDetails(HospitalMinSearchRequestDTO searchRequestDTO);
 
-    Integer fetchHospitalFollowUpIntervalDays(Long hospitalId);
-
     HospitalFollowUpResponseDTO fetchFollowUpDetails(Long hospitalId);
 }

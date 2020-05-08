@@ -242,7 +242,6 @@ public class AppointmentServiceImpl implements AppointmentService {
     * 9. UPDATE TRANSACTION STATUS IN AppointmentTransactionRequestLog AS 'Y'
     * AND RETURN THE FINAL RESPONSE.
     * */
-    //todo: change requestDTO in esewa-module
     @Override
     public AppointmentSuccessResponseDTO saveAppointmentForSelf(@Valid AppointmentRequestDTOForSelf requestDTO) {
 
@@ -438,7 +437,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         return parseToStatusResponseDTO();
     }
 
-    //todo:update in esewa-module
     @Override
     public StatusResponseDTO rescheduleAppointment(AppointmentRescheduleRequestDTO rescheduleRequestDTO) {
 

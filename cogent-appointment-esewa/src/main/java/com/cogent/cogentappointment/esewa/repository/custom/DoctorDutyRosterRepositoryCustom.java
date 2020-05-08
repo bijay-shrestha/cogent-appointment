@@ -1,7 +1,8 @@
 package com.cogent.cogentappointment.esewa.repository.custom;
 
-import com.cogent.cogentappointment.esewa.dto.request.appointment.AppointmentDatesRequestDTO;
-import com.cogent.cogentappointment.esewa.dto.request.eSewa.AppointmentDetailRequestDTO;
+import com.cogent.cogentappointment.esewa.dto.request.appointment.eSewa.AppointmentDatesRequestDTO;
+import com.cogent.cogentappointment.esewa.dto.request.appointment.eSewa.AppointmentDetailRequestDTO;
+import com.cogent.cogentappointment.esewa.dto.request.appointment.eSewa.AvailableDoctorRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.appoinmentDateAndTime.DoctorDutyRosterAppointmentDate;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.appoinmentDateAndTime.DoctorWeekDaysDutyRosterAppointmentDate;
 import com.cogent.cogentappointment.esewa.dto.response.appointmentDetails.AvailableDoctorWithSpecialization;
@@ -37,7 +38,9 @@ public interface DoctorDutyRosterRepositoryCustom {
 
     List<AvailableDoctorWithSpecialization> fetchAvailableDoctor(AppointmentDetailRequestDTO requestDTO);
 
-    List<DutyRosterAppointmentDateAndSpecilizationDTO> getAvaliableDatesAndSpecilizationByDoctorId(Long doctorId);
+    List<DutyRosterAppointmentDateAndSpecilizationDTO> getAvailableDatesAndSpecilizationByDoctorId(Long doctorId);
 
-    List<DutyRosterAppointmentDateAndDoctorDTO> getAvaliableDatesAndDoctorBySpecilizationId(Long specilizationId);
+    List<DutyRosterAppointmentDateAndDoctorDTO> getAvailableDatesAndDoctorBySpecilizationId(Long specilizationId);
+
+    List<AvailableDoctorWithSpecialization> fetchAvailableDoctor(AvailableDoctorRequestDTO requestDTO);
 }

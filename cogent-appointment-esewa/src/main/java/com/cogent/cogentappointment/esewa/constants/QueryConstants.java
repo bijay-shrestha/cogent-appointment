@@ -7,7 +7,6 @@ public class QueryConstants {
 
     //A
     public interface AppointmentConstants {
-        String APPOINTMENT_ID = "appointmentId";
         String APPOINTMENT_DATE = "appointmentDate";
         String APPOINTMENT_TIME = "appointmentTime";
         String TRANSACTION_NUMBER = "transactionNumber";
@@ -34,11 +33,6 @@ public class QueryConstants {
     //E
 
     //F
-    public interface AppointmentFollowUpTrackerConstants {
-        String PARENT_APPOINTMENT_ID = "parentAppointmentId";
-    }
-
-
     public static final String FROM_DATE = "fromDate";
 
     //G

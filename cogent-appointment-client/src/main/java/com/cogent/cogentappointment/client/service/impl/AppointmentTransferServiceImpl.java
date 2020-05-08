@@ -8,8 +8,10 @@ import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.Over
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.WeekDayAndTimeDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableDates.DoctorDatesResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.charge.AppointmentChargeResponseDTO;
+import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.AppointmentTransferRepository;
 import com.cogent.cogentappointment.client.service.AppointmentTransferService;
+import com.cogent.cogentappointment.persistence.model.DoctorDutyRoster;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,9 +19,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.client.constants.StatusConstants.NO;
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentTransferLog.*;
+import static com.cogent.cogentappointment.client.log.constants.DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER;
 import static com.cogent.cogentappointment.client.utils.AppointmentTransferUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 
@@ -37,6 +43,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
         this.repository = repository;
     }
 
+    /* FETCH APPOINTMENT DATES BASED ON DOCTOR ID AND SPECIALIZATION ID */
     @Override
     public List<Date> fetchAvailableDatesByDoctorId(AppointmentDateRequestDTO requestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
@@ -71,6 +78,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
         return utilDateListToSqlDateList(mergeOverrideAndActualDateList(overrideDate, actualDate));
     }
 
+    /* FETCH VACANT APPOINTMENT TIME BASED ON SPECIFIC DATE, DOCTOR ID AND SPECIALIZATION ID */
     @Override
     public List<String> fetchAvailableDoctorTime(AppointmentTransferTimeRequestDTO requestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
@@ -86,11 +94,14 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
         Date sqlRequestDate = utilDateToSqlDate(requestDTO.getDate());
 
-        time.addAll(checkOverride(requestDTO,unavailableTime,sqlRequestDate));
+        time.addAll(checkOverride(requestDTO, unavailableTime, sqlRequestDate));
 
         if (time.size() == 0) {
-           time.addAll(checkActual(requestDTO,unavailableTime,sqlRequestDate));
+            time.addAll(checkActual(requestDTO, unavailableTime, sqlRequestDate));
         }
+
+        if(time.isEmpty())
+            throw DOCTOR_DUTY_ROSTER_NOT_FOUND.get();
 
         log.info(FETCHING_AVAILABLE_DOCTOR_TIME_PROCESS_COMPLETED, APPOINTMENT_TRANSFER,
                 getDifferenceBetweenTwoTime(startTime));
@@ -98,6 +109,10 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
         return time;
     }
 
+    /* FETCH DOCTOR CHARGE BY DOCTOR ID
+    *
+    *  IF FOLLOWUP - 'N' ACTUAL CHARGE
+    *  ELSE FOLLOWUP CHARGE*/
     @Override
     public Double fetchDoctorChargeByDoctorId(DoctorChargeRequestDTO requestDTO) {
 
@@ -115,7 +130,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
         return response;
     }
 
-
+    /* CHECKS AVAILABLE APPT. TIME FROM OVERRIDE TABLE */
     private List<String> checkOverride(AppointmentTransferTimeRequestDTO requestDTO, List<String> unavailableTime,
                                        Date sqlRequestDate) {
 
@@ -132,7 +147,8 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
             Date date = compareAndGetDate(overrideDates, sqlRequestDate);
 
-            if (date != null) {
+            if (!Objects.isNull(date)) {
+
                 List<String> overrideTime = getGapDuration(override.getStartTime(),
                         override.getEndTime(),
                         override.getGapDuration());
@@ -143,9 +159,9 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
         return finalOverridetime;
     }
 
-
+    /* CHECKS AVAILABLE APPT. TIME FROM DUTY ROSTER TABLE */
     private List<String> checkActual(AppointmentTransferTimeRequestDTO requestDTO, List<String> unavailableTime,
-                                       Date sqlRequestDate) {
+                                     Date sqlRequestDate) {
 
         List<String> finaltime = new ArrayList<>();
 
@@ -153,8 +169,9 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
                 requestDTO.getSpecializationId());
 
         for (ActualDateAndTimeResponseDTO actual : actualDateAndTime) {
-            List<Date> actualDates = utilDateListToSqlDateList(getDates(actual.getFromDate(),
-                    actual.getToDate()));
+
+            List<Date> actualDates = getActualdate(repository.getDayOffDaysByRosterId(actual.getId()),
+                    getDates(actual.getFromDate(), actual.getToDate()));
 
             for (Date actualDate : actualDates) {
 
@@ -173,6 +190,11 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
         }
         return finaltime;
     }
+
+    private Supplier<NoContentFoundException> DOCTOR_DUTY_ROSTER_NOT_FOUND = () -> {
+        log.error(CONTENT_NOT_FOUND, DOCTOR_DUTY_ROSTER);
+        throw new NoContentFoundException(DoctorDutyRoster.class);
+    };
 
 
 }

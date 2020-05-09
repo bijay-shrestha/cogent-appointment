@@ -44,16 +44,20 @@ public class UserLogInterceptor implements HandlerInterceptor {
 
         if (asList(URL_TO_LOG).contains(uri)) {
 
+            Object data=request.getAttribute("loginRequest");
+
 
             String jsonString="";
             ObjectMapper mapper = new ObjectMapper();
             //Converting the Object to JSONString
             try {
-                jsonString = mapper.writeValueAsString(handler);
+                jsonString = mapper.writeValueAsString(data);
                 System.out.println(jsonString);
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
+
+            System.out.println(jsonString);
 
             LoginRequestDTO loginRequestDTO = map(jsonString, LoginRequestDTO.class);
 

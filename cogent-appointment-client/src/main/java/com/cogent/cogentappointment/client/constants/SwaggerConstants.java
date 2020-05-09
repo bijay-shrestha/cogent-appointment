@@ -272,6 +272,11 @@ public class SwaggerConstants {
 
     //S
 
+    public interface SalutationConstant {
+        String BASE_API_VALUE = "This is Salutation Resource";
+        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal Salutation details (id and code) for dropdown";
+    }
+
     public interface SpecializationConstant {
         String BASE_API_VALUE = "This is Specialization Resource";
         String SAVE_OPERATION = "Save new Specialization like Physician, Surgeon, etc. Generates random 3-digit code.";

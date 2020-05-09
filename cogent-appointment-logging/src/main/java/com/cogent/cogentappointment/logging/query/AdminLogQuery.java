@@ -50,7 +50,23 @@ public class AdminLogQuery {
                 " al.browser as browser," +
                 " al.operatingSystem as os," +
                 " al.location as location," +
-                " a.email as email," +
+
+                " CASE" +
+                " WHEN" +
+                " a.email is NULL" +
+                " THEN" +
+                " al.unknownUser" +
+                " ELSE" +
+                " a.email" +
+                " END AS email," +
+
+                " CASE" +
+                " WHEN" +
+                " a.mobileNumber is NOT NULL" +
+                " THEN" +
+                " a.mobileNumber"+
+                " END AS mobileNumber," +
+
                 " a.mobileNumber as mobileNumber," +
                 " al.ipAddress as ipAddress," +
                 " al.feature as feature," +
@@ -76,7 +92,7 @@ public class AdminLogQuery {
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getAdminMetaInfoId()))
             whereClause += " AND ami.id=" + searchRequestDTO.getAdminMetaInfoId();
-        
+
         if (!ObjectUtils.isEmpty(searchRequestDTO.getParentId()))
             whereClause += " AND al.parentId=" + searchRequestDTO.getParentId();
 

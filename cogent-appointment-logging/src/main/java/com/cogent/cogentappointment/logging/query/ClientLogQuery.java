@@ -52,8 +52,24 @@ public class ClientLogQuery {
                 " cl.browser as browser," +
                 " cl.operatingSystem as os," +
                 " cl.location as location," +
-                " a.email as email," +
-                " a.mobileNumber as mobileNumber," +
+
+                " CASE" +
+                " WHEN" +
+                " a.email is NULL" +
+                " THEN" +
+                " cl.unknownUser" +
+                " ELSE" +
+                " a.email" +
+                " END AS email," +
+
+                " CASE" +
+                " WHEN" +
+                " a.mobileNumber is NOT NULL" +
+                " THEN" +
+                " a.mobileNumber"+
+                " END AS mobileNumber," +
+
+
                 " cl.ipAddress as ipAddress," +
                 " cl.feature as feature," +
                 " cl.actionType as actionType," +

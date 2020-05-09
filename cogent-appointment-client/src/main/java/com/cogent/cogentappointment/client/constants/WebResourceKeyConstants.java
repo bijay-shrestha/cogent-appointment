@@ -182,6 +182,10 @@ public class WebResourceKeyConstants {
 
     //S
 
+    public interface SalutationConstant {
+        String BASE_SALUTATION = "/salutation";
+    }
+
     public static final String SEARCH = "/search";
 
     public static final String SELF = "/self";

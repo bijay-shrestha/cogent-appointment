@@ -25,13 +25,13 @@ public class RequestCheckpoint {
         return response.getStatus();
     }
 
-    public static AdminLogRequestDTO checkURI(HttpServletRequest request, HttpServletResponse response) throws IOException, GeoIp2Exception {
+    public static AdminLogRequestDTO checkURI(HttpServletRequest request,LoginRequestDTO loginRequestDTO) throws IOException, GeoIp2Exception {
 
         String method = request.getMethod();
         AdminLogRequestDTO adminLogRequestDTO = null;
         if (request.getServletPath().contains(LOGIN) && method.equalsIgnoreCase("POST")) {
 
-            String email = response.getHeader("email");
+            String email = loginRequestDTO.getEmail();
             adminLogRequestDTO = userLoginLogging(request, email);
 
         }

@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.loghandler;
 
 import com.cogent.cogentappointment.client.dto.commons.ClientLogRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.login.LoginRequestDTO;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,13 +26,13 @@ public class RequestCheckpoint {
         return response.getStatus();
     }
 
-    public static ClientLogRequestDTO checkURI(HttpServletRequest request, HttpServletResponse response) throws IOException, GeoIp2Exception {
+    public static ClientLogRequestDTO checkURI(HttpServletRequest request, LoginRequestDTO loginRequestDTO) throws IOException, GeoIp2Exception {
 
         String method = request.getMethod();
         ClientLogRequestDTO clientLogRequestDTO = null;
         if (request.getServletPath().contains(LOGIN) && method.equalsIgnoreCase("POST")) {
 
-            String email = response.getHeader("email");
+            String email = loginRequestDTO.getEmail();
             clientLogRequestDTO = userLoginLogging(request, email);
 
         }

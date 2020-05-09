@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.loghandler;
 
 import com.cogent.cogentappointment.client.dto.commons.ClientLogRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.login.LoginRequestDTO;
 import com.cogent.cogentappointment.client.service.ClientLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,7 @@ import static com.cogent.cogentappointment.client.loghandler.RequestCheckpoint.c
 import static com.cogent.cogentappointment.client.loghandler.LogDescription.getFailedLogDescription;
 import static com.cogent.cogentappointment.client.loghandler.LogDescription.getSuccessLogDescription;
 import static com.cogent.cogentappointment.client.loghandler.RequestHandler.convertToClientLogRequestDTO;
+import static com.cogent.cogentappointment.client.utils.commons.ObjectMapperUtils.map;
 import static java.util.Arrays.asList;
 
 @Component
@@ -29,10 +31,17 @@ public class UserLogInterceptor implements HandlerInterceptor {
 
         int status = RequestCheckpoint.checkResponseStatus(response);
         String uri = request.getServletPath();
-
         if (asList(RequestCheckpoint.URL_TO_LOG).contains(uri)) {
 
-            ClientLogRequestDTO clientLogRequestDTO = checkURI(request, response);
+            Object data=request.getAttribute("loginRequest");
+
+            LoginRequestDTO loginRequestDTO=null;
+            if(data!=null){
+                loginRequestDTO = map(data.toString(), LoginRequestDTO.class);
+            }
+
+
+            ClientLogRequestDTO clientLogRequestDTO = checkURI(request, loginRequestDTO);
             checkStatusAndSave(status, clientLogRequestDTO);
 
         }

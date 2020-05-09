@@ -33,6 +33,7 @@ public class DoctorQuery {
         return " SELECT" +
                 SELECT_CLAUSE_TO_FETCH_MINIMAL_DOCTOR + "," +
                 " tbl1.specialization_name as specializationName," +
+                " GROUP_CONCAT(sal.code) as doctorSalutation," +
                 " h.name as hospitalName," +
                 " CASE WHEN" +
                 " (da.status is null OR da.status = 'N')" +
@@ -43,6 +44,8 @@ public class DoctorQuery {
                 " FROM doctor d" +
                 " LEFT JOIN hospital h ON h.id = d.hospital_id" +
                 " LEFT JOIN doctor_avatar da ON da.doctor_id = d.id" +
+                " LEFT JOIN doctor_salutation ds ON ds.doctor_id =d.id" +
+                " LEFT JOIN salutation sal ON sal.id=ds.salutation_id" +
                 " RIGHT JOIN" +
                 " (" +
                 QUERY_TO_SEARCH_DOCTOR_SPECIALIZATION.apply(searchRequestDTO) +
@@ -151,8 +154,11 @@ public class DoctorQuery {
                     " tbl1.specialization_name as specializationName," +                //[12]
                     " tbl2.qualification_name as qualificationName," +                   //[13]
                     " tbl3.file_uri as fileUri," +                                       //[14]
+                    " GROUP_CONCAT(sal.code) as doctorSalutation," +
                     DOCTOR_AUDITABLE_QUERY() +
                     " FROM doctor d" +
+                    " LEFT JOIN doctor_salutation ds ON ds.doctor_id =d.id" +
+                    " LEFT JOIN salutation sal ON sal.id=ds.salutation_id" +
                     " LEFT JOIN hospital h ON h.id = d.hospital_id" +
                     " LEFT JOIN doctor_appointment_charge dac ON dac.doctor_id= d.id" +
                     " RIGHT JOIN" +

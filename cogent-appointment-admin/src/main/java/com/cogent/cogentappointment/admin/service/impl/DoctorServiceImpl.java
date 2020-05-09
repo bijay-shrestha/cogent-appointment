@@ -35,6 +35,7 @@ import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.DoctorLog.*;
 import static com.cogent.cogentappointment.admin.utils.DoctorUtils.*;
+import static com.cogent.cogentappointment.admin.utils.SalutationUtils.parseToDoctorSalutation;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
@@ -64,6 +65,10 @@ public class DoctorServiceImpl implements DoctorService {
 
     private final DoctorAvatarRepository doctorAvatarRepository;
 
+    private final SalutationService salutationService;
+
+    private final DoctorSalutationRepository doctorSalutationRepository;
+
     private final Validator validator;
 
     public DoctorServiceImpl(DoctorRepository doctorRepository,
@@ -74,7 +79,7 @@ public class DoctorServiceImpl implements DoctorService {
                              HospitalService hospitalService,
                              DoctorAppointmentChargeRepository doctorAppointmentChargeRepository,
                              FileService fileService,
-                             MinioFileService minioFileService, DoctorAvatarRepository doctorAvatarRepository, Validator validator) {
+                             MinioFileService minioFileService, DoctorAvatarRepository doctorAvatarRepository, SalutationService salutationService, DoctorSalutationRepository doctorSalutationRepository, Validator validator) {
         this.doctorRepository = doctorRepository;
         this.doctorSpecializationRepository = doctorSpecializationRepository;
         this.specializationService = specializationService;
@@ -84,6 +89,8 @@ public class DoctorServiceImpl implements DoctorService {
         this.doctorAppointmentChargeRepository = doctorAppointmentChargeRepository;
         this.minioFileService = minioFileService;
         this.doctorAvatarRepository = doctorAvatarRepository;
+        this.salutationService = salutationService;
+        this.doctorSalutationRepository = doctorSalutationRepository;
         this.validator = validator;
     }
 
@@ -112,6 +119,8 @@ public class DoctorServiceImpl implements DoctorService {
         saveDoctorSpecialization(doctor.getId(), requestDTO.getSpecializationIds());
 
         saveDoctorQualifications(doctor.getId(), requestDTO.getQualificationIds());
+
+        saveDoctorSalutation(doctor.getId(), requestDTO.getSalutationIds());
 
         saveDoctorAvatar(doctor, avatar);
 
@@ -358,6 +367,31 @@ public class DoctorServiceImpl implements DoctorService {
 
         log.info(SAVING_PROCESS_COMPLETED, DOCTOR_APPOINTMENT_CHARGE, getDifferenceBetweenTwoTime(startTime));
     }
+
+    private void saveDoctorSalutation(Long doctorId, List<Long> salutationIds) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SAVING_PROCESS_STARTED, DOCTOR_SALUTATION);
+
+        List<DoctorSalutation> doctorSalutations = salutationIds.stream()
+                .map(salutationId -> {
+                    fetchSalutationById(salutationId);
+                    return parseToDoctorSalutation(doctorId, salutationId);
+                }).collect(Collectors.toList());
+
+
+        doctorSalutationRepository.saveAll(doctorSalutations);
+
+        log.info(SAVING_PROCESS_COMPLETED, DOCTOR_SALUTATION, getDifferenceBetweenTwoTime(startTime));
+
+    }
+
+    private void fetchSalutationById(Long salutationId) {
+
+        salutationService.fetchSalutationById(salutationId);
+    }
+
 
     private void updateDoctorSpecialization(Long doctorId,
                                             List<DoctorSpecializationUpdateDTO> specializationUpdateRequestDTO) {

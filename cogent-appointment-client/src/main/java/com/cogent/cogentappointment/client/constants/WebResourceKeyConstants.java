@@ -178,8 +178,11 @@ public class WebResourceKeyConstants {
 
     //R
 
-
     //S
+
+    public interface SalutationConstants {
+        String BASE_SALUTATION = "/salutation";
+    }
 
     public static final String SEARCH = "/search";
 

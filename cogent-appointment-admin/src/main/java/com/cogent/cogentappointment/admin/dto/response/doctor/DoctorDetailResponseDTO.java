@@ -22,6 +22,8 @@ public class DoctorDetailResponseDTO extends AuditableResponseDTO implements Ser
 
     private String doctorName;
 
+    private String doctorSalutation;
+
     private String mobileNumber;
 
     private String code;

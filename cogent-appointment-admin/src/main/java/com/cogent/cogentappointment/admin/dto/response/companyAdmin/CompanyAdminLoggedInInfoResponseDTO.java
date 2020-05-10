@@ -28,6 +28,8 @@ public class CompanyAdminLoggedInInfoResponseDTO implements Serializable {
 
     private String hospitalName;
 
+    private String hospitalLogo;
+
     private Character isCompany;
 
     private Character isAllRoleAssigned;

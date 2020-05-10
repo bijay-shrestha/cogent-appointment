@@ -94,7 +94,7 @@ public class Appointment extends Auditable<String> implements Serializable {
     /* If Appointment has been transferred - Y
      * Else N */
     @Column(name = "has_transferred")
-    private Character hasTransferred;
+    private Character hasTransferred = 'N';
 
     @Override
     public String toString() {

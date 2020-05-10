@@ -52,6 +52,9 @@ public class AppointmentTransferTransactionDetail extends Auditable<String> impl
     @Column(name = "previous_service_charge_amount")
     private Double previousServiceChargeAmount;
 
+    @Column(name = "remarks")
+    private String remarks;
+
     @Override
     public String toString() {
         return "AppointmentTransferTransactionDetail{" +
@@ -63,6 +66,7 @@ public class AppointmentTransferTransactionDetail extends Auditable<String> impl
                 ", previousTaxAmount=" + previousTaxAmount +
                 ", previousDiscountAmount=" + previousDiscountAmount +
                 ", previousServiceChargeAmount=" + previousServiceChargeAmount +
+                ", remarks='" + remarks + '\'' +
                 '}';
     }
 }

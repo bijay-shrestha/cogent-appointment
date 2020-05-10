@@ -47,7 +47,7 @@ public class AppointmentTransferTransactionRequestLog extends Auditable<String> 
     private AppointmentTransactionRequestLog appointmentTransactionRequestLog;
 
     @Column(name = "remarks")
-    private Character remarks;
+    private String remarks;
 
     @Override
     public String toString() {

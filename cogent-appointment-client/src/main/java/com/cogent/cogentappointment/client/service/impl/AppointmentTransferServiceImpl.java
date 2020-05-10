@@ -29,9 +29,12 @@ import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.APPOINTMENT;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentTransactionDetailLog.APPOINTMENT_TRANSACTION_DETAIL;
+import static com.cogent.cogentappointment.client.log.constants.AppointmentTransactionRequestLogConstant.APPOINTMENT_TRANSACTION_REQUEST_LOG;
+import static com.cogent.cogentappointment.client.log.constants.AppointmentTransactionRequestLogConstant.CONTENT_NOT_FOUND_BY_APPOINTMENT_NUMBER;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentTransferLog.*;
 import static com.cogent.cogentappointment.client.log.constants.DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER;
 import static com.cogent.cogentappointment.client.log.constants.DoctorLog.DOCTOR;
+import static com.cogent.cogentappointment.client.log.constants.SpecializationLog.SPECIALIZATION;
 import static com.cogent.cogentappointment.client.utils.AppointmentTransferUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 
@@ -45,27 +48,36 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
     private final AppointmentTransferRepository repository;
 
+    private final AppointmentTransferTransactionDetailRepository transferTransactionRepository;
+
+    private final AppointmentTransferTransactionRequestLogRepository transferTransactionRequestLogRepository;
+
     private final AppointmentRepository appointmentRepository;
 
-    private final AppointmentTransactionDetailRepository appointmentTransactionDetailRepository;
+    private final AppointmentTransactionDetailRepository transactionDetailRepository;
+
+    private final AppointmentTransactionRequestLogRepository transactionRequestLogRepository;
 
     private final DoctorRepository doctorRepository;
 
     private final SpecializationRepository specializationRepository;
 
-    private final AppointmentTransactionRequestLogRepository transactionRequestLogRepository;
-
     public AppointmentTransferServiceImpl(AppointmentTransferRepository repository,
+                                          AppointmentTransferTransactionDetailRepository transferTransactionRepository,
+                                          AppointmentTransferTransactionRequestLogRepository transferTransactionRequestLogRepository,
                                           AppointmentRepository appointmentRepository,
-                                          AppointmentTransactionDetailRepository appointmentTransactionDetailRepository,
+                                          AppointmentTransactionDetailRepository transactionDetailRepository,
+                                          AppointmentTransactionRequestLogRepository transactionRequestLogRepository,
                                           DoctorRepository doctorRepository,
-                                          SpecializationRepository specializationRepository, AppointmentTransactionRequestLogRepository transactionRequestLogRepository) {
+                                          SpecializationRepository specializationRepository) {
         this.repository = repository;
+        this.transferTransactionRepository = transferTransactionRepository;
+        this.transferTransactionRequestLogRepository = transferTransactionRequestLogRepository;
         this.appointmentRepository = appointmentRepository;
-        this.appointmentTransactionDetailRepository = appointmentTransactionDetailRepository;
+        this.transactionDetailRepository = transactionDetailRepository;
+        this.transactionRequestLogRepository = transactionRequestLogRepository;
         this.doctorRepository = doctorRepository;
         this.specializationRepository = specializationRepository;
-        this.transactionRequestLogRepository = transactionRequestLogRepository;
     }
 
     /* FETCH APPOINTMENT DATES BASED ON DOCTOR ID AND SPECIALIZATION ID */
@@ -169,17 +181,48 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
         Long specializationId = appointment.getSpecializationId().getId();
 
         if (specializationId == requestDTO.getSpecializationId() &&
-                (transactionDetail.getAppointmentAmount().compareTo(requestDTO.getAppointmentCharge())==0)) {
+                (transactionDetail.getAppointmentAmount().compareTo(requestDTO.getAppointmentCharge()) == 0)) {
+
             AppointmentTransfer appointmentTransfer = parseToAppointmentTransfer(appointment,
                     requestDTO.getRemarks());
+
             Appointment transferredAppointment = parseAppointmentTransferDetail(appointment,
                     requestDTO,
                     fetchDoctorById(requestDTO.getDoctorId()));
+
             save(transferredAppointment, appointmentTransfer);
-        }else{
+        } else {
+            AppointmentTransfer appointmentTransfer = parseToAppointmentTransfer(appointment,
+                    requestDTO.getRemarks());
+
+            Appointment transferredAppointment = parseAppointmentForSpecialization(appointment,
+                    requestDTO,
+                    fetchDoctorById(requestDTO.getDoctorId()),
+                    fetchSpecializationById(requestDTO.getSpecializationId()));
+
+            AppointmentTransferTransactionDetail transferTransactionDetail = parseToAppointmentTransferTransactionDetail(
+                    transactionDetail,
+                    requestDTO.getRemarks());
+
+            AppointmentTransactionDetail appointmentTransactionDetail = parseToAppointmentTransactionDetail(
+                    transactionDetail,
+                    requestDTO);
+
+            AppointmentTransactionRequestLog requestLog = fetchByTransactionNumber(transactionDetail.getTransactionNumber());
+
+            AppointmentTransferTransactionRequestLog transferTransactionRequestLog =
+                    parseToAppointmentTransferTransactionRequestLog(requestLog, requestDTO.getRemarks());
+
+            AppointmentTransactionRequestLog transactionRequestLog = parseToAppointmentTransactionRequestLog(requestLog);
+
+            save(transferredAppointment, appointmentTransfer);
+
+            saveTransferDetails(transferTransactionDetail,
+                    transferTransactionRequestLog,
+                    appointmentTransactionDetail,
+                    transactionRequestLog);
 
         }
-
 
         log.info(APPOINTMENT_TRANSFER_PROCESS_COMPLETED, APPOINTMENT_TRANSFER,
                 getDifferenceBetweenTwoTime(startTime));
@@ -261,14 +304,35 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
                 .orElseThrow(() -> DOCTOR_WITH_GIVEN_ID_NOT_FOUND.apply(id));
     }
 
+    private AppointmentTransactionRequestLog fetchByTransactionNumber(String transactionNumber) {
+        return transactionRequestLogRepository.fetchByTransactionNumber(transactionNumber)
+                .orElseThrow(() -> APPOINTMENT_TRANSACTION_REQUEST_LOG_WITH_GIVEN_TXN_NUMBER_NOT_FOUND
+                        .apply(transactionNumber));
+    }
+
+    private Specialization fetchSpecializationById(Long id) {
+        return specializationRepository.fetchActiveSpecializationById(id)
+                .orElseThrow(() -> SPECIALIZATION_WITH_GIVEN_ID_NOT_FOUND.apply(id));
+    }
+
     private AppointmentTransactionDetail fetchAppointmentTransactionDetailByappointmentId(Long appointmentId) {
-        return appointmentTransactionDetailRepository.fetchByAppointmentId(appointmentId)
+        return transactionDetailRepository.fetchByAppointmentId(appointmentId)
                 .orElseThrow(() -> APPOINTMENT_TRANSACTION_DETAIL_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
     }
 
     private void save(Appointment appointment, AppointmentTransfer appointmentTransfer) {
         appointmentRepository.save(appointment);
         repository.save(appointmentTransfer);
+    }
+
+    private void saveTransferDetails(AppointmentTransferTransactionDetail transferTransactionDetail,
+                                     AppointmentTransferTransactionRequestLog transferTransactionRequestLog,
+                                     AppointmentTransactionDetail transactionDetail,
+                                     AppointmentTransactionRequestLog transactionRequestLog) {
+        transferTransactionRepository.save(transferTransactionDetail);
+        transferTransactionRequestLogRepository.save(transferTransactionRequestLog);
+        transactionDetailRepository.save(transactionDetail);
+        transactionRequestLogRepository.save(transactionRequestLog);
     }
 
     private Function<Long, NoContentFoundException> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
@@ -281,9 +345,19 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
         throw new NoContentFoundException(Doctor.class, "id", id.toString());
     };
 
+    private Function<Long, NoContentFoundException> SPECIALIZATION_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, SPECIALIZATION, id);
+        throw new NoContentFoundException(Specialization.class, "id", id.toString());
+    };
+
     private Function<Long, NoContentFoundException> APPOINTMENT_TRANSACTION_DETAIL_WITH_GIVEN_ID_NOT_FOUND = (appointmentId) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT_TRANSACTION_DETAIL, appointmentId);
         throw new NoContentFoundException(AppointmentTransactionDetail.class, "appointmentId", appointmentId.toString());
+    };
+
+    private Function<String, NoContentFoundException> APPOINTMENT_TRANSACTION_REQUEST_LOG_WITH_GIVEN_TXN_NUMBER_NOT_FOUND = (transactionNumber) -> {
+        log.error(CONTENT_NOT_FOUND_BY_APPOINTMENT_NUMBER, APPOINTMENT_TRANSACTION_REQUEST_LOG, transactionNumber);
+        throw new NoContentFoundException(AppointmentTransactionRequestLog.class, "transactionNumber", transactionNumber.toString());
     };
 
 

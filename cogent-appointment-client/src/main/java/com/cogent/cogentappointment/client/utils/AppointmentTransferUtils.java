@@ -1,9 +1,7 @@
 package com.cogent.cogentappointment.client.utils;
 
 import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.AppointmentTransferRequestDTO;
-import com.cogent.cogentappointment.persistence.model.Appointment;
-import com.cogent.cogentappointment.persistence.model.AppointmentTransfer;
-import com.cogent.cogentappointment.persistence.model.Doctor;
+import com.cogent.cogentappointment.persistence.model.*;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.LocalTime;
@@ -15,8 +13,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
-import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 
 /**
  * @author Sauravi Thapa ON 5/6/20
@@ -110,27 +108,82 @@ public class AppointmentTransferUtils {
                                                              AppointmentTransferRequestDTO requestDTO,
                                                              Doctor doctor) {
         appointment.setAppointmentDate(requestDTO.getAppointmentDate());
-        appointment.setAppointmentTime(parseAppointmentTime(appointment.getAppointmentDate(),requestDTO.getAppointmentTime()));
+        appointment.setAppointmentTime(parseAppointmentTime(appointment.getAppointmentDate(), requestDTO.getAppointmentTime()));
         appointment.setDoctorId(doctor);
         appointment.setRemarks(requestDTO.getRemarks());
+        appointment.setHasTransferred(YES);
         return appointment;
     }
 
-    public static AppointmentTransfer parseToAppointmentTransfer(Appointment appointment,String remarks) {
-       AppointmentTransfer appointmentTransfer=new AppointmentTransfer();
-       appointmentTransfer.setAppointment(appointment);
-       appointmentTransfer.setPreviousAppointmentDate(appointment.getAppointmentDate());
-       appointmentTransfer.setPreviousAppointmentTime(appointment.getAppointmentTime());
-       appointmentTransfer.setPreviousDoctorId(appointment.getDoctorId().getId());
-       appointmentTransfer.setPreviousSpecializationId(appointment.getSpecializationId().getId());
-       appointment.setRemarks(remarks);
+    public static Appointment parseAppointmentForSpecialization(Appointment appointment,
+                                                                AppointmentTransferRequestDTO requestDTO,
+                                                                Doctor doctor,
+                                                                Specialization specialization) {
+        parseAppointmentTransferDetail(appointment,
+                requestDTO,
+                doctor);
+        appointment.setSpecializationId(specialization);
+        return appointment;
+    }
 
-       return appointmentTransfer;
+    public static AppointmentTransfer parseToAppointmentTransfer(Appointment appointment, String remarks) {
+        AppointmentTransfer appointmentTransfer = new AppointmentTransfer();
+        appointmentTransfer.setAppointment(appointment);
+        appointmentTransfer.setPreviousAppointmentDate(appointment.getAppointmentDate());
+        appointmentTransfer.setPreviousAppointmentTime(appointment.getAppointmentTime());
+        appointmentTransfer.setPreviousDoctorId(appointment.getDoctorId().getId());
+        appointmentTransfer.setPreviousSpecializationId(appointment.getSpecializationId().getId());
+        appointment.setRemarks(remarks);
+
+        return appointmentTransfer;
+    }
+
+    public static AppointmentTransferTransactionDetail parseToAppointmentTransferTransactionDetail(
+            AppointmentTransactionDetail transactionDetail,
+            String remarks) {
+        AppointmentTransferTransactionDetail transferTransactionDetail = new AppointmentTransferTransactionDetail();
+        transferTransactionDetail.setAppointmentTransactionDetail(transactionDetail);
+        transferTransactionDetail.setPreviousAppointmentAmount(transactionDetail.getAppointmentAmount());
+        transferTransactionDetail.setPreviousDiscountAmount(transactionDetail.getDiscountAmount());
+        transferTransactionDetail.setPreviousServiceChargeAmount(transactionDetail.getServiceChargeAmount());
+        transferTransactionDetail.setPreviousTaxAmount(transactionDetail.getTaxAmount());
+        transferTransactionDetail.setPreviousTransactionDate(transactionDetail.getTransactionDate());
+        transferTransactionDetail.setPreviousTransactionDateTime(transactionDetail.getTransactionDateTime());
+        transferTransactionDetail.setRemarks(remarks);
+
+        return transferTransactionDetail;
+    }
+    public static AppointmentTransactionDetail parseToAppointmentTransactionDetail(
+            AppointmentTransactionDetail transactionDetail,
+            AppointmentTransferRequestDTO requestDTO) {
+        transactionDetail.setAppointmentAmount(requestDTO.getAppointmentCharge());
+        transactionDetail.setTransactionDate(new Date());
+        transactionDetail.setTransactionDateTime(new Date());
+
+        return transactionDetail;
+    }
+
+    public static AppointmentTransferTransactionRequestLog parseToAppointmentTransferTransactionRequestLog(
+            AppointmentTransactionRequestLog transactionRequestLog,
+            String remarks) {
+        AppointmentTransferTransactionRequestLog requestLog = new AppointmentTransferTransactionRequestLog();
+        requestLog.setAppointmentTransactionRequestLog(transactionRequestLog);
+        requestLog.setPreviousTransactionDate(transactionRequestLog.getTransactionDate());
+        requestLog.setPreviousTransactionStatus(transactionRequestLog.getTransactionStatus());
+        requestLog.setRemarks(remarks);
+
+        return requestLog;
+    }
+
+    public static AppointmentTransactionRequestLog parseToAppointmentTransactionRequestLog(
+            AppointmentTransactionRequestLog transactionRequestLog) {
+        transactionRequestLog.setTransactionDate(new Date());
+        transactionRequestLog.setTransactionStatus(YES);
+
+        return transactionRequestLog;
     }
 
     private static Date parseAppointmentTime(Date appointmentDate, String appointmentTime) {
-        String convert=convert12HourTo24HourFormat(appointmentTime);
-
         return datePlusTime(utilDateToSqlDate(appointmentDate),
                 Objects.requireNonNull(parseTime(convert12HourTo24HourFormat(appointmentTime))));
     }

@@ -22,4 +22,7 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long>, DoctorRep
     @Query("SELECT d FROM Doctor d WHERE d.id = :doctorId AND d.hospital.id =:hospitalId AND d.status='Y'")
     Optional<Doctor> fetchActiveDoctorByIdAndHospitalId(@Param("doctorId") Long doctorId,
                                                         @Param("hospitalId") Long hospitalId);
+
+    @Query("SELECT d FROM Doctor d WHERE d.id = :doctorId AND d.status='Y'")
+    Optional<Doctor> fetchDoctorById(@Param("doctorId") Long doctorId);
 }

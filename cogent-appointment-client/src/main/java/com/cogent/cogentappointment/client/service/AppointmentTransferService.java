@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.service;
 
 import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.AppointmentDateRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.AppointmentTransferRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.AppointmentTransferTimeRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.DoctorChargeRequestDTO;
 
@@ -16,4 +17,6 @@ public interface AppointmentTransferService {
     List<String> fetchAvailableDoctorTime(AppointmentTransferTimeRequestDTO requestDTO);
 
     Double fetchDoctorChargeByDoctorId(DoctorChargeRequestDTO requestDTO);
+
+    void appointmentTransfer(AppointmentTransferRequestDTO requestDTO);
 }

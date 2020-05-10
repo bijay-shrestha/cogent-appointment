@@ -1,6 +1,9 @@
 package com.cogent.cogentappointment.client.utils;
 
-import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.ActualDateAndTimeResponseDTO;
+import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.AppointmentTransferRequestDTO;
+import com.cogent.cogentappointment.persistence.model.Appointment;
+import com.cogent.cogentappointment.persistence.model.AppointmentTransfer;
+import com.cogent.cogentappointment.persistence.model.Doctor;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.LocalTime;
@@ -9,13 +12,11 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
+import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 
 /**
  * @author Sauravi Thapa ON 5/6/20
@@ -93,8 +94,8 @@ public class AppointmentTransferUtils {
 //                        .filter(override -> (override.equals(actual)))
 //                        .anyMatch(override -> override.equals(actual))))
 //                .collect(Collectors.toList());
-        List<Date> matchedList=overrideList.stream()
-                .filter(overrideDate->overrideDate.equals(requestedDate))
+        List<Date> matchedList = overrideList.stream()
+                .filter(overrideDate -> overrideDate.equals(requestedDate))
                 .collect(Collectors.toList());
 
         for (Date date : matchedList) {
@@ -105,6 +106,34 @@ public class AppointmentTransferUtils {
         return null;
     }
 
+    public static Appointment parseAppointmentTransferDetail(Appointment appointment,
+                                                             AppointmentTransferRequestDTO requestDTO,
+                                                             Doctor doctor) {
+        appointment.setAppointmentDate(requestDTO.getAppointmentDate());
+        appointment.setAppointmentTime(parseAppointmentTime(appointment.getAppointmentDate(),requestDTO.getAppointmentTime()));
+        appointment.setDoctorId(doctor);
+        appointment.setRemarks(requestDTO.getRemarks());
+        return appointment;
+    }
+
+    public static AppointmentTransfer parseToAppointmentTransfer(Appointment appointment,String remarks) {
+       AppointmentTransfer appointmentTransfer=new AppointmentTransfer();
+       appointmentTransfer.setAppointment(appointment);
+       appointmentTransfer.setPreviousAppointmentDate(appointment.getAppointmentDate());
+       appointmentTransfer.setPreviousAppointmentTime(appointment.getAppointmentTime());
+       appointmentTransfer.setPreviousDoctorId(appointment.getDoctorId().getId());
+       appointmentTransfer.setPreviousSpecializationId(appointment.getSpecializationId().getId());
+       appointment.setRemarks(remarks);
+
+       return appointmentTransfer;
+    }
+
+    private static Date parseAppointmentTime(Date appointmentDate, String appointmentTime) {
+        String convert=convert12HourTo24HourFormat(appointmentTime);
+
+        return datePlusTime(utilDateToSqlDate(appointmentDate),
+                Objects.requireNonNull(parseTime(convert12HourTo24HourFormat(appointmentTime))));
+    }
 
 
 }

@@ -182,6 +182,23 @@ public class DateUtils {
         }
     }
 
+//    public static String convert12HourTo24HourFormat(String timeIn12HrFormat) {
+//        try{
+//            SimpleDateFormat dateFormatter = new SimpleDateFormat("HH:mm");
+//           return dateFormatter.format(timeIn12HrFormat);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
+
+    public static String convert12HourTo24HourFormat(String timeIn12HrFormat) {
+        int hour = Integer.parseInt(timeIn12HrFormat.substring(0, 2)) % 12;
+        if (timeIn12HrFormat.endsWith("PM") || timeIn12HrFormat.endsWith("pm")  )
+            hour += 12;
+        return String.format("%02d", hour) + timeIn12HrFormat.substring(2, 6);
+    }
+
     public static Date parseTime(String requestedTime) {
         try {
             SimpleDateFormat time = new SimpleDateFormat("HH:mm");

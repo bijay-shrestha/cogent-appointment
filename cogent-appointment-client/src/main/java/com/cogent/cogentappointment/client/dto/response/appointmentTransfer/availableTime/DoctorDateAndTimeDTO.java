@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.dto.response.appointmentTransfer;
+package com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime;
 
 import lombok.*;
 

@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.dto.response.appointmentTransfer;
+package com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime;
 
 import lombok.*;
 
@@ -13,7 +13,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OverrideDateAndTimeResponseDTO implements Serializable {
+public class ActualDateAndTimeResponseDTO implements Serializable {
 
     private Long id;
 
@@ -23,8 +23,6 @@ public class OverrideDateAndTimeResponseDTO implements Serializable {
 
     private Integer gapDuration;
 
-    private String startTime;
-
-    private String endTime;
+    private Character hasOverride;
 
 }

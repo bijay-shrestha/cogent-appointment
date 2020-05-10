@@ -67,8 +67,6 @@ public class DoctorServiceImpl implements DoctorService {
 
     private final SalutationService salutationService;
 
-    private final DoctorSalutationRepository doctorSalutationRepository;
-
     private final Validator validator;
 
     public DoctorServiceImpl(DoctorRepository doctorRepository,
@@ -79,7 +77,7 @@ public class DoctorServiceImpl implements DoctorService {
                              HospitalService hospitalService,
                              DoctorAppointmentChargeRepository doctorAppointmentChargeRepository,
                              FileService fileService,
-                             MinioFileService minioFileService, DoctorAvatarRepository doctorAvatarRepository, SalutationService salutationService, DoctorSalutationRepository doctorSalutationRepository, Validator validator) {
+                             MinioFileService minioFileService, DoctorAvatarRepository doctorAvatarRepository, SalutationService salutationService, Validator validator) {
         this.doctorRepository = doctorRepository;
         this.doctorSpecializationRepository = doctorSpecializationRepository;
         this.specializationService = specializationService;
@@ -90,7 +88,6 @@ public class DoctorServiceImpl implements DoctorService {
         this.minioFileService = minioFileService;
         this.doctorAvatarRepository = doctorAvatarRepository;
         this.salutationService = salutationService;
-        this.doctorSalutationRepository = doctorSalutationRepository;
         this.validator = validator;
     }
 
@@ -381,7 +378,6 @@ public class DoctorServiceImpl implements DoctorService {
                 }).collect(Collectors.toList());
 
 
-        doctorSalutationRepository.saveAll(doctorSalutations);
 
         log.info(SAVING_PROCESS_COMPLETED, DOCTOR_SALUTATION, getDifferenceBetweenTwoTime(startTime));
 

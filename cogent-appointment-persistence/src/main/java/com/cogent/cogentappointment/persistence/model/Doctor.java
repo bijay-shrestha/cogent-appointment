@@ -30,6 +30,9 @@ public class Doctor extends Auditable<String> implements Serializable {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "salutation")
+    private String salutation;
+
     @Column(name = "code", updatable = false)
     private String code;
 

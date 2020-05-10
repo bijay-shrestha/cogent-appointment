@@ -45,7 +45,7 @@ public class RequestHandler {
         String clientBrowser = RequestData.getClientBrowser(request);
         String clientOS = RequestData.getClientOS(request);
         String clientIpAddr = RequestData.getClientIpAddr(request);
-        String location=location(clientIpAddr);
+        String location = location(clientIpAddr);
 
         adminLogRequestDTO.setLocation(location);
         adminLogRequestDTO.setBrowser(clientBrowser);
@@ -74,7 +74,7 @@ public class RequestHandler {
         return adminLogRequestDTO;
     }
 
-    public static AdminLogRequestDTO userLoginLogging(HttpServletRequest request,String email) throws IOException, GeoIp2Exception {
+    public static AdminLogRequestDTO userLoginLogging(HttpServletRequest request, String email) throws IOException, GeoIp2Exception {
 
         AdminLogRequestDTO adminLogRequestDTO = AdminLogRequestDTO.
                 builder()
@@ -108,10 +108,11 @@ public class RequestHandler {
 
     public static String location(String ip) throws IOException, GeoIp2Exception {
 
-        System.out.println("***********************************public ip="+ip);
+        System.out.println("***********************************public ip=" + ip);
 
         String countryName = "";
         String cityName = "";
+        String location = "";
         try {
 
             String name = "./location/GeoLite2-City.mmdb";
@@ -124,7 +125,15 @@ public class RequestHandler {
             countryName = response.getCountry().getName();
             cityName = response.getCity().getName();
 
-            return cityName + ", " + countryName;
+            if (cityName == null) {
+                location = countryName;
+            }
+
+            if (cityName != null && countryName != null) {
+                location = cityName + ", " + countryName;
+            }
+
+            return location;
 
         } catch (IOException | AddressNotFoundException e) {
             return "N/A";

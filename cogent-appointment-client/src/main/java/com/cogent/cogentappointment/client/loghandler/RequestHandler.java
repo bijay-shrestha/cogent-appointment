@@ -106,6 +106,7 @@ public class RequestHandler {
 
         String countryName = "";
         String cityName = "";
+        String location = "";
         try {
 
             String name = "./location/GeoLite2-City.mmdb";
@@ -118,7 +119,16 @@ public class RequestHandler {
             countryName = response.getCountry().getName();
             cityName = response.getCity().getName();
 
-            return cityName + ", " + countryName;
+            if (cityName == null) {
+                location = countryName;
+            }
+
+            if (cityName != null && countryName != null) {
+                location = cityName + ", " + countryName;
+            }
+
+            return location;
+
 
         } catch (IOException | AddressNotFoundException e) {
             return "N/A";

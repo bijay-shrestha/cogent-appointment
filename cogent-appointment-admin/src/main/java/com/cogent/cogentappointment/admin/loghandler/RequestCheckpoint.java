@@ -12,6 +12,7 @@ import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstan
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.LOGIN;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.LOGOUT;
 import static com.cogent.cogentappointment.admin.loghandler.RequestHandler.*;
+import static com.cogent.cogentappointment.admin.utils.commons.ObjectMapperUtils.map;
 
 public class RequestCheckpoint {
 
@@ -25,11 +26,18 @@ public class RequestCheckpoint {
         return response.getStatus();
     }
 
-    public static AdminLogRequestDTO checkURI(HttpServletRequest request,LoginRequestDTO loginRequestDTO) throws IOException, GeoIp2Exception {
+    public static AdminLogRequestDTO checkURI(HttpServletRequest request) throws IOException, GeoIp2Exception {
 
         String method = request.getMethod();
         AdminLogRequestDTO adminLogRequestDTO = null;
         if (request.getServletPath().contains(LOGIN) && method.equalsIgnoreCase("POST")) {
+
+            Object data = request.getAttribute("loginRequest");
+
+            LoginRequestDTO loginRequestDTO = null;
+            if (data != null) {
+                loginRequestDTO = map(data.toString(), LoginRequestDTO.class);
+            }
 
             String email = loginRequestDTO.getEmail();
             adminLogRequestDTO = userLoginLogging(request, email);

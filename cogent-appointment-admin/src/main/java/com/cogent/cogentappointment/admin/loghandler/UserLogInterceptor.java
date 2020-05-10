@@ -44,14 +44,7 @@ public class UserLogInterceptor implements HandlerInterceptor {
 
         if (asList(URL_TO_LOG).contains(uri)) {
 
-            Object data=request.getAttribute("loginRequest");
-
-            LoginRequestDTO loginRequestDTO=null;
-            if(data!=null){
-                loginRequestDTO = map(data.toString(), LoginRequestDTO.class);
-            }
-
-            AdminLogRequestDTO adminLogRequestDTO = checkURI(request, loginRequestDTO);
+            AdminLogRequestDTO adminLogRequestDTO = checkURI(request);
             checkStatusAndSave(response.getStatus(), adminLogRequestDTO);
 
         }

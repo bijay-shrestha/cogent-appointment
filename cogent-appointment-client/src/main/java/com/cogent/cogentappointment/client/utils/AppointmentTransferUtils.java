@@ -11,10 +11,7 @@ import org.joda.time.format.DateTimeFormatter;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -41,6 +38,7 @@ public class AppointmentTransferUtils {
         overrideList.addAll(unmatchedList);
 
 //        overrideList.removeIf(override -> override.getDayOffStatus().equals(YES));
+        Collections.sort(overrideList);
 
         return overrideList;
     }

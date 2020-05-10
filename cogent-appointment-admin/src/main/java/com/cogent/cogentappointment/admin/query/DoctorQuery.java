@@ -33,7 +33,7 @@ public class DoctorQuery {
         return " SELECT" +
                 SELECT_CLAUSE_TO_FETCH_MINIMAL_DOCTOR + "," +
                 " tbl1.specialization_name as specializationName," +
-                " GROUP_CONCAT(sal.code) as doctorSalutation," +
+                " d.salutation as doctorSalutation," +
                 " h.name as hospitalName," +
                 " CASE WHEN" +
                 " (da.status is null OR da.status = 'N')" +

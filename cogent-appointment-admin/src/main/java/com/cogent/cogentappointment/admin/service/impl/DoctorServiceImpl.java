@@ -35,7 +35,6 @@ import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.DoctorLog.*;
 import static com.cogent.cogentappointment.admin.utils.DoctorUtils.*;
-import static com.cogent.cogentappointment.admin.utils.SalutationUtils.parseToDoctorSalutation;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
@@ -67,6 +66,8 @@ public class DoctorServiceImpl implements DoctorService {
 
     private final SalutationService salutationService;
 
+    private final SalutationRepository salutationRepository;
+
     private final Validator validator;
 
     public DoctorServiceImpl(DoctorRepository doctorRepository,
@@ -77,7 +78,7 @@ public class DoctorServiceImpl implements DoctorService {
                              HospitalService hospitalService,
                              DoctorAppointmentChargeRepository doctorAppointmentChargeRepository,
                              FileService fileService,
-                             MinioFileService minioFileService, DoctorAvatarRepository doctorAvatarRepository, SalutationService salutationService, Validator validator) {
+                             MinioFileService minioFileService, DoctorAvatarRepository doctorAvatarRepository, SalutationService salutationService, SalutationRepository salutationRepository, Validator validator) {
         this.doctorRepository = doctorRepository;
         this.doctorSpecializationRepository = doctorSpecializationRepository;
         this.specializationService = specializationService;
@@ -88,6 +89,7 @@ public class DoctorServiceImpl implements DoctorService {
         this.minioFileService = minioFileService;
         this.doctorAvatarRepository = doctorAvatarRepository;
         this.salutationService = salutationService;
+        this.salutationRepository = salutationRepository;
         this.validator = validator;
     }
 
@@ -109,6 +111,9 @@ public class DoctorServiceImpl implements DoctorService {
                 fetchGender(requestDTO.getGenderCode()),
                 fetchHospitalById(requestDTO.getHospitalId()));
 
+        String salutations = findDoctorSalutation(requestDTO.getSalutationIds());
+
+        doctor.setSalutation(salutations);
         saveDoctor(doctor);
 
         saveDoctorAppointmentCharge(doctor, requestDTO.getAppointmentCharge(), requestDTO.getAppointmentFollowUpCharge());
@@ -117,13 +122,53 @@ public class DoctorServiceImpl implements DoctorService {
 
         saveDoctorQualifications(doctor.getId(), requestDTO.getQualificationIds());
 
-        saveDoctorSalutation(doctor.getId(), requestDTO.getSalutationIds());
-
         saveDoctorAvatar(doctor, avatar);
 
         log.info(SAVING_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 
         return doctor.getCode();
+    }
+
+    private String findDoctorSalutation(List<Long> salutationIds) {
+
+        String salutations = "";
+        if (salutationIds.size() > 0) {
+            List<Salutation> salutationList = findActiveSalutations(salutationIds);
+            if (salutationList.size() == 1) {
+                salutations = salutationList.stream()
+                        .map(request -> request.getCode()).collect(Collectors.joining());
+            }
+
+            if (salutationList.size() > 1) {
+                salutations = salutationList.stream()
+                        .map(request -> request.getCode())
+                        .collect(Collectors.joining(","));
+            }
+        }
+
+        return salutations;
+    }
+
+
+    private List<Salutation> findActiveSalutations(List<Long> salutationIds) {
+
+        String ids = salutationIds.stream()
+                .map(request -> request.toString())
+                .collect(Collectors.joining(","));
+
+        List<Salutation> salutationList = validateSalutations(ids);
+        int requestCount = salutationIds.size();
+
+        if ((salutationList.size()) != requestCount) {
+            throw new NoContentFoundException(Salutation.class);
+        }
+
+        return salutationList;
+
+    }
+
+    private List<Salutation> validateSalutations(String ids) {
+        return salutationRepository.validateSalutationCount(ids);
     }
 
     @Override
@@ -365,22 +410,28 @@ public class DoctorServiceImpl implements DoctorService {
         log.info(SAVING_PROCESS_COMPLETED, DOCTOR_APPOINTMENT_CHARGE, getDifferenceBetweenTwoTime(startTime));
     }
 
-    private void saveDoctorSalutation(Long doctorId, List<Long> salutationIds) {
-
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(SAVING_PROCESS_STARTED, DOCTOR_SALUTATION);
-
-        List<DoctorSalutation> doctorSalutations = salutationIds.stream()
-                .map(salutationId -> {
-                    fetchSalutationById(salutationId);
-                    return parseToDoctorSalutation(doctorId, salutationId);
-                }).collect(Collectors.toList());
-
-
-        log.info(SAVING_PROCESS_COMPLETED, DOCTOR_SALUTATION, getDifferenceBetweenTwoTime(startTime));
-
-    }
+//    private void saveDoctorSalutation(Long doctorId, List<Long> salutationIds) {
+//
+//        Long startTime = getTimeInMillisecondsFromLocalDate();
+//
+//        log.info(SAVING_PROCESS_STARTED, DOCTOR_SALUTATION);
+//
+////        List<DoctorSalutation> doctorSalutations = salutationIds.stream()
+////                .map(salutationId -> {
+////                    fetchSalutationById(salutationId);
+////                    return parseToDoctorSalutation(doctorId, salutationId);
+////                }).collect(Collectors.toList());
+//
+//        List<DoctorSalutation> doctorSalutations = salutationIds.stream()
+//                .map(salutationId -> {
+//                    fetchSalutationById(salutationId);
+//                    return parseToDoctorSalutation(doctorId, salutationId);
+//                }).collect(Collectors.toList());
+//
+//
+//        log.info(SAVING_PROCESS_COMPLETED, DOCTOR_SALUTATION, getDifferenceBetweenTwoTime(startTime));
+//
+//    }
 
     private void fetchSalutationById(Long salutationId) {
 

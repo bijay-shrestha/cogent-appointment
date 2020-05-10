@@ -9,4 +9,14 @@ public class SalutationQuery {
                     " FROM" +
                     " Salutation sa " +
                     " WHERE sa.status='Y'";
+
+    public static String QUERY_TO_VALIDATE_SALUTATION_COUNT(String ids) {
+
+        return " SELECT " +
+                " sal " +                   //[0]
+                " FROM Salutation sal" +
+                " WHERE sal.status ='Y'" +
+                " AND sal.id IN (" + ids + ")";
+
+    }
 }

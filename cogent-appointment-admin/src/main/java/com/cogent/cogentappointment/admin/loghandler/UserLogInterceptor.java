@@ -5,7 +5,6 @@ import com.cogent.cogentappointment.admin.service.AdminLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,6 +13,9 @@ import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIV
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
 import static com.cogent.cogentappointment.admin.loghandler.LogDescription.getFailedLogDescription;
 import static com.cogent.cogentappointment.admin.loghandler.LogDescription.getSuccessLogDescription;
+import static com.cogent.cogentappointment.admin.loghandler.RequestCheckpoint.*;
+import static com.cogent.cogentappointment.admin.loghandler.RequestHandler.convertToAdminLogRequestDTO;
+import static java.util.Arrays.asList;
 
 @Component
 public class UserLogInterceptor implements HandlerInterceptor {
@@ -25,47 +27,52 @@ public class UserLogInterceptor implements HandlerInterceptor {
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
                                 Exception exception) throws Exception {
 
+        String uri = request.getServletPath();
+        int status = checkResponseStatus(response);
+
+        if (asList(URL_TO_LOG).contains(uri)) {
+
+            AdminLogRequestDTO adminLogRequestDTO = checkURI(request);
+            checkStatusAndSave(response.getStatus(), adminLogRequestDTO);
+
+        }
+
         String userLog = RequestHeader.getUserLogs(request);
 
         if (userLog != null) {
 
-            AdminLogRequestDTO adminLogRequestDTO = RequestHandler.convertToAdminLogRequestDTO(userLog);
-
-            String clientBrowser = RequestData.getClientBrowser(request);
-            String clientOS = RequestData.getClientOS(request);
-            String clientIpAddr = RequestData.getClientIpAddr(request);
-
-            adminLogRequestDTO.setBrowser(clientBrowser);
-            adminLogRequestDTO.setOperatingSystem(clientOS);
-            adminLogRequestDTO.setIpAddress(clientIpAddr);
-
-            if (exception == null) {
-
-                adminLogRequestDTO.setLogDescription(getSuccessLogDescription(adminLogRequestDTO.getFeature(), adminLogRequestDTO.getActionType()));
-                saveSuccessLogs(adminLogRequestDTO);
-            }
-
-            if (exception != null) {
-
-                adminLogRequestDTO.setLogDescription(getFailedLogDescription());
-                saveFailedLogs(adminLogRequestDTO);
-            }
+            AdminLogRequestDTO adminLogRequestDTO = convertToAdminLogRequestDTO(userLog, request);
+            checkStatusAndSave(response.getStatus(), adminLogRequestDTO);
 
         }
 
     }
 
-    private void saveSuccessLogs(AdminLogRequestDTO adminLogRequestDTO) {
 
-        adminLogService.save(adminLogRequestDTO, ACTIVE);
+    private void checkStatusAndSave(int status, AdminLogRequestDTO adminLogRequestDTO) {
+
+        if (status >= 400 && status < 600) {    //error
+            adminLogRequestDTO.setLogDescription(
+                    getFailedLogDescription(adminLogRequestDTO.getFeature(),
+                            adminLogRequestDTO.getActionType(),
+                            status));
+            saveFailedLogs(adminLogRequestDTO);
+        }
+
+        if (status >= 200 && status < 300) {      //success
+            adminLogRequestDTO.setLogDescription(getSuccessLogDescription(adminLogRequestDTO.getFeature(), adminLogRequestDTO.getActionType()));
+            saveSuccessLogs(adminLogRequestDTO);
+        }
+
 
     }
 
-    private void saveFailedLogs(AdminLogRequestDTO adminLogRequestDTO) {
+    private void saveSuccessLogs(AdminLogRequestDTO adminLogRequestDTO) {
+        adminLogService.save(adminLogRequestDTO, ACTIVE);
+    }
 
-        System.out.println("SAVING USER LOGS STARTED-----------------------------------");
+    private void saveFailedLogs(AdminLogRequestDTO adminLogRequestDTO) {
         adminLogService.save(adminLogRequestDTO, INACTIVE);
-        System.out.println("SAVING USER LOGS COMPLETED-----------------------------------");
     }
 
 }

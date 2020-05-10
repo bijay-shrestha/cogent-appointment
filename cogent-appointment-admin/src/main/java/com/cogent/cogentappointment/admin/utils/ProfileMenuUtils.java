@@ -16,9 +16,49 @@ public class ProfileMenuUtils {
 
     public static List<ProfileMenu> convertToProfileMenu(Profile profile,
                                                          List<ProfileMenuRequestDTO> requestDTO) {
-        return requestDTO.stream()
+
+        List<ProfileMenu> profileMenuList=requestDTO.stream()
                 .map(profileMenu -> convertToProfileMenuResponse.apply(profile, profileMenu))
                 .collect(Collectors.toList());
+
+        setLoginAndForgotPasswordMenu(profile,profileMenuList);
+
+
+        return profileMenuList;
+    }
+
+    private static void setLoginAndForgotPasswordMenu(Profile profile,List<ProfileMenu> profileMenuList){
+
+        //login profilemenu
+        ProfileMenu loginMenu=new ProfileMenu();
+        loginMenu.setProfile(profile);
+        loginMenu.setParentId(8080l);
+        loginMenu.setRoleId(3001l);
+        loginMenu.setUserMenuId(8080l);
+        loginMenu.setStatus('Y');
+
+        profileMenuList.add(loginMenu);
+
+        //forgot password profile menu
+        ProfileMenu forgotPasswordMenu=new ProfileMenu();
+        forgotPasswordMenu.setProfile(profile);
+        forgotPasswordMenu.setParentId(8081l);
+        forgotPasswordMenu.setRoleId(3002l);
+        forgotPasswordMenu.setUserMenuId(8081l);
+        forgotPasswordMenu.setStatus('Y');
+
+        profileMenuList.add(forgotPasswordMenu);
+
+        //logout profile menu
+        ProfileMenu logoutMenu=new ProfileMenu();
+        logoutMenu.setProfile(profile);
+        logoutMenu.setParentId(8082l);
+        logoutMenu.setRoleId(3003l);
+        logoutMenu.setUserMenuId(8082l);
+        logoutMenu.setStatus('Y');
+
+        profileMenuList.add(logoutMenu);
+
     }
 
     private static BiFunction<Profile, ProfileMenuRequestDTO, ProfileMenu> convertToProfileMenuResponse =

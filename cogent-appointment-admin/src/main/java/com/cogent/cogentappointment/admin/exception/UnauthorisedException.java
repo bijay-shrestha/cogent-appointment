@@ -2,8 +2,13 @@ package com.cogent.cogentappointment.admin.exception;
 
 import com.cogent.cogentappointment.admin.exception.utils.ExceptionUtils;
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+import javax.servlet.http.HttpServletResponse;
 
 import static com.cogent.cogentappointment.admin.exception.utils.ExceptionUtils.generateMessage;
+import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
@@ -11,6 +16,7 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
  * @author smriti on 7/2/19
  */
 @Getter
+@ResponseStatus(value= UNAUTHORIZED)
 public class UnauthorisedException extends RuntimeException {
 
     private ExceptionResponse exception;

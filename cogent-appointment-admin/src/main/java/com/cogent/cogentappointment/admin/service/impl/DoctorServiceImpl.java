@@ -378,7 +378,6 @@ public class DoctorServiceImpl implements DoctorService {
                 }).collect(Collectors.toList());
 
 
-
         log.info(SAVING_PROCESS_COMPLETED, DOCTOR_SALUTATION, getDifferenceBetweenTwoTime(startTime));
 
     }

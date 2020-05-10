@@ -1,8 +1,11 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
+import com.cogent.cogentappointment.admin.constants.EmailConstants;
 import com.cogent.cogentappointment.admin.dto.request.login.LoginRequestDTO;
+import com.cogent.cogentappointment.admin.exception.UnauthorisedException;
 import com.cogent.cogentappointment.admin.security.hmac.HMACUtils;
 import com.cogent.cogentappointment.admin.service.AuthenticateService;
+import com.cogent.cogentappointment.persistence.model.Admin;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,9 +32,15 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 
     @Override
     public String loginUser(LoginRequestDTO requestDTO) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(requestDTO.getEmail(), requestDTO.getPassword()));
-            return hmacUtils.getHash(authentication);
+
+        Authentication authentication = null;
+        try {
+            authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(requestDTO.getEmail(), requestDTO.getPassword()));
+        } catch (Exception e) {
+            throw new UnauthorisedException(Admin.class, "Invalid Username or Password");
+        }
+        return hmacUtils.getHash(authentication);
 
     }
 }

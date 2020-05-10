@@ -71,6 +71,7 @@ public class SwaggerConstants {
     public interface AuthenticateConstant {
         String BASE_API_VALUE = "This is Login and SignUp Resource.";
         String LOGIN_OPERATION = "Login User";
+        String LOGOUT_OPERATION = "Logout User";
     }
 
     public static final String[] AUTH_WHITELIST = {
@@ -273,7 +274,7 @@ public class SwaggerConstants {
 
     public interface SalutationConstant {
         String BASE_API_VALUE = "This is Salutation Resource";
-        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal Salutation details for dropdown";
+        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal Salutation details (id and code) for dropdown";
     }
 
     public interface SpecializationConstant {

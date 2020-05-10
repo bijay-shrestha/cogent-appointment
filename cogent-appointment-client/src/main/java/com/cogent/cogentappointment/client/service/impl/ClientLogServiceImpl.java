@@ -42,7 +42,7 @@ public class ClientLogServiceImpl implements ClientLogService {
         log.info(SAVING_PROCESS_STARTED, ADMIN_USER_MENU_LOG);
 
         Admin admin = adminRepository.findAdminByEmail(requestDTO.getAdminEmail())
-                .orElseThrow(() -> new NoContentFoundException(Admin.class));
+                .orElse(null);
 
         ClientLog clientLog = parseToClientLog(requestDTO, status, admin);
         clientLogRepository.save(clientLog);

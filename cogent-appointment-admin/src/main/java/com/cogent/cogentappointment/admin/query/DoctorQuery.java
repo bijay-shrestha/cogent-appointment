@@ -44,8 +44,6 @@ public class DoctorQuery {
                 " FROM doctor d" +
                 " LEFT JOIN hospital h ON h.id = d.hospital_id" +
                 " LEFT JOIN doctor_avatar da ON da.doctor_id = d.id" +
-                " LEFT JOIN doctor_salutation ds ON ds.doctor_id =d.id" +
-                " LEFT JOIN salutation sal ON sal.id=ds.salutation_id" +
                 " RIGHT JOIN" +
                 " (" +
                 QUERY_TO_SEARCH_DOCTOR_SPECIALIZATION.apply(searchRequestDTO) +

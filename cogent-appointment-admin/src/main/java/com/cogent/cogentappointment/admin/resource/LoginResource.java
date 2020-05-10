@@ -37,7 +37,6 @@ public class LoginResource {
     public ResponseEntity<AdminLoggedInInfoResponseDTO> login(@RequestBody LoginRequestDTO requestDTO) {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.AUTHORIZATION, authenticateService.loginUser(requestDTO));
-        headers.add("email", requestDTO.getEmail());
         return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 

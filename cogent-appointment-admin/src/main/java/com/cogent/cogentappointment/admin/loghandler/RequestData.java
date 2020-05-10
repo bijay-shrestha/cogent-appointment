@@ -12,8 +12,6 @@ public class RequestData {
 
         String ip = RequestHeader.getXForwardedFor(request);
 
-        System.out.println(ip);
-
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getHeader("Proxy-Client-IP");
         }

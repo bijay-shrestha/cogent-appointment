@@ -15,11 +15,8 @@ import java.util.Date;
 /**
  * @author Sauravi Thapa ON 5/6/20
  *
- * TO TRACK TRANSACTION STATUS OF SPECIFIC TRANSACTION NUMBER + PATIENT NAME (UNIQUE IDENTIFIER).
- * USEFUL TO VERIFY THE TRANSACTION STATUS ON OUR SIDE.
- * IN CASE OF TIMEOUT ISSUES, SERVER PROBLEM ETC. transactionStatus= 'N'
- * ELSE,
- *  transactionStatus= 'Y'
+ * TO TRACK PREVIOUS APPOINTMENT TRANSACTION REQUEST LOG DETAILS
+ * i.e TransactionDate,Status
  */
 @Entity
 @Table(name = "appointment_transfer_transaction_request_log")

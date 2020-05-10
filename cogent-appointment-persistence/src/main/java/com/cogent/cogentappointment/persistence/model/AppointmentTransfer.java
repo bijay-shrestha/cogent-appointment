@@ -13,6 +13,8 @@ import java.util.Date;
 
 /**
  * @author Sauravi Thapa ON 5/6/20
+ * TO TRACK PREVIOUS APPOINTMENT DETAILS
+ * i.e doctorId,SpecializatoinId,AppointmentDate,AppointmentTime
  */
 @Entity
 @Table(name = "appointment_transfer")

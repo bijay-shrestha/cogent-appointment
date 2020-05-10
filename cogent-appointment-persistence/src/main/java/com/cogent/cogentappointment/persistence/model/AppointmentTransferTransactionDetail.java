@@ -14,6 +14,8 @@ import java.util.Date;
 
 /**
  * @author Sauravi Thapa ON 5/6/20
+ *  TO TRACK PREVIOUS APPOINTMENT TRANSACTION DETAILS
+ * i.e Charges(including tax and discount),TransactionDate,TransactionTime
  */
 @Entity
 @Table(name = "appointment_transfer_transaction_detail")

@@ -53,16 +53,19 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
     private final SpecializationRepository specializationRepository;
 
+    private final AppointmentTransactionRequestLogRepository transactionRequestLogRepository;
+
     public AppointmentTransferServiceImpl(AppointmentTransferRepository repository,
                                           AppointmentRepository appointmentRepository,
                                           AppointmentTransactionDetailRepository appointmentTransactionDetailRepository,
                                           DoctorRepository doctorRepository,
-                                          SpecializationRepository specializationRepository) {
+                                          SpecializationRepository specializationRepository, AppointmentTransactionRequestLogRepository transactionRequestLogRepository) {
         this.repository = repository;
         this.appointmentRepository = appointmentRepository;
         this.appointmentTransactionDetailRepository = appointmentTransactionDetailRepository;
         this.doctorRepository = doctorRepository;
         this.specializationRepository = specializationRepository;
+        this.transactionRequestLogRepository = transactionRequestLogRepository;
     }
 
     /* FETCH APPOINTMENT DATES BASED ON DOCTOR ID AND SPECIALIZATION ID */
@@ -173,7 +176,10 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
                     requestDTO,
                     fetchDoctorById(requestDTO.getDoctorId()));
             save(transferredAppointment, appointmentTransfer);
+        }else{
+
         }
+
 
         log.info(APPOINTMENT_TRANSFER_PROCESS_COMPLETED, APPOINTMENT_TRANSFER,
                 getDifferenceBetweenTwoTime(startTime));

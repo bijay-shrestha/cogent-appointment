@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.admin.loghandler;
 import com.cogent.cogentappointment.admin.dto.commons.AdminLogRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.login.LoginRequestDTO;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,7 +24,9 @@ public class RequestCheckpoint {
     };
 
     public static int checkResponseStatus(HttpServletResponse response) {
+
         return response.getStatus();
+
     }
 
     public static AdminLogRequestDTO checkURI(HttpServletRequest request) throws IOException, GeoIp2Exception {

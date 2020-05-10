@@ -1,24 +1,13 @@
 package com.cogent.cogentappointment.admin.loghandler;
 
 import com.cogent.cogentappointment.admin.dto.commons.AdminLogRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.admin.AdminRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.login.LoginRequestDTO;
 import com.cogent.cogentappointment.admin.service.AdminLogService;
-import com.cogent.cogentappointment.admin.utils.commons.ObjectMapperUtils;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import javax.servlet.DispatcherType;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
@@ -26,7 +15,6 @@ import static com.cogent.cogentappointment.admin.loghandler.LogDescription.getFa
 import static com.cogent.cogentappointment.admin.loghandler.LogDescription.getSuccessLogDescription;
 import static com.cogent.cogentappointment.admin.loghandler.RequestCheckpoint.*;
 import static com.cogent.cogentappointment.admin.loghandler.RequestHandler.convertToAdminLogRequestDTO;
-import static com.cogent.cogentappointment.admin.utils.commons.ObjectMapperUtils.map;
 import static java.util.Arrays.asList;
 
 @Component

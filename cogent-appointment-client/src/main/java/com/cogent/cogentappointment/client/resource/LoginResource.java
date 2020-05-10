@@ -34,6 +34,7 @@ public class LoginResource {
     @ApiOperation(LOGIN_OPERATION)
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO requestDTO) {
         HttpHeaders headers = new HttpHeaders();
+
         headers.add(HttpHeaders.AUTHORIZATION, authenticateService.loginUser(requestDTO));
         return new ResponseEntity<>(headers, HttpStatus.OK);
     }
@@ -45,7 +46,7 @@ public class LoginResource {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping(LOGIN+"/eSewa")
+    @PostMapping(LOGIN + "/eSewa")
     @ApiOperation(LOGIN_OPERATION)
     public ResponseEntity<?> logineSewa(@RequestBody LoginEsewaRequestDTO requestDTO) {
         HttpHeaders headers = new HttpHeaders();

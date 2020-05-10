@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.exception;
 
 import lombok.Getter;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import static com.cogent.cogentappointment.client.exception.utils.ExceptionUtils.generateMessage;
 import static com.cogent.cogentappointment.client.exception.utils.ExceptionUtils.getLocalDateTime;
@@ -11,6 +12,7 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
  * @author smriti on 7/2/19
  */
 @Getter
+@ResponseStatus(value= UNAUTHORIZED)
 public class UnauthorisedException extends RuntimeException {
 
     private ExceptionResponse exception;

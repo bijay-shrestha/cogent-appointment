@@ -18,6 +18,7 @@ import java.util.function.Supplier;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.SalutationLog.SALUTATION;
 import static com.cogent.cogentappointment.admin.query.SalutationQuery.QUERY_TO_FETCH_ACTIVE_SALUTATION_FOR_DROPDOWN;
+import static com.cogent.cogentappointment.admin.query.SalutationQuery.QUERY_TO_VALIDATE_SALUTATION_COUNT;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
 
@@ -43,9 +44,14 @@ public class SalutationRepositoryCustomImpl implements SalutationRepositoryCusto
 
     @Override
     public List<Salutation> validateSalutationCount(String ids) {
-        Query query = createQuery.apply(entityManager, SalutationQuery.QUERY_TO_VALIDATE_SALUTATION_COUNT(ids));
+        Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_SALUTATION_COUNT(ids));
 
-        return query.getResultList();
+        List<Salutation> salutationList=query.getResultList();
+
+        if (salutationList.isEmpty()) {
+            error();
+            throw SALUTATION_NOT_FOUND.get();
+        } else return salutationList;
     }
 
     private Supplier<NoContentFoundException> SALUTATION_NOT_FOUND = () ->

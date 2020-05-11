@@ -61,6 +61,8 @@ public class DoctorServiceImpl implements DoctorService {
 
     private final DoctorAvatarRepository doctorAvatarRepository;
 
+    private final SalutationRepository salutationRepository;
+
     public DoctorServiceImpl(DoctorRepository doctorRepository,
                              DoctorSpecializationRepository doctorSpecializationRepository,
                              SpecializationService specializationService,
@@ -69,7 +71,7 @@ public class DoctorServiceImpl implements DoctorService {
                              HospitalService hospitalService,
                              DoctorAppointmentChargeRepository doctorAppointmentChargeRepository,
                              MinioFileService minioFileService,
-                             DoctorAvatarRepository doctorAvatarRepository) {
+                             DoctorAvatarRepository doctorAvatarRepository, SalutationRepository salutationRepository) {
         this.doctorRepository = doctorRepository;
         this.doctorSpecializationRepository = doctorSpecializationRepository;
         this.specializationService = specializationService;
@@ -79,6 +81,7 @@ public class DoctorServiceImpl implements DoctorService {
         this.doctorAppointmentChargeRepository = doctorAppointmentChargeRepository;
         this.minioFileService = minioFileService;
         this.doctorAvatarRepository = doctorAvatarRepository;
+        this.salutationRepository = salutationRepository;
     }
 
     @Override
@@ -98,6 +101,9 @@ public class DoctorServiceImpl implements DoctorService {
         Doctor doctor = parseDTOToDoctor(requestDTO,
                 fetchGender(requestDTO.getGenderCode()),
                 fetchHospitalById(hospitalId));
+
+        String salutations = findDoctorSalutation(requestDTO.getSalutationIds());
+        doctor.setSalutation(salutations);
 
         saveDoctor(doctor);
 
@@ -275,6 +281,47 @@ public class DoctorServiceImpl implements DoctorService {
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
+    }
+
+    private String findDoctorSalutation(List<Long> salutationIds) {
+
+        String salutations = "";
+        if (salutationIds.size() > 0) {
+            List<Salutation> salutationList = findActiveSalutations(salutationIds);
+            if (salutationList.size() == 1) {
+                salutations = salutationList.stream()
+                        .map(request -> request.getCode()).collect(Collectors.joining());
+            }
+
+            if (salutationList.size() > 1) {
+                salutations = salutationList.stream()
+                        .map(request -> request.getCode())
+                        .collect(Collectors.joining(","));
+            }
+        }
+
+        return salutations;
+    }
+
+    private List<Salutation> findActiveSalutations(List<Long> salutationIds) {
+
+        String ids = salutationIds.stream()
+                .map(request -> request.toString())
+                .collect(Collectors.joining(","));
+
+        List<Salutation> salutationList = validateSalutations(ids);
+        int requestCount = salutationIds.size();
+
+        if ((salutationList.size()) != requestCount) {
+            throw new NoContentFoundException(Salutation.class);
+        }
+
+        return salutationList;
+
+    }
+
+    private List<Salutation> validateSalutations(String ids) {
+        return salutationRepository.validateSalutationCount(ids);
     }
 
     private Gender fetchGender(Character genderCode) {

@@ -64,6 +64,7 @@ public class Doctor extends Auditable<String> implements Serializable {
         return "Doctor{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", salutation='" + salutation + '\'' +
                 ", code='" + code + '\'' +
                 ", mobileNumber='" + mobileNumber + '\'' +
                 ", email='" + email + '\'' +

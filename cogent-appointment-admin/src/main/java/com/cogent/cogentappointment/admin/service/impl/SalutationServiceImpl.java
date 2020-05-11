@@ -41,19 +41,19 @@ public class SalutationServiceImpl implements SalutationService {
         return responseDTOS;
     }
 
-    @Override
-    public Salutation fetchSalutationById(Long salutationId) {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(FETCHING_PROCESS_STARTED, SALUTATION);
-
-        Salutation salutation = salutationRepository.fetchActiveSalutationById(salutationId)
-                .orElseThrow(() -> SALUTATION_WITH_GIVEN_ID_NOT_FOUND.apply(salutationId));
-
-        log.info(FETCHING_PROCESS_COMPLETED, SALUTATION, getDifferenceBetweenTwoTime(startTime));
-
-        return salutation;
-    }
+//    @Override
+//    public Salutation fetchSalutationById(Long salutationId) {
+//        Long startTime = getTimeInMillisecondsFromLocalDate();
+//
+//        log.info(FETCHING_PROCESS_STARTED, SALUTATION);
+//
+//        Salutation salutation = salutationRepository.fetchActiveSalutationById(salutationId)
+//                .orElseThrow(() -> SALUTATION_WITH_GIVEN_ID_NOT_FOUND.apply(salutationId));
+//
+//        log.info(FETCHING_PROCESS_COMPLETED, SALUTATION, getDifferenceBetweenTwoTime(startTime));
+//
+//        return salutation;
+//    }
 
     private Function<Long, NoContentFoundException> SALUTATION_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, SALUTATION, id);

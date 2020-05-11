@@ -8,6 +8,4 @@ import java.util.List;
 public interface SalutationService {
 
     List<DropDownResponseDTO> fetchActiveMinSalutation();
-
-    Salutation fetchSalutationById(Long salutationId);
 }

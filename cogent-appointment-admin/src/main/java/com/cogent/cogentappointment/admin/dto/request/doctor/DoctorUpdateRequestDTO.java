@@ -32,6 +32,6 @@ public class DoctorUpdateRequestDTO implements Serializable {
 
     @Valid
     @NotEmpty
-    private List<Long> salutationIds;
+    private List<DoctorSalutationUpdateDTO> doctorSalutationInfo;
 
 }

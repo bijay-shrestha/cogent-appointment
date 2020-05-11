@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save;
+package com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.weekDaysDetail;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;

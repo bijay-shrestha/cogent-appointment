@@ -51,7 +51,7 @@ public class ErrorMessageConstants {
         String ACCOUNT_NOT_ACTIVATED_MESSAGE = "Sorry '%s', please activate your account first.";
         String ACCOUNT_NOT_ACTIVATED_DEBUG_MESSAGE = "'status' flag in Admin entity is 'N'";
 
-        String BAD_UPDATE_MESSAGE = "Operation failed, save password pending.";
+        String BAD_UPDATE_MESSAGE = "Operation failed, saveDDRWeekDaysDetail password pending.";
         String BAD_UPDATE_DEBUG_MESSAGE = "Admin hasn't saved its password yet and is still inactive.";
     }
 
@@ -70,7 +70,7 @@ public class ErrorMessageConstants {
     public interface DoctorDutyRosterServiceMessages {
         String DUPLICATION_MESSAGE = "Doctor Duty Roster already exists for selected doctor.";
 
-        String BAD_REQUEST_MESSAGE = "Doctor Duty Roster Override doesn't lie within the duty roster date range.";
+        String BAD_OVERRIDE_REQUEST_MESSAGE = "Doctor Duty Roster Override doesn't lie within the duty roster date range.";
 
         String APPOINTMENT_EXISTS_MESSAGE = "Cannot update doctor duty roster because appointment" +
                 " exists within the selected date range.";
@@ -82,6 +82,17 @@ public class ErrorMessageConstants {
     public interface DDRShiftWiseMessages {
         String DUPLICATE_SHIFT_MESSAGE = "Sorry, Operation failed! Request contains duplicate shift details";
         String INVALID_SHIFT_REQUEST_MESSAGE = "Sorry, Operation failed! Requested Shift(s) is not assigned to doctor";
+
+        String DUPLICATION_MESSAGE = "Doctor Duty Roster already exists for selected doctor.";
+
+        String BAD_OVERRIDE_REQUEST_MESSAGE = "Requested Override detail doesn't lie within the actual doctor duty roster" +
+                " date range.";
+
+        String OVERRIDE_TIME_OVERLAP_MESSAGE = "Sorry, Operation failed! Override time schedules overlaps between shifts";
+
+
+
+
     }
 
     public interface DoctorMessages {

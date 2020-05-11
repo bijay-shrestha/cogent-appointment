@@ -212,7 +212,7 @@ public class DateUtils {
         }
     }
 
-    public static void validateIsStartTimeGreater(Date startTime, Date endTime) {
+    public static void validateIfStartTimeGreater(Date startTime, Date endTime) {
 
         boolean isBothTimeEqual = startTime.equals(endTime);
 

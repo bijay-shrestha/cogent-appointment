@@ -338,8 +338,8 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
                         && isDateBetweenInclusive(dutyRosterFromDate, dutyRosterToDate, removeTime(overrideToDate));
 
         if (!isDateBetweenInclusive) {
-            log.error(BAD_REQUEST_MESSAGE);
-            throw new BadRequestException(BAD_REQUEST_MESSAGE);
+            log.error(BAD_OVERRIDE_REQUEST_MESSAGE);
+            throw new BadRequestException(BAD_OVERRIDE_REQUEST_MESSAGE);
         }
     }
 

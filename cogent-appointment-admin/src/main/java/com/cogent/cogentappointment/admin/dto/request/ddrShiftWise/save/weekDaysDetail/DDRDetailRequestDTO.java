@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save;
+package com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.weekDaysDetail;
 
 import com.cogent.cogentappointment.admin.constraintvalidator.Status;
 import lombok.Getter;

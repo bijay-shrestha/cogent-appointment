@@ -115,7 +115,7 @@ public class WebResourceKeyConstants {
 
     public interface DDRShiftWiseConstants {
         String BASE_DDR_SHIFT_WISE = "/doctorDutyRoster/shiftWise";
-        String DOCTOR_DUTY_ROSTER_OVERRIDE = "/doctorDutyRosterOverride";
+        String OVERRIDE = "/override";
         String EXISTING = "/existing";
         String REVERT_DOCTOR_DUTY_ROSTER_OVERRIDE = "/revert";
     }
@@ -224,7 +224,7 @@ public class WebResourceKeyConstants {
 
     //W
     public interface WeekDaysConstants {
-        String BASE_WEEK_DAYS = "/weekDays";
+        String BASE_WEEK_DAYS = "/weekDaysDetail";
         String PREPARE_WEEK_DAYS_DATA = "/prepare-weekdays-data";
     }
 

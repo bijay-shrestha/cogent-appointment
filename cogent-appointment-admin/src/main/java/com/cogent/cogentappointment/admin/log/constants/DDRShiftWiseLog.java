@@ -6,4 +6,6 @@ package com.cogent.cogentappointment.admin.log.constants;
 public class DDRShiftWiseLog {
 
     public final static String DDR_SHIFT_WISE = "DDR SHIFT WISE";
+
+    public final static String DDR_OVERRIDE = "DDR OVERRIDE";
 }

@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.service.impl;
 
+import com.cogent.cogentappointment.client.constants.StatusConstants;
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.doctor.*;
 import com.cogent.cogentappointment.client.dto.response.doctor.DoctorDetailResponseDTO;
@@ -19,14 +20,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.NAME_AND_MOBILE_NUMBER_DUPLICATION_MESSAGE;
-import static com.cogent.cogentappointment.client.constants.StatusConstants.INACTIVE;
-import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.*;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.DoctorLog.*;
 import static com.cogent.cogentappointment.client.utils.DoctorUtils.*;
@@ -141,6 +143,11 @@ public class DoctorServiceImpl implements DoctorService {
                 requestDTO.getDoctorInfo().getName(),
                 requestDTO.getDoctorInfo().getMobileNumber());
 
+        if (requestDTO.getDoctorSalutationInfo().size() > 0) {
+            String doctorSalutations = updateDoctorSalutations(requestDTO.getDoctorSalutationInfo(), doctor);
+            doctor.setSalutation(doctorSalutations);
+        }
+
         convertToUpdatedDoctor(
                 requestDTO.getDoctorInfo(),
                 doctor,
@@ -160,6 +167,55 @@ public class DoctorServiceImpl implements DoctorService {
             updateDoctorAvatar(doctor, avatar);
 
         log.info(UPDATING_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
+    }
+
+
+    private String updateDoctorSalutations(List<DoctorSalutationUpdateDTO> updateDTOS, Doctor doctor) {
+
+        String ids = updateDTOS.stream()
+                .map(request -> request.getSalutationId().toString())
+                .collect(Collectors.joining(","));
+
+        validateSalutations(ids);
+
+        List<String> salutationList = new ArrayList<>();
+        if (doctor.getSalutation() != null) {
+            salutationList.addAll(Arrays.asList(doctor.getSalutation().split("\\s+")));
+        }
+
+        updateDTOS.forEach(result -> {
+
+            Salutation salutation = findActiveSalutation(result.getSalutationId());
+
+            if (result.getStatus().equals(INACTIVE)) {
+                salutationList.remove(salutation.getCode());
+            }
+
+            if (result.getStatus().equals(ACTIVE) && !salutationList.contains(salutation.getCode())){
+                salutationList.add(salutation.getCode());
+
+            }
+
+        });
+
+        if (salutationList.size() == 0) {
+            return null;
+        }
+
+        if (salutationList.size() == 1) {
+            return salutationList.stream()
+                    .collect(Collectors.joining());
+        }
+
+        return salutationList.stream()
+                .collect(Collectors.joining(" "));
+
+    }
+
+    private Salutation findActiveSalutation(Long salutationId) {
+
+        return salutationRepository.fetchActiveSalutationById(salutationId)
+                .orElseThrow(() -> new NoContentFoundException(Salutation.class));
     }
 
     @Override

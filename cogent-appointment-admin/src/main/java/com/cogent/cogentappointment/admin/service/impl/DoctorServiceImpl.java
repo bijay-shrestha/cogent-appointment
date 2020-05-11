@@ -227,7 +227,7 @@ public class DoctorServiceImpl implements DoctorService {
         validateSalutations(ids);
 
         List<String> salutationList = new ArrayList<>();
-        if(doctor.getSalutation()!=null){
+        if (doctor.getSalutation() != null) {
             salutationList.addAll(Arrays.asList(doctor.getSalutation().split("\\s+")));
         }
 
@@ -239,8 +239,9 @@ public class DoctorServiceImpl implements DoctorService {
                 salutationList.remove(salutation.getCode());
             }
 
-            if (result.getStatus().equals(ACTIVE)) {
+            if (result.getStatus().equals(ACTIVE) && !salutationList.contains(salutation.getCode())){
                 salutationList.add(salutation.getCode());
+
             }
 
         });
@@ -254,8 +255,8 @@ public class DoctorServiceImpl implements DoctorService {
                     .collect(Collectors.joining());
         }
 
-            return salutationList.stream()
-                    .collect(Collectors.joining(" "));
+        return salutationList.stream()
+                .collect(Collectors.joining(" "));
 
     }
 

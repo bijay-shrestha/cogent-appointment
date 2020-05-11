@@ -9,6 +9,7 @@ import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.*;
 import com.cogent.cogentappointment.persistence.model.*;
+import com.cogent.cogentappointment.persistence.model.ddrShiftWise.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +30,7 @@ import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.DDRShiftWiseLog.DDR_OVERRIDE;
 import static com.cogent.cogentappointment.admin.log.constants.DDRShiftWiseLog.DDR_SHIFT_WISE;
 import static com.cogent.cogentappointment.admin.utils.DDRBreakDetailUtils.parseToDDRBreakDetail;
+import static com.cogent.cogentappointment.admin.utils.DDROverrideBreakDetailUtils.parseToDDROverrideBreakDetail;
 import static com.cogent.cogentappointment.admin.utils.DDROverrideDetailUtils.parseToDdrOverrideDetail;
 import static com.cogent.cogentappointment.admin.utils.DDRShiftWiseUtils.parseToDDRShiftWise;
 import static com.cogent.cogentappointment.admin.utils.DDRWeekDaysUtils.parseToDDRShiftDetail;
@@ -67,6 +69,8 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
 
     private final DDROverrideDetailRepository ddrOverrideDetailRepository;
 
+    private final DDROverrideBreakDetailRepository ddrOverrideBreakDetailRepository;
+
     public DDRShiftWiseServiceImpl(Validator validator,
                                    DDRShiftWiseRepository ddrShiftWiseRepository,
                                    HospitalService hospitalService,
@@ -78,7 +82,8 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
                                    WeekDaysService weekDaysService,
                                    DDRBreakDetailRepository ddrBreakDetailRepository,
                                    BreakTypeService breakTypeService,
-                                   DDROverrideDetailRepository ddrOverrideDetailRepository) {
+                                   DDROverrideDetailRepository ddrOverrideDetailRepository,
+                                   DDROverrideBreakDetailRepository ddrOverrideBreakDetailRepository) {
         this.validator = validator;
         this.ddrShiftWiseRepository = ddrShiftWiseRepository;
         this.hospitalService = hospitalService;
@@ -91,6 +96,7 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         this.ddrBreakDetailRepository = ddrBreakDetailRepository;
         this.breakTypeService = breakTypeService;
         this.ddrOverrideDetailRepository = ddrOverrideDetailRepository;
+        this.ddrOverrideBreakDetailRepository = ddrOverrideBreakDetailRepository;
     }
 
     @Override
@@ -217,7 +223,7 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
                                        DDRShiftDetail ddrShiftDetail) {
 
         weekDaysRequestDTOS.forEach(
-                weekDaysRequestDTO -> {
+                (DDRWeekDaysRequestDTO weekDaysRequestDTO) -> {
 
                     DDRWeekDaysDetail weekDaysDetail = saveDDRWeekDaysDetail(weekDaysRequestDTO, ddrShiftDetail);
 
@@ -273,18 +279,161 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         overrideRequestDTOS.forEach(
                 (DDROverrideDetailRequestDTO overrideRequestDTO) -> {
 
-                    validateDDROverrideRequestInfo(ddrShiftWise, overrideRequestDTO, overrideDetails);
+                    DDROverrideDetail ddrOverrideDetail = saveDDROverrideDetail(
+                            ddrShiftWise,
+                            overrideRequestDTO,
+                            overrideDetails
+                    );
 
-                    Shift shift = fetchShift(overrideRequestDTO.getShiftId(), ddrShiftWise.getHospital().getId());
-
-                    DDROverrideDetail ddrOverrideDetail =
-                            parseToDdrOverrideDetail(overrideRequestDTO, ddrShiftWise, shift);
-
-                    overrideDetails.add(ddrOverrideDetail);
+                    if (!overrideRequestDTO.getBreakDetail().isEmpty()) {
+                        saveDDROverrideBreakDetail(
+                                overrideRequestDTO.getBreakDetail(),
+                                ddrOverrideDetail,
+                                ddrShiftWise.getHospital().getId()
+                        );
+                    }
                 }
         );
+    }
 
-        saveDDROverrideDetail(overrideDetails);
+    private DDROverrideDetail saveDDROverrideDetail(DoctorDutyRosterShiftWise ddrShiftWise,
+                                                    DDROverrideDetailRequestDTO overrideRequestDTO,
+                                                    List<DDROverrideDetail> overrideDetails) {
+
+        validateDDROverrideRequestInfo(ddrShiftWise, overrideRequestDTO, overrideDetails);
+
+        Shift shift = fetchShift(overrideRequestDTO.getShiftId(), ddrShiftWise.getHospital().getId());
+
+        DDROverrideDetail ddrOverrideDetail =
+                parseToDdrOverrideDetail(overrideRequestDTO, ddrShiftWise, shift);
+
+        saveDDROverrideDetail(ddrOverrideDetail);
+
+        overrideDetails.add(ddrOverrideDetail);
+
+        return ddrOverrideDetail;
+    }
+
+    private void saveDDROverrideBreakDetail(List<DDRBreakRequestDTO> breakRequestDTOS,
+                                            DDROverrideDetail overrideDetail,
+                                            Long hospitalId) {
+
+        List<DDROverrideBreakDetail> ddrOverrideBreakDetails = new ArrayList<>();
+
+        breakRequestDTOS.forEach(ddrBreakRequestDTO -> {
+
+            validateDDROverrideBreakRequestInfo(ddrOverrideBreakDetails, ddrBreakRequestDTO);
+
+            BreakType breakType = fetchBreakType(ddrBreakRequestDTO.getBreakTypeId(), hospitalId);
+
+            DDROverrideBreakDetail ddrOverrideBreakDetail =
+                    parseToDDROverrideBreakDetail(ddrBreakRequestDTO, overrideDetail, breakType);
+
+            ddrOverrideBreakDetails.add(ddrOverrideBreakDetail);
+        });
+
+        saveDDROverrideBreakDetail(ddrOverrideBreakDetails);
+    }
+
+    /*1. VALIDATE IF REQUESTED OVERRIDE DATE LIES IN BETWEEN ORIGINAL DDR FROM DATE & TO DATE
+  * 2. VALIDATE IF END TIME IS GREATER THAN START TIME
+  * 3. FOR THE SAME DAY,
+  *  IF THERE ARE MULTIPLE OVERRIDE REQUESTS, VALIDATE IF START TIME & END TIME OVERLAPS WITH OTHER
+   *  EG: IF FIRST REQUEST IS 2020-05-10 (9AM-5PM)
+   *      NOW NEXT REQUEST FOR 2020-05-10(9AM-1PM) IS NOT ALLOWED SINCE IT IS BETWEEN (9AM-5PM)
+   * */
+    private void validateDDROverrideRequestInfo(DoctorDutyRosterShiftWise ddrShiftWise,
+                                                DDROverrideDetailRequestDTO overrideRequestDTO,
+                                                List<DDROverrideDetail> overrideDetails) {
+
+        validateIfOverrideDateIsBetweenDDDR(
+                ddrShiftWise.getFromDate(),
+                ddrShiftWise.getToDate(),
+                overrideRequestDTO.getDate()
+        );
+
+        validateIfStartTimeGreater(
+                overrideRequestDTO.getStartTime(),
+                overrideRequestDTO.getEndTime()
+        );
+
+        if (overrideDetails.size() >= 1) {
+            overrideDetails.stream()
+                    .filter(overrideDetail ->
+                            overrideDetail.getDate().equals(overrideRequestDTO.getDate())
+                    ).forEach(matchedResult -> {
+
+                        boolean isTimeOverlapped = validateTimeOverlap(
+                                matchedResult.getStartTime(),
+                                matchedResult.getEndTime(),
+                                overrideRequestDTO.getStartTime(),
+                                overrideRequestDTO.getEndTime()
+                        );
+
+                        if (isTimeOverlapped) {
+                            log.error(OVERRIDE_TIME_OVERLAP_MESSAGE);
+                            throw new BadRequestException(OVERRIDE_TIME_OVERLAP_MESSAGE);
+                        }
+                    }
+            );
+        }
+    }
+
+    private void validateDDROverrideBreakRequestInfo(List<DDROverrideBreakDetail> overrideBreakDetails,
+                                                     DDRBreakRequestDTO breakRequestDTO) {
+
+        validateIfStartTimeGreater(breakRequestDTO.getStartTime(), breakRequestDTO.getEndTime());
+
+        if (overrideBreakDetails.size() >= 1) {
+            overrideBreakDetails.forEach(overrideBreakDetail -> {
+
+                        boolean isTimeOverlapped = validateTimeOverlap(
+                                overrideBreakDetail.getStartTime(),
+                                overrideBreakDetail.getEndTime(),
+                                breakRequestDTO.getStartTime(),
+                                breakRequestDTO.getEndTime()
+                        );
+
+                        if (isTimeOverlapped) {
+                            log.error(BREAK_TIME_OVERLAP_MESSAGE);
+                            throw new BadRequestException(BREAK_TIME_OVERLAP_MESSAGE);
+                        }
+                    }
+            );
+        }
+    }
+
+    /*VALIDATE IF ALL REQUESTED SHIFTS ARE ASSIGNED TO DOCTOR*/
+    private void validateOverrideShiftDetail(List<DDROverrideDetailRequestDTO> overrideDetail,
+                                             Long doctorId) {
+
+        List<Long> requestedShiftIds = overrideDetail
+                .stream().map(DDROverrideDetailRequestDTO::getShiftId)
+                .distinct()
+                .collect(Collectors.toList());
+
+        Long assignedDoctorShifts = doctorService.validateDoctorShiftCount(requestedShiftIds, doctorId);
+
+        if (assignedDoctorShifts != requestedShiftIds.size())
+            throw new BadRequestException(INVALID_SHIFT_REQUEST_MESSAGE);
+    }
+
+    private boolean validateTimeOverlap(Date initialStartTime, Date initialEndTime,
+                                        Date nextStartTime, Date nextEndTime) {
+
+        LocalTime initialStart = LocalTime.parse(getTimeFromDate(initialStartTime));
+        LocalTime initialEnd = LocalTime.parse(getTimeFromDate(initialEndTime));
+
+        LocalTime nextStartTarget = LocalTime.parse(getTimeFromDate(nextStartTime));
+        LocalTime nextEndTarget = LocalTime.parse(getTimeFromDate(nextEndTime));
+
+        Boolean isNextStartTimeInclusive =
+                ((!nextStartTarget.isBefore(initialStart) && nextStartTarget.isBefore(initialEnd)));
+
+        Boolean isNextEndTimeInclusive =
+                ((!nextEndTarget.isBefore(initialStart) && nextStartTarget.isBefore(initialEnd)));
+
+        return (isNextStartTimeInclusive || isNextEndTimeInclusive);
     }
 
     private Hospital fetchHospitalById(Long hospitalId) {
@@ -317,6 +466,10 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
 
     private void saveDDRBreakDetail(List<DDRBreakDetail> ddrBreakDetails) {
         ddrBreakDetailRepository.saveAll(ddrBreakDetails);
+    }
+
+    private void saveDDROverrideBreakDetail(List<DDROverrideBreakDetail> ddrBreakDetails) {
+        ddrOverrideBreakDetailRepository.saveAll(ddrBreakDetails);
     }
 
     private BreakType fetchBreakType(Long breakTypeId, Long hospitalId) {
@@ -353,82 +506,8 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         }
     }
 
-    /*1. VALIDATE IF REQUESTED OVERRIDE DATE LIES IN BETWEEN ORIGINAL DDR FROM DATE & TO DATE
-    * 2. VALIDATE IF END TIME IS GREATER THAN START TIME
-    * 3. FOR THE SAME DAY,
-    *  IF THERE ARE MULTIPLE OVERRIDE REQUESTS, VALIDATE IF START TIME & END TIME OVERLAPS WITH OTHER
-     *  EG: IF FIRST REQUEST IS 2020-05-10 (9AM-5PM)
-     *      NOW NEXT REQUEST FOR 2020-05-10(9AM-1PM) IS NOT ALLOWED SINCE IT IS BETWEEN (9AM-5PM)
-     * */
-    private void validateDDROverrideRequestInfo(DoctorDutyRosterShiftWise ddrShiftWise,
-                                                DDROverrideDetailRequestDTO overrideRequestDTO,
-                                                List<DDROverrideDetail> overrideDetails) {
-
-        validateIfOverrideDateIsBetweenDDDR(
-                ddrShiftWise.getFromDate(),
-                ddrShiftWise.getToDate(),
-                overrideRequestDTO.getDate()
-        );
-
-        validateIfStartTimeGreater(
-                overrideRequestDTO.getStartTime(),
-                overrideRequestDTO.getEndTime()
-        );
-
-        if (!overrideDetails.isEmpty()) {
-            overrideDetails.stream()
-                    .filter(overrideDetail ->
-                            overrideDetail.getDate().equals(overrideRequestDTO.getDate())
-                    ).forEach(matchedResult -> {
-                        validateOverrideTimeDuplicity(
-                                matchedResult.getStartTime(),
-                                matchedResult.getEndTime(),
-                                overrideRequestDTO.getStartTime(),
-                                overrideRequestDTO.getEndTime()
-                        );
-                    }
-            );
-        }
-    }
-
-    /*VALIDATE IF ALL REQUESTED SHIFTS ARE ASSIGNED TO DOCTOR*/
-    private void validateOverrideShiftDetail(List<DDROverrideDetailRequestDTO> overrideDetail,
-                                             Long doctorId) {
-
-        List<Long> requestedShiftIds = overrideDetail
-                .stream().map(DDROverrideDetailRequestDTO::getShiftId)
-                .distinct()
-                .collect(Collectors.toList());
-
-        Long assignedDoctorShifts = doctorService.validateDoctorShiftCount(requestedShiftIds, doctorId);
-
-        if (assignedDoctorShifts != requestedShiftIds.size())
-            throw new BadRequestException(INVALID_SHIFT_REQUEST_MESSAGE);
-    }
-
-    private void validateOverrideTimeDuplicity(Date initialStartTime, Date initialEndTime,
-                                               Date nextStartTime, Date nextEndTime) {
-
-        LocalTime initialStart = LocalTime.parse(getTimeFromDate(initialStartTime));
-        LocalTime initialEnd = LocalTime.parse(getTimeFromDate(initialEndTime));
-
-        LocalTime nextStartTarget = LocalTime.parse(getTimeFromDate(nextStartTime));
-        LocalTime nextEndTarget = LocalTime.parse(getTimeFromDate(nextEndTime));
-
-        Boolean isNextStartTimeInclusive =
-                ((!nextStartTarget.isBefore(initialStart) && nextStartTarget.isBefore(initialEnd)));
-
-        Boolean isNextEndTimeInclusive =
-                ((!nextEndTarget.isBefore(initialStart) && nextStartTarget.isBefore(initialEnd)));
-
-        if (isNextStartTimeInclusive || isNextEndTimeInclusive) {
-            log.error(OVERRIDE_TIME_OVERLAP_MESSAGE);
-            throw new BadRequestException(OVERRIDE_TIME_OVERLAP_MESSAGE);
-        }
-    }
-
-    private void saveDDROverrideDetail(List<DDROverrideDetail> overrideDetails) {
-        ddrOverrideDetailRepository.saveAll(overrideDetails);
+    private void saveDDROverrideDetail(DDROverrideDetail overrideDetails) {
+        ddrOverrideDetailRepository.save(overrideDetails);
     }
 
 

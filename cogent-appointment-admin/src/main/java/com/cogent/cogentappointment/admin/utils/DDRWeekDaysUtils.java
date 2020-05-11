@@ -2,6 +2,9 @@ package com.cogent.cogentappointment.admin.utils;
 
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.weekDaysDetail.DDRWeekDaysRequestDTO;
 import com.cogent.cogentappointment.persistence.model.*;
+import com.cogent.cogentappointment.persistence.model.ddrShiftWise.DDRShiftDetail;
+import com.cogent.cogentappointment.persistence.model.ddrShiftWise.DDRWeekDaysDetail;
+import com.cogent.cogentappointment.persistence.model.ddrShiftWise.DoctorDutyRosterShiftWise;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
 

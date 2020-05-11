@@ -2,8 +2,8 @@ package com.cogent.cogentappointment.admin.utils;
 
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.weekDaysDetail.DDRBreakRequestDTO;
 import com.cogent.cogentappointment.persistence.model.BreakType;
-import com.cogent.cogentappointment.persistence.model.DDRBreakDetail;
-import com.cogent.cogentappointment.persistence.model.DDRWeekDaysDetail;
+import com.cogent.cogentappointment.persistence.model.ddrShiftWise.DDRBreakDetail;
+import com.cogent.cogentappointment.persistence.model.ddrShiftWise.DDRWeekDaysDetail;
 
 /**
  * @author smriti on 11/05/20
@@ -13,6 +13,7 @@ public class DDRBreakDetailUtils {
     public static DDRBreakDetail parseToDDRBreakDetail(DDRBreakRequestDTO requestDTO,
                                                        DDRWeekDaysDetail weekDaysDetail,
                                                        BreakType breakType){
+
         DDRBreakDetail breakDetail = new DDRBreakDetail();
         breakDetail.setStartTime(requestDTO.getStartTime());
         breakDetail.setEndTime(requestDTO.getEndTime());

@@ -1,8 +1,8 @@
 package com.cogent.cogentappointment.admin.utils;
 
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.override.DDROverrideDetailRequestDTO;
-import com.cogent.cogentappointment.persistence.model.DDROverrideDetail;
-import com.cogent.cogentappointment.persistence.model.DoctorDutyRosterShiftWise;
+import com.cogent.cogentappointment.persistence.model.ddrShiftWise.DDROverrideDetail;
+import com.cogent.cogentappointment.persistence.model.ddrShiftWise.DoctorDutyRosterShiftWise;
 import com.cogent.cogentappointment.persistence.model.Shift;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.NO;

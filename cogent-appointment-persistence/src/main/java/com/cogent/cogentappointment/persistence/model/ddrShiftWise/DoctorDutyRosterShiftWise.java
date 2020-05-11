@@ -1,7 +1,10 @@
-package com.cogent.cogentappointment.persistence.model;
+package com.cogent.cogentappointment.persistence.model.ddrShiftWise;
 
 import com.cogent.cogentappointment.persistence.audit.Auditable;
 import com.cogent.cogentappointment.persistence.listener.DoctorDutyRosterShiftWiseEntityListener;
+import com.cogent.cogentappointment.persistence.model.Doctor;
+import com.cogent.cogentappointment.persistence.model.Hospital;
+import com.cogent.cogentappointment.persistence.model.Specialization;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

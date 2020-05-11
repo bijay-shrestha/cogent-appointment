@@ -90,7 +90,8 @@ public class ErrorMessageConstants {
 
         String OVERRIDE_TIME_OVERLAP_MESSAGE = "Sorry, Operation failed! Override time schedules overlaps between shifts";
 
-
+        String BREAK_TIME_OVERLAP_MESSAGE = "Sorry, Operation failed! Requested Break time schedules overlaps between " +
+                " break types";
 
 
     }

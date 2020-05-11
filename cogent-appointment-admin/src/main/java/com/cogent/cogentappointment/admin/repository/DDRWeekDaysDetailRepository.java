@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.admin.repository;
 
-import com.cogent.cogentappointment.persistence.model.DDRShiftDetail;
-import com.cogent.cogentappointment.persistence.model.DDRWeekDaysDetail;
+import com.cogent.cogentappointment.persistence.model.ddrShiftWise.DDRWeekDaysDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

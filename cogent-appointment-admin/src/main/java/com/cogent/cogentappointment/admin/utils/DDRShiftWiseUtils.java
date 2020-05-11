@@ -2,7 +2,7 @@ package com.cogent.cogentappointment.admin.utils;
 
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.weekDaysDetail.DDRDetailRequestDTO;
 import com.cogent.cogentappointment.persistence.model.Doctor;
-import com.cogent.cogentappointment.persistence.model.DoctorDutyRosterShiftWise;
+import com.cogent.cogentappointment.persistence.model.ddrShiftWise.DoctorDutyRosterShiftWise;
 import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.Specialization;
 

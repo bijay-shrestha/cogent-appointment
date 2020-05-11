@@ -2,7 +2,7 @@ package com.cogent.cogentappointment.persistence.listener;
 
 import com.cogent.cogentappointment.persistence.config.Action;
 import com.cogent.cogentappointment.persistence.history.DoctorDutyRosterShiftWiseHistory;
-import com.cogent.cogentappointment.persistence.model.DoctorDutyRosterShiftWise;
+import com.cogent.cogentappointment.persistence.model.ddrShiftWise.DoctorDutyRosterShiftWise;
 import com.cogent.cogentappointment.persistence.util.BeanUtil;
 
 import javax.persistence.EntityManager;

@@ -1,5 +1,7 @@
-package com.cogent.cogentappointment.persistence.model;
+package com.cogent.cogentappointment.persistence.model.ddrShiftWise;
 
+import com.cogent.cogentappointment.persistence.model.Shift;
+import com.cogent.cogentappointment.persistence.model.ddrShiftWise.DoctorDutyRosterShiftWise;
 import lombok.Getter;
 import lombok.Setter;
 

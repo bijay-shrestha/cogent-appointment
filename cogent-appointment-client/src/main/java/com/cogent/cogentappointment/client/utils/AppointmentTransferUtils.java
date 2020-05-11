@@ -133,7 +133,7 @@ public class AppointmentTransferUtils {
         appointmentTransfer.setPreviousAppointmentTime(appointment.getAppointmentTime());
         appointmentTransfer.setPreviousDoctorId(appointment.getDoctorId().getId());
         appointmentTransfer.setPreviousSpecializationId(appointment.getSpecializationId().getId());
-        appointment.setRemarks(remarks);
+        appointmentTransfer.setRemarks(remarks);
 
         return appointmentTransfer;
     }

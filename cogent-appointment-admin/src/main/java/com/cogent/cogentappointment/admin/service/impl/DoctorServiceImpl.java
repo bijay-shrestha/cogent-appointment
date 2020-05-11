@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.Validator;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -192,6 +193,8 @@ public class DoctorServiceImpl implements DoctorService {
                 requestDTO.getDoctorInfo().getName(),
                 requestDTO.getDoctorInfo().getMobileNumber());
 
+        updateDoctorSalutations(requestDTO.getSalutationIds(), doctor.getId());
+
         convertToUpdatedDoctor(
                 requestDTO.getDoctorInfo(),
                 doctor,
@@ -213,6 +216,30 @@ public class DoctorServiceImpl implements DoctorService {
             updateDoctorAvatar(doctor, avatar);
 
         log.info(UPDATING_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    private void updateDoctorSalutations(List<Long> salutationIds, Doctor doctor) {
+
+        if (salutationIds.size() > 0) {
+            List<Salutation> salutationList = findActiveSalutations(salutationIds);
+
+            //to update salutations
+            String salutations =salutationList.stream()
+                    .map(request -> request.getCode()).collect(Collectors.joining(" "));
+
+            String[] toUpdate=salutations.split("\\s+");
+
+            //already exist salutions
+            String[] doctorSalutation = doctor.getSalutation().split("\\s+");
+
+            List<String> sal = Arrays.asList(doctorSalutation);
+
+//            String salutations = sal.stream()
+//                    .map(request -> request.).collect(Collectors.joining(" "));
+
+        }
+
+
     }
 
     @Override

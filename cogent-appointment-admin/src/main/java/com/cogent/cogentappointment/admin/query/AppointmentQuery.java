@@ -189,14 +189,12 @@ public class AppointmentQuery {
                             " a.appointmentModeId.name as appointmentMode," +
                             " atd.appointmentAmount as appointmentAmount," +
                             " da.fileUri as fileUri," +
-                            " sal.code as doctorSalutation" +
+                            " d.salutation as doctorSalutation" +
                             " FROM Appointment a" +
                             " LEFT JOIN Patient p ON a.patientId=p.id" +
                             " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                             " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
                             " LEFT JOIN DoctorAvatar da ON da.doctorId = d.id" +
-                            " LEFT JOIN DoctorSalutation ds ON ds.doctorId =d.id" +
-                            " LEFT JOIN Salutation sal ON sal.id=ds.salutationId" +
                             " LEFT JOIN Specialization sp ON a.specializationId=sp.id" +
                             " LEFT JOIN Hospital h ON a.hospitalId=h.id" +
                             " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id" +

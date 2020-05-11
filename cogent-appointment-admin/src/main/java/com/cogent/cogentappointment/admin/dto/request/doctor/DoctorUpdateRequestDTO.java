@@ -29,4 +29,9 @@ public class DoctorUpdateRequestDTO implements Serializable {
     @Valid
     @NotEmpty
     private List<DoctorQualificationUpdateDTO> doctorQualificationInfo;
+
+    @Valid
+    @NotEmpty
+    private List<Long> salutationIds;
+
 }

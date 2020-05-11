@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.admin.query;
 
-import com.cogent.cogentappointment.admin.dto.request.appointment.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointment.TransactionLogSearchDTO;
 import org.springframework.util.ObjectUtils;
 
@@ -39,7 +38,7 @@ public class TransactionLogQuery {
                     " hpi.address as patientAddress," +                            //[20]
                     " DATE_FORMAT(atd.transactionDateTime, '%h:%i %p') as appointmentTime," + //[21]
                     " (atd.appointmentAmount - COALESCE(ard.refundAmount,0)) as revenueAmount," + //[22]
-                    " da.fileUri as fileUri"+
+                    " da.fileUri as fileUri" +
                     " FROM Appointment a" +
                     " LEFT JOIN AppointmentMode am On am.id=a.appointmentModeId.id" +
                     " LEFT JOIN Patient p ON a.patientId.id=p.id" +
@@ -61,7 +60,8 @@ public class TransactionLogQuery {
             TransactionLogSearchDTO transactionLogSearchDTO) {
 
         String whereClause = " WHERE " +
-                " sp.status='Y' ";
+                " sp.status!='D'" +
+                " AND d.status!='D'";
 
         if (!ObjectUtils.isEmpty(transactionLogSearchDTO.getFromDate())
                 && !ObjectUtils.isEmpty(transactionLogSearchDTO.getToDate()))
@@ -111,7 +111,8 @@ public class TransactionLogQuery {
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
                     " WHERE" +
-                    " sp.status='Y'";
+                    " sp.status!='D'" +
+                    " AND d.status!='D'";
 
     private static String SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT =
             "SELECT" +
@@ -126,7 +127,9 @@ public class TransactionLogQuery {
                     " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id AND pi.status='Y'" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
-                    " WHERE";
+                    " WHERE" +
+                    " sp.status!='D'" +
+                    " AND d.status!='D'";
 
     public static String QUERY_TO_FETCH_TOTAL_APPOINTMENT_AMOUNT_FOR_TRANSACTION_LOG(TransactionLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_TOTAL_AMOUNT;
@@ -136,7 +139,8 @@ public class TransactionLogQuery {
 
     public static String QUERY_TO_FETCH_BOOKED_APPOINTMENT_FOR_TXN_LOG(TransactionLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
-                " a.status='PA' AND a.isFollowUp = 'N'";
+                " AND a.status='PA'" +
+                " AND a.isFollowUp = 'N'";
 
         return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
     }
@@ -145,35 +149,40 @@ public class TransactionLogQuery {
             (TransactionLogSearchDTO searchRequestDTO) {
 
         String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
-                " a.status='PA' AND a.isFollowUp = 'Y'";
+                " AND a.status='PA'" +
+                " AND a.isFollowUp = 'Y'";
 
         return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
     }
 
     public static String QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_FOR_TXN_LOG(TransactionLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
-                " a.status='A' AND a.isFollowUp = 'N'";
+                " AND a.status='A'" +
+                " AND a.isFollowUp = 'N'";
 
         return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
     }
 
     public static String QUERY_TO_FETCH_CHECKED_IN_APPOINTMENT_WITH_FOLLOW_UP_FOR_TXN_LOG(TransactionLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
-                " a.status='A' AND a.isFollowUp = 'Y'";
+                " AND a.status='A'" +
+                " AND a.isFollowUp = 'Y'";
 
         return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
     }
 
     public static String QUERY_TO_FETCH_CANCELLED_APPOINTMENT_FOR_TXN_LOG(TransactionLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
-                " a.status='C' AND a.isFollowUp = 'N'";
+                " AND a.status='C'" +
+                " AND a.isFollowUp = 'N'";
 
         return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
     }
 
     public static String QUERY_TO_FETCH_CANCELLED_APPOINTMENT_WITH_FOLLOW_UP_FOR_TXN_LOG(TransactionLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT +
-                " a.status='C' AND a.isFollowUp = 'Y'";
+                " AND a.status='C'" +
+                " AND a.isFollowUp = 'Y'";
 
         return QUERY_TO_SEARCH_BY_DATES(query, searchRequestDTO);
     }
@@ -192,7 +201,9 @@ public class TransactionLogQuery {
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
                     " WHERE" +
-                    " a.status='RE'";
+                    " sp.status!='D'" +
+                    " AND d.status!='D'" +
+                    " AND a.status='RE'";
 
     public static String QUERY_TO_FETCH_REFUNDED_APPOINTMENT_FOR_TXN_LOG(TransactionLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_FETCH_REFUNDED_APPOINTMENT +
@@ -222,7 +233,9 @@ public class TransactionLogQuery {
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
                     " WHERE" +
-                    " a.status='RE'";
+                    " sp.status!='D'" +
+                    " AND d.status!='D'" +
+                    " AND a.status='RE'";
 
     public static String QUERY_TO_FETCH_REVENUE_REFUNDED_APPOINTMENT_FOR_TXN_LOG(TransactionLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_FETCH_REVENUE_REFUNDED_APPOINTMENT +

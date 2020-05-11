@@ -39,7 +39,7 @@ public class TransactionLogQuery {
                     " a.isFollowUp as isFollowUp," +                                //[19]
                     " DATE_FORMAT(atd.transactionDateTime, '%h:%i %p') as appointmentTime," + //[20]
                     " (atd.appointmentAmount - COALESCE(ard.refundAmount,0)) as revenueAmount," + //[21]
-                    " da.fileUri as fileUri"+                                                     //[22]
+                    " da.fileUri as fileUri" +                                                     //[22]
                     " FROM Appointment a" +
                     " LEFT JOIN AppointmentMode am On am.id=a.appointmentModeId.id" +
                     " LEFT JOIN Patient p ON a.patientId.id=p.id" +
@@ -61,7 +61,8 @@ public class TransactionLogQuery {
             TransactionLogSearchDTO transactionLogSearchDTO) {
 
         String whereClause = " WHERE " +
-                " sp.status='Y' " +
+                " sp.status!='D'" +
+                " AND d.status!='D'" +
                 " AND h.id=:hospitalId";
 
         if (!ObjectUtils.isEmpty(transactionLogSearchDTO.getFromDate())
@@ -109,7 +110,9 @@ public class TransactionLogQuery {
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
                     " WHERE" +
-                    " h.id=:hospitalId";
+                    " h.id=:hospitalId" +
+                    " AND sp.status!='D'" +
+                    " AND d.status!='D'";
 
     private static String SELECT_CLAUSE_TO_GET_AMOUNT_AND_APPOINTMENT_COUNT =
             "SELECT" +
@@ -125,7 +128,9 @@ public class TransactionLogQuery {
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id = atd.appointment.id" +
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
                     " WHERE" +
-                    " h.id=:hospitalId";
+                    " sp.status!='D'" +
+                    " AND d.status!='D'" +
+                    " AND h.id=:hospitalId";
 
     public static String QUERY_TO_FETCH_TOTAL_APPOINTMENT_AMOUNT_FOR_TRANSACTION_LOG(TransactionLogSearchDTO searchRequestDTO) {
         String query = SELECT_CLAUSE_TO_GET_TOTAL_AMOUNT;
@@ -192,6 +197,8 @@ public class TransactionLogQuery {
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
                     " WHERE" +
                     " h.id=:hospitalId" +
+                    " AND sp.status!='D'" +
+                    " AND d.status!='D'" +
                     " AND a.status='RE'";
 
     public static String QUERY_TO_FETCH_REFUNDED_APPOINTMENT_FOR_TXN_LOG(TransactionLogSearchDTO searchRequestDTO) {
@@ -223,6 +230,8 @@ public class TransactionLogQuery {
                     " LEFT JOIN AppointmentRefundDetail ard ON ard.appointmentId=a.id AND ard.status='A'" +
                     " WHERE" +
                     " h.id=:hospitalId" +
+                    " AND sp.status!='D'" +
+                    " AND d.status!='D'" +
                     " AND a.status='RE'";
 
     public static String QUERY_TO_FETCH_REVENUE_REFUNDED_APPOINTMENT_FOR_TXN_LOG(TransactionLogSearchDTO searchRequestDTO) {

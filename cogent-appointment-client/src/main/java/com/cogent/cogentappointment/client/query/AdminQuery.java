@@ -178,15 +178,18 @@ public class AdminQuery {
                     " d.name as departmentName," +
                     " h.name as hospitalName," +                                           //[6]
                     " p.isAllRoleAssigned as isAllRoleAssigned," +                         //[7]
-                    " af.isSideBarCollapse as isSideBarCollapse" +                         //[8]
+                    " af.isSideBarCollapse as isSideBarCollapse," +                         //[8]
+                    " hl.fileUri as hospitalLogo"+
                     " FROM Admin a" +
                     " LEFT JOIN AdminAvatar av ON av.admin.id=a.id" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                     " LEFT JOIN Department d ON d.id=p.department.id" +
                     " LEFT JOIN Hospital h ON h.id=d.hospital.id" +
+                    " LEFT JOIN HospitalLogo hl ON hl.hospital.id=h.id" +
                     " LEFT JOIN AdminFeature af ON a.id = af.admin.id" +
                     " WHERE " +
                     " (a.email =:email OR a.mobileNumber=:email)" +
+                    " AND hl.status='Y'"+
                     " AND a.status='Y'" +
                     " AND h.id=:hospitalId";
 

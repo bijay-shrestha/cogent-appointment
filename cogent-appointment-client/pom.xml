@@ -202,11 +202,11 @@
         </dependency>
 
         <!--SCHEDULER MODULE-->
-        <dependency>
-            <groupId>com.cogent</groupId>
-            <artifactId>cogent-appointment-scheduler</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.cogent</groupId>-->
+            <!--<artifactId>cogent-appointment-scheduler</artifactId>-->
+            <!--<version>0.0.1-SNAPSHOT</version>-->
+        <!--</dependency>-->
 
         <!-- https://mvnrepository.com/artifact/com.maxmind.geoip2/geoip2 -->
         <dependency>

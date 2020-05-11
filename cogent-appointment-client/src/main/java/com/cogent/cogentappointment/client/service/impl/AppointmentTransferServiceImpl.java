@@ -1,9 +1,7 @@
 package com.cogent.cogentappointment.client.service.impl;
 
-import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.AppointmentDateRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.AppointmentTransferRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.AppointmentTransferTimeRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.DoctorChargeRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.*;
+import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.AppointmentTransferLogDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableDates.DoctorDatesResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.ActualDateAndTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.OverrideDateAndTimeResponseDTO;
@@ -25,8 +23,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.client.constants.StatusConstants.NO;
-import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
-import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.APPOINTMENT;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentTransactionDetailLog.APPOINTMENT_TRANSACTION_DETAIL;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentTransactionRequestLogConstant.APPOINTMENT_TRANSACTION_REQUEST_LOG;
@@ -202,7 +199,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
             AppointmentTransferTransactionDetail transferTransactionDetail = parseToAppointmentTransferTransactionDetail(
                     transactionDetail,
-                    requestDTO.getRemarks());
+                    requestDTO.getRemarks(),appointmentTransfer);
 
             AppointmentTransactionDetail appointmentTransactionDetail = parseToAppointmentTransactionDetail(
                     transactionDetail,
@@ -211,7 +208,9 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
             AppointmentTransactionRequestLog requestLog = fetchByTransactionNumber(transactionDetail.getTransactionNumber());
 
             AppointmentTransferTransactionRequestLog transferTransactionRequestLog =
-                    parseToAppointmentTransferTransactionRequestLog(requestLog, requestDTO.getRemarks());
+                    parseToAppointmentTransferTransactionRequestLog(requestLog,
+                            requestDTO.getRemarks(),
+                            transferTransactionDetail);
 
             AppointmentTransactionRequestLog transactionRequestLog = parseToAppointmentTransactionRequestLog(requestLog);
 
@@ -226,6 +225,20 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
         log.info(APPOINTMENT_TRANSFER_PROCESS_COMPLETED, APPOINTMENT_TRANSFER,
                 getDifferenceBetweenTwoTime(startTime));
+    }
+
+    @Override
+    public List<AppointmentTransferLogDTO> searchTransferredAppointment(AppointmentTransferSearchRequestDTO requestDTO) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_TRANSFER);
+
+        List<AppointmentTransferLogDTO> appointmentTransferLogDTOS=repository.getFinalAppTransferredInfo(requestDTO);
+
+        log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_TRANSFER,
+                getDifferenceBetweenTwoTime(startTime));
+
+        return appointmentTransferLogDTOS;
     }
 
     /* CHECKS AVAILABLE APPT. TIME FROM OVERRIDE TABLE */

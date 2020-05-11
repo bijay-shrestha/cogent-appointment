@@ -140,7 +140,8 @@ public class AppointmentTransferUtils {
 
     public static AppointmentTransferTransactionDetail parseToAppointmentTransferTransactionDetail(
             AppointmentTransactionDetail transactionDetail,
-            String remarks) {
+            String remarks,
+            AppointmentTransfer appointmentTransfer) {
         AppointmentTransferTransactionDetail transferTransactionDetail = new AppointmentTransferTransactionDetail();
         transferTransactionDetail.setAppointmentTransactionDetail(transactionDetail);
         transferTransactionDetail.setPreviousAppointmentAmount(transactionDetail.getAppointmentAmount());
@@ -150,6 +151,7 @@ public class AppointmentTransferUtils {
         transferTransactionDetail.setPreviousTransactionDate(transactionDetail.getTransactionDate());
         transferTransactionDetail.setPreviousTransactionDateTime(transactionDetail.getTransactionDateTime());
         transferTransactionDetail.setRemarks(remarks);
+        transferTransactionDetail.setAppointmentTransfer(appointmentTransfer);
 
         return transferTransactionDetail;
     }
@@ -165,12 +167,14 @@ public class AppointmentTransferUtils {
 
     public static AppointmentTransferTransactionRequestLog parseToAppointmentTransferTransactionRequestLog(
             AppointmentTransactionRequestLog transactionRequestLog,
-            String remarks) {
+            String remarks,
+            AppointmentTransferTransactionDetail transferTransactionDetail) {
         AppointmentTransferTransactionRequestLog requestLog = new AppointmentTransferTransactionRequestLog();
         requestLog.setAppointmentTransactionRequestLog(transactionRequestLog);
         requestLog.setPreviousTransactionDate(transactionRequestLog.getTransactionDate());
         requestLog.setPreviousTransactionStatus(transactionRequestLog.getTransactionStatus());
         requestLog.setRemarks(remarks);
+        requestLog.setAppointmentTransferTransactionDetail(transferTransactionDetail);
 
         return requestLog;
     }

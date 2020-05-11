@@ -1,5 +1,7 @@
 package com.cogent.cogentappointment.client.repository.custom;
 
+import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.AppointmentTransferSearchRequestDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.AppointmentTransferLogDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.ActualDateAndTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.OverrideDateAndTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableDates.DoctorDatesResponseDTO;
@@ -32,4 +34,6 @@ public interface AppointmentTransferRepositoryCustom {
     AppointmentChargeResponseDTO getAppointmentChargeByDoctorId(Long doctorId);
 
     List<OverrideDateAndTimeResponseDTO> getOverideRosterDateAndTime(Long doctorId, Long specializationId);
+
+    List<AppointmentTransferLogDTO> getFinalAppTransferredInfo(AppointmentTransferSearchRequestDTO requestDTO);
 }

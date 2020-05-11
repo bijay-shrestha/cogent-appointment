@@ -1,9 +1,6 @@
 package com.cogent.cogentappointment.client.resource;
 
-import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.AppointmentDateRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.AppointmentTransferRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.AppointmentTransferTimeRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.DoctorChargeRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.*;
 import com.cogent.cogentappointment.client.service.AppointmentTransferService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -54,5 +51,11 @@ public class AppointmentTransferResource  {
     public ResponseEntity<?> appointmentTransfer(@RequestBody AppointmentTransferRequestDTO requestDTO){
         appointmentTransferService.appointmentTransfer(requestDTO);
         return ok().build();
+    }
+
+    @PutMapping(INFO)
+    @ApiOperation(APPOINTMENT_TRANSFER)
+    public ResponseEntity<?> searchAppointmentTransfer(@RequestBody AppointmentTransferSearchRequestDTO requestDTO){
+        return ok(appointmentTransferService.searchTransferredAppointment(requestDTO));
     }
 }

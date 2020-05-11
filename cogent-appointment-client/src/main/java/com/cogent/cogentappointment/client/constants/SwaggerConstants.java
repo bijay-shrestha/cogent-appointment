@@ -75,6 +75,7 @@ public class SwaggerConstants {
         String FETCH_DOCTOR_CHARGE="Fetch selected doctor charge by  doctor id";
         String APPOINTMENT_TRANSFER="Transfer current appointment details(i.e. doctorId,specializationId," +
                 "appointmentDate,appointmentTime,Charge)";
+        String FETCH_TRANSFERRED_APPOINTMENT_LIST="Fetch list of transferred appointments";
     }
 
     public interface AuthenticateConstant {

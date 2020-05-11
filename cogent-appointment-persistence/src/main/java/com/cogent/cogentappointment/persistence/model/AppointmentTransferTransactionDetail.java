@@ -57,6 +57,10 @@ public class AppointmentTransferTransactionDetail extends Auditable<String> impl
     @Column(name = "remarks")
     private String remarks;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="appointment_transfer_id")
+    private AppointmentTransfer appointmentTransfer;
+
     @Override
     public String toString() {
         return "AppointmentTransferTransactionDetail{" +
@@ -69,6 +73,7 @@ public class AppointmentTransferTransactionDetail extends Auditable<String> impl
                 ", previousDiscountAmount=" + previousDiscountAmount +
                 ", previousServiceChargeAmount=" + previousServiceChargeAmount +
                 ", remarks='" + remarks + '\'' +
+                ", appointmentTransfer=" + appointmentTransfer.getId() +
                 '}';
     }
 }

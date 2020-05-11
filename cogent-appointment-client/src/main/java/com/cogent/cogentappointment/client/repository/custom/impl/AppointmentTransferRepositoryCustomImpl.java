@@ -1,5 +1,7 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
+import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.AppointmentTransferSearchRequestDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.AppointmentTransferLogDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.ActualDateAndTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.OverrideDateAndTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.WeekDayAndTimeDTO;
@@ -131,6 +133,15 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
 
         return response;
 
+    }
+
+    @Override
+    public List<AppointmentTransferLogDTO> getFinalAppTransferredInfo(AppointmentTransferSearchRequestDTO requestDTO) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_GET_CURRENT_TRANSFERRED_DETAIL(requestDTO));
+
+        List<AppointmentTransferLogDTO> response = transformQueryToResultList(query, AppointmentTransferLogDTO.class);
+
+        return response;
     }
 
     private Supplier<NoContentFoundException> DOCTOR_DUTY_ROSTER_NOT_FOUND = () -> {

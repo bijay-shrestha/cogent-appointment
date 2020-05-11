@@ -1,8 +1,6 @@
 package com.cogent.cogentappointment.admin.resource;
 
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.DDRRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.DDRShiftRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.doctorDutyRoster.DoctorDutyRosterRequestDTO;
 import com.cogent.cogentappointment.admin.service.DDRShiftWiseService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -38,7 +36,7 @@ public class DDRShiftWiseResource {
     @PostMapping
     @ApiOperation(SAVE_OPERATION)
     public ResponseEntity<?> save(@Valid @RequestBody DDRRequestDTO requestDTO) {
-//        doctorDutyRosterService.save(requestDTO);
+        ddrShiftWiseService.save(requestDTO);
         return created(create(API_V1 + BASE_DDR_SHIFT_WISE)).build();
     }
 }

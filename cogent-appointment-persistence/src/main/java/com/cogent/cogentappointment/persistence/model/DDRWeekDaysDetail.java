@@ -11,7 +11,7 @@ import java.util.Date;
  * @author smriti on 08/05/20
  */
 @Entity
-@Table(name = "ddr_shift_detail")
+@Table(name = "ddr_week_days_detail")
 @Getter
 @Setter
 public class DDRWeekDaysDetail implements Serializable {
@@ -32,8 +32,8 @@ public class DDRWeekDaysDetail implements Serializable {
     private Character offStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ddr_shift_wise_id")
-    private DoctorDutyRosterShiftWise ddrShiftWise;
+    @JoinColumn(name = "ddr_shift_detail_id")
+    private DDRShiftDetail ddrShiftDetail;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "week_days_id")

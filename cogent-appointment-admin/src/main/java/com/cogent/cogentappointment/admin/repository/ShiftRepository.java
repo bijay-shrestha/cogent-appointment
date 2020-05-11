@@ -15,7 +15,8 @@ import java.util.Optional;
 @Repository
 public interface ShiftRepository extends JpaRepository<Shift, Long>, ShiftRepositoryCustom {
 
-    @Query("SELECT s FROM Shift s WHERE s.status = 'Y' AND s.id =:shiftId")
-    Optional<Shift> fetchShiftById(@Param("shiftId") Long shiftId);
+    @Query("SELECT s FROM Shift s WHERE s.status = 'Y' AND s.id =:shiftId AND s.hospital.id =:hospitalId")
+    Optional<Shift> fetchShiftByIdAndHospitalId(@Param("shiftId") Long shiftId,
+                                                @Param("hospitalId") Long hospitalId);
 
 }

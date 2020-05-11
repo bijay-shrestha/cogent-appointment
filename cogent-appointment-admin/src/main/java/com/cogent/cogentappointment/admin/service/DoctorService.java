@@ -41,4 +41,6 @@ public interface DoctorService {
     List<DoctorShiftMinResponseDTO> fetchAssignedDoctorShifts(Long doctorId);
 
     void assignShiftsToDoctor(DoctorShiftRequestDTO requestDTO);
+
+    Long validateDoctorShiftCount(List<Long> shiftIds, Long doctorId);
 }

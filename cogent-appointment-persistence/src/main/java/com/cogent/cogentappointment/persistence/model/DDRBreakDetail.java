@@ -11,7 +11,7 @@ import java.util.Date;
  * @author smriti on 08/05/20
  */
 @Entity
-@Table(name = "ddr_shift_detail")
+@Table(name = "ddr_break_detail")
 @Getter
 @Setter
 public class DDRBreakDetail implements Serializable {

@@ -12,9 +12,9 @@ import com.cogent.cogentappointment.persistence.model.Specialization;
 public class DDRShiftWiseUtils {
 
     public static DoctorDutyRosterShiftWise parseToDDRShiftWise(DDRDetailRequestDTO requestDTO,
-                                                                Doctor doctor,
+                                                                Hospital hospital,
                                                                 Specialization specialization,
-                                                                Hospital hospital) {
+                                                                Doctor doctor) {
 
         DoctorDutyRosterShiftWise doctorDutyRoster = new DoctorDutyRosterShiftWise();
         doctorDutyRoster.setHospital(hospital);

@@ -64,7 +64,7 @@ public class DoctorDutyRosterShiftWise extends Auditable<String> implements Seri
 
     @Override
     public String toString() {
-        return "DoctorDutyRoster{" +
+        return "DoctorDutyRosterShiftWise{" +
                 "id=" + id +
                 ", doctor=" + doctor.getName() +
                 ", specialization=" + specialization.getName() +

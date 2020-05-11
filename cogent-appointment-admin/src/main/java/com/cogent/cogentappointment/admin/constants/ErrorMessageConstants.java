@@ -79,7 +79,12 @@ public class ErrorMessageConstants {
                 " exists within the selected date range '%s'.";
     }
 
-    public interface DoctorMessages{
+    public interface DDRShiftWiseMessages {
+        String DUPLICATE_SHIFT_MESSAGE = "Sorry, Operation failed! Request contains duplicate shift details";
+        String INVALID_SHIFT_REQUEST_MESSAGE = "Sorry, Operation failed! Requested Shift(s) is not assigned to doctor";
+    }
+
+    public interface DoctorMessages {
         String SHIFT_DUPLICATION_MESSAGE = "Doctor is already assigned with shift(s) : '%s'";
     }
 

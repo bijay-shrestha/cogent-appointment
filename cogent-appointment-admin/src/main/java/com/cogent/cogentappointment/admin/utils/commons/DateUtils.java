@@ -2,6 +2,8 @@ package com.cogent.cogentappointment.admin.utils.commons;
 
 import com.cogent.cogentappointment.admin.constants.StringConstant;
 import com.cogent.cogentappointment.admin.constants.UtilityConfigConstants;
+import com.cogent.cogentappointment.admin.exception.BadRequestException;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -14,12 +16,15 @@ import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INVALID_DATE_DEBUG_MESSAGE;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INVALID_DATE_MESSAGE;
 import static java.util.Calendar.MONTH;
 import static java.util.Calendar.YEAR;
 
 /**
  * @author smriti on 2019-07-30
  */
+@Slf4j
 public class DateUtils {
     public static Long getTimeInMillisecondsFromLocalDate() {
         LocalDateTime localDate = LocalDateTime.now();
@@ -198,7 +203,15 @@ public class DateUtils {
         Date date = new Date(System.currentTimeMillis());
 
         return formatter.format(date);
+    }
 
+    public static void validateIsFirstDateGreater(Date fromDate, Date toDate) {
+        boolean fromDateGreaterThanToDate = isFirstDateGreater(fromDate, toDate);
+
+        if (fromDateGreaterThanToDate) {
+            log.error(INVALID_DATE_DEBUG_MESSAGE);
+            throw new BadRequestException(INVALID_DATE_MESSAGE, INVALID_DATE_DEBUG_MESSAGE);
+        }
     }
 
 

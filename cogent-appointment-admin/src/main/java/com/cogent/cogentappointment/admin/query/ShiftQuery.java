@@ -21,6 +21,7 @@ public class ShiftQuery {
                 " GROUP_CONCAT(s.name)" +
                 " FROM " +
                 " shift s" +
-                " WHERE id IN (" + shiftIds + ")";
+                " WHERE s.id IN (" + shiftIds + ")" +
+                " AND s.status = 'Y'";
     }
 }

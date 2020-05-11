@@ -13,6 +13,8 @@ import java.util.List;
 @Setter
 public class DoctorShiftRequestDTO implements Serializable {
 
+    private Long hospitalId;
+
     private Long doctorId;
 
     private List<Long> shiftIds;

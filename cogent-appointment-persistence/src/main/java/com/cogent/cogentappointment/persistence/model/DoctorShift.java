@@ -11,6 +11,8 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.io.Serializable;
 
+/*SHIFTS CAN BE ASSIGNED TO A DOCTOR FROM DDR SETUP ALSO (ONLY ADD)*/
+
 /**
  * @author smriti on 06/05/20
  */

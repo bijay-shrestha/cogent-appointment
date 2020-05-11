@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
-import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.request.doctor.*;
 import com.cogent.cogentappointment.admin.dto.response.doctor.*;
 import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
@@ -66,7 +65,7 @@ public class DoctorServiceImpl implements DoctorService {
 
     private final Validator validator;
 
-    private final ShiftRepository shiftRepository;
+    private final ShiftService shiftService;
 
     private final DoctorShiftRepository doctorShiftRepository;
 
@@ -80,7 +79,7 @@ public class DoctorServiceImpl implements DoctorService {
                              MinioFileService minioFileService,
                              DoctorAvatarRepository doctorAvatarRepository,
                              Validator validator,
-                             ShiftRepository shiftRepository,
+                             ShiftService shiftService,
                              DoctorShiftRepository doctorShiftRepository) {
         this.doctorRepository = doctorRepository;
         this.doctorSpecializationRepository = doctorSpecializationRepository;
@@ -92,7 +91,7 @@ public class DoctorServiceImpl implements DoctorService {
         this.minioFileService = minioFileService;
         this.doctorAvatarRepository = doctorAvatarRepository;
         this.validator = validator;
-        this.shiftRepository = shiftRepository;
+        this.shiftService = shiftService;
         this.doctorShiftRepository = doctorShiftRepository;
     }
 
@@ -249,13 +248,14 @@ public class DoctorServiceImpl implements DoctorService {
         log.info(FETCHING_PROCESS_STARTED, DOCTOR_SHIFT);
 
         List<DoctorShiftMinResponseDTO> doctorShifts =
-                doctorRepository.fetchAssignedDoctorShifts(doctorId);
+                doctorShiftRepository.fetchAssignedDoctorShifts(doctorId);
 
         log.info(FETCHING_PROCESS_COMPLETED, DOCTOR_SHIFT, getDifferenceBetweenTwoTime(startTime));
 
         return doctorShifts;
     }
 
+    /**/
     @Override
     public void assignShiftsToDoctor(DoctorShiftRequestDTO requestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
@@ -272,7 +272,7 @@ public class DoctorServiceImpl implements DoctorService {
                             doctorShiftRepository.fetchByDoctorIdAndShiftId(requestDTO.getDoctorId(), shiftId);
 
                     if (Objects.isNull(doctorShift)) {
-                        Shift shift = fetchShiftById(shiftId);
+                        Shift shift = fetchShiftById(shiftId, requestDTO.getHospitalId());
 
                         return parseToDoctorShift(doctor, shift, new DoctorShift());
                     } else
@@ -284,6 +284,11 @@ public class DoctorServiceImpl implements DoctorService {
         saveDoctorShifts(doctorShifts);
 
         log.info(SAVING_PROCESS_COMPLETED, DOCTOR_SHIFT, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    @Override
+    public Long validateDoctorShiftCount(List<Long> shiftIds, Long doctorId) {
+        return doctorShiftRepository.validateDoctorShiftCount(shiftIds, doctorId);
     }
 
     @Override
@@ -533,8 +538,8 @@ public class DoctorServiceImpl implements DoctorService {
         throw new NoContentFoundException(DoctorAppointmentCharge.class, "doctorId", doctorId.toString());
     };
 
-    private Doctor fetchDoctor(Long doctorId){
-       return doctorRepository.findActiveDoctorById(doctorId)
+    private Doctor fetchDoctor(Long doctorId) {
+        return doctorRepository.findActiveDoctorById(doctorId)
                 .orElseThrow(() -> DOCTOR_WITH_GIVEN_ID_NOT_FOUND.apply(doctorId));
     }
 
@@ -549,7 +554,7 @@ public class DoctorServiceImpl implements DoctorService {
     * */
     private void validateShiftDuplicity(DoctorShiftRequestDTO requestDTO) {
 
-        List<Long> assignedShifts = doctorRepository.fetchActiveAssignedDoctorShiftIds(requestDTO.getDoctorId());
+        List<Long> assignedShifts = doctorShiftRepository.fetchActiveAssignedDoctorShiftIds(requestDTO.getDoctorId());
 
         if (!assignedShifts.isEmpty()) {
             List<Long> common = assignedShifts.stream()
@@ -558,16 +563,15 @@ public class DoctorServiceImpl implements DoctorService {
 
             if (!common.isEmpty()) {
                 String commonIds = StringUtils.join(common, COMMA_SEPARATED);
-                String commonNames = shiftRepository.fetchNameByIds(commonIds);
+                String commonNames = shiftService.fetchNameByIds(commonIds);
 
                 throw new DataDuplicationException(String.format(SHIFT_DUPLICATION_MESSAGE, commonNames));
             }
         }
     }
 
-    private Shift fetchShiftById(Long shiftId) {
-        return shiftRepository.fetchShiftById(shiftId)
-                .orElseThrow(() -> new NoContentFoundException(Shift.class, "shiftId", shiftId.toString()));
+    private Shift fetchShiftById(Long shiftId, Long hospitalId) {
+        return shiftService.fetchActiveShiftByIdAndHospitalId(shiftId, hospitalId);
     }
 
     private void saveDoctorShifts(List<DoctorShift> doctorShifts) {

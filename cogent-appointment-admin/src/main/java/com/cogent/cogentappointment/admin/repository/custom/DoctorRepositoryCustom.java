@@ -1,7 +1,10 @@
 package com.cogent.cogentappointment.admin.repository.custom;
 
 import com.cogent.cogentappointment.admin.dto.request.doctor.DoctorSearchRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.doctor.*;
+import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorDetailResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorDropdownDTO;
+import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorMinimalResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorUpdateResponseDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -32,8 +35,4 @@ public interface DoctorRepositoryCustom {
     DoctorUpdateResponseDTO fetchDetailsForUpdate(Long id);
 
     List<DoctorDropdownDTO> fetchDoctorAvatarInfo(Long hospitalId, Long doctorId);
-
-    List<DoctorShiftMinResponseDTO> fetchAssignedDoctorShifts(Long doctorId);
-
-    List<Long> fetchActiveAssignedDoctorShiftIds(Long doctorId);
 }

@@ -1,11 +1,13 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.dto.request.doctor.DoctorSearchRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.doctor.*;
+import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorDetailResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorDropdownDTO;
+import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorMinimalResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorUpdateResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.DoctorRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Doctor;
-import com.cogent.cogentappointment.persistence.model.DoctorShift;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -23,7 +25,6 @@ import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.admin.log.constants.DoctorLog.DOCTOR;
-import static com.cogent.cogentappointment.admin.log.constants.DoctorLog.DOCTOR_SHIFT;
 import static com.cogent.cogentappointment.admin.query.DoctorQuery.*;
 import static com.cogent.cogentappointment.admin.utils.DoctorUtils.parseToDoctorUpdateResponseDTO;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
@@ -156,27 +157,6 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
         return results;
     }
 
-    @Override
-    public List<DoctorShiftMinResponseDTO> fetchAssignedDoctorShifts(Long doctorId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_SHIFTS)
-                .setParameter(DOCTOR_ID, doctorId);
-
-        List<DoctorShiftMinResponseDTO> results = transformQueryToResultList(query, DoctorShiftMinResponseDTO.class);
-
-        if (results.isEmpty())
-            DOCTOR_SHIFTS_NOT_FOUND.get();
-
-        return results;
-    }
-
-    @Override
-    public List<Long> fetchActiveAssignedDoctorShiftIds(Long doctorId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ASSIGNED_DOCTOR_SHIFTS)
-                .setParameter(DOCTOR_ID, doctorId);
-
-        return query.getResultList();
-    }
-
     private Supplier<NoContentFoundException> DOCTOR_NOT_FOUND = () -> {
         log.error(CONTENT_NOT_FOUND, DOCTOR);
         throw new NoContentFoundException(Doctor.class);
@@ -185,10 +165,5 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
     private Function<Long, NoContentFoundException> DOCTOR_WITH_GIVEN_ID_NOT_FOUND = (doctorId) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, DOCTOR, doctorId);
         throw new NoContentFoundException(Doctor.class, "doctorId", doctorId.toString());
-    };
-
-    private Supplier<NoContentFoundException> DOCTOR_SHIFTS_NOT_FOUND = () -> {
-        log.error(CONTENT_NOT_FOUND, DOCTOR_SHIFT);
-        throw new NoContentFoundException(DoctorShift.class);
     };
 }

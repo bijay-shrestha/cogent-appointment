@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client;
+package com.cogent.cogentappointment.admin.repository;
 
 import org.junit.Test;
 
@@ -11,13 +11,13 @@ public class DateTest {
 
     @Test
     public void isTimeBetween() {
-        String startTime = "20:11";
-        String endTime = "14:49";
+        String startTime = "09:00";
+        String endTime = "17:49";
 
         LocalTime start = LocalTime.parse(startTime);
-        LocalTime stop = LocalTime.parse("14:49");
+        LocalTime stop = LocalTime.parse(endTime);
 
-        LocalTime target = LocalTime.parse("20:30");
+        LocalTime target = LocalTime.parse("17:49");
 
         Boolean isBetweenStartAndStopStrictlySpeaking =
                 ((!target.isBefore(start) && target.isBefore(stop)));

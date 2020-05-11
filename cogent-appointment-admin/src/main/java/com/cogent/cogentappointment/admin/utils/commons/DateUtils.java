@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
-import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -16,8 +15,7 @@ import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 
-import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INVALID_DATE_DEBUG_MESSAGE;
-import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.INVALID_DATE_MESSAGE;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.*;
 import static java.util.Calendar.MONTH;
 import static java.util.Calendar.YEAR;
 
@@ -211,6 +209,23 @@ public class DateUtils {
         if (fromDateGreaterThanToDate) {
             log.error(INVALID_DATE_DEBUG_MESSAGE);
             throw new BadRequestException(INVALID_DATE_MESSAGE, INVALID_DATE_DEBUG_MESSAGE);
+        }
+    }
+
+    public static void validateIsStartTimeGreater(Date startTime, Date endTime) {
+
+        boolean isBothTimeEqual = startTime.equals(endTime);
+
+        if (isBothTimeEqual) {
+            log.error(EQUAL_DATE_TIME_MESSAGE);
+            throw new BadRequestException(EQUAL_DATE_TIME_MESSAGE, EQUAL_DATE_TIME_DEBUG_MESSAGE);
+        }
+
+        boolean isStartTimeGreaterThanEndTime = startTime.after(endTime);
+
+        if (isStartTimeGreaterThanEndTime) {
+            log.error(INVALID_DATE_TIME_MESSAGE);
+            throw new BadRequestException(INVALID_DATE_TIME_MESSAGE, INVALID_DATE_TIME_DEBUG_MESSAGE);
         }
     }
 

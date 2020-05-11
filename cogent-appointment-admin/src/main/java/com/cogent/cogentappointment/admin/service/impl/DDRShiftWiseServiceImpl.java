@@ -1,11 +1,9 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
-import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.DDRDetailRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.DDRRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.DDRShiftRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.DDRWeekDaysRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.*;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
+import com.cogent.cogentappointment.admin.repository.DDRBreakDetailRepository;
 import com.cogent.cogentappointment.admin.repository.DDRShiftDetailRepository;
 import com.cogent.cogentappointment.admin.repository.DDRShiftWiseRepository;
 import com.cogent.cogentappointment.admin.repository.DDRWeekDaysDetailRepository;
@@ -28,6 +26,7 @@ import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.SAVING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.SAVING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.admin.log.constants.DDRShiftWiseLog.DDR_SHIFT_WISE;
+import static com.cogent.cogentappointment.admin.utils.DDRBreakDetailUtils.parseToDDRBreakDetail;
 import static com.cogent.cogentappointment.admin.utils.DDRShiftWiseUtils.parseToDDRShiftWise;
 import static com.cogent.cogentappointment.admin.utils.DDRWeekDaysUtils.parseToDDRShiftDetail;
 import static com.cogent.cogentappointment.admin.utils.DDRWeekDaysUtils.parseToDDRWeekDaysDetail;
@@ -59,6 +58,10 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
 
     private final WeekDaysService weekDaysService;
 
+    private final DDRBreakDetailRepository ddrBreakDetailRepository;
+
+    private final BreakTypeService breakTypeService;
+
     public DDRShiftWiseServiceImpl(Validator validator,
                                    DDRShiftWiseRepository ddrShiftWiseRepository,
                                    HospitalService hospitalService,
@@ -67,7 +70,9 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
                                    ShiftService shiftService,
                                    DDRShiftDetailRepository ddrShiftDetailRepository,
                                    DDRWeekDaysDetailRepository ddrWeekDaysDetailRepository,
-                                   WeekDaysService weekDaysService) {
+                                   WeekDaysService weekDaysService,
+                                   DDRBreakDetailRepository ddrBreakDetailRepository,
+                                   BreakTypeService breakTypeService) {
         this.validator = validator;
         this.ddrShiftWiseRepository = ddrShiftWiseRepository;
         this.hospitalService = hospitalService;
@@ -77,6 +82,8 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         this.ddrShiftDetailRepository = ddrShiftDetailRepository;
         this.ddrWeekDaysDetailRepository = ddrWeekDaysDetailRepository;
         this.weekDaysService = weekDaysService;
+        this.ddrBreakDetailRepository = ddrBreakDetailRepository;
+        this.breakTypeService = breakTypeService;
     }
 
     @Override
@@ -93,6 +100,7 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         saveDDRWeekDaysDetail(ddrShiftWise, requestDTO.getShiftDetail());
 
         log.info(SAVING_PROCESS_COMPLETED, DDR_SHIFT_WISE, getDifferenceBetweenTwoTime(startTime));
+
     }
 
     private void validateDDRRequestInfo(DDRRequestDTO requestDTO) {
@@ -103,7 +111,7 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
 
         validateShiftDetail(requestDTO.getShiftDetail(), requestDTO.getDdrDetail().getDoctorId());
 
-        validateDoctorDutyRosterCount(
+        validateDoctorDutyRosterDuplicity(
                 requestDTO.getDdrDetail().getDoctorId(),
                 requestDTO.getDdrDetail().getSpecializationId(),
                 requestDTO.getDdrDetail().getFromDate(),
@@ -131,8 +139,8 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
             throw new BadRequestException(INVALID_SHIFT_REQUEST_MESSAGE);
     }
 
-    private void validateDoctorDutyRosterCount(Long doctorId, Long specializationId,
-                                               Date fromDate, Date toDate) {
+    private void validateDoctorDutyRosterDuplicity(Long doctorId, Long specializationId,
+                                                   Date fromDate, Date toDate) {
 
         Long doctorDutyRosterCount = ddrShiftWiseRepository.validateDoctorDutyRosterCount(
                 doctorId, specializationId, fromDate, toDate);
@@ -186,16 +194,51 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
     private void saveDDRWeekDaysDetail(List<DDRWeekDaysRequestDTO> weekDaysRequestDTOS,
                                        DDRShiftDetail ddrShiftDetail) {
 
-        List<DDRWeekDaysDetail> ddrWeekDaysDetail =
-                weekDaysRequestDTOS.stream().map(
-                        weekDaysDetail -> {
-                            WeekDays weekDays = findWeekDaysById(weekDaysDetail.getWeekDaysId());
+        weekDaysRequestDTOS.forEach(
+                weekDaysRequestDTO -> {
 
-                            return parseToDDRWeekDaysDetail(weekDaysDetail, ddrShiftDetail, weekDays);
-                        }
-                ).collect(Collectors.toList());
+                    DDRWeekDaysDetail weekDaysDetail = saveDDRWeekDaysDetail(weekDaysRequestDTO, ddrShiftDetail);
 
-        saveDDRWeekDaysDetail(ddrWeekDaysDetail);
+                    if (weekDaysRequestDTO.getBreakDetail().size() > 0) {
+                        saveDDRBreakDetail(
+                                weekDaysRequestDTO.getBreakDetail(),
+                                weekDaysDetail,
+                                ddrShiftDetail.getDdrShiftWise().getHospital().getId()
+                        );
+                    }
+                }
+        );
+    }
+
+    private DDRWeekDaysDetail saveDDRWeekDaysDetail(DDRWeekDaysRequestDTO weekDaysRequestDTO,
+                                                    DDRShiftDetail ddrShiftDetail) {
+
+        validateIsStartTimeGreater(weekDaysRequestDTO.getStartTime(), weekDaysRequestDTO.getEndTime());
+
+        WeekDays weekDays = findWeekDaysById(weekDaysRequestDTO.getWeekDaysId());
+
+        DDRWeekDaysDetail weekDaysDetail =
+                parseToDDRWeekDaysDetail(weekDaysRequestDTO, ddrShiftDetail, weekDays);
+
+        return saveDDRWeekDaysDetail(weekDaysDetail);
+    }
+
+    private void saveDDRBreakDetail(List<DDRBreakRequestDTO> breakRequestDTOS,
+                                    DDRWeekDaysDetail ddrWeekDaysDetail,
+                                    Long hospitalId) {
+
+        List<DDRBreakDetail> ddrBreakDetails = breakRequestDTOS.stream()
+                .map(ddrBreakRequestDTO -> {
+
+                    validateIsStartTimeGreater(ddrBreakRequestDTO.getStartTime(), ddrBreakRequestDTO.getEndTime());
+
+                    BreakType breakType = fetchBreakType(ddrBreakRequestDTO.getBreakTypeId(), hospitalId);
+
+                    return parseToDDRBreakDetail(ddrBreakRequestDTO, ddrWeekDaysDetail, breakType);
+
+                }).collect(Collectors.toList());
+
+        saveDDRBreakDetail(ddrBreakDetails);
     }
 
     private Hospital fetchHospitalById(Long hospitalId) {
@@ -222,9 +265,16 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         return weekDaysService.fetchWeekDaysById(weekDaysId);
     }
 
-    private void saveDDRWeekDaysDetail(List<DDRWeekDaysDetail> ddrWeekDaysDetail) {
-        ddrWeekDaysDetailRepository.saveAll(ddrWeekDaysDetail);
+    private DDRWeekDaysDetail saveDDRWeekDaysDetail(DDRWeekDaysDetail ddrWeekDaysDetail) {
+        return ddrWeekDaysDetailRepository.save(ddrWeekDaysDetail);
     }
 
+    private void saveDDRBreakDetail(List<DDRBreakDetail> ddrBreakDetails) {
+        ddrBreakDetailRepository.saveAll(ddrBreakDetails);
+    }
+
+    private BreakType fetchBreakType(Long breakTypeId, Long hospitalId) {
+        return breakTypeService.fetchActiveBreakTypeByIdAndHospitalId(breakTypeId, hospitalId);
+    }
 
 }

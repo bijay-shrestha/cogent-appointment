@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,10 +16,13 @@ public class DDRBreakRequestDTO implements Serializable {
 
     private Long breakTypeId;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss", timezone = "Asia/Kathmandu")
     private Date startTime;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss", timezone = "Asia/Kathmandu")
     private Date endTime;
 
     private Character status;
 
+    private String remarks;
 }

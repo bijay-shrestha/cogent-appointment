@@ -1,24 +1,22 @@
 package com.cogent.cogentappointment.admin.resource;
 
+import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.checkAvailability.DDRExistingAvailabilityRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.override.DDROverrideRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.weekDaysDetail.DDRRequestDTO;
 import com.cogent.cogentappointment.admin.service.DDRShiftWiseService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.DoctorDutyRosterShiftWiseConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.DDRShiftWiseConstants.BASE_DDR_SHIFT_WISE;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.DDRShiftWiseConstants.OVERRIDE;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.DDRShiftWiseConstants.*;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
+import static org.springframework.http.ResponseEntity.ok;
 
 /**
  * @author smriti on 08/05/20
@@ -46,5 +44,11 @@ public class DDRShiftWiseResource {
     public ResponseEntity<?> saveDDROverrideDetail (@RequestBody DDROverrideRequestDTO requestDTO){
         ddrShiftWiseService.saveDDROverrideDetail(requestDTO);
         return created(create(API_V1 + BASE_DDR_SHIFT_WISE+OVERRIDE)).build();
+    }
+
+    @PutMapping(EXISTING)
+    @ApiOperation(FETCH_EXISTING_ROSTERS)
+    public ResponseEntity<?> fetchExistingDutyRosters(@Valid @RequestBody DDRExistingAvailabilityRequestDTO requestDTO) {
+        return ok(ddrShiftWiseService.fetchExistingDDR(requestDTO));
     }
 }

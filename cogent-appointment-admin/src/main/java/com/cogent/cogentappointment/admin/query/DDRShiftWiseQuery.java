@@ -14,4 +14,17 @@ public class DDRShiftWiseQuery {
                     " AND d.toDate >=:fromDate" +
                     " AND d.fromDate <=:toDate";
 
+    public static final String QUERY_TO_FETCH_EXISTING_DDR =
+            " SELECT" +
+                    " dd.id as ddrId," +                                      //[0]
+                    " dd.fromDate as fromDate," +                            //[1]
+                    " dd.toDate as toDate," +                                //[2]
+                    " dd.rosterGapDuration as rosterGapDuration" +           //[3]
+                    " FROM DoctorDutyRosterShiftWise dd" +
+                    " WHERE dd.status != 'D'" +
+                    " AND dd.doctor.id=:doctorId" +
+                    " AND dd.specialization.id= :specializationId" +
+                    " AND dd.toDate >=:fromDate" +
+                    " AND dd.fromDate <=:toDate";
+
 }

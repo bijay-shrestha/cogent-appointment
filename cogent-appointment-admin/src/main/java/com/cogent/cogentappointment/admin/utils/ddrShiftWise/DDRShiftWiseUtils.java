@@ -1,10 +1,14 @@
 package com.cogent.cogentappointment.admin.utils.ddrShiftWise;
 
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.weekDaysDetail.DDRDetailRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRExistingAvailabilityResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRExistingResponseDTO;
 import com.cogent.cogentappointment.persistence.model.Doctor;
-import com.cogent.cogentappointment.persistence.model.ddrShiftWise.DoctorDutyRosterShiftWise;
 import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.Specialization;
+import com.cogent.cogentappointment.persistence.model.ddrShiftWise.DoctorDutyRosterShiftWise;
+
+import java.util.List;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.NO;
 
@@ -28,6 +32,15 @@ public class DDRShiftWiseUtils {
         doctorDutyRoster.setStatus(requestDTO.getStatus());
         doctorDutyRoster.setHasOverride(NO);
         return doctorDutyRoster;
+    }
+
+    public static DDRExistingAvailabilityResponseDTO parseToExistingAvailabilityResponseDTO
+            (List<DDRExistingResponseDTO> existingRosters) {
+
+        return DDRExistingAvailabilityResponseDTO.builder()
+                .hasExistingRosters(!existingRosters.isEmpty())
+                .existingRosters(existingRosters)
+                .build();
     }
 
 }

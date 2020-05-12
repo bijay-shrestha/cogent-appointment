@@ -1,8 +1,11 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
+import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.checkAvailability.DDRExistingAvailabilityRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.override.DDROverrideDetailRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.override.DDROverrideRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.weekDaysDetail.*;
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRExistingAvailabilityResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRExistingResponseDTO;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
@@ -35,6 +38,7 @@ import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDRDateValid
 import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDROverrideBreakDetailUtils.parseToDDROverrideBreakDetail;
 import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDROverrideDetailUtils.parseToDdrOverrideDetail;
 import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDRShiftWiseUtils.parseToDDRShiftWise;
+import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDRShiftWiseUtils.parseToExistingAvailabilityResponseDTO;
 import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDRWeekDaysUtils.parseToDDRShiftDetail;
 import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDRWeekDaysUtils.parseToDDRWeekDaysDetail;
 
@@ -130,6 +134,22 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
             saveDDROverrideDetail(ddrShiftWise, requestDTO.getOverrideDetail());
 
         log.info(SAVING_PROCESS_COMPLETED, DDR_OVERRIDE, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    @Override
+    public DDRExistingAvailabilityResponseDTO fetchExistingDDR(DDRExistingAvailabilityRequestDTO requestDTO) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, DDR_SHIFT_WISE);
+
+        List<DDRExistingResponseDTO> existingRosters = ddrShiftWiseRepository.fetchExistingDDR(requestDTO);
+
+        DDRExistingAvailabilityResponseDTO responseDTO = parseToExistingAvailabilityResponseDTO(existingRosters);
+
+        log.info(FETCHING_PROCESS_COMPLETED, DDR_SHIFT_WISE, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTO;
     }
 
     /*1. VALIDATE CONSTRAINTS VIOLATION

@@ -17,7 +17,6 @@ import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstan
 @Api(BASE_API_VALUE)
 public class TestResource {
 
-
     @GetMapping
     @ApiOperation(TEST_OPERATION)
     public String testClient(){

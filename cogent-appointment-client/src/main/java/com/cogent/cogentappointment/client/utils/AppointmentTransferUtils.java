@@ -1,6 +1,8 @@
 package com.cogent.cogentappointment.client.utils;
 
 import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.AppointmentTransferRequestDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.AppointmentTransferLogDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.PreviousAppointmentDetails;
 import com.cogent.cogentappointment.persistence.model.*;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -155,6 +157,7 @@ public class AppointmentTransferUtils {
 
         return transferTransactionDetail;
     }
+
     public static AppointmentTransactionDetail parseToAppointmentTransactionDetail(
             AppointmentTransactionDetail transactionDetail,
             AppointmentTransferRequestDTO requestDTO) {
@@ -187,9 +190,19 @@ public class AppointmentTransferUtils {
         return transactionRequestLog;
     }
 
-    private static Date parseAppointmentTime(Date appointmentDate, String appointmentTime) {
+    public static Date parseAppointmentTime(Date appointmentDate, String appointmentTime) {
         return datePlusTime(utilDateToSqlDate(appointmentDate),
                 Objects.requireNonNull(parseTime(convert12HourTo24HourFormat(appointmentTime))));
+    }
+
+    public static List<AppointmentTransferLogDTO> parsePreviousData(
+            List<PreviousAppointmentDetails> previousAppointmentDetailsList,
+            AppointmentTransferLogDTO responses) {
+
+
+
+        return null;
+
     }
 
 

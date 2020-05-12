@@ -137,18 +137,19 @@ public class AppointmentTransferQuery {
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id " +
                     " LEFT JOIN AppointmentTransferTransactionDetail attd ON attd.appointmentTransfer.id=apt.id" +
                     " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id" +
-                    " LEFT JOIN DoctorAppointmentCharge dac ON dac.doctorId.id=td.id ";
+                    " LEFT JOIN DoctorAppointmentCharge dac ON dac.doctorId.id=td.id " +
+                    " WHERE" +
+                    " a.hasTransferred = 'Y'" +
+                    " AND apt.lastModifiedDate =(" +
+                    " SELECT" +
+                    "  MAX(at2.lastModifiedDate)" +
+                    " FROM" +
+                    "  AppointmentTransfer at2 " +
+                    " WHERE a.id=at2.appointment.id )";
 
     public static String WHERE_CLAUSE_FOR_SEARCH(AppointmentTransferSearchRequestDTO requestDTO) {
 
-        String whereClause = " WHERE" +
-                " a.hasTransferred = 'Y'" +
-                " AND apt.lastModifiedDate =(" +
-                " SELECT" +
-                "  MAX(at2.lastModifiedDate)" +
-                " FROM" +
-                "  AppointmentTransfer at2 " +
-                " WHERE a.id=at2.appointment.id )";
+        String whereClause =" ";
 
         if (!ObjectUtils.isEmpty(requestDTO.getAppointmentNumber()))
             whereClause += " AND a.appointmentNumber='" + requestDTO.getAppointmentNumber() + "'";
@@ -171,6 +172,25 @@ public class AppointmentTransferQuery {
         return SELECT_CLAUSE_FOR_SEARCH +
                 WHERE_CLAUSE_FOR_SEARCH(requestDTO);
     }
+
+    public static String QUERY_TO_GET_PREVIOUS_INFOS=
+            "SELECT " +
+                    " at2.previousAppointmentDate as previousDate," +
+                    " DATE_FORMAT(at2.previousAppointmentTime,'%h:%i %p') as previousTime ," +
+                    " d.name as previousDoctor," +
+                    " s.name as previousSpecialization," +
+                    " CASE " +
+                    " WHEN attd.previousAppointmentAmount IS NULL THEN dac.appointmentCharge " +
+                    " WHEN attd.previousAppointmentAmount>0 THEN attd.previousAppointmentAmount  END AS previousAppointmentAmount" +
+                    " FROM AppointmentTransfer at2" +
+                    " LEFT JOIN Appointment a ON at2.appointment.id = a.id" +
+                    " LEFT JOIN AppointmentTransferTransactionDetail attd ON attd.appointmentTransfer.id = at2.id" +
+                    " LEFT JOIN Doctor d ON d.id=at2.previousDoctorId" +
+                    " LEFT JOIN Specialization s ON s.id=at2.previousSpecializationId " +
+                    " LEFT JOIN DoctorAppointmentCharge dac ON dac.doctorId.id=at2.previousDoctorId " +
+                    " WHERE" +
+                    " a.id = :appointmentId" +
+                    " ORDER BY at2.lastModifiedDate DESC";
 
 
 }

@@ -2,10 +2,11 @@ package com.cogent.cogentappointment.client.repository.custom.impl;
 
 import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.AppointmentTransferSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.AppointmentTransferLogDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.PreviousAppointmentDetails;
+import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableDates.DoctorDatesResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.ActualDateAndTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.OverrideDateAndTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.WeekDayAndTimeDTO;
-import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableDates.DoctorDatesResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.charge.AppointmentChargeResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.AppointmentTransferRepositoryCustom;
@@ -22,10 +23,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.client.constants.QueryConstants.AppointmentConstants.APPOINTMENT_ID;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.client.log.constants.DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER;
 import static com.cogent.cogentappointment.client.query.AppointmentTransferQuery.*;
+import static com.cogent.cogentappointment.client.utils.AppointmentTransferUtils.parsePreviousData;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
 
 /**
@@ -68,7 +71,7 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
                 .setParameter(CODE, code);
 
         try {
-            return  transformQueryToSingleResult(query, WeekDayAndTimeDTO.class);
+            return transformQueryToSingleResult(query, WeekDayAndTimeDTO.class);
         } catch (NoResultException e) {
             throw DOCTOR_DUTY_ROSTER_NOT_FOUND.get();
         }
@@ -102,7 +105,7 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
     }
 
     @Override
-    public List<String> getUnavailableTimeByDateAndDoctorId(Long doctorId,Long specializationId, Date date) {
+    public List<String> getUnavailableTimeByDateAndDoctorId(Long doctorId, Long specializationId, Date date) {
         Query query = createQuery.apply(entityManager, QUERY_TO_GET_UNAVAILABLE_TIME)
                 .setParameter(DOCTOR_ID, doctorId)
                 .setParameter(SPECIALIZATION_ID, specializationId)
@@ -139,9 +142,20 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
     public List<AppointmentTransferLogDTO> getFinalAppTransferredInfo(AppointmentTransferSearchRequestDTO requestDTO) {
         Query query = createQuery.apply(entityManager, QUERY_TO_GET_CURRENT_TRANSFERRED_DETAIL(requestDTO));
 
-        List<AppointmentTransferLogDTO> response = transformQueryToResultList(query, AppointmentTransferLogDTO.class);
+        List<AppointmentTransferLogDTO> responses = transformQueryToResultList(query, AppointmentTransferLogDTO.class);
 
-        return response;
+        responses.forEach(response -> {
+            Query queryForpreviousInfos = createQuery.apply(entityManager, QUERY_TO_GET_PREVIOUS_INFOS)
+                    .setParameter(APPOINTMENT_ID, response.getAppointmentId());
+            if (queryForpreviousInfos.getResultList().size() > 1) {
+                List<PreviousAppointmentDetails> previousInfo = transformQueryToResultList(queryForpreviousInfos,
+                        PreviousAppointmentDetails.class);
+                responses.addAll(parsePreviousData(previousInfo,response));
+            }
+        });
+
+
+        return responses;
     }
 
     private Supplier<NoContentFoundException> DOCTOR_DUTY_ROSTER_NOT_FOUND = () -> {

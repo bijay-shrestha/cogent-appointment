@@ -15,35 +15,20 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AppointmentTransferLogDTO implements Serializable{
+
     private Long appointmentId;
 
-    private String status;
-
-    private String apptNumber;
-
-    private String patientName;
+    private String status,apptNumber, patientName,mobileNumber;
 
     private Gender gender;
 
-    private String mobileNumber;
+    private Date transferredToDate,transferredFromDate;
 
-    private Date transferredToDate;
+    private String transferredToTime,transferredFromTime;
 
-    private Date transferredFromDate;
+    private String transferredToDoctor,transferredFromDoctor;
 
-    private String transferredToTime;
+    private String transferredToSpecialization,transferredFromSpecialization;
 
-    private String transferredFromTime;
-
-    private String transferredToDoctor;
-
-    private String  transferredFromDoctor;
-
-    private String transferredToSpecialization;
-
-    private String transferredFromSpecialization;
-
-    private Double transferredToAppointmentAmount;
-
-    private Double transferredFromAppointmentAmount;
+    private Double transferredToAppointmentAmount,transferredFromAppointmentAmount;
 }

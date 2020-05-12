@@ -115,7 +115,7 @@ public class DoctorDutyRosterQuery {
                 " s.id as specializationId," +                            //[5]
                 " s.name as specializationName," +                        //[6]
                 " d.roster_gap_duration as rosterGapDuration," +           //[7]
-                " dr.salutation as doctorSalutation"+
+                " dr.salutation as doctorSalutation"+                      //[8]
                 " FROM doctor_duty_roster d" +
                 " LEFT JOIN doctor_week_days_duty_roster dw ON d.id = dw.doctor_duty_roster_id" +
                 " LEFT JOIN week_days w ON w.id = dw.week_days_id" +

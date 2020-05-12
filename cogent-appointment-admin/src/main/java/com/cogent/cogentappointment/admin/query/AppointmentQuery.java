@@ -70,8 +70,6 @@ public class AppointmentQuery {
                 " FROM Appointment a" +
                 " LEFT JOIN Patient p ON p.id = a.patientId.id" +
                 " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
-                " LEFT JOIN DoctorSalutation ds ON ds.doctorId =d.id" +
-                " LEFT JOIN Salutation sal ON sal.id=ds.salutationId" +
                 " LEFT JOIN DoctorAvatar da ON da.doctorId.id = d.id" +
                 " LEFT JOIN Specialization s ON s.id = a.specializationId.id" +
                 " LEFT JOIN Hospital h ON h.id = a.hospitalId.id" +

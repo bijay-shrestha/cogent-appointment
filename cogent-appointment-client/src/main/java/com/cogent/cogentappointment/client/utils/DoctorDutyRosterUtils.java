@@ -135,12 +135,16 @@ public class DoctorDutyRosterUtils {
             final int SPECIALIZATION_ID_INDEX = 5;
             final int SPECIALIZATION_NAME_INDEX = 6;
             final int ROSTER_GAP_DURATION_INDEX = 7;
+            final int DOCTOR_SALUTATION_INDEX=8;
 
             LocalDate startLocalDate = convertDateToLocalDate((Date) result[START_DATE_INDEX]);
             LocalDate endLocalDate = convertDateToLocalDate((Date) result[END_DATE_INDEX]);
 
             List<String> timeDetails = Arrays.asList(result[DOCTOR_TIME_DETAILS_INDEX].toString()
                     .split(StringConstant.COMMA_SEPARATED));
+
+            String salutation = Objects.isNull(result[DOCTOR_SALUTATION_INDEX]) ?
+                    null : result[DOCTOR_SALUTATION_INDEX].toString();
 
             Stream.iterate(startLocalDate, date -> date.plusDays(1))
                     .limit(ChronoUnit.DAYS.between(startLocalDate, endLocalDate) + 1)
@@ -169,6 +173,7 @@ public class DoctorDutyRosterUtils {
                                         .specializationId(Long.parseLong(result[SPECIALIZATION_ID_INDEX].toString()))
                                         .specializationName(result[SPECIALIZATION_NAME_INDEX].toString())
                                         .rosterGapDuration(Integer.parseInt(result[ROSTER_GAP_DURATION_INDEX].toString()))
+                                        .doctorSalutation(salutation)
                                         .build();
 
                                 doctorDutyRosterStatusResponseDTOS.add(responseDTO);

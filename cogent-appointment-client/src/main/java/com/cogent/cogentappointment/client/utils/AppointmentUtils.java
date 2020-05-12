@@ -369,7 +369,8 @@ public class AppointmentUtils {
             final int APPOINTMENT_MODE_INDEX = 18;
             final int IS_FOLLOW_UP_INDEX = 19;
             final int REVENUE_AMOUNT_INDEX = 20;
-            final int DOCTOR_SALUTATION_INDEX = 21;
+            final int DOCTOR_AVATAR_INDEX=21;
+            final int DOCTOR_SALUTATION_INDEX = 22;
 
             Date appointmentDate = (Date) result[APPOINTMENT_DATE_INDEX];
             Date patientDob = (Date) result[PATIENT_DOB_INDEX];
@@ -382,6 +383,12 @@ public class AppointmentUtils {
 
             String registrationNumber = Objects.isNull(result[REGISTRATION_NUMBER_INDEX]) ?
                     null : result[REGISTRATION_NUMBER_INDEX].toString();
+
+            String doctorSalutation = Objects.isNull(result[DOCTOR_SALUTATION_INDEX]) ?
+                    null : result[DOCTOR_SALUTATION_INDEX].toString();
+
+            String doctorAvatar = Objects.isNull(result[DOCTOR_AVATAR_INDEX]) ?
+                    null : result[DOCTOR_AVATAR_INDEX].toString();
 
             AppointmentLogDTO appointmentLogDTO =
                     AppointmentLogDTO.builder()
@@ -409,7 +416,8 @@ public class AppointmentUtils {
                             .appointmentMode(result[APPOINTMENT_MODE_INDEX].toString())
                             .isFollowUp(result[IS_FOLLOW_UP_INDEX].toString().charAt(0))
                             .revenueAmount(Double.parseDouble(result[REVENUE_AMOUNT_INDEX].toString()))
-                            .doctorSalutation(result[DOCTOR_SALUTATION_INDEX].toString())
+                            .fileUri(doctorAvatar)
+                            .doctorSalutation(doctorSalutation)
                             .build();
 
             appointmentLogSearchDTOS.add(appointmentLogDTO);

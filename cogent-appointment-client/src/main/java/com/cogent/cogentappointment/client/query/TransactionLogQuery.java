@@ -39,7 +39,8 @@ public class TransactionLogQuery {
                     " a.isFollowUp as isFollowUp," +                                //[19]
                     " DATE_FORMAT(atd.transactionDateTime, '%h:%i %p') as appointmentTime," + //[20]
                     " (atd.appointmentAmount - COALESCE(ard.refundAmount,0)) as revenueAmount," + //[21]
-                    " da.fileUri as fileUri" +                                                     //[22]
+                    " da.fileUri as fileUri," +                                                     //[22]
+                    " d.salutation as doctorSalutation"+
                     " FROM Appointment a" +
                     " LEFT JOIN AppointmentMode am On am.id=a.appointmentModeId.id" +
                     " LEFT JOIN Patient p ON a.patientId.id=p.id" +

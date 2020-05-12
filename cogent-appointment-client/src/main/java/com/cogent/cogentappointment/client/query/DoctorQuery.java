@@ -39,7 +39,8 @@ public class DoctorQuery {
                 " THEN null" +
                 " ELSE" +
                 " da.file_uri" +
-                " END as fileUri" +
+                " END as fileUri," +
+                " d.salutation as doctorSalutation"+
                 " FROM doctor d" +
                 " LEFT JOIN doctor_avatar da ON da.doctor_id = d.id" +
                 " RIGHT JOIN" +
@@ -147,7 +148,8 @@ public class DoctorQuery {
                     " tbl1.specialization_name as specializationName," +                 //[11]
                     " tbl2.qualification_name as qualificationName," +                   //[12]
                     " tbl3.file_uri as fileUri," +                                        //[13]
-                    DOCTOR_AUDITABLE_QUERY() +
+                    DOCTOR_AUDITABLE_QUERY() +","+
+                    " d.salutation as doctorSalutation"+
                     " FROM doctor d" +
                     " LEFT JOIN hospital h ON h.id = d.hospital_id" +
                     " LEFT JOIN doctor_appointment_charge dac ON dac.doctor_id= d.id" +

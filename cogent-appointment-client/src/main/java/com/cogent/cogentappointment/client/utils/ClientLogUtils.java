@@ -16,7 +16,13 @@ public class ClientLogUtils {
     public static ClientLog parseToClientLog(ClientLogRequestDTO requestDTO, Character status, Admin admin) {
 
         ClientLog clientLog = new ClientLog();
-        clientLog.setAdminId(admin);
+        if (admin == null) {
+            clientLog.setAdminId(null);
+            clientLog.setUnknownUser(requestDTO.getAdminEmail());
+        } else {
+            clientLog.setAdminId(admin);
+        }
+
         clientLog.setParentId(requestDTO.getParentId());
         clientLog.setRoleId(requestDTO.getRoleId());
         clientLog.setIpAddress(requestDTO.getIpAddress());

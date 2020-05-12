@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.utils;
+package com.cogent.cogentappointment.admin.utils.ddrShiftWise;
 
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.weekDaysDetail.DDRBreakRequestDTO;
 import com.cogent.cogentappointment.persistence.model.BreakType;

@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Valid;
 import javax.validation.Validator;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -29,13 +28,15 @@ import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.DDRShiftWiseLog.DDR_OVERRIDE;
 import static com.cogent.cogentappointment.admin.log.constants.DDRShiftWiseLog.DDR_SHIFT_WISE;
-import static com.cogent.cogentappointment.admin.utils.DDRBreakDetailUtils.parseToDDRBreakDetail;
-import static com.cogent.cogentappointment.admin.utils.DDROverrideBreakDetailUtils.parseToDDROverrideBreakDetail;
-import static com.cogent.cogentappointment.admin.utils.DDROverrideDetailUtils.parseToDdrOverrideDetail;
-import static com.cogent.cogentappointment.admin.utils.DDRShiftWiseUtils.parseToDDRShiftWise;
-import static com.cogent.cogentappointment.admin.utils.DDRWeekDaysUtils.parseToDDRShiftDetail;
-import static com.cogent.cogentappointment.admin.utils.DDRWeekDaysUtils.parseToDDRWeekDaysDetail;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
+import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDRBreakDetailUtils.parseToDDRBreakDetail;
+import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDRDateValidationUtils.validateBreakTimeOverlap;
+import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDRDateValidationUtils.validateTimeOverlap;
+import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDROverrideBreakDetailUtils.parseToDDROverrideBreakDetail;
+import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDROverrideDetailUtils.parseToDdrOverrideDetail;
+import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDRShiftWiseUtils.parseToDDRShiftWise;
+import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDRWeekDaysUtils.parseToDDRShiftDetail;
+import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDRWeekDaysUtils.parseToDDRWeekDaysDetail;
 
 /**
  * @author smriti on 08/05/20
@@ -108,7 +109,7 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
 
         validateDDRRequestInfo(requestDTO);
 
-        DoctorDutyRosterShiftWise ddrShiftWise = saveDDRShiftWise(requestDTO.getDdrDetail());
+        DoctorDutyRosterShiftWise ddrShiftWise = saveDDRGeneralInfo(requestDTO.getDdrDetail());
 
         saveDDRWeekDaysDetail(ddrShiftWise, requestDTO.getShiftDetail());
 
@@ -131,7 +132,15 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         log.info(SAVING_PROCESS_COMPLETED, DDR_OVERRIDE, getDifferenceBetweenTwoTime(startTime));
     }
 
+    /*1. VALIDATE CONSTRAINTS VIOLATION
+    * 2. VALIDATE IF FIRST DATE IS GREATER THAN TO DATE
+    * 3. VALIDATE REQUESTED SHIFT DETAILS
+    *    A. VALIDATE IF REQUEST CONTAINS DUPLICATE SHIFT IDS
+    *    B. VALIDATE IF REQUESTED SHIFT IDS IS ASSIGNED TO DOCTOR
+    * 4. VALIDATE IF DDR ALREADY EXISTS FOR SAME DOCTOR, SPECIALIZATION & DATE
+    * */
     private void validateDDRRequestInfo(DDRRequestDTO requestDTO) {
+
         validateConstraintViolation(validator.validate(requestDTO));
 
         validateIsFirstDateGreater(requestDTO.getDdrDetail().getFromDate(),
@@ -179,7 +188,7 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         }
     }
 
-    private DoctorDutyRosterShiftWise saveDDRShiftWise(DDRDetailRequestDTO ddrDetail) {
+    private DoctorDutyRosterShiftWise saveDDRGeneralInfo(DDRDetailRequestDTO ddrDetail) {
 
         Hospital hospital = fetchHospitalById(ddrDetail.getHospitalId());
 
@@ -196,6 +205,8 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
     private void saveDDRWeekDaysDetail(DoctorDutyRosterShiftWise ddrShiftWise,
                                        List<DDRShiftRequestDTO> shiftRequestDTO) {
 
+        List<DDRWeekDaysDetail> ddrWeekDaysDetails = new ArrayList<>();
+
         shiftRequestDTO.forEach(
                 shiftDetail -> {
                     Shift shift = fetchShift(
@@ -206,7 +217,7 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
                     DDRShiftDetail ddrShiftDetail =
                             saveDDRShiftDetail(ddrShiftWise, shift);
 
-                    saveDDRWeekDaysDetail(shiftDetail.getWeekDaysDetail(), ddrShiftDetail);
+                    saveDDRWeekDaysDetail(shiftDetail.getWeekDaysDetail(), ddrShiftDetail, ddrWeekDaysDetails);
                 }
         );
     }
@@ -220,12 +231,17 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
     }
 
     private void saveDDRWeekDaysDetail(List<DDRWeekDaysRequestDTO> weekDaysRequestDTOS,
-                                       DDRShiftDetail ddrShiftDetail) {
+                                       DDRShiftDetail ddrShiftDetail,
+                                       List<DDRWeekDaysDetail> ddrWeekDaysDetails) {
 
         weekDaysRequestDTOS.forEach(
                 (DDRWeekDaysRequestDTO weekDaysRequestDTO) -> {
 
-                    DDRWeekDaysDetail weekDaysDetail = saveDDRWeekDaysDetail(weekDaysRequestDTO, ddrShiftDetail);
+                    DDRWeekDaysDetail weekDaysDetail = saveWeekDaysDetail(
+                            weekDaysRequestDTO,
+                            ddrShiftDetail,
+                            ddrWeekDaysDetails
+                    );
 
                     if (weekDaysRequestDTO.getBreakDetail().size() > 0) {
                         saveDDRBreakDetail(
@@ -238,36 +254,124 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         );
     }
 
-    private DDRWeekDaysDetail saveDDRWeekDaysDetail(DDRWeekDaysRequestDTO weekDaysRequestDTO,
-                                                    DDRShiftDetail ddrShiftDetail) {
+    private DDRWeekDaysDetail saveWeekDaysDetail(DDRWeekDaysRequestDTO weekDaysRequestDTO,
+                                                 DDRShiftDetail ddrShiftDetail,
+                                                 List<DDRWeekDaysDetail> ddrWeekDaysDetails) {
 
-        validateIfStartTimeGreater(weekDaysRequestDTO.getStartTime(), weekDaysRequestDTO.getEndTime());
+        validateDDRWeekDaysDetail(weekDaysRequestDTO, ddrWeekDaysDetails);
 
         WeekDays weekDays = findWeekDaysById(weekDaysRequestDTO.getWeekDaysId());
 
         DDRWeekDaysDetail weekDaysDetail =
                 parseToDDRWeekDaysDetail(weekDaysRequestDTO, ddrShiftDetail, weekDays);
 
-        return saveDDRWeekDaysDetail(weekDaysDetail);
+        saveDDRWeekDaysDetail(weekDaysDetail);
+
+        ddrWeekDaysDetails.add(weekDaysDetail);
+
+        return weekDaysDetail;
+    }
+
+    /* 1. VALIDATE IF END TIME IS GREATER THAN START TIME
+    * 2. VALIDATE IF TIME OVERLAPS IRRESPECTIVE OF SHIFTS
+    * eg. MORNING SHIFT -> SUNDAY -> 9AM-12PM -> ALLOWED
+    *    DAY SHIFT -> SUNDAY -> 11AM-4PM -> NOT ALLOWED */
+    private void validateDDRWeekDaysDetail(DDRWeekDaysRequestDTO weekDaysRequestDTO,
+                                           List<DDRWeekDaysDetail> ddrWeekDaysDetails) {
+
+        validateIfStartTimeGreater(weekDaysRequestDTO.getStartTime(), weekDaysRequestDTO.getEndTime());
+
+        if (ddrWeekDaysDetails.size() >= 1) {
+            ddrWeekDaysDetails.stream()
+                    .filter(ddrWeekDaysDetail ->
+                            ddrWeekDaysDetail.getWeekDays().getId().equals(weekDaysRequestDTO.getWeekDaysId()))
+                    .forEach(matchedResult -> {
+
+                        boolean isTimeOverlapped = validateTimeOverlap(
+                                matchedResult.getStartTime(),
+                                matchedResult.getEndTime(),
+                                weekDaysRequestDTO.getStartTime(),
+                                weekDaysRequestDTO.getEndTime()
+                        );
+
+                        if (isTimeOverlapped) {
+                            log.error(String.format(INVALID_WEEK_DAYS_REQUEST, matchedResult.getWeekDays().getName()));
+                            throw new BadRequestException(String.format(INVALID_WEEK_DAYS_REQUEST,
+                                    matchedResult.getWeekDays().getName()));
+                        }
+                    });
+        }
     }
 
     private void saveDDRBreakDetail(List<DDRBreakRequestDTO> breakRequestDTOS,
                                     DDRWeekDaysDetail ddrWeekDaysDetail,
                                     Long hospitalId) {
 
-        List<DDRBreakDetail> ddrBreakDetails = breakRequestDTOS.stream()
-                .map(ddrBreakRequestDTO -> {
+        List<DDRBreakDetail> ddrBreakDetails = new ArrayList<>();
 
-                    validateIfStartTimeGreater(ddrBreakRequestDTO.getStartTime(), ddrBreakRequestDTO.getEndTime());
+        breakRequestDTOS.forEach((DDRBreakRequestDTO ddrBreakRequestDTO) -> {
 
-                    BreakType breakType = fetchBreakType(ddrBreakRequestDTO.getBreakTypeId(), hospitalId);
+            validateDDRBreakInfo(ddrWeekDaysDetail, ddrBreakDetails, ddrBreakRequestDTO);
 
-                    return parseToDDRBreakDetail(ddrBreakRequestDTO, ddrWeekDaysDetail, breakType);
+            BreakType breakType = fetchBreakType(ddrBreakRequestDTO.getBreakTypeId(), hospitalId);
 
-                }).collect(Collectors.toList());
+            DDRBreakDetail ddrBreakDetail = parseToDDRBreakDetail(ddrBreakRequestDTO, ddrWeekDaysDetail, breakType);
+
+            ddrBreakDetails.add(ddrBreakDetail);
+        });
 
         saveDDRBreakDetail(ddrBreakDetails);
     }
+
+    private void validateDDRBreakInfo(DDRWeekDaysDetail ddrWeekDaysDetail,
+                                      List<DDRBreakDetail> ddrBreakDetails,
+                                      DDRBreakRequestDTO ddrBreakRequestDTO) {
+
+        validateIfStartTimeGreater(ddrBreakRequestDTO.getStartTime(), ddrBreakRequestDTO.getEndTime());
+
+        validateIfDDRBreakIsBetweenWeekDaysTime(ddrWeekDaysDetail, ddrBreakRequestDTO);
+
+        if (ddrBreakDetails.size() >= 1)
+            validateDDRBreakTimeDuplicity(ddrBreakDetails, ddrBreakRequestDTO);
+    }
+
+    private void validateIfDDRBreakIsBetweenWeekDaysTime(DDRWeekDaysDetail ddrWeekDaysDetail,
+                                                         DDRBreakRequestDTO breakRequestDTO) {
+
+        boolean isTimeOverlapped = validateBreakTimeOverlap(
+                ddrWeekDaysDetail.getStartTime(),
+                ddrWeekDaysDetail.getEndTime(),
+                breakRequestDTO.getStartTime(),
+                breakRequestDTO.getEndTime()
+        );
+
+        if (!isTimeOverlapped) {
+            log.error(String.format(INVALID_WEEK_DAYS_BREAK_REQUEST, ddrWeekDaysDetail.getWeekDays().getName()));
+            throw new BadRequestException(String.format(INVALID_WEEK_DAYS_BREAK_REQUEST,
+                    ddrWeekDaysDetail.getWeekDays().getName()));
+        }
+    }
+
+    private void validateDDRBreakTimeDuplicity(List<DDRBreakDetail> breakDetails,
+                                               DDRBreakRequestDTO breakRequestDTO) {
+
+        breakDetails.forEach(breakDetail -> {
+
+                    boolean isTimeOverlapped = validateTimeOverlap(
+                            breakDetail.getStartTime(),
+                            breakDetail.getEndTime(),
+                            breakRequestDTO.getStartTime(),
+                            breakRequestDTO.getEndTime()
+                    );
+
+                    if (isTimeOverlapped) {
+                        log.error(BREAK_TIME_OVERLAP_MESSAGE);
+                        throw new BadRequestException(BREAK_TIME_OVERLAP_MESSAGE);
+                    }
+                }
+        );
+    }
+
 
     private void saveDDROverrideDetail(DoctorDutyRosterShiftWise ddrShiftWise,
                                        List<DDROverrideDetailRequestDTO> overrideRequestDTOS) {
@@ -339,6 +443,7 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
   * 2. VALIDATE IF END TIME IS GREATER THAN START TIME
   * 3. FOR THE SAME DAY,
   *  IF THERE ARE MULTIPLE OVERRIDE REQUESTS, VALIDATE IF START TIME & END TIME OVERLAPS WITH OTHER
+  *  (SHOULD BE EXCLUSIVE)
    *  EG: IF FIRST REQUEST IS 2020-05-10 (9AM-5PM)
    *      NOW NEXT REQUEST FOR 2020-05-10(9AM-1PM) IS NOT ALLOWED SINCE IT IS BETWEEN (9AM-5PM)
    * */
@@ -379,6 +484,12 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         }
     }
 
+    /*1. VALIDATE IF END TIME IS GREATER THAN START TIME
+    * 2. VALIDATE IF OVERRIDE BREAK TIME SCHEDULES IS BETWEEN DDR OVERRIDE FROM DATE-TO DATE (SHOULD BE INCLUSIVE)
+   *  3. IF THERE ARE MULTIPLE OVERRIDE BREAK REQUESTS, VALIDATE IF START TIME & END TIME OVERLAPS WITH OTHER
+   *  EG: IF FIRST REQUEST IS 2020-05-10 (9AM-12PM)
+   *      NOW NEXT REQUEST FOR 2020-05-10(9AM-11PM) IS NOT ALLOWED SINCE IT IS BETWEEN (9AM-12PM)
+ * */
     private void validateDDROverrideBreakRequestInfo(DDROverrideDetail overrideDetail,
                                                      List<DDROverrideBreakDetail> overrideBreakDetails,
                                                      DDRBreakRequestDTO breakRequestDTO) {
@@ -427,7 +538,12 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         );
     }
 
-    /*VALIDATE IF ALL REQUESTED SHIFTS ARE ASSIGNED TO DOCTOR*/
+    /*VALIDATE IF ALL REQUESTED SHIFTS ARE ASSIGNED TO DOCTOR
+    *
+    * 1. FETCH ACTUAL ASSIGNED DOCTOR SHIFTS
+    * EG. COUNT = 2
+    *
+    * 2. IF REQUESTED COUNT !=ASSIGNED SHIFTS COUNT, MEANS INVALID SHIFT IDS ARE REQUESTED*/
     private void validateOverrideShiftDetail(List<DDROverrideDetailRequestDTO> overrideDetail,
                                              Long doctorId) {
 
@@ -440,42 +556,6 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
 
         if (assignedDoctorShifts != requestedShiftIds.size())
             throw new BadRequestException(INVALID_SHIFT_REQUEST_MESSAGE);
-    }
-
-    private boolean validateTimeOverlap(Date initialStartTime, Date initialEndTime,
-                                        Date nextStartTime, Date nextEndTime) {
-
-        LocalTime initialStart = LocalTime.parse(getTimeFromDate(initialStartTime));
-        LocalTime initialEnd = LocalTime.parse(getTimeFromDate(initialEndTime));
-
-        LocalTime nextStartTarget = LocalTime.parse(getTimeFromDate(nextStartTime));
-        LocalTime nextEndTarget = LocalTime.parse(getTimeFromDate(nextEndTime));
-
-        Boolean isNextStartTimeInclusive =
-                ((!nextStartTarget.isBefore(initialStart) && nextStartTarget.isBefore(initialEnd)));
-
-        Boolean isNextEndTimeInclusive =
-                ((!nextEndTarget.isBefore(initialStart) && nextStartTarget.isBefore(initialEnd)));
-
-        return (isNextStartTimeInclusive || isNextEndTimeInclusive);
-    }
-
-    private boolean validateBreakTimeOverlap(Date initialStartTime, Date initialEndTime,
-                                             Date nextStartTime, Date nextEndTime) {
-
-        LocalTime initialStart = LocalTime.parse(getTimeFromDate(initialStartTime));
-        LocalTime initialEnd = LocalTime.parse(getTimeFromDate(initialEndTime));
-
-        LocalTime nextStartTarget = LocalTime.parse(getTimeFromDate(nextStartTime));
-        LocalTime nextEndTarget = LocalTime.parse(getTimeFromDate(nextEndTime));
-
-        Boolean isNextStartTimeInclusive =
-                ((!nextStartTarget.isBefore(initialStart) && nextStartTarget.isBefore(initialEnd)));
-
-        Boolean isNextEndTimeInclusive =
-                ((!nextEndTarget.isBefore(initialStart) && nextStartTarget.isBefore(initialEnd)));
-
-        return (isNextStartTimeInclusive && isNextEndTimeInclusive);
     }
 
     private Hospital fetchHospitalById(Long hospitalId) {
@@ -502,8 +582,8 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         return weekDaysService.fetchWeekDaysById(weekDaysId);
     }
 
-    private DDRWeekDaysDetail saveDDRWeekDaysDetail(DDRWeekDaysDetail ddrWeekDaysDetail) {
-        return ddrWeekDaysDetailRepository.save(ddrWeekDaysDetail);
+    private void saveDDRWeekDaysDetail(DDRWeekDaysDetail ddrWeekDaysDetail) {
+        ddrWeekDaysDetailRepository.save(ddrWeekDaysDetail);
     }
 
     private void saveDDRBreakDetail(List<DDRBreakDetail> ddrBreakDetails) {
@@ -539,12 +619,14 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
                                                      Date dutyRosterToDate,
                                                      Date overrideDate) {
 
+        validateIsFirstDateGreater(dutyRosterFromDate, dutyRosterToDate);
+
         boolean isDateBetweenInclusive =
                 isDateBetweenInclusive(dutyRosterFromDate, dutyRosterToDate, removeTime(overrideDate));
 
         if (!isDateBetweenInclusive) {
-            log.error(BAD_OVERRIDE_REQUEST_MESSAGE);
-            throw new BadRequestException(BAD_OVERRIDE_REQUEST_MESSAGE);
+            log.error(INVALID_OVERRIDE_REQUEST_MESSAGE);
+            throw new BadRequestException(INVALID_OVERRIDE_REQUEST_MESSAGE);
         }
     }
 

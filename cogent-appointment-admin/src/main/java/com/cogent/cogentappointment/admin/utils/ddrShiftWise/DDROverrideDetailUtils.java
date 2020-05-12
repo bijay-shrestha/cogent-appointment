@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.utils;
+package com.cogent.cogentappointment.admin.utils.ddrShiftWise;
 
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.override.DDROverrideDetailRequestDTO;
 import com.cogent.cogentappointment.persistence.model.ddrShiftWise.DDROverrideDetail;

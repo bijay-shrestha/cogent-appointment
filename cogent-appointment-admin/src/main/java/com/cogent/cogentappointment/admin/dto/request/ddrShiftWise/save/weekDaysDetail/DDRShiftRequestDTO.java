@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.List;
 
@@ -19,6 +20,6 @@ public class DDRShiftRequestDTO implements Serializable {
     private Long shiftId;
 
     @NotEmpty
-//    @Size(min = 7, max = 7)
+    @Size(min = 1, max = 7)
     private List<DDRWeekDaysRequestDTO> weekDaysDetail;
 }

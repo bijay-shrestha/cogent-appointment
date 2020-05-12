@@ -93,6 +93,9 @@ public class ErrorMessageConstants {
         String BREAK_TIME_OVERLAP_MESSAGE = "Sorry, Operation failed! Requested Break time schedules overlaps between " +
                 " break types";
 
+        String INVALID_BREAK_OVERRIDE_REQUEST = "Sorry, Operation failed! Break time schedules doesn't lie between " +
+                "override time schedules";
+
 
     }
 

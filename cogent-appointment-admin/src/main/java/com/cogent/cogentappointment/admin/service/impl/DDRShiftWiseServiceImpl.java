@@ -128,6 +128,8 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         if (ddrShiftWise.getHasOverride().equals(YES))
             saveDDROverrideDetail(ddrShiftWise, requestDTO.getOverrideDetail());
 
+        long a = 1 / 0;
+
         log.info(SAVING_PROCESS_COMPLETED, DDR_OVERRIDE, getDifferenceBetweenTwoTime(startTime));
     }
 
@@ -322,7 +324,7 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
 
         breakRequestDTOS.forEach(ddrBreakRequestDTO -> {
 
-            validateDDROverrideBreakRequestInfo(ddrOverrideBreakDetails, ddrBreakRequestDTO);
+            validateDDROverrideBreakRequestInfo(overrideDetail, ddrOverrideBreakDetails, ddrBreakRequestDTO);
 
             BreakType breakType = fetchBreakType(ddrBreakRequestDTO.getBreakTypeId(), hospitalId);
 
@@ -379,28 +381,52 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         }
     }
 
-    private void validateDDROverrideBreakRequestInfo(List<DDROverrideBreakDetail> overrideBreakDetails,
+    private void validateDDROverrideBreakRequestInfo(DDROverrideDetail overrideDetail,
+                                                     List<DDROverrideBreakDetail> overrideBreakDetails,
                                                      DDRBreakRequestDTO breakRequestDTO) {
 
         validateIfStartTimeGreater(breakRequestDTO.getStartTime(), breakRequestDTO.getEndTime());
 
-        if (overrideBreakDetails.size() >= 1) {
-            overrideBreakDetails.forEach(overrideBreakDetail -> {
+        validateIfOverrideBreakIsBetweenOverrideTime(overrideDetail, breakRequestDTO);
 
-                        boolean isTimeOverlapped = validateTimeOverlap(
-                                overrideBreakDetail.getStartTime(),
-                                overrideBreakDetail.getEndTime(),
-                                breakRequestDTO.getStartTime(),
-                                breakRequestDTO.getEndTime()
-                        );
+        if (overrideBreakDetails.size() >= 1)
+            validateOverrideBreakTimeDuplicity(overrideBreakDetails, breakRequestDTO);
+    }
 
-                        if (isTimeOverlapped) {
-                            log.error(BREAK_TIME_OVERLAP_MESSAGE);
-                            throw new BadRequestException(BREAK_TIME_OVERLAP_MESSAGE);
-                        }
-                    }
-            );
+    private void validateIfOverrideBreakIsBetweenOverrideTime(DDROverrideDetail overrideDetail,
+                                                              DDRBreakRequestDTO breakRequestDTO) {
+
+        boolean isTimeOverlapped = validateTimeOverlap(
+                overrideDetail.getStartTime(),
+                overrideDetail.getEndTime(),
+                breakRequestDTO.getStartTime(),
+                breakRequestDTO.getEndTime()
+        );
+
+        if (!isTimeOverlapped) {
+            log.error(INVALID_BREAK_OVERRIDE_REQUEST);
+            throw new BadRequestException(INVALID_BREAK_OVERRIDE_REQUEST);
         }
+    }
+
+    private void validateOverrideBreakTimeDuplicity(List<DDROverrideBreakDetail> overrideBreakDetails,
+                                                    DDRBreakRequestDTO breakRequestDTO) {
+
+        overrideBreakDetails.forEach(overrideBreakDetail -> {
+
+                    boolean isTimeOverlapped = validateTimeOverlap(
+                            overrideBreakDetail.getStartTime(),
+                            overrideBreakDetail.getEndTime(),
+                            breakRequestDTO.getStartTime(),
+                            breakRequestDTO.getEndTime()
+                    );
+
+                    if (isTimeOverlapped) {
+                        log.error(BREAK_TIME_OVERLAP_MESSAGE);
+                        throw new BadRequestException(BREAK_TIME_OVERLAP_MESSAGE);
+                    }
+                }
+        );
     }
 
     /*VALIDATE IF ALL REQUESTED SHIFTS ARE ASSIGNED TO DOCTOR*/

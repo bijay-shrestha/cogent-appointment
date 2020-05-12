@@ -19,6 +19,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Supplier;
@@ -142,20 +143,23 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
     public List<AppointmentTransferLogDTO> getFinalAppTransferredInfo(AppointmentTransferSearchRequestDTO requestDTO) {
         Query query = createQuery.apply(entityManager, QUERY_TO_GET_CURRENT_TRANSFERRED_DETAIL(requestDTO));
 
+        List<AppointmentTransferLogDTO> finalList=new ArrayList<>();
+
         List<AppointmentTransferLogDTO> responses = transformQueryToResultList(query, AppointmentTransferLogDTO.class);
 
         responses.forEach(response -> {
             Query queryForpreviousInfos = createQuery.apply(entityManager, QUERY_TO_GET_PREVIOUS_INFOS)
                     .setParameter(APPOINTMENT_ID, response.getAppointmentId());
+            finalList.add(response);
             if (queryForpreviousInfos.getResultList().size() > 1) {
                 List<PreviousAppointmentDetails> previousInfo = transformQueryToResultList(queryForpreviousInfos,
                         PreviousAppointmentDetails.class);
-                responses.addAll(parsePreviousData(previousInfo,response));
+                finalList.addAll(parsePreviousData(previousInfo,response));
             }
         });
 
 
-        return responses;
+        return finalList;
     }
 
     private Supplier<NoContentFoundException> DOCTOR_DUTY_ROSTER_NOT_FOUND = () -> {

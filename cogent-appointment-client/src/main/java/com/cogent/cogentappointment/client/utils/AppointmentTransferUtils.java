@@ -203,9 +203,7 @@ public class AppointmentTransferUtils {
         for(int i=0;i<previousAppointmentDetailsList.size();i++){
             if(i<previousAppointmentDetailsList.size()-1) {
                 PreviousAppointmentDetails data = previousAppointmentDetailsList.get(i);
-
-                int j=i+1;
-                PreviousAppointmentDetails data1 = previousAppointmentDetailsList.get(j);
+                PreviousAppointmentDetails data1 = previousAppointmentDetailsList.get(i+1);
                 AppointmentTransferLogDTO appointmentTransferLogDTO = new AppointmentTransferLogDTO();
                 appointmentTransferLogDTO.setAppointmentId(responses.getAppointmentId());
                 appointmentTransferLogDTO.setApptNumber(responses.getApptNumber());

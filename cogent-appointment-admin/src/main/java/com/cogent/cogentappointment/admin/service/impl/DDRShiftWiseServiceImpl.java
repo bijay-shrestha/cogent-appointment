@@ -128,8 +128,6 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         if (ddrShiftWise.getHasOverride().equals(YES))
             saveDDROverrideDetail(ddrShiftWise, requestDTO.getOverrideDetail());
 
-        long a = 1 / 0;
-
         log.info(SAVING_PROCESS_COMPLETED, DDR_OVERRIDE, getDifferenceBetweenTwoTime(startTime));
     }
 
@@ -396,7 +394,7 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
     private void validateIfOverrideBreakIsBetweenOverrideTime(DDROverrideDetail overrideDetail,
                                                               DDRBreakRequestDTO breakRequestDTO) {
 
-        boolean isTimeOverlapped = validateTimeOverlap(
+        boolean isTimeOverlapped = validateBreakTimeOverlap(
                 overrideDetail.getStartTime(),
                 overrideDetail.getEndTime(),
                 breakRequestDTO.getStartTime(),
@@ -460,6 +458,24 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
                 ((!nextEndTarget.isBefore(initialStart) && nextStartTarget.isBefore(initialEnd)));
 
         return (isNextStartTimeInclusive || isNextEndTimeInclusive);
+    }
+
+    private boolean validateBreakTimeOverlap(Date initialStartTime, Date initialEndTime,
+                                             Date nextStartTime, Date nextEndTime) {
+
+        LocalTime initialStart = LocalTime.parse(getTimeFromDate(initialStartTime));
+        LocalTime initialEnd = LocalTime.parse(getTimeFromDate(initialEndTime));
+
+        LocalTime nextStartTarget = LocalTime.parse(getTimeFromDate(nextStartTime));
+        LocalTime nextEndTarget = LocalTime.parse(getTimeFromDate(nextEndTime));
+
+        Boolean isNextStartTimeInclusive =
+                ((!nextStartTarget.isBefore(initialStart) && nextStartTarget.isBefore(initialEnd)));
+
+        Boolean isNextEndTimeInclusive =
+                ((!nextEndTarget.isBefore(initialStart) && nextStartTarget.isBefore(initialEnd)));
+
+        return (isNextStartTimeInclusive && isNextEndTimeInclusive);
     }
 
     private Hospital fetchHospitalById(Long hospitalId) {

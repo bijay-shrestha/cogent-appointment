@@ -198,43 +198,20 @@ public class AppointmentTransferUtils {
     public static List<AppointmentTransferLogDTO> parsePreviousData(
             List<PreviousAppointmentDetails> previousAppointmentDetailsList,
             AppointmentTransferLogDTO responses) {
-        int i = 0;
-        int j=1;
-        int size=previousAppointmentDetailsList.size();
+
+
+//        previousAppointmentDetailsList.forEach(appointmentDetails -> {
+//        });
+
+
+        int size = previousAppointmentDetailsList.size();
         List<AppointmentTransferLogDTO> appointmentTransferLogDTOS = new ArrayList<>();
 
-        while (i<previousAppointmentDetailsList.size()){
-            PreviousAppointmentDetails data=previousAppointmentDetailsList.get(i);
-            AppointmentTransferLogDTO appointmentTransferLogDTO = new AppointmentTransferLogDTO();
-            appointmentTransferLogDTO.setAppointmentId(responses.getAppointmentId());
-            appointmentTransferLogDTO.setApptNumber(responses.getApptNumber());
-            appointmentTransferLogDTO.setPatientName(responses.getPatientName());
-            appointmentTransferLogDTO.setGender(responses.getGender());
-            appointmentTransferLogDTO.setMobileNumber(responses.getMobileNumber());
-            appointmentTransferLogDTO.setStatus("N/A");
-            appointmentTransferLogDTO.setTransferredToDate(data.getPreviousDate());
-            appointmentTransferLogDTO.setTransferredToTime(data.getPreviousTime());
-            appointmentTransferLogDTO.setTransferredToDoctor(data.getPreviousDoctor());
-            appointmentTransferLogDTO.setTransferredToSpecialization(data.getPreviousSpecialization());
-            appointmentTransferLogDTO.setTransferredToAppointmentAmount(data.getPreviousAppointmentAmount());
-            while (j<=previousAppointmentDetailsList.size()){
-                PreviousAppointmentDetails data1=previousAppointmentDetailsList.get(j);
-                appointmentTransferLogDTO.setTransferredFromDate(data1.getPreviousDate());
-                appointmentTransferLogDTO.setTransferredFromTime(data1.getPreviousTime());
-                appointmentTransferLogDTO.setTransferredFromDoctor(data1.getPreviousDoctor());
-                appointmentTransferLogDTO.setTransferredFromSpecialization(data1.getPreviousSpecialization());
-                appointmentTransferLogDTO.setTransferredFromAppointmentAmount(data1.getPreviousAppointmentAmount());
-                appointmentTransferLogDTOS.add(appointmentTransferLogDTO);
-                j++;
-            }
-            i++;
-            appointmentTransferLogDTOS.add(appointmentTransferLogDTO);
-        }
 
 
         return appointmentTransferLogDTOS;
 
-    }
+}
 
 
 }

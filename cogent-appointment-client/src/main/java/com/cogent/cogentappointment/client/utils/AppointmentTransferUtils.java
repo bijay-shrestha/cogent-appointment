@@ -186,6 +186,7 @@ public class AppointmentTransferUtils {
             AppointmentTransactionRequestLog transactionRequestLog) {
         transactionRequestLog.setTransactionDate(new Date());
         transactionRequestLog.setTransactionStatus(YES);
+        transactionRequestLog.setHas_transferred(YES);
 
         return transactionRequestLog;
     }

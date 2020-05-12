@@ -369,6 +369,7 @@ public class AppointmentUtils {
             final int APPOINTMENT_MODE_INDEX = 18;
             final int IS_FOLLOW_UP_INDEX = 19;
             final int REVENUE_AMOUNT_INDEX = 20;
+            final int DOCTOR_SALUTATION_INDEX = 21;
 
             Date appointmentDate = (Date) result[APPOINTMENT_DATE_INDEX];
             Date patientDob = (Date) result[PATIENT_DOB_INDEX];
@@ -408,6 +409,7 @@ public class AppointmentUtils {
                             .appointmentMode(result[APPOINTMENT_MODE_INDEX].toString())
                             .isFollowUp(result[IS_FOLLOW_UP_INDEX].toString().charAt(0))
                             .revenueAmount(Double.parseDouble(result[REVENUE_AMOUNT_INDEX].toString()))
+                            .doctorSalutation(result[DOCTOR_SALUTATION_INDEX].toString())
                             .build();
 
             appointmentLogSearchDTOS.add(appointmentLogDTO);

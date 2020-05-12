@@ -210,7 +210,8 @@ public class DashBoardQuery {
                             " THEN null" +
                             " ELSE" +
                             " dv.fileUri" +
-                            " END as doctorAvatar" +
+                            " END as doctorAvatar," +
+                            " d.salutation as doctorSalutation"+
                             " FROM Appointment a" +
                             " LEFT JOIN Patient p ON p.id = a.patientId.id" +
                             " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +

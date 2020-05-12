@@ -30,7 +30,8 @@ public class DoctorDutyRosterQuery {
                 " ddr.fromDate as fromDate," +                                          //[4]
                 " ddr.toDate as toDate," +                                              //[5]
                 " ddr.status as status," +                                              //[6]
-                " da.fileUri as fileUri"+                                               //[7]
+                " da.fileUri as fileUri," +                                              //[7]
+                " d.salutation as doctorSalutation" +                                    //[8]
                 " FROM DoctorDutyRoster ddr" +
                 " LEFT JOIN Doctor d ON ddr.doctorId.id = d.id" +
                 " LEFT JOIN Specialization s ON ddr.specializationId.id = s.id" +
@@ -66,8 +67,9 @@ public class DoctorDutyRosterQuery {
                     " ddr.status as status," +                                          //[8]
                     " ddr.remarks as remarks," +                                        //[9]
                     " ddr.hasOverrideDutyRoster as hasOverrideDutyRoster," +             //[10]
-                    " dv.fileUri as fileUri,"+
-                    DOCTOR_DUTY_ROSTERS_AUDITABLE_QUERY() +
+                    " dv.fileUri as fileUri," +
+                    DOCTOR_DUTY_ROSTERS_AUDITABLE_QUERY() + "," +
+                    " d.salutation as doctorSalutation" +
                     " FROM DoctorDutyRoster ddr" +
                     " LEFT JOIN Doctor d ON ddr.doctorId.id = d.id" +
                     " LEFT JOIN DoctorAvatar dv ON dv.doctorId.id = d.id" +

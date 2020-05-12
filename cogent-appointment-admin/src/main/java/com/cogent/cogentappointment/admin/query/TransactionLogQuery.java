@@ -38,7 +38,8 @@ public class TransactionLogQuery {
                     " hpi.address as patientAddress," +                            //[20]
                     " DATE_FORMAT(atd.transactionDateTime, '%h:%i %p') as appointmentTime," + //[21]
                     " (atd.appointmentAmount - COALESCE(ard.refundAmount,0)) as revenueAmount," + //[22]
-                    " da.fileUri as fileUri" +
+                    " da.fileUri as fileUri," +
+                    " d.salutation as doctorSalutation"+
                     " FROM Appointment a" +
                     " LEFT JOIN AppointmentMode am On am.id=a.appointmentModeId.id" +
                     " LEFT JOIN Patient p ON a.patientId.id=p.id" +

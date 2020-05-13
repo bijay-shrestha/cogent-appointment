@@ -1,12 +1,8 @@
 package com.cogent.cogentappointment.client.service.impl;
 
-import com.cogent.cogentappointment.client.constants.StatusConstants;
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.doctor.*;
-import com.cogent.cogentappointment.client.dto.response.doctor.DoctorDetailResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.doctor.DoctorDropdownDTO;
-import com.cogent.cogentappointment.client.dto.response.doctor.DoctorMinimalResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.doctor.DoctorUpdateResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.doctor.*;
 import com.cogent.cogentappointment.client.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
@@ -47,6 +43,8 @@ public class DoctorServiceImpl implements DoctorService {
 
     private final DoctorRepository doctorRepository;
 
+    private final DoctorSalutationRepository doctorSalutationRepository;
+
     private final DoctorSpecializationRepository doctorSpecializationRepository;
 
     private final SpecializationService specializationService;
@@ -66,7 +64,7 @@ public class DoctorServiceImpl implements DoctorService {
     private final SalutationRepository salutationRepository;
 
     public DoctorServiceImpl(DoctorRepository doctorRepository,
-                             DoctorSpecializationRepository doctorSpecializationRepository,
+                             DoctorSalutationRepository doctorSalutationRepository, DoctorSpecializationRepository doctorSpecializationRepository,
                              SpecializationService specializationService,
                              QualificationService qualificationService,
                              DoctorQualificationRepository doctorQualificationRepository,
@@ -75,6 +73,7 @@ public class DoctorServiceImpl implements DoctorService {
                              MinioFileService minioFileService,
                              DoctorAvatarRepository doctorAvatarRepository, SalutationRepository salutationRepository) {
         this.doctorRepository = doctorRepository;
+        this.doctorSalutationRepository = doctorSalutationRepository;
         this.doctorSpecializationRepository = doctorSpecializationRepository;
         this.specializationService = specializationService;
         this.qualificationService = qualificationService;
@@ -281,6 +280,10 @@ public class DoctorServiceImpl implements DoctorService {
         log.info(FETCHING_DETAIL_PROCESS_STARTED, DOCTOR);
 
         DoctorUpdateResponseDTO responseDTO = doctorRepository.fetchDetailsForUpdate(id, getLoggedInHospitalId());
+
+        List<DoctorSalutationResponseDTO> salutationResponseDTOList=doctorSalutationRepository.fetchDoctorSalutationByDoctorId(id);
+        responseDTO.setDoctorSalutationResponseDTOS(salutationResponseDTOList);
+
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 

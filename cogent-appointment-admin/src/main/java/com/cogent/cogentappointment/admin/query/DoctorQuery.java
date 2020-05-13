@@ -152,8 +152,8 @@ public class DoctorQuery {
                     " tbl1.specialization_name as specializationName," +                //[12]
                     " tbl2.qualification_name as qualificationName," +                   //[13]
                     " tbl3.file_uri as fileUri," +                                       //[14]
-                    " d.salutation as doctorSalutation," +
-                    DOCTOR_AUDITABLE_QUERY() +
+                    DOCTOR_AUDITABLE_QUERY() + "," +
+                    " d.salutation as doctorSalutation" +
                     " FROM doctor d" +
                     " LEFT JOIN hospital h ON h.id = d.hospital_id" +
                     " LEFT JOIN doctor_appointment_charge dac ON dac.doctor_id= d.id" +

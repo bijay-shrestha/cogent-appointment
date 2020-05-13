@@ -11,8 +11,8 @@ public class SalutationUtils {
     public static DoctorSalutation parseToDoctorSalutation(Doctor doctor, Salutation salutation) {
 
         DoctorSalutation doctorSalutation = new DoctorSalutation();
-        doctorSalutation.setDoctorId(doctor);
-        doctorSalutation.setSalutationId(salutation);
+        doctorSalutation.setDoctorId(doctor.getId());
+        doctorSalutation.setSalutationId(salutation.getId());
         doctorSalutation.setStatus(ACTIVE);
         return doctorSalutation;
 

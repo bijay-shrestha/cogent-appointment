@@ -18,6 +18,8 @@ public class DoctorUpdateResponseDTO implements Serializable {
 
     private String doctorName;
 
+    private List<DoctorSalutationResponseDTO> doctorSalutationResponseDTOS;
+
     private String mobileNumber;
 
     private String code;

@@ -22,6 +22,9 @@ public class DoctorChargeRequestDTO implements Serializable{
     private Long doctorId;
 
     @NotNull
+    private Long hospitalId;
+
+    @NotNull
     private Long specializationId;
 
     @Status(message = "Must be Y/N")

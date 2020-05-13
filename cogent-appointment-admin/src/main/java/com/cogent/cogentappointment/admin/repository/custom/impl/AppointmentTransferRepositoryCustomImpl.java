@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.avail
 import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.availableTime.ActualDateAndTimeResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.availableTime.OverrideDateAndTimeResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.availableTime.WeekDayAndTimeDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.charge.AppointmentChargeResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.AppointmentTransferRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.AppointmentTransfer;
@@ -41,7 +42,7 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
 
 
     @Override
-    public List<DoctorDatesResponseDTO> getDatesByDoctorId(Long doctorId, Long specializationId,Long hospitalId) {
+    public List<DoctorDatesResponseDTO> getDatesByDoctorId(Long doctorId, Long specializationId, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DATES_BY_DOCTOR_ID)
                 .setParameter(DOCTOR_ID, doctorId)
                 .setParameter(HOSPITAL_ID, hospitalId)
@@ -77,7 +78,7 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
     }
 
     @Override
-    public List<DoctorDatesResponseDTO> getOverrideDatesByDoctorId(Long doctorId, Long specializationId,Long hospitalId) {
+    public List<DoctorDatesResponseDTO> getOverrideDatesByDoctorId(Long doctorId, Long specializationId, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_GET_OVERRIDE_DATES_BY_DOCTOR_ID)
                 .setParameter(DOCTOR_ID, doctorId)
                 .setParameter(HOSPITAL_ID, hospitalId)
@@ -115,6 +116,18 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
                 .setParameter(DATE, date);
 
         List<String> response = query.getResultList();
+
+        return response;
+    }
+
+    @Override
+    public AppointmentChargeResponseDTO getAppointmentChargeByDoctorId(Long doctorId, Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_GET_DOCTOR_CHARGE_BY_DOCTOR_ID)
+                .setParameter(DOCTOR_ID, doctorId)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        AppointmentChargeResponseDTO response = transformQueryToSingleResult(
+                query, AppointmentChargeResponseDTO.class);
 
         return response;
     }

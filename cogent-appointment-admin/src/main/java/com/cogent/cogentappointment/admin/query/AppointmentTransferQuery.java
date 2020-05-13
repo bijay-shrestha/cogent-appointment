@@ -106,12 +106,14 @@ public class AppointmentTransferQuery {
 
     public static String QUERY_TO_GET_DOCTOR_CHARGE_BY_DOCTOR_ID =
             "SELECT" +
-                    " appointmentCharge as actualCharge," +
-                    " appointmentFollowUpCharge  as followUpCharge" +
+                    " dac.appointmentCharge as actualCharge," +
+                    " dac.appointmentFollowUpCharge  as followUpCharge" +
                     " FROM " +
                     " DoctorAppointmentCharge dac" +
+                    " LEFT JOIN Doctor d ON d.id=dac.doctorId.id" +
                     " WHERE" +
-                    " dac.doctorId.id =:doctorId";
+                    " dac.doctorId.id =:doctorId" +
+                    " AND d.hospital.id=:hospitalId";
 
     public static String SELECT_CLAUSE_FOR_SEARCH =
             "SELECT " +

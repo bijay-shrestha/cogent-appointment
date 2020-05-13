@@ -2,10 +2,12 @@ package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.request.appointmentTransfer.AppointmentDateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointmentTransfer.AppointmentTransferTimeRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointmentTransfer.DoctorChargeRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.availableDates.DoctorDatesResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.availableTime.ActualDateAndTimeResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.availableTime.OverrideDateAndTimeResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.availableTime.WeekDayAndTimeDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.charge.AppointmentChargeResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.AppointmentTransferService;
@@ -21,6 +23,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentTransferLog.*;
 import static com.cogent.cogentappointment.admin.log.constants.DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER;
@@ -139,6 +142,24 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
                 getDifferenceBetweenTwoTime(startTime));
 
         return time;
+    }
+
+    @Override
+    public Double fetchDoctorChargeByDoctorId(DoctorChargeRequestDTO requestDTO) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_DOCTOR_CHARGE_PROCESS_STARTED, APPOINTMENT_TRANSFER);
+
+        AppointmentChargeResponseDTO charge = repository.getAppointmentChargeByDoctorId(requestDTO.getDoctorId(),
+                requestDTO.getHospitalId());
+
+        Double response = requestDTO.getFollowUp().equals(NO) ? charge.getActualCharge() : charge.getFollowUpCharge();
+
+        log.info(FETCHING_DOCTOR_CHARGE_PROCESS_COMPLETED, APPOINTMENT_TRANSFER,
+                getDifferenceBetweenTwoTime(startTime));
+
+        return response;
     }
 
     /* CHECKS AVAILABLE APPT. TIME FROM OVERRIDE TABLE */

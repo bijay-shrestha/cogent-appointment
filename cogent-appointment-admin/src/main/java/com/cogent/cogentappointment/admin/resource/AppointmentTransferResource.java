@@ -46,7 +46,7 @@ public class AppointmentTransferResource {
     @PutMapping(APPOINTMENT_CHARGE)
     @ApiOperation(FETCH_DOCTOR_CHARGE)
     public ResponseEntity<?> fetchDoctorChargeByDoctorId(@Valid @RequestBody DoctorChargeRequestDTO requestDTO) {
-        return null;
+        return ok(appointmentTransferService.fetchDoctorChargeByDoctorId(requestDTO));
     }
 
     @PutMapping

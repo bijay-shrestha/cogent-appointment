@@ -1,8 +1,10 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.request.appointmentTransfer.AppointmentDateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointmentTransfer.AppointmentTransferSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointmentTransfer.AppointmentTransferTimeRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointmentTransfer.DoctorChargeRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.AppointmentTransferLog.AppointmentTransferLogResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.availableDates.DoctorDatesResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.availableTime.ActualDateAndTimeResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.availableTime.OverrideDateAndTimeResponseDTO;
@@ -14,6 +16,7 @@ import com.cogent.cogentappointment.admin.service.AppointmentTransferService;
 import com.cogent.cogentappointment.admin.service.DoctorService;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRoster;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +28,8 @@ import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.SEARCHING_PROCESS_COMPLETED;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.SEARCHING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentTransferLog.*;
 import static com.cogent.cogentappointment.admin.log.constants.DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER;
 import static com.cogent.cogentappointment.admin.utils.AppointmentTransferUtils.*;
@@ -160,6 +165,21 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
                 getDifferenceBetweenTwoTime(startTime));
 
         return response;
+    }
+
+    @Override
+    public AppointmentTransferLogResponseDTO searchTransferredAppointment(AppointmentTransferSearchRequestDTO requestDTO, Pageable pageable) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_TRANSFER);
+
+        AppointmentTransferLogResponseDTO appointmentTransferLogDTOS = repository.getApptTransferredList(requestDTO,
+                pageable);
+
+        log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_TRANSFER,
+                getDifferenceBetweenTwoTime(startTime));
+
+        return appointmentTransferLogDTOS;
     }
 
     /* CHECKS AVAILABLE APPT. TIME FROM OVERRIDE TABLE */

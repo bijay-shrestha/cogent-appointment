@@ -37,5 +37,5 @@ public interface AppointmentTransferRepositoryCustom {
 
     List<OverrideDateAndTimeResponseDTO> getOverideRosterDateAndTime(Long doctorId, Long specializationId);
 
-    AppointmentTransferLogResponseDTO getFinalAppTransferredInfo(AppointmentTransferSearchRequestDTO requestDTO, Pageable pageable);
+    AppointmentTransferLogResponseDTO getApptTransferredList(AppointmentTransferSearchRequestDTO requestDTO, Pageable pageable);
 }

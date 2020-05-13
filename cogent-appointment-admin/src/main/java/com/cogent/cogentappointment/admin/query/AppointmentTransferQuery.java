@@ -144,7 +144,8 @@ public class AppointmentTransferQuery {
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id  " +
                     " LEFT JOIN AppointmentTransferTransactionDetail attd ON attd.appointmentTransfer.id=apt.id " +
                     " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id  " +
-                    " WHERE a.hasTransferred='Y' ";
+                    " WHERE a.hasTransferred='Y'" +
+                    " AND a.hospitalId.id=:hospitalId";
 
     public static String WHERE_CLAUSE_FOR_SEARCH(AppointmentTransferSearchRequestDTO requestDTO) {
 
@@ -207,7 +208,8 @@ public class AppointmentTransferQuery {
                     " LEFT JOIN Specialization s ON s.id=a.specializationId.id" +
                     " LEFT JOIN Patient p ON p.id=a.patientId.id" +
                     " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id" +
-                    " WHERE a.hasTransferred='Y'";
+                    " WHERE a.hasTransferred='Y'" +
+                    " AND a.hospitalId.id=:hospitalId";
 
     public static String WHERE_CLAUSE_FOR_CURRENT_INFO(AppointmentTransferSearchRequestDTO requestDTO) {
 

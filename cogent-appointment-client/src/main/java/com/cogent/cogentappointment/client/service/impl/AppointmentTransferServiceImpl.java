@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.*;
-import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.AppointmentTransferLogDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.AppointmentTransferLogResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableDates.DoctorDatesResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.ActualDateAndTimeResponseDTO;
@@ -271,7 +270,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
         log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_TRANSFER);
 
-        AppointmentTransferLogResponseDTO appointmentTransferLogDTOS = repository.getFinalAppTransferredInfo(requestDTO,
+        AppointmentTransferLogResponseDTO appointmentTransferLogDTOS = repository.getApptTransferredList(requestDTO,
                 pageable);
 
         log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_TRANSFER,

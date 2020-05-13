@@ -1,6 +1,8 @@
 package com.cogent.cogentappointment.admin.service;
 
 import com.cogent.cogentappointment.admin.dto.request.appointmentTransfer.*;
+import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.AppointmentTransferLog.AppointmentTransferLogResponseDTO;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Date;
 import java.util.List;
@@ -14,4 +16,7 @@ public interface AppointmentTransferService {
     List<String> fetchAvailableDoctorTime(AppointmentTransferTimeRequestDTO requestDTO);
 
     Double fetchDoctorChargeByDoctorId(DoctorChargeRequestDTO requestDTO);
+
+    AppointmentTransferLogResponseDTO searchTransferredAppointment(AppointmentTransferSearchRequestDTO requestDTO,
+                                                                   Pageable pageable);
 }

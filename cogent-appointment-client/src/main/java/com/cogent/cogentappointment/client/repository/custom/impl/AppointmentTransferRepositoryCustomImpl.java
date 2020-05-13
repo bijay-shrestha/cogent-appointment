@@ -147,8 +147,8 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
     }
 
     @Override
-    public AppointmentTransferLogResponseDTO getFinalAppTransferredInfo(AppointmentTransferSearchRequestDTO requestDTO,
-                                                                        Pageable pageable) {
+    public AppointmentTransferLogResponseDTO getApptTransferredList(AppointmentTransferSearchRequestDTO requestDTO,
+                                                                    Pageable pageable) {
 
         AppointmentTransferLogResponseDTO appointmentTransferLogResponseDTO=new AppointmentTransferLogResponseDTO();
 

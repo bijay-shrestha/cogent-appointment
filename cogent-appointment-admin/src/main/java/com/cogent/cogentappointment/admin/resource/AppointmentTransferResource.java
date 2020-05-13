@@ -57,10 +57,10 @@ public class AppointmentTransferResource {
 
     @PutMapping(INFO)
     @ApiOperation(FETCH_TRANSFERRED_APPOINTMENT_LIST)
-    public ResponseEntity<?> searchAppointmentTransfer(@RequestBody AppointmentTransferSearchRequestDTO requestDTO,
+    public ResponseEntity<?> searchAppointmentTransfer(@Valid @RequestBody AppointmentTransferSearchRequestDTO requestDTO,
                                                        @RequestParam("page") int page,
                                                        @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return null;
+        return ok(appointmentTransferService.searchTransferredAppointment(requestDTO,pageable));
     }
 }

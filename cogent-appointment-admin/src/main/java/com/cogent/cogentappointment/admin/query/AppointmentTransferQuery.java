@@ -272,7 +272,8 @@ public class AppointmentTransferQuery {
                     " apt.currentDoctor.name as transferredToDoctor," +
                     " apt.previousSpecialization.name as transferredFromSpecialization," +
                     " apt.currentSpecialization.name as transferredToSpecialization," +
-                    QUERY_TO_CALCULATE_PATIENT_AGE +
+                    QUERY_TO_CALCULATE_PATIENT_AGE +","+
+                    APPOINTMENT_TRANSFER_AUDITABLE_QUERY()+
                     " FROM" +
                     " AppointmentTransfer apt" +
                     " LEFT JOIN Appointment a ON a.id=apt.appointment.id " +
@@ -280,6 +281,13 @@ public class AppointmentTransferQuery {
                     " LEFT JOIN Patient p ON p.id=a.patientId.id" +
                     " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id " +
                     " WHERE apt.id=:appointmentTransferId";
+
+    public static String APPOINTMENT_TRANSFER_AUDITABLE_QUERY() {
+        return " apt.createdBy as createdBy," +
+                " apt.createdDate as createdDate," +
+                " apt.lastModifiedBy as lastModifiedBy," +
+                " apt.lastModifiedDate as lastModifiedDate";
+    }
 
 
 }

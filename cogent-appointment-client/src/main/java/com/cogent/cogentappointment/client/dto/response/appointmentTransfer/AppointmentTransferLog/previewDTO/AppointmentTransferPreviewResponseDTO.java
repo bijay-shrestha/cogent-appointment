@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.previewDTO;
 
+import com.cogent.cogentappointment.client.dto.response.common.AuditableResponseDTO;
 import com.cogent.cogentappointment.persistence.enums.Gender;
 import lombok.*;
 
@@ -14,7 +15,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppointmentTransferPreviewResponseDTO implements Serializable{
+public class AppointmentTransferPreviewResponseDTO extends AuditableResponseDTO implements Serializable{
 
     private String appointmentNumber, patientName,mobileNumber,age;
 

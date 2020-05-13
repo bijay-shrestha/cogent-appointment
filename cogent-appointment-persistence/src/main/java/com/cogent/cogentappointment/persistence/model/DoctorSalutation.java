@@ -23,11 +23,12 @@ public class DoctorSalutation extends Auditable<String> implements Serializable 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "doctor_id")
-    private Long doctorId;
+    @JoinColumn(name = "doctor_id")
+    private Doctor doctorId;
 
-    @Column(name = "salutation_id")
-    private Long salutationId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "salutation_id")
+    private Salutation salutationId;
 
     @Column(name = "status")
     private Character status;

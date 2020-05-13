@@ -14,21 +14,21 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppointmentTransferLogDTO implements Serializable{
+public class AppointmentTransferLogDTO implements Serializable {
 
-    private Long appointmentId,appointmentTransferId;
+    private Long appointmentId, appointmentTransferId;
 
-    private String status,apptNumber, patientName,mobileNumber;
+    private String status, apptNumber, patientName, mobileNumber, age;
 
     private Gender gender;
 
-    private Date transferredToDate,transferredFromDate;
+    private Date transferredToDate, transferredFromDate;
 
-    private String transferredToTime,transferredFromTime;
+    private String transferredToTime, transferredFromTime;
 
-    private String transferredToDoctor,transferredFromDoctor;
+    private String transferredToDoctor, transferredFromDoctor;
 
-    private String transferredToSpecialization,transferredFromSpecialization;
+    private String transferredToSpecialization, transferredFromSpecialization;
 
-    private Double transferredToAmount,transferredFromAmount;
+    private Double transferredToAmount, transferredFromAmount;
 }

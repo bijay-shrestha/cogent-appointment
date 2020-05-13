@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.admin.service;
 
 import com.cogent.cogentappointment.admin.dto.request.appointmentTransfer.*;
 import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.AppointmentTransferLog.AppointmentTransferLogResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.AppointmentTransferLog.previewDTO.AppointmentTransferPreviewResponseDTO;
 import org.springframework.data.domain.Pageable;
 
 import java.util.Date;
@@ -21,4 +22,6 @@ public interface AppointmentTransferService {
 
     AppointmentTransferLogResponseDTO searchTransferredAppointment(AppointmentTransferSearchRequestDTO requestDTO,
                                                                    Pageable pageable);
+
+    AppointmentTransferPreviewResponseDTO fetchAppointmentTransferDetailById(Long id);
 }

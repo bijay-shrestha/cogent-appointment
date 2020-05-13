@@ -12,9 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentTransferConstant.*;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentTransferConstants.*;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.SEARCH;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -64,5 +63,11 @@ public class AppointmentTransferResource {
                                                        @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ok(appointmentTransferService.searchTransferredAppointment(requestDTO,pageable));
+    }
+
+    @GetMapping(DETAIL + ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_TRANSFERRED_APPOINTMENT_DETAIL)
+    public ResponseEntity<?> fetchAppointmentTransferDetailById(@PathVariable("id") Long id) {
+        return ok(appointmentTransferService.fetchAppointmentTransferDetailById(id));
     }
 }

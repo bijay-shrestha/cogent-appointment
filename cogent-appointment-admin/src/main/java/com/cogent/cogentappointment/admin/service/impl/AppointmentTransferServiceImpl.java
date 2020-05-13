@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.request.appointmentTransfer.*;
 import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.AppointmentTransferLog.AppointmentTransferLogResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.AppointmentTransferLog.previewDTO.AppointmentTransferPreviewResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.availableDates.DoctorDatesResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.availableTime.ActualDateAndTimeResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.availableTime.OverrideDateAndTimeResponseDTO;
@@ -11,7 +12,6 @@ import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.AppointmentTransferService;
-import com.cogent.cogentappointment.admin.service.DoctorService;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -257,7 +257,9 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
     }
 
     @Override
-    public AppointmentTransferLogResponseDTO searchTransferredAppointment(AppointmentTransferSearchRequestDTO requestDTO, Pageable pageable) {
+    public AppointmentTransferLogResponseDTO searchTransferredAppointment(AppointmentTransferSearchRequestDTO requestDTO,
+                                                                          Pageable pageable) {
+
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_TRANSFER);
@@ -269,6 +271,20 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
                 getDifferenceBetweenTwoTime(startTime));
 
         return appointmentTransferLogDTOS;
+    }
+
+    @Override
+    public AppointmentTransferPreviewResponseDTO fetchAppointmentTransferDetailById(Long id) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_DETAIL_PROCESS_STARTED, APPOINTMENT_TRANSFER);
+
+        AppointmentTransferPreviewResponseDTO response = repository.fetchAppointmentTransferDetailById(id);
+
+        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, APPOINTMENT_TRANSFER,
+                getDifferenceBetweenTwoTime(startTime));
+
+        return response;
     }
 
     /* CHECKS AVAILABLE APPT. TIME FROM OVERRIDE TABLE */

@@ -13,9 +13,9 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppointmentTransferLogResponseDTO implements Serializable{
+public class AppointmentTransferLogResponseDTO implements Serializable {
 
-   private List<AppointmentTransferLogDTO> response;
+    private List<AppointmentTransferLogDTO> response;
 
-   private int totalItems;
+    private int totalItems;
 }

@@ -19,6 +19,9 @@ public class DDRShiftRequestDTO implements Serializable {
     @NotNull
     private Long shiftId;
 
+    @NotNull
+    private Integer rosterGapDuration;
+
     @NotEmpty
     @Size(min = 1, max = 7)
     private List<DDRWeekDaysRequestDTO> weekDaysDetail;

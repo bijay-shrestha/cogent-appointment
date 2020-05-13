@@ -1,7 +1,8 @@
 package com.cogent.cogentappointment.admin.utils.ddrShiftWise;
 
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.weekDaysDetail.DDRWeekDaysRequestDTO;
-import com.cogent.cogentappointment.persistence.model.*;
+import com.cogent.cogentappointment.persistence.model.Shift;
+import com.cogent.cogentappointment.persistence.model.WeekDays;
 import com.cogent.cogentappointment.persistence.model.ddrShiftWise.DDRShiftDetail;
 import com.cogent.cogentappointment.persistence.model.ddrShiftWise.DDRWeekDaysDetail;
 import com.cogent.cogentappointment.persistence.model.ddrShiftWise.DoctorDutyRosterShiftWise;
@@ -14,9 +15,12 @@ import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIV
 public class DDRWeekDaysUtils {
 
     public static DDRShiftDetail parseToDDRShiftDetail(DoctorDutyRosterShiftWise doctorDutyRosterShiftWise,
-                                                       Shift shift) {
+                                                       Shift shift,
+                                                       Integer rosterGapDuration) {
+
         DDRShiftDetail ddrShiftDetail = new DDRShiftDetail();
         ddrShiftDetail.setDdrShiftWise(doctorDutyRosterShiftWise);
+        ddrShiftDetail.setRosterGapDuration(rosterGapDuration);
         ddrShiftDetail.setShift(shift);
         ddrShiftDetail.setStatus(ACTIVE);
 
@@ -31,6 +35,7 @@ public class DDRWeekDaysUtils {
         ddrWeekDaysDetail.setStartTime(weekDaysRequestDTO.getStartTime());
         ddrWeekDaysDetail.setEndTime(weekDaysRequestDTO.getEndTime());
         ddrWeekDaysDetail.setOffStatus(weekDaysRequestDTO.getOffStatus());
+        ddrWeekDaysDetail.setHasBreak(weekDaysRequestDTO.getHasBreak());
         ddrWeekDaysDetail.setDdrShiftDetail(ddrShiftDetail);
         ddrWeekDaysDetail.setWeekDays(weekDays);
         return ddrWeekDaysDetail;

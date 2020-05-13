@@ -53,6 +53,11 @@ public class DDROverrideDetail implements Serializable {
     @Column(name = "is_shift_added")
     private Character isAddedShift;
 
+    /*Y -> HAS BREAKS
+    * N-> NO BREAKS*/
+    @Column(name = "has_break")
+    private Character hasBreak;
+
     /*Y-> ACTIVE
     * N-> INACTIVE
     */

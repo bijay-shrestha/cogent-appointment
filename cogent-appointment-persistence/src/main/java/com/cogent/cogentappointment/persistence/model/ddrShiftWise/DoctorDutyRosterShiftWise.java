@@ -50,9 +50,6 @@ public class DoctorDutyRosterShiftWise extends Auditable<String> implements Seri
     @Column(name = "to_date")
     private Date toDate;
 
-    @Column(name = "roster_gap_duration")
-    private Integer rosterGapDuration;
-
     /*Y-> ACTIVE
     * N-> INACTIVE
     * D-> DELETED*/
@@ -71,7 +68,6 @@ public class DoctorDutyRosterShiftWise extends Auditable<String> implements Seri
                 "id=" + id +
                 ", doctor=" + doctor.getName() +
                 ", specialization=" + specialization.getName() +
-                ", rosterGapDuration=" + rosterGapDuration +
                 ", fromDate=" + fromDate +
                 ", toDate=" + toDate +
                 ", status=" + status +

@@ -30,6 +30,10 @@ public class DDRWeekDaysRequestDTO implements Serializable {
     private Character offStatus;
 
     @NotNull
+    @Status
+    private Character hasBreak;
+
+    @NotNull
     private Long weekDaysId;
 
     private List<DDRBreakRequestDTO> breakDetail;

@@ -36,6 +36,10 @@ public class DDROverrideDetailRequestDTO implements Serializable {
     @Status
     private Character offStatus;
 
+    @NotNull
+    @Status
+    private Character hasBreak;
+
     private Character status;
 
     private String remarks;

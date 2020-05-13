@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.persistence.model.ddrShiftWise;
 
 import com.cogent.cogentappointment.persistence.model.Shift;
-import com.cogent.cogentappointment.persistence.model.ddrShiftWise.DoctorDutyRosterShiftWise;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,6 +27,9 @@ public class DDRShiftDetail implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shift_id")
     private Shift shift;
+
+    @Column(name = "roster_gap_duration")
+    private Integer rosterGapDuration;
 
     /* Y-> ACTIVE
     * D-> DELETED*/

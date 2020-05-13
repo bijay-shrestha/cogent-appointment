@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.persistence.model.ddrShiftWise;
 
 import com.cogent.cogentappointment.persistence.model.WeekDays;
-import com.cogent.cogentappointment.persistence.model.ddrShiftWise.DDRShiftDetail;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -32,6 +31,11 @@ public class DDRWeekDaysDetail implements Serializable {
 
     @Column(name = "off_status")
     private Character offStatus;
+
+    /*Y -> HAS BREAKS
+    * N-> NO BREAKS*/
+    @Column(name = "has_break")
+    private Character hasBreak;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ddr_shift_detail_id")

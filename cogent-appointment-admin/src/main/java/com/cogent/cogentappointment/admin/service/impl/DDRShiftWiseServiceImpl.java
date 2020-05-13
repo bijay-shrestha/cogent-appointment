@@ -251,7 +251,7 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
                     );
 
                     DDRShiftDetail ddrShiftDetail =
-                            saveDDRShiftDetail(ddrShiftWise, shift);
+                            saveDDRShiftDetail(ddrShiftWise, shift, shiftDetail.getRosterGapDuration());
 
                     saveDDRWeekDaysDetail(shiftDetail.getWeekDaysDetail(), ddrShiftDetail, ddrWeekDaysDetails);
                 }
@@ -259,9 +259,10 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
     }
 
     private DDRShiftDetail saveDDRShiftDetail(DoctorDutyRosterShiftWise ddrShiftWise,
-                                              Shift shift) {
+                                              Shift shift,
+                                              Integer rosterGapDuration) {
 
-        DDRShiftDetail ddrShiftDetail = parseToDDRShiftDetail(ddrShiftWise, shift);
+        DDRShiftDetail ddrShiftDetail = parseToDDRShiftDetail(ddrShiftWise, shift, rosterGapDuration);
 
         return ddrShiftDetailRepository.save(ddrShiftDetail);
     }
@@ -279,7 +280,7 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
                             ddrWeekDaysDetails
                     );
 
-                    if (weekDaysRequestDTO.getBreakDetail().size() > 0) {
+                    if (!weekDaysRequestDTO.getBreakDetail().isEmpty()) {
                         saveDDRBreakDetail(
                                 weekDaysRequestDTO.getBreakDetail(),
                                 weekDaysDetail,

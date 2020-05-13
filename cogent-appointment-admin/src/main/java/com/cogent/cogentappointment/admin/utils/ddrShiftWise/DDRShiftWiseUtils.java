@@ -1,8 +1,8 @@
 package com.cogent.cogentappointment.admin.utils.ddrShiftWise;
 
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.weekDaysDetail.DDRDetailRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRExistingMinResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRExistingMinDTO;
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRExistingMinResponseDTO;
 import com.cogent.cogentappointment.persistence.model.Doctor;
 import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.Specialization;
@@ -28,7 +28,6 @@ public class DDRShiftWiseUtils {
         doctorDutyRoster.setDoctor(doctor);
         doctorDutyRoster.setFromDate(requestDTO.getFromDate());
         doctorDutyRoster.setToDate(requestDTO.getToDate());
-        doctorDutyRoster.setRosterGapDuration(requestDTO.getRosterGapDuration());
         doctorDutyRoster.setStatus(requestDTO.getStatus());
         doctorDutyRoster.setHasOverride(NO);
         return doctorDutyRoster;

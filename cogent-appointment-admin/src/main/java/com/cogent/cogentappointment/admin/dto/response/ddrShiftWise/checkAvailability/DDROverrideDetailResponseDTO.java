@@ -15,9 +15,9 @@ import java.util.List;
 @Setter
 public class DDROverrideDetailResponseDTO implements Serializable {
 
-    private Date date;
+    private Long ddrOverrideId;
 
-    private Long shiftId;
+    private Date date;
 
     private String shiftName;
 

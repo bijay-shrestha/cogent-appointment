@@ -1,9 +1,9 @@
 package com.cogent.cogentappointment.admin.utils.ddrShiftWise;
 
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.override.DDROverrideDetailRequestDTO;
+import com.cogent.cogentappointment.persistence.model.Shift;
 import com.cogent.cogentappointment.persistence.model.ddrShiftWise.DDROverrideDetail;
 import com.cogent.cogentappointment.persistence.model.ddrShiftWise.DoctorDutyRosterShiftWise;
-import com.cogent.cogentappointment.persistence.model.Shift;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.NO;
 
@@ -26,6 +26,7 @@ public class DDROverrideDetailUtils {
         ddrOverrideDetail.setShift(shift);
         ddrOverrideDetail.setStatus(requestDTO.getStatus());
         ddrOverrideDetail.setRemarks(requestDTO.getRemarks());
+        ddrOverrideDetail.setHasBreak(requestDTO.getHasBreak());
         ddrOverrideDetail.setIsAddedShift(NO);
 
         return ddrOverrideDetail;

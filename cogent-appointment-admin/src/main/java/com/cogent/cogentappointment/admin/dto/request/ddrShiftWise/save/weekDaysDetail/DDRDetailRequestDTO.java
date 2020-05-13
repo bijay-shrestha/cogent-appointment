@@ -25,9 +25,6 @@ public class DDRDetailRequestDTO implements Serializable{
     private Long doctorId;
 
     @NotNull
-    private Integer rosterGapDuration;
-
-    @NotNull
     private Date fromDate;
 
     @NotNull

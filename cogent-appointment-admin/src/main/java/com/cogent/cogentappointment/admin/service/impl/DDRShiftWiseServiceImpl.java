@@ -4,10 +4,7 @@ import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.checkAvailabi
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.override.DDROverrideDetailRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.override.DDROverrideRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.weekDaysDetail.*;
-import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRExistingDetailResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRExistingMinDTO;
-import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRExistingMinResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRShiftResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.*;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
@@ -39,8 +36,7 @@ import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDRDateValid
 import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDRDateValidationUtils.validateTimeOverlap;
 import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDROverrideBreakDetailUtils.parseToDDROverrideBreakDetail;
 import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDROverrideDetailUtils.parseToDdrOverrideDetail;
-import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDRShiftWiseUtils.parseToDDRShiftWise;
-import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDRShiftWiseUtils.parseToExistingAvailabilityResponseDTO;
+import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDRShiftWiseUtils.*;
 import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDRWeekDaysUtils.parseToDDRShiftDetail;
 import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDRWeekDaysUtils.parseToDDRWeekDaysDetail;
 
@@ -160,12 +156,23 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
 
         log.info(FETCHING_PROCESS_STARTED, DDR_SHIFT_WISE);
 
+        Character hasDDROverride = ddrShiftWiseRepository.fetchOverrideStatus(ddrId)
+                .orElseThrow(() -> DDR_WITH_GIVEN_ID_NOT_FOUND.apply(ddrId));
+
         List<DDRShiftResponseDTO> shiftDetail =
                 ddrShiftDetailRepository.fetchExistingShift(ddrId);
 
+        List<DDROverrideDetailResponseDTO> overrideDetail = new ArrayList<>();
+
+        if (hasDDROverride.equals(YES))
+            overrideDetail = ddrOverrideDetailRepository.fetchDDROverrideDetail(ddrId);
+
+        DDRExistingDetailResponseDTO responseDTO =
+                parseToDDRExistingDetailResponseDTO(hasDDROverride, shiftDetail, overrideDetail);
+
         log.info(FETCHING_PROCESS_COMPLETED, DDR_SHIFT_WISE, getDifferenceBetweenTwoTime(startTime));
 
-        return null;
+        return responseDTO;
     }
 
     /*1. VALIDATE CONSTRAINTS VIOLATION
@@ -175,6 +182,7 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
     *    B. VALIDATE IF REQUESTED SHIFT IDS IS ASSIGNED TO DOCTOR
     * 4. VALIDATE IF DDR ALREADY EXISTS FOR SAME DOCTOR, SPECIALIZATION & DATE
     * */
+
     private void validateDDRRequestInfo(DDRRequestDTO requestDTO) {
 
         validateConstraintViolation(validator.validate(requestDTO));

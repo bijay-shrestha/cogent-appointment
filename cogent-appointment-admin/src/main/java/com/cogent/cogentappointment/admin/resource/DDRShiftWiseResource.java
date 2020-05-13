@@ -14,6 +14,7 @@ import javax.validation.Valid;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.DoctorDutyRosterShiftWiseConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.DDRShiftWiseConstants.*;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.DETAIL;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
@@ -48,7 +49,13 @@ public class DDRShiftWiseResource {
 
     @PutMapping(EXISTING)
     @ApiOperation(FETCH_EXISTING_ROSTERS)
-    public ResponseEntity<?> fetchExistingDutyRosters(@Valid @RequestBody DDRExistingAvailabilityRequestDTO requestDTO) {
+    public ResponseEntity<?> fetchMinExistingDDR(@Valid @RequestBody DDRExistingAvailabilityRequestDTO requestDTO) {
         return ok(ddrShiftWiseService.fetchMinExistingDDR(requestDTO));
+    }
+
+    @GetMapping(EXISTING + DETAIL + DDR_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_EXISTING_ROSTERS_DETAIL)
+    public ResponseEntity<?> fetchDetailExistingDDR(@PathVariable("ddrId") Long ddrId) {
+        return ok(ddrShiftWiseService.fetchDetailExistingDDR(ddrId));
     }
 }

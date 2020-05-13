@@ -7,14 +7,16 @@ public class DDROverrideDetailQuery {
 
     public static final String QUERY_TO_FETCH_DDR_OVERRIDE_DETAIL =
             " SELECT" +
-                    " dd.id as ddrOverrideId," +
-                    " dd.date as date," +
-                    " DATE_FORMAT(dd.startTime, '%h:%i %p') as startTime," +
-                    " DATE_FORMAT(dd.endTime, '%h:%i %p') as endTime," +
-                    " dd.shift.name as shiftName," +
-                    " dd.offStatus as offStatus," +
-                    " dd.rosterGapDuration as rosterGapDuration," +
-                    " dd.remarks as remarks" +
+                    " dd.id as ddrOverrideId," +                                        //[0]
+                    " dd.date as date," +                                               //[1]
+                    " dd.startTime as startTime," +                                     //[2]
+                    " dd.endTime as endTime," +                                         //[3]
+                    " dd.shift.id as shiftId,"+                                         //[4]
+                    " dd.shift.name as shiftName," +                                    //[5]
+                    " dd.offStatus as offStatus," +                                     //[6]
+                    " dd.rosterGapDuration as rosterGapDuration," +                     //[7]
+                    " dd.hasBreak as hasBreak," +                                       //[8]
+                    " dd.remarks as remarks" +                                          //[9]
                     " FROM DDROverrideDetail dd" +
                     " WHERE dd.status = 'Y'" +
                     " AND dd.ddrShiftWise.status != 'D'" +

@@ -17,4 +17,6 @@ public class DDRShiftResponseDTO implements Serializable{
     private Long shiftId;
 
     private String shiftName;
+
+    private Integer rosterGapDuration;
 }

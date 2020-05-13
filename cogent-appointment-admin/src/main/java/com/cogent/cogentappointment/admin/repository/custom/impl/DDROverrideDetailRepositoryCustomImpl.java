@@ -11,6 +11,10 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
 
+import static com.cogent.cogentappointment.admin.constants.QueryConstants.DDRConstants.DDR_ID;
+import static com.cogent.cogentappointment.admin.query.ddrShiftWise.DDROverrideDetailQuery.QUERY_TO_FETCH_DDR_OVERRIDE_DETAIL;
+import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
+
 /**
  * @author smriti on 13/05/20
  */
@@ -25,7 +29,9 @@ public class DDROverrideDetailRepositoryCustomImpl implements DDROverrideDetailR
 
     @Override
     public List<DDROverrideDetailResponseDTO> fetchDDROverrideDetail(Long ddrId) {
-//        Query query = entityManager.createQuery()
-        return null;
+        Query query = entityManager.createQuery(QUERY_TO_FETCH_DDR_OVERRIDE_DETAIL)
+                .setParameter(DDR_ID, ddrId);
+
+        return transformQueryToResultList(query, DDROverrideDetailResponseDTO.class);
     }
 }

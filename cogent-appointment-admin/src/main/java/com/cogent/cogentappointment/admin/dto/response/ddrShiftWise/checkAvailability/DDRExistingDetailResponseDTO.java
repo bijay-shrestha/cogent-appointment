@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.List;
@@ -11,7 +10,12 @@ import java.util.List;
  */
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class DDRExistingDetailResponseDTO implements Serializable {
+
+    private Character hasOverride;
 
     private List<DDRShiftResponseDTO> shiftDetail;
 

@@ -22,6 +22,8 @@ public class DDRExistingMinDTO implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd, YYYY", timezone = "Asia/Kathmandu")
     private Date toDate;
 
-    private Integer rosterGapDuration;
+    private Integer totalDays;
+
+    private Integer remainingDays;
 
 }

@@ -1,8 +1,7 @@
 package com.cogent.cogentappointment.admin.utils.ddrShiftWise;
 
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.weekDaysDetail.DDRDetailRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRExistingMinDTO;
-import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRExistingMinResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.*;
 import com.cogent.cogentappointment.persistence.model.Doctor;
 import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.Specialization;
@@ -41,5 +40,18 @@ public class DDRShiftWiseUtils {
                 .existingRosters(existingRosters)
                 .build();
     }
+
+    public static DDRExistingDetailResponseDTO parseToDDRExistingDetailResponseDTO(
+            Character hasDDROverride,
+            List<DDRShiftResponseDTO> shiftDetail,
+            List<DDROverrideDetailResponseDTO> overrideDetail) {
+
+        return DDRExistingDetailResponseDTO.builder()
+                .hasOverride(hasDDROverride)
+                .shiftDetail(shiftDetail)
+                .overrideDetail(overrideDetail)
+                .build();
+    }
+
 
 }

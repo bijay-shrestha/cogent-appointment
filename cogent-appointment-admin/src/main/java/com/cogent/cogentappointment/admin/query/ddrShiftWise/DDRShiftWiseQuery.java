@@ -16,10 +16,11 @@ public class DDRShiftWiseQuery {
 
     public static final String QUERY_TO_FETCH_EXISTING_DDR =
             " SELECT" +
-                    " dd.id as ddrId," +                                      //[0]
-                    " dd.fromDate as fromDate," +                            //[1]
-                    " dd.toDate as toDate," +                                //[2]
-                    " dd.rosterGapDuration as rosterGapDuration" +           //[3]
+                    " dd.id as ddrId," +                                             //[0]
+                    " dd.fromDate as fromDate," +                                    //[1]
+                    " dd.toDate as toDate," +                                        //[2]
+                    " DATEDIFF(toDate, fromDate) + 1 as totalDays," +               //[3]
+                    " ABS(DATEDIFF(toDate, CURDATE())) + 1 as remainingDays"+        //[4]
                     " FROM DoctorDutyRosterShiftWise dd" +
                     " WHERE dd.status != 'D'" +
                     " AND dd.doctor.id=:doctorId" +

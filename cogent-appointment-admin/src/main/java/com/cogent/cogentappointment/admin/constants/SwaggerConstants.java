@@ -210,6 +210,7 @@ public class SwaggerConstants {
         String SAVE_WEEK_DAYS_ROSTER_OPERATION = "Save Week Days Doctor Duty Roster";
         String SAVE_OVERRIDE_ROSTER_OPERATION = "Save Override Doctor Duty Roster";
         String FETCH_EXISTING_ROSTERS = " Fetch existing doctor duty rosters within the selected date range";
+        String FETCH_EXISTING_ROSTERS_DETAIL = "Fetch existing rosters shift & override information";
 
         String UPDATE_OPERATION = "Update Doctor Duty Roster. Note that week days time can be updated " +
                 "only if there are no appointments within the selected date range";
@@ -218,6 +219,7 @@ public class SwaggerConstants {
                 " only if there are no appointments within the selected date range";
         String SEARCH_OPERATION = "Search Doctor Duty Roster according to given request parameters";
         String DETAILS_OPERATION = "Fetch Doctor Duty Roster details by its id";
+
         String UPDATE_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION = "Update Doctor Duty Roster Override schedules." +
                 " (Can saveDDRWeekDaysDetail new override schedules for the same roster or update existing rosters). " +
                 " Returns saved/updated override id as response.";

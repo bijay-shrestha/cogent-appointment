@@ -13,15 +13,15 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PreviousAppointmentDetails implements Serializable {
+public class CurrentAppointmentDetails implements Serializable {
 
-    private Date previousDate;
+    private Long appointmentId;
 
-    private String previousTime;
+    private Date appointmentDate;
 
-    private String previousDoctor;
+    private String appointmentNumber,status,appointmentTime;
 
-    private String previousSpecialization;
+    private String doctor,specialization;
 
-    private Double previousAppointmentAmount;
+    private Double appointmentAmount;
 }

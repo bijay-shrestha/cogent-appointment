@@ -2,7 +2,7 @@ package com.cogent.cogentappointment.client.repository.custom.impl;
 
 import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.AppointmentTransferSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.AppointmentTransferLogDTO;
-import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.PreviousAppointmentDetails;
+import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.CurrentAppointmentDetails;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableDates.DoctorDatesResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.ActualDateAndTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.OverrideDateAndTimeResponseDTO;
@@ -10,6 +10,7 @@ import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.avai
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.charge.AppointmentChargeResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.AppointmentTransferRepositoryCustom;
+import com.cogent.cogentappointment.persistence.model.AppointmentTransfer;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRoster;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -19,17 +20,16 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.client.constants.QueryConstants.AppointmentConstants.APPOINTMENT_ID;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
+import static com.cogent.cogentappointment.client.log.constants.AppointmentTransferLog.APPOINTMENT_TRANSFER;
 import static com.cogent.cogentappointment.client.log.constants.DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER;
 import static com.cogent.cogentappointment.client.query.AppointmentTransferQuery.*;
-import static com.cogent.cogentappointment.client.utils.AppointmentTransferUtils.parsePreviousData;
+import static com.cogent.cogentappointment.client.utils.AppointmentTransferUtils.mergeCurrentAppointmentStatus;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
 
 /**
@@ -143,27 +143,31 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
     public List<AppointmentTransferLogDTO> getFinalAppTransferredInfo(AppointmentTransferSearchRequestDTO requestDTO) {
         Query query = createQuery.apply(entityManager, QUERY_TO_GET_CURRENT_TRANSFERRED_DETAIL(requestDTO));
 
-        List<AppointmentTransferLogDTO> finalList=new ArrayList<>();
+        Query queryToGetCurretAppointment=createQuery.apply(entityManager, QUERY_TO_GET_CURRENT_APPOINTMENT_INFOS);
+
+        List<CurrentAppointmentDetails> currentDetails=transformQueryToResultList(queryToGetCurretAppointment,
+                CurrentAppointmentDetails.class);
 
         List<AppointmentTransferLogDTO> responses = transformQueryToResultList(query, AppointmentTransferLogDTO.class);
 
-        responses.forEach(response -> {
-            Query queryForpreviousInfos = createQuery.apply(entityManager, QUERY_TO_GET_PREVIOUS_INFOS)
-                    .setParameter(APPOINTMENT_ID, response.getAppointmentId());
-            finalList.add(response);
-            if (queryForpreviousInfos.getResultList().size() > 1) {
-                List<PreviousAppointmentDetails> previousInfo = transformQueryToResultList(queryForpreviousInfos,
-                        PreviousAppointmentDetails.class);
-                finalList.addAll(parsePreviousData(previousInfo,response));
-            }
+        currentDetails.forEach(currentDetail->{
+            mergeCurrentAppointmentStatus(currentDetail,responses);
         });
 
 
-        return finalList;
+        if (responses.isEmpty()) {
+            throw APPOINTMENT_TRANSFERE_NOT_FOUND.get();
+        }
+        return responses;
     }
 
     private Supplier<NoContentFoundException> DOCTOR_DUTY_ROSTER_NOT_FOUND = () -> {
         log.error(CONTENT_NOT_FOUND, DOCTOR_DUTY_ROSTER);
         throw new NoContentFoundException(DoctorDutyRoster.class);
+    };
+
+    private Supplier<NoContentFoundException> APPOINTMENT_TRANSFERE_NOT_FOUND = () -> {
+        log.error(CONTENT_NOT_FOUND, APPOINTMENT_TRANSFER);
+        throw new NoContentFoundException(AppointmentTransfer.class);
     };
 }

@@ -181,25 +181,47 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
                 (transactionDetail.getAppointmentAmount().compareTo(requestDTO.getAppointmentCharge()) == 0)) {
 
             AppointmentTransfer appointmentTransfer = parseToAppointmentTransfer(appointment,
-                    requestDTO.getRemarks());
+                    requestDTO,
+                    fetchDoctorById(requestDTO.getDoctorId()),
+                    fetchSpecializationById(requestDTO.getSpecializationId()),
+                    fetchDoctorById(appointment.getDoctorId().getId()),
+                    fetchSpecializationById(appointment.getSpecializationId().getId()));
 
             Appointment transferredAppointment = parseAppointmentTransferDetail(appointment,
                     requestDTO,
                     fetchDoctorById(requestDTO.getDoctorId()));
 
+            AppointmentTransferTransactionDetail transferTransactionDetail = parseToAppointmentTransferTransactionDetail(
+                    transactionDetail,
+                    requestDTO.getAppointmentCharge(),
+                    requestDTO.getRemarks(),
+                    appointmentTransfer);
+
             save(transferredAppointment, appointmentTransfer);
-        } else {
+            saveTransferTransaction(transferTransactionDetail);
+        }
+        else {
+            Doctor currentDoctor= fetchDoctorById(requestDTO.getDoctorId());
+
+            Specialization currentSpecialization=fetchSpecializationById(requestDTO.getSpecializationId());
+
             AppointmentTransfer appointmentTransfer = parseToAppointmentTransfer(appointment,
-                    requestDTO.getRemarks());
+                    requestDTO,
+                    currentDoctor,
+                    currentSpecialization,
+                    fetchDoctorById(appointment.getDoctorId().getId()),
+                    fetchSpecializationById(appointment.getSpecializationId().getId()));
 
             Appointment transferredAppointment = parseAppointmentForSpecialization(appointment,
                     requestDTO,
-                    fetchDoctorById(requestDTO.getDoctorId()),
-                    fetchSpecializationById(requestDTO.getSpecializationId()));
+                    currentDoctor,
+                    currentSpecialization);
 
             AppointmentTransferTransactionDetail transferTransactionDetail = parseToAppointmentTransferTransactionDetail(
                     transactionDetail,
-                    requestDTO.getRemarks(),appointmentTransfer);
+                    requestDTO.getAppointmentCharge(),
+                    requestDTO.getRemarks(),
+                    appointmentTransfer);
 
             AppointmentTransactionDetail appointmentTransactionDetail = parseToAppointmentTransactionDetail(
                     transactionDetail,
@@ -233,7 +255,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
         log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_TRANSFER);
 
-        List<AppointmentTransferLogDTO> appointmentTransferLogDTOS=repository.getFinalAppTransferredInfo(requestDTO);
+        List<AppointmentTransferLogDTO> appointmentTransferLogDTOS = repository.getFinalAppTransferredInfo(requestDTO);
 
         log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_TRANSFER,
                 getDifferenceBetweenTwoTime(startTime));
@@ -336,6 +358,10 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
     private void save(Appointment appointment, AppointmentTransfer appointmentTransfer) {
         appointmentRepository.save(appointment);
         repository.save(appointmentTransfer);
+    }
+
+    private void saveTransferTransaction(AppointmentTransferTransactionDetail transferTransactionDetail){
+        transferTransactionRepository.save(transferTransactionDetail);
     }
 
     private void saveTransferDetails(AppointmentTransferTransactionDetail transferTransactionDetail,

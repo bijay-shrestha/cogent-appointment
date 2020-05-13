@@ -32,20 +32,39 @@ public class AppointmentTransfer extends Auditable<String> implements Serializab
     @JoinColumn(name = "appointment_id")
     private Appointment appointment;
 
-    @Column(name = "previous_doctor_id", updatable = false)
-    private Long previousDoctorId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "previous_doctor_id", updatable = false)
+    private Doctor previousDoctor;
 
-    @Column(name = "previous_specialization_id", updatable = false)
-    private Long previousSpecializationId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "current_doctor_id", updatable = false)
+    private Doctor currentDoctor;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "previous_specialization_id", updatable = false)
+    private Specialization previousSpecialization;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "current_specialization_id", updatable = false)
+    private Specialization currentSpecialization;
 
     /*saved in format YYYY-MM-DD*/
     @Temporal(TemporalType.DATE)
     @Column(name = "previous_appointment_date", updatable = false)
     private Date previousAppointmentDate;
 
+    /*saved in format YYYY-MM-DD*/
+    @Temporal(TemporalType.DATE)
+    @Column(name = "current_appointment_date", updatable = false)
+    private Date currentAppointmentDate;
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "previous_appointment_time", updatable = false)
     private Date previousAppointmentTime;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "current_appointment_time", updatable = false)
+    private Date currentAppointmentTime;
 
     @Column(name = "remarks")
     private String remarks;
@@ -53,11 +72,16 @@ public class AppointmentTransfer extends Auditable<String> implements Serializab
     @Override
     public String toString() {
         return "AppointmentTransfer{" +
-                "appointment=" + appointment.getAppointmentNumber() +
-                ", previousDoctorId=" + previousDoctorId +
-                ", previousSpecializationId=" + previousSpecializationId +
+                "id=" + id +
+                ", appointment=" + appointment.getAppointmentNumber() +
+                ", previousDoctor=" + previousDoctor.getName() +
+                ", currentDoctor=" + currentDoctor.getName() +
+                ", previousSpecialization=" + previousSpecialization.getName() +
+                ", currentSpecialization=" + currentSpecialization.getName() +
                 ", previousAppointmentDate=" + previousAppointmentDate +
+                ", currentAppointmentDate=" + currentAppointmentDate +
                 ", previousAppointmentTime=" + previousAppointmentTime +
+                ", currentAppointmentTime=" + currentAppointmentTime +
                 ", remarks='" + remarks + '\'' +
                 '}';
     }

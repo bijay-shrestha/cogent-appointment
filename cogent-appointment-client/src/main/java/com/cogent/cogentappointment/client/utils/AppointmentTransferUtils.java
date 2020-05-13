@@ -2,7 +2,7 @@ package com.cogent.cogentappointment.client.utils;
 
 import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.AppointmentTransferRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.AppointmentTransferLogDTO;
-import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.PreviousAppointmentDetails;
+import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.CurrentAppointmentDetails;
 import com.cogent.cogentappointment.persistence.model.*;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -128,20 +128,31 @@ public class AppointmentTransferUtils {
         return appointment;
     }
 
-    public static AppointmentTransfer parseToAppointmentTransfer(Appointment appointment, String remarks) {
+    public static AppointmentTransfer parseToAppointmentTransfer(Appointment appointment,
+                                                                 AppointmentTransferRequestDTO requestDTO,
+                                                                 Doctor currentDoctor,
+                                                                 Specialization currentSpecialization,
+                                                                 Doctor previousDoctor,
+                                                                 Specialization previousSpecialization) {
         AppointmentTransfer appointmentTransfer = new AppointmentTransfer();
         appointmentTransfer.setAppointment(appointment);
         appointmentTransfer.setPreviousAppointmentDate(appointment.getAppointmentDate());
         appointmentTransfer.setPreviousAppointmentTime(appointment.getAppointmentTime());
-        appointmentTransfer.setPreviousDoctorId(appointment.getDoctorId().getId());
-        appointmentTransfer.setPreviousSpecializationId(appointment.getSpecializationId().getId());
-        appointmentTransfer.setRemarks(remarks);
+        appointmentTransfer.setRemarks(requestDTO.getRemarks());
+        appointmentTransfer.setCurrentAppointmentDate(requestDTO.getAppointmentDate());
+        appointmentTransfer.setCurrentAppointmentTime(parseAppointmentTime(requestDTO.getAppointmentDate(),
+                requestDTO.getAppointmentTime()));
+        appointmentTransfer.setPreviousDoctor(previousDoctor);
+        appointmentTransfer.setPreviousSpecialization(previousSpecialization);
+        appointmentTransfer.setCurrentDoctor(currentDoctor);
+        appointmentTransfer.setCurrentSpecialization(currentSpecialization);
 
         return appointmentTransfer;
     }
 
     public static AppointmentTransferTransactionDetail parseToAppointmentTransferTransactionDetail(
             AppointmentTransactionDetail transactionDetail,
+            Double currentAppointmentCharge,
             String remarks,
             AppointmentTransfer appointmentTransfer) {
         AppointmentTransferTransactionDetail transferTransactionDetail = new AppointmentTransferTransactionDetail();
@@ -154,6 +165,7 @@ public class AppointmentTransferUtils {
         transferTransactionDetail.setPreviousTransactionDateTime(transactionDetail.getTransactionDateTime());
         transferTransactionDetail.setRemarks(remarks);
         transferTransactionDetail.setAppointmentTransfer(appointmentTransfer);
+        transferTransactionDetail.setCurrentAppointmentAmount(currentAppointmentCharge);
 
         return transferTransactionDetail;
     }
@@ -196,38 +208,22 @@ public class AppointmentTransferUtils {
                 Objects.requireNonNull(parseTime(convert12HourTo24HourFormat(appointmentTime))));
     }
 
-    public static List<AppointmentTransferLogDTO> parsePreviousData(
-            List<PreviousAppointmentDetails> previousAppointmentDetailsList,
-            AppointmentTransferLogDTO responses) {
 
-        List<AppointmentTransferLogDTO> appointmentTransferLogDTOS = new ArrayList<>();
-        for(int i=0;i<previousAppointmentDetailsList.size();i++){
-            if(i<previousAppointmentDetailsList.size()-1) {
-                PreviousAppointmentDetails data = previousAppointmentDetailsList.get(i);
-                PreviousAppointmentDetails data1 = previousAppointmentDetailsList.get(i+1);
-                AppointmentTransferLogDTO appointmentTransferLogDTO = new AppointmentTransferLogDTO();
-                appointmentTransferLogDTO.setAppointmentId(responses.getAppointmentId());
-                appointmentTransferLogDTO.setApptNumber(responses.getApptNumber());
-                appointmentTransferLogDTO.setPatientName(responses.getPatientName());
-                appointmentTransferLogDTO.setGender(responses.getGender());
-                appointmentTransferLogDTO.setMobileNumber(responses.getMobileNumber());
-                appointmentTransferLogDTO.setStatus("N/A");
-                appointmentTransferLogDTO.setTransferredToDate(data.getPreviousDate());
-                appointmentTransferLogDTO.setTransferredToTime(data.getPreviousTime());
-                appointmentTransferLogDTO.setTransferredToDoctor(data.getPreviousDoctor());
-                appointmentTransferLogDTO.setTransferredToSpecialization(data.getPreviousSpecialization());
-                appointmentTransferLogDTO.setTransferredToAppointmentAmount(data.getPreviousAppointmentAmount());
-                appointmentTransferLogDTO.setTransferredFromDate(data1.getPreviousDate());
-                appointmentTransferLogDTO.setTransferredFromTime(data1.getPreviousTime());
-                appointmentTransferLogDTO.setTransferredFromDoctor(data1.getPreviousDoctor());
-                appointmentTransferLogDTO.setTransferredFromSpecialization(data1.getPreviousSpecialization());
-                appointmentTransferLogDTO.setTransferredFromAppointmentAmount(data1.getPreviousAppointmentAmount());
-                appointmentTransferLogDTOS.add(appointmentTransferLogDTO);
+    public static List<AppointmentTransferLogDTO> mergeCurrentAppointmentStatus(
+            CurrentAppointmentDetails currentDetails,
+            List<AppointmentTransferLogDTO> transferredList) {
+
+        transferredList.forEach(transferredData->{
+            if(currentDetails.getAppointmentDate().equals(transferredData.getTransferredToDate()) &&
+                    currentDetails.getAppointmentTime().equals(transferredData.getTransferredToTime()) &&
+                    currentDetails.getAppointmentAmount().equals(transferredData.getTransferredToAmount()) &&
+                    currentDetails.getDoctor().equals(transferredData.getTransferredToDoctor()) &&
+                    currentDetails.getSpecialization().equals(transferredData.getTransferredToSpecialization())){
+                transferredData.setStatus(currentDetails.getStatus());
             }
-        }
+        });
 
-        return appointmentTransferLogDTOS;
-
+        return transferredList;
     }
 
 

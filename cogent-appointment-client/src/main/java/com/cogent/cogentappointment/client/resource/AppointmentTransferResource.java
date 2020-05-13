@@ -54,7 +54,7 @@ public class AppointmentTransferResource  {
     }
 
     @PutMapping(INFO)
-    @ApiOperation(APPOINTMENT_TRANSFER)
+    @ApiOperation(FETCH_TRANSFERRED_APPOINTMENT_LIST)
     public ResponseEntity<?> searchAppointmentTransfer(@RequestBody AppointmentTransferSearchRequestDTO requestDTO){
         return ok(appointmentTransferService.searchTransferredAppointment(requestDTO));
     }

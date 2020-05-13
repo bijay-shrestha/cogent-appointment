@@ -46,7 +46,7 @@ public class WebResourceKeyConstants {
     }
 
     public interface AppointmentTransferConstants{
-        String BASE_APPOINTMENT_TRANSFER = "/appointment-transfer";
+        String BASE_APPOINTMENT_TRANSFER = "/appointmentTransfer";
         String APPOINTMENT_TIME = "/time";
         String APPOINTMENT_CHARGE = "/charge";
         String APPOINTMENT_DATE = "/date";

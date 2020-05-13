@@ -42,6 +42,9 @@ public class AppointmentTransferTransactionDetail extends Auditable<String> impl
     @Column(name = "previous_transaction_date_time")
     private Date previousTransactionDateTime;
 
+    @Column(name = "current_appointment_amount")
+    private Double currentAppointmentAmount;
+
     @Column(name = "previous_appointment_amount")
     private Double previousAppointmentAmount;
 
@@ -68,6 +71,7 @@ public class AppointmentTransferTransactionDetail extends Auditable<String> impl
                 ", appointmentTransactionDetail=" + appointmentTransactionDetail.getTransactionNumber() +
                 ", previousTransactionDate=" + previousTransactionDate +
                 ", previousTransactionDateTime=" + previousTransactionDateTime +
+                ", currentAppointmentAmount=" + currentAppointmentAmount +
                 ", previousAppointmentAmount=" + previousAppointmentAmount +
                 ", previousTaxAmount=" + previousTaxAmount +
                 ", previousDiscountAmount=" + previousDiscountAmount +

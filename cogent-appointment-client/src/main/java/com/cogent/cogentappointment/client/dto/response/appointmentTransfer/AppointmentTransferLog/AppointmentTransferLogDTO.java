@@ -30,5 +30,5 @@ public class AppointmentTransferLogDTO implements Serializable{
 
     private String transferredToSpecialization,transferredFromSpecialization;
 
-    private Double transferredToAppointmentAmount,transferredFromAppointmentAmount;
+    private Double transferredToAmount,transferredFromAmount;
 }

@@ -14,6 +14,7 @@ import javax.validation.Valid;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentTransferConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentTransferConstants.*;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.SEARCH;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -56,7 +57,7 @@ public class AppointmentTransferResource {
         return ok().build();
     }
 
-    @PutMapping(INFO)
+    @PutMapping(SEARCH)
     @ApiOperation(FETCH_TRANSFERRED_APPOINTMENT_LIST)
     public ResponseEntity<?> searchAppointmentTransfer(@Valid @RequestBody AppointmentTransferSearchRequestDTO requestDTO,
                                                        @RequestParam("page") int page,

@@ -2,6 +2,9 @@ package com.cogent.cogentappointment.admin.dto.response.weekdays;
 
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Rupak
  */
@@ -23,5 +26,7 @@ public class WeekDaysResponseDTO {
     private Character dayOffStatus='N';
 
     private String errorMessage="";
+
+    private List<String> breakDetail = new ArrayList<>();
 
 }

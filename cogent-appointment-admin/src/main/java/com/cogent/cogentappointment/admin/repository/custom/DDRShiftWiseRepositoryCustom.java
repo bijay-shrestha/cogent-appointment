@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.admin.repository.custom;
 
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.checkAvailability.DDRExistingAvailabilityRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRExistingResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRExistingMinDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
@@ -20,6 +20,8 @@ public interface DDRShiftWiseRepositoryCustom {
                                        Date fromDate,
                                        Date toDate);
 
-    List<DDRExistingResponseDTO> fetchExistingDDR(DDRExistingAvailabilityRequestDTO requestDTO);
+    /*EXISTING ROSTERS CHECK AVAILABILITY*/
+    List<DDRExistingMinDTO> fetchExistingDDR(DDRExistingAvailabilityRequestDTO requestDTO);
+
 
 }

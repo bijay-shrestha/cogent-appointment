@@ -1,8 +1,8 @@
 package com.cogent.cogentappointment.admin.utils.ddrShiftWise;
 
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.weekDaysDetail.DDRDetailRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRExistingAvailabilityResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRExistingResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRExistingMinResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRExistingMinDTO;
 import com.cogent.cogentappointment.persistence.model.Doctor;
 import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.Specialization;
@@ -34,10 +34,10 @@ public class DDRShiftWiseUtils {
         return doctorDutyRoster;
     }
 
-    public static DDRExistingAvailabilityResponseDTO parseToExistingAvailabilityResponseDTO
-            (List<DDRExistingResponseDTO> existingRosters) {
+    public static DDRExistingMinResponseDTO parseToExistingAvailabilityResponseDTO
+            (List<DDRExistingMinDTO> existingRosters) {
 
-        return DDRExistingAvailabilityResponseDTO.builder()
+        return DDRExistingMinResponseDTO.builder()
                 .hasExistingRosters(!existingRosters.isEmpty())
                 .existingRosters(existingRosters)
                 .build();

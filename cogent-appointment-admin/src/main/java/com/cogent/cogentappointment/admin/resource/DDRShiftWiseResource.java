@@ -49,6 +49,6 @@ public class DDRShiftWiseResource {
     @PutMapping(EXISTING)
     @ApiOperation(FETCH_EXISTING_ROSTERS)
     public ResponseEntity<?> fetchExistingDutyRosters(@Valid @RequestBody DDRExistingAvailabilityRequestDTO requestDTO) {
-        return ok(ddrShiftWiseService.fetchExistingDDR(requestDTO));
+        return ok(ddrShiftWiseService.fetchMinExistingDDR(requestDTO));
     }
 }

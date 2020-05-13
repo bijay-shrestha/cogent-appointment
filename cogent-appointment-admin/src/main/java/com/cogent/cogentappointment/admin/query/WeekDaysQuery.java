@@ -10,6 +10,7 @@ public class WeekDaysQuery {
                     " w.name as label" +
                     " FROM WeekDays w" +
                     " WHERE w.status = 'Y'";
+
     public static final String QUERY_TO_PREPARE_ACTIVE_WEEK_DAYS =
             "SELECT" +
                     " w.id as weekDaysId," +

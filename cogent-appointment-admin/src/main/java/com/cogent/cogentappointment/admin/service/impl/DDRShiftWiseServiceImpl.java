@@ -4,8 +4,10 @@ import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.checkAvailabi
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.override.DDROverrideDetailRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.override.DDROverrideRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.weekDaysDetail.*;
-import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRExistingAvailabilityResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRExistingResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRExistingDetailResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRExistingMinDTO;
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRExistingMinResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRShiftResponseDTO;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
@@ -72,7 +74,7 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
 
     private final BreakTypeService breakTypeService;
 
-    private final DDROverrideDetailRepository ddrOverrideDetailRepository;
+    private final DDROverrideDetailDetailRepository ddrOverrideDetailRepository;
 
     private final DDROverrideBreakDetailRepository ddrOverrideBreakDetailRepository;
 
@@ -87,7 +89,7 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
                                    WeekDaysService weekDaysService,
                                    DDRBreakDetailRepository ddrBreakDetailRepository,
                                    BreakTypeService breakTypeService,
-                                   DDROverrideDetailRepository ddrOverrideDetailRepository,
+                                   DDROverrideDetailDetailRepository ddrOverrideDetailRepository,
                                    DDROverrideBreakDetailRepository ddrOverrideBreakDetailRepository) {
         this.validator = validator;
         this.ddrShiftWiseRepository = ddrShiftWiseRepository;
@@ -137,19 +139,33 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
     }
 
     @Override
-    public DDRExistingAvailabilityResponseDTO fetchExistingDDR(DDRExistingAvailabilityRequestDTO requestDTO) {
+    public DDRExistingMinResponseDTO fetchMinExistingDDR(DDRExistingAvailabilityRequestDTO requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, DDR_SHIFT_WISE);
 
-        List<DDRExistingResponseDTO> existingRosters = ddrShiftWiseRepository.fetchExistingDDR(requestDTO);
+        List<DDRExistingMinDTO> existingRosters = ddrShiftWiseRepository.fetchExistingDDR(requestDTO);
 
-        DDRExistingAvailabilityResponseDTO responseDTO = parseToExistingAvailabilityResponseDTO(existingRosters);
+        DDRExistingMinResponseDTO responseDTO = parseToExistingAvailabilityResponseDTO(existingRosters);
 
         log.info(FETCHING_PROCESS_COMPLETED, DDR_SHIFT_WISE, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
+    }
+
+    @Override
+    public DDRExistingDetailResponseDTO fetchDetailExistingDDR(Long ddrId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, DDR_SHIFT_WISE);
+
+        List<DDRShiftResponseDTO> shiftDetail =
+                ddrShiftDetailRepository.fetchExistingShift(ddrId);
+
+        log.info(FETCHING_PROCESS_COMPLETED, DDR_SHIFT_WISE, getDifferenceBetweenTwoTime(startTime));
+
+        return null;
     }
 
     /*1. VALIDATE CONSTRAINTS VIOLATION

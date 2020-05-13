@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.admin.resource;
 
-import com.cogent.cogentappointment.admin.dto.response.weekdays.WeekDaysResponseDTO;
 import com.cogent.cogentappointment.admin.service.WeekDaysService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -8,8 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.WeekDaysConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
@@ -40,7 +37,6 @@ public class WeekDaysResource {
     @GetMapping(PREPARE_WEEK_DAYS_DATA)
     @ApiOperation(FETCH_PREPARE_WEEK_DAYS)
     public ResponseEntity<?> fetchPrepareWeekDays() {
-
         return ok(weekDaysService.fetchPrepareWeekDays());
     }
 

@@ -13,10 +13,10 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DDRExistingAvailabilityResponseDTO implements Serializable {
+public class DDRExistingMinResponseDTO implements Serializable {
 
     private Boolean hasExistingRosters;
 
-   private List<DDRExistingResponseDTO> existingRosters;
+   private List<DDRExistingMinDTO> existingRosters;
 
 }

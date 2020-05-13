@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.checkAvailability.DDRExistingAvailabilityRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRExistingResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRExistingMinDTO;
 import com.cogent.cogentappointment.admin.repository.custom.DDRShiftWiseRepositoryCustom;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -14,8 +14,8 @@ import java.util.Date;
 import java.util.List;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
-import static com.cogent.cogentappointment.admin.query.DDRShiftWiseQuery.VALIDATE_DDR_SHIFT_WISE_COUNT;
-import static com.cogent.cogentappointment.admin.query.DDRShiftWiseQuery.QUERY_TO_FETCH_EXISTING_DDR;
+import static com.cogent.cogentappointment.admin.query.ddrShiftWise.DDRShiftWiseQuery.QUERY_TO_FETCH_EXISTING_DDR;
+import static com.cogent.cogentappointment.admin.query.ddrShiftWise.DDRShiftWiseQuery.VALIDATE_DDR_SHIFT_WISE_COUNT;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
@@ -48,13 +48,13 @@ public class DDRShiftWiseRepositoryCustomImpl implements DDRShiftWiseRepositoryC
     }
 
     @Override
-    public List<DDRExistingResponseDTO> fetchExistingDDR(DDRExistingAvailabilityRequestDTO requestDTO) {
+    public List<DDRExistingMinDTO> fetchExistingDDR(DDRExistingAvailabilityRequestDTO requestDTO) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_EXISTING_DDR)
                 .setParameter(DOCTOR_ID, requestDTO.getDoctorId())
                 .setParameter(SPECIALIZATION_ID, requestDTO.getSpecializationId())
                 .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
                 .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()));
 
-        return transformQueryToResultList(query, DDRExistingResponseDTO.class);
+        return transformQueryToResultList(query, DDRExistingMinDTO.class);
     }
 }

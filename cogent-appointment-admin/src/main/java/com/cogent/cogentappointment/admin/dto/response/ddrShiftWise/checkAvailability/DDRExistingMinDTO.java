@@ -12,7 +12,7 @@ import java.util.Date;
  */
 @Getter
 @Setter
-public class DDRExistingResponseDTO implements Serializable {
+public class DDRExistingMinDTO implements Serializable {
 
     private Long ddrId;
 

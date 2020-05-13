@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.query;
+package com.cogent.cogentappointment.admin.query.ddrShiftWise;
 
 /**
  * @author smriti on 08/05/20
@@ -26,5 +26,7 @@ public class DDRShiftWiseQuery {
                     " AND dd.specialization.id= :specializationId" +
                     " AND dd.toDate >=:fromDate" +
                     " AND dd.fromDate <=:toDate";
+
+
 
 }

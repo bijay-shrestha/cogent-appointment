@@ -1,10 +1,13 @@
 package com.cogent.cogentappointment.admin.repository.custom;
 
 import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.availableDates.DoctorDatesResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.availableTime.ActualDateAndTimeResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.availableTime.OverrideDateAndTimeResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.availableTime.WeekDayAndTimeDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -20,14 +23,14 @@ public interface AppointmentTransferRepositoryCustom {
     WeekDayAndTimeDTO getWeekDaysByCode(Long doctorId, String code);
 
     List<DoctorDatesResponseDTO> getOverrideDatesByDoctorId(Long doctorId, Long specializationId,Long hospitalId);
-//
-//    List<ActualDateAndTimeResponseDTO> getActualTimeByDoctorId(Long doctorId, Long specializationId);
-//
-//    List<String> getUnavailableTimeByDateAndDoctorId(Long doctorId, Long specializationId, Date date);
+
+    List<ActualDateAndTimeResponseDTO> getActualTimeByDoctorId(Long doctorId, Long specializationId,Long hospitalId);
+
+    List<String> getUnavailableTimeByDateAndDoctorId(Long doctorId, Long specializationId, Date date,Long hospitalId);
 //
 //    AppointmentChargeResponseDTO getAppointmentChargeByDoctorId(Long doctorId);
 //
-//    List<OverrideDateAndTimeResponseDTO> getOverideRosterDateAndTime(Long doctorId, Long specializationId);
+    List<OverrideDateAndTimeResponseDTO> getOverideRosterDateAndTime(Long doctorId, Long specializationId,Long hospitalId);
 //
 //    AppointmentTransferLogResponseDTO getFinalAppTransferredInfo(AppointmentTransferSearchRequestDTO requestDTO, Pageable pageable);
 }

@@ -1,6 +1,8 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.availableDates.DoctorDatesResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.availableTime.ActualDateAndTimeResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.availableTime.OverrideDateAndTimeResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.availableTime.WeekDayAndTimeDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.AppointmentTransferRepositoryCustom;
@@ -14,6 +16,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.util.Date;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -82,6 +85,49 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
 
         List<DoctorDatesResponseDTO> response = transformQueryToResultList(
                 query, DoctorDatesResponseDTO.class);
+
+        return response;
+    }
+
+    @Override
+    public List<ActualDateAndTimeResponseDTO> getActualTimeByDoctorId(Long doctorId, Long specializationId, Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DATE_AND_TIME_BY_DOCTOR_ID)
+                .setParameter(DOCTOR_ID, doctorId)
+                .setParameter(HOSPITAL_ID, hospitalId)
+                .setParameter(SPECIALIZATION_ID, specializationId);
+
+        List<ActualDateAndTimeResponseDTO> response = transformQueryToResultList(
+                query, ActualDateAndTimeResponseDTO.class);
+
+        if (response.isEmpty()) {
+            throw DOCTOR_DUTY_ROSTER_NOT_FOUND.get();
+        }
+
+        return response;
+    }
+
+    @Override
+    public List<String> getUnavailableTimeByDateAndDoctorId(Long doctorId, Long specializationId, Date date, Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_GET_UNAVAILABLE_TIME)
+                .setParameter(DOCTOR_ID, doctorId)
+                .setParameter(HOSPITAL_ID, hospitalId)
+                .setParameter(SPECIALIZATION_ID, specializationId)
+                .setParameter(DATE, date);
+
+        List<String> response = query.getResultList();
+
+        return response;
+    }
+
+    @Override
+    public List<OverrideDateAndTimeResponseDTO> getOverideRosterDateAndTime(Long doctorId, Long specializationId, Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_OVERRIDE_DATE_AND_TIME_BY_DOCTOR_ID)
+                .setParameter(DOCTOR_ID, doctorId)
+                .setParameter(HOSPITAL_ID, hospitalId)
+                .setParameter(SPECIALIZATION_ID, specializationId);
+
+        List<OverrideDateAndTimeResponseDTO> response = transformQueryToResultList(
+                query, OverrideDateAndTimeResponseDTO.class);
 
         return response;
     }

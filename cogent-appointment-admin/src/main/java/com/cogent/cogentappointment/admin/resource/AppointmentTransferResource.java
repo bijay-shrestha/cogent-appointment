@@ -40,7 +40,7 @@ public class AppointmentTransferResource {
     @PutMapping(APPOINTMENT_TIME)
     @ApiOperation(FETCH_AVAILABLE_TIME)
     public ResponseEntity<?> fetchDoctorAvailableTime(@Valid @RequestBody AppointmentTransferTimeRequestDTO requestDTO) {
-        return null;
+        return ok(appointmentTransferService.fetchAvailableDoctorTime(requestDTO));
     }
 
     @PutMapping(APPOINTMENT_CHARGE)

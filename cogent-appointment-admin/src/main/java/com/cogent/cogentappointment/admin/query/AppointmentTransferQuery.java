@@ -32,6 +32,7 @@ public class AppointmentTransferQuery {
                     " DoctorDutyRoster ddr" +
                     " WHERE" +
                     " ddr.doctorId.id = :doctorId" +
+                    " AND ddr.hospitalId.id = :hospitalId" +
                     " AND ddr.specializationId.id=:specializationId";
 
     public static String QUERY_TO_FETCH_OVERRIDE_DATE_AND_TIME_BY_DOCTOR_ID =
@@ -47,6 +48,7 @@ public class AppointmentTransferQuery {
                     " LEFT JOIN DoctorDutyRoster ddr ON ddr.id=ddro.doctorDutyRosterId.id " +
                     " WHERE" +
                     " ddr.doctorId.id = :doctorId" +
+                    " AND ddr.hospitalId.id = :hospitalId" +
                     " AND ddr.specializationId.id =:specializationId";
 
     public static String QUERY_TO_GET_DAY_OFF_WEEKS_BY_DUTY_ROSTER_ID =
@@ -96,6 +98,7 @@ public class AppointmentTransferQuery {
                     " Appointment a" +
                     " WHERE" +
                     " a.doctorId.id = :doctorId" +
+                    " AND a.hospitalId.id = :hospitalId" +
                     " AND a.specializationId.id = :specializationId" +
                     " AND a.appointmentDate = :date" +
                     " AND (a.status = 'PA'" +

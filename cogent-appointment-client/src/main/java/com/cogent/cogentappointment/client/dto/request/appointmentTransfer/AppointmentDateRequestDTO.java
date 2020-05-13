@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -16,7 +17,9 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class AppointmentDateRequestDTO implements Serializable{
 
+    @NotNull
     private Long doctorId;
 
+    @NotNull
     private Long specializationId;
 }

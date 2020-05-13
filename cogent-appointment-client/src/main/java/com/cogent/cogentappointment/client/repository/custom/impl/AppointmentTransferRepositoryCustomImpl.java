@@ -143,7 +143,7 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
     public List<AppointmentTransferLogDTO> getFinalAppTransferredInfo(AppointmentTransferSearchRequestDTO requestDTO) {
         Query query = createQuery.apply(entityManager, QUERY_TO_GET_CURRENT_TRANSFERRED_DETAIL(requestDTO));
 
-        Query queryToGetCurretAppointment=createQuery.apply(entityManager, QUERY_TO_GET_CURRENT_APPOINTMENT_INFOS);
+        Query queryToGetCurretAppointment=createQuery.apply(entityManager, QUERY_TO_GET_CURRENT_APPOINTMENT_INFOS(requestDTO));
 
         List<CurrentAppointmentDetails> currentDetails=transformQueryToResultList(queryToGetCurretAppointment,
                 CurrentAppointmentDetails.class);

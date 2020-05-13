@@ -7,6 +7,8 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AppointmentTransferConstant.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.AppointmentTransferConstants.*;
@@ -30,25 +32,25 @@ public class AppointmentTransferResource  {
 
     @PutMapping(APPOINTMENT_DATE)
     @ApiOperation(FETCH_AVAILABLE_DATES)
-    public ResponseEntity<?> fetchDoctorAvailableDates(@RequestBody AppointmentDateRequestDTO requestDTO){
+    public ResponseEntity<?> fetchDoctorAvailableDates(@Valid @RequestBody AppointmentDateRequestDTO requestDTO){
         return ok(appointmentTransferService.fetchAvailableDatesByDoctorId(requestDTO));
     }
 
     @PutMapping(APPOINTMENT_TIME)
     @ApiOperation(FETCH_AVAILABLE_TIME)
-    public ResponseEntity<?> fetchDoctorAvailableTime(@RequestBody AppointmentTransferTimeRequestDTO requestDTO){
+    public ResponseEntity<?> fetchDoctorAvailableTime(@Valid @RequestBody AppointmentTransferTimeRequestDTO requestDTO){
         return ok(appointmentTransferService.fetchAvailableDoctorTime(requestDTO));
     }
 
     @PutMapping(APPOINTMENT_CHARGE)
     @ApiOperation(FETCH_DOCTOR_CHARGE)
-    public ResponseEntity<?> fetchDoctorChargeByDoctorId(@RequestBody DoctorChargeRequestDTO requestDTO){
+    public ResponseEntity<?> fetchDoctorChargeByDoctorId(@Valid @RequestBody DoctorChargeRequestDTO requestDTO){
         return ok(appointmentTransferService.fetchDoctorChargeByDoctorId(requestDTO));
     }
 
     @PutMapping
     @ApiOperation(APPOINTMENT_TRANSFER)
-    public ResponseEntity<?> appointmentTransfer(@RequestBody AppointmentTransferRequestDTO requestDTO){
+    public ResponseEntity<?> appointmentTransfer(@Valid @RequestBody AppointmentTransferRequestDTO requestDTO){
         appointmentTransferService.appointmentTransfer(requestDTO);
         return ok().build();
     }

@@ -7,9 +7,11 @@ import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.avai
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.OverrideDateAndTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.WeekDayAndTimeDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.charge.AppointmentChargeResponseDTO;
+import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.*;
 import com.cogent.cogentappointment.client.service.AppointmentTransferService;
+import com.cogent.cogentappointment.client.service.DoctorService;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,7 +24,10 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.DoctorServiceMessages.DOCTOR_APPOINTMENT_CHARGE_INVALID;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.DoctorServiceMessages.DOCTOR_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.NO;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.APPOINTMENT;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentTransactionDetailLog.APPOINTMENT_TRANSACTION_DETAIL;
@@ -34,6 +39,7 @@ import static com.cogent.cogentappointment.client.log.constants.DoctorLog.DOCTOR
 import static com.cogent.cogentappointment.client.log.constants.SpecializationLog.SPECIALIZATION;
 import static com.cogent.cogentappointment.client.utils.AppointmentTransferUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
+import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 
 /**
  * @author Sauravi Thapa ON 5/6/20
@@ -44,6 +50,8 @@ import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 public class AppointmentTransferServiceImpl implements AppointmentTransferService {
 
     private final AppointmentTransferRepository repository;
+
+    private final DoctorService doctorService;
 
     private final AppointmentTransferTransactionDetailRepository transferTransactionRepository;
 
@@ -60,6 +68,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
     private final SpecializationRepository specializationRepository;
 
     public AppointmentTransferServiceImpl(AppointmentTransferRepository repository,
+                                          DoctorService doctorService,
                                           AppointmentTransferTransactionDetailRepository transferTransactionRepository,
                                           AppointmentTransferTransactionRequestLogRepository transferTransactionRequestLogRepository,
                                           AppointmentRepository appointmentRepository,
@@ -68,6 +77,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
                                           DoctorRepository doctorRepository,
                                           SpecializationRepository specializationRepository) {
         this.repository = repository;
+        this.doctorService = doctorService;
         this.transferTransactionRepository = transferTransactionRepository;
         this.transferTransactionRequestLogRepository = transferTransactionRequestLogRepository;
         this.appointmentRepository = appointmentRepository;
@@ -169,6 +179,9 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(APPOINTMENT_TRANSFER_PROCESS_STARTED, APPOINTMENT_TRANSFER);
+
+        validateAppointmentAmount(requestDTO.getDoctorId(),getLoggedInHospitalId(),
+                requestDTO.getIsFollowUp(),requestDTO.getAppointmentCharge());
 
         Appointment appointment = fetchAppointmentById(requestDTO.getAppointmentId());
 
@@ -398,6 +411,20 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
         log.error(CONTENT_NOT_FOUND_BY_APPOINTMENT_NUMBER, APPOINTMENT_TRANSACTION_REQUEST_LOG, transactionNumber);
         throw new NoContentFoundException(AppointmentTransactionRequestLog.class, "transactionNumber", transactionNumber.toString());
     };
+
+    private void validateAppointmentAmount(Long doctorId, Long hospitalId,
+                                           Character isFollowUp, Double appointmentAmount) {
+
+        Double actualAppointmentCharge = isFollowUp.equals(YES)
+                ? doctorService.fetchDoctorFollowupAppointmentCharge(doctorId, hospitalId)
+                : doctorService.fetchDoctorAppointmentCharge(doctorId, hospitalId);
+
+        if (!(Double.compare(actualAppointmentCharge, appointmentAmount) == 0)) {
+            log.error(String.format(DOCTOR_APPOINTMENT_CHARGE_INVALID, appointmentAmount));
+            throw new BadRequestException(String.format(DOCTOR_APPOINTMENT_CHARGE_INVALID, appointmentAmount),
+                    DOCTOR_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE);
+        }
+    }
 
 
 }

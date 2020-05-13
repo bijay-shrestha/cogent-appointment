@@ -172,7 +172,14 @@ public class AppointmentTransferQuery {
                 WHERE_CLAUSE_FOR_SEARCH(requestDTO);
     }
 
-    public static String QUERY_TO_GET_CURRENT_APPOINTMENT_INFOS =
+    public static String QUERY_TO_GET_CURRENT_APPOINTMENT_INFOS (AppointmentTransferSearchRequestDTO requestDTO){
+        return SELECT_CLAUSE_FOR_CURRENT_INFO +
+                WHERE_CLAUSE_FOR_CURRENT_INFO(requestDTO);
+    }
+
+
+
+    public static String SELECT_CLAUSE_FOR_CURRENT_INFO=
             "SELECT" +
                     " a.id as appointmentId," +
                     " a.status as status, " +
@@ -184,10 +191,37 @@ public class AppointmentTransferQuery {
                     " atd.appointmentAmount as appointmentAmount" +
                     " FROM" +
                     " Appointment a" +
-                    " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id " +
-                    " LEFT JOIN Doctor d ON d.id=a.doctorId.id " +
-                    " LEFT JOIN Specialization s ON s.id=a.specializationId " +
+                    " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
+                    " LEFT JOIN Doctor d ON d.id=a.doctorId.id" +
+                    " LEFT JOIN Specialization s ON s.id=a.specializationId.id" +
+                    " LEFT JOIN Patient p ON p.id=a.patientId.id" +
+                    " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id" +
                     " WHERE a.hasTransferred='Y'";
+
+    public static String WHERE_CLAUSE_FOR_CURRENT_INFO(AppointmentTransferSearchRequestDTO requestDTO) {
+
+        String whereClause = " ";
+
+        if (!ObjectUtils.isEmpty(requestDTO.getAppointmentFromDate())
+                && !ObjectUtils.isEmpty(requestDTO.getAppointmentToDate()))
+            whereClause += " AND (a.appointmentDate BETWEEN '" + utilDateToSqlDate(requestDTO.getAppointmentFromDate())
+                    + "' AND '" + utilDateToSqlDate(requestDTO.getAppointmentToDate()) + "')";
+
+        if (!ObjectUtils.isEmpty(requestDTO.getAppointmentNumber()))
+            whereClause += " AND a.appointmentNumber='" + requestDTO.getAppointmentNumber() + "'";
+
+        if (!ObjectUtils.isEmpty(requestDTO.getPatientMetaInfoId()))
+            whereClause += " AND pmi.id=" + requestDTO.getPatientMetaInfoId();
+
+        if (!ObjectUtils.isEmpty(requestDTO.getDoctorId()))
+            whereClause += " AND a.doctorId.id=" + requestDTO.getDoctorId();
+
+        if (!ObjectUtils.isEmpty(requestDTO.getSpecializationId()))
+            whereClause += " AND a.specializationId.id=" + requestDTO.getSpecializationId();
+
+        return whereClause;
+    }
+
 
 
 }

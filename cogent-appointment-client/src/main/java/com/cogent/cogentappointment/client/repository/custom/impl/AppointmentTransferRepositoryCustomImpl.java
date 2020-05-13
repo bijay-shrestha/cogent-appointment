@@ -3,7 +3,7 @@ package com.cogent.cogentappointment.client.repository.custom.impl;
 import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.AppointmentTransferSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.AppointmentTransferLogDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.AppointmentTransferLogResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.CurrentAppointmentDetails;
+import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.CurrentAppointmentDetailsDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableDates.DoctorDatesResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.ActualDateAndTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.OverrideDateAndTimeResponseDTO;
@@ -88,7 +88,8 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
                 .setParameter(DOCTOR_ID, doctorId)
                 .setParameter(SPECIALIZATION_ID, specializationId);
 
-        List<DoctorDatesResponseDTO> response = transformQueryToResultList(query, DoctorDatesResponseDTO.class);
+        List<DoctorDatesResponseDTO> response = transformQueryToResultList(
+                query, DoctorDatesResponseDTO.class);
 
         return response;
     }
@@ -99,7 +100,8 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
                 .setParameter(DOCTOR_ID, doctorId)
                 .setParameter(SPECIALIZATION_ID, specializationId);
 
-        List<ActualDateAndTimeResponseDTO> response = transformQueryToResultList(query, ActualDateAndTimeResponseDTO.class);
+        List<ActualDateAndTimeResponseDTO> response = transformQueryToResultList(
+                query, ActualDateAndTimeResponseDTO.class);
 
         if (response.isEmpty()) {
             throw DOCTOR_DUTY_ROSTER_NOT_FOUND.get();
@@ -125,7 +127,8 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
         Query query = createQuery.apply(entityManager, QUERY_TO_GET_DOCTOR_CHARGE_BY_DOCTOR_ID)
                 .setParameter(DOCTOR_ID, doctorId);
 
-        AppointmentChargeResponseDTO response = transformQueryToSingleResult(query, AppointmentChargeResponseDTO.class);
+        AppointmentChargeResponseDTO response = transformQueryToSingleResult(
+                query, AppointmentChargeResponseDTO.class);
 
         return response;
     }
@@ -136,7 +139,8 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
                 .setParameter(DOCTOR_ID, doctorId)
                 .setParameter(SPECIALIZATION_ID, specializationId);
 
-        List<OverrideDateAndTimeResponseDTO> response = transformQueryToResultList(query, OverrideDateAndTimeResponseDTO.class);
+        List<OverrideDateAndTimeResponseDTO> response = transformQueryToResultList(
+                query, OverrideDateAndTimeResponseDTO.class);
 
         return response;
 
@@ -147,28 +151,32 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
                                                                         Pageable pageable) {
 
         AppointmentTransferLogResponseDTO appointmentTransferLogResponseDTO=new AppointmentTransferLogResponseDTO();
+
         Query query = createQuery.apply(entityManager, QUERY_TO_GET_CURRENT_TRANSFERRED_DETAIL(requestDTO));
 
         int totalItems = query.getResultList().size();
 
         addPagination.accept(pageable, query);
 
-        Query queryToGetCurretAppointment=createQuery.apply(entityManager, QUERY_TO_GET_CURRENT_APPOINTMENT_INFOS(requestDTO));
+        Query queryToGetCurretAppointment=createQuery.apply(entityManager,
+                QUERY_TO_GET_CURRENT_APPOINTMENT_INFOS(requestDTO));
 
-        List<CurrentAppointmentDetails> currentDetails=transformQueryToResultList(queryToGetCurretAppointment,
-                CurrentAppointmentDetails.class);
+        List<CurrentAppointmentDetailsDTO> currentDetails=transformQueryToResultList(
+                queryToGetCurretAppointment, CurrentAppointmentDetailsDTO.class);
 
-        List<AppointmentTransferLogDTO> responses = transformQueryToResultList(query, AppointmentTransferLogDTO.class);
+        List<AppointmentTransferLogDTO> responses = transformQueryToResultList(
+                query, AppointmentTransferLogDTO.class);
 
         currentDetails.forEach(currentDetail->{
             mergeCurrentAppointmentStatus(currentDetail,responses);
         });
 
-
         if (responses.isEmpty()) {
             throw APPOINTMENT_TRANSFERE_NOT_FOUND.get();
         }
+
         appointmentTransferLogResponseDTO.setResponse(responses);
+
         appointmentTransferLogResponseDTO.setTotalItems(totalItems);
 
         return appointmentTransferLogResponseDTO;

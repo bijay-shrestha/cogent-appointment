@@ -2,7 +2,7 @@ package com.cogent.cogentappointment.client.utils;
 
 import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.AppointmentTransferRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.AppointmentTransferLogDTO;
-import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.CurrentAppointmentDetails;
+import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.CurrentAppointmentDetailsDTO;
 import com.cogent.cogentappointment.persistence.model.*;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -210,7 +210,7 @@ public class AppointmentTransferUtils {
 
 
     public static List<AppointmentTransferLogDTO> mergeCurrentAppointmentStatus(
-            CurrentAppointmentDetails currentDetails,
+            CurrentAppointmentDetailsDTO currentDetails,
             List<AppointmentTransferLogDTO> transferredList) {
 
         transferredList.forEach(transferredData->{

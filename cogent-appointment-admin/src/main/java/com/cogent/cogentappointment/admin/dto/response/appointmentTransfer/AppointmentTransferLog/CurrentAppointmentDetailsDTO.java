@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog;
+package com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.AppointmentTransferLog;
 
 import lombok.*;
 
@@ -13,7 +13,7 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CurrentAppointmentDetails implements Serializable {
+public class CurrentAppointmentDetailsDTO implements Serializable {
 
     private Long appointmentId;
 

@@ -51,8 +51,6 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
     private final AppointmentTransferRepository repository;
 
-    private final DoctorService doctorService;
-
     private final AppointmentTransferTransactionDetailRepository transferTransactionRepository;
 
     private final AppointmentTransferTransactionRequestLogRepository transferTransactionRequestLogRepository;
@@ -68,7 +66,6 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
     private final SpecializationRepository specializationRepository;
 
     public AppointmentTransferServiceImpl(AppointmentTransferRepository repository,
-                                          DoctorService doctorService,
                                           AppointmentTransferTransactionDetailRepository transferTransactionRepository,
                                           AppointmentTransferTransactionRequestLogRepository transferTransactionRequestLogRepository,
                                           AppointmentRepository appointmentRepository,
@@ -77,7 +74,6 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
                                           DoctorRepository doctorRepository,
                                           SpecializationRepository specializationRepository) {
         this.repository = repository;
-        this.doctorService = doctorService;
         this.transferTransactionRepository = transferTransactionRepository;
         this.transferTransactionRequestLogRepository = transferTransactionRequestLogRepository;
         this.appointmentRepository = appointmentRepository;

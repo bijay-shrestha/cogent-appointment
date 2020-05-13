@@ -60,7 +60,7 @@ public class DDRShiftWiseResource {
         return ok(ddrShiftWiseService.fetchDetailExistingDDR(ddrId));
     }
 
-    @GetMapping(EXISTING + WEEK_DAYS)
+    @PutMapping(EXISTING + WEEK_DAYS)
     @ApiOperation(FETCH_EXISTING_WEEK_DAYS_DETAIL)
     public ResponseEntity<?> fetchDDRWeekDaysDetail(@Valid @RequestBody DDRExistingWeekDaysRequestDTO requestDTO) {
         return ok(ddrShiftWiseService.fetchDDRWeekDaysDetail(requestDTO));

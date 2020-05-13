@@ -50,7 +50,7 @@ public class WebResourceKeyConstants {
         String APPOINTMENT_TIME = "/time";
         String APPOINTMENT_CHARGE = "/charge";
         String APPOINTMENT_DATE = "/date";
-        String INFO="/info";
+        String APPOINTMENT_TRANSFER_ID_PATH_VARIABLE_BASE = "/{appointmentTransferId}";
     }
 
 

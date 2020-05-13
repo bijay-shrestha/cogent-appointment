@@ -190,9 +190,9 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
     }
 
     @Override
-    public AppointmentTransferPreviewResponseDTO fetchAppointmentTransferDetailById(Long id) {
+    public AppointmentTransferPreviewResponseDTO fetchAppointmentTransferDetailById(Long appointmentTransferId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_TRANSFER_DETAIL_BY_ID)
-                .setParameter(ID, id);
+                .setParameter(APPOINTMENT_TRANSFER_ID, appointmentTransferId);
 
         AppointmentTransferPreviewResponseDTO response = transformQueryToSingleResult(
                 query, AppointmentTransferPreviewResponseDTO.class);

@@ -53,5 +53,5 @@ public interface AppointmentTransferRepositoryCustom {
                                                              Pageable pageable);
 
 
-    AppointmentTransferPreviewResponseDTO fetchAppointmentTransferDetailById(Long id);
+    AppointmentTransferPreviewResponseDTO fetchAppointmentTransferDetailById(Long appointmentTransferId);
 }

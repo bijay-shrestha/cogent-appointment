@@ -274,12 +274,12 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
     }
 
     @Override
-    public AppointmentTransferPreviewResponseDTO fetchAppointmentTransferDetailById(Long id) {
+    public AppointmentTransferPreviewResponseDTO fetchAppointmentTransferDetailById(Long appointmentTransferId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_DETAIL_PROCESS_STARTED, APPOINTMENT_TRANSFER);
 
-        AppointmentTransferPreviewResponseDTO response = repository.fetchAppointmentTransferDetailById(id);
+        AppointmentTransferPreviewResponseDTO response = repository.fetchAppointmentTransferDetailById(appointmentTransferId);
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, APPOINTMENT_TRANSFER,
                 getDifferenceBetweenTwoTime(startTime));

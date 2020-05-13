@@ -279,7 +279,7 @@ public class AppointmentTransferQuery {
                     " LEFT JOIN AppointmentTransferTransactionDetail attd ON attd.appointmentTransfer.id=apt.id" +
                     " LEFT JOIN Patient p ON p.id=a.patientId.id" +
                     " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id " +
-                    " WHERE apt.id=:id";
+                    " WHERE apt.id=:appointmentTransferId";
 
 
 }

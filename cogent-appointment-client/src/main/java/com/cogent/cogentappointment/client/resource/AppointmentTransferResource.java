@@ -65,9 +65,9 @@ public class AppointmentTransferResource {
         return ok(appointmentTransferService.searchTransferredAppointment(requestDTO, pageable));
     }
 
-    @GetMapping(DETAIL + ID_PATH_VARIABLE_BASE)
+    @GetMapping(DETAIL + APPOINTMENT_TRANSFER_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_TRANSFERRED_APPOINTMENT_DETAIL)
-    public ResponseEntity<?> fetchAppointmentTransferDetailById(@PathVariable("id") Long id) {
-        return ok(appointmentTransferService.fetchAppointmentTransferDetailById(id));
+    public ResponseEntity<?> fetchAppointmentTransferDetailById(@PathVariable("appointmentTransferId") Long appointmentTransferId) {
+        return ok(appointmentTransferService.fetchAppointmentTransferDetailById(appointmentTransferId));
     }
 }

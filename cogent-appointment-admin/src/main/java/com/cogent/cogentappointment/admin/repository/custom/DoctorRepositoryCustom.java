@@ -35,4 +35,5 @@ public interface DoctorRepositoryCustom {
     DoctorUpdateResponseDTO fetchDetailsForUpdate(Long id);
 
     List<DoctorDropdownDTO> fetchDoctorAvatarInfo(Long hospitalId, Long doctorId);
+
 }

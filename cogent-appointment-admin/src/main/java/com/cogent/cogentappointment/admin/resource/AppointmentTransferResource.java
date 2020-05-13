@@ -52,7 +52,8 @@ public class AppointmentTransferResource {
     @PutMapping
     @ApiOperation(APPOINTMENT_TRANSFER)
     public ResponseEntity<?> appointmentTransfer(@Valid @RequestBody AppointmentTransferRequestDTO requestDTO) {
-        return null;
+        appointmentTransferService.appointmentTransfer(requestDTO);
+        return ok().build();
     }
 
     @PutMapping(INFO)

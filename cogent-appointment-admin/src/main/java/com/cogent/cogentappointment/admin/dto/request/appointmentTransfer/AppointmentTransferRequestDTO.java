@@ -22,6 +22,9 @@ import java.util.Date;
 public class AppointmentTransferRequestDTO implements Serializable{
 
     @NotNull
+    private Long hospitalId;
+
+    @NotNull
     private Long appointmentId;
 
     @NotNull

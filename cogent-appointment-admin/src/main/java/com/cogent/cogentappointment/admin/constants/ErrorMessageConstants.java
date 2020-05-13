@@ -67,6 +67,15 @@ public class ErrorMessageConstants {
     public static final String CODE_DUPLICATION_MESSAGE = "%s already exists with code '%s'";
 
     //D
+
+    public interface DoctorServiceMessages {
+        String DOCTOR_NOT_AVAILABLE = "Sorry, Doctor is not available in selected date '%s'.";
+        String DOCTOR_APPOINTMENT_CHARGE_INVALID = "Sorry, requested appointment amount '%s' doesn't match with " +
+                "actual doctor appointment charge";
+        String DOCTOR_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE = "Appointment amount is not equal to " +
+                "Doctor actual appointment charge/ follow-up appointment charge";
+    }
+
     public interface DoctorDutyRosterServiceMessages {
         String DUPLICATION_MESSAGE = "Doctor Duty Roster already exists for selected doctor.";
 

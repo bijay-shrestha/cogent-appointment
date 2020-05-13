@@ -40,7 +40,6 @@ import static com.cogent.cogentappointment.client.log.constants.DoctorLog.DOCTOR
 import static com.cogent.cogentappointment.client.log.constants.SpecializationLog.SPECIALIZATION;
 import static com.cogent.cogentappointment.client.utils.AppointmentTransferUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
-import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 
 /**
  * @author Sauravi Thapa ON 5/6/20
@@ -181,8 +180,8 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
         log.info(APPOINTMENT_TRANSFER_PROCESS_STARTED, APPOINTMENT_TRANSFER);
 
-        validateAppointmentAmount(requestDTO.getDoctorId(),getLoggedInHospitalId(),
-                requestDTO.getIsFollowUp(),requestDTO.getAppointmentCharge());
+        validateAppointmentAmount(requestDTO.getDoctorId(),
+                requestDTO.getIsFollowUp(), requestDTO.getAppointmentCharge());
 
         Appointment appointment = fetchAppointmentById(requestDTO.getAppointmentId());
 
@@ -213,11 +212,10 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
             save(transferredAppointment, appointmentTransfer);
             saveTransferTransaction(transferTransactionDetail);
-        }
-        else {
-            Doctor currentDoctor= fetchDoctorById(requestDTO.getDoctorId());
+        } else {
+            Doctor currentDoctor = fetchDoctorById(requestDTO.getDoctorId());
 
-            Specialization currentSpecialization=fetchSpecializationById(requestDTO.getSpecializationId());
+            Specialization currentSpecialization = fetchSpecializationById(requestDTO.getSpecializationId());
 
             AppointmentTransfer appointmentTransfer = parseToAppointmentTransfer(appointment,
                     requestDTO,
@@ -376,7 +374,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
         repository.save(appointmentTransfer);
     }
 
-    private void saveTransferTransaction(AppointmentTransferTransactionDetail transferTransactionDetail){
+    private void saveTransferTransaction(AppointmentTransferTransactionDetail transferTransactionDetail) {
         transferTransactionRepository.save(transferTransactionDetail);
     }
 
@@ -384,7 +382,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
                                      AppointmentTransferTransactionRequestLog transferTransactionRequestLog,
                                      AppointmentTransactionDetail transactionDetail,
                                      AppointmentTransactionRequestLog transactionRequestLog) {
-        transferTransactionRepository.save(transferTransactionDetail);
+        saveTransferTransaction(transferTransactionDetail);
         transferTransactionRequestLogRepository.save(transferTransactionRequestLog);
         transactionDetailRepository.save(transactionDetail);
         transactionRequestLogRepository.save(transactionRequestLog);
@@ -415,18 +413,24 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
         throw new NoContentFoundException(AppointmentTransactionRequestLog.class, "transactionNumber", transactionNumber.toString());
     };
 
-    private void validateAppointmentAmount(Long doctorId, Long hospitalId,
+    private void validateAppointmentAmount(Long doctorId,
                                            Character isFollowUp, Double appointmentAmount) {
 
+        AppointmentChargeResponseDTO responseDTO = fetchAppointmentCharge(doctorId);
+
         Double actualAppointmentCharge = isFollowUp.equals(YES)
-                ? doctorService.fetchDoctorFollowupAppointmentCharge(doctorId, hospitalId)
-                : doctorService.fetchDoctorAppointmentCharge(doctorId, hospitalId);
+                ? responseDTO.getFollowUpCharge()
+                : responseDTO.getActualCharge();
 
         if (!(Double.compare(actualAppointmentCharge, appointmentAmount) == 0)) {
             log.error(String.format(DOCTOR_APPOINTMENT_CHARGE_INVALID, appointmentAmount));
             throw new BadRequestException(String.format(DOCTOR_APPOINTMENT_CHARGE_INVALID, appointmentAmount),
                     DOCTOR_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE);
         }
+    }
+
+    public AppointmentChargeResponseDTO fetchAppointmentCharge(Long doctorId) {
+        return repository.getAppointmentChargeByDoctorId(doctorId);
     }
 
 

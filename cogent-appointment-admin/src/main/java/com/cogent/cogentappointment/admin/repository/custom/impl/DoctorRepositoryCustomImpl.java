@@ -159,6 +159,7 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
         } else return results;
     }
 
+
     private Supplier<NoContentFoundException> DOCTOR_NOT_FOUND = () ->
             new NoContentFoundException(Doctor.class);
 

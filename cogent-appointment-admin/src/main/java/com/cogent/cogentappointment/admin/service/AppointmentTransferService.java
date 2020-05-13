@@ -17,6 +17,8 @@ public interface AppointmentTransferService {
 
     Double fetchDoctorChargeByDoctorId(DoctorChargeRequestDTO requestDTO);
 
+    void appointmentTransfer(AppointmentTransferRequestDTO requestDTO);
+
     AppointmentTransferLogResponseDTO searchTransferredAppointment(AppointmentTransferSearchRequestDTO requestDTO,
                                                                    Pageable pageable);
 }

@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.*;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.AppointmentTransferLogResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.previewDTO.AppointmentTransferPreviewResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableDates.DoctorDatesResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.ActualDateAndTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.OverrideDateAndTimeResponseDTO;
@@ -271,6 +272,20 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
                 getDifferenceBetweenTwoTime(startTime));
 
         return appointmentTransferLogDTOS;
+    }
+
+    @Override
+    public AppointmentTransferPreviewResponseDTO fetchAppointmentTransferDetailById(Long id) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_DETAIL_PROCESS_STARTED, APPOINTMENT_TRANSFER);
+
+        AppointmentTransferPreviewResponseDTO response = repository.fetchAppointmentTransferDetailById(id);
+
+        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, APPOINTMENT_TRANSFER,
+                getDifferenceBetweenTwoTime(startTime));
+
+        return response;
     }
 
     /* CHECKS AVAILABLE APPT. TIME FROM OVERRIDE TABLE */

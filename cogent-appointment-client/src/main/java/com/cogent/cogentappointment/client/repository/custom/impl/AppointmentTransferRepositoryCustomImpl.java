@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.Appoi
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.AppointmentTransferLogDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.AppointmentTransferLogResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.CurrentAppointmentDetailsDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.previewDTO.AppointmentTransferPreviewResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableDates.DoctorDatesResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.ActualDateAndTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.OverrideDateAndTimeResponseDTO;
@@ -180,6 +181,17 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
         appointmentTransferLogResponseDTO.setTotalItems(totalItems);
 
         return appointmentTransferLogResponseDTO;
+    }
+
+    @Override
+    public AppointmentTransferPreviewResponseDTO fetchAppointmentTransferDetailById(Long id) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_TRANSFER_DETAIL_BY_ID)
+                .setParameter(ID, id);
+
+        AppointmentTransferPreviewResponseDTO response = transformQueryToSingleResult(
+                query, AppointmentTransferPreviewResponseDTO.class);
+
+        return response;
     }
 
     private Supplier<NoContentFoundException> DOCTOR_DUTY_ROSTER_NOT_FOUND = () -> {

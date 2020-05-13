@@ -12,10 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AppointmentTransferConstant.*;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.AppointmentTransferConstants.*;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.DOCTOR_ID_PATH_VARIABLE_BASE;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.SEARCH;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -23,9 +21,9 @@ import static org.springframework.http.ResponseEntity.ok;
  */
 
 @RestController
-@RequestMapping(API_V1+BASE_APPOINTMENT_TRANSFER)
+@RequestMapping(API_V1 + BASE_APPOINTMENT_TRANSFER)
 @Api(BASE_API_VALUE)
-public class AppointmentTransferResource  {
+public class AppointmentTransferResource {
 
     private final AppointmentTransferService appointmentTransferService;
 
@@ -35,25 +33,25 @@ public class AppointmentTransferResource  {
 
     @PutMapping(APPOINTMENT_DATE)
     @ApiOperation(FETCH_AVAILABLE_DATES)
-    public ResponseEntity<?> fetchDoctorAvailableDates(@Valid @RequestBody AppointmentDateRequestDTO requestDTO){
+    public ResponseEntity<?> fetchDoctorAvailableDates(@Valid @RequestBody AppointmentDateRequestDTO requestDTO) {
         return ok(appointmentTransferService.fetchAvailableDatesByDoctorId(requestDTO));
     }
 
     @PutMapping(APPOINTMENT_TIME)
     @ApiOperation(FETCH_AVAILABLE_TIME)
-    public ResponseEntity<?> fetchDoctorAvailableTime(@Valid @RequestBody AppointmentTransferTimeRequestDTO requestDTO){
+    public ResponseEntity<?> fetchDoctorAvailableTime(@Valid @RequestBody AppointmentTransferTimeRequestDTO requestDTO) {
         return ok(appointmentTransferService.fetchAvailableDoctorTime(requestDTO));
     }
 
     @PutMapping(APPOINTMENT_CHARGE)
     @ApiOperation(FETCH_DOCTOR_CHARGE)
-    public ResponseEntity<?> fetchDoctorChargeByDoctorId(@Valid @RequestBody DoctorChargeRequestDTO requestDTO){
+    public ResponseEntity<?> fetchDoctorChargeByDoctorId(@Valid @RequestBody DoctorChargeRequestDTO requestDTO) {
         return ok(appointmentTransferService.fetchDoctorChargeByDoctorId(requestDTO));
     }
 
     @PutMapping
     @ApiOperation(APPOINTMENT_TRANSFER)
-    public ResponseEntity<?> appointmentTransfer(@Valid @RequestBody AppointmentTransferRequestDTO requestDTO){
+    public ResponseEntity<?> appointmentTransfer(@Valid @RequestBody AppointmentTransferRequestDTO requestDTO) {
         appointmentTransferService.appointmentTransfer(requestDTO);
         return ok().build();
     }
@@ -62,8 +60,14 @@ public class AppointmentTransferResource  {
     @ApiOperation(FETCH_TRANSFERRED_APPOINTMENT_LIST)
     public ResponseEntity<?> searchAppointmentTransfer(@RequestBody AppointmentTransferSearchRequestDTO requestDTO,
                                                        @RequestParam("page") int page,
-                                                       @RequestParam("size") int size){
+                                                       @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return ok(appointmentTransferService.searchTransferredAppointment(requestDTO,pageable));
+        return ok(appointmentTransferService.searchTransferredAppointment(requestDTO, pageable));
+    }
+
+    @GetMapping(DETAIL + ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_TRANSFERRED_APPOINTMENT_DETAIL)
+    public ResponseEntity<?> fetchAppointmentTransferDetailById(@PathVariable("id") Long id) {
+        return ok(appointmentTransferService.fetchAppointmentTransferDetailById(id));
     }
 }

@@ -20,5 +20,5 @@ public interface DDRShiftWiseRepository extends JpaRepository<DoctorDutyRosterSh
     Optional<DoctorDutyRosterShiftWise> findDoctorDutyRosterById(@Param("id") Long id);
 
     @Query("SELECT d.hasOverride FROM DoctorDutyRosterShiftWise d WHERE d.status!='D' AND d.id = :id")
-    Optional<Character> fetchOverrideStatus(@Param("id")Long id);
+    Optional<Character> fetchOverrideStatus(@Param("id") Long id);
 }

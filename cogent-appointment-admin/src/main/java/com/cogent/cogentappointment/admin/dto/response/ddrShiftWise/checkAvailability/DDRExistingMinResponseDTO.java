@@ -18,5 +18,4 @@ public class DDRExistingMinResponseDTO implements Serializable {
     private Boolean hasExistingRosters;
 
    private List<DDRExistingMinDTO> existingRosters;
-
 }

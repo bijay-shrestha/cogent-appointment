@@ -31,6 +31,7 @@ public class QueryConstants {
 
     public interface DDRConstants {
         String DDR_ID = "ddrId";
+        String SHIFT_ID = "shiftId";
     }
 
 

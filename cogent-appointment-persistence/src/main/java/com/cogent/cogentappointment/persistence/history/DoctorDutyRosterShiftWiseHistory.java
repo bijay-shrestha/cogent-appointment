@@ -50,7 +50,8 @@ public class DoctorDutyRosterShiftWiseHistory implements Serializable {
     @Enumerated(STRING)
     private Action action;
 
-    public DoctorDutyRosterShiftWiseHistory(DoctorDutyRosterShiftWise doctorDutyRosterShiftWise, Action action) {
+    public DoctorDutyRosterShiftWiseHistory(DoctorDutyRosterShiftWise doctorDutyRosterShiftWise,
+                                            Action action) {
         this.doctorDutyRosterShiftWise = doctorDutyRosterShiftWise;
         this.ddrShiftContent = doctorDutyRosterShiftWise.toString();
         this.action = action;

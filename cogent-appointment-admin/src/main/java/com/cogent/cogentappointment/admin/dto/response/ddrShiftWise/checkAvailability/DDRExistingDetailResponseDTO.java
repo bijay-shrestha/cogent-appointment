@@ -17,7 +17,7 @@ public class DDRExistingDetailResponseDTO implements Serializable {
 
     private Character hasOverride;
 
-    private List<DDRShiftResponseDTO> shiftDetail;
+    private List<DDRShiftMinResponseDTO> shiftDetail;
 
     private List<DDROverrideDetailResponseDTO> overrideDetail;
 }

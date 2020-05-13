@@ -210,7 +210,8 @@ public class SwaggerConstants {
         String SAVE_WEEK_DAYS_ROSTER_OPERATION = "Save Week Days Doctor Duty Roster";
         String SAVE_OVERRIDE_ROSTER_OPERATION = "Save Override Doctor Duty Roster";
         String FETCH_EXISTING_ROSTERS = " Fetch existing doctor duty rosters within the selected date range";
-        String FETCH_EXISTING_ROSTERS_DETAIL = "Fetch existing rosters shift & override information";
+        String FETCH_EXISTING_ROSTERS_DETAIL = "Fetch existing rosters ddrShiftWise & override information";
+        String FETCH_EXISTING_WEEK_DAYS_DETAIL = "Fetch existing rosters week days information";
 
         String UPDATE_OPERATION = "Update Doctor Duty Roster. Note that week days time can be updated " +
                 "only if there are no appointments within the selected date range";
@@ -345,7 +346,7 @@ public class SwaggerConstants {
         String SEARCH_OPERATION = "Search Shift according to given request parameters";
         String DETAILS_OPERATION = "Fetch Shift details by its id";
         String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal Shift details for dropdown";
-        String FETCH_SHIFT_BY_HOSPITAL_OPERATION = "Fetch active shift by hospital id";
+        String FETCH_SHIFT_BY_HOSPITAL_OPERATION = "Fetch active ddrShiftWise by hospital id";
     }
 
     //T

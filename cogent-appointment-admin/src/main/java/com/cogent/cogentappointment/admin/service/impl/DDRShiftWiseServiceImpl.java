@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.checkAvailability.DDRExistingAvailabilityRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.checkAvailability.DDRExistingWeekDaysRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.override.DDROverrideDetailRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.override.DDROverrideRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.weekDaysDetail.*;
@@ -28,8 +29,7 @@ import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
-import static com.cogent.cogentappointment.admin.log.constants.DDRShiftWiseLog.DDR_OVERRIDE;
-import static com.cogent.cogentappointment.admin.log.constants.DDRShiftWiseLog.DDR_SHIFT_WISE;
+import static com.cogent.cogentappointment.admin.log.constants.DDRShiftWiseLog.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDRBreakDetailUtils.parseToDDRBreakDetail;
 import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDRDateValidationUtils.validateBreakTimeOverlap;
@@ -159,7 +159,7 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         Character hasDDROverride = ddrShiftWiseRepository.fetchOverrideStatus(ddrId)
                 .orElseThrow(() -> DDR_WITH_GIVEN_ID_NOT_FOUND.apply(ddrId));
 
-        List<DDRShiftResponseDTO> shiftDetail =
+        List<DDRShiftMinResponseDTO> shiftDetail =
                 ddrShiftDetailRepository.fetchExistingShift(ddrId);
 
         List<DDROverrideDetailResponseDTO> overrideDetail = new ArrayList<>();
@@ -173,6 +173,20 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         log.info(FETCHING_PROCESS_COMPLETED, DDR_SHIFT_WISE, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
+    }
+
+    @Override
+    public List<DDRExistingWeekDaysResponseDTO> fetchDDRWeekDaysDetail(DDRExistingWeekDaysRequestDTO requestDTO) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, DDR_WEEK_DAYS);
+
+        List<DDRExistingWeekDaysResponseDTO> weekDaysDetail =
+                ddrWeekDaysDetailRepository.fetchDDRWeekDaysDetail(requestDTO);
+
+        log.info(FETCHING_PROCESS_COMPLETED, DDR_WEEK_DAYS, getDifferenceBetweenTwoTime(startTime));
+
+        return weekDaysDetail;
     }
 
     /*1. VALIDATE CONSTRAINTS VIOLATION

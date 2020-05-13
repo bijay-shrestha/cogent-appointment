@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DDRShiftResponseDTO implements Serializable{
+public class DDRShiftMinResponseDTO implements Serializable{
 
     private Long shiftId;
 

@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.resource;
 
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.checkAvailability.DDRExistingAvailabilityRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.checkAvailability.DDRExistingWeekDaysRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.override.DDROverrideRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.weekDaysDetail.DDRRequestDTO;
 import com.cogent.cogentappointment.admin.service.DDRShiftWiseService;
@@ -58,4 +59,11 @@ public class DDRShiftWiseResource {
     public ResponseEntity<?> fetchDetailExistingDDR(@PathVariable("ddrId") Long ddrId) {
         return ok(ddrShiftWiseService.fetchDetailExistingDDR(ddrId));
     }
+
+    @GetMapping(EXISTING + WEEK_DAYS)
+    @ApiOperation(FETCH_EXISTING_WEEK_DAYS_DETAIL)
+    public ResponseEntity<?> fetchDDRWeekDaysDetail(@Valid @RequestBody DDRExistingWeekDaysRequestDTO requestDTO) {
+        return ok(ddrShiftWiseService.fetchDDRWeekDaysDetail(requestDTO));
+    }
+
 }

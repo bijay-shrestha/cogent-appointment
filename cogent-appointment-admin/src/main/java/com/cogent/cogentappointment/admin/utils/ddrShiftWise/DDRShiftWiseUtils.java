@@ -43,7 +43,7 @@ public class DDRShiftWiseUtils {
 
     public static DDRExistingDetailResponseDTO parseToDDRExistingDetailResponseDTO(
             Character hasDDROverride,
-            List<DDRShiftResponseDTO> shiftDetail,
+            List<DDRShiftMinResponseDTO> shiftDetail,
             List<DDROverrideDetailResponseDTO> overrideDetail) {
 
         return DDRExistingDetailResponseDTO.builder()

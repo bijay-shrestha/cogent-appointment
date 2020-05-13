@@ -4,7 +4,7 @@ import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.checkAvailabi
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRExistingMinDTO;
 import com.cogent.cogentappointment.admin.repository.custom.DDRShiftWiseRepositoryCustom;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -23,14 +23,13 @@ import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transf
 /**
  * @author smriti on 08/05/20
  */
-@Repository
+@Service
 @Transactional(readOnly = true)
 @Slf4j
 public class DDRShiftWiseRepositoryCustomImpl implements DDRShiftWiseRepositoryCustom {
 
     @PersistenceContext
     private EntityManager entityManager;
-
 
     @Override
     public Long validateDoctorDutyRosterCount(Long doctorId,

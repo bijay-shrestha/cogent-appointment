@@ -118,6 +118,7 @@ public class WebResourceKeyConstants {
         String DDR_ID_PATH_VARIABLE_BASE = "/{ddrId}";
         String OVERRIDE = "/override";
         String EXISTING = "/existing";
+        String WEEK_DAYS = "/weekDays";
 
         String REVERT_DOCTOR_DUTY_ROSTER_OVERRIDE = "/revert";
     }

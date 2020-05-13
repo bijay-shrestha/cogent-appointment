@@ -7,5 +7,7 @@ public class DDRShiftWiseLog {
 
     public final static String DDR_SHIFT_WISE = "DDR SHIFT WISE";
 
-    public final static String DDR_OVERRIDE = "DDR OVERRIDE";
+    public final static String DDR_WEEK_DAYS = "DDR WEEK DAYS DETAIL";
+
+    public final static String DDR_OVERRIDE = "DDR OVERRIDE DETAIL";
 }

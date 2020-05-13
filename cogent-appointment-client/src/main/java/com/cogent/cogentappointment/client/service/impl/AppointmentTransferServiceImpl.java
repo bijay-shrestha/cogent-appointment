@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.*;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.AppointmentTransferLogDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.AppointmentTransferLogResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableDates.DoctorDatesResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.ActualDateAndTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.OverrideDateAndTimeResponseDTO;
@@ -14,6 +15,7 @@ import com.cogent.cogentappointment.client.service.AppointmentTransferService;
 import com.cogent.cogentappointment.client.service.DoctorService;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -263,12 +265,14 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
     }
 
     @Override
-    public List<AppointmentTransferLogDTO> searchTransferredAppointment(AppointmentTransferSearchRequestDTO requestDTO) {
+    public AppointmentTransferLogResponseDTO searchTransferredAppointment(AppointmentTransferSearchRequestDTO requestDTO,
+                                                                          Pageable pageable) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_TRANSFER);
 
-        List<AppointmentTransferLogDTO> appointmentTransferLogDTOS = repository.getFinalAppTransferredInfo(requestDTO);
+        AppointmentTransferLogResponseDTO appointmentTransferLogDTOS = repository.getFinalAppTransferredInfo(requestDTO,
+                pageable);
 
         log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_TRANSFER,
                 getDifferenceBetweenTwoTime(startTime));

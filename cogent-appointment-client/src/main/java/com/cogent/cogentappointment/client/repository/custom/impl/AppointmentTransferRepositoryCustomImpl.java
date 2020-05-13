@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.client.repository.custom.impl;
 
 import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.AppointmentTransferSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.AppointmentTransferLogDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.AppointmentTransferLogResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.CurrentAppointmentDetails;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableDates.DoctorDatesResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.ActualDateAndTimeResponseDTO;
@@ -13,6 +14,7 @@ import com.cogent.cogentappointment.client.repository.custom.AppointmentTransfer
 import com.cogent.cogentappointment.persistence.model.AppointmentTransfer;
 import com.cogent.cogentappointment.persistence.model.DoctorDutyRoster;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +32,7 @@ import static com.cogent.cogentappointment.client.log.constants.AppointmentTrans
 import static com.cogent.cogentappointment.client.log.constants.DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER;
 import static com.cogent.cogentappointment.client.query.AppointmentTransferQuery.*;
 import static com.cogent.cogentappointment.client.utils.AppointmentTransferUtils.mergeCurrentAppointmentStatus;
+import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
 
 /**
@@ -140,8 +143,15 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
     }
 
     @Override
-    public List<AppointmentTransferLogDTO> getFinalAppTransferredInfo(AppointmentTransferSearchRequestDTO requestDTO) {
+    public AppointmentTransferLogResponseDTO getFinalAppTransferredInfo(AppointmentTransferSearchRequestDTO requestDTO,
+                                                                        Pageable pageable) {
+
+        AppointmentTransferLogResponseDTO appointmentTransferLogResponseDTO=new AppointmentTransferLogResponseDTO();
         Query query = createQuery.apply(entityManager, QUERY_TO_GET_CURRENT_TRANSFERRED_DETAIL(requestDTO));
+
+        int totalItems = query.getResultList().size();
+
+        addPagination.accept(pageable, query);
 
         Query queryToGetCurretAppointment=createQuery.apply(entityManager, QUERY_TO_GET_CURRENT_APPOINTMENT_INFOS(requestDTO));
 
@@ -158,7 +168,10 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
         if (responses.isEmpty()) {
             throw APPOINTMENT_TRANSFERE_NOT_FOUND.get();
         }
-        return responses;
+        appointmentTransferLogResponseDTO.setResponse(responses);
+        appointmentTransferLogResponseDTO.setTotalItems(totalItems);
+
+        return appointmentTransferLogResponseDTO;
     }
 
     private Supplier<NoContentFoundException> DOCTOR_DUTY_ROSTER_NOT_FOUND = () -> {

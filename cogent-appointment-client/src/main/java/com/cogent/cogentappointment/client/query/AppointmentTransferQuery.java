@@ -127,8 +127,8 @@ public class AppointmentTransferQuery {
                     "  attd.currentAppointmentAmount  AS transferredToAmount, " +
                     "  attd.previousAppointmentAmount  AS transferredFromAmount " +
                     " FROM " +
-                    " Appointment a  " +
-                    " LEFT JOIN AppointmentTransfer apt ON a.id=apt.appointment.id  " +
+                    " AppointmentTransfer apt  " +
+                    " LEFT JOIN Appointment a ON a.id=apt.appointment.id  " +
                     " LEFT JOIN Patient p ON p.id=a.patientId.id  " +
                     " LEFT JOIN Doctor d ON d.id=apt.currentDoctor.id  " +
                     " LEFT JOIN Doctor pd ON pd.id=apt.previousDoctor.id " +
@@ -145,8 +145,13 @@ public class AppointmentTransferQuery {
 
         if (!ObjectUtils.isEmpty(requestDTO.getAppointmentFromDate())
                 && !ObjectUtils.isEmpty(requestDTO.getAppointmentToDate()))
-            whereClause += " AND (a.appointmentDate BETWEEN '" + utilDateToSqlDate(requestDTO.getAppointmentFromDate())
+            whereClause += " And ((apt.previousAppointmentDate BETWEEN '" + utilDateToSqlDate(requestDTO.getAppointmentFromDate())
                     + "' AND '" + utilDateToSqlDate(requestDTO.getAppointmentToDate()) + "')";
+
+        if (!ObjectUtils.isEmpty(requestDTO.getAppointmentFromDate())
+                && !ObjectUtils.isEmpty(requestDTO.getAppointmentToDate()))
+            whereClause += " OR (apt.currentAppointmentDate BETWEEN '" + utilDateToSqlDate(requestDTO.getAppointmentFromDate())
+                    + "' AND '" + utilDateToSqlDate(requestDTO.getAppointmentToDate()) + "'))";
 
         if (!ObjectUtils.isEmpty(requestDTO.getAppointmentNumber()))
             whereClause += " AND a.appointmentNumber='" + requestDTO.getAppointmentNumber() + "'";
@@ -162,7 +167,7 @@ public class AppointmentTransferQuery {
             whereClause += " AND (apt.previousSpecialization.id=" + requestDTO.getSpecializationId() +
                     " OR apt.currentSpecialization.id=" + requestDTO.getSpecializationId() + ")";
 
-        whereClause += "ORDER BY apt.createdDate DESC";
+        whereClause += "ORDER BY a.id DESC";
 
         return whereClause;
     }
@@ -218,6 +223,8 @@ public class AppointmentTransferQuery {
 
         if (!ObjectUtils.isEmpty(requestDTO.getSpecializationId()))
             whereClause += " AND a.specializationId.id=" + requestDTO.getSpecializationId();
+
+        whereClause += "ORDER BY a.id DESC";
 
         return whereClause;
     }

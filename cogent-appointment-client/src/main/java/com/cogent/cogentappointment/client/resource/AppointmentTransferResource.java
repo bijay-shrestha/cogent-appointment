@@ -4,6 +4,8 @@ import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.*;
 import com.cogent.cogentappointment.client.service.AppointmentTransferService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,7 +59,10 @@ public class AppointmentTransferResource  {
 
     @PutMapping(INFO)
     @ApiOperation(FETCH_TRANSFERRED_APPOINTMENT_LIST)
-    public ResponseEntity<?> searchAppointmentTransfer(@RequestBody AppointmentTransferSearchRequestDTO requestDTO){
-        return ok(appointmentTransferService.searchTransferredAppointment(requestDTO));
+    public ResponseEntity<?> searchAppointmentTransfer(@RequestBody AppointmentTransferSearchRequestDTO requestDTO,
+                                                       @RequestParam("page") int page,
+                                                       @RequestParam("size") int size){
+        Pageable pageable = PageRequest.of(page, size);
+        return ok(appointmentTransferService.searchTransferredAppointment(requestDTO,pageable));
     }
 }

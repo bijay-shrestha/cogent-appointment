@@ -22,4 +22,7 @@ public class AppointmentDateRequestDTO implements Serializable{
 
     @NotNull
     private Long specializationId;
+
+    @NotNull
+    private Long hospitalId;
 }

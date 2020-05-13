@@ -14,6 +14,7 @@ import javax.validation.Valid;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentTransferConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentTransferConstants.*;
+import static org.springframework.http.ResponseEntity.ok;
 
 /**
  * @author Sauravi Thapa ON 5/6/20
@@ -33,7 +34,7 @@ public class AppointmentTransferResource {
     @PutMapping(APPOINTMENT_DATE)
     @ApiOperation(FETCH_AVAILABLE_DATES)
     public ResponseEntity<?> fetchDoctorAvailableDates(@Valid @RequestBody AppointmentDateRequestDTO requestDTO) {
-        return null;
+        return ok(appointmentTransferService.fetchAvailableDatesByDoctorId(requestDTO));
     }
 
     @PutMapping(APPOINTMENT_TIME)

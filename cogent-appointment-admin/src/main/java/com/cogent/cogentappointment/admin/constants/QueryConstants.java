@@ -25,6 +25,7 @@ public class QueryConstants {
 
     public static final String DOCTOR_ID = "doctorId";
     public static final String DASHBOARD_FEATURE_ID = "dashboardFeatureId";
+    public static final String DOCTOR_DUTY_ROSTER_ID = "doctorDutyRosterId";
     public static final String DATE = "date";
     public static final String DATE_OF_BIRTH = "dateOfBirth";
 

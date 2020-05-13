@@ -11,8 +11,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
 
 import static java.util.Calendar.MONTH;
 import static java.util.Calendar.YEAR;
@@ -198,6 +197,44 @@ public class DateUtils {
         Date date = new Date(System.currentTimeMillis());
 
         return formatter.format(date);
+
+    }
+
+    public static List<Date> getDates(
+            Date startDate, Date endDate) {
+        List<Date> datesInRange = new ArrayList<>();
+        Date today = utilDateToSqlDate(new Date());
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(startDate);
+
+        Calendar endCalendar = new GregorianCalendar();
+        endCalendar.setTime(endDate);
+
+        while (!calendar.after(endCalendar)) {
+            Date result = calendar.getTime();
+            if (utilDateToSqlDate(calendar.getTime()).before(today) ) {
+                calendar.add(Calendar.DATE, 1);
+
+            }else {
+                datesInRange.add(result);
+                calendar.add(Calendar.DATE, 1);
+            }
+        }
+        return datesInRange;
+    }
+
+    public static List<Date> utilDateListToSqlDateList(List<Date> uDates) {
+        List<Date> resultDates = new ArrayList<>();
+        uDates.forEach(uDate -> {
+            try {
+                DateFormat sqlDateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+                Date date = java.sql.Date.valueOf(sqlDateFormatter.format(uDate));
+                resultDates.add(date);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        return resultDates;
 
     }
 

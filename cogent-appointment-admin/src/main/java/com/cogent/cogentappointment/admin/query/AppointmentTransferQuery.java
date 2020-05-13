@@ -118,6 +118,7 @@ public class AppointmentTransferQuery {
     public static String SELECT_CLAUSE_FOR_SEARCH =
             "SELECT " +
                     "  a.id as appointmentId," +
+                    "  apt.id as appointmentTransferId," +
                     "  'N/A' as status, " +
                     "  a.appointmentNumber as apptNumber, " +
                     "  p.name as patientName, " +

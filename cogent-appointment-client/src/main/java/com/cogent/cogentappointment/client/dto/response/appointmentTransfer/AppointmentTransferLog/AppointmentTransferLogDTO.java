@@ -16,7 +16,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class AppointmentTransferLogDTO implements Serializable{
 
-    private Long appointmentId;
+    private Long appointmentId,appointmentTransferId;
 
     private String status,apptNumber, patientName,mobileNumber;
 

@@ -46,7 +46,7 @@ public class AdminLogQuery {
 
         return " SELECT " +
                 " al.logDate as logDate," +
-                " DATE_FORMAT(al.logDateTime,'%h:%i %p') as logTime," +
+                " DATE_FORMAT(al.logDateTime,'%h:%i:%s %p') as logTime," +
                 " al.browser as browser," +
                 " al.operatingSystem as os," +
                 " al.location as location," +

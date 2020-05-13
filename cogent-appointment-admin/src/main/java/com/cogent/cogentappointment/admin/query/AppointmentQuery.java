@@ -186,13 +186,12 @@ public class AppointmentQuery {
                             " d.name as doctorName," +                                                  //[8]
                             " a.appointmentModeId.name as appointmentMode," +
                             " atd.appointmentAmount as appointmentAmount," +
-                            " da.fileUri as fileUri," +
-                            " d.salutation as doctorSalutation" +
+                            " da.fileUri as fileUri" +
                             " FROM Appointment a" +
                             " LEFT JOIN Patient p ON a.patientId=p.id" +
                             " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                             " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
-                            " LEFT JOIN DoctorAvatar da ON da.doctorId = d.id" +
+                            " LEFT JOIN DoctorAvatar da ON da.doctorId.id = d.id" +
                             " LEFT JOIN Specialization sp ON a.specializationId=sp.id" +
                             " LEFT JOIN Hospital h ON a.hospitalId=h.id" +
                             " LEFT JOIN PatientMetaInfo pi ON pi.patient.id=p.id" +
@@ -263,8 +262,7 @@ public class AppointmentQuery {
                             " am.name as appointmentMode," +                                //[19]
                             " a.isFollowUp as isFollowUp," +                                //[20]
                             " (atd.appointmentAmount - COALESCE(ard.refundAmount,0)) as revenueAmount," + //[21]
-                            " da.fileUri as fileUri," +
-                            " d.salutation as doctorSalutation" +
+                            " da.fileUri as fileUri" +
                             " FROM Appointment a" +
                             " LEFT JOIN AppointmentMode am On am.id=a.appointmentModeId.id" +
                             " LEFT JOIN Patient p ON a.patientId.id=p.id" +
@@ -354,8 +352,7 @@ public class AppointmentQuery {
                             " atd.appointmentAmount as appointmentAmount," +                            //[15]
                             " arl.remarks as remarks," +                                                 //[16]
                             " a.isFollowUp as isFollowUp," +                                             //[17]
-                            " da.fileUri as fileUri," +                                                  //[19]
-                            " d.salutation as doctorSalutation" +                                         //[18]
+                            " da.fileUri as fileUri" +                                                   //[18]
                             " FROM AppointmentRescheduleLog arl" +
                             " LEFT JOIN Appointment a ON a.id=arl.appointmentId.id" +
                             " LEFT JOIN Patient p ON p.id=a.patientId" +
@@ -435,8 +432,7 @@ public class AppointmentQuery {
                             " THEN null" +
                             " ELSE" +
                             " dv.fileUri" +
-                            " END as doctorAvatar," +
-                            " d.salutation as doctorSalutation" +
+                            " END as doctorAvatar" +
                             " FROM Appointment a" +
                             " LEFT JOIN Patient p ON p.id = a.patientId.id" +
                             " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
@@ -488,8 +484,7 @@ public class AppointmentQuery {
                     " a.isSelf as isSelf," +                                                    //[15]
                     " h.name as hospitalName," +
                     " a.appointmentModeId.name as appointmentMode," +                           //[16]
-                    " da.fileUri as fileUri," +                                                   //[17]
-                    " d.salutation as doctorSalutation" +                                        //[18]
+                    " da.fileUri as fileUri" +                                                   //[17]
                     " FROM Appointment a" +
                     " LEFT JOIN Patient p ON a.patientId=p.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
@@ -530,8 +525,7 @@ public class AppointmentQuery {
                     " a.appointmentModeId.name as appointmentMode," +
                     " hpi.isRegistered as isRegistered," +
                     QUERY_TO_CALCULATE_PATIENT_AGE + "," +
-                    " dv.fileUri as fileUri," +
-                    " d.salutation as doctorSalutation"+
+                    " dv.fileUri as fileUri" +
                     " FROM" +
                     " AppointmentRefundDetail ard" +
                     " LEFT JOIN Appointment a ON a.id=ard.appointmentId.id" +

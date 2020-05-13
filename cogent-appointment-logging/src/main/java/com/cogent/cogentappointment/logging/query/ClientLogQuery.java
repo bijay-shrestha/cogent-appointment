@@ -48,7 +48,7 @@ public class ClientLogQuery {
 
         return " SELECT " +
                 " cl.logDate as logDate," +
-                " DATE_FORMAT(cl.logDateTime,'%h:%i %p') as logTime," +
+                " DATE_FORMAT(cl.logDateTime,'%h:%i:%s %p') as logTime," +
                 " cl.browser as browser," +
                 " cl.operatingSystem as os," +
                 " cl.location as location," +

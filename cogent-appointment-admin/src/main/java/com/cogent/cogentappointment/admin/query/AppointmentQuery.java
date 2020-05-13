@@ -483,7 +483,10 @@ public class AppointmentQuery {
                     " a.isSelf as isSelf," +                                                    //[15]
                     " h.name as hospitalName," +
                     " a.appointmentModeId.name as appointmentMode," +                           //[16]
-                    " da.fileUri as fileUri" +                                                   //[17]
+                    " da.fileUri as fileUri," +
+                    " a.doctorId.id as doctorId," +
+                    " a.specializationId.id as specializationId," +
+                    " a.isFollowUp as followUp" +                                                   //[17]
                     " FROM Appointment a" +
                     " LEFT JOIN Patient p ON a.patientId=p.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +

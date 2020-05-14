@@ -59,7 +59,7 @@ public class AppointmentTransferUtils {
         List<String> response = new ArrayList<>();
 
         do {
-            response.add(convert24HourTo12HourFormat(FORMAT.print(dateTime)));
+            response.add(convertTo12HourFormat(FORMAT.print(dateTime)));
             dateTime = dateTime.plus(duration);
         } while (dateTime.compareTo(FORMAT.parseDateTime(endTime)) <= 0);
 
@@ -224,6 +224,18 @@ public class AppointmentTransferUtils {
         });
 
         return transferredList;
+    }
+
+    public static String convertTo12HourFormat(String timeIn24HrFormat) {
+        try {
+            SimpleDateFormat dateParser = new SimpleDateFormat("HH:mm");
+            Date date = dateParser.parse(timeIn24HrFormat);
+            SimpleDateFormat dateFormatter = new SimpleDateFormat("hh:mm a");
+            return dateFormatter.format(date);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 

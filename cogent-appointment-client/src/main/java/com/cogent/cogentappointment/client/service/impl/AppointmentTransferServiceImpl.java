@@ -328,8 +328,8 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
         for (ActualDateAndTimeResponseDTO actual : actualDateAndTime) {
 
-            List<Date> actualDates = getActualdate(repository.getDayOffDaysByRosterId(actual.getId()),
-                    getDates(actual.getFromDate(), actual.getToDate()));
+            List<Date> actualDates = utilDateListToSqlDateList(getActualdate(repository.getDayOffDaysByRosterId(actual.getId()),
+                    getDates(actual.getFromDate(), actual.getToDate())));
 
             for (Date actualDate : actualDates) {
 

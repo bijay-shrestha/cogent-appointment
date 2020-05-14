@@ -232,8 +232,7 @@ public class DateUtils {
         }
     }
 
-    public static List<Date> getDates(
-            Date startDate, Date endDate) {
+    public static List<Date> getDates(Date startDate, Date endDate) {
         List<Date> datesInRange = new ArrayList<>();
         Date today = utilDateToSqlDate(new Date());
         Calendar calendar = new GregorianCalendar();
@@ -244,13 +243,16 @@ public class DateUtils {
 
         while (!calendar.after(endCalendar)) {
             Date result = calendar.getTime();
-            if (utilDateToSqlDate(calendar.getTime()).before(today) ) {
-                calendar.add(Calendar.DATE, 1);
-
-            }else {
+//            if (utilDateToSqlDate(calendar.getTime()).before(today) ) {
+//                calendar.add(Calendar.DATE, 1);
+//            }else {
+//                datesInRange.add(result);
+//                calendar.add(Calendar.DATE, 1);
+//            }
+            if(!utilDateToSqlDate(calendar.getTime()).before(today)){
                 datesInRange.add(result);
-                calendar.add(Calendar.DATE, 1);
             }
+            calendar.add(Calendar.DATE, 1);
         }
         return datesInRange;
     }

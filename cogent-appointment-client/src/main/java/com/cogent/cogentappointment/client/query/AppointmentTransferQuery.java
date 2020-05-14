@@ -26,7 +26,7 @@ public class AppointmentTransferQuery {
                     " CONCAT(((TIMESTAMPDIFF(YEAR, p.dateOfBirth ,CURDATE()))), ' years')" +
                     " END AS age";
 
-    public static String QUERY_TO_FETCH_DATES_BY_DOCTOR_ID =
+    public static String QUERY_TO_FETCH_DATES_BY_DOCTOR_ID_AND_SPECIALIZATION_ID =
             "SELECT" +
                     " ddr.id as id," +
                     " ddr.fromDate as fromDate," +
@@ -35,7 +35,8 @@ public class AppointmentTransferQuery {
                     " DoctorDutyRoster ddr" +
                     " WHERE" +
                     " ddr.doctorId.id = :doctorId" +
-                    " AND ddr.specializationId.id=:specializationId";
+                    " AND ddr.specializationId.id=:specializationId" +
+                    " AND ddr.status='Y'";
 
     public static String QUERY_TO_FETCH_DATE_AND_TIME_BY_DOCTOR_ID =
             "SELECT" +

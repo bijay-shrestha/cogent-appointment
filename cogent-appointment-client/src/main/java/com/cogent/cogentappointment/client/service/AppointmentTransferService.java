@@ -12,7 +12,7 @@ import java.util.List;
  * @author Sauravi Thapa ON 5/6/20
  */
 public interface AppointmentTransferService {
-    List<Date> fetchAvailableDatesByDoctorId(AppointmentDateRequestDTO requestDTO);
+    List<Date> fetchAvailableDatesByDoctorIdAndSpecializationId(AppointmentDateRequestDTO requestDTO);
 
     List<String> fetchAvailableDoctorTime(AppointmentTransferTimeRequestDTO requestDTO);
 

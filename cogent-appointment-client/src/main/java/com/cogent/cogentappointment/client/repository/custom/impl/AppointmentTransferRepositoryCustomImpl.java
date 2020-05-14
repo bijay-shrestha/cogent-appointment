@@ -49,8 +49,8 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
     private EntityManager entityManager;
 
     @Override
-    public List<DoctorDatesResponseDTO> getDatesByDoctorId(Long doctorId, Long specializationId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DATES_BY_DOCTOR_ID)
+    public List<DoctorDatesResponseDTO> getDutyRosterByDoctorIdAndSpecializationId(Long doctorId, Long specializationId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DATES_BY_DOCTOR_ID_AND_SPECIALIZATION_ID)
                 .setParameter(DOCTOR_ID, doctorId)
                 .setParameter(SPECIALIZATION_ID, specializationId);
 

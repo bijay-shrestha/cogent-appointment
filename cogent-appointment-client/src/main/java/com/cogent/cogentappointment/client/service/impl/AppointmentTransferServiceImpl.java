@@ -50,7 +50,7 @@ import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 @Transactional
 public class AppointmentTransferServiceImpl implements AppointmentTransferService {
 
-    private final AppointmentTransferRepository repository;
+    private final AppointmentTransferRepository appointmentTransferRepository;
 
     private final AppointmentTransferTransactionDetailRepository transferTransactionRepository;
 
@@ -66,7 +66,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
     private final SpecializationRepository specializationRepository;
 
-    public AppointmentTransferServiceImpl(AppointmentTransferRepository repository,
+    public AppointmentTransferServiceImpl(AppointmentTransferRepository appointmentTransferRepository,
                                           AppointmentTransferTransactionDetailRepository transferTransactionRepository,
                                           AppointmentTransferTransactionRequestLogRepository transferTransactionRequestLogRepository,
                                           AppointmentRepository appointmentRepository,
@@ -74,7 +74,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
                                           AppointmentTransactionRequestLogRepository transactionRequestLogRepository,
                                           DoctorRepository doctorRepository,
                                           SpecializationRepository specializationRepository) {
-        this.repository = repository;
+        this.appointmentTransferRepository = appointmentTransferRepository;
         this.transferTransactionRepository = transferTransactionRepository;
         this.transferTransactionRequestLogRepository = transferTransactionRequestLogRepository;
         this.appointmentRepository = appointmentRepository;
@@ -86,37 +86,39 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
     /* FETCH APPOINTMENT DATES BASED ON DOCTOR ID AND SPECIALIZATION ID */
     @Override
-    public List<Date> fetchAvailableDatesByDoctorId(AppointmentDateRequestDTO requestDTO) {
+    public List<Date> fetchAvailableDatesByDoctorIdAndSpecializationId(AppointmentDateRequestDTO requestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_AVAILABLE_DATES_BY_DOCTOR_ID_PROCESS_STARTED, APPOINTMENT_TRANSFER);
 
-        List<Date> actualDate = new ArrayList<>();
+        List<Date>  actualDutyRosterDate= new ArrayList<>();
 
-        List<Date> overrideDate = new ArrayList<>();
+        List<Date> overrideDutyRosterDate = new ArrayList<>();
 
-        List<DoctorDatesResponseDTO> rosterDates = repository.getDatesByDoctorId(requestDTO.getDoctorId(),
+        List<DoctorDatesResponseDTO> dutyRosterList = appointmentTransferRepository.getDutyRosterByDoctorIdAndSpecializationId(
+                requestDTO.getDoctorId(),
                 requestDTO.getSpecializationId());
 
-        rosterDates.forEach(rosterId -> {
+        dutyRosterList.forEach(rosterId -> {
 
-            List<Date> dates = getActualdate(repository.getDayOffDaysByRosterId(rosterId.getId()),
+            List<Date> dates = getActualdate(appointmentTransferRepository.getDayOffDaysByRosterId(rosterId.getId()),
                     getDates(rosterId.getFromDate(), rosterId.getToDate()));
 
-            actualDate.addAll(dates);
+            actualDutyRosterDate.addAll(dates);
         });
 
-        List<DoctorDatesResponseDTO> overrideDates = repository.getOverrideDatesByDoctorId(requestDTO.getDoctorId(),
+        List<DoctorDatesResponseDTO> overrideDates = appointmentTransferRepository.getOverrideDatesByDoctorId(
+                requestDTO.getDoctorId(),
                 requestDTO.getSpecializationId());
 
         overrideDates.forEach(date -> {
-            overrideDate.addAll(getDates(date.getFromDate(), date.getToDate()));
+            overrideDutyRosterDate.addAll(getDates(date.getFromDate(), date.getToDate()));
         });
 
         log.info(FETCHING_AVAILABLE_DATES_BY_DOCTOR_ID_PROCESS_COMPLETED, APPOINTMENT_TRANSFER,
                 getDifferenceBetweenTwoTime(startTime));
 
-        return utilDateListToSqlDateList(mergeOverrideAndActualDateList(overrideDate, actualDate));
+        return utilDateListToSqlDateList(mergeOverrideAndActualDateList(overrideDutyRosterDate, actualDutyRosterDate));
     }
 
     /* FETCH VACANT APPOINTMENT TIME BASED ON SPECIFIC DATE, DOCTOR ID AND SPECIALIZATION ID */
@@ -128,7 +130,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
         List<String> time = new ArrayList<>();
 
-        List<String> unavailableTime = repository.getUnavailableTimeByDateAndDoctorId(
+        List<String> unavailableTime = appointmentTransferRepository.getUnavailableTimeByDateAndDoctorId(
                 requestDTO.getDoctorId(),
                 requestDTO.getSpecializationId(),
                 requestDTO.getDate());
@@ -161,7 +163,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
         log.info(FETCHING_DOCTOR_CHARGE_PROCESS_STARTED, APPOINTMENT_TRANSFER);
 
-        AppointmentChargeResponseDTO charge = repository.getAppointmentChargeByDoctorId(requestDTO.getDoctorId());
+        AppointmentChargeResponseDTO charge = appointmentTransferRepository.getAppointmentChargeByDoctorId(requestDTO.getDoctorId());
 
         Double response = requestDTO.getFollowUp().equals(NO) ? charge.getActualCharge() : charge.getFollowUpCharge();
 
@@ -265,7 +267,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
         log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_TRANSFER);
 
-        AppointmentTransferLogResponseDTO appointmentTransferLogDTOS = repository.getApptTransferredList(requestDTO,
+        AppointmentTransferLogResponseDTO appointmentTransferLogDTOS = appointmentTransferRepository.getApptTransferredList(requestDTO,
                 pageable);
 
         log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_TRANSFER,
@@ -280,7 +282,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
         log.info(FETCHING_DETAIL_PROCESS_STARTED, APPOINTMENT_TRANSFER);
 
-        AppointmentTransferPreviewResponseDTO response = repository.fetchAppointmentTransferDetailById(appointmentTransferId);
+        AppointmentTransferPreviewResponseDTO response = appointmentTransferRepository.fetchAppointmentTransferDetailById(appointmentTransferId);
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, APPOINTMENT_TRANSFER,
                 getDifferenceBetweenTwoTime(startTime));
@@ -294,7 +296,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
         List<String> finalOverridetime = new ArrayList<>();
 
-        List<OverrideDateAndTimeResponseDTO> overrideDateAndTime = repository.getOverideRosterDateAndTime(
+        List<OverrideDateAndTimeResponseDTO> overrideDateAndTime = appointmentTransferRepository.getOverideRosterDateAndTime(
                 requestDTO.getDoctorId(),
                 requestDTO.getSpecializationId());
 
@@ -323,12 +325,12 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
         List<String> finaltime = new ArrayList<>();
 
-        List<ActualDateAndTimeResponseDTO> actualDateAndTime = repository.getActualTimeByDoctorId(requestDTO.getDoctorId(),
+        List<ActualDateAndTimeResponseDTO> actualDateAndTime = appointmentTransferRepository.getActualTimeByDoctorId(requestDTO.getDoctorId(),
                 requestDTO.getSpecializationId());
 
         for (ActualDateAndTimeResponseDTO actual : actualDateAndTime) {
 
-            List<Date> actualDates = utilDateListToSqlDateList(getActualdate(repository.getDayOffDaysByRosterId(actual.getId()),
+            List<Date> actualDates = utilDateListToSqlDateList(getActualdate(appointmentTransferRepository.getDayOffDaysByRosterId(actual.getId()),
                     getDates(actual.getFromDate(), actual.getToDate())));
 
             for (Date actualDate : actualDates) {
@@ -337,12 +339,14 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
                     String code = requestDTO.getDate().toString().substring(0, 3);
 
-                    WeekDayAndTimeDTO codeAndTime = repository.getWeekDaysByCode(requestDTO.getDoctorId(), code);
+                    WeekDayAndTimeDTO codeAndTime = appointmentTransferRepository.getWeekDaysByCode(requestDTO.getDoctorId(), code);
 
                     List<String> actualTime = getGapDuration(codeAndTime.getStartTime(), codeAndTime.getEndTime(),
                             actual.getGapDuration());
 
                     finaltime = getVacantTime(actualTime, unavailableTime, actualDate);
+
+                    break;
                 }
             }
         }
@@ -382,7 +386,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
     private void save(Appointment appointment, AppointmentTransfer appointmentTransfer) {
         appointmentRepository.save(appointment);
-        repository.save(appointmentTransfer);
+        appointmentTransferRepository.save(appointmentTransfer);
     }
 
     private void saveTransferTransaction(AppointmentTransferTransactionDetail transferTransactionDetail) {
@@ -441,7 +445,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
     }
 
     public AppointmentChargeResponseDTO fetchAppointmentCharge(Long doctorId) {
-        return repository.getAppointmentChargeByDoctorId(doctorId);
+        return appointmentTransferRepository.getAppointmentChargeByDoctorId(doctorId);
     }
 
 

@@ -44,7 +44,7 @@ public class AppointmentTransferUtils {
         return overrideList;
     }
 
-    public static List<Date> getActualdate(List<String> dayOffDay, List<Date> dates) {
+    public static List<Date>  getActualdate(List<String> dayOffDay, List<Date> dates) {
         List<Date> unmatched = dates.stream()
                 .filter(actualDate -> dayOffDay.stream()
                         .filter(weekDay -> weekDay.equals(actualDate.toString().substring(0, 3).toUpperCase()))

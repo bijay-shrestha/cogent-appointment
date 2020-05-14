@@ -5,6 +5,9 @@
 
 ##### [END] CATALINA HOME CONFIG [/END] #########
 
+#catalina:
+#  home: /home/rupak/Softwares/tomcat
+
 spring:
   profiles:
     active: uat

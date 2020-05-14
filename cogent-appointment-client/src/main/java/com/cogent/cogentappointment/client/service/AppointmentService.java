@@ -13,7 +13,7 @@ import com.cogent.cogentappointment.client.dto.request.appointment.esewa.save.Ap
 import com.cogent.cogentappointment.client.dto.request.appointment.log.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.log.TransactionLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentCancelApprovalSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
@@ -76,8 +76,8 @@ public interface AppointmentService {
     void rejectAppointment(AppointmentRejectDTO rejectDTO);
 
     /*REFUND APPROVAL*/
-    AppointmentRefundResponseDTO fetchRefundAppointments(AppointmentRefundSearchDTO searchDTO,
-                                                         Pageable pageable);
+    AppointmentRefundResponseDTO fetchAppointmentCancelApprovals(AppointmentCancelApprovalSearchDTO searchDTO,
+                                                                 Pageable pageable);
 
     AppointmentRefundDetailResponseDTO fetchRefundDetailsById(Long id);
 

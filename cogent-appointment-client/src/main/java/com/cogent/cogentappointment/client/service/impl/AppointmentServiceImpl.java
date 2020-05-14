@@ -15,7 +15,7 @@ import com.cogent.cogentappointment.client.dto.request.appointment.esewa.save.Ap
 import com.cogent.cogentappointment.client.dto.request.appointment.log.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.log.TransactionLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentCancelApprovalSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestByDTO;
@@ -627,14 +627,14 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentRefundResponseDTO fetchRefundAppointments(AppointmentRefundSearchDTO searchDTO,
-                                                                Pageable pageable) {
+    public AppointmentRefundResponseDTO fetchAppointmentCancelApprovals(AppointmentCancelApprovalSearchDTO searchDTO,
+                                                                        Pageable pageable) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_REFUND);
 
         AppointmentRefundResponseDTO refundAppointments =
-                appointmentRepository.fetchRefundAppointments(searchDTO, pageable, getLoggedInHospitalId());
+                appointmentRepository.fetchAppointmentCancelApprovals(searchDTO, pageable, getLoggedInHospitalId());
 
         log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_REFUND, getDifferenceBetweenTwoTime(startTime));
 

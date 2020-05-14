@@ -95,7 +95,8 @@ public class AppointmentTransferQuery {
             "select" +
                     " ddro.id as id," +
                     " ddro.fromDate as fromDate," +
-                    " ddro.toDate as toDate" +
+                    " ddro.toDate as toDate," +
+                    " ddro.dayOffStatus as dayOffStatus" +
                     " FROM" +
                     " DoctorDutyRosterOverride ddro" +
                     " LEFT JOIN DoctorDutyRoster ddr ON ddr.id=ddro.doctorDutyRosterId.id " +
@@ -103,7 +104,6 @@ public class AppointmentTransferQuery {
                     " WHERE" +
                     " ddr.doctorId.id = :doctorId" +
                     " AND ddr.specializationId.id=:specializationId" +
-                    " AND ddro.dayOffStatus = 'N'" +
                     " AND ddro.status='Y'";
 
     public static String QUERY_TO_GET_UNAVAILABLE_TIME =

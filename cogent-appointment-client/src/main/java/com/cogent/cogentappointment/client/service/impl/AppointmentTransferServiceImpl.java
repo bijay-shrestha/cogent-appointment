@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.*;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.AppointmentTransferLogResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.previewDTO.AppointmentTransferPreviewResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableDates.DoctorDatesResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableDates.OverrideDatesResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.ActualDateAndTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.OverrideDateAndTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.StartTimeAndEndTimeDTO;
@@ -93,6 +94,8 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
         List<Date> overrideDutyRosterDate = new ArrayList<>();
 
+        List<Date> overrideDutyRosterDayOffDate = new ArrayList<>();
+
         List<DoctorDatesResponseDTO> dutyRosterList = appointmentTransferRepository.getDutyRosterByDoctorIdAndSpecializationId(
                 requestDTO.getDoctorId(),
                 requestDTO.getSpecializationId());
@@ -105,18 +108,20 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
             actualDutyRosterDate.addAll(dates);
         });
 
-        List<DoctorDatesResponseDTO> overrideDates = appointmentTransferRepository.getOverrideDatesByDoctorId(
+        List<OverrideDatesResponseDTO> overrideDates = appointmentTransferRepository.getOverrideDatesByDoctorId(
                 requestDTO.getDoctorId(),
                 requestDTO.getSpecializationId());
 
-        overrideDates.forEach(date -> {
-            overrideDutyRosterDate.addAll(getDates(date.getFromDate(), date.getToDate()));
-        });
+        List<Date> overrideDayOffDates=filterOverrideDayOffDates(overrideDates);
+
+        List<Date> overrideAvaliableDates=filterOverrideAvaliableDates(overrideDates);
 
         log.info(FETCHING_AVAILABLE_DATES_BY_DOCTOR_ID_PROCESS_COMPLETED, APPOINTMENT_TRANSFER,
                 getDifferenceBetweenTwoTime(startTime));
 
-        return utilDateListToSqlDateList(mergeOverrideAndActualDateList(overrideDutyRosterDate, actualDutyRosterDate));
+        return utilDateListToSqlDateList(mergeOverrideAndActualDateList(overrideAvaliableDates,
+                actualDutyRosterDate,
+                overrideDayOffDates));
     }
 
     /* FETCH VACANT APPOINTMENT TIME BASED ON SPECIFIC DATE, DOCTOR ID AND SPECIALIZATION ID */

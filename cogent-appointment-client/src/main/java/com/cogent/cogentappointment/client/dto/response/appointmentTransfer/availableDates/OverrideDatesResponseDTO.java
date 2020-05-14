@@ -13,11 +13,14 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DoctorDatesResponseDTO implements Serializable {
+public class OverrideDatesResponseDTO implements Serializable {
 
     private Long id;
 
     private Date fromDate;
 
     private Date toDate;
+
+    private Character dayOffStatus;
+
 }

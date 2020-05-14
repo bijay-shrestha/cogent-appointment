@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableDates;
+package com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.availableDates;
 
 import lombok.*;
 
@@ -13,11 +13,12 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DoctorDatesResponseDTO implements Serializable {
+public class OverrideDatesResponseDTO implements Serializable {
 
     private Long id;
 
     private Date fromDate;
 
     private Date toDate;
+
 }

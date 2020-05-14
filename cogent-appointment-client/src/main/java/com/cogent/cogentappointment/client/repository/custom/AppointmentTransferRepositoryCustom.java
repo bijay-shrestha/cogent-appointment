@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.Appoi
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.AppointmentTransferLogResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.previewDTO.AppointmentTransferPreviewResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableDates.DoctorDatesResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableDates.OverrideDatesResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.ActualDateAndTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.OverrideDateAndTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.StartTimeAndEndTimeDTO;
@@ -27,7 +28,7 @@ public interface AppointmentTransferRepositoryCustom {
 
     StartTimeAndEndTimeDTO getWeekDaysByCode(Long rosterId, String code);
 
-    List<DoctorDatesResponseDTO> getOverrideDatesByDoctorId(Long doctorId,Long specializationId);
+    List<OverrideDatesResponseDTO> getOverrideDatesByDoctorId(Long doctorId,Long specializationId);
 
     List<ActualDateAndTimeResponseDTO> getActualTimeByDoctorId(Long doctorId,Long specializationId);
 

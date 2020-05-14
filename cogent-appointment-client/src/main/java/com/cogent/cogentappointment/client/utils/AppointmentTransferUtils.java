@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.client.utils;
 import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.AppointmentTransferRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.AppointmentTransferLogDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.CurrentAppointmentDetailsDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableDates.OverrideDatesResponseDTO;
 import com.cogent.cogentappointment.persistence.model.*;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.apache.commons.collections4.ListUtils;
@@ -27,16 +28,26 @@ public class AppointmentTransferUtils {
     private static final DateTimeFormatter FORMAT = DateTimeFormat.forPattern("HH:mm");
 
     public static List<Date> mergeOverrideAndActualDateList(
-            List<Date> overrideList,
-            List<Date> actualList) {
+            List<Date> overrideAvailableList,
+            List<Date> actualList,
+            List<Date> overrideDayOffList) {
 
         List<Date> unmatchedList = actualList.stream()
-                .filter(actual -> (overrideList.stream()
+                .filter(actual -> (overrideAvailableList.stream()
                         .filter(override -> (override.equals(actual)))
                         .count()) < 1)
                 .collect(Collectors.toList());
 
-        List<Date> dates=ListUtils.union(unmatchedList,overrideList);
+
+                List<Date> matchedList = actualList.stream()
+                .filter(actual -> (overrideDayOffList.stream()
+                        .filter(override -> (override.equals(actual)))
+                        .anyMatch(override -> override.equals(actual))))
+                .collect(Collectors.toList());
+
+        List<Date> dates=ListUtils.union(unmatchedList,overrideAvailableList);
+
+        dates.removeAll(matchedList);
 
 //        overrideList.removeIf(override -> override.getDayOffStatus().equals(YES));
          Collections.sort(dates);
@@ -73,6 +84,7 @@ public class AppointmentTransferUtils {
         Date time = new java.util.Date(System.currentTimeMillis());
         String dateFormat = new SimpleDateFormat("HH:mm:ss").format(time);
         LocalTime localTime = LocalTime.parse(dateFormat);
+        System.out.println(localTime);
 
         List<String> unmatchedList = allTimeSlot.stream()
                 .filter(actual -> (unavailableTimeSlot.stream()
@@ -223,6 +235,39 @@ public class AppointmentTransferUtils {
             return null;
         }
     }
+
+    public static List<Date>  filterOverrideDayOffDates(List<OverrideDatesResponseDTO> overrideDatesResponseDTOS) {
+        List<Date> dayOffDateRange=new ArrayList<>();
+
+        List<OverrideDatesResponseDTO> dayOffDates = overrideDatesResponseDTOS.stream()
+                .filter(date->date.getDayOffStatus().equals('Y'))
+                .collect(Collectors.toList());
+
+        dayOffDates.forEach(dates->{
+            List<Date> dateList=getDates(dates.getFromDate(),dates.getToDate());
+            dayOffDateRange.addAll(dateList);
+        });
+
+        return dayOffDateRange;
+    }
+
+    public static List<Date>  filterOverrideAvaliableDates(List<OverrideDatesResponseDTO> overrideDatesResponseDTOS) {
+        List<Date> dayOffDateRange=new ArrayList<>();
+
+        List<OverrideDatesResponseDTO> dayOffDates = overrideDatesResponseDTOS.stream()
+                .filter(date->date.getDayOffStatus().equals('N'))
+                .collect(Collectors.toList());
+
+        dayOffDates.forEach(dates->{
+            List<Date> dateList=getDates(dates.getFromDate(),dates.getToDate());
+            dayOffDateRange.addAll(dateList);
+        });
+
+        return dayOffDateRange;
+    }
+
+
+
 
 
 }

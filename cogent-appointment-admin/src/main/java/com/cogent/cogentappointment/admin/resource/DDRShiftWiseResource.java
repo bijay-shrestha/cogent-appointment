@@ -2,20 +2,22 @@ package com.cogent.cogentappointment.admin.resource;
 
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.checkAvailability.DDRExistingAvailabilityRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.checkAvailability.DDRExistingWeekDaysRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.manage.DDRSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.override.DDROverrideRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.weekDaysDetail.DDRRequestDTO;
 import com.cogent.cogentappointment.admin.service.DDRShiftWiseService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.DoctorDutyRosterShiftWiseConstant.*;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.DDRShiftWiseConstants.*;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.DETAIL;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
@@ -78,4 +80,12 @@ public class DDRShiftWiseResource {
         return ok(ddrShiftWiseService.fetchOverrideBreakDetail(ddrOverrideId));
     }
 
+    @PutMapping(SEARCH)
+    @ApiOperation(SEARCH_OPERATION)
+    public ResponseEntity<?> search(@RequestBody DDRSearchRequestDTO searchRequestDTO,
+                                    @RequestParam("page") int page,
+                                    @RequestParam("size") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ok().body(ddrShiftWiseService.search(searchRequestDTO, pageable));
+    }
 }

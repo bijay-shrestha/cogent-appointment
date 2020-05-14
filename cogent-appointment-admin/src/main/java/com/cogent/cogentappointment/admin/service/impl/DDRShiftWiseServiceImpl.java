@@ -2,10 +2,12 @@ package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.checkAvailability.DDRExistingAvailabilityRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.checkAvailability.DDRExistingWeekDaysRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.manage.DDRSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.override.DDROverrideDetailRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.override.DDROverrideRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.weekDaysDetail.*;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.*;
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.DDRMinResponseDTO;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
@@ -14,6 +16,7 @@ import com.cogent.cogentappointment.admin.service.*;
 import com.cogent.cogentappointment.persistence.model.*;
 import com.cogent.cogentappointment.persistence.model.ddrShiftWise.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -215,6 +218,19 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         log.info(FETCHING_PROCESS_COMPLETED, DDR_OVERRIDE_BREAK_DETAIL, getDifferenceBetweenTwoTime(startTime));
 
         return breakDetails;
+    }
+
+    @Override
+    public List<DDRMinResponseDTO> search(DDRSearchRequestDTO searchRequestDTO, Pageable pageable) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SEARCHING_PROCESS_STARTED, DDR_SHIFT_WISE);
+
+        List<DDRMinResponseDTO> minInfo = ddrShiftWiseRepository.search(searchRequestDTO, pageable);
+
+        log.info(SEARCHING_PROCESS_COMPLETED, DDR_SHIFT_WISE, getDifferenceBetweenTwoTime(startTime));
+
+        return minInfo;
     }
 
     /*1. VALIDATE CONSTRAINTS VIOLATION

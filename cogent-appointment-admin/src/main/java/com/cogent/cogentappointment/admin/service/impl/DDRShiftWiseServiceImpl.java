@@ -189,6 +189,34 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         return weekDaysDetail;
     }
 
+    @Override
+    public List<DDRBreakDetailResponseDTO> fetchWeekDaysBreakDetail(Long ddrWeekDaysDetailId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, DDR_BREAK_DETAIL);
+
+        List<DDRBreakDetailResponseDTO> breakDetails =
+                ddrBreakDetailRepository.fetchWeekDaysBreakDetails(ddrWeekDaysDetailId);
+
+        log.info(FETCHING_PROCESS_COMPLETED, DDR_BREAK_DETAIL, getDifferenceBetweenTwoTime(startTime));
+
+        return breakDetails;
+    }
+
+    @Override
+    public List<DDRBreakDetailResponseDTO> fetchOverrideBreakDetail(Long ddrOverrideDetailId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, DDR_OVERRIDE_BREAK_DETAIL);
+
+        List<DDRBreakDetailResponseDTO> breakDetails =
+                ddrOverrideBreakDetailRepository.fetchOverrideBreakDetail(ddrOverrideDetailId);
+
+        log.info(FETCHING_PROCESS_COMPLETED, DDR_OVERRIDE_BREAK_DETAIL, getDifferenceBetweenTwoTime(startTime));
+
+        return breakDetails;
+    }
+
     /*1. VALIDATE CONSTRAINTS VIOLATION
     * 2. VALIDATE IF FIRST DATE IS GREATER THAN TO DATE
     * 3. VALIDATE REQUESTED SHIFT DETAILS

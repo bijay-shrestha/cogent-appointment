@@ -43,9 +43,9 @@ public class DDRShiftWiseResource {
 
     @PostMapping(OVERRIDE)
     @ApiOperation(SAVE_OVERRIDE_ROSTER_OPERATION)
-    public ResponseEntity<?> saveDDROverrideDetail (@RequestBody DDROverrideRequestDTO requestDTO){
+    public ResponseEntity<?> saveDDROverrideDetail(@RequestBody DDROverrideRequestDTO requestDTO) {
         ddrShiftWiseService.saveDDROverrideDetail(requestDTO);
-        return created(create(API_V1 + BASE_DDR_SHIFT_WISE+OVERRIDE)).build();
+        return created(create(API_V1 + BASE_DDR_SHIFT_WISE + OVERRIDE)).build();
     }
 
     @PutMapping(EXISTING)
@@ -64,6 +64,18 @@ public class DDRShiftWiseResource {
     @ApiOperation(FETCH_EXISTING_WEEK_DAYS_DETAIL)
     public ResponseEntity<?> fetchDDRWeekDaysDetail(@Valid @RequestBody DDRExistingWeekDaysRequestDTO requestDTO) {
         return ok(ddrShiftWiseService.fetchDDRWeekDaysDetail(requestDTO));
+    }
+
+    @GetMapping(EXISTING + WEEK_DAYS + BREAK_DETAIL + DDR_WEEK_DAYS_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_EXISTING_WEEK_DAYS_BREAK_DETAIL)
+    public ResponseEntity<?> fetchDDRWeekDaysBreakDetail(@PathVariable("ddrWeekDaysId") Long ddrWeekDaysId) {
+        return ok(ddrShiftWiseService.fetchWeekDaysBreakDetail(ddrWeekDaysId));
+    }
+
+    @GetMapping(EXISTING + OVERRIDE + BREAK_DETAIL + DDR_OVERRIDE_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_EXISTING_OVERRIDE_BREAK_DETAIL)
+    public ResponseEntity<?> fetchOverrideBreakDetail(@PathVariable("ddrOverrideId") Long ddrOverrideId) {
+        return ok(ddrShiftWiseService.fetchOverrideBreakDetail(ddrOverrideId));
     }
 
 }

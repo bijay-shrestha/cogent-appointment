@@ -212,6 +212,8 @@ public class SwaggerConstants {
         String FETCH_EXISTING_ROSTERS = " Fetch existing doctor duty rosters within the selected date range";
         String FETCH_EXISTING_ROSTERS_DETAIL = "Fetch existing rosters ddrShiftWise & override information";
         String FETCH_EXISTING_WEEK_DAYS_DETAIL = "Fetch existing rosters week days information";
+        String FETCH_EXISTING_WEEK_DAYS_BREAK_DETAIL = "Fetch week days break detail";
+        String FETCH_EXISTING_OVERRIDE_BREAK_DETAIL = "Fetch override break detail";
 
         String UPDATE_OPERATION = "Update Doctor Duty Roster. Note that week days time can be updated " +
                 "only if there are no appointments within the selected date range";

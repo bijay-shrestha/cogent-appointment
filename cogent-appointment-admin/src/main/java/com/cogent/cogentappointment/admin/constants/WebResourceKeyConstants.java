@@ -116,9 +116,12 @@ public class WebResourceKeyConstants {
     public interface DDRShiftWiseConstants {
         String BASE_DDR_SHIFT_WISE = "/doctorDutyRoster/shiftWise";
         String DDR_ID_PATH_VARIABLE_BASE = "/{ddrId}";
+        String DDR_WEEK_DAYS_ID_PATH_VARIABLE_BASE = "/{ddrWeekDaysId}";
+        String DDR_OVERRIDE_ID_PATH_VARIABLE_BASE = "/{ddrOverrideId}";
         String OVERRIDE = "/override";
         String EXISTING = "/existing";
         String WEEK_DAYS = "/weekDays";
+        String BREAK_DETAIL = "/breakDetail";
 
         String REVERT_DOCTOR_DUTY_ROSTER_OVERRIDE = "/revert";
     }

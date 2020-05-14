@@ -33,6 +33,7 @@ import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.DoctorLog.*;
 import static com.cogent.cogentappointment.admin.utils.DoctorUtils.*;
+import static com.cogent.cogentappointment.admin.utils.SalutationUtils.parseToDoctorSalutation;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
@@ -114,6 +115,8 @@ public class DoctorServiceImpl implements DoctorService {
         doctor.setSalutation(salutations);
         saveDoctor(doctor);
 
+        saveDoctorSalutation(doctor.getId(), requestDTO.getSalutationIds());
+
         saveDoctorAppointmentCharge(doctor, requestDTO.getAppointmentCharge(), requestDTO.getAppointmentFollowUpCharge());
 
         saveDoctorSpecialization(doctor.getId(), requestDTO.getSpecializationIds());
@@ -125,6 +128,12 @@ public class DoctorServiceImpl implements DoctorService {
         log.info(SAVING_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));
 
         return doctor.getCode();
+    }
+
+    private void saveDoctorSalutation(Long doctorId, List<Long> salutationIds) {
+
+        doctorSalutationRepository.saveAll(parseToDoctorSalutation(doctorId, salutationIds));
+
     }
 
     private String findDoctorSalutation(List<Long> salutationIds) {
@@ -239,7 +248,7 @@ public class DoctorServiceImpl implements DoctorService {
                 salutationList.remove(salutation.getCode());
             }
 
-            if (result.getStatus().equals(ACTIVE) && !salutationList.contains(salutation.getCode())){
+            if (result.getStatus().equals(ACTIVE) && !salutationList.contains(salutation.getCode())) {
                 salutationList.add(salutation.getCode());
 
             }
@@ -328,7 +337,7 @@ public class DoctorServiceImpl implements DoctorService {
 
         DoctorUpdateResponseDTO responseDTO = doctorRepository.fetchDetailsForUpdate(id);
 
-        List<DoctorSalutationResponseDTO> salutationResponseDTOList=doctorSalutationRepository.fetchDoctorSalutationByDoctorId(id);
+        List<DoctorSalutationResponseDTO> salutationResponseDTOList = doctorSalutationRepository.fetchDoctorSalutationByDoctorId(id);
         responseDTO.setDoctorSalutationResponseDTOS(salutationResponseDTOList);
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, DOCTOR, getDifferenceBetweenTwoTime(startTime));

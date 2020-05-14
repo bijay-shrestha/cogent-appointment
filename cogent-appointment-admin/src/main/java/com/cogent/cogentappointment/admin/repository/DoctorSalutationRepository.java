@@ -16,6 +16,6 @@ import java.util.Optional;
 @Repository
 public interface DoctorSalutationRepository extends JpaRepository<DoctorSalutation, Long>, DoctorSalutationRepositoryCustom {
 
-    @Query("SELECT ds FROM DoctorSalutation ds WHERE ds.status!='D'' AND ds.id = :id")
+    @Query("SELECT ds FROM DoctorSalutation ds WHERE ds.status!='D' AND ds.salutationId = :id")
     Optional<List<DoctorSalutation>> findDoctorSalutationBySalutationId(@Param("id") Long id);
 }

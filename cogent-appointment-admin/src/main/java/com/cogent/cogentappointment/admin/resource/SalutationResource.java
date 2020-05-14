@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.admin.resource;
 
-import com.cogent.cogentappointment.admin.constants.SwaggerConstants;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.service.SalutationService;
 import io.swagger.annotations.Api;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.HospitalConstant.DELETE_OPERATION;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.SalutationConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.SalutationConstant.BASE_SALUTATION;
@@ -34,7 +32,7 @@ public class SalutationResource {
     }
 
     @DeleteMapping
-    @ApiOperation(SwaggerConstants.SalutationConstant.DELETE_OPERATION)
+    @ApiOperation(DELETE_OPERATION)
     public ResponseEntity<?> delete(@Valid @RequestBody DeleteRequestDTO deleteRequestDTO) {
         salutationService.delete(deleteRequestDTO);
         return ok().build();

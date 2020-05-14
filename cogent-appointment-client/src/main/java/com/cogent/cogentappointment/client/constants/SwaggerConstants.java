@@ -50,7 +50,7 @@ public class SwaggerConstants {
         String SEARCH_APPOINTMENT = " Search appointment history for myself/others";
 
         /*admin*/
-        String FETCH_REFUND_APPOINTMENTS = "Fetch Refund Appointment Request List";
+        String FETCH_APPOINTMENT_CANCEL_APPROVALS = "Fetch  Appointment Cancel Approvals List";
         String FETCH_REFUND_APPOINTMENTS_DETAIL = "Fetch Refund Appointment Detail By appointmentId";
         String APPROVE_REFUND_APPOINTMENT = "Approve Refund Request Appointment";
         String REJECT_REFUND_APPOINTMENT = "Reject Refund Request Appointment";

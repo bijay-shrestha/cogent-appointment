@@ -17,6 +17,7 @@ import java.util.function.Supplier;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.client.log.constants.SalutationLog.DOCTOR_SALUTATION;
 import static com.cogent.cogentappointment.client.query.SalutationQuery.QUERY_TO_FETCH_DOCTOR_SALUTATION_BY_DOCTOR_ID;
+import static com.cogent.cogentappointment.client.query.SalutationQuery.QUERY_TO_VALIDATE_DOCTOR_SALUTATION_COUNT;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.transformQueryToResultList;
 
@@ -44,6 +45,18 @@ public class DoctorSalutationRepositoryCustomImpl implements DoctorSalutationRep
             return results;
         }
 
+    }
+
+    @Override
+    public List<DoctorSalutation> validateDoctorSalutationCount(String ids) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DOCTOR_SALUTATION_COUNT(ids));
+
+        List<DoctorSalutation> doctorSalutationList = query.getResultList();
+
+        if (doctorSalutationList.isEmpty()) {
+            error();
+            throw DOCTOR_SALUTATION_NOT_FOUND.get();
+        } else return doctorSalutationList;
     }
 
     private Supplier<NoContentFoundException> DOCTOR_SALUTATION_NOT_FOUND = () ->

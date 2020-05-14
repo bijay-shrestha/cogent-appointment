@@ -13,12 +13,23 @@ public class SalutationQuery {
     public static String QUERY_TO_VALIDATE_SALUTATION_COUNT(String ids) {
 
         return " SELECT " +
-                " sal " +                   //[0]
+                " sal " +
                 " FROM Salutation sal" +
                 " WHERE sal.status ='Y'" +
                 " AND sal.id IN (" + ids + ")";
 
     }
+
+    public static String QUERY_TO_VALIDATE_DOCTOR_SALUTATION_COUNT(String ids) {
+
+        return " SELECT " +
+                " ds " +
+                " FROM DoctorSalutation ds" +
+                " WHERE ds.status ='Y'" +
+                " AND ds.id IN (" + ids + ")";
+
+    }
+
 
     public static final String QUERY_TO_FETCH_DOCTOR_SALUTATION_BY_DOCTOR_ID(Long id) {
 

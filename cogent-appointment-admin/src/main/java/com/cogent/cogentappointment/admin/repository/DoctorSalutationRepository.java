@@ -18,4 +18,7 @@ public interface DoctorSalutationRepository extends JpaRepository<DoctorSalutati
 
     @Query("SELECT ds FROM DoctorSalutation ds WHERE ds.status!='D' AND ds.salutationId = :id")
     Optional<List<DoctorSalutation>> findDoctorSalutationBySalutationId(@Param("id") Long id);
+
+    @Query("SELECT ds FROM DoctorSalutation ds WHERE ds.status!='D' AND ds.id = :id")
+    Optional<DoctorSalutation> findDoctorSalutationById(@Param("id") Long id);
 }

@@ -188,31 +188,44 @@ public class DoctorServiceImpl implements DoctorService {
     private String updateDoctorSalutations(List<DoctorSalutationUpdateDTO> updateDTOS, Doctor doctor) {
 
         String ids = updateDTOS.stream()
-                .map(request -> request.getSalutationId().toString())
+                .map(request -> request.getDoctorSalutationId().toString())
                 .collect(Collectors.joining(COMMA_SEPARATED));
 
-        validateSalutations(ids);
+        List<DoctorSalutation> doctorSalutationList = validateDoctorSalutations(ids);
 
         List<String> salutationList = new ArrayList<>();
         if (doctor.getSalutation() != null) {
             salutationList.addAll(Arrays.asList(doctor.getSalutation().split("\\s+")));
         }
 
+        List<DoctorSalutation> doctorSalutationListToUpdate = new ArrayList<>();
+
         updateDTOS.forEach(result -> {
 
-            Salutation salutation = findActiveSalutation(result.getSalutationId());
+
+            DoctorSalutation doctorSalutation = doctorSalutationRepository.findDoctorSalutationById(result.getDoctorSalutationId())
+                    .orElseThrow(() -> new NoContentFoundException(DoctorSalutation.class));
+
+            Salutation salutation = findActiveSalutation(doctorSalutation.getSalutationId());
 
             if (result.getStatus().equals(INACTIVE)) {
                 salutationList.remove(salutation.getCode());
+                doctorSalutation.setStatus(INACTIVE);
 
             }
 
             if (result.getStatus().equals(ACTIVE) && !salutationList.contains(salutation.getCode())) {
                 salutationList.add(salutation.getCode());
+                doctorSalutation.setStatus(ACTIVE);
+
 
             }
 
+            doctorSalutationListToUpdate.add(doctorSalutation);
+
         });
+
+        updateDoctorSalutation(doctorSalutationListToUpdate);
 
         if (salutationList.size() == 0) {
             return null;
@@ -234,6 +247,15 @@ public class DoctorServiceImpl implements DoctorService {
         return salutationRepository.fetchActiveSalutationById(salutationId)
                 .orElseThrow(() -> new NoContentFoundException(Salutation.class));
     }
+
+    private List<DoctorSalutation> validateDoctorSalutations(String ids) {
+        return doctorSalutationRepository.validateDoctorSalutationCount(ids);
+    }
+
+    private void updateDoctorSalutation(List<DoctorSalutation> doctorSalutationListToUpdate) {
+        doctorSalutationRepository.saveAll(doctorSalutationListToUpdate);
+    }
+
 
     @Override
     public void delete(DeleteRequestDTO deleteRequestDTO) {

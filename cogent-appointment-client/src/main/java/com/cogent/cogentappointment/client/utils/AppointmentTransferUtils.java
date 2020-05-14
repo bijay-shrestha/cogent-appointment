@@ -64,20 +64,38 @@ public class AppointmentTransferUtils {
 
     public static List<String> getGapDuration(String startTime, String endTime, Integer gapDuration, Date requestedDate) {
         final Duration duration = Minutes.minutes(gapDuration).toStandardDuration();
-        DateTime dateTime;
+        DateTime appointmentStartTime = new DateTime(FORMAT.parseDateTime(startTime));
         if (utilDateToSqlDate(new Date()).equals(utilDateToSqlDate(requestedDate))) {
-            Date time = new java.util.Date(System.currentTimeMillis());
-            String dateFormat = new SimpleDateFormat("HH:00").format(time);
-            dateTime = new DateTime(FORMAT.parseDateTime(dateFormat));
+            return filterAppointmentTimeByCurrentDate(appointmentStartTime, endTime, duration);
         } else {
-            dateTime = new DateTime(FORMAT.parseDateTime(startTime));
+            return getAppointmentTimeExcludingCurrentDate(appointmentStartTime, endTime, duration);
         }
-        List<String> response = new ArrayList<>();
+    }
 
+    public static List<String> filterAppointmentTimeByCurrentDate(DateTime appointmentStartTime,
+                                                                  String appointmentEndTime,
+                                                                  Duration duration) {
+        List<String> response = new ArrayList<>();
         do {
-            response.add(convertTo12HourFormat(FORMAT.print(dateTime)));
-            dateTime = dateTime.plus(duration);
-        } while (dateTime.compareTo(FORMAT.parseDateTime(endTime)) <= 0);
+            Date time = new java.util.Date(System.currentTimeMillis());
+            String dateFormat = new SimpleDateFormat("HH:mm").format(time);
+            DateTime currentTime = new DateTime(FORMAT.parseDateTime(dateFormat));
+            if (!appointmentStartTime.isBefore(currentTime) && !appointmentStartTime.equals(currentTime)) {
+                response.add(convertTo12HourFormat(FORMAT.print(appointmentStartTime)));
+            }
+            appointmentStartTime = appointmentStartTime.plus(duration);
+        } while (appointmentStartTime.compareTo(FORMAT.parseDateTime(appointmentEndTime)) <= 0);
+        return response;
+    }
+
+    public static List<String> getAppointmentTimeExcludingCurrentDate(DateTime appointmentStartTime,
+                                                                      String appointmentEndTime,
+                                                                      Duration duration) {
+        List<String> response = new ArrayList<>();
+        do {
+            response.add(convertTo12HourFormat(FORMAT.print(appointmentStartTime)));
+            appointmentStartTime = appointmentStartTime.plus(duration);
+        } while (appointmentStartTime.compareTo(FORMAT.parseDateTime(appointmentEndTime)) <= 0);
 
         return response;
     }

@@ -147,7 +147,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
         }
 
         if (time.isEmpty())
-            throw APPOINTMENT_TIME_ALL_BOOKED.get();
+            throw APPOINTMENT_TIME_NOT_AVAILABLE.get();
 
         log.info(FETCHING_AVAILABLE_DOCTOR_TIME_PROCESS_COMPLETED, APPOINTMENT_TRANSFER,
                 getDifferenceBetweenTwoTime(startTime));
@@ -362,9 +362,9 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
         throw new NoContentFoundException(DoctorDutyRoster.class);
     };
 
-    private Supplier<NoContentFoundException> APPOINTMENT_TIME_ALL_BOOKED = () -> {
-        log.error("Appointment Time All Booked");
-        throw new NoContentFoundException("Appointment Time All Booked");
+    private Supplier<NoContentFoundException> APPOINTMENT_TIME_NOT_AVAILABLE = () -> {
+        log.error("Appointment Time Not Available");
+        throw new NoContentFoundException("Appointment Time Not Available");
     };
 
     private Appointment fetchAppointmentById(Long appointmentId) {

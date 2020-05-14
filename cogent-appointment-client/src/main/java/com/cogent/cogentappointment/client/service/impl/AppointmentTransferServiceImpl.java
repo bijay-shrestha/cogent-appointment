@@ -92,10 +92,6 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
         List<Date> actualDutyRosterDate = new ArrayList<>();
 
-        List<Date> overrideDutyRosterDate = new ArrayList<>();
-
-        List<Date> overrideDutyRosterDayOffDate = new ArrayList<>();
-
         List<DoctorDatesResponseDTO> dutyRosterList = appointmentTransferRepository.getDutyRosterByDoctorIdAndSpecializationId(
                 requestDTO.getDoctorId(),
                 requestDTO.getSpecializationId());
@@ -112,16 +108,20 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
                 requestDTO.getDoctorId(),
                 requestDTO.getSpecializationId());
 
-        List<Date> overrideDayOffDates=filterOverrideDayOffDates(overrideDates);
+        List<Date> overrideDayOffDates = filterOverrideDayOffDates(overrideDates);
 
-        List<Date> overrideAvaliableDates=filterOverrideAvaliableDates(overrideDates);
+        List<Date> overrideAvaliableDates = filterOverrideAvaliableDates(overrideDates);
+
+        List<Date> mergeOverrideAndActualDateList = utilDateListToSqlDateList(
+                mergeOverrideAndActualDateList(
+                        overrideAvaliableDates,
+                        actualDutyRosterDate,
+                        overrideDayOffDates));
 
         log.info(FETCHING_AVAILABLE_DATES_BY_DOCTOR_ID_PROCESS_COMPLETED, APPOINTMENT_TRANSFER,
                 getDifferenceBetweenTwoTime(startTime));
 
-        return utilDateListToSqlDateList(mergeOverrideAndActualDateList(overrideAvaliableDates,
-                actualDutyRosterDate,
-                overrideDayOffDates));
+        return mergeOverrideAndActualDateList;
     }
 
     /* FETCH VACANT APPOINTMENT TIME BASED ON SPECIFIC DATE, DOCTOR ID AND SPECIALIZATION ID */

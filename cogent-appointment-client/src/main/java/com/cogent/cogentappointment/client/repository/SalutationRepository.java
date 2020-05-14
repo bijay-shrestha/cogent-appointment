@@ -14,4 +14,5 @@ public interface SalutationRepository extends JpaRepository<Salutation, Long>, S
 
     @Query("SELECT s FROM Salutation s WHERE s.status='Y' AND s.id = :id")
     Optional<Salutation> fetchActiveSalutationById(@Param("id") Long id);
+
 }

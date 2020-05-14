@@ -25,10 +25,14 @@ import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.NAME_AND_MOBILE_NUMBER_DUPLICATION_MESSAGE;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.*;
+import static com.cogent.cogentappointment.client.constants.StringConstant.COMMA_SEPARATED;
+import static com.cogent.cogentappointment.client.constants.StringConstant.SPACE;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.DoctorLog.*;
+import static com.cogent.cogentappointment.client.log.constants.SalutationLog.SALUTATION;
 import static com.cogent.cogentappointment.client.utils.DoctorUtils.*;
 import static com.cogent.cogentappointment.client.utils.GenderUtils.fetchGenderByCode;
+import static com.cogent.cogentappointment.client.utils.SalutationUtils.parseToDoctorSalutation;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
@@ -103,10 +107,15 @@ public class DoctorServiceImpl implements DoctorService {
                 fetchGender(requestDTO.getGenderCode()),
                 fetchHospitalById(hospitalId));
 
-        String salutations = findDoctorSalutation(requestDTO.getSalutationIds());
-        doctor.setSalutation(salutations);
 
         saveDoctor(doctor);
+
+        if (requestDTO.getSalutationIds().size() > 0) {
+            String salutations = findDoctorSalutation(requestDTO.getSalutationIds());
+            doctor.setSalutation(salutations);
+
+            saveDoctorSalutation(doctor.getId(), requestDTO.getSalutationIds());
+        }
 
         saveDoctorAppointmentCharge(doctor, requestDTO.getAppointmentCharge(), requestDTO.getAppointmentFollowUpCharge());
 
@@ -120,6 +129,13 @@ public class DoctorServiceImpl implements DoctorService {
 
         return doctor.getCode();
     }
+
+    private void saveDoctorSalutation(Long doctorId, List<Long> salutationIds) {
+
+        doctorSalutationRepository.saveAll(parseToDoctorSalutation(doctorId, salutationIds));
+
+    }
+
 
     @Override
     public void update(DoctorUpdateRequestDTO requestDTO, MultipartFile avatar) {
@@ -173,7 +189,7 @@ public class DoctorServiceImpl implements DoctorService {
 
         String ids = updateDTOS.stream()
                 .map(request -> request.getSalutationId().toString())
-                .collect(Collectors.joining(","));
+                .collect(Collectors.joining(COMMA_SEPARATED));
 
         validateSalutations(ids);
 
@@ -188,9 +204,10 @@ public class DoctorServiceImpl implements DoctorService {
 
             if (result.getStatus().equals(INACTIVE)) {
                 salutationList.remove(salutation.getCode());
+
             }
 
-            if (result.getStatus().equals(ACTIVE) && !salutationList.contains(salutation.getCode())){
+            if (result.getStatus().equals(ACTIVE) && !salutationList.contains(salutation.getCode())) {
                 salutationList.add(salutation.getCode());
 
             }
@@ -207,9 +224,10 @@ public class DoctorServiceImpl implements DoctorService {
         }
 
         return salutationList.stream()
-                .collect(Collectors.joining(" "));
+                .collect(Collectors.joining(SPACE));
 
     }
+
 
     private Salutation findActiveSalutation(Long salutationId) {
 
@@ -281,7 +299,7 @@ public class DoctorServiceImpl implements DoctorService {
 
         DoctorUpdateResponseDTO responseDTO = doctorRepository.fetchDetailsForUpdate(id, getLoggedInHospitalId());
 
-        List<DoctorSalutationResponseDTO> salutationResponseDTOList=doctorSalutationRepository.fetchDoctorSalutationByDoctorId(id);
+        List<DoctorSalutationResponseDTO> salutationResponseDTOList = doctorSalutationRepository.fetchDoctorSalutationByDoctorId(id);
         responseDTO.setDoctorSalutationResponseDTOS(salutationResponseDTOList);
 
 
@@ -355,7 +373,7 @@ public class DoctorServiceImpl implements DoctorService {
             if (salutationList.size() > 1) {
                 salutations = salutationList.stream()
                         .map(request -> request.getCode())
-                        .collect(Collectors.joining(","));
+                        .collect(Collectors.joining(" "));
             }
         }
 
@@ -585,6 +603,11 @@ public class DoctorServiceImpl implements DoctorService {
     private Function<Long, NoContentFoundException> DOCTOR_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, DOCTOR, id);
         throw new NoContentFoundException(Doctor.class, "id", id.toString());
+    };
+
+    private Function<Long, NoContentFoundException> SALUTATION_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, SALUTATION, id);
+        throw new NoContentFoundException(Salutation.class, "id", id.toString());
     };
 
     private Function<Long, NoContentFoundException> DOCTOR_APPOINTMENT_CHARGE_WITH_GIVEN_DOCTOR_ID_NOT_FOUND = (doctorId) -> {

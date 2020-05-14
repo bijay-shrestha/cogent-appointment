@@ -22,5 +22,5 @@ public class DoctorShiftMinResponseDTO implements Serializable {
     of assigned shifts as selected in the front-end. To bind/unbind selected check-boxes.*/
     private boolean isChecked = true;
 
-    private Integer rosterGapDuration;
+    private String rosterGapDuration = "";
 }

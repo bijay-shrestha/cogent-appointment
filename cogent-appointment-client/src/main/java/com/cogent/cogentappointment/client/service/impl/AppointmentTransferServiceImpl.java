@@ -12,7 +12,6 @@ import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.*;
 import com.cogent.cogentappointment.client.service.AppointmentTransferService;
-import com.cogent.cogentappointment.client.service.DoctorService;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -91,7 +90,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
         log.info(FETCHING_AVAILABLE_DATES_BY_DOCTOR_ID_PROCESS_STARTED, APPOINTMENT_TRANSFER);
 
-        List<Date>  actualDutyRosterDate= new ArrayList<>();
+        List<Date> actualDutyRosterDate = new ArrayList<>();
 
         List<Date> overrideDutyRosterDate = new ArrayList<>();
 
@@ -314,6 +313,8 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
                         override.getGapDuration());
 
                 finalOverridetime = getVacantTime(overrideTime, unavailableTime, date);
+
+                break;
             }
         }
         return finalOverridetime;
@@ -333,22 +334,22 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
             List<Date> actualDates = utilDateListToSqlDateList(getActualdate(appointmentTransferRepository.getDayOffDaysByRosterId(actual.getId()),
                     getDates(actual.getFromDate(), actual.getToDate())));
 
-            for (Date actualDate : actualDates) {
+            Date date = compareAndGetDate(actualDates, sqlRequestDate);
 
-                if (actualDate.equals(sqlRequestDate)) {
+            if (!Objects.isNull(date)) {
 
-                    String code = requestDTO.getDate().toString().substring(0, 3);
+                String code = requestDTO.getDate().toString().substring(0, 3);
 
-                    WeekDayAndTimeDTO codeAndTime = appointmentTransferRepository.getWeekDaysByCode(requestDTO.getDoctorId(), code);
+                WeekDayAndTimeDTO codeAndTime = appointmentTransferRepository.getWeekDaysByCode(requestDTO.getDoctorId(), code);
 
-                    List<String> actualTime = getGapDuration(codeAndTime.getStartTime(), codeAndTime.getEndTime(),
-                            actual.getGapDuration());
+                List<String> actualTime = getGapDuration(codeAndTime.getStartTime(), codeAndTime.getEndTime(),
+                        actual.getGapDuration());
 
-                    finaltime = getVacantTime(actualTime, unavailableTime, actualDate);
+                finaltime = getVacantTime(actualTime, unavailableTime, date);
 
-                    break;
-                }
+                break;
             }
+
         }
         return finaltime;
     }

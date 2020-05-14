@@ -5,11 +5,9 @@ import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.Appo
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.CurrentAppointmentDetailsDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableDates.OverrideDatesResponseDTO;
 import com.cogent.cogentappointment.persistence.model.*;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.apache.commons.collections4.ListUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
-import org.joda.time.LocalTime;
 import org.joda.time.Minutes;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -39,23 +37,23 @@ public class AppointmentTransferUtils {
                 .collect(Collectors.toList());
 
 
-                List<Date> matchedList = actualList.stream()
+        List<Date> matchedList = actualList.stream()
                 .filter(actual -> (overrideDayOffList.stream()
                         .filter(override -> (override.equals(actual)))
                         .anyMatch(override -> override.equals(actual))))
                 .collect(Collectors.toList());
 
-        List<Date> dates=ListUtils.union(unmatchedList,overrideAvailableList);
+        List<Date> dates = ListUtils.union(unmatchedList, overrideAvailableList);
 
         dates.removeAll(matchedList);
 
 //        overrideList.removeIf(override -> override.getDayOffStatus().equals(YES));
-         Collections.sort(dates);
+        Collections.sort(dates);
 
         return dates;
     }
 
-    public static List<Date>  getActualdate(List<String> dayOffDay, List<Date> dates) {
+    public static List<Date> getActualdate(List<String> dayOffDay, List<Date> dates) {
         List<Date> unmatched = dates.stream()
                 .filter(actualDate -> dayOffDay.stream()
                         .filter(weekDay -> weekDay.equals(actualDate.toString().substring(0, 3).toUpperCase()))
@@ -64,9 +62,16 @@ public class AppointmentTransferUtils {
         return unmatched;
     }
 
-    public static List<String> getGapDuration(String startTime, String endTime, Integer gapDuration) {
+    public static List<String> getGapDuration(String startTime, String endTime, Integer gapDuration, Date requestedDate) {
         final Duration duration = Minutes.minutes(gapDuration).toStandardDuration();
-        DateTime dateTime = new DateTime(FORMAT.parseDateTime(startTime));
+        DateTime dateTime;
+        if (utilDateToSqlDate(new Date()).equals(utilDateToSqlDate(requestedDate))) {
+            Date time = new java.util.Date(System.currentTimeMillis());
+            String dateFormat = new SimpleDateFormat("HH:00").format(time);
+            dateTime = new DateTime(FORMAT.parseDateTime(dateFormat));
+        } else {
+            dateTime = new DateTime(FORMAT.parseDateTime(startTime));
+        }
         List<String> response = new ArrayList<>();
 
         do {
@@ -77,14 +82,9 @@ public class AppointmentTransferUtils {
         return response;
     }
 
-    public static List<String> getVacantTime(List<String> allTimeSlot,
-                                             List<String> unavailableTimeSlot,
-                                             Date requestedDate) {
 
-        Date time = new java.util.Date(System.currentTimeMillis());
-        String dateFormat = new SimpleDateFormat("HH:mm:ss").format(time);
-        LocalTime localTime = LocalTime.parse(dateFormat);
-        System.out.println(localTime);
+    public static List<String> getVacantTime(List<String> allTimeSlot,
+                                             List<String> unavailableTimeSlot) {
 
         List<String> unmatchedList = allTimeSlot.stream()
                 .filter(actual -> (unavailableTimeSlot.stream()
@@ -97,11 +97,8 @@ public class AppointmentTransferUtils {
         return unmatchedList;
     }
 
-    public static Boolean compareIfRequestedDateExists(
-            List<Date> overrideList,
-            Date requestedDate) {
-
-      return   overrideList.contains(requestedDate)? true:false;
+    public static Boolean compareIfRequestedDateExists(List<Date> overrideList, Date requestedDate) {
+        return overrideList.contains(requestedDate) ? true : false;
     }
 
     public static Appointment parseAppointmentTransferDetail(Appointment appointment,
@@ -211,12 +208,12 @@ public class AppointmentTransferUtils {
             CurrentAppointmentDetailsDTO currentDetails,
             List<AppointmentTransferLogDTO> transferredList) {
 
-        transferredList.forEach(transferredData->{
-            if(currentDetails.getAppointmentDate().equals(transferredData.getTransferredToDate()) &&
+        transferredList.forEach(transferredData -> {
+            if (currentDetails.getAppointmentDate().equals(transferredData.getTransferredToDate()) &&
                     currentDetails.getAppointmentTime().equals(transferredData.getTransferredToTime()) &&
                     currentDetails.getAppointmentAmount().equals(transferredData.getTransferredToAmount()) &&
                     currentDetails.getDoctor().equals(transferredData.getTransferredToDoctor()) &&
-                    currentDetails.getSpecialization().equals(transferredData.getTransferredToSpecialization())){
+                    currentDetails.getSpecialization().equals(transferredData.getTransferredToSpecialization())) {
                 transferredData.setStatus(currentDetails.getStatus());
             }
         });
@@ -236,38 +233,35 @@ public class AppointmentTransferUtils {
         }
     }
 
-    public static List<Date>  filterOverrideDayOffDates(List<OverrideDatesResponseDTO> overrideDatesResponseDTOS) {
-        List<Date> dayOffDateRange=new ArrayList<>();
+    public static List<Date> filterOverrideDayOffDates(List<OverrideDatesResponseDTO> overrideDatesResponseDTOS) {
+        List<Date> dayOffDateRange = new ArrayList<>();
 
         List<OverrideDatesResponseDTO> dayOffDates = overrideDatesResponseDTOS.stream()
-                .filter(date->date.getDayOffStatus().equals('Y'))
+                .filter(date -> date.getDayOffStatus().equals('Y'))
                 .collect(Collectors.toList());
 
-        dayOffDates.forEach(dates->{
-            List<Date> dateList=getDates(dates.getFromDate(),dates.getToDate());
+        dayOffDates.forEach(dates -> {
+            List<Date> dateList = getDates(dates.getFromDate(), dates.getToDate());
             dayOffDateRange.addAll(dateList);
         });
 
         return dayOffDateRange;
     }
 
-    public static List<Date>  filterOverrideAvaliableDates(List<OverrideDatesResponseDTO> overrideDatesResponseDTOS) {
-        List<Date> dayOffDateRange=new ArrayList<>();
+    public static List<Date> filterOverrideAvaliableDates(List<OverrideDatesResponseDTO> overrideDatesResponseDTOS) {
+        List<Date> dayOffDateRange = new ArrayList<>();
 
         List<OverrideDatesResponseDTO> dayOffDates = overrideDatesResponseDTOS.stream()
-                .filter(date->date.getDayOffStatus().equals('N'))
+                .filter(date -> date.getDayOffStatus().equals('N'))
                 .collect(Collectors.toList());
 
-        dayOffDates.forEach(dates->{
-            List<Date> dateList=getDates(dates.getFromDate(),dates.getToDate());
+        dayOffDates.forEach(dates -> {
+            List<Date> dateList = getDates(dates.getFromDate(), dates.getToDate());
             dayOffDateRange.addAll(dateList);
         });
 
         return dayOffDateRange;
     }
-
-
-
 
 
 }

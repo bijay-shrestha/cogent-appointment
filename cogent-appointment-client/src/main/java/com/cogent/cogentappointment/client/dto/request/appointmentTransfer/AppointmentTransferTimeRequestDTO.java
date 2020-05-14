@@ -25,5 +25,6 @@ public class AppointmentTransferTimeRequestDTO implements Serializable{
     @NotNull
     private Long specializationId;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Kathmandu")
     private Date date;
 }

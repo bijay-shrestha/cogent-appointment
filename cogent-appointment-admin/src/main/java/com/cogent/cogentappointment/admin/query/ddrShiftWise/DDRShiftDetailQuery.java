@@ -5,7 +5,7 @@ package com.cogent.cogentappointment.admin.query.ddrShiftWise;
  */
 public class DDRShiftDetailQuery {
 
-    public static final String QUERY_TO_FETCH_EXISTING_SHIFT_DETAIL =
+    public static final String QUERY_TO_FETCH_MIN_SHIFT_INFO =
             " SELECT" +
                     " ds.shift.id as shiftId," +
                     " ds.shift.name as shiftName," +

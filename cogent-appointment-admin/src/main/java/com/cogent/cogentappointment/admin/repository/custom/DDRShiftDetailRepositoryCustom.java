@@ -13,5 +13,5 @@ import java.util.List;
 @Qualifier("ddrShiftDetailRepositoryCustom")
 public interface DDRShiftDetailRepositoryCustom {
 
-    List<DDRShiftMinResponseDTO> fetchExistingShift(Long ddrId);
+    List<DDRShiftMinResponseDTO> fetchMinShiftInfo(Long ddrId);
 }

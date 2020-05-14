@@ -97,4 +97,11 @@ public class DDRShiftWiseResource {
         return ok().build();
     }
 
+    @GetMapping(DETAIL + DDR_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(DETAILS_OPERATION)
+    public ResponseEntity<?> fetchDetailsById(@PathVariable("ddrId") Long ddrId) {
+        return ok(ddrShiftWiseService.fetchDetailsById(ddrId));
+    }
+
+
 }

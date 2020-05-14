@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.checkAvailabi
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.manage.DDRSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRExistingMinDTO;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.DDRMinResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.DDRResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.DDRShiftWiseRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.ddrShiftWise.DoctorDutyRosterShiftWise;
@@ -13,20 +14,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.admin.constants.QueryConstants.DDRConstants.DDR_ID;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.admin.log.constants.DDRShiftWiseLog.DDR_SHIFT_WISE;
 import static com.cogent.cogentappointment.admin.query.ddrShiftWise.DDRShiftWiseQuery.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
-import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
-import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
+import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
 
 /**
  * @author smriti on 08/05/20
@@ -86,8 +89,25 @@ public class DDRShiftWiseRepositoryCustomImpl implements DDRShiftWiseRepositoryC
         return results;
     }
 
+    @Override
+    public DDRResponseDTO fetchDDRDetail(Long ddrId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DDR_SHIFT_WISE_DETAILS)
+                .setParameter(DDR_ID, ddrId);
+        try {
+            return transformQueryToSingleResult(query, DDRResponseDTO.class);
+        } catch (NoResultException e) {
+            throw DOCTOR_DUTY_ROSTER_WITH_GIVEN_ID_NOT_FOUND(ddrId);
+        }
+    }
+
     private Supplier<NoContentFoundException> DOCTOR_DUTY_ROSTER_NOT_FOUND = () -> {
         log.error(CONTENT_NOT_FOUND, DDR_SHIFT_WISE);
         throw new NoContentFoundException(DoctorDutyRosterShiftWise.class);
     };
+
+    private NoContentFoundException DOCTOR_DUTY_ROSTER_WITH_GIVEN_ID_NOT_FOUND(Long ddrId) {
+        log.error(CONTENT_NOT_FOUND_BY_ID, DDR_SHIFT_WISE, ddrId);
+        throw new NoContentFoundException(DoctorDutyRosterShiftWise.class, "ddrId", ddrId.toString());
+    }
 }

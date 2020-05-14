@@ -25,7 +25,7 @@ public class DDRShiftWiseQuery {
                     " dd.fromDate as fromDate," +                                    //[1]
                     " dd.toDate as toDate," +                                        //[2]
                     " DATEDIFF(toDate, fromDate) + 1 as totalDays," +               //[3]
-                    " ABS(DATEDIFF(toDate, CURDATE())) + 1 as remainingDays"+        //[4]
+                    " ABS(DATEDIFF(toDate, CURDATE())) + 1 as remainingDays" +        //[4]
                     " FROM DoctorDutyRosterShiftWise dd" +
                     " WHERE dd.status != 'D'" +
                     " AND dd.doctor.id=:doctorId" +
@@ -73,6 +73,40 @@ public class DDRShiftWiseQuery {
         return sql + " ORDER BY ddr.id DESC";
     }
 
+    public static final String QUERY_TO_FETCH_DDR_SHIFT_WISE_DETAILS =
+            " SELECT" +
+                    " ddr.id as ddrId," +                                                //[0]
+                    " h.id as hospitalId," +                                            //[1]
+                    " h.name as hospitalName," +                                        //[2]
+                    " s.id as specializationId," +                                      //[3]
+                    " s.name as specializationName," +                                  //[4]
+                    " d.id as doctorId," +                                              //[5]
+                    " d.name as doctorName," +                                          //[6]
+                    " ddr.fromDate as fromDate," +                                      //[7]
+                    " ddr.toDate as toDate," +                                          //[8]
+                    " ddr.status as status," +                                          //[9]
+                    " ddr.remarks as remarks," +                                        //[10]
+                    " ddr.hasOverride as hasOverride," +                                //[11]
+                    " CASE WHEN" +
+                    " (da.status is null OR da.status = 'N')" +
+                    " THEN null" +
+                    " ELSE" +
+                    " da.fileUri" +
+                    " END as fileUri," +                                                //[12]
+                    DOCTOR_DUTY_ROSTERS_AUDITABLE_QUERY() +
+                    " FROM DoctorDutyRosterShiftWise ddr" +
+                    " LEFT JOIN Doctor d ON ddr.doctor.id = d.id" +
+                    " LEFT JOIN DoctorAvatar da ON da.doctorId.id = d.id" +
+                    " LEFT JOIN Specialization s ON ddr.specialization.id = s.id" +
+                    " LEFT JOIN Hospital h ON ddr.hospital.id = h.id" +
+                    " WHERE ddr.status !='D'" +
+                    " AND ddr.id = :ddrId";
 
+    private static String DOCTOR_DUTY_ROSTERS_AUDITABLE_QUERY() {
+        return " ddr.createdBy as createdBy," +
+                " ddr.createdDate as createdDate," +
+                " ddr.lastModifiedBy as lastModifiedBy," +
+                " ddr.lastModifiedDate as lastModifiedDate";
+    }
 
 }

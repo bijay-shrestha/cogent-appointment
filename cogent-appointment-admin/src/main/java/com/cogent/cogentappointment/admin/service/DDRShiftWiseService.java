@@ -10,6 +10,7 @@ import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailab
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRExistingDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRExistingMinResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRExistingWeekDaysResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.DDRDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.DDRMinResponseDTO;
 import org.springframework.data.domain.Pageable;
 
@@ -37,4 +38,6 @@ public interface DDRShiftWiseService {
     List<DDRMinResponseDTO> search(DDRSearchRequestDTO searchRequestDTO, Pageable pageable);
 
     void delete(DeleteRequestDTO deleteRequestDTO);
+
+    DDRDetailResponseDTO fetchDetailsById(Long ddrId);
 }

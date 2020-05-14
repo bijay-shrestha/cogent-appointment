@@ -8,7 +8,9 @@ import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.override
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.override.DDROverrideRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.weekDaysDetail.*;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.*;
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.DDRDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.DDRMinResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.DDRResponseDTO;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
@@ -168,7 +170,7 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
                 .orElseThrow(() -> DDR_WITH_GIVEN_ID_NOT_FOUND.apply(ddrId));
 
         List<DDRShiftMinResponseDTO> shiftDetail =
-                ddrShiftDetailRepository.fetchExistingShift(ddrId);
+                ddrShiftDetailRepository.fetchMinShiftInfo(ddrId);
 
         List<DDROverrideDetailResponseDTO> overrideDetail = new ArrayList<>();
 
@@ -257,6 +259,30 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         save(doctorDutyRoster);
 
         log.info(DELETING_PROCESS_COMPLETED, DDR_SHIFT_WISE, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    @Override
+    public DDRDetailResponseDTO fetchDetailsById(Long ddrId) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_DETAIL_PROCESS_STARTED, DDR_SHIFT_WISE);
+
+        DDRResponseDTO ddrDetail = ddrShiftWiseRepository.fetchDDRDetail(ddrId);
+
+        List<DDRShiftMinResponseDTO> shiftDetail =
+                ddrShiftDetailRepository.fetchMinShiftInfo(ddrId);
+
+        List<DDROverrideDetailResponseDTO> overrideDetail = new ArrayList<>();
+
+        if (ddrDetail.getHasOverride().equals(YES))
+            overrideDetail = ddrOverrideDetailRepository.fetchDDROverrideDetail(ddrId);
+
+        DDRDetailResponseDTO detailResponseDTO = parseToDdrDetailResponseDTO(ddrDetail, shiftDetail, overrideDetail);
+
+        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, DDR_SHIFT_WISE, getDifferenceBetweenTwoTime(startTime));
+
+        return detailResponseDTO;
     }
 
     /*1. VALIDATE CONSTRAINTS VIOLATION

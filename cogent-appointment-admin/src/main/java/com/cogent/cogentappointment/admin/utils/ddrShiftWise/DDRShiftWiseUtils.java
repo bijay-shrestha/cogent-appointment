@@ -3,6 +3,8 @@ package com.cogent.cogentappointment.admin.utils.ddrShiftWise;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.weekDaysDetail.DDRDetailRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.*;
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.DDRDetailResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.DDRResponseDTO;
 import com.cogent.cogentappointment.persistence.model.Doctor;
 import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.Specialization;
@@ -60,5 +62,14 @@ public class DDRShiftWiseUtils {
         doctorDutyRoster.setRemarks(deleteRequestDTO.getRemarks());
     }
 
+    public static DDRDetailResponseDTO parseToDdrDetailResponseDTO(DDRResponseDTO ddrDetail,
+                                                            List<DDRShiftMinResponseDTO> shiftDetail ,
+                                                            List<DDROverrideDetailResponseDTO> overrideDetail){
+        return DDRDetailResponseDTO.builder()
+                .ddrDetail(ddrDetail)
+                .overrideDetail(overrideDetail)
+                .build();
+
+    }
 
 }

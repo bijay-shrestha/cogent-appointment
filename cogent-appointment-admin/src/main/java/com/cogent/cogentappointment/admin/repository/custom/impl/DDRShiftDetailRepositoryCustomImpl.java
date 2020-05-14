@@ -17,7 +17,7 @@ import java.util.function.Supplier;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.DDRConstants.DDR_ID;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.DDRShiftWiseLog.DDR_SHIFT_WISE;
-import static com.cogent.cogentappointment.admin.query.ddrShiftWise.DDRShiftDetailQuery.QUERY_TO_FETCH_EXISTING_SHIFT_DETAIL;
+import static com.cogent.cogentappointment.admin.query.ddrShiftWise.DDRShiftDetailQuery.QUERY_TO_FETCH_MIN_SHIFT_INFO;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
 
@@ -33,8 +33,8 @@ public class DDRShiftDetailRepositoryCustomImpl implements DDRShiftDetailReposit
     private EntityManager entityManager;
 
     @Override
-    public List<DDRShiftMinResponseDTO> fetchExistingShift(Long ddrId) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_EXISTING_SHIFT_DETAIL)
+    public List<DDRShiftMinResponseDTO> fetchMinShiftInfo(Long ddrId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_MIN_SHIFT_INFO)
                 .setParameter(DDR_ID, ddrId);
 
         List<DDRShiftMinResponseDTO> shiftDetail =

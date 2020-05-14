@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.utils.ddrShiftWise;
 
+import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.weekDaysDetail.DDRDetailRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.*;
 import com.cogent.cogentappointment.persistence.model.Doctor;
@@ -51,6 +52,12 @@ public class DDRShiftWiseUtils {
                 .shiftDetail(shiftDetail)
                 .overrideDetail(overrideDetail)
                 .build();
+    }
+
+    public static void parseDDRDeleteStatus(DoctorDutyRosterShiftWise doctorDutyRoster,
+                                            DeleteRequestDTO deleteRequestDTO) {
+        doctorDutyRoster.setStatus(deleteRequestDTO.getStatus());
+        doctorDutyRoster.setRemarks(deleteRequestDTO.getRemarks());
     }
 
 

@@ -219,11 +219,12 @@ public class SwaggerConstants {
 
         String SEARCH_OPERATION = "Search Doctor Duty Roster according to given request parameters";
 
-        String UPDATE_OPERATION = "Update Doctor Duty Roster. Note that week days time can be updated " +
-                "only if there are no appointments within the selected date range";
         String DELETE_OPERATION = "Set Doctor Duty Roster status as 'D' when deleted. " +
                 " Note that doctor duty roster can be deleted " +
                 " only if there are no appointments within the selected date range";
+
+        String UPDATE_OPERATION = "Update Doctor Duty Roster. Note that week days time can be updated " +
+                "only if there are no appointments within the selected date range";
         String DETAILS_OPERATION = "Fetch Doctor Duty Roster details by its id";
 
         String UPDATE_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION = "Update Doctor Duty Roster Override schedules." +

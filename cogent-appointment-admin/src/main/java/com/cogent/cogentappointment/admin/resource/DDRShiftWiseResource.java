@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.resource;
 
+import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.checkAvailability.DDRExistingAvailabilityRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.checkAvailability.DDRExistingWeekDaysRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.manage.DDRSearchRequestDTO;
@@ -88,4 +89,12 @@ public class DDRShiftWiseResource {
         Pageable pageable = PageRequest.of(page, size);
         return ok().body(ddrShiftWiseService.search(searchRequestDTO, pageable));
     }
+
+    @DeleteMapping
+    @ApiOperation(DELETE_OPERATION)
+    public ResponseEntity<?> delete(@Valid @RequestBody DeleteRequestDTO deleteRequestDTO) {
+        ddrShiftWiseService.delete(deleteRequestDTO);
+        return ok().build();
+    }
+
 }

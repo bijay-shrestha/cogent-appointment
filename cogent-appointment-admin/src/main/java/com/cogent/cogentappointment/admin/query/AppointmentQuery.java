@@ -33,7 +33,7 @@ public class AppointmentQuery {
 
     public static final String QUERY_TO_FETCH_BOOKED_APPOINTMENT_COUNT =
             "SELECT" +
-                    " COUNT(a.appointmentDate) as appointmentDate" +
+                    " COUNT(a.id) as appointmentDate" +
                     " FROM Appointment a" +
                     " WHERE" +
                     " a.status='PA'" +

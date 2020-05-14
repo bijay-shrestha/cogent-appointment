@@ -101,6 +101,9 @@ public class ErrorMessageConstants {
         String INVALID_BREAK_OVERRIDE_REQUEST = "Sorry, Operation failed! Break time schedules doesn't lie between " +
                 "override time schedules";
 
+        String APPOINTMENT_EXISTS_MESSAGE = "Cannot update/delete doctor duty roster because appointment" +
+                " exists within the selected date range.";
+
 
     }
 

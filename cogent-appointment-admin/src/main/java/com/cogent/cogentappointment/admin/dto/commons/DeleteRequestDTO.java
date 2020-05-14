@@ -12,6 +12,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class DeleteRequestDTO implements Serializable {
+
     @NotNull
     private Long id;
 

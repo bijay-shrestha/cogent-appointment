@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.service;
 
+import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.checkAvailability.DDRExistingAvailabilityRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.checkAvailability.DDRExistingWeekDaysRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.manage.DDRSearchRequestDTO;
@@ -35,4 +36,5 @@ public interface DDRShiftWiseService {
 
     List<DDRMinResponseDTO> search(DDRSearchRequestDTO searchRequestDTO, Pageable pageable);
 
+    void delete(DeleteRequestDTO deleteRequestDTO);
 }

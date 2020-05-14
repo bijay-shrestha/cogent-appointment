@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
+import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.checkAvailability.DDRExistingAvailabilityRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.checkAvailability.DDRExistingWeekDaysRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.manage.DDRSearchRequestDTO;
@@ -77,6 +78,8 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
 
     private final DDROverrideBreakDetailRepository ddrOverrideBreakDetailRepository;
 
+    private final AppointmentRepository appointmentRepository;
+
     public DDRShiftWiseServiceImpl(Validator validator,
                                    DDRShiftWiseRepository ddrShiftWiseRepository,
                                    HospitalService hospitalService,
@@ -89,7 +92,8 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
                                    DDRBreakDetailRepository ddrBreakDetailRepository,
                                    BreakTypeService breakTypeService,
                                    DDROverrideDetailDetailRepository ddrOverrideDetailRepository,
-                                   DDROverrideBreakDetailRepository ddrOverrideBreakDetailRepository) {
+                                   DDROverrideBreakDetailRepository ddrOverrideBreakDetailRepository,
+                                   AppointmentRepository appointmentRepository) {
         this.validator = validator;
         this.ddrShiftWiseRepository = ddrShiftWiseRepository;
         this.hospitalService = hospitalService;
@@ -103,6 +107,7 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         this.breakTypeService = breakTypeService;
         this.ddrOverrideDetailRepository = ddrOverrideDetailRepository;
         this.ddrOverrideBreakDetailRepository = ddrOverrideBreakDetailRepository;
+        this.appointmentRepository = appointmentRepository;
     }
 
     @Override
@@ -231,6 +236,27 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         log.info(SEARCHING_PROCESS_COMPLETED, DDR_SHIFT_WISE, getDifferenceBetweenTwoTime(startTime));
 
         return minInfo;
+    }
+
+    @Override
+    public void delete(DeleteRequestDTO deleteRequestDTO) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(DELETING_PROCESS_STARTED, DDR_SHIFT_WISE);
+
+        DoctorDutyRosterShiftWise doctorDutyRoster = fetchDDRShiftWise(deleteRequestDTO.getId());
+
+        validateAppointmentCount(doctorDutyRoster.getFromDate(),
+                doctorDutyRoster.getToDate(),
+                doctorDutyRoster.getDoctor().getId(),
+                doctorDutyRoster.getSpecialization().getId()
+        );
+
+        parseDDRDeleteStatus(doctorDutyRoster, deleteRequestDTO);
+
+        save(doctorDutyRoster);
+
+        log.info(DELETING_PROCESS_COMPLETED, DDR_SHIFT_WISE, getDifferenceBetweenTwoTime(startTime));
     }
 
     /*1. VALIDATE CONSTRAINTS VIOLATION
@@ -737,5 +763,16 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         ddrOverrideDetailRepository.save(overrideDetails);
     }
 
+    private void validateAppointmentCount(Date fromDate, Date toDate,
+                                          Long doctorId, Long specializationId) {
+
+        Long appointments = appointmentRepository.fetchBookedAppointmentCount(
+                fromDate, toDate, doctorId, specializationId);
+
+        if (appointments.intValue() > 0) {
+            log.error(APPOINTMENT_EXISTS_MESSAGE);
+            throw new BadRequestException(APPOINTMENT_EXISTS_MESSAGE);
+        }
+    }
 
 }

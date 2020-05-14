@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.esewa.dto.response.appointmentDetails;
 import lombok.*;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 
 /**
  * @author smriti on 16/03/20
@@ -14,13 +15,19 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class AvailableDoctorWithSpecialization implements Serializable {
 
-    private Long doctorId;
+    private BigInteger doctorId;
 
     private String doctorName;
 
-    private Long specializationId;
+    private BigInteger specializationId;
 
     private String specializationName;
 
     private Character dayOffStatus;
+
+    private String nmcNumber;
+
+    private String qualificationAlias;
+
+    private String fileUri;
 }

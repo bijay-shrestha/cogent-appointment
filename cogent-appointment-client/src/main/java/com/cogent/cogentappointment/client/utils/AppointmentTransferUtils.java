@@ -94,11 +94,8 @@ public class AppointmentTransferUtils {
 //                        .filter(override -> (override.equals(actual)))
 //                        .anyMatch(override -> override.equals(actual))))
 //                .collect(Collectors.toList());
-        List<Date> matchedList = overrideList.stream()
-                .filter(overrideDate -> overrideDate.equals(requestedDate))
-                .collect(Collectors.toList());
 
-        for (Date date : matchedList) {
+        for (Date date : overrideList) {
             if (date.equals(requestedDate)) {
                 return date;
             }

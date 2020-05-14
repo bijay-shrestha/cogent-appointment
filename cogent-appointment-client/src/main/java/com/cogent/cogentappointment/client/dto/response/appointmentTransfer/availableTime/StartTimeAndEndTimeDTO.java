@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class WeekDayAndTimeDTO implements Serializable {
+public class StartTimeAndEndTimeDTO implements Serializable {
 
     private String startTime;
 

@@ -243,12 +243,6 @@ public class DateUtils {
 
         while (!calendar.after(endCalendar)) {
             Date result = calendar.getTime();
-//            if (utilDateToSqlDate(calendar.getTime()).before(today) ) {
-//                calendar.add(Calendar.DATE, 1);
-//            }else {
-//                datesInRange.add(result);
-//                calendar.add(Calendar.DATE, 1);
-//            }
             if(!utilDateToSqlDate(calendar.getTime()).before(today)){
                 datesInRange.add(result);
             }

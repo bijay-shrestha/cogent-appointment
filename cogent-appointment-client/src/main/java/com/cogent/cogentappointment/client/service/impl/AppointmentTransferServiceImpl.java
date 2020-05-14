@@ -6,7 +6,7 @@ import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.Appo
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableDates.DoctorDatesResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.ActualDateAndTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.OverrideDateAndTimeResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.WeekDayAndTimeDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.StartTimeAndEndTimeDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.charge.AppointmentChargeResponseDTO;
 import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -136,14 +135,14 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
         Date sqlRequestDate = utilDateToSqlDate(requestDTO.getDate());
 
-        time.addAll(checkOverride(requestDTO, unavailableTime, sqlRequestDate));
+        time.addAll(checkOverrideRoster(requestDTO, unavailableTime, sqlRequestDate));
 
         if (time.size() == 0) {
-            time.addAll(checkActual(requestDTO, unavailableTime, sqlRequestDate));
+            time.addAll(checkDutyRoster(requestDTO, unavailableTime, sqlRequestDate));
         }
 
         if (time.isEmpty())
-            throw DOCTOR_DUTY_ROSTER_NOT_FOUND.get();
+            throw APPOINTMENT_TIME_ALL_BOOKED.get();
 
         log.info(FETCHING_AVAILABLE_DOCTOR_TIME_PROCESS_COMPLETED, APPOINTMENT_TRANSFER,
                 getDifferenceBetweenTwoTime(startTime));
@@ -211,6 +210,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
             save(transferredAppointment, appointmentTransfer);
             saveTransferTransaction(transferTransactionDetail);
         } else {
+//            toDo:esewa Logic left
             Doctor currentDoctor = fetchDoctorById(requestDTO.getDoctorId());
 
             Specialization currentSpecialization = fetchSpecializationById(requestDTO.getSpecializationId());
@@ -290,8 +290,8 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
     }
 
     /* CHECKS AVAILABLE APPT. TIME FROM OVERRIDE TABLE */
-    private List<String> checkOverride(AppointmentTransferTimeRequestDTO requestDTO, List<String> unavailableTime,
-                                       Date sqlRequestDate) {
+    private List<String> checkOverrideRoster(AppointmentTransferTimeRequestDTO requestDTO, List<String> unavailableTime,
+                                             Date sqlRequestDate) {
 
         List<String> finalOverridetime = new ArrayList<>();
 
@@ -304,15 +304,13 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
             List<Date> overrideDates = utilDateListToSqlDateList(getDates(override.getFromDate(),
                     override.getToDate()));
 
-            Date date = compareAndGetDate(overrideDates, sqlRequestDate);
-
-            if (!Objects.isNull(date)) {
+            if (compareIfRequestedDateExists(overrideDates, sqlRequestDate)) {
 
                 List<String> overrideTime = getGapDuration(override.getStartTime(),
                         override.getEndTime(),
                         override.getGapDuration());
 
-                finalOverridetime = getVacantTime(overrideTime, unavailableTime, date);
+                finalOverridetime = getVacantTime(overrideTime, unavailableTime, requestDTO.getDate());
 
                 break;
             }
@@ -321,31 +319,30 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
     }
 
     /* CHECKS AVAILABLE APPT. TIME FROM DUTY ROSTER TABLE */
-    private List<String> checkActual(AppointmentTransferTimeRequestDTO requestDTO, List<String> unavailableTime,
-                                     Date sqlRequestDate) {
+    private List<String> checkDutyRoster(AppointmentTransferTimeRequestDTO requestDTO, List<String> unavailableTime,
+                                         Date sqlRequestDate) {
 
         List<String> finaltime = new ArrayList<>();
 
-        List<ActualDateAndTimeResponseDTO> actualDateAndTime = appointmentTransferRepository.getActualTimeByDoctorId(requestDTO.getDoctorId(),
+        List<ActualDateAndTimeResponseDTO> actualDutyRosterDateAndTimes = appointmentTransferRepository.getActualTimeByDoctorId(requestDTO.getDoctorId(),
                 requestDTO.getSpecializationId());
 
-        for (ActualDateAndTimeResponseDTO actual : actualDateAndTime) {
+        for (ActualDateAndTimeResponseDTO actualDutyRosterDateAndTime : actualDutyRosterDateAndTimes) {
 
-            List<Date> actualDates = utilDateListToSqlDateList(getActualdate(appointmentTransferRepository.getDayOffDaysByRosterId(actual.getId()),
-                    getDates(actual.getFromDate(), actual.getToDate())));
+            List<Date> actualDates = utilDateListToSqlDateList(getActualdate(appointmentTransferRepository.getDayOffDaysByRosterId(actualDutyRosterDateAndTime.getId()),
+                    getDates(actualDutyRosterDateAndTime.getFromDate(), actualDutyRosterDateAndTime.getToDate())));
 
-            Date date = compareAndGetDate(actualDates, sqlRequestDate);
-
-            if (!Objects.isNull(date)) {
+            if (compareIfRequestedDateExists(actualDates, sqlRequestDate)) {
 
                 String code = requestDTO.getDate().toString().substring(0, 3);
 
-                WeekDayAndTimeDTO codeAndTime = appointmentTransferRepository.getWeekDaysByCode(requestDTO.getDoctorId(), code);
+                StartTimeAndEndTimeDTO codeAndTime = appointmentTransferRepository.getWeekDaysByCode(actualDutyRosterDateAndTime.getId(),
+                        code);
 
                 List<String> actualTime = getGapDuration(codeAndTime.getStartTime(), codeAndTime.getEndTime(),
-                        actual.getGapDuration());
+                        actualDutyRosterDateAndTime.getGapDuration());
 
-                finaltime = getVacantTime(actualTime, unavailableTime, date);
+                finaltime = getVacantTime(actualTime, unavailableTime, requestDTO.getDate());
 
                 break;
             }
@@ -357,6 +354,11 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
     private Supplier<NoContentFoundException> DOCTOR_DUTY_ROSTER_NOT_FOUND = () -> {
         log.error(CONTENT_NOT_FOUND, DOCTOR_DUTY_ROSTER);
         throw new NoContentFoundException(DoctorDutyRoster.class);
+    };
+
+    private Supplier<NoContentFoundException> APPOINTMENT_TIME_ALL_BOOKED = () -> {
+        log.error("Appointment Time All Booked");
+        throw new NoContentFoundException("Appointment Time All Booked");
     };
 
     private Appointment fetchAppointmentById(Long appointmentId) {

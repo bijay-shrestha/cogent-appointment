@@ -8,7 +8,7 @@ import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.Appo
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableDates.DoctorDatesResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.ActualDateAndTimeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.OverrideDateAndTimeResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.WeekDayAndTimeDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableTime.StartTimeAndEndTimeDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.charge.AppointmentChargeResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.AppointmentTransferRepositoryCustom;
@@ -70,13 +70,13 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
     }
 
     @Override
-    public WeekDayAndTimeDTO getWeekDaysByCode(Long doctorId, String code) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_GET_WEEKS_BY_DUTY_ROSTER_ID)
-                .setParameter(DOCTOR_ID, doctorId)
+    public StartTimeAndEndTimeDTO getWeekDaysByCode(Long doctorDutyRosterId, String code) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_GET_WEEKS_TIME_BY_DOCTOR_ID)
+                .setParameter(DOCTOR_DUTY_ROSTER_ID, doctorDutyRosterId)
                 .setParameter(CODE, code);
 
         try {
-            return transformQueryToSingleResult(query, WeekDayAndTimeDTO.class);
+            return transformQueryToSingleResult(query, StartTimeAndEndTimeDTO.class);
         } catch (NoResultException e) {
             throw DOCTOR_DUTY_ROSTER_NOT_FOUND.get();
         }
@@ -135,7 +135,7 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
     }
 
     @Override
-    public List<OverrideDateAndTimeResponseDTO> getOverideRosterDateAndTime(Long doctorId, Long specializationId) {
+    public List<OverrideDateAndTimeResponseDTO>  getOverideRosterDateAndTime(Long doctorId, Long specializationId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_OVERRIDE_DATE_AND_TIME_BY_DOCTOR_ID)
                 .setParameter(DOCTOR_ID, doctorId)
                 .setParameter(SPECIALIZATION_ID, specializationId);

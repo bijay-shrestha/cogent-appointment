@@ -4,6 +4,8 @@ import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.Appoi
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.AppointmentTransferLogDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.CurrentAppointmentDetailsDTO;
 import com.cogent.cogentappointment.persistence.model.*;
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import org.apache.commons.collections4.ListUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.LocalTime;
@@ -30,18 +32,16 @@ public class AppointmentTransferUtils {
 
         List<Date> unmatchedList = actualList.stream()
                 .filter(actual -> (overrideList.stream()
-                        .filter(override -> (override.equals(actual))
-                                && (override.equals(actual))
-                        )
+                        .filter(override -> (override.equals(actual)))
                         .count()) < 1)
                 .collect(Collectors.toList());
 
-        overrideList.addAll(unmatchedList);
+        List<Date> dates=ListUtils.union(unmatchedList,overrideList);
 
 //        overrideList.removeIf(override -> override.getDayOffStatus().equals(YES));
-        Collections.sort(overrideList);
+         Collections.sort(dates);
 
-        return overrideList;
+        return dates;
     }
 
     public static List<Date>  getActualdate(List<String> dayOffDay, List<Date> dates) {
@@ -85,22 +85,11 @@ public class AppointmentTransferUtils {
         return unmatchedList;
     }
 
-    public static Date compareAndGetDate(
+    public static Boolean compareIfRequestedDateExists(
             List<Date> overrideList,
             Date requestedDate) {
 
-//        List<Date> matchedList = overrideList.stream()
-//                .filter(actual -> (overrideList.stream()
-//                        .filter(override -> (override.equals(actual)))
-//                        .anyMatch(override -> override.equals(actual))))
-//                .collect(Collectors.toList());
-
-        for (Date date : overrideList) {
-            if (date.equals(requestedDate)) {
-                return date;
-            }
-        }
-        return null;
+      return   overrideList.contains(requestedDate)? true:false;
     }
 
     public static Appointment parseAppointmentTransferDetail(Appointment appointment,

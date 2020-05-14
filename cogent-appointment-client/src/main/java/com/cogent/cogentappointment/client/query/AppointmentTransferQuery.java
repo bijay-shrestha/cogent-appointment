@@ -77,7 +77,7 @@ public class AppointmentTransferQuery {
                     " dwddr.doctorDutyRosterId.id = :doctorDutyRosterId" +
                     " AND dwddr.dayOffStatus = 'Y'";
 
-    public static String QUERY_TO_GET_WEEKS_BY_DUTY_ROSTER_ID =
+    public static String QUERY_TO_GET_WEEKS_TIME_BY_DOCTOR_ID =
             "SELECT" +
                     " DATE_FORMAT(dwddr.startTime, '%H:%i') as startTime," +
                     " DATE_FORMAT(dwddr.endTime, '%H:%i') as endTime" +
@@ -87,7 +87,7 @@ public class AppointmentTransferQuery {
                     " wd.id = dwddr.weekDaysId.id" +
                     " LEFT JOIN DoctorDutyRoster ddr ON ddr.id=dwddr.doctorDutyRosterId.id" +
                     " WHERE" +
-                    " ddr.doctorId.id = :doctorId" +
+                    " ddr.id = :doctorDutyRosterId" +
                     " AND dwddr.dayOffStatus = 'N'" +
                     " AND wd.code=:code";
 
@@ -103,7 +103,8 @@ public class AppointmentTransferQuery {
                     " WHERE" +
                     " ddr.doctorId.id = :doctorId" +
                     " AND ddr.specializationId.id=:specializationId" +
-                    " AND ddro.dayOffStatus = 'N'";
+                    " AND ddro.dayOffStatus = 'N'" +
+                    " AND ddro.status='Y'";
 
     public static String QUERY_TO_GET_UNAVAILABLE_TIME =
             "SELECT" +

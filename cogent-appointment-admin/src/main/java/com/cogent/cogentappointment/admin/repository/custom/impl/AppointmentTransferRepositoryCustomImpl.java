@@ -73,9 +73,9 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
     }
 
     @Override
-    public StartTimeAndEndTimeDTO getWeekDaysByRosterIdAndCode(Long doctorId, String code) {
+    public StartTimeAndEndTimeDTO getWeekDaysByRosterIdAndCode(Long doctorDutyRosterId, String code) {
         Query query = createQuery.apply(entityManager, QUERY_TO_GET_WEEKS_BY_DUTY_ROSTER_ID)
-                .setParameter(DOCTOR_ID, doctorId)
+                .setParameter(DOCTOR_DUTY_ROSTER_ID, doctorDutyRosterId)
                 .setParameter(CODE, code);
 
         try {

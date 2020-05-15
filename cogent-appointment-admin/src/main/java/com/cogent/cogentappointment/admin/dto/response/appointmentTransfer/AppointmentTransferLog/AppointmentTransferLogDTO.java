@@ -22,7 +22,7 @@ public class AppointmentTransferLogDTO implements Serializable {
 
     private Gender gender;
 
-    private Date transferredToDate, transferredFromDate;
+    private String transferredToDate, transferredFromDate;
 
     private String transferredToTime, transferredFromTime;
 

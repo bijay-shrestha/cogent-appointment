@@ -64,7 +64,8 @@ public class AppointmentTransferQuery {
                     " LEFT JOIN DoctorDutyRoster ddr ON ddr.id=ddro.doctorDutyRosterId.id " +
                     " WHERE" +
                     " ddr.doctorId.id = :doctorId" +
-                    " AND ddr.specializationId.id =:specializationId";
+                    " AND ddr.specializationId.id =:specializationId" +
+                    " AND ddro.dayOffStatus='N'";
 
     public static String QUERY_TO_GET_DAY_OFF_WEEKS_BY_DUTY_ROSTER_ID =
             "SELECT" +

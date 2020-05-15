@@ -229,7 +229,7 @@ public class AppointmentTransferUtils {
             List<AppointmentTransferLogDTO> transferredList) {
 
         transferredList.forEach(transferredData -> {
-            if (currentDetails.getAppointmentDate().equals(transferredData.getTransferredToDate()) &&
+            if (currentDetails.getAppointmentDate().toString().equals(transferredData.getTransferredToDate()) &&
                     currentDetails.getAppointmentTime().equals(transferredData.getTransferredToTime()) &&
                     currentDetails.getAppointmentAmount().equals(transferredData.getTransferredToAmount()) &&
                     currentDetails.getDoctor().equals(transferredData.getTransferredToDoctor()) &&

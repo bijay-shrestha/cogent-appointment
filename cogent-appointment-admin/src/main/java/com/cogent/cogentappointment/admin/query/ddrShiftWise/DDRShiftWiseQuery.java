@@ -76,23 +76,20 @@ public class DDRShiftWiseQuery {
     public static final String QUERY_TO_FETCH_DDR_SHIFT_WISE_DETAILS =
             " SELECT" +
                     " ddr.id as ddrId," +                                                //[0]
-                    " h.id as hospitalId," +                                            //[1]
-                    " h.name as hospitalName," +                                        //[2]
-                    " s.id as specializationId," +                                      //[3]
-                    " s.name as specializationName," +                                  //[4]
-                    " d.id as doctorId," +                                              //[5]
-                    " d.name as doctorName," +                                          //[6]
-                    " ddr.fromDate as fromDate," +                                      //[7]
-                    " ddr.toDate as toDate," +                                          //[8]
-                    " ddr.status as status," +                                          //[9]
-                    " ddr.remarks as remarks," +                                        //[10]
-                    " ddr.hasOverride as hasOverride," +                                //[11]
+                    " h.name as hospitalName," +                                        //[1]
+                    " s.name as specializationName," +                                  //[2]
+                    " d.name as doctorName," +                                          //[3]
+                    " ddr.fromDate as fromDate," +                                      //[4]
+                    " ddr.toDate as toDate," +                                          //[5]
+                    " ddr.status as status," +                                          //[6]
+                    " ddr.remarks as remarks," +                                        //[7]
+                    " ddr.hasOverride as hasOverride," +                                //[8]
                     " CASE WHEN" +
                     " (da.status is null OR da.status = 'N')" +
                     " THEN null" +
                     " ELSE" +
                     " da.fileUri" +
-                    " END as fileUri," +                                                //[12]
+                    " END as fileUri," +                                                //[9]
                     DOCTOR_DUTY_ROSTERS_AUDITABLE_QUERY() +
                     " FROM DoctorDutyRosterShiftWise ddr" +
                     " LEFT JOIN Doctor d ON ddr.doctor.id = d.id" +

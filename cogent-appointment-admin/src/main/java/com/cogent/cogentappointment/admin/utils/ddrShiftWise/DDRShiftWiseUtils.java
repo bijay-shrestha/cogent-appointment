@@ -67,6 +67,7 @@ public class DDRShiftWiseUtils {
                                                             List<DDROverrideDetailResponseDTO> overrideDetail){
         return DDRDetailResponseDTO.builder()
                 .ddrDetail(ddrDetail)
+                .shiftDetail(shiftDetail)
                 .overrideDetail(overrideDetail)
                 .build();
 

@@ -278,7 +278,8 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         if (ddrDetail.getHasOverride().equals(YES))
             overrideDetail = ddrOverrideDetailRepository.fetchDDROverrideDetail(ddrId);
 
-        DDRDetailResponseDTO detailResponseDTO = parseToDdrDetailResponseDTO(ddrDetail, shiftDetail, overrideDetail);
+        DDRDetailResponseDTO detailResponseDTO =
+                parseToDdrDetailResponseDTO(ddrDetail, shiftDetail, overrideDetail);
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, DDR_SHIFT_WISE, getDifferenceBetweenTwoTime(startTime));
 

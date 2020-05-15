@@ -19,15 +19,9 @@ public class DDRResponseDTO extends AuditableResponseDTO implements Serializable
 
     private Long ddrId;
 
-    private Long hospitalId;
-
     private String hospitalName;
 
-    private Long specializationId;
-
     private String specializationName;
-
-    private Long doctorId;
 
     private String doctorName;
 

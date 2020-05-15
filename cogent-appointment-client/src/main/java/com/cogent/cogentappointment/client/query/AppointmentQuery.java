@@ -3,7 +3,7 @@ package com.cogent.cogentappointment.client.query;
 import com.cogent.cogentappointment.client.dto.request.appointment.approval.AppointmentPendingApprovalSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.esewa.history.AppointmentSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.log.AppointmentLogSearchDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentCancelApprovalSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import org.springframework.util.ObjectUtils;
@@ -303,7 +303,7 @@ public class AppointmentQuery {
     }
 
     /*admin*/
-    public static String QUERY_TO_FETCH_REFUND_APPOINTMENTS(AppointmentRefundSearchDTO searchDTO) {
+    public static String QUERY_TO_FETCH_APPOINTMENTS_CANCEL_APPROVALS(AppointmentCancelApprovalSearchDTO searchDTO) {
         return " SELECT" +
                 "  a.id as appointmentId," +
                 "  a.appointmentDate as appointmentDate," +
@@ -341,7 +341,7 @@ public class AppointmentQuery {
                 GET_WHERE_CLAUSE_TO_FETCH_REFUND_APPOINTMENTS(searchDTO);
     }
 
-    private static String GET_WHERE_CLAUSE_TO_FETCH_REFUND_APPOINTMENTS(AppointmentRefundSearchDTO searchDTO) {
+    private static String GET_WHERE_CLAUSE_TO_FETCH_REFUND_APPOINTMENTS(AppointmentCancelApprovalSearchDTO searchDTO) {
         String whereClause = " WHERE ard.status = 'PA'" +
                 " AND s.status!='D'" +
                 " AND d.status!='D'"+
@@ -371,7 +371,7 @@ public class AppointmentQuery {
     }
 
     /*admin*/
-    public static String QUERY_TO_FETCH_TOTAL_REFUND_AMOUNT(AppointmentRefundSearchDTO searchDTO) {
+    public static String QUERY_TO_FETCH_TOTAL_REFUND_AMOUNT(AppointmentCancelApprovalSearchDTO searchDTO) {
         return " SELECT SUM(ard.refundAmount)" +
                 " FROM Appointment a" +
                 " LEFT JOIN Patient p ON p.id = a.patientId.id" +

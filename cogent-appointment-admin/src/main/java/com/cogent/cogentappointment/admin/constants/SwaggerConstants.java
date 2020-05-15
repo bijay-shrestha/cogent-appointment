@@ -44,7 +44,7 @@ public class SwaggerConstants {
 
     public interface AppointmentConstant {
         String BASE_API_VALUE = "This is Appointment Resource";
-        String FETCH_REFUND_APPOINTMENTS = "Fetch Refund Appointment Request List";
+        String FETCH_APPOINTMENTS_CANCEL_APPROVALS = "Fetch  Appointment cancel approval List";
         String FETCH_REFUND_APPOINTMENTS_DETAIL = "Fetch Refund Appointment Detail By appointmentId";
         String APPROVE_REFUND_APPOINTMENT = "Approve Refund Request Appointment";
         String REJECT_REFUND_APPOINTMENT = "Reject Refund Request Appointment";
@@ -78,6 +78,7 @@ public class SwaggerConstants {
     public interface AuthenticateConstant {
         String BASE_API_VALUE = "This is Login and SignUp Resource.";
         String LOGIN_OPERATION = "Login User";
+        String LOGOUT_OPERATION = "Logout User";
     }
 
     public interface AppointmentModeConstant {
@@ -293,6 +294,11 @@ public class SwaggerConstants {
     //R
 
     //S
+
+    public interface SalutationConstant {
+        String BASE_API_VALUE = "This is Salutation Resource";
+        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal Salutation details (id and code) for dropdown";
+    }
 
     public interface SpecializationConstant {
         String BASE_API_VALUE = "This is Specialization Resource";

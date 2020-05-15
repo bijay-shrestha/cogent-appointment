@@ -71,7 +71,8 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
                 signatureBuilder = null;
             }
 
-            compareSignature(signatureBuilder, authHeader.getDigest());
+            compareSignature(signatureBuilder, authHeader.getDigest()); if (!signatureBuilder.isHashEquals(authHeader.getDigest()))
+                throw new BadCredentialsException(HMAC_BAD_SIGNATURE);
 
             SecurityContextHolder.getContext().setAuthentication(getAuthenticationForHospital(authHeader.getEmail(),
                     adminMinDetails.getHospitalId()));

@@ -144,6 +144,7 @@ public class WebResourceKeyConstants {
 
     //L
     public static final String LOGIN = "/login";
+    public static final String LOGOUT = "/logout";
 
     //M
     public static final String META_INFO = "/metaInfo";
@@ -183,6 +184,9 @@ public class WebResourceKeyConstants {
 
 
     //S
+    public interface SalutationConstant {
+        String BASE_SALUTATION = "/salutation";
+    }
 
     public static final String SEARCH = "/search";
 

@@ -16,6 +16,8 @@
         <module>cogent-appointment-client</module>
         <module>cogent-appointment-scheduler</module>
         <module>cogent-appointment-logging</module>
+        <module>cogent-appointment-esewa</module>
+
     </modules>
 
 </project>

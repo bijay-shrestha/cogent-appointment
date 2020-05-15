@@ -31,6 +31,9 @@ public class ClientLog extends Auditable<String> implements Serializable {
     @JoinColumn(name = "admin_id")
     private Admin adminId;
 
+    @Column(name = "unknown_user")
+    private String unknownUser;
+
     @Column(name = "parent_id")
     private Long parentId;
 
@@ -73,7 +76,7 @@ public class ClientLog extends Auditable<String> implements Serializable {
     public String toString() {
         return "ClientLog{" +
                 "id=" + id +
-                ", adminId='" + adminId.getId() + '\'' +
+                ", unknownUser='" + unknownUser + '\'' +
                 ", parentId='" + parentId + '\'' +
                 ", roleId='" + roleId + '\'' +
                 ", logDateTime='" + logDateTime + '\'' +

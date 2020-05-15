@@ -14,7 +14,6 @@ public class StatusValidator implements ConstraintValidator<Status, Character> {
 
     @Override
     public boolean isValid(Character status, ConstraintValidatorContext context) {
-        if (Objects.isNull(status)) return false;
-        return PatternUtils.isStatusActiveOrInactive(status);
+        return !Objects.isNull(status) && PatternUtils.isStatusActiveOrInactive(status);
     }
 }

@@ -170,6 +170,7 @@ public class AppointmentStatusUtils {
             responseDTO.setAppointmentId(appointmentStatusResponseDTO.getAppointmentId());
             responseDTO.setHasTimePassed(hasTimeHasPassed(appointmentStatusResponseDTO.getDate(), appointmentTime));
             responseDTO.setIsFollowUp(appointmentStatusResponseDTO.getIsFollowUp());
+            responseDTO.setHasTransferred(appointmentStatusResponseDTO.getHasTransferred());
         }
 
         doctorTimeSlotResponseDTOS.add(responseDTO);

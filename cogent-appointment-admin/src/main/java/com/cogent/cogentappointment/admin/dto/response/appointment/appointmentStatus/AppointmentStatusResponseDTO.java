@@ -38,4 +38,6 @@ public class AppointmentStatusResponseDTO implements Serializable {
     private Long appointmentId;
 
     private Character isFollowUp;
+
+    private Character hasTransferred;
 }

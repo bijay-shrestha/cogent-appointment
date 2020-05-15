@@ -78,8 +78,7 @@ public class AppointmentTransferUtils {
                                                                   Duration duration) {
         List<String> response = new ArrayList<>();
         do {
-            Date time = new java.util.Date(System.currentTimeMillis());
-            String dateFormat = new SimpleDateFormat("HH:mm").format(time);
+            String dateFormat = new SimpleDateFormat("HH:mm").format(new java.util.Date(System.currentTimeMillis()));
             DateTime currentTime = new DateTime(FORMAT.parseDateTime(dateFormat));
             if (!appointmentStartTime.isBefore(currentTime) && !appointmentStartTime.equals(currentTime)) {
                 response.add(convertTo12HourFormat(FORMAT.print(appointmentStartTime)));

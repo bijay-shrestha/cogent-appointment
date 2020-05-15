@@ -187,6 +187,8 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
         Appointment appointment = fetchAppointmentById(requestDTO.getAppointmentId());
 
+        validateAppointmentDate(appointment.getAppointmentDate());
+
         AppointmentTransactionDetail transactionDetail = fetchAppointmentTransactionDetailByappointmentId(
                 requestDTO.getAppointmentId());
 
@@ -451,6 +453,13 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
             throw new BadRequestException(String.format(DOCTOR_APPOINTMENT_CHARGE_INVALID, appointmentAmount),
                     DOCTOR_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE);
         }
+    }
+
+    private void validateAppointmentDate(Date appointmentDate) {
+       if(appointmentDate.before(new Date())){
+           log.error("Appointment Date has passed");
+           throw new BadRequestException("Appointment Date has passed");
+       }
     }
 
     public AppointmentChargeResponseDTO fetchAppointmentCharge(Long doctorId) {

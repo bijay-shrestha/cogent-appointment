@@ -305,7 +305,8 @@ public class EsewaQuery {
                     " ddr.toDate as toDate," +
                     " ddr.hasOverrideDutyRoster as hasOverride," +
                     " d.id as doctorId," +
-                    " d.name as doctorName" +
+                    " d.name as doctorName," +
+                    " d.salutation as doctorSalutation"+
                     " FROM DoctorDutyRoster ddr" +
                     " LEFT JOIN Doctor d ON d.id=ddr.doctorId.id" +
                     " WHERE ddr.specializationId.id=:specializationId" +

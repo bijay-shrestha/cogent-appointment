@@ -34,7 +34,7 @@ public class AppointmentTransferResource {
     @PutMapping(APPOINTMENT_DATE)
     @ApiOperation(FETCH_AVAILABLE_DATES)
     public ResponseEntity<?> fetchDoctorAvailableDates(@Valid @RequestBody AppointmentDateRequestDTO requestDTO) {
-        return ok(appointmentTransferService.fetchAvailableDatesByDoctorId(requestDTO));
+        return ok(appointmentTransferService.fetchAvailableDatesByDoctorIdAndSpecializationId(requestDTO));
     }
 
     @PutMapping(APPOINTMENT_TIME)

@@ -96,7 +96,8 @@ public class AppointmentTransferQuery {
             "select" +
                     " ddro.id as id," +
                     " ddro.fromDate as fromDate," +
-                    " ddro.toDate as toDate" +
+                    " ddro.toDate as toDate," +
+                    " ddro.dayOffStatus as dayOffStatus" +
                     " FROM" +
                     " DoctorDutyRosterOverride ddro" +
                     " LEFT JOIN DoctorDutyRoster ddr ON ddr.id=ddro.doctorDutyRosterId.id " +
@@ -105,7 +106,7 @@ public class AppointmentTransferQuery {
                     " ddr.doctorId.id = :doctorId" +
                     " AND ddr.hospitalId.id = :hospitalId" +
                     " AND ddr.specializationId.id=:specializationId" +
-                    " AND ddro.dayOffStatus = 'N'";
+                    " AND ddro.status = 'Y'";
 
     public static String QUERY_TO_GET_UNAVAILABLE_TIME =
             "SELECT" +
@@ -140,14 +141,14 @@ public class AppointmentTransferQuery {
                     "  p.name as patientName, " +
                     "  p.mobileNumber as mobileNumber, " +
                     "  p.gender  as gender, " +
-                    "  apt.currentAppointmentDate  as transferredToDate, " +
-                    "  apt.previousAppointmentDate  as transferredFromDate, " +
+                    "  DATE_FORMAT(apt.currentAppointmentDateAndTime ,'%Y-%m-%d')  as transferredToDate, " +
+                    "  DATE_FORMAT(apt.previousAppointmentDateAndTime ,'%Y-%m-%d')  as transferredFromDate, " +
                     "  DATE_FORMAT(apt.currentAppointmentTime ,'%h:%i %p')  as transferredToTime, " +
                     "  DATE_FORMAT(apt.previousAppointmentTime ,'%h:%i %p')  as transferredFromTime, " +
-                    "  d.name as transferredToDoctor, " +
-                    "  pd.name as transferredFromDoctor, " +
-                    "  s.name as transferredToSpecialization, " +
-                    "  ps.name as transferredFromSpecialization, " +
+                    "  atp.currentDoctor.name as transferredToDoctor, " +
+                    "  atp.previousDoctor.name as transferredFromDoctor, " +
+                    "  atp.currentSpecialization.name as transferredToSpecialization, " +
+                    "  atp.previousSpecialization.name as transferredFromSpecialization, " +
                     "  attd.currentAppointmentAmount  AS transferredToAmount, " +
                     "  attd.previousAppointmentAmount  AS transferredFromAmount, " +
                     QUERY_TO_CALCULATE_PATIENT_AGE +
@@ -155,10 +156,6 @@ public class AppointmentTransferQuery {
                     " AppointmentTransfer apt  " +
                     " LEFT JOIN Appointment a ON a.id=apt.appointment.id  " +
                     " LEFT JOIN Patient p ON p.id=a.patientId.id  " +
-                    " LEFT JOIN Doctor d ON d.id=apt.currentDoctor.id  " +
-                    " LEFT JOIN Doctor pd ON pd.id=apt.previousDoctor.id " +
-                    " LEFT JOIN Specialization s ON s.id=apt.currentSpecialization.id " +
-                    " LEFT JOIN Specialization ps ON ps.id=apt.previousSpecialization.id " +
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id  " +
                     " LEFT JOIN AppointmentTransferTransactionDetail attd ON attd.appointmentTransfer.id=apt.id " +
                     " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id  " +

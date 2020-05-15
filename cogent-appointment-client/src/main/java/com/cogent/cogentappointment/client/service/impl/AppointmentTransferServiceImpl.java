@@ -110,11 +110,11 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
         List<Date> overrideDayOffDates = filterOverrideDayOffDates(overrideDates);
 
-        List<Date> overrideAvaliableDates = filterOverrideAvaliableDates(overrideDates);
+        List<Date> overrideAvailableDates = filterOverrideAvaliableDates(overrideDates);
 
         List<Date> mergeOverrideAndActualDateList = utilDateListToSqlDateList(
                 mergeOverrideAndActualDateList(
-                        overrideAvaliableDates,
+                        overrideAvailableDates,
                         actualDutyRosterDate,
                         overrideDayOffDates));
 
@@ -342,7 +342,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
                 String code = requestDTO.getDate().toString().substring(0, 3);
 
-                StartTimeAndEndTimeDTO codeAndTime = appointmentTransferRepository.getWeekDaysByCode(actualDutyRosterDateAndTime.getId(),
+                StartTimeAndEndTimeDTO codeAndTime = appointmentTransferRepository.getWeekDaysByRosterIdAndCode(actualDutyRosterDateAndTime.getId(),
                         code);
 
                 List<String> actualTime = getGapDuration(codeAndTime.getStartTime(), codeAndTime.getEndTime(),

@@ -21,7 +21,7 @@ public class AppointmentTransferPreviewResponseDTO extends AuditableResponseDTO 
 
     private Gender gender;
 
-    private Date transferredToDate,transferredFromDate;
+    private String transferredToDate,transferredFromDate;
 
     private String transferredToTime,transferredFromTime;
 

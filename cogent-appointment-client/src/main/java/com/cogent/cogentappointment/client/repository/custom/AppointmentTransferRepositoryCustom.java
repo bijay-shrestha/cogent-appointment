@@ -26,7 +26,7 @@ public interface AppointmentTransferRepositoryCustom {
 
     List<String> getDayOffDaysByRosterId(Long doctorDutyRosterId);
 
-    StartTimeAndEndTimeDTO getWeekDaysByCode(Long rosterId, String code);
+    StartTimeAndEndTimeDTO getWeekDaysByRosterIdAndCode(Long rosterId, String code);
 
     List<OverrideDatesResponseDTO> getOverrideDatesByDoctorId(Long doctorId,Long specializationId);
 

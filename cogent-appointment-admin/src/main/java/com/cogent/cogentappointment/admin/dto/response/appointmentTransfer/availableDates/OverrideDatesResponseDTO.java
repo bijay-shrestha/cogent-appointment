@@ -10,7 +10,6 @@ import java.util.Date;
  */
 @Getter
 @Setter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class OverrideDatesResponseDTO implements Serializable {
@@ -20,5 +19,8 @@ public class OverrideDatesResponseDTO implements Serializable {
     private Date fromDate;
 
     private Date toDate;
+
+    private Character dayOffStatus;
+
 
 }

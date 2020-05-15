@@ -36,7 +36,7 @@ public class AppointmentTransactionDetail extends Auditable<String> implements S
     @JoinColumn(name = "appointment_id")
     private Appointment appointment;
 
-    //TODO : REMOVE UNNECESSARY PARAMETERS FROM HERE SINCE IT IS SAVED NOW IN AppointmentTransactionRequestLog
+
     @Temporal(TemporalType.DATE)
     @Column(name = "transaction_date")
     private Date transactionDate;
@@ -60,6 +60,7 @@ public class AppointmentTransactionDetail extends Auditable<String> implements S
     @Column(name = "service_charge_amount")
     private Double serviceChargeAmount;
 
+    //TODO : REMOVE THIS AppointmentTransactionRequestLog(BY Bijay Shrestha)
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "appointment_transaction_request_log_id")
     private AppointmentTransactionRequestLog appointmentTransactionRequestLog;

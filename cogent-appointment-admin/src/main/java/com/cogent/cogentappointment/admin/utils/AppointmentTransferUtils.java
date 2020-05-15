@@ -3,7 +3,9 @@ package com.cogent.cogentappointment.admin.utils;
 import com.cogent.cogentappointment.admin.dto.request.appointmentTransfer.AppointmentTransferRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.AppointmentTransferLog.AppointmentTransferLogDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.AppointmentTransferLog.CurrentAppointmentDetailsDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.availableDates.OverrideDatesResponseDTO;
 import com.cogent.cogentappointment.persistence.model.*;
+import org.apache.commons.collections4.ListUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.LocalTime;
@@ -25,23 +27,31 @@ public class AppointmentTransferUtils {
     private static final DateTimeFormatter FORMAT = DateTimeFormat.forPattern("HH:mm");
 
     public static List<Date> mergeOverrideAndActualDateList(
-            List<Date> overrideList,
-            List<Date> actualList) {
+            List<Date> overrideAvailableList,
+            List<Date> actualList,
+            List<Date> overrideDayOffList) {
 
         List<Date> unmatchedList = actualList.stream()
-                .filter(actual -> (overrideList.stream()
-                        .filter(override -> (override.equals(actual))
-                                && (override.equals(actual))
-                        )
+                .filter(actual -> (overrideAvailableList.stream()
+                        .filter(override -> (override.equals(actual)))
                         .count()) < 1)
                 .collect(Collectors.toList());
 
-        overrideList.addAll(unmatchedList);
+
+        List<Date> matchedList = actualList.stream()
+                .filter(actual -> (overrideDayOffList.stream()
+                        .filter(override -> (override.equals(actual)))
+                        .anyMatch(override -> override.equals(actual))))
+                .collect(Collectors.toList());
+
+        List<Date> dates = ListUtils.union(unmatchedList, overrideAvailableList);
+
+        dates.removeAll(matchedList);
 
 //        overrideList.removeIf(override -> override.getDayOffStatus().equals(YES));
-        Collections.sort(overrideList);
+        Collections.sort(dates);
 
-        return overrideList;
+        return dates;
     }
 
     public static List<Date> getActualdate(List<String> dayOffDay, List<Date> dates) {
@@ -53,26 +63,47 @@ public class AppointmentTransferUtils {
         return unmatched;
     }
 
-    public static List<String> getGapDuration(String startTime, String endTime, Integer gapDuration) {
+    public static List<String> getGapDuration(String startTime, String endTime, Integer gapDuration, Date requestedDate) {
         final Duration duration = Minutes.minutes(gapDuration).toStandardDuration();
-        DateTime dateTime = new DateTime(FORMAT.parseDateTime(startTime));
-        List<String> response = new ArrayList<>();
+        DateTime appointmentStartTime = new DateTime(FORMAT.parseDateTime(startTime));
+        if (utilDateToSqlDate(new Date()).equals(utilDateToSqlDate(requestedDate))) {
+            return filterAppointmentTimeByCurrentDate(appointmentStartTime, endTime, duration);
+        } else {
+            return getAppointmentTimeExcludingCurrentDate(appointmentStartTime, endTime, duration);
+        }
+    }
 
+    public static List<String> filterAppointmentTimeByCurrentDate(DateTime appointmentStartTime,
+                                                                  String appointmentEndTime,
+                                                                  Duration duration) {
+        List<String> response = new ArrayList<>();
         do {
-            response.add(convert24HourTo12HourFormat(FORMAT.print(dateTime)));
-            dateTime = dateTime.plus(duration);
-        } while (dateTime.compareTo(FORMAT.parseDateTime(endTime)) <= 0);
+            Date time = new java.util.Date(System.currentTimeMillis());
+            String dateFormat = new SimpleDateFormat("HH:mm").format(time);
+            DateTime currentTime = new DateTime(FORMAT.parseDateTime(dateFormat));
+            if (!appointmentStartTime.isBefore(currentTime) && !appointmentStartTime.equals(currentTime)) {
+                response.add(convertTo12HourFormat(FORMAT.print(appointmentStartTime)));
+            }
+            appointmentStartTime = appointmentStartTime.plus(duration);
+        } while (appointmentStartTime.compareTo(FORMAT.parseDateTime(appointmentEndTime)) <= 0);
+        return response;
+    }
+
+    public static List<String> getAppointmentTimeExcludingCurrentDate(DateTime appointmentStartTime,
+                                                                      String appointmentEndTime,
+                                                                      Duration duration) {
+        List<String> response = new ArrayList<>();
+        do {
+            response.add(convertTo12HourFormat(FORMAT.print(appointmentStartTime)));
+            appointmentStartTime = appointmentStartTime.plus(duration);
+        } while (appointmentStartTime.compareTo(FORMAT.parseDateTime(appointmentEndTime)) <= 0);
 
         return response;
     }
 
-    public static List<String> getVacantTime(List<String> allTimeSlot,
-                                             List<String> unavailableTimeSlot,
-                                             Date requestedDate) {
 
-        Date time = new Date(System.currentTimeMillis());
-        String dateFormat = new SimpleDateFormat("HH:mm:ss").format(time);
-        LocalTime localTime = LocalTime.parse(dateFormat);
+    public static List<String> getVacantTime(List<String> allTimeSlot,
+                                             List<String> unavailableTimeSlot) {
 
         List<String> unmatchedList = allTimeSlot.stream()
                 .filter(actual -> (unavailableTimeSlot.stream()
@@ -85,25 +116,11 @@ public class AppointmentTransferUtils {
         return unmatchedList;
     }
 
-    public static Date compareAndGetDate(
+    public static Boolean compareIfRequestedDateExists(
             List<Date> overrideList,
             Date requestedDate) {
 
-//        List<Date> matchedList = overrideList.stream()
-//                .filter(actual -> (overrideList.stream()
-//                        .filter(override -> (override.equals(actual)))
-//                        .anyMatch(override -> override.equals(actual))))
-//                .collect(Collectors.toList());
-        List<Date> matchedList = overrideList.stream()
-                .filter(overrideDate -> overrideDate.equals(requestedDate))
-                .collect(Collectors.toList());
-
-        for (Date date : matchedList) {
-            if (date.equals(requestedDate)) {
-                return date;
-            }
-        }
-        return null;
+        return overrideList.contains(requestedDate) ? true : false;
     }
 
     public static Appointment parseAppointmentTransferDetail(Appointment appointment,
@@ -136,11 +153,9 @@ public class AppointmentTransferUtils {
                                                                  Specialization previousSpecialization) {
         AppointmentTransfer appointmentTransfer = new AppointmentTransfer();
         appointmentTransfer.setAppointment(appointment);
-        appointmentTransfer.setPreviousAppointmentDate(appointment.getAppointmentDate());
-        appointmentTransfer.setPreviousAppointmentTime(appointment.getAppointmentTime());
+        appointmentTransfer.setPreviousAppointmentDateAndTime(appointment.getAppointmentTime());
         appointmentTransfer.setRemarks(requestDTO.getRemarks());
-        appointmentTransfer.setCurrentAppointmentDate(requestDTO.getAppointmentDate());
-        appointmentTransfer.setCurrentAppointmentTime(parseAppointmentTime(requestDTO.getAppointmentDate(),
+        appointmentTransfer.setCurrentAppointmentDateAndTime(parseAppointmentTime(requestDTO.getAppointmentDate(),
                 requestDTO.getAppointmentTime()));
         appointmentTransfer.setPreviousDoctor(previousDoctor);
         appointmentTransfer.setPreviousSpecialization(previousSpecialization);
@@ -224,6 +239,48 @@ public class AppointmentTransferUtils {
         });
 
         return transferredList;
+    }
+
+    public static List<Date> filterOverrideDayOffDates(List<OverrideDatesResponseDTO> overrideDatesResponseDTOS) {
+        List<Date> dayOffDateRange = new ArrayList<>();
+
+        List<OverrideDatesResponseDTO> dayOffDates = overrideDatesResponseDTOS.stream()
+                .filter(date -> date.getDayOffStatus().equals('Y'))
+                .collect(Collectors.toList());
+
+        dayOffDates.forEach(dates -> {
+            List<Date> dateList = getDates(dates.getFromDate(), dates.getToDate());
+            dayOffDateRange.addAll(dateList);
+        });
+
+        return dayOffDateRange;
+    }
+
+    public static List<Date> filterOverrideAvaliableDates(List<OverrideDatesResponseDTO> overrideDatesResponseDTOS) {
+        List<Date> dayOffDateRange = new ArrayList<>();
+
+        List<OverrideDatesResponseDTO> dayOffDates = overrideDatesResponseDTOS.stream()
+                .filter(date -> date.getDayOffStatus().equals('N'))
+                .collect(Collectors.toList());
+
+        dayOffDates.forEach(dates -> {
+            List<Date> dateList = getDates(dates.getFromDate(), dates.getToDate());
+            dayOffDateRange.addAll(dateList);
+        });
+
+        return dayOffDateRange;
+    }
+
+    public static String convertTo12HourFormat(String timeIn24HrFormat) {
+        try {
+            SimpleDateFormat dateParser = new SimpleDateFormat("HH:mm");
+            Date date = dateParser.parse(timeIn24HrFormat);
+            SimpleDateFormat dateFormatter = new SimpleDateFormat("hh:mm a");
+            return dateFormatter.format(date);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 

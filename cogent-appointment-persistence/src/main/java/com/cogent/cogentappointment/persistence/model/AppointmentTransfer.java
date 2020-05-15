@@ -48,23 +48,14 @@ public class AppointmentTransfer extends Auditable<String> implements Serializab
     @JoinColumn(name = "current_specialization_id", updatable = false)
     private Specialization currentSpecialization;
 
-    /*saved in format YYYY-MM-DD*/
-    @Temporal(TemporalType.DATE)
-    @Column(name = "previous_appointment_date", updatable = false)
-    private Date previousAppointmentDate;
-
-    /*saved in format YYYY-MM-DD*/
-    @Temporal(TemporalType.DATE)
-    @Column(name = "current_appointment_date", updatable = false)
-    private Date currentAppointmentDate;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "previous_appointment_time", updatable = false)
-    private Date previousAppointmentTime;
+    @Column(name = "previous_appointment_date_and_time", updatable = false)
+    private Date previousAppointmentDateAndTime;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "current_appointment_time", updatable = false)
-    private Date currentAppointmentTime;
+    @Column(name = "current_appointment_date_and_time", updatable = false)
+    private Date currentAppointmentDateAndTime;
 
     @Column(name = "remarks")
     private String remarks;
@@ -78,10 +69,8 @@ public class AppointmentTransfer extends Auditable<String> implements Serializab
                 ", currentDoctor=" + currentDoctor.getName() +
                 ", previousSpecialization=" + previousSpecialization.getName() +
                 ", currentSpecialization=" + currentSpecialization.getName() +
-                ", previousAppointmentDate=" + previousAppointmentDate +
-                ", currentAppointmentDate=" + currentAppointmentDate +
-                ", previousAppointmentTime=" + previousAppointmentTime +
-                ", currentAppointmentTime=" + currentAppointmentTime +
+                ", previousAppointmentDateAndTime=" + previousAppointmentDateAndTime +
+                ", currentAppointmentDateAndTime=" + currentAppointmentDateAndTime +
                 ", remarks='" + remarks + '\'' +
                 '}';
     }

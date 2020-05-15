@@ -136,28 +136,24 @@ public class AppointmentTransferQuery {
                     "  p.name as patientName, " +
                     "  p.mobileNumber as mobileNumber, " +
                     "  p.gender  as gender, " +
-                    "  apt.currentAppointmentDate  as transferredToDate, " +
-                    "  apt.previousAppointmentDate  as transferredFromDate, " +
-                    "  DATE_FORMAT(apt.currentAppointmentTime ,'%h:%i %p')  as transferredToTime, " +
-                    "  DATE_FORMAT(apt.previousAppointmentTime ,'%h:%i %p')  as transferredFromTime, " +
-                    "  d.name as transferredToDoctor, " +
-                    "  pd.name as transferredFromDoctor, " +
-                    "  s.name as transferredToSpecialization, " +
-                    "  ps.name as transferredFromSpecialization, " +
+                    "  DATE_FORMAT(apt.currentAppointmentDateAndTime ,'%Y-%m-%d')  as transferredToDate, " +
+                    "  DATE_FORMAT(apt.previousAppointmentDateAndTime ,'%Y-%m-%d')  as transferredFromDate, " +
+                    "  DATE_FORMAT(apt.currentAppointmentDateAndTime ,'%h:%i %p')  as transferredToTime, " +
+                    "  DATE_FORMAT(apt.previousAppointmentDateAndTime ,'%h:%i %p')  as transferredFromTime, " +
+                    "  apt.currentDoctor.name as transferredToDoctor, " +
+                    "  apt.previousDoctor.name as transferredFromDoctor, " +
+                    "  apt.currentSpecialization.name as transferredToSpecialization, " +
+                    "  apt.previousSpecialization.name as transferredFromSpecialization, " +
                     "  attd.currentAppointmentAmount  AS transferredToAmount, " +
                     "  attd.previousAppointmentAmount  AS transferredFromAmount, " +
                     QUERY_TO_CALCULATE_PATIENT_AGE +
                     " FROM " +
                     " AppointmentTransfer apt  " +
-                    " LEFT JOIN Appointment a ON a.id=apt.appointment.id  " +
-                    " LEFT JOIN Patient p ON p.id=a.patientId.id  " +
-                    " LEFT JOIN Doctor d ON d.id=apt.currentDoctor.id  " +
-                    " LEFT JOIN Doctor pd ON pd.id=apt.previousDoctor.id " +
-                    " LEFT JOIN Specialization s ON s.id=apt.currentSpecialization.id " +
-                    " LEFT JOIN Specialization ps ON ps.id=apt.previousSpecialization.id " +
-                    " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id  " +
-                    " LEFT JOIN AppointmentTransferTransactionDetail attd ON attd.appointmentTransfer.id=apt.id " +
-                    " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id  " +
+                    " LEFT JOIN Appointment a ON a.id=apt.appointment.id" +
+                    " LEFT JOIN Patient p ON p.id=a.patientId.id" +
+                    " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id" +
+                    " LEFT JOIN AppointmentTransferTransactionDetail attd ON attd.appointmentTransfer.id=apt.id" +
+                    " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id" +
                     " WHERE a.hasTransferred='Y' ";
 
     public static String WHERE_CLAUSE_FOR_SEARCH(AppointmentTransferSearchRequestDTO requestDTO) {
@@ -255,10 +251,10 @@ public class AppointmentTransferQuery {
                     " p.name as patientName," +
                     " p.gender as gender," +
                     " p.mobileNumber as mobileNumber," +
-                    " apt.currentAppointmentDate as transferredToDate," +
-                    " apt.previousAppointmentDate as transferredFromDate," +
-                    " DATE_FORMAT(apt.currentAppointmentTime,'%h:%i %p') as  transferredToTime," +
-                    " DATE_FORMAT(apt.previousAppointmentTime,'%h:%i %p') as  transferredFromTime," +
+                    " DATE_FORMAT(apt.currentAppointmentDateAndTime ,'%Y-%m-%d')  as transferredToDate, " +
+                    " DATE_FORMAT(apt.previousAppointmentDateAndTime ,'%Y-%m-%d')  as transferredFromDate, " +
+                    " DATE_FORMAT(apt.currentAppointmentDateAndTime,'%h:%i %p') as  transferredToTime," +
+                    " DATE_FORMAT(apt.previousAppointmentDateAndTime,'%h:%i %p') as  transferredFromTime," +
                     " attd.currentAppointmentAmount  as transferredToAmount," +
                     " attd.previousAppointmentAmount  as transferredFromAmount," +
                     " apt.remarks," +

@@ -6,9 +6,10 @@ import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.Appoi
 import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.AppointmentTransferLog.CurrentAppointmentDetailsDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.AppointmentTransferLog.previewDTO.AppointmentTransferPreviewResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.availableDates.DoctorDatesResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.availableDates.OverrideDatesResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.availableTime.ActualDateAndTimeResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.availableTime.OverrideDateAndTimeResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.availableTime.WeekDayAndTimeDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.availableTime.StartTimeAndEndTimeDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentTransfer.charge.AppointmentChargeResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.AppointmentTransferRepositoryCustom;
@@ -50,7 +51,7 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
 
 
     @Override
-    public List<DoctorDatesResponseDTO> getDatesByDoctorId(Long doctorId, Long specializationId, Long hospitalId) {
+    public List<DoctorDatesResponseDTO> getDutyRosterByDoctorIdAndSpecializationId(Long doctorId, Long specializationId, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DATES_BY_DOCTOR_ID)
                 .setParameter(DOCTOR_ID, doctorId)
                 .setParameter(HOSPITAL_ID, hospitalId)
@@ -72,13 +73,13 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
     }
 
     @Override
-    public WeekDayAndTimeDTO getWeekDaysByCode(Long doctorId, String code) {
+    public StartTimeAndEndTimeDTO getWeekDaysByRosterIdAndCode(Long doctorId, String code) {
         Query query = createQuery.apply(entityManager, QUERY_TO_GET_WEEKS_BY_DUTY_ROSTER_ID)
                 .setParameter(DOCTOR_ID, doctorId)
                 .setParameter(CODE, code);
 
         try {
-            return transformQueryToSingleResult(query, WeekDayAndTimeDTO.class);
+            return transformQueryToSingleResult(query, StartTimeAndEndTimeDTO.class);
         } catch (NoResultException e) {
             throw DOCTOR_DUTY_ROSTER_NOT_FOUND.get();
         }
@@ -86,14 +87,14 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
     }
 
     @Override
-    public List<DoctorDatesResponseDTO> getOverrideDatesByDoctorId(Long doctorId, Long specializationId, Long hospitalId) {
+    public List<OverrideDatesResponseDTO> getOverrideDatesByDoctorId(Long doctorId, Long specializationId, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_GET_OVERRIDE_DATES_BY_DOCTOR_ID)
                 .setParameter(DOCTOR_ID, doctorId)
                 .setParameter(HOSPITAL_ID, hospitalId)
                 .setParameter(SPECIALIZATION_ID, specializationId);
 
-        List<DoctorDatesResponseDTO> response = transformQueryToResultList(
-                query, DoctorDatesResponseDTO.class);
+        List<OverrideDatesResponseDTO> response = transformQueryToResultList(
+                query, OverrideDatesResponseDTO.class);
 
         return response;
     }

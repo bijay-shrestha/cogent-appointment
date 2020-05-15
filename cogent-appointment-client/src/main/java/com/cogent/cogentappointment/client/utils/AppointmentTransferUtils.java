@@ -149,11 +149,9 @@ public class AppointmentTransferUtils {
                                                                  Specialization previousSpecialization) {
         AppointmentTransfer appointmentTransfer = new AppointmentTransfer();
         appointmentTransfer.setAppointment(appointment);
-        appointmentTransfer.setPreviousAppointmentDate(appointment.getAppointmentDate());
-        appointmentTransfer.setPreviousAppointmentTime(appointment.getAppointmentTime());
+        appointmentTransfer.setPreviousAppointmentDateAndTime(appointment.getAppointmentTime());
         appointmentTransfer.setRemarks(requestDTO.getRemarks());
-        appointmentTransfer.setCurrentAppointmentDate(requestDTO.getAppointmentDate());
-        appointmentTransfer.setCurrentAppointmentTime(parseAppointmentTime(requestDTO.getAppointmentDate(),
+        appointmentTransfer.setCurrentAppointmentDateAndTime(parseAppointmentTime(requestDTO.getAppointmentDate(),
                 requestDTO.getAppointmentTime()));
         appointmentTransfer.setPreviousDoctor(previousDoctor);
         appointmentTransfer.setPreviousSpecialization(previousSpecialization);
@@ -227,7 +225,7 @@ public class AppointmentTransferUtils {
             List<AppointmentTransferLogDTO> transferredList) {
 
         transferredList.forEach(transferredData -> {
-            if (currentDetails.getAppointmentDate().equals(transferredData.getTransferredToDate()) &&
+            if (currentDetails.getAppointmentDate().toString().equals(transferredData.getTransferredToDate()) &&
                     currentDetails.getAppointmentTime().equals(transferredData.getTransferredToTime()) &&
                     currentDetails.getAppointmentAmount().equals(transferredData.getTransferredToAmount()) &&
                     currentDetails.getDoctor().equals(transferredData.getTransferredToDoctor()) &&

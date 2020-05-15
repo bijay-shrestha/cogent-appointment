@@ -59,8 +59,9 @@ public class AppointmentQuery {
                     " p.name as patientName," +                                             //[4]
                     " d.name as doctorName," +                                              //[5]
                     " s.name as specializationName," +                                      //[6]
-                    " h.name as hospitalName," +                                             //[7]
-                    " atd.appointmentAmount as appointmentAmount" +                          //[8]
+                    " h.name as hospitalName," +                                            //[7]
+                    " atd.appointmentAmount as appointmentAmount," +                        //[8]
+                    " d.salutation as doctorSalutation"+                                    //[9]
                     " FROM Appointment a" +
                     " LEFT JOIN Patient p ON p.id = a.patientId.id" +
                     " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
@@ -99,7 +100,8 @@ public class AppointmentQuery {
                     " atd.appointmentAmount as appointmentAmount," +                        //[9]
                     " atd.taxAmount as taxAmount," +                                        //[10]
                     " atd.discountAmount as discountAmount," +                             //[11]
-                    " atd.serviceChargeAmount as serviceChargeAmount" +                    //[12]
+                    " atd.serviceChargeAmount as serviceChargeAmount," +                    //[12]
+                    " d.salutation as doctorSalutation"+                                    //[13]
                     " FROM Appointment a" +
                     " LEFT JOIN Patient p ON p.id = a.patientId.id" +
                     " LEFT JOIN Doctor d ON d.id = a.doctorId.id" +
@@ -151,7 +153,8 @@ public class AppointmentQuery {
                     " a.status = 'R'" +
                     " THEN 'REJECTED'" +
                     " END AS status," +                                                   //[15]
-                    " hpi.registrationNumber AS registrationNumber"+                      //[16]
+                    " hpi.registrationNumber AS registrationNumber,"+                      //[16]
+                    " d.salutation as doctorSalutation"+
                     " FROM Appointment a" +
                     " LEFT JOIN Patient p ON p.id = a.patientId.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +

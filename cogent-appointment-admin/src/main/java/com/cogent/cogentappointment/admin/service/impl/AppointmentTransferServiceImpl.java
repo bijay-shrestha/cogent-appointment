@@ -271,7 +271,8 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
         log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_TRANSFER);
 
-        AppointmentTransferLogResponseDTO appointmentTransferLogDTOS = appointmentTransferRepository.getApptTransferredList(requestDTO,
+        AppointmentTransferLogResponseDTO appointmentTransferLogDTOS = appointmentTransferRepository.
+                getApptTransferredList(requestDTO,
                 pageable);
 
         log.info(SEARCHING_PROCESS_COMPLETED, APPOINTMENT_TRANSFER,

@@ -13,15 +13,9 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CurrentAppointmentDetailsDTO implements Serializable {
+public class LastModifiedAppointmentIdAndStatus implements Serializable {
 
-    private Long appointmentId;
+    private Long appointmentTransferredId;
 
-    private Date appointmentDate;
-
-    private String appointmentNumber,status,appointmentTime;
-
-    private String doctor,specialization;
-
-    private Double appointmentAmount;
+    private String status;
 }

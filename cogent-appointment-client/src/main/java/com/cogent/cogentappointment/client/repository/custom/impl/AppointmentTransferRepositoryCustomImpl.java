@@ -3,7 +3,7 @@ package com.cogent.cogentappointment.client.repository.custom.impl;
 import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.AppointmentTransferSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.AppointmentTransferLogDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.AppointmentTransferLogResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.CurrentAppointmentDetailsDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.LastModifiedAppointmentIdAndStatus;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.previewDTO.AppointmentTransferPreviewResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableDates.DoctorDatesResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableDates.OverrideDatesResponseDTO;
@@ -24,11 +24,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.client.constants.QueryConstants.AppointmentConstants.APPOINTMENT_ID;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentTransferLog.APPOINTMENT_TRANSFER;
 import static com.cogent.cogentappointment.client.log.constants.DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER;
@@ -36,6 +38,7 @@ import static com.cogent.cogentappointment.client.query.AppointmentTransferQuery
 import static com.cogent.cogentappointment.client.utils.AppointmentTransferUtils.mergeCurrentAppointmentStatus;
 import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
+import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
 
 /**
  * @author Sauravi Thapa ON 5/6/20
@@ -136,7 +139,7 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
     }
 
     @Override
-    public List<OverrideDateAndTimeResponseDTO>  getOverideRosterDateAndTime(Long doctorId, Long specializationId) {
+    public List<OverrideDateAndTimeResponseDTO> getOverideRosterDateAndTime(Long doctorId, Long specializationId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_OVERRIDE_DATE_AND_TIME_BY_DOCTOR_ID)
                 .setParameter(DOCTOR_ID, doctorId)
                 .setParameter(SPECIALIZATION_ID, specializationId);
@@ -152,32 +155,51 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
     public AppointmentTransferLogResponseDTO getApptTransferredList(AppointmentTransferSearchRequestDTO requestDTO,
                                                                     Pageable pageable) {
 
-        AppointmentTransferLogResponseDTO appointmentTransferLogResponseDTO=new AppointmentTransferLogResponseDTO();
+        AppointmentTransferLogResponseDTO appointmentTransferLogResponseDTO = new AppointmentTransferLogResponseDTO();
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_GET_CURRENT_TRANSFERRED_DETAIL(requestDTO));
+        Long hospitalId=getLoggedInHospitalId();
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_GET_CURRENT_TRANSFERRED_DETAIL(requestDTO))
+                .setParameter(HOSPITAL_ID,hospitalId);
 
         int totalItems = query.getResultList().size();
 
         addPagination.accept(pageable, query);
 
-        Query queryToGetCurretAppointment=createQuery.apply(entityManager,
-                QUERY_TO_GET_CURRENT_APPOINTMENT_INFOS(requestDTO));
+//        Query queryToGetCurretAppointment=createQuery.apply(entityManager,
+//                QUERY_TO_GET_CURRENT_APPOINTMENT_INFOS(requestDTO));
+//
+//        List<LastModifiedAppointmentIdAndStatus> currentDetails=transformQueryToResultList(
+//                queryToGetCurretAppointment, LastModifiedAppointmentIdAndStatus.class);
 
-        List<CurrentAppointmentDetailsDTO> currentDetails=transformQueryToResultList(
-                queryToGetCurretAppointment, CurrentAppointmentDetailsDTO.class);
+        Query queryToGetTransferredAppointmentId = createQuery.apply(entityManager,
+                QUERY_TO_GET_LIST_OF_TRANSFERRED_APPOINTMENT_FROM_ID)
+                .setParameter(HOSPITAL_ID,hospitalId);
+
+        List<Long> appointmentIds = queryToGetTransferredAppointmentId.getResultList();
+
+        List<LastModifiedAppointmentIdAndStatus> lastModifiedAppointmentIdAndStatuses = new ArrayList<>();
+
+        appointmentIds.forEach(appointmentId -> {
+
+            Query query1 = createQuery.apply(entityManager,
+                    QUERY_TO_GET_LASTEST_APPOINTMENT_TRANSFERRED_ID_AND_STATUS_BY_APPOINTMENTID)
+                    .setParameter(APPOINTMENT_ID, appointmentId);
+
+            LastModifiedAppointmentIdAndStatus dtoList = transformQueryToSingleResult(
+                    query1, LastModifiedAppointmentIdAndStatus.class);
+
+            lastModifiedAppointmentIdAndStatuses.add(dtoList);
+        });
 
         List<AppointmentTransferLogDTO> responses = transformQueryToResultList(
                 query, AppointmentTransferLogDTO.class);
-
-        currentDetails.forEach(currentDetail->{
-            mergeCurrentAppointmentStatus(currentDetail,responses);
-        });
 
         if (responses.isEmpty()) {
             throw APPOINTMENT_TRANSFERE_NOT_FOUND.get();
         }
 
-        appointmentTransferLogResponseDTO.setResponse(responses);
+        appointmentTransferLogResponseDTO.setResponse(mergeCurrentAppointmentStatus(lastModifiedAppointmentIdAndStatuses, responses));
 
         appointmentTransferLogResponseDTO.setTotalItems(totalItems);
 

@@ -2,7 +2,7 @@ package com.cogent.cogentappointment.client.utils;
 
 import com.cogent.cogentappointment.client.dto.request.appointmentTransfer.AppointmentTransferRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.AppointmentTransferLogDTO;
-import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.CurrentAppointmentDetailsDTO;
+import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.AppointmentTransferLog.LastModifiedAppointmentIdAndStatus;
 import com.cogent.cogentappointment.client.dto.response.appointmentTransfer.availableDates.OverrideDatesResponseDTO;
 import com.cogent.cogentappointment.persistence.model.*;
 import org.apache.commons.collections4.ListUtils;
@@ -221,17 +221,16 @@ public class AppointmentTransferUtils {
 
 
     public static List<AppointmentTransferLogDTO> mergeCurrentAppointmentStatus(
-            CurrentAppointmentDetailsDTO currentDetails,
+            List<LastModifiedAppointmentIdAndStatus> appointmentDetailsDTOS,
             List<AppointmentTransferLogDTO> transferredList) {
 
-        transferredList.forEach(transferredData -> {
-            if (currentDetails.getAppointmentDate().toString().equals(transferredData.getTransferredToDate()) &&
-                    currentDetails.getAppointmentTime().equals(transferredData.getTransferredToTime()) &&
-                    currentDetails.getAppointmentAmount().equals(transferredData.getTransferredToAmount()) &&
-                    currentDetails.getDoctor().equals(transferredData.getTransferredToDoctor()) &&
-                    currentDetails.getSpecialization().equals(transferredData.getTransferredToSpecialization())) {
-                transferredData.setStatus(currentDetails.getStatus());
-            }
+        transferredList.forEach(appointmentTransferLogDTO -> {
+            appointmentDetailsDTOS.forEach(lastModifiedAppointmentIdAndStatus -> {
+                if (appointmentTransferLogDTO.getAppointmentTransferId() ==
+                        lastModifiedAppointmentIdAndStatus.getAppointmentTransferredId()) {
+                    appointmentTransferLogDTO.setStatus(lastModifiedAppointmentIdAndStatus.getStatus());
+                }
+            });
         });
 
         return transferredList;

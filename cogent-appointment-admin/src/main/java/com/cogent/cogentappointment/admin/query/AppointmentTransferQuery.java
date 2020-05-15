@@ -287,5 +287,20 @@ public class AppointmentTransferQuery {
                 " apt.lastModifiedDate as lastModifiedDate";
     }
 
+    public static String QUERY_TO_GET_LIST_OF_TRANSFERRED_APPOINTMENT_FROM_ID=
+            "SELECT a.id FROM Appointment a WHERE a.hasTransferred='Y' AND a.hospitalId.id=:hospitalId";
+
+    public static String QUERY_TO_GET_LASTEST_APPOINTMENT_TRANSFERRED_ID_AND_STATUS_BY_APPOINTMENTID =
+            "SELECT" +
+                    " apt.id as appointmentTransferredId," +
+                    " a.status  as status" +
+                    " FROM" +
+                    " AppointmentTransfer apt" +
+                    " LEFT JOIN Appointment a on apt.appointment.id=a.id" +
+                    " WHERE apt.appointment.id = :appointmentId" +
+                    " AND apt.lastModifiedDate =" +
+                    " (SELECT MAX(apt1.lastModifiedDate) FROM AppointmentTransfer apt1 " +
+                    " WHERE apt1.appointment.id = :appointmentId)";
+
 
 }

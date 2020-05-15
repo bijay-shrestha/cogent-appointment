@@ -20,7 +20,8 @@ public class DoctorQuery {
                     " s.name as specializationName," +                                  //[4]
                     " tbl1.qualificationAlias as qualificationAlias," +                 //[5]
                     " d.nmc_number as nmcNumber," +                                     //[6]
-                    " dc.appointment_charge as doctorCharge"+                           //[7]
+                    " dc.appointment_charge as doctorCharge,"+                          //[7]
+                    " d.salutation as doctorSalutation"+                                //[8]
                     " FROM" +
                     " doctor d" +
                     " LEFT JOIN doctor_avatar da ON d.id = da.doctor_id" +

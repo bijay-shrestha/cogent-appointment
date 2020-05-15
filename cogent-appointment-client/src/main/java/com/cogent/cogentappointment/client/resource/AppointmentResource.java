@@ -11,8 +11,8 @@ import com.cogent.cogentappointment.client.dto.request.appointment.esewa.save.Ap
 import com.cogent.cogentappointment.client.dto.request.appointment.esewa.save.AppointmentRequestDTOForSelf;
 import com.cogent.cogentappointment.client.dto.request.appointment.log.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.log.TransactionLogSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentCancelApprovalSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.client.service.AppointmentService;
@@ -159,12 +159,12 @@ public class AppointmentResource {
     }
 
     @PutMapping(REFUND)
-    @ApiOperation(FETCH_REFUND_APPOINTMENTS)
-    public ResponseEntity<?> fetchRefundAppointments(@RequestBody AppointmentRefundSearchDTO searchDTO,
+    @ApiOperation(FETCH_APPOINTMENT_CANCEL_APPROVALS)
+    public ResponseEntity<?> fetchRefundAppointments(@RequestBody AppointmentCancelApprovalSearchDTO searchDTO,
                                                      @RequestParam("page") int page,
                                                      @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return ok().body(appointmentService.fetchRefundAppointments(searchDTO, pageable));
+        return ok().body(appointmentService.fetchAppointmentCancelApprovals(searchDTO, pageable));
     }
 
     @GetMapping(REFUND + DETAIL + APPOINTMENT_ID_PATH_VARIABLE_BASE)

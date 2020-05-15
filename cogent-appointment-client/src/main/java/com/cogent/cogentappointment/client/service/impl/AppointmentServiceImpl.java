@@ -15,7 +15,7 @@ import com.cogent.cogentappointment.client.dto.request.appointment.esewa.save.Ap
 import com.cogent.cogentappointment.client.dto.request.appointment.log.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.log.TransactionLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentCancelApprovalSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestByDTO;
@@ -627,16 +627,16 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentRefundResponseDTO fetchRefundAppointments(AppointmentRefundSearchDTO searchDTO,
-                                                                Pageable pageable) {
+    public AppointmentRefundResponseDTO fetchAppointmentCancelApprovals(AppointmentCancelApprovalSearchDTO searchDTO,
+                                                                        Pageable pageable) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_REFUND);
+        log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_CANCEL_APPROVAL);
 
         AppointmentRefundResponseDTO refundAppointments =
-                appointmentRepository.fetchRefundAppointments(searchDTO, pageable, getLoggedInHospitalId());
+                appointmentRepository.fetchAppointmentCancelApprovals(searchDTO, pageable, getLoggedInHospitalId());
 
-        log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_REFUND, getDifferenceBetweenTwoTime(startTime));
+        log.info(SEARCHING_PROCESS_STARTED, APPOINTMENT_CANCEL_APPROVAL, getDifferenceBetweenTwoTime(startTime));
 
         return refundAppointments;
     }
@@ -645,11 +645,11 @@ public class AppointmentServiceImpl implements AppointmentService {
     public AppointmentRefundDetailResponseDTO fetchRefundDetailsById(Long appointmentId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_PROCESS_STARTED, APPOINTMENT_REFUND);
+        log.info(FETCHING_PROCESS_STARTED, APPOINTMENT_CANCEL_APPROVAL);
 
         AppointmentRefundDetailResponseDTO refundAppointments = appointmentRepository.fetchRefundDetailsById(appointmentId);
 
-        log.info(FETCHING_PROCESS_COMPLETED, APPOINTMENT_REFUND, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_COMPLETED, APPOINTMENT_CANCEL_APPROVAL, getDifferenceBetweenTwoTime(startTime));
 
         return refundAppointments;
     }
@@ -658,7 +658,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     public void approveRefundAppointment(Long appointmentId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(APPROVE_PROCESS_STARTED, APPOINTMENT_REFUND);
+        log.info(APPROVE_PROCESS_STARTED, APPOINTMENT_CANCEL_APPROVAL);
 
         AppointmentRefundDetail refundAppointmentDetail =
                 appointmentRefundDetailRepository.findByAppointmentIdAndHospitalId
@@ -677,7 +677,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         saveRefundDetails(refundAppointmentDetail);
 
-        log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT_REFUND, getDifferenceBetweenTwoTime(startTime));
+        log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT_CANCEL_APPROVAL, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
@@ -685,7 +685,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(REJECT_PROCESS_STARTED, APPOINTMENT_REFUND);
+        log.info(REJECT_PROCESS_STARTED, APPOINTMENT_CANCEL_APPROVAL);
 
         AppointmentRefundDetail refundAppointmentDetail =
                 appointmentRefundDetailRepository.findByAppointmentIdAndHospitalId(
@@ -694,7 +694,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         parseRefundRejectDetails(refundRejectDTO, refundAppointmentDetail);
 
-        log.info(REJECT_PROCESS_COMPLETED, APPOINTMENT_REFUND, getDifferenceBetweenTwoTime(startTime));
+        log.info(REJECT_PROCESS_COMPLETED, APPOINTMENT_CANCEL_APPROVAL, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override

@@ -31,4 +31,10 @@ public class AppointmentTransferLogDTO implements Serializable {
     private String transferredToSpecialization, transferredFromSpecialization;
 
     private Double transferredToAmount, transferredFromAmount;
+
+    private String patientType;
+
+    private Character isFollowUp;
+
+    private String transactionNumber;
 }

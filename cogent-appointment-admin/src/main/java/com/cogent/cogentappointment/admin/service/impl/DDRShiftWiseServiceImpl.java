@@ -2,16 +2,18 @@ package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.checkAvailability.DDRExistingAvailabilityRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.checkAvailability.DDRExistingWeekDaysRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.checkAvailability.DDRWeekDaysRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.manage.DDRSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.override.DDROverrideDetailRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.override.DDROverrideRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.weekDaysDetail.*;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.*;
-import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.DDRDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.DDRMinResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.DDRResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.DDRShiftDetailResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.DDROverrideBreakDetailResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.detail.DDRDetailResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.detail.DDRResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.detail.DDRShiftDetailResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.weekDaysDetail.DDRWeekDaysResponseDTO;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
@@ -187,13 +189,13 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
     }
 
     @Override
-    public List<DDRExistingWeekDaysResponseDTO> fetchDDRWeekDaysDetail(DDRExistingWeekDaysRequestDTO requestDTO) {
+    public List<DDRExistingWeekDaysResponseDTO> fetchExistingDDRWeekDaysDetail(DDRWeekDaysRequestDTO requestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, DDR_WEEK_DAYS);
 
         List<DDRExistingWeekDaysResponseDTO> weekDaysDetail =
-                ddrWeekDaysDetailRepository.fetchDDRWeekDaysDetail(requestDTO);
+                ddrWeekDaysDetailRepository.fetchExistingDDRWeekDaysDetail(requestDTO);
 
         log.info(FETCHING_PROCESS_COMPLETED, DDR_WEEK_DAYS, getDifferenceBetweenTwoTime(startTime));
 
@@ -215,13 +217,13 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
     }
 
     @Override
-    public List<DDRBreakDetailResponseDTO> fetchOverrideBreakDetail(Long ddrOverrideDetailId) {
+    public List<DDRBreakDetailResponseDTO> fetchExistingOverrideBreakDetail(Long ddrOverrideId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED, DDR_OVERRIDE_BREAK_DETAIL);
 
         List<DDRBreakDetailResponseDTO> breakDetails =
-                ddrOverrideBreakDetailRepository.fetchOverrideBreakDetail(ddrOverrideDetailId);
+                ddrOverrideBreakDetailRepository.fetchExistingOverrideBreakDetail(ddrOverrideId);
 
         log.info(FETCHING_PROCESS_COMPLETED, DDR_OVERRIDE_BREAK_DETAIL, getDifferenceBetweenTwoTime(startTime));
 
@@ -285,6 +287,34 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, DDR_SHIFT_WISE, getDifferenceBetweenTwoTime(startTime));
 
         return detailResponseDTO;
+    }
+
+    @Override
+    public List<DDRWeekDaysResponseDTO> fetchDDRWeekDaysDetail(DDRWeekDaysRequestDTO requestDTO) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, DDR_WEEK_DAYS);
+
+        List<DDRWeekDaysResponseDTO> weekDaysDetail =
+                ddrWeekDaysDetailRepository.fetchDDRWeekDaysDetail(requestDTO);
+
+        log.info(FETCHING_PROCESS_COMPLETED, DDR_WEEK_DAYS, getDifferenceBetweenTwoTime(startTime));
+
+        return weekDaysDetail;
+    }
+
+    @Override
+    public List<DDROverrideBreakDetailResponseDTO> fetchDDROverrideBreakDetail(Long ddrOverrideDetailId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, DDR_OVERRIDE_BREAK_DETAIL);
+
+        List<DDROverrideBreakDetailResponseDTO> breakDetails =
+                ddrOverrideBreakDetailRepository.fetchOverrideBreakDetail(ddrOverrideDetailId);
+
+        log.info(FETCHING_PROCESS_COMPLETED, DDR_OVERRIDE_BREAK_DETAIL, getDifferenceBetweenTwoTime(startTime));
+
+        return breakDetails;
     }
 
     /*1. VALIDATE CONSTRAINTS VIOLATION
@@ -387,12 +417,12 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         return ddrShiftDetailRepository.save(ddrShiftDetail);
     }
 
-    private void saveDDRWeekDaysDetail(List<DDRWeekDaysRequestDTO> weekDaysRequestDTOS,
+    private void saveDDRWeekDaysDetail(List<DDRWeekDaysDetailRequestDTO> weekDaysRequestDTOS,
                                        DDRShiftDetail ddrShiftDetail,
                                        List<DDRWeekDaysDetail> ddrWeekDaysDetails) {
 
         weekDaysRequestDTOS.forEach(
-                (DDRWeekDaysRequestDTO weekDaysRequestDTO) -> {
+                (DDRWeekDaysDetailRequestDTO weekDaysRequestDTO) -> {
 
                     DDRWeekDaysDetail weekDaysDetail = saveWeekDaysDetail(
                             weekDaysRequestDTO,
@@ -411,7 +441,7 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         );
     }
 
-    private DDRWeekDaysDetail saveWeekDaysDetail(DDRWeekDaysRequestDTO weekDaysRequestDTO,
+    private DDRWeekDaysDetail saveWeekDaysDetail(DDRWeekDaysDetailRequestDTO weekDaysRequestDTO,
                                                  DDRShiftDetail ddrShiftDetail,
                                                  List<DDRWeekDaysDetail> ddrWeekDaysDetails) {
 
@@ -433,7 +463,7 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
     * 2. VALIDATE IF TIME OVERLAPS IRRESPECTIVE OF SHIFTS
     * eg. MORNING SHIFT -> SUNDAY -> 9AM-12PM -> ALLOWED
     *    DAY SHIFT -> SUNDAY -> 11AM-4PM -> NOT ALLOWED */
-    private void validateDDRWeekDaysDetail(DDRWeekDaysRequestDTO weekDaysRequestDTO,
+    private void validateDDRWeekDaysDetail(DDRWeekDaysDetailRequestDTO weekDaysRequestDTO,
                                            List<DDRWeekDaysDetail> ddrWeekDaysDetails) {
 
         validateIfStartTimeGreater(weekDaysRequestDTO.getStartTime(), weekDaysRequestDTO.getEndTime());
@@ -460,19 +490,19 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         }
     }
 
-    private void saveDDRBreakDetail(List<DDRBreakRequestDTO> breakRequestDTOS,
+    private void saveDDRBreakDetail(List<DDRBreakDetailRequestDTO> breakRequestDTOS,
                                     DDRWeekDaysDetail ddrWeekDaysDetail,
                                     Long hospitalId) {
 
         List<DDRBreakDetail> ddrBreakDetails = new ArrayList<>();
 
-        breakRequestDTOS.forEach((DDRBreakRequestDTO ddrBreakRequestDTO) -> {
+        breakRequestDTOS.forEach((DDRBreakDetailRequestDTO ddrBreakDetailRequestDTO) -> {
 
-            validateDDRBreakInfo(ddrWeekDaysDetail, ddrBreakDetails, ddrBreakRequestDTO);
+            validateDDRBreakInfo(ddrWeekDaysDetail, ddrBreakDetails, ddrBreakDetailRequestDTO);
 
-            BreakType breakType = fetchBreakType(ddrBreakRequestDTO.getBreakTypeId(), hospitalId);
+            BreakType breakType = fetchBreakType(ddrBreakDetailRequestDTO.getBreakTypeId(), hospitalId);
 
-            DDRBreakDetail ddrBreakDetail = parseToDDRBreakDetail(ddrBreakRequestDTO, ddrWeekDaysDetail, breakType);
+            DDRBreakDetail ddrBreakDetail = parseToDDRBreakDetail(ddrBreakDetailRequestDTO, ddrWeekDaysDetail, breakType);
 
             ddrBreakDetails.add(ddrBreakDetail);
         });
@@ -482,18 +512,18 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
 
     private void validateDDRBreakInfo(DDRWeekDaysDetail ddrWeekDaysDetail,
                                       List<DDRBreakDetail> ddrBreakDetails,
-                                      DDRBreakRequestDTO ddrBreakRequestDTO) {
+                                      DDRBreakDetailRequestDTO ddrBreakDetailRequestDTO) {
 
-        validateIfStartTimeGreater(ddrBreakRequestDTO.getStartTime(), ddrBreakRequestDTO.getEndTime());
+        validateIfStartTimeGreater(ddrBreakDetailRequestDTO.getStartTime(), ddrBreakDetailRequestDTO.getEndTime());
 
-        validateIfDDRBreakIsBetweenWeekDaysTime(ddrWeekDaysDetail, ddrBreakRequestDTO);
+        validateIfDDRBreakIsBetweenWeekDaysTime(ddrWeekDaysDetail, ddrBreakDetailRequestDTO);
 
         if (ddrBreakDetails.size() >= 1)
-            validateDDRBreakTimeDuplicity(ddrBreakDetails, ddrBreakRequestDTO);
+            validateDDRBreakTimeDuplicity(ddrBreakDetails, ddrBreakDetailRequestDTO);
     }
 
     private void validateIfDDRBreakIsBetweenWeekDaysTime(DDRWeekDaysDetail ddrWeekDaysDetail,
-                                                         DDRBreakRequestDTO breakRequestDTO) {
+                                                         DDRBreakDetailRequestDTO breakRequestDTO) {
 
         boolean isTimeOverlapped = validateBreakTimeOverlap(
                 ddrWeekDaysDetail.getStartTime(),
@@ -510,7 +540,7 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
     }
 
     private void validateDDRBreakTimeDuplicity(List<DDRBreakDetail> breakDetails,
-                                               DDRBreakRequestDTO breakRequestDTO) {
+                                               DDRBreakDetailRequestDTO breakRequestDTO) {
 
         breakDetails.forEach(breakDetail -> {
 
@@ -575,7 +605,7 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         return ddrOverrideDetail;
     }
 
-    private void saveDDROverrideBreakDetail(List<DDRBreakRequestDTO> breakRequestDTOS,
+    private void saveDDROverrideBreakDetail(List<DDRBreakDetailRequestDTO> breakRequestDTOS,
                                             DDROverrideDetail overrideDetail,
                                             Long hospitalId) {
 
@@ -649,7 +679,7 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
  * */
     private void validateDDROverrideBreakRequestInfo(DDROverrideDetail overrideDetail,
                                                      List<DDROverrideBreakDetail> overrideBreakDetails,
-                                                     DDRBreakRequestDTO breakRequestDTO) {
+                                                     DDRBreakDetailRequestDTO breakRequestDTO) {
 
         validateIfStartTimeGreater(breakRequestDTO.getStartTime(), breakRequestDTO.getEndTime());
 
@@ -660,7 +690,7 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
     }
 
     private void validateIfOverrideBreakIsBetweenOverrideTime(DDROverrideDetail overrideDetail,
-                                                              DDRBreakRequestDTO breakRequestDTO) {
+                                                              DDRBreakDetailRequestDTO breakRequestDTO) {
 
         boolean isTimeOverlapped = validateBreakTimeOverlap(
                 overrideDetail.getStartTime(),
@@ -676,7 +706,7 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
     }
 
     private void validateOverrideBreakTimeDuplicity(List<DDROverrideBreakDetail> overrideBreakDetails,
-                                                    DDRBreakRequestDTO breakRequestDTO) {
+                                                    DDRBreakDetailRequestDTO breakRequestDTO) {
 
         overrideBreakDetails.forEach(overrideBreakDetail -> {
 

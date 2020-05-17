@@ -1,7 +1,6 @@
-package com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage;
+package com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.detail;
 
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDROverrideDetailResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRShiftMinResponseDTO;
 import lombok.*;
 
 import java.io.Serializable;

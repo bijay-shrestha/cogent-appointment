@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRBreakDetailResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.weekDaysDetail.DDRBreakResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.DDRBreakDetailRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.ddrShiftWise.DDRBreakDetail;
@@ -18,6 +19,7 @@ import static com.cogent.cogentappointment.admin.constants.QueryConstants.DDRCon
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.DDRShiftWiseLog.DDR_BREAK_DETAIL;
 import static com.cogent.cogentappointment.admin.query.ddrShiftWise.DDRBreakDetailQuery.QUERY_TO_FETCH_BREAK_DETAIL;
+import static com.cogent.cogentappointment.admin.query.ddrShiftWise.DDRBreakDetailQuery.QUERY_TO_FETCH_BREAK_DETAIL_FOR_UPDATE_MODAL;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
 
 /**
@@ -43,6 +45,14 @@ public class DDRBreakDetailRepositoryCustomImpl implements DDRBreakDetailReposit
             NO_BREAK_DETAIL_FOUND.get();
 
         return breakDetails;
+    }
+
+    @Override
+    public List<DDRBreakResponseDTO> fetchWeekDaysBreakDetailForUpdateModal(Long ddrWeekDaysDetailId) {
+        Query query = entityManager.createQuery(QUERY_TO_FETCH_BREAK_DETAIL_FOR_UPDATE_MODAL)
+                .setParameter(DDR_WEEK_DAYS_ID, ddrWeekDaysDetailId);
+
+        return transformQueryToResultList(query, DDRBreakResponseDTO.class);
     }
 
     private Supplier<NoContentFoundException> NO_BREAK_DETAIL_FOUND = () -> {

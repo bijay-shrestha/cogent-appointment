@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.override;
 
 import com.cogent.cogentappointment.admin.constraintvalidator.Status;
-import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.weekDaysDetail.DDRBreakRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.weekDaysDetail.DDRBreakDetailRequestDTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
@@ -44,5 +44,5 @@ public class DDROverrideDetailRequestDTO implements Serializable {
 
     private String remarks;
 
-    private List<DDRBreakRequestDTO> breakDetail;
+    private List<DDRBreakDetailRequestDTO> breakDetail;
 }

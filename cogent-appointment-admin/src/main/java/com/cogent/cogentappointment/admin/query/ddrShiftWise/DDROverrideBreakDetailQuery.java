@@ -5,7 +5,7 @@ package com.cogent.cogentappointment.admin.query.ddrShiftWise;
  */
 public class DDROverrideBreakDetailQuery {
 
-    public static String QUERY_TO_FETCH_OVERRIDE_BREAK_DETAIL =
+    public static String QUERY_TO_FETCH_EXISTING_OVERRIDE_BREAK_DETAIL =
             " SELECT" +
                     " dd.startTime as startTime," +                 //[0]
                     " dd.endTime as endTime," +                     //[1]
@@ -14,5 +14,17 @@ public class DDROverrideBreakDetailQuery {
                     " dd.remarks as remarks" +                      //[4]
                     " FROM DDROverrideBreakDetail dd" +
                     " WHERE dd.status = 'Y'" +
-                    " AND dd.ddrOverrideDetail.id = :ddrOverrideDetailId";
+                    " AND dd.ddrOverrideDetail.id = :ddrOverrideId";
+
+    public static String QUERY_TO_FETCH_OVERRIDE_BREAK_DETAIL =
+            " SELECT" +
+                    " dd.id as ddrOverrideBreakId," +               //[0]
+                    " dd.startTime as startTime," +                 //[1]
+                    " dd.endTime as endTime," +                     //[2]
+                    " dd.breakType.id as breakTypeId," +            //[3]
+                    " dd.breakType.name as breakTypeName," +        //[4]
+                    " dd.remarks as remarks" +                      //[5]
+                    " FROM DDROverrideBreakDetail dd" +
+                    " WHERE dd.status = 'Y'" +
+                    " AND dd.ddrOverrideDetail.id = :ddrOverrideId";
 }

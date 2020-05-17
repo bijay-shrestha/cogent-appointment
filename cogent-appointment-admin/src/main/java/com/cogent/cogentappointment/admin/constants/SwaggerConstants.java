@@ -208,22 +208,29 @@ public class SwaggerConstants {
     public interface DoctorDutyRosterShiftWiseConstant {
         String BASE_API_VALUE = "This is Doctor Duty Roster Shift-Wise Resource";
 
+        /*save*/
         String SAVE_WEEK_DAYS_ROSTER_OPERATION = "Save Week Days Doctor Duty Roster";
         String SAVE_OVERRIDE_ROSTER_OPERATION = "Save Override Doctor Duty Roster";
 
+        /*existing rosters*/
         String FETCH_EXISTING_ROSTERS = " Fetch existing doctor duty rosters within the selected date range";
         String FETCH_EXISTING_ROSTERS_DETAIL = "Fetch existing rosters ddrShiftWise & override information";
         String FETCH_EXISTING_WEEK_DAYS_DETAIL = "Fetch existing rosters week days information";
         String FETCH_EXISTING_WEEK_DAYS_BREAK_DETAIL = "Fetch week days break detail";
-        String FETCH_EXISTING_OVERRIDE_BREAK_DETAIL = "Fetch override break detail";
+        String FETCH_EXISTING_OVERRIDE_BREAK_DETAIL = "Fetch existing override break detail if applicable";
 
+        /*search*/
         String SEARCH_OPERATION = "Search Doctor Duty Roster according to given request parameters";
 
+        /*delete*/
         String DELETE_OPERATION = "Set Doctor Duty Roster status as 'D' when deleted. " +
                 " Note that doctor duty roster can be deleted " +
                 " only if there are no appointments within the selected date range";
 
+        /*details/edit modal*/
         String DETAILS_OPERATION = "Fetch Doctor Duty Roster details by its id";
+        String FETCH_WEEK_DAYS_DETAIL = "Fetch week days information";
+        String FETCH_OVERRIDE_BREAK_DETAIL = "Fetch override break detail if applicable";
 
         String UPDATE_OPERATION = "Update Doctor Duty Roster. Note that week days time can be updated " +
                 "only if there are no appointments within the selected date range";

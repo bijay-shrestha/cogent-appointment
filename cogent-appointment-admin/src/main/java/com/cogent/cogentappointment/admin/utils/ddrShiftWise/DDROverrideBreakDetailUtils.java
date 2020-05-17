@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.admin.utils.ddrShiftWise;
 
-import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.weekDaysDetail.DDRBreakRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.weekDaysDetail.DDRBreakDetailRequestDTO;
 import com.cogent.cogentappointment.persistence.model.BreakType;
 import com.cogent.cogentappointment.persistence.model.ddrShiftWise.DDROverrideBreakDetail;
 import com.cogent.cogentappointment.persistence.model.ddrShiftWise.DDROverrideDetail;
@@ -10,7 +10,7 @@ import com.cogent.cogentappointment.persistence.model.ddrShiftWise.DDROverrideDe
  */
 public class DDROverrideBreakDetailUtils {
 
-    public static DDROverrideBreakDetail parseToDDROverrideBreakDetail(DDRBreakRequestDTO requestDTO,
+    public static DDROverrideBreakDetail parseToDDROverrideBreakDetail(DDRBreakDetailRequestDTO requestDTO,
                                                                        DDROverrideDetail overrideDetail,
                                                                        BreakType breakType) {
         DDROverrideBreakDetail breakDetail = new DDROverrideBreakDetail();

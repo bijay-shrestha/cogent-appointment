@@ -15,7 +15,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class DDRWeekDaysRequestDTO implements Serializable {
+public class DDRWeekDaysDetailRequestDTO implements Serializable {
 
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss", timezone = "Asia/Kathmandu")
@@ -36,5 +36,5 @@ public class DDRWeekDaysRequestDTO implements Serializable {
     @NotNull
     private Long weekDaysId;
 
-    private List<DDRBreakRequestDTO> breakDetail;
+    private List<DDRBreakDetailRequestDTO> breakDetail;
 }

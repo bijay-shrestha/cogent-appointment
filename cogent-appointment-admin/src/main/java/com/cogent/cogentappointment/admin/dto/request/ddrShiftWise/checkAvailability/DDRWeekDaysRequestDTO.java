@@ -11,7 +11,7 @@ import java.io.Serializable;
  */
 @Getter
 @Setter
-public class DDRExistingWeekDaysRequestDTO implements Serializable {
+public class DDRWeekDaysRequestDTO implements Serializable {
 
     @NotNull
     private Long ddrId;

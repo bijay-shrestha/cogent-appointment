@@ -24,5 +24,5 @@ public class DDRShiftRequestDTO implements Serializable {
 
     @NotEmpty
     @Size(min = 1, max = 7)
-    private List<DDRWeekDaysRequestDTO> weekDaysDetail;
+    private List<DDRWeekDaysDetailRequestDTO> weekDaysDetail;
 }

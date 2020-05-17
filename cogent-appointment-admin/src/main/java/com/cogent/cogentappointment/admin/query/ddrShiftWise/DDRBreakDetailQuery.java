@@ -15,4 +15,16 @@ public class DDRBreakDetailQuery {
                     " FROM DDRBreakDetail dd" +
                     " WHERE dd.status = 'Y'" +
                     " AND dd.ddrWeekDaysDetail.id = :ddrWeekDaysId";
+
+    public static String QUERY_TO_FETCH_BREAK_DETAIL_FOR_UPDATE_MODAL =
+            " SELECT" +
+                    " dd.id as ddrBreakId,"+                        //[0]
+                    " dd.startTime as startTime," +                 //[1]
+                    " dd.endTime as endTime," +                     //[2]
+                    " dd.breakType.id as breakTypeId," +            //[3]
+                    " dd.breakType.name as breakTypeName," +        //[4]
+                    " dd.remarks as remarks" +                      //[5]
+                    " FROM DDRBreakDetail dd" +
+                    " WHERE dd.status = 'Y'" +
+                    " AND dd.ddrWeekDaysDetail.id = :ddrWeekDaysId";
 }

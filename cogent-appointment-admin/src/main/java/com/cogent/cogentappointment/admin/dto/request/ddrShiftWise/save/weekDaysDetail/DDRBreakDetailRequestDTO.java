@@ -12,7 +12,7 @@ import java.util.Date;
  */
 @Getter
 @Setter
-public class DDRBreakRequestDTO implements Serializable {
+public class DDRBreakDetailRequestDTO implements Serializable {
 
     private Long breakTypeId;
 

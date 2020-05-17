@@ -83,6 +83,9 @@ public class ErrorMessageConstants {
         String DUPLICATE_SHIFT_MESSAGE = "Sorry, Operation failed! Request contains duplicate ddrShiftWise details";
         String INVALID_SHIFT_REQUEST_MESSAGE = "Sorry, Operation failed! Requested Shift(s) is not assigned to doctor";
 
+        String INVALID_DDR_SHIFT_REQUEST_MESSAGE = "Sorry, Operation failed! Requested Shift(s) is not " +
+                "assigned in this doctor duty roster";
+
         String DUPLICATION_MESSAGE = "Doctor Duty Roster already exists for selected doctor.";
 
         String INVALID_WEEK_DAYS_REQUEST = "Sorry, Operation failed! '%s' time schedules overlaps between ddrShiftWise(s).";

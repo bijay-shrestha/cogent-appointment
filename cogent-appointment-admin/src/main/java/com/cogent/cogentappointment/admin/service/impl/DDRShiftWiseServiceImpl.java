@@ -11,6 +11,7 @@ import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailab
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.DDRDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.DDRMinResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.DDRResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.DDRShiftDetailResponseDTO;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
@@ -270,8 +271,8 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
 
         DDRResponseDTO ddrDetail = ddrShiftWiseRepository.fetchDDRDetail(ddrId);
 
-        List<DDRShiftMinResponseDTO> shiftDetail =
-                ddrShiftDetailRepository.fetchMinShiftInfo(ddrId);
+        List<DDRShiftDetailResponseDTO> shiftDetail =
+                ddrShiftDetailRepository.fetchShiftDetails(ddrId);
 
         List<DDROverrideDetailResponseDTO> overrideDetail = new ArrayList<>();
 
@@ -532,7 +533,7 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
     private void saveDDROverrideDetail(DoctorDutyRosterShiftWise ddrShiftWise,
                                        List<DDROverrideDetailRequestDTO> overrideRequestDTOS) {
 
-        validateOverrideShiftDetail(overrideRequestDTOS, ddrShiftWise.getDoctor().getId());
+        validateOverrideShiftDetail(overrideRequestDTOS, ddrShiftWise.getId());
 
         List<DDROverrideDetail> overrideDetails = new ArrayList<>();
 
@@ -701,17 +702,17 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
     *
     * 2. IF REQUESTED COUNT !=ASSIGNED SHIFTS COUNT, MEANS INVALID SHIFT IDS ARE REQUESTED*/
     private void validateOverrideShiftDetail(List<DDROverrideDetailRequestDTO> overrideDetail,
-                                             Long doctorId) {
+                                             Long ddrId) {
 
         List<Long> requestedShiftIds = overrideDetail
                 .stream().map(DDROverrideDetailRequestDTO::getShiftId)
                 .distinct()
                 .collect(Collectors.toList());
 
-        Long assignedDoctorShifts = doctorService.validateDoctorShiftCount(requestedShiftIds, doctorId);
+        Long assignedDDRShifts = ddrShiftDetailRepository.validateDDRShiftCount(requestedShiftIds, ddrId);
 
-        if (assignedDoctorShifts != requestedShiftIds.size())
-            throw new BadRequestException(INVALID_SHIFT_REQUEST_MESSAGE);
+        if (assignedDDRShifts != requestedShiftIds.size())
+            throw new BadRequestException(INVALID_DDR_SHIFT_REQUEST_MESSAGE);
     }
 
     private Hospital fetchHospitalById(Long hospitalId) {

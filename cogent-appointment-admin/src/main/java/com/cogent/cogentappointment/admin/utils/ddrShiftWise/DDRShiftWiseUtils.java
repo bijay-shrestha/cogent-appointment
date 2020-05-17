@@ -5,6 +5,7 @@ import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.weekDays
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.*;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.DDRDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.DDRResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.DDRShiftDetailResponseDTO;
 import com.cogent.cogentappointment.persistence.model.Doctor;
 import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.Specialization;
@@ -63,8 +64,9 @@ public class DDRShiftWiseUtils {
     }
 
     public static DDRDetailResponseDTO parseToDdrDetailResponseDTO(DDRResponseDTO ddrDetail,
-                                                            List<DDRShiftMinResponseDTO> shiftDetail ,
-                                                            List<DDROverrideDetailResponseDTO> overrideDetail){
+                                                                   List<DDRShiftDetailResponseDTO> shiftDetail,
+                                                                   List<DDROverrideDetailResponseDTO> overrideDetail) {
+
         return DDRDetailResponseDTO.builder()
                 .ddrDetail(ddrDetail)
                 .shiftDetail(shiftDetail)

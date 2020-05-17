@@ -19,7 +19,7 @@ public class DDRDetailResponseDTO implements Serializable {
 
     private DDRResponseDTO ddrDetail;
 
-    private List<DDRShiftMinResponseDTO> shiftDetail;
+    private List<DDRShiftDetailResponseDTO> shiftDetail;
 
     private List<DDROverrideDetailResponseDTO> overrideDetail;
 

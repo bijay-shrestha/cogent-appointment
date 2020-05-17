@@ -37,4 +37,6 @@ public class AppointmentTransferLogDTO implements Serializable {
     private Character isFollowUp;
 
     private String transactionNumber;
+
+    private String transferredToFileUri,transferredFromFileUri;
 }

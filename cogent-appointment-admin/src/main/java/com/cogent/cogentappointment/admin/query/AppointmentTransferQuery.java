@@ -156,6 +156,8 @@ public class AppointmentTransferQuery {
                     "  atd.transactionNumber as transactionNumber," +
                     "  a.isFollowUp as isFollowUp," +
                     "  hpi.isRegistered as  patientType," +
+                    "  pda.fileUri as transferredFromFileUri," +
+                    "  cda.fileUri as transferredToFileUri," +
                     QUERY_TO_CALCULATE_PATIENT_AGE +
                     " FROM " +
                     " AppointmentTransfer apt  " +
@@ -165,7 +167,9 @@ public class AppointmentTransferQuery {
                     " LEFT JOIN AppointmentTransferTransactionDetail attd ON attd.appointmentTransfer.id=apt.id" +
                     " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
-                    " WHERE a.hasTransferred='Y' "+
+                    " LEFT JOIN DoctorAvatar pda ON pda.doctorId.id=apt.previousDoctor.id " +
+                    " LEFT JOIN DoctorAvatar cda ON cda.doctorId.id=apt.currentDoctor.id " +
+                    " WHERE a.hasTransferred='Y' " +
                     " AND a.hospitalId.id=:hospitalId";
 
     public static String WHERE_CLAUSE_FOR_SEARCH(AppointmentTransferSearchRequestDTO requestDTO) {
@@ -278,8 +282,10 @@ public class AppointmentTransferQuery {
                     "  atd.transactionNumber as transactionNumber," +
                     "  a.isFollowUp as isFollowUp," +
                     "  hpi.isRegistered as patientType," +
-                    QUERY_TO_CALCULATE_PATIENT_AGE +","+
-                    APPOINTMENT_TRANSFER_AUDITABLE_QUERY()+
+                    "  pda.fileUri as transferredFromFileUri," +
+                    "  cda.fileUri as transferredToFileUri," +
+                    QUERY_TO_CALCULATE_PATIENT_AGE + "," +
+                    APPOINTMENT_TRANSFER_AUDITABLE_QUERY() +
                     " FROM" +
                     " AppointmentTransfer apt" +
                     " LEFT JOIN Appointment a ON a.id=apt.appointment.id " +
@@ -287,6 +293,8 @@ public class AppointmentTransferQuery {
                     " LEFT JOIN AppointmentTransferTransactionDetail attd ON attd.appointmentTransfer.id=apt.id" +
                     " LEFT JOIN Patient p ON p.id=a.patientId.id" +
                     " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id " +
+                    " LEFT JOIN DoctorAvatar pda ON pda.doctorId.id=apt.previousDoctor.id " +
+                    " LEFT JOIN DoctorAvatar cda ON cda.doctorId.id=apt.currentDoctor.id " +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                     " WHERE apt.id=:appointmentTransferId";
 
@@ -297,7 +305,7 @@ public class AppointmentTransferQuery {
                 " apt.lastModifiedDate as lastModifiedDate";
     }
 
-    public static String QUERY_TO_GET_LIST_OF_TRANSFERRED_APPOINTMENT_FROM_ID=
+    public static String QUERY_TO_GET_LIST_OF_TRANSFERRED_APPOINTMENT_FROM_ID =
             "SELECT a.id FROM Appointment a WHERE a.hasTransferred='Y' AND a.hospitalId.id=:hospitalId";
 
     public static String QUERY_TO_GET_LASTEST_APPOINTMENT_TRANSFERRED_ID_AND_STATUS_BY_APPOINTMENTID =

@@ -36,4 +36,7 @@ public class AppointmentTransferPreviewResponseDTO extends AuditableResponseDTO 
     private Character isFollowUp;
 
     private String transactionNumber;
+
+    private String transferredToFileUri,transferredFromFileUri;
+
 }

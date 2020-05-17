@@ -149,7 +149,7 @@ public class AppointmentTransferQuery {
                     "  attd.previousAppointmentAmount  AS transferredFromAmount," +
                     "  atd.transactionNumber as transactionNumber," +
                     "  a.isFollowUp as isFollowUp," +
-                    "  hpi.isRegistered  patientType," +
+                    "  hpi.isRegistered as patientType," +
                     QUERY_TO_CALCULATE_PATIENT_AGE +
                     " FROM " +
                     " AppointmentTransfer apt  " +

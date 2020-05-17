@@ -32,7 +32,7 @@ public class AppointmentTransferLogDTO implements Serializable{
 
     private Double transferredToAmount,transferredFromAmount;
 
-    private String patientType;
+    private Character patientType;
 
     private Character isFollowUp;
 

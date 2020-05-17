@@ -31,7 +31,7 @@ public class AppointmentTransferPreviewResponseDTO extends AuditableResponseDTO 
 
     private Double transferredToAmount,transferredFromAmount;
 
-    private String patientType;
+    private Character patientType;
 
     private Character isFollowUp;
 

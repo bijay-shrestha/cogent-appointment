@@ -149,9 +149,7 @@ public class AppointmentTransferQuery {
                     "  attd.previousAppointmentAmount  AS transferredFromAmount," +
                     "  atd.transactionNumber as transactionNumber," +
                     "  a.isFollowUp as isFollowUp," +
-                    "  CASE " +
-                    "  WHEN hpi.isRegistered='Y' THEN 'Registered'" +
-                    "  ELSE 'NEW' END as  patientType," +
+                    "  hpi.isRegistered  patientType," +
                     QUERY_TO_CALCULATE_PATIENT_AGE +
                     " FROM " +
                     " AppointmentTransfer apt  " +
@@ -274,9 +272,7 @@ public class AppointmentTransferQuery {
                     " apt.currentSpecialization.name as transferredToSpecialization," +
                     " atd.transactionNumber as transactionNumber," +
                     " a.isFollowUp as isFollowUp," +
-                    "  CASE " +
-                    "  WHEN hpi.isRegistered='Y' THEN 'Registered'" +
-                    "  ELSE 'NEW' END as  patientType," +
+                    "  hpi.isRegistered as patientType," +
                     QUERY_TO_CALCULATE_PATIENT_AGE+"," +
                     APPOINTMENT_TRANSFER_AUDITABLE_QUERY()+
                     " FROM" +

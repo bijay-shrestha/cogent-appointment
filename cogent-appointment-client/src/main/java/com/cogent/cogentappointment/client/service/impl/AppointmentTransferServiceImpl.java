@@ -187,7 +187,7 @@ public class AppointmentTransferServiceImpl implements AppointmentTransferServic
 
         Appointment appointment = fetchAppointmentById(requestDTO.getAppointmentId());
 
-        validateAppointmentDate(appointment.getAppointmentDate());
+//        validateAppointmentDate(appointment.getAppointmentDate());
 
         AppointmentTransactionDetail transactionDetail = fetchAppointmentTransactionDetailByappointmentId(
                 requestDTO.getAppointmentId());

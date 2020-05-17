@@ -146,7 +146,12 @@ public class AppointmentTransferQuery {
                     "  apt.currentSpecialization.name as transferredToSpecialization, " +
                     "  apt.previousSpecialization.name as transferredFromSpecialization, " +
                     "  attd.currentAppointmentAmount  AS transferredToAmount, " +
-                    "  attd.previousAppointmentAmount  AS transferredFromAmount, " +
+                    "  attd.previousAppointmentAmount  AS transferredFromAmount," +
+                    "  atd.transactionNumber as transactionNumber," +
+                    "  a.isFollowUp as isFollowUp," +
+                    "  CASE " +
+                    "  WHEN hpi.isRegistered='Y' THEN 'Registered'" +
+                    "  ELSE 'NEW' END as  patientType," +
                     QUERY_TO_CALCULATE_PATIENT_AGE +
                     " FROM " +
                     " AppointmentTransfer apt  " +
@@ -155,6 +160,7 @@ public class AppointmentTransferQuery {
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id" +
                     " LEFT JOIN AppointmentTransferTransactionDetail attd ON attd.appointmentTransfer.id=apt.id" +
                     " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id" +
+                    " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                     " WHERE a.hasTransferred='Y'" +
                     " AND a.hospitalId.id=:hospitalId ";
 
@@ -186,7 +192,7 @@ public class AppointmentTransferQuery {
             whereClause += " AND (apt.previousSpecialization.id=" + requestDTO.getSpecializationId() +
                     " OR apt.currentSpecialization.id=" + requestDTO.getSpecializationId() + ")";
 
-        whereClause += "ORDER BY a.id DESC";
+        whereClause += "ORDER BY a.id,apt.id DESC";
 
         return whereClause;
     }
@@ -211,7 +217,9 @@ public class AppointmentTransferQuery {
                     " DATE_FORMAT(a.appointmentTime ,'%h:%i %p')  as appointmentTime," +
                     " d.name as doctor," +
                     " s.name as specialization," +
-                    " atd.appointmentAmount as appointmentAmount" +
+                    " atd.appointmentAmount as appointmentAmount," +
+                    " atd.transactionNumber as transactionNumber," +
+                    " a.isFollowUp as isFollowUp" +
                     " FROM" +
                     " Appointment a" +
                     " LEFT JOIN AppointmentTransactionDetail atd ON a.id=atd.appointment.id" +
@@ -264,14 +272,21 @@ public class AppointmentTransferQuery {
                     " apt.currentDoctor.name as transferredToDoctor," +
                     " apt.previousSpecialization.name as transferredFromSpecialization," +
                     " apt.currentSpecialization.name as transferredToSpecialization," +
+                    " atd.transactionNumber as transactionNumber," +
+                    " a.isFollowUp as isFollowUp," +
+                    "  CASE " +
+                    "  WHEN hpi.isRegistered='Y' THEN 'Registered'" +
+                    "  ELSE 'NEW' END as  patientType," +
                     QUERY_TO_CALCULATE_PATIENT_AGE+"," +
                     APPOINTMENT_TRANSFER_AUDITABLE_QUERY()+
                     " FROM" +
                     " AppointmentTransfer apt" +
                     " LEFT JOIN Appointment a ON a.id=apt.appointment.id " +
+                    " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id" +
                     " LEFT JOIN AppointmentTransferTransactionDetail attd ON attd.appointmentTransfer.id=apt.id" +
                     " LEFT JOIN Patient p ON p.id=a.patientId.id" +
                     " LEFT JOIN PatientMetaInfo pmi ON pmi.patient.id=p.id " +
+                    " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                     " WHERE apt.id=:appointmentTransferId";
 
     public static String APPOINTMENT_TRANSFER_AUDITABLE_QUERY() {
@@ -282,7 +297,7 @@ public class AppointmentTransferQuery {
     }
 
     public static String QUERY_TO_GET_LIST_OF_TRANSFERRED_APPOINTMENT_FROM_ID=
-            "SELECT a.id FROM Appointment a WHERE a.hasTransferred='Y' AND a.hospitalId:hospitalId";
+            "SELECT a.id FROM Appointment a WHERE a.hasTransferred='Y' AND a.hospitalId.id=:hospitalId";
 
     public static String QUERY_TO_GET_LASTEST_APPOINTMENT_TRANSFERRED_ID_AND_STATUS_BY_APPOINTMENTID =
             "SELECT" +

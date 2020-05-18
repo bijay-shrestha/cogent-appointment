@@ -137,8 +137,8 @@ public class AppointmentTransferQuery {
                     "  p.name as patientName, " +
                     "  p.mobileNumber as mobileNumber, " +
                     "  p.gender  as gender, " +
-                    "  DATE_FORMAT(apt.currentAppointmentDateAndTime ,'%Y-%m-%d')  as transferredToDate, " +
-                    "  DATE_FORMAT(apt.previousAppointmentDateAndTime ,'%Y-%m-%d')  as transferredFromDate, " +
+                    "  DATE_FORMAT(apt.currentAppointmentDateAndTime ,'%b %d,%Y')  as transferredToDate, " +
+                    "  DATE_FORMAT(apt.previousAppointmentDateAndTime ,'%b %d,%Y')  as transferredFromDate, " +
                     "  DATE_FORMAT(apt.currentAppointmentDateAndTime ,'%h:%i %p')  as transferredToTime, " +
                     "  DATE_FORMAT(apt.previousAppointmentDateAndTime ,'%h:%i %p')  as transferredFromTime, " +
                     "  apt.currentDoctor.name as transferredToDoctor, " +
@@ -263,8 +263,8 @@ public class AppointmentTransferQuery {
                     " p.name as patientName," +
                     " p.gender as gender," +
                     " p.mobileNumber as mobileNumber," +
-                    " DATE_FORMAT(apt.currentAppointmentDateAndTime ,'%Y-%m-%d')  as transferredToDate, " +
-                    " DATE_FORMAT(apt.previousAppointmentDateAndTime ,'%Y-%m-%d')  as transferredFromDate, " +
+                    " DATE_FORMAT(apt.currentAppointmentDateAndTime ,'%b %d,%Y')  as transferredToDate, " +
+                    " DATE_FORMAT(apt.previousAppointmentDateAndTime ,'%b %d,%Y')  as transferredFromDate, " +
                     " DATE_FORMAT(apt.currentAppointmentDateAndTime,'%h:%i %p') as  transferredToTime," +
                     " DATE_FORMAT(apt.previousAppointmentDateAndTime,'%h:%i %p') as  transferredFromTime," +
                     " attd.currentAppointmentAmount  as transferredToAmount," +

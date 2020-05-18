@@ -41,6 +41,16 @@ public class AppointmentQuery {
                     " AND a.doctorId.id = :doctorId" +
                     " AND a.specializationId.id = :specializationId";
 
+    public static final String QUERY_TO_FETCH_APPOINTMENT_COUNT =
+            "SELECT" +
+                    " COUNT(a.id) as appointmentDate" +
+                    " FROM Appointment a" +
+                    " WHERE" +
+                    " a.status='PA'" +
+                    " AND a.appointmentDate =:date" +
+                    " AND a.doctorId.id = :doctorId" +
+                    " AND a.specializationId.id = :specializationId";
+
     public static String QUERY_TO_FETCH_REFUND_APPOINTMENTS(AppointmentRefundSearchDTO searchDTO) {
         return " SELECT" +
                 "  a.id as appointmentId," +

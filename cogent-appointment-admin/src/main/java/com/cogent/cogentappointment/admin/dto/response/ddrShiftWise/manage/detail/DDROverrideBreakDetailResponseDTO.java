@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage;
+package com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.detail;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -40,6 +40,8 @@ public interface AppointmentRepositoryCustom {
 
     Long fetchBookedAppointmentCount(Date fromDate, Date toDate, Long doctorId, Long specializationId);
 
+    Long fetchBookedAppointmentCount(Date date, Long doctorId, Long specializationId);
+
     AppointmentRefundResponseDTO fetchRefundAppointments(AppointmentRefundSearchDTO searchDTO,
                                                          Pageable pageable);
 

@@ -94,6 +94,17 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         return (Long) query.getSingleResult();
     }
 
+    /*USED IN DOCTOR DUTY ROSTER SHIFT WISE TO VALIDATE IF APPOINTMENT EXISTS ON SELECTED OVERRIDE DATE*/
+    @Override
+    public Long fetchBookedAppointmentCount(Date date, Long doctorId, Long specializationId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENT_COUNT)
+                .setParameter(DATE, utilDateToSqlDate(date))
+                .setParameter(DOCTOR_ID, doctorId)
+                .setParameter(SPECIALIZATION_ID, specializationId);
+
+        return (Long) query.getSingleResult();
+    }
+
     @Override
     public AppointmentRefundResponseDTO fetchRefundAppointments(AppointmentRefundSearchDTO searchDTO,
                                                                 Pageable pageable) {

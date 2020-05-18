@@ -7,13 +7,16 @@ import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.manage.DDRSea
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.override.DDROverrideDetailRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.override.DDROverrideRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.weekDaysDetail.*;
+import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.update.override.DDROverrideUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.DDRTimeResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.*;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.DDRMinResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.DDROverrideBreakDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.detail.DDRDetailResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.detail.DDROverrideBreakDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.detail.DDRResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.detail.DDRShiftDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.weekDaysDetail.DDRWeekDaysResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.update.DDROverrideUpdateResponseDTO;
 import com.cogent.cogentappointment.admin.exception.BadRequestException;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
@@ -28,9 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Valid;
 import javax.validation.Validator;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -45,6 +46,7 @@ import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDRDateValid
 import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDRDateValidationUtils.validateTimeOverlap;
 import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDROverrideBreakDetailUtils.parseToDDROverrideBreakDetail;
 import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDROverrideDetailUtils.parseToDdrOverrideDetail;
+import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDROverrideDetailUtils.parseToOverrideUpdateResponse;
 import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDRShiftWiseUtils.*;
 import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDRWeekDaysUtils.parseToDDRShiftDetail;
 import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDRWeekDaysUtils.parseToDDRWeekDaysDetail;
@@ -315,6 +317,69 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         log.info(FETCHING_PROCESS_COMPLETED, DDR_OVERRIDE_BREAK_DETAIL, getDifferenceBetweenTwoTime(startTime));
 
         return breakDetails;
+    }
+
+    /* REQUIRED VALIDATIONS:
+    *  1. OVERRIDE DATE MUST BE BETWEEN ACTUAL DDR
+    *  2. OVERRIDE END TIME MUST BE GREATER THAN END TIME
+    *  3. REQUESTED SHIFT MUST BE ASSIGNED TO THE SELECTED DDR
+    *  4. OVERRIDE CAN BE UPDATED ONLY IF NO APPOINTMENT EXISTS ON THAT DATE
+    *  5. REQUESTED TIME SCHEDULES SHOULD NOT OVERLAP WITH EXISTING OVERRIDE TIME SCHEDULES
+    *
+    *  SAVED OVERRIDE ID IS RETURNED AS A RESPONSE SUCH THAT FRONT-END DO NOT NEED TO HIT API
+    *  TO FETCH OVERRIDE DETAILS AGAIN.
+    *  */
+    @Override
+    public DDROverrideUpdateResponseDTO updateDoctorDutyRosterOverride(DDROverrideUpdateRequestDTO updateRequestDTO) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(UPDATING_PROCESS_STARTED, DDR_OVERRIDE);
+
+        DoctorDutyRosterShiftWise ddrShiftWise = fetchDDRShiftWise(updateRequestDTO.getDdrId());
+
+        updateDDROverrideStatus(ddrShiftWise, updateRequestDTO.getHasOverride());
+
+        validateDDROverrideUpdateRequestInfo(ddrShiftWise, updateRequestDTO);
+
+        Long savedOverrideId;
+
+        if (Objects.isNull(updateRequestDTO.getDdrOverrideId())) {
+
+            /*SAVE NEW DOCTOR DUTY ROSTER OVERRIDE*/
+            List<DDRTimeResponseDTO> ddrTimeResponseDTOS =
+                    ddrOverrideDetailRepository.fetchDDROverrideTimeDetails(
+                            updateRequestDTO.getDate(),
+                            ddrShiftWise.getDoctor().getId(),
+                            ddrShiftWise.getSpecialization().getId()
+                    );
+
+            if (ddrTimeResponseDTOS.size() >= 1)
+                validateOverrideTimeDuplicity(ddrTimeResponseDTOS, updateRequestDTO);
+
+            savedOverrideId = saveNewOverrideDetail(updateRequestDTO, ddrShiftWise);
+
+        } else {
+
+             /*UPDATE DOCTOR DUTY ROSTER OVERRIDE*/
+            List<DDRTimeResponseDTO> ddrTimeResponseDTOS =
+                    ddrOverrideDetailRepository.fetchDDROverrideTimeDetailsExceptCurrentId(
+                            updateRequestDTO.getDdrOverrideId(),
+                            updateRequestDTO.getDate(),
+                            ddrShiftWise.getDoctor().getId(),
+                            ddrShiftWise.getSpecialization().getId()
+                    );
+
+            if (ddrTimeResponseDTOS.size() >= 1)
+                validateOverrideTimeDuplicity(ddrTimeResponseDTOS, updateRequestDTO);
+
+            savedOverrideId = updateDDROverrideDetail(updateRequestDTO, ddrShiftWise.getHospital().getId());
+        }
+
+        DDROverrideUpdateResponseDTO updateResponse = parseToOverrideUpdateResponse(savedOverrideId);
+
+        log.info(UPDATING_PROCESS_COMPLETED, DDR_OVERRIDE, getDifferenceBetweenTwoTime(startTime));
+
+        return updateResponse;
     }
 
     /*1. VALIDATE CONSTRAINTS VIOLATION
@@ -638,7 +703,7 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
                                                 DDROverrideDetailRequestDTO overrideRequestDTO,
                                                 List<DDROverrideDetail> overrideDetails) {
 
-        validateIfOverrideDateIsBetweenDDDR(
+        validateIfOverrideDateIsBetweenDDR(
                 ddrShiftWise.getFromDate(),
                 ddrShiftWise.getToDate(),
                 overrideRequestDTO.getDate()
@@ -663,8 +728,10 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
                         );
 
                         if (isTimeOverlapped) {
-                            log.error(OVERRIDE_TIME_OVERLAP_MESSAGE);
-                            throw new BadRequestException(OVERRIDE_TIME_OVERLAP_MESSAGE);
+                            log.error(String.format(OVERRIDE_TIME_OVERLAP_MESSAGE,
+                                    matchedResult.getShift().getName()));
+                            throw new BadRequestException(String.format(OVERRIDE_TIME_OVERLAP_MESSAGE,
+                                    matchedResult.getShift().getName()));
                         }
                     }
             );
@@ -802,9 +869,9 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         save(ddrShiftWise);
     }
 
-    private void validateIfOverrideDateIsBetweenDDDR(Date dutyRosterFromDate,
-                                                     Date dutyRosterToDate,
-                                                     Date overrideDate) {
+    private void validateIfOverrideDateIsBetweenDDR(Date dutyRosterFromDate,
+                                                    Date dutyRosterToDate,
+                                                    Date overrideDate) {
 
         validateIsFirstDateGreater(dutyRosterFromDate, dutyRosterToDate);
 
@@ -832,5 +899,103 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
             throw new BadRequestException(APPOINTMENT_EXISTS_MESSAGE);
         }
     }
+
+    private void validateDDROverrideUpdateRequestInfo(DoctorDutyRosterShiftWise ddrShiftWise,
+                                                      DDROverrideUpdateRequestDTO overrideRequestDTO) {
+
+        validateIfOverrideDateIsBetweenDDR(
+                ddrShiftWise.getFromDate(),
+                ddrShiftWise.getToDate(),
+                overrideRequestDTO.getDate()
+        );
+
+        validateIfStartTimeGreater(
+                overrideRequestDTO.getStartTime(),
+                overrideRequestDTO.getEndTime()
+        );
+
+        validateUpdatedOverrideShifts(overrideRequestDTO.getShiftId(),
+                ddrShiftWise.getId());
+
+         /*UPDATE IS ALLOWED ONLY IF THERE ARE NO APPOINTMENTS WITHIN THAT RANGE*/
+        validateAppointmentCount(overrideRequestDTO.getDate(),
+                ddrShiftWise.getDoctor().getId(),
+                ddrShiftWise.getSpecialization().getId()
+        );
+    }
+
+    private void validateUpdatedOverrideShifts(Long shiftId, Long ddrId) {
+
+        Long isAssignedShiftCount = ddrShiftDetailRepository.validateDDRShiftCount(
+                Collections.singletonList(shiftId), ddrId);
+
+        if (isAssignedShiftCount <= 0)
+            throw new BadRequestException(INVALID_DDR_SHIFT_REQUEST_MESSAGE);
+    }
+
+    private void validateAppointmentCount(Date date, Long doctorId, Long specializationId) {
+
+        Long appointments = appointmentRepository.fetchBookedAppointmentCount(date, doctorId, specializationId);
+
+        if (appointments.intValue() > 0) {
+            log.error(APPOINTMENT_EXISTS_MESSAGE);
+            throw new BadRequestException(APPOINTMENT_EXISTS_MESSAGE);
+        }
+    }
+
+    private void validateOverrideTimeDuplicity(List<DDRTimeResponseDTO> ddrTimeResponseDTOS,
+                                               DDROverrideUpdateRequestDTO updateRequestDTO) {
+
+        ddrTimeResponseDTOS
+                .forEach(ddrOverrideTime -> {
+                            boolean isTimeOverlapped = validateTimeOverlap(
+                                    ddrOverrideTime.getStartTime(),
+                                    ddrOverrideTime.getEndTime(),
+                                    updateRequestDTO.getStartTime(),
+                                    updateRequestDTO.getEndTime()
+                            );
+
+                            if (isTimeOverlapped) {
+                                log.error(String.format(OVERRIDE_TIME_OVERLAP_MESSAGE, ddrOverrideTime.getShiftName()));
+                                throw new BadRequestException(OVERRIDE_TIME_OVERLAP_MESSAGE, ddrOverrideTime.getShiftName());
+                            }
+                        }
+                );
+    }
+
+    private Long saveNewOverrideDetail(DDROverrideUpdateRequestDTO updateRequestDTO,
+                                       DoctorDutyRosterShiftWise ddrShiftWise) {
+
+        Shift shift = fetchShift(updateRequestDTO.getShiftId(), ddrShiftWise.getHospital().getId());
+
+        DDROverrideDetail ddrOverrideDetail =
+                parseToDdrOverrideDetail(updateRequestDTO, shift, new DDROverrideDetail());
+
+        ddrOverrideDetail.setDdrShiftWise(ddrShiftWise);
+
+        saveDDROverrideDetail(ddrOverrideDetail);
+
+        return ddrOverrideDetail.getId();
+    }
+
+    private Long updateDDROverrideDetail(DDROverrideUpdateRequestDTO updateRequestDTO,
+                                         Long hospitalId) {
+
+        DDROverrideDetail ddrOverrideDetail =
+                ddrOverrideDetailRepository.fetchById(updateRequestDTO.getDdrId())
+                        .orElseThrow(() -> DDR_OVERRIDE_WITH_GIVEN_ID_NOT_FOUND.apply(updateRequestDTO.getDdrOverrideId()));
+
+        Shift shift = fetchShift(updateRequestDTO.getShiftId(), hospitalId);
+
+        saveDDROverrideDetail(parseToDdrOverrideDetail(updateRequestDTO, shift, ddrOverrideDetail));
+
+        return ddrOverrideDetail.getId();
+    }
+
+    private Function<Long, NoContentFoundException> DDR_OVERRIDE_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, DDR_OVERRIDE, id);
+        throw new NoContentFoundException(DDROverrideDetail.class, "id", id.toString());
+    };
+
 
 }

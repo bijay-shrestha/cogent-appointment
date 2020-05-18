@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRBreakDetailResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.DDROverrideBreakDetailResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.detail.DDROverrideBreakDetailResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.DDROverrideBreakDetailRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.ddrShiftWise.DDROverrideBreakDetail;
@@ -20,6 +20,7 @@ import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_N
 import static com.cogent.cogentappointment.admin.log.constants.DDRShiftWiseLog.DDR_OVERRIDE_BREAK_DETAIL;
 import static com.cogent.cogentappointment.admin.query.ddrShiftWise.DDROverrideBreakDetailQuery.QUERY_TO_FETCH_EXISTING_OVERRIDE_BREAK_DETAIL;
 import static com.cogent.cogentappointment.admin.query.ddrShiftWise.DDROverrideBreakDetailQuery.QUERY_TO_FETCH_OVERRIDE_BREAK_DETAIL;
+import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
 
 /**
@@ -35,7 +36,8 @@ public class DDROverrideBreakDetailRepositoryCustomImpl implements DDROverrideBr
 
     @Override
     public List<DDRBreakDetailResponseDTO> fetchExistingOverrideBreakDetail(Long ddrOverrideId) {
-        Query query = entityManager.createQuery(QUERY_TO_FETCH_EXISTING_OVERRIDE_BREAK_DETAIL)
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_EXISTING_OVERRIDE_BREAK_DETAIL)
                 .setParameter(DDR_OVERRIDE_ID, ddrOverrideId);
 
         List<DDRBreakDetailResponseDTO> breakDetails =
@@ -49,7 +51,8 @@ public class DDROverrideBreakDetailRepositoryCustomImpl implements DDROverrideBr
 
     @Override
     public List<DDROverrideBreakDetailResponseDTO> fetchOverrideBreakDetail(Long ddrOverrideId) {
-        Query query = entityManager.createQuery(QUERY_TO_FETCH_OVERRIDE_BREAK_DETAIL)
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_OVERRIDE_BREAK_DETAIL)
                 .setParameter(DDR_OVERRIDE_ID, ddrOverrideId);
 
         List<DDROverrideBreakDetailResponseDTO> breakDetails =

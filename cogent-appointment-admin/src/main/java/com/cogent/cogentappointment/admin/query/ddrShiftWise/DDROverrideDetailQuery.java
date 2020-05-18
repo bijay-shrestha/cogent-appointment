@@ -11,7 +11,7 @@ public class DDROverrideDetailQuery {
                     " dd.date as date," +                                               //[1]
                     " dd.startTime as startTime," +                                     //[2]
                     " dd.endTime as endTime," +                                         //[3]
-                    " dd.shift.id as shiftId,"+                                         //[4]
+                    " dd.shift.id as shiftId," +                                         //[4]
                     " dd.shift.name as shiftName," +                                    //[5]
                     " dd.offStatus as offStatus," +                                     //[6]
                     " dd.rosterGapDuration as rosterGapDuration," +                     //[7]
@@ -21,4 +21,31 @@ public class DDROverrideDetailQuery {
                     " WHERE dd.status = 'Y'" +
                     " AND dd.ddrShiftWise.status != 'D'" +
                     " AND dd.ddrShiftWise.id = :ddrId";
+
+    public static final String QUERY_TO_FETCH_DDR_OVERRIDE_TIME_DETAIL =
+            " SELECT" +
+                    " dd.startTime as startTime," +                                     //[0]
+                    " dd.endTime as endTime," +                                         //[1]
+                    " dd.shift.name as shiftName" +                                     //[2]
+                    " FROM DoctorDutyRosterShiftWise ddr" +
+                    " LEFT JOIN DDROverrideDetail dd ON ddr.id = dd.ddrShiftWise.id" +
+                    " WHERE dd.status = 'Y'" +
+                    " AND ddr.status != 'D'" +
+                    " AND ddr.doctor.id=:doctorId" +
+                    " AND ddr.specialization.id= :specializationId" +
+                    " AND ddr.date =:date";
+
+    public static final String QUERY_TO_FETCH_DDR_OVERRIDE_TIME_DETAIL_EXCEPT_CURRENT_ID =
+            " SELECT" +
+                    " dd.startTime as startTime," +                                     //[0]
+                    " dd.endTime as endTime," +                                        //[1]
+                    " dd.shift.name as shiftName" +                                    //[2]
+                    " FROM DoctorDutyRosterShiftWise ddr" +
+                    " LEFT JOIN DDROverrideDetail dd ON ddr.id = dd.ddrShiftWise.id" +
+                    " WHERE dd.status = 'Y'" +
+                    " AND ddr.status != 'D'" +
+                    " AND dd.id!=:ddrOverrideId" +
+                    " AND ddr.doctor.id=:doctorId" +
+                    " AND ddr.specialization.id= :specializationId" +
+                    " AND ddr.date =:date";
 }

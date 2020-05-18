@@ -45,6 +45,7 @@ public class DDRWeekDaysDetailRepositoryCustomImpl implements DDRWeekDaysDetailR
 
     @Override
     public List<DDRExistingWeekDaysResponseDTO> fetchExistingDDRWeekDaysDetail(DDRWeekDaysRequestDTO requestDTO) {
+
         Query query = entityManager.createQuery(QUERY_TO_FETCH_DDR_WEEK_DAYS_DETAIL)
                 .setParameter(DDR_ID, requestDTO.getDdrId())
                 .setParameter(SHIFT_ID, requestDTO.getShiftId());
@@ -60,6 +61,7 @@ public class DDRWeekDaysDetailRepositoryCustomImpl implements DDRWeekDaysDetailR
 
     @Override
     public List<DDRWeekDaysResponseDTO> fetchDDRWeekDaysDetail(DDRWeekDaysRequestDTO requestDTO) {
+
         Query query = entityManager.createQuery(QUERY_TO_FETCH_DDR_WEEK_DAYS_DETAIL)
                 .setParameter(DDR_ID, requestDTO.getDdrId())
                 .setParameter(SHIFT_ID, requestDTO.getShiftId());

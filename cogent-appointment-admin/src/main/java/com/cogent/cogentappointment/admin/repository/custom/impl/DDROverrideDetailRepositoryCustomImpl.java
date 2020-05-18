@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.DDRTimeResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDROverrideDetailResponseDTO;
 import com.cogent.cogentappointment.admin.repository.custom.DDROverrideDetailRepositoryCustom;
 import lombok.extern.slf4j.Slf4j;
@@ -9,10 +10,15 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.util.Date;
 import java.util.List;
 
+import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.DDRConstants.DDR_ID;
-import static com.cogent.cogentappointment.admin.query.ddrShiftWise.DDROverrideDetailQuery.QUERY_TO_FETCH_DDR_OVERRIDE_DETAIL;
+import static com.cogent.cogentappointment.admin.constants.QueryConstants.DDRConstants.DDR_OVERRIDE_ID;
+import static com.cogent.cogentappointment.admin.query.ddrShiftWise.DDROverrideDetailQuery.*;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
+import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
 
 /**
@@ -29,9 +35,34 @@ public class DDROverrideDetailRepositoryCustomImpl implements DDROverrideDetailR
 
     @Override
     public List<DDROverrideDetailResponseDTO> fetchDDROverrideDetail(Long ddrId) {
-        Query query = entityManager.createQuery(QUERY_TO_FETCH_DDR_OVERRIDE_DETAIL)
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DDR_OVERRIDE_DETAIL)
                 .setParameter(DDR_ID, ddrId);
 
         return transformQueryToResultList(query, DDROverrideDetailResponseDTO.class);
+    }
+
+    @Override
+    public List<DDRTimeResponseDTO> fetchDDROverrideTimeDetails(Date date, Long doctorId, Long specializationId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DDR_OVERRIDE_TIME_DETAIL)
+                .setParameter(DOCTOR_ID, doctorId)
+                .setParameter(SPECIALIZATION_ID, specializationId)
+                .setParameter(DATE, utilDateToSqlDate(date));
+
+        return transformQueryToResultList(query, DDRTimeResponseDTO.class);
+    }
+
+    @Override
+    public List<DDRTimeResponseDTO> fetchDDROverrideTimeDetailsExceptCurrentId(Long ddrOverrideId,
+                                                                               Date date, Long doctorId,
+                                                                               Long specializationId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DDR_OVERRIDE_TIME_DETAIL_EXCEPT_CURRENT_ID)
+                .setParameter(DDR_OVERRIDE_ID, ddrOverrideId)
+                .setParameter(DOCTOR_ID, doctorId)
+                .setParameter(SPECIALIZATION_ID, specializationId)
+                .setParameter(DATE, utilDateToSqlDate(date));
+
+        return transformQueryToResultList(query, DDRTimeResponseDTO.class);
     }
 }

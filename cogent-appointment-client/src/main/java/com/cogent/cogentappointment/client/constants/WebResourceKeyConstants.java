@@ -109,6 +109,8 @@ public class WebResourceKeyConstants {
     }
 
 
+
+
     //E
     public interface EsewaConstants {
         String BASE_ESEWA = "/esewa";
@@ -189,6 +191,13 @@ public class WebResourceKeyConstants {
 
 
     //S
+
+    public interface SpecializationDutyRosterConstants {
+        String BASE_SPECIALIZATION_DUTY_ROSTER = "/specializationDutyRoster";
+        String SPECIALIZATION_DUTY_ROSTER_OVERRIDE = "/specializationDutyRosterOverride";
+        String EXISTING = "/existing";
+        String REVERT_DOCTOR_DUTY_ROSTER_OVERRIDE = "/revert";
+    }
 
     public interface SalutationConstant {
         String BASE_SALUTATION = "/salutation";

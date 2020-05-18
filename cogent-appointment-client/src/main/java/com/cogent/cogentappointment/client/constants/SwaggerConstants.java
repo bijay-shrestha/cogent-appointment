@@ -282,6 +282,25 @@ public class SwaggerConstants {
     //R
 
     //S
+    public interface SpecializationDutyRosterConstant {
+        String BASE_API_VALUE = "This is Specialization Duty Roster Resource";
+        String SAVE_OPERATION = "Save  Specialization Duty Roster";
+        String UPDATE_OPERATION = "Update Specialization Duty Roster. Note that week days time can be updated " +
+                "only if there are no appointments within the selected date range";
+        String DELETE_OPERATION = "Set Specialization Duty Roster status as 'D' when deleted. " +
+                " Note that  specialization duty roster can be deleted " +
+                " only if there are no appointments within the selected date range";
+        String SEARCH_OPERATION = "Search Specialization Duty Roster according to given request parameters";
+        String DETAILS_OPERATION = "Fetch Specialization Duty Roster details by its id";
+        String UPDATE_SPECIALIZATION_DUTY_ROSTER_OVERRIDE_OPERATION = "Update Specialization Duty Roster Override schedules." +
+                " (Can saveSelfPatient new override schedules for the same roster or update existing rosters). " +
+                " Returns saved/updated override id as response.";
+        String DELETE_SPECIALIZATION_DUTY_ROSTER_OVERRIDE_OPERATION = "Set Specialization Duty Roster Override status as 'D' when deleted. " +
+                " Note that Specialization duty roster override can be deleted " +
+                " only if there are no appointments within the selected date range";
+        String FETCH_EXISTING_ROSTERS = " Fetch existing Specialization duty rosters within the selected date range";
+        String REVERT_SPECIALIZATION_DUTY_ROSTER_OVERRIDE_OPERATION = "Revert Specialization duty roster.";
+    }
 
     public interface SalutationConstant {
         String BASE_API_VALUE = "This is Salutation Resource";

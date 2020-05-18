@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.client.utils;
 
 
-import com.cogent.cogentappointment.client.dto.request.DoctorRevenueRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.dashboard.DoctorRevenueRequestDTO;
 
 import java.text.ParseException;
 

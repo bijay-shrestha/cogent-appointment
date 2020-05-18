@@ -29,11 +29,11 @@ public class SpecializationDutyRoster extends Auditable<String> implements Seria
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "specialization_id", updatable = false)
-    private Specialization specializationId;
+    private Specialization specialization;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hospital_id", updatable = false)
-    private Hospital hospitalId;
+    private Hospital hospital;
 
     @Column(name = "roster_gap_duration")
     private Integer rosterGapDuration;
@@ -59,8 +59,8 @@ public class SpecializationDutyRoster extends Auditable<String> implements Seria
     public String toString() {
         return "SpecializationDutyRoster{" +
                 "id=" + id +
-                ", specializationId=" + specializationId.getName() +
-                ", hospitalId=" + hospitalId.getName() +
+                ", specializationId=" + specialization.getName() +
+                ", hospitalId=" + hospital.getName() +
                 ", rosterGapDuration=" + rosterGapDuration +
                 ", fromDate=" + fromDate +
                 ", toDate=" + toDate +

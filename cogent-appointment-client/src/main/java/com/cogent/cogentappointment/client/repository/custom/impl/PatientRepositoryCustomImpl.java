@@ -232,7 +232,7 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
 
     @Override
     public String fetchLatestRegistrationNumber(Long hospitalId) {
-        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_LATEST_REGISTRATION_NUMBER)
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_LATEST_REGISTRATION_NUMBER)
                 .setParameter(HOSPITAL_ID, hospitalId);
 
         List results = query.getResultList();

@@ -194,7 +194,7 @@ public class SwaggerConstants {
         String SEARCH_OPERATION = "Search Doctor Duty Roster according to given request parameters";
         String DETAILS_OPERATION = "Fetch Doctor Duty Roster details by its id";
         String UPDATE_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION = "Update Doctor Duty Roster Override schedules." +
-                " (Can saveDDRWeekDaysDetail new override schedules for the same roster or update existing rosters). " +
+                " (Can save new override schedules for the same roster or update existing rosters). " +
                 " Returns saved/updated override id as response.";
         String DELETE_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION = "Set Doctor Duty Roster Override status as 'D' when deleted. " +
                 " Note that doctor duty roster override can be deleted " +
@@ -232,12 +232,14 @@ public class SwaggerConstants {
         String FETCH_WEEK_DAYS_DETAIL = "Fetch week days information";
         String FETCH_OVERRIDE_BREAK_DETAIL = "Fetch override break detail if applicable";
 
+        /*update*/
         String UPDATE_OPERATION = "Update Doctor Duty Roster. Note that week days time can be updated " +
                 "only if there are no appointments within the selected date range";
 
-        String UPDATE_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION = "Update Doctor Duty Roster Override schedules." +
-                " (Can saveDDRWeekDaysDetail new override schedules for the same roster or update existing rosters). " +
+        String UPDATE_DDR_OVERRIDE_OPERATION ="Update Doctor Duty Roster Override schedules." +
+                " (Can save new override schedules for the same roster or update existing rosters). " +
                 " Returns saved/updated override id as response.";
+
         String DELETE_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION = "Set Doctor Duty Roster Override status as 'D' when deleted. " +
                 " Note that doctor duty roster override can be deleted " +
                 " only if there are no appointments within the selected date range";

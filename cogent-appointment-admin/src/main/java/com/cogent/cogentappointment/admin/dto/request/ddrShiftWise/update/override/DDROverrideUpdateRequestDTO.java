@@ -25,7 +25,7 @@ public class DDROverrideUpdateRequestDTO implements Serializable {
     @Status
     private Character hasOverride;
 
-    @NotNull
+    /*null when for new override */
     private Long ddrOverrideId;
 
     @NotNull

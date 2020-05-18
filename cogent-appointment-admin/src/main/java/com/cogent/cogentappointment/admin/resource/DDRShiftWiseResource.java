@@ -6,6 +6,7 @@ import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.checkAvailabi
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.manage.DDRSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.override.DDROverrideRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.weekDaysDetail.DDRRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.update.override.DDROverrideUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.service.DDRShiftWiseService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -113,6 +114,12 @@ public class DDRShiftWiseResource {
     @ApiOperation(FETCH_OVERRIDE_BREAK_DETAIL)
     public ResponseEntity<?> fetchDDROverrideBreakDetail(@PathVariable("ddrOverrideId") Long ddrOverrideId) {
         return ok(ddrShiftWiseService.fetchDDROverrideBreakDetail(ddrOverrideId));
+    }
+
+    @PutMapping(UPDATE + OVERRIDE)
+    @ApiOperation(UPDATE_DDR_OVERRIDE_OPERATION)
+    public ResponseEntity<?> updateDDROverrideDetail (@Valid @RequestBody DDROverrideUpdateRequestDTO requestDTO){
+        return ok(ddrShiftWiseService.updateDoctorDutyRosterOverride(requestDTO));
     }
 
 

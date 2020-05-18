@@ -93,8 +93,8 @@ public class ErrorMessageConstants {
         String INVALID_WEEK_DAYS_BREAK_REQUEST = "Sorry, Operation failed! Break time schedules doesn't lie between " +
                 "'%s' time schedules";
 
-        String INVALID_OVERRIDE_REQUEST_MESSAGE = "Requested Override detail doesn't lie within the actual doctor duty roster" +
-                " date range.";
+        String INVALID_OVERRIDE_REQUEST_MESSAGE = "Requested Override date doesn't lie within the actual doctor duty roster" +
+                " date range ('%s' to '%s')";
 
         String OVERRIDE_TIME_OVERLAP_MESSAGE = "Sorry, Operation failed! Override time schedules overlaps " +
                 " with '%s' shift's time schedules";

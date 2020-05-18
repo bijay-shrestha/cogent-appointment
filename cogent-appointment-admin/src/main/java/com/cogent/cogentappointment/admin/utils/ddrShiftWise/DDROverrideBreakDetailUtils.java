@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.utils.ddrShiftWise;
 
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.weekDaysDetail.DDRBreakDetailRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.update.override.DDROverrideBreakUpdateRequestDTO;
 import com.cogent.cogentappointment.persistence.model.BreakType;
 import com.cogent.cogentappointment.persistence.model.ddrShiftWise.DDROverrideBreakDetail;
 import com.cogent.cogentappointment.persistence.model.ddrShiftWise.DDROverrideDetail;
@@ -14,6 +15,21 @@ public class DDROverrideBreakDetailUtils {
                                                                        DDROverrideDetail overrideDetail,
                                                                        BreakType breakType) {
         DDROverrideBreakDetail breakDetail = new DDROverrideBreakDetail();
+        breakDetail.setStartTime(requestDTO.getStartTime());
+        breakDetail.setEndTime(requestDTO.getEndTime());
+        breakDetail.setDdrOverrideDetail(overrideDetail);
+        breakDetail.setBreakType(breakType);
+        breakDetail.setStatus(requestDTO.getStatus());
+        breakDetail.setRemarks(requestDTO.getRemarks());
+
+        return breakDetail;
+    }
+
+    public static DDROverrideBreakDetail parseToUpdatedDDROverrideBreakDetail(DDROverrideBreakUpdateRequestDTO requestDTO,
+                                                                              DDROverrideDetail overrideDetail,
+                                                                              BreakType breakType,
+                                                                              DDROverrideBreakDetail breakDetail) {
+
         breakDetail.setStartTime(requestDTO.getStartTime());
         breakDetail.setEndTime(requestDTO.getEndTime());
         breakDetail.setDdrOverrideDetail(overrideDetail);

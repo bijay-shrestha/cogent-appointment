@@ -33,7 +33,7 @@ public class DDROverrideDetailQuery {
                     " AND ddr.status != 'D'" +
                     " AND ddr.doctor.id=:doctorId" +
                     " AND ddr.specialization.id= :specializationId" +
-                    " AND ddr.date =:date";
+                    " AND dd.date =:date";
 
     public static final String QUERY_TO_FETCH_DDR_OVERRIDE_TIME_DETAIL_EXCEPT_CURRENT_ID =
             " SELECT" +
@@ -44,8 +44,8 @@ public class DDROverrideDetailQuery {
                     " LEFT JOIN DDROverrideDetail dd ON ddr.id = dd.ddrShiftWise.id" +
                     " WHERE dd.status = 'Y'" +
                     " AND ddr.status != 'D'" +
-                    " AND dd.id!=:ddrOverrideId" +
+                    " AND dd.id !=:ddrOverrideId" +
                     " AND ddr.doctor.id=:doctorId" +
                     " AND ddr.specialization.id= :specializationId" +
-                    " AND ddr.date =:date";
+                    " AND dd.date =:date";
 }

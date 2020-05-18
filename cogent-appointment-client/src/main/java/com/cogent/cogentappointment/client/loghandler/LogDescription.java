@@ -12,6 +12,10 @@ public class LogDescription {
             logDescription = feature + " is added successfully...";
         }
 
+        if (action.equalsIgnoreCase("Transfer")) {
+            logDescription = "Appointment is Transferred";
+        }
+
         if (action.equalsIgnoreCase("Create") || action.equalsIgnoreCase("Create [Single Tab]")) {
             logDescription = feature + " is created successfully...";
         }

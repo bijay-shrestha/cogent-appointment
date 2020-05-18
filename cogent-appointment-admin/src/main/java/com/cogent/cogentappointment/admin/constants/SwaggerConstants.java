@@ -235,6 +235,10 @@ public class SwaggerConstants {
 
     //I
 
+    public interface IntegrationConstant {
+        String BASE_API_VALUE = "This is Integration Resource.";
+    }
+
     //J
     //K
     //L

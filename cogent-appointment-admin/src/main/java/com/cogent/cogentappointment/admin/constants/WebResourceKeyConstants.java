@@ -137,6 +137,10 @@ public class WebResourceKeyConstants {
     //I
     public static final String ID_PATH_VARIABLE_BASE = "/{id}";
 
+    public interface IntegrationConstants {
+        String BASE_INTEGRATION = "/integration";
+    }
+
 
     //J
 

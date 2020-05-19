@@ -17,6 +17,8 @@ public class AppointmentSuccessResponseDTO implements Serializable {
 
     private String appointmentNumber;
 
+    private Double refundPercentage;
+
     private Character appointmentTransactionStatus;
 
     private int responseCode;

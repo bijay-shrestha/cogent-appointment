@@ -720,20 +720,25 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
 
         validateIfStartTimeGreater(breakRequestDTO.getStartTime(), breakRequestDTO.getEndTime());
 
-        validateIfOverrideBreakIsBetweenOverrideTime(overrideDetail, breakRequestDTO);
+        validateIfOverrideBreakIsBetweenOverrideTime(
+                overrideDetail,
+                breakRequestDTO.getStartTime(),
+                breakRequestDTO.getEndTime()
+        );
 
         if (overrideBreakDetails.size() >= 1)
             validateOverrideBreakTimeDuplicity(overrideBreakDetails, breakRequestDTO);
     }
 
     private void validateIfOverrideBreakIsBetweenOverrideTime(DDROverrideDetail overrideDetail,
-                                                              DDRBreakDetailRequestDTO breakRequestDTO) {
+                                                              Date breakStartTime,
+                                                              Date breakEndTime) {
 
         boolean isTimeOverlapped = validateBreakTimeOverlap(
                 overrideDetail.getStartTime(),
                 overrideDetail.getEndTime(),
-                breakRequestDTO.getStartTime(),
-                breakRequestDTO.getEndTime()
+                breakStartTime,
+                breakEndTime
         );
 
         if (!isTimeOverlapped) {
@@ -1018,6 +1023,8 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         breakUpdateRequestDTOS
                 .forEach(breakUpdateRequestDTO -> {
 
+                    validatedUpdateBreakRequestInfo(breakUpdateRequestDTO, ddrOverrideDetail);
+
                     if (Objects.isNull(breakUpdateRequestDTO.getDdrBreakId())) {
 
                         DDROverrideBreakDetail ddrOverrideBreakDetail = saveNewOverrideBreakDetail(
@@ -1037,7 +1044,18 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
                         );
                     }
                 });
+    }
 
+    private void validatedUpdateBreakRequestInfo(DDROverrideBreakUpdateRequestDTO breakRequestDTO,
+                                                 DDROverrideDetail ddrOverrideDetail) {
+
+        validateIfStartTimeGreater(breakRequestDTO.getStartTime(), breakRequestDTO.getEndTime());
+
+        validateIfOverrideBreakIsBetweenOverrideTime(
+                ddrOverrideDetail,
+                breakRequestDTO.getStartTime(),
+                breakRequestDTO.getEndTime()
+        );
     }
 
     private void validateBreakTimeDuplicity(Date compareStartTime,
@@ -1106,7 +1124,7 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
                         .stream()
                         .filter(existing -> existing.getId().equals(breakUpdateRequestDTO.getDdrBreakId()))
                         .findAny()
-                        .orElseThrow(() -> new NoContentFoundException(DDROverrideBreakDetail.class)));
+                        .orElseThrow(() -> DDR_BREAK_DETAIL_NOT_FOUND.apply(breakUpdateRequestDTO.getDdrBreakId())));
 
         parseToUpdatedDDROverrideBreakDetail(breakUpdateRequestDTO,
                 ddrOverrideDetail,
@@ -1115,5 +1133,10 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
                 matchingObject.get()
         );
     }
+
+    private Function<Long, NoContentFoundException> DDR_BREAK_DETAIL_NOT_FOUND = (ddrBreakId) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, DDR_OVERRIDE_BREAK_DETAIL, ddrBreakId);
+        throw new NoContentFoundException(DDROverrideBreakDetail.class, "ddrBreakId", ddrBreakId.toString());
+    };
 
 }

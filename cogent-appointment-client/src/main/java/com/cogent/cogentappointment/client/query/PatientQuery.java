@@ -278,4 +278,13 @@ public class PatientQuery {
         return query;
     }
 
+
+    public static final String QUERY_TO_FETCH_ESEWA_ID =
+            " SELECT p.id as value," +                                      //[0]
+                    " p.eSewaId as label" +                                 //[1]
+                    " FROM Patient p " +
+                    " LEFT JOIN HospitalPatientInfo hp ON p.id = hp.patient.id " +
+                    " WHERE p.eSewaId IS NOT NULL" +
+                    " AND hp.hospital.id =:hospitalId";
+
 }

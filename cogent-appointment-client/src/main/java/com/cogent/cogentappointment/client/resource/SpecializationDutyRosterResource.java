@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.resource;
 
+import com.cogent.cogentappointment.client.repository.SpecializationDutyRosterRepository;
 import io.swagger.annotations.Api;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,4 +16,10 @@ import static com.cogent.cogentappointment.client.constants.WebResourceKeyConsta
 @RequestMapping(value = API_V1 + BASE_SPECIALIZATION_DUTY_ROSTER)
 @Api(BASE_API_VALUE)
 public class SpecializationDutyRosterResource {
+
+    private final SpecializationDutyRosterRepository specializationDutyRosterRepository;
+
+    public SpecializationDutyRosterResource(SpecializationDutyRosterRepository specializationDutyRosterRepository) {
+        this.specializationDutyRosterRepository = specializationDutyRosterRepository;
+    }
 }

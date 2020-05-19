@@ -280,6 +280,15 @@ public class SwaggerConstants {
     }
 
     //R
+    public interface RoomConstant {
+        String BASE_API_VALUE = "This is Room Resource.";
+        String SAVE_OPERATION = "Save new room number.";
+        String UPDATE_OPERATION = "Update existing room number";
+        String DELETE_OPERATION = "Set room number status as 'D' when deleted";
+        String SEARCH_OPERATION = "Search room number according to given request parameters";
+        String FETCH_ACTIVE_ROOM_FOR_DROP_DOWN = "Fetch active room numbers for drop down";
+        String FETCH_ROOM_FOR_DROP_DOWN = "Fetch room numbers for drop down";
+    }
 
     //S
     public interface SpecializationDutyRosterConstant {

@@ -81,6 +81,7 @@ public class QueryConstants {
     //Q
 
     //R
+    public static final String ROOM_NUMBER = "roomNumber";
 
 
     //S

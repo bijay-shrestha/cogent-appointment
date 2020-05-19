@@ -1,8 +1,8 @@
 package com.cogent.cogentappointment.persistence.listener;
 
 import com.cogent.cogentappointment.persistence.config.Action;
-import com.cogent.cogentappointment.persistence.history.ApiIntegrationFormatHistory;
-import com.cogent.cogentappointment.persistence.model.ApiIntegrationFormat;
+import com.cogent.cogentappointment.persistence.history.QueryParametersHistory;
+import com.cogent.cogentappointment.persistence.model.QueryParameters;
 import com.cogent.cogentappointment.persistence.util.BeanUtil;
 
 import javax.persistence.EntityManager;
@@ -17,27 +17,27 @@ import static javax.transaction.Transactional.TxType.MANDATORY;
 /**
  * @author rupak on 2020-05-19
  */
-public class ApiIntegrationFormatEntityListener {
+public class QueryParametersEntityListener {
 
     @PrePersist
-    public void prePersist(ApiIntegrationFormat target) {
+    public void prePersist(QueryParameters target) {
         perform(target, INSERTED);
     }
 
     @PreUpdate
-    public void preUpdate(ApiIntegrationFormat target) {
+    public void preUpdate(QueryParameters target) {
         perform(target, UPDATED);
     }
 
     @PreRemove
-    public void preRemove(ApiIntegrationFormat target) {
+    public void preRemove(QueryParameters target) {
         perform(target, DELETED);
     }
 
     @Transactional(MANDATORY)
-    public void perform(ApiIntegrationFormat target, Action action) {
+    public void perform(QueryParameters target, Action action) {
         EntityManager entityManager = BeanUtil.getBean(EntityManager.class);
-        entityManager.persist(new ApiIntegrationFormatHistory(target, action));
+        entityManager.persist(new QueryParametersHistory(target, action));
     }
-
+    
 }

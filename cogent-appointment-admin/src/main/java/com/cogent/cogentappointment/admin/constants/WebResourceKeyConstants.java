@@ -139,8 +139,9 @@ public class WebResourceKeyConstants {
 
     public interface IntegrationConstants {
         String BASE_INTEGRATION = "/integration";
+        String FEATURES="/features";
+        String HTTP_REQUEST_METHODS="/request-methods";
     }
-
 
     //J
 

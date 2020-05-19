@@ -1,11 +1,27 @@
 package com.cogent.cogentappointment.persistence.model;
 
+import com.cogent.cogentappointment.persistence.audit.Auditable;
+import com.cogent.cogentappointment.persistence.listener.ApiQueryParametersEntityListener;
+import com.cogent.cogentappointment.persistence.listener.ApiRequestHeaderEntityListener;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * @author rupak on 2020-05-19
  */
-public class ApiRequestHeader {
+@Table(name = "api_request_header")
+@Entity
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@EntityListeners(ApiRequestHeaderEntityListener.class)
+public class ApiRequestHeader extends Auditable<String> implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,8 +34,8 @@ public class ApiRequestHeader {
     @JoinColumn(name = "api_integration_format_id")
     private ApiIntegrationFormat apiIntegrationFormatId;
 
-    @Column(name = "param")
-    private String param;
+    @Column(name = "key")
+    private String key;
 
     @Column(name = "value")
     private String value;
@@ -32,11 +48,11 @@ public class ApiRequestHeader {
 
     @Override
     public String toString() {
-        return "QueryParameters{" +
+        return "ApiRequestHeader{" +
                 "id=" + id +
                 ", url='" + url + '\'' +
                 ", apiIntegrationFormatId='" + apiIntegrationFormatId.getId() + '\'' +
-                ", param='" + param + '\'' +
+                ", key='" + key + '\'' +
                 ", value='" + value + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + status +

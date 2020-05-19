@@ -1,17 +1,23 @@
 package com.cogent.cogentappointment.admin.resource;
 
+import com.cogent.cogentappointment.admin.constants.SwaggerConstants;
+import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiIntegrationRequestDTO;
+import com.cogent.cogentappointment.admin.service.HttpRequestMethodService;
+import com.cogent.cogentappointment.admin.service.IntegrationFeatureService;
 import com.cogent.cogentappointment.admin.service.IntegrationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.IntegrationConstant.BASE_API_VALUE;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.QualificationConstant.FETCH_DETAILS_FOR_DROPDOWN;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.IntegrationConstants.*;
+import static java.net.URI.create;
+import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -23,21 +29,34 @@ import static org.springframework.http.ResponseEntity.ok;
 public class IntegrationResource {
 
     private final IntegrationService integrationService;
+    private final IntegrationFeatureService integrationFeatureService;
+    private final HttpRequestMethodService httpRequestMethodService;
 
-    public IntegrationResource(IntegrationService integrationService) {
+    public IntegrationResource(IntegrationService integrationService,
+                               IntegrationFeatureService integrationFeatureService,
+                               HttpRequestMethodService httpRequestMethodService) {
         this.integrationService = integrationService;
+        this.integrationFeatureService = integrationFeatureService;
+        this.httpRequestMethodService = httpRequestMethodService;
+    }
+
+    @PostMapping
+    @ApiOperation(SwaggerConstants.IntegrationConstant.SAVE_OPERATION)
+    public ResponseEntity<?> save(@Valid @RequestBody ClientApiIntegrationRequestDTO requestDTO) {
+        integrationService.save(requestDTO);
+        return created(create(API_V1 + BASE_INTEGRATION)).build();
     }
 
     @GetMapping(FEATURES + ACTIVE + MIN)
     @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
     public ResponseEntity<?> fetchFeatureTypeForDropdown() {
-        return ok(integrationService.fetchActiveFeatureType());
+        return ok(integrationFeatureService.fetchActiveFeatureType());
     }
 
     @GetMapping(HTTP_REQUEST_METHODS + ACTIVE + MIN)
     @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
     public ResponseEntity<?> fetchQualificationForDropDown() {
-        return ok(integrationService.fetchActiveRequestMethod());
+        return ok(httpRequestMethodService.fetchActiveRequestMethod());
     }
 
 }

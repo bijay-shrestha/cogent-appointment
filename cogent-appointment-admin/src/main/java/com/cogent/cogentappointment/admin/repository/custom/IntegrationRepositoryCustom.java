@@ -13,7 +13,4 @@ import java.util.List;
 @Qualifier("integrationRepositoryCustom")
 public interface IntegrationRepositoryCustom {
 
-    List<DropDownResponseDTO> fetchActiveFeatureType();
-
-    List<DropDownResponseDTO> fetchActiveRequestMethod();
 }

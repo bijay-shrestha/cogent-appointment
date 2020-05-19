@@ -5,7 +5,9 @@ package com.cogent.cogentappointment.admin.log.constants;
  */
 public class IntegrationLog {
 
-    public final static String FEATURES = "HOSPITAL";
+    public final static String API_INTEGRATIONS = "API INTEGRATION";
+
+    public final static String FEATURES = "FEATURES";
 
     public final static String HTTP_REQUEST_METHODS = "HTTP REQUEST METHODS";
 

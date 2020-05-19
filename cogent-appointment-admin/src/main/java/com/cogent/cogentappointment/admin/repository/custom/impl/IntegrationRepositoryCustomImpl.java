@@ -34,41 +34,5 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Override
-    public List<DropDownResponseDTO> fetchActiveFeatureType() {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_MIN_FEATURES);
 
-        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
-
-        if (results.isEmpty()) {
-            featureError();
-            throw FEATURE_NOT_FOUND.get();
-        } else return results;
-    }
-
-    @Override
-    public List<DropDownResponseDTO> fetchActiveRequestMethod() {
-        Query query = createQuery.apply(entityManager, IntegrationQuery.QUERY_TO_FETCH_MIN_REQUEST_METHODS);
-
-        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
-
-        if (results.isEmpty()) {
-            httpRequestMethodError();
-            throw REQUEST_METHODS_NOT_FOUND.get();
-        } else return results;
-    }
-
-    private Supplier<NoContentFoundException> FEATURE_NOT_FOUND = () ->
-            new NoContentFoundException(Feature.class);
-
-    private Supplier<NoContentFoundException> REQUEST_METHODS_NOT_FOUND = () ->
-            new NoContentFoundException(HttpRequestMethod.class);
-
-    private void featureError() {
-        log.error(CONTENT_NOT_FOUND, FEATURES);
-    }
-
-    private void httpRequestMethodError() {
-        log.error(CONTENT_NOT_FOUND, HTTP_REQUEST_METHODS);
-    }
 }

@@ -14,6 +14,8 @@ public class DDRShiftUpdateDTO implements Serializable {
 
     private Long ddrShiftDetailId;
 
+    private Long shiftId;
+
     private Integer rosterGapDuration;
 
     private Character status;

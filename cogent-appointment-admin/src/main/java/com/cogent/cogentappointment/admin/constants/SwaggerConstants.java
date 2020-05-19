@@ -233,12 +233,15 @@ public class SwaggerConstants {
         String FETCH_OVERRIDE_BREAK_DETAIL = "Fetch override break detail if applicable";
 
         /*update*/
+        String UPDATE_DDR_OVERRIDE_OPERATION = "Update Doctor Duty Roster Override schedules." +
+                " (Can save new override schedules for the same roster or update existing rosters). " +
+                " Returns saved/updated override id as response.";
+
+        String UPDATE_DDR_SHIFT_OPERATION = "Save/update shifts for selected DDR";
+
         String UPDATE_OPERATION = "Update Doctor Duty Roster. Note that week days time can be updated " +
                 "only if there are no appointments within the selected date range";
 
-        String UPDATE_DDR_OVERRIDE_OPERATION ="Update Doctor Duty Roster Override schedules." +
-                " (Can save new override schedules for the same roster or update existing rosters). " +
-                " Returns saved/updated override id as response.";
 
         String DELETE_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION = "Set Doctor Duty Roster Override status as 'D' when deleted. " +
                 " Note that doctor duty roster override can be deleted " +

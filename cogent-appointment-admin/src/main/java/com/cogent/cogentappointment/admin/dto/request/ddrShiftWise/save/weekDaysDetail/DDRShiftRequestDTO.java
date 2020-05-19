@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.weekDaysDetail;
 
+import com.cogent.cogentappointment.admin.constraintvalidator.Status;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,6 +22,10 @@ public class DDRShiftRequestDTO implements Serializable {
 
     @NotNull
     private Integer rosterGapDuration;
+
+    @NotNull
+    @Status
+    private Character status;
 
     @NotEmpty
     @Size(min = 1, max = 7)

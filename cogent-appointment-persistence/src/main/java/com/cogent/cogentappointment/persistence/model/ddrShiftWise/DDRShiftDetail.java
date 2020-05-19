@@ -31,7 +31,11 @@ public class DDRShiftDetail implements Serializable {
     @Column(name = "roster_gap_duration")
     private Integer rosterGapDuration;
 
+    /*DURING EDIT, SHIFT INFORMATION CAN BE UPDATED SEPARATELY.
+    * SO, IF ANY SHIFTS ARE ASSIGNED IN DDR, ITS STATUS IS INITIALLY INACTIVE
+    * AND WHEN WEEK DAYS INFO ARE PROVIDED, ITS STATUS IS ACTIVE.*/
     /* Y-> ACTIVE
+    N-> INACTIVE
     * D-> DELETED*/
     @Column(name = "status")
     private Character status;

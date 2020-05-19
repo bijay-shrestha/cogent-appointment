@@ -80,7 +80,7 @@ public class ErrorMessageConstants {
     }
 
     public interface DDRShiftWiseMessages {
-        String DUPLICATE_SHIFT_MESSAGE = "Sorry, Operation failed! Request contains duplicate ddrShiftWise details";
+        String DUPLICATE_SHIFT_MESSAGE = "Sorry, Operation failed! Request contains duplicate shift details";
         String INVALID_SHIFT_REQUEST_MESSAGE = "Sorry, Operation failed! Requested Shift(s) is not assigned to doctor";
 
         String INVALID_DDR_SHIFT_REQUEST_MESSAGE = "Sorry, Operation failed! Requested Shift(s) is not " +
@@ -88,7 +88,7 @@ public class ErrorMessageConstants {
 
         String DUPLICATION_MESSAGE = "Doctor Duty Roster already exists for selected doctor.";
 
-        String INVALID_WEEK_DAYS_REQUEST = "Sorry, Operation failed! '%s' time schedules overlaps between ddrShiftWise(s).";
+        String INVALID_WEEK_DAYS_REQUEST = "Sorry, Operation failed! '%s' time schedules overlaps between shift(s).";
 
         String INVALID_WEEK_DAYS_BREAK_REQUEST = "Sorry, Operation failed! Break time schedules doesn't lie between " +
                 "'%s' time schedules";
@@ -107,6 +107,9 @@ public class ErrorMessageConstants {
 
         String APPOINTMENT_EXISTS_MESSAGE = "Cannot update/delete doctor duty roster because appointment" +
                 " exists within the selected date range.";
+
+        String DUPLICATE_SHIFT_ASSIGNMENT_MESSAGE = "Sorry, Operation failed!" +
+                " '%s' Shift is already assigned in this duty roster";
 
 
     }

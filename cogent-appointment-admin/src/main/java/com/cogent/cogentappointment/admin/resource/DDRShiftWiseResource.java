@@ -7,6 +7,7 @@ import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.manage.DDRSea
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.override.DDROverrideRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.weekDaysDetail.DDRRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.update.override.DDROverrideUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.update.shift.DDRShiftUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.service.DDRShiftWiseService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -118,9 +119,14 @@ public class DDRShiftWiseResource {
 
     @PutMapping(UPDATE + OVERRIDE)
     @ApiOperation(UPDATE_DDR_OVERRIDE_OPERATION)
-    public ResponseEntity<?> updateDDROverrideDetail (@Valid @RequestBody DDROverrideUpdateRequestDTO requestDTO){
+    public ResponseEntity<?> updateDDROverrideDetail(@Valid @RequestBody DDROverrideUpdateRequestDTO requestDTO) {
         return ok(ddrShiftWiseService.updateDoctorDutyRosterOverride(requestDTO));
     }
 
-
+    @PutMapping(UPDATE )
+    @ApiOperation(UPDATE_DDR_SHIFT_OPERATION)
+    public ResponseEntity<?> updateDDRShiftDetail(@Valid @RequestBody DDRShiftUpdateRequestDTO updateRequestDTO) {
+        ddrShiftWiseService.updateDDRShiftDetail(updateRequestDTO);
+        return ok().build();
+    }
 }

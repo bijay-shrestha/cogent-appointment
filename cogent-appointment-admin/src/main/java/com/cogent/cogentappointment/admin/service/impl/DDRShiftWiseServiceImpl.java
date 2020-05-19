@@ -9,6 +9,8 @@ import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.override
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.weekDaysDetail.*;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.update.override.DDROverrideBreakUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.update.override.DDROverrideUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.update.shift.DDRShiftUpdateDTO;
+import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.update.shift.DDRShiftUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.DDRTimeResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.*;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.DDRMinResponseDTO;
@@ -51,8 +53,9 @@ import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDROverrideB
 import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDROverrideBreakDetailUtils.parseToUpdatedDDROverrideBreakDetail;
 import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDROverrideDetailUtils.parseToDdrOverrideDetail;
 import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDROverrideDetailUtils.parseToOverrideUpdateResponse;
+import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDRShiftDetailUtils.parseToDDRShiftDetail;
+import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDRShiftDetailUtils.parseToUpdatedDDRShiftDetail;
 import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDRShiftWiseUtils.*;
-import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDRWeekDaysUtils.parseToDDRShiftDetail;
 import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDRWeekDaysUtils.parseToDDRWeekDaysDetail;
 
 /**
@@ -361,6 +364,45 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         return updateResponse;
     }
 
+    /*1. If new shifts are saved while updating DDR,
+    *   a. Validate if that requested shifts are not previously assigned
+    *   b. Validate if requested shifts are assigned to the doctor
+     * 2. If existing shifts are updated while updating DDR,
+      * a. Validate if that shiftDetailId is valid and simply update roster gap duration & status*/
+    @Override
+    public void updateDDRShiftDetail(DDRShiftUpdateRequestDTO shiftUpdateRequestDTO) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(UPDATING_PROCESS_STARTED, DDR_SHIFT_WISE);
+
+        DoctorDutyRosterShiftWise ddrShiftWise = fetchDDRShiftWise(shiftUpdateRequestDTO.getDdrId());
+
+        List<DDRShiftDetail> existingShiftDetails =
+                ddrShiftDetailRepository.fetchByDDRId(shiftUpdateRequestDTO.getDdrId());
+
+        shiftUpdateRequestDTO.getShiftDetail().forEach(
+                updateRequestDTO -> {
+
+                    if (Objects.isNull(updateRequestDTO.getDdrShiftDetailId())) {
+                        validateUpdatedShiftRequestInfo(
+                                existingShiftDetails,
+                                updateRequestDTO.getShiftId(),
+                                ddrShiftWise.getDoctor().getId());
+
+                        saveDDRShiftDetail(
+                                ddrShiftWise,
+                                updateRequestDTO.getShiftId(),
+                                updateRequestDTO.getRosterGapDuration(),
+                                updateRequestDTO.getStatus()
+                        );
+                    } else
+                        updateDDRShiftDetail(existingShiftDetails, updateRequestDTO);
+                }
+        );
+
+        log.info(UPDATING_PROCESS_COMPLETED, DDR_SHIFT_WISE, getDifferenceBetweenTwoTime(startTime));
+    }
+
     /*1. VALIDATE CONSTRAINTS VIOLATION
     * 2. VALIDATE IF FIRST DATE IS GREATER THAN TO DATE
     * 3. VALIDATE REQUESTED SHIFT DETAILS
@@ -398,7 +440,7 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
                 .collect(Collectors.toList());
 
         if (requestedShiftIds.size() != shiftDetail.size())
-            throw new BadRequestException(DUPLICATE_SHIFT_MESSAGE);
+            throw new DataDuplicationException(DUPLICATE_SHIFT_MESSAGE);
 
         Long assignedDoctorShifts = doctorService.validateDoctorShiftCount(requestedShiftIds, doctorId);
 
@@ -439,13 +481,13 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
 
         shiftRequestDTO.forEach(
                 shiftDetail -> {
-                    Shift shift = fetchShift(
-                            shiftDetail.getShiftId(),
-                            ddrShiftWise.getHospital().getId()
-                    );
 
-                    DDRShiftDetail ddrShiftDetail =
-                            saveDDRShiftDetail(ddrShiftWise, shift, shiftDetail.getRosterGapDuration());
+                    DDRShiftDetail ddrShiftDetail = saveDDRShiftDetail(
+                            ddrShiftWise,
+                            shiftDetail.getShiftId(),
+                            shiftDetail.getRosterGapDuration(),
+                            shiftDetail.getStatus()
+                    );
 
                     saveDDRWeekDaysDetail(shiftDetail.getWeekDaysDetail(), ddrShiftDetail, ddrWeekDaysDetails);
                 }
@@ -453,11 +495,18 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
     }
 
     private DDRShiftDetail saveDDRShiftDetail(DoctorDutyRosterShiftWise ddrShiftWise,
-                                              Shift shift,
-                                              Integer rosterGapDuration) {
+                                              Long shiftId,
+                                              Integer rosterGapDuration,
+                                              Character status) {
 
-        DDRShiftDetail ddrShiftDetail = parseToDDRShiftDetail(ddrShiftWise, shift, rosterGapDuration);
+        Shift shift = fetchShift(shiftId, ddrShiftWise.getHospital().getId());
 
+        DDRShiftDetail ddrShiftDetail = parseToDDRShiftDetail(ddrShiftWise, shift, rosterGapDuration, status);
+
+        return saveDDRShiftDetail(ddrShiftDetail);
+    }
+
+    private DDRShiftDetail saveDDRShiftDetail(DDRShiftDetail ddrShiftDetail) {
         return ddrShiftDetailRepository.save(ddrShiftDetail);
     }
 
@@ -611,13 +660,12 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
                             overrideDetails
                     );
 
-                    if (!overrideRequestDTO.getBreakDetail().isEmpty()) {
+                    if (!overrideRequestDTO.getBreakDetail().isEmpty())
                         saveDDROverrideBreakDetail(
                                 overrideRequestDTO.getBreakDetail(),
                                 ddrOverrideDetail,
                                 ddrShiftWise.getHospital().getId()
                         );
-                    }
                 }
         );
     }
@@ -1139,4 +1187,41 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         throw new NoContentFoundException(DDROverrideBreakDetail.class, "ddrBreakId", ddrBreakId.toString());
     };
 
+    private Function<Long, NoContentFoundException> DDR_SHIFT_DETAIL_NOT_FOUND = (ddrShiftDetailId) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, DDRShiftDetail.class, ddrShiftDetailId);
+        throw new NoContentFoundException(DDRShiftDetail.class, "ddrShiftDetailId", ddrShiftDetailId.toString());
+    };
+
+    private void validateUpdatedShiftRequestInfo(List<DDRShiftDetail> existingShiftDetails,
+                                                 Long shiftId, Long doctorId) {
+
+        DDRShiftDetail matched = existingShiftDetails.stream()
+                .filter(existing -> existing.getShift().getId().equals(shiftId))
+                .findAny()
+                .orElse(null);
+
+        if (!Objects.isNull(matched))
+            throw new DataDuplicationException(
+                    String.format(DUPLICATE_SHIFT_ASSIGNMENT_MESSAGE, matched.getShift().getName()));
+
+        Long assignedShiftCount =
+                doctorService.validateDoctorShiftCount(Collections.singletonList(shiftId), doctorId);
+
+        if (assignedShiftCount <= 0) throw new BadRequestException(INVALID_SHIFT_REQUEST_MESSAGE);
+    }
+
+    private void updateDDRShiftDetail(List<DDRShiftDetail> existingShiftDetails,
+                                      DDRShiftUpdateDTO updateRequestDTO) {
+
+        DDRShiftDetail ddrShiftDetail = existingShiftDetails.stream()
+                .filter(existing -> existing.getId().equals(updateRequestDTO.getDdrShiftDetailId()))
+                .findAny()
+                .orElseThrow(() -> DDR_SHIFT_DETAIL_NOT_FOUND.apply(updateRequestDTO.getDdrShiftDetailId()));
+
+        parseToUpdatedDDRShiftDetail(ddrShiftDetail,
+                updateRequestDTO.getRosterGapDuration(),
+                updateRequestDTO.getStatus());
+
+        saveDDRShiftDetail(ddrShiftDetail);
+    }
 }

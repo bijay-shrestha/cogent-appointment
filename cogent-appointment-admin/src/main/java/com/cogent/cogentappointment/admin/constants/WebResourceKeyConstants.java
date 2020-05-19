@@ -181,6 +181,9 @@ public class WebResourceKeyConstants {
     }
 
     //R
+    public interface RoomConstants {
+        String BASE_ROOM = "/room";
+    }
 
 
     //S

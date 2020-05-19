@@ -103,6 +103,18 @@ public class ErrorMessageConstants {
                 " exists within the selected date range '%s'.";
     }
 
+    public interface SpecializationDutyRosterServiceMessages {
+        String DUPLICATION_MESSAGE = "Specialization Duty Roster already exists for selected specialization.";
+
+        String BAD_REQUEST_MESSAGE = "Specialization Duty Roster Override doesn't lie within the duty roster date range.";
+
+        String APPOINTMENT_EXISTS_MESSAGE = "Cannot update specialization duty roster because appointment" +
+                " exists within the selected date range.";
+
+        String APPOINTMENT_EXISTS_ON_WEEK_DAY_MESSAGE = "Cannot update specialization duty roster because appointment" +
+                " exists within the selected date range '%s'.";
+    }
+
     //E
 
     //F

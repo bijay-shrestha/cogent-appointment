@@ -53,7 +53,7 @@ public class SpecializationWeekDaysDutyRoster extends Auditable<String> implemen
                 ", startTime=" + startTime +
                 ", endTime=" + endTime +
                 ", dayOffStatus=" + dayOffStatus +
-                ", specializationDutyRoster=" + specializationDutyRoster.getSpecializationId() +
+                ", specializationDutyRoster=" + specializationDutyRoster.getId() +
                 ", weekDaysId=" + weekDays.getName() +
                 '}';
     }

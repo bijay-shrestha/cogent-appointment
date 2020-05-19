@@ -27,9 +27,9 @@ import java.util.List;
 @Qualifier("specializationDutyRosterRepositoryCustom")
 public interface SpecializationDutyRosterRepositoryCustom {
 
-//    Long validateDoctorDutyRosterCount(Long specializationId,
-//                                       Date fromDate,
-//                                       Date toDate);
+    Long validateSpecializationDutyRosterCount(Long specializationId,
+                                       Date fromDate,
+                                       Date toDate);
 //
 //    List<DoctorDutyRosterMinimalResponseDTO> search(DoctorDutyRosterSearchRequestDTO searchRequestDTO,
 //                                                    Pageable pageable,

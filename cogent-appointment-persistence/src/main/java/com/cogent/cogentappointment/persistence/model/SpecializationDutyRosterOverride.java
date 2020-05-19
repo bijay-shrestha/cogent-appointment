@@ -67,7 +67,7 @@ public class SpecializationDutyRosterOverride extends Auditable<String> implemen
                 ", startTime=" + startTime +
                 ", endTime=" + endTime +
                 ", dayOffStatus=" + dayOffStatus +
-                ", specializationDutyRoster=" + specializationDutyRoster.getSpecializationId() +
+                ", specializationDutyRoster=" + specializationDutyRoster.getId() +
                 ", status=" + status +
                 ", remarks='" + remarks + '\'' +
                 '}';

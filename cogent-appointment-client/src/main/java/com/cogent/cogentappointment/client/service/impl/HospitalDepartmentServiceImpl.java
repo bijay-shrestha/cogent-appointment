@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
+import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentDeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentUpdateRequestDTO;
@@ -201,6 +202,42 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
         deleteDoctorInfo(requestDTO);
 
         deleteRoomInfo(requestDTO);
+
+        log.info(DELETING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    @Override
+    public void deleteDoctor(HospitalDepartmentDeleteRequestDTO requestDTO) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(DELETING_PROCESS_STARTED, HOSPITAL_DEPARTMENT);
+
+        HospitalDepartmentDoctorInfo hospitalDeptDoctorInfo=hospitalDepartmentDoctorInfoRepository
+                .fetchDoctorByHospitalDepartmentId(requestDTO.getHospitalDepartmentId(),requestDTO.getId());
+
+        hospitalDeptDoctorInfo.setStatus(requestDTO.getStatus());
+
+        hospitalDeptDoctorInfo.setRemarks(requestDTO.getRemarks());
+
+        saveHospitalDepartmentDoctorInfo(hospitalDeptDoctorInfo);
+
+        log.info(DELETING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    @Override
+    public void deleteRoom(HospitalDepartmentDeleteRequestDTO requestDTO) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(DELETING_PROCESS_STARTED, HOSPITAL_DEPARTMENT);
+
+        HospitalDepartmentRoomInfo hospitalDeptRoomInfo=hospitalDepartmentRoomInfoRepository
+                .fetchRoomByHospitalDepartmentId(requestDTO.getHospitalDepartmentId(),requestDTO.getId());
+
+        hospitalDeptRoomInfo.setStatus(requestDTO.getStatus());
+
+        hospitalDeptRoomInfo.setRemarks(requestDTO.getRemarks());
+
+        saveHospitalDepartmentRoomInfo(hospitalDeptRoomInfo);
 
         log.info(DELETING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
     }

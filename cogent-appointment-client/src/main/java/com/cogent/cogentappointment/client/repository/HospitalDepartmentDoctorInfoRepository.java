@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.client.repository;
 
 import com.cogent.cogentappointment.client.repository.custom.HospitalDepartmentDoctorInfoRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDoctorInfo;
+import com.cogent.cogentappointment.persistence.model.HospitalDepartmentRoomInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,6 +19,12 @@ public interface HospitalDepartmentDoctorInfoRepository extends JpaRepository<Ho
     @Query(value = "SELECT hdi.doctor.id FROM HospitalDepartmentDoctorInfo hdi WHERE hdi.hospitalDepartment.id=:hospitalDepartmentId AND hdi.status='Y'")
     List<Long> fetchDoctorIdListByHospitalDepartmentId(@Param("hospitalDepartmentId") Long hospitalDepartmentId);
 
-    @Query(value = "SELECT hdi FROM HospitalDepartmentDoctorInfo hdi WHERE hdi.hospitalDepartment.id=:hospitalDepartmentId AND hdi.status!='D'")
+    @Query(value = "SELECT hdi FROM HospitalDepartmentDoctorInfo hdi WHERE hdi.hospitalDepartment.id=:hospitalDepartmentId " +
+            "AND hdi.status!='D'")
     List<HospitalDepartmentDoctorInfo> fetchDoctorListByHospitalDepartmentId(@Param("hospitalDepartmentId") Long hospitalDepartmentId);
+
+    @Query(value = "SELECT hdi FROM HospitalDepartmentDoctorInfo hdi WHERE hdi.hospitalDepartment.id=:hospitalDepartmentId" +
+            " AND hdi.doctor.id=:doctorId AND hdi.status!='D'")
+    HospitalDepartmentDoctorInfo fetchDoctorByHospitalDepartmentId(@Param("hospitalDepartmentId") Long hospitalDepartmentId,
+                                                               @Param("doctorId") Long doctorId);
 }

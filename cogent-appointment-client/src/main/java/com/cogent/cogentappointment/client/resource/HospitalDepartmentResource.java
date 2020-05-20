@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.resource;
 
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentDeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentUpdateRequestDTO;
@@ -19,6 +20,8 @@ import static com.cogent.cogentappointment.client.constants.SwaggerConstants.Dep
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.HospitalDepartmentConstant.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.HospitalDepartmentConstants.BASE_HOSPITAL_DEPARTMENT;
+import static com.cogent.cogentappointment.client.log.constants.DoctorLog.DOCTOR;
+import static com.cogent.cogentappointment.client.log.constants.RoomLog.ROOM;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -85,10 +88,17 @@ public class HospitalDepartmentResource {
         return ok().build();
     }
 
-//    @DeleteMapping(ID_PATH_VARIABLE_BASE)
-//    @ApiOperation(DELETE_DEPARTMENT_OPERATION)
-//    public ResponseEntity<?> delete(@PathVariable("id") Long id) {
-//        hospitalDepartmentService.delete(deleteRequestDTO);
-//        return ok().build();
-//    }
+    @DeleteMapping(DOCTOR)
+    @ApiOperation(DELETE_DEPARTMENT_OPERATION)
+    public ResponseEntity<?> deleteDoctor(@Valid @RequestBody HospitalDepartmentDeleteRequestDTO deleteRequestDTO) {
+        hospitalDepartmentService.deleteDoctor(deleteRequestDTO);
+        return ok().build();
+    }
+
+    @DeleteMapping(ROOM)
+    @ApiOperation(DELETE_DEPARTMENT_OPERATION)
+    public ResponseEntity<?> deleteRoom(@Valid @RequestBody HospitalDepartmentDeleteRequestDTO deleteRequestDTO) {
+        hospitalDepartmentService.deleteRoom(deleteRequestDTO);
+        return ok().build();
+    }
 }

@@ -28,38 +28,38 @@ public class IntegrationServiceImpl implements IntegrationService {
     @Override
     public ClientIntegrationResponseDTO fetchClientIntegrationResponseDTO(ApiIntegrationRequestDTO apiIntegrationRequestDTO) {
 
-        List<FeatureIntegrationResponse> integrationResponseDTOList=integrationRepository.
-                fetchClientIntegrationResponseDTO(apiIntegrationRequestDTO.getHospitalId());
+//        List<FeatureIntegrationResponse> integrationResponseDTOList=integrationRepository.
+//                fetchClientIntegrationResponseDTO(apiIntegrationRequestDTO.getHospitalId());
+//
+//
+//        List<FeatureIntegrationResponseDTO> features=new ArrayList<>();
+//        integrationResponseDTOList.forEach(responseDTO->{
+//
+//            List<ApiRequestHeaderResponseDTO> requestHeaderResponseDTO=integrationRepository.findApiRequestHeaders(responseDTO.getApiIntegrationFormatId());
+//
+//            List<ApiQueryParametersResponseDTO> queryParametersResponseDTO=integrationRepository.findApiQueryParameters(responseDTO.getApiIntegrationFormatId());
+//
+//
+//            ClientIntegrationResponseDTO integrationResponseDTO=new ClientIntegrationResponseDTO();
+//
+//            FeatureIntegrationResponseDTO featureIntegrationResponseDTO=new FeatureIntegrationResponseDTO();
+//            featureIntegrationResponseDTO.setFeatureCode(responseDTO.getFeatureCode());
+//            featureIntegrationResponseDTO.setRequestBody(responseDTO.getRequestBody());
+//            featureIntegrationResponseDTO.setRequestMethod(responseDTO.getRequestMethod());
+//            featureIntegrationResponseDTO.setUrl(responseDTO.getUrl());
+//
+//            featureIntegrationResponseDTO.setHeaders(requestHeaderResponseDTO);
+//            featureIntegrationResponseDTO.setQueryParameters(queryParametersResponseDTO);
+//
+//            features.add(featureIntegrationResponseDTO);
+//
+//        });
+//
+//
+//        ClientIntegrationResponseDTO clientIntegrationResponseDTO=new ClientIntegrationResponseDTO();
+//        clientIntegrationResponseDTO.setFeatures(features);
 
-
-        List<FeatureIntegrationResponseDTO> features=new ArrayList<>();
-        integrationResponseDTOList.forEach(responseDTO->{
-
-            List<ApiRequestHeaderResponseDTO> requestHeaderResponseDTO=integrationRepository.findApiRequestHeaders(responseDTO.getApiIntegrationFormatId());
-
-            List<ApiQueryParametersResponseDTO> queryParametersResponseDTO=integrationRepository.findApiQueryParameters(responseDTO.getApiIntegrationFormatId());
-
-
-            ClientIntegrationResponseDTO integrationResponseDTO=new ClientIntegrationResponseDTO();
-
-            FeatureIntegrationResponseDTO featureIntegrationResponseDTO=new FeatureIntegrationResponseDTO();
-            featureIntegrationResponseDTO.setFeatureCode(responseDTO.getFeatureCode());
-            featureIntegrationResponseDTO.setRequestBody(responseDTO.getRequestBody());
-            featureIntegrationResponseDTO.setRequestMethod(responseDTO.getRequestMethod());
-            featureIntegrationResponseDTO.setUrl(responseDTO.getUrl());
-
-            featureIntegrationResponseDTO.setHeaders(requestHeaderResponseDTO);
-            featureIntegrationResponseDTO.setQueryParameters(queryParametersResponseDTO);
-
-            features.add(featureIntegrationResponseDTO);
-
-        });
-
-
-        ClientIntegrationResponseDTO clientIntegrationResponseDTO=new ClientIntegrationResponseDTO();
-        clientIntegrationResponseDTO.setFeatures(features);
-
-        return clientIntegrationResponseDTO;
+        return null;
 
     }
 }

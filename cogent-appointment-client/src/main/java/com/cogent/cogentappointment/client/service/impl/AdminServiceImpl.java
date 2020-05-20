@@ -28,10 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.Validator;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -407,8 +404,8 @@ public class AdminServiceImpl implements AdminService {
         AdminLoggedInInfoResponseDTO responseDTO =
                 adminRepository.fetchLoggedInAdminInfo(requestDTO, getLoggedInHospitalId());
 
-        ClientIntegrationResponseDTO eCIntegrate = getHospitalApiIntegration(getLoggedInHospitalId());
-        responseDTO.setECIntegrate(eCIntegrate);
+        ClientIntegrationResponseDTO integrationResponseDTO = getHospitalApiIntegration(getLoggedInHospitalId());
+        responseDTO.setECIntegrate(integrationResponseDTO);
 
         log.info(FETCHING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
 
@@ -424,7 +421,9 @@ public class AdminServiceImpl implements AdminService {
         List<FeatureIntegrationResponseDTO> features = new ArrayList<>();
         integrationResponseDTOList.forEach(responseDTO -> {
 
-            List<ApiRequestHeaderResponseDTO> requestHeaderResponseDTO = integrationRepository.findApiRequestHeaders(responseDTO.getApiIntegrationFormatId());
+//            List<ApiRequestHeaderResponseDTO> requestHeaderResponseDTO = integrationRepository.findApiRequestHeaders(responseDTO.getApiIntegrationFormatId());
+
+            Map<String,String> requestHeaderResponseDTO = integrationRepository.findApiRequestHeaders(responseDTO.getApiIntegrationFormatId());
 
             List<ApiQueryParametersResponseDTO> queryParametersResponseDTO = integrationRepository.findApiQueryParameters(responseDTO.getApiIntegrationFormatId());
 

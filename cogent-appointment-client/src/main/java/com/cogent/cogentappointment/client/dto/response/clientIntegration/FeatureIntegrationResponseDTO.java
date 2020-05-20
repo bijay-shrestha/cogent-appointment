@@ -4,6 +4,7 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author rupak on 2020-05-20
@@ -23,7 +24,9 @@ public class FeatureIntegrationResponseDTO implements Serializable {
 
     private String requestBody;
 
-    private List<ApiRequestHeaderResponseDTO> headers;
+//    private List<ApiRequestHeaderResponseDTO> headers;
+
+    private Map<String,String> headers;
 
     private List<ApiQueryParametersResponseDTO> queryParameters;
 

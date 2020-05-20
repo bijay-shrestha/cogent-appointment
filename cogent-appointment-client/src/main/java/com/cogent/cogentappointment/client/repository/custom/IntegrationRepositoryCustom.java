@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author rupak on 2020-05-20
@@ -16,7 +17,7 @@ public interface IntegrationRepositoryCustom {
 
     List<FeatureIntegrationResponse> fetchClientIntegrationResponseDTO(Long hospitalId);
 
-    List<ApiRequestHeaderResponseDTO> findApiRequestHeaders(Long apiIntegrationFormatId);
+    Map<String,String> findApiRequestHeaders(Long apiIntegrationFormatId);
 
     List<ApiQueryParametersResponseDTO> findApiQueryParameters(Long apiIntegrationFormatId);
 }

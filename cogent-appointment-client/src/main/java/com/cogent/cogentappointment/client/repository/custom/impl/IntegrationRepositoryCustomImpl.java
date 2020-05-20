@@ -13,7 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.CLIENT_API_INTEGRATION_FORMAT_ID;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.HOSPITAL_ID;
@@ -46,18 +49,23 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
     }
 
     @Override
-    public List<ApiRequestHeaderResponseDTO> findApiRequestHeaders(Long apiIntegrationFormatId) {
+    public  Map<String,String> findApiRequestHeaders(Long apiIntegrationFormatId) {
         Query query = createQuery.apply(entityManager, IntegrationQuery.CLIENT_API_FEAUTRES_HEADERS_QUERY)
                 .setParameter(CLIENT_API_INTEGRATION_FORMAT_ID, apiIntegrationFormatId);
 
         List<ApiRequestHeaderResponseDTO> requestHeaderResponseDTO =
                 transformQueryToResultList(query, ApiRequestHeaderResponseDTO.class);
 
+        Map<String,String> map=new HashMap<>();
+        requestHeaderResponseDTO.forEach(response->{
+            map.put(response.getKeyName(), response.getKeyValue());
+        });
+
 //        if (appointmentDetails.isEmpty()) throw APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId);
 //
 //        return appointmentDetails.get(0);
 
-        return requestHeaderResponseDTO;
+        return map;
     }
 
     @Override

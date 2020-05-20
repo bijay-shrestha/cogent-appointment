@@ -23,8 +23,8 @@ public class IntegrationQuery {
 
     public static final String CLIENT_API_FEAUTRES_HEADERS_QUERY =
             " SELECT " +
-                    " arh.keyName as token," +
-                    " arh.value as contentType" +
+                    " arh.keyName as keyName," +
+                    " arh.value as keyValue" +
                     " FROM ClientFeatureIntegration cfi" +
                     " LEFT JOIN Feature f ON f.id=cfi.featureId" +
                     " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=cfi.id" +

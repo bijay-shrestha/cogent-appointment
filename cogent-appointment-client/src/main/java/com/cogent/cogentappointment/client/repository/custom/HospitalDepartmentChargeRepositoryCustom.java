@@ -11,9 +11,7 @@ import java.util.List;
  * @author Sauravi Thapa ON 5/20/20
  */
 @Repository
-@Qualifier("hospitalDepartmentRepositoryCustom")
-public interface HospitalDepartmentRepositoryCustom {
-    List<Object[]> validateDuplicity(HospitalDepartmentRequestDTO requestDTO, Long hospitalId);
+@Qualifier("hospitalDepartmentChargeRepositoryCustom")
+public interface HospitalDepartmentChargeRepositoryCustom {
 
-    List<Object[]> validateDuplicity(HospitalDepartmentUpdateRequestDTO requestDTO, Long hospitalId);
 }

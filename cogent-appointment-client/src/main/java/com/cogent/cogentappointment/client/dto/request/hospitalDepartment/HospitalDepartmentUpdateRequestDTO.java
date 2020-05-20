@@ -18,9 +18,17 @@ import java.util.List;
 public class HospitalDepartmentUpdateRequestDTO implements Serializable {
 
     @NotNull
+    private Long id;
+
+    @NotNull
     @NotEmpty
     @NotBlank
     private String name;
+
+    @NotNull
+    @NotEmpty
+    @NotBlank
+    private String code;
 
     @NotNull
     @NotEmpty

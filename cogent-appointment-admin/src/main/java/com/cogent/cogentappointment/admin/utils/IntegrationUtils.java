@@ -20,11 +20,11 @@ public class IntegrationUtils {
         return clientFeatureIntegration;
     }
 
-    public static ApiIntegrationFormat parseToClientApiIntegrationFormat(ApiIntegrationFormatRequestDTO requestDTO, HttpRequestMethod httpRequestMethod) {
+    public static ApiIntegrationFormat parseToClientApiIntegrationFormat(ApiIntegrationFormatRequestDTO requestDTO) {
 
         ApiIntegrationFormat apiIntegrationFormat=new ApiIntegrationFormat();
         apiIntegrationFormat.setHttpRequestBodyAttributes(requestDTO.getRequestBodyAttrribute());
-        apiIntegrationFormat.setHttpRequestMethodId(httpRequestMethod.getId());
+        apiIntegrationFormat.setHttpRequestMethodId(requestDTO.getRequestMethodId());
         apiIntegrationFormat.setUrl(requestDTO.getApiUrl());
         apiIntegrationFormat.setStatus(StatusConstants.ACTIVE);
 

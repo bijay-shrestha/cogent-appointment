@@ -40,8 +40,9 @@ public class IntegrationServiceImpl implements IntegrationService {
     private final ApiQueryParametersRepository apiQueryParametersRepository;
     private final ApiRequestHeaderRepository apiRequestHeaderRepository;
     private final ApiFeatureIntegrationRepository apiFeatureIntegrationRepository;
+    private final FeatureRepository featureRepository;
 
-    public IntegrationServiceImpl(ClientFeatureIntegrationRepository clientFeatureIntegrationRepository, ClientApiIntegrationFormatRespository clientApiIntegrationFormatRespository, HttpRequestMethodRepository httpRequestMethodRepository, ApiQueryParametersRepository apiQueryParametersRepository, ApiRequestHeaderRepository apiRequestHeaderRepository, ApiFeatureIntegrationRepository apiFeatureIntegrationRepository) {
+    public IntegrationServiceImpl(ClientFeatureIntegrationRepository clientFeatureIntegrationRepository, ClientApiIntegrationFormatRespository clientApiIntegrationFormatRespository, HttpRequestMethodRepository httpRequestMethodRepository, ApiQueryParametersRepository apiQueryParametersRepository, ApiRequestHeaderRepository apiRequestHeaderRepository, ApiFeatureIntegrationRepository apiFeatureIntegrationRepository, FeatureRepository featureRepository) {
 
         this.clientFeatureIntegrationRepository = clientFeatureIntegrationRepository;
         this.clientApiIntegrationFormatRespository = clientApiIntegrationFormatRespository;
@@ -49,6 +50,7 @@ public class IntegrationServiceImpl implements IntegrationService {
         this.apiQueryParametersRepository = apiQueryParametersRepository;
         this.apiRequestHeaderRepository = apiRequestHeaderRepository;
         this.apiFeatureIntegrationRepository = apiFeatureIntegrationRepository;
+        this.featureRepository = featureRepository;
     }
 
     @Override
@@ -58,12 +60,13 @@ public class IntegrationServiceImpl implements IntegrationService {
 
         log.info(SAVING_PROCESS_STARTED, API_INTEGRATIONS);
 
-        ClientFeatureIntegration clientFeatureIntegration = parseToClientFeatureIntegration(requestDTO.getHospitalId(), requestDTO.getFeatureTypeId());
+        validateFeatureAndHttpRequestMethod(requestDTO.getFeatureTypeId(),
+                requestDTO.getRequestMethodId());
+
+        ClientFeatureIntegration clientFeatureIntegration = parseToClientFeatureIntegration(requestDTO.getHospitalId(),
+                requestDTO.getFeatureTypeId());
+
         saveClientFeatureIntegration(clientFeatureIntegration);
-
-        HttpRequestMethod httpRequestMethod = httpRequestMethodRepository.httpRequestMethodById(requestDTO.getRequestMethodId())
-                .orElseThrow(() -> HTTP_REQUEST_METHOD_WITH_GIVEN_ID_NOT_FOUND.apply(requestDTO.getRequestMethodId()));
-
 
         ApiIntegrationFormatRequestDTO apiIntegrationFormatRequestDTO = ApiIntegrationFormatRequestDTO.builder()
                 .apiUrl(requestDTO.getApiUrl())
@@ -72,7 +75,7 @@ public class IntegrationServiceImpl implements IntegrationService {
                 .build();
 
         ApiIntegrationFormat apiIntegrationFormat =
-                parseToClientApiIntegrationFormat(apiIntegrationFormatRequestDTO, httpRequestMethod);
+                parseToClientApiIntegrationFormat(apiIntegrationFormatRequestDTO);
 
         saveApiIntegrationFormat(apiIntegrationFormat);
 
@@ -83,6 +86,17 @@ public class IntegrationServiceImpl implements IntegrationService {
         saveApiRequestHeaders(requestDTO.getClientApiRequestHeaders(), apiIntegrationFormat);
 
         log.info(SAVING_PROCESS_COMPLETED, API_INTEGRATIONS, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    private void validateFeatureAndHttpRequestMethod(Long featureTypeId, Long requestMethodId) {
+
+        featureRepository.findFeatureById(featureTypeId)
+                .orElseThrow(() -> FEATURE_NOT_FOUND.apply(featureTypeId));
+
+        httpRequestMethodRepository.httpRequestMethodById(requestMethodId)
+                .orElseThrow(() -> HTTP_REQUEST_METHOD_WITH_GIVEN_ID_NOT_FOUND.apply(requestMethodId));
+
+
     }
 
     private void saveApiRequestHeaders(List<ClientApiHeadersRequestDTO> clientApiRequestHeaders, ApiIntegrationFormat apiIntegrationFormat) {
@@ -144,5 +158,9 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     private Function<Long, NoContentFoundException> HTTP_REQUEST_METHOD_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         throw new NoContentFoundException(HttpRequestMethod.class);
+    };
+
+    private Function<Long, NoContentFoundException> FEATURE_NOT_FOUND = (id) -> {
+        throw new NoContentFoundException(Feature.class);
     };
 }

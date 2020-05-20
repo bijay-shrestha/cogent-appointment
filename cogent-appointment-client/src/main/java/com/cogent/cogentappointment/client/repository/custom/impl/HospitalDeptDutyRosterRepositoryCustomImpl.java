@@ -1,7 +1,8 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterSearchRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.specializationDutyRoster.HospitalDeptDutyRosterMinResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.HospitalDeptDutyRosterMinResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.detail.*;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.HospitalDeptDutyRosterRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDutyRoster;
@@ -11,26 +12,29 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.client.log.constants.HospitalDepartmentDutyRosterLog.HOSPITAL_DEPARTMENT_DUTY_ROSTER;
-import static com.cogent.cogentappointment.client.query.HospitalDeptDutyRosterQuery.QUERY_TO_SEARCH_HOSPITAL_DEPARTMENT_DUTY_ROSTER;
-import static com.cogent.cogentappointment.client.query.HospitalDeptDutyRosterQuery.VALIDATE_DEPT_DUTY_ROSTER_COUNT;
+import static com.cogent.cogentappointment.client.query.HospitalDeptDutyRosterQuery.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
-import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
-import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.transformQueryToResultList;
+import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
+import static com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterUtils.parseHDDRosterDetails;
 
 /**
- * @author Sauravi Thapa ON 5/18/20
+ * @author smriti on 20/05/20
  */
-
 @Repository
 @Transactional(readOnly = true)
 @Slf4j
@@ -67,14 +71,72 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
         List<HospitalDeptDutyRosterMinResponseDTO> results = transformQueryToResultList(
                 query, HospitalDeptDutyRosterMinResponseDTO.class);
 
-        if (results.isEmpty())  HOSPITAL_DEPT_DUTY_ROSTER_NOT_FOUND.get();
+        if (results.isEmpty()) HOSPITAL_DEPT_DUTY_ROSTER_NOT_FOUND.get();
 
         results.get(0).setTotalItems(totalItems);
         return results;
     }
 
+    @Override
+    public HospitalDeptDutyRosterDetailResponseDTO fetchDetailsById(Long hddRosterId, Long hospitalId) {
+
+        HospitalDeptDutyRosterResponseDTO hddRosterDetail = fetchHDDRosterDetail(hddRosterId, hospitalId);
+
+        HospitalDeptDutyRosterRoomResponseDTO roomDetail =
+                hddRosterDetail.getIsRoomEnabled().equals(YES) ? fetchHDDRosterRoomDetail(hddRosterId) : null;
+
+        List<HospitalDeptWeekDaysDutyRosterResponseDTO> weekDaysDetail = fetchHDDRosterWeekDaysDetail(hddRosterId);
+
+        List<HospitalDeptDutyRosterOverrideResponseDTO> overrideDetail =
+                hddRosterDetail.getHasOverrideDutyRoster().equals(YES)
+                        ? fetchHDDRosterOverrideDetail(hddRosterId) : new ArrayList<>();
+
+        return parseHDDRosterDetails(hddRosterDetail, roomDetail, weekDaysDetail, overrideDetail);
+    }
+
+    private HospitalDeptDutyRosterResponseDTO fetchHDDRosterDetail(Long hddRosterId, Long hospitalId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HDD_ROSTER_DETAIL)
+                .setParameter(ID, hddRosterId)
+                .setParameter(HOSPITAL_ID, hospitalId);
+        try {
+            return transformQueryToSingleResult(query, HospitalDeptDutyRosterResponseDTO.class);
+        } catch (NoResultException e) {
+            throw HOSPITAL_DEPT_DUTY_ROSTER_WITH_ID_NOT_FOUND.apply(hddRosterId);
+        }
+    }
+
+    private HospitalDeptDutyRosterRoomResponseDTO fetchHDDRosterRoomDetail(Long hddRosterId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HDD_ROSTER_ROOM_DETAIL)
+                .setParameter(ID, hddRosterId);
+
+        return transformQueryToSingleResult(query, HospitalDeptDutyRosterRoomResponseDTO.class);
+    }
+
+    private List<HospitalDeptWeekDaysDutyRosterResponseDTO> fetchHDDRosterWeekDaysDetail(Long hddRosterId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HDD_WEEK_DAYS_DETAIL)
+                .setParameter(ID, hddRosterId);
+
+        return transformQueryToResultList(query, HospitalDeptWeekDaysDutyRosterResponseDTO.class);
+    }
+
+    private List<HospitalDeptDutyRosterOverrideResponseDTO> fetchHDDRosterOverrideDetail(Long hddRosterId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HDD_ROSTER_OVERRIDE_DETAILS)
+                .setParameter(ID, hddRosterId);
+
+        return transformQueryToResultList(query, HospitalDeptDutyRosterOverrideResponseDTO.class);
+    }
+
     private Supplier<NoContentFoundException> HOSPITAL_DEPT_DUTY_ROSTER_NOT_FOUND = () -> {
         log.error(CONTENT_NOT_FOUND, HOSPITAL_DEPARTMENT_DUTY_ROSTER);
         throw new NoContentFoundException(HospitalDepartmentDutyRoster.class);
+    };
+
+    private Function<Long, NoContentFoundException> HOSPITAL_DEPT_DUTY_ROSTER_WITH_ID_NOT_FOUND = (hddRosterId) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, HOSPITAL_DEPARTMENT_DUTY_ROSTER);
+        throw new NoContentFoundException(HospitalDepartmentDutyRoster.class, "hddRosterId", hddRosterId.toString());
     };
 }

@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.dto.response.specializationDutyRoster;
+package com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.detail;
 
 import com.cogent.cogentappointment.client.dto.response.common.AuditableResponseDTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -8,20 +8,20 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @author smriti on 29/11/2019
+ * @author smriti on 20/05/20
  */
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SpecializationDutyRosterResponseDTO extends AuditableResponseDTO implements Serializable {
+public class HospitalDeptDutyRosterResponseDTO extends AuditableResponseDTO implements Serializable {
 
     private Long id;
 
-    private Long specializationId;
+    private Long hospitalDeptId;
 
-    private String specializationName;
+    private String hospitalDeptName;
 
     private Integer rosterGapDuration;
 
@@ -36,4 +36,6 @@ public class SpecializationDutyRosterResponseDTO extends AuditableResponseDTO im
     private String remarks;
 
     private Character hasOverrideDutyRoster;
+
+    private Character isRoomEnabled;
 }

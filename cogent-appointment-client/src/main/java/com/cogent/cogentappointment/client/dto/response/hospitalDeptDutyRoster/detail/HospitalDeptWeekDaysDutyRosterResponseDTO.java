@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.dto.response.specializationDutyRoster;
+package com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.detail;
 
 import lombok.*;
 
@@ -6,16 +6,16 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @author smriti on 29/11/2019
+ * @author smriti on 20/05/20
  */
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SpecializationWeekDaysDutyRosterResponseDTO implements Serializable {
+public class HospitalDeptWeekDaysDutyRosterResponseDTO implements Serializable {
 
-    private Long specializationWeekDaysDutyRosterId;
+    private Long rosterWeekDaysId;
 
     private Date startTime;
 

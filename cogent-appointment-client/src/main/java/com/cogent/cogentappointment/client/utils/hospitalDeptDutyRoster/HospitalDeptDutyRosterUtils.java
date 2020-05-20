@@ -2,8 +2,11 @@ package com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster;
 
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.save.HospitalDepartmentDutyRosterRequestDTO;
+import com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.detail.*;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartment;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDutyRoster;
+
+import java.util.List;
 
 /**
  * @author smriti on 20/05/20
@@ -29,5 +32,19 @@ public class HospitalDeptDutyRosterUtils {
                                            DeleteRequestDTO deleteRequestDTO) {
         doctorDutyRoster.setStatus(deleteRequestDTO.getStatus());
         doctorDutyRoster.setRemarks(deleteRequestDTO.getRemarks());
+    }
+
+    public static HospitalDeptDutyRosterDetailResponseDTO parseHDDRosterDetails(
+            HospitalDeptDutyRosterResponseDTO dutyRosterDetail,
+            HospitalDeptDutyRosterRoomResponseDTO roomInfo,
+            List<HospitalDeptWeekDaysDutyRosterResponseDTO> weekDaysRosters,
+            List<HospitalDeptDutyRosterOverrideResponseDTO> overrideRosters) {
+
+        return HospitalDeptDutyRosterDetailResponseDTO.builder()
+                .dutyRosterDetail(dutyRosterDetail)
+                .roomInfo(roomInfo)
+                .weekDaysRosters(weekDaysRosters)
+                .overrideRosters(overrideRosters)
+                .build();
     }
 }

@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.dto.response.specializationDutyRoster;
+package com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster;
 
 import lombok.Builder;
 import lombok.Getter;

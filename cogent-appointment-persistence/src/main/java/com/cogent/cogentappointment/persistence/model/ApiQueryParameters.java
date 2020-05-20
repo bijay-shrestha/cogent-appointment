@@ -27,8 +27,7 @@ public class ApiQueryParameters extends Auditable<String> implements Serializabl
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "api_integration_format_id")
+    @Column(name = "api_integration_format_id")
     private ApiIntegrationFormat apiIntegrationFormatId;
 
     @Column(name = "param")

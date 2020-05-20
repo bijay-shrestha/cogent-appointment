@@ -30,9 +30,8 @@ public class ApiIntegrationFormat extends Auditable<String> implements Serializa
     @Column(name = "url")
     private String url;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "http_request_method_id")
-    private HttpRequestMethod httpRequestMethodId;
+    @Column(name = "http_request_method_id")
+    private Long httpRequestMethodId;
 
     @Column(name = "http_request_body_attributes")
     private String httpRequestBodyAttributes;
@@ -46,7 +45,7 @@ public class ApiIntegrationFormat extends Auditable<String> implements Serializa
         return "ApiIntegrationFormat{" +
                 "id=" + id +
                 ", url='" + url + '\'' +
-                ", httpRequestMethodId='" + httpRequestMethodId.getId() + '\'' +
+                ", httpRequestMethodId='" + httpRequestMethodId + '\'' +
                 ", httpRequestBodyAttributes='" + httpRequestBodyAttributes + '\'' +
                 ", status=" + status +
                 '}';

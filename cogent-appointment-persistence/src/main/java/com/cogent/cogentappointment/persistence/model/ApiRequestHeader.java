@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.persistence.model;
 
 import com.cogent.cogentappointment.persistence.audit.Auditable;
-import com.cogent.cogentappointment.persistence.listener.ApiQueryParametersEntityListener;
 import com.cogent.cogentappointment.persistence.listener.ApiRequestHeaderEntityListener;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,9 +29,8 @@ public class ApiRequestHeader extends Auditable<String> implements Serializable 
     @Column(name = "url")
     private String url;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "api_integration_format_id")
-    private ApiIntegrationFormat apiIntegrationFormatId;
+    @Column(name = "api_integration_format_id")
+    private Long apiIntegrationFormatId;
 
     @Column(name = "key")
     private String key;
@@ -51,7 +49,7 @@ public class ApiRequestHeader extends Auditable<String> implements Serializable 
         return "ApiRequestHeader{" +
                 "id=" + id +
                 ", url='" + url + '\'' +
-                ", apiIntegrationFormatId='" + apiIntegrationFormatId.getId() + '\'' +
+                ", apiIntegrationFormatId='" + apiIntegrationFormatId + '\'' +
                 ", key='" + key + '\'' +
                 ", value='" + value + '\'' +
                 ", description='" + description + '\'' +

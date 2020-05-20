@@ -89,7 +89,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
         clientApiRequestHeaders.forEach(requestDTO -> {
             ApiRequestHeader requestHeader = new ApiRequestHeader();
-            requestHeader.setApiIntegrationFormatId(apiIntegrationFormat);
+            requestHeader.setApiIntegrationFormatId(apiIntegrationFormat.getId());
             requestHeader.setKey(requestDTO.getKey());
             requestHeader.setValue(requestDTO.getValue());
             requestHeader.setDescription(requestDTO.getDescription());

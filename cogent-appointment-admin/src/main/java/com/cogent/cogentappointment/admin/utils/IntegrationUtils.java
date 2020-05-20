@@ -25,7 +25,7 @@ public class IntegrationUtils {
 
         ApiIntegrationFormat apiIntegrationFormat=new ApiIntegrationFormat();
         apiIntegrationFormat.setHttpRequestBodyAttributes(requestDTO.getRequestBodyAttrribute());
-        apiIntegrationFormat.setHttpRequestMethodId(httpRequestMethod);
+        apiIntegrationFormat.setHttpRequestMethodId(httpRequestMethod.getId());
         apiIntegrationFormat.setUrl(requestDTO.getApiUrl());
         apiIntegrationFormat.setStatus(StatusConstants.ACTIVE);
 

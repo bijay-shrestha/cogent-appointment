@@ -12,5 +12,5 @@ import java.util.Date;
 @Qualifier("hospitalDeptDutyRosterOverrideRepositoryCustom")
 public interface HospitalDeptDutyRosterOverrideRepositoryCustom {
 
-    Long fetchOverrideCount( Long specializationId, Date fromDate, Date toDate);
+    Long fetchOverrideCount( Long hospitalDepartmentId, Date fromDate, Date toDate);
 }

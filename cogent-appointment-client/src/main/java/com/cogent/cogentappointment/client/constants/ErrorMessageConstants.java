@@ -103,10 +103,11 @@ public class ErrorMessageConstants {
                 " exists within the selected date range '%s'.";
     }
 
-    public interface SpecializationDutyRosterServiceMessages {
+    public interface HospitalDepartmentDutyRosterServiceMessages {
         String DUPLICATION_MESSAGE = "Specialization Duty Roster already exists for selected specialization.";
 
-        String BAD_REQUEST_MESSAGE = "Specialization Duty Roster Override doesn't lie within the duty roster date range.";
+        String BAD_REQUEST_MESSAGE = "Requested Override duty roster doesn't lie within the duty roster date range" +
+                " '%s' to '%s'";
 
         String APPOINTMENT_EXISTS_MESSAGE = "Cannot update specialization duty roster because appointment" +
                 " exists within the selected date range.";
@@ -135,6 +136,13 @@ public class ErrorMessageConstants {
     //I
     public static final String INVALID_DATE_MESSAGE = "From date cannot be greater than to date";
     public static final String INVALID_DATE_DEBUG_MESSAGE = "Failed to complete operation due to invalid from and to date";
+
+    public static final String INVALID_DATE_TIME_MESSAGE = "Start time cannot be greater than end time";
+    public static final String INVALID_DATE_TIME_DEBUG_MESSAGE = "Failed to complete operation due to invalid start and end date-time";
+
+    public static final String EQUAL_DATE_TIME_MESSAGE = "Start time cannot be equal to end time";
+    public static final String EQUAL_DATE_TIME_DEBUG_MESSAGE = "Failed to complete operation due to invalid start and end date-time";
+
 
     public static final String INVALID_USERNAME_OR_ACCESS_KEY = "Invalid username or access key";
     public static final String INVALID_PASSWORD = "Invalid password";

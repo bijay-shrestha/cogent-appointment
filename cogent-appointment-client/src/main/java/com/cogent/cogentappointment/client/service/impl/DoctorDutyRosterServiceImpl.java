@@ -393,6 +393,7 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
         List<DoctorWeekDaysDutyRoster> doctorWeekDaysDutyRosters = weekDaysDutyRosterRequestDTOS.stream()
                 .map(requestDTO -> {
+                    validateIfStartTimeGreater(requestDTO.getStartTime(), requestDTO.getEndTime());
 
                     WeekDays weekDays = findWeekDaysById(requestDTO.getWeekDaysId());
 
@@ -484,6 +485,8 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
 
         List<DoctorWeekDaysDutyRoster> doctorWeekDaysDutyRosters = updateRequestDTOS.stream()
                 .map(requestDTO -> {
+                    validateIfStartTimeGreater(requestDTO.getStartTime(), requestDTO.getEndTime());
+
                     WeekDays weekDays = findWeekDaysById(requestDTO.getWeekDaysId());
 
                     return parseToUpdatedDoctorWeekDaysDutyRoster(requestDTO, doctorDutyRoster, weekDays);

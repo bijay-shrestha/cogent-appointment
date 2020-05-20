@@ -13,25 +13,23 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.INVALID_DATE_DEBUG_MESSAGE;
-import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.INVALID_DATE_MESSAGE;
-import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.SpecializationDutyRosterServiceMessages.BAD_REQUEST_MESSAGE;
-import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.SpecializationDutyRosterServiceMessages.DUPLICATION_MESSAGE;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.HospitalDepartmentDutyRosterServiceMessages.BAD_REQUEST_MESSAGE;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.HospitalDepartmentDutyRosterServiceMessages.DUPLICATION_MESSAGE;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
-import static com.cogent.cogentappointment.client.log.constants.HospitalLog.HOSPITAL;
-import static com.cogent.cogentappointment.client.log.constants.SpecializationDutyRosterLog.*;
-import static com.cogent.cogentappointment.client.log.constants.SpecializationLog.SPECIALIZATION;
+import static com.cogent.cogentappointment.client.log.constants.HospitalDepartmentDutyRosterLog.*;
+import static com.cogent.cogentappointment.client.log.constants.HospitalDepartmentLog.HOSPITAL_DEPARTMENT;
 import static com.cogent.cogentappointment.client.log.constants.WeekDaysLog.WEEK_DAYS;
-import static com.cogent.cogentappointment.client.utils.HospitalDeptDutyRosterUtils.parseToSpecializationDutyRosterOverride;
-import static com.cogent.cogentappointment.client.utils.HospitalDeptDutyRosterUtils.parseToSpecializationWeekDaysDutyRoster;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
+import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
+import static com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterUtils.parseToHospitalDepartmentDutyRoster;
+import static com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster.HospitalDeptOverrideDutyRosterUtils.parseToSpecializationDutyRosterOverride;
+import static com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster.HospitalDeptWeekDaysDutyRosterUtils.parseToHospitalDeptWeekDaysDutyRoster;
 
 /**
  * @author smriti on 20/05/20
@@ -49,23 +47,19 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
 
     private final HospitalDeptDutyRosterOverrideRepository overrideRepository;
 
-    private final SpecializationRepository specializationRepository;
-
-    private final HospitalRepository hospitalRepository;
+    private final HospitalDepartmentRepository hospitalDepartmentRepository;
 
     public HospitalDepartmentDutyRosterServiceImpl(HospitalDeptDutyRosterRepository hospitalDeptDutyRosterRepository,
                                                    HospitalDeptWeekDaysDutyRosterRepository weekDaysDutyRosterRepository,
                                                    WeekDaysRepository weekDaysRepository,
                                                    HospitalDeptDutyRosterOverrideRepository overrideRepository,
-                                                   SpecializationRepository specializationRepository,
-                                                   HospitalRepository hospitalRepository) {
+                                                   HospitalDepartmentRepository hospitalDepartmentRepository) {
 
         this.hospitalDeptDutyRosterRepository = hospitalDeptDutyRosterRepository;
         this.weekDaysDutyRosterRepository = weekDaysDutyRosterRepository;
         this.weekDaysRepository = weekDaysRepository;
         this.overrideRepository = overrideRepository;
-        this.specializationRepository = specializationRepository;
-        this.hospitalRepository = hospitalRepository;
+        this.hospitalDepartmentRepository = hospitalDepartmentRepository;
     }
 
     @Override
@@ -73,94 +67,73 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(SAVING_PROCESS_STARTED, SPECIALIZATION_DUTY_ROSTER);
+        log.info(SAVING_PROCESS_STARTED, HOSPITAL_DEPARTMENT_DUTY_ROSTER);
 
         validateIsFirstDateGreater(requestDTO.getFromDate(), requestDTO.getToDate());
+
+        Long hospitalId = getLoggedInHospitalId();
 
 //        validateSpecializationDutyRosterCount(requestDTO.getSpecializationId(),
 //                requestDTO.getFromDate(),
 //                requestDTO.getToDate());
 //
-//        HospitalDepartmentDutyRoster hospitalDepartmentDutyRoster = parseToHospitalDepartmentDutyRoster(requestDTO,
-//                fetchSpecializationByIdAndHospitalId(requestDTO.getSpecializationId(), hospitalId),
-//                fetchHospitalById(hospitalId));
-//
-//        save(hospitalDepartmentDutyRoster);
-//
-//        saveSpecializationWeekDaysDutyRoster(hospitalDepartmentDutyRoster,
-//                requestDTO.getHospitalDeptWeekDaysDutyRosterRequestDTOS());
-//
-//        saveSpecializationDutyRosterOverride(hospitalDepartmentDutyRoster,
-//                requestDTO.getHospitalDeptDutyRosterOverrideRequestDTOS());
+        HospitalDepartmentDutyRoster hospitalDepartmentDutyRoster = parseToHospitalDepartmentDutyRoster(
+                requestDTO,
+                fetchHospitalDepartment(requestDTO.getHospitalDepartmentId(), hospitalId)
+        );
 
-        log.info(SAVING_PROCESS_COMPLETED, SPECIALIZATION_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
+        save(hospitalDepartmentDutyRoster);
+
+        saveWeekDaysDutyRoster(hospitalDepartmentDutyRoster,
+                requestDTO.getWeekDaysDetail());
+
+        if (hospitalDepartmentDutyRoster.getHasOverrideDutyRoster().equals(YES))
+            saveDutyRosterOverride(hospitalDepartmentDutyRoster, requestDTO.getOverrideDetail());
+
+        log.info(SAVING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
     }
 
-    private void saveSpecializationWeekDaysDutyRoster(HospitalDepartmentDutyRoster hospitalDepartmentDutyRoster,
-                                                      List<HospitalDeptWeekDaysDutyRosterRequestDTO>
-                                                              weekDaysDutyRosterRequestDTOS) {
+    private void saveWeekDaysDutyRoster(HospitalDepartmentDutyRoster hospitalDepartmentDutyRoster,
+                                        List<HospitalDeptWeekDaysDutyRosterRequestDTO>
+                                                weekDaysDutyRosterRequestDTOS) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(SAVING_PROCESS_STARTED, SPECIALIZATION_WEEK_DAYS_DUTY_ROSTER);
+        log.info(SAVING_PROCESS_STARTED, HOSPITAL_DEPARTMENT_WEEK_DAYS_DUTY_ROSTER);
 
-        List<HospitalDepartmentWeekDaysDutyRoster> hospitalDepartmentWeekDaysDutyRosters = weekDaysDutyRosterRequestDTOS.stream()
-                .map(requestDTO -> {
+        List<HospitalDepartmentWeekDaysDutyRoster> weekDaysDutyRosters =
+                weekDaysDutyRosterRequestDTOS.stream().map(requestDTO -> {
+
+                    validateIfStartTimeGreater(requestDTO.getStartTime(), requestDTO.getEndTime());
 
                     WeekDays weekDays = fetchWeekDaysById(requestDTO.getWeekDaysId());
 
-                    return parseToSpecializationWeekDaysDutyRoster(requestDTO, hospitalDepartmentDutyRoster, weekDays);
+                    return parseToHospitalDeptWeekDaysDutyRoster(requestDTO, hospitalDepartmentDutyRoster, weekDays);
                 }).collect(Collectors.toList());
 
-        saveSpecializationWeekDaysDutyRoster(hospitalDepartmentWeekDaysDutyRosters);
+        saveWeekDaysDutyRoster(weekDaysDutyRosters);
 
-        log.info(SAVING_PROCESS_COMPLETED, SPECIALIZATION_WEEK_DAYS_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
+        log.info(SAVING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_WEEK_DAYS_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
     }
 
-    private void saveSpecializationDutyRosterOverride(HospitalDepartmentDutyRoster hospitalDepartmentDutyRoster,
-                                                      List<HospitalDeptDutyRosterOverrideRequestDTO> overrideRequestDTOS) {
+    private void saveDutyRosterOverride(HospitalDepartmentDutyRoster hospitalDepartmentDutyRoster,
+                                        List<HospitalDeptDutyRosterOverrideRequestDTO> overrideRequestDTOS) {
 
-        if (hospitalDepartmentDutyRoster.getHasOverrideDutyRoster().equals(YES)) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
-            Long startTime = getTimeInMillisecondsFromLocalDate();
+        log.info(SAVING_PROCESS_STARTED, HOSPITAL_DEPARTMENT_DUTY_ROSTER_OVERRIDE);
 
-            log.info(SAVING_PROCESS_STARTED, SPECIALIZATION_DUTY_ROSTER_OVERRIDE);
+        overrideRequestDTOS
+                .forEach(requestDTO -> {
+                    validateOverrideRequestInfo(hospitalDepartmentDutyRoster, requestDTO);
 
-            List<HospitalDepartmentDutyRosterOverride> hospitalDepartmentDutyRosterOverrides = new ArrayList<>();
+                    saveDutyRosterOverride(parseToSpecializationDutyRosterOverride(
+                            requestDTO, hospitalDepartmentDutyRoster)
+                    );
+                });
 
-            hospitalDepartmentDutyRosterOverrides = overrideRequestDTOS
-                    .stream()
-                    .map(requestDTO -> {
-
-                        validateIfOverrideDateIsBetweenSpecializationDutyRoster(
-                                hospitalDepartmentDutyRoster.getFromDate(), hospitalDepartmentDutyRoster.getToDate(),
-                                requestDTO.getFromDate(), requestDTO.getToDate());
-
-//                        validateSpecializationDutyRosterOverrideCount(
-//                                overrideRepository.fetchOverrideCount(
-//                                        hospitalDepartmentDutyRoster.getSpecialization().getId(),
-//                                        requestDTO.getFromDate(),
-//                                        requestDTO.getToDate()));
-
-                        return parseToSpecializationDutyRosterOverride(requestDTO, hospitalDepartmentDutyRoster);
-                    }).collect(Collectors.toList());
-
-            saveSpecializationDutyRosterOverride(hospitalDepartmentDutyRosterOverrides);
-
-            log.info(SAVING_PROCESS_COMPLETED, SPECIALIZATION_DUTY_ROSTER_OVERRIDE, getDifferenceBetweenTwoTime(startTime));
-        }
-    }
-
-    private void save(HospitalDepartmentDutyRoster hospitalDepartmentDutyRoster) {
-        hospitalDeptDutyRosterRepository.save(hospitalDepartmentDutyRoster);
-    }
-
-    private void saveSpecializationWeekDaysDutyRoster(List<HospitalDepartmentWeekDaysDutyRoster> hospitalDepartmentWeekDaysDutyRosters) {
-        weekDaysDutyRosterRepository.saveAll(hospitalDepartmentWeekDaysDutyRosters);
-    }
-
-    private void saveSpecializationDutyRosterOverride(List<HospitalDepartmentDutyRosterOverride> hospitalDepartmentDutyRosterOverrides) {
-        overrideRepository.saveAll(hospitalDepartmentDutyRosterOverrides);
+        log.info(SAVING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_DUTY_ROSTER_OVERRIDE,
+                getDifferenceBetweenTwoTime(startTime));
     }
 
 
@@ -174,18 +147,18 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
         throw new NoContentFoundException(WeekDays.class, "id", id.toString());
     };
 
-    private void validateIfOverrideDateIsBetweenSpecializationDutyRoster(Date dutyRosterFromDate,
-                                                                         Date dutyRosterToDate,
-                                                                         Date overrideFromDate,
-                                                                         Date overrideToDate) {
+    private void validateIfOverrideDateIsBetweenActualDutyRoster(Date dutyRosterFromDate,
+                                                                 Date dutyRosterToDate,
+                                                                 Date overrideFromDate,
+                                                                 Date overrideToDate) {
 
         boolean isDateBetweenInclusive =
                 isDateBetweenInclusive(dutyRosterFromDate, dutyRosterToDate, removeTime(overrideFromDate))
                         && isDateBetweenInclusive(dutyRosterFromDate, dutyRosterToDate, removeTime(overrideToDate));
 
         if (!isDateBetweenInclusive) {
-            log.error(BAD_REQUEST_MESSAGE);
-            throw new BadRequestException(BAD_REQUEST_MESSAGE);
+            log.error(String.format(BAD_REQUEST_MESSAGE, dutyRosterFromDate, dutyRosterToDate));
+            throw new BadRequestException(String.format(BAD_REQUEST_MESSAGE, dutyRosterFromDate, dutyRosterToDate));
         }
     }
 
@@ -193,15 +166,6 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
         if (specializationDutyRosterOverrideCount.intValue() > 0) {
             log.error(DUPLICATION_MESSAGE);
             throw new DataDuplicationException(DUPLICATION_MESSAGE);
-        }
-    }
-
-    private void validateIsFirstDateGreater(Date fromDate, Date toDate) {
-        boolean fromDateGreaterThanToDate = isFirstDateGreater(fromDate, toDate);
-
-        if (fromDateGreaterThanToDate) {
-            log.error(INVALID_DATE_DEBUG_MESSAGE);
-            throw new BadRequestException(INVALID_DATE_MESSAGE, INVALID_DATE_DEBUG_MESSAGE);
         }
     }
 
@@ -217,22 +181,42 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
         }
     }
 
-    private Specialization fetchSpecializationByIdAndHospitalId(Long specializationId, Long hospitalId) {
-        return specializationRepository
-                .findActiveSpecializationByIdAndHospitalId(specializationId, hospitalId)
-                .orElseThrow(() -> SPECIALIZATION_WITH_GIVEN_ID_NOT_FOUND.apply(specializationId));
+    private void save(HospitalDepartmentDutyRoster hospitalDepartmentDutyRoster) {
+        hospitalDeptDutyRosterRepository.save(hospitalDepartmentDutyRoster);
     }
 
-    private Function<Long, NoContentFoundException> SPECIALIZATION_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        log.error(CONTENT_NOT_FOUND_BY_ID, SPECIALIZATION, id);
-        throw new NoContentFoundException(Specialization.class, "id", id.toString());
+    private void saveWeekDaysDutyRoster(List<HospitalDepartmentWeekDaysDutyRoster> weekDaysDutyRosters) {
+        weekDaysDutyRosterRepository.saveAll(weekDaysDutyRosters);
+    }
+
+    private void saveDutyRosterOverride(HospitalDepartmentDutyRosterOverride overrideRosters) {
+        overrideRepository.save(overrideRosters);
+    }
+
+    private HospitalDepartment fetchHospitalDepartment(Long hospitalDepartmentId, Long hospitalId) {
+        return hospitalDepartmentRepository.fetchByIdAndHospitalId(hospitalDepartmentId, hospitalId)
+                .orElseThrow(() -> HOSPITAL_DEPARTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(hospitalDepartmentId));
+    }
+
+    private Function<Long, NoContentFoundException> HOSPITAL_DEPARTMENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, HOSPITAL_DEPARTMENT, id);
+        throw new NoContentFoundException(HospitalDepartment.class, "id", id.toString());
     };
 
-    private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        log.error(CONTENT_NOT_FOUND_BY_ID, HOSPITAL, id);
-        throw new NoContentFoundException(Hospital.class, "id", id.toString());
-    };
+    private void validateOverrideRequestInfo(HospitalDepartmentDutyRoster hospitalDepartmentDutyRoster,
+                                             HospitalDeptDutyRosterOverrideRequestDTO requestDTO){
 
+        validateIfOverrideDateIsBetweenActualDutyRoster(
+                hospitalDepartmentDutyRoster.getFromDate(), hospitalDepartmentDutyRoster.getToDate(),
+                requestDTO.getFromDate(), requestDTO.getToDate());
+
+        validateSpecializationDutyRosterOverrideCount(
+                overrideRepository.fetchOverrideCount(
+                        hospitalDepartmentDutyRoster.getId(),
+                        requestDTO.getFromDate(),
+                        requestDTO.getToDate())
+        );
+    }
 }
 
 

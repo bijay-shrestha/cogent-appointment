@@ -44,7 +44,7 @@ public class HospitalDepartmentDutyRosterRequestDTO implements Serializable {
     private Character isRoomEnabled;
 
     @NotEmpty
-    private List<HospitalDeptWeekDaysDutyRosterRequestDTO> hospitalDeptWeekDaysDutyRosterRequestDTOS;
+    private List<HospitalDeptWeekDaysDutyRosterRequestDTO> weekDaysDetail;
 
-    private List<HospitalDeptDutyRosterOverrideRequestDTO> hospitalDeptDutyRosterOverrideRequestDTOS;
+    private List<HospitalDeptDutyRosterOverrideRequestDTO> overrideDetail;
 }

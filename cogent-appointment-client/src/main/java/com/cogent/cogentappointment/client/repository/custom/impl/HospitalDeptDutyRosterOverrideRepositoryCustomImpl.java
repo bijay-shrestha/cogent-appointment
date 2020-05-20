@@ -11,7 +11,7 @@ import javax.persistence.Query;
 import java.util.Date;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
-import static com.cogent.cogentappointment.client.query.HopsitalDeptDutyRosterOverrideQuery.VALIDATE_SPECIALIZATION_DUTY_ROSTER_OVERRIDE_COUNT;
+import static com.cogent.cogentappointment.client.query.HopsitalDeptDutyRosterOverrideQuery.QUERY_TO_FETCH_DDR_OVERRIDE_COUNT;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
 
@@ -28,9 +28,9 @@ public class HospitalDeptDutyRosterOverrideRepositoryCustomImpl implements
     private EntityManager entityManager;
 
     @Override
-    public Long fetchOverrideCount(Long specializationId, Date fromDate, Date toDate) {
-        Query query = createQuery.apply(entityManager, VALIDATE_SPECIALIZATION_DUTY_ROSTER_OVERRIDE_COUNT)
-                .setParameter(SPECIALIZATION_ID, specializationId)
+    public Long fetchOverrideCount(Long hospitalDepartmentId, Date fromDate, Date toDate) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DDR_OVERRIDE_COUNT)
+                .setParameter(HOSPITAL_DEPARMTENT_ID, hospitalDepartmentId)
                 .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))
                 .setParameter(TO_DATE, utilDateToSqlDate(toDate));
 

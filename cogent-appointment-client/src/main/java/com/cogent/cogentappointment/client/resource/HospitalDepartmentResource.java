@@ -1,10 +1,13 @@
 package com.cogent.cogentappointment.client.resource;
 
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentUpdateRequestDTO;
 import com.cogent.cogentappointment.client.service.HospitalDepartmentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,10 +15,8 @@ import javax.validation.Valid;
 import java.net.URI;
 
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.HospitalDepartmentConstant.*;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.ACTIVE;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.HospitalDepartmentConstants.BASE_HOSPITAL_DEPARTMENT;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.MIN;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -58,5 +59,14 @@ public class HospitalDepartmentResource {
     @ApiOperation(FETCH_ACTIVE_HOSPITAL_DEPARTMENT_FOR_DROP_DOWN_OPERATION)
     public ResponseEntity<?> fetchActiveMinDepartment() {
         return ok(hospitalDepartmentService.fetchActiveMinHospitalDepartment());
+    }
+
+    @PutMapping(SEARCH)
+    @ApiOperation(SEARCH_HOSPITAL_DEPARTMENT_OPERATION)
+    public ResponseEntity<?> search(@RequestBody HospitalDepartmentSearchRequestDTO departmentSearchRequestDTO,
+                                    @RequestParam("page") int page,
+                                    @RequestParam("size") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ok(hospitalDepartmentService.search(departmentSearchRequestDTO, pageable));
     }
 }

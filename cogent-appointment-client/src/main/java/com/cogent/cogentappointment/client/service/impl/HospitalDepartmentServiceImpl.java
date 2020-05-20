@@ -2,12 +2,15 @@ package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentUpdateRequestDTO;
+import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.HospitalDepartmentMinimalResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.*;
 import com.cogent.cogentappointment.client.service.HospitalDepartmentService;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -105,9 +108,9 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
         updateHospitalDepartmentCharge(requestDTO);
 
-        updateHospitalDepartmentDoctorInfo(requestDTO,hospitalDepartment);
+        updateHospitalDepartmentDoctorInfo(requestDTO, hospitalDepartment);
 
-        updateHospitalDepartmentRoomInfo(requestDTO,hospitalDepartment);
+        updateHospitalDepartmentRoomInfo(requestDTO, hospitalDepartment);
 
         log.info(UPDATING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
 
@@ -137,12 +140,28 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
         Long hospitalId = getLoggedInHospitalId();
 
-        List<DropDownResponseDTO> minDepartment = hospitalDepartmentRepository.fetchActiveMinHospitalDepartment(hospitalId)
-                .orElseThrow(() -> HOSPITAL_DEPARTMENT_NOT_FOUND());
+        List<DropDownResponseDTO> minDepartment = hospitalDepartmentRepository.
+                fetchActiveMinHospitalDepartment(hospitalId).orElseThrow(() -> HOSPITAL_DEPARTMENT_NOT_FOUND());
 
-        log.info(FETCHING_PROCESS_FOR_ACTIVE_DROPDOWN_COMPLETED, HOSPITAL_DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_FOR_ACTIVE_DROPDOWN_COMPLETED, HOSPITAL_DEPARTMENT,
+                getDifferenceBetweenTwoTime(startTime));
 
         return minDepartment;
+    }
+
+    @Override
+    public HospitalDepartmentMinimalResponseDTO search(HospitalDepartmentSearchRequestDTO searchRequestDTO,
+                                                             Pageable pageable) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SEARCHING_PROCESS_STARTED, HOSPITAL_DEPARTMENT);
+
+        HospitalDepartmentMinimalResponseDTO responseDTO =
+                hospitalDepartmentRepository.search(searchRequestDTO, pageable);
+
+        log.info(SEARCHING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTO;
     }
 
     private void saveHospitalDepartmentDoctorInfo(HospitalDepartmentRequestDTO requestDTO,
@@ -185,22 +204,22 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
                 (requestDTO.getId());
 
         if (hospitalDepartmentCharge.getAppointmentCharge() != requestDTO.getAppointmentCharge() ||
-                hospitalDepartmentCharge.getAppointmentFollowUpCharge() != requestDTO.getFollowUpCharge()){
-            saveHospitalDepartmentCharge(parseToUpdateHospitalDepartmentCharge(hospitalDepartmentCharge,requestDTO));
+                hospitalDepartmentCharge.getAppointmentFollowUpCharge() != requestDTO.getFollowUpCharge()) {
+            saveHospitalDepartmentCharge(parseToUpdateHospitalDepartmentCharge(hospitalDepartmentCharge, requestDTO));
         }
 
     }
 
     private void updateHospitalDepartmentDoctorInfo(HospitalDepartmentUpdateRequestDTO requestDTO,
-                                                    HospitalDepartment hospitalDepartment){
+                                                    HospitalDepartment hospitalDepartment) {
 
         Long hospitalId = getLoggedInHospitalId();
 
-        List<Long> exisitngActiveDoctorIdList=fetchExisitngActiveDoctorIdList(requestDTO.getId());
+        List<Long> exisitngActiveDoctorIdList = fetchExisitngActiveDoctorIdList(requestDTO.getId());
 
-        List<Long> newDoctorIdList=mergeExisitingAndNewListId(exisitngActiveDoctorIdList,requestDTO.getDoctorId());
+        List<Long> newDoctorIdList = mergeExisitingAndNewListId(exisitngActiveDoctorIdList, requestDTO.getDoctorId());
 
-        if(newDoctorIdList.size()>0){
+        if (newDoctorIdList.size() > 0) {
             List<HospitalDepartmentDoctorInfo> hospitalDepartmentDoctorInfos = new ArrayList<>();
 
             newDoctorIdList.forEach(doctorID -> {
@@ -215,15 +234,15 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
     }
 
     private void updateHospitalDepartmentRoomInfo(HospitalDepartmentUpdateRequestDTO requestDTO,
-                                                    HospitalDepartment hospitalDepartment){
+                                                  HospitalDepartment hospitalDepartment) {
 
         Long hospitalId = getLoggedInHospitalId();
 
-        List<Long> exisitngActiveRoomIdList=fetchExisitngActiveRoomIdList(requestDTO.getId());
+        List<Long> exisitngActiveRoomIdList = fetchExisitngActiveRoomIdList(requestDTO.getId());
 
-        List<Long> newRoomIdList=mergeExisitingAndNewListId(exisitngActiveRoomIdList,requestDTO.getRoomId());
+        List<Long> newRoomIdList = mergeExisitingAndNewListId(exisitngActiveRoomIdList, requestDTO.getRoomId());
 
-        if(newRoomIdList.size()>0){
+        if (newRoomIdList.size() > 0) {
             List<HospitalDepartmentRoomInfo> hospitalDepartmentRoomInfos = new ArrayList<>();
 
             newRoomIdList.forEach(roomID -> {
@@ -303,18 +322,18 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
     private Function<Long, NoContentFoundException> HOSPITAL_DEPARTMENT_CHARGE_WITH_GIVEN_ID_NOT_FOUND =
             (hospitalDepartmentId) -> {
-        log.error(CONTENT_NOT_FOUND_BY_HOSPITAL_DEPARTMENT_ID, HOSPITAL_DEPARTMENT_CHARGE, hospitalDepartmentId);
-        throw new NoContentFoundException(HospitalDepartmentCharge.class, "hospitalDepartmentId",
-                hospitalDepartmentId.toString());
-    };
+                log.error(CONTENT_NOT_FOUND_BY_HOSPITAL_DEPARTMENT_ID, HOSPITAL_DEPARTMENT_CHARGE, hospitalDepartmentId);
+                throw new NoContentFoundException(HospitalDepartmentCharge.class, "hospitalDepartmentId",
+                        hospitalDepartmentId.toString());
+            };
 
     private Function<Long, NoContentFoundException> DOCTOR_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, DOCTOR, id);
         throw new NoContentFoundException(Doctor.class, "id", id.toString());
     };
 
-    private NoContentFoundException HOSPITAL_DEPARTMENT_NOT_FOUND(){
-        log.error(CONTENT_NOT_FOUND,HOSPITAL_DEPARTMENT);
+    private NoContentFoundException HOSPITAL_DEPARTMENT_NOT_FOUND() {
+        log.error(CONTENT_NOT_FOUND, HOSPITAL_DEPARTMENT);
         throw new NoContentFoundException(HospitalDepartment.class);
     }
 }

@@ -14,7 +14,11 @@ public class HospitalDepartmentSearchRequestDTO implements Serializable {
 
     private Long id;
 
-    private String departmentCode;
+    private String code;
+
+    private Long doctorId;
+
+    private Long roomId;
 
     private Character status;
 }

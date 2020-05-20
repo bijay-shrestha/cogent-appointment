@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.client.dto.response.hospitalDepartment;
 import lombok.*;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 
 /**
  * @author smriti ON 24/01/2020
@@ -14,11 +15,13 @@ import java.io.Serializable;
 @Builder
 public class HospitalDepartmentMinimalResponse implements Serializable {
 
-    private Long id;
+    private BigInteger id;
 
     private String name;
 
-    private String description;
-
     private Character status;
+
+    private String roomList;
+
+    private Double appointmentCharge,followUpCharge;
 }

@@ -215,11 +215,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
         HospitalDepartmentDoctorInfo hospitalDeptDoctorInfo=hospitalDepartmentDoctorInfoRepository
                 .fetchDoctorByHospitalDepartmentId(requestDTO.getHospitalDepartmentId(),requestDTO.getId());
 
-        hospitalDeptDoctorInfo.setStatus(requestDTO.getStatus());
-
-        hospitalDeptDoctorInfo.setRemarks(requestDTO.getRemarks());
-
-        saveHospitalDepartmentDoctorInfo(hospitalDeptDoctorInfo);
+        saveHospitalDepartmentDoctorInfo(parseToDeleteHospitalDeptDoctorInfo(hospitalDeptDoctorInfo,requestDTO));
 
         log.info(DELETING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
     }
@@ -233,11 +229,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
         HospitalDepartmentRoomInfo hospitalDeptRoomInfo=hospitalDepartmentRoomInfoRepository
                 .fetchRoomByHospitalDepartmentId(requestDTO.getHospitalDepartmentId(),requestDTO.getId());
 
-        hospitalDeptRoomInfo.setStatus(requestDTO.getStatus());
-
-        hospitalDeptRoomInfo.setRemarks(requestDTO.getRemarks());
-
-        saveHospitalDepartmentRoomInfo(hospitalDeptRoomInfo);
+        saveHospitalDepartmentRoomInfo(parseToDeleteHospitalDeptRoomInfo(hospitalDeptRoomInfo,requestDTO));
 
         log.info(DELETING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
     }
@@ -337,13 +329,13 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
     public void deleteRoomInfo(DeleteRequestDTO requestDTO){
 
         List<HospitalDepartmentRoomInfo> roomInfos=fetchExisitngRoomList(requestDTO.getId());
-        saveHospitalDepartmentRoomInfo(parseToDeleteHospitalDeptRoomInfo(roomInfos,requestDTO));
+        saveHospitalDepartmentRoomInfo(parseToDeleteHospitalDeptRoomInfos(roomInfos,requestDTO));
     }
 
     public void deleteDoctorInfo(DeleteRequestDTO requestDTO){
 
         List<HospitalDepartmentDoctorInfo> doctorInfos=fetchExisitngDoctorList(requestDTO.getId());
-        saveHospitalDepartmentDoctorInfo(parseToDeleteHospitalDeptDoctorInfo(doctorInfos,requestDTO));
+        saveHospitalDepartmentDoctorInfo(parseToDeleteHospitalDeptDoctorInfos(doctorInfos,requestDTO));
     }
 
     private List<HospitalDepartmentRoomInfo> fetchExisitngRoomList(Long hospitalDepartmentId) {

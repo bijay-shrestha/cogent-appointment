@@ -1,11 +1,11 @@
 package com.cogent.cogentappointment.client.utils;
 
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentDeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentUpdateRequestDTO;
 import com.cogent.cogentappointment.persistence.model.*;
 
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -91,19 +91,19 @@ public class HospitalDepartmentUtils {
     }
 
     public static List<Long> mergeExisitingAndNewListId(List<Long> existingIdList,
-                                                          List<Long> newIdList) {
+                                                        List<Long> newIdList) {
 
 
         return existingIdList.stream()
                 .filter(oldId -> (newIdList.stream()
-                        .filter(newId -> (newId==oldId))
+                        .filter(newId -> (newId == oldId))
                         .count()) < 1)
                 .collect(Collectors.toList());
 
     }
 
     public static HospitalDepartment parseToDeleteHospitalDept(HospitalDepartment hospitalDepartment,
-                                                                     DeleteRequestDTO requestDTO) {
+                                                               DeleteRequestDTO requestDTO) {
         hospitalDepartment.setStatus(requestDTO.getStatus());
         hospitalDepartment.setRemarks(requestDTO.getRemarks());
 
@@ -111,7 +111,7 @@ public class HospitalDepartmentUtils {
     }
 
     public static HospitalDepartmentCharge parseToDeleteHospitalDeptCharge(HospitalDepartmentCharge hospitalDepartmentCharge,
-                                                                     DeleteRequestDTO requestDTO) {
+                                                                           DeleteRequestDTO requestDTO) {
         hospitalDepartmentCharge.setStatus(requestDTO.getStatus());
         hospitalDepartmentCharge.setRemarks(requestDTO.getRemarks());
 
@@ -119,8 +119,8 @@ public class HospitalDepartmentUtils {
     }
 
 
-    public static List<HospitalDepartmentDoctorInfo> parseToDeleteHospitalDeptDoctorInfo(List<HospitalDepartmentDoctorInfo> doctorInfos,
-                                                                                         DeleteRequestDTO requestDTO) {
+    public static List<HospitalDepartmentDoctorInfo> parseToDeleteHospitalDeptDoctorInfos(List<HospitalDepartmentDoctorInfo> doctorInfos,
+                                                                                          DeleteRequestDTO requestDTO) {
         doctorInfos.forEach(doctorInfo -> {
             doctorInfo.setStatus(requestDTO.getStatus());
             doctorInfo.setRemarks(requestDTO.getRemarks());
@@ -129,15 +129,33 @@ public class HospitalDepartmentUtils {
         return doctorInfos;
     }
 
-    public static List<HospitalDepartmentRoomInfo> parseToDeleteHospitalDeptRoomInfo(List<HospitalDepartmentRoomInfo> roomInfos,
-                                                                                       DeleteRequestDTO requestDTO) {
+    public static HospitalDepartmentDoctorInfo parseToDeleteHospitalDeptDoctorInfo(HospitalDepartmentDoctorInfo doctorInfo,
+                                                                                   HospitalDepartmentDeleteRequestDTO requestDTO) {
 
-        roomInfos.forEach(roomInfo->{
+        doctorInfo.setStatus(requestDTO.getStatus());
+        doctorInfo.setRemarks(requestDTO.getRemarks());
+
+        return doctorInfo;
+    }
+
+    public static List<HospitalDepartmentRoomInfo> parseToDeleteHospitalDeptRoomInfos(List<HospitalDepartmentRoomInfo> roomInfos,
+                                                                                      DeleteRequestDTO requestDTO) {
+
+        roomInfos.forEach(roomInfo -> {
             roomInfo.setStatus(requestDTO.getStatus());
             roomInfo.setRemarks(requestDTO.getRemarks());
         });
 
         return roomInfos;
+    }
+
+    public static HospitalDepartmentRoomInfo parseToDeleteHospitalDeptRoomInfo(HospitalDepartmentRoomInfo roomInfo,
+                                                                               HospitalDepartmentDeleteRequestDTO requestDTO) {
+
+        roomInfo.setStatus(requestDTO.getStatus());
+        roomInfo.setRemarks(requestDTO.getRemarks());
+
+        return roomInfo;
     }
 
 

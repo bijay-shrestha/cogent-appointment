@@ -195,9 +195,9 @@ public class WebResourceKeyConstants {
 
     //S
 
-    public interface SpecializationDutyRosterConstants {
-        String BASE_SPECIALIZATION_DUTY_ROSTER = "/specializationDutyRoster";
-        String SPECIALIZATION_DUTY_ROSTER_OVERRIDE = "/specializationDutyRosterOverride";
+    public interface HospitalDeptDutyRosterConstants {
+        String BASE_HOSPITAL_DEPARTMENT_DUTY_ROSTER = "/hospitalDepartmentDutyRoster";
+        String SPECIALIZATION_DUTY_ROSTER_OVERRIDE = "/hospitalDepartmentDutyRosterOverride";
         String EXISTING = "/existing";
         String REVERT_DOCTOR_DUTY_ROSTER_OVERRIDE = "/revert";
     }

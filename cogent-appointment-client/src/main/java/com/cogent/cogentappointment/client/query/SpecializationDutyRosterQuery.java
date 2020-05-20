@@ -6,7 +6,7 @@ package com.cogent.cogentappointment.client.query;
 public class SpecializationDutyRosterQuery {
     public static final String VALIDATE_SPECIALIZATION_DUTY_ROSTER_COUNT =
             " SELECT COUNT(sdr.id)" +
-                    " FROM SpecializationDutyRoster sdr" +
+                    " FROM HospitalDepartmentDutyRoster sdr" +
                     " WHERE sdr.status != 'D'" +
                     " AND sdr.specialization.id= :specializationId" +
                     " AND sdr.toDate >=:fromDate" +

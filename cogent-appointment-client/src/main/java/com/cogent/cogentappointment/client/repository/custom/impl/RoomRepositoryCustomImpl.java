@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.client.repository.custom.impl;
 
 import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.request.room.RoomSearchRequestDTO;
+import com.cogent.cogentappointment.client.dto.response.room.RoomMinimalResponse;
 import com.cogent.cogentappointment.client.dto.response.room.RoomMinimalResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.RoomRepositoryCustom;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -84,23 +86,26 @@ public class RoomRepositoryCustomImpl implements RoomRepositoryCustom {
     }
 
     @Override
-    public List<RoomMinimalResponseDTO> search(RoomSearchRequestDTO searchRequestDTO, Pageable pageable) {
+    public RoomMinimalResponseDTO search(RoomSearchRequestDTO searchRequestDTO, Pageable pageable) {
         Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_ROOM.apply(searchRequestDTO))
                 .setParameter(HOSPITAL_ID,getLoggedInHospitalId());
+
+        RoomMinimalResponseDTO response=new RoomMinimalResponseDTO();
 
         int totalItems = query.getResultList().size();
 
         addPagination.accept(pageable, query);
 
-        List<RoomMinimalResponseDTO> results = transformQueryToResultList(
-                query, RoomMinimalResponseDTO.class);
+        List<RoomMinimalResponse> results = transformQueryToResultList(
+                query, RoomMinimalResponse.class);
 
         if (results.isEmpty()) {
             error();
             throw ROOM_NOT_FOUND.get();
         } else {
-            results.get(0).setTotalItems(totalItems);
-            return results;
+            response.setResponse(results);
+            response.setTotalItems(totalItems);
+            return response;
         }
     }
 

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author smriti on 2019-09-25
@@ -15,11 +16,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Data
 public class RoomMinimalResponseDTO implements Serializable {
-    private Long id;
 
-    private Integer roomNumber;
-
-    private Character status;
+    private List<RoomMinimalResponse> response;
 
     private int totalItems;
 }

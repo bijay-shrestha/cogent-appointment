@@ -29,7 +29,7 @@ public class RoomQuery {
 
     public static final String QUERY_TO_FETCH_ACTIVE_ROOM_FOR_DROPDOWN =
             "SELECT r.id as value," +                                             //[0]
-                    " CONCAT('Room No','-',r.roomNumber) AS label" +                 //[1]
+                    " CONCAT('Room No',' - ',r.roomNumber) AS label" +                 //[1]
                     " FROM Room r " +
                     " WHERE r.status = 'Y'" +
                     " AND r.hospital.id=:hospitalId" +
@@ -37,7 +37,7 @@ public class RoomQuery {
 
     public static final String QUERY_TO_FETCH_ROOM_FOR_DROPDOWN =
             "SELECT r.id as value," +                                             //[0]
-                    " CONCAT('Room No','-',r.roomNumber) AS label" +                 //[1]
+                    " CONCAT('Room No',' - ',r.roomNumber) AS label" +                 //[1]
                     " FROM Room r " +
                     " WHERE r.status != 'D'" +
                     " AND r.hospital.id=:hospitalId" +

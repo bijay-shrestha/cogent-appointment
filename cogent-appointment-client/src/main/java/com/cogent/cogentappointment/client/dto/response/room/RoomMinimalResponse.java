@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.dto.response.room;
+package com.cogent.cogentappointment.client.dto.response.room;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * @author smriti on 2019-09-25
@@ -15,9 +14,10 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class RoomMinimalResponseDTO implements Serializable {
+public class RoomMinimalResponse implements Serializable {
+    private Long id;
 
-    private List<RoomMinimalResponse> response;
+    private Integer roomNumber;
 
-    private int totalItems;
+    private Character status;
 }

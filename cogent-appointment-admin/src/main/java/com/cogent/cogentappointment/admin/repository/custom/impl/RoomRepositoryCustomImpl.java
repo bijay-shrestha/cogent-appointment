@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.request.room.RoomSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.room.RoomMinimalResponse;
 import com.cogent.cogentappointment.admin.dto.response.room.RoomMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.RoomRepositoryCustom;
@@ -86,22 +87,26 @@ public class RoomRepositoryCustomImpl implements RoomRepositoryCustom {
     }
 
     @Override
-    public List<RoomMinimalResponseDTO> search(RoomSearchRequestDTO searchRequestDTO, Pageable pageable) {
+    public RoomMinimalResponseDTO search(RoomSearchRequestDTO searchRequestDTO, Pageable pageable) {
+
+        RoomMinimalResponseDTO response = new RoomMinimalResponseDTO();
+
         Query query = createQuery.apply(entityManager, QUERY_TO_SEARCH_ROOM.apply(searchRequestDTO));
 
         int totalItems = query.getResultList().size();
 
         addPagination.accept(pageable, query);
 
-        List<RoomMinimalResponseDTO> results = transformQueryToResultList(
-                query, RoomMinimalResponseDTO.class);
+        List<RoomMinimalResponse> results = transformQueryToResultList(
+                query, RoomMinimalResponse.class);
 
         if (results.isEmpty()) {
             error();
             throw ROOM_NOT_FOUND.get();
         } else {
-            results.get(0).setTotalItems(totalItems);
-            return results;
+            response.setResponse(results);
+            response.setTotalItems(totalItems);
+            return response;
         }
     }
 

@@ -29,35 +29,29 @@ public class RoomQuery {
 
     public static final String QUERY_TO_FETCH_ACTIVE_ROOM_FOR_DROPDOWN =
             "SELECT r.id as value," +                                             //[0]
-                    " CONCAT(h.alias,'-',r.roomNumber) AS label" +                 //[1]
+                    " CONCAT(r.hospital.alias,' - ',r.roomNumber) AS label" +                 //[1]
                     " FROM Room r " +
-                    " LEFT JOIN Hospital h ON h.id = r.hospital.id" +
                     " WHERE r.status = 'Y'" +
-                    " AND h.status = 'Y'" +
-                    " AND h.id=:hospitalId" +
-                    " AND h.isCompany='N'"+
+                    " AND r.hospital.status = 'Y'" +
+                    " AND r.hospital.id=:hospitalId" +
                     " ORDER BY label ASC";
 
     public static final String QUERY_TO_FETCH_ROOM_FOR_DROPDOWN =
             "SELECT r.id as value," +                                             //[0]
-                    " CONCAT(h.alias,'-',r.roomNumber) AS label" +                 //[1]
+                    " CONCAT(r.hospital.alias,' - ',r.roomNumber) AS label" +                 //[1]
                     " FROM Room r " +
-                    " LEFT JOIN Hospital h ON h.id = r.hospital.id" +
                     " WHERE r.status != 'D'" +
-                    " AND h.status = 'Y'" +
-                    " AND h.id=:hospitalId" +
-                    " AND h.isCompany='N'"+
+                    " AND r.hospital.status = 'Y'" +
+                    " AND r.hospital.id=:hospitalId" +
                     " ORDER BY label ASC";
 
     private static final String SELECT_CLAUSE_TO_FETCH_MINIMAL_ROOM =
             "SELECT r.id as id," +                                                //[0]
                     " r.roomNumber as roomNumber," +                              //[1]
                     " r.status as status," +                                     //[2]
-                    " h.name as hospitalName" +                                //[3]
+                    " r.hospital.name as hospitalName" +                                //[3]
                     " FROM Room r " +
-                    " LEFT JOIN Hospital h ON h.id = r.hospital.id" +
-                    " WHERE" +
-                    " h.isCompany='N'";
+                    " WHERE";
 
     public static Function<RoomSearchRequestDTO, String> QUERY_TO_SEARCH_ROOM =
             (roomSearchRequestDTO -> (
@@ -68,10 +62,10 @@ public class RoomQuery {
     private static String GET_WHERE_CLAUSE_FOR_SEARCHING_QUALIFICATION
             (RoomSearchRequestDTO searchRequestDTO) {
 
-        String whereClause = " AND r.status!='D'";
+        String whereClause = " r.status!='D'";
 
         if (!Objects.isNull(searchRequestDTO.getHospitalId()))
-            whereClause += " AND h.id = " + searchRequestDTO.getHospitalId();
+            whereClause += " AND r.hospital.id = " + searchRequestDTO.getHospitalId();
 
         if (!Objects.isNull(searchRequestDTO.getId()))
             whereClause += " AND r.id=" + searchRequestDTO.getId();

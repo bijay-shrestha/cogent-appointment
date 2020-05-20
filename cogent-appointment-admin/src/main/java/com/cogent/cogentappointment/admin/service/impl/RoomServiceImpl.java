@@ -130,17 +130,17 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public List<RoomMinimalResponseDTO> search(RoomSearchRequestDTO searchRequestDTO, Pageable pageable) {
+    public RoomMinimalResponseDTO search(RoomSearchRequestDTO searchRequestDTO, Pageable pageable) {
 
             Long startTime = getTimeInMillisecondsFromLocalDate();
 
             log.info(SEARCHING_PROCESS_STARTED, ROOM);
 
-            List<RoomMinimalResponseDTO> responseDTOS = roomRepository.search(searchRequestDTO, pageable);
+            RoomMinimalResponseDTO response = roomRepository.search(searchRequestDTO, pageable);
 
             log.info(SEARCHING_PROCESS_COMPLETED, ROOM, getDifferenceBetweenTwoTime(startTime));
 
-            return responseDTOS;
+            return response;
     }
 
     private void validateRoomNumber(Integer roomNumber, Long count) {

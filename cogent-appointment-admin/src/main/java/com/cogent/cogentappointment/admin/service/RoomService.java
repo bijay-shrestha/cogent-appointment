@@ -24,6 +24,6 @@ public interface RoomService {
 
     List<DropDownResponseDTO> fetchMinRoom(Long hospitalId);
 
-    List<RoomMinimalResponseDTO> search(RoomSearchRequestDTO searchRequestDTO,
+    RoomMinimalResponseDTO search(RoomSearchRequestDTO searchRequestDTO,
                                         Pageable pageable);
 }

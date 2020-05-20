@@ -13,8 +13,8 @@ import java.io.Serializable;
 /**
  * @author rupak on 2020-05-18
  */
-@Table(name = "client_feature_integration")
 @Entity
+@Table(name = "client_feature_integration")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

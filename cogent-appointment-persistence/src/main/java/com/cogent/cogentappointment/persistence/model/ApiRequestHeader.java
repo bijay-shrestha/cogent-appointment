@@ -13,8 +13,8 @@ import java.io.Serializable;
 /**
  * @author rupak on 2020-05-19
  */
-@Table(name = "api_request_header")
 @Entity
+@Table(name = "api_request_header")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -26,14 +26,12 @@ public class ApiRequestHeader extends Auditable<String> implements Serializable 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "url")
-    private String url;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "api_integration_format_id")
+    private ApiIntegrationFormat apiIntegrationFormatId;
 
-    @Column(name = "api_integration_format_id")
-    private Long apiIntegrationFormatId;
-
-    @Column(name = "key")
-    private String key;
+    @Column(name = "key_name")
+    private String keyName;
 
     @Column(name = "value")
     private String value;
@@ -48,9 +46,8 @@ public class ApiRequestHeader extends Auditable<String> implements Serializable 
     public String toString() {
         return "ApiRequestHeader{" +
                 "id=" + id +
-                ", url='" + url + '\'' +
                 ", apiIntegrationFormatId='" + apiIntegrationFormatId + '\'' +
-                ", key='" + key + '\'' +
+                ", keyName='" + keyName + '\'' +
                 ", value='" + value + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + status +

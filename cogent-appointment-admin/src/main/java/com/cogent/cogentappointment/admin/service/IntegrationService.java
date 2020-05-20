@@ -11,4 +11,6 @@ import java.util.List;
 public interface IntegrationService {
 
     void save(ClientApiIntegrationRequestDTO requestDTO);
+
+//    ClientApiIntegrationRequestDTO fetchClientIntegrationResponseDTO(ClientApiIntegrationRequestDTO );
 }

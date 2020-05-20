@@ -39,5 +39,5 @@ public class ApiRequestHeaderEntityListener {
         EntityManager entityManager = BeanUtil.getBean(EntityManager.class);
         entityManager.persist(new ApiRequestHeaderHistory(target, action));
     }
-    
+
 }

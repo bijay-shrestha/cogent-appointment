@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.persistence.model;
 
 import com.cogent.cogentappointment.persistence.audit.Auditable;
-import com.cogent.cogentappointment.persistence.listener.ApiIntegrationFormatEntityListener;
 import com.cogent.cogentappointment.persistence.listener.ApiQueryParametersEntityListener;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,8 +13,8 @@ import java.io.Serializable;
 /**
  * @author rupak on 2020-05-19
  */
-@Table(name = "api_query_parameters")
 @Entity
+@Table(name = "api_query_parameters")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -28,7 +27,7 @@ public class ApiQueryParameters extends Auditable<String> implements Serializabl
     private Long id;
 
     @Column(name = "api_integration_format_id")
-    private ApiIntegrationFormat apiIntegrationFormatId;
+    private Long apiIntegrationFormatId;
 
     @Column(name = "param")
     private String param;
@@ -46,7 +45,7 @@ public class ApiQueryParameters extends Auditable<String> implements Serializabl
     public String toString() {
         return "ApiQueryParameters{" +
                 "id=" + id +
-                ", apiIntegrationFormatId='" + apiIntegrationFormatId.getId() + '\'' +
+                ", apiIntegrationFormatId='" + apiIntegrationFormatId + '\'' +
                 ", param='" + param + '\'' +
                 ", value='" + value + '\'' +
                 ", description='" + description + '\'' +

@@ -32,7 +32,8 @@ public class ApiRequestHeaderHistory implements Serializable {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "api_request_header_id", foreignKey = @ForeignKey(name = "FK_api_request_header_history_api_request_header"))
+    @JoinColumn(name = "api_request_header_id", foreignKey =
+    @ForeignKey(name = "FK_api_request_header_history_api_request_header"))
     private ApiRequestHeader apiRequestHeader;
 
     @Column(name = "api_request_header_content")

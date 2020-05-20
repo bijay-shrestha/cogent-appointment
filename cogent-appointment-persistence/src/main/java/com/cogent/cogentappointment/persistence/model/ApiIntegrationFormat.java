@@ -14,8 +14,8 @@ import java.io.Serializable;
 /**
  * @author rupak on 2020-05-19
  */
-@Table(name = "api_integration_format")
 @Entity
+@Table(name = "api_integration_format")
 @Getter
 @Setter
 @AllArgsConstructor

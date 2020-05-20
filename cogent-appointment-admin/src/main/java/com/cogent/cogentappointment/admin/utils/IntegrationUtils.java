@@ -5,7 +5,6 @@ import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ApiInteg
 import com.cogent.cogentappointment.persistence.model.ApiIntegrationFormat;
 import com.cogent.cogentappointment.persistence.model.ClientFeatureIntegration;
 import com.cogent.cogentappointment.persistence.model.HttpRequestMethod;
-import org.omg.PortableInterceptor.ACTIVE;
 
 /**
  * @author rupak on 2020-05-19

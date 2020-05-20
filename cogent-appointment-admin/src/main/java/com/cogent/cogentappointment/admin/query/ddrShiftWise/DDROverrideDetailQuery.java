@@ -1,5 +1,7 @@
 package com.cogent.cogentappointment.admin.query.ddrShiftWise;
 
+import java.util.Objects;
+
 /**
  * @author smriti on 13/05/20
  */
@@ -48,4 +50,23 @@ public class DDROverrideDetailQuery {
                     " AND ddr.doctor.id=:doctorId" +
                     " AND ddr.specialization.id= :specializationId" +
                     " AND dd.date =:date";
+
+    public static String QUERY_TO_FETCH_DDR_OVERRIDE_COUNT(Long ddrOverrideId) {
+
+        String query = " SELECT" +
+                " COUNT(dd.id) " +
+                " FROM DDROverrideDetail dd" +
+                " WHERE" +
+                " dd.status = 'Y'" +
+                " AND dd.date =:date" +
+                " AND dd.ddrShiftWise.id=:ddrId" +
+                " AND (DATE_FORMAT(dd.endTime,'%H:%i') >:startTime" +
+                " AND DATE_FORMAT(dd.startTime,'%H:%i')<:endTime)";
+
+        /*IF UPDATING EXISTING OVERRIDE DETAIL, VALIDATE EXCEPT CURRENT ID*/
+        if (!Objects.isNull(ddrOverrideId))
+            query += " AND dd.id !=" + ddrOverrideId;
+
+        return query;
+    }
 }

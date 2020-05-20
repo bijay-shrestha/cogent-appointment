@@ -1,6 +1,8 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.checkAvailability.DDRWeekDaysRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.update.weekDays.DDRCompareShiftRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.DDRWeekDaysTimeResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRExistingWeekDaysResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.weekDaysDetail.DDRBreakResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.weekDaysDetail.DDRWeekDaysResponseDTO;
@@ -24,6 +26,8 @@ import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.DDRShiftWiseLog.DDR_WEEK_DAYS;
 import static com.cogent.cogentappointment.admin.query.ddrShiftWise.DDRWeekDaysDetailQuery.QUERY_TO_FETCH_DDR_WEEK_DAYS_DETAIL;
+import static com.cogent.cogentappointment.admin.query.ddrShiftWise.DDRWeekDaysDetailQuery.QUERY_TO_FETCH_WEEK_DAYS_TIME_DETAIL;
+import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
 
 /**
@@ -83,6 +87,17 @@ public class DDRWeekDaysDetailRepositoryCustomImpl implements DDRWeekDaysDetailR
         }
 
         return ddrWeekDetails;
+    }
+
+    @Override
+    public List<DDRWeekDaysTimeResponseDTO> fetchDDRWeekdaysTimeInfo(DDRCompareShiftRequestDTO requestDTO) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_WEEK_DAYS_TIME_DETAIL(
+                requestDTO.getWeekDaysId(),
+                requestDTO.getDdrShiftDetailId())
+        );
+
+        return transformQueryToResultList(query, DDRWeekDaysTimeResponseDTO.class);
     }
 
     private Supplier<NoContentFoundException> NO_WEEK_DAYS_INFO_FOUND = () -> {

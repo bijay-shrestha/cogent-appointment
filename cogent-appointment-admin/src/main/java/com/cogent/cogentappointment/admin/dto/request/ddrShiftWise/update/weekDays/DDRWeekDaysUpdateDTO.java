@@ -1,0 +1,41 @@
+package com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.update.weekDays;
+
+import com.cogent.cogentappointment.admin.constraintvalidator.Status;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+import java.util.Date;
+
+/**
+ * @author smriti on 19/05/20
+ */
+@Getter
+@Setter
+public class DDRWeekDaysUpdateDTO implements Serializable {
+
+    private Long ddrWeekDaysId;
+
+    @NotNull
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss", timezone = "Asia/Kathmandu")
+    private Date startTime;
+
+    @NotNull
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss", timezone = "Asia/Kathmandu")
+    private Date endTime;
+
+    @NotNull
+    @Status
+    private Character offStatus;
+
+    @NotNull
+    @Status
+    private Character hasBreak;
+
+    @NotNull
+    private Long weekDaysId;
+
+//    private List<DDRBreakDetailRequestDTO> breakDetail;
+}

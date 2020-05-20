@@ -1,6 +1,8 @@
 package com.cogent.cogentappointment.admin.repository.custom;
 
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.checkAvailability.DDRWeekDaysRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.update.weekDays.DDRCompareShiftRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.DDRWeekDaysTimeResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRExistingWeekDaysResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.weekDaysDetail.DDRWeekDaysResponseDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -18,4 +20,6 @@ public interface DDRWeekDaysDetailRepositoryCustom {
     List<DDRExistingWeekDaysResponseDTO> fetchExistingDDRWeekDaysDetail(DDRWeekDaysRequestDTO requestDTO);
 
     List<DDRWeekDaysResponseDTO> fetchDDRWeekDaysDetail(DDRWeekDaysRequestDTO requestDTO);
+
+    List<DDRWeekDaysTimeResponseDTO> fetchDDRWeekdaysTimeInfo(DDRCompareShiftRequestDTO requestDTO);
 }

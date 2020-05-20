@@ -8,6 +8,7 @@ import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.override
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.weekDaysDetail.DDRRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.update.override.DDROverrideUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.update.shift.DDRShiftUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.update.weekDays.DDRWeekDaysUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRBreakDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRExistingDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRExistingMinResponseDTO;
@@ -59,4 +60,7 @@ public interface DDRShiftWiseService {
     DDROverrideUpdateResponseDTO updateDoctorDutyRosterOverride(DDROverrideUpdateRequestDTO updateRequestDTO);
 
     void updateDDRShiftDetail(DDRShiftUpdateRequestDTO updateRequestDTO);
+
+    void updateDDRWeekDaysDetail(DDRWeekDaysUpdateRequestDTO requestDTO);
+
 }

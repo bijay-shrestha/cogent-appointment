@@ -1,5 +1,11 @@
 package com.cogent.cogentappointment.admin.query.ddrShiftWise;
 
+import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.update.override.DDROverrideBreakUpdateRequestDTO;
+
+import java.util.List;
+
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeFromDate;
+
 /**
  * @author smriti on 14/05/20
  */
@@ -27,4 +33,33 @@ public class DDROverrideBreakDetailQuery {
                     " FROM DDROverrideBreakDetail dd" +
                     " WHERE dd.status = 'Y'" +
                     " AND dd.ddrOverrideDetail.id = :ddrOverrideId";
+
+    public static String QUERY_TO_FETCH_DDR_OVERRIDE_BREAK_COUNT(
+            List<DDROverrideBreakUpdateRequestDTO> breakUpdateRequestDTOS) {
+
+        String query = " SELECT" +
+                " COUNT(dd.id) " +
+                " FROM DDROverrideBreakDetail dd" +
+                " WHERE" +
+                " dd.status = 'Y'" +
+                " AND dd.ddrOverrideDetail.id=:ddrOverrideId";
+
+        boolean isFirstRequestAdded = false;
+
+        for (DDROverrideBreakUpdateRequestDTO breakDetails : breakUpdateRequestDTOS) {
+
+            if (!isFirstRequestAdded) {
+                query += " AND (DATE_FORMAT(dd.endTime,'%H:%i') >'" + getTimeFromDate(breakDetails.getStartTime()) + "'" +
+                        " AND DATE_FORMAT(dd.startTime,'%H:%i')<'" + getTimeFromDate(breakDetails.getEndTime()) + "'";
+
+                isFirstRequestAdded = true;
+            } else {
+                query += " OR (DATE_FORMAT(dd.endTime,'%H:%i') >'" + getTimeFromDate(breakDetails.getStartTime()) + "'" +
+                        " AND DATE_FORMAT(dd.startTime,'%H:%i')<'" + getTimeFromDate(breakDetails.getEndTime()) + "'";
+            }
+        }
+
+        return query;
+    }
+
 }

@@ -239,6 +239,8 @@ public class SwaggerConstants {
 
         String UPDATE_DDR_SHIFT_OPERATION = "Save/update shifts for selected DDR";
 
+        String UPDATE_DDR_WEEK_DAYS_OPERATION = "Update week days information. ";
+
         String UPDATE_OPERATION = "Update Doctor Duty Roster. Note that week days time can be updated " +
                 "only if there are no appointments within the selected date range";
 

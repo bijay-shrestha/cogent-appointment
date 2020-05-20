@@ -22,4 +22,6 @@ public interface DDROverrideDetailRepositoryCustom {
     List<DDRTimeResponseDTO> fetchDDROverrideTimeDetailsExceptCurrentId(Long ddrOverrideId,
                                                                         Date date, Long doctorId,
                                                                         Long specializationId);
+
+    Long fetchDDROverrideCount(Long ddrId, Long ddrOverrideId, Date date, Date startTime, Date endTime);
 }

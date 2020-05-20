@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.repository.custom;
 
+import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.update.override.DDROverrideBreakUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRBreakDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.detail.DDROverrideBreakDetailResponseDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,4 +18,7 @@ public interface DDROverrideBreakDetailRepositoryCustom {
     List<DDRBreakDetailResponseDTO> fetchExistingOverrideBreakDetail(Long ddrOverrideId);
 
     List<DDROverrideBreakDetailResponseDTO> fetchOverrideBreakDetail(Long ddrOverrideId);
+
+    Long fetchDDROverrideBreakCount(List<DDROverrideBreakUpdateRequestDTO> breakUpdateRequestDTOS,
+                                    Long ddrOverrideId);
 }

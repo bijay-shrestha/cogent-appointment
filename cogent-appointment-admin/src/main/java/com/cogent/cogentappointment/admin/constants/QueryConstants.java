@@ -34,6 +34,8 @@ public class QueryConstants {
         String SHIFT_ID = "shiftId";
         String DDR_WEEK_DAYS_ID = "ddrWeekDaysId";
         String DDR_OVERRIDE_ID = "ddrOverrideId";
+        String START_TIME = "startTime";
+        String END_TIME = "endTime";
     }
 
 

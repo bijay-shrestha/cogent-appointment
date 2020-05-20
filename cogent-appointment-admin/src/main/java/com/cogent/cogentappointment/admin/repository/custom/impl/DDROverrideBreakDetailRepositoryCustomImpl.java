@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
+import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.update.override.DDROverrideBreakUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRBreakDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.detail.DDROverrideBreakDetailResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
@@ -18,8 +19,7 @@ import java.util.function.Function;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.DDRConstants.DDR_OVERRIDE_ID;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.DDRShiftWiseLog.DDR_OVERRIDE_BREAK_DETAIL;
-import static com.cogent.cogentappointment.admin.query.ddrShiftWise.DDROverrideBreakDetailQuery.QUERY_TO_FETCH_EXISTING_OVERRIDE_BREAK_DETAIL;
-import static com.cogent.cogentappointment.admin.query.ddrShiftWise.DDROverrideBreakDetailQuery.QUERY_TO_FETCH_OVERRIDE_BREAK_DETAIL;
+import static com.cogent.cogentappointment.admin.query.ddrShiftWise.DDROverrideBreakDetailQuery.*;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
 
@@ -62,6 +62,17 @@ public class DDROverrideBreakDetailRepositoryCustomImpl implements DDROverrideBr
             NO_BREAK_DETAIL_FOUND.apply(ddrOverrideId);
 
         return breakDetails;
+    }
+
+    //todo: future enhancements : this can be done by using query
+    @Override
+    public Long fetchDDROverrideBreakCount(List<DDROverrideBreakUpdateRequestDTO> breakUpdateRequestDTOS,
+                                           Long ddrOverrideId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DDR_OVERRIDE_BREAK_COUNT(breakUpdateRequestDTOS))
+                .setParameter(DDR_OVERRIDE_ID, ddrOverrideId);
+
+        return (Long) query.getSingleResult();
     }
 
     private Function<Long, NoContentFoundException> NO_BREAK_DETAIL_FOUND = (ddrOverrideId) -> {

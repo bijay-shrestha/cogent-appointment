@@ -1,5 +1,7 @@
 package com.cogent.cogentappointment.admin.query.ddrShiftWise;
 
+import java.util.List;
+
 /**
  * @author smriti on 13/05/20
  */
@@ -21,4 +23,19 @@ public class DDRWeekDaysDetailQuery {
                     " AND dsd.status = 'Y'" +
                     " AND ddr.id = :ddrId" +
                     " AND dsd.shift.id = :shiftId";
+
+    /*USED FOR COMPARISON WHILE UPDATING DDR WEEKDAYS INFO*/
+    public static String QUERY_TO_FETCH_WEEK_DAYS_TIME_DETAIL(List<Long> weekDaysIds, List<Long> shiftDetailIds) {
+
+        return "SELECT" +
+                " dw.weekDays.id as weekDaysId," +                  //[0]
+                " dw.weekDays.name as weekDaysName," +               //[1]
+                " dw.startTime as startTime," +                     //[2]
+                " dw.endTime as endTime" +                          //[3]
+                " FROM DDRWeekDaysDetail dw" +
+                " WHERE" +
+                " dw.offStatus = 'N'" +
+                " dw.weekDays.id IN (" + weekDaysIds + ")" +
+                " AND dw.ddrShiftDetail.id IN (" + shiftDetailIds + ")";
+    }
 }

@@ -8,13 +8,16 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author smriti on 08/05/20
  */
 @Repository
-public interface DDRShiftDetailRepository extends JpaRepository<DDRShiftDetail, Long>,
-        DDRShiftDetailRepositoryCustom {
+public interface DDRShiftDetailRepository extends JpaRepository<DDRShiftDetail, Long>, DDRShiftDetailRepositoryCustom {
+
+    @Query("SELECT d FROM DDRShiftDetail d WHERE d.status!='D' AND d.id = :id")
+    Optional<DDRShiftDetail> fetchById(@Param("id") Long id);
 
     @Query("SELECT d FROM DDRShiftDetail d WHERE d.status!='D' AND d.ddrShiftWise.id = :ddrId")
     List<DDRShiftDetail> fetchByDDRId(@Param("ddrId") Long ddrId);

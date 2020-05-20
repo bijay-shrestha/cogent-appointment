@@ -34,7 +34,7 @@ public class DDRShiftDetailQuery {
                     " ds.shift.name as shiftName," +                            //[2]
                     " ds.rosterGapDuration as rosterGapDuration" +              //[3]
                     " FROM DDRShiftDetail ds " +
-                    " WHERE ds.status = 'Y'" +
+                    " WHERE ds.status != 'D'" +
                     " AND ds.ddrShiftWise.status != 'D'" +
                     " AND ds.ddrShiftWise.id =:ddrId";
 

@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
+import com.cogent.cogentappointment.client.repository.custom.HospitalDepartmentRepositoryCustom;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +15,7 @@ import javax.persistence.PersistenceContext;
 @Repository
 @Transactional(readOnly = true)
 @Slf4j
-public class HospitalDepartmentRepositoryCustomImpl {
+public class HospitalDepartmentRepositoryCustomImpl implements HospitalDepartmentRepositoryCustom {
 
     @PersistenceContext
     EntityManager entityManager;

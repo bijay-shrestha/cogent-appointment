@@ -1,10 +1,12 @@
 package com.cogent.cogentappointment.client.service;
 
+import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentUpdateRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.HospitalDepartmentMinimalResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.HospitalDepartmentResponseDTO;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -24,4 +26,8 @@ public interface HospitalDepartmentService {
 
     HospitalDepartmentMinimalResponseDTO search(HospitalDepartmentSearchRequestDTO departmentSearchRequestDTO,
                                                       Pageable pageable);
+
+    HospitalDepartmentResponseDTO fetchHospitalDepartmentDetails(Long id);
+
+    void delete(DeleteRequestDTO deleteRequestDTO);
 }

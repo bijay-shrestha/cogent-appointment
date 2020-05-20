@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.utils;
 
+import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentUpdateRequestDTO;
 import com.cogent.cogentappointment.persistence.model.*;
@@ -99,6 +100,44 @@ public class HospitalDepartmentUtils {
                         .count()) < 1)
                 .collect(Collectors.toList());
 
+    }
+
+    public static HospitalDepartment parseToDeleteHospitalDept(HospitalDepartment hospitalDepartment,
+                                                                     DeleteRequestDTO requestDTO) {
+        hospitalDepartment.setStatus(requestDTO.getStatus());
+        hospitalDepartment.setRemarks(requestDTO.getRemarks());
+
+        return hospitalDepartment;
+    }
+
+    public static HospitalDepartmentCharge parseToDeleteHospitalDeptCharge(HospitalDepartmentCharge hospitalDepartmentCharge,
+                                                                     DeleteRequestDTO requestDTO) {
+        hospitalDepartmentCharge.setStatus(requestDTO.getStatus());
+        hospitalDepartmentCharge.setRemarks(requestDTO.getRemarks());
+
+        return hospitalDepartmentCharge;
+    }
+
+
+    public static List<HospitalDepartmentDoctorInfo> parseToDeleteHospitalDeptDoctorInfo(List<HospitalDepartmentDoctorInfo> doctorInfos,
+                                                                                         DeleteRequestDTO requestDTO) {
+        doctorInfos.forEach(doctorInfo -> {
+            doctorInfo.setStatus(requestDTO.getStatus());
+            doctorInfo.setRemarks(requestDTO.getRemarks());
+        });
+
+        return doctorInfos;
+    }
+
+    public static List<HospitalDepartmentRoomInfo> parseToDeleteHospitalDeptRoomInfo(List<HospitalDepartmentRoomInfo> roomInfos,
+                                                                                       DeleteRequestDTO requestDTO) {
+
+        roomInfos.forEach(roomInfo->{
+            roomInfo.setStatus(requestDTO.getStatus());
+            roomInfo.setRemarks(requestDTO.getRemarks());
+        });
+
+        return roomInfos;
     }
 
 

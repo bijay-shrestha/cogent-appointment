@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.resource;
 
+import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentUpdateRequestDTO;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 
+import static com.cogent.cogentappointment.client.constants.SwaggerConstants.DepartmentConstant.DELETE_DEPARTMENT_OPERATION;
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.HospitalDepartmentConstant.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.HospitalDepartmentConstants.BASE_HOSPITAL_DEPARTMENT;
@@ -69,4 +71,24 @@ public class HospitalDepartmentResource {
         Pageable pageable = PageRequest.of(page, size);
         return ok(hospitalDepartmentService.search(departmentSearchRequestDTO, pageable));
     }
+
+    @GetMapping(DETAIL + ID_PATH_VARIABLE_BASE)
+    @ApiOperation(HOSPITAL_DEPARTMENT_DETAILS_OPERATION)
+    public ResponseEntity<?> fetchHospitalDepartmentDetails(@PathVariable("id") Long id) {
+        return ok(hospitalDepartmentService.fetchHospitalDepartmentDetails(id));
+    }
+
+    @DeleteMapping
+    @ApiOperation(DELETE_HOSPITAL_DEPARTMENT_OPERATION)
+    public ResponseEntity<?> delete(@Valid @RequestBody DeleteRequestDTO deleteRequestDTO) {
+        hospitalDepartmentService.delete(deleteRequestDTO);
+        return ok().build();
+    }
+
+//    @DeleteMapping(ID_PATH_VARIABLE_BASE)
+//    @ApiOperation(DELETE_DEPARTMENT_OPERATION)
+//    public ResponseEntity<?> delete(@PathVariable("id") Long id) {
+//        hospitalDepartmentService.delete(deleteRequestDTO);
+//        return ok().build();
+//    }
 }

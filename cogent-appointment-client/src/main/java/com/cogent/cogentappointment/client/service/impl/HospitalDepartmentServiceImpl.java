@@ -1,10 +1,12 @@
 package com.cogent.cogentappointment.client.service.impl;
 
+import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentUpdateRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.HospitalDepartmentMinimalResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.HospitalDepartmentResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.*;
 import com.cogent.cogentappointment.client.service.HospitalDepartmentService;
@@ -164,6 +166,45 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
         return responseDTO;
     }
 
+    @Override
+    public HospitalDepartmentResponseDTO fetchHospitalDepartmentDetails(Long id) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_DETAIL_PROCESS_STARTED, HOSPITAL_DEPARTMENT);
+
+        Long hospitalId = getLoggedInHospitalId();
+
+        HospitalDepartmentResponseDTO responseDTO =
+                hospitalDepartmentRepository.fetchHospitalDepartmentDetails(id, hospitalId);
+
+        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTO;
+    }
+
+    @Override
+    public void delete(DeleteRequestDTO requestDTO) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(DELETING_PROCESS_STARTED, HOSPITAL_DEPARTMENT);
+
+        Long hospitalId = getLoggedInHospitalId();
+
+        HospitalDepartment hospitalDepartment = fetchHospitalDepartmentById(requestDTO.getId(), hospitalId);
+
+        HospitalDepartmentCharge hospitalDepartmentCharge = fetchHospitalDepartmentChargeByHospitalDepartmentId(requestDTO.getId());
+
+        saveHospitalDepartment(parseToDeleteHospitalDept(hospitalDepartment,requestDTO));
+
+        saveHospitalDepartmentCharge(parseToDeleteHospitalDeptCharge(hospitalDepartmentCharge,requestDTO));
+
+        deleteDoctorInfo(requestDTO);
+
+        deleteRoomInfo(requestDTO);
+
+        log.info(DELETING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
+    }
+
     private void saveHospitalDepartmentDoctorInfo(HospitalDepartmentRequestDTO requestDTO,
                                                   HospitalDepartment hospitalDepartment) {
         Long hospitalId = getLoggedInHospitalId();
@@ -256,6 +297,26 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
     }
 
+    public void deleteRoomInfo(DeleteRequestDTO requestDTO){
+
+        List<HospitalDepartmentRoomInfo> roomInfos=fetchExisitngRoomList(requestDTO.getId());
+        saveHospitalDepartmentRoomInfo(parseToDeleteHospitalDeptRoomInfo(roomInfos,requestDTO));
+    }
+
+    public void deleteDoctorInfo(DeleteRequestDTO requestDTO){
+
+        List<HospitalDepartmentDoctorInfo> doctorInfos=fetchExisitngDoctorList(requestDTO.getId());
+        saveHospitalDepartmentDoctorInfo(parseToDeleteHospitalDeptDoctorInfo(doctorInfos,requestDTO));
+    }
+
+    private List<HospitalDepartmentRoomInfo> fetchExisitngRoomList(Long hospitalDepartmentId) {
+        return hospitalDepartmentRoomInfoRepository.fetchRoomListByHospitalDepartmentId(hospitalDepartmentId);
+    }
+
+    private List<HospitalDepartmentDoctorInfo> fetchExisitngDoctorList(Long hospitalDepartmentId) {
+        return hospitalDepartmentDoctorInfoRepository.fetchDoctorListByHospitalDepartmentId(hospitalDepartmentId);
+    }
+
     private List<Long> fetchExisitngActiveDoctorIdList(Long hospitalDepartmentId) {
         return hospitalDepartmentDoctorInfoRepository.fetchDoctorIdListByHospitalDepartmentId(hospitalDepartmentId);
     }
@@ -268,8 +329,16 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
         hospitalDepartmentDoctorInfoRepository.saveAll(doctorInfoList);
     }
 
+    private void saveHospitalDepartmentDoctorInfo(HospitalDepartmentDoctorInfo doctorInfo) {
+        hospitalDepartmentDoctorInfoRepository.save(doctorInfo);
+    }
+
     private void saveHospitalDepartmentRoomInfo(List<HospitalDepartmentRoomInfo> roomInfoList) {
         hospitalDepartmentRoomInfoRepository.saveAll(roomInfoList);
+    }
+
+    private void saveHospitalDepartmentRoomInfo(HospitalDepartmentRoomInfo roomInfo) {
+        hospitalDepartmentRoomInfoRepository.save(roomInfo);
     }
 
     private HospitalDepartment saveHospitalDepartment(HospitalDepartment hospitalDepartment) {

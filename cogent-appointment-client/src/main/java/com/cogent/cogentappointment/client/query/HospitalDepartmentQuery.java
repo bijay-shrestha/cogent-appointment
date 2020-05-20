@@ -91,10 +91,44 @@ public class HospitalDepartmentQuery {
         return whereClause;
     }
 
-    public static String DEPARTMENT_AUDITABLE_QUERY() {
-        return " d.createdBy as createdBy," +
-                " d.createdDate as createdDate," +
-                " d.lastModifiedBy as lastModifiedBy," +
-                " d.lastModifiedDate as lastModifiedDate";
+    public static String  QUERY_TO_GET_DETAILS=
+            "SELECT " +
+                    "  hd.name as name, " +
+                    "  hd.code as code, " +
+                    "  hd.description as description, " +
+                    "  hd.remarks as remarks, " +
+                    "  hdc.appointmentCharge as appointmentCharge, " +
+                    "  hdc.appointmentFollowUpCharge  as followUpCharge, " +
+                    HOSPITAL_DEPARTMENT_AUDITABLE_QUERY()+
+                    "  FROM " +
+                    "  HospitalDepartment hd " +
+                    "  LEFT JOIN HospitalDepartmentCharge hdc ON hdc.hospitalDepartment.id=hd.id  " +
+                    "  WHERE hd.id=:hospitalDepartmentId" +
+                    "  AND hd.hospital.id=:hospitalId";
+
+    public static String QUERY_TO_GET_DOCTOR_LIST_BY_HOSPITAL_DEPARTMENT_ID=
+            "SELECT" +
+                    " hddi.doctor.name" +
+                    " FROM" +
+                    " HospitalDepartmentDoctorInfo hddi" +
+                    " WHERE" +
+                    " hddi.hospitalDepartment.id = :hospitalDepartmentId" +
+                    " AND hddi.status='Y'";
+
+    public static String QUERY_TO_GET_ROOM_LIST_BY_HOSPITAL_DEPARTMENT_ID=
+            "SELECT" +
+                    " hdri.room.roomNumber" +
+                    " FROM" +
+                    " HospitalDepartmentRoomInfo hdri" +
+                    " WHERE" +
+                    " hdri.hospitalDepartment.id = :hospitalDepartmentId"+
+                    " AND hdri.status='Y'";
+    
+
+    public static String HOSPITAL_DEPARTMENT_AUDITABLE_QUERY() {
+        return " hd.createdBy as createdBy," +
+                " hd.createdDate as createdDate," +
+                " hd.lastModifiedBy as lastModifiedBy," +
+                " hd.lastModifiedDate as lastModifiedDate";
     }
 }

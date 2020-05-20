@@ -16,4 +16,7 @@ public interface HospitalDepartmentRoomInfoRepository extends JpaRepository<Hosp
 
     @Query(value = "SELECT hdi.room.id FROM HospitalDepartmentRoomInfo hdi WHERE hdi.hospitalDepartment.id=:hospitalDepartmentId AND hdi.status='Y'")
     List<Long> fetchRoomIdListByHospitalDepartmentId(@Param("hospitalDepartmentId") Long hospitalDepartmentId);
+
+    @Query(value = "SELECT hdi FROM HospitalDepartmentRoomInfo hdi WHERE hdi.hospitalDepartment.id=:hospitalDepartmentId AND hdi.status!='D'")
+    List<HospitalDepartmentRoomInfo> fetchRoomListByHospitalDepartmentId(@Param("hospitalDepartmentId") Long hospitalDepartmentId);
 }

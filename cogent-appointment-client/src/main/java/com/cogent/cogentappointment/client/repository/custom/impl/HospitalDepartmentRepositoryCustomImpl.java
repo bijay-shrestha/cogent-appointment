@@ -6,6 +6,7 @@ import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.Hospit
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentUpdateRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.HospitalDepartmentMinimalResponse;
 import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.HospitalDepartmentMinimalResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.HospitalDepartmentResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.HospitalDepartmentRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartment;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
@@ -108,6 +110,30 @@ public class HospitalDepartmentRepositoryCustomImpl implements HospitalDepartmen
             return response;
         }
 
+    }
+
+    @Override
+    public HospitalDepartmentResponseDTO fetchHospitalDepartmentDetails(Long hospitalDepartmentId, Long hospitalId) {
+        Query query = createQuery.apply(entityManager,QUERY_TO_GET_DETAILS )
+                .setParameter(HOSPITAL_DEPARMTENT_ID, hospitalDepartmentId)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        Query doctorListQuery=createQuery.apply(entityManager,QUERY_TO_GET_DOCTOR_LIST_BY_HOSPITAL_DEPARTMENT_ID )
+                .setParameter(HOSPITAL_DEPARMTENT_ID, hospitalDepartmentId);
+
+        Query roomListQuery=createQuery.apply(entityManager,QUERY_TO_GET_ROOM_LIST_BY_HOSPITAL_DEPARTMENT_ID )
+                .setParameter(HOSPITAL_DEPARMTENT_ID, hospitalDepartmentId);
+
+        try {
+            HospitalDepartmentResponseDTO responseDTO= transformQueryToSingleResult(query,
+                    HospitalDepartmentResponseDTO.class);
+            responseDTO.setDoctorList(doctorListQuery.getResultList());
+            responseDTO.setRoomList(roomListQuery.getResultList());
+            return responseDTO;
+        } catch (NoResultException e) {
+            log.error(CONTENT_NOT_FOUND_BY_ID,HOSPITAL_DEPARTMENT,hospitalDepartmentId);
+            throw new NoContentFoundException(HospitalDepartment.class, "id", hospitalDepartmentId.toString());
+        }
     }
 
     private Supplier<NoContentFoundException> HOSPITAL_DEPARTMENT_NOT_FOUND = () -> {

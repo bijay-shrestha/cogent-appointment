@@ -47,4 +47,9 @@ public class HospitalDepartmentUpdateRequestDTO implements Serializable {
 
     @NotNull
     private Double followUpCharge;
+
+    @NotNull
+    @NotEmpty
+    @NotBlank
+    private String remarks;
 }

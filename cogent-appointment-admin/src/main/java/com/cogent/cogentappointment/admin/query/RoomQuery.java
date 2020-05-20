@@ -37,7 +37,7 @@ public class RoomQuery {
                     " ORDER BY label ASC";
 
     public static final String QUERY_TO_FETCH_ROOM_FOR_DROPDOWN =
-            "SELECT r.id as value," +                                             //[0]
+            "SELECT r.id as value," +                                                         //[0]
                     " CONCAT(r.hospital.alias,' - ',r.roomNumber) AS label" +                 //[1]
                     " FROM Room r " +
                     " WHERE r.status != 'D'" +
@@ -49,7 +49,8 @@ public class RoomQuery {
             "SELECT r.id as id," +                                                //[0]
                     " r.roomNumber as roomNumber," +                              //[1]
                     " r.status as status," +                                     //[2]
-                    " r.hospital.name as hospitalName" +                                //[3]
+                    " r.hospital.id as hospitalId," +                            //[3]
+                    " r.hospital.name as hospitalName" +                         //[4]
                     " FROM Room r " +
                     " WHERE";
 

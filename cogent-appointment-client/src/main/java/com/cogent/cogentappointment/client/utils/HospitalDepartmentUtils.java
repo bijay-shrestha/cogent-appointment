@@ -3,6 +3,9 @@ package com.cogent.cogentappointment.client.utils;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentRequestDTO;
 import com.cogent.cogentappointment.persistence.model.*;
 
+import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toNormalCase;
+import static com.cogent.cogentappointment.client.utils.commons.StringUtil.toUpperCase;
+
 /**
  * @author Sauravi Thapa ON 5/20/20
  */
@@ -12,8 +15,8 @@ public class HospitalDepartmentUtils {
                                                                Hospital hospital){
 
         HospitalDepartment hospitalDepartment=new HospitalDepartment();
-        hospitalDepartment.setName(requestDTO.getName());
-        hospitalDepartment.setCode(requestDTO.getCode());
+        hospitalDepartment.setName(toNormalCase(requestDTO.getName()));
+        hospitalDepartment.setCode(toUpperCase(requestDTO.getCode()));
         hospitalDepartment.setDescription(requestDTO.getDescription());
         hospitalDepartment.setStatus(requestDTO.getStatus());
         hospitalDepartment.setHospital(hospital);

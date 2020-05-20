@@ -21,5 +21,7 @@ public class RoomMinimalResponse implements Serializable {
 
     private Character status;
 
+    private Long hospitalId;
+
     private String hospitalName;
 }

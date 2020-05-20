@@ -16,6 +16,8 @@ import java.util.Optional;
 public interface HospitalDepartmentChargeRepository extends JpaRepository<HospitalDepartmentCharge,Long>,
         HospitalDepartmentChargeRepositoryCustom {
 
-    @Query(value = "SELECT hdc FROM HospitalDepartmentCharge hdc WHERE hdc.hospitalDepartment.id = :id AND hdc.status != 'D'")
-    Optional<HospitalDepartmentCharge> fetchByHospitalDepartmentId(@Param("hospitalDepartmentId") Long id);
+    @Query(value = "SELECT hdc FROM HospitalDepartmentCharge hdc WHERE hdc.hospitalDepartment.id = :hospitalDepartmentId" +
+            " AND hdc.status != 'D'")
+    Optional<HospitalDepartmentCharge> fetchByHospitalDepartmentId(@Param("hospitalDepartmentId") Long hospitalDepartmentId);
+
 }

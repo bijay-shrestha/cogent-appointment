@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.service.impl;
 
+import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentUpdateRequestDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
@@ -110,6 +111,38 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
         log.info(UPDATING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
 
+    }
+
+    @Override
+    public List<DropDownResponseDTO> fetchMinHospitalDepartment() {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, HOSPITAL_DEPARTMENT);
+
+        Long hospitalId = getLoggedInHospitalId();
+
+        List<DropDownResponseDTO> minDepartment = hospitalDepartmentRepository.fetchMinHospitalDepartment(hospitalId)
+                .orElseThrow(() -> HOSPITAL_DEPARTMENT_NOT_FOUND());
+
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, HOSPITAL_DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
+
+        return minDepartment;
+    }
+
+    @Override
+    public List<DropDownResponseDTO> fetchActiveMinHospitalDepartment() {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_ACTIVE_DROPDOWN, HOSPITAL_DEPARTMENT);
+
+        Long hospitalId = getLoggedInHospitalId();
+
+        List<DropDownResponseDTO> minDepartment = hospitalDepartmentRepository.fetchActiveMinHospitalDepartment(hospitalId)
+                .orElseThrow(() -> HOSPITAL_DEPARTMENT_NOT_FOUND());
+
+        log.info(FETCHING_PROCESS_FOR_ACTIVE_DROPDOWN_COMPLETED, HOSPITAL_DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
+
+        return minDepartment;
     }
 
     private void saveHospitalDepartmentDoctorInfo(HospitalDepartmentRequestDTO requestDTO,
@@ -268,13 +301,20 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
         throw new NoContentFoundException(HospitalDepartment.class, "id", id.toString());
     };
 
-    private Function<Long, NoContentFoundException> HOSPITAL_DEPARTMENT_CHARGE_WITH_GIVEN_ID_NOT_FOUND = (hospitalDepartmentId) -> {
+    private Function<Long, NoContentFoundException> HOSPITAL_DEPARTMENT_CHARGE_WITH_GIVEN_ID_NOT_FOUND =
+            (hospitalDepartmentId) -> {
         log.error(CONTENT_NOT_FOUND_BY_HOSPITAL_DEPARTMENT_ID, HOSPITAL_DEPARTMENT_CHARGE, hospitalDepartmentId);
-        throw new NoContentFoundException(HospitalDepartmentCharge.class, "hospitalDepartmentId", hospitalDepartmentId.toString());
+        throw new NoContentFoundException(HospitalDepartmentCharge.class, "hospitalDepartmentId",
+                hospitalDepartmentId.toString());
     };
 
     private Function<Long, NoContentFoundException> DOCTOR_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, DOCTOR, id);
         throw new NoContentFoundException(Doctor.class, "id", id.toString());
     };
+
+    private NoContentFoundException HOSPITAL_DEPARTMENT_NOT_FOUND(){
+        log.error(CONTENT_NOT_FOUND,HOSPITAL_DEPARTMENT);
+        throw new NoContentFoundException(HospitalDepartment.class);
+    }
 }

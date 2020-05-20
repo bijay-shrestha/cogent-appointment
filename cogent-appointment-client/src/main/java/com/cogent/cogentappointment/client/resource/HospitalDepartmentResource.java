@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 
-import static com.cogent.cogentappointment.client.constants.SwaggerConstants.HospitalDepartmentConstant.BASE_HOSPITAL_DEPARTMENT_API_VALUE;
-import static com.cogent.cogentappointment.client.constants.SwaggerConstants.HospitalDepartmentConstant.SAVE_HOSPITAL_DEPARTMENT_OPERATION;
-import static com.cogent.cogentappointment.client.constants.SwaggerConstants.HospitalDepartmentConstant.UPDATE_HOSPITAL_DEPARTMENT_OPERATION;
+import static com.cogent.cogentappointment.client.constants.SwaggerConstants.HospitalDepartmentConstant.*;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.ACTIVE;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.HospitalDepartmentConstants.BASE_HOSPITAL_DEPARTMENT;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.MIN;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -46,5 +46,17 @@ public class HospitalDepartmentResource {
     public ResponseEntity<?> update(@Valid @RequestBody HospitalDepartmentUpdateRequestDTO departmentUpdateRequestDTO) {
         hospitalDepartmentService.update(departmentUpdateRequestDTO);
         return ok().build();
+    }
+
+    @GetMapping(MIN)
+    @ApiOperation(FETCH_HOSPITAL_DEPARTMENT_FOR_DROP_DOWN_OPERATION)
+    public ResponseEntity<?> fetchMinDepartment() {
+        return ok(hospitalDepartmentService.fetchMinHospitalDepartment());
+    }
+
+    @GetMapping(ACTIVE + MIN)
+    @ApiOperation(FETCH_ACTIVE_HOSPITAL_DEPARTMENT_FOR_DROP_DOWN_OPERATION)
+    public ResponseEntity<?> fetchActiveMinDepartment() {
+        return ok(hospitalDepartmentService.fetchActiveMinHospitalDepartment());
     }
 }

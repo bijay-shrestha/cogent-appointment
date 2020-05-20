@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.persistence.model;
 
 import com.cogent.cogentappointment.persistence.audit.Auditable;
-import com.cogent.cogentappointment.persistence.listener.HospitalDepartmentEntityListener;
+import com.cogent.cogentappointment.persistence.listener.HospitalDepartmentDoctorInfoEntityListener;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,20 +14,25 @@ import java.io.Serializable;
  * @author Sauravi Thapa ON 5/19/20
  */
 @Entity
-@Table(name = "hospital_department")
+@Table(name = "hospital_department_doctor_info")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EntityListeners(HospitalDepartmentEntityListener.class)
-public class HospitalDepartment extends Auditable<String> implements Serializable {
+@EntityListeners(HospitalDepartmentDoctorInfoEntityListener.class)
+public class HospitalDepartmentDoctorInfo extends Auditable<String> implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
-    private String name;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hospital_department_id")
+    private HospitalDepartment hospitalDepartment;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "doctor_id")
+    private Doctor doctor;
 
     @Column(name = "status")
     private Character status;
@@ -35,25 +40,14 @@ public class HospitalDepartment extends Auditable<String> implements Serializabl
     @Column(name = "remarks")
     private String remarks;
 
-    @Column(name = "code", nullable = false, updatable = false, length = 50)
-    private String code;
-
-    @Column(name = "description")
-    private String description;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hospital_id")
-    private Hospital hospital;
-
     @Override
     public String toString() {
-        return "HospitalDepartment{" +
+        return "HospitalDepartmentDoctorInfo{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
+                ", hospitalDepartment=" + hospitalDepartment.getName() +
+                ", doctor=" + doctor.getName() +
                 ", status=" + status +
                 ", remarks='" + remarks + '\'' +
-                ", description='" + description + '\'' +
-                ", hospital=" + hospital.getName() +
                 '}';
     }
 }

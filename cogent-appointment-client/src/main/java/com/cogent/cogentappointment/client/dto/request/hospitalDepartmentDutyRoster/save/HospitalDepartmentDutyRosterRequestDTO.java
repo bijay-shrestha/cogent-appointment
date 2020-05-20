@@ -43,6 +43,8 @@ public class HospitalDepartmentDutyRosterRequestDTO implements Serializable {
     @Status
     private Character isRoomEnabled;
 
+    private Long roomId;
+
     @NotEmpty
     private List<HospitalDeptWeekDaysDutyRosterRequestDTO> weekDaysDetail;
 

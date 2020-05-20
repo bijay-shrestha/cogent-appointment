@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster;
 
+import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.save.HospitalDepartmentDutyRosterRequestDTO;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartment;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDutyRoster;
@@ -22,5 +23,11 @@ public class HospitalDeptDutyRosterUtils {
         hospitalDepartmentDutyRoster.setHasOverrideDutyRoster(requestDTO.getHasOverrideDutyRoster());
         hospitalDepartmentDutyRoster.setIsRoomEnabled(requestDTO.getIsRoomEnabled());
         return hospitalDepartmentDutyRoster;
+    }
+
+    public static void parseDeletedDetails(HospitalDepartmentDutyRoster doctorDutyRoster,
+                                           DeleteRequestDTO deleteRequestDTO) {
+        doctorDutyRoster.setStatus(deleteRequestDTO.getStatus());
+        doctorDutyRoster.setRemarks(deleteRequestDTO.getRemarks());
     }
 }

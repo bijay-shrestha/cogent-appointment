@@ -13,9 +13,9 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SpecializationDutyRosterSearchRequestDTO implements Serializable {
+public class HospitalDeptDutyRosterSearchRequestDTO implements Serializable {
 
-    private Long specializationId;
+    private Long hospitalDepartmentId;
 
     private Date fromDate;
 

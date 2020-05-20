@@ -56,15 +56,15 @@ public class RoomServiceImpl implements RoomService {
 
         log.info(SAVING_PROCESS_STARTED, ROOM);
 
-        Long hospitalId=getLoggedInHospitalId();
+        Long hospitalId = getLoggedInHospitalId();
 
-        Long count = roomRepository.validateDuplicity(requestDTO.getRoomNumber(),hospitalId);
+        Long count = roomRepository.validateDuplicity(requestDTO.getRoomNumber(), hospitalId);
 
         validateRoomNumber(requestDTO.getRoomNumber(), count);
 
         Hospital hospital = fetchHospitalById(hospitalId);
 
-       save(parseToRoom(requestDTO,hospital));
+        save(parseToRoom(requestDTO, hospital));
 
         log.info(SAVING_PROCESS_COMPLETED, ROOM, getDifferenceBetweenTwoTime(startTime));
     }
@@ -75,7 +75,7 @@ public class RoomServiceImpl implements RoomService {
 
         log.info(UPDATING_PROCESS_STARTED, ROOM);
 
-        Long hospitalId=getLoggedInHospitalId();
+        Long hospitalId = getLoggedInHospitalId();
 
         Room room = fetchRoomById(requestDTO.getId());
 
@@ -84,7 +84,7 @@ public class RoomServiceImpl implements RoomService {
                 requestDTO.getRoomNumber(),
                 hospitalId);
 
-        validateRoomNumber(requestDTO.getRoomNumber(),count);
+        validateRoomNumber(requestDTO.getRoomNumber(), count);
 
         Hospital hospital = fetchHospitalById(hospitalId);
 
@@ -135,15 +135,21 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public RoomMinimalResponseDTO search(RoomSearchRequestDTO searchRequestDTO, Pageable pageable) {
 
-            Long startTime = getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
-            log.info(SEARCHING_PROCESS_STARTED, ROOM);
+        log.info(SEARCHING_PROCESS_STARTED, ROOM);
 
-            RoomMinimalResponseDTO responseDTOS = roomRepository.search(searchRequestDTO, pageable);
+        RoomMinimalResponseDTO responseDTOS = roomRepository.search(searchRequestDTO, pageable);
 
-            log.info(SEARCHING_PROCESS_COMPLETED, ROOM, getDifferenceBetweenTwoTime(startTime));
+        log.info(SEARCHING_PROCESS_COMPLETED, ROOM, getDifferenceBetweenTwoTime(startTime));
 
-            return responseDTOS;
+        return responseDTOS;
+    }
+
+    @Override
+    public Room fetchActiveRoom(Long roomId, Long hospitalId) {
+        return roomRepository.fetchActiveRoomByIdAndHospitalId(roomId, hospitalId)
+                .orElseThrow(()-> ROOM_WITH_GIVEN_ID_NOT_FOUND.apply(roomId));
     }
 
     private void validateRoomNumber(Integer roomNumber, Long count) {

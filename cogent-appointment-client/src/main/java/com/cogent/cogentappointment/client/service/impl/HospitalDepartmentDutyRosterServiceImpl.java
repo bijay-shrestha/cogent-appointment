@@ -1,15 +1,20 @@
 package com.cogent.cogentappointment.client.service.impl;
 
+import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.save.HospitalDepartmentDutyRosterRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.save.HospitalDeptDutyRosterOverrideRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.save.HospitalDeptWeekDaysDutyRosterRequestDTO;
+import com.cogent.cogentappointment.client.dto.response.specializationDutyRoster.HospitalDeptDutyRosterMinResponseDTO;
 import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.*;
 import com.cogent.cogentappointment.client.service.HospitalDepartmentDutyRosterService;
+import com.cogent.cogentappointment.client.service.RoomService;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,11 +27,14 @@ import static com.cogent.cogentappointment.client.constants.ErrorMessageConstant
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.HospitalDepartmentDutyRosterServiceMessages.DUPLICATION_MESSAGE;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
+import static com.cogent.cogentappointment.client.log.constants.DoctorDutyRosterLog.DOCTOR_DUTY_ROSTER;
 import static com.cogent.cogentappointment.client.log.constants.HospitalDepartmentDutyRosterLog.*;
 import static com.cogent.cogentappointment.client.log.constants.HospitalDepartmentLog.HOSPITAL_DEPARTMENT;
 import static com.cogent.cogentappointment.client.log.constants.WeekDaysLog.WEEK_DAYS;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
+import static com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterRoomUtils.parseRoomDetails;
+import static com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterUtils.parseDeletedDetails;
 import static com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterUtils.parseToHospitalDepartmentDutyRoster;
 import static com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster.HospitalDeptOverrideDutyRosterUtils.parseToSpecializationDutyRosterOverride;
 import static com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster.HospitalDeptWeekDaysDutyRosterUtils.parseToHospitalDeptWeekDaysDutyRoster;
@@ -49,17 +57,25 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
 
     private final HospitalDepartmentRepository hospitalDepartmentRepository;
 
+    private final RoomService roomService;
+
+    private final HospitalDeptDutyRosterRoomInfoRepository dutyRosterRoomInfoRepository;
+
     public HospitalDepartmentDutyRosterServiceImpl(HospitalDeptDutyRosterRepository hospitalDeptDutyRosterRepository,
                                                    HospitalDeptWeekDaysDutyRosterRepository weekDaysDutyRosterRepository,
                                                    WeekDaysRepository weekDaysRepository,
                                                    HospitalDeptDutyRosterOverrideRepository overrideRepository,
-                                                   HospitalDepartmentRepository hospitalDepartmentRepository) {
+                                                   HospitalDepartmentRepository hospitalDepartmentRepository,
+                                                   RoomService roomService,
+                                                   HospitalDeptDutyRosterRoomInfoRepository dutyRosterRoomInfoRepository) {
 
         this.hospitalDeptDutyRosterRepository = hospitalDeptDutyRosterRepository;
         this.weekDaysDutyRosterRepository = weekDaysDutyRosterRepository;
         this.weekDaysRepository = weekDaysRepository;
         this.overrideRepository = overrideRepository;
         this.hospitalDepartmentRepository = hospitalDepartmentRepository;
+        this.roomService = roomService;
+        this.dutyRosterRoomInfoRepository = dutyRosterRoomInfoRepository;
     }
 
     @Override
@@ -77,20 +93,52 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
 //                requestDTO.getFromDate(),
 //                requestDTO.getToDate());
 //
-        HospitalDepartmentDutyRoster hospitalDepartmentDutyRoster = parseToHospitalDepartmentDutyRoster(
+        HospitalDepartmentDutyRoster dutyRoster = parseToHospitalDepartmentDutyRoster(
                 requestDTO,
                 fetchHospitalDepartment(requestDTO.getHospitalDepartmentId(), hospitalId)
         );
 
-        save(hospitalDepartmentDutyRoster);
+        save(dutyRoster);
 
-        saveWeekDaysDutyRoster(hospitalDepartmentDutyRoster,
+        if(dutyRoster.getIsRoomEnabled().equals(YES))
+            saveDutyRosterRoomInfo(dutyRoster, requestDTO.getRoomId(), hospitalId );
+
+        saveWeekDaysDutyRoster(dutyRoster,
                 requestDTO.getWeekDaysDetail());
 
-        if (hospitalDepartmentDutyRoster.getHasOverrideDutyRoster().equals(YES))
-            saveDutyRosterOverride(hospitalDepartmentDutyRoster, requestDTO.getOverrideDetail());
+        if (dutyRoster.getHasOverrideDutyRoster().equals(YES))
+            saveDutyRosterOverride(dutyRoster, requestDTO.getOverrideDetail());
 
         log.info(SAVING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    @Override
+    public List<HospitalDeptDutyRosterMinResponseDTO> search(HospitalDeptDutyRosterSearchRequestDTO searchRequestDTO,
+                                                             Pageable pageable) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SEARCHING_PROCESS_STARTED, HOSPITAL_DEPARTMENT_DUTY_ROSTER);
+
+        List<HospitalDeptDutyRosterMinResponseDTO> minInfo =
+                hospitalDeptDutyRosterRepository.search(searchRequestDTO, pageable, getLoggedInHospitalId());
+
+        log.info(SEARCHING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
+
+        return minInfo;
+    }
+
+    @Override
+    public void delete(DeleteRequestDTO deleteRequestDTO) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(DELETING_PROCESS_STARTED, HOSPITAL_DEPARTMENT_DUTY_ROSTER);
+
+        HospitalDepartmentDutyRoster departmentDutyRoster = findDeptDutyRosterById(deleteRequestDTO.getId());
+
+        parseDeletedDetails(departmentDutyRoster, deleteRequestDTO);
+
+        log.info(DELETING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
     }
 
     private void saveWeekDaysDutyRoster(HospitalDepartmentDutyRoster hospitalDepartmentDutyRoster,
@@ -217,6 +265,34 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
                         requestDTO.getToDate())
         );
     }
+
+    private void saveDutyRosterRoomInfo(HospitalDepartmentDutyRoster dutyRoster,
+                                        Long roomId, Long hospitalId){
+
+        Room room = fetchRoom(roomId, hospitalId);
+        HospitalDepartmentDutyRosterRoomInfo roomInfo = parseRoomDetails(dutyRoster, room);
+        saveDutyRosterRoomInfo(roomInfo);
+    }
+
+    private Room fetchRoom(Long roomId, Long hospitalId){
+        return roomService.fetchActiveRoom(roomId, hospitalId);
+    }
+
+    private void saveDutyRosterRoomInfo(HospitalDepartmentDutyRosterRoomInfo roomInfo){
+        dutyRosterRoomInfoRepository.save(roomInfo);
+    }
+
+    private HospitalDepartmentDutyRoster findDeptDutyRosterById(Long dutyRosterId) {
+        return hospitalDeptDutyRosterRepository.fetchById(dutyRosterId)
+                .orElseThrow(() -> HOSPITAL_DEPT_DUTY_ROSTER_WITH_GIVEN_ID_NOT_FOUND.apply(dutyRosterId));
+    }
+
+    private Function<Long, NoContentFoundException> HOSPITAL_DEPT_DUTY_ROSTER_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, DOCTOR_DUTY_ROSTER, id);
+        throw new NoContentFoundException(HospitalDepartmentDutyRoster.class, "id", id.toString());
+    };
+
+
 }
 
 

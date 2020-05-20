@@ -14,11 +14,11 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SpecializationDutyRosterMinimalResponseDTO implements Serializable {
+public class HospitalDeptDutyRosterMinResponseDTO implements Serializable {
 
     private Long id;
 
-    private String specializationName;
+    private String hospitalDeptName;
 
     private Integer rosterGapDuration;
 

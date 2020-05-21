@@ -16,7 +16,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class HospitalDeptDutyRosterMinResponseDTO implements Serializable {
 
-    private Long id;
+    private Long hddRosterId;
 
     private String hospitalDeptName;
 

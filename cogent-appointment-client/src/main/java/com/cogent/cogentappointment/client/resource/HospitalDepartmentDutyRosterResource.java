@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.client.resource;
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.save.HospitalDepartmentDutyRosterRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.update.HospitalDeptDutyRosterUpdateRequestDTO;
 import com.cogent.cogentappointment.client.service.HospitalDepartmentDutyRosterService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -61,5 +62,12 @@ public class HospitalDepartmentDutyRosterResource {
     @ApiOperation(DETAILS_OPERATION)
     public ResponseEntity<?> fetchDetailsById(@PathVariable("id") Long id) {
         return ok(hospitalDepartmentDutyRosterService.fetchDetailsById(id));
+    }
+
+    @PutMapping
+    @ApiOperation(UPDATE_OPERATION)
+    public ResponseEntity<?> update(@Valid @RequestBody HospitalDeptDutyRosterUpdateRequestDTO updateRequestDTO) {
+        hospitalDepartmentDutyRosterService.update(updateRequestDTO);
+        return ok().build();
     }
 }

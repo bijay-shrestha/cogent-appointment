@@ -16,4 +16,5 @@ public interface HospitalDeptDutyRosterOverrideRepositoryCustom {
 
     Long fetchOverrideCountWithRoom(Long hospitalDepartmentId, Date fromDate, Date toDate, Long roomId);
 
+    void updateOverrideStatus(Long hddRosterId);
 }

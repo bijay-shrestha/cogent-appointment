@@ -24,7 +24,7 @@ public class HospitalDeptDutyRosterQuery {
             HospitalDeptDutyRosterSearchRequestDTO searchRequestDTO) {
 
         String sql = " SELECT" +
-                " dr.id as id," +                                                      //[0]
+                " dr.id as hddRosterId," +                                             //[0]
                 " hd.name as hospitalDeptName," +                                      //[1]
                 " dr.rosterGapDuration as rosterGapDuration," +                        //[2]
                 " dr.fromDate as fromDate," +                                          //[3]
@@ -49,7 +49,7 @@ public class HospitalDeptDutyRosterQuery {
     public static final String QUERY_TO_FETCH_HDD_ROSTER_DETAIL =
 
             " SELECT" +
-                    " ddr.id as id," +                                                  //[0]
+                    " ddr.id as hddRosterId," +                                         //[0]
                     " hd.id as hospitalDeptId," +                                       //[1]
                     " hd.name as hospitalDeptName," +                                   //[2]
                     " ddr.rosterGapDuration as rosterGapDuration," +                    //[3]

@@ -17,7 +17,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class HospitalDeptDutyRosterResponseDTO extends AuditableResponseDTO implements Serializable {
 
-    private Long id;
+    private Long hddRosterId;
 
     private Long hospitalDeptId;
 

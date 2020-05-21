@@ -29,4 +29,9 @@ public class HospitalDeptDutyRosterOverrideQuery {
                     " AND dd.room.id =:roomId" +
                     " AND dd.toDate >=:fromDate" +
                     " AND dd.fromDate <=:toDate";
+
+    public static final String QUERY_TO_UPDATE_OVERRIDE_STATUS =
+            " UPDATE HospitalDepartmentDutyRosterOverride h" +
+                    " SET h.status = 'N'" +
+                    " WHERE h.hospitalDepartmentDutyRoster.id = :id";
 }

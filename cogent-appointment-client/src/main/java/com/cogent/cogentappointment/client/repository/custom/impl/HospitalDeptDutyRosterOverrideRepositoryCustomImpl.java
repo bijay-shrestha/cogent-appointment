@@ -11,8 +11,7 @@ import javax.persistence.Query;
 import java.util.Date;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
-import static com.cogent.cogentappointment.client.query.HospitalDeptDutyRosterOverrideQuery.QUERY_TO_FETCH_DDR_OVERRIDE_COUNT_WITHOUT_ROOM;
-import static com.cogent.cogentappointment.client.query.HospitalDeptDutyRosterOverrideQuery.QUERY_TO_FETCH_DDR_OVERRIDE_COUNT_WITH_ROOM;
+import static com.cogent.cogentappointment.client.query.HospitalDeptDutyRosterOverrideQuery.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
 
@@ -20,7 +19,7 @@ import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.creat
  * @author smriti on 20/05/20
  */
 @Repository
-@Transactional(readOnly = true)
+@Transactional
 @Slf4j
 public class HospitalDeptDutyRosterOverrideRepositoryCustomImpl implements
         HospitalDeptDutyRosterOverrideRepositoryCustom {
@@ -48,5 +47,12 @@ public class HospitalDeptDutyRosterOverrideRepositoryCustomImpl implements
                 .setParameter(TO_DATE, utilDateToSqlDate(toDate));
 
         return (Long) query.getSingleResult();
+    }
+
+    @Override
+    public void updateOverrideStatus(Long hddRosterId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_UPDATE_OVERRIDE_STATUS)
+                .setParameter(ID, hddRosterId);
+        query.executeUpdate();
     }
 }

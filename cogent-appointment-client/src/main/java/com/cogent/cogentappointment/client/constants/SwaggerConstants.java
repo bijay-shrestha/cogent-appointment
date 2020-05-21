@@ -219,10 +219,6 @@ public class SwaggerConstants {
         String BASE_HOSPITAL_DEPARTMENT_API_VALUE = "This is Hospital Department Resource";
         String SAVE_HOSPITAL_DEPARTMENT_OPERATION = "Save new hospital department";
         String UPDATE_HOSPITAL_DEPARTMENT_OPERATION = "Update existing hospital department";
-        String DELETE_DOCTOR_FROM_HOSPITAL_DEPARTMENT_OPERATION = "Set doctor from hospital department status" +
-                " as 'D' when deleted";
-        String DELETE_ROOM_FROM_HOSPITAL_DEPARTMENT_OPERATION = "Set room from hospital department status " +
-                "as 'D' when deleted";
         String DELETE_HOSPITAL_DEPARTMENT_OPERATION = "Set hospital department status as 'D' when deleted";
         String SEARCH_HOSPITAL_DEPARTMENT_OPERATION = "Search hospital department according to given request parameters";
         String HOSPITAL_DEPARTMENT_DETAILS_OPERATION = "Fetch hospital department details";

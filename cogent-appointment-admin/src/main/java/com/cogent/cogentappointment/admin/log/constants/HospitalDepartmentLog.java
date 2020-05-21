@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.log.constants;
+package com.cogent.cogentappointment.admin.log.constants;
 
 /**
  * @author Sauravi Thapa ON 5/20/20

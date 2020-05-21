@@ -233,6 +233,20 @@ public class SwaggerConstants {
         String FETCH_ALIAS_BY_ID = "Fetch alias by hospital id";
     }
 
+    public interface HospitalDepartmentConstant {
+        String BASE_HOSPITAL_DEPARTMENT_API_VALUE = "This is Hospital Department Resource";
+        String SAVE_HOSPITAL_DEPARTMENT_OPERATION = "Save new hospital department";
+        String UPDATE_HOSPITAL_DEPARTMENT_OPERATION = "Update existing hospital department";
+        String DELETE_HOSPITAL_DEPARTMENT_OPERATION = "Set hospital department status as 'D' when deleted";
+        String SEARCH_HOSPITAL_DEPARTMENT_OPERATION = "Search hospital department according to given request parameters";
+        String HOSPITAL_DEPARTMENT_DETAILS_OPERATION = "Fetch hospital department details";
+        String FETCH_HOSPITAL_DEPARTMENT_FOR_DROP_DOWN_OPERATION = "Fetch minimal hospital department details" +
+                " (id and name) for dropdown";
+        String FETCH_ACTIVE_HOSPITAL_DEPARTMENT_FOR_DROP_DOWN_OPERATION = "Fetch minimal active hospital department" +
+                " details (id and name) for dropdown";
+    }
+
+
     //I
 
     //J

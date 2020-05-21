@@ -45,7 +45,7 @@ public class WebResourceKeyConstants {
         String TRANSACTION_LOG = "/transaction-log";
     }
 
-    public interface AppointmentTransferConstants{
+    public interface AppointmentTransferConstants {
         String BASE_APPOINTMENT_TRANSFER = "/appointmentTransfer";
         String APPOINTMENT_TIME = "/time";
         String APPOINTMENT_CHARGE = "/charge";
@@ -109,8 +109,6 @@ public class WebResourceKeyConstants {
     }
 
 
-
-
     //E
     public interface EsewaConstants {
         String BASE_ESEWA = "/esewa";
@@ -142,9 +140,6 @@ public class WebResourceKeyConstants {
 
     public interface HospitalDepartmentConstants {
         String BASE_HOSPITAL_DEPARTMENT = "/hospitalDepartment";
-        String HOSPITAL_DEPARTMENT_ID_PATH_VARIABLE_BASE = "/{hospitalDepartmentId}";
-        String DOCTOR = "/doctor";
-        String ROOM = "/room";
     }
 
     //I

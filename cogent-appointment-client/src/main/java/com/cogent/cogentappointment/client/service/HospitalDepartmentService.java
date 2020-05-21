@@ -2,7 +2,6 @@ package com.cogent.cogentappointment.client.service;
 
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
-import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentDeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentUpdateRequestDTO;
@@ -26,7 +25,7 @@ public interface HospitalDepartmentService {
     List<DropDownResponseDTO> fetchActiveMinHospitalDepartment();
 
     HospitalDepartmentMinimalResponseDTO search(HospitalDepartmentSearchRequestDTO departmentSearchRequestDTO,
-                                                      Pageable pageable);
+                                                Pageable pageable);
 
     HospitalDepartmentResponseDTO fetchHospitalDepartmentDetails(Long id);
 

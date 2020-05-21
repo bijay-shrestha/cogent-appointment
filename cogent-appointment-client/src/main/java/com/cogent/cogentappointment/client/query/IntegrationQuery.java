@@ -17,8 +17,12 @@ public class IntegrationQuery {
                     " LEFT JOIN Feature f ON f.id=cfi.featureId" +
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=afi.apiIntegrationFormatId" +
                     " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId" +
-                    " LEFT JOIN ApiQueryParameters aqp ON aqp.apiIntegrationFormatId =aif.id" +
-                    " WHERE cfi.hospitalId= :hospitalId";
+                    " WHERE cfi.hospitalId= :hospitalId"+
+                    " AND aif.status='Y'"+
+                    " AND hrm.status='Y'"+
+                    " AND afi.status='Y'"+
+                    " AND f.status='Y'"+
+                    " AND cfi.status='Y'";
 
 
     public static final String CLIENT_API_FEAUTRES_HEADERS_QUERY =
@@ -30,7 +34,11 @@ public class IntegrationQuery {
                     " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=cfi.id" +
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=afi.apiIntegrationFormatId" +
                     " LEFT JOIN ApiRequestHeader arh ON arh.apiIntegrationFormatId=aif.id" +
-                    " WHERE aif.id=:apiIntegrationFormatId";
+                    " WHERE aif.id=:apiIntegrationFormatId"+
+                    " AND aif.status='Y'"+
+                    " AND arh.status='Y'"+
+                    " AND afi.status='Y'"+
+                    " AND cfi.status='Y'";
 
 
     public static final String CLIENT_API_PARAMETERS_QUERY =
@@ -41,5 +49,11 @@ public class IntegrationQuery {
                     " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=cfi.id" +
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=afi.apiIntegrationFormatId" +
                     " LEFT JOIN ApiQueryParameters aqp ON aqp.apiIntegrationFormatId =aif.id"+
-                    " WHERE aif.id=:apiIntegrationFormatId";
+                    " WHERE aif.id=:apiIntegrationFormatId" +
+                    " AND aif.status='Y'"+
+                    " AND afi.status='Y'"+
+                    " AND aqp.status='Y'"+
+                    " AND cfi.status='Y'";
+
+
 }

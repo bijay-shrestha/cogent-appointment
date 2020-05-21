@@ -63,10 +63,4 @@ public class IntegrationResource {
         return ok(httpRequestMethodService.fetchActiveRequestMethod());
     }
 
-//    @PutMapping(CLIENT_API_INTEGRATION)
-//    @ApiOperation(FETCH_CLIENT_API_INTEGRATION)
-//    public ResponseEntity<?> fetchClientIntegrationResponseDTO(@Valid @RequestBody ClientApiIntegrationRequestDTO requestDTO) {
-//        return ok(integrationService.fetchClientIntegrationResponseDTO(requestDTO));
-//    }
-
 }

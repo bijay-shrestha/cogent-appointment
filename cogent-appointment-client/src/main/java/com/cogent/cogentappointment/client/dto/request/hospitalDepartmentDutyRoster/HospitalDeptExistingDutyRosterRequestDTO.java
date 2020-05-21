@@ -12,10 +12,10 @@ import java.util.Date;
  */
 @Getter
 @Setter
-public class SpecializationExistingDutyRosterRequestDTO implements Serializable {
+public class HospitalDeptExistingDutyRosterRequestDTO implements Serializable {
 
     @NotNull
-    private Long specializationId;
+    private Long hospitalDeptId;
 
     @NotNull
     private Date fromDate;

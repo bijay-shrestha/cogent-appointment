@@ -19,11 +19,11 @@ public class HospitalDepartmentDutyRosterRoomInfo implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hospital_department_duty_roster_id")
     private HospitalDepartmentDutyRoster hospitalDepartmentDutyRoster;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
     private Room room;
 

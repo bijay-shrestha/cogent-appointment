@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster;
+package com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.existing;
 
 import com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.detail.HospitalDeptDutyRosterOverrideResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.detail.HospitalDeptWeekDaysDutyRosterResponseDTO;
@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SpecializationExistingDutyRosterDetailResponseDTO implements Serializable {
+public class HospitalDeptExistingDutyRosterDetailResponseDTO implements Serializable {
 
     private List<HospitalDeptWeekDaysDutyRosterResponseDTO> weekDaysRosters;
 

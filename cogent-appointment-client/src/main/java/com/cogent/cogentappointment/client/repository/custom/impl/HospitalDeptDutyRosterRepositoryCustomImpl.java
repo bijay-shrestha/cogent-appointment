@@ -1,8 +1,11 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterSearchRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.HospitalDeptExistingDutyRosterRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.HospitalDeptDutyRosterMinResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.detail.*;
+import com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.existing.HospitalDeptExistingDutyRosterDetailResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.existing.HospitalDeptExistingDutyRosterResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.HospitalDeptDutyRosterRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDutyRoster;
@@ -31,6 +34,7 @@ import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDa
 import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
 import static com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterUtils.parseHDDRosterDetails;
+import static com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterUtils.parseToExistingRosterDetails;
 
 /**
  * @author smriti on 20/05/20
@@ -93,6 +97,56 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
                         ? fetchHDDRosterOverrideDetail(hddRosterId) : new ArrayList<>();
 
         return parseHDDRosterDetails(hddRosterDetail, roomDetail, weekDaysDetail, overrideDetail);
+    }
+
+    @Override
+    public List<HospitalDeptExistingDutyRosterResponseDTO> fetchExistingDutyRosters(
+            HospitalDeptExistingDutyRosterRequestDTO requestDTO, Long hospitalId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_EXISTING_DUTY_ROSTER)
+                .setParameter(ID, requestDTO.getHospitalDeptId())
+                .setParameter(FROM_DATE, utilDateToSqlDate(requestDTO.getFromDate()))
+                .setParameter(TO_DATE, utilDateToSqlDate(requestDTO.getToDate()))
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        List<HospitalDeptExistingDutyRosterResponseDTO> existingRosters =
+                transformQueryToResultList(query, HospitalDeptExistingDutyRosterResponseDTO.class);
+
+        existingRosters.forEach(existing -> {
+            if (existing.getIsRoomEnabled().equals(YES))
+                existing.setRoomNumber(fetchRoomNumber(existing.getHddRosterId()));
+        });
+
+        return existingRosters;
+    }
+
+    @Override
+    public HospitalDeptExistingDutyRosterDetailResponseDTO fetchExistingRosterDetails(Long hddRosterId) {
+        Character hasOverrideRosters = checkIfDutyRosterOverrideExists(hddRosterId);
+
+        List<HospitalDeptWeekDaysDutyRosterResponseDTO> weekDaysDetail =
+                fetchHDDRosterWeekDaysDetail(hddRosterId);
+
+        List<HospitalDeptDutyRosterOverrideResponseDTO> overrideDetail =
+                hasOverrideRosters.equals(YES)
+                        ? fetchHDDRosterOverrideDetail(hddRosterId)
+                        : new ArrayList<>();
+
+        return parseToExistingRosterDetails(weekDaysDetail, overrideDetail);
+    }
+
+    private Integer fetchRoomNumber(Long hddRosterId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HDD_ROSTER_ROOM_NUMBER)
+                .setParameter(ID, hddRosterId);
+
+        return (Integer) query.getSingleResult();
+    }
+
+    private Character checkIfDutyRosterOverrideExists(Long hddRosterId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_CHECK_IF_OVERRIDE_EXISTS)
+                .setParameter(ID, hddRosterId);
+
+        return (Character) query.getSingleResult();
     }
 
     private HospitalDeptDutyRosterResponseDTO fetchHDDRosterDetail(Long hddRosterId, Long hospitalId) {

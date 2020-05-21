@@ -110,5 +110,34 @@ public class HospitalDeptDutyRosterQuery {
                     " AND d.status = 'Y'" +
                     " AND d.hospitalDepartmentDutyRoster.id = :id";
 
+    public static final String QUERY_TO_FETCH_EXISTING_DUTY_ROSTER =
+            " SELECT" +
+                    " dd.id as hddRosterId," +                                             //[0]
+                    " dd.fromDate as fromDate," +                                          //[1]
+                    " dd.toDate as toDate," +                                              //[2]
+                    " dd.rosterGapDuration as rosterGapDuration," +                        //[3]
+                    " dd.isRoomEnabled as isRoomEnabled" +                                 //[4]
+                    " FROM HospitalDepartmentDutyRoster dd" +
+                    " LEFT JOIN HospitalDepartment hd ON hd.id = dd.hospitalDepartment.id" +
+                    " WHERE dd.status != 'D'" +
+                    " AND hd.id=:id" +
+                    " AND dd.toDate >=:fromDate" +
+                    " AND dd.fromDate <=:toDate" +
+                    " AND hd.hospital.id=:hospitalId";
+
+
+    public static String QUERY_TO_FETCH_HDD_ROSTER_ROOM_NUMBER =
+            " SELECT" +
+                    " h.room.roomNumber as roomNumber" +                                //[0]
+                    " FROM HospitalDepartmentDutyRosterRoomInfo h" +
+                    " WHERE h.status = 'Y'" +
+                    " AND h.hospitalDepartmentDutyRoster.id =:id";
+
+    public static final String QUERY_TO_CHECK_IF_OVERRIDE_EXISTS =
+            " SELECT" +
+                    " dd.hasOverrideDutyRoster as hasOverrideDutyRoster" +             //[0]
+                    " FROM HospitalDepartmentDutyRoster dd" +
+                    " WHERE dd.status !='D'" +
+                    " AND dd.id = :id";
 
 }

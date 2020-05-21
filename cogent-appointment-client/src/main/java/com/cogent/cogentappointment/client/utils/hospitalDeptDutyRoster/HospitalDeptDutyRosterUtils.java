@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.save.HospitalDepartmentDutyRosterRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.update.HospitalDeptDutyRosterUpdateDTO;
 import com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.detail.*;
+import com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.existing.HospitalDeptExistingDutyRosterDetailResponseDTO;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartment;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDutyRoster;
 
@@ -57,6 +58,16 @@ public class HospitalDeptDutyRosterUtils {
         dutyRoster.setRemarks(updateRequestDTO.getRemarks());
         dutyRoster.setHasOverrideDutyRoster(updateRequestDTO.getHasOverrideDutyRoster());
         dutyRoster.setIsRoomEnabled(updateRequestDTO.getIsRoomEnabled());
+    }
+
+    public static HospitalDeptExistingDutyRosterDetailResponseDTO parseToExistingRosterDetails(
+            List<HospitalDeptWeekDaysDutyRosterResponseDTO> weekDaysRosters,
+            List<HospitalDeptDutyRosterOverrideResponseDTO> overrideRosters) {
+
+        return HospitalDeptExistingDutyRosterDetailResponseDTO.builder()
+                .weekDaysRosters(weekDaysRosters)
+                .overrideRosters(overrideRosters)
+                .build();
     }
 
 }

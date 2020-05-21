@@ -51,6 +51,13 @@ public class Patient extends Auditable<String> implements Serializable {
     @Column(name = "cogent_id")
     private String cogentId;
 
+    /*used to identify valid patient data
+    * in case of agent: date of birth = merchant's created date */
+    /*'Y'-> FOR AGENTS
+    * 'N' -> FOR NORMAL PATIENTS*/
+    @Column(name ="is_agent")
+    private Character isAgent;
+
     @Override
     public String toString() {
         return "Patient{" +

@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.client.resource;
 
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterSearchRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.HospitalDeptExistingDutyRosterRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.save.HospitalDepartmentDutyRosterRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.update.HospitalDeptDutyRosterOverrideUpdateRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.update.HospitalDeptDutyRosterUpdateRequestDTO;
@@ -24,7 +25,7 @@ import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
- * @author Sauravi Thapa ON 5/18/20
+ * @author smriti on 20/05/20
  */
 @RestController
 @RequestMapping(value = API_V1 + BASE_HOSPITAL_DEPARTMENT_DUTY_ROSTER)
@@ -95,6 +96,18 @@ public class HospitalDepartmentDutyRosterResource {
         return ok().build();
     }
 
+    @PutMapping(EXISTING)
+    @ApiOperation(FETCH_EXISTING_ROSTERS)
+    public ResponseEntity<?> fetchExistingDutyRosters(@Valid @RequestBody
+                                                              HospitalDeptExistingDutyRosterRequestDTO requestDTO) {
+        return ok(hospitalDepartmentDutyRosterService.fetchExistingDutyRosters(requestDTO));
+    }
+
+    @GetMapping(EXISTING + DETAIL + ID_PATH_VARIABLE_BASE)
+    @ApiOperation(DETAILS_OPERATION)
+    public ResponseEntity<?> fetchExistingRosterDetails(@PathVariable("id") Long id) {
+        return ok(hospitalDepartmentDutyRosterService.fetchExistingRosterDetails(id));
+    }
 
 }
 

@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster;
+package com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.existing;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
@@ -14,9 +14,9 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SpecializationExistingDutyRosterResponseDTO implements Serializable {
+public class HospitalDeptExistingDutyRosterResponseDTO implements Serializable {
 
-    private Long specializationDutyRosterId;
+    private Long hddRosterId;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "MMM dd, YYYY", timezone = "Asia/Kathmandu")
     private Date fromDate;
@@ -25,4 +25,8 @@ public class SpecializationExistingDutyRosterResponseDTO implements Serializable
     private Date toDate;
 
     private Integer rosterGapDuration;
+
+    private Character isRoomEnabled;
+
+    private Integer roomNumber;
 }

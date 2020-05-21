@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterSearchRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.HospitalDeptExistingDutyRosterRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.save.HospitalDepartmentDutyRosterRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.save.HospitalDeptDutyRosterOverrideRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.save.HospitalDeptWeekDaysDutyRosterRequestDTO;
@@ -11,6 +12,8 @@ import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRos
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.update.HospitalDeptWeekDaysDutyRosterUpdateRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.HospitalDeptDutyRosterMinResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.detail.HospitalDeptDutyRosterDetailResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.existing.HospitalDeptExistingDutyRosterDetailResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.existing.HospitalDeptExistingDutyRosterResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.update.HospitalDeptDutyRosterOverrideUpdateResponseDTO;
 import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
@@ -34,8 +37,6 @@ import static com.cogent.cogentappointment.client.constants.ErrorMessageConstant
 import static com.cogent.cogentappointment.client.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
-import static com.cogent.cogentappointment.client.log.constants.DoctorDutyRosterLog.REVERTING_PROCESS_COMPLETED;
-import static com.cogent.cogentappointment.client.log.constants.DoctorDutyRosterLog.REVERTING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.client.log.constants.HospitalDepartmentDutyRosterLog.*;
 import static com.cogent.cogentappointment.client.log.constants.HospitalDepartmentLog.HOSPITAL_DEPARTMENT;
 import static com.cogent.cogentappointment.client.log.constants.WeekDaysLog.WEEK_DAYS;
@@ -242,6 +243,37 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
                         }));
 
         log.info(REVERTING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_DUTY_ROSTER_OVERRIDE, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    @Override
+    public List<HospitalDeptExistingDutyRosterResponseDTO> fetchExistingDutyRosters(
+            HospitalDeptExistingDutyRosterRequestDTO requestDTO) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, EXISTING_HOSPITAL_DEPARTMENT_DUTY_ROSTER);
+
+        List<HospitalDeptExistingDutyRosterResponseDTO> existingRosters =
+                hospitalDeptDutyRosterRepository.fetchExistingDutyRosters(requestDTO, getLoggedInHospitalId());
+
+        log.info(FETCHING_PROCESS_COMPLETED, EXISTING_HOSPITAL_DEPARTMENT_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
+
+        return existingRosters;
+    }
+
+    @Override
+    public HospitalDeptExistingDutyRosterDetailResponseDTO fetchExistingRosterDetails(Long hddRosterId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_DETAIL_PROCESS_STARTED, EXISTING_HOSPITAL_DEPARTMENT_DUTY_ROSTER);
+
+        HospitalDeptExistingDutyRosterDetailResponseDTO existingRosterDetails =
+                hospitalDeptDutyRosterRepository.fetchExistingRosterDetails(hddRosterId);
+
+        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, EXISTING_HOSPITAL_DEPARTMENT_DUTY_ROSTER,
+                getDifferenceBetweenTwoTime(startTime));
+
+        return existingRosterDetails;
     }
 
     private void validateHDDRosterRequestInfo(HospitalDepartmentDutyRosterRequestDTO requestDTO) {

@@ -15,7 +15,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class DoctorUpdateRequestDTO implements Serializable {
+public class DepartmentDoctorUpdateRequestDTO implements Serializable {
 
     @NotNull
     private Long doctorId;

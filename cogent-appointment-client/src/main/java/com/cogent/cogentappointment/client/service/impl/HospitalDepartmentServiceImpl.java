@@ -109,9 +109,13 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
         updateHospitalDepartmentCharge(requestDTO);
 
-        updateHospitalDepartmentDoctorInfo(requestDTO, hospitalDepartment);
+        if(requestDTO.getDoctorUpdateList().size()>0)
+            updateHospitalDepartmentDoctorInfo(requestDTO, hospitalDepartment);
 
-        updateHospitalDepartmentRoomInfo(requestDTO, hospitalDepartment);
+
+        if(requestDTO.getRoomUpdateList().size()>0)
+            updateHospitalDepartmentRoomInfo(requestDTO, hospitalDepartment);
+
 
         log.info(UPDATING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
 
@@ -256,7 +260,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
         Long hospitaId=getLoggedInHospitalId();
 
-        List<DoctorUpdateRequestDTO> doctorUpdateRequestDTOS=requestDTO.getDoctorUpdateList();
+        List<DepartmentDoctorUpdateRequestDTO> doctorUpdateRequestDTOS=requestDTO.getDoctorUpdateList();
 
         doctorUpdateRequestDTOS.forEach(doctorUpdateRequestDTO->{
             if(doctorUpdateRequestDTO.getStatus().equals(YES)){
@@ -276,14 +280,14 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
         Long hospitaId=getLoggedInHospitalId();
 
-        List<RoomUpdateRequestDTO> roomUpdateRequestDTOS=requestDTO.getRoomUpdateList();
+        List<DepartmentRoomUpdateRequestDTO> roomUpdateRequestDTOS=requestDTO.getRoomUpdateList();
 
         roomUpdateRequestDTOS.forEach(roomUpdateRequestDTO->{
             if(roomUpdateRequestDTO.getStatus().equals(YES)){
-                saveHospitalDepartmentDoctorInfo(parseToHospitalDepartmentDoctorInfo(
+                saveHospitalDepartmentRoomInfo(parseToHospitalDepartmentRoomInfo(
                         hospitalDepartment,
                         roomUpdateRequestDTO.getStatus(),
-                        fetchActiveDoctor(roomUpdateRequestDTO.getRoomId(),hospitaId)));
+                        fetchActiveRoom(roomUpdateRequestDTO.getRoomId(),hospitaId)));
             }else{
                 deleteRoom(roomUpdateRequestDTO,requestDTO.getId(),requestDTO.getRemarks());
             }
@@ -291,7 +295,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
     }
 
-    public void deleteDoctor(DoctorUpdateRequestDTO requestDTO,Long hospitalDepartmentId,String remarks) {
+    public void deleteDoctor(DepartmentDoctorUpdateRequestDTO requestDTO, Long hospitalDepartmentId, String remarks) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(DELETING_PROCESS_STARTED, HOSPITAL_DEPARTMENT);
@@ -306,7 +310,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
         log.info(DELETING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
     }
 
-    public void deleteRoom(RoomUpdateRequestDTO requestDTO,Long hospitalDepartmentId,String remarks) {
+    public void deleteRoom(DepartmentRoomUpdateRequestDTO requestDTO, Long hospitalDepartmentId, String remarks) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(DELETING_PROCESS_STARTED, HOSPITAL_DEPARTMENT);

@@ -12,7 +12,7 @@ import java.io.Serializable;
  */
 @Getter
 @Setter
-public class RoomUpdateRequestDTO implements Serializable {
+public class DepartmentRoomUpdateRequestDTO implements Serializable {
 
     @NotNull
     private Long roomId;

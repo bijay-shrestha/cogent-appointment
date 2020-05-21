@@ -417,11 +417,8 @@ public class AdminServiceImpl implements AdminService {
         List<FeatureIntegrationResponse> integrationResponseDTOList = integrationRepository.
                 fetchClientIntegrationResponseDTO(hospitalId);
 
-
         List<FeatureIntegrationResponseDTO> features = new ArrayList<>();
         integrationResponseDTOList.forEach(responseDTO -> {
-
-//            List<ApiRequestHeaderResponseDTO> requestHeaderResponseDTO = integrationRepository.findApiRequestHeaders(responseDTO.getApiIntegrationFormatId());
 
             Map<String,String> requestHeaderResponseDTO = integrationRepository.findApiRequestHeaders(responseDTO.getApiIntegrationFormatId());
 

@@ -1,10 +1,14 @@
 package com.cogent.cogentappointment.admin.utils;
 
-import com.cogent.cogentappointment.admin.constants.StatusConstants;
 import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ApiIntegrationFormatRequestDTO;
-import com.cogent.cogentappointment.persistence.model.ApiIntegrationFormat;
-import com.cogent.cogentappointment.persistence.model.ClientFeatureIntegration;
-import com.cogent.cogentappointment.persistence.model.HttpRequestMethod;
+import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiHeadersRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiQueryParametersRequestDTO;
+import com.cogent.cogentappointment.persistence.model.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
 
 /**
  * @author rupak on 2020-05-19
@@ -12,22 +16,70 @@ import com.cogent.cogentappointment.persistence.model.HttpRequestMethod;
 public class IntegrationUtils {
     public static ClientFeatureIntegration parseToClientFeatureIntegration(Long hospitalId, Long featureTypeId) {
 
-        ClientFeatureIntegration clientFeatureIntegration=new ClientFeatureIntegration();
+        ClientFeatureIntegration clientFeatureIntegration = new ClientFeatureIntegration();
         clientFeatureIntegration.setFeatureId(featureTypeId);
         clientFeatureIntegration.setHospitalId(hospitalId);
-        clientFeatureIntegration.setStatus(StatusConstants.ACTIVE);
+        clientFeatureIntegration.setStatus(ACTIVE);
 
         return clientFeatureIntegration;
     }
 
     public static ApiIntegrationFormat parseToClientApiIntegrationFormat(ApiIntegrationFormatRequestDTO requestDTO) {
 
-        ApiIntegrationFormat apiIntegrationFormat=new ApiIntegrationFormat();
+        ApiIntegrationFormat apiIntegrationFormat = new ApiIntegrationFormat();
         apiIntegrationFormat.setHttpRequestBodyAttributes(requestDTO.getRequestBodyAttrribute());
         apiIntegrationFormat.setHttpRequestMethodId(requestDTO.getRequestMethodId());
         apiIntegrationFormat.setUrl(requestDTO.getApiUrl());
-        apiIntegrationFormat.setStatus(StatusConstants.ACTIVE);
+        apiIntegrationFormat.setStatus(ACTIVE);
 
         return apiIntegrationFormat;
+    }
+
+    public static List<ApiQueryParameters> parseToClientApiQueryParameters(List<ClientApiQueryParametersRequestDTO> parametersRequestDTOS, Long apiIntegrationFormatId) {
+        List<ApiQueryParameters> apiQueryParametersList = new ArrayList<>();
+
+        parametersRequestDTOS.forEach(request -> {
+            ApiQueryParameters parameter = new ApiQueryParameters();
+            parameter.setApiIntegrationFormatId(apiIntegrationFormatId);
+            parameter.setParam(request.getKey());
+            parameter.setValue(request.getValue());
+            parameter.setDescription(request.getDescription());
+            parameter.setStatus(ACTIVE);
+
+            apiQueryParametersList.add(parameter);
+        });
+
+        return apiQueryParametersList;
+    }
+
+    public static ApiFeatureIntegration parseToClientApiFeatureIntegration(Long clientFeatureIntegrationId,
+                                                                           Long apiIntegrationFormatId) {
+
+        ApiFeatureIntegration apiFeatureIntegration = new ApiFeatureIntegration();
+        apiFeatureIntegration.setApiIntegrationFormatId(apiIntegrationFormatId);
+        apiFeatureIntegration.setClientFeatureIntegrationId(apiIntegrationFormatId);
+        apiFeatureIntegration.setStatus(ACTIVE);
+
+        return apiFeatureIntegration;
+    }
+
+    public static List<ApiRequestHeader> parseToClientApiRequestHeaders(List<ClientApiHeadersRequestDTO> clientApiRequestHeaders,
+                                                      ApiIntegrationFormat apiIntegrationFormat) {
+
+        List<ApiRequestHeader> requestHeaderList = new ArrayList<>();
+
+        clientApiRequestHeaders.forEach(requestDTO -> {
+            ApiRequestHeader requestHeader = new ApiRequestHeader();
+            requestHeader.setApiIntegrationFormatId(apiIntegrationFormat);
+            requestHeader.setKeyName(requestDTO.getKeyParam());
+            requestHeader.setValue(requestDTO.getValueParam());
+            requestHeader.setDescription(requestDTO.getDescription());
+            requestHeader.setStatus(ACTIVE);
+
+            requestHeaderList.add(requestHeader);
+        });
+
+        return requestHeaderList;
+
     }
 }

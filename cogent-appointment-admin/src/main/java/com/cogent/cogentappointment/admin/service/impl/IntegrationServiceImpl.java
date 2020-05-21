@@ -7,21 +7,21 @@ import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientAp
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.IntegrationService;
-import com.cogent.cogentappointment.persistence.model.*;
+import com.cogent.cogentappointment.persistence.model.ApiIntegrationFormat;
+import com.cogent.cogentappointment.persistence.model.ClientFeatureIntegration;
+import com.cogent.cogentappointment.persistence.model.Feature;
+import com.cogent.cogentappointment.persistence.model.HttpRequestMethod;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.SAVING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.SAVING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.API_INTEGRATIONS;
-import static com.cogent.cogentappointment.admin.utils.IntegrationUtils.parseToClientApiIntegrationFormat;
-import static com.cogent.cogentappointment.admin.utils.IntegrationUtils.parseToClientFeatureIntegration;
+import static com.cogent.cogentappointment.admin.utils.IntegrationUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
@@ -99,50 +99,25 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     }
 
-    private void saveApiRequestHeaders(List<ClientApiHeadersRequestDTO> clientApiRequestHeaders, ApiIntegrationFormat apiIntegrationFormat) {
+    private void saveApiRequestHeaders(List<ClientApiHeadersRequestDTO> clientApiRequestHeaders,
+                                       ApiIntegrationFormat apiIntegrationFormat) {
 
-        List<ApiRequestHeader> requestHeaderList = new ArrayList<>();
-
-        clientApiRequestHeaders.forEach(requestDTO -> {
-            ApiRequestHeader requestHeader = new ApiRequestHeader();
-            requestHeader.setApiIntegrationFormatId(apiIntegrationFormat);
-            requestHeader.setKeyName(requestDTO.getKey());
-            requestHeader.setValue(requestDTO.getValue());
-            requestHeader.setDescription(requestDTO.getDescription());
-            requestHeader.setStatus(ACTIVE);
-
-            requestHeaderList.add(requestHeader);
-        });
-
-        apiRequestHeaderRepository.saveAll(requestHeaderList);
+        apiRequestHeaderRepository.saveAll(parseToClientApiRequestHeaders(clientApiRequestHeaders, apiIntegrationFormat));
 
     }
 
-    private void saveApiQueryParameters(List<ClientApiQueryParametersRequestDTO> parametersRequestDTOS, ApiIntegrationFormat apiIntegrationFormat) {
+    private void saveApiQueryParameters(List<ClientApiQueryParametersRequestDTO> parametersRequestDTOS,
+                                        ApiIntegrationFormat apiIntegrationFormat) {
 
-        List<ApiQueryParameters> apiQueryParametersList = new ArrayList<>();
-
-        parametersRequestDTOS.forEach(request -> {
-            ApiQueryParameters parameter = new ApiQueryParameters();
-            parameter.setApiIntegrationFormatId(apiIntegrationFormat.getId());
-            parameter.setParam(request.getKey());
-            parameter.setValue(request.getValue());
-            parameter.setDescription(request.getDescription());
-            parameter.setStatus(ACTIVE);
-
-            apiQueryParametersList.add(parameter);
-        });
-
-        apiQueryParametersRepository.saveAll(apiQueryParametersList);
+        apiQueryParametersRepository.saveAll(parseToClientApiQueryParameters(parametersRequestDTOS,
+                apiIntegrationFormat.getId()));
 
     }
 
     private void saveApiFeatureIntegration(Long clientFeatureIntegrationId, Long apiIntegrationFormatId) {
-        ApiFeatureIntegration apiFeatureIntegration = new ApiFeatureIntegration();
-        apiFeatureIntegration.setApiIntegrationFormatId(apiIntegrationFormatId);
-        apiFeatureIntegration.setClientFeatureIntegrationId(apiIntegrationFormatId);
 
-        apiFeatureIntegrationRepository.save(apiFeatureIntegration);
+        apiFeatureIntegrationRepository.save(parseToClientApiFeatureIntegration(clientFeatureIntegrationId,
+                apiIntegrationFormatId));
 
     }
 

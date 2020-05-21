@@ -16,9 +16,9 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class ClientApiHeadersRequestDTO implements Serializable {
 
-    private String key;
+    private String keyParam;
 
-    private String value;
+    private String valueParam;
 
     private String description;
 }

@@ -41,8 +41,8 @@ public class IntegrationUtils {
         parametersRequestDTOS.forEach(request -> {
             ApiQueryParameters parameter = new ApiQueryParameters();
             parameter.setApiIntegrationFormatId(apiIntegrationFormatId);
-            parameter.setParam(request.getKey());
-            parameter.setValue(request.getValue());
+            parameter.setParam(request.getKeyParam());
+            parameter.setValue(request.getValueParam());
             parameter.setDescription(request.getDescription());
             parameter.setStatus(ACTIVE);
 
@@ -81,5 +81,15 @@ public class IntegrationUtils {
 
         return requestHeaderList;
 
+    }
+
+    public static AdminModeFeatureIntegration parseToAdminModeFeatureIntegration(AppointmentMode appointmentMode, Long featureTypeId) {
+
+        AdminModeFeatureIntegration adminModeFeatureIntegration = new AdminModeFeatureIntegration();
+        adminModeFeatureIntegration.setFeatureId(featureTypeId);
+        adminModeFeatureIntegration.setAppointmentModeId(appointmentMode);
+        adminModeFeatureIntegration.setStatus(ACTIVE);
+
+        return adminModeFeatureIntegration;
     }
 }

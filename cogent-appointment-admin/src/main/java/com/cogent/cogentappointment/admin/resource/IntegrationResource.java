@@ -1,7 +1,5 @@
 package com.cogent.cogentappointment.admin.resource;
 
-import com.cogent.cogentappointment.admin.constants.SwaggerConstants;
-import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiIntegrationRequestDTO;
 import com.cogent.cogentappointment.admin.service.HttpRequestMethodService;
 import com.cogent.cogentappointment.admin.service.IntegrationFeatureService;
@@ -13,12 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.AppointmentStatusConstant.FETCH_APPOINTMENT_STATUS;
-import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.IntegrationConstant.BASE_API_VALUE;
-import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.IntegrationConstant.FETCH_CLIENT_API_INTEGRATION;
+import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.IntegrationConstant.*;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.QualificationConstant.FETCH_DETAILS_FOR_DROPDOWN;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.STATUS;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.IntegrationConstants.*;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
@@ -45,7 +40,7 @@ public class IntegrationResource {
     }
 
     @PostMapping
-    @ApiOperation(SwaggerConstants.IntegrationConstant.SAVE_OPERATION)
+    @ApiOperation(SAVE_CLIENT_OPERATION)
     public ResponseEntity<?> save(@Valid @RequestBody ClientApiIntegrationRequestDTO requestDTO) {
         integrationService.save(requestDTO);
         return created(create(API_V1 + BASE_INTEGRATION)).build();

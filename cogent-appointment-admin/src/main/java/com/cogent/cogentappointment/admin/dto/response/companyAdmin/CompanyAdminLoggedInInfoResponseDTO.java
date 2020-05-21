@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.dto.response.companyAdmin;
 
+import com.cogent.cogentappointment.admin.dto.response.adminModeIntegration.AdminModeFeatureIntegrationResponseDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -35,4 +36,6 @@ public class CompanyAdminLoggedInInfoResponseDTO implements Serializable {
     private Character isAllRoleAssigned;
 
     private Character isSideBarCollapse;
+
+    private AdminModeFeatureIntegrationResponseDTO eAIntegrate;
 }

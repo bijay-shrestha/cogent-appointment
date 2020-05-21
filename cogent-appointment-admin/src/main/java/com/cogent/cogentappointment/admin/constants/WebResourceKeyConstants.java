@@ -24,6 +24,10 @@ public class WebResourceKeyConstants {
         String BASE_ADMIN_FEATURE = "/adminFeature";
     }
 
+    public interface AdminModeIntegrationConstants {
+        String BASE_ADMIN_MODE_INTEGRATION = "/admin-mode-integration";
+    }
+
     public interface AppointmentConstants {
         String BASE_APPOINTMENT = "/appointment";
         String APPOINTMENT_ID_PATH_VARIABLE_BASE = "/{appointmentId}";

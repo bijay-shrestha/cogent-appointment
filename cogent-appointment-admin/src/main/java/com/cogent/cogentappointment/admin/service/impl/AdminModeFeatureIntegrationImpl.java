@@ -1,16 +1,13 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
+import com.cogent.cogentappointment.admin.dto.request.adminModeIntegration.AdminModeFeatureIntegrationRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ApiIntegrationFormatRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiHeadersRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiIntegrationRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiQueryParametersRequestDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
-import com.cogent.cogentappointment.admin.service.IntegrationService;
-import com.cogent.cogentappointment.persistence.model.ApiIntegrationFormat;
-import com.cogent.cogentappointment.persistence.model.ClientFeatureIntegration;
-import com.cogent.cogentappointment.persistence.model.Feature;
-import com.cogent.cogentappointment.persistence.model.HttpRequestMethod;
+import com.cogent.cogentappointment.admin.service.AdminModeFeatureIntegrationService;
+import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,52 +17,61 @@ import java.util.function.Function;
 
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.SAVING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.SAVING_PROCESS_STARTED;
-import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.API_INTEGRATIONS;
+import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.ADMIN_MODE_FEATURE_INTEGRATION;
 import static com.cogent.cogentappointment.admin.utils.IntegrationUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
 /**
- * @author rupak on 2020-05-19
+ * @author rupak on 2020-05-21
  */
 @Service
 @Transactional
 @Slf4j
-public class IntegrationServiceImpl implements IntegrationService {
+public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrationService {
 
-    private final ClientFeatureIntegrationRepository clientFeatureIntegrationRepository;
-    private final ClientApiIntegrationFormatRespository clientApiIntegrationFormatRespository;
-    private final HttpRequestMethodRepository httpRequestMethodRepository;
+    private final AdminModeFeatureIntegrationRepository adminModeFeatureIntegrationRepository;
+    private final AppointmentModeRepository appointmentModeRepository;
     private final ApiQueryParametersRepository apiQueryParametersRepository;
     private final ApiRequestHeaderRepository apiRequestHeaderRepository;
     private final ApiFeatureIntegrationRepository apiFeatureIntegrationRepository;
+    private final ClientApiIntegrationFormatRespository clientApiIntegrationFormatRespository;
     private final FeatureRepository featureRepository;
+    private final HttpRequestMethodRepository httpRequestMethodRepository;
 
-    public IntegrationServiceImpl(ClientFeatureIntegrationRepository clientFeatureIntegrationRepository, ClientApiIntegrationFormatRespository clientApiIntegrationFormatRespository, HttpRequestMethodRepository httpRequestMethodRepository, ApiQueryParametersRepository apiQueryParametersRepository, ApiRequestHeaderRepository apiRequestHeaderRepository, ApiFeatureIntegrationRepository apiFeatureIntegrationRepository, FeatureRepository featureRepository) {
-
-        this.clientFeatureIntegrationRepository = clientFeatureIntegrationRepository;
-        this.clientApiIntegrationFormatRespository = clientApiIntegrationFormatRespository;
+    public AdminModeFeatureIntegrationImpl(AdminModeFeatureIntegrationRepository adminModeFeatureIntegrationRepository,
+                                           AppointmentModeRepository appointmentModeRepository,
+                                           HttpRequestMethodRepository httpRequestMethodRepository,
+                                           ApiQueryParametersRepository apiQueryParametersRepository,
+                                           ApiRequestHeaderRepository apiRequestHeaderRepository,
+                                           ApiFeatureIntegrationRepository apiFeatureIntegrationRepository,
+                                           ClientApiIntegrationFormatRespository clientApiIntegrationFormatRespository, FeatureRepository featureRepository) {
+        this.adminModeFeatureIntegrationRepository = adminModeFeatureIntegrationRepository;
+        this.appointmentModeRepository = appointmentModeRepository;
         this.httpRequestMethodRepository = httpRequestMethodRepository;
         this.apiQueryParametersRepository = apiQueryParametersRepository;
         this.apiRequestHeaderRepository = apiRequestHeaderRepository;
         this.apiFeatureIntegrationRepository = apiFeatureIntegrationRepository;
+        this.clientApiIntegrationFormatRespository = clientApiIntegrationFormatRespository;
         this.featureRepository = featureRepository;
     }
 
     @Override
-    public void save(ClientApiIntegrationRequestDTO requestDTO) {
+    public void save(AdminModeFeatureIntegrationRequestDTO requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(SAVING_PROCESS_STARTED, API_INTEGRATIONS);
+        log.info(SAVING_PROCESS_STARTED, ADMIN_MODE_FEATURE_INTEGRATION);
 
         validateFeatureAndHttpRequestMethod(requestDTO.getFeatureTypeId(),
                 requestDTO.getRequestMethodId());
 
-        ClientFeatureIntegration clientFeatureIntegration = parseToClientFeatureIntegration(requestDTO.getHospitalId(),
+        AppointmentMode appointmentMode = findAppointmentMode(requestDTO.getAppointmentModeId());
+
+        AdminModeFeatureIntegration adminModeFeatureIntegration = parseToAdminModeFeatureIntegration(appointmentMode,
                 requestDTO.getFeatureTypeId());
 
-        saveClientFeatureIntegration(clientFeatureIntegration);
+        saveAdminModeFeatureIntegration(adminModeFeatureIntegration);
 
         ApiIntegrationFormatRequestDTO apiIntegrationFormatRequestDTO = ApiIntegrationFormatRequestDTO.builder()
                 .apiUrl(requestDTO.getApiUrl())
@@ -78,13 +84,24 @@ public class IntegrationServiceImpl implements IntegrationService {
 
         saveApiIntegrationFormat(apiIntegrationFormat);
 
-        saveApiFeatureIntegration(clientFeatureIntegration.getId(), apiIntegrationFormat.getId());
+        saveApiFeatureIntegration(adminModeFeatureIntegration.getId(), apiIntegrationFormat.getId());
 
         saveApiQueryParameters(requestDTO.getParametersRequestDTOS(), apiIntegrationFormat);
 
         saveApiRequestHeaders(requestDTO.getClientApiRequestHeaders(), apiIntegrationFormat);
 
-        log.info(SAVING_PROCESS_COMPLETED, API_INTEGRATIONS, getDifferenceBetweenTwoTime(startTime));
+        log.info(SAVING_PROCESS_COMPLETED, ADMIN_MODE_FEATURE_INTEGRATION, getDifferenceBetweenTwoTime(startTime));
+
+    }
+
+    private void saveAdminModeFeatureIntegration(AdminModeFeatureIntegration adminModeFeatureIntegration) {
+        adminModeFeatureIntegrationRepository.save(adminModeFeatureIntegration);
+    }
+
+    private AppointmentMode findAppointmentMode(Long appointmentModeId) {
+
+        return appointmentModeRepository.fetchAppointmentModeById(appointmentModeId)
+                .orElseThrow(() -> APPOINTMENT_MODE_NOT_FOUND.apply(appointmentModeId));
     }
 
     private void validateFeatureAndHttpRequestMethod(Long featureTypeId, Long requestMethodId) {
@@ -125,10 +142,9 @@ public class IntegrationServiceImpl implements IntegrationService {
         clientApiIntegrationFormatRespository.save(apiIntegrationFormat);
     }
 
-    private void saveClientFeatureIntegration(ClientFeatureIntegration clientFeatureIntegration) {
-
-        clientFeatureIntegrationRepository.save(clientFeatureIntegration);
-    }
+    private Function<Long, NoContentFoundException> APPOINTMENT_MODE_NOT_FOUND = (id) -> {
+        throw new NoContentFoundException(AppointmentMode.class);
+    };
 
     private Function<Long, NoContentFoundException> HTTP_REQUEST_METHOD_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         throw new NoContentFoundException(HttpRequestMethod.class);

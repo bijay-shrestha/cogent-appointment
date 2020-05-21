@@ -425,8 +425,7 @@ public class AdminServiceImpl implements AdminService {
 
             Map<String,String> requestHeaderResponseDTO = integrationRepository.findApiRequestHeaders(responseDTO.getApiIntegrationFormatId());
 
-            List<ApiQueryParametersResponseDTO> queryParametersResponseDTO = integrationRepository.findApiQueryParameters(responseDTO.getApiIntegrationFormatId());
-
+            Map<String,String> queryParametersResponseDTO = integrationRepository.findApiQueryParameters(responseDTO.getApiIntegrationFormatId());
 
             ClientIntegrationResponseDTO integrationResponseDTO = new ClientIntegrationResponseDTO();
 

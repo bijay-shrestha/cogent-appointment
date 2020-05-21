@@ -218,7 +218,7 @@ public class SwaggerConstants {
     //I
     public interface IntegrationConstant {
         String BASE_API_VALUE = "This is Integration Resource.";
-        String FETCH_CLIENT_API_INTEGRATION = "Fetch client Api integration detail";
+        String FETCH_CLIENT_API_INTEGRATION = "Fetch client API integration detail";
         String SAVE_OPERATION = "Save new Client API Integration";
     }
 

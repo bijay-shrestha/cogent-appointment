@@ -24,11 +24,9 @@ public class FeatureIntegrationResponseDTO implements Serializable {
 
     private String requestBody;
 
-//    private List<ApiRequestHeaderResponseDTO> headers;
-
     private Map<String,String> headers;
 
-    private List<ApiQueryParametersResponseDTO> queryParameters;
+    private Map<String,String> queryParameters;
 
 
 }

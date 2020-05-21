@@ -19,5 +19,5 @@ public interface IntegrationRepositoryCustom {
 
     Map<String,String> findApiRequestHeaders(Long apiIntegrationFormatId);
 
-    List<ApiQueryParametersResponseDTO> findApiQueryParameters(Long apiIntegrationFormatId);
+    Map<String,String> findApiQueryParameters(Long apiIntegrationFormatId);
 }

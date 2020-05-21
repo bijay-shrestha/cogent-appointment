@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.client.resource;
 
-import com.cogent.cogentappointment.client.dto.request.clientIntegration.ApiIntegrationRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.clientIntegration.ApiIntegrationCheckInRequestDTO;
 import com.cogent.cogentappointment.client.service.IntegrationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -16,7 +16,7 @@ import static com.cogent.cogentappointment.client.constants.SwaggerConstants.Int
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.IntegrationConstant.FETCH_CLIENT_API_INTEGRATION;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.IntegrationConstants.BASE_INTEGRATION;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.IntegrationConstants.CLIENT_API_INTEGRATION;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.IntegrationConstants.CLIENT_API_INTEGRATION_APPOINTMENT_APPROVE;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -33,10 +33,11 @@ public class IntegrationResource {
         this.integrationService = integrationService;
     }
 
-    @PutMapping(CLIENT_API_INTEGRATION)
+    @PutMapping(CLIENT_API_INTEGRATION_APPOINTMENT_APPROVE)
     @ApiOperation(FETCH_CLIENT_API_INTEGRATION)
-    public ResponseEntity<?> fetchClientIntegrationResponseDTO(@Valid @RequestBody ApiIntegrationRequestDTO requestDTO) {
-        return ok(integrationService.fetchClientIntegrationResponseDTO(requestDTO));
+    public ResponseEntity<?> approveAppointmentCheckIn(@Valid @RequestBody ApiIntegrationCheckInRequestDTO requestDTO) {
+        integrationService.approveAppointmentCheckIn(requestDTO);
+        return ok().build();
     }
 
 }

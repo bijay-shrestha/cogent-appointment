@@ -1,15 +1,20 @@
 package com.cogent.cogentappointment.client.service.impl;
 
-import com.cogent.cogentappointment.client.dto.request.clientIntegration.ApiIntegrationRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.clientIntegration.*;
+import com.cogent.cogentappointment.client.dto.request.clientIntegration.ApiIntegrationCheckInRequestDTO;
+import com.cogent.cogentappointment.client.exception.NoContentFoundException;
+import com.cogent.cogentappointment.client.repository.AppointmentRepository;
+import com.cogent.cogentappointment.client.repository.HospitalPatientInfoRepository;
 import com.cogent.cogentappointment.client.repository.IntegrationRepository;
 import com.cogent.cogentappointment.client.service.IntegrationService;
+import com.cogent.cogentappointment.persistence.model.Appointment;
+import com.cogent.cogentappointment.persistence.model.HospitalPatientInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.transaction.Transactional;
+import java.util.function.Function;
+
+import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.APPROVED;
 
 /**
  * @author rupak on 2020-05-19
@@ -20,46 +25,42 @@ import java.util.List;
 public class IntegrationServiceImpl implements IntegrationService {
 
     private final IntegrationRepository integrationRepository;
+    private final HospitalPatientInfoRepository hospitalPatientInfoRepository;
+    private final AppointmentRepository appointmentRepository;
 
-    public IntegrationServiceImpl(IntegrationRepository integrationRepository) {
+    public IntegrationServiceImpl(IntegrationRepository integrationRepository, HospitalPatientInfoRepository hospitalPatientInfoRepository, AppointmentRepository appointmentRepository) {
         this.integrationRepository = integrationRepository;
+        this.hospitalPatientInfoRepository = hospitalPatientInfoRepository;
+        this.appointmentRepository = appointmentRepository;
     }
 
     @Override
-    public ClientIntegrationResponseDTO fetchClientIntegrationResponseDTO(ApiIntegrationRequestDTO apiIntegrationRequestDTO) {
+    public void approveAppointmentCheckIn(ApiIntegrationCheckInRequestDTO requestDTO) {
 
-//        List<FeatureIntegrationResponse> integrationResponseDTOList=integrationRepository.
-//                fetchClientIntegrationResponseDTO(apiIntegrationRequestDTO.getHospitalId());
-//
-//
-//        List<FeatureIntegrationResponseDTO> features=new ArrayList<>();
-//        integrationResponseDTOList.forEach(responseDTO->{
-//
-//            List<ApiRequestHeaderResponseDTO> requestHeaderResponseDTO=integrationRepository.findApiRequestHeaders(responseDTO.getApiIntegrationFormatId());
-//
-//            List<ApiQueryParametersResponseDTO> queryParametersResponseDTO=integrationRepository.findApiQueryParameters(responseDTO.getApiIntegrationFormatId());
-//
-//
-//            ClientIntegrationResponseDTO integrationResponseDTO=new ClientIntegrationResponseDTO();
-//
-//            FeatureIntegrationResponseDTO featureIntegrationResponseDTO=new FeatureIntegrationResponseDTO();
-//            featureIntegrationResponseDTO.setFeatureCode(responseDTO.getFeatureCode());
-//            featureIntegrationResponseDTO.setRequestBody(responseDTO.getRequestBody());
-//            featureIntegrationResponseDTO.setRequestMethod(responseDTO.getRequestMethod());
-//            featureIntegrationResponseDTO.setUrl(responseDTO.getUrl());
-//
-//            featureIntegrationResponseDTO.setHeaders(requestHeaderResponseDTO);
-//            featureIntegrationResponseDTO.setQueryParameters(queryParametersResponseDTO);
-//
-//            features.add(featureIntegrationResponseDTO);
-//
-//        });
-//
-//
-//        ClientIntegrationResponseDTO clientIntegrationResponseDTO=new ClientIntegrationResponseDTO();
-//        clientIntegrationResponseDTO.setFeatures(features);
+        Appointment appointment = appointmentRepository.fetchPendingAppointmentById(requestDTO.getAppointmentId())
+                .orElseThrow(() -> APPOINTMENT_INFO_NOT_FOUND.apply(requestDTO.getAppointmentId()));
 
-        return null;
+
+        if (requestDTO.isStatus()) {
+
+            HospitalPatientInfo hospitalPatientInfo = hospitalPatientInfoRepository.
+                    findByPatientAndHospitalId(appointment.getPatientId().getId(), appointment.getHospitalId().getId())
+                    .orElseThrow(() -> HOSPITAL_PATIENT_INFO_NOT_FOUND.apply(appointment.getPatientId().getId()));
+
+            hospitalPatientInfo.setHospitalNumber(requestDTO.getHospitalNumber());
+        }
+
+        appointment.setStatus(APPROVED);
+
 
     }
+
+    private Function<Long, NoContentFoundException> APPOINTMENT_INFO_NOT_FOUND = (id) -> {
+        throw new NoContentFoundException(Appointment.class);
+    };
+
+    private Function<Long, NoContentFoundException> HOSPITAL_PATIENT_INFO_NOT_FOUND = (id) -> {
+        throw new NoContentFoundException(HospitalPatientInfo.class);
+    };
+
 }

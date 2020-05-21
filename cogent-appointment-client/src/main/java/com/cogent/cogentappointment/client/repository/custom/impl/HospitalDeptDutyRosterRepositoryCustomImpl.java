@@ -44,9 +44,10 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
     private EntityManager entityManager;
 
     @Override
-    public Long validateSpecializationDutyRosterCount(Long specializationId, Date fromDate, Date toDate) {
-        Query query = createQuery.apply(entityManager, VALIDATE_DEPT_DUTY_ROSTER_COUNT)
-                .setParameter(SPECIALIZATION_ID, specializationId)
+    public Long fetchRosterCountWithoutRoom(Long hospitalDepartmentId, Date fromDate, Date toDate) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HDD_ROSTER_COUNT_WITHOUT_ROOM)
+                .setParameter(ID, hospitalDepartmentId)
                 .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))
                 .setParameter(TO_DATE, utilDateToSqlDate(toDate));
 

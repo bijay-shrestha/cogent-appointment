@@ -10,13 +10,15 @@ import java.util.Objects;
  */
 public class HospitalDeptDutyRosterQuery {
 
-    public static final String VALIDATE_DEPT_DUTY_ROSTER_COUNT =
-            " SELECT COUNT(sdr.id)" +
-                    " FROM HospitalDepartmentDutyRoster sdr" +
-                    " WHERE sdr.status != 'D'" +
-                    " AND sdr.specialization.id= :specializationId" +
-                    " AND sdr.toDate >=:fromDate" +
-                    " AND sdr.fromDate <=:toDate";
+    public static final String QUERY_TO_FETCH_HDD_ROSTER_COUNT_WITHOUT_ROOM =
+            " SELECT COUNT(d.id)" +
+                    " FROM HospitalDepartmentDutyRoster d" +
+                    " WHERE" +
+                    " d.status != 'D'" +
+                    " AND d.isRoomEnabled = 'N'" +
+                    " AND d.hospitalDepartment.id= :id" +
+                    " AND d.toDate >=:fromDate" +
+                    " AND d.fromDate <=:toDate";
 
     public static String QUERY_TO_SEARCH_HOSPITAL_DEPARTMENT_DUTY_ROSTER(
             HospitalDeptDutyRosterSearchRequestDTO searchRequestDTO) {

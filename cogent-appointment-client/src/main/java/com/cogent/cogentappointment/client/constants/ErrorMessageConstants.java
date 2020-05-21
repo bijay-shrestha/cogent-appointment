@@ -103,19 +103,6 @@ public class ErrorMessageConstants {
                 " exists within the selected date range '%s'.";
     }
 
-    public interface HospitalDepartmentDutyRosterServiceMessages {
-        String DUPLICATION_MESSAGE = "Specialization Duty Roster already exists for selected specialization.";
-
-        String BAD_REQUEST_MESSAGE = "Requested Override duty roster doesn't lie within the duty roster date range" +
-                " '%s' to '%s'";
-
-        String APPOINTMENT_EXISTS_MESSAGE = "Cannot update specialization duty roster because appointment" +
-                " exists within the selected date range.";
-
-        String APPOINTMENT_EXISTS_ON_WEEK_DAY_MESSAGE = "Cannot update specialization duty roster because appointment" +
-                " exists within the selected date range '%s'.";
-    }
-
     //E
 
     //F
@@ -132,6 +119,23 @@ public class ErrorMessageConstants {
     //H
     public static final String HOSPITAL_NULL_MESSAGE = " Hospital id must not be null";
 
+    public interface HospitalDeptDutyRosterMessages {
+        String BAD_REQUEST_MESSAGE = "Doctor Duty Roster Override doesn't lie within the duty roster date range" +
+                " '%s' to '%s'";
+
+        String DUPLICATE_DUTY_ROSTER_WITHOUT_ROOM =
+                "Hospital Department Duty Roster already exists within '%s' to '%s'";
+
+        String DUPLICATE_DUTY_ROSTER_WITH_ROOM =
+                "Hospital Department Duty Roster already exists within '%s' to '%s' for selected room";
+
+        String DUPLICATE_DUTY_ROSTER_OVERRIDE_WITHOUT_ROOM =
+                "Hospital Department Duty Roster Override already exists within '%s' to '%s'";
+
+        String DUPLICATE_DUTY_ROSTER_OVERRIDE_WITH_ROOM =
+                "Hospital Department Duty Roster Override already exists within '%s' to '%s' for selected room";
+
+    }
 
     //I
     public static final String INVALID_DATE_MESSAGE = "From date cannot be greater than to date";

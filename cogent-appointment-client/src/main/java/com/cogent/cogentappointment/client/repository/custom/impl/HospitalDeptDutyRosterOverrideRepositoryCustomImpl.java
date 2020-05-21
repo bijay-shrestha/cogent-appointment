@@ -11,7 +11,8 @@ import javax.persistence.Query;
 import java.util.Date;
 
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
-import static com.cogent.cogentappointment.client.query.HopsitalDeptDutyRosterOverrideQuery.QUERY_TO_FETCH_DDR_OVERRIDE_COUNT;
+import static com.cogent.cogentappointment.client.query.HospitalDeptDutyRosterOverrideQuery.QUERY_TO_FETCH_DDR_OVERRIDE_COUNT_WITHOUT_ROOM;
+import static com.cogent.cogentappointment.client.query.HospitalDeptDutyRosterOverrideQuery.QUERY_TO_FETCH_DDR_OVERRIDE_COUNT_WITH_ROOM;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
 
@@ -28,9 +29,21 @@ public class HospitalDeptDutyRosterOverrideRepositoryCustomImpl implements
     private EntityManager entityManager;
 
     @Override
-    public Long fetchOverrideCount(Long hospitalDepartmentId, Date fromDate, Date toDate) {
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DDR_OVERRIDE_COUNT)
-                .setParameter(HOSPITAL_DEPARMTENT_ID, hospitalDepartmentId)
+    public Long fetchOverrideCountWithoutRoom(Long hospitalDepartmentId, Date fromDate, Date toDate) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DDR_OVERRIDE_COUNT_WITHOUT_ROOM)
+                .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId)
+                .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))
+                .setParameter(TO_DATE, utilDateToSqlDate(toDate));
+
+        return (Long) query.getSingleResult();
+    }
+
+    @Override
+    public Long fetchOverrideCountWithRoom(Long hospitalDepartmentId, Date fromDate,
+                                           Date toDate, Long roomId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DDR_OVERRIDE_COUNT_WITH_ROOM)
+                .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId)
+                .setParameter(ROOM_ID, roomId)
                 .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))
                 .setParameter(TO_DATE, utilDateToSqlDate(toDate));
 

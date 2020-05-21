@@ -13,8 +13,7 @@ import java.util.Optional;
  * @author smriti on 20/05/20
  */
 @Repository
-public interface HospitalDeptDutyRosterRepository extends JpaRepository<HospitalDepartmentDutyRoster, Long>,
-        HospitalDeptDutyRosterRepositoryCustom {
+public interface HospitalDeptDutyRosterRepository extends JpaRepository<HospitalDepartmentDutyRoster, Long>, HospitalDeptDutyRosterRepositoryCustom {
 
     @Query("SELECT d FROM HospitalDepartmentDutyRoster d WHERE d.status!='D' AND d.id = :id")
     Optional<HospitalDepartmentDutyRoster> fetchById(@Param("id") Long id);

@@ -90,7 +90,10 @@ public class DateUtils {
     }
 
     public static boolean isDateBetweenInclusive(Date startDate, Date endDate, Date target) {
-        return !target.before(startDate) && !target.after(endDate);
+        Date targetDateOnly = removeTime(target);
+        Date startDateOnly = removeTime(startDate);
+        Date endDateOnly = removeTime(endDate);
+        return !targetDateOnly.before(startDateOnly) && !targetDateOnly.after(endDateOnly);
     }
 
     public static Date convertStringToDate(String date) throws ParseException {
@@ -182,7 +185,7 @@ public class DateUtils {
 
     public static String convert12HourTo24HourFormat(String timeIn12HrFormat) {
         int hour = Integer.parseInt(timeIn12HrFormat.substring(0, 2)) % 12;
-        if (timeIn12HrFormat.endsWith("PM") || timeIn12HrFormat.endsWith("pm")  )
+        if (timeIn12HrFormat.endsWith("PM") || timeIn12HrFormat.endsWith("pm"))
             hour += 12;
         return String.format("%02d", hour) + timeIn12HrFormat.substring(2, 6);
     }
@@ -241,7 +244,7 @@ public class DateUtils {
 
         while (!calendar.after(endCalendar)) {
             Date result = calendar.getTime();
-            if(!utilDateToSqlDate(calendar.getTime()).before(today)){
+            if (!utilDateToSqlDate(calendar.getTime()).before(today)) {
                 datesInRange.add(result);
             }
             calendar.add(Calendar.DATE, 1);

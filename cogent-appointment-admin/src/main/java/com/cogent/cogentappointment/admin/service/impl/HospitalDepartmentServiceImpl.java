@@ -95,6 +95,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
         saveHospitalDepartmentDoctorInfo(requestDTO, hospitalDepartment);
 
+        if(requestDTO.getRoomId().size()>0)
         saveHospitalDepartmentRoomInfo(requestDTO, hospitalDepartment);
 
         log.info(SAVING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT, getDifferenceBetweenTwoTime(startTime));

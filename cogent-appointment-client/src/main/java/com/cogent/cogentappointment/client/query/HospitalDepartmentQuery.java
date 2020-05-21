@@ -57,12 +57,15 @@ public class HospitalDepartmentQuery {
                             " hd.status as status," +
                             " hdc.appointment_charge as appointmentCharge," +
                             " hdc.appointment_follow_up_charge  as followUpCharge," +
-                            " GROUP_CONCAT(DISTINCT hdr.room_id) as roomList" +
+                            " CASE" +
+                            " WHEN GROUP_CONCAT(DISTINCT hdr.room_id) IS NULL THEN 'N/A'" +
+                            " ELSE GROUP_CONCAT(DISTINCT hdr.room_id)" +
+                            " END as roomList" +
                             " FROM" +
                             " hospital_department hd" +
                             " LEFT JOIN hospital_department_charge hdc ON hdc.hospital_department_id=hd.id" +
-                            " LEFT JOIN hospital_department_room_info  hdr ON hdr.hospital_department_id=hd.id" +
-                            " LEFT JOIN hospital_department_doctor_info  hdd ON hdd.hospital_department_id=hd.id" +
+                            " LEFT JOIN hospital_department_room_info  hdr ON hdr.hospital_department_id=hd.id AND hdr.status!='D'" +
+                            " LEFT JOIN hospital_department_doctor_info  hdd ON hdd.hospital_department_id=hd.id  AND hdd.status!='D'" +
                             " WHERE " +
                             " hd.hospital_id=:hospitalId " +
                             GET_WHERE_CLAUSE_FOR_SEARCH(searchRequestDTO));
@@ -106,7 +109,7 @@ public class HospitalDepartmentQuery {
                     "  HospitalDepartment hd " +
                     "  LEFT JOIN HospitalDepartmentCharge hdc ON hdc.hospitalDepartment.id=hd.id  " +
                     "  WHERE hd.id=:hospitalDepartmentId" +
-                    "  AND hd.hospital.id=:hospitalId"+
+                    "  AND hd.hospital.id=:hospitalId" +
                     "  AND hd.status!='D'";
 
     public static String QUERY_TO_GET_DOCTOR_LIST_BY_HOSPITAL_DEPARTMENT_ID =
@@ -116,7 +119,7 @@ public class HospitalDepartmentQuery {
                     " HospitalDepartmentDoctorInfo hddi" +
                     " WHERE" +
                     " hddi.hospitalDepartment.id = :hospitalDepartmentId" +
-                    " AND hddi.status='Y'"+
+                    " AND hddi.status='Y'" +
                     " AND hddi.hospitalDepartment.status!='D'";
 
     public static String QUERY_TO_GET_ROOM_LIST_BY_HOSPITAL_DEPARTMENT_ID =
@@ -126,7 +129,7 @@ public class HospitalDepartmentQuery {
                     " HospitalDepartmentRoomInfo hdri" +
                     " WHERE" +
                     " hdri.hospitalDepartment.id = :hospitalDepartmentId" +
-                    " AND hdri.status='Y'"+
+                    " AND hdri.status='Y'" +
                     " AND hdri.hospitalDepartment.status!='D'";
 
 

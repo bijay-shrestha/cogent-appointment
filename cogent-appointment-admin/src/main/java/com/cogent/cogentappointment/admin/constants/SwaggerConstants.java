@@ -241,9 +241,9 @@ public class SwaggerConstants {
         String SEARCH_HOSPITAL_DEPARTMENT_OPERATION = "Search hospital department according to given request parameters";
         String HOSPITAL_DEPARTMENT_DETAILS_OPERATION = "Fetch hospital department details";
         String FETCH_HOSPITAL_DEPARTMENT_FOR_DROP_DOWN_OPERATION = "Fetch minimal hospital department details" +
-                " (id and name) for dropdown";
+                " (id and name) for dropdown by hospital id";
         String FETCH_ACTIVE_HOSPITAL_DEPARTMENT_FOR_DROP_DOWN_OPERATION = "Fetch minimal active hospital department" +
-                " details (id and name) for dropdown";
+                " details (id and name) for dropdown by hospital id";
     }
 
 

@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster;
+package com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.update;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Builder
-public class SpecializationRosterOverrideUpdateResponseDTO implements Serializable {
+public class HospitalDeptDutyRosterOverrideUpdateResponseDTO implements Serializable {
 
     private Long savedOverrideId;
 }

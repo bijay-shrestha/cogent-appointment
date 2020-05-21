@@ -12,11 +12,20 @@ import static com.cogent.cogentappointment.client.constants.StatusConstants.ACTI
 public class HospitalDeptDutyRosterRoomUtils {
 
     public static HospitalDepartmentDutyRosterRoomInfo parseRoomDetails(HospitalDepartmentDutyRoster dutyRoster,
-                                                                        Room room){
+                                                                        Room room) {
+
         HospitalDepartmentDutyRosterRoomInfo roomInfo = new HospitalDepartmentDutyRosterRoomInfo();
         roomInfo.setHospitalDepartmentDutyRoster(dutyRoster);
         roomInfo.setRoom(room);
         roomInfo.setStatus(ACTIVE);
         return roomInfo;
+    }
+
+    public static void updateRoomDetails(Room room,
+                                         Character status,
+                                         HospitalDepartmentDutyRosterRoomInfo rosterRoomInfo) {
+
+        rosterRoomInfo.setRoom(room);
+        rosterRoomInfo.setStatus(status);
     }
 }

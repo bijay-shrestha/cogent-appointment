@@ -228,6 +228,26 @@ public class SwaggerConstants {
                 " details (id and name) for dropdown";
     }
 
+    public interface HospitalDeptDutyRosterConstant {
+        String BASE_API_VALUE = "This is Hospital Department Duty Roster Resource";
+        String SAVE_OPERATION = "Save Hospital Department Duty Roster";
+        String UPDATE_OPERATION = "Update Hospital Department Duty Roster. Note that week days time can be updated " +
+                "only if there are no appointments within the selected date range";
+        String DELETE_OPERATION = "Set Hospital Department Duty Roster status as 'D' when deleted. " +
+                " Note that Hospital Department duty roster can be deleted " +
+                " only if there are no appointments within the selected date range";
+        String SEARCH_OPERATION = "Search Hospital Department Duty Roster according to given request parameters";
+        String DETAILS_OPERATION = "Fetch Hospital Department Duty Roster details by its id";
+        String UPDATE_OVERRIDE_OPERATION = "Update Hospital Department Duty Roster Override schedules." +
+                " (Can save new override schedules for the same roster or update existing rosters). " +
+                " Returns saved/updated override id as response.";
+        String DELETE_OVERRIDE_OPERATION = "Set Hospital Department Duty Roster" +
+                " Override status as 'D' when deleted. Note that Hospital Department duty roster override can be deleted" +
+                " only if there are no appointments within the selected date range";
+        String FETCH_EXISTING_ROSTERS = " Fetch existing Hospital Department duty rosters within the selected date range";
+        String REVERT_OVERRIDE_OPERATION = "Revert Hospital Department duty roster.";
+    }
+
     //I
 
     //J
@@ -304,27 +324,7 @@ public class SwaggerConstants {
     }
 
     //S
-    public interface HospitalDeptDutyRosterConstant {
-        String BASE_API_VALUE = "This is Hospital Department Duty Roster Resource";
-        String SAVE_OPERATION = "Save Hospital Department Duty Roster";
-        String UPDATE_OPERATION = "Update Hospital Department Duty Roster. Note that week days time can be updated " +
-                "only if there are no appointments within the selected date range";
-        String DELETE_OPERATION = "Set Hospital Department Duty Roster status as 'D' when deleted. " +
-                " Note that Hospital Department duty roster can be deleted " +
-                " only if there are no appointments within the selected date range";
-        String SEARCH_OPERATION = "Search Hospital Department Duty Roster according to given request parameters";
-        String DETAILS_OPERATION = "Fetch Hospital Department Duty Roster details by its id";
 
-        String UPDATE_SPECIALIZATION_DUTY_ROSTER_OVERRIDE_OPERATION = "Update Hospital Department Duty Roster Override schedules." +
-                " (Can save new override schedules for the same roster or update existing rosters). " +
-                " Returns saved/updated override id as response.";
-        String DELETE_SPECIALIZATION_DUTY_ROSTER_OVERRIDE_OPERATION = "Set Hospital Department Duty Roster" +
-                " Override status as 'D' when deleted. " +
-                " Note that Hospital Department duty roster override can be deleted " +
-                " only if there are no appointments within the selected date range";
-        String FETCH_EXISTING_ROSTERS = " Fetch existing Hospital Department duty rosters within the selected date range";
-        String REVERT_SPECIALIZATION_DUTY_ROSTER_OVERRIDE_OPERATION = "Revert Hospital Department duty roster.";
-    }
 
     public interface SalutationConstant {
         String BASE_API_VALUE = "This is Salutation Resource";

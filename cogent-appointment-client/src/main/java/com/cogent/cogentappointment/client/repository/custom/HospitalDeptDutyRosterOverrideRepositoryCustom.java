@@ -1,9 +1,12 @@
 package com.cogent.cogentappointment.client.repository.custom;
 
+import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.update.HospitalDeptDutyRosterOverrideUpdateRequestDTO;
+import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDutyRosterOverride;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author smriti on 20/05/20
@@ -16,5 +19,15 @@ public interface HospitalDeptDutyRosterOverrideRepositoryCustom {
 
     Long fetchOverrideCountWithRoom(Long hospitalDepartmentId, Date fromDate, Date toDate, Long roomId);
 
+    Long fetchOverrideCountWithoutRoomExceptCurrentId(Long hospitalDepartmentId,
+                                                      Date fromDate, Date toDate, Long rosterOverrideId);
+
+    Long fetchOverrideCountWithRoomExceptCurrentId(Long hospitalDepartmentId, Date fromDate,
+                                                   Date toDate, Long roomId, Long rosterOverrideId);
+
     void updateOverrideStatus(Long hddRosterId);
+
+    List<HospitalDepartmentDutyRosterOverride> fetchOverrideList(
+            List<HospitalDeptDutyRosterOverrideUpdateRequestDTO> updateRequestDTOS);
+
 }

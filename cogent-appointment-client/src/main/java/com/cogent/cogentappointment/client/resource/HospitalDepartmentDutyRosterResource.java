@@ -1,8 +1,10 @@
 package com.cogent.cogentappointment.client.resource;
 
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.DoctorDutyRosterOverrideUpdateRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.save.HospitalDepartmentDutyRosterRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.update.HospitalDeptDutyRosterOverrideUpdateRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.update.HospitalDeptDutyRosterUpdateRequestDTO;
 import com.cogent.cogentappointment.client.service.HospitalDepartmentDutyRosterService;
 import io.swagger.annotations.Api;
@@ -13,10 +15,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
+import static com.cogent.cogentappointment.client.constants.SwaggerConstants.DoctorDutyRosterConstant.REVERT_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION;
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.HospitalDeptDutyRosterConstant.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.HospitalDeptDutyRosterConstants.BASE_HOSPITAL_DEPARTMENT_DUTY_ROSTER;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.HospitalDeptDutyRosterConstants.*;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
@@ -70,4 +74,29 @@ public class HospitalDepartmentDutyRosterResource {
         hospitalDepartmentDutyRosterService.update(updateRequestDTO);
         return ok().build();
     }
+
+    @PutMapping(OVERRIDE)
+    @ApiOperation(UPDATE_OVERRIDE_OPERATION)
+    public ResponseEntity<?> updateOverride(@Valid @RequestBody
+                                                    HospitalDeptDutyRosterOverrideUpdateRequestDTO updateRequestDTO) {
+        return ok(hospitalDepartmentDutyRosterService.updateOverride(updateRequestDTO));
+    }
+
+    @DeleteMapping(OVERRIDE)
+    @ApiOperation(DELETE_OVERRIDE_OPERATION)
+    public ResponseEntity<?> deleteOverride(@Valid @RequestBody DeleteRequestDTO deleteRequestDTO) {
+        hospitalDepartmentDutyRosterService.deleteOverride(deleteRequestDTO);
+        return ok().build();
+    }
+
+    @PutMapping(OVERRIDE + REVERT)
+    @ApiOperation(REVERT_OVERRIDE_OPERATION)
+    public ResponseEntity<?> revertDoctorDutyRosterOverride(
+            @Valid @RequestBody List<DoctorDutyRosterOverrideUpdateRequestDTO> updateRequestDTOS) {
+        hospitalDepartmentDutyRosterService.revertOverride(updateRequestDTOS);
+        return ok().build();
+    }
+
+
 }
+

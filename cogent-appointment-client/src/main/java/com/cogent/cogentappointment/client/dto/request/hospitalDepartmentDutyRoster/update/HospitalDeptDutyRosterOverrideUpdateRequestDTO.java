@@ -1,6 +1,7 @@
-package com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster;
+package com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.update;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -10,21 +11,18 @@ import java.util.Date;
 
 @Getter
 @Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class SpecializationDutyRosterOverrideUpdateRequestDTO implements Serializable {
+public class HospitalDeptDutyRosterOverrideUpdateRequestDTO implements Serializable {
 
     @NotNull
-    private Long specializationDutyRosterId;
+    private Long hddRosterId;
 
-    private Long specializationDutyRosterOverrideId;
-
-    @NotNull
-    private Date overrideFromDate;
+    private Long rosterOverrideId;
 
     @NotNull
-    private Date overrideToDate;
+    private Date fromDate;
+
+    @NotNull
+    private Date toDate;
 
     private Date startTime;
 
@@ -35,6 +33,8 @@ public class SpecializationDutyRosterOverrideUpdateRequestDTO implements Seriali
 
     @NotNull
     private Character status;
+
+    private Long roomId;
 
     @NotEmpty
     @NotBlank

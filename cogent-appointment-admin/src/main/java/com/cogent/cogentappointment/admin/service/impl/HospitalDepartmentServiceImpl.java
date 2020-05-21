@@ -5,6 +5,7 @@ import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.*;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.HospitalDepartmentMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.HospitalDepartmentResponseDTO;
+import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.HospitalDepartmentService;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.ROOM_NUMBER_DUPLICATION_MESSAGE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.DoctorLog.DOCTOR;
@@ -28,6 +30,7 @@ import static com.cogent.cogentappointment.admin.utils.HospitalDepartmentUtils.*
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static com.cogent.cogentappointment.admin.utils.commons.NameAndCodeValidationUtils.validateDuplicity;
+import static java.lang.reflect.Array.get;
 
 
 /**
@@ -82,6 +85,8 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
         validateDuplicity(hospitalDepartments, requestDTO.getName(), requestDTO.getCode(),
                 HospitalDepartment.class.getSimpleName());
 
+        validateRoomNumber(requestDTO);
+
         Hospital hospital = fetchHospitalById(hospitalId);
 
         HospitalDepartment hospitalDepartment = saveHospitalDepartment(parseToHospitalDepartment(requestDTO, hospital));
@@ -101,9 +106,9 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
         log.info(UPDATING_PROCESS_STARTED, HOSPITAL_DEPARTMENT);
 
-        Long hospitalId = requestDTO.getHospitalId();
-
         HospitalDepartment hospitalDepartment = fetchHospitalDepartmentById(requestDTO.getId());
+
+        validateRoomNumber(requestDTO);
 
         saveHospitalDepartment(parseToUpdateHospitalDepartment(hospitalDepartment, requestDTO));
 
@@ -198,6 +203,26 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
         deleteRoomInfo(requestDTO);
 
         log.info(DELETING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    public void validateRoomNumber(HospitalDepartmentRequestDTO requestDTO){
+
+        List<Long> roomIds=requestDTO.getRoomId();
+        roomIds.forEach(roomId->{
+            List<Object[]> roomNumber=hospitalDepartmentRoomInfoRepository.validateRoomDuplicity(roomId,
+                    requestDTO.getHospitalId());
+            validateRoomDuplicity(roomNumber,roomId);
+        });
+    }
+
+    public void validateRoomNumber(HospitalDepartmentUpdateRequestDTO requestDTO){
+
+        List<DepartmentRoomUpdateRequestDTO> roomIds=requestDTO.getRoomUpdateList();
+        roomIds.forEach(roomId->{
+            List<Object[]> roomNumber=hospitalDepartmentRoomInfoRepository.validateRoomDuplicity(roomId.getRoomId(),
+                    requestDTO.getHospitalId());
+            validateRoomDuplicity(roomNumber,roomId.getRoomId());
+        });
     }
 
 
@@ -327,6 +352,18 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
         List<HospitalDepartmentDoctorInfo> doctorInfos = fetchExisitngDoctorList(requestDTO.getId());
         saveHospitalDepartmentDoctorInfo(parseToDeleteHospitalDeptDoctorInfos(doctorInfos, requestDTO));
+    }
+
+    public static void validateRoomDuplicity(List<Object[]> objects,
+                                         Long requestedRoomId) {
+        final int ID = 0;
+        final int ROOM_NUMBER = 1;
+
+        objects.forEach(object -> {
+            if (requestedRoomId==(get(object, ID)))
+                throw new DataDuplicationException(
+                        String.format(ROOM_NUMBER_DUPLICATION_MESSAGE, (get(object, ROOM_NUMBER))));
+        });
     }
 
     private List<HospitalDepartmentRoomInfo> fetchExisitngRoomList(Long hospitalDepartmentId) {

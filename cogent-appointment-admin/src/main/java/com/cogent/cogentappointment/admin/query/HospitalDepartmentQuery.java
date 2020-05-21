@@ -110,7 +110,8 @@ public class HospitalDepartmentQuery {
                     "  FROM " +
                     "  HospitalDepartment hd " +
                     "  LEFT JOIN HospitalDepartmentCharge hdc ON hdc.hospitalDepartment.id=hd.id  " +
-                    "  WHERE hd.id=:hospitalDepartmentId";
+                    "  WHERE hd.id=:hospitalDepartmentId" +
+                    "  AND hd.status!='D'";
 
     public static String QUERY_TO_GET_DOCTOR_LIST_BY_HOSPITAL_DEPARTMENT_ID =
             "SELECT" +
@@ -119,7 +120,8 @@ public class HospitalDepartmentQuery {
                     " HospitalDepartmentDoctorInfo hddi" +
                     " WHERE" +
                     " hddi.hospitalDepartment.id = :hospitalDepartmentId" +
-                    " AND hddi.status='Y'";
+                    " AND hddi.status='Y'"+
+                    " AND hddi.hospitalDepartment.status!='D'";
 
     public static String QUERY_TO_GET_ROOM_LIST_BY_HOSPITAL_DEPARTMENT_ID =
             "SELECT" +
@@ -128,7 +130,8 @@ public class HospitalDepartmentQuery {
                     " HospitalDepartmentRoomInfo hdri" +
                     " WHERE" +
                     " hdri.hospitalDepartment.id = :hospitalDepartmentId" +
-                    " AND hdri.status='Y'";
+                    " AND hdri.status='Y'"+
+                    " AND hdri.hospitalDepartment.status!='D'";
 
 
     public static String HOSPITAL_DEPARTMENT_AUDITABLE_QUERY() {

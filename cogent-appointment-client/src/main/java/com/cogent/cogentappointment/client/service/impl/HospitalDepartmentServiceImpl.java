@@ -5,6 +5,7 @@ import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.*;
 import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.HospitalDepartmentMinimalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.HospitalDepartmentResponseDTO;
+import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.*;
 import com.cogent.cogentappointment.client.service.HospitalDepartmentService;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.ROOM_NUMBER_DUPLICATION_MESSAGE;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.DoctorLog.DOCTOR;
@@ -29,6 +31,7 @@ import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDif
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 import static com.cogent.cogentappointment.client.utils.commons.NameAndCodeValidationUtils.validateDuplicity;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
+import static java.lang.reflect.Array.get;
 
 /**
  * @author Sauravi Thapa ON 5/20/20
@@ -82,6 +85,8 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
         validateDuplicity(hospitalDepartments, requestDTO.getName(), requestDTO.getCode(),
                 HospitalDepartment.class.getSimpleName());
 
+        validateRoomNumber(requestDTO);
+
         Hospital hospital = fetchHospitalById(hospitalId);
 
         HospitalDepartment hospitalDepartment = saveHospitalDepartment(parseToHospitalDepartment(requestDTO, hospital));
@@ -104,6 +109,8 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
         Long hospitalId = getLoggedInHospitalId();
 
         HospitalDepartment hospitalDepartment = fetchHospitalDepartmentById(requestDTO.getId(), hospitalId);
+
+        validateRoomNumber(requestDTO);
 
         saveHospitalDepartment(parseToUpdateHospitalDepartment(hospitalDepartment, requestDTO));
 
@@ -323,6 +330,38 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
                 remarks));
 
         log.info(DELETING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    public void validateRoomNumber(HospitalDepartmentRequestDTO requestDTO){
+
+        List<Long> roomIds=requestDTO.getRoomId();
+        roomIds.forEach(roomId->{
+            List<Object[]> roomNumber=hospitalDepartmentRoomInfoRepository.validateRoomDuplicity(roomId,
+                    getLoggedInHospitalId());
+            validateRoomDuplicity(roomNumber,roomId);
+        });
+    }
+
+    public void validateRoomNumber(HospitalDepartmentUpdateRequestDTO requestDTO){
+
+        List<DepartmentRoomUpdateRequestDTO> roomUpdateList=requestDTO.getRoomUpdateList();
+        roomUpdateList.forEach(room->{
+            List<Object[]> roomNumber=hospitalDepartmentRoomInfoRepository.validateRoomDuplicity(room.getRoomId(),
+                    getLoggedInHospitalId());
+            validateRoomDuplicity(roomNumber,room.getRoomId());
+        });
+    }
+
+    public static void validateRoomDuplicity(List<Object[]> objects,
+                                             Long requestedRoomId) {
+        final int ID = 0;
+        final int ROOM_NUMBER = 1;
+
+        objects.forEach(object -> {
+            if (requestedRoomId==(get(object, ID)))
+                throw new DataDuplicationException(
+                        String.format(ROOM_NUMBER_DUPLICATION_MESSAGE, (get(object, ROOM_NUMBER))));
+        });
     }
 
     public void deleteRoomInfo(DeleteRequestDTO requestDTO) {

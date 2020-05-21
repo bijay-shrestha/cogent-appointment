@@ -65,6 +65,7 @@ public class QueryConstants {
 
     //N
     public static final String NAME = "name";
+    public static final String ROOM_ID = "roomId";
 
     //O
 

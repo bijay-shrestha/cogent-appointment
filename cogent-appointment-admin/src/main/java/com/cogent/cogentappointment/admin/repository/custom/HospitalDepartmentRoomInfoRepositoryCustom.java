@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.admin.repository.custom;
 
-import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.HospitalDepartmentRequestDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 

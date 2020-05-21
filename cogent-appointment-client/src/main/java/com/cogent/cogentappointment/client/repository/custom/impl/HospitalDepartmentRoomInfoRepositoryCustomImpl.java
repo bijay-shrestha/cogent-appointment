@@ -7,6 +7,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import java.util.List;
+
+import static com.cogent.cogentappointment.client.constants.QueryConstants.HOSPITAL_ID;
+import static com.cogent.cogentappointment.client.constants.QueryConstants.ROOM_ID;
+import static com.cogent.cogentappointment.client.query.HospitalDepartmentRoomInfoQuery.QUERY_TO_VALIDATE_DUPLICITY;
+import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
 
 /**
  * @author Sauravi Thapa ON 5/20/20
@@ -18,5 +25,14 @@ public class HospitalDepartmentRoomInfoRepositoryCustomImpl implements HospitalD
 
     @PersistenceContext
     EntityManager entityManager;
+
+    @Override
+    public List<Object[]> validateRoomDuplicity(Long roomId, Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY)
+                .setParameter(ROOM_ID, roomId)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        return query.getResultList();
+    }
 
 }

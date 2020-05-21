@@ -29,7 +29,7 @@ public class HospitalDeptDutyRosterQuery {
                 " dr.rosterGapDuration as rosterGapDuration," +                        //[2]
                 " dr.fromDate as fromDate," +                                          //[3]
                 " dr.toDate as toDate," +                                              //[4]
-                " dr.status as status," +                                              //[5]
+                " dr.status as status" +                                              //[5]
                 " FROM HospitalDepartmentDutyRoster dr" +
                 " LEFT JOIN HospitalDepartment hd ON hd.id = dr.hospitalDepartment.id" +
                 " WHERE" +
@@ -43,7 +43,7 @@ public class HospitalDeptDutyRosterQuery {
         if (!Objects.isNull(searchRequestDTO.getHospitalDepartmentId()))
             sql += " AND hd.id = " + searchRequestDTO.getHospitalDepartmentId();
 
-        return sql + " ORDER BY ddr.id DESC";
+        return sql + " ORDER BY dr.id DESC";
     }
 
     public static final String QUERY_TO_FETCH_HDD_ROSTER_DETAIL =
@@ -61,7 +61,7 @@ public class HospitalDeptDutyRosterQuery {
                     " ddr.isRoomEnabled as isRoomEnabled," +
                     HDD_ROSTER_AUDITABLE_QUERY() +
                     " FROM HospitalDepartmentDutyRoster ddr" +
-                    " LEFT JOIN HospitalDepartment hd ON hd.id = dr.hospitalDepartment.id" +
+                    " LEFT JOIN HospitalDepartment hd ON hd.id = ddr.hospitalDepartment.id" +
                     " WHERE ddr.status !='D'" +
                     " AND ddr.id = :id" +
                     " AND hd.hospital.id =:hospitalId";
@@ -77,9 +77,9 @@ public class HospitalDeptDutyRosterQuery {
             " SELECT" +
                     " h.id as rosterRoomId," +                                          //[0]
                     " h.room.id as roomId," +                                           //[1]
-                    " h.room.name as roomName" +                                        //[2]
+                    " h.room.roomNumber as roomNumber" +                                //[2]
                     " FROM HospitalDepartmentDutyRosterRoomInfo h" +
-                    " WHERE status = 'Y'" +
+                    " WHERE h.status = 'Y'" +
                     " AND h.hospitalDepartmentDutyRoster.id =:id";
 
     public static final String QUERY_TO_FETCH_HDD_WEEK_DAYS_DETAIL =

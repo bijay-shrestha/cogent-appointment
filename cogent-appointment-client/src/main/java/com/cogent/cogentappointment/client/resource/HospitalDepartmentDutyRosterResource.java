@@ -14,9 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.HospitalDeptDutyRosterConstant.*;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.HospitalDeptDutyRosterConstants.BASE_HOSPITAL_DEPARTMENT_DUTY_ROSTER;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.SEARCH;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
@@ -56,5 +55,11 @@ public class HospitalDepartmentDutyRosterResource {
     public ResponseEntity<?> delete(@Valid @RequestBody DeleteRequestDTO deleteRequestDTO) {
         hospitalDepartmentDutyRosterService.delete(deleteRequestDTO);
         return ok().build();
+    }
+
+    @GetMapping(DETAIL + ID_PATH_VARIABLE_BASE)
+    @ApiOperation(DETAILS_OPERATION)
+    public ResponseEntity<?> fetchDetailsById(@PathVariable("id") Long id) {
+        return ok(hospitalDepartmentDutyRosterService.fetchDetailsById(id));
     }
 }

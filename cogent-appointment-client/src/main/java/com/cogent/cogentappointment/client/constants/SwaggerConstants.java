@@ -314,6 +314,7 @@ public class SwaggerConstants {
                 " only if there are no appointments within the selected date range";
         String SEARCH_OPERATION = "Search Hospital Department Duty Roster according to given request parameters";
         String DETAILS_OPERATION = "Fetch Hospital Department Duty Roster details by its id";
+
         String UPDATE_SPECIALIZATION_DUTY_ROSTER_OVERRIDE_OPERATION = "Update Hospital Department Duty Roster Override schedules." +
                 " (Can save new override schedules for the same roster or update existing rosters). " +
                 " Returns saved/updated override id as response.";

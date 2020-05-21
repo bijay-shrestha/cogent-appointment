@@ -16,8 +16,8 @@ public interface HospitalDepartmentDutyRosterService {
 
     void save(HospitalDepartmentDutyRosterRequestDTO requestDTO);
 
-    List<HospitalDeptDutyRosterMinResponseDTO> search (HospitalDeptDutyRosterSearchRequestDTO searchRequestDTO,
-                                                       Pageable pageable);
+    List<HospitalDeptDutyRosterMinResponseDTO> search(HospitalDeptDutyRosterSearchRequestDTO searchRequestDTO,
+                                                      Pageable pageable);
 
     void delete(DeleteRequestDTO deleteRequestDTO);
 

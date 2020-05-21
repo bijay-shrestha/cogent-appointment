@@ -20,8 +20,8 @@ import static com.cogent.cogentappointment.client.constants.SwaggerConstants.Dep
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.HospitalDepartmentConstant.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.HospitalDepartmentConstants.BASE_HOSPITAL_DEPARTMENT;
-import static com.cogent.cogentappointment.client.log.constants.DoctorLog.DOCTOR;
-import static com.cogent.cogentappointment.client.log.constants.RoomLog.ROOM;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.HospitalDepartmentConstants.DOCTOR;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.HospitalDepartmentConstants.ROOM;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -85,20 +85,6 @@ public class HospitalDepartmentResource {
     @ApiOperation(DELETE_HOSPITAL_DEPARTMENT_OPERATION)
     public ResponseEntity<?> delete(@Valid @RequestBody DeleteRequestDTO deleteRequestDTO) {
         hospitalDepartmentService.delete(deleteRequestDTO);
-        return ok().build();
-    }
-
-    @DeleteMapping(DOCTOR)
-    @ApiOperation(DELETE_DEPARTMENT_OPERATION)
-    public ResponseEntity<?> deleteDoctor(@Valid @RequestBody HospitalDepartmentDeleteRequestDTO deleteRequestDTO) {
-        hospitalDepartmentService.deleteDoctor(deleteRequestDTO);
-        return ok().build();
-    }
-
-    @DeleteMapping(ROOM)
-    @ApiOperation(DELETE_DEPARTMENT_OPERATION)
-    public ResponseEntity<?> deleteRoom(@Valid @RequestBody HospitalDepartmentDeleteRequestDTO deleteRequestDTO) {
-        hospitalDepartmentService.deleteRoom(deleteRequestDTO);
         return ok().build();
     }
 }

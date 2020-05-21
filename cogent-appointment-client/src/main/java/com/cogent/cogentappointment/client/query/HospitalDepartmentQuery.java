@@ -57,7 +57,7 @@ public class HospitalDepartmentQuery {
                             " hd.status as status," +
                             " hdc.appointment_charge as appointmentCharge," +
                             " hdc.appointment_follow_up_charge  as followUpCharge," +
-                            " GROUP_CONCAT(hdr.room_id) as roomList" +
+                            " GROUP_CONCAT(DISTINCT hdr.room_id) as roomList" +
                             " FROM" +
                             " hospital_department hd" +
                             " LEFT JOIN hospital_department_charge hdc ON hdc.hospital_department_id=hd.id" +
@@ -86,27 +86,29 @@ public class HospitalDepartmentQuery {
         if (!ObjectUtils.isEmpty(searchRequestDTO.getRoomId()))
             whereClause += " AND hdr.room_id=" + searchRequestDTO.getRoomId();
 
-        whereClause += " ORDER BY hd.id DESC";
+        whereClause += " GROUP BY hd.id" +
+                " ORDER BY hd.id DESC";
 
         return whereClause;
     }
 
-    public static String  QUERY_TO_GET_DETAILS=
+    public static String QUERY_TO_GET_DETAILS =
             "SELECT " +
                     "  hd.name as name, " +
                     "  hd.code as code, " +
                     "  hd.description as description, " +
                     "  hd.remarks as remarks, " +
                     "  hdc.appointmentCharge as appointmentCharge, " +
-                    "  hdc.appointmentFollowUpCharge  as followUpCharge, " +
-                    HOSPITAL_DEPARTMENT_AUDITABLE_QUERY()+
+                    "  hdc.appointmentFollowUpCharge  as followUpCharge," +
+                    "  hd.status as status, " +
+                    HOSPITAL_DEPARTMENT_AUDITABLE_QUERY() +
                     "  FROM " +
                     "  HospitalDepartment hd " +
                     "  LEFT JOIN HospitalDepartmentCharge hdc ON hdc.hospitalDepartment.id=hd.id  " +
                     "  WHERE hd.id=:hospitalDepartmentId" +
                     "  AND hd.hospital.id=:hospitalId";
 
-    public static String QUERY_TO_GET_DOCTOR_LIST_BY_HOSPITAL_DEPARTMENT_ID=
+    public static String QUERY_TO_GET_DOCTOR_LIST_BY_HOSPITAL_DEPARTMENT_ID =
             "SELECT" +
                     " hddi.doctor.name" +
                     " FROM" +
@@ -115,15 +117,15 @@ public class HospitalDepartmentQuery {
                     " hddi.hospitalDepartment.id = :hospitalDepartmentId" +
                     " AND hddi.status='Y'";
 
-    public static String QUERY_TO_GET_ROOM_LIST_BY_HOSPITAL_DEPARTMENT_ID=
+    public static String QUERY_TO_GET_ROOM_LIST_BY_HOSPITAL_DEPARTMENT_ID =
             "SELECT" +
                     " hdri.room.roomNumber" +
                     " FROM" +
                     " HospitalDepartmentRoomInfo hdri" +
                     " WHERE" +
-                    " hdri.hospitalDepartment.id = :hospitalDepartmentId"+
+                    " hdri.hospitalDepartment.id = :hospitalDepartmentId" +
                     " AND hdri.status='Y'";
-    
+
 
     public static String HOSPITAL_DEPARTMENT_AUDITABLE_QUERY() {
         return " hd.createdBy as createdBy," +

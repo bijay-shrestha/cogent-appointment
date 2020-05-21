@@ -143,6 +143,8 @@ public class WebResourceKeyConstants {
     public interface HospitalDepartmentConstants {
         String BASE_HOSPITAL_DEPARTMENT = "/hospitalDepartment";
         String HOSPITAL_DEPARTMENT_ID_PATH_VARIABLE_BASE = "/{hospitalDepartmentId}";
+        String DOCTOR = "/doctor";
+        String ROOM = "/room";
     }
 
     //I

@@ -31,8 +31,4 @@ public interface HospitalDepartmentService {
     HospitalDepartmentResponseDTO fetchHospitalDepartmentDetails(Long id);
 
     void delete(DeleteRequestDTO deleteRequestDTO);
-
-    void deleteDoctor(HospitalDepartmentDeleteRequestDTO requestDTO);
-
-    void deleteRoom(HospitalDepartmentDeleteRequestDTO requestDTO);
 }

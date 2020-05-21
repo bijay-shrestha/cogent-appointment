@@ -70,13 +70,13 @@ public class SwaggerConstants {
 
     public interface AppointmentTransferConstant {
         String BASE_API_VALUE = "Resource used for Appointment Transfer Scenario.";
-        String FETCH_AVAILABLE_DATES="Fetch available dates by doctor id and specialization id";
-        String FETCH_AVAILABLE_TIME="Fetch available time by available date and doctor id";
-        String FETCH_DOCTOR_CHARGE="Fetch selected doctor charge by  doctor id";
-        String APPOINTMENT_TRANSFER="Transfer current appointment details(i.e. doctorId,specializationId," +
+        String FETCH_AVAILABLE_DATES = "Fetch available dates by doctor id and specialization id";
+        String FETCH_AVAILABLE_TIME = "Fetch available time by available date and doctor id";
+        String FETCH_DOCTOR_CHARGE = "Fetch selected doctor charge by  doctor id";
+        String APPOINTMENT_TRANSFER = "Transfer current appointment details(i.e. doctorId,specializationId," +
                 "appointmentDate,appointmentTime,Charge)";
-        String FETCH_TRANSFERRED_APPOINTMENT_LIST="Fetch list of transferred appointments";
-        String FETCH_TRANSFERRED_APPOINTMENT_DETAIL="Fetch transferred appointment detail by id";
+        String FETCH_TRANSFERRED_APPOINTMENT_LIST = "Fetch list of transferred appointments";
+        String FETCH_TRANSFERRED_APPOINTMENT_DETAIL = "Fetch transferred appointment detail by id";
     }
 
     public interface AuthenticateConstant {
@@ -219,6 +219,10 @@ public class SwaggerConstants {
         String BASE_HOSPITAL_DEPARTMENT_API_VALUE = "This is Hospital Department Resource";
         String SAVE_HOSPITAL_DEPARTMENT_OPERATION = "Save new hospital department";
         String UPDATE_HOSPITAL_DEPARTMENT_OPERATION = "Update existing hospital department";
+        String DELETE_DOCTOR_FROM_HOSPITAL_DEPARTMENT_OPERATION = "Set doctor from hospital department status" +
+                " as 'D' when deleted";
+        String DELETE_ROOM_FROM_HOSPITAL_DEPARTMENT_OPERATION = "Set room from hospital department status " +
+                "as 'D' when deleted";
         String DELETE_HOSPITAL_DEPARTMENT_OPERATION = "Set hospital department status as 'D' when deleted";
         String SEARCH_HOSPITAL_DEPARTMENT_OPERATION = "Search hospital department according to given request parameters";
         String HOSPITAL_DEPARTMENT_DETAILS_OPERATION = "Fetch hospital department details";

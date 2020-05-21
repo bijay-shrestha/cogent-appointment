@@ -2,10 +2,7 @@ package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
-import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentDeleteRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentSearchRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentUpdateRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.*;
 import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.HospitalDepartmentMinimalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.HospitalDepartmentResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
@@ -21,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.DoctorLog.DOCTOR;
 import static com.cogent.cogentappointment.client.log.constants.HospitalDepartmentLog.*;
@@ -206,33 +204,6 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
         log.info(DELETING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
     }
 
-    @Override
-    public void deleteDoctor(HospitalDepartmentDeleteRequestDTO requestDTO) {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(DELETING_PROCESS_STARTED, HOSPITAL_DEPARTMENT);
-
-        HospitalDepartmentDoctorInfo hospitalDeptDoctorInfo=hospitalDepartmentDoctorInfoRepository
-                .fetchDoctorByHospitalDepartmentId(requestDTO.getHospitalDepartmentId(),requestDTO.getId());
-
-        saveHospitalDepartmentDoctorInfo(parseToDeleteHospitalDeptDoctorInfo(hospitalDeptDoctorInfo,requestDTO));
-
-        log.info(DELETING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
-    }
-
-    @Override
-    public void deleteRoom(HospitalDepartmentDeleteRequestDTO requestDTO) {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(DELETING_PROCESS_STARTED, HOSPITAL_DEPARTMENT);
-
-        HospitalDepartmentRoomInfo hospitalDeptRoomInfo=hospitalDepartmentRoomInfoRepository
-                .fetchRoomByHospitalDepartmentId(requestDTO.getHospitalDepartmentId(),requestDTO.getId());
-
-        saveHospitalDepartmentRoomInfo(parseToDeleteHospitalDeptRoomInfo(hospitalDeptRoomInfo,requestDTO));
-
-        log.info(DELETING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
-    }
 
     private void saveHospitalDepartmentDoctorInfo(HospitalDepartmentRequestDTO requestDTO,
                                                   HospitalDepartment hospitalDepartment) {
@@ -283,47 +254,71 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
     private void updateHospitalDepartmentDoctorInfo(HospitalDepartmentUpdateRequestDTO requestDTO,
                                                     HospitalDepartment hospitalDepartment) {
 
-        Long hospitalId = getLoggedInHospitalId();
+        Long hospitaId=getLoggedInHospitalId();
 
-        List<Long> exisitngActiveDoctorIdList = fetchExisitngActiveDoctorIdList(requestDTO.getId());
+        List<DoctorUpdateRequestDTO> doctorUpdateRequestDTOS=requestDTO.getDoctorUpdateList();
 
-        List<Long> newDoctorIdList = mergeExisitingAndNewListId(exisitngActiveDoctorIdList, requestDTO.getDoctorId());
-
-        if (newDoctorIdList.size() > 0) {
-            List<HospitalDepartmentDoctorInfo> hospitalDepartmentDoctorInfos = new ArrayList<>();
-
-            newDoctorIdList.forEach(doctorID -> {
-                hospitalDepartmentDoctorInfos.add(parseToHospitalDepartmentDoctorInfo(hospitalDepartment,
-                        requestDTO.getStatus(),
-                        fetchActiveDoctor(doctorID, hospitalId)));
-            });
-
-            saveHospitalDepartmentDoctorInfo(hospitalDepartmentDoctorInfos);
-        }
-
+        doctorUpdateRequestDTOS.forEach(doctorUpdateRequestDTO->{
+            if(doctorUpdateRequestDTO.getStatus().equals(YES)){
+                saveHospitalDepartmentDoctorInfo(parseToHospitalDepartmentDoctorInfo(
+                        hospitalDepartment,
+                        doctorUpdateRequestDTO.getStatus(),
+                        fetchActiveDoctor(doctorUpdateRequestDTO.getDoctorId(),hospitaId)));
+            }else{
+                deleteDoctor(doctorUpdateRequestDTO,requestDTO.getId(),requestDTO.getRemarks());
+            }
+        });
     }
 
     private void updateHospitalDepartmentRoomInfo(HospitalDepartmentUpdateRequestDTO requestDTO,
                                                   HospitalDepartment hospitalDepartment) {
 
-        Long hospitalId = getLoggedInHospitalId();
 
-        List<Long> exisitngActiveRoomIdList = fetchExisitngActiveRoomIdList(requestDTO.getId());
+        Long hospitaId=getLoggedInHospitalId();
 
-        List<Long> newRoomIdList = mergeExisitingAndNewListId(exisitngActiveRoomIdList, requestDTO.getRoomId());
+        List<RoomUpdateRequestDTO> roomUpdateRequestDTOS=requestDTO.getRoomUpdateList();
 
-        if (newRoomIdList.size() > 0) {
-            List<HospitalDepartmentRoomInfo> hospitalDepartmentRoomInfos = new ArrayList<>();
+        roomUpdateRequestDTOS.forEach(roomUpdateRequestDTO->{
+            if(roomUpdateRequestDTO.getStatus().equals(YES)){
+                saveHospitalDepartmentDoctorInfo(parseToHospitalDepartmentDoctorInfo(
+                        hospitalDepartment,
+                        roomUpdateRequestDTO.getStatus(),
+                        fetchActiveDoctor(roomUpdateRequestDTO.getRoomId(),hospitaId)));
+            }else{
+                deleteRoom(roomUpdateRequestDTO,requestDTO.getId(),requestDTO.getRemarks());
+            }
+        });
 
-            newRoomIdList.forEach(roomID -> {
-                hospitalDepartmentRoomInfos.add(parseToHospitalDepartmentRoomInfo(hospitalDepartment,
-                        requestDTO.getStatus(),
-                        fetchActiveRoom(roomID, hospitalId)));
-            });
+    }
 
-            saveHospitalDepartmentRoomInfo(hospitalDepartmentRoomInfos);
-        }
+    public void deleteDoctor(DoctorUpdateRequestDTO requestDTO,Long hospitalDepartmentId,String remarks) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
+        log.info(DELETING_PROCESS_STARTED, HOSPITAL_DEPARTMENT);
+
+        HospitalDepartmentDoctorInfo hospitalDeptDoctorInfo=hospitalDepartmentDoctorInfoRepository
+                .fetchDoctorByHospitalDepartmentId(hospitalDepartmentId,requestDTO.getDoctorId());
+
+        saveHospitalDepartmentDoctorInfo(parseToDeleteHospitalDeptDoctorInfo(hospitalDeptDoctorInfo,
+                requestDTO.getStatus(),
+                remarks));
+
+        log.info(DELETING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    public void deleteRoom(RoomUpdateRequestDTO requestDTO,Long hospitalDepartmentId,String remarks) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(DELETING_PROCESS_STARTED, HOSPITAL_DEPARTMENT);
+
+        HospitalDepartmentRoomInfo hospitalDeptRoomInfo=hospitalDepartmentRoomInfoRepository
+                .fetchRoomByHospitalDepartmentId(hospitalDepartmentId,requestDTO.getRoomId());
+
+        saveHospitalDepartmentRoomInfo(parseToDeleteHospitalDeptRoomInfo(hospitalDeptRoomInfo,
+                requestDTO.getStatus(),
+                remarks));
+
+        log.info(DELETING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
     }
 
     public void deleteRoomInfo(DeleteRequestDTO requestDTO){
@@ -344,14 +339,6 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
     private List<HospitalDepartmentDoctorInfo> fetchExisitngDoctorList(Long hospitalDepartmentId) {
         return hospitalDepartmentDoctorInfoRepository.fetchDoctorListByHospitalDepartmentId(hospitalDepartmentId);
-    }
-
-    private List<Long> fetchExisitngActiveDoctorIdList(Long hospitalDepartmentId) {
-        return hospitalDepartmentDoctorInfoRepository.fetchDoctorIdListByHospitalDepartmentId(hospitalDepartmentId);
-    }
-
-    private List<Long> fetchExisitngActiveRoomIdList(Long hospitalDepartmentId) {
-        return hospitalDepartmentRoomInfoRepository.fetchRoomIdListByHospitalDepartmentId(hospitalDepartmentId);
     }
 
     private void saveHospitalDepartmentDoctorInfo(List<HospitalDepartmentDoctorInfo> doctorInfoList) {

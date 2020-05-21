@@ -38,9 +38,9 @@ public class HospitalDepartmentUpdateRequestDTO implements Serializable {
     @Status
     private Character status;
 
-    private List<Long> doctorId;
+    private List<DoctorUpdateRequestDTO> doctorUpdateList;
 
-    private List<Long> roomId;
+    private List<RoomUpdateRequestDTO> roomUpdateList;
 
     @NotNull
     private Double appointmentCharge;

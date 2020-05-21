@@ -110,10 +110,9 @@ public class HospitalDepartmentRepositoryCustomImpl implements HospitalDepartmen
     }
 
     @Override
-    public HospitalDepartmentResponseDTO fetchHospitalDepartmentDetails(Long hospitalDepartmentId, Long hospitalId) {
+    public HospitalDepartmentResponseDTO fetchHospitalDepartmentDetails(Long hospitalDepartmentId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_GET_DETAILS)
-                .setParameter(HOSPITAL_DEPARMTENT_ID, hospitalDepartmentId)
-                .setParameter(HOSPITAL_ID, hospitalId);
+                .setParameter(HOSPITAL_DEPARMTENT_ID, hospitalDepartmentId);
 
         Query doctorListQuery = createQuery.apply(entityManager, QUERY_TO_GET_DOCTOR_LIST_BY_HOSPITAL_DEPARTMENT_ID)
                 .setParameter(HOSPITAL_DEPARMTENT_ID, hospitalDepartmentId);

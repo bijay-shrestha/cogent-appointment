@@ -1,7 +1,6 @@
 package com.cogent.cogentappointment.client.resource;
 
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.doctorDutyRoster.DoctorDutyRosterOverrideUpdateRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.save.HospitalDepartmentDutyRosterRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.update.HospitalDeptDutyRosterOverrideUpdateRequestDTO;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-import static com.cogent.cogentappointment.client.constants.SwaggerConstants.DoctorDutyRosterConstant.REVERT_DOCTOR_DUTY_ROSTER_OVERRIDE_OPERATION;
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.HospitalDeptDutyRosterConstant.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.HospitalDeptDutyRosterConstants.*;
@@ -92,7 +90,7 @@ public class HospitalDepartmentDutyRosterResource {
     @PutMapping(OVERRIDE + REVERT)
     @ApiOperation(REVERT_OVERRIDE_OPERATION)
     public ResponseEntity<?> revertDoctorDutyRosterOverride(
-            @Valid @RequestBody List<DoctorDutyRosterOverrideUpdateRequestDTO> updateRequestDTOS) {
+            @Valid @RequestBody List<HospitalDeptDutyRosterOverrideUpdateRequestDTO> updateRequestDTOS) {
         hospitalDepartmentDutyRosterService.revertOverride(updateRequestDTOS);
         return ok().build();
     }

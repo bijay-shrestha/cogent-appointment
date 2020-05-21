@@ -61,16 +61,6 @@ public class HospitalDeptOverrideDutyRosterUtils {
         override.setRemarks(requestDTO.getRemarks());
     }
 
-    public static void updateHDDRosterOverrideDetails(HospitalDepartmentDutyRosterOverride originalInfo,
-                                                      HospitalDeptDutyRosterOverrideUpdateRequestDTO updatedInfo) {
-
-        originalInfo.setStartTime(updatedInfo.getStartTime());
-        originalInfo.setEndTime(updatedInfo.getEndTime());
-        originalInfo.setFromDate(updatedInfo.getFromDate());
-        originalInfo.setToDate(updatedInfo.getToDate());
-        originalInfo.setStatus(updatedInfo.getStatus());
-        originalInfo.setRemarks(updatedInfo.getRemarks());
-    }
 
 
 }

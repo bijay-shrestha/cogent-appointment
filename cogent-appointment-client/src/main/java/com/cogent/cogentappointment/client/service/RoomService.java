@@ -28,5 +28,5 @@ public interface RoomService {
     RoomMinimalResponseDTO search(RoomSearchRequestDTO searchRequestDTO,
                                   Pageable pageable);
 
-    Room fetchActiveRoom(Long roomId, Long hospitalId);
+    Room fetchActiveRoom(Long roomId);
 }

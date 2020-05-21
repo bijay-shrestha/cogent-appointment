@@ -147,8 +147,8 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Room fetchActiveRoom(Long roomId, Long hospitalId) {
-        return roomRepository.fetchActiveRoomByIdAndHospitalId(roomId, hospitalId)
+    public Room fetchActiveRoom(Long roomId) {
+        return roomRepository.fetchActiveRoomById(roomId)
                 .orElseThrow(()-> ROOM_WITH_GIVEN_ID_NOT_FOUND.apply(roomId));
     }
 

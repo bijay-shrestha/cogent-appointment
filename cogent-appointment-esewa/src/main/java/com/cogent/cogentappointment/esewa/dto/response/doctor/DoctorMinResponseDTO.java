@@ -29,5 +29,5 @@ public class DoctorMinResponseDTO implements Serializable {
 
     private String nmcNumber;
 
-    private Double doctorCharge;
+    private Double appointmentCharge;
 }

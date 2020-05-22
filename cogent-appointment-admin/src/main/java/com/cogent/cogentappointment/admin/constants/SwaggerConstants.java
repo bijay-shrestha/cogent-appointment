@@ -240,6 +240,7 @@ public class SwaggerConstants {
         String FETCH_CLIENT_API_INTEGRATION = "Fetch client Api integration detail";
         String SAVE_ADMIN_MODE_OPERATION = "Save new Admin Mode API Integration";
         String SAVE_CLIENT_OPERATION = "Save new Client API Integration";
+        String UPDATE_CLIENT_OPERATION = "Update Client API Integration";
     }
 
     //J

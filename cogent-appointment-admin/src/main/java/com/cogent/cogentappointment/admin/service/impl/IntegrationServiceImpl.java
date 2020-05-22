@@ -1,9 +1,6 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
-import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ApiIntegrationFormatRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiHeadersRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiIntegrationRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiQueryParametersRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.clientIntegration.*;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.IntegrationService;
@@ -18,8 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.function.Function;
 
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.SAVING_PROCESS_COMPLETED;
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.SAVING_PROCESS_STARTED;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.API_INTEGRATIONS;
 import static com.cogent.cogentappointment.admin.utils.IntegrationUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
@@ -85,6 +81,22 @@ public class IntegrationServiceImpl implements IntegrationService {
         saveApiRequestHeaders(requestDTO.getClientApiRequestHeaders(), apiIntegrationFormat);
 
         log.info(SAVING_PROCESS_COMPLETED, API_INTEGRATIONS, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    @Override
+    public void update(ClientApiIntegrationUpdateRequestDTO requestDTO) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        validateFeatureAndHttpRequestMethod(requestDTO.getFeatureTypeId(),
+                requestDTO.getRequestMethodId());
+
+
+
+        log.info(UPDATING_PROCESS_STARTED, API_INTEGRATIONS);
+
+        log.info(UPDATING_PROCESS_COMPLETED, API_INTEGRATIONS, getDifferenceBetweenTwoTime(startTime));
+
     }
 
     private void validateFeatureAndHttpRequestMethod(Long featureTypeId, Long requestMethodId) {

@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.resource;
 
 import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiIntegrationRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiIntegrationUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.service.HttpRequestMethodService;
 import com.cogent.cogentappointment.admin.service.IntegrationFeatureService;
 import com.cogent.cogentappointment.admin.service.IntegrationService;
@@ -8,14 +9,17 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.IntegrationConstant.*;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.QualificationConstant.FETCH_DETAILS_FOR_DROPDOWN;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AdminConstants.AVATAR;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.IntegrationConstants.*;
 import static java.net.URI.create;
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -45,6 +49,17 @@ public class IntegrationResource {
         integrationService.save(requestDTO);
         return created(create(API_V1 + BASE_INTEGRATION)).build();
     }
+
+    @PutMapping
+    @ApiOperation(UPDATE_CLIENT_OPERATION)
+    public ResponseEntity<?> updateAvatar(@Valid @RequestBody ClientApiIntegrationUpdateRequestDTO requestDTO) {
+        integrationService.update(requestDTO);
+        return ok().build();
+    }
+
+
+
+
 
     @GetMapping(FEATURES + ACTIVE + MIN)
     @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)

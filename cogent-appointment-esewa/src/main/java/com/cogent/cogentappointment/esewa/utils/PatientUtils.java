@@ -28,7 +28,8 @@ public class PatientUtils {
                                          String mobileNumber,
                                          Date dateOfBirth,
                                          String eSewaId,
-                                         Gender gender) {
+                                         Gender gender,
+                                         Character isAgent) {
         Patient patient = new Patient();
         patient.setName(toNormalCase(name));
         patient.setMobileNumber(mobileNumber);
@@ -36,6 +37,7 @@ public class PatientUtils {
         patient.setESewaId(eSewaId);
         patient.setGender(gender);
         patient.setCogentId(generateRandomNumber(4));
+        patient.setIsAgent(isAgent);
         return patient;
     }
 

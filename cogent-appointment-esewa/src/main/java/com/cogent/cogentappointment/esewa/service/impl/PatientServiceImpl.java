@@ -24,6 +24,7 @@ import java.util.function.Function;
 
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.PatientServiceMessages.DUPLICATE_PATIENT_MESSAGE;
 import static com.cogent.cogentappointment.esewa.constants.StatusConstants.DELETED;
+import static com.cogent.cogentappointment.esewa.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.esewa.log.constants.PatientLog.PATIENT;
 import static com.cogent.cogentappointment.esewa.utils.GenderUtils.fetchGenderByCode;
@@ -232,7 +233,8 @@ public class PatientServiceImpl implements PatientService {
                 requestDTO.getMobileNumber(),
                 requestDTO.getDateOfBirth(),
                 requestDTO.getESewaId(),
-                requestDTO.getGender()
+                requestDTO.getGender(),
+                requestDTO.getIsAgent()
         );
     }
 
@@ -242,14 +244,16 @@ public class PatientServiceImpl implements PatientService {
                 requestDTO.getMobileNumber(),
                 requestDTO.getDateOfBirth(),
                 null,
-                requestDTO.getGender()
+                requestDTO.getGender(),
+                NO
         );
     }
 
     private Patient savePatientInfo(String name, String mobileNumber, Date dateOfBirth,
-                                    String eSewaId, Character genderCode) {
+                                    String eSewaId, Character genderCode, Character isAgent) {
 
-        Patient patient = parseToPatient(name, mobileNumber, dateOfBirth, eSewaId, fetchGender(genderCode));
+        Patient patient =
+                parseToPatient(name, mobileNumber, dateOfBirth, eSewaId, fetchGender(genderCode), isAgent);
         return patientRepository.save(patient);
     }
 
@@ -288,7 +292,7 @@ public class PatientServiceImpl implements PatientService {
 
     private HospitalPatientInfo fetchHospitalPatientInfoById(Long hospitalPatientInfoId) {
         return hospitalPatientInfoRepository.fetchHospitalPatientInfoById(hospitalPatientInfoId)
-                .orElseThrow(() -> NoContentFoundException());
+                .orElseThrow(this::NoContentFoundException);
     }
 
     private NoContentFoundException NoContentFoundException() {

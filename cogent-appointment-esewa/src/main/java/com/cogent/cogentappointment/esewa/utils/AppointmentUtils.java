@@ -2,7 +2,7 @@ package com.cogent.cogentappointment.esewa.utils;
 
 import com.cogent.cogentappointment.esewa.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.save.AppointmentRequestDTO;
-import com.cogent.cogentappointment.esewa.dto.response.appointment.*;
+import com.cogent.cogentappointment.esewa.dto.response.appointment.StatusResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.checkAvailabililty.AppointmentBookedTimeResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.checkAvailabililty.AppointmentCheckAvailabilityResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.history.*;

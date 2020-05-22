@@ -27,7 +27,7 @@ public class Room extends Auditable<String> implements Serializable {
     private Long id;
 
     @Column(name = "room_number")
-    private Integer roomNumber;
+    private String roomNumber;
 
     @Column(name = "status")
     private Character status;

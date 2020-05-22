@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
@@ -19,7 +20,9 @@ import java.io.Serializable;
 public class RoomRequestDTO implements Serializable {
 
     @NotNull
-    private Integer roomNumber;
+    @NotEmpty
+    @NotEmpty
+    private String roomNumber;
 
     @NotNull
     @Status

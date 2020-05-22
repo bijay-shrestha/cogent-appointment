@@ -23,7 +23,7 @@ public class RoomUpdateRequestDTO implements Serializable {
     private Long id;
 
     @NotNull
-    private Integer roomNumber;
+    private String roomNumber;
 
     @NotNull
     @Status

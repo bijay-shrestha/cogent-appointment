@@ -147,7 +147,7 @@ public class RoomServiceImpl implements RoomService {
                 .orElseThrow(() -> ROOM_WITH_GIVEN_ID_NOT_FOUND.apply(roomId));
     }
 
-    private void validateRoomNumber(Integer roomNumber, Long count) {
+    private void validateRoomNumber(String roomNumber, Long count) {
 
         if (count.intValue() > 0) {
             log.error(ROOM_NUMBER_DUPLICATION_ERROR, roomNumber);

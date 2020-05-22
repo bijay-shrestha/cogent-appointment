@@ -17,7 +17,7 @@ import java.io.Serializable;
 public class RoomMinimalResponse implements Serializable {
     private Long id;
 
-    private Integer roomNumber;
+    private String roomNumber;
 
     private Character status;
 }

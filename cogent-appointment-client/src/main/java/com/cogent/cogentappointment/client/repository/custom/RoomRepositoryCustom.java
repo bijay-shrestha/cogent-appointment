@@ -17,9 +17,9 @@ import java.util.List;
 @Qualifier("roomRepositoryCustom")
 public interface RoomRepositoryCustom {
 
-    Long validateDuplicity(Integer roomNumber, Long hospitalId);
+    Long validateDuplicity(String roomNumber, Long hospitalId);
 
-    Long validateDuplicity(Long id, Integer roomNumber, Long hospitalId);
+    Long validateDuplicity(Long id, String roomNumber, Long hospitalId);
 
     List<DropDownResponseDTO> fetchActiveMinRoom(Long hospitalId);
 

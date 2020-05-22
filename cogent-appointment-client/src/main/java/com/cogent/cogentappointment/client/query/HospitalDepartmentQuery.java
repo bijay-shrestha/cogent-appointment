@@ -114,9 +114,17 @@ public class HospitalDepartmentQuery {
 
     public static String QUERY_TO_GET_DOCTOR_LIST_BY_HOSPITAL_DEPARTMENT_ID =
             "SELECT" +
-                    " hddi.doctor.name" +
+                    " hddi.doctor.id as value," +
+                    " hddi.doctor.name as label," +
+                    " CASE WHEN" +
+                    " (da.status is null OR da.status = 'N')" +
+                    " THEN null" +
+                    " ELSE" +
+                    " da.fileUri" +
+                    " END as fileUri" +
                     " FROM" +
                     " HospitalDepartmentDoctorInfo hddi" +
+                    " LEFT JOIN DoctorAvatar da ON da.doctorId=hddi.doctor.id" +
                     " WHERE" +
                     " hddi.hospitalDepartment.id = :hospitalDepartmentId" +
                     " AND hddi.status='Y'" +
@@ -124,7 +132,8 @@ public class HospitalDepartmentQuery {
 
     public static String QUERY_TO_GET_ROOM_LIST_BY_HOSPITAL_DEPARTMENT_ID =
             "SELECT" +
-                    " hdri.room.roomNumber" +
+                    " hdri.room.id as value," +
+                    " hdri.room.roomNumber as label" +
                     " FROM" +
                     " HospitalDepartmentRoomInfo hdri" +
                     " WHERE" +

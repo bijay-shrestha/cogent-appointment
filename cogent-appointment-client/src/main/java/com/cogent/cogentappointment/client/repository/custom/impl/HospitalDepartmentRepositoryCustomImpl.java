@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentUpdateRequestDTO;
+import com.cogent.cogentappointment.client.dto.response.doctor.DoctorDropdownDTO;
 import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.HospitalDepartmentMinimalResponse;
 import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.HospitalDepartmentMinimalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.HospitalDepartmentResponseDTO;
@@ -126,8 +127,8 @@ public class HospitalDepartmentRepositoryCustomImpl implements HospitalDepartmen
         try {
             HospitalDepartmentResponseDTO responseDTO = transformQueryToSingleResult(query,
                     HospitalDepartmentResponseDTO.class);
-            responseDTO.setDoctorList(doctorListQuery.getResultList());
-            responseDTO.setRoomList(roomListQuery.getResultList());
+            responseDTO.setDoctorList(transformQueryToResultList(doctorListQuery, DoctorDropdownDTO.class));
+            responseDTO.setRoomList(transformQueryToResultList(roomListQuery,DropDownResponseDTO.class));
             return responseDTO;
         } catch (NoResultException e) {
             log.error(CONTENT_NOT_FOUND_BY_ID, HOSPITAL_DEPARTMENT, hospitalDepartmentId);

@@ -1,6 +1,8 @@
 package com.cogent.cogentappointment.admin.dto.response.hospitalDepartment;
 
+import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.commons.AuditableResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorDropdownDTO;
 import lombok.*;
 
 import java.io.Serializable;
@@ -27,8 +29,8 @@ public class HospitalDepartmentResponseDTO extends AuditableResponseDTO implemen
 
     private Double appointmentCharge,followUpCharge;
 
-    private List<String> doctorList;
+    private List<DoctorDropdownDTO> doctorList;
 
-    private List<String> roomList;
+    private List<DropDownResponseDTO> roomList;
 
 }

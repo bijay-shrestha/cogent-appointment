@@ -105,6 +105,7 @@ public class DoctorResource {
         return ok(doctorService.fetchDoctorBySpecializationId(specializationId));
     }
 
+//    todo:Can be Removed
     @GetMapping(HOSPITAL_WISE)
     @ApiOperation(FETCH_ACTIVE_DOCTORS_BY_HOSPITAL_ID)
     public ResponseEntity<?> fetchDoctorByHospitalId() {

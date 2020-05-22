@@ -19,7 +19,7 @@ public class HospitalResponseDTO implements Serializable {
 
     private String name;
 
-    private String hospitalCode;
+    private String esewaMerchantCode;
 
     private Character status;
 

@@ -22,14 +22,13 @@ public class HospitalRequestDTO implements Serializable {
 
     @NotNull
     @NotEmpty
-    @SpecialCharacters
     @NotBlank
     private String name;
 
     @NotNull
     @NotEmpty
     @NotBlank
-    private String hospitalCode;
+    private String esewaMerchantCode;
 
     @NotNull
     @NotEmpty

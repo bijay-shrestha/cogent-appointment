@@ -90,10 +90,10 @@ public class HospitalServiceImpl implements HospitalService {
         validateConstraintViolation(validator.validate(requestDTO));
 
         List<Object[]> hospitals = hospitalRepository.validateHospitalDuplicity(
-                requestDTO.getName(), requestDTO.getHospitalCode(), requestDTO.getAlias());
+                requestDTO.getName(), requestDTO.getEsewaMerchantCode(), requestDTO.getAlias());
 
         HospitalUtils.validateDuplicity(hospitals, requestDTO.getName(),
-                requestDTO.getHospitalCode(),
+                requestDTO.getEsewaMerchantCode(),
                 requestDTO.getAlias(),
                 Hospital.class.getSimpleName());
 
@@ -124,19 +124,19 @@ public class HospitalServiceImpl implements HospitalService {
         List<Object[]> hospitals = hospitalRepository.validateHospitalDuplicityForUpdate(
                 updateRequestDTO.getId(),
                 updateRequestDTO.getName(),
-                updateRequestDTO.getHospitalCode(),
+                updateRequestDTO.getEsewaMerchantCode(),
                 hospital.getAlias()
         );
 
         HospitalUtils.validateDuplicity(hospitals,
                 updateRequestDTO.getName(),
-                updateRequestDTO.getHospitalCode(),
+                updateRequestDTO.getEsewaMerchantCode(),
                 hospital.getAlias(),
                 Hospital.class.getSimpleName());
 
         HmacApiInfo hmacApiInfo = hmacApiInfoRepository.getHmacApiInfoByHospitalId(updateRequestDTO.getId());
 
-        parseToUpdatedHospital(updateRequestDTO, hospital);
+        save(parseToUpdatedHospital(updateRequestDTO, hospital));
 
         updateHospitalContactNumber(hospital.getId(), updateRequestDTO.getContactNumberUpdateRequestDTOS());
 

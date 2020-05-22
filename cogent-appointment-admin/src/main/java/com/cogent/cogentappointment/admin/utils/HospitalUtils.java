@@ -35,7 +35,7 @@ public class HospitalUtils {
 
     public static void validateDuplicity(List<Object[]> objects,
                                          String requestedName,
-                                         String requestedCode,
+                                         String requestedEsewaMerchantCode,
                                          String requestedAlias,
                                          String className) {
         final int NAME = 0;
@@ -45,18 +45,19 @@ public class HospitalUtils {
         objects.forEach(object -> {
             boolean isNameExists = requestedName.equalsIgnoreCase((String) get(object, NAME));
 
-            boolean isCodeExists = requestedCode.equalsIgnoreCase((String) get(object, CODE));
+            boolean isCodeExists = requestedEsewaMerchantCode.equalsIgnoreCase((String) get(object, CODE));
 
             boolean isAliasExists = requestedAlias.equalsIgnoreCase((String) get(object, ALIAS));
 
             if (isNameExists && isCodeExists && isAliasExists)
                 throw new DataDuplicationException(
-                        String.format(NAME_AND_CODE_DUPLICATION_MESSAGE, className, requestedName, requestedCode),
-                        "name", requestedName, "code", requestedCode
+                        String.format(NAME_AND_CODE_DUPLICATION_MESSAGE, className, requestedName,
+                                requestedEsewaMerchantCode),
+                        "name", requestedName, "esewaMerchantCode", requestedEsewaMerchantCode
                 );
 
             validateName(isNameExists, requestedName, className);
-            validateCode(isCodeExists, requestedCode, className);
+            validateCode(isCodeExists, requestedEsewaMerchantCode, className);
             validateAlias(isAliasExists, requestedAlias, className);
         });
     }
@@ -85,7 +86,7 @@ public class HospitalUtils {
     public static Hospital convertDTOToHospital(HospitalRequestDTO hospitalRequestDTO) {
         Hospital hospital = new Hospital();
         hospital.setName(convertToNormalCase(hospitalRequestDTO.getName()));
-        hospital.setCode(toUpperCase(hospitalRequestDTO.getHospitalCode()));
+        hospital.setEsewaMerchantCode(toUpperCase(hospitalRequestDTO.getEsewaMerchantCode()));
         hospital.setAddress(hospitalRequestDTO.getAddress());
         hospital.setPanNumber(hospitalRequestDTO.getPanNumber());
         hospital.setStatus(hospitalRequestDTO.getStatus());
@@ -137,7 +138,7 @@ public class HospitalUtils {
         hospitalBanner.setStatus(ACTIVE);
     }
 
-    public static void parseToUpdatedHospital(HospitalUpdateRequestDTO updateRequestDTO,
+    public static Hospital parseToUpdatedHospital(HospitalUpdateRequestDTO updateRequestDTO,
                                               Hospital hospital) {
 
         hospital.setName(convertToNormalCase(updateRequestDTO.getName()));
@@ -149,6 +150,8 @@ public class HospitalUtils {
         hospital.setNumberOfAdmins(updateRequestDTO.getNumberOfAdmins());
         hospital.setNumberOfFollowUps(updateRequestDTO.getNumberOfFollowUps());
         hospital.setFollowUpIntervalDays(updateRequestDTO.getFollowUpIntervalDays());
+
+        return hospital;
     }
 
     public static HospitalContactNumber parseToUpdatedHospitalContactNumber(
@@ -187,7 +190,7 @@ public class HospitalUtils {
         final int REMARKS_INDEX = 5;
         final int HOSPITAL_LOGO_INDEX = 6;
         final int HOSPITAL_BANNER_INDEX = 7;
-        final int HOSPITAL_CODE_INDEX = 8;
+        final int ESEWA_MERCHANT_CODE_INDEX = 8;
         final int CONTACT_DETAILS_INDEX = 9;
         final int REFUND_PERCENTAGE_INDEX = 10;
         final int NUMBER_OF_ADMINS_INDEX = 11;
@@ -210,7 +213,7 @@ public class HospitalUtils {
                 .remarks(Objects.isNull(results[REMARKS_INDEX]) ? null : results[REMARKS_INDEX].toString())
                 .hospitalLogo(Objects.isNull(results[HOSPITAL_LOGO_INDEX]) ? null : results[HOSPITAL_LOGO_INDEX].toString())
                 .hospitalBanner(Objects.isNull(results[HOSPITAL_BANNER_INDEX]) ? null : results[HOSPITAL_BANNER_INDEX].toString())
-                .hospitalCode(results[HOSPITAL_CODE_INDEX].toString())
+                .esewaMerchantCode(results[ESEWA_MERCHANT_CODE_INDEX].toString())
                 .contactNumberResponseDTOS(Objects.isNull(results[CONTACT_DETAILS_INDEX]) ?
                         new ArrayList<>() : parseToHospitalContactNumberResponseDTOS(results))
                 .refundPercentage(Double.parseDouble(results[REFUND_PERCENTAGE_INDEX].toString()))

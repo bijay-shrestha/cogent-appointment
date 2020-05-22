@@ -29,7 +29,7 @@ public class HospitalUpdateRequestDTO implements Serializable {
     @NotNull
     @NotEmpty
     @NotBlank
-    private String hospitalCode;
+    private String esewaMerchantCode;
 
     @NotNull
     @NotEmpty

@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.esewa.utils;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.save.AppointmentRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.StatusResponseDTO;
+import com.cogent.cogentappointment.esewa.dto.response.appointment.cancel.AppointmentCancelResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.checkAvailabililty.AppointmentBookedTimeResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.checkAvailabililty.AppointmentCheckAvailabilityResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.history.*;
@@ -358,6 +359,17 @@ public class AppointmentUtils {
 
         return AppointmentResponseWithStatusDTO.builder()
                 .appointments(appointmentHistory)
+                .responseStatus(OK)
+                .responseCode(OK.value())
+                .build();
+    }
+
+    public static AppointmentCancelResponseDTO parseAppointmentCancelResponse(Double appointmentAmount,
+                                                                              Double refundAmount) {
+        return AppointmentCancelResponseDTO.builder()
+                .appointmentAmount(appointmentAmount)
+                .refundAmount(refundAmount)
+                .message("Your appointment has been cancelled successfully. Your refund request has been proceeded!!")
                 .responseStatus(OK)
                 .responseCode(OK.value())
                 .build();

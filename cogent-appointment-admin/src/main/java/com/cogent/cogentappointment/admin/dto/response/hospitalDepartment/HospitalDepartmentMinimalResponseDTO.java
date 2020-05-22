@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 public class HospitalDepartmentMinimalResponseDTO implements Serializable {
 
-    List<HospitalDepartmentMinimalResponse> response;
+    List<HospitalDepartmentMinimalResponse> hospitalDepartmentList;
 
     private Integer totalItems;
 }

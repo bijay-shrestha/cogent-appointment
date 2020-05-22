@@ -102,7 +102,7 @@ public class HospitalDepartmentRepositoryCustomImpl implements HospitalDepartmen
         if (minimalResponseDTOS.isEmpty()) {
             throw HOSPITAL_DEPARTMENT_NOT_FOUND.get();
         } else {
-            response.setResponse(minimalResponseDTOS);
+            response.setHospitalDepartmentList(minimalResponseDTOS);
             response.setTotalItems(totalItems);
             return response;
         }

@@ -135,6 +135,19 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
     }
 
     @Override
+    public List<DoctorDropdownDTO> fetchMinDoctorByHospitalId(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_MIN_DOCTOR_BY_HOSPITAL_ID)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
+
+        if (results.isEmpty()) {
+            error();
+            throw DOCTOR_NOT_FOUND.get();
+        } else return results;
+    }
+
+    @Override
     public DoctorUpdateResponseDTO fetchDetailsForUpdate(Long doctorId) {
         Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_DOCTOR_DETAILS_FOR_UPDATE)
                 .setParameter(ID, doctorId);

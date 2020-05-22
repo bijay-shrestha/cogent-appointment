@@ -21,7 +21,7 @@ import java.io.Serializable;
 public class RoomRequestDTO implements Serializable {
 
     @NotNull
-    private Integer roomNumber;
+    private String roomNumber;
 
     @NotNull
     @Status

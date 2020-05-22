@@ -167,6 +167,18 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
     @Override
     public List<HospitalDropdownResponseDTO> fetchActiveHospitalForDropDown() {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_HOSPITAL_FOR_DROPDOWN);
+
+        List<HospitalDropdownResponseDTO> results = transformQueryToResultList(query, HospitalDropdownResponseDTO.class);
+
+        if (results.isEmpty()) {
+            error();
+            throw HOSPITAL_NOT_FOUND.get();
+        } else return results;
+    }
+
+    @Override
+    public List<HospitalDropdownResponseDTO> fetchHospitalForDropDown() {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_FOR_DROPDOWN);
 
         List<HospitalDropdownResponseDTO> results = transformQueryToResultList(query, HospitalDropdownResponseDTO.class);

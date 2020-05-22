@@ -111,8 +111,6 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
         HospitalDepartment hospitalDepartment = fetchHospitalDepartmentById(requestDTO.getId(), hospitalId);
 
-        validateRoomNumber(requestDTO);
-
         saveHospitalDepartment(parseToUpdateHospitalDepartment(hospitalDepartment, requestDTO));
 
         updateHospitalDepartmentCharge(requestDTO);
@@ -292,6 +290,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
         roomUpdateRequestDTOS.forEach(roomUpdateRequestDTO -> {
             if (roomUpdateRequestDTO.getStatus().equals(YES)) {
+                validateRoomNumber(requestDTO);
                 saveHospitalDepartmentRoomInfo(parseToHospitalDepartmentRoomInfo(
                         hospitalDepartment,
                         roomUpdateRequestDTO.getStatus(),

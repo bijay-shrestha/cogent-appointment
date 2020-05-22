@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.HospitalDepartmentRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.HospitalDepartmentSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.HospitalDepartmentUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorDropdownDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.HospitalDepartmentMinimalResponse;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.HospitalDepartmentMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.HospitalDepartmentResponseDTO;
@@ -102,7 +103,7 @@ public class HospitalDepartmentRepositoryCustomImpl implements HospitalDepartmen
         if (minimalResponseDTOS.isEmpty()) {
             throw HOSPITAL_DEPARTMENT_NOT_FOUND.get();
         } else {
-            response.setResponse(minimalResponseDTOS);
+            response.setHospitalDepartmentList(minimalResponseDTOS);
             response.setTotalItems(totalItems);
             return response;
         }
@@ -123,8 +124,8 @@ public class HospitalDepartmentRepositoryCustomImpl implements HospitalDepartmen
         try {
             HospitalDepartmentResponseDTO responseDTO = transformQueryToSingleResult(query,
                     HospitalDepartmentResponseDTO.class);
-            responseDTO.setDoctorList(doctorListQuery.getResultList());
-            responseDTO.setRoomList(roomListQuery.getResultList());
+            responseDTO.setDoctorList(transformQueryToResultList(doctorListQuery, DoctorDropdownDTO.class));
+            responseDTO.setRoomList(transformQueryToResultList(roomListQuery,DropDownResponseDTO.class));
             return responseDTO;
         } catch (NoResultException e) {
             log.error(CONTENT_NOT_FOUND_BY_ID, HOSPITAL_DEPARTMENT, hospitalDepartmentId);

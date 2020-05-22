@@ -243,7 +243,7 @@ public class DoctorQuery {
                     " AND d.hospital.id= :hospitalId" +
                     " ORDER BY label ASC";
 
-    public static final String QUERY_TO_FETCH_DOCTOR_BY_HOSPITAL_ID =
+    public static final String QUERY_TO_FETCH_ACTIVE_DOCTOR_BY_HOSPITAL_ID =
             " SELECT" +
                     " d.id as value," +                                     //[0]
                     " d.name as label," +                                   //[1]
@@ -258,6 +258,24 @@ public class DoctorQuery {
                     " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId" +
                     " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
                     " WHERE d.status ='Y'" +
+                    " AND h.id=:hospitalId "+
+                    " ORDER BY label ASC";
+
+    public static final String QUERY_TO_FETCH_DOCTOR_BY_HOSPITAL_ID =
+            " SELECT" +
+                    " d.id as value," +                                     //[0]
+                    " d.name as label," +                                   //[1]
+                    " CASE WHEN" +
+                    " (da.status is null OR da.status = 'N')" +
+                    " THEN null" +
+                    " ELSE" +
+                    " da.fileUri" +
+                    " END as fileUri" +                                    //[2]
+                    " FROM" +
+                    " Doctor d" +
+                    " LEFT JOIN DoctorAvatar da ON d.id = da.doctorId" +
+                    " LEFT JOIN Hospital h ON h.id = d.hospital.id" +
+                    " WHERE d.status !='D'" +
                     " AND h.id=:hospitalId "+
                     " ORDER BY label ASC";
 

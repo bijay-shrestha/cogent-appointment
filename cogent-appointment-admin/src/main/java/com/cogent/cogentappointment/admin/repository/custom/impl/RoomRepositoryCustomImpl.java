@@ -15,13 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-
 import java.util.List;
 import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.admin.constants.QueryConstants.HOSPITAL_ID;
-import static com.cogent.cogentappointment.admin.constants.QueryConstants.ID;
-import static com.cogent.cogentappointment.admin.constants.QueryConstants.ROOM_NUMBER;
+import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.RoomLog.ROOM;
 import static com.cogent.cogentappointment.admin.query.RoomQuery.*;
@@ -42,7 +39,7 @@ public class RoomRepositoryCustomImpl implements RoomRepositoryCustom {
     private EntityManager entityManager;
 
     @Override
-    public Long validateDuplicity(Integer roomNumber, Long hospitalId) {
+    public Long validateDuplicity(String roomNumber, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY)
                 .setParameter(ROOM_NUMBER, roomNumber)
                 .setParameter(HOSPITAL_ID, hospitalId);
@@ -51,7 +48,7 @@ public class RoomRepositoryCustomImpl implements RoomRepositoryCustom {
     }
 
     @Override
-    public Long validateDuplicity(Long id, Integer roomNumber, Long hospitalId) {
+    public Long validateDuplicity(Long id, String roomNumber, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE)
                 .setParameter(ID, id)
                 .setParameter(ROOM_NUMBER, roomNumber)

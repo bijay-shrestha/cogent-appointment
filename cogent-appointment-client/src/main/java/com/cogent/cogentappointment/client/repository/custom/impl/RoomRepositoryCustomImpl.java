@@ -41,7 +41,7 @@ public class RoomRepositoryCustomImpl implements RoomRepositoryCustom {
     private EntityManager entityManager;
 
     @Override
-    public Long validateDuplicity(Integer roomNumber, Long hospitalId) {
+    public Long validateDuplicity(String roomNumber, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY)
                 .setParameter(ROOM_NUMBER, roomNumber)
                 .setParameter(HOSPITAL_ID, hospitalId);
@@ -50,7 +50,7 @@ public class RoomRepositoryCustomImpl implements RoomRepositoryCustom {
     }
 
     @Override
-    public Long validateDuplicity(Long id, Integer roomNumber, Long hospitalId) {
+    public Long validateDuplicity(Long id, String roomNumber, Long hospitalId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE)
                 .setParameter(ID, id)
                 .setParameter(ROOM_NUMBER, roomNumber)

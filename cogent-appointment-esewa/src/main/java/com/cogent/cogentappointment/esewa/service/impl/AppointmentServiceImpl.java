@@ -297,7 +297,9 @@ public class AppointmentServiceImpl implements AppointmentService {
         updateAppointmentTransactionRequestLog(transactionRequestLog);
 
         AppointmentSuccessResponseDTO responseDTO =
-                parseToAppointmentSuccessResponseDTO(appointmentNumber, transactionRequestLog.getTransactionStatus());
+                parseToAppointmentSuccessResponseDTO(appointmentNumber,
+                        transactionRequestLog.getTransactionStatus(),
+                        hospital.getRefundPercentage());
 
         log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
 
@@ -377,7 +379,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         updateAppointmentTransactionRequestLog(transactionRequestLog);
 
         AppointmentSuccessResponseDTO responseDTO =
-                parseToAppointmentSuccessResponseDTO(appointmentNumber, transactionRequestLog.getTransactionStatus());
+                parseToAppointmentSuccessResponseDTO(appointmentNumber, transactionRequestLog.getTransactionStatus(),hospital.getRefundPercentage());
 
         log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT, getDifferenceBetweenTwoTime(startTime));
 

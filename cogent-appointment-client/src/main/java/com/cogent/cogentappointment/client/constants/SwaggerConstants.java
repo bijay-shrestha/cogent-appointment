@@ -277,6 +277,7 @@ public class SwaggerConstants {
         String SEARCH_OPERATION = "Search Patient Info";
         String FETCH_DETAILS_BY_ID = " Fetch patient details by id";
         String FETCH_PATIENT_MIN_DETAIL_BY_APPOINTMENT_ID = "Fetch min patient detail by appointment id.";
+        String FETCH_PATIENT_ESEWA_ID = "Fetch patient esewa id";
 
     }
 

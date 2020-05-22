@@ -27,6 +27,6 @@ public class HospitalDepartmentResponseDTO extends AuditableResponseDTO implemen
 
     private List<String> doctorList;
 
-    private List<Integer> roomList;
+    private List<String> roomList;
 
 }

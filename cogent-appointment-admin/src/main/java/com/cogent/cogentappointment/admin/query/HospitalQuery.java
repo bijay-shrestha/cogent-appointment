@@ -32,7 +32,7 @@ public class HospitalQuery {
                     " (h.name =:name OR h.code =:code OR h.alias = :alias)" +
                     " AND h.status != 'D'";
 
-    public static final String QUERY_TO_FETCH_HOSPITAL_FOR_DROPDOWN =
+    public static final String QUERY_TO_FETCH_ACTIVE_HOSPITAL_FOR_DROPDOWN =
             " SELECT" +
                     " h.id as value," +                     //[0]
                     " h.name as label," +                   //[1]
@@ -41,6 +41,18 @@ public class HospitalQuery {
                     " FROM" +
                     " Hospital h" +
                     " WHERE h.status ='Y'" +
+                    " AND h.isCompany='N'" +
+                    " ORDER BY h.name ASC ";
+
+    public static final String QUERY_TO_FETCH_HOSPITAL_FOR_DROPDOWN =
+            " SELECT" +
+                    " h.id as value," +                     //[0]
+                    " h.name as label," +                   //[1]
+                    " h.isCompany as isCompany," +          //[2]
+                    " h.alias as alias" +                    //[3]
+                    " FROM" +
+                    " Hospital h" +
+                    " WHERE h.status !='D'" +
                     " AND h.isCompany='N'" +
                     " ORDER BY h.name ASC ";
 

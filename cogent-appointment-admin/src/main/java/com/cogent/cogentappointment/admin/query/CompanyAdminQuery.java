@@ -164,14 +164,17 @@ public class CompanyAdminQuery {
                     " h.name as hospitalName," +                                            //[6]
                     " h.isCompany as isCompany," +                                          //[7]
                     " p.isAllRoleAssigned as isAllRoleAssigned," +                          //[8]
-                    " af.isSideBarCollapse as isSideBarCollapse" +                           //[9]
+                    " af.isSideBarCollapse as isSideBarCollapse," +                           //[9]
+                    " hl.fileUri as hospitalLogo"+
                     " FROM Admin a" +
                     " LEFT JOIN AdminAvatar av ON av.admin.id=a.id" +
                     " LEFT JOIN Profile p ON p.id=a.profileId.id" +
                     " LEFT JOIN Hospital h ON h.id=p.company.id" +
+                    " LEFT JOIN HospitalLogo hl ON hl.hospital.id=h.id" +
                     " LEFT JOIN AdminFeature af ON a.id = af.admin.id" +
                     " WHERE " +
                     " (a.email =:email OR a.mobileNumber=:email)" +
+                    " AND hl.status='Y'"+
                     " AND a.status='Y'" +
                     " AND h.isCompany='Y'";
 

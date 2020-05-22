@@ -16,4 +16,8 @@ public interface DoctorAppointmentChargeRepository extends JpaRepository<DoctorA
 
     @Query("SELECT d FROM DoctorAppointmentCharge d WHERE d.doctorId.id=:doctorId AND d.doctorId.status !='D'")
     Optional<DoctorAppointmentCharge> findByDoctorId(@Param("doctorId") Long doctorId);
+
+    @Query("SELECT d.id FROM DoctorAppointmentCharge d WHERE d.doctorId.id=:doctorId AND d.appointmentCharge=:charge")
+    Optional<Long> findByDoctorIdAndCharge(@Param("doctorId") Long doctorId,
+                                           @Param("charge") Double charge);
 }

@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
+import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientMinSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.patient.*;
@@ -232,7 +233,7 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
 
     @Override
     public String fetchLatestRegistrationNumber(Long hospitalId) {
-        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_LATEST_REGISTRATION_NUMBER)
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_LATEST_REGISTRATION_NUMBER)
                 .setParameter(HOSPITAL_ID, hospitalId);
 
         List results = query.getResultList();
@@ -276,6 +277,18 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
         return (Patient) query.getSingleResult();
     }
 
+    @Override
+    public List<DropDownResponseDTO> fetchPatientEsewaId(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ESEWA_ID)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        List<DropDownResponseDTO> list = transformQueryToResultList(query, DropDownResponseDTO.class);
+
+        if (list.isEmpty()) PATIENT_NOT_FOUND();
+
+        return list;
+    }
+
     private Supplier<NoContentFoundException> PATIENT_NOT_FOUND = () -> {
         log.error(CONTENT_NOT_FOUND, PATIENT);
         throw new NoContentFoundException(Patient.class);
@@ -294,6 +307,11 @@ public class PatientRepositoryCustomImpl implements PatientRepositoryCustom {
 
         if (!ObjectUtils.isEmpty(result))
             parseHospitalWisePatientInfo(patientInfo, result.get(0));
+    }
+
+    private void PATIENT_NOT_FOUND() {
+        log.error(CONTENT_NOT_FOUND, PATIENT);
+        throw new NoContentFoundException(Patient.class);
     }
 
 

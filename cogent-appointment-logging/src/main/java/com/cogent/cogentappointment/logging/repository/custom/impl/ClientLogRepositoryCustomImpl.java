@@ -20,7 +20,8 @@ import javax.persistence.Query;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.logging.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.logging.constants.QueryConstants.FROM_DATE;
+import static com.cogent.cogentappointment.logging.constants.QueryConstants.TO_DATE;
 import static com.cogent.cogentappointment.logging.query.ClientLogQuery.*;
 import static com.cogent.cogentappointment.logging.utils.common.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.logging.utils.common.QueryUtils.createQuery;
@@ -120,7 +121,8 @@ public class ClientLogRepositoryCustomImpl implements ClientLogRepositoryCustom 
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_USER_LOGS_STATICS_FOR_PIE_CHART(searchRequestDTO))
                 .setParameter(FROM_DATE, searchRequestDTO.getFromDate())
-                .setParameter(TO_DATE, searchRequestDTO.getToDate());
+                .setParameter(TO_DATE, searchRequestDTO.getToDate())
+                .setMaxResults(10);
 
         int totalItems = query.getResultList().size();
 

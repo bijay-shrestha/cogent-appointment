@@ -12,6 +12,10 @@ public class LogDescription {
             logDescription = feature + " is added successfully...";
         }
 
+        if (action.equalsIgnoreCase("Transfer")) {
+            logDescription = "Appointment is Transferred";
+        }
+
         if (action.equalsIgnoreCase("Create") || action.equalsIgnoreCase("Create [Single Tab]")) {
             logDescription = feature + " is created successfully...";
         }
@@ -52,15 +56,47 @@ public class LogDescription {
             logDescription = feature + " is refunded successfully...";
         }
 
+        if (action.equalsIgnoreCase("Forgot Password")) {
+            logDescription = feature + " is requested...";
+        }
+
+        if (action.equalsIgnoreCase("Login")) {
+            logDescription = "Successfully login...";
+        }
+
+        if (action.equalsIgnoreCase("Logout")) {
+            logDescription = "Successfully Logout...";
+        }
+
+
         return logDescription;
     }
 
+    public static String getFailedLogDescription(String feature, String action, int status) {
 
-    public static String getFailedLogDescription() {
+        String[] featureName = feature.split("\\s+");
 
-        return "Process cannot be completed due to exception...";
+        String log = "";
+        switch (status) {
+            case 401:
+                log = " Unauthorized Error...";
+                break;
+            case 400:
+                log = " Bad Request Error...";
+                break;
+            case 404:
+                log = featureName[0] + " with details not found...";
+                break;
+            case 409:
+                log =  featureName[0]  + " already exist with given details...";
+                break;
+            case 500:
+                log = "Internal Server error...";
+                break;
+            default:
+                log="Process cannot be completed due to exception...";
+        }
+        return log;
 
     }
-
-
 }

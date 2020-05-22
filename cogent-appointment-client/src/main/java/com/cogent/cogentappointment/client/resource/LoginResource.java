@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AuthenticateConstant.BASE_API_VALUE;
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AuthenticateConstant.LOGIN_OPERATION;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.LOGIN;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
 
 /**
  * @author Sauravi Thapa २०/१/१३
@@ -35,11 +34,19 @@ public class LoginResource {
     @ApiOperation(LOGIN_OPERATION)
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO requestDTO) {
         HttpHeaders headers = new HttpHeaders();
+
         headers.add(HttpHeaders.AUTHORIZATION, authenticateService.loginUser(requestDTO));
         return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 
-    @PostMapping(LOGIN+"/eSewa")
+    @GetMapping(LOGOUT)
+    @ApiOperation(LOGIN_OPERATION)
+    public ResponseEntity<?> logout() {
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping(LOGIN + "/eSewa")
     @ApiOperation(LOGIN_OPERATION)
     public ResponseEntity<?> logineSewa(@RequestBody LoginEsewaRequestDTO requestDTO) {
         HttpHeaders headers = new HttpHeaders();

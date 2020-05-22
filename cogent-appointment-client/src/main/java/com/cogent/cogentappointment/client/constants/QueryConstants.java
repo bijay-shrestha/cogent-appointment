@@ -13,6 +13,8 @@ public class QueryConstants {
         String TRANSACTION_NUMBER = "transactionNumber";
     }
 
+    public static final String APPOINTMENT_TRANSFER_ID = "appointmentTransferId";
+
     public static final String API_KEY = "apiKey";
 
     //B
@@ -47,7 +49,7 @@ public class QueryConstants {
     //H
     public static final String HOSPITAL_ID = "hospitalId";
     public static final String HOSPITAL_CODE = "hospitalCode";
-
+    public static final String HOSPITAL_DEPARTMENT_ID = "hospitalDepartmentId";
 
     //I
     public static final String ID = "id";
@@ -64,6 +66,7 @@ public class QueryConstants {
     //N
     public static final String NAME = "name";
 
+
     //O
 
     //P
@@ -79,6 +82,8 @@ public class QueryConstants {
     //Q
 
     //R
+    public static final String ROOM_ID = "roomId";
+    public static final String ROOM_NUMBER = "roomNumber";
 
 
     //S
@@ -90,7 +95,6 @@ public class QueryConstants {
     public static final String TO_DATE = "toDate";
 
     //U
-    public static final String USERNAME = "username";
 
     public static final String UNIVERSITY_ID = "universityId";
 

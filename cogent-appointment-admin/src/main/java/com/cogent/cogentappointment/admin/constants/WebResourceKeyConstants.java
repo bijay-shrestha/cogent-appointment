@@ -43,6 +43,14 @@ public class WebResourceKeyConstants {
 
     }
 
+    public interface AppointmentTransferConstants{
+        String BASE_APPOINTMENT_TRANSFER = "/appointmentTransfer";
+        String APPOINTMENT_TIME = "/time";
+        String APPOINTMENT_CHARGE = "/charge";
+        String APPOINTMENT_DATE = "/date";
+        String APPOINTMENT_TRANSFER_ID_PATH_VARIABLE_BASE = "/{appointmentTransferId}";
+    }
+
     //B
     public static final String BASE_PASSWORD = "/password";
 
@@ -144,6 +152,17 @@ public class WebResourceKeyConstants {
         String HOSPITAL_ID_PATH_VARIABLE_BASE = "/{hospitalId}";
     }
 
+    public interface HospitalDeptDutyRosterConstants {
+        String BASE_HOSPITAL_DEPARTMENT_DUTY_ROSTER = "/hospitalDepartmentDutyRoster";
+        String OVERRIDE = "/override";
+        String EXISTING = "/existing";
+        String REVERT = "/revert";
+    }
+
+    public interface HospitalDepartmentConstants {
+        String BASE_HOSPITAL_DEPARTMENT = "/hospitalDepartment";
+    }
+
     //I
     public static final String ID_PATH_VARIABLE_BASE = "/{id}";
 
@@ -154,6 +173,7 @@ public class WebResourceKeyConstants {
 
     //L
     public static final String LOGIN = "/login";
+    public static final String LOGOUT = "/logout";
 
     //M
     public static final String META_INFO = "/metaInfo";
@@ -190,9 +210,15 @@ public class WebResourceKeyConstants {
     }
 
     //R
+    public interface RoomConstants {
+        String BASE_ROOM = "/room";
+    }
 
 
     //S
+    public interface SalutationConstant {
+        String BASE_SALUTATION = "/salutation";
+    }
 
     public static final String SEARCH = "/search";
 

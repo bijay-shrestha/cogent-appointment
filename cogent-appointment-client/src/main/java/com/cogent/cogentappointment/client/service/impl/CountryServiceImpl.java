@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.service.impl;
 
+
 import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.log.constants.CountryLog;
@@ -58,7 +59,6 @@ public class CountryServiceImpl implements CountryService {
 
         return country;
     }
-
 
     private Function<Long, NoContentFoundException>
             COUNTRY_WITH_GIVEN_ID_NOT_FOUND = (id) -> {

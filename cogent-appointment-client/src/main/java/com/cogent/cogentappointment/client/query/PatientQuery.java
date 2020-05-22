@@ -177,13 +177,13 @@ public class PatientQuery {
     }
 
     public static final String QUERY_TO_FETCH_LATEST_REGISTRATION_NUMBER =
-            " SELECT registration_number" +
-                    " FROM hospital_patient_info p " +
+            "SELECT" +
+                    " MAX(hpi.registrationNumber)" +
+                    " FROM" +
+                    " HospitalPatientInfo hpi" +
                     " WHERE" +
-                    " registration_number IS NOT NULL" +
-                    " AND p.hospital_id=:hospitalId" +
-                    " ORDER BY id DESC" +
-                    " LIMIT 1";
+                    " hpi.hospital.id = :hospitalId" +
+                    " AND hpi.isRegistered='Y'";
 
     public static final String QUERY_TO_FETCH_PATIENT =
             " SELECT p FROM Patient p" +
@@ -277,5 +277,14 @@ public class PatientQuery {
 
         return query;
     }
+
+
+    public static final String QUERY_TO_FETCH_ESEWA_ID =
+            " SELECT p.id as value," +                                      //[0]
+                    " p.eSewaId as label" +                                 //[1]
+                    " FROM Patient p " +
+                    " LEFT JOIN HospitalPatientInfo hp ON p.id = hp.patient.id " +
+                    " WHERE p.eSewaId IS NOT NULL" +
+                    " AND hp.hospital.id =:hospitalId";
 
 }

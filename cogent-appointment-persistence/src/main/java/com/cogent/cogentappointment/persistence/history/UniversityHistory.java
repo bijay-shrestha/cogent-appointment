@@ -32,8 +32,7 @@ public class UniversityHistory implements Serializable {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "university_history_id",
-            foreignKey = @ForeignKey(name = "FK_university_history_university"))
+    @JoinColumn(name = "university_history_id")
     private University university;
 
     @Column(name = "university_content")

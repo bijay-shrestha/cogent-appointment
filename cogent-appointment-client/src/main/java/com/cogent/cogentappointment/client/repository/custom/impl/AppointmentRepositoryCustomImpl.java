@@ -7,7 +7,7 @@ import com.cogent.cogentappointment.client.dto.request.appointment.esewa.Appoint
 import com.cogent.cogentappointment.client.dto.request.appointment.esewa.history.AppointmentSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.log.AppointmentLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.log.TransactionLogSearchDTO;
-import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundSearchDTO;
+import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentCancelApprovalSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
@@ -336,11 +336,11 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
     }
 
     @Override
-    public AppointmentRefundResponseDTO fetchRefundAppointments(AppointmentRefundSearchDTO searchDTO,
-                                                                Pageable pageable,
-                                                                Long hospitalId) {
+    public AppointmentRefundResponseDTO fetchAppointmentCancelApprovals(AppointmentCancelApprovalSearchDTO searchDTO,
+                                                                        Pageable pageable,
+                                                                        Long hospitalId) {
 
-        Query query = getQueryToFetchRefundAppointments(searchDTO, hospitalId);
+        Query query = getQueryToFetchfetchAppointmentCancelApprovals(searchDTO, hospitalId);
 
         int totalItems = query.getResultList().size();
 
@@ -539,14 +539,14 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         throw new NoContentFoundException(Appointment.class);
     };
 
-    private Query getQueryToFetchRefundAppointments(AppointmentRefundSearchDTO searchDTO,
-                                                    Long hospitalId) {
+    private Query getQueryToFetchfetchAppointmentCancelApprovals(AppointmentCancelApprovalSearchDTO searchDTO,
+                                                                 Long hospitalId) {
 
-        return createQuery.apply(entityManager, QUERY_TO_FETCH_REFUND_APPOINTMENTS(searchDTO))
+        return createQuery.apply(entityManager, QUERY_TO_FETCH_APPOINTMENTS_CANCEL_APPROVALS(searchDTO))
                 .setParameter(HOSPITAL_ID, hospitalId);
     }
 
-    private Double calculateTotalRefundAmount(AppointmentRefundSearchDTO searchDTO,
+    private Double calculateTotalRefundAmount(AppointmentCancelApprovalSearchDTO searchDTO,
                                               Long hospitalId) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_TOTAL_REFUND_AMOUNT(searchDTO))

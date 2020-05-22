@@ -45,6 +45,14 @@ public class WebResourceKeyConstants {
         String TRANSACTION_LOG = "/transaction-log";
     }
 
+    public interface AppointmentTransferConstants {
+        String BASE_APPOINTMENT_TRANSFER = "/appointmentTransfer";
+        String APPOINTMENT_TIME = "/time";
+        String APPOINTMENT_CHARGE = "/charge";
+        String APPOINTMENT_DATE = "/date";
+        String APPOINTMENT_TRANSFER_ID_PATH_VARIABLE_BASE = "/{appointmentTransferId}";
+    }
+
 
     //B
     public static final String BASE_PASSWORD = "/password";
@@ -130,6 +138,17 @@ public class WebResourceKeyConstants {
         String HOSPITAL_ID_PATH_VARIABLE_BASE = "/{hospitalId}";
     }
 
+    public interface HospitalDepartmentConstants {
+        String BASE_HOSPITAL_DEPARTMENT = "/hospitalDepartment";
+    }
+
+    public interface HospitalDeptDutyRosterConstants {
+        String BASE_HOSPITAL_DEPARTMENT_DUTY_ROSTER = "/hospitalDepartmentDutyRoster";
+        String OVERRIDE = "/override";
+        String EXISTING = "/existing";
+        String REVERT = "/revert";
+    }
+
     //I
     public static final String INFO = "/info";
     public static final String ID_PATH_VARIABLE_BASE = "/{id}";
@@ -141,6 +160,7 @@ public class WebResourceKeyConstants {
 
     //L
     public static final String LOGIN = "/login";
+    public static final String LOGOUT = "/logout";
 
     //M
     public static final String MIN = "/min";
@@ -161,6 +181,7 @@ public class WebResourceKeyConstants {
     public interface PatientConstant {
         String BASE_PATIENT = "/patient";
         String HOSPITAL_PATIENT_INFO_ID_PATH_VARIABLE_BASE = "/{hospitalPatientInfoId}";
+        String ESEWA_ID = "/eSewaId";
     }
 
     public interface ProfileSetupConstants {
@@ -177,9 +198,18 @@ public class WebResourceKeyConstants {
     }
 
     //R
+    public interface RoomConstants {
+        String BASE_ROOM = "/room";
+    }
 
 
     //S
+
+
+
+    public interface SalutationConstant {
+        String BASE_SALUTATION = "/salutation";
+    }
 
     public static final String SEARCH = "/search";
 

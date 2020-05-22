@@ -108,7 +108,7 @@ public class PatientUtils {
         if (Objects.isNull(latestRegistrationNumber)) {
             registrationNumber = year + month + day + String.format("%04d", 1);
         } else {
-            long l1 = Long.parseLong((latestRegistrationNumber.substring(6)));
+            long l1 = Long.parseLong((latestRegistrationNumber.substring(alias.length()+7)));
 
             String patientCount = (l1 < 9999) ?
                     String.format("%04d", l1 + 1) : String.format("%d", l1 + 1);

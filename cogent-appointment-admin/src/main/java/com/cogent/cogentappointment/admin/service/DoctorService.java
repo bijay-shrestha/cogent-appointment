@@ -35,7 +35,9 @@ public interface DoctorService {
     List<DoctorDropdownDTO> fetchDoctorBySpecializationId(Long specializationId);
 
     List<DoctorDropdownDTO> fetchDoctorByHospitalId(Long hospitalId);
-    
+
+    List<DoctorDropdownDTO> fetchMinDoctorByHospitalId(Long hospitalId);
+
     DoctorUpdateResponseDTO fetchDetailsForUpdate(Long id);
 
     List<DoctorShiftMinResponseDTO> fetchAssignedDoctorShifts(Long doctorId);

@@ -67,6 +67,15 @@ public class ErrorMessageConstants {
     public static final String CODE_DUPLICATION_MESSAGE = "%s already exists with code '%s'";
 
     //D
+
+    public interface DoctorServiceMessages {
+        String DOCTOR_NOT_AVAILABLE = "Sorry, Doctor is not available in selected date '%s'.";
+        String DOCTOR_APPOINTMENT_CHARGE_INVALID = "Sorry, requested appointment amount '%s' doesn't match with " +
+                "actual doctor appointment charge";
+        String DOCTOR_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE = "Appointment amount is not equal to " +
+                "Doctor actual appointment charge/ follow-up appointment charge";
+    }
+
     public interface DoctorDutyRosterServiceMessages {
         String DUPLICATION_MESSAGE = "Doctor Duty Roster already exists for selected doctor.";
 
@@ -149,6 +158,24 @@ public class ErrorMessageConstants {
     //H
     public final static String HMAC_BAD_SIGNATURE = "HmacAccessFilter.badSignature";
 
+    public interface HospitalDeptDutyRosterMessages {
+        String BAD_REQUEST_MESSAGE = "Doctor Duty Roster Override doesn't lie within the duty roster date range" +
+                " '%s' to '%s'";
+
+        String DUPLICATE_DUTY_ROSTER_WITHOUT_ROOM =
+                "Hospital Department Duty Roster already exists within '%s' to '%s'";
+
+        String DUPLICATE_DUTY_ROSTER_WITH_ROOM =
+                "Hospital Department Duty Roster already exists within '%s' to '%s' for selected room";
+
+        String DUPLICATE_DUTY_ROSTER_OVERRIDE_WITHOUT_ROOM =
+                "Hospital Department Duty Roster Override already exists within '%s' to '%s'";
+
+        String DUPLICATE_DUTY_ROSTER_OVERRIDE_WITH_ROOM =
+                "Hospital Department Duty Roster Override already exists within '%s' to '%s' for selected room";
+
+    }
+
     //I
     public static final String INVALID_DATE_MESSAGE = "From date cannot be greater than to date";
     public static final String INVALID_DATE_DEBUG_MESSAGE = "Failed to complete operation due to invalid from and to date";
@@ -162,6 +189,11 @@ public class ErrorMessageConstants {
 
     public static final String INVALID_VERIFICATION_TOKEN = "Invalid verification token";
 
+    public static final String INVALID_DATE_TIME_MESSAGE = "Start time cannot be greater than end time";
+    public static final String INVALID_DATE_TIME_DEBUG_MESSAGE = "Failed to complete operation due to invalid start and end date-time";
+
+    public static final String EQUAL_DATE_TIME_MESSAGE = "Start time cannot be equal to end time";
+    public static final String EQUAL_DATE_TIME_DEBUG_MESSAGE = "Failed to complete operation due to invalid start and end date-time";
     //J
 
     //K
@@ -195,6 +227,7 @@ public class ErrorMessageConstants {
     //Q
 
     //R
+    public static final String ROOM_NUMBER_DUPLICATION_MESSAGE = "Room Number already exists with number '%s'";
 
 
     //S

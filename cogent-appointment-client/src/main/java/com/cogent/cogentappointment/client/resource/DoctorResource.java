@@ -76,13 +76,13 @@ public class DoctorResource {
     }
 
     @GetMapping(ACTIVE + MIN)
-    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
+    @ApiOperation(FETCH_ACTIVE_DOCTORS_BY_HOSPITAL_ID)
     public ResponseEntity<?> fetchDoctorForDropDown() {
         return ok(doctorService.fetchActiveMinDoctor());
     }
 
     @GetMapping(MIN)
-    @ApiOperation(FETCH_BY_HOSPITAL_ID)
+    @ApiOperation(FETCH_DOCTORS_BY_HOSPITAL_ID)
     public ResponseEntity<?> fetchMinDoctorByHospitalId() {
         return ok(doctorService.fetchMinDoctor());
     }
@@ -106,7 +106,7 @@ public class DoctorResource {
     }
 
     @GetMapping(HOSPITAL_WISE)
-    @ApiOperation(FETCH_BY_HOSPITAL_ID)
+    @ApiOperation(FETCH_ACTIVE_DOCTORS_BY_HOSPITAL_ID)
     public ResponseEntity<?> fetchDoctorByHospitalId() {
         return ok(doctorService.fetchDoctorByHospitalId());
     }

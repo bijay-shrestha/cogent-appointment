@@ -73,8 +73,8 @@ public class AppointmentUtils {
     }
 
     /*VALIDATE IF REQUESTED APPOINTMENT TIME LIES BETWEEN DOCTOR DUTY ROSTER TIME SCHEDULES
-  * IF IT MATCHES, THEN DO NOTHING
-  * ELSE REQUESTED TIME IS INVALID AND THUS CANNOT TAKE AN APPOINTMENT*/
+     * IF IT MATCHES, THEN DO NOTHING
+     * ELSE REQUESTED TIME IS INVALID AND THUS CANNOT TAKE AN APPOINTMENT*/
     public static boolean validateIfRequestedAppointmentTimeIsValid(DoctorDutyRosterTimeResponseDTO doctorDutyRosterInfo,
                                                                     String appointmentTime) {
 
@@ -140,10 +140,12 @@ public class AppointmentUtils {
     }
 
     public static AppointmentSuccessResponseDTO parseToAppointmentSuccessResponseDTO(String appointmentNumber,
-                                                                                     Character transactionStatus) {
+                                                                                     Character transactionStatus,
+                                                                                     Double refundPercentage) {
         return AppointmentSuccessResponseDTO.builder()
                 .appointmentNumber(appointmentNumber)
                 .appointmentTransactionStatus(transactionStatus)
+                .refundPercentage(refundPercentage)
                 .responseStatus(CREATED)
                 .responseCode(CREATED.value())
                 .build();
@@ -168,21 +170,21 @@ public class AppointmentUtils {
     }
 
     /*startingFiscalYear = 2076-04-01
-    * startingYear = 2076
-    * splitStartingYear = 76
-    *
-    * endingFiscalYear = 2077-03-01
-    * endingYear = 2077
-    * splitEndingYear = 77
-    *
-    * APPOINTMENT NUMBER IS GENERATED IN FORMAT : 76-77-0001
-    * (fiscal year start- fiscal year end – unique appointment no)
-    * appointment number starts with ‘0001’ and increments by 1 & starts with ‘0001’ again in next
-    * fiscal year.
-    *
-    * results[0] = start fiscal year
-    * results[1] = end fiscal year
-    * results[2] = appointment number*/
+     * startingYear = 2076
+     * splitStartingYear = 76
+     *
+     * endingFiscalYear = 2077-03-01
+     * endingYear = 2077
+     * splitEndingYear = 77
+     *
+     * APPOINTMENT NUMBER IS GENERATED IN FORMAT : 76-77-0001
+     * (fiscal year start- fiscal year end – unique appointment no)
+     * appointment number starts with ‘0001’ and increments by 1 & starts with ‘0001’ again in next
+     * fiscal year.
+     *
+     * results[0] = start fiscal year
+     * results[1] = end fiscal year
+     * results[2] = appointment number*/
     public static String generateAppointmentNumber(List results,
                                                    String startingFiscalYear,
                                                    String endingFiscalYear) {

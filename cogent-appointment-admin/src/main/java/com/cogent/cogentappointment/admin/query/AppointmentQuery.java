@@ -487,7 +487,8 @@ public class AppointmentQuery {
                     " da.fileUri as fileUri," +
                     " a.doctorId.id as doctorId," +
                     " a.specializationId.id as specializationId," +
-                    " a.isFollowUp as followUp" +                                                   //[17]
+                    " a.isFollowUp as followUp," +
+                    " h.id as hospitalId" +                                                   //[17]
                     " FROM Appointment a" +
                     " LEFT JOIN Patient p ON a.patientId=p.id" +
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +

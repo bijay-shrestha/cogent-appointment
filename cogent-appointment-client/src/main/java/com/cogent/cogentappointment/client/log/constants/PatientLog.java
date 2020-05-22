@@ -23,4 +23,6 @@ public class PatientLog {
 
     public static final String REGISTERING_PATIENT_PROCESS_COMPLETED = ":::: REGISTERING PATIENT PROCESS COMPLETED" +
             " IN {} ms ::::";
+
+    public static final String PATIENT_ESEWA_ID = "PATIENT eSewa ID";
 }

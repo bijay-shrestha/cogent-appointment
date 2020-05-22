@@ -16,7 +16,6 @@ import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.Inte
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.IntegrationConstant.SAVE_ADMIN_MODE_OPERATION;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AdminModeIntegrationConstants.BASE_ADMIN_MODE_INTEGRATION;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.IntegrationConstants.BASE_INTEGRATION;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
 
@@ -38,7 +37,7 @@ public class AdminModeIntegrationResource {
     @ApiOperation(SAVE_ADMIN_MODE_OPERATION)
     public ResponseEntity<?> save(@Valid @RequestBody AdminModeFeatureIntegrationRequestDTO requestDTO) {
         adminModeIntegrationService.save(requestDTO);
-        return created(create(API_V1 + BASE_INTEGRATION)).build();
+        return created(create(API_V1 + BASE_ADMIN_MODE_INTEGRATION)).build();
     }
 
 }

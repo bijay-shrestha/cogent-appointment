@@ -97,7 +97,8 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                                    ProfileService profileService,
                                    DashboardFeatureRepository dashboardFeatureRepository,
                                    AdminDashboardFeatureRepository adminDashboardFeatureRepository,
-                                   AdminFeatureService adminFeatureService, IntegrationRepository integrationRepository) {
+                                   AdminFeatureService adminFeatureService,
+                                   IntegrationRepository integrationRepository) {
         this.validator = validator;
         this.adminRepository = adminRepository;
         this.adminMacAddressInfoRepository = adminMacAddressInfoRepository;
@@ -418,18 +419,21 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         List<FeatureIntegrationResponseDTO> features = new ArrayList<>();
         integrationResponseDTOList.forEach(responseDTO -> {
 
-            Map<String, String> requestHeaderResponseDTO = integrationRepository.findApiRequestHeaders(responseDTO.getApiIntegrationFormatId());
+            Map<String, String> requestHeaderResponseDTO = integrationRepository.
+                    findApiRequestHeaders(responseDTO.getApiIntegrationFormatId());
 
-            Map<String, String> queryParametersResponseDTO = integrationRepository.findApiQueryParameters(responseDTO.getApiIntegrationFormatId());
+            Map<String, String> queryParametersResponseDTO = integrationRepository.
+                    findApiQueryParameters(responseDTO.getApiIntegrationFormatId());
 
-            FeatureIntegrationResponseDTO featureIntegrationResponseDTO = new FeatureIntegrationResponseDTO();
-            featureIntegrationResponseDTO.setFeatureCode(responseDTO.getFeatureCode());
-            featureIntegrationResponseDTO.setRequestBody(responseDTO.getRequestBody());
-            featureIntegrationResponseDTO.setRequestMethod(responseDTO.getRequestMethod());
-            featureIntegrationResponseDTO.setUrl(responseDTO.getUrl());
-
-            featureIntegrationResponseDTO.setHeaders(requestHeaderResponseDTO);
-            featureIntegrationResponseDTO.setQueryParameters(queryParametersResponseDTO);
+            FeatureIntegrationResponseDTO featureIntegrationResponseDTO =
+                    FeatureIntegrationResponseDTO.builder()
+                            .featureCode(responseDTO.getFeatureCode())
+                            .requestBody(responseDTO.getRequestBody())
+                            .requestMethod(responseDTO.getRequestMethod())
+                            .url(responseDTO.getUrl())
+                            .headers(requestHeaderResponseDTO)
+                            .queryParameters(queryParametersResponseDTO)
+                            .build();
 
             features.add(featureIntegrationResponseDTO);
 
@@ -494,7 +498,8 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         List<AdminDashboardFeature> adminDashboardFeatureList = new ArrayList<>();
         adminDashboardRequestDTOS.forEach(result -> {
 
-            AdminDashboardFeature adminDashboardFeature = adminDashboardFeatureRepository.findAdminDashboardFeatureBydashboardFeatureId(result.getId(), admin.getId());
+            AdminDashboardFeature adminDashboardFeature = adminDashboardFeatureRepository.
+                    findAdminDashboardFeatureBydashboardFeatureId(result.getId(), admin.getId());
 
             if (adminDashboardFeature == null) {
                 saveAdminDashboardFeature(result.getId(), admin);

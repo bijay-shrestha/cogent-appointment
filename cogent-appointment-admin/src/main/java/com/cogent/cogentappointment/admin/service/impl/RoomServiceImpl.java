@@ -26,9 +26,7 @@ import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.HOSPITAL;
 import static com.cogent.cogentappointment.admin.log.constants.RoomLog.ROOM;
 import static com.cogent.cogentappointment.admin.log.constants.RoomLog.ROOM_NUMBER_DUPLICATION_ERROR;
-import static com.cogent.cogentappointment.admin.utils.RoomUtils.parseToDeletedRoom;
-import static com.cogent.cogentappointment.admin.utils.RoomUtils.parseToRoom;
-import static com.cogent.cogentappointment.admin.utils.RoomUtils.parseToUpdatedRoom;
+import static com.cogent.cogentappointment.admin.utils.RoomUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
@@ -63,7 +61,7 @@ public class RoomServiceImpl implements RoomService {
 
         Hospital hospital = fetchHospitalById(requestDTO.getHospitalId());
 
-       save(parseToRoom(requestDTO,hospital));
+        save(parseToRoom(requestDTO, hospital));
 
         log.info(SAVING_PROCESS_COMPLETED, ROOM, getDifferenceBetweenTwoTime(startTime));
     }
@@ -81,7 +79,7 @@ public class RoomServiceImpl implements RoomService {
                 requestDTO.getRoomNumber(),
                 requestDTO.getHospitalId());
 
-        validateRoomNumber(requestDTO.getRoomNumber(),count);
+        validateRoomNumber(requestDTO.getRoomNumber(), count);
 
         Hospital hospital = fetchHospitalById(requestDTO.getHospitalId());
 
@@ -132,15 +130,21 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public RoomMinimalResponseDTO search(RoomSearchRequestDTO searchRequestDTO, Pageable pageable) {
 
-            Long startTime = getTimeInMillisecondsFromLocalDate();
+        Long startTime = getTimeInMillisecondsFromLocalDate();
 
-            log.info(SEARCHING_PROCESS_STARTED, ROOM);
+        log.info(SEARCHING_PROCESS_STARTED, ROOM);
 
-            RoomMinimalResponseDTO response = roomRepository.search(searchRequestDTO, pageable);
+        RoomMinimalResponseDTO response = roomRepository.search(searchRequestDTO, pageable);
 
-            log.info(SEARCHING_PROCESS_COMPLETED, ROOM, getDifferenceBetweenTwoTime(startTime));
+        log.info(SEARCHING_PROCESS_COMPLETED, ROOM, getDifferenceBetweenTwoTime(startTime));
 
-            return response;
+        return response;
+    }
+
+    @Override
+    public Room fetchActiveRoom(Long roomId) {
+        return roomRepository.fetchActiveRoomById(roomId)
+                .orElseThrow(() -> ROOM_WITH_GIVEN_ID_NOT_FOUND.apply(roomId));
     }
 
     private void validateRoomNumber(Integer roomNumber, Long count) {

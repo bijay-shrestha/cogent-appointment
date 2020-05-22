@@ -1,6 +1,6 @@
-package com.cogent.cogentappointment.client.query;
+package com.cogent.cogentappointment.admin.query;
 
-import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterSearchRequestDTO;
 import org.springframework.util.ObjectUtils;
 
 import java.util.Objects;
@@ -34,7 +34,6 @@ public class HospitalDeptDutyRosterQuery {
                 " LEFT JOIN HospitalDepartment hd ON hd.id = dr.hospitalDepartment.id" +
                 " WHERE" +
                 " dr.status !='D'" +
-                " AND hd.hospital.id=:hospitalId" +
                 " AND dr.toDate >=:fromDate AND dr.fromDate <=:toDate";
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
@@ -42,6 +41,9 @@ public class HospitalDeptDutyRosterQuery {
 
         if (!Objects.isNull(searchRequestDTO.getHospitalDepartmentId()))
             sql += " AND hd.id = " + searchRequestDTO.getHospitalDepartmentId();
+
+        if (!Objects.isNull(searchRequestDTO.getHospitalId()))
+            sql += " AND  hd.hospital.id= " + searchRequestDTO.getHospitalId();
 
         return sql + " ORDER BY dr.id DESC";
     }
@@ -63,8 +65,7 @@ public class HospitalDeptDutyRosterQuery {
                     " FROM HospitalDepartmentDutyRoster ddr" +
                     " LEFT JOIN HospitalDepartment hd ON hd.id = ddr.hospitalDepartment.id" +
                     " WHERE ddr.status !='D'" +
-                    " AND ddr.id = :id" +
-                    " AND hd.hospital.id =:hospitalId";
+                    " AND ddr.id = :id";
 
     private static String HDD_ROSTER_AUDITABLE_QUERY() {
         return " ddr.createdBy as createdBy," +
@@ -98,6 +99,5 @@ public class HospitalDeptDutyRosterQuery {
                     " WHERE dd.status != 'D'" +
                     " AND hd.id=:id" +
                     " AND dd.toDate >=:fromDate" +
-                    " AND dd.fromDate <=:toDate" +
-                    " AND hd.hospital.id=:hospitalId";
+                    " AND dd.fromDate <=:toDate";
 }

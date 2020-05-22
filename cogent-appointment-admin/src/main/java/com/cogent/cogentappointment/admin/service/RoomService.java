@@ -6,6 +6,7 @@ import com.cogent.cogentappointment.admin.dto.request.room.RoomRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.room.RoomSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.room.RoomUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.room.RoomMinimalResponseDTO;
+import com.cogent.cogentappointment.persistence.model.Room;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -26,4 +27,7 @@ public interface RoomService {
 
     RoomMinimalResponseDTO search(RoomSearchRequestDTO searchRequestDTO,
                                         Pageable pageable);
+
+    Room fetchActiveRoom(Long roomId);
+
 }

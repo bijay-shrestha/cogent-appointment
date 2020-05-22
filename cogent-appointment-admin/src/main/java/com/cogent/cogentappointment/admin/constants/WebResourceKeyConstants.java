@@ -134,6 +134,13 @@ public class WebResourceKeyConstants {
         String HOSPITAL_ID_PATH_VARIABLE_BASE = "/{hospitalId}";
     }
 
+    public interface HospitalDeptDutyRosterConstants {
+        String BASE_HOSPITAL_DEPARTMENT_DUTY_ROSTER = "/hospitalDepartmentDutyRoster";
+        String OVERRIDE = "/override";
+        String EXISTING = "/existing";
+        String REVERT = "/revert";
+    }
+
     //I
     public static final String ID_PATH_VARIABLE_BASE = "/{id}";
 

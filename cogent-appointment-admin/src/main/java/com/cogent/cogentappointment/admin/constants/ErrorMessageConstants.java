@@ -115,11 +115,34 @@ public class ErrorMessageConstants {
     //H
     public final static String HMAC_BAD_SIGNATURE = "HmacAccessFilter.badSignature";
 
+    public interface HospitalDeptDutyRosterMessages {
+        String BAD_REQUEST_MESSAGE = "Doctor Duty Roster Override doesn't lie within the duty roster date range" +
+                " '%s' to '%s'";
+
+        String DUPLICATE_DUTY_ROSTER_WITHOUT_ROOM =
+                "Hospital Department Duty Roster already exists within '%s' to '%s'";
+
+        String DUPLICATE_DUTY_ROSTER_WITH_ROOM =
+                "Hospital Department Duty Roster already exists within '%s' to '%s' for selected room";
+
+        String DUPLICATE_DUTY_ROSTER_OVERRIDE_WITHOUT_ROOM =
+                "Hospital Department Duty Roster Override already exists within '%s' to '%s'";
+
+        String DUPLICATE_DUTY_ROSTER_OVERRIDE_WITH_ROOM =
+                "Hospital Department Duty Roster Override already exists within '%s' to '%s' for selected room";
+
+    }
+
     //I
     public static final String INVALID_DATE_MESSAGE = "From date cannot be greater than to date";
     public static final String INVALID_DATE_DEBUG_MESSAGE = "Failed to complete operation due to invalid from and to date";
     public static final String INVALID_VERIFICATION_TOKEN = "Invalid verification token";
 
+    public static final String INVALID_DATE_TIME_MESSAGE = "Start time cannot be greater than end time";
+    public static final String INVALID_DATE_TIME_DEBUG_MESSAGE = "Failed to complete operation due to invalid start and end date-time";
+
+    public static final String EQUAL_DATE_TIME_MESSAGE = "Start time cannot be equal to end time";
+    public static final String EQUAL_DATE_TIME_DEBUG_MESSAGE = "Failed to complete operation due to invalid start and end date-time";
     //J
 
     //K

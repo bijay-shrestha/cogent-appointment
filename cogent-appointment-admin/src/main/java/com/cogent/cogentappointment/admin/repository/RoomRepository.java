@@ -17,4 +17,8 @@ public interface RoomRepository extends JpaRepository<Room,Long>,RoomRepositoryC
 
     @Query("SELECT r FROM Room r WHERE r.status!='D' AND r.id = :id")
     Optional<Room> fetchRoomById(@Param("id") Long id);
+
+    @Query("SELECT r FROM Room r WHERE r.status='Y' AND r.id = :id")
+    Optional<Room> fetchActiveRoomById(@Param("id") Long id);
+
 }

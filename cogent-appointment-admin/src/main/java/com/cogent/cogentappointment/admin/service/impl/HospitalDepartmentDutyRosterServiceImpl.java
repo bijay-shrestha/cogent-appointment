@@ -1,26 +1,26 @@
-package com.cogent.cogentappointment.client.service.impl;
+package com.cogent.cogentappointment.admin.service.impl;
 
-import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterSearchRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.HospitalDeptExistingDutyRosterRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.save.HospitalDepartmentDutyRosterRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.save.HospitalDeptDutyRosterOverrideRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.save.HospitalDeptWeekDaysDutyRosterRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.update.HospitalDeptDutyRosterOverrideUpdateRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.update.HospitalDeptDutyRosterRoomUpdateRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.update.HospitalDeptDutyRosterUpdateRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.update.HospitalDeptWeekDaysDutyRosterUpdateRequestDTO;
-import com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.HospitalDeptDutyRosterMinResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.detail.HospitalDeptDutyRosterDetailResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.existing.HospitalDeptExistingDutyRosterDetailResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.existing.HospitalDeptExistingDutyRosterResponseDTO;
-import com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.update.HospitalDeptDutyRosterOverrideUpdateResponseDTO;
-import com.cogent.cogentappointment.client.exception.BadRequestException;
-import com.cogent.cogentappointment.client.exception.DataDuplicationException;
-import com.cogent.cogentappointment.client.exception.NoContentFoundException;
-import com.cogent.cogentappointment.client.repository.*;
-import com.cogent.cogentappointment.client.service.HospitalDepartmentDutyRosterService;
-import com.cogent.cogentappointment.client.service.RoomService;
+import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.hospitalDepartmentDutyRoster.HospitalDeptExistingDutyRosterRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.hospitalDepartmentDutyRoster.save.HospitalDepartmentDutyRosterRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.hospitalDepartmentDutyRoster.save.HospitalDeptDutyRosterOverrideRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.hospitalDepartmentDutyRoster.save.HospitalDeptWeekDaysDutyRosterRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.hospitalDepartmentDutyRoster.update.HospitalDeptDutyRosterOverrideUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.hospitalDepartmentDutyRoster.update.HospitalDeptDutyRosterRoomUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.hospitalDepartmentDutyRoster.update.HospitalDeptDutyRosterUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.hospitalDepartmentDutyRoster.update.HospitalDeptWeekDaysDutyRosterUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.hospitalDeptDutyRoster.HospitalDeptDutyRosterMinResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.hospitalDeptDutyRoster.detail.HospitalDeptDutyRosterDetailResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.hospitalDeptDutyRoster.existing.HospitalDeptExistingDutyRosterDetailResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.hospitalDeptDutyRoster.existing.HospitalDeptExistingDutyRosterResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.hospitalDeptDutyRoster.update.HospitalDeptDutyRosterOverrideUpdateResponseDTO;
+import com.cogent.cogentappointment.admin.exception.BadRequestException;
+import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
+import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
+import com.cogent.cogentappointment.admin.repository.*;
+import com.cogent.cogentappointment.admin.service.HospitalDepartmentDutyRosterService;
+import com.cogent.cogentappointment.admin.service.RoomService;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -33,21 +33,20 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.HospitalDeptDutyRosterMessages.*;
-import static com.cogent.cogentappointment.client.constants.StatusConstants.NO;
-import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
-import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
-import static com.cogent.cogentappointment.client.log.constants.HospitalDepartmentDutyRosterLog.*;
-import static com.cogent.cogentappointment.client.log.constants.HospitalDepartmentLog.HOSPITAL_DEPARTMENT;
-import static com.cogent.cogentappointment.client.log.constants.WeekDaysLog.WEEK_DAYS;
-import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
-import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
-import static com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterRoomUtils.parseRoomDetails;
-import static com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterRoomUtils.updateRoomDetails;
-import static com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterUtils.*;
-import static com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster.HospitalDeptOverrideDutyRosterUtils.*;
-import static com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster.HospitalDeptWeekDaysDutyRosterUtils.parseToHospitalDeptWeekDaysDutyRoster;
-import static com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster.HospitalDeptWeekDaysDutyRosterUtils.parseUpdatedWeekDaysDetails;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.HospitalDeptDutyRosterMessages.*;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.NO;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
+import static com.cogent.cogentappointment.admin.log.constants.HospitalDepartmentDutyRosterLog.*;
+import static com.cogent.cogentappointment.admin.log.constants.HospitalDepartmentLog.HOSPITAL_DEPARTMENT;
+import static com.cogent.cogentappointment.admin.log.constants.WeekDaysLog.WEEK_DAYS;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
+import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterRoomUtils.parseRoomDetails;
+import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterRoomUtils.updateRoomDetails;
+import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterUtils.*;
+import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptOverrideDutyRosterUtils.*;
+import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptWeekDaysDutyRosterUtils.parseToHospitalDeptWeekDaysDutyRoster;
+import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptWeekDaysDutyRosterUtils.parseUpdatedWeekDaysDetails;
 
 /**
  * @author smriti on 20/05/20
@@ -97,11 +96,9 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
 
         validateHDDRosterRequestInfo(requestDTO);
 
-        Long hospitalId = getLoggedInHospitalId();
-
         HospitalDepartmentDutyRoster dutyRoster = parseToHospitalDepartmentDutyRoster(
                 requestDTO,
-                fetchHospitalDepartment(requestDTO.getHospitalDepartmentId(), hospitalId)
+                fetchHospitalDepartment(requestDTO.getHospitalDepartmentId(), requestDTO.getHospitalId())
         );
 
         save(dutyRoster);
@@ -114,7 +111,8 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
         if (dutyRoster.getHasOverrideDutyRoster().equals(YES))
             saveDutyRosterOverride(dutyRoster, requestDTO.getOverrideDetail(), requestDTO.getRoomId());
 
-        log.info(SAVING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
+        log.info(SAVING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_DUTY_ROSTER,
+                getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
@@ -126,9 +124,10 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
         log.info(SEARCHING_PROCESS_STARTED, HOSPITAL_DEPARTMENT_DUTY_ROSTER);
 
         List<HospitalDeptDutyRosterMinResponseDTO> minInfo =
-                hospitalDeptDutyRosterRepository.search(searchRequestDTO, pageable, getLoggedInHospitalId());
+                hospitalDeptDutyRosterRepository.search(searchRequestDTO, pageable);
 
-        log.info(SEARCHING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
+        log.info(SEARCHING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_DUTY_ROSTER,
+                getDifferenceBetweenTwoTime(startTime));
 
         return minInfo;
     }
@@ -152,10 +151,8 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
 
         log.info(FETCHING_DETAIL_PROCESS_STARTED, HOSPITAL_DEPARTMENT_DUTY_ROSTER);
 
-        Long hospitalId = getLoggedInHospitalId();
-
         HospitalDeptDutyRosterDetailResponseDTO responseDTO =
-                hospitalDeptDutyRosterRepository.fetchDetailsById(id, hospitalId);
+                hospitalDeptDutyRosterRepository.fetchDetailsById(id);
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_DUTY_ROSTER,
                 getDifferenceBetweenTwoTime(startTime));
@@ -180,7 +177,8 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
 
         updateDutyRosterOverrideStatus(dutyRoster);
 
-        log.info(UPDATING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
+        log.info(UPDATING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_DUTY_ROSTER,
+                getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
@@ -203,10 +201,10 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
                 saveHDDRosterOverride(updateRequestDTO, dutyRoster, room) :
                 updateHDDRosterOverride(updateRequestDTO, dutyRoster, room);
 
-        HospitalDeptDutyRosterOverrideUpdateResponseDTO updateResponse = parseOverrideUpdateResponse(savedOverrideId);
+        HospitalDeptDutyRosterOverrideUpdateResponseDTO updateResponse =
+                parseOverrideUpdateResponse(savedOverrideId);
 
         log.info(UPDATING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_DUTY_ROSTER_OVERRIDE,
-
                 getDifferenceBetweenTwoTime(startTime));
 
         return updateResponse;
@@ -256,7 +254,7 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
         log.info(FETCHING_PROCESS_STARTED, EXISTING_HOSPITAL_DEPARTMENT_DUTY_ROSTER);
 
         List<HospitalDeptExistingDutyRosterResponseDTO> existingRosters =
-                hospitalDeptDutyRosterRepository.fetchExistingDutyRosters(requestDTO, getLoggedInHospitalId());
+                hospitalDeptDutyRosterRepository.fetchExistingDutyRosters(requestDTO);
 
         log.info(FETCHING_PROCESS_COMPLETED, EXISTING_HOSPITAL_DEPARTMENT_DUTY_ROSTER,
                 getDifferenceBetweenTwoTime(startTime));
@@ -382,9 +380,8 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
                                                                  Date overrideFromDate,
                                                                  Date overrideToDate) {
 
-        boolean isDateBetweenInclusive =
-                isDateBetweenInclusive(dutyRosterFromDate, dutyRosterToDate, overrideFromDate)
-                        && isDateBetweenInclusive(dutyRosterFromDate, dutyRosterToDate, overrideToDate);
+        boolean isDateBetweenInclusive = isDateBetweenInclusive(dutyRosterFromDate, dutyRosterToDate, overrideFromDate)
+                && isDateBetweenInclusive(dutyRosterFromDate, dutyRosterToDate, overrideToDate);
 
         if (!isDateBetweenInclusive) {
             log.error(String.format(BAD_REQUEST_MESSAGE, utilDateToSqlDate(dutyRosterFromDate),
@@ -612,9 +609,8 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
     }
 
     private HospitalDepartmentDutyRosterOverride fetchOverrideById(Long rosterOverrideId) {
-        return overrideRepository.fetchById(rosterOverrideId)
-                .orElseThrow(() -> HOSPITAL_DEPT_DUTY_ROSTER_OVERRIDE_WITH_GIVEN_ID_NOT_FOUND.apply(rosterOverrideId));
-
+        return overrideRepository.fetchById(rosterOverrideId).orElseThrow(() ->
+                HOSPITAL_DEPT_DUTY_ROSTER_OVERRIDE_WITH_GIVEN_ID_NOT_FOUND.apply(rosterOverrideId));
     }
 
     private Function<Long, NoContentFoundException> HOSPITAL_DEPT_DUTY_ROSTER_OVERRIDE_WITH_GIVEN_ID_NOT_FOUND =
@@ -628,8 +624,6 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
                                                       HospitalDeptDutyRosterOverrideUpdateRequestDTO updatedOverride) {
         return originalOverride.getId().equals(updatedOverride.getRosterOverrideId());
     }
-
-
 }
 
 

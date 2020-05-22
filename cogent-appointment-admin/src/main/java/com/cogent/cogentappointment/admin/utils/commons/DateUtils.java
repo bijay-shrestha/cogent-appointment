@@ -2,10 +2,11 @@ package com.cogent.cogentappointment.admin.utils.commons;
 
 import com.cogent.cogentappointment.admin.constants.StringConstant;
 import com.cogent.cogentappointment.admin.constants.UtilityConfigConstants;
+import com.cogent.cogentappointment.admin.exception.BadRequestException;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
-import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -13,12 +14,14 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
 
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.*;
 import static java.util.Calendar.MONTH;
 import static java.util.Calendar.YEAR;
 
 /**
  * @author smriti on 2019-07-30
  */
+@Slf4j
 public class DateUtils {
     public static Long getTimeInMillisecondsFromLocalDate() {
         LocalDateTime localDate = LocalDateTime.now();
@@ -236,6 +239,32 @@ public class DateUtils {
         });
         return resultDates;
 
+    }
+
+    public static void validateIsFirstDateGreater(Date fromDate, Date toDate) {
+        boolean fromDateGreaterThanToDate = isFirstDateGreater(fromDate, toDate);
+
+        if (fromDateGreaterThanToDate) {
+            log.error(INVALID_DATE_DEBUG_MESSAGE);
+            throw new BadRequestException(INVALID_DATE_MESSAGE, INVALID_DATE_DEBUG_MESSAGE);
+        }
+    }
+
+    public static void validateIfStartTimeGreater(Date startTime, Date endTime) {
+
+        boolean isBothTimeEqual = startTime.equals(endTime);
+
+        if (isBothTimeEqual) {
+            log.error(EQUAL_DATE_TIME_MESSAGE);
+            throw new BadRequestException(EQUAL_DATE_TIME_MESSAGE, EQUAL_DATE_TIME_DEBUG_MESSAGE);
+        }
+
+        boolean isStartTimeGreaterThanEndTime = startTime.after(endTime);
+
+        if (isStartTimeGreaterThanEndTime) {
+            log.error(INVALID_DATE_TIME_MESSAGE);
+            throw new BadRequestException(INVALID_DATE_TIME_MESSAGE, INVALID_DATE_TIME_DEBUG_MESSAGE);
+        }
     }
 
 

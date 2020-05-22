@@ -411,10 +411,10 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         return responseDTO;
     }
 
-    private AdminModeFeatureIntegrationResponseDTO getAdminModeApiIntegration(Long hospitalId) {
+    private AdminModeFeatureIntegrationResponseDTO getAdminModeApiIntegration(Long appointmentModeId) {
 
         List<FeatureIntegrationResponse> integrationResponseDTOList = integrationRepository.
-                fetchAdminModeIntegrationResponseDTO(hospitalId);
+                fetchAdminModeIntegrationResponseDTO(appointmentModeId);
 
         List<FeatureIntegrationResponseDTO> features = new ArrayList<>();
         integrationResponseDTOList.forEach(responseDTO -> {
@@ -441,7 +441,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         AdminModeFeatureIntegrationResponseDTO clientIntegrationResponseDTO = new AdminModeFeatureIntegrationResponseDTO();
         clientIntegrationResponseDTO.setFeatures(features);
-        clientIntegrationResponseDTO.setAppointmentModeId(hospitalId);
+        clientIntegrationResponseDTO.setAppointmentModeId(appointmentModeId);
 
         return clientIntegrationResponseDTO;
 

@@ -16,8 +16,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.cogent.cogentappointment.admin.constants.QueryConstants.APPOINTMENT_MODE_ID;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.CLIENT_API_INTEGRATION_FORMAT_ID;
-import static com.cogent.cogentappointment.admin.constants.QueryConstants.HOSPITAL_ID;
+import static com.cogent.cogentappointment.admin.query.IntegrationQuery.ADMIN_MODE_FEAUTRES_INTEGRATION_API_QUERY;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
 
@@ -33,9 +34,9 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
     private EntityManager entityManager;
 
     @Override
-    public List<FeatureIntegrationResponse> fetchAdminModeIntegrationResponseDTO(Long hospitalId) {
-        Query query = createQuery.apply(entityManager, IntegrationQuery.CLIENT_FEAUTRES_INTEGRATION_API_QUERY)
-                .setParameter(HOSPITAL_ID, hospitalId);
+    public List<FeatureIntegrationResponse> fetchAdminModeIntegrationResponseDTO(Long appointmentModeId) {
+        Query query = createQuery.apply(entityManager, ADMIN_MODE_FEAUTRES_INTEGRATION_API_QUERY)
+                .setParameter(APPOINTMENT_MODE_ID, appointmentModeId);
 
         List<FeatureIntegrationResponse> responseDTOList =
                 transformQueryToResultList(query, FeatureIntegrationResponse.class);

@@ -24,24 +24,24 @@ public class IntegrationQuery {
                     " WHERE hrm.status ='Y'" +
                     " ORDER by hrm.name ASC";
 
-    public static final String CLIENT_FEAUTRES_INTEGRATION_API_QUERY =
+    public static final String ADMIN_MODE_FEAUTRES_INTEGRATION_API_QUERY =
             "SELECT" +
                     " aif.id as apiIntegrationFormatId," +
                     " f.code as featureCode," +
                     " hrm.name as requestMethod,"+
                     " aif.url as url," +
                     " aif.httpRequestBodyAttributes as requestBody" +
-                    " from ClientFeatureIntegration cfi" +
-                    " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=cfi.id" +
-                    " LEFT JOIN Feature f ON f.id=cfi.featureId" +
+                    " from AdminModeFeatureIntegration amfi"+
+                    " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=amfi.id" +
+                    " LEFT JOIN Feature f ON f.id=amfi.featureId" +
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=afi.apiIntegrationFormatId" +
                     " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId" +
-                    " WHERE cfi.hospitalId= :hospitalId"+
+                    " WHERE amfi.appointmentModeId= :appointmentModeId"+
                     " AND aif.status='Y'"+
                     " AND hrm.status='Y'"+
                     " AND afi.status='Y'"+
                     " AND f.status='Y'"+
-                    " AND cfi.status='Y'";
+                    " AND amfi.status='Y'";
 
 
     public static final String CLIENT_API_FEAUTRES_HEADERS_QUERY =
@@ -72,6 +72,5 @@ public class IntegrationQuery {
                     " AND afi.status='Y'"+
                     " AND aqp.status='Y'"+
                     " AND cfi.status='Y'";
-
 
 }

@@ -1,22 +1,24 @@
 package com.cogent.cogentappointment.client.resource;
 
 import com.cogent.cogentappointment.client.dto.request.clientIntegration.ApiIntegrationCheckInRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.clientIntegration.ClientSaveRequestDTO;
 import com.cogent.cogentappointment.client.service.IntegrationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 
+import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AdminConstant.SAVE_OPERATION;
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.IntegrationConstant.BASE_API_VALUE;
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.IntegrationConstant.FETCH_CLIENT_API_INTEGRATION;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.IntegrationConstants.BASE_INTEGRATION;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.IntegrationConstants.CLIENT_API_INTEGRATION_APPOINTMENT_APPROVE;
+import static java.net.URI.create;
+import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -38,6 +40,13 @@ public class IntegrationResource {
     public ResponseEntity<?> approveAppointmentCheckIn(@Valid @RequestBody ApiIntegrationCheckInRequestDTO requestDTO) {
         integrationService.approveAppointmentCheckIn(requestDTO);
         return ok().build();
+    }
+
+    @PostMapping("/client/save")
+    @ApiOperation(SAVE_OPERATION)
+    public ResponseEntity<?> save(@RequestBody ClientSaveRequestDTO clientSaveRequestDTO) throws IOException {
+
+        return created(create(API_V1 + "/client/save")).build();
     }
 
 }

@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.admin.dto.request.hospitalDepartmentDutyRoster.save;
 
-import com.cogent.cogentappointment.client.constraintvalidator.Status;
+import com.cogent.cogentappointment.admin.constraintvalidator.Status;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;

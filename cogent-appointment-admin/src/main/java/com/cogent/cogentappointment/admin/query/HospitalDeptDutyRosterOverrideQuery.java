@@ -1,12 +1,11 @@
 package com.cogent.cogentappointment.admin.query;
 
-import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.update.HospitalDeptDutyRosterOverrideUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.hospitalDepartmentDutyRoster.update.HospitalDeptDutyRosterOverrideUpdateRequestDTO;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.StringConstant.COMMA_SEPARATED;
-import static com.cogent.cogentappointment.client.constants.StringConstant.COMMA_SEPARATED;
 
 /**
  * @author smriti on 20/05/20

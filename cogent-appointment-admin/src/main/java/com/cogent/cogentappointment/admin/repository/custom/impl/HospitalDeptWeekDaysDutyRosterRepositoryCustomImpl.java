@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
-import com.cogent.cogentappointment.client.repository.custom.HospitalDeptWeekDaysDutyRosterRepositoryCustom;
+import com.cogent.cogentappointment.admin.repository.custom.HospitalDeptWeekDaysDutyRosterRepositoryCustom;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

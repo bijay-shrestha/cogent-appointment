@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.admin.dto.response.hospitalDeptDutyRoster.detail;
 
-import com.cogent.cogentappointment.client.dto.response.common.AuditableResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.commons.AuditableResponseDTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 

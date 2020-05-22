@@ -66,6 +66,7 @@ public class QueryConstants {
     //N
     public static final String NAME = "name";
 
+
     //O
 
     //P
@@ -94,7 +95,6 @@ public class QueryConstants {
     public static final String TO_DATE = "toDate";
 
     //U
-    public static final String USERNAME = "username";
 
     public static final String UNIVERSITY_ID = "universityId";
 

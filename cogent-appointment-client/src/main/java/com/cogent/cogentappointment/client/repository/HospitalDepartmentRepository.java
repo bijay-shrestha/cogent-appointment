@@ -18,10 +18,11 @@ import java.util.Optional;
 public interface HospitalDepartmentRepository extends JpaRepository<HospitalDepartment, Long>,
         HospitalDepartmentRepositoryCustom {
 
-    @Query("SELECT hd FROM HospitalDepartment hd WHERE hd.status = 'Y' AND hd.id =:id ")
-    Optional<HospitalDepartment> fetchActiveHospitalDeptById(@Param("id") Long id);
-
     @Query("SELECT hd FROM HospitalDepartment hd WHERE hd.status = 'Y' AND hd.id =:id AND hd.hospital.id =:hospitalId")
-    Optional<HospitalDepartment> fetchByIdAndHospitalId(@Param("id") Long id,
-                                                        @Param("hospitalId") Long hospitalId);
+    Optional<HospitalDepartment> fetchActiveByIdAndHospitalId(@Param("id") Long id,
+                                                              @Param("hospitalId") Long hospitalId);
+
+    @Query(value = "SELECT sd FROM HospitalDepartment sd WHERE sd.id = :id AND sd.hospital.id= :hospitalId" +
+            " AND sd.status != 'D'")
+    Optional<HospitalDepartment> fetchByIdAndHospitalId(@Param("id") Long id, @Param("hospitalId") Long hospitalId);
 }

@@ -15,14 +15,18 @@ public class HospitalDepartmentResponseDTO extends AuditableResponseDTO implemen
 
     private String name;
 
+    private String code;
+
     private String description;
 
     private Character status;
 
     private String remarks;
 
+    private Double appointmentCharge,followUpCharge;
+
     private List<String> doctorList;
 
-    private List<String> roomList;
+    private List<Integer> roomList;
 
 }

@@ -18,9 +18,17 @@ import java.util.List;
 public class HospitalDepartmentUpdateRequestDTO implements Serializable {
 
     @NotNull
+    private Long id;
+
+    @NotNull
     @NotEmpty
     @NotBlank
     private String name;
+
+    @NotNull
+    @NotEmpty
+    @NotBlank
+    private String code;
 
     @NotNull
     @NotEmpty
@@ -30,13 +38,18 @@ public class HospitalDepartmentUpdateRequestDTO implements Serializable {
     @Status
     private Character status;
 
-    private List<Long> doctorId;
+    private List<DepartmentDoctorUpdateRequestDTO> doctorUpdateList;
 
-    private List<Long> roomId;
+    private List<DepartmentRoomUpdateRequestDTO> roomUpdateList;
 
     @NotNull
     private Double appointmentCharge;
 
     @NotNull
     private Double followUpCharge;
+
+    @NotNull
+    @NotEmpty
+    @NotBlank
+    private String remarks;
 }

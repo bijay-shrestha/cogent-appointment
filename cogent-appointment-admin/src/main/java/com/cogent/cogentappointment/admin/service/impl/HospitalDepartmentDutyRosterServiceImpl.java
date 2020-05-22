@@ -404,7 +404,7 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
     }
 
     private HospitalDepartment fetchHospitalDepartment(Long hospitalDepartmentId, Long hospitalId) {
-        return hospitalDepartmentRepository.fetchByIdAndHospitalId(hospitalDepartmentId, hospitalId)
+        return hospitalDepartmentRepository.fetchActiveByIdAndHospitalId(hospitalDepartmentId, hospitalId)
                 .orElseThrow(() -> HOSPITAL_DEPARTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(hospitalDepartmentId));
     }
 

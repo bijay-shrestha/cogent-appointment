@@ -197,6 +197,21 @@ public class HospitalServiceImpl implements HospitalService {
         return hospital;
     }
 
+
+    @Override
+    public List<HospitalDropdownResponseDTO> fetchActiveHospitalForDropDown() {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_ACTIVE_DROPDOWN, HOSPITAL);
+
+        List<HospitalDropdownResponseDTO> responseDTOS = hospitalRepository.fetchActiveHospitalForDropDown();
+
+        log.info(FETCHING_PROCESS_FOR_ACTIVE_DROPDOWN_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
     @Override
     public List<HospitalDropdownResponseDTO> fetchHospitalForDropDown() {
 
@@ -204,7 +219,7 @@ public class HospitalServiceImpl implements HospitalService {
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, HOSPITAL);
 
-        List<HospitalDropdownResponseDTO> responseDTOS = hospitalRepository.fetchActiveHospitalForDropDown();
+        List<HospitalDropdownResponseDTO> responseDTOS = hospitalRepository.fetchHospitalForDropDown();
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
 

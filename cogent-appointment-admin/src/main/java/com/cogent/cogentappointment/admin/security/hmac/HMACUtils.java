@@ -15,6 +15,7 @@ import static com.cogent.cogentappointment.admin.utils.HMACKeyGenerator.generate
 public class HMACUtils {
 
     public String getHash(Authentication authentication) {
+
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
         Integer id= Math.toIntExact(userPrincipal.getId());
         String email = userPrincipal.getEmail();

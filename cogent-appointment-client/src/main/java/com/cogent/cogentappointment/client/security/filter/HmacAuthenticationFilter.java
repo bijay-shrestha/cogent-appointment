@@ -6,6 +6,8 @@ import com.cogent.cogentappointment.client.repository.HmacApiInfoRepository;
 import com.cogent.cogentappointment.client.security.hmac.AuthHeader;
 import com.cogent.cogentappointment.client.security.hmac.HMACBuilder;
 import com.cogent.cogentappointment.client.security.hmac.HMACBuilderEsewa;
+import com.cogent.cogentappointment.client.service.impl.UserDetailsImpl;
+import com.cogent.cogentappointment.client.service.impl.UserDetailsServiceImpl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,9 +35,13 @@ import static com.cogent.cogentappointment.client.constants.StatusConstants.NO;
 @Component
 public class HmacAuthenticationFilter extends OncePerRequestFilter {
 
+    private final UserDetailsServiceImpl userDetailsService;
+
     private final HmacApiInfoRepository hmacApiInfoRepository;
 
-    public HmacAuthenticationFilter(HmacApiInfoRepository hmacApiInfoRepository) {
+    public HmacAuthenticationFilter(UserDetailsServiceImpl userDetailsService,
+                                    HmacApiInfoRepository hmacApiInfoRepository) {
+        this.userDetailsService = userDetailsService;
         this.hmacApiInfoRepository = hmacApiInfoRepository;
     }
 
@@ -52,12 +58,15 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
         if (authHeader != null) {
             final HMACBuilder signatureBuilder;
 
-            AdminMinDetails adminMinDetails = hmacApiInfoRepository.getAdminDetailForAuthentication(
-                    authHeader.getEmail(),
-                    authHeader.getHospitalCode(),
-                    authHeader.getApiKey());
+            UserDetailsImpl userDetails = userDetailsService.loadUserByUsername(authHeader.getEmail());
 
-            if (adminMinDetails.getIsCompany().equals(NO)) {
+            if (userDetails.getIsCompany().equals(NO) &&
+                    authHeader.getEmail().equals(userDetails.getEmail()) &&
+                    authHeader.getId().longValue() == userDetails.getId() &&
+                    authHeader.getHospitalId().longValue() == userDetails.getHospitalId() &&
+                    authHeader.getHospitalCode().equals(userDetails.getHospitalCode())
+                    && authHeader.getApiKey().equals(userDetails.getApiKey())) {
+
                 signatureBuilder = new HMACBuilder()
                         .algorithm(authHeader.getAlgorithm())
                         .id(authHeader.getId())
@@ -66,16 +75,17 @@ public class HmacAuthenticationFilter extends OncePerRequestFilter {
                         .hospitalCode(authHeader.getHospitalCode())
                         .apiKey(authHeader.getApiKey())
                         .nonce(authHeader.getNonce())
-                        .apiSecret(adminMinDetails.getApiSecret());
+                        .apiSecret(userDetails.getApiSecret());
             } else {
                 signatureBuilder = null;
             }
 
-            compareSignature(signatureBuilder, authHeader.getDigest()); if (!signatureBuilder.isHashEquals(authHeader.getDigest()))
+            compareSignature(signatureBuilder, authHeader.getDigest());
+            if (!signatureBuilder.isHashEquals(authHeader.getDigest()))
                 throw new BadCredentialsException(HMAC_BAD_SIGNATURE);
 
             SecurityContextHolder.getContext().setAuthentication(getAuthenticationForHospital(authHeader.getEmail(),
-                    adminMinDetails.getHospitalId()));
+                    userDetails.getHospitalId()));
         }
 
         if (authHeader == null && eSewaAuthHeader != null) {

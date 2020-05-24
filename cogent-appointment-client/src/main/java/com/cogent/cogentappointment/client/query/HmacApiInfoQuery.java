@@ -34,6 +34,7 @@ public class HmacApiInfoQuery {
 
     public static final String QUERY_TO_FECTH_ADMIN_FOR_AUTHENTICATION =
             " SELECT" +
+                    " a.id as userId," +
                     " a.fullName as fullName," +
                     " a.email as email," +
                     " h.code as hospitalCode," +

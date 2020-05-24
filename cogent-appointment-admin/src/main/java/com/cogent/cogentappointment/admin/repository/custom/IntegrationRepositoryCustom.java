@@ -20,4 +20,8 @@ public interface IntegrationRepositoryCustom {
 
 
     List<FeatureIntegrationResponse> fetchAdminModeIntegrationResponseDTO(Long hospitalId);
+
+    Map<String, String> findAdminModeApiRequestHeaders(Long apiIntegrationFormatId);
+
+    Map<String, String> findAdminModeApiQueryParameters(Long apiIntegrationFormatId);
 }

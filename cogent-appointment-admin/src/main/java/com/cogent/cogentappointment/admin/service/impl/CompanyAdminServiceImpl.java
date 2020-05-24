@@ -420,10 +420,10 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         integrationResponseDTOList.forEach(responseDTO -> {
 
             Map<String, String> requestHeaderResponseDTO = integrationRepository.
-                    findApiRequestHeaders(responseDTO.getApiIntegrationFormatId());
+                    findAdminModeApiRequestHeaders(responseDTO.getApiIntegrationFormatId());
 
             Map<String, String> queryParametersResponseDTO = integrationRepository.
-                    findApiQueryParameters(responseDTO.getApiIntegrationFormatId());
+                    findAdminModeApiQueryParameters(responseDTO.getApiIntegrationFormatId());
 
             FeatureIntegrationResponseDTO featureIntegrationResponseDTO =
                     FeatureIntegrationResponseDTO.builder()

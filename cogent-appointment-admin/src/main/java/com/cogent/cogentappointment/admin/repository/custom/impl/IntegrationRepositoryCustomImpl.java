@@ -18,7 +18,7 @@ import java.util.Map;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.APPOINTMENT_MODE_ID;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.CLIENT_API_INTEGRATION_FORMAT_ID;
-import static com.cogent.cogentappointment.admin.query.IntegrationQuery.ADMIN_MODE_FEAUTRES_INTEGRATION_API_QUERY;
+import static com.cogent.cogentappointment.admin.query.IntegrationQuery.ADMIN_MODE_FEATURES_INTEGRATION_API_QUERY;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
 
@@ -35,7 +35,7 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
 
     @Override
     public List<FeatureIntegrationResponse> fetchAdminModeIntegrationResponseDTO(Long appointmentModeId) {
-        Query query = createQuery.apply(entityManager, ADMIN_MODE_FEAUTRES_INTEGRATION_API_QUERY)
+        Query query = createQuery.apply(entityManager, ADMIN_MODE_FEATURES_INTEGRATION_API_QUERY)
                 .setParameter(APPOINTMENT_MODE_ID, appointmentModeId);
 
         List<FeatureIntegrationResponse> responseDTOList =
@@ -46,6 +46,38 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
 //        return appointmentDetails.get(0);
 
         return responseDTOList;
+    }
+
+    @Override
+    public Map<String, String> findAdminModeApiRequestHeaders(Long apiIntegrationFormatId) {
+        Query query = createQuery.apply(entityManager, IntegrationQuery.ADMIN_MODE_API_FEAUTRES_HEADERS_QUERY)
+                .setParameter(CLIENT_API_INTEGRATION_FORMAT_ID, apiIntegrationFormatId);
+
+        List<ApiRequestHeaderResponseDTO> requestHeaderResponseDTO =
+                transformQueryToResultList(query, ApiRequestHeaderResponseDTO.class);
+
+        Map<String, String> map = new HashMap<>();
+        requestHeaderResponseDTO.forEach(response -> {
+            map.put(response.getKeyName(), response.getKeyValue());
+        });
+
+        return map;
+    }
+
+    @Override
+    public Map<String, String> findAdminModeApiQueryParameters(Long apiIntegrationFormatId) {
+        Query query = createQuery.apply(entityManager, IntegrationQuery.ADMIN_MODE_API_PARAMETERS_QUERY)
+                .setParameter(CLIENT_API_INTEGRATION_FORMAT_ID, apiIntegrationFormatId);
+
+        List<ApiQueryParametersResponseDTO> parametersResponseDTO =
+                transformQueryToResultList(query, ApiQueryParametersResponseDTO.class);
+
+        Map<String, String> map = new HashMap<>();
+        parametersResponseDTO.forEach(response -> {
+            map.put(response.getParam(), response.getValue());
+        });
+
+        return map;
     }
 
     @Override

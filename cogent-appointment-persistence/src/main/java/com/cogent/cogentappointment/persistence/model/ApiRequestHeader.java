@@ -26,9 +26,8 @@ public class ApiRequestHeader extends Auditable<String> implements Serializable 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "api_integration_format_id")
-    private ApiIntegrationFormat apiIntegrationFormatId;
+    @Column(name = "api_integration_format_id")
+    private Long apiIntegrationFormatId;
 
     @Column(name = "key_name")
     private String keyName;

@@ -64,13 +64,13 @@ public class IntegrationUtils {
     }
 
     public static List<ApiRequestHeader> parseToClientApiRequestHeaders(List<ClientApiHeadersRequestDTO> clientApiRequestHeaders,
-                                                      ApiIntegrationFormat apiIntegrationFormat) {
+                                                                        Long id) {
 
         List<ApiRequestHeader> requestHeaderList = new ArrayList<>();
 
         clientApiRequestHeaders.forEach(requestDTO -> {
             ApiRequestHeader requestHeader = new ApiRequestHeader();
-            requestHeader.setApiIntegrationFormatId(apiIntegrationFormat);
+            requestHeader.setApiIntegrationFormatId(id);
             requestHeader.setKeyName(requestDTO.getKeyParam());
             requestHeader.setValue(requestDTO.getValueParam());
             requestHeader.setDescription(requestDTO.getDescription());
@@ -83,7 +83,8 @@ public class IntegrationUtils {
 
     }
 
-    public static AdminModeFeatureIntegration parseToAdminModeFeatureIntegration(AppointmentMode appointmentMode, Long featureTypeId) {
+    public static AdminModeFeatureIntegration parseToAdminModeFeatureIntegration(AppointmentMode appointmentMode,
+                                                                                 Long featureTypeId) {
 
         AdminModeFeatureIntegration adminModeFeatureIntegration = new AdminModeFeatureIntegration();
         adminModeFeatureIntegration.setFeatureId(featureTypeId);
@@ -91,5 +92,18 @@ public class IntegrationUtils {
         adminModeFeatureIntegration.setStatus(ACTIVE);
 
         return adminModeFeatureIntegration;
+    }
+
+    public static AdminModeApiFeatureIntegration parseToAdminModeApiFeatureIntegration(
+            AdminModeFeatureIntegration adminModeApiFeatureIntegration
+            , ApiIntegrationFormat apiIntegrationFormat) {
+
+        AdminModeApiFeatureIntegration modeApiFeatureIntegration = new AdminModeApiFeatureIntegration();
+        modeApiFeatureIntegration.setAdminModeFeatureIntegrationId(adminModeApiFeatureIntegration);
+        modeApiFeatureIntegration.setApiIntegrationFormatId(apiIntegrationFormat);
+        modeApiFeatureIntegration.setStatus(ACTIVE);
+
+        return modeApiFeatureIntegration;
+
     }
 }

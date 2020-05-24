@@ -113,7 +113,7 @@ public class IntegrationServiceImpl implements IntegrationService {
     private void saveApiRequestHeaders(List<ClientApiHeadersRequestDTO> clientApiRequestHeaders,
                                        ApiIntegrationFormat apiIntegrationFormat) {
 
-        apiRequestHeaderRepository.saveAll(parseToClientApiRequestHeaders(clientApiRequestHeaders, apiIntegrationFormat));
+        apiRequestHeaderRepository.saveAll(parseToClientApiRequestHeaders(clientApiRequestHeaders, apiIntegrationFormat.getId()));
 
     }
 

@@ -403,8 +403,8 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         CompanyAdminLoggedInInfoResponseDTO responseDTO = adminRepository.fetchLoggedInCompanyAdminInfo(requestDTO);
 
-//        AdminModeFeatureIntegrationResponseDTO integrationResponseDTO = getAdminModeApiIntegration(1l);
-//        responseDTO.setEAIntegrate(integrationResponseDTO);
+        AdminModeFeatureIntegrationResponseDTO integrationResponseDTO = getAdminModeApiIntegration(1l);
+        responseDTO.setEAIntegrate(integrationResponseDTO);
 
         log.info(FETCHING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
 

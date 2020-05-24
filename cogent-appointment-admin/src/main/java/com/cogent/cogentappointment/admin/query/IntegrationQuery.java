@@ -32,15 +32,17 @@ public class IntegrationQuery {
                     " aif.url as url," +
                     " aif.httpRequestBodyAttributes as requestBody" +
                     " from AdminModeFeatureIntegration amfi"+
+                    " LEFT JOIN AppointmentMode am ON am.id=amfi.appointmentModeId.id"+
                     " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=amfi.id" +
                     " LEFT JOIN Feature f ON f.id=amfi.featureId" +
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=afi.apiIntegrationFormatId" +
                     " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId" +
-                    " WHERE amfi.appointmentModeId= :appointmentModeId"+
+                    " WHERE amfi.appointmentModeId.id= :appointmentModeId"+
                     " AND aif.status='Y'"+
                     " AND hrm.status='Y'"+
                     " AND afi.status='Y'"+
                     " AND f.status='Y'"+
+                    " AND am.status='Y'"+
                     " AND amfi.status='Y'";
 
 

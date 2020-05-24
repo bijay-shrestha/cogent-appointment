@@ -52,7 +52,7 @@ public class IntegrationResource {
 
     @PutMapping
     @ApiOperation(UPDATE_CLIENT_OPERATION)
-    public ResponseEntity<?> updateAvatar(@Valid @RequestBody ClientApiIntegrationUpdateRequestDTO requestDTO) {
+    public ResponseEntity<?> update(@Valid @RequestBody ClientApiIntegrationUpdateRequestDTO requestDTO) {
         integrationService.update(requestDTO);
         return ok().build();
     }

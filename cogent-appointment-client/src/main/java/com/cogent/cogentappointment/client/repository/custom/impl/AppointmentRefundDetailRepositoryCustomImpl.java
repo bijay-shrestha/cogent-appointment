@@ -2,6 +2,8 @@ package com.cogent.cogentappointment.client.repository.custom.impl;
 
 
 import com.cogent.cogentappointment.client.dto.request.dashboard.RefundAmountRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.refundStatus.RefundStatusSearchRequestDTO;
+import com.cogent.cogentappointment.client.dto.response.refundStatus.RefundStatusResponseDTO;
 import com.cogent.cogentappointment.client.repository.custom.AppointmentRefundDetailRepositoryCustom;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,5 +39,10 @@ public class AppointmentRefundDetailRepositoryCustomImpl implements AppointmentR
         Double count = (Double) query.getSingleResult();
 
         return (count == null) ? 0D : count;
+    }
+
+    @Override
+    public RefundStatusResponseDTO searchRefundAppointments(RefundStatusSearchRequestDTO requestDTO) {
+        return null;
     }
 }

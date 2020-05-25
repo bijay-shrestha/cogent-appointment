@@ -106,20 +106,4 @@ public class DDRShiftWiseQuery {
                 " ddr.lastModifiedBy as lastModifiedBy," +
                 " ddr.lastModifiedDate as lastModifiedDate";
     }
-
-    public static String QUERY_TO_FETCH_MIN_DAY_WISE_DETAIL =
-            " SELECT" +
-                    " dd.id as ddrId," +                                             //[0]
-                    " dd.fromDate as fromDate," +                                    //[1]
-                    " dd.toDate as toDate," +                                        //[2]
-                    " DATEDIFF(toDate, fromDate) + 1 as totalDays," +               //[3]
-                    " ABS(DATEDIFF(toDate, CURDATE())) + 1 as remainingDays," +     //[4]
-                    " dd.status as status" +                                         //[5]
-                    " FROM DoctorDutyRosterShiftWise dd" +
-                    " WHERE dd.status != 'D'" +
-                    " AND dd.doctor.id=:doctorId" +
-                    " AND dd.specialization.id= :specializationId" +
-                    " AND dd.toDate >=:fromDate" +
-                    " AND dd.fromDate <=:toDate";
-
 }

@@ -60,6 +60,9 @@ public interface DDRShiftWiseService {
 
     void updateDDRWeekDaysDetail(DDRWeekDaysUpdateRequestDTO requestDTO);
 
+    /*day wise*/
     List<DDRExistingMinDTO> fetchDayWiseMinDetail(DDRExistingAvailabilityRequestDTO requestDTO);
+
+
 
 }

@@ -92,7 +92,7 @@ public class HospitalDepartmentRepositoryCustomImpl implements HospitalDepartmen
 
         HospitalDepartmentMinimalResponseDTO response = new HospitalDepartmentMinimalResponseDTO();
 
-        Query query = createNativeQuery.apply(entityManager, QUERY_TO_SEARCH_DEPARTMENT.apply(searchRequestDTO))
+        Query query = createNativeQuery.apply(entityManager, QUERY_TO_SEARCH_HOSPITAL_DEPARTMENT.apply(searchRequestDTO))
                 .setParameter(HOSPITAL_ID, getLoggedInHospitalId());
 
         int totalItems = query.getResultList().size();

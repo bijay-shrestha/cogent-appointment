@@ -9,18 +9,16 @@ import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
  */
 public class RefundStatusUtils {
 
-    public static Appointment changeAppointmentStatus(Appointment appointment,
-                                                      RefundStatusRequestDTO requestDTO){
-        appointment.setStatus(requestDTO.getStatus());
-        appointment.setRemarks(requestDTO.getRemarks());
+    public static Appointment changeAppointmentStatus(Appointment appointment){
+        appointment.setStatus("A");
+        appointment.setRemarks("Through refund status page");
 
         return appointment;
     }
 
-    public static AppointmentRefundDetail changeAppointmentRefundDetailStatus(AppointmentRefundDetail appointmentRefundDetail,
-                                                                  RefundStatusRequestDTO requestDTO){
-        appointmentRefundDetail.setStatus(requestDTO.getStatus());
-        appointmentRefundDetail.setRemarks(requestDTO.getRemarks());
+    public static AppointmentRefundDetail changeAppointmentRefundDetailStatus(AppointmentRefundDetail appointmentRefundDetail){
+        appointmentRefundDetail.setStatus("RE");
+        appointmentRefundDetail.setRemarks("Through refund status page");
 
         return appointmentRefundDetail;
     }

@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.resource;
 
+import com.cogent.cogentappointment.client.dto.request.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.refundStatus.RefundStatusSearchRequestDTO;
 import com.cogent.cogentappointment.client.service.RefundStatusService;
 import io.swagger.annotations.Api;
@@ -9,9 +10,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.RefundStatusConstant.BASE_API_VALUE;
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.RefundStatusConstant.FETCH_PENDING_REFUND_APPROVAL_LIST;
+import static com.cogent.cogentappointment.client.constants.SwaggerConstants.RefundStatusConstant.FETCH_REFUND_DETAILS_TO_APPROVE;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.AppointmentConstants.APPROVE;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.AppointmentConstants.BASE_APPOINTMENT;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.RefundStatusConstants.BASE_REFUND_STATUS;
 import static org.springframework.http.ResponseEntity.ok;
@@ -37,5 +42,12 @@ public class RefundStatusResource {
                                                      @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ok().body(refundStatusService.searchRefundAppointments(searchDTO, pageable));
+    }
+
+    @PutMapping(APPROVE)
+    @ApiOperation(FETCH_REFUND_DETAILS_TO_APPROVE)
+    public ResponseEntity<?> fetchRefundAppointments(@Valid @RequestBody RefundStatusRequestDTO requestDTO) {
+        refundStatusService.approveAppointmentRefund(requestDTO);
+        return ok().build();
     }
 }

@@ -10,6 +10,7 @@ import com.cogent.cogentappointment.client.dto.request.appointment.log.Transacti
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentCancelApprovalSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.dashboard.DashBoardRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedDateResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.appointment.AppointmentBookedTimeResponseDTO;
@@ -527,6 +528,23 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
                 parseQueryResultToAppointmentQueueForTodayByTimeResponse(objects);
 
         return results;
+    }
+
+    @Override
+    public Appointment fetchCancelledAppointmentDetails(RefundStatusRequestDTO requestDTO) {
+        try {
+            Appointment appointment= entityManager.createQuery(QUERY_TO_GET_CANCELLED_APPOINTMENT,
+                    Appointment.class)
+                    .setParameter(ESEWA_ID, requestDTO.getEsewaId())
+                    .setParameter(ESEWA_MERCHANT_CODE, requestDTO.getEsewaMerchantCode())
+                    .setParameter(TRANSACTION_NUMBER, requestDTO.getTransactionNumber())
+                    .getSingleResult();
+
+            return appointment;
+        } catch (NoResultException e) {
+            log.error(CONTENT_NOT_FOUND, APPOINTMENT);
+            throw APPOINTMENT_NOT_FOUND.get();
+        }
     }
 
     private Function<Long, NoContentFoundException> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {

@@ -2,8 +2,10 @@ package com.cogent.cogentappointment.client.repository.custom;
 
 
 import com.cogent.cogentappointment.client.dto.request.dashboard.RefundAmountRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.refundStatus.RefundStatusSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.refundStatus.RefundStatusResponseDTO;
+import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -18,4 +20,6 @@ public interface AppointmentRefundDetailRepositoryCustom {
     Double getTotalRefundedAmount(RefundAmountRequestDTO refundAmountRequestDTO, Long hospitalId);
 
     RefundStatusResponseDTO searchRefundAppointments(RefundStatusSearchRequestDTO requestDTO, Pageable pageable);
+
+    AppointmentRefundDetail fetchAppointmentRefundDetail(RefundStatusRequestDTO requestDTO);
 }

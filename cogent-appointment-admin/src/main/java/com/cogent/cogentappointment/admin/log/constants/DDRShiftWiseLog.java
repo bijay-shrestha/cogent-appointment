@@ -14,4 +14,6 @@ public class DDRShiftWiseLog {
     public final static String DDR_OVERRIDE = "DDR OVERRIDE DETAIL";
 
     public final static String DDR_OVERRIDE_BREAK_DETAIL = "DDR OVERRIDE BREAK DETAIL";
+
+    public final static String DDR_DAY_WISE_DETAIL = "DDR DAY WISE DETAIL";
 }

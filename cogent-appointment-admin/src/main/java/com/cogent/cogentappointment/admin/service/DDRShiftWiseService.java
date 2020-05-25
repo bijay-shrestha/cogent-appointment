@@ -9,10 +9,7 @@ import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.weekDays
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.update.override.DDROverrideUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.update.shift.DDRShiftUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.update.weekDays.DDRWeekDaysUpdateRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRBreakDetailResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRExistingDetailResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRExistingMinResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.DDRExistingWeekDaysResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.checkAvailability.*;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.DDRMinResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.detail.DDRDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.manage.detail.DDROverrideBreakDetailResponseDTO;
@@ -32,7 +29,7 @@ public interface DDRShiftWiseService {
 
     void saveDDROverrideDetail(DDROverrideRequestDTO requestDTO);
 
-    /*existing rosters*/
+    /*used to fetch existing rosters*/
     DDRExistingMinResponseDTO fetchMinExistingDDR(DDRExistingAvailabilityRequestDTO requestDTO);
 
     DDRExistingDetailResponseDTO fetchDetailExistingDDR(Long ddrId);
@@ -62,5 +59,7 @@ public interface DDRShiftWiseService {
     void updateDDRShiftDetail(DDRShiftUpdateRequestDTO updateRequestDTO);
 
     void updateDDRWeekDaysDetail(DDRWeekDaysUpdateRequestDTO requestDTO);
+
+    List<DDRExistingMinDTO> fetchDayWiseMinDetail(DDRExistingAvailabilityRequestDTO requestDTO);
 
 }

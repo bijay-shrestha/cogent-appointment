@@ -137,4 +137,10 @@ public class DDRShiftWiseResource {
         ddrShiftWiseService.updateDDRWeekDaysDetail(updateRequestDTO);
         return ok().build();
     }
+
+    @PutMapping(DAY_WISE + MIN)
+    @ApiOperation(FETCH_MIN_DAY_WISE_DETAIL)
+    public ResponseEntity<?> fetchDayWiseMinDetail(@Valid @RequestBody DDRExistingAvailabilityRequestDTO requestDTO) {
+        return ok(ddrShiftWiseService.fetchDayWiseMinDetail(requestDTO));
+    }
 }

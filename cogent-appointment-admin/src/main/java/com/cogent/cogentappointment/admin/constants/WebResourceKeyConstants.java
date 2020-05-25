@@ -43,7 +43,7 @@ public class WebResourceKeyConstants {
 
     }
 
-    public interface AppointmentTransferConstants{
+    public interface AppointmentTransferConstants {
         String BASE_APPOINTMENT_TRANSFER = "/appointmentTransfer";
         String APPOINTMENT_TIME = "/time";
         String APPOINTMENT_CHARGE = "/charge";
@@ -130,6 +130,7 @@ public class WebResourceKeyConstants {
         String EXISTING = "/existing";
         String WEEK_DAYS = "/weekDays";
         String BREAK_DETAIL = "/breakDetail";
+        String DAY_WISE = "/dayWise";
 
         String REVERT_DOCTOR_DUTY_ROSTER_OVERRIDE = "/revert";
     }

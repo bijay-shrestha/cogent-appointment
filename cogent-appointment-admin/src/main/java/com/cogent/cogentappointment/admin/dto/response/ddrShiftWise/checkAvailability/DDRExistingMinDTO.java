@@ -26,4 +26,6 @@ public class DDRExistingMinDTO implements Serializable {
 
     private Integer remainingDays;
 
+    private Character status;
+
 }

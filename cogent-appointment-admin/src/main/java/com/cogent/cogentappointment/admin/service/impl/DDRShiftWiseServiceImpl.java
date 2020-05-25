@@ -41,6 +41,7 @@ import javax.validation.Valid;
 import javax.validation.Validator;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.DDRShiftWiseMessages.*;
@@ -435,6 +436,22 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         updateWeekDaysDetail(requestDTO);
 
         log.info(UPDATING_PROCESS_COMPLETED, DDR_WEEK_DAYS, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    @Override
+    public List<DDRExistingMinDTO> fetchDayWiseMinDetail(DDRExistingAvailabilityRequestDTO requestDTO) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, DDR_DAY_WISE_DETAIL);
+
+        List<DDRExistingMinDTO> minInfo = ddrShiftWiseRepository.fetchExistingDDR(requestDTO);
+
+        if (minInfo.isEmpty())
+            NO_DDR_RECORDS_FOUND.get();
+
+        log.info(FETCHING_PROCESS_COMPLETED, DDR_DAY_WISE_DETAIL, getDifferenceBetweenTwoTime(startTime));
+
+        return minInfo;
     }
 
     /*1. VALIDATE CONSTRAINTS VIOLATION
@@ -1439,4 +1456,9 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
 
         return parseUpdatedDDRBreakDetail(requestDTO, breakType, breakDetail);
     }
+
+    private Supplier<NoContentFoundException> NO_DDR_RECORDS_FOUND = () -> {
+        log.error(CONTENT_NOT_FOUND, DDR_SHIFT_WISE);
+        throw new NoContentFoundException(DoctorDutyRosterShiftWise.class);
+    };
 }

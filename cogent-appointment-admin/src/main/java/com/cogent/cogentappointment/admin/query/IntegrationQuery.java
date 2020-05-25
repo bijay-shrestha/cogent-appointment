@@ -119,7 +119,7 @@ public class IntegrationQuery {
                     " LEFT JOIN Feature f ON f.id=cfi.featureId" +
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=afi.apiIntegrationFormatId" +
                     " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId" +
-                    " WHERE f.id= :featureId"+
+                    " WHERE cfi.id= :clientFeatureIntegrationId"+
                     " AND aif.status='Y'"+
                     " AND hrm.status='Y'"+
                     " AND afi.status='Y'"+
@@ -135,12 +135,10 @@ public class IntegrationQuery {
                             " hrm.name as requestMethod," +
                             " aif.url as url" +
                             " FROM ClientFeatureIntegration cfi" +
-                            " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=cfi.id" +
                             " LEFT JOIN Feature f ON f.id=cfi.featureId" +
+                            " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=cfi.id" +
                             " LEFT JOIN ApiIntegrationFormat aif ON aif.id=afi.apiIntegrationFormatId" +
-                            " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId" +
-                            " LEFT JOIN ApiRequestHeader arh ON arh.apiIntegrationFormatId=aif.id" +
-                            " LEFT JOIN ApiQueryParameters aqp ON aqp.apiIntegrationFormatId=aif.id"
+                            " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId"
                             + GET_WHERE_CLAUSE_TO_SEARCH_CLIENT_API_INTEGRATION(searchRequestDTO);
 
     private static String GET_WHERE_CLAUSE_TO_SEARCH_CLIENT_API_INTEGRATION(
@@ -149,7 +147,6 @@ public class IntegrationQuery {
         String whereClause = " WHERE" +
                 " aif.status='Y'" +
                 " AND afi.status='Y'" +
-                " AND aqp.status='Y'" +
                 " AND cfi.status='Y'";
 
         if (!Objects.isNull(requestSearchDTO.getHospitalId()))

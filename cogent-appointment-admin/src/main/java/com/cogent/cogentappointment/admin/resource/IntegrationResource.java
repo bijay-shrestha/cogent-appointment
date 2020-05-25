@@ -67,9 +67,9 @@ public class IntegrationResource {
         return ok().body(integrationService.search(searchRequestDTO, pageable));
     }
 
-    @GetMapping(CLIENT_API_INTEGRATION_FEATURE_ID_PATH_VARIABLE_BASE)
+    @GetMapping(CLIENT_API_FEATURE_INTEGRATION_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_CLIENT_API_INTEGRATION_DETAIL)
-    public ResponseEntity<?> fetchDetailByAppointmentId(@PathVariable("featureId") Long id) {
+    public ResponseEntity<?> fetchDetailByAppointmentId(@PathVariable("clientFeatureIntegrationId") Long id) {
         return ok(integrationService.fetchClientApiIntegrationById(id));
     }
 

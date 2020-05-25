@@ -117,7 +117,7 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
     @Override
     public ClientApiIntegrationResponseDTO findClientApiIntegration(Long id) {
         Query query = createQuery.apply(entityManager, CLIENT_FEATURES_INTEGRATION_DETAILS_API_QUERY)
-                .setParameter(CLIENT_API_INTEGRATION_FEATURE_ID, id);
+                .setParameter(CLIENT_FEATURE_INTEGRATION_ID, id);
 
         ClientApiIntegrationResponseDTO responseDTOList =
                 transformQueryToSingleResult(query, ClientApiIntegrationResponseDTO.class);

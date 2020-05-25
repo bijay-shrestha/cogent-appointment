@@ -180,13 +180,6 @@ public class ErrorMessageConstants {
     public static final String INVALID_DATE_MESSAGE = "From date cannot be greater than to date";
     public static final String INVALID_DATE_DEBUG_MESSAGE = "Failed to complete operation due to invalid from and to date";
 
-    public static final String INVALID_DATE_TIME_MESSAGE = "Start time cannot be greater than end time";
-    public static final String INVALID_DATE_TIME_DEBUG_MESSAGE = "Failed to complete operation due to invalid start and end date-time";
-
-
-    public static final String EQUAL_DATE_TIME_MESSAGE = "Start time cannot be equal to end time";
-    public static final String EQUAL_DATE_TIME_DEBUG_MESSAGE = "Failed to complete operation due to invalid start and end date-time";
-
     public static final String INVALID_VERIFICATION_TOKEN = "Invalid verification token";
 
     public static final String INVALID_DATE_TIME_MESSAGE = "Start time cannot be greater than end time";

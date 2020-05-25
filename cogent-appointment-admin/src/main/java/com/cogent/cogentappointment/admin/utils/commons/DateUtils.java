@@ -266,31 +266,6 @@ public class DateUtils {
 
     }
 
-    public static void validateIsFirstDateGreater(Date fromDate, Date toDate) {
-        boolean fromDateGreaterThanToDate = isFirstDateGreater(fromDate, toDate);
-
-        if (fromDateGreaterThanToDate) {
-            log.error(INVALID_DATE_DEBUG_MESSAGE);
-            throw new BadRequestException(INVALID_DATE_MESSAGE, INVALID_DATE_DEBUG_MESSAGE);
-        }
-    }
-
-    public static void validateIfStartTimeGreater(Date startTime, Date endTime) {
-
-        boolean isBothTimeEqual = startTime.equals(endTime);
-
-        if (isBothTimeEqual) {
-            log.error(EQUAL_DATE_TIME_MESSAGE);
-            throw new BadRequestException(EQUAL_DATE_TIME_MESSAGE, EQUAL_DATE_TIME_DEBUG_MESSAGE);
-        }
-
-        boolean isStartTimeGreaterThanEndTime = startTime.after(endTime);
-
-        if (isStartTimeGreaterThanEndTime) {
-            log.error(INVALID_DATE_TIME_MESSAGE);
-            throw new BadRequestException(INVALID_DATE_TIME_MESSAGE, INVALID_DATE_TIME_DEBUG_MESSAGE);
-        }
-    }
 
 
 }

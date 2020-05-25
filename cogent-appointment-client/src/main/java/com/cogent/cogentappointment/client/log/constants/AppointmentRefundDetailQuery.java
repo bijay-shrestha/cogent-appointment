@@ -5,6 +5,7 @@ import org.springframework.util.ObjectUtils;
 
 import java.util.Objects;
 
+import static com.cogent.cogentappointment.client.query.PatientQuery.QUERY_TO_CALCULATE_PATIENT_AGE;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 
 /**
@@ -12,7 +13,7 @@ import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDa
  */
 public class AppointmentRefundDetailQuery {
 
-    public static String QUERY_TO_FETCH_REFUND_APPOINTMENTS(RefundStatusSearchRequestDTO searchDTO){
+    public static String QUERY_TO_FETCH_REFUND_APPOINTMENTS(RefundStatusSearchRequestDTO searchDTO) {
         return "SELECT" +
                 " ard.id as id," +
                 " a.id  as appointmentId," +
@@ -35,22 +36,22 @@ public class AppointmentRefundDetailQuery {
                 " a.specializationId.name as specializationName," +
                 " a.patientId.eSewaId as eSewaId," +
                 " a.appointmentModeId.name as appointmentMode," +
-                " a.hospitalId.esewaMerchantCode as esewaMerchantCode" +
+                " a.hospitalId.esewaMerchantCode as eSewaMerchantCode," +
+                QUERY_TO_CALCULATE_PATIENT_AGE +
                 " FROM" +
                 " AppointmentRefundDetail ard" +
                 " LEFT JOIN Appointment a ON a.id = ard.appointmentId.id" +
                 " LEFT JOIN DoctorAvatar da ON da.doctorId.id = a.doctorId.id" +
                 " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id = a.id" +
-                " LEFT JOIN PatientMetaInfo pm ON pm.patient_id = a.patientId.id AND pm.status = 'Y'" +
+                " LEFT JOIN PatientMetaInfo pm ON pm.patient.id = a.patientId.id AND pm.status = 'Y'" +
                 " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = a.patientId.id AND hpi.hospital.id = a.hospitalId.id" +
                 " WHERE" +
                 " a.status='C' " +
                 " AND ard.status='PA'" +
-                " AND a.hospitalId.id=:hospitalId"+
+                " AND a.hospitalId.id=:hospitalId" +
                 GET_WHERE_CLAUSE_TO_FETCH_REFUND_APPOINTMENTS(searchDTO);
 
     }
-
 
 
     private static String GET_WHERE_CLAUSE_TO_FETCH_REFUND_APPOINTMENTS(RefundStatusSearchRequestDTO searchDTO) {
@@ -79,7 +80,7 @@ public class AppointmentRefundDetailQuery {
         return whereClause + " ORDER BY a.appointmentDate DESC";
     }
 
-    public static String QUERY_TO_GET_TOTAL_REFUND_AMOUNT=
+    public static String QUERY_TO_GET_TOTAL_REFUND_AMOUNT =
             "SELECT" +
                     " COALESCE(SUM(ard.refundAmount),0) as totalRefundAmount" +
                     " FROM" +

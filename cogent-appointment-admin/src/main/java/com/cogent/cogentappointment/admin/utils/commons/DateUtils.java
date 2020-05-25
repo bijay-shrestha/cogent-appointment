@@ -83,34 +83,14 @@ public class DateUtils {
     }
 
     public static boolean isDateBetweenInclusive(Date startDate, Date endDate, Date target) {
-        return !target.before(startDate) && !target.after(endDate);
+        Date targetDateOnly = removeTime(target);
+        Date startDateOnly = removeTime(startDate);
+        Date endDateOnly = removeTime(endDate);
+        return !targetDateOnly.before(startDateOnly) && !targetDateOnly.after(endDateOnly);
     }
 
     public static Date convertStringToDate(String date) throws ParseException {
         return new SimpleDateFormat("yyyy-MM-dd").parse(date);
-    }
-
-    public static int getYearFromNepaliDate(String nepaliDate) {
-        return Integer.parseInt(nepaliDate.split(StringConstant.HYPHEN)[0]);
-    }
-
-    public static int getMonthFromNepaliDate(String nepaliDate) {
-        return Integer.parseInt(nepaliDate.split(StringConstant.HYPHEN)[1]);
-    }
-
-    public static String fetchStartingFiscalYear(int year, int month) {
-        return (month < UtilityConfigConstants.APPLICATION_STARTING_FISCAL_MONTH)
-                ? (year + 1 + UtilityConfigConstants.APPLICATION_STARTING_FISCAL_DAY) : (year + UtilityConfigConstants.APPLICATION_STARTING_FISCAL_DAY);
-    }
-
-    public static String fetchEndingFiscalYear(int year, int month) {
-        return (month < UtilityConfigConstants.APPLICATION_STARTING_FISCAL_MONTH)
-                ? (year + UtilityConfigConstants.APPLICATION_ENDING_FISCAL_DAY) : (year + 1 + UtilityConfigConstants.APPLICATION_ENDING_FISCAL_DAY);
-    }
-
-    public static String getTimeIn12HourFormat(Date date) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm a");
-        return dateFormat.format(date);
     }
 
     public static String getTimeFromDate(Date date) {
@@ -240,10 +220,10 @@ public class DateUtils {
 
         while (!calendar.after(endCalendar)) {
             Date result = calendar.getTime();
-            if (utilDateToSqlDate(calendar.getTime()).before(today) ) {
+            if (utilDateToSqlDate(calendar.getTime()).before(today)) {
                 calendar.add(Calendar.DATE, 1);
 
-            }else {
+            } else {
                 datesInRange.add(result);
                 calendar.add(Calendar.DATE, 1);
             }
@@ -265,7 +245,6 @@ public class DateUtils {
         return resultDates;
 
     }
-
 
 
 }

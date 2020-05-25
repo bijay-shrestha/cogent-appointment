@@ -918,12 +918,13 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
                                                     Date overrideDate) {
 
         boolean isDateBetweenInclusive =
-                isDateBetweenInclusive(dutyRosterFromDate, dutyRosterToDate, removeTime(overrideDate));
+                isDateBetweenInclusive(dutyRosterFromDate, dutyRosterToDate, overrideDate);
 
         if (!isDateBetweenInclusive) {
-            log.error(String.format(INVALID_OVERRIDE_REQUEST_MESSAGE, dutyRosterFromDate, dutyRosterToDate));
-            throw new BadRequestException(
-                    String.format(INVALID_OVERRIDE_REQUEST_MESSAGE, dutyRosterFromDate, dutyRosterToDate));
+            log.error(String.format(INVALID_OVERRIDE_REQUEST_MESSAGE,
+                    utilDateToSqlDate(dutyRosterFromDate), utilDateToSqlDate(dutyRosterToDate)));
+            throw new BadRequestException(String.format(INVALID_OVERRIDE_REQUEST_MESSAGE,
+                    utilDateToSqlDate(dutyRosterFromDate), utilDateToSqlDate(dutyRosterToDate)));
         }
     }
 

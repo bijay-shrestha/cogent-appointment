@@ -9,6 +9,7 @@ public class WebResourceKeyConstants {
     public static final String API_V1 = "/api/v1";
     public static final String ACTIVE = "/active";
 
+
     public interface AdminConstants {
         String BASE_ADMIN = "/admin";
         String AVATAR = "/avatar";
@@ -140,6 +141,8 @@ public class WebResourceKeyConstants {
 
     public interface HospitalDepartmentConstants {
         String BASE_HOSPITAL_DEPARTMENT = "/hospitalDepartment";
+         String AVAILABLE = "/available";
+        String ROOM = "/room";
     }
 
     public interface HospitalDeptDutyRosterConstants {

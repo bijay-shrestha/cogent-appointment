@@ -24,10 +24,14 @@ public interface HospitalDepartmentService {
 
     List<DropDownResponseDTO> fetchActiveMinHospitalDepartment();
 
+    List<DropDownResponseDTO> fetchAvailableHospitalDepartment();
+
     HospitalDepartmentMinimalResponseDTO search(HospitalDepartmentSearchRequestDTO departmentSearchRequestDTO,
                                                 Pageable pageable);
 
     HospitalDepartmentResponseDTO fetchHospitalDepartmentDetails(Long id);
 
     void delete(DeleteRequestDTO deleteRequestDTO);
+
+
 }

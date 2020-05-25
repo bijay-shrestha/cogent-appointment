@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.query;
 
 import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiIntegrationSearchRequestDTO;
+import org.springframework.util.ObjectUtils;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -9,7 +10,6 @@ import java.util.function.Function;
  * @author rupak on 2020-05-19
  */
 public class IntegrationQuery {
-
 
     public static final String QUERY_TO_FETCH_MIN_FEATURES =
             "SELECT" +
@@ -129,7 +129,7 @@ public class IntegrationQuery {
     public static Function<ClientApiIntegrationSearchRequestDTO, String> CLIENT_API_INTEGRATION_SEARCH_QUERY =
             (searchRequestDTO) ->
                     " SELECT" +
-                            " f.id as featureId,"+
+                            " cfi.id as clientFeatureIntegrationId,"+
                             " f.name as featureName," +
                             " f.code as featureCode," +
                             " hrm.name as requestMethod," +
@@ -152,12 +152,17 @@ public class IntegrationQuery {
                 " AND aqp.status='Y'" +
                 " AND cfi.status='Y'";
 
-
         if (!Objects.isNull(requestSearchDTO.getHospitalId()))
             whereClause += " AND cfi.hospitalId=" + requestSearchDTO.getHospitalId();
 
         if (!Objects.isNull(requestSearchDTO.getFeatureTypeId()))
             whereClause += " AND cfi.featureId=" + requestSearchDTO.getFeatureTypeId();
+
+        if (!Objects.isNull(requestSearchDTO.getRequestMethodId()))
+            whereClause += " AND hrm.id=" + requestSearchDTO.getRequestMethodId();
+
+        if (!ObjectUtils.isEmpty(requestSearchDTO.getUrl()))
+            whereClause += " AND aif.url like %'" + requestSearchDTO.getUrl() + "'%";
 
 
         return whereClause;

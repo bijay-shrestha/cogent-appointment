@@ -8,11 +8,7 @@ import com.cogent.cogentappointment.admin.dto.response.clientIntegration.ClientA
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.IntegrationService;
-import com.cogent.cogentappointment.admin.utils.IntegrationUtils;
-import com.cogent.cogentappointment.persistence.model.ApiIntegrationFormat;
-import com.cogent.cogentappointment.persistence.model.ClientFeatureIntegration;
-import com.cogent.cogentappointment.persistence.model.Feature;
-import com.cogent.cogentappointment.persistence.model.HttpRequestMethod;
+import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -146,7 +142,13 @@ public class IntegrationServiceImpl implements IntegrationService {
                 .findClientFeatureIntegrationById(deleteRequestDTO.getId())
                 .orElseThrow(() -> CLIENT_FEATURE_NOT_FOUND.apply(deleteRequestDTO.getId()));
 
-        IntegrationUtils.parseToDeleteClientFeatureIntegration(clientFeatureIntegration,deleteRequestDTO);
+        parseToDeletedClientFeatureIntegration(clientFeatureIntegration,deleteRequestDTO);
+
+        List<ApiFeatureIntegration> apiFeatureIntegrationList=apiFeatureIntegrationRepository
+                .findApiFeatureIntegrationbyClientFeatureId(clientFeatureIntegration.getId())
+                .orElseThrow(() -> CLIENT_FEATURE_NOT_FOUND.apply(clientFeatureIntegration.getId()));
+
+        parseToDeletedApiFeatureIntegration(apiFeatureIntegrationList);
 
         log.info(DELETING_PROCESS_COMPLETED, API_INTEGRATIONS, getDifferenceBetweenTwoTime(startTime));
 

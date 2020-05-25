@@ -14,8 +14,13 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class ClientApiIntegrationSearchRequestDTO implements Serializable {
 
+    private Long requestMethodId;
+
     private Long hospitalId;
 
     private Long featureTypeId;
+
+    private String url;
+
 
 }

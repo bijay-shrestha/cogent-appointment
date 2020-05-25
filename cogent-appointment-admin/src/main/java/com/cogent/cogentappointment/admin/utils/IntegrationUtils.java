@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.DELETED;
 
 /**
  * @author rupak on 2020-05-19
@@ -108,10 +109,17 @@ public class IntegrationUtils {
 
     }
 
-    public static void parseToDeleteClientFeatureIntegration(ClientFeatureIntegration clientFeatureIntegration, DeleteRequestDTO deleteRequestDTO) {
+    public static void parseToDeletedClientFeatureIntegration(ClientFeatureIntegration clientFeatureIntegration, DeleteRequestDTO deleteRequestDTO) {
 
         clientFeatureIntegration.setStatus(deleteRequestDTO.getStatus());
         clientFeatureIntegration.setStatus(deleteRequestDTO.getStatus());
 
+    }
+
+    public static void parseToDeletedApiFeatureIntegration(List<ApiFeatureIntegration> apiFeatureIntegrationList) {
+
+        apiFeatureIntegrationList.forEach(apiFeatureIntegration -> {
+            apiFeatureIntegration.setStatus(DELETED);
+        });
     }
 }

@@ -93,8 +93,12 @@ public class DateUtils {
         return new SimpleDateFormat("yyyy-MM-dd").parse(date);
     }
 
-    public static String getTimeFromDate(Date date) {
+    public static String getTimeFromDateIn24HrFormat(Date date) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+        return dateFormat.format(date);
+    }
+  public static String getTimeFromDateIn12HrFormat(Date date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("h:mm a");
         return dateFormat.format(date);
     }
 

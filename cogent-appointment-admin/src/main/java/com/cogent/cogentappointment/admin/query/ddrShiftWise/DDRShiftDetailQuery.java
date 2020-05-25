@@ -9,7 +9,8 @@ public class DDRShiftDetailQuery {
             " SELECT" +
                     " ds.shift.id as shiftId," +                            //[0]
                     " ds.shift.name as shiftName," +                        //[1]
-                    " ds.rosterGapDuration as rosterGapDuration" +          //[2]
+                    " ds.rosterGapDuration as rosterGapDuration," +          //[2]
+                    " ds.status as status" +                                  //[3]
                     " FROM DDRShiftDetail ds " +
                     " WHERE ds.status = 'Y'" +
                     " AND ds.ddrShiftWise.status != 'D'" +
@@ -32,7 +33,8 @@ public class DDRShiftDetailQuery {
                     " ds.id as ddrShiftDetailId," +                             //[0]
                     " ds.shift.id as shiftId," +                                //[1]
                     " ds.shift.name as shiftName," +                            //[2]
-                    " ds.rosterGapDuration as rosterGapDuration" +              //[3]
+                    " ds.rosterGapDuration as rosterGapDuration," +             //[3]
+                    " ds.status as status" +                                    //[4]
                     " FROM DDRShiftDetail ds " +
                     " WHERE ds.status != 'D'" +
                     " AND ds.ddrShiftWise.status != 'D'" +

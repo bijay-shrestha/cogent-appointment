@@ -45,8 +45,8 @@ public class BreakTypeServiceImpl implements BreakTypeService {
     }
 
     @Override
-    public BreakType fetchActiveBreakTypeByIdAndHospitalId(Long breakTypeId, Long hospitalId) {
-        return breakTypeRepository.fetchActiveBreakTypeByIdAndHospitalId(breakTypeId, hospitalId)
+    public BreakType fetchActiveBreakType(Long breakTypeId) {
+        return breakTypeRepository.fetchActiveBreakType(breakTypeId)
                 .orElseThrow(() -> NO_BREAK_TYPE_FOUND.apply(breakTypeId));
     }
 

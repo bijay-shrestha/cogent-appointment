@@ -90,8 +90,8 @@ public class AppointmentUtils {
 
         final DateTimeFormatter FORMAT = DateTimeFormat.forPattern("HH:mm");
 
-        String doctorStartTime = getTimeFromDate(doctorDutyRosterInfo.getStartTime());
-        String doctorEndTime = getTimeFromDate(doctorDutyRosterInfo.getEndTime());
+        String doctorStartTime = getTimeFromDateIn24HrFormat(doctorDutyRosterInfo.getStartTime());
+        String doctorEndTime = getTimeFromDateIn24HrFormat(doctorDutyRosterInfo.getEndTime());
 
         DateTime startDateTime = new DateTime(FORMAT.parseDateTime(doctorStartTime));
 

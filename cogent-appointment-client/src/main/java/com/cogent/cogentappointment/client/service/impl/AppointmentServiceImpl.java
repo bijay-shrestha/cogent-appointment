@@ -771,8 +771,8 @@ public class AppointmentServiceImpl implements AppointmentService {
             AppointmentCheckAvailabilityRequestDTO requestDTO) {
 
         Date queryDate = utilDateToSqlDate(requestDTO.getAppointmentDate());
-        String doctorStartTime = getTimeFromDate(doctorDutyRosterInfo.getStartTime());
-        String doctorEndTime = getTimeFromDate(doctorDutyRosterInfo.getEndTime());
+        String doctorStartTime = getTimeFromDateIn24HrFormat(doctorDutyRosterInfo.getStartTime());
+        String doctorEndTime = getTimeFromDateIn24HrFormat(doctorDutyRosterInfo.getEndTime());
 
         AppointmentCheckAvailabilityResponseDTO responseDTO;
 
@@ -805,8 +805,8 @@ public class AppointmentServiceImpl implements AppointmentService {
             AppointmentCheckAvailabilityRequestDTO requestDTO) {
 
         Date queryDate = utilDateToSqlDate(requestDTO.getAppointmentDate());
-        String doctorStartTime = getTimeFromDate(doctorDutyRosterInfo.getStartTime());
-        String doctorEndTime = getTimeFromDate(doctorDutyRosterInfo.getEndTime());
+        String doctorStartTime = getTimeFromDateIn24HrFormat(doctorDutyRosterInfo.getStartTime());
+        String doctorEndTime = getTimeFromDateIn24HrFormat(doctorDutyRosterInfo.getEndTime());
 
         AppointmentCheckAvailabilityResponseDTO responseDTO;
 
@@ -1112,7 +1112,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     /*VALIDATE IF APPOINTMENT ALREADY EXISTS ON SELECTED DATE AND TIME */
     private void validateIfParentAppointmentExists(AppointmentReservationLog appointmentReservationLog) {
 
-        String appointmentTime = getTimeFromDate(appointmentReservationLog.getAppointmentTime());
+        String appointmentTime = getTimeFromDateIn24HrFormat(appointmentReservationLog.getAppointmentTime());
 
         Long appointmentCount = appointmentRepository.validateIfAppointmentExists(
                 appointmentReservationLog.getAppointmentDate(),

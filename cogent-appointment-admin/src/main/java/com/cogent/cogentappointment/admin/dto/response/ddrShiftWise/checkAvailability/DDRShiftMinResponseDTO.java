@@ -19,4 +19,6 @@ public class DDRShiftMinResponseDTO implements Serializable{
     private String shiftName;
 
     private Integer rosterGapDuration;
+
+    private Character status;
 }

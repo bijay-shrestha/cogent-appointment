@@ -4,7 +4,7 @@ import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.update.overri
 
 import java.util.List;
 
-import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeFromDate;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeFromDateIn24HrFormat;
 
 /**
  * @author smriti on 14/05/20
@@ -49,13 +49,13 @@ public class DDROverrideBreakDetailQuery {
         for (DDROverrideBreakUpdateRequestDTO breakDetails : breakUpdateRequestDTOS) {
 
             if (!isFirstRequestAdded) {
-                query += " AND (DATE_FORMAT(dd.endTime,'%H:%i') >'" + getTimeFromDate(breakDetails.getStartTime()) + "'" +
-                        " AND DATE_FORMAT(dd.startTime,'%H:%i')<'" + getTimeFromDate(breakDetails.getEndTime()) + "'";
+                query += " AND (DATE_FORMAT(dd.endTime,'%H:%i') >'" + getTimeFromDateIn24HrFormat(breakDetails.getStartTime()) + "'" +
+                        " AND DATE_FORMAT(dd.startTime,'%H:%i')<'" + getTimeFromDateIn24HrFormat(breakDetails.getEndTime()) + "'";
 
                 isFirstRequestAdded = true;
             } else {
-                query += " OR (DATE_FORMAT(dd.endTime,'%H:%i') >'" + getTimeFromDate(breakDetails.getStartTime()) + "'" +
-                        " AND DATE_FORMAT(dd.startTime,'%H:%i')<'" + getTimeFromDate(breakDetails.getEndTime()) + "'";
+                query += " OR (DATE_FORMAT(dd.endTime,'%H:%i') >'" + getTimeFromDateIn24HrFormat(breakDetails.getStartTime()) + "'" +
+                        " AND DATE_FORMAT(dd.startTime,'%H:%i')<'" + getTimeFromDateIn24HrFormat(breakDetails.getEndTime()) + "'";
             }
         }
 

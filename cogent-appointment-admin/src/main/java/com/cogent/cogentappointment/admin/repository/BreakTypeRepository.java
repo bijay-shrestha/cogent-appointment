@@ -15,7 +15,6 @@ import java.util.Optional;
 @Repository
 public interface BreakTypeRepository extends JpaRepository<BreakType, Long>, BreakTypeRepositoryCustom {
 
-    @Query("SELECT b FROM BreakType b WHERE b.status = 'Y' AND b.id =:breakTypeId AND b.hospital.id =:hospitalId")
-    Optional<BreakType> fetchActiveBreakTypeByIdAndHospitalId(@Param("breakTypeId") Long breakTypeId,
-                                                              @Param("hospitalId") Long hospitalId);
+    @Query("SELECT b FROM BreakType b WHERE b.status = 'Y' AND b.id =:breakTypeId")
+    Optional<BreakType> fetchActiveBreakType(@Param("breakTypeId") Long breakTypeId);
 }

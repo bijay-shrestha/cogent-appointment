@@ -12,5 +12,5 @@ public interface BreakTypeService {
 
     List<DropDownResponseDTO> fetchBreakTypeByHospitalId(Long hospitalId);
 
-    BreakType fetchActiveBreakTypeByIdAndHospitalId(Long id, Long hospitalId);
+    BreakType fetchActiveBreakType(Long id);
 }

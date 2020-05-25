@@ -166,7 +166,7 @@ public class DateUtils {
         return dateFormat.format(date);
     }
 
-    public static String getTimeFromDate(Date date) {
+    public static String getTimeFromDateIn24HrFormat(Date date) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
         return dateFormat.format(date);
     }

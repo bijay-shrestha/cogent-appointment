@@ -97,11 +97,11 @@ public class ErrorMessageConstants {
 
         String DUPLICATION_MESSAGE = "Doctor Duty Roster already exists for selected doctor.";
 
-        String INVALID_WEEK_DAYS_REQUEST = "Sorry, Operation failed! Requested '%s' time schedules overlaps with '%s' " +
-                "shift's.";
+        String INVALID_WEEK_DAYS_REQUEST = "Sorry, Operation failed! Requested '%s' time schedule overlaps with '%s' " +
+                "shift's time schedule.";
 
-        String INVALID_WEEK_DAYS_BREAK_REQUEST = "Sorry, Operation failed! Break time schedules doesn't lie between " +
-                "'%s' time schedules";
+        String INVALID_WEEK_DAYS_BREAK_REQUEST = "Sorry, Operation failed! Break time schedule (%s to %s) doesn't lie between " +
+                "'%s' time schedule (%s to %s)";
 
         String INVALID_OVERRIDE_REQUEST_MESSAGE = "Requested Override date doesn't lie within the actual doctor duty roster" +
                 " date range ('%s' to '%s')";
@@ -112,8 +112,8 @@ public class ErrorMessageConstants {
         String DUPLICATE_OVERRIDE_TIME_MESSAGE = "Sorry, Operation failed! Requested override time schedules overlaps " +
                 " between shift(s) of '%s'";
 
-        String BREAK_TIME_OVERLAP_MESSAGE = "Sorry, Operation failed! Requested Break time schedules overlaps between" +
-                " break types";
+        String BREAK_TIME_OVERLAP_MESSAGE = "Sorry, Operation failed! Requested Break time schedule (%s to %s)" +
+                " overlaps with other break type (%s to %s)";
 
         String INVALID_BREAK_OVERRIDE_REQUEST = "Sorry, Operation failed! Break time schedules doesn't lie between " +
                 "override time schedules";

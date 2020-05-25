@@ -16,7 +16,7 @@ import java.util.List;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.DDRConstants.*;
 import static com.cogent.cogentappointment.admin.query.ddrShiftWise.DDROverrideDetailQuery.*;
-import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeFromDate;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeFromDateIn24HrFormat;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
@@ -73,8 +73,8 @@ public class DDROverrideDetailRepositoryCustomImpl implements DDROverrideDetailR
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_DDR_OVERRIDE_COUNT(ddrOverrideId))
                 .setParameter(DATE, date)
                 .setParameter(DDR_ID, ddrId)
-                .setParameter(START_TIME, getTimeFromDate(startTime))
-                .setParameter(END_TIME, getTimeFromDate(endTime));
+                .setParameter(START_TIME, getTimeFromDateIn24HrFormat(startTime))
+                .setParameter(END_TIME, getTimeFromDateIn24HrFormat(endTime));
 
         return (Long) (query.getSingleResult());
     }

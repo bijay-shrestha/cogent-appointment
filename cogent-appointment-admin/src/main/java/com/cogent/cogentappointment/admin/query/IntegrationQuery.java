@@ -1,5 +1,10 @@
 package com.cogent.cogentappointment.admin.query;
 
+import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiIntegrationSearchRequestDTO;
+
+import java.util.Objects;
+import java.util.function.Function;
+
 /**
  * @author rupak on 2020-05-19
  */
@@ -44,7 +49,7 @@ public class IntegrationQuery {
                     " AND amfi.status='Y'";
 
 
-    public static final String CLIENT_API_FEAUTRES_HEADERS_QUERY =
+    public static final String CLIENT_API_FEATURES_HEADERS_QUERY =
             " SELECT " +
                     " arh.keyName as keyName," +
                     " arh.value as keyValue" +
@@ -53,7 +58,7 @@ public class IntegrationQuery {
                     " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=cfi.id" +
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=afi.apiIntegrationFormatId" +
                     " LEFT JOIN ApiRequestHeader arh ON arh.apiIntegrationFormatId=aif.id" +
-                    " WHERE aif.id=:apiIntegrationFormatId" +
+                    " WHERE f.id=:featureId" +
                     " AND aif.status='Y'" +
                     " AND arh.status='Y'" +
                     " AND afi.status='Y'" +
@@ -67,7 +72,8 @@ public class IntegrationQuery {
                     " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=cfi.id" +
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=afi.apiIntegrationFormatId" +
                     " LEFT JOIN ApiQueryParameters aqp ON aqp.apiIntegrationFormatId =aif.id" +
-                    " WHERE aif.id=:apiIntegrationFormatId" +
+                    " LEFT JOIN Feature f ON f.id=cfi.featureId" +
+                    " WHERE f.id=:featureId" +
                     " AND aif.status='Y'" +
                     " AND afi.status='Y'" +
                     " AND aqp.status='Y'" +
@@ -85,7 +91,7 @@ public class IntegrationQuery {
                     " AND aif.status='Y'" +
                     " AND arh.status='Y'" +
                     " AND amfi.status='Y'" +
-                    " AND amafi.status='Y'" ;
+                    " AND amafi.status='Y'";
 
     public static final String ADMIN_MODE_API_PARAMETERS_QUERY =
             " SELECT " +
@@ -100,5 +106,61 @@ public class IntegrationQuery {
                     " AND amfi.status='Y'" +
                     " AND amafi.status='Y'" +
                     " AND aqp.status='Y'";
+
+    public static final String CLIENT_FEATURES_INTEGRATION_DETAILS_API_QUERY =
+            "SELECT" +
+                    " f.id as featureId," +
+                    " f.code as featureCode," +
+                    " hrm.name as requestMethod,"+
+                    " aif.url as url," +
+                    " aif.httpRequestBodyAttributes as requestBody" +
+                    " from ClientFeatureIntegration cfi" +
+                    " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=cfi.id" +
+                    " LEFT JOIN Feature f ON f.id=cfi.featureId" +
+                    " LEFT JOIN ApiIntegrationFormat aif ON aif.id=afi.apiIntegrationFormatId" +
+                    " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId" +
+                    " WHERE f.id= :featureId"+
+                    " AND aif.status='Y'"+
+                    " AND hrm.status='Y'"+
+                    " AND afi.status='Y'"+
+                    " AND f.status='Y'"+
+                    " AND cfi.status='Y'";
+
+    public static Function<ClientApiIntegrationSearchRequestDTO, String> CLIENT_API_INTEGRATION_SEARCH_QUERY =
+            (searchRequestDTO) ->
+                    " SELECT" +
+                            " f.id as featureId,"+
+                            " f.name as featureName," +
+                            " f.code as featureCode," +
+                            " hrm.name as requestMethod," +
+                            " aif.url as url" +
+                            " FROM ClientFeatureIntegration cfi" +
+                            " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=cfi.id" +
+                            " LEFT JOIN Feature f ON f.id=cfi.featureId" +
+                            " LEFT JOIN ApiIntegrationFormat aif ON aif.id=afi.apiIntegrationFormatId" +
+                            " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId" +
+                            " LEFT JOIN ApiRequestHeader arh ON arh.apiIntegrationFormatId=aif.id" +
+                            " LEFT JOIN ApiQueryParameters aqp ON aqp.apiIntegrationFormatId=aif.id"
+                            + GET_WHERE_CLAUSE_TO_SEARCH_CLIENT_API_INTEGRATION(searchRequestDTO);
+
+    private static String GET_WHERE_CLAUSE_TO_SEARCH_CLIENT_API_INTEGRATION(
+            ClientApiIntegrationSearchRequestDTO requestSearchDTO) {
+
+        String whereClause = " WHERE" +
+                " aif.status='Y'" +
+                " AND afi.status='Y'" +
+                " AND aqp.status='Y'" +
+                " AND cfi.status='Y'";
+
+
+        if (!Objects.isNull(requestSearchDTO.getHospitalId()))
+            whereClause += " AND cfi.hospitalId=" + requestSearchDTO.getHospitalId();
+
+        if (!Objects.isNull(requestSearchDTO.getFeatureTypeId()))
+            whereClause += " AND cfi.featureId=" + requestSearchDTO.getFeatureTypeId();
+
+
+        return whereClause;
+    }
 
 }

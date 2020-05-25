@@ -1,11 +1,19 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
+import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiIntegrationSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.adminModeIntegration.ApiQueryParametersResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.adminModeIntegration.ApiRequestHeaderResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.adminModeIntegration.FeatureIntegrationResponse;
+import com.cogent.cogentappointment.admin.dto.response.clientIntegration.ClientApiIntegrationResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.clientIntegration.ClientApiIntegrationSearchDTO;
+import com.cogent.cogentappointment.admin.dto.response.clientIntegration.ClientApiIntegrationSearchResponseDTO;
+import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
+import com.cogent.cogentappointment.admin.log.constants.IntegrationLog;
 import com.cogent.cogentappointment.admin.query.IntegrationQuery;
 import com.cogent.cogentappointment.admin.repository.custom.IntegrationRepositoryCustom;
+import com.cogent.cogentappointment.persistence.model.ClientFeatureIntegration;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,12 +23,13 @@ import javax.persistence.Query;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.admin.constants.QueryConstants.APPOINTMENT_MODE_ID;
-import static com.cogent.cogentappointment.admin.constants.QueryConstants.CLIENT_API_INTEGRATION_FORMAT_ID;
-import static com.cogent.cogentappointment.admin.query.IntegrationQuery.ADMIN_MODE_FEATURES_INTEGRATION_API_QUERY;
-import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
-import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
+import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
+import static com.cogent.cogentappointment.admin.query.IntegrationQuery.*;
+import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
+import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
 
 /**
  * @author rupak on 2020-05-20
@@ -66,7 +75,7 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
 
     @Override
     public Map<String, String> findAdminModeApiQueryParameters(Long apiIntegrationFormatId) {
-        Query query = createQuery.apply(entityManager, IntegrationQuery.ADMIN_MODE_API_PARAMETERS_QUERY)
+        Query query = createQuery.apply(entityManager, ADMIN_MODE_API_PARAMETERS_QUERY)
                 .setParameter(CLIENT_API_INTEGRATION_FORMAT_ID, apiIntegrationFormatId);
 
         List<ApiQueryParametersResponseDTO> parametersResponseDTO =
@@ -81,9 +90,49 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
     }
 
     @Override
-    public Map<String, String> findApiRequestHeaders(Long apiIntegrationFormatId) {
-        Query query = createQuery.apply(entityManager, IntegrationQuery.CLIENT_API_FEAUTRES_HEADERS_QUERY)
-                .setParameter(CLIENT_API_INTEGRATION_FORMAT_ID, apiIntegrationFormatId);
+    public ClientApiIntegrationSearchDTO searchClientApiIntegration(ClientApiIntegrationSearchRequestDTO searchRequestDTO, Pageable pageable) {
+
+        Query query = createQuery.apply(entityManager, CLIENT_API_INTEGRATION_SEARCH_QUERY.apply(searchRequestDTO));
+
+        int totalItems = query.getResultList().size();
+
+        addPagination.accept(pageable, query);
+
+        List<ClientApiIntegrationSearchResponseDTO> apiIntegrationSearchResponseDTOList =
+                transformQueryToResultList(query, ClientApiIntegrationSearchResponseDTO.class);
+
+        ClientApiIntegrationSearchDTO integrationSearchDTO = new ClientApiIntegrationSearchDTO();
+        if (apiIntegrationSearchResponseDTOList.isEmpty())
+            throw CLIENT_API_FEATURE_INTEGRATION.get();
+
+        else {
+            integrationSearchDTO.setSearchResponseDTOS(apiIntegrationSearchResponseDTOList);
+            integrationSearchDTO.setTotalItems(totalItems);
+            return integrationSearchDTO;
+        }
+
+
+    }
+
+    @Override
+    public ClientApiIntegrationResponseDTO findClientApiIntegration(Long id) {
+        Query query = createQuery.apply(entityManager, CLIENT_FEATURES_INTEGRATION_DETAILS_API_QUERY)
+                .setParameter(CLIENT_API_INTEGRATION_FEATURE_ID, id);
+
+        ClientApiIntegrationResponseDTO responseDTOList =
+                transformQueryToSingleResult(query, ClientApiIntegrationResponseDTO.class);
+
+//        if (appointmentDetails.isEmpty()) throw APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId);
+//
+//        return appointmentDetails.get(0);
+
+        return responseDTOList;
+    }
+
+    @Override
+    public Map<String, String> findApiRequestHeaders(Long featureId) {
+        Query query = createQuery.apply(entityManager, IntegrationQuery.CLIENT_API_FEATURES_HEADERS_QUERY)
+                .setParameter(CLIENT_API_INTEGRATION_FEATURE_ID, featureId);
 
         List<ApiRequestHeaderResponseDTO> requestHeaderResponseDTO =
                 transformQueryToResultList(query, ApiRequestHeaderResponseDTO.class);
@@ -101,9 +150,9 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
     }
 
     @Override
-    public Map<String, String> findApiQueryParameters(Long apiIntegrationFormatId) {
+    public Map<String, String> findApiQueryParameters(Long featureId) {
         Query query = createQuery.apply(entityManager, IntegrationQuery.CLIENT_API_PARAMETERS_QUERY)
-                .setParameter(CLIENT_API_INTEGRATION_FORMAT_ID, apiIntegrationFormatId);
+                .setParameter(CLIENT_API_INTEGRATION_FEATURE_ID, featureId);
 
         List<ApiQueryParametersResponseDTO> parametersResponseDTO =
                 transformQueryToResultList(query, ApiQueryParametersResponseDTO.class);
@@ -119,5 +168,11 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
 
         return map;
     }
+
+
+    private Supplier<NoContentFoundException> CLIENT_API_FEATURE_INTEGRATION = () -> {
+        log.error(CONTENT_NOT_FOUND, IntegrationLog.CLIENT_API_FEATURE_INTEGRATION);
+        throw new NoContentFoundException(ClientFeatureIntegration.class);
+    };
 
 }

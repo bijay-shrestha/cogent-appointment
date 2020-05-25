@@ -1,25 +1,28 @@
 package com.cogent.cogentappointment.admin.resource;
 
+import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiIntegrationRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiIntegrationSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiIntegrationUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.service.HttpRequestMethodService;
 import com.cogent.cogentappointment.admin.service.IntegrationFeatureService;
 import com.cogent.cogentappointment.admin.service.IntegrationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
+import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.DepartmentConstant.DELETE_DEPARTMENT_OPERATION;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.IntegrationConstant.*;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.QualificationConstant.FETCH_DETAILS_FOR_DROPDOWN;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AdminConstants.AVATAR;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.APPOINTMENT_ID_PATH_VARIABLE_BASE;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.IntegrationConstants.*;
 import static java.net.URI.create;
-import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -57,9 +60,27 @@ public class IntegrationResource {
         return ok().build();
     }
 
+    @PutMapping(CLIENT_API_INTEGRATION)
+    @ApiOperation(SEARCH_CLIENT_API_INTEGRATION_OPERATION)
+    public ResponseEntity<?> search(@RequestBody ClientApiIntegrationSearchRequestDTO searchRequestDTO,
+                                    @RequestParam("page") int page,
+                                    @RequestParam("size") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ok().body(integrationService.search(searchRequestDTO, pageable));
+    }
 
+    @GetMapping(CLIENT_API_INTEGRATION_FEATURE_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_CLIENT_API_INTEGRATION_DETAIL)
+    public ResponseEntity<?> fetchDetailByAppointmentId(@PathVariable("featureId") Long id) {
+        return ok(integrationService.fetchClientApiIntegrationById(id));
+    }
 
-
+    @DeleteMapping
+    @ApiOperation(DELETE_CLIENT_INTEGRATION_FEATURE_OPERATION)
+    public ResponseEntity<?> delete(@Valid @RequestBody DeleteRequestDTO deleteRequestDTO) {
+        integrationService.delete(deleteRequestDTO);
+        return ok().build();
+    }
 
     @GetMapping(FEATURES + ACTIVE + MIN)
     @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)

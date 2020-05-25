@@ -51,6 +51,7 @@ import static com.cogent.cogentappointment.admin.utils.DashboardFeatureUtils.par
 import static com.cogent.cogentappointment.admin.utils.GenderUtils.fetchGenderByCode;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.admin.utils.commons.SecurityContextUtils.getLoggedInCompanyId;
 import static java.lang.reflect.Array.get;
 
 /**
@@ -86,6 +87,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
     private final AdminFeatureService adminFeatureService;
 
     private final IntegrationRepository integrationRepository;
+    private final AppointmentModeHospitalInfoRepository appointmentModeHospitalInfoRepository;
 
     public CompanyAdminServiceImpl(Validator validator,
                                    AdminRepository adminRepository,
@@ -98,7 +100,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                                    DashboardFeatureRepository dashboardFeatureRepository,
                                    AdminDashboardFeatureRepository adminDashboardFeatureRepository,
                                    AdminFeatureService adminFeatureService,
-                                   IntegrationRepository integrationRepository) {
+                                   IntegrationRepository integrationRepository, AppointmentModeHospitalInfoRepository appointmentModeHospitalInfoRepository) {
         this.validator = validator;
         this.adminRepository = adminRepository;
         this.adminMacAddressInfoRepository = adminMacAddressInfoRepository;
@@ -112,6 +114,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         this.adminDashboardFeatureRepository = adminDashboardFeatureRepository;
         this.adminFeatureService = adminFeatureService;
         this.integrationRepository = integrationRepository;
+        this.appointmentModeHospitalInfoRepository = appointmentModeHospitalInfoRepository;
     }
 
     @Override
@@ -403,8 +406,26 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         CompanyAdminLoggedInInfoResponseDTO responseDTO = adminRepository.fetchLoggedInCompanyAdminInfo(requestDTO);
 
-        AdminModeFeatureIntegrationResponseDTO integrationResponseDTO = getAdminModeApiIntegration(1l);
-        responseDTO.setEAIntegrate(integrationResponseDTO);
+        Long companyId = getLoggedInCompanyId();
+        List<AppointmentModeHospitalInfo> appointmentModeHospitalInfos =
+                appointmentModeHospitalInfoRepository.
+                        findAppointmentModeHospitalInfoByHospitalId(companyId)
+                        .orElseThrow(() -> APPOINTMENT_MODE_HOSPITAL_INFO.apply(companyId));
+
+        if (appointmentModeHospitalInfos.size() > 0) {
+
+            List<AdminModeFeatureIntegrationResponseDTO> featureIntegrationResponseDTOList = new ArrayList<>();
+            appointmentModeHospitalInfos.forEach(appointmentModeHospitalInfo -> {
+
+                AdminModeFeatureIntegrationResponseDTO integrationResponseDTO =
+                        getAdminModeApiIntegration(appointmentModeHospitalInfo.getAppointmentModeId().getId());
+
+                featureIntegrationResponseDTOList.add(integrationResponseDTO);
+            });
+
+            responseDTO.setEAIntegrate(featureIntegrationResponseDTOList);
+
+        }
 
         log.info(FETCHING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
 
@@ -748,6 +769,10 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
     private Function<String, NoContentFoundException> CONFIRMATION_TOKEN_NOT_FOUND = (confirmationToken) -> {
         throw new NoContentFoundException(INVALID_CONFIRMATION_TOKEN, "confirmationToken", confirmationToken);
+    };
+
+    private Function<Long, NoContentFoundException> APPOINTMENT_MODE_HOSPITAL_INFO = (companyId) -> {
+        throw new NoContentFoundException(AppointmentModeHospitalInfo.class);
     };
 
     private Gender fetchGender(Character genderCode) {

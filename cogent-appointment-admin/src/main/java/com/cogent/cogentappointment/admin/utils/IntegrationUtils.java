@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.utils;
 
+import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ApiIntegrationFormatRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiHeadersRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiQueryParametersRequestDTO;
@@ -104,6 +105,13 @@ public class IntegrationUtils {
         modeApiFeatureIntegration.setStatus(ACTIVE);
 
         return modeApiFeatureIntegration;
+
+    }
+
+    public static void parseToDeleteClientFeatureIntegration(ClientFeatureIntegration clientFeatureIntegration, DeleteRequestDTO deleteRequestDTO) {
+
+        clientFeatureIntegration.setStatus(deleteRequestDTO.getStatus());
+        clientFeatureIntegration.setStatus(deleteRequestDTO.getStatus());
 
     }
 }

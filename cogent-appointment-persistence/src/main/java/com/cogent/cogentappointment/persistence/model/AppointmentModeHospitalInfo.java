@@ -1,13 +1,14 @@
 package com.cogent.cogentappointment.persistence.model;
 
+import com.cogent.cogentappointment.persistence.audit.Auditable;
 import com.cogent.cogentappointment.persistence.listener.AppointmentModeHospitalInfoListener;
-import com.cogent.cogentappointment.persistence.listener.AppointmentModeListener;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * @author rupak on 2020-05-22
@@ -19,18 +20,18 @@ import javax.persistence.*;
 @Getter
 @Setter
 @EntityListeners(AppointmentModeHospitalInfoListener.class)
-public class AppointmentModeHospitalInfo {
+public class AppointmentModeHospitalInfo extends Auditable<String> implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name =  "appointment_mode_id")
+    @JoinColumn(name = "appointment_mode_id")
     private AppointmentMode appointmentModeId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name =  "hospital_id")
+    @JoinColumn(name = "hospital_id")
     private Hospital hospitalId;
 
     @Column(name = "remarks")

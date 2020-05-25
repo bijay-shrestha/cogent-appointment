@@ -144,6 +144,8 @@ public class WebResourceKeyConstants {
     public interface IntegrationConstants {
         String BASE_INTEGRATION = "/integration";
         String CLIENT_API_INTEGRATION = "/client-api-integration";
+        String CLIENT_API_INTEGRATION_ID_PATH_VARIABLE_BASE = "/{clientApiIntegrationId}";
+        String CLIENT_API_INTEGRATION_FEATURE_ID_PATH_VARIABLE_BASE = "/{featureId}";
         String FEATURES="/features";
         String HTTP_REQUEST_METHODS="/request-methods";
     }

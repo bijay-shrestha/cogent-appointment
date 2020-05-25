@@ -228,7 +228,7 @@ public class SwaggerConstants {
         String FETCH_ACTIVE_HOSPITAL_DEPARTMENT_FOR_DROP_DOWN_OPERATION = "Fetch minimal active hospital department" +
                 " details (id and name) for dropdown";
         String FETCH_AVAILABLE_ROOM_FOR_DROP_DOWN_OPERATION = "Fetch available room " +
-                " details (id and name) for dropdown";
+                " details (id and name) for dropdown by hospitalId";
     }
 
     public interface HospitalDeptDutyRosterConstant {

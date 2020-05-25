@@ -49,6 +49,27 @@ public class HospitalDepartmentQuery {
                     " AND hd.hospital.id= :hospitalId" +
                     " ORDER BY hd.id DESC";
 
+    public static final String QUERY_TO_FETCH_AVAILABLE_ROOM_FOR_DROPDOWN =
+            "SELECT" +
+                    " r.id as value," +
+                    " r.roomNumber as label" +
+                    " FROM" +
+                    " Room r" +
+                    " WHERE" +
+                    " r.id NOT IN (" +
+                    " SELECT" +
+                    "  DISTINCT r.id" +
+                    " FROM" +
+                    "  Room r" +
+                    " LEFT JOIN HospitalDepartmentRoomInfo hdri ON" +
+                    "  r.id = hdri.room.id" +
+                    " WHERE" +
+                    "  hdri.status = 'Y'" +
+                    "  AND r.hospital.id = :hospitalId)" +
+                    " AND r.hospital.id = :hospitalId" +
+                    " AND r.status = 'Y'" +
+                    " ORDER BY r.id ASC";
+
     public static final Function<HospitalDepartmentSearchRequestDTO, String> QUERY_TO_SEARCH_HOSPITAL_DEPARTMENT =
             (searchRequestDTO ->
                     " SELECT" +

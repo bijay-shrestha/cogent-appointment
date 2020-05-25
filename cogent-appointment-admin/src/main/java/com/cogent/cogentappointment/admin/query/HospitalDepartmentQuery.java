@@ -52,7 +52,7 @@ public class HospitalDepartmentQuery {
     public static final String QUERY_TO_FETCH_AVAILABLE_ROOM_FOR_DROPDOWN =
             "SELECT" +
                     " r.id as value," +
-                    " r.roomNumber as label" +
+                    " CONCAT('Room No',' - ',r.roomNumber) AS label" +
                     " FROM" +
                     " Room r" +
                     " WHERE" +

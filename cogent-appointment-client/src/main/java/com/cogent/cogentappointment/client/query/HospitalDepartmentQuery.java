@@ -97,6 +97,7 @@ public class HospitalDepartmentQuery {
 
     public static String QUERY_TO_GET_DETAILS =
             "SELECT " +
+                    "  hd.id as id, " +
                     "  hd.name as name, " +
                     "  hd.code as code, " +
                     "  hd.description as description, " +

@@ -17,6 +17,8 @@ public class HospitalDepartmentResponseDTO extends AuditableResponseDTO implemen
 
     private String hospitalName;
 
+    private Long id;
+
     private String name;
 
     private String code;

@@ -1,9 +1,7 @@
 package com.cogent.cogentappointment.client.dto.response.refundStatus;
 
 import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundDTO;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.List;
@@ -14,6 +12,8 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class RefundStatusResponseDTO implements Serializable {
 
     private Double totalRefundAmount;

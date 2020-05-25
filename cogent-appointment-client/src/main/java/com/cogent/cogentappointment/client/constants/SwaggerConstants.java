@@ -327,6 +327,12 @@ public class SwaggerConstants {
         String FETCH_ROOM_FOR_DROP_DOWN = "Fetch room numbers for drop down";
     }
 
+    public interface RefundStatusConstant {
+        String BASE_API_VALUE = "This is Refund Status Resource";
+
+        String FETCH_PENDING_REFUND_APPROVAL_LIST = "Fetch Appointment Refund Details having status 'PA' ";
+    }
+
     //S
 
 

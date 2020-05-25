@@ -6,6 +6,7 @@ import com.cogent.cogentappointment.client.repository.AppointmentRefundDetailRep
 import com.cogent.cogentappointment.client.repository.AppointmentRepository;
 import com.cogent.cogentappointment.client.service.RefundStatusService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,12 +37,15 @@ public class RefundStatusServiceImpl implements RefundStatusService{
     }
 
     @Override
-    public RefundStatusResponseDTO searchRefundAppointments(RefundStatusSearchRequestDTO requestDTO) {
+    public RefundStatusResponseDTO searchRefundAppointments(RefundStatusSearchRequestDTO requestDTO, Pageable pageable) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED,REFUND_STATUS);
 
+        RefundStatusResponseDTO response=refundDetailRepository.searchRefundAppointments(requestDTO,pageable);
 
         log.info(SEARCHING_PROCESS_COMPLETED,REFUND_STATUS,getDifferenceBetweenTwoTime(startTime));
+
+        return response;
     }
 }

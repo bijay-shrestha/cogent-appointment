@@ -144,6 +144,7 @@ public class HospitalDepartmentRepositoryCustomImpl implements HospitalDepartmen
         }
     }
 
+    //    Hospital Department = Department in frontend
     private Supplier<NoContentFoundException> HOSPITAL_DEPARTMENT_NOT_FOUND = () -> {
         log.error(CONTENT_NOT_FOUND, HOSPITAL_DEPARTMENT);
         throw new NoContentFoundException("No Department(s) Found");

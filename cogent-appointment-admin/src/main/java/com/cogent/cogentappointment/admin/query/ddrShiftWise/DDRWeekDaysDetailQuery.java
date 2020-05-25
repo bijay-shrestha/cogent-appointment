@@ -29,13 +29,16 @@ public class DDRWeekDaysDetailQuery {
 
         return "SELECT" +
                 " dw.weekDays.id as weekDaysId," +                  //[0]
-                " dw.weekDays.name as weekDaysName," +               //[1]
+                " dw.weekDays.name as weekDaysName," +              //[1]
                 " dw.startTime as startTime," +                     //[2]
-                " dw.endTime as endTime" +                          //[3]
+                " dw.endTime as endTime," +                         //[3]
+                " ds.shift.name as shiftName" +                     //[4]
                 " FROM DDRWeekDaysDetail dw" +
+                " LEFT JOIN DDRShiftDetail ds ON ds.id = dw.ddrShiftDetail.id" +
                 " WHERE" +
                 " dw.offStatus = 'N'" +
                 " dw.weekDays.id IN (" + weekDaysIds + ")" +
-                " AND dw.ddrShiftDetail.id IN (" + shiftDetailIds + ")";
+                " AND dw.ddrShiftDetail.id IN (" + shiftDetailIds + ")" +
+                " AND ds.status = 'Y'";
     }
 }

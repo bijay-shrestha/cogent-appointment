@@ -11,6 +11,7 @@ import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.update.overri
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.update.override.DDROverrideUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.update.shift.DDRShiftUpdateDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.update.shift.DDRShiftUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.update.weekDays.DDREditedShiftDetailRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.update.weekDays.DDRWeekDaysUpdateDTO;
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.update.weekDays.DDRWeekDaysUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.ddrShiftWise.DDRWeekDaysTimeResponseDTO;
@@ -59,6 +60,7 @@ import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDRShiftDeta
 import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDRShiftDetailUtils.parseToUpdatedDDRShiftDetail;
 import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDRShiftWiseUtils.*;
 import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDRWeekDaysUtils.parseToDDRWeekDaysDetail;
+import static com.cogent.cogentappointment.admin.utils.ddrShiftWise.DDRWeekDaysUtils.parseUpdatedWeekDaysDetail;
 
 /**
  * @author smriti on 08/05/20
@@ -405,6 +407,17 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         log.info(UPDATING_PROCESS_COMPLETED, DDR_SHIFT_WISE, getDifferenceBetweenTwoTime(startTime));
     }
 
+    /* IF DDR EXISTS FOR MULTIPLE SHIFTS, THEN editedShiftDetails REPRESENTS THE
+    * WEEK DAYS ROSTER OF THE SPECIFIC SHIFT TO BE UPDATED
+    * AND compareShiftDetails REPRESENTS THE REST OF THE SHIFTS ROSTERS (TO BE COMPARED WITH)
+    * CONDITIONS TO COMPARE :
+    * a. compareShiftDetails IS NOT NULL
+    * b. EXISTING ROSTERS OF compareShiftDetails IS NOT EMPTY (OFF STATUS = 'N')
+    *
+    * IF DDR EXISTS FOR SINGLE SHIFTS, THEN editedShiftDetails REPRESENTS THE
+    * WEEK DAYS INFORMATION OF THE SPECIFIC SHIFT TO BE UPDATED
+    * AND compareShiftDetails WILL BE NULL (NO NEED OF COMPARISON)
+    * */
     @Override
     public void updateDDRWeekDaysDetail(DDRWeekDaysUpdateRequestDTO requestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
@@ -413,36 +426,23 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
 
         List<DDRWeekDaysTimeResponseDTO> existingWeekDaysRosters = new ArrayList<>();
 
-        if (Objects.isNull(requestDTO.getCompareShiftDetails()))
+        boolean compare = false;
+
+        if (!Objects.isNull(requestDTO.getCompareShiftDetails())) {
             existingWeekDaysRosters =
                     ddrWeekDaysDetailRepository.fetchDDRWeekdaysTimeInfo(requestDTO.getCompareShiftDetails());
 
-        boolean compare = !ObjectUtils.isEmpty(existingWeekDaysRosters);
-
-        for (DDRWeekDaysUpdateDTO weekDaysUpdateDTO : requestDTO.getEditedShiftDetails().getWeekDaysDetail()) {
-
-//            if (compare) {
-//                existingWeekDaysRosters.stream()
-//                        .filter(existing -> existing.getWeekDaysId().equals(weekDaysUpdateDTO.getWeekDaysId()))
-//                        .forEach(matchedResult ->
-//                                validateWeekDaysTimeDuplicity(
-//                                        matchedResult.getStartTime(),
-//                                        matchedResult.getEndTime(),
-//                                        weekDaysUpdateDTO.getStartTime(),
-//                                        weekDaysUpdateDTO.getEndTime(),
-//                                        matchedResult.getWeekDaysName()
-//                                ));
-//            }
-
-            DDRShiftDetail ddrShiftDetail = fetchDDdrShiftDetailById(requestDTO.getEditedShiftDetails().getDdrShiftDetailId());
-            ddrShiftDetail.setStatus(requestDTO.getEditedShiftDetails().getStatus());
-
-
+            compare = !ObjectUtils.isEmpty(existingWeekDaysRosters);
         }
+
+        updateWeekDaysDetail(requestDTO.getEditedShiftDetails().getWeekDaysDetail(),
+                existingWeekDaysRosters, compare
+        );
+
+        updateDDRShiftDetailStatus(requestDTO.getEditedShiftDetails());
 
         log.info(UPDATING_PROCESS_COMPLETED, DDR_WEEK_DAYS, getDifferenceBetweenTwoTime(startTime));
     }
-
 
     /*1. VALIDATE CONSTRAINTS VIOLATION
     * 2. VALIDATE IF FIRST DATE IS GREATER THAN TO DATE
@@ -1269,7 +1269,7 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         DDRShiftDetail ddrShiftDetail = existingShiftDetails.stream()
                 .filter(existing -> existing.getId().equals(updateRequestDTO.getDdrShiftDetailId()))
                 .findAny()
-                .orElseThrow(() -> DDR_SHIFT_DETAIL_NOT_FOUND.apply(updateRequestDTO.getDdrShiftDetailId()));
+                .orElseThrow(() -> DDR_WEEK_DAYS_DETAIL_NOT_FOUND.apply(updateRequestDTO.getDdrShiftDetailId()));
 
         parseToUpdatedDDRShiftDetail(ddrShiftDetail,
                 updateRequestDTO.getRosterGapDuration(),
@@ -1312,4 +1312,54 @@ public class DDRShiftWiseServiceImpl implements DDRShiftWiseService {
         return ddrShiftDetailRepository.fetchById(ddrShiftDetailId)
                 .orElseThrow(() -> DDR_SHIFT_DETAIL_NOT_FOUND.apply(ddrShiftDetailId));
     }
+
+    private DDRWeekDaysDetail fetchDDRWeekDaysDetailById(Long ddrWeekDaysId) {
+        return ddrWeekDaysDetailRepository.fetchById(ddrWeekDaysId)
+                .orElseThrow(() -> DDR_WEEK_DAYS_DETAIL_NOT_FOUND.apply(ddrWeekDaysId));
+    }
+
+    private Function<Long, NoContentFoundException> DDR_WEEK_DAYS_DETAIL_NOT_FOUND = (ddrWeekDaysId) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, DDRWeekDaysDetail.class, ddrWeekDaysId);
+        throw new NoContentFoundException(DDRWeekDaysDetail.class, "ddrWeekDaysId", ddrWeekDaysId.toString());
+    };
+
+    private void validateUpdatedDDRWeekDaysDetail(List<DDRWeekDaysTimeResponseDTO> existingWeekDaysRosters,
+                                                  DDRWeekDaysUpdateDTO weekDaysUpdateDTO,
+                                                  boolean compare) {
+        validateIfStartTimeGreater(weekDaysUpdateDTO.getStartTime(), weekDaysUpdateDTO.getEndTime());
+
+        if (compare) {
+            existingWeekDaysRosters.stream()
+                    .filter(existing -> existing.getWeekDaysId().equals(weekDaysUpdateDTO.getWeekDaysId()))
+                    .forEach(matchedResult ->
+                            validateWeekDaysTimeDuplicity(
+                                    matchedResult.getStartTime(),
+                                    matchedResult.getEndTime(),
+                                    weekDaysUpdateDTO.getStartTime(),
+                                    weekDaysUpdateDTO.getEndTime(),
+                                    matchedResult.getShiftName(),
+                                    matchedResult.getWeekDaysName()
+                            ));
+        }
+    }
+
+    private void updateDDRShiftDetailStatus(DDREditedShiftDetailRequestDTO requestDTO) {
+        DDRShiftDetail ddrShiftDetail = fetchDDdrShiftDetailById(requestDTO.getDdrShiftDetailId());
+        ddrShiftDetail.setStatus(requestDTO.getStatus());
+        saveDDRShiftDetail(ddrShiftDetail);
+    }
+
+    private void updateWeekDaysDetail(List<DDRWeekDaysUpdateDTO> weekDaysDetail,
+                                      List<DDRWeekDaysTimeResponseDTO> existingWeekDaysRosters,
+                                      boolean compare) {
+
+        for (DDRWeekDaysUpdateDTO weekDaysUpdateDTO : weekDaysDetail) {
+            validateUpdatedDDRWeekDaysDetail(existingWeekDaysRosters, weekDaysUpdateDTO, compare);
+
+            DDRWeekDaysDetail ddrWeekDaysDetail = fetchDDRWeekDaysDetailById(weekDaysUpdateDTO.getDdrWeekDaysId());
+
+            saveDDRWeekDaysDetail(parseUpdatedWeekDaysDetail(ddrWeekDaysDetail, weekDaysUpdateDTO));
+        }
+    }
+
 }

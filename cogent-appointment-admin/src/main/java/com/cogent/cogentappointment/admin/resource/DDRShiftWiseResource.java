@@ -134,6 +134,7 @@ public class DDRShiftWiseResource {
     @PutMapping(UPDATE + WEEK_DAYS)
     @ApiOperation(UPDATE_DDR_WEEK_DAYS_OPERATION)
     public ResponseEntity<?> updateDDRWeekDaysDetail(@RequestBody DDRWeekDaysUpdateRequestDTO updateRequestDTO) {
+        ddrShiftWiseService.updateDDRWeekDaysDetail(updateRequestDTO);
         return ok().build();
     }
 }

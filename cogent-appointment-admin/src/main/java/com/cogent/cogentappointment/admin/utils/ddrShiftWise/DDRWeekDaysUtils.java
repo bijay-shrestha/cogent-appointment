@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.utils.ddrShiftWise;
 
 import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.save.weekDaysDetail.DDRWeekDaysDetailRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.ddrShiftWise.update.weekDays.DDRWeekDaysUpdateDTO;
 import com.cogent.cogentappointment.persistence.model.WeekDays;
 import com.cogent.cogentappointment.persistence.model.ddrShiftWise.DDRShiftDetail;
 import com.cogent.cogentappointment.persistence.model.ddrShiftWise.DDRWeekDaysDetail;
@@ -22,5 +23,16 @@ public class DDRWeekDaysUtils {
         ddrWeekDaysDetail.setDdrShiftDetail(ddrShiftDetail);
         ddrWeekDaysDetail.setWeekDays(weekDays);
         return ddrWeekDaysDetail;
+    }
+
+    public static DDRWeekDaysDetail parseUpdatedWeekDaysDetail(DDRWeekDaysDetail weekDaysDetail,
+                                                               DDRWeekDaysUpdateDTO updateDTO) {
+
+        weekDaysDetail.setStartTime(updateDTO.getStartTime());
+        weekDaysDetail.setEndTime(updateDTO.getEndTime());
+        weekDaysDetail.setOffStatus(updateDTO.getOffStatus());
+        weekDaysDetail.setHasBreak(updateDTO.getHasBreak());
+
+        return weekDaysDetail;
     }
 }

@@ -19,6 +19,8 @@ public class DDRWeekDaysTimeResponseDTO implements Serializable {
 
     private Date endTime;
 
+    private String shiftName;
+
     private Long weekDaysId;
 
     private String weekDaysName;

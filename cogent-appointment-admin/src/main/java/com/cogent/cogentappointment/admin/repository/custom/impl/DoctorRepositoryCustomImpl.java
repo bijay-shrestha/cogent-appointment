@@ -139,10 +139,10 @@ public class DoctorRepositoryCustomImpl implements DoctorRepositoryCustom {
 
         List<DoctorDropdownDTO> results = transformQueryToResultList(query, DoctorDropdownDTO.class);
 
-        if (results.isEmpty()) {
-            error();
+        if (results.isEmpty())
             throw DOCTOR_NOT_FOUND.get();
-        } else return results;
+
+        else return results;
     }
 
     @Override

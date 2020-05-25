@@ -49,7 +49,28 @@ public class HospitalDepartmentQuery {
                     " AND hd.hospital.id= :hospitalId" +
                     " ORDER BY hd.id DESC";
 
-    public static final Function<HospitalDepartmentSearchRequestDTO, String> QUERY_TO_SEARCH_DEPARTMENT =
+    public static final String QUERY_TO_FETCH_AVAILABLE_ROOM_FOR_DROPDOWN =
+            "SELECT" +
+                    " r.id as value," +
+                    " r.roomNumber as label" +
+                    " FROM" +
+                    " Room r" +
+                    " WHERE" +
+                    " r.id NOT IN (" +
+                    " SELECT" +
+                    "  DISTINCT r.id" +
+                    " FROM" +
+                    "  Room r" +
+                    " LEFT JOIN HospitalDepartmentRoomInfo hdri ON" +
+                    "  r.id = hdri.room.id" +
+                    " WHERE" +
+                    "  hdri.status = 'Y'" +
+                    "  AND r.hospital.id = :hospitalId)" +
+                    " AND r.hospital.id = :hospitalId" +
+                    " AND r.status = 'Y'" +
+                    " ORDER BY r.id ASC";
+
+    public static final Function<HospitalDepartmentSearchRequestDTO, String> QUERY_TO_SEARCH_HOSPITAL_DEPARTMENT =
             (searchRequestDTO ->
                     " SELECT" +
                             " hd.id as id," +
@@ -59,12 +80,13 @@ public class HospitalDepartmentQuery {
                             " hdc.appointment_follow_up_charge  as followUpCharge," +
                             " CASE" +
                             " WHEN GROUP_CONCAT(DISTINCT hdr.room_id) IS NULL THEN 'N/A'" +
-                            " ELSE GROUP_CONCAT(DISTINCT hdr.room_id)" +
+                            " ELSE GROUP_CONCAT(DISTINCT r.room_number )" +
                             " END as roomList" +
                             " FROM" +
                             " hospital_department hd" +
                             " LEFT JOIN hospital_department_charge hdc ON hdc.hospital_department_id=hd.id" +
                             " LEFT JOIN hospital_department_room_info  hdr ON hdr.hospital_department_id=hd.id AND hdr.status!='D'" +
+                            " LEFT JOIN room r ON hdr.room_id =r.id " +
                             " LEFT JOIN hospital_department_doctor_info  hdd ON hdd.hospital_department_id=hd.id  AND hdd.status!='D'" +
                             " WHERE " +
                             " hd.hospital_id=:hospitalId " +

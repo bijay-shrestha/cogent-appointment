@@ -86,12 +86,22 @@ public class HospitalDepartmentRepositoryCustomImpl implements HospitalDepartmen
     }
 
     @Override
+    public Optional<List<DropDownResponseDTO>> fetchAvailableHospitalDepartment(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_AVAILABLE_ROOM_FOR_DROPDOWN)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        List<DropDownResponseDTO> dropDownDTOS = transformQueryToResultList(query, DropDownResponseDTO.class);
+
+        return dropDownDTOS.isEmpty() ? Optional.empty() : Optional.of(dropDownDTOS);
+    }
+
+    @Override
     public HospitalDepartmentMinimalResponseDTO search(HospitalDepartmentSearchRequestDTO searchRequestDTO,
                                                        Pageable pageable) {
 
         HospitalDepartmentMinimalResponseDTO response = new HospitalDepartmentMinimalResponseDTO();
 
-        Query query = createNativeQuery.apply(entityManager, QUERY_TO_SEARCH_DEPARTMENT.apply(searchRequestDTO));
+        Query query = createNativeQuery.apply(entityManager, QUERY_TO_SEARCH_HOSPITAL_DEPARTMENT.apply(searchRequestDTO));
 
         int totalItems = query.getResultList().size();
 

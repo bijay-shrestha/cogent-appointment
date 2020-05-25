@@ -73,9 +73,6 @@ public class ErrorMessageConstants {
 
     public static final String CODE_DUPLICATION_MESSAGE = "%s already exists with code '%s'";
 
-    public static final String CANNOT_ACCESS_CLIENT_MODULE = "SORRY!!! YOU CANNOT ACCESS CLIENT MODULE";
-    public static final String CANNOT_ACCESS_CLIENT_MODULE_DEBUG_MESSAGE = "Admin belongs to company";
-
     //D
 
     public interface DashboardMessages {
@@ -186,7 +183,7 @@ public class ErrorMessageConstants {
     //Q
 
     //R
-    public static final String ROOM_NUMBER_DUPLICATION_MESSAGE = "Room Number already exists with number '%s'";
+    public static final String ROOM_NUMBER_DUPLICATION_MESSAGE = "Room Number '%s' already in use";
 
 
     //S
@@ -196,7 +193,6 @@ public class ErrorMessageConstants {
 
 
     //U
-    public static final String UNAUTHORISED = "Unauthorised";
 
     //V
 

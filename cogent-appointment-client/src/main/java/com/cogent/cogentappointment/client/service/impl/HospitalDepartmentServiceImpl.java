@@ -25,6 +25,7 @@ import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.DoctorLog.DOCTOR;
 import static com.cogent.cogentappointment.client.log.constants.HospitalDepartmentLog.*;
 import static com.cogent.cogentappointment.client.log.constants.HospitalLog.HOSPITAL;
+import static com.cogent.cogentappointment.client.log.constants.RoomLog.AVAILABLE_ROOM;
 import static com.cogent.cogentappointment.client.log.constants.RoomLog.ROOM;
 import static com.cogent.cogentappointment.client.utils.HospitalDepartmentUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
@@ -155,6 +156,23 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
                 fetchActiveMinHospitalDepartment(hospitalId).orElseThrow(() -> HOSPITAL_DEPARTMENT_NOT_FOUND());
 
         log.info(FETCHING_PROCESS_FOR_ACTIVE_DROPDOWN_COMPLETED, HOSPITAL_DEPARTMENT,
+                getDifferenceBetweenTwoTime(startTime));
+
+        return minDepartment;
+    }
+
+    @Override
+    public List<DropDownResponseDTO> fetchAvailableHospitalDepartment() {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_ACTIVE_DROPDOWN, AVAILABLE_ROOM);
+
+        Long hospitalId = getLoggedInHospitalId();
+
+        List<DropDownResponseDTO> minDepartment = hospitalDepartmentRepository.
+                fetchAvailableHospitalDepartment(hospitalId).orElseThrow(() -> HOSPITAL_DEPARTMENT_NOT_FOUND());
+
+        log.info(FETCHING_PROCESS_FOR_ACTIVE_DROPDOWN_COMPLETED, AVAILABLE_ROOM,
                 getDifferenceBetweenTwoTime(startTime));
 
         return minDepartment;

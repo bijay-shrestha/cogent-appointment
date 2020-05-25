@@ -27,6 +27,8 @@ public interface HospitalDepartmentRepositoryCustom {
 
     Optional<List<DropDownResponseDTO>> fetchActiveMinHospitalDepartment(Long hospitalId);
 
+    Optional<List<DropDownResponseDTO>> fetchAvailableHospitalDepartment(Long hospitalId);
+
     HospitalDepartmentMinimalResponseDTO search(HospitalDepartmentSearchRequestDTO searchRequestDTO,
                                                 Pageable pageable);
 

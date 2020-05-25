@@ -6,5 +6,7 @@ package com.cogent.cogentappointment.admin.log.constants;
 public class RoomLog {
     public final static String ROOM = "ROOM";
 
+    public final static String AVAILABLE_ROOM = "AVAILABLE ROOM";
+
     public final static String ROOM_NUMBER_DUPLICATION_ERROR = ":::: ROOM WITH NUMBER : '{}' ALREADY EXISTS ::::";
 }

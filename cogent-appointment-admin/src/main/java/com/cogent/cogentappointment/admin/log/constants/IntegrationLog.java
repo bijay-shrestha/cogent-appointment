@@ -9,7 +9,7 @@ public class IntegrationLog {
 
     public final static String ADMIN_MODE_FEATURE_INTEGRATION = "ADMIN MODE FEATURE INTEGRATION";
 
-    public final static String CLIENT_API_FEATURE_INTEGRATION = "CLIENT API FEATURE INTEGRATION";
+    public final static String CLIENT_FEATURE_INTEGRATION = "CLIENT API FEATURE INTEGRATION";
 
     public final static String FEATURES = "FEATURES";
 

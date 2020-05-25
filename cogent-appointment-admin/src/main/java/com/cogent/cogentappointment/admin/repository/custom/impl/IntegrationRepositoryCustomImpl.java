@@ -8,7 +8,6 @@ import com.cogent.cogentappointment.admin.dto.response.clientIntegration.ClientA
 import com.cogent.cogentappointment.admin.dto.response.clientIntegration.ClientApiIntegrationSearchDTO;
 import com.cogent.cogentappointment.admin.dto.response.clientIntegration.ClientApiIntegrationSearchResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.log.constants.IntegrationLog;
 import com.cogent.cogentappointment.admin.query.IntegrationQuery;
 import com.cogent.cogentappointment.admin.repository.custom.IntegrationRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.ClientFeatureIntegration;
@@ -27,6 +26,7 @@ import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
+import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.CLIENT_FEATURE_INTEGRATION;
 import static com.cogent.cogentappointment.admin.query.IntegrationQuery.*;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
@@ -111,7 +111,6 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
             return integrationSearchDTO;
         }
 
-
     }
 
     @Override
@@ -169,9 +168,8 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
         return map;
     }
 
-
     private Supplier<NoContentFoundException> CLIENT_API_FEATURE_INTEGRATION = () -> {
-        log.error(CONTENT_NOT_FOUND, IntegrationLog.CLIENT_API_FEATURE_INTEGRATION);
+        log.error(CONTENT_NOT_FOUND, CLIENT_FEATURE_INTEGRATION);
         throw new NoContentFoundException(ClientFeatureIntegration.class);
     };
 

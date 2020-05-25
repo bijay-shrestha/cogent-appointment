@@ -97,8 +97,8 @@ public class ErrorMessageConstants {
 
         String DUPLICATION_MESSAGE = "Doctor Duty Roster already exists for selected doctor.";
 
-        String INVALID_WEEK_DAYS_REQUEST = "Sorry, Operation failed! '%s' time schedules overlaps with '%s' " +
-                "shift.";
+        String INVALID_WEEK_DAYS_REQUEST = "Sorry, Operation failed! Requested '%s' time schedules overlaps with '%s' " +
+                "shift's.";
 
         String INVALID_WEEK_DAYS_BREAK_REQUEST = "Sorry, Operation failed! Break time schedules doesn't lie between " +
                 "'%s' time schedules";

@@ -11,6 +11,7 @@ import com.cogent.cogentappointment.admin.repository.DDRBreakDetailRepository;
 import com.cogent.cogentappointment.admin.repository.custom.DDRWeekDaysDetailRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.ddrShiftWise.DDRWeekDaysDetail;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +24,7 @@ import java.util.function.Supplier;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.DDRConstants.DDR_ID;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.DDRConstants.SHIFT_ID;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
+import static com.cogent.cogentappointment.admin.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.DDRShiftWiseLog.DDR_WEEK_DAYS;
 import static com.cogent.cogentappointment.admin.query.ddrShiftWise.DDRWeekDaysDetailQuery.QUERY_TO_FETCH_DDR_WEEK_DAYS_DETAIL;
@@ -92,10 +94,11 @@ public class DDRWeekDaysDetailRepositoryCustomImpl implements DDRWeekDaysDetailR
     @Override
     public List<DDRWeekDaysTimeResponseDTO> fetchDDRWeekdaysTimeInfo(DDRCompareShiftRequestDTO requestDTO) {
 
+        String weekDaysId = StringUtils.join(requestDTO.getWeekDaysId(), COMMA_SEPARATED);
+        String ddrShiftDetailId = StringUtils.join(requestDTO.getDdrShiftDetailId(), COMMA_SEPARATED);
+
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_WEEK_DAYS_TIME_DETAIL(
-                requestDTO.getWeekDaysId(),
-                requestDTO.getDdrShiftDetailId())
-        );
+                weekDaysId, ddrShiftDetailId));
 
         return transformQueryToResultList(query, DDRWeekDaysTimeResponseDTO.class);
     }

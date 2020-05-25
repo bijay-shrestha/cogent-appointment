@@ -5,7 +5,6 @@ import org.springframework.util.ObjectUtils;
 
 import java.util.Objects;
 
-import static com.cogent.cogentappointment.client.query.PatientQuery.QUERY_TO_CALCULATE_PATIENT_AGE;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 
 /**
@@ -91,5 +90,20 @@ public class AppointmentRefundDetailQuery {
                     " AND ard.status='PA'" +
                     " AND a.hospitalId.id=:hospitalId" +
                     " ORDER BY a.id";
+
+    public static final String QUERY_TO_CALCULATE_PATIENT_AGE =
+            " CASE" +
+                    " WHEN" +
+                    " (((TIMESTAMPDIFF(YEAR, a.patientId.dateOfBirth, CURDATE()))<=0) AND" +
+                    " ((TIMESTAMPDIFF(MONTH, a.patientId.dateOfBirth, CURDATE()) % 12)<=0))" +
+                    " THEN" +
+                    " CONCAT((FLOOR(TIMESTAMPDIFF(DAY, a.patientId.dateOfBirth, CURDATE()) % 30.4375)), ' days')" +
+                    " WHEN" +
+                    " ((TIMESTAMPDIFF(YEAR, a.patientId.dateOfBirth ,CURDATE()))<=0)" +
+                    " THEN" +
+                    " CONCAT(((TIMESTAMPDIFF(MONTH, a.patientId.dateOfBirth, CURDATE()) % 12)), ' months')" +
+                    " ELSE" +
+                    " CONCAT(((TIMESTAMPDIFF(YEAR, a.patientId.dateOfBirth ,CURDATE()))), ' years')" +
+                    " END AS age";
 
 }

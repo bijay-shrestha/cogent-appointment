@@ -10,6 +10,7 @@ import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.Hospit
 import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.HospitalDepartmentResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.HospitalDepartmentRepositoryCustom;
+import com.cogent.cogentappointment.persistence.model.Department;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartment;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -143,9 +144,10 @@ public class HospitalDepartmentRepositoryCustomImpl implements HospitalDepartmen
         }
     }
 
+    //    Hospital Department = Department in frontend
     private Supplier<NoContentFoundException> HOSPITAL_DEPARTMENT_NOT_FOUND = () -> {
         log.error(CONTENT_NOT_FOUND, HOSPITAL_DEPARTMENT);
-        throw new NoContentFoundException(HospitalDepartment.class);
+        throw new NoContentFoundException("No Department(s) Found");
     };
 
 }

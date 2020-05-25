@@ -20,7 +20,7 @@ public class HospitalDepartmentUpdateRequestDTO implements Serializable {
     @NotNull
     private Long id;
 
-    @NotNull
+    @NotNull(message = "Client cannot bu null")
     private Long hospitalId;
 
     @NotNull

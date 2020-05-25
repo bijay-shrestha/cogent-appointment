@@ -176,7 +176,7 @@ public class ErrorMessageConstants {
     //Q
 
     //R
-    public static final String ROOM_NUMBER_DUPLICATION_MESSAGE = "Room Number already exists with number '%s'";
+    public static final String ROOM_NUMBER_DUPLICATION_MESSAGE = "Room Number '%s' already in use";
 
 
     //S

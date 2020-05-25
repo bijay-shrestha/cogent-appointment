@@ -63,9 +63,9 @@ public class RefundStatusServiceImpl implements RefundStatusService {
 
         Appointment appointment=appointmentRepository.fetchCancelledAppointmentDetails(requestDTO);
 
-        saveAppointment(changeAppointmentStatus(appointment,requestDTO));
+        saveAppointment(changeAppointmentStatus(appointment));
 
-        saveAppointmentRefundDetails(changeAppointmentRefundDetailStatus(appointmentRefundDetail,requestDTO));
+        saveAppointmentRefundDetails(changeAppointmentRefundDetailStatus(appointmentRefundDetail));
 
         log.info(SAVING_PROCESS_COMPLETED, REFUND_STATUS, getDifferenceBetweenTwoTime(startTime));
     }

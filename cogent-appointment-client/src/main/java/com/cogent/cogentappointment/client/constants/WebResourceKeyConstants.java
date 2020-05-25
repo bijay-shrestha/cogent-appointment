@@ -198,6 +198,11 @@ public class WebResourceKeyConstants {
     }
 
     //R
+    public interface RefundStatusConstants {
+        String BASE_REFUND_STATUS = "/refundStatus";
+    }
+
+
     public interface RoomConstants {
         String BASE_ROOM = "/room";
     }

@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 public class HospitalDepartmentResponseDTO extends AuditableResponseDTO implements Serializable {
 
-    private String hospitalId;
+    private Long hospitalId;
 
     private String hospitalName;
 

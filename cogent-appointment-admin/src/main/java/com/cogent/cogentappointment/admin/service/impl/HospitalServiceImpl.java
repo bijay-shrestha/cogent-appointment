@@ -64,12 +64,16 @@ public class HospitalServiceImpl implements HospitalService {
 
     private final Validator validator;
 
+    private final HospitalAppointmentServiceTypeRepository hospitalAppointmentServiceTypeRepository;
+
     public HospitalServiceImpl(HospitalRepository hospitalRepository,
                                HospitalContactNumberRepository hospitalContactNumberRepository,
                                HospitalLogoRepository hospitalLogoRepository,
                                HospitalBannerRepository hospitalBannerRepository,
                                HmacApiInfoRepository hmacApiInfoRepository,
-                               MinioFileService minioFileService, Validator validator) {
+                               MinioFileService minioFileService,
+                               Validator validator,
+                               HospitalAppointmentServiceTypeRepository hospitalAppointmentServiceTypeRepository) {
         this.hospitalRepository = hospitalRepository;
         this.hospitalContactNumberRepository = hospitalContactNumberRepository;
         this.hospitalLogoRepository = hospitalLogoRepository;
@@ -77,6 +81,7 @@ public class HospitalServiceImpl implements HospitalService {
         this.hmacApiInfoRepository = hmacApiInfoRepository;
         this.minioFileService = minioFileService;
         this.validator = validator;
+        this.hospitalAppointmentServiceTypeRepository = hospitalAppointmentServiceTypeRepository;
     }
 
     @Override
@@ -361,5 +366,14 @@ public class HospitalServiceImpl implements HospitalService {
         log.error(CONTENT_NOT_FOUND_BY_ID, HOSPITAL, id);
         throw new NoContentFoundException(Hospital.class, "id", id.toString());
     };
+
+    private void saveHospitalAppointmentServiceType(Long hospitalId, List<String> contactNumbers) {
+        List<HospitalContactNumber> hospitalContactNumbers = contactNumbers.stream()
+                .map(contactNumber -> parseToHospitalContactNumber(hospitalId, contactNumber))
+                .collect(Collectors.toList());
+
+        saveHospitalContactNumber(hospitalContactNumbers);
+    }
+
 
 }

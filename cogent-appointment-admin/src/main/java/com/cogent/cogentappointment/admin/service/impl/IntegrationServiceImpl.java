@@ -91,13 +91,24 @@ public class IntegrationServiceImpl implements IntegrationService {
     @Override
     public void update(ClientApiIntegrationUpdateRequestDTO requestDTO) {
 
+        log.info(UPDATING_PROCESS_STARTED, API_INTEGRATIONS);
+
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        validateFeatureAndHttpRequestMethod(requestDTO.getFeatureTypeId(),
-                requestDTO.getRequestMethodId());
+        ClientFeatureIntegration clientFeatureIntegration =
+                clientFeatureIntegrationRepository.findClientFeatureIntegrationById(requestDTO.getClientFeatureIntegrationId())
+                        .orElseThrow(() -> CLIENT_FEATURE_NOT_FOUND.apply(requestDTO.getClientFeatureIntegrationId()));
 
+        List<ApiFeatureIntegration> apiFeatureIntegration =
+                apiFeatureIntegrationRepository.findApiFeatureIntegrationbyClientFeatureId(clientFeatureIntegration.getId())
+                        .orElseThrow(() -> API_FEATURE_INTEGRATION_FEATURE_NOT_FOUND.apply(requestDTO.getClientFeatureIntegrationId()));
 
-        log.info(UPDATING_PROCESS_STARTED, API_INTEGRATIONS);
+//        updateApiFeatureIntegration(clientFeatureIntegration.getId(), apiIntegrationFormat.getId());
+//
+//        updateApiQueryParameters(requestDTO.getParametersRequestDTOS(), apiIntegrationFormat);
+//
+//        updateApiRequestHeaders(requestDTO.getClientApiRequestHeaders(), apiIntegrationFormat);
+
 
         log.info(UPDATING_PROCESS_COMPLETED, API_INTEGRATIONS, getDifferenceBetweenTwoTime(startTime));
 
@@ -138,13 +149,13 @@ public class IntegrationServiceImpl implements IntegrationService {
 
         log.info(DELETING_PROCESS_STARTED, API_INTEGRATIONS);
 
-        ClientFeatureIntegration clientFeatureIntegration=clientFeatureIntegrationRepository
+        ClientFeatureIntegration clientFeatureIntegration = clientFeatureIntegrationRepository
                 .findClientFeatureIntegrationById(deleteRequestDTO.getId())
                 .orElseThrow(() -> CLIENT_FEATURE_NOT_FOUND.apply(deleteRequestDTO.getId()));
 
-        parseToDeletedClientFeatureIntegration(clientFeatureIntegration,deleteRequestDTO);
+        parseToDeletedClientFeatureIntegration(clientFeatureIntegration, deleteRequestDTO);
 
-        List<ApiFeatureIntegration> apiFeatureIntegrationList=apiFeatureIntegrationRepository
+        List<ApiFeatureIntegration> apiFeatureIntegrationList = apiFeatureIntegrationRepository
                 .findApiFeatureIntegrationbyClientFeatureId(clientFeatureIntegration.getId())
                 .orElseThrow(() -> CLIENT_FEATURE_NOT_FOUND.apply(clientFeatureIntegration.getId()));
 
@@ -218,6 +229,10 @@ public class IntegrationServiceImpl implements IntegrationService {
 
         clientFeatureIntegrationRepository.save(clientFeatureIntegration);
     }
+
+    private Function<Long, NoContentFoundException> API_FEATURE_INTEGRATION_FEATURE_NOT_FOUND = (id) -> {
+        throw new NoContentFoundException(ApiFeatureIntegration.class);
+    };
 
     private Function<Long, NoContentFoundException> CLIENT_FEATURE_NOT_FOUND = (id) -> {
         throw new NoContentFoundException(ClientFeatureIntegration.class);

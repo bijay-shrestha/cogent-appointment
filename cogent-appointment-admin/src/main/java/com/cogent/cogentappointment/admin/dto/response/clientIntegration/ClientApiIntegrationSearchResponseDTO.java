@@ -12,7 +12,7 @@ import lombok.*;
 @NoArgsConstructor
 public class ClientApiIntegrationSearchResponseDTO {
 
-    private Long clientFeatureIntegrationId;
+    private Long id;
 
     private String featureName;
 

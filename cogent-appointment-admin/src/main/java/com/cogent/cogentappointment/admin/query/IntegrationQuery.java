@@ -129,7 +129,7 @@ public class IntegrationQuery {
     public static Function<ClientApiIntegrationSearchRequestDTO, String> CLIENT_API_INTEGRATION_SEARCH_QUERY =
             (searchRequestDTO) ->
                     " SELECT" +
-                            " cfi.id as clientFeatureIntegrationId,"+
+                            " cfi.id as id,"+
                             " f.name as featureName," +
                             " f.code as featureCode," +
                             " hrm.name as requestMethod," +

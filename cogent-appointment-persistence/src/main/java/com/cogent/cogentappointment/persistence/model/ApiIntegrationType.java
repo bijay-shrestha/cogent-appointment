@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.persistence.model;
 
 import com.cogent.cogentappointment.persistence.audit.Auditable;
-import com.cogent.cogentappointment.persistence.listener.FeatureEntityListener;
+import com.cogent.cogentappointment.persistence.listener.ApiIntegrationTypeEntityListener;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,48 +11,34 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 /**
- * @author rupak on 2020-05-18
+ * @author rupak on 2020-05-26
  */
 @Entity
-@Table(name = "feature")
+@Table(name = "api_integration_type")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EntityListeners(FeatureEntityListener.class)
-public class Feature extends Auditable<String> implements Serializable {
+@EntityListeners(ApiIntegrationTypeEntityListener.class)
+public class ApiIntegrationType  extends Auditable<String> implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "api_integration_type_id")
-    private ApiIntegrationType apiIntegrationTypeId;
-
     @Column(name = "name")
     private String name;
-
-    @Column(name = "code")
-    private String code;
-
-    @Column(name = "description")
-    private String description;
 
     @Column(name = "status")
     private Character status;
 
     @Override
     public String toString() {
-        return "Feature{" +
+        return "ApiIntegrationType{" +
                 "id=" + id +
-                "apiIntegrationTypeId=" + apiIntegrationTypeId.getId() +
                 ", name='" + name + '\'' +
-                ", code='" + code + '\'' +
-                ", description='" + description + '\'' +
                 ", status=" + status +
                 '}';
-
     }
 
 }

@@ -51,8 +51,10 @@ public class IntegrationQuery {
 
     public static final String CLIENT_API_FEATURES_HEADERS_QUERY =
             " SELECT " +
-                    " arh.keyName as keyName," +
-                    " arh.value as keyValue" +
+                    " arh.id as id,"+
+                    " arh.keyName as keyParam," +
+                    " arh.value as valueParam," +
+                    " arh.status as status"+
                     " FROM ClientFeatureIntegration cfi" +
                     " LEFT JOIN Feature f ON f.id=cfi.featureId" +
                     " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=cfi.id" +
@@ -66,8 +68,10 @@ public class IntegrationQuery {
 
     public static final String CLIENT_API_PARAMETERS_QUERY =
             " SELECT " +
-                    " aqp.param as param," +
-                    " aqp.value as value" +
+                    " aqp.id as id,"+
+                    " aqp.param as keyParam," +
+                    " aqp.value as valueParam," +
+                    " aqp.status as status"+
                     " FROM ClientFeatureIntegration cfi" +
                     " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=cfi.id" +
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=afi.apiIntegrationFormatId" +
@@ -81,8 +85,8 @@ public class IntegrationQuery {
 
     public static final String ADMIN_MODE_API_FEAUTRES_HEADERS_QUERY =
             " SELECT " +
-                    " arh.keyName as keyName," +
-                    " arh.value as keyValue" +
+                    " arh.keyName as keyParam," +
+                    " arh.value as valueParam" +
                     " FROM AdminModeFeatureIntegration amfi" +
                     " LEFT JOIN AdminModeApiFeatureIntegration amafi ON amafi.adminModeFeatureIntegrationId.id =amfi.id " +
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.apiIntegrationFormatId.id" +
@@ -95,8 +99,8 @@ public class IntegrationQuery {
 
     public static final String ADMIN_MODE_API_PARAMETERS_QUERY =
             " SELECT " +
-                    " aqp.param as param," +
-                    " aqp.value as value" +
+                    " aqp.param as keyParam," +
+                    " aqp.value as valueParam" +
                     " FROM AdminModeFeatureIntegration amfi" +
                     " LEFT JOIN AdminModeApiFeatureIntegration amafi ON amafi.adminModeFeatureIntegrationId.id =amfi.id " +
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.apiIntegrationFormatId.id" +
@@ -126,6 +130,16 @@ public class IntegrationQuery {
                     " AND f.status='Y'"+
                     " AND cfi.status='Y'";
 
+    public static final String QUERY_TO_FETCH_MIN_API_INTEGRATION_TYPE =
+            "SELECT" +
+                    " ait.id as value," +
+                    " ait.name as label" +
+                    " FROM" +
+                    " ApiIntegrationType ait" +
+                    " WHERE ait.status ='Y'" +
+                    " ORDER by ait.name ASC";
+
+
     public static Function<ClientApiIntegrationSearchRequestDTO, String> CLIENT_API_INTEGRATION_SEARCH_QUERY =
             (searchRequestDTO) ->
                     " SELECT" +
@@ -138,6 +152,7 @@ public class IntegrationQuery {
                             " FROM ClientFeatureIntegration cfi" +
                             " LEFT JOIN Hospital h ON h.id=cfi.hospitalId"+
                             " LEFT JOIN Feature f ON f.id=cfi.featureId" +
+                            " LEFT JOIN ApiIntegrationType ait ON ait.id=f.apiIntegrationTypeId.id" +
                             " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=cfi.id" +
                             " LEFT JOIN ApiIntegrationFormat aif ON aif.id=afi.apiIntegrationFormatId" +
                             " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId"
@@ -159,6 +174,9 @@ public class IntegrationQuery {
 
         if (!Objects.isNull(requestSearchDTO.getRequestMethodId()))
             whereClause += " AND hrm.id=" + requestSearchDTO.getRequestMethodId();
+
+        if (!Objects.isNull(requestSearchDTO.getApiIntegrationTypeId()))
+            whereClause += " AND ait.id=" + requestSearchDTO.getApiIntegrationTypeId();
 
         if (!ObjectUtils.isEmpty(requestSearchDTO.getUrl()))
             whereClause += " AND aif.url like %'" + requestSearchDTO.getUrl() + "'%";

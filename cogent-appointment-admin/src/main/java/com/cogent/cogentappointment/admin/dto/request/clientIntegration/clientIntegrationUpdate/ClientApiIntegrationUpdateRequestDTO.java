@@ -1,5 +1,7 @@
-package com.cogent.cogentappointment.admin.dto.request.clientIntegration;
+package com.cogent.cogentappointment.admin.dto.request.clientIntegration.clientIntegrationUpdate;
 
+import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiHeadersRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiQueryParametersRequestDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

@@ -2,9 +2,14 @@ package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.clientIntegration.*;
+import com.cogent.cogentappointment.admin.dto.request.clientIntegration.clientIntegrationUpdate.ClientApiIntegrationUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.clientIntegration.ApiQueryParametersResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.clientIntegration.ClientApiIntegrationDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.clientIntegration.ClientApiIntegrationResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.clientIntegration.ClientApiIntegrationSearchDTO;
+import com.cogent.cogentappointment.admin.dto.response.clientIntegration.clientIntegrationUpdate.ApiQueryParametersUpdateResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.clientIntegration.clientIntegrationUpdate.ApiRequestHeaderUpdateResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.clientIntegration.clientIntegrationUpdate.ClientApiIntegrationUpdateResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.IntegrationService;
@@ -177,6 +182,42 @@ public class IntegrationServiceImpl implements IntegrationService {
                 findApiQueryParameters(featureIntegrationResponse.getFeatureId());
 
         ClientApiIntegrationDetailResponseDTO responseDTO = new ClientApiIntegrationDetailResponseDTO();
+        responseDTO.setFeatureCode(featureIntegrationResponse.getFeatureCode());
+        responseDTO.setRequestBody(featureIntegrationResponse.getRequestBody());
+        responseDTO.setRequestMethod(featureIntegrationResponse.getRequestMethod());
+        responseDTO.setUrl(featureIntegrationResponse.getUrl());
+        responseDTO.setHeaders(requestHeaderResponseDTO);
+        responseDTO.setQueryParameters(queryParametersResponseDTO);
+
+        return responseDTO;
+    }
+
+    @Override
+    public ClientApiIntegrationUpdateResponseDTO fetchDetailsForUpdate(Long id) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, API_INTEGRATIONS);
+
+        ClientApiIntegrationUpdateResponseDTO updateResponseDTO =
+                getClientApiIntegrationDetailForUpdate(id);
+
+        log.info(FETCHING_PROCESS_COMPLETED, API_INTEGRATIONS, getDifferenceBetweenTwoTime(startTime));
+
+        return updateResponseDTO;
+    }
+
+    private ClientApiIntegrationUpdateResponseDTO getClientApiIntegrationDetailForUpdate(Long id) {
+
+        ClientApiIntegrationResponseDTO featureIntegrationResponse = integrationRepository.
+                findClientApiIntegration(id);
+
+        List<ApiRequestHeaderUpdateResponseDTO> requestHeaderResponseDTO = integrationRepository.
+                findApiRequestHeadersForUpdate(featureIntegrationResponse.getFeatureId());
+
+        List<ApiQueryParametersUpdateResponseDTO> queryParametersResponseDTO = integrationRepository.
+                findApiQueryParametersForUpdate(featureIntegrationResponse.getFeatureId());
+
+        ClientApiIntegrationUpdateResponseDTO responseDTO = new ClientApiIntegrationUpdateResponseDTO();
         responseDTO.setFeatureCode(featureIntegrationResponse.getFeatureCode());
         responseDTO.setRequestBody(featureIntegrationResponse.getRequestBody());
         responseDTO.setRequestMethod(featureIntegrationResponse.getRequestMethod());

@@ -3,8 +3,11 @@ package com.cogent.cogentappointment.admin.repository.custom;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiIntegrationSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.adminModeIntegration.FeatureIntegrationResponse;
+import com.cogent.cogentappointment.admin.dto.response.clientIntegration.ApiQueryParametersResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.clientIntegration.ClientApiIntegrationResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.clientIntegration.ClientApiIntegrationSearchDTO;
+import com.cogent.cogentappointment.admin.dto.response.clientIntegration.clientIntegrationUpdate.ApiQueryParametersUpdateResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.clientIntegration.clientIntegrationUpdate.ApiRequestHeaderUpdateResponseDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -33,4 +36,7 @@ public interface IntegrationRepositoryCustom {
 
     ClientApiIntegrationResponseDTO findClientApiIntegration(Long id);
 
+    List<ApiRequestHeaderUpdateResponseDTO> findApiRequestHeadersForUpdate(Long featureId);
+
+    List<ApiQueryParametersUpdateResponseDTO> findApiQueryParametersForUpdate(Long featureId);
 }

@@ -27,8 +27,8 @@ public class IntegrationQuery {
 
     public static final String CLIENT_API_FEAUTRES_HEADERS_QUERY =
             " SELECT " +
-                    " arh.keyName as keyName," +
-                    " arh.value as keyValue" +
+                    " arh.keyName as keyParam," +
+                    " arh.value as valueParam" +
                     " FROM ClientFeatureIntegration cfi" +
                     " LEFT JOIN Feature f ON f.id=cfi.featureId" +
                     " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=cfi.id" +
@@ -43,8 +43,8 @@ public class IntegrationQuery {
 
     public static final String CLIENT_API_PARAMETERS_QUERY =
             " SELECT " +
-                    " aqp.param as param," +
-                    " aqp.value as value" +
+                    " aqp.param as keyParam," +
+                    " aqp.value as valueParam" +
                     " FROM ClientFeatureIntegration cfi" +
                     " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=cfi.id" +
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=afi.apiIntegrationFormatId" +

@@ -14,8 +14,12 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class ApiRequestHeaderResponseDTO implements Serializable {
 
+    private Long id;
+
     private String keyName;
 
     private String keyValue;
+
+    private Character status;
 
 }

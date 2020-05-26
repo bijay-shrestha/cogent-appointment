@@ -16,6 +16,8 @@ public class ClientApiIntegrationRequestDTO implements Serializable {
 
     private Long hospitalId;
 
+    private Long apiIntegrationTypeId;
+
     private Long featureTypeId;
 
     private Long requestMethodId;

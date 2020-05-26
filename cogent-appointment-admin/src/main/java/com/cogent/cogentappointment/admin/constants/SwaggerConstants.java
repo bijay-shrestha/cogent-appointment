@@ -244,6 +244,8 @@ public class SwaggerConstants {
         String SEARCH_CLIENT_API_INTEGRATION_OPERATION = "Search Client API Integration";
         String FETCH_CLIENT_API_INTEGRATION_DETAIL = "Fetch Client Api Integration detail by client integration id";
         String DELETE_CLIENT_INTEGRATION_FEATURE_OPERATION="Delete client integration feature by client integration id";
+        String DETAILS_FOR_UPDATE_CLIENT_INTEGRATION_MODAL_OPERATION = "Fetch Client Integration details for update modal by its id";
+        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal details for dropdown";
     }
 
     //J

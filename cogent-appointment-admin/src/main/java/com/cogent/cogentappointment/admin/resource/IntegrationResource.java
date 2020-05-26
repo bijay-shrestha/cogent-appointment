@@ -3,7 +3,8 @@ package com.cogent.cogentappointment.admin.resource;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiIntegrationRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiIntegrationSearchRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiIntegrationUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.clientIntegration.clientIntegrationUpdate.ClientApiIntegrationUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.service.ApiIntegrationTypeService;
 import com.cogent.cogentappointment.admin.service.HttpRequestMethodService;
 import com.cogent.cogentappointment.admin.service.IntegrationFeatureService;
 import com.cogent.cogentappointment.admin.service.IntegrationService;
@@ -35,13 +36,15 @@ public class IntegrationResource {
     private final IntegrationService integrationService;
     private final IntegrationFeatureService integrationFeatureService;
     private final HttpRequestMethodService httpRequestMethodService;
+    private final ApiIntegrationTypeService apiIntegrationTypeService;
 
     public IntegrationResource(IntegrationService integrationService,
                                IntegrationFeatureService integrationFeatureService,
-                               HttpRequestMethodService httpRequestMethodService) {
+                               HttpRequestMethodService httpRequestMethodService, ApiIntegrationTypeService apiIntegrationTypeService) {
         this.integrationService = integrationService;
         this.integrationFeatureService = integrationFeatureService;
         this.httpRequestMethodService = httpRequestMethodService;
+        this.apiIntegrationTypeService = apiIntegrationTypeService;
     }
 
     @PostMapping
@@ -58,7 +61,7 @@ public class IntegrationResource {
         return ok().build();
     }
 
-    @PutMapping(CLIENT_API_INTEGRATION)
+    @PutMapping(CLIENT_INTEGRATION)
     @ApiOperation(SEARCH_CLIENT_API_INTEGRATION_OPERATION)
     public ResponseEntity<?> search(@RequestBody ClientApiIntegrationSearchRequestDTO searchRequestDTO,
                                     @RequestParam("page") int page,
@@ -67,9 +70,15 @@ public class IntegrationResource {
         return ok().body(integrationService.search(searchRequestDTO, pageable));
     }
 
-    @GetMapping(CLIENT_API_FEATURE_INTEGRATION_ID_PATH_VARIABLE_BASE)
+    @GetMapping(CLIENT_INTEGRATION_UPDATE_DETAILS + ID_PATH_VARIABLE_BASE)
+    @ApiOperation(DETAILS_FOR_UPDATE_CLIENT_INTEGRATION_MODAL_OPERATION)
+    public ResponseEntity<?> fetchDetailsForUpdate(@PathVariable("id") Long id) {
+        return ok(integrationService.fetchDetailsForUpdate(id));
+    }
+
+    @GetMapping(CLIENT_FEATURE_INTEGRATION_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_CLIENT_API_INTEGRATION_DETAIL)
-    public ResponseEntity<?> fetchDetailByAppointmentId(@PathVariable("clientFeatureIntegrationId") Long id) {
+    public ResponseEntity<?> fetchDetailByAppointmentId(@PathVariable("id") Long id) {
         return ok(integrationService.fetchClientApiIntegrationById(id));
     }
 
@@ -90,6 +99,12 @@ public class IntegrationResource {
     @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
     public ResponseEntity<?> fetchQualificationForDropDown() {
         return ok(httpRequestMethodService.fetchActiveRequestMethod());
+    }
+
+    @GetMapping(API_INTEGRATION_TYPE + ACTIVE + MIN)
+    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
+    public ResponseEntity<?> fetchApiIntegrationTypeForDropDown() {
+        return ok(apiIntegrationTypeService.fetchActiveApiIntegrationType());
     }
 
 }

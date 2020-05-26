@@ -6,6 +6,7 @@ import com.cogent.cogentappointment.client.dto.request.clientIntegration.Dummy;
 import com.cogent.cogentappointment.client.dto.request.clientIntegration.EsewaPayementStatus;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.DummyMessage;
 import com.cogent.cogentappointment.client.service.IntegrationService;
+import com.cogent.cogentappointment.client.utils.commons.ObjectMapperUtils;
 import com.cogent.cogentappointment.client.utils.resttempalte.RestTemplateUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -60,13 +61,14 @@ public class IntegrationResource {
     public ResponseEntity<?> savetestEsewa() throws IOException {
 
 
-        ResponseEntity<Dummy> response = (ResponseEntity<Dummy>) restTemplateUtils.getRequest(ESEWA_API_AUTHENTICATE,
+        ResponseEntity<?> response = restTemplateUtils.getRequest(ESEWA_API_AUTHENTICATE,
                 new HttpEntity<>(getEsewaAPIHeaders()));
 
+        Dummy dummy=ObjectMapperUtils.map(response.getBody().toString(),Dummy.class);
 
-        System.out.println(response.getBody().getUuid());
-        System.out.println(response.getBody().getDevice_unique_id());
-        System.out.println(response.getBody().getModule());
+        System.out.println(dummy.getUuid());
+        System.out.println(dummy.getDevice_unique_id());
+        System.out.println(dummy.getModule());
 
         return ok().build();
     }
@@ -125,7 +127,7 @@ public class IntegrationResource {
         HttpEntity<?> request = new HttpEntity<>(esewaPayementStatus, getEsewaPaymentStatusAPIHeaders());
 
         ResponseEntity<DummyMessage> response = (ResponseEntity<DummyMessage>) restTemplateUtils
-                .postRequest(BHERI_HOSPITAL_POST_TICKET, request);
+                .postRequest(ESEWA_API_PAYMENT_STATUS, request);
 
         System.out.println(response.getBody().getError_message());
 

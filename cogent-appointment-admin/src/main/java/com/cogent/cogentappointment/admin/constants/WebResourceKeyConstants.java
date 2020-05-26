@@ -143,11 +143,13 @@ public class WebResourceKeyConstants {
 
     public interface IntegrationConstants {
         String BASE_INTEGRATION = "/integration";
-        String CLIENT_API_INTEGRATION = "/client-api-integration";
-        String CLIENT_API_FEATURE_INTEGRATION_ID_PATH_VARIABLE_BASE = "/{clientFeatureIntegrationId}";
-        String CLIENT_API_INTEGRATION_FEATURE_ID_PATH_VARIABLE_BASE = "/{featureId}";
+        String CLIENT_INTEGRATION = "/client-api-integration";
+        String CLIENT_FEATURE_INTEGRATION_ID_PATH_VARIABLE_BASE = "/{id}";
+        String CLIENT_INTEGRATION_FEATURE_ID_PATH_VARIABLE_BASE = "/{featureId}";
+        String CLIENT_INTEGRATION_UPDATE_DETAILS = "/updateDetails";
         String FEATURES="/features";
         String HTTP_REQUEST_METHODS="/request-methods";
+        String API_INTEGRATION_TYPE="/api-integration-type";
     }
 
     //J

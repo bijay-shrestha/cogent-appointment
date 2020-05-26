@@ -7,6 +7,8 @@ public class IntegrationLog {
 
     public final static String API_INTEGRATIONS = "API INTEGRATION";
 
+    public final static String API_INTEGRATION_TYPE = "API INTEGRATION TYPE";
+
     public final static String ADMIN_MODE_FEATURE_INTEGRATION = "ADMIN MODE FEATURE INTEGRATION";
 
     public final static String CLIENT_FEATURE_INTEGRATION = "CLIENT API FEATURE INTEGRATION";

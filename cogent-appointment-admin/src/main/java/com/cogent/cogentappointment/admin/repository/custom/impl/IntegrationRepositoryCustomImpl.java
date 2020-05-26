@@ -7,6 +7,8 @@ import com.cogent.cogentappointment.admin.dto.response.adminModeIntegration.Feat
 import com.cogent.cogentappointment.admin.dto.response.clientIntegration.ClientApiIntegrationResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.clientIntegration.ClientApiIntegrationSearchDTO;
 import com.cogent.cogentappointment.admin.dto.response.clientIntegration.ClientApiIntegrationSearchResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.clientIntegration.clientIntegrationUpdate.ApiQueryParametersUpdateResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.clientIntegration.clientIntegrationUpdate.ApiRequestHeaderUpdateResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.query.IntegrationQuery;
 import com.cogent.cogentappointment.admin.repository.custom.IntegrationRepositoryCustom;
@@ -83,7 +85,7 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
 
         Map<String, String> map = new HashMap<>();
         parametersResponseDTO.forEach(response -> {
-            map.put(response.getParam(), response.getValue());
+            map.put(response.getKeyParam(), response.getValueParam());
         });
 
         return map;
@@ -129,6 +131,34 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
     }
 
     @Override
+    public List<ApiRequestHeaderUpdateResponseDTO> findApiRequestHeadersForUpdate(Long featureId) {
+
+        Query query = createQuery.apply(entityManager, IntegrationQuery.CLIENT_API_FEATURES_HEADERS_QUERY)
+                .setParameter(CLIENT_API_INTEGRATION_FEATURE_ID, featureId);
+
+        List<ApiRequestHeaderUpdateResponseDTO> apiRequestHeaderUpdateResponseDTOS =
+                transformQueryToResultList(query, ApiRequestHeaderUpdateResponseDTO.class);
+
+//        if (appointmentDetails.isEmpty()) throw APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId);
+//
+//        return appointmentDetails.get(0);
+
+        return apiRequestHeaderUpdateResponseDTOS;
+    }
+
+    @Override
+    public List<ApiQueryParametersUpdateResponseDTO> findApiQueryParametersForUpdate(Long featureId) {
+        Query query = createQuery.apply(entityManager, IntegrationQuery.CLIENT_API_PARAMETERS_QUERY)
+                .setParameter(CLIENT_API_INTEGRATION_FEATURE_ID, featureId);
+
+        List<ApiQueryParametersUpdateResponseDTO> apiQueryParametersUpdateResponseDTOS =
+                transformQueryToResultList(query, ApiQueryParametersUpdateResponseDTO.class);
+
+        return apiQueryParametersUpdateResponseDTOS;
+
+    }
+
+    @Override
     public Map<String, String> findApiRequestHeaders(Long featureId) {
         Query query = createQuery.apply(entityManager, IntegrationQuery.CLIENT_API_FEATURES_HEADERS_QUERY)
                 .setParameter(CLIENT_API_INTEGRATION_FEATURE_ID, featureId);
@@ -158,7 +188,7 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
 
         Map<String, String> map = new HashMap<>();
         parametersResponseDTO.forEach(response -> {
-            map.put(response.getParam(), response.getValue());
+            map.put(response.getKeyParam(), response.getValueParam());
         });
 
 //        if (appointmentDetails.isEmpty()) throw APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId);

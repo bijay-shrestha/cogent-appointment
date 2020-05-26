@@ -32,7 +32,6 @@ public class PatientRequestByDTO implements Serializable {
     private Character gender;
 
     @NotNull
-//    @DateFormat
     private Date dateOfBirth;
 
     private String email;
@@ -40,4 +39,6 @@ public class PatientRequestByDTO implements Serializable {
     private String eSewaId;
 
     private String address;
+
+    private Character isAgent;
 }

@@ -406,7 +406,8 @@ public class AppointmentQuery {
                             " a.appointmentModeId.name as appointmentMode," +
                             " atd.appointmentAmount as appointmentAmount," +
                             " da.fileUri as fileUri," +
-                            " a.isFollowUp as followUp" +
+                            " a.isFollowUp as followUp," +
+                            " hpi.hospitalNumber as hospitalNumber" +
                             " FROM Appointment a" +
                             " LEFT JOIN Patient p ON a.patientId=p.id" +
                             " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +

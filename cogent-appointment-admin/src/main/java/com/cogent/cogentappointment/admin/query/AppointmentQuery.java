@@ -186,7 +186,8 @@ public class AppointmentQuery {
                             " d.name as doctorName," +                                                  //[8]
                             " a.appointmentModeId.name as appointmentMode," +
                             " atd.appointmentAmount as appointmentAmount," +
-                            " da.fileUri as fileUri" +
+                            " da.fileUri as fileUri," +
+                            " hpi.hospitalNumber as hospitalNumber" +
                             " FROM Appointment a" +
                             " LEFT JOIN Patient p ON a.patientId=p.id" +
                             " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +

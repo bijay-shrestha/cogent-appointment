@@ -8,6 +8,7 @@ import com.cogent.cogentappointment.client.dto.response.admin.AdminDetailRespons
 import com.cogent.cogentappointment.client.dto.response.admin.AdminLoggedInInfoResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.admin.AdminMetaInfoResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.admin.AdminMinimalResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.clientIntegration.*;
 import com.cogent.cogentappointment.client.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
@@ -27,10 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.Validator;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -82,6 +80,8 @@ public class AdminServiceImpl implements AdminService {
 
     private final AdminFeatureService adminFeatureService;
 
+    private final IntegrationRepository integrationRepository;
+
     public AdminServiceImpl(Validator validator,
                             AdminRepository adminRepository,
                             AdminMacAddressInfoRepository adminMacAddressInfoRepository,
@@ -93,7 +93,7 @@ public class AdminServiceImpl implements AdminService {
                             MinioFileService minioFileService,
                             EmailService emailService,
                             ProfileService profileService,
-                            AdminFeatureService adminFeatureService) {
+                            AdminFeatureService adminFeatureService, IntegrationRepository integrationRepository) {
         this.validator = validator;
         this.adminRepository = adminRepository;
         this.adminMacAddressInfoRepository = adminMacAddressInfoRepository;
@@ -106,6 +106,7 @@ public class AdminServiceImpl implements AdminService {
         this.emailService = emailService;
         this.profileService = profileService;
         this.adminFeatureService = adminFeatureService;
+        this.integrationRepository = integrationRepository;
     }
 
     @Override
@@ -403,9 +404,47 @@ public class AdminServiceImpl implements AdminService {
         AdminLoggedInInfoResponseDTO responseDTO =
                 adminRepository.fetchLoggedInAdminInfo(requestDTO, getLoggedInHospitalId());
 
+        ClientIntegrationResponseDTO integrationResponseDTO = getHospitalApiIntegration(getLoggedInHospitalId());
+        responseDTO.setECIntegrate(integrationResponseDTO);
+
         log.info(FETCHING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
+    }
+
+    private ClientIntegrationResponseDTO getHospitalApiIntegration(Long hospitalId) {
+
+        List<FeatureIntegrationResponse> integrationResponseDTOList = integrationRepository.
+                fetchClientIntegrationResponseDTO(hospitalId);
+
+        List<FeatureIntegrationResponseDTO> features = new ArrayList<>();
+        integrationResponseDTOList.forEach(responseDTO -> {
+
+            Map<String,String> requestHeaderResponseDTO = integrationRepository.findApiRequestHeaders(responseDTO.getApiIntegrationFormatId());
+
+            Map<String,String> queryParametersResponseDTO = integrationRepository.findApiQueryParameters(responseDTO.getApiIntegrationFormatId());
+
+            ClientIntegrationResponseDTO integrationResponseDTO = new ClientIntegrationResponseDTO();
+
+            FeatureIntegrationResponseDTO featureIntegrationResponseDTO = new FeatureIntegrationResponseDTO();
+            featureIntegrationResponseDTO.setFeatureCode(responseDTO.getFeatureCode());
+            featureIntegrationResponseDTO.setRequestBody(responseDTO.getRequestBody());
+            featureIntegrationResponseDTO.setRequestMethod(responseDTO.getRequestMethod());
+            featureIntegrationResponseDTO.setUrl(responseDTO.getUrl());
+
+            featureIntegrationResponseDTO.setHeaders(requestHeaderResponseDTO);
+            featureIntegrationResponseDTO.setQueryParameters(queryParametersResponseDTO);
+
+            features.add(featureIntegrationResponseDTO);
+
+        });
+
+        ClientIntegrationResponseDTO clientIntegrationResponseDTO = new ClientIntegrationResponseDTO();
+        clientIntegrationResponseDTO.setFeatures(features);
+        clientIntegrationResponseDTO.setClientId(hospitalId);
+
+        return clientIntegrationResponseDTO;
+
     }
 
     @Override
@@ -622,7 +661,7 @@ public class AdminServiceImpl implements AdminService {
             boolean isMobileNumberExists = requestMobileNumber.equalsIgnoreCase((String) get(admin, MOBILE_NUMBER));
             Long hospitalId = (Long) get(admin, HOSPITAL_ID);
 
-              /*THIS MEANS ADMIN WITH SAME EMAIL/ MOBILE NUMBER ALREADY EXISTS IN REQUESTED HOSPITAL*/
+            /*THIS MEANS ADMIN WITH SAME EMAIL/ MOBILE NUMBER ALREADY EXISTS IN REQUESTED HOSPITAL*/
             if (hospitalId.equals(requestedHospitalId)) {
                 if (isEmailExists && isMobileNumberExists) {
                     log.error(String.format(ADMIN_DUPLICATION_MESSAGE, requestEmail, requestMobileNumber));
@@ -632,7 +671,7 @@ public class AdminServiceImpl implements AdminService {
                 validateEmail(isEmailExists, requestEmail);
                 validateMobileNumber(isMobileNumberExists, requestMobileNumber);
             }
-              /*THIS MEANS ADMIN WITH SAME EMAIL/ MOBILE NUMBER ALREADY EXISTS IN ANOTHER HOSPITAL*/
+            /*THIS MEANS ADMIN WITH SAME EMAIL/ MOBILE NUMBER ALREADY EXISTS IN ANOTHER HOSPITAL*/
             else {
                 if (isEmailExists && isMobileNumberExists)
                     ADMIN_DUPLICATION_IN_DIFFERENT_HOSPITAL(requestEmail, requestMobileNumber);

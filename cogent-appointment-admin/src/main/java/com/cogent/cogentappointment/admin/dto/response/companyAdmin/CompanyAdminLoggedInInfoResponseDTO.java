@@ -1,9 +1,11 @@
 package com.cogent.cogentappointment.admin.dto.response.companyAdmin;
 
+import com.cogent.cogentappointment.admin.dto.response.adminModeIntegration.AdminModeFeatureIntegrationResponseDTO;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author smriti ON 01/01/2020
@@ -35,4 +37,6 @@ public class CompanyAdminLoggedInInfoResponseDTO implements Serializable {
     private Character isAllRoleAssigned;
 
     private Character isSideBarCollapse;
+
+    private List<AdminModeFeatureIntegrationResponseDTO> eAIntegrate;
 }

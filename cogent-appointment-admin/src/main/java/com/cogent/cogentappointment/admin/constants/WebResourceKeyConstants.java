@@ -24,6 +24,10 @@ public class WebResourceKeyConstants {
         String BASE_ADMIN_FEATURE = "/adminFeature";
     }
 
+    public interface AdminModeIntegrationConstants {
+        String BASE_ADMIN_MODE_INTEGRATION = "/admin-mode-integration";
+    }
+
     public interface AppointmentConstants {
         String BASE_APPOINTMENT = "/appointment";
         String APPOINTMENT_ID_PATH_VARIABLE_BASE = "/{appointmentId}";
@@ -150,6 +154,14 @@ public class WebResourceKeyConstants {
     //I
     public static final String ID_PATH_VARIABLE_BASE = "/{id}";
 
+    public interface IntegrationConstants {
+        String BASE_INTEGRATION = "/integration";
+        String CLIENT_API_INTEGRATION = "/client-api-integration";
+        String CLIENT_API_FEATURE_INTEGRATION_ID_PATH_VARIABLE_BASE = "/{clientFeatureIntegrationId}";
+        String CLIENT_API_INTEGRATION_FEATURE_ID_PATH_VARIABLE_BASE = "/{featureId}";
+        String FEATURES="/features";
+        String HTTP_REQUEST_METHODS="/request-methods";
+    }
 
     //J
 

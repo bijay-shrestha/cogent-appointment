@@ -38,14 +38,14 @@ public class RestTemplateUtils {
 
 
 
-    public ResponseEntity<?> postRequest(String uri, HttpEntity<?> request) {
+    public ResponseEntity<?> postRequest(String uri, HttpEntity<?> request,Class responseDTO) {
 
         ResponseEntity<?> response = null;
         try {
             response = restTemplate.exchange(uri,
                     POST,
                     request,
-                    String.class);
+                    responseDTO);
         } catch (HttpStatusCodeException exception) {
             System.out.println("Response: " + exception.getStatusCode().value());
         }

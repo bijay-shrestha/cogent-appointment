@@ -96,7 +96,7 @@ public class IntegrationResource {
 
         ResponseEntity<?> response = restTemplateUtils.
                 postRequest(BHERI_HOSPITAL_POST_TICKET,
-                        new HttpEntity<>(saveRequestDTO, getBheriAPIHeaders()));
+                        new HttpEntity<>(saveRequestDTO, getBheriAPIHeaders()),String.class);
 
         System.out.println(response);
 
@@ -125,7 +125,7 @@ public class IntegrationResource {
         HttpEntity<?> request = new HttpEntity<>(esewaPayementStatus, getEsewaPaymentStatusAPIHeaders());
 
         ResponseEntity<DummyMessage> response = (ResponseEntity<DummyMessage>) restTemplateUtils
-                .postRequest(BHERI_HOSPITAL_POST_TICKET, request);
+                .postRequest(BHERI_HOSPITAL_POST_TICKET, request,String.class);
 
         System.out.println(response.getBody().getError_message());
 

@@ -66,17 +66,4 @@ public class RefundStatusResource {
         return ok().build();
     }
 
-    @PostMapping
-    @ApiOperation(SAVE_OPERATION)
-    public ResponseEntity<?> paymentStatus(@RequestBody EsewaPayementStatus esewaPayementStatus) throws IOException {
-
-        HttpEntity<?> request = new HttpEntity<>(esewaPayementStatus, getEsewaPaymentStatusAPIHeaders());
-
-        ResponseEntity<DummyMessage> response = (ResponseEntity<DummyMessage>) restTemplateUtils
-                .postRequest(BHERI_HOSPITAL_POST_TICKET, request);
-
-        System.out.println(response.getBody().getError_message());
-
-        return ok().build();
-    }
 }

@@ -32,4 +32,9 @@ public class RefundStatusRequestDTO implements Serializable{
     @NotBlank
     private String transactionNumber;
 
+    @NotNull
+    @NotEmpty
+    @NotBlank
+    private String appointmentMode;
+
 }

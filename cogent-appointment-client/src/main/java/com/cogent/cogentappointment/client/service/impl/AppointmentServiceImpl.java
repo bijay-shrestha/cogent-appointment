@@ -18,6 +18,8 @@ import com.cogent.cogentappointment.client.dto.request.appointment.refund.Appoin
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentCancelApprovalSearchDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.appointmentStatus.AppointmentStatusRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.clientIntegration.Refund.EsewaRefundRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.clientIntegration.Refund.Properties;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestByDTO;
 import com.cogent.cogentappointment.client.dto.request.patient.PatientRequestForDTO;
 import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
@@ -39,16 +41,21 @@ import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.*;
 import com.cogent.cogentappointment.client.service.*;
+import com.cogent.cogentappointment.client.utils.resttempalte.RestTemplateUtils;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.Duration;
 import org.joda.time.Minutes;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Valid;
 import javax.validation.Validator;
+import java.net.URL;
 import java.util.*;
 import java.util.function.Function;
 
@@ -73,6 +80,9 @@ import static com.cogent.cogentappointment.client.utils.AppointmentUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateConverterUtils.calculateAge;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
+import static com.cogent.cogentappointment.client.utils.resttempalte.IntegrationRequestHeaders.getEsewaPaymentStatusAPIHeaders;
+import static com.cogent.cogentappointment.client.utils.resttempalte.IntegrationRequestURI.ESEWA_API_PAYMENT_STATUS;
+import static com.cogent.cogentappointment.client.utils.resttempalte.IntegrationRequestURI.ESEWA_REFUND_API;
 
 /**
  * @author smriti on 2019-10-22
@@ -128,6 +138,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final Validator validator;
 
+    private final RestTemplateUtils restTemplateUtils;
+
     public AppointmentServiceImpl(PatientService patientService,
                                   DoctorService doctorService,
                                   SpecializationService specializationService,
@@ -150,7 +162,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   AppointmentModeRepository appointmentModeRepository,
                                   AppointmentStatisticsRepository appointmentStatisticsRepository,
                                   HospitalPatientInfoRepository hospitalPatientInfoRepository,
-                                  Validator validator) {
+                                  Validator validator,
+                                  RestTemplateUtils restTemplateUtils) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -174,6 +187,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.appointmentStatisticsRepository = appointmentStatisticsRepository;
         this.hospitalPatientInfoRepository = hospitalPatientInfoRepository;
         this.validator = validator;
+        this.restTemplateUtils = restTemplateUtils;
     }
 
     @Override
@@ -669,6 +683,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 (appointmentId, getLoggedInHospitalId())
                 .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
 
+        AppointmentTransactionDetail appointmentTransactionDetail=fetchAppointmentTransactionDetail(appointmentId);
+
         appointment.setStatus(REFUNDED);
 
         refundAppointmentDetail.setStatus(APPROVED);
@@ -678,6 +694,32 @@ public class AppointmentServiceImpl implements AppointmentService {
         saveRefundDetails(refundAppointmentDetail);
 
         log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT_CANCEL_APPROVAL, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    private HttpStatus requestEsewaApi(Appointment appointment,
+                                       AppointmentTransactionDetail transactionDetail,
+                                       AppointmentRefundDetail appointmentRefundDetail){
+        EsewaRefundRequestDTO esewaRefundRequestDTO=EsewaRefundRequestDTO.builder()
+                .esewa_id(appointment.getPatientId().getESewaId())
+                .is_refund("TRUE")
+                .refund_amount(appointmentRefundDetail.getRefundAmount())
+                .product_code(appointment.getHospitalId().getEsewaMerchantCode())
+                .txn_amount(transactionDetail.getAppointmentAmount())
+                .properties(Properties.builder()
+                        .appointmentId(appointment.getId())
+                        .hospitalName(appointment.getHospitalId().getName())
+                        .build())
+                .build();
+
+
+        HttpEntity<?> request = new HttpEntity<>(esewaRefundRequestDTO, getEsewaPaymentStatusAPIHeaders());
+
+        String url=String.format(ESEWA_REFUND_API,transactionDetail.getTransactionNumber());
+
+        ResponseEntity<?> response = restTemplateUtils.
+                postRequest(url, request,String.class);
+
+        return response.getStatusCode();
     }
 
     @Override
@@ -949,12 +991,22 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
     }
 
+    private AppointmentTransactionDetail fetchAppointmentTransactionDetail(Long appointmentId) {
+        return appointmentTransactionDetailRepository.fetchByAppointmentId(appointmentId)
+                .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
+    }
+
     private AppointmentMode fetchActiveAppointmentModeIdByCode(String appointmentModeCode) {
         return appointmentModeRepository.fetchActiveAppointmentModeByCode(appointmentModeCode)
                 .orElseThrow(() -> APPOINTMENT_MODE_WITH_GIVEN_CODE_NOT_FOUND.apply(appointmentModeCode));
     }
 
     private Function<Long, NoContentFoundException> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT_TRANSACTION_DETAIL, id);
+        throw new NoContentFoundException(AppointmentTransactionDetail.class, "id", id.toString());
+    };
+
+    private Function<Long, NoContentFoundException> APPOINTMENT_TRANSACTION_DETAIL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT, id);
         throw new NoContentFoundException(Appointment.class, "id", id.toString());
     };

@@ -15,5 +15,7 @@ public class IntegrationRequestURI {
 
     public static final String ESEWA_API_PAYMENT_STATUS= "https://rc.esewa.com.np/api/esewa/client/payment/status";
 
+    public static final String ESEWA_REFUND_API= "https://rc.esewa.com.np/api/esewa/client/payment/%s/refund";
+
 
 }

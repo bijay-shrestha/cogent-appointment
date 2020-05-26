@@ -6,26 +6,32 @@ import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
 
 import java.util.Date;
+import java.util.function.Function;
+
+import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.APPROVED;
+import static com.cogent.cogentappointment.client.constants.StatusConstants.AppointmentStatusConstants.REFUNDED;
 
 /**
  * @author Sauravi Thapa ON 5/25/20
  */
 public class RefundStatusUtils {
 
-    public static Appointment changeAppointmentStatus(Appointment appointment){
-        appointment.setStatus("A");
-        appointment.setRemarks("Through refund status page");
+    public static final String REMARKS=" Refund Re-initiated at, " ;
+
+    public static Function<Appointment,Appointment> changeAppointmentStatus=(appointment -> {
+        appointment.setStatus(REFUNDED);
+        appointment.setRemarks(REMARKS + new Date());
 
         return appointment;
-    }
+    });
 
-    public static AppointmentRefundDetail changeAppointmentRefundDetailStatus(AppointmentRefundDetail appointmentRefundDetail){
-        appointmentRefundDetail.setRefundedDate(new Date());
-        appointmentRefundDetail.setStatus("RE");
-        appointmentRefundDetail.setRemarks("Through refund status page");
+    public static Function<AppointmentRefundDetail,AppointmentRefundDetail> changeAppointmentRefundDetailStatus=(refundDetail -> {
+        refundDetail.setRefundedDate(new Date());
+        refundDetail.setStatus(APPROVED);
+        refundDetail.setRemarks(REMARKS + new Date());
 
-        return appointmentRefundDetail;
-    }
+        return refundDetail;
+    });
 
     public static EsewaPayementStatus parseToEsewaPayementStatus(RefundStatusRequestDTO requestDTO){
         return  EsewaPayementStatus.builder()

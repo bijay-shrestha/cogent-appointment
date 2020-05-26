@@ -112,7 +112,7 @@ public class IntegrationUtils {
     public static void parseToDeletedClientFeatureIntegration(ClientFeatureIntegration clientFeatureIntegration, DeleteRequestDTO deleteRequestDTO) {
 
         clientFeatureIntegration.setStatus(deleteRequestDTO.getStatus());
-        clientFeatureIntegration.setStatus(deleteRequestDTO.getStatus());
+        clientFeatureIntegration.setRemarks(deleteRequestDTO.getRemarks());
 
     }
 

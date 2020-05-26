@@ -35,12 +35,16 @@ public class ClientFeatureIntegration extends Auditable<String> implements Seria
     @Column(name = "status")
     private Character status;
 
+    @Column(name = "remarks")
+    private String remarks;
+
     @Override
     public String toString() {
         return "ClientFeatureIntegration{" +
                 "id=" + id +
                 ", hospitalId=" + hospitalId +
                 ", featureId=" + featureId +
+                ", remarks='" + remarks + '\'' +
                 ", status=" + status +
                 '}';
     }

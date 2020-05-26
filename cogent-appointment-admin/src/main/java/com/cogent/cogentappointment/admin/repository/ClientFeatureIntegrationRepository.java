@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.admin.repository;
 import com.cogent.cogentappointment.persistence.model.ClientFeatureIntegration;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -14,5 +15,5 @@ import java.util.Optional;
 public interface ClientFeatureIntegrationRepository extends JpaRepository<ClientFeatureIntegration,Long> {
 
     @Query("SELECT cfi from ClientFeatureIntegration cfi where cfi.id=:id AND cfi.status!='D'")
-    Optional<ClientFeatureIntegration> findClientFeatureIntegrationById(Long id);
+    Optional<ClientFeatureIntegration> findClientFeatureIntegrationById(@Param("id") Long id);
 }

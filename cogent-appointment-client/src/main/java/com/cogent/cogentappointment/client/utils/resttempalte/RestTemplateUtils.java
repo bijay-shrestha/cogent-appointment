@@ -36,8 +36,6 @@ public class RestTemplateUtils {
     }
 
 
-
-
     public ResponseEntity<?> postRequest(String uri, HttpEntity<?> request) {
 
         ResponseEntity<String> response = null;

@@ -25,7 +25,7 @@ import static com.cogent.cogentappointment.client.constants.QueryConstants.Appoi
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.APPOINTMENT_REFUND_DETAIL;
-import static com.cogent.cogentappointment.client.log.constants.AppointmentRefundDetailQuery.*;
+import static com.cogent.cogentappointment.client.query.AppointmentRefundDetailQuery.*;
 import static com.cogent.cogentappointment.client.query.DashBoardQuery.QUERY_TO_FETCH_REFUND_AMOUNT;
 import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;

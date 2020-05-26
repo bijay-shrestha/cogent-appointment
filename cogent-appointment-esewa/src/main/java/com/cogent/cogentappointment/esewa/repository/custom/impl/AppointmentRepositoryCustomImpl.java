@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.esewa.repository.custom.impl;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.checkAvailibility.AppointmentCheckAvailabilityRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.history.AppointmentHistorySearchDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.history.AppointmentSearchDTO;
+import com.cogent.cogentappointment.esewa.dto.request.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.checkAvailabililty.AppointmentBookedTimeResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.history.AppointmentDetailResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.history.AppointmentMinResponseDTO;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.AppointmentConstants.APPOINTMENT_DATE;
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.AppointmentConstants.APPOINTMENT_TIME;
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.esewa.constants.QueryConstants.AppointmentConstants.TRANSACTION_NUMBER;
 import static com.cogent.cogentappointment.esewa.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
@@ -126,6 +128,23 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
             return Double.parseDouble(query.getSingleResult().toString());
         } catch (NoResultException e) {
             throw APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId);
+        }
+    }
+
+    @Override
+    public Appointment fetchCancelledAppointmentDetails(RefundStatusRequestDTO requestDTO) {
+        try {
+            Appointment appointment= entityManager.createQuery(QUERY_TO_GET_CANCELLED_APPOINTMENT,
+                    Appointment.class)
+                    .setParameter(ESEWA_ID, requestDTO.getEsewaId())
+                    .setParameter(ESEWA_MERCHANT_CODE, requestDTO.getEsewaMerchantCode())
+                    .setParameter(TRANSACTION_NUMBER, requestDTO.getTransactionNumber())
+                    .getSingleResult();
+
+            return appointment;
+        } catch (NoResultException e) {
+            log.error(CONTENT_NOT_FOUND, APPOINTMENT);
+            throw APPOINTMENT_NOT_FOUND.get();
         }
     }
 

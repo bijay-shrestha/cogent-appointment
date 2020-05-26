@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.log.constants;
+package com.cogent.cogentappointment.client.query;
 
 import com.cogent.cogentappointment.client.dto.request.refundStatus.RefundStatusSearchRequestDTO;
 import org.springframework.util.ObjectUtils;

@@ -130,11 +130,13 @@ public class IntegrationQuery {
             (searchRequestDTO) ->
                     " SELECT" +
                             " cfi.id as id,"+
+                            " h.name as hospitalName,"+
                             " f.name as featureName," +
                             " f.code as featureCode," +
                             " hrm.name as requestMethod," +
                             " aif.url as url" +
                             " FROM ClientFeatureIntegration cfi" +
+                            " LEFT JOIN Hospital h ON h.id=cfi.hospitalId"+
                             " LEFT JOIN Feature f ON f.id=cfi.featureId" +
                             " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=cfi.id" +
                             " LEFT JOIN ApiIntegrationFormat aif ON aif.id=afi.apiIntegrationFormatId" +

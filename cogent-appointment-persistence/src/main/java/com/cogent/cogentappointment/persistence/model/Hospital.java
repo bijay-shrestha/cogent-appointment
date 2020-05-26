@@ -15,6 +15,12 @@ import java.io.Serializable;
  * THIS ENTITY IS USED TO SAVE BOTH HOSPITAL/CLIENT AND COMPANY
  * IN CASE OF COMPANY - isCompany = 'Y' ELSE isCompany = 'N'
  * REFUND PERCENTAGE AND FOLLOW UP DETAILS DO NOT NEED TO BE SAVED IN CASE OF COMPANY
+ *
+ * CONNECTED TABLE:
+ * a. HospitalContactNumber
+ * b. HospitalLogo
+ * c. HospitalBanner
+ * d. HospitalAppointmentServiceType
  */
 @Table(name = "hospital")
 @Entity

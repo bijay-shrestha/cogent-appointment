@@ -16,9 +16,9 @@ public class ApiRequestHeaderResponseDTO implements Serializable {
 
     private Long id;
 
-    private String keyName;
+    private String keyParam;
 
-    private String keyValue;
+    private String valueParam;
 
     private Character status;
 

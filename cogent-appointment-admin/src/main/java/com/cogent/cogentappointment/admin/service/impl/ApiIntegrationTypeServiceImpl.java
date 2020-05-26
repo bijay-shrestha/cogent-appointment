@@ -42,4 +42,17 @@ public class ApiIntegrationTypeServiceImpl implements ApiIntegrationTypeService 
 
         return downResponseDTOList;
     }
+
+    @Override
+    public List<DropDownResponseDTO> fetchActiveFeatureTypeByIntegrationTypeId(Long id) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, API_INTEGRATION_TYPE);
+
+        List<DropDownResponseDTO> downResponseDTOList = apiIntegrationTypeRepository.fetchActiveFeatureTypeByIntegrationTypeId(id);
+
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, API_INTEGRATION_TYPE, getDifferenceBetweenTwoTime(startTime));
+
+        return downResponseDTOList;
+    }
 }

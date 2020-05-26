@@ -14,4 +14,6 @@ import java.util.List;
 public interface ApiIntegrationTypeRepositoryCustom {
     
     List<DropDownResponseDTO> fetchActiveApiIntegrationType();
+
+    List<DropDownResponseDTO> fetchActiveFeatureTypeByIntegrationTypeId(Long id);
 }

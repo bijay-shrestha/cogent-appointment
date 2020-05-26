@@ -139,6 +139,18 @@ public class IntegrationQuery {
                     " WHERE ait.status ='Y'" +
                     " ORDER by ait.name ASC";
 
+    public static final String QUERY_TO_FETCH_MIN_API_INTEGRATION_TYPE_BY_INTEGRATION_TYPE_ID =
+            "SELECT" +
+                    " f.id as value," +
+                    " f.name as label" +
+                    " FROM" +
+                    " Feature f"+
+                    " LEFT JOIN ApiIntegrationType ait ON ait.id=f.apiIntegrationTypeId.id"+
+                    " WHERE ait.status ='Y'" +
+                    " AND f.status ='Y'" +
+                    " AND ait.id=:apiIntegrationTypeId"+
+                    " ORDER by ait.name ASC";
+
 
     public static Function<ClientApiIntegrationSearchRequestDTO, String> CLIENT_API_INTEGRATION_SEARCH_QUERY =
             (searchRequestDTO) ->

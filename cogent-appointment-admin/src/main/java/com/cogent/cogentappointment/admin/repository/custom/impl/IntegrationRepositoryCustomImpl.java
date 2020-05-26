@@ -69,7 +69,7 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
 
         Map<String, String> map = new HashMap<>();
         requestHeaderResponseDTO.forEach(response -> {
-            map.put(response.getKeyName(), response.getKeyValue());
+            map.put(response.getKeyParam(), response.getValueParam());
         });
 
         return map;
@@ -168,7 +168,7 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
 
         Map<String, String> map = new HashMap<>();
         requestHeaderResponseDTO.forEach(response -> {
-            map.put(response.getKeyName(), response.getKeyValue());
+            map.put(response.getKeyParam(), response.getValueParam());
         });
 
 //        if (appointmentDetails.isEmpty()) throw APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId);

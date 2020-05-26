@@ -108,6 +108,12 @@ public class IntegrationServiceImpl implements IntegrationService {
                 apiFeatureIntegrationRepository.findApiFeatureIntegrationbyClientFeatureId(clientFeatureIntegration.getId())
                         .orElseThrow(() -> API_FEATURE_INTEGRATION_FEATURE_NOT_FOUND.apply(requestDTO.getClientFeatureIntegrationId()));
 
+//        apiFeatureIntegration.forEach(apiIntegration->{
+//            apiIntegration.
+//        });
+//
+//        ApiIntegrationFormat apiIntegrationFormat=
+
 //        updateApiFeatureIntegration(clientFeatureIntegration.getId(), apiIntegrationFormat.getId());
 //
 //        updateApiQueryParameters(requestDTO.getParametersRequestDTOS(), apiIntegrationFormat);

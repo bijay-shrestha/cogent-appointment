@@ -95,6 +95,12 @@ public class IntegrationResource {
         return ok(integrationFeatureService.fetchActiveFeatureType());
     }
 
+    @GetMapping(FEATURES + CLIENT_INTEGRATION_TYPE_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
+    public ResponseEntity<?> fetchFeatureTypeByIntegrationType(@PathVariable("apiIntegrationTypeId") Long id) {
+        return ok(apiIntegrationTypeService.fetchActiveFeatureTypeByIntegrationTypeId(id));
+    }
+
     @GetMapping(HTTP_REQUEST_METHODS + ACTIVE + MIN)
     @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
     public ResponseEntity<?> fetchQualificationForDropDown() {

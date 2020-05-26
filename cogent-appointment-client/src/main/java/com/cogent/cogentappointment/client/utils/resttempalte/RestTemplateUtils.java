@@ -40,7 +40,7 @@ public class RestTemplateUtils {
 
     public ResponseEntity<?> postRequest(String uri, HttpEntity<?> request) {
 
-        ResponseEntity<String> response = null;
+        ResponseEntity<?> response = null;
         try {
             response = restTemplate.exchange(uri,
                     POST,
@@ -50,7 +50,7 @@ public class RestTemplateUtils {
             System.out.println("Response: " + exception.getStatusCode().value());
         }
 
-        return new ResponseEntity<>(response.getBody(), OK);
+        return response;
     }
 
 

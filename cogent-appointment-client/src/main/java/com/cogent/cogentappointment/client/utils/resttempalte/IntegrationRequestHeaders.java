@@ -41,7 +41,7 @@ public class IntegrationRequestHeaders {
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 
         headers.add("signature",
-                "a531bcd75978687aa2beb52c94b2fb1fc2e31070c95d12a2da3d8c44cbf9a67b2c9f1da3f99f1f1cdb6605d60ad6dd5b3d8c2d15576e9b92bef5e3caf9d8e65b");
+                "ac497c6d7ee552429e05468dd0127d27c48b1cb81c00c5c7d1d0fd577fb3497f6e0e4f361c057051a5dc6b6dd1eaadd4c858a4058334f315c0cb8240671cef74");
 
 
         return headers;

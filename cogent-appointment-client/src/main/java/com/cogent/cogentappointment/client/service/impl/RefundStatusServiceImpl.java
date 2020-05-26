@@ -1,24 +1,35 @@
 package com.cogent.cogentappointment.client.service.impl;
 
+import com.cogent.cogentappointment.client.dto.request.clientIntegration.EsewaPayementStatus;
 import com.cogent.cogentappointment.client.dto.request.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.refundStatus.RefundStatusSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.refundStatus.RefundStatusResponseDTO;
 import com.cogent.cogentappointment.client.repository.AppointmentRefundDetailRepository;
 import com.cogent.cogentappointment.client.repository.AppointmentRepository;
 import com.cogent.cogentappointment.client.service.RefundStatusService;
+import com.cogent.cogentappointment.client.utils.resttempalte.RestTemplateUtils;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.protocol.HTTP;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Objects;
 
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.RefundStatusLog.REFUND_STATUS;
 import static com.cogent.cogentappointment.client.utils.RefundStatusUtils.changeAppointmentRefundDetailStatus;
 import static com.cogent.cogentappointment.client.utils.RefundStatusUtils.changeAppointmentStatus;
+import static com.cogent.cogentappointment.client.utils.RefundStatusUtils.parseToEsewaPayementStatus;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.client.utils.resttempalte.IntegrationRequestHeaders.getEsewaPaymentStatusAPIHeaders;
+import static com.cogent.cogentappointment.client.utils.resttempalte.IntegrationRequestURI.ESEWA_API_PAYMENT_STATUS;
 
 /**
  * @author Sauravi Thapa ON 5/25/20
@@ -33,11 +44,14 @@ public class RefundStatusServiceImpl implements RefundStatusService {
 
     private final AppointmentRepository appointmentRepository;
 
+    private final RestTemplateUtils restTemplateUtils;
+
 
     public RefundStatusServiceImpl(AppointmentRefundDetailRepository refundDetailRepository,
-                                   AppointmentRepository appointmentRepository) {
+                                   AppointmentRepository appointmentRepository, RestTemplateUtils restTemplateUtils) {
         this.refundDetailRepository = refundDetailRepository;
         this.appointmentRepository = appointmentRepository;
+        this.restTemplateUtils = restTemplateUtils;
     }
 
     @Override
@@ -54,20 +68,42 @@ public class RefundStatusServiceImpl implements RefundStatusService {
     }
 
     @Override
-    public void approveAppointmentRefund(RefundStatusRequestDTO requestDTO) {
+    public void checkRefundStatus(RefundStatusRequestDTO requestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, REFUND_STATUS);
 
-        AppointmentRefundDetail appointmentRefundDetail=refundDetailRepository.fetchAppointmentRefundDetail(requestDTO);
+        String response=requestEsewaApi(requestDTO);
 
-        Appointment appointment=appointmentRepository.fetchCancelledAppointmentDetails(requestDTO);
+        if(response.toString().equals("COMPLETED")) {
 
-        saveAppointment(changeAppointmentStatus(appointment));
+            AppointmentRefundDetail appointmentRefundDetail = refundDetailRepository.fetchAppointmentRefundDetail(requestDTO);
 
-        saveAppointmentRefundDetails(changeAppointmentRefundDetailStatus(appointmentRefundDetail));
+            Appointment appointment = appointmentRepository.fetchCancelledAppointmentDetails(requestDTO);
+
+            saveAppointment(changeAppointmentStatus(appointment));
+
+            saveAppointmentRefundDetails(changeAppointmentRefundDetailStatus(appointmentRefundDetail));
+        }
 
         log.info(SAVING_PROCESS_COMPLETED, REFUND_STATUS, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    /* Requests esewa api to check the cancelled appointment's status in their side
+    * if Response returns COMPLETED our db should maintain 'A' status in Refund table
+     * and 'RE' in Appointment table*/
+    private String requestEsewaApi(RefundStatusRequestDTO requestDTO){
+        EsewaPayementStatus esewaPayementStatus=parseToEsewaPayementStatus(requestDTO);
+
+        HttpEntity<?> request = new HttpEntity<>(esewaPayementStatus, getEsewaPaymentStatusAPIHeaders());
+
+        ResponseEntity<?> response = restTemplateUtils.
+                postRequest(ESEWA_API_PAYMENT_STATUS,
+                        new HttpEntity<>(request, getEsewaPaymentStatusAPIHeaders()));
+
+        String objects= String.valueOf(response.getBody());
+
+        return null;
     }
 
     private void saveAppointment( Appointment appointment){

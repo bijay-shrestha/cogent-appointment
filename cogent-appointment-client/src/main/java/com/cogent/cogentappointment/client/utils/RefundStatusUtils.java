@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.utils;
 
+import com.cogent.cogentappointment.client.dto.request.clientIntegration.EsewaPayementStatus;
 import com.cogent.cogentappointment.client.dto.request.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
@@ -24,5 +25,13 @@ public class RefundStatusUtils {
         appointmentRefundDetail.setRemarks("Through refund status page");
 
         return appointmentRefundDetail;
+    }
+
+    public static EsewaPayementStatus parseToEsewaPayementStatus(RefundStatusRequestDTO requestDTO){
+        return  EsewaPayementStatus.builder()
+                .esewa_id(requestDTO.getEsewaId())
+                .product_code(requestDTO.getEsewaMerchantCode())
+                .transaction_code(requestDTO.getTransactionNumber())
+                .build();
     }
 }

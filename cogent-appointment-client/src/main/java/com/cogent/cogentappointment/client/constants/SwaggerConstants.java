@@ -212,7 +212,7 @@ public class SwaggerConstants {
 
     //H
     public interface HospitalConstant {
-        String BASE_API_VALUE = "This is Hospital Resource";egration
+        String BASE_API_VALUE = "This is Hospital Resource";
         String FETCH_MIN_DETAILS = "Fetch min hospital details (search by name)";
     }
 

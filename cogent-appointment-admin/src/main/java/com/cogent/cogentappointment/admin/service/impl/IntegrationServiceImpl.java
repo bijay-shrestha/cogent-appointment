@@ -155,6 +155,7 @@ public class IntegrationServiceImpl implements IntegrationService {
                 requestHeader.setApiIntegrationFormatId(integrationFormatId);
                 requestHeader.setKeyName(requestDTO.getKeyParam());
                 requestHeader.setValue(requestDTO.getValueParam());
+                requestHeader.setDescription(requestDTO.getDescription());
                 requestHeader.setStatus(requestDTO.getStatus());
 
                 apiRequestHeaderRepository.save(requestHeader);
@@ -165,6 +166,7 @@ public class IntegrationServiceImpl implements IntegrationService {
                 apiRequestHeader.setKeyName(requestDTO.getKeyParam());
                 apiRequestHeader.setValue(requestDTO.getValueParam());
                 apiRequestHeader.setStatus(requestDTO.getStatus());
+                apiRequestHeader.setDescription(requestDTO.getDescription());
                 apiRequestHeader.setApiIntegrationFormatId(integrationFormatId);
 
             }

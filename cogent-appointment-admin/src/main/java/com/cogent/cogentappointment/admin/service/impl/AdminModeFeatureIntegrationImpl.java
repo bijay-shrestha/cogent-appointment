@@ -96,7 +96,8 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
         saveAdminModeApiFeatureIntegration(adminModeApiFeatureIntegration);
 
 
-        saveApiFeatureIntegration(adminModeFeatureIntegration.getId(), adminModeApiFeatureIntegration.getId());
+        saveApiFeatureIntegration(adminModeFeatureIntegration.getId(), adminModeApiFeatureIntegration.getId(),
+                null);
 
         saveApiQueryParameters(requestDTO.getParametersRequestDTOS(), adminModeApiFeatureIntegration.getId());
 
@@ -151,10 +152,10 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
 
     }
 
-    private void saveApiFeatureIntegration(Long clientFeatureIntegrationId, Long apiIntegrationFormatId) {
+    private void saveApiFeatureIntegration(Long clientFeatureIntegrationId, Long apiIntegrationFormatId,Long integrationTypeId) {
 
         apiFeatureIntegrationRepository.save(parseToClientApiFeatureIntegration(clientFeatureIntegrationId,
-                apiIntegrationFormatId));
+                apiIntegrationFormatId, integrationTypeId));
 
     }
 

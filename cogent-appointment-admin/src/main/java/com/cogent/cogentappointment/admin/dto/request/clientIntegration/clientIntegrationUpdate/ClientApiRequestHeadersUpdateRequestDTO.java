@@ -20,6 +20,8 @@ public class ClientApiRequestHeadersUpdateRequestDTO implements Serializable {
 
     private String valueParam;
 
+    private String description;
+
     private Character Status;
 
 

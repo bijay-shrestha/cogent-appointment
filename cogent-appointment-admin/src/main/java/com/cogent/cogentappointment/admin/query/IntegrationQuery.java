@@ -54,6 +54,7 @@ public class IntegrationQuery {
                     " arh.id as id," +
                     " arh.keyName as keyParam," +
                     " arh.value as valueParam," +
+                    " arh.description as description," +
                     " arh.status as status" +
                     " FROM ClientFeatureIntegration cfi" +
                     " LEFT JOIN Feature f ON f.id=cfi.featureId" +
@@ -71,7 +72,8 @@ public class IntegrationQuery {
                     " aqp.id as id," +
                     " aqp.param as keyParam," +
                     " aqp.value as valueParam," +
-                    " aqp.status as status" +
+                    " aqp.status as status," +
+                    " aqp.description as description" +
                     " FROM ClientFeatureIntegration cfi" +
                     " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=cfi.id" +
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=afi.apiIntegrationFormatId" +

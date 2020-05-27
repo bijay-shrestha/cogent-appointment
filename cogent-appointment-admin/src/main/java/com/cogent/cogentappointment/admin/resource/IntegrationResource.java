@@ -113,4 +113,10 @@ public class IntegrationResource {
         return ok(apiIntegrationTypeService.fetchActiveApiIntegrationType());
     }
 
+    @GetMapping(API_INTEGRATION_TYPE + ACTIVE + MIN)
+    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
+    public ResponseEntity<?> fetchApiIntegrationTypeForDropDown() {
+        return ok(apiIntegrationTypeService.fetchActiveApiIntegrationType());
+    }
+
 }

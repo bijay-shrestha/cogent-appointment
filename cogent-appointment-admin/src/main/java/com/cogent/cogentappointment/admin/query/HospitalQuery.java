@@ -123,7 +123,7 @@ public class HospitalQuery {
                     " h.alias as alias," +                                    //[14]
                     HOSPITAL_AUDITABLE_QUERY() +
                     " FROM" +
-                    " hospital h" +
+                    " Hospital h" +
                     " LEFT JOIN HospitalLogo hl ON h.id =hl.hospital.id " +
                     " LEFT JOIN HospitalBanner hb ON h.id = hb.hospital.id" +
                     " WHERE h.id =:id" +
@@ -151,7 +151,7 @@ public class HospitalQuery {
 
     private static String HOSPITAL_AUDITABLE_QUERY() {
         return " h.createdBy as createdBy," +
-                " h.created_date as createdDate," +
+                " h.createdDate as createdDate," +
                 " h.lastModifiedBy as lastModifiedBy," +
                 " h.lastModifiedDate as lastModifiedDate";
     }

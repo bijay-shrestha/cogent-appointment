@@ -80,5 +80,6 @@ public class HospitalUpdateRequestDTO implements Serializable {
     @NotNull
     private List<HospitalAppointmentServiceTypeUpdateRequestDTO> appointmentServiceTypeUpdateRequestDTO;
 
+    @NotNull
     private Long primaryAppointmentServiceTypeId;
 }

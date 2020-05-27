@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.client.service;
 
 import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusSearchRequestDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.refundStatus.RefundStatusResponseDTO;
 import org.springframework.data.domain.Pageable;
 
@@ -13,5 +14,7 @@ public interface RefundStatusService {
     RefundStatusResponseDTO searchRefundAppointments(RefundStatusSearchRequestDTO requestDTO, Pageable pageable);
 
     void checkRefundStatus(RefundStatusRequestDTO requestDTO);
+
+    AppointmentRefundDetailResponseDTO fetchRefundDetailsById(Long id);
 
 }

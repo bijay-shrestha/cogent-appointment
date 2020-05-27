@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.client.service.impl;
 import com.cogent.cogentappointment.client.dto.request.clientIntegration.EsewaPayementStatus;
 import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusSearchRequestDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.refundStatus.EsewaResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.refundStatus.RefundStatusResponseDTO;
 import com.cogent.cogentappointment.client.repository.AppointmentRefundDetailRepository;
@@ -23,6 +24,7 @@ import static com.cogent.cogentappointment.client.constants.CogentAppointmentCon
 import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.RefundResponseConstant.FULL_REFUND;
 import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.RefundResponseConstant.PARTIAL_REFUND;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
+import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.APPOINTMENT_CANCEL_APPROVAL;
 import static com.cogent.cogentappointment.client.log.constants.RefundStatusLog.REFUND_STATUS;
 import static com.cogent.cogentappointment.client.utils.RefundStatusUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
@@ -94,6 +96,19 @@ public class RefundStatusServiceImpl implements RefundStatusService {
         }
 
         log.info(SAVING_PROCESS_COMPLETED, REFUND_STATUS, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    @Override
+    public AppointmentRefundDetailResponseDTO fetchRefundDetailsById(Long appointmentId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, REFUND_STATUS);
+
+        AppointmentRefundDetailResponseDTO refundAppointments = appointmentRepository.fetchRefundDetailsById(appointmentId);
+
+        log.info(FETCHING_PROCESS_COMPLETED, REFUND_STATUS, getDifferenceBetweenTwoTime(startTime));
+
+        return refundAppointments;
     }
 
     /* Requests esewa api to check the cancelled appointment's status in their side

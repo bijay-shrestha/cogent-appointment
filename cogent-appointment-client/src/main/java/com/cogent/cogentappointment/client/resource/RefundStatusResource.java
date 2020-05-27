@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import static com.cogent.cogentappointment.client.constants.SwaggerConstants.RefundStatusConstant.BASE_API_VALUE;
-import static com.cogent.cogentappointment.client.constants.SwaggerConstants.RefundStatusConstant.FETCH_PENDING_REFUND_APPROVAL_LIST;
-import static com.cogent.cogentappointment.client.constants.SwaggerConstants.RefundStatusConstant.FETCH_REFUND_DETAILS_TO_APPROVE;
+import static com.cogent.cogentappointment.client.constants.SwaggerConstants.RefundStatusConstant.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.AppointmentConstants.APPOINTMENT_ID_PATH_VARIABLE_BASE;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.AppointmentConstants.BASE_APPOINTMENT;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.DETAIL;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.RefundStatusConstants.BASE_REFUND_STATUS;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.RefundStatusConstants.CHECK;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.SEARCH;
@@ -33,12 +33,8 @@ public class RefundStatusResource {
 
     private final RefundStatusService refundStatusService;
 
-    private final RestTemplateUtils restTemplateUtils;
-
-    public RefundStatusResource(RefundStatusService refundStatusService,
-                                RestTemplateUtils restTemplateUtils) {
+    public RefundStatusResource(RefundStatusService refundStatusService) {
         this.refundStatusService = refundStatusService;
-        this.restTemplateUtils = restTemplateUtils;
     }
 
     @PutMapping(SEARCH)
@@ -55,6 +51,12 @@ public class RefundStatusResource {
     public ResponseEntity<?> checkRefundStatus(@Valid @RequestBody RefundStatusRequestDTO requestDTO) {
         refundStatusService.checkRefundStatus(requestDTO);
         return ok().build();
+    }
+
+    @GetMapping(DETAIL + APPOINTMENT_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_REFUND_STATUS_APPOINTMENTS_DETAIL)
+    public ResponseEntity<?> fetchRefundDetailsById(@PathVariable("appointmentId") Long appointmentId) {
+        return ok().body(refundStatusService.fetchRefundDetailsById(appointmentId));
     }
 
 }

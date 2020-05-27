@@ -15,6 +15,8 @@ import java.util.Map;
 @NoArgsConstructor
 public class ClientApiIntegrationDetailResponseDTO  implements Serializable {
 
+    private String hospitalName;
+
     private String featureCode;
 
     private String requestMethod;

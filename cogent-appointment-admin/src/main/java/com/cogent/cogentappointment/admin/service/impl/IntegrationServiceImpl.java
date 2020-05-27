@@ -253,6 +253,7 @@ public class IntegrationServiceImpl implements IntegrationService {
         responseDTO.setFeatureCode(featureIntegrationResponse.getFeatureCode());
         responseDTO.setRequestBody(featureIntegrationResponse.getRequestBody());
         responseDTO.setRequestMethod(featureIntegrationResponse.getRequestMethod());
+        responseDTO.setHospitalName(featureIntegrationResponse.getHospitalName());
         responseDTO.setUrl(featureIntegrationResponse.getUrl());
         responseDTO.setHeaders(requestHeaderResponseDTO);
         responseDTO.setQueryParameters(queryParametersResponseDTO);
@@ -290,6 +291,7 @@ public class IntegrationServiceImpl implements IntegrationService {
         responseDTO.setRequestBody(featureIntegrationResponse.getRequestBody());
         responseDTO.setRequestMethod(featureIntegrationResponse.getRequestMethod());
         responseDTO.setUrl(featureIntegrationResponse.getUrl());
+        responseDTO.setHospitalName(featureIntegrationResponse.getHospitalName());
         responseDTO.setHeaders(requestHeaderResponseDTO);
         responseDTO.setQueryParameters(queryParametersResponseDTO);
 

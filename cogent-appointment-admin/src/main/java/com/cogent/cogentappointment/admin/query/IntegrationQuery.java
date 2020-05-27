@@ -114,6 +114,7 @@ public class IntegrationQuery {
     public static final String CLIENT_FEATURES_INTEGRATION_DETAILS_API_QUERY =
             "SELECT" +
                     " f.id as featureId," +
+                    " h.name as hospitalName,"+
                     " f.code as featureCode," +
                     " hrm.name as requestMethod,"+
                     " aif.url as url," +
@@ -123,6 +124,7 @@ public class IntegrationQuery {
                     " LEFT JOIN Feature f ON f.id=cfi.featureId" +
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=afi.apiIntegrationFormatId" +
                     " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId" +
+                    " LEFT JOIN Hospital h ON h.id=cfi.hospitalId"+
                     " WHERE cfi.id= :clientFeatureIntegrationId"+
                     " AND aif.status='Y'"+
                     " AND hrm.status='Y'"+

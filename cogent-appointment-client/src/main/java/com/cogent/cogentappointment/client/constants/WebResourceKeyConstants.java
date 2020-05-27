@@ -204,6 +204,7 @@ public class WebResourceKeyConstants {
     //R
     public interface RoomConstants {
         String BASE_ROOM = "/room";
+        String HOSPITAL_DEPARTMENT_WISE = "/hospitalDepartmentWise";
     }
 
 

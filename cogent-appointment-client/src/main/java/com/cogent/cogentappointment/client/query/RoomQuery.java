@@ -49,6 +49,7 @@ public class RoomQuery {
                     " FROM Room r" +
                     " LEFT JOIN HospitalDepartmentRoomInfo hdri ON hdri.room.id=r.id" +
                     " WHERE hdri.hospitalDepartment.id=:hospitalDepartmentId " +
+                    " AND r.hospital.id=:hospitalId" +
                     " AND r.status != 'D'" +
                     " AND hdri.status != 'D'" +
                     " ORDER BY label ASC";
@@ -59,6 +60,7 @@ public class RoomQuery {
                     " FROM Room r" +
                     " LEFT JOIN HospitalDepartmentRoomInfo hdri ON hdri.room.id=r.id" +
                     " WHERE hdri.hospitalDepartment.id=:hospitalDepartmentId " +
+                    " AND r.hospital.id=:hospitalId" +
                     " AND r.status = 'Y'" +
                     " AND hdri.status = 'Y'" +
                     " ORDER BY label ASC";

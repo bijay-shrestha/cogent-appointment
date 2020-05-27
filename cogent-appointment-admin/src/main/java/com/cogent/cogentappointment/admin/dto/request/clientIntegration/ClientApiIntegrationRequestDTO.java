@@ -18,6 +18,8 @@ public class ClientApiIntegrationRequestDTO implements Serializable {
 
     private Long apiIntegrationTypeId;
 
+    private Long integrationChannelId;
+
     private Long featureTypeId;
 
     private Long requestMethodId;

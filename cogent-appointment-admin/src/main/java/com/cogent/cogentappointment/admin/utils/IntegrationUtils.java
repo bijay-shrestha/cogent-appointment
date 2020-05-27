@@ -16,7 +16,8 @@ import static com.cogent.cogentappointment.admin.constants.StatusConstants.DELET
  * @author rupak on 2020-05-19
  */
 public class IntegrationUtils {
-    public static ClientFeatureIntegration parseToClientFeatureIntegration(Long hospitalId, Long featureTypeId) {
+    public static ClientFeatureIntegration parseToClientFeatureIntegration(Long hospitalId,
+                                                                           Long featureTypeId) {
 
         ClientFeatureIntegration clientFeatureIntegration = new ClientFeatureIntegration();
         clientFeatureIntegration.setFeatureId(featureTypeId);
@@ -55,11 +56,13 @@ public class IntegrationUtils {
     }
 
     public static ApiFeatureIntegration parseToClientApiFeatureIntegration(Long clientFeatureIntegrationId,
-                                                                           Long apiIntegrationFormatId) {
+                                                                           Long apiIntegrationFormatId,
+                                                                           Long integrationChannelId) {
 
         ApiFeatureIntegration apiFeatureIntegration = new ApiFeatureIntegration();
         apiFeatureIntegration.setApiIntegrationFormatId(apiIntegrationFormatId);
         apiFeatureIntegration.setClientFeatureIntegrationId(apiIntegrationFormatId);
+        apiFeatureIntegration.setIntegrationChannelId(integrationChannelId);
         apiFeatureIntegration.setStatus(ACTIVE);
 
         return apiFeatureIntegration;

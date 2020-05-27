@@ -85,7 +85,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
         saveApiIntegrationFormat(apiIntegrationFormat);
 
-        saveApiFeatureIntegration(clientFeatureIntegration.getId(), apiIntegrationFormat.getId());
+        saveApiFeatureIntegration(clientFeatureIntegration.getId(), apiIntegrationFormat.getId(),requestDTO.getIntegrationChannelId());
 
         saveApiQueryParameters(requestDTO.getParametersRequestDTOS(), apiIntegrationFormat);
 
@@ -345,10 +345,10 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     }
 
-    private void saveApiFeatureIntegration(Long clientFeatureIntegrationId, Long apiIntegrationFormatId) {
+    private void saveApiFeatureIntegration(Long clientFeatureIntegrationId, Long apiIntegrationFormatId, Long integrationChannelId) {
 
         apiFeatureIntegrationRepository.save(parseToClientApiFeatureIntegration(clientFeatureIntegrationId,
-                apiIntegrationFormatId));
+                apiIntegrationFormatId,integrationChannelId));
 
     }
 

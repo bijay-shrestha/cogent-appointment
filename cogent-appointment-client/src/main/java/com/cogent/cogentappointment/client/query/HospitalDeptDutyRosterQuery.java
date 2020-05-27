@@ -10,13 +10,22 @@ import java.util.Objects;
  */
 public class HospitalDeptDutyRosterQuery {
 
-    public static final String QUERY_TO_FETCH_HDD_ROSTER_COUNT_WITHOUT_ROOM =
-            " SELECT COUNT(d.id)" +
+    public static final String QUERY_TO_FETCH_HDD_ROSTER_STATUS =
+            " SELECT MAX(d.isRoomEnabled)" +
                     " FROM HospitalDepartmentDutyRoster d" +
                     " WHERE" +
                     " d.status != 'D'" +
-                    " AND d.isRoomEnabled = 'N'" +
-                    " AND d.hospitalDepartment.id= :id" +
+                    " AND d.hospitalDepartment.id= :hospitalDepartmentId" +
+                    " AND d.toDate >=:fromDate" +
+                    " AND d.fromDate <=:toDate";
+
+    public static final String QUERY_TO_FETCH_HDD_ROSTER_STATUS_EXCEPT_CURRENT_ID =
+            " SELECT MAX(d.isRoomEnabled)" +
+                    " FROM HospitalDepartmentDutyRoster d" +
+                    " WHERE" +
+                    " d.status != 'D'" +
+                    " AND d.id != :id" +
+                    " AND d.hospitalDepartment.id= :hospitalDepartmentId" +
                     " AND d.toDate >=:fromDate" +
                     " AND d.fromDate <=:toDate";
 

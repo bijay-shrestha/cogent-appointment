@@ -120,6 +120,8 @@ public class ErrorMessageConstants {
         String BAD_REQUEST_MESSAGE = "Doctor Duty Roster Override doesn't lie within the duty roster date range" +
                 " '%s' to '%s'";
 
+        String BAD_ROOM_REQUEST = "If room is enabled, corresponding room details is also required";
+
         String DUPLICATE_DUTY_ROSTER_WITHOUT_ROOM =
                 "Hospital Department Duty Roster already exists within '%s' to '%s'";
 

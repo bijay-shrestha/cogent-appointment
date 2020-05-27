@@ -325,6 +325,10 @@ public class SwaggerConstants {
         String SEARCH_OPERATION = "Search room number according to given request parameters";
         String FETCH_ACTIVE_ROOM_FOR_DROP_DOWN = "Fetch active room numbers for drop down";
         String FETCH_ROOM_FOR_DROP_DOWN = "Fetch room numbers for drop down";
+        String FETCH_ACTIVE_ROOM_FOR_DROP_DOWN_BY_HOSPITAL_DEPARTMENT_ID = "Fetch active room numbers for drop down " +
+                " by hospital department Id";
+        String FETCH_ROOM_FOR_DROP_DOWN_BY_HOSPITAL_DEPARTMENT_ID = "Fetch room numbers for drop down " +
+                "by hospital department Id";
     }
 
     //S

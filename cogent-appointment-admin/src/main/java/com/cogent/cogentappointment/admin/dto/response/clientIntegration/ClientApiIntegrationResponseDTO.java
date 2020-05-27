@@ -20,7 +20,9 @@ public class ClientApiIntegrationResponseDTO implements Serializable {
 
     private String featureCode;
 
-    private String requestMethod;
+    private Long requestMethodId;
+
+    private String requestMethodName;
 
     private String url;
 

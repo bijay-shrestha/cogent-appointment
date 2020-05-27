@@ -252,7 +252,7 @@ public class IntegrationServiceImpl implements IntegrationService {
         ClientApiIntegrationDetailResponseDTO responseDTO = new ClientApiIntegrationDetailResponseDTO();
         responseDTO.setFeatureCode(featureIntegrationResponse.getFeatureCode());
         responseDTO.setRequestBody(featureIntegrationResponse.getRequestBody());
-        responseDTO.setRequestMethod(featureIntegrationResponse.getRequestMethod());
+        responseDTO.setRequestMethodName(featureIntegrationResponse.getRequestMethodName());
         responseDTO.setHospitalName(featureIntegrationResponse.getHospitalName());
         responseDTO.setUrl(featureIntegrationResponse.getUrl());
         responseDTO.setHeaders(requestHeaderResponseDTO);
@@ -288,8 +288,10 @@ public class IntegrationServiceImpl implements IntegrationService {
 
         ClientApiIntegrationUpdateResponseDTO responseDTO = new ClientApiIntegrationUpdateResponseDTO();
         responseDTO.setFeatureCode(featureIntegrationResponse.getFeatureCode());
+        responseDTO.setFeatureId(featureIntegrationResponse.getFeatureId());
         responseDTO.setRequestBody(featureIntegrationResponse.getRequestBody());
-        responseDTO.setRequestMethod(featureIntegrationResponse.getRequestMethod());
+        responseDTO.setRequestMethodName(featureIntegrationResponse.getRequestMethodName());
+        responseDTO.setRequestMethodId(featureIntegrationResponse.getRequestMethodId());
         responseDTO.setUrl(featureIntegrationResponse.getUrl());
         responseDTO.setHospitalName(featureIntegrationResponse.getHospitalName());
         responseDTO.setHeaders(requestHeaderResponseDTO);

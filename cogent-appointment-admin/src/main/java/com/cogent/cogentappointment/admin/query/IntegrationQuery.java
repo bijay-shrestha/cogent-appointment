@@ -51,10 +51,10 @@ public class IntegrationQuery {
 
     public static final String CLIENT_API_FEATURES_HEADERS_QUERY =
             " SELECT " +
-                    " arh.id as id,"+
+                    " arh.id as id," +
                     " arh.keyName as keyParam," +
                     " arh.value as valueParam," +
-                    " arh.status as status"+
+                    " arh.status as status" +
                     " FROM ClientFeatureIntegration cfi" +
                     " LEFT JOIN Feature f ON f.id=cfi.featureId" +
                     " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=cfi.id" +
@@ -68,10 +68,10 @@ public class IntegrationQuery {
 
     public static final String CLIENT_API_PARAMETERS_QUERY =
             " SELECT " +
-                    " aqp.id as id,"+
+                    " aqp.id as id," +
                     " aqp.param as keyParam," +
                     " aqp.value as valueParam," +
-                    " aqp.status as status"+
+                    " aqp.status as status" +
                     " FROM ClientFeatureIntegration cfi" +
                     " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=cfi.id" +
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=afi.apiIntegrationFormatId" +
@@ -114,9 +114,10 @@ public class IntegrationQuery {
     public static final String CLIENT_FEATURES_INTEGRATION_DETAILS_API_QUERY =
             "SELECT" +
                     " f.id as featureId," +
-                    " h.name as hospitalName,"+
+                    " h.name as hospitalName," +
                     " f.code as featureCode," +
-                    " hrm.name as requestMethod,"+
+                    " hrm.id as requestMethodId," +
+                    " hrm.name as requestMethodName," +
                     " aif.url as url," +
                     " aif.httpRequestBodyAttributes as requestBody" +
                     " from ClientFeatureIntegration cfi" +
@@ -124,12 +125,12 @@ public class IntegrationQuery {
                     " LEFT JOIN Feature f ON f.id=cfi.featureId" +
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=afi.apiIntegrationFormatId" +
                     " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId" +
-                    " LEFT JOIN Hospital h ON h.id=cfi.hospitalId"+
-                    " WHERE cfi.id= :clientFeatureIntegrationId"+
-                    " AND aif.status='Y'"+
-                    " AND hrm.status='Y'"+
-                    " AND afi.status='Y'"+
-                    " AND f.status='Y'"+
+                    " LEFT JOIN Hospital h ON h.id=cfi.hospitalId" +
+                    " WHERE cfi.id= :clientFeatureIntegrationId" +
+                    " AND aif.status='Y'" +
+                    " AND hrm.status='Y'" +
+                    " AND afi.status='Y'" +
+                    " AND f.status='Y'" +
                     " AND cfi.status='Y'";
 
     public static final String QUERY_TO_FETCH_MIN_API_INTEGRATION_TYPE =
@@ -146,25 +147,25 @@ public class IntegrationQuery {
                     " f.id as value," +
                     " f.name as label" +
                     " FROM" +
-                    " Feature f"+
-                    " LEFT JOIN ApiIntegrationType ait ON ait.id=f.apiIntegrationTypeId.id"+
+                    " Feature f" +
+                    " LEFT JOIN ApiIntegrationType ait ON ait.id=f.apiIntegrationTypeId.id" +
                     " WHERE ait.status ='Y'" +
                     " AND f.status ='Y'" +
-                    " AND ait.id=:apiIntegrationTypeId"+
+                    " AND ait.id=:apiIntegrationTypeId" +
                     " ORDER by ait.name ASC";
 
 
     public static Function<ClientApiIntegrationSearchRequestDTO, String> CLIENT_API_INTEGRATION_SEARCH_QUERY =
             (searchRequestDTO) ->
                     " SELECT" +
-                            " cfi.id as id,"+
-                            " h.name as hospitalName,"+
+                            " cfi.id as id," +
+                            " h.name as hospitalName," +
                             " f.name as featureName," +
                             " f.code as featureCode," +
                             " hrm.name as requestMethod," +
                             " aif.url as url" +
                             " FROM ClientFeatureIntegration cfi" +
-                            " LEFT JOIN Hospital h ON h.id=cfi.hospitalId"+
+                            " LEFT JOIN Hospital h ON h.id=cfi.hospitalId" +
                             " LEFT JOIN Feature f ON f.id=cfi.featureId" +
                             " LEFT JOIN ApiIntegrationType ait ON ait.id=f.apiIntegrationTypeId.id" +
                             " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=cfi.id" +

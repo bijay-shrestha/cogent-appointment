@@ -17,9 +17,13 @@ public class ClientApiIntegrationDetailResponseDTO  implements Serializable {
 
     private String hospitalName;
 
+    private Long featureId;
+
     private String featureCode;
 
-    private String requestMethod;
+    private Long requestMethodId;
+
+    private String requestMethodName;
 
     private String url;
 

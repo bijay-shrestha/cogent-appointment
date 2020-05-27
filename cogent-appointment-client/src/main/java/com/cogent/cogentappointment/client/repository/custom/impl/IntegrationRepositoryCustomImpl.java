@@ -77,7 +77,7 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
 
         Map<String, String> map = new HashMap<>();
         parametersResponseDTO.forEach(response -> {
-            map.put(response.getParam(), response.getValue());
+            map.put(response.getKeyParam(), response.getValueParam());
         });
 
 //        if (appointmentDetails.isEmpty()) throw APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId);

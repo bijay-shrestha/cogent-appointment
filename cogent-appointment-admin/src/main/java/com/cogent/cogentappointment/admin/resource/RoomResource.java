@@ -17,7 +17,9 @@ import javax.validation.Valid;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.RoomConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.HospitalConstants.HOSPITAL_ID_PATH_VARIABLE_BASE;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.HospitalDepartmentConstants.HOSPITAL_DEPARTMENT_ID_PATH_VARIABLE_BASE;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.RoomConstants.BASE_ROOM;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.RoomConstants.HOSPITAL_DEPARTMENT_WISE;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
@@ -64,7 +66,7 @@ public class RoomResource {
         return ok(roomService.fetchActiveMinRoom(hospitalId));
     }
 
-    @GetMapping(MIN+HOSPITAL_ID_PATH_VARIABLE_BASE)
+    @GetMapping(MIN + HOSPITAL_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_ROOM_FOR_DROP_DOWN)
     public ResponseEntity<?> fetchMinRoom(@PathVariable("hospitalId") Long hospitalId) {
         return ok(roomService.fetchMinRoom(hospitalId));
@@ -77,6 +79,18 @@ public class RoomResource {
                                     @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ok().body(roomService.search(searchRequestDTO, pageable));
+    }
+
+    @GetMapping(HOSPITAL_DEPARTMENT_WISE + ACTIVE + MIN + HOSPITAL_DEPARTMENT_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_ACTIVE_ROOM_FOR_DROP_DOWN_BY_HOSPITAL_DEPARTMENT_ID)
+    public ResponseEntity<?> fetchActiveMinRoomByHospitalDepartmentId(@PathVariable("hospitalDepartmentId") Long hospitalDepartmentId) {
+        return ok(roomService.fetchActiveMinRoomByHospitalDepartmentId(hospitalDepartmentId));
+    }
+
+    @GetMapping(HOSPITAL_DEPARTMENT_WISE + MIN + HOSPITAL_DEPARTMENT_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_ROOM_FOR_DROP_DOWN_BY_HOSPITAL_DEPARTMENT_ID)
+    public ResponseEntity<?> fetchMinRoomByHospitalDepartmentId(@PathVariable("hospitalDepartmentId") Long hospitalDepartmentId) {
+        return ok(roomService.fetchMinRoomByHospitalDepartmentId(hospitalDepartmentId));
     }
 
 }

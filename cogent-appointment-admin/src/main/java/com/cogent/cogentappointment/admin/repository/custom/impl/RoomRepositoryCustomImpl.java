@@ -107,6 +107,32 @@ public class RoomRepositoryCustomImpl implements RoomRepositoryCustom {
         }
     }
 
+    @Override
+    public List<DropDownResponseDTO> fetchActiveMinRoomByHospitalDepartmentId(Long hospitalDepartmentId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_ROOM_FOR_DROPDOWN_BY_HOSPITAL_DEPARTMENT_ID)
+                .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId);
+
+        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
+
+        if (results.isEmpty()) {
+            error();
+            throw ROOM_NOT_FOUND.get();
+        } else return results;
+    }
+
+    @Override
+    public List<DropDownResponseDTO> fetchMinRoomByHospitalDepartmentId(Long hospitalDepartmentId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ROOM_FOR_DROPDOWN_BY_HOSPITAL_DEPARTMENT_ID)
+                .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId);
+
+        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
+
+        if (results.isEmpty()) {
+            error();
+            throw ROOM_NOT_FOUND.get();
+        } else return results;
+    }
+
     private Supplier<NoContentFoundException> ROOM_NOT_FOUND = () ->
             new NoContentFoundException(Room.class);
 

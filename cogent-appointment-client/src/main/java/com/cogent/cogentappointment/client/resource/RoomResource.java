@@ -16,6 +16,7 @@ import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.RoomConstant.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.HospitalDepartmentConstants.HOSPITAL_DEPARTMENT_ID_PATH_VARIABLE_BASE;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.RoomConstants.BASE_ROOM;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
@@ -57,7 +58,7 @@ public class RoomResource {
         return ok().build();
     }
 
-    @GetMapping(ACTIVE + MIN )
+    @GetMapping(ACTIVE + MIN)
     @ApiOperation(FETCH_ACTIVE_ROOM_FOR_DROP_DOWN)
     public ResponseEntity<?> fetchActiveMinRoom() {
         return ok(roomService.fetchActiveMinRoom());
@@ -76,6 +77,18 @@ public class RoomResource {
                                     @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ok().body(roomService.search(searchRequestDTO, pageable));
+    }
+
+    @GetMapping(ACTIVE + MIN + HOSPITAL_DEPARTMENT_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_ACTIVE_ROOM_FOR_DROP_DOWN_BY_HOSPITAL_DEPARTMENT_ID)
+    public ResponseEntity<?> fetchActiveMinRoomByHospitalDepartmentId(@PathVariable("hospitalDepartmentId") Long hospitalDepartmentId) {
+        return ok(roomService.fetchActiveMinRoomByHospitalDepartmentId(hospitalDepartmentId));
+    }
+
+    @GetMapping(MIN + HOSPITAL_DEPARTMENT_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_ROOM_FOR_DROP_DOWN_BY_HOSPITAL_DEPARTMENT_ID)
+    public ResponseEntity<?> fetchMinRoomByHospitalDepartmentId(@PathVariable("hospitalDepartmentId") Long hospitalDepartmentId) {
+        return ok(roomService.fetchMinRoomByHospitalDepartmentId(hospitalDepartmentId));
     }
 
 }

@@ -12,5 +12,5 @@ public interface AppointmentServiceTypeService {
 
     List<DropDownResponseDTO> fetchActiveMinInfo();
 
-    AppointmentServiceType fetchById(Long id);
+    AppointmentServiceType fetchActiveById(Long id);
 }

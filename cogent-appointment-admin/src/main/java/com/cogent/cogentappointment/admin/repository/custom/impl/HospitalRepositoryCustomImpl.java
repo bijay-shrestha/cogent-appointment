@@ -5,6 +5,7 @@ import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalSearchReq
 import com.cogent.cogentappointment.admin.dto.response.company.CompanyDropdownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.company.CompanyMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.company.CompanyResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalContactNumberResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalDropdownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalResponseDTO;
@@ -18,8 +19,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -31,7 +34,6 @@ import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.HOSPI
 import static com.cogent.cogentappointment.admin.query.CompanyQuery.*;
 import static com.cogent.cogentappointment.admin.query.HospitalQuery.*;
 import static com.cogent.cogentappointment.admin.utils.CompanyUtils.parseToCompanyResponseDTO;
-import static com.cogent.cogentappointment.admin.utils.HospitalUtils.parseToHospitalResponseDTO;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
 
 /**
@@ -96,10 +98,8 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
         List<HospitalMinimalResponseDTO> results = transformNativeQueryToResultList(query, HospitalMinimalResponseDTO.class);
 
-        if (results.isEmpty()) {
-            error();
+        if (results.isEmpty())
             throw HOSPITAL_NOT_FOUND.get();
-        }
 
         results.get(0).setTotalItems(totalItems);
         return results;
@@ -115,10 +115,8 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
         List<CompanyMinimalResponseDTO> results = transformNativeQueryToResultList(query, CompanyMinimalResponseDTO.class);
 
-        if (results.isEmpty()) {
-            error();
+        if (results.isEmpty())
             throw HOSPITAL_NOT_FOUND.get();
-        }
 
         results.get(0).setTotalItems(totalItems);
         return results;
@@ -126,16 +124,22 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
     @Override
     public HospitalResponseDTO fetchDetailsById(Long id) {
-        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_DETAILS)
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_DETAILS)
                 .setParameter(ID, id);
 
-        List<Object[]> results = query.getResultList();
+        try {
+            HospitalResponseDTO hospitalDetails =
+                    transformNativeQueryToSingleResult(query, HospitalResponseDTO.class);
 
-        if (results.isEmpty()) {
+            List<HospitalContactNumberResponseDTO> contactDetails =
+                    fetchHospitalContactNumber(id);
+
+            hospitalDetails.setContactNumberResponseDTOS(contactDetails);
+
+            return hospitalDetails;
+        } catch (NoResultException ex) {
             throw HOSPITAL_WITH_GIVEN_ID_NOT_FOUND.apply(id);
         }
-
-        return parseToHospitalResponseDTO(results.get(0));
     }
 
     @Override
@@ -171,10 +175,10 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
         List<HospitalDropdownResponseDTO> results = transformQueryToResultList(query, HospitalDropdownResponseDTO.class);
 
-        if (results.isEmpty()) {
-            error();
+        if (results.isEmpty())
             throw HOSPITAL_NOT_FOUND.get();
-        } else return results;
+
+        else return results;
     }
 
     @Override
@@ -183,10 +187,10 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
         List<HospitalDropdownResponseDTO> results = transformQueryToResultList(query, HospitalDropdownResponseDTO.class);
 
-        if (results.isEmpty()) {
-            error();
+        if (results.isEmpty())
             throw HOSPITAL_NOT_FOUND.get();
-        } else return results;
+
+        else return results;
     }
 
     @Override
@@ -195,21 +199,30 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
         List<CompanyDropdownResponseDTO> results = transformQueryToResultList(query, CompanyDropdownResponseDTO.class);
 
-        if (results.isEmpty()) {
-            error();
+        if (results.isEmpty())
             throw HOSPITAL_NOT_FOUND.get();
-        } else return results;
+
+        else return results;
     }
 
-    private Supplier<NoContentFoundException> HOSPITAL_NOT_FOUND = () -> new NoContentFoundException(Hospital.class);
+    private Supplier<NoContentFoundException> HOSPITAL_NOT_FOUND = () -> {
+        log.error(CONTENT_NOT_FOUND, HOSPITAL);
+        throw new NoContentFoundException(Hospital.class);
+    };
 
     private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, HOSPITAL, id);
         throw new NoContentFoundException(Hospital.class, "id", id.toString());
     };
 
-    private void error() {
-        log.error(CONTENT_NOT_FOUND, HOSPITAL);
+    private List<HospitalContactNumberResponseDTO> fetchHospitalContactNumber(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_CONTACT_NUMBER)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        List<HospitalContactNumberResponseDTO> contactNumbers =
+                transformQueryToResultList(query, HospitalContactNumberResponseDTO.class);
+
+        return contactNumbers.isEmpty() ? new ArrayList<>() : contactNumbers;
     }
 }
 

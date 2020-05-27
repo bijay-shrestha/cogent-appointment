@@ -8,10 +8,7 @@ import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseD
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalContactNumberResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalResponseDTO;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
-import com.cogent.cogentappointment.persistence.model.Hospital;
-import com.cogent.cogentappointment.persistence.model.HospitalBanner;
-import com.cogent.cogentappointment.persistence.model.HospitalContactNumber;
-import com.cogent.cogentappointment.persistence.model.HospitalLogo;
+import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
@@ -244,5 +241,24 @@ public class HospitalUtils {
                         .status(contactDetails[2].charAt(0))
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    public static HospitalAppointmentServiceType parseToHospitalAppointmentServiceType(Hospital hospital,
+                                                                                       AppointmentServiceType appointmentServiceType,
+                                                                                       Character isPrimary) {
+
+        HospitalAppointmentServiceType hospitalAppointmentServiceType = new HospitalAppointmentServiceType();
+        hospitalAppointmentServiceType.setHospital(hospital);
+        hospitalAppointmentServiceType.setAppointmentServiceType(appointmentServiceType);
+        hospitalAppointmentServiceType.setIsPrimary(isPrimary);
+        hospitalAppointmentServiceType.setStatus(ACTIVE);
+        return hospitalAppointmentServiceType;
+    }
+
+    public static HospitalAppointmentServiceType updateHospitalAppointmentServiceTypeStatus(
+            HospitalAppointmentServiceType hospitalAppointmentServiceType, Character status, Character isPrimary) {
+
+        hospitalAppointmentServiceType.setStatus(status);
+        return hospitalAppointmentServiceType;
     }
 }

@@ -45,7 +45,7 @@ public class AppointmentServiceTypeServiceImpl implements AppointmentServiceType
     }
 
     @Override
-    public AppointmentServiceType fetchById(Long id) {
+    public AppointmentServiceType fetchActiveById(Long id) {
         return appointmentServiceTypeRepository.fetchActiveById(id)
                 .orElseThrow(() -> NO_APPOINTMENT_SERVICE_TYPE_FOUND.apply(id));
     }

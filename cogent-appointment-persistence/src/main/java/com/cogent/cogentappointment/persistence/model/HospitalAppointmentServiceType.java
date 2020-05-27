@@ -34,10 +34,12 @@ public class HospitalAppointmentServiceType extends Auditable<String> implements
     @JoinColumn(name = "appointment_service_type_id")
     private AppointmentServiceType appointmentServiceType;
 
-    /*→ is_primary reflected after selecting a hospital
-     during the appointment process  in eSewa.*/
+    /* is_primary reflected after selecting a hospital
+     during the appointment process  in eSewa.
+     By default, it is 'N' and only one AppointmentServiceType can be primary
+     */
     @Column(name = "is_primary")
-    private Character isPrimary;
+    private Character isPrimary = 'N';
 
     @Column(name = "status")
     private Character status;

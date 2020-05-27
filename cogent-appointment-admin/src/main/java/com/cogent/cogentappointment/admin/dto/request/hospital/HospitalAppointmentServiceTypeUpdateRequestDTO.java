@@ -4,24 +4,20 @@ import com.cogent.cogentappointment.admin.constraintvalidator.Status;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
- * @author smriti ON 12/01/2020
+ * @author smriti on 26/05/20
  */
 @Getter
 @Setter
-public class HospitalContactNumberUpdateRequestDTO implements Serializable {
+public class HospitalAppointmentServiceTypeUpdateRequestDTO implements Serializable {
 
-    private Long hospitalContactNumberId;
+    private Long hospitalAppointmentServiceTypeId;
 
     @NotNull
-    @NotEmpty
-    @NotBlank
-    private String contactNumber;
+    private Long appointmentServiceTypeId;
 
     @Status
     private Character status;

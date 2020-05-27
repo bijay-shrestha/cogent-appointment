@@ -1,8 +1,8 @@
 package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.dto.request.clientIntegration.EsewaPayementStatus;
-import com.cogent.cogentappointment.client.dto.request.refundStatus.RefundStatusRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.refundStatus.RefundStatusSearchRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.refundStatus.EsewaResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.refundStatus.RefundStatusResponseDTO;
 import com.cogent.cogentappointment.client.repository.AppointmentRefundDetailRepository;
@@ -56,6 +56,7 @@ public class RefundStatusServiceImpl implements RefundStatusService {
 
     @Override
     public RefundStatusResponseDTO searchRefundAppointments(RefundStatusSearchRequestDTO requestDTO, Pageable pageable) {
+
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SEARCHING_PROCESS_STARTED, REFUND_STATUS);
@@ -76,11 +77,15 @@ public class RefundStatusServiceImpl implements RefundStatusService {
         String response = processRefundRequest(requestDTO);
 
         switch (response) {
+
             case PARTIAL_REFUND:
-            case FULL_REFUND: {
                 changeAppointmentAndAppointmentRefundDetailStatus(requestDTO);
                 break;
-            }
+
+            case FULL_REFUND:
+                changeAppointmentAndAppointmentRefundDetailStatus(requestDTO);
+                break;
+
         }
 
 

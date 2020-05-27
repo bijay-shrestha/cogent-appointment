@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.client.utils;
 
 import com.cogent.cogentappointment.client.dto.request.clientIntegration.EsewaPayementStatus;
-import com.cogent.cogentappointment.client.dto.request.refundStatus.RefundStatusRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.refundStatus.EsewaResponseDTO;
 import com.cogent.cogentappointment.client.utils.resttempalte.RestTemplateUtils;
 import org.springframework.http.HttpEntity;

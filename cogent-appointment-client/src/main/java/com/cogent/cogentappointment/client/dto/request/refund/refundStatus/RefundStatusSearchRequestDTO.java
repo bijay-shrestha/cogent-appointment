@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.dto.request.refundStatus;
+package com.cogent.cogentappointment.client.dto.request.refund.refundStatus;
 
 import lombok.Getter;
 import lombok.Setter;

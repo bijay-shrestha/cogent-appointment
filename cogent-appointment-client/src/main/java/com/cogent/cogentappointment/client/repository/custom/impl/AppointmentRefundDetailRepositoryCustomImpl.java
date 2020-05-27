@@ -2,8 +2,8 @@ package com.cogent.cogentappointment.client.repository.custom.impl;
 
 
 import com.cogent.cogentappointment.client.dto.request.dashboard.RefundAmountRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.refundStatus.RefundStatusRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.refundStatus.RefundStatusSearchRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.refundStatus.RefundStatusDTO;
 import com.cogent.cogentappointment.client.dto.response.refundStatus.RefundStatusResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;

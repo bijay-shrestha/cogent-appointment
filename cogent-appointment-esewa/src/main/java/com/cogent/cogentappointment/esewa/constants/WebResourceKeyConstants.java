@@ -103,7 +103,7 @@ public class WebResourceKeyConstants {
 
     //R
     public interface RefundStatusConstants {
-        String BASE_REFUND_STATUS = "/refundStatus";
+        String BASE_REFUND_STATUS = "/refund";
         String APPROVE = "/approve";
     }
 

@@ -1,11 +1,6 @@
 package com.cogent.cogentappointment.admin.dto.request.clientIntegration.clientIntegrationUpdate;
 
-import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiHeadersRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiQueryParametersRequestDTO;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.List;
@@ -14,6 +9,7 @@ import java.util.List;
  * @author rupak on 2020-05-22
  */
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,9 +21,9 @@ public class ClientApiIntegrationUpdateRequestDTO implements Serializable {
 
     private String apiUrl;
 
-    private List<ClientApiHeadersRequestDTO> clientApiRequestHeaders;
+    private List<ClientApiRequestHeadersUpdateRequestDTO> clientApiRequestHeaders;
 
-    private List<ClientApiQueryParametersRequestDTO> parametersRequestDTOS;
+    private List<ClientApiQueryParamtersUpdateRequestDTO> queryParametersRequestDTOS;
 
     private String requestBodyAttrribute;
 

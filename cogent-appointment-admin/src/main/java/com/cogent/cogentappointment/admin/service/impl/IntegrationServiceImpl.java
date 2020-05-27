@@ -3,7 +3,8 @@ package com.cogent.cogentappointment.admin.service.impl;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.clientIntegration.*;
 import com.cogent.cogentappointment.admin.dto.request.clientIntegration.clientIntegrationUpdate.ClientApiIntegrationUpdateRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.clientIntegration.ApiQueryParametersResponseDTO;
+import com.cogent.cogentappointment.admin.dto.request.clientIntegration.clientIntegrationUpdate.ClientApiQueryParamtersUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.clientIntegration.clientIntegrationUpdate.ClientApiRequestHeadersUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.clientIntegration.ClientApiIntegrationDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.clientIntegration.ClientApiIntegrationResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.clientIntegration.ClientApiIntegrationSearchDTO;
@@ -106,41 +107,85 @@ public class IntegrationServiceImpl implements IntegrationService {
 
         List<ApiFeatureIntegration> apiFeatureIntegration =
                 apiFeatureIntegrationRepository.findApiFeatureIntegrationbyClientFeatureId(clientFeatureIntegration.getId())
-                        .orElseThrow(() -> API_FEATURE_INTEGRATION_FEATURE_NOT_FOUND.apply(requestDTO.getClientFeatureIntegrationId()));
+                        .orElseThrow(() -> API_FEATURE_INTEGRATION_NOT_FOUND.apply(requestDTO.getClientFeatureIntegrationId()));
 
-//        apiFeatureIntegration.forEach(apiIntegration->{
+        apiFeatureIntegration.forEach(featureIntegration -> {
 
-//           ApiIntegrationFormat apiIntegrationFormat=
-//                   clientApiIntegrationFormatRespository.findByIntegrationFormatId(apiIntegration.getApiIntegrationFormatId());
-//
-//           apiIntegrationFormat.setUrl(requestDTO.getApiUrl());
-//           apiIntegrationFormat.setHttpRequestBodyAttributes(requestDTO.getRequestBodyAttrribute());
-//           apiIntegrationFormat.setHttpRequestMethodId(requestDTO.getRequestMethodId());
-//
-//        });
-//
-//
-//        ApiRequestHeader requestHeader=
-//                apiRequestHeaderRepository.findApiRequestHeaderByApiIntegraionFormatId(apiIntegrationFormat.getId());
-//
-//        requestHeader.se
-//
+            updateApiQueryParameters(requestDTO.getQueryParametersRequestDTOS(), featureIntegration.getApiIntegrationFormatId());
 
-
-
-
-//        ApiIntegrationFormat apiIntegrationFormat=
-
-//        updateApiFeatureIntegration(clientFeatureIntegration.getId(), apiIntegrationFormat.getId());
-//
-//        updateApiQueryParameters(requestDTO.getParametersRequestDTOS(), apiIntegrationFormat);
-//
-//        updateApiRequestHeaders(requestDTO.getClientApiRequestHeaders(), apiIntegrationFormat);
-
+            updateApiRequestHeaders(requestDTO.getClientApiRequestHeaders(), featureIntegration.getApiIntegrationFormatId());
+        });
 
         log.info(UPDATING_PROCESS_COMPLETED, API_INTEGRATIONS, getDifferenceBetweenTwoTime(startTime));
 
     }
+
+    private void updateApiRequestHeaders(List<ClientApiRequestHeadersUpdateRequestDTO> queryParametersRequestDTOS,
+                                         Long integrationFormatId) {
+
+        queryParametersRequestDTOS.forEach(requestDTO -> {
+
+            ApiRequestHeader apiRequestHeader =
+                    apiRequestHeaderRepository.findApiRequestHeaderById(requestDTO.getId())
+                            .orElseThrow(() -> API_REQUEST_HEADER_NOT_FOUND.apply(requestDTO.getId()));
+
+            if (apiRequestHeader == null) {
+
+                ApiRequestHeader requestHeader = new ApiRequestHeader();
+                requestHeader.setApiIntegrationFormatId(integrationFormatId);
+                requestHeader.setKeyName(requestDTO.getKeyParam());
+                requestHeader.setValue(requestDTO.getValueParam());
+                requestHeader.setStatus(requestDTO.getStatus());
+
+                apiRequestHeaderRepository.save(requestHeader);
+
+            }
+
+            if (apiRequestHeader != null) {
+                apiRequestHeader.setKeyName(requestDTO.getKeyParam());
+                apiRequestHeader.setValue(requestDTO.getValueParam());
+                apiRequestHeader.setStatus(requestDTO.getStatus());
+                apiRequestHeader.setApiIntegrationFormatId(integrationFormatId);
+
+            }
+
+        });
+
+    }
+
+    private void updateApiQueryParameters(List<ClientApiQueryParamtersUpdateRequestDTO> queryParametersRequestDTOS,
+                                         Long integrationFormatId) {
+
+        queryParametersRequestDTOS.forEach(requestDTO -> {
+
+            ApiQueryParameters apiQueryParameters =
+                    apiQueryParametersRepository.findApiQueryParameterById(requestDTO.getId())
+                            .orElseThrow(() -> CLIENT_FEATURE_NOT_FOUND.apply(requestDTO.getId()));
+
+            if (apiQueryParameters == null) {
+
+                ApiQueryParameters queryParameters = new ApiQueryParameters();
+                queryParameters.setApiIntegrationFormatId(integrationFormatId);
+                queryParameters.setParam(requestDTO.getKeyParam());
+                queryParameters.setValue(requestDTO.getValueParam());
+                queryParameters.setStatus(requestDTO.getStatus());
+
+                apiQueryParametersRepository.save(queryParameters);
+
+            }
+
+            if (apiQueryParameters != null) {
+                apiQueryParameters.setParam(requestDTO.getKeyParam());
+                apiQueryParameters.setValue(requestDTO.getValueParam());
+                apiQueryParameters.setStatus(requestDTO.getStatus());
+                apiQueryParameters.setApiIntegrationFormatId(integrationFormatId);
+
+            }
+        });
+
+
+    }
+
 
     @Override
     public ClientApiIntegrationSearchDTO search(ClientApiIntegrationSearchRequestDTO searchRequestDTO, Pageable pageable) {
@@ -294,8 +339,17 @@ public class IntegrationServiceImpl implements IntegrationService {
         clientFeatureIntegrationRepository.save(clientFeatureIntegration);
     }
 
-    private Function<Long, NoContentFoundException> API_FEATURE_INTEGRATION_FEATURE_NOT_FOUND = (id) -> {
+    private Function<Long, NoContentFoundException> API_REQUEST_HEADER_NOT_FOUND = (id) -> {
+        throw new NoContentFoundException(ApiRequestHeader.class);
+    };
+
+
+    private Function<Long, NoContentFoundException> API_FEATURE_INTEGRATION_NOT_FOUND = (id) -> {
         throw new NoContentFoundException(ApiFeatureIntegration.class);
+    };
+
+    private Function<Long, NoContentFoundException> API_INTEGRATION_FORMAT_NOT_FOUND = (id) -> {
+        throw new NoContentFoundException(ApiIntegrationFormat.class);
     };
 
     private Function<Long, NoContentFoundException> CLIENT_FEATURE_NOT_FOUND = (id) -> {

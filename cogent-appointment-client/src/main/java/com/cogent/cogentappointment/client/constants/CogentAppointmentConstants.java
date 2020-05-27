@@ -10,8 +10,9 @@ public class CogentAppointmentConstants {
         String APPOINTMENT_MODE_FONEPAY_CODE="FP";
     }
 
-    public interface RefundStatusResponseConstant{
+    public interface RefundResponseConstant {
         String PARTIAL_REFUND="PARTIAL_REFUND";
         String FULL_REFUND="FULL_REFUND";
+        String SUCCESS="SUCCESS";
     }
 }

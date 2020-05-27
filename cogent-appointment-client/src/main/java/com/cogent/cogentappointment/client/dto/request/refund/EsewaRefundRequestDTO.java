@@ -22,7 +22,7 @@ public class EsewaRefundRequestDTO implements Serializable{
 
     private String esewa_id;
 
-    private String is_refund;
+    private Boolean is_refund;
 
     private String remarks;
 

@@ -329,16 +329,20 @@ public class AppointmentUtils {
         return countResponseDTO;
     }
 
-    public static void parseRefundRejectDetails(AppointmentRefundRejectDTO refundRejectDTO,
+    public static AppointmentRefundDetail parseRefundRejectDetails(AppointmentRefundRejectDTO refundRejectDTO,
                                                 AppointmentRefundDetail refundDetail) {
         refundDetail.setStatus(REJECTED);
         refundDetail.setRemarks(refundRejectDTO.getRemarks());
+
+        return refundDetail;
     }
 
-    public static void parseAppointmentRejectDetails(AppointmentRejectDTO rejectDTO,
+    public static Appointment parseAppointmentRejectDetails(AppointmentRejectDTO rejectDTO,
                                                      Appointment appointment) {
         appointment.setStatus(REJECTED);
         appointment.setRemarks(rejectDTO.getRemarks());
+
+        return appointment;
     }
 
     public static AppointmentLogResponseDTO parseQueryResultToAppointmentLogResponse(List<Object[]> results) {

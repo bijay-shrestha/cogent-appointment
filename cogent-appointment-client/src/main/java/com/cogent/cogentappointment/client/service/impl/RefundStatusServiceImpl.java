@@ -20,8 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_ESEWA_CODE;
 import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_FONEPAY_CODE;
-import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.RefundStatusResponseConstant.FULL_REFUND;
-import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.RefundStatusResponseConstant.PARTIAL_REFUND;
+import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.RefundResponseConstant.FULL_REFUND;
+import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.RefundResponseConstant.PARTIAL_REFUND;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.RefundStatusLog.REFUND_STATUS;
 import static com.cogent.cogentappointment.client.utils.RefundStatusUtils.*;
@@ -79,11 +79,11 @@ public class RefundStatusServiceImpl implements RefundStatusService {
         switch (response) {
 
             case PARTIAL_REFUND:
-                changeAppointmentAndAppointmentRefundDetailStatus(requestDTO);
+                changeAppointmentAndAppointmentRefundDetailStatus(requestDTO,response);
                 break;
 
             case FULL_REFUND:
-                changeAppointmentAndAppointmentRefundDetailStatus(requestDTO);
+                changeAppointmentAndAppointmentRefundDetailStatus(requestDTO,response);
                 break;
 
         }
@@ -126,15 +126,15 @@ public class RefundStatusServiceImpl implements RefundStatusService {
         return null;
     }
 
-    private void changeAppointmentAndAppointmentRefundDetailStatus(RefundStatusRequestDTO requestDTO) {
+    private void changeAppointmentAndAppointmentRefundDetailStatus(RefundStatusRequestDTO requestDTO,String remarks) {
 
         AppointmentRefundDetail appointmentRefundDetail = refundDetailRepository.fetchAppointmentRefundDetail(requestDTO);
 
         Appointment appointment = appointmentRepository.fetchCancelledAppointmentDetails(requestDTO);
 
-        saveAppointment(changeAppointmentStatus.apply(appointment));
+        saveAppointment(changeAppointmentStatus.apply(appointment,remarks));
 
-        saveAppointmentRefundDetails(changeAppointmentRefundDetailStatus.apply(appointmentRefundDetail));
+        saveAppointmentRefundDetails(changeAppointmentRefundDetailStatus.apply(appointmentRefundDetail,remarks));
     }
 
     private void saveAppointment(Appointment appointment) {

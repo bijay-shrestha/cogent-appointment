@@ -152,6 +152,32 @@ public class RoomServiceImpl implements RoomService {
                 .orElseThrow(()-> ROOM_WITH_GIVEN_ID_NOT_FOUND.apply(roomId));
     }
 
+    @Override
+    public List<DropDownResponseDTO> fetchActiveMinRoomByHospitalDepartmentId(Long hospitalDepartmentId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, ROOM);
+
+        List<DropDownResponseDTO> responseDTOS = roomRepository.fetchActiveMinRoomByHospitalDepartmentId(hospitalDepartmentId);
+
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, ROOM, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
+    @Override
+    public List<DropDownResponseDTO> fetchMinRoomByHospitalDepartmentId(Long hospitalDepartmentId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, ROOM);
+
+        List<DropDownResponseDTO> responseDTOS = roomRepository.fetchMinRoomByHospitalDepartmentId(hospitalDepartmentId);
+
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, ROOM, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
+
     private void validateRoomNumber(String roomNumber, Long count) {
 
         if (count.intValue() > 0) {

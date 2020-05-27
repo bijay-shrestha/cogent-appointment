@@ -28,7 +28,7 @@ public class RoomQuery {
                     " AND r.hospital.id =:hospitalId";
 
     public static final String QUERY_TO_FETCH_ACTIVE_ROOM_FOR_DROPDOWN =
-            "SELECT r.id as value," +                                             //[0]
+            "SELECT r.id as value," +                                                  //[0]
                     " CONCAT('Room No',' - ',r.roomNumber) AS label" +                 //[1]
                     " FROM Room r " +
                     " WHERE r.status = 'Y'" +
@@ -36,11 +36,33 @@ public class RoomQuery {
                     " ORDER BY label ASC";
 
     public static final String QUERY_TO_FETCH_ROOM_FOR_DROPDOWN =
-            "SELECT r.id as value," +                                             //[0]
+            "SELECT r.id as value," +                                                  //[0]
                     " CONCAT('Room No',' - ',r.roomNumber) AS label" +                 //[1]
                     " FROM Room r " +
                     " WHERE r.status != 'D'" +
                     " AND r.hospital.id=:hospitalId" +
+                    " ORDER BY label ASC";
+
+    public static final String QUERY_TO_FETCH_ROOM_FOR_DROPDOWN_BY_HOSPITAL_DEPARTMENT_ID =
+            "SELECT r.id as value," +                                                  //[0]
+                    " CONCAT('Room No',' - ',r.roomNumber) AS label" +                 //[1]
+                    " FROM Room r" +
+                    " LEFT JOIN HospitalDepartmentRoomInfo hdri ON hdri.room.id=r.id" +
+                    " WHERE hdri.hospitalDepartment.id=:hospitalDepartmentId " +
+                    " AND r.hospital.id=:hospitalId" +
+                    " AND r.status != 'D'" +
+                    " AND hdri.status != 'D'" +
+                    " ORDER BY label ASC";
+
+    public static final String QUERY_TO_FETCH_ACTIVE_ROOM_FOR_DROPDOWN_BY_HOSPITAL_DEPARTMENT_ID =
+            "SELECT r.id as value," +                                                  //[0]
+                    " CONCAT('Room No',' - ',r.roomNumber) AS label" +                 //[1]
+                    " FROM Room r" +
+                    " LEFT JOIN HospitalDepartmentRoomInfo hdri ON hdri.room.id=r.id" +
+                    " WHERE hdri.hospitalDepartment.id=:hospitalDepartmentId " +
+                    " AND r.hospital.id=:hospitalId" +
+                    " AND r.status = 'Y'" +
+                    " AND hdri.status = 'Y'" +
                     " ORDER BY label ASC";
 
     private static final String SELECT_CLAUSE_TO_FETCH_MINIMAL_ROOM =

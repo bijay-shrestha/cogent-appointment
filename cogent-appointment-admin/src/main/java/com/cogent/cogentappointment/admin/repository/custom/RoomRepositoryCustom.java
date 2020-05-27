@@ -27,4 +27,8 @@ public interface RoomRepositoryCustom {
 
     RoomMinimalResponseDTO search(RoomSearchRequestDTO searchRequestDTO,
                                         Pageable pageable);
+
+    List<DropDownResponseDTO> fetchActiveMinRoomByHospitalDepartmentId(Long hospitalDepartmentId);
+
+    List<DropDownResponseDTO> fetchMinRoomByHospitalDepartmentId(Long hospitalDepartmentId);
 }

@@ -30,4 +30,8 @@ public interface RoomService {
 
     Room fetchActiveRoom(Long roomId);
 
+    List<DropDownResponseDTO> fetchActiveMinRoomByHospitalDepartmentId(Long hospitalDepartmentId);
+
+    List<DropDownResponseDTO> fetchMinRoomByHospitalDepartmentId(Long hospitalDepartmentId);
+
 }

@@ -139,11 +139,11 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
         return parseToExistingRosterDetails(weekDaysDetail, overrideDetail);
     }
 
-    private Integer fetchRoomNumber(Long hddRosterId) {
+    private String fetchRoomNumber(Long hddRosterId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HDD_ROSTER_ROOM_NUMBER)
                 .setParameter(ID, hddRosterId);
 
-        return (Integer) query.getSingleResult();
+        return (String) query.getSingleResult();
     }
 
     private Character checkIfDutyRosterOverrideExists(Long hddRosterId) {

@@ -26,7 +26,7 @@ public class Room extends Auditable<String> implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "room_number",length = 10)
+    @Column(name = "room_number", length = 10)
     private String roomNumber;
 
     @Column(name = "status")

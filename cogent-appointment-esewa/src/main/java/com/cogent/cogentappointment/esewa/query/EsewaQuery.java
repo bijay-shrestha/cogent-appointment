@@ -186,12 +186,14 @@ public class EsewaQuery {
                 " ELSE" +
                 " da.file_uri" +
                 " END as fileUri," +                                //[5]
-                " tbl1.qualificationAlias as qualificationAlias" +  //[6]
+                " tbl1.qualificationAlias as qualificationAlias," + //[6]
+                " dc.appointment_charge as appointmentCharge"+      //[7]
                 " FROM doctor_duty_roster ddr" +
                 " LEFT JOIN doctor_week_days_duty_roster dw ON dw.doctor_duty_roster_id = ddr.id" +
                 " LEFT JOIN doctor d ON d.id = ddr.doctor_id" +
                 " LEFT JOIN specialization s ON s.id = ddr.specialization_id" +
                 " LEFT JOIN doctor_avatar da ON d.id = da.doctor_id" +
+                " LEFT JOIN doctor_appointment_charge dc ON d.id = dc.doctor_id"+
                 " LEFT JOIN(" +
                 " SELECT" +
                 " GROUP_CONCAT(qa.name) as qualificationAlias," +

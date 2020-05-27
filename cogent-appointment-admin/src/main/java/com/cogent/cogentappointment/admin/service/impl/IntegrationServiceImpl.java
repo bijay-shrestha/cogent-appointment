@@ -105,11 +105,19 @@ public class IntegrationServiceImpl implements IntegrationService {
                 clientFeatureIntegrationRepository.findClientFeatureIntegrationById(requestDTO.getClientFeatureIntegrationId())
                         .orElseThrow(() -> CLIENT_FEATURE_NOT_FOUND.apply(requestDTO.getClientFeatureIntegrationId()));
 
+//        ApiFeatureIntegration apiFeatureIntegration =
+//                apiFeatureIntegrationRepository.findApiFeatureIntegrationbyClientFeatureId(clientFeatureIntegration.getId())
+//                        .orElseThrow(() -> API_FEATURE_INTEGRATION_NOT_FOUND.apply(requestDTO.getClientFeatureIntegrationId()));
+
+
         List<ApiFeatureIntegration> apiFeatureIntegration =
                 apiFeatureIntegrationRepository.findApiFeatureIntegrationbyClientFeatureId(clientFeatureIntegration.getId())
                         .orElseThrow(() -> API_FEATURE_INTEGRATION_NOT_FOUND.apply(requestDTO.getClientFeatureIntegrationId()));
 
+
         apiFeatureIntegration.forEach(featureIntegration -> {
+
+            updateApiIntegrationFormat(requestDTO, featureIntegration.getApiIntegrationFormatId());
 
             updateApiQueryParameters(requestDTO.getQueryParametersRequestDTOS(), featureIntegration.getApiIntegrationFormatId());
 
@@ -118,6 +126,18 @@ public class IntegrationServiceImpl implements IntegrationService {
 
         log.info(UPDATING_PROCESS_COMPLETED, API_INTEGRATIONS, getDifferenceBetweenTwoTime(startTime));
 
+    }
+
+    private void updateApiIntegrationFormat(ClientApiIntegrationUpdateRequestDTO requestDTO, Long apiIntegrationFormatId) {
+
+        ApiIntegrationFormat apiIntegrationFormat = clientApiIntegrationFormatRespository.findByIntegrationFormatId(apiIntegrationFormatId)
+                .orElseThrow(() -> API_INTEGRATION_FORMAT_NOT_FOUND.apply(apiIntegrationFormatId));
+
+        apiIntegrationFormat.setUrl(requestDTO.getApiUrl());
+        apiIntegrationFormat.setHttpRequestMethodId(requestDTO.getRequestMethodId());
+        apiIntegrationFormat.setHttpRequestBodyAttributes(requestDTO.getRequestBodyAttrribute());
+
+        clientApiIntegrationFormatRespository.save(apiIntegrationFormat);
     }
 
     private void updateApiRequestHeaders(List<ClientApiRequestHeadersUpdateRequestDTO> queryParametersRequestDTOS,
@@ -154,7 +174,7 @@ public class IntegrationServiceImpl implements IntegrationService {
     }
 
     private void updateApiQueryParameters(List<ClientApiQueryParamtersUpdateRequestDTO> queryParametersRequestDTOS,
-                                         Long integrationFormatId) {
+                                          Long integrationFormatId) {
 
         queryParametersRequestDTOS.forEach(requestDTO -> {
 

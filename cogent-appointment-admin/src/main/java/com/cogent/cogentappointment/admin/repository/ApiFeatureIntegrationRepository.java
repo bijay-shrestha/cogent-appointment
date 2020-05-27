@@ -16,5 +16,6 @@ import java.util.Optional;
 public interface ApiFeatureIntegrationRepository extends JpaRepository<ApiFeatureIntegration, Long> {
 
     @Query("SELECT afi FROM ApiFeatureIntegration afi WHERE afi.clientFeatureIntegrationId=:id AND afi.status!='D'")
+//    Optional<ApiFeatureIntegration> findApiFeatureIntegrationbyClientFeatureId(@Param("id") Long id);
     Optional<List<ApiFeatureIntegration>> findApiFeatureIntegrationbyClientFeatureId(@Param("id") Long id);
 }

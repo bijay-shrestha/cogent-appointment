@@ -36,6 +36,7 @@ public class AppointmentRefundDetailQuery {
                 " a.patientId.eSewaId as eSewaId," +
                 " a.appointmentModeId.name as appointmentMode," +
                 " a.hospitalId.esewaMerchantCode as eSewaMerchantCode," +
+                " ard.status as refundStatus," +
                 QUERY_TO_CALCULATE_PATIENT_AGE +
                 " FROM" +
                 " AppointmentRefundDetail ard" +
@@ -46,7 +47,7 @@ public class AppointmentRefundDetailQuery {
                 " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = a.patientId.id AND hpi.hospital.id = a.hospitalId.id" +
                 " WHERE" +
                 " a.status='C' " +
-                " AND ard.status='PA'" +
+                " AND ard.status IN ('PA','A','R')" +
                 " AND a.hospitalId.id=:hospitalId" +
                 GET_WHERE_CLAUSE_TO_FETCH_REFUND_APPOINTMENTS(searchDTO);
 

@@ -118,20 +118,19 @@ public class RefundStatusServiceImpl implements RefundStatusService {
 
     private String processRefundRequest(RefundStatusRequestDTO requestDTO) {
 
+        String thirdPartyResponse=null;
+
         switch (requestDTO.getAppointmentMode()) {
 
             case APPOINTMENT_MODE_ESEWA_CODE:
-                return checkEsewaRefundStatus(requestDTO);
-
-            case APPOINTMENT_MODE_FONEPAY_CODE:
-                break;
+                 checkEsewaRefundStatus(requestDTO);
+                 break;
 
             default:
                 break;
         }
 
-
-        return null;
+        return thirdPartyResponse;
     }
 
     private void changeAppointmentAndAppointmentRefundDetailStatus(RefundStatusRequestDTO requestDTO,String remarks) {

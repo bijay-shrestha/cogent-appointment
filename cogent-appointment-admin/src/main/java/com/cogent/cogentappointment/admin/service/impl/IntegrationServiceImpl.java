@@ -127,7 +127,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
             ApiRequestHeader apiRequestHeader =
                     apiRequestHeaderRepository.findApiRequestHeaderById(requestDTO.getId())
-                            .orElseThrow(() -> API_REQUEST_HEADER_NOT_FOUND.apply(requestDTO.getId()));
+                            .orElse(null);
 
             if (apiRequestHeader == null) {
 
@@ -159,8 +159,7 @@ public class IntegrationServiceImpl implements IntegrationService {
         queryParametersRequestDTOS.forEach(requestDTO -> {
 
             ApiQueryParameters apiQueryParameters =
-                    apiQueryParametersRepository.findApiQueryParameterById(requestDTO.getId())
-                            .orElseThrow(() -> CLIENT_FEATURE_NOT_FOUND.apply(requestDTO.getId()));
+                    apiQueryParametersRepository.findApiQueryParameterById(requestDTO.getId()).orElse(null);
 
             if (apiQueryParameters == null) {
 

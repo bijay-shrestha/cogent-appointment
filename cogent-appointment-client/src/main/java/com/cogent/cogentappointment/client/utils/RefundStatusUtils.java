@@ -25,12 +25,12 @@ public class RefundStatusUtils {
         return appointment;
     };
 
-    public static Function<Appointment,Appointment> defaultAppointmentStatusChange=(appointment -> {
+    public static BiFunction<Appointment,String,Appointment> defaultAppointmentStatusChange=(appointment,remarks) -> {
         appointment.setStatus(CANCELLED);
-        appointment.setRemarks(REMARKS);
+        appointment.setRemarks(remarks);
 
         return appointment;
-    });
+    };
 
     public static BiFunction<AppointmentRefundDetail,String,AppointmentRefundDetail> changeAppointmentRefundDetailStatus
             =(refundDetail,remarks) -> {
@@ -41,13 +41,13 @@ public class RefundStatusUtils {
         return refundDetail;
     };
 
-    public static Function<AppointmentRefundDetail,AppointmentRefundDetail> defaultAppointmentRefundDetailStatusChange=(refundDetail -> {
+    public static BiFunction<AppointmentRefundDetail,String,AppointmentRefundDetail> defaultAppointmentRefundDetailStatusChange=(refundDetail,remarks) -> {
         refundDetail.setRefundedDate(new Date());
         refundDetail.setStatus(PENDING_APPROVAL);
-        refundDetail.setRemarks(REMARKS);
+        refundDetail.setRemarks(remarks);
 
         return refundDetail;
-    });
+    };
 
     public static EsewaPayementStatus parseToEsewaPayementStatus(RefundStatusRequestDTO requestDTO){
         return  EsewaPayementStatus.builder()

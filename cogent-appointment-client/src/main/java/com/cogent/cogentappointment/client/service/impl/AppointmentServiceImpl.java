@@ -692,96 +692,13 @@ public class AppointmentServiceImpl implements AppointmentService {
                 refundAppointmentDetail,
                 true);
 
-        switch (response) {
-
-            case PARTIAL_REFUND:
-                changeAppointmentAndAppointmentRefundDetailStatus(appointment, refundAppointmentDetail, response);
-                break;
-
-            case FULL_REFUND:
-                changeAppointmentAndAppointmentRefundDetailStatus(appointment, refundAppointmentDetail, response);
-                break;
-
-            default:
-                defaultAppointmentAndAppointmentRefundDetailStatusChanges(appointment, refundAppointmentDetail);
-
-        }
+        updateAppointmentAndAppointmentRefundDetails(response,appointment,refundAppointmentDetail,null);
 
 
         log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT_CANCEL_APPROVAL, getDifferenceBetweenTwoTime(startTime));
     }
 
-    private void changeAppointmentAndAppointmentRefundDetailStatus(Appointment appointment,
-                                                                   AppointmentRefundDetail refundAppointmentDetail,
-                                                                   String remarks) {
 
-        save(changeAppointmentStatus.apply(appointment, remarks));
-
-        saveAppointmentRefundDetail(changeAppointmentRefundDetailStatus.apply(refundAppointmentDetail, remarks));
-
-    }
-
-    private void defaultAppointmentAndAppointmentRefundDetailStatusChanges(Appointment appointment,
-                                                                           AppointmentRefundDetail refundAppointmentDetail) {
-
-        save(defaultAppointmentStatusChange.apply(appointment));
-
-        saveAppointmentRefundDetail(defaultAppointmentRefundDetailStatusChange.apply(refundAppointmentDetail));
-
-    }
-
-    private String processRefundRequest(Appointment appointment,
-                                        AppointmentTransactionDetail transactionDetail,
-                                        AppointmentRefundDetail appointmentRefundDetail,
-                                        Boolean isRefund) {
-
-        String thirdPartyResponse = null;
-
-        switch (appointment.getAppointmentModeId().getCode()) {
-
-            case APPOINTMENT_MODE_ESEWA_CODE:
-                thirdPartyResponse = requestEsewaForRefund(appointment,
-                        transactionDetail,
-                        appointmentRefundDetail,
-                        isRefund);
-                break;
-
-            default:
-                break;
-        }
-
-
-        return thirdPartyResponse;
-    }
-
-
-    private String requestEsewaForRefund(Appointment appointment,
-                                             AppointmentTransactionDetail transactionDetail,
-                                             AppointmentRefundDetail appointmentRefundDetail,
-                                         Boolean isRefund){
-        EsewaRefundRequestDTO esewaRefundRequestDTO=EsewaRefundRequestDTO.builder()
-                .esewa_id("9841409090")
-                .is_refund(isRefund)
-                .refund_amount(800D)
-                .product_code("testBir")
-                .remarks("refund")
-                .txn_amount(1000D)
-                .properties(Properties.builder()
-                        .appointmentId(10L)
-                        .hospitalName("Bir hospital")
-                        .build())
-                .build();
-
-
-        HttpEntity<?> request = new HttpEntity<>(esewaRefundRequestDTO, getEsewaPaymentStatusAPIHeaders());
-
-        String url = String.format(ESEWA_REFUND_API, "5VQ");
-
-        ResponseEntity<EsewaResponseDTO> response = (ResponseEntity<EsewaResponseDTO>) restTemplateUtils.
-                postRequest(url, request, EsewaResponseDTO.class);
-
-        return response.getBody().getStatus();
-    }
 
     @Override
     public void rejectRefundAppointment(AppointmentRefundRejectDTO refundRejectDTO) {
@@ -808,19 +725,11 @@ public class AppointmentServiceImpl implements AppointmentService {
                 refundAppointmentDetail,
                 false);
 
-        switch (response) {
-
-            case SUCCESS:
-                saveAppointmentRefundDetail(parseRefundRejectDetails(refundRejectDTO, refundAppointmentDetail));
-                break;
-
-            default:
-                defaultAppointmentAndAppointmentRefundDetailStatusChanges(appointment, refundAppointmentDetail);
-
-        }
+        updateAppointmentAndAppointmentRefundDetails(response,appointment,refundAppointmentDetail,refundRejectDTO);
 
         log.info(REJECT_PROCESS_COMPLETED, APPOINTMENT_CANCEL_APPROVAL, getDifferenceBetweenTwoTime(startTime));
     }
+
 
     @Override
     public List<AppointmentStatusResponseDTO> fetchAppointmentForAppointmentStatus(
@@ -1067,6 +976,102 @@ public class AppointmentServiceImpl implements AppointmentService {
         );
 
         return childPatient;
+    }
+    private void changeAppointmentAndAppointmentRefundDetailStatus(Appointment appointment,
+                                                                   AppointmentRefundDetail refundAppointmentDetail,
+                                                                   String remarks) {
+
+        save(changeAppointmentStatus.apply(appointment, remarks));
+
+        saveAppointmentRefundDetail(changeAppointmentRefundDetailStatus.apply(refundAppointmentDetail, remarks));
+
+    }
+
+    private void defaultAppointmentAndAppointmentRefundDetailStatusChanges(Appointment appointment,
+                                                                           AppointmentRefundDetail refundAppointmentDetail,
+                                                                           String remarks) {
+
+        save(defaultAppointmentStatusChange.apply(appointment,remarks));
+
+        saveAppointmentRefundDetail(defaultAppointmentRefundDetailStatusChange.apply(refundAppointmentDetail,remarks));
+
+    }
+
+    private String processRefundRequest(Appointment appointment,
+                                        AppointmentTransactionDetail transactionDetail,
+                                        AppointmentRefundDetail appointmentRefundDetail,
+                                        Boolean isRefund) {
+
+        String thirdPartyResponse = null;
+
+        switch (appointment.getAppointmentModeId().getCode()) {
+
+            case APPOINTMENT_MODE_ESEWA_CODE:
+                thirdPartyResponse = requestEsewaForRefund(appointment,
+                        transactionDetail,
+                        appointmentRefundDetail,
+                        isRefund);
+                break;
+
+            default:
+                throw new BadRequestException("APPOINTMENT MODE NOT VALID");
+        }
+
+
+        return thirdPartyResponse;
+    }
+
+
+    private String requestEsewaForRefund(Appointment appointment,
+                                         AppointmentTransactionDetail transactionDetail,
+                                         AppointmentRefundDetail appointmentRefundDetail,
+                                         Boolean isRefund){
+        EsewaRefundRequestDTO esewaRefundRequestDTO=EsewaRefundRequestDTO.builder()
+                .esewa_id("9841409090")
+                .is_refund(isRefund)
+                .refund_amount(800D)
+                .product_code("testBir")
+                .remarks("refund")
+                .txn_amount(1000D)
+                .properties(Properties.builder()
+                        .appointmentId(10L)
+                        .hospitalName("Bir hospital")
+                        .build())
+                .build();
+
+
+        HttpEntity<?> request = new HttpEntity<>(esewaRefundRequestDTO, getEsewaPaymentStatusAPIHeaders());
+
+        String url = String.format(ESEWA_REFUND_API, "5VQ");
+
+        ResponseEntity<EsewaResponseDTO> response = (ResponseEntity<EsewaResponseDTO>) restTemplateUtils.
+                postRequest(url, request, EsewaResponseDTO.class);
+
+        return response.getBody().getStatus();
+    }
+
+    private void updateAppointmentAndAppointmentRefundDetails(String response,
+                                                              Appointment appointment,
+                                                              AppointmentRefundDetail refundAppointmentDetail,
+                                                              AppointmentRefundRejectDTO refundRejectDTO){
+        switch (response) {
+
+            case PARTIAL_REFUND:
+                changeAppointmentAndAppointmentRefundDetailStatus(appointment, refundAppointmentDetail, response);
+                break;
+
+            case FULL_REFUND:
+                changeAppointmentAndAppointmentRefundDetailStatus(appointment, refundAppointmentDetail, response);
+                break;
+
+            case SUCCESS:
+                saveAppointmentRefundDetail(parseRefundRejectDetails(refundRejectDTO, refundAppointmentDetail));
+                break;
+
+            default:
+                defaultAppointmentAndAppointmentRefundDetailStatusChanges(appointment, refundAppointmentDetail,response);
+
+        }
     }
 
     private Appointment findPendingAppointmentById(Long appointmentId) {

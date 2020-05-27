@@ -7,6 +7,7 @@ import com.cogent.cogentappointment.client.dto.response.refundStatus.EsewaRespon
 import com.cogent.cogentappointment.client.dto.response.refundStatus.RefundStatusResponseDTO;
 import com.cogent.cogentappointment.client.repository.AppointmentRefundDetailRepository;
 import com.cogent.cogentappointment.client.repository.AppointmentRepository;
+import com.cogent.cogentappointment.client.service.AppointmentService;
 import com.cogent.cogentappointment.client.service.RefundStatusService;
 import com.cogent.cogentappointment.client.utils.resttempalte.RestTemplateUtils;
 import com.cogent.cogentappointment.persistence.model.Appointment;
@@ -45,13 +46,16 @@ public class RefundStatusServiceImpl implements RefundStatusService {
 
     private final RestTemplateUtils restTemplateUtils;
 
+    private final AppointmentService appointmentService;
+
 
     public RefundStatusServiceImpl(AppointmentRefundDetailRepository refundDetailRepository,
                                    AppointmentRepository appointmentRepository,
-                                   RestTemplateUtils restTemplateUtils) {
+                                   RestTemplateUtils restTemplateUtils, AppointmentService appointmentService) {
         this.refundDetailRepository = refundDetailRepository;
         this.appointmentRepository = appointmentRepository;
         this.restTemplateUtils = restTemplateUtils;
+        this.appointmentService = appointmentService;
     }
 
     @Override
@@ -85,6 +89,10 @@ public class RefundStatusServiceImpl implements RefundStatusService {
             case FULL_REFUND:
                 changeAppointmentAndAppointmentRefundDetailStatus(requestDTO,response);
                 break;
+
+            default:
+                appointmentService.approveRefundAppointment(requestDTO.getAppointmentId());
+
 
         }
 

@@ -17,6 +17,9 @@ import java.io.Serializable;
 public class RefundStatusRequestDTO implements Serializable{
 
     @NotNull
+    private Long appointmentId;
+
+    @NotNull
     @NotEmpty
     @NotBlank
     private String esewaId;

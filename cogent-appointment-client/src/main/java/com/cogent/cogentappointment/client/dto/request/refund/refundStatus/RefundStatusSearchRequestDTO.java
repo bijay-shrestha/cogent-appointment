@@ -32,7 +32,7 @@ public class RefundStatusSearchRequestDTO implements Serializable{
 
     private String esewaId;
 
-    private String esewaMerchantCode;
+    private String appointmentModeId;
 
     private String transactionNumber;
 }

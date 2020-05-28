@@ -65,6 +65,9 @@ public class AppointmentRefundDetailQuery {
         if (!ObjectUtils.isEmpty(searchDTO.getAppointmentNumber()))
             whereClause += " AND a.appointmentNumber LIKE '%" + searchDTO.getAppointmentNumber() + "%'";
 
+        if (!ObjectUtils.isEmpty(searchDTO.getAppointmentModeId()))
+            whereClause += " AND a.appointmentModeId.id =" + searchDTO.getAppointmentModeId();
+
         if (!Objects.isNull(searchDTO.getPatientMetaInfoId()))
             whereClause += " AND pm.id =" + searchDTO.getPatientMetaInfoId();
 
@@ -107,7 +110,7 @@ public class AppointmentRefundDetailQuery {
                     " CONCAT(((TIMESTAMPDIFF(YEAR, a.patientId.dateOfBirth ,CURDATE()))), ' years')" +
                     " END AS age";
 
-    public static String QUERY_TO_GET_APPOINTMENT_REFUND_DETAILS=
+    public static String QUERY_TO_GET_APPOINTMENT_REFUND_DETAILS =
             "SELECT" +
                     " ard" +
                     " FROM" +

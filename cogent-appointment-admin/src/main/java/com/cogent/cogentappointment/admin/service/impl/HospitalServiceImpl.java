@@ -1,6 +1,5 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
-import com.cogent.cogentappointment.admin.constants.StatusConstants;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospital.*;
 import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
@@ -28,12 +27,11 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.ALIAS_NOT_FOUND;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.NO;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NO_RECORD_FOUND;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.*;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
-import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.HOSPITAL;
-import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.HOSPITAL_ALIAS;
+import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.*;
 import static com.cogent.cogentappointment.admin.utils.HmacApiInfoUtils.parseToHmacApiInfo;
 import static com.cogent.cogentappointment.admin.utils.HmacApiInfoUtils.updateHmacApiInfoAsHospital;
 import static com.cogent.cogentappointment.admin.utils.HospitalUtils.*;
@@ -102,7 +100,7 @@ public class HospitalServiceImpl implements HospitalService {
         validateDuplicity(hospitals, requestDTO.getName(),
                 requestDTO.getHospitalCode(),
                 requestDTO.getAlias(),
-                Hospital.class.getSimpleName());
+                CLIENT);
 
         Hospital hospital = save(convertDTOToHospital(requestDTO));
 
@@ -144,7 +142,7 @@ public class HospitalServiceImpl implements HospitalService {
                 updateRequestDTO.getName(),
                 updateRequestDTO.getHospitalCode(),
                 hospital.getAlias(),
-                Hospital.class.getSimpleName());
+                CLIENT);
 
         HmacApiInfo hmacApiInfo = hmacApiInfoRepository.getHmacApiInfoByHospitalId(updateRequestDTO.getId());
 
@@ -357,7 +355,7 @@ public class HospitalServiceImpl implements HospitalService {
             List<FileUploadResponseDTO> responseList = uploadFiles(hospital, new MultipartFile[]{files});
             setLogoFileProperties(responseList.get(0), hospitalLogo);
         } else
-            hospitalLogo.setStatus(StatusConstants.INACTIVE);
+            hospitalLogo.setStatus(INACTIVE);
     }
 
     private void updateHospitalBanner(Hospital hospital, HospitalBanner hospitalBanner, MultipartFile banner) {
@@ -366,7 +364,7 @@ public class HospitalServiceImpl implements HospitalService {
             List<FileUploadResponseDTO> responseList = uploadFiles(hospital, new MultipartFile[]{banner});
             setBannerFileProperties(responseList.get(0), hospitalBanner);
         } else
-            hospitalBanner.setStatus(StatusConstants.INACTIVE);
+            hospitalBanner.setStatus(INACTIVE);
     }
 
     private void updateHospitalBanner(Hospital hospital, MultipartFile banner) {
@@ -378,7 +376,7 @@ public class HospitalServiceImpl implements HospitalService {
 
     private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, HOSPITAL, id);
-        throw new NoContentFoundException(Hospital.class, "id", id.toString());
+        throw new NoContentFoundException(String.format(NO_RECORD_FOUND, CLIENT), "id", id.toString());
     };
 
     private void saveHospitalAppointmentServiceType(Hospital hospital, List<Long> appointmentServiceTypeIds,

@@ -8,7 +8,6 @@ import com.cogent.cogentappointment.admin.dto.response.company.CompanyResponseDT
 import com.cogent.cogentappointment.admin.dto.response.hospital.*;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.HospitalRepositoryCustom;
-import com.cogent.cogentappointment.persistence.model.Hospital;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -23,9 +22,11 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NO_RECORD_FOUND;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
+import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.CLIENT;
 import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.HOSPITAL;
 import static com.cogent.cogentappointment.admin.query.CompanyQuery.*;
 import static com.cogent.cogentappointment.admin.query.HospitalAppointmentServiceTypeQuery.QUERY_TO_FETCH_HOSPITAL_APPOINTMENT_SERVICE_TYPE;
@@ -206,12 +207,12 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
     private Supplier<NoContentFoundException> HOSPITAL_NOT_FOUND = () -> {
         log.error(CONTENT_NOT_FOUND, HOSPITAL);
-        throw new NoContentFoundException(Hospital.class);
+        throw new NoContentFoundException(NO_RECORD_FOUND, CLIENT);
     };
 
     private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, HOSPITAL, id);
-        throw new NoContentFoundException(Hospital.class, "id", id.toString());
+        throw new NoContentFoundException(String.format(NO_RECORD_FOUND, CLIENT), "id", id.toString());
     };
 
     private List<HospitalContactNumberResponseDTO> fetchHospitalContactNumber(Long hospitalId) {

@@ -19,6 +19,8 @@ public class HospitalDeptDutyRosterResponseDTO extends AuditableResponseDTO impl
 
     private Long hddRosterId;
 
+    private String hospitalName;
+
     private Long hospitalDeptId;
 
     private String hospitalDeptName;

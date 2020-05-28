@@ -43,7 +43,7 @@ public class HospitalDeptDutyRosterQuery {
                 " LEFT JOIN HospitalDepartment hd ON hd.id = dr.hospitalDepartment.id" +
                 " WHERE" +
                 " dr.status !='D'" +
-                " AND hd.hospital.id=:hospitalId" +
+                " AND dr.hospital.id=:hospitalId" +
                 " AND dr.toDate >=:fromDate AND dr.fromDate <=:toDate";
 
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
@@ -73,7 +73,7 @@ public class HospitalDeptDutyRosterQuery {
                     " LEFT JOIN HospitalDepartment hd ON hd.id = ddr.hospitalDepartment.id" +
                     " WHERE ddr.status !='D'" +
                     " AND ddr.id = :id" +
-                    " AND hd.hospital.id =:hospitalId";
+                    " AND ddr.hospital.id =:hospitalId";
 
     private static String HDD_ROSTER_AUDITABLE_QUERY() {
         return " ddr.createdBy as createdBy," +
@@ -108,5 +108,5 @@ public class HospitalDeptDutyRosterQuery {
                     " AND hd.id=:id" +
                     " AND dd.toDate >=:fromDate" +
                     " AND dd.fromDate <=:toDate" +
-                    " AND hd.hospital.id=:hospitalId";
+                    " AND dd.hospital.id=:hospitalId";
 }

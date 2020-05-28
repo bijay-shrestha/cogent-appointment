@@ -15,7 +15,7 @@ public interface HospitalDeptDutyRosterRoomInfoRepositoryCustom {
     Long fetchRoomCount(Long hospitalDeptId, Date fromDate, Date toDate, Long roomId);
 
     Long fetchRoomCountExceptCurrentId(Long hospitalDeptId, Date fromDate, Date toDate, Long roomId,
-                                       Long rosterRoomId);
+                                       Long hddRosterId);
 }
 
 

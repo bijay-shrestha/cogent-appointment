@@ -5,6 +5,7 @@ import com.cogent.cogentappointment.admin.dto.request.hospitalDepartmentDutyRost
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartmentDutyRoster.update.HospitalDeptDutyRosterUpdateDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDeptDutyRoster.detail.*;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDeptDutyRoster.existing.HospitalDeptExistingDutyRosterDetailResponseDTO;
+import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartment;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDutyRoster;
 
@@ -17,9 +18,11 @@ public class HospitalDeptDutyRosterUtils {
 
     public static HospitalDepartmentDutyRoster parseToHospitalDepartmentDutyRoster(
             HospitalDepartmentDutyRosterRequestDTO requestDTO,
-            HospitalDepartment hospitalDepartment) {
+            HospitalDepartment hospitalDepartment,
+            Hospital hospital) {
 
         HospitalDepartmentDutyRoster hospitalDepartmentDutyRoster = new HospitalDepartmentDutyRoster();
+        hospitalDepartmentDutyRoster.setHospital(hospital);
         hospitalDepartmentDutyRoster.setHospitalDepartment(hospitalDepartment);
         hospitalDepartmentDutyRoster.setFromDate(requestDTO.getFromDate());
         hospitalDepartmentDutyRoster.setToDate(requestDTO.getToDate());

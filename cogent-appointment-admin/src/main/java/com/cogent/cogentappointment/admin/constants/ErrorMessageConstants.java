@@ -116,8 +116,10 @@ public class ErrorMessageConstants {
     public final static String HMAC_BAD_SIGNATURE = "HmacAccessFilter.badSignature";
 
     public interface HospitalDeptDutyRosterMessages {
-        String BAD_REQUEST_MESSAGE = "Doctor Duty Roster Override doesn't lie within the duty roster date range" +
-                " '%s' to '%s'";
+        String BAD_REQUEST_MESSAGE = "Hospital Department Duty Roster Override doesn't lie within the actual" +
+                " duty roster date range '%s' to '%s'";
+
+        String BAD_ROOM_REQUEST = "If room is enabled, corresponding room details is also required";
 
         String DUPLICATE_DUTY_ROSTER_WITHOUT_ROOM =
                 "Hospital Department Duty Roster already exists within '%s' to '%s'";

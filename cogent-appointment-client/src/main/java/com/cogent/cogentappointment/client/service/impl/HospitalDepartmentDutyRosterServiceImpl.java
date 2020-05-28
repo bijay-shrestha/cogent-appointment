@@ -39,6 +39,7 @@ import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.client.log.constants.HospitalDepartmentDutyRosterLog.*;
 import static com.cogent.cogentappointment.client.log.constants.HospitalDepartmentLog.HOSPITAL_DEPARTMENT;
+import static com.cogent.cogentappointment.client.log.constants.HospitalLog.HOSPITAL;
 import static com.cogent.cogentappointment.client.log.constants.WeekDaysLog.WEEK_DAYS;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.SecurityContextUtils.getLoggedInHospitalId;
@@ -71,13 +72,16 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
 
     private final HospitalDeptDutyRosterRoomInfoRepository dutyRosterRoomInfoRepository;
 
+    private final HospitalRepository hospitalRepository;
+
     public HospitalDepartmentDutyRosterServiceImpl(HospitalDeptDutyRosterRepository hospitalDeptDutyRosterRepository,
                                                    HospitalDeptWeekDaysDutyRosterRepository weekDaysDutyRosterRepository,
                                                    WeekDaysRepository weekDaysRepository,
                                                    HospitalDeptDutyRosterOverrideRepository overrideRepository,
                                                    HospitalDepartmentRepository hospitalDepartmentRepository,
                                                    RoomService roomService,
-                                                   HospitalDeptDutyRosterRoomInfoRepository dutyRosterRoomInfoRepository) {
+                                                   HospitalDeptDutyRosterRoomInfoRepository dutyRosterRoomInfoRepository,
+                                                   HospitalRepository hospitalRepository) {
 
         this.hospitalDeptDutyRosterRepository = hospitalDeptDutyRosterRepository;
         this.weekDaysDutyRosterRepository = weekDaysDutyRosterRepository;
@@ -86,6 +90,7 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
         this.hospitalDepartmentRepository = hospitalDepartmentRepository;
         this.roomService = roomService;
         this.dutyRosterRoomInfoRepository = dutyRosterRoomInfoRepository;
+        this.hospitalRepository = hospitalRepository;
     }
 
     @Override
@@ -101,7 +106,8 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
 
         HospitalDepartmentDutyRoster dutyRoster = parseToHospitalDepartmentDutyRoster(
                 requestDTO,
-                fetchHospitalDepartment(requestDTO.getHospitalDepartmentId(), hospitalId)
+                fetchHospitalDepartment(requestDTO.getHospitalDepartmentId(), hospitalId),
+                findHospitalById(hospitalId)
         );
 
         save(dutyRoster);
@@ -139,7 +145,8 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
 
         log.info(DELETING_PROCESS_STARTED, HOSPITAL_DEPARTMENT_DUTY_ROSTER);
 
-        HospitalDepartmentDutyRoster departmentDutyRoster = findHospitalDeptDutyRosterById(deleteRequestDTO.getId());
+        HospitalDepartmentDutyRoster departmentDutyRoster =
+                findHospitalDeptDutyRosterByIdAndHospitalId(deleteRequestDTO.getId(), getLoggedInHospitalId());
 
         parseDeletedDetails(departmentDutyRoster, deleteRequestDTO);
 
@@ -169,8 +176,8 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
 
         log.info(UPDATING_PROCESS_STARTED, HOSPITAL_DEPARTMENT_DUTY_ROSTER);
 
-        HospitalDepartmentDutyRoster dutyRoster =
-                findHospitalDeptDutyRosterById(updateRequestDTO.getUpdateDetail().getHddRosterId());
+        HospitalDepartmentDutyRoster dutyRoster = findHospitalDeptDutyRosterByIdAndHospitalId(
+                updateRequestDTO.getUpdateDetail().getHddRosterId(), getLoggedInHospitalId());
 
         validateUpdateHDDRosterDuplicity(updateRequestDTO, dutyRoster);
 
@@ -193,7 +200,8 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
 
         log.info(UPDATING_PROCESS_STARTED, HOSPITAL_DEPARTMENT_DUTY_ROSTER_OVERRIDE);
 
-        HospitalDepartmentDutyRoster dutyRoster = findHospitalDeptDutyRosterById(updateRequestDTO.getHddRosterId());
+        HospitalDepartmentDutyRoster dutyRoster =
+                findHospitalDeptDutyRosterByIdAndHospitalId(updateRequestDTO.getHddRosterId(), getLoggedInHospitalId());
 
         validateUpdatedOverrideRequestInfo(dutyRoster, updateRequestDTO);
 
@@ -280,6 +288,16 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
 
         return existingRosterDetails;
     }
+
+    private Hospital findHospitalById(Long hospitalId) {
+        return hospitalRepository.findActiveHospitalById(hospitalId)
+                .orElseThrow(() -> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND.apply(hospitalId));
+    }
+
+    private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (hospitalId) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, HOSPITAL, hospitalId);
+        throw new NoContentFoundException(Hospital.class, "hospitalId", hospitalId.toString());
+    };
 
     private void validateHDDRosterRequestInfo(HospitalDepartmentDutyRosterRequestDTO requestDTO) {
         validateIsFirstDateGreater(requestDTO.getFromDate(), requestDTO.getToDate());
@@ -504,8 +522,10 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
         dutyRosterRoomInfoRepository.save(roomInfo);
     }
 
-    private HospitalDepartmentDutyRoster findHospitalDeptDutyRosterById(Long dutyRosterId) {
-        return hospitalDeptDutyRosterRepository.fetchById(dutyRosterId)
+    private HospitalDepartmentDutyRoster findHospitalDeptDutyRosterByIdAndHospitalId(Long dutyRosterId,
+                                                                                     Long hospitalId) {
+
+        return hospitalDeptDutyRosterRepository.fetchByIdAndHospitalId(dutyRosterId, hospitalId)
                 .orElseThrow(() -> HOSPITAL_DEPT_DUTY_ROSTER_WITH_GIVEN_ID_NOT_FOUND.apply(dutyRosterId));
     }
 
@@ -699,7 +719,6 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
 
             }
         }
-
     }
 }
 

@@ -28,6 +28,10 @@ public class HospitalDepartmentDutyRoster extends Auditable<String> implements S
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hospital_id", updatable = false)
+    private Hospital hospital;
+
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hospital_department_id", updatable = false)
     private HospitalDepartment hospitalDepartment;
 

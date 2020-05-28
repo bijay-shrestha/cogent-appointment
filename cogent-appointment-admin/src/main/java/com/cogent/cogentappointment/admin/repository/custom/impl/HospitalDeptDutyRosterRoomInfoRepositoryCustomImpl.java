@@ -12,6 +12,7 @@ import java.util.Date;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.query.HospitalDeptDutyRosterRoomQuery.QUERY_TO_FETCH_ROOM_COUNT;
+import static com.cogent.cogentappointment.admin.query.HospitalDeptDutyRosterRoomQuery.QUERY_TO_FETCH_ROOM_COUNT_EXCEPT_CURRENT_ID;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
 
@@ -34,6 +35,19 @@ public class HospitalDeptDutyRosterRoomInfoRepositoryCustomImpl implements Hospi
                 .setParameter(TO_DATE, utilDateToSqlDate(toDate))
                 .setParameter(ROOM_ID, roomId)
                 .setParameter(ID, hospitalDeptId);
+
+        return (Long) query.getSingleResult();
+    }
+
+    @Override
+    public Long fetchRoomCountExceptCurrentId(Long hospitalDeptId, Date fromDate, Date toDate, Long roomId, Long hddRosterId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ROOM_COUNT_EXCEPT_CURRENT_ID)
+                .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))
+                .setParameter(TO_DATE, utilDateToSqlDate(toDate))
+                .setParameter(ROOM_ID, roomId)
+                .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDeptId)
+                .setParameter(ID, hddRosterId);
 
         return (Long) query.getSingleResult();
     }

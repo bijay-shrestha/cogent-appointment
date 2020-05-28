@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.persistence.history;
 
 import com.cogent.cogentappointment.persistence.config.Action;
-import com.cogent.cogentappointment.persistence.model.IntegrationChannel;
+import com.cogent.cogentappointment.persistence.model.IntegrationRequestBodyParameters;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,28 +17,29 @@ import static javax.persistence.EnumType.STRING;
 import static javax.persistence.TemporalType.TIMESTAMP;
 
 /**
- * @author rupak on 2020-05-27
+ * @author rupak ON 5/28/20
  */
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "integration_channel_history")
-public class IntegrationChannelHistory implements Serializable {
+@Table(name = "integration_request_body_parameters_history")
+public class IntegrationRequestBodyParametersHistory implements Serializable {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "integration_channel_id",
-            foreignKey = @ForeignKey(name = "FK_integration_channel_history_integration_channel"))
-    private IntegrationChannel integrationChannel;
+    @JoinColumn(name = "integration_request_body_id",
+            foreignKey = @ForeignKey(name = "FK_integration_request_body_history_integration_request_body"))
+    private IntegrationRequestBodyParameters integrationRequestBodyParameters;
 
-    @Column(name = "integration_channel_content")
+    @Column(name = "integration_request_body_content")
     @Lob
-    private String integrationChannelContent;
+    private String integrationRequestBodyParametersContent;
 
     @CreatedBy
     private String modifiedBy;
@@ -50,9 +51,9 @@ public class IntegrationChannelHistory implements Serializable {
     @Enumerated(STRING)
     private Action action;
 
-    public IntegrationChannelHistory(IntegrationChannel integrationChannel, Action action) {
-        this.integrationChannel = integrationChannel;
-        this.integrationChannelContent = integrationChannel.toString();
+    public IntegrationRequestBodyParametersHistory(IntegrationRequestBodyParameters integrationRequestBodyParameters, Action action) {
+        this.integrationRequestBodyParameters = integrationRequestBodyParameters;
+        this.integrationRequestBodyParametersContent = integrationRequestBodyParameters.toString();
         this.action = action;
     }
 }

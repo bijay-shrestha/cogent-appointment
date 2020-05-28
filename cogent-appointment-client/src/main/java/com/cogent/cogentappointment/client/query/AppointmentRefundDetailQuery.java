@@ -66,6 +66,9 @@ public class AppointmentRefundDetailQuery {
         if (!ObjectUtils.isEmpty(searchDTO.getAppointmentNumber()))
             whereClause += " AND a.appointmentNumber LIKE '%" + searchDTO.getAppointmentNumber() + "%'";
 
+        if (!ObjectUtils.isEmpty(searchDTO.getStatus()))
+            whereClause += " AND ard.status = '" + searchDTO.getStatus() + "'";
+
         if (!ObjectUtils.isEmpty(searchDTO.getAppointmentModeId()))
             whereClause += " AND a.appointmentModeId.id =" + searchDTO.getAppointmentModeId();
 

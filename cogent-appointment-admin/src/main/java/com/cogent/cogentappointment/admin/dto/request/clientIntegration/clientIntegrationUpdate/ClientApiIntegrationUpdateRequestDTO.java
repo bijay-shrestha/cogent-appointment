@@ -17,6 +17,8 @@ public class ClientApiIntegrationUpdateRequestDTO implements Serializable {
 
     private Long clientFeatureIntegrationId;
 
+    private Long featureId;
+
     private Long requestMethodId;
 
     private String apiUrl;

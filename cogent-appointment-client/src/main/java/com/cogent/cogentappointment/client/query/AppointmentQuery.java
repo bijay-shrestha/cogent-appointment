@@ -853,6 +853,5 @@ public class AppointmentQuery {
                     " Appointment a " +
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id " +
                     " WHERE atd.transactionNumber=:transactionNumber" +
-                    " AND a.hospitalId.esewaMerchantCode =:esewaMerchantCode" +
                     " AND a.patientId.eSewaId =:esewaId";
 }

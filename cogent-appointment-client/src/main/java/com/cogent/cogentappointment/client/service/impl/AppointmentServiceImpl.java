@@ -1027,22 +1027,22 @@ public class AppointmentServiceImpl implements AppointmentService {
                                          AppointmentRefundDetail appointmentRefundDetail,
                                          Boolean isRefund){
         EsewaRefundRequestDTO esewaRefundRequestDTO=EsewaRefundRequestDTO.builder()
-                .esewa_id("9841409090")
+                .esewa_id(appointment.getPatientId().getESewaId())
                 .is_refund(isRefund)
-                .refund_amount(800D)
-                .product_code("testBir")
+                .refund_amount(appointmentRefundDetail.getRefundAmount())
+                .product_code(appointment.getHospitalId().getEsewaMerchantCode())
                 .remarks("refund")
-                .txn_amount(1000D)
+                .txn_amount(transactionDetail.getAppointmentAmount())
                 .properties(Properties.builder()
-                        .appointmentId(10L)
-                        .hospitalName("Bir hospital")
+                        .appointmentId(appointment.getId())
+                        .hospitalName(appointment.getHospitalId().getName())
                         .build())
                 .build();
 
 
         HttpEntity<?> request = new HttpEntity<>(esewaRefundRequestDTO, getEsewaPaymentStatusAPIHeaders());
 
-        String url = String.format(ESEWA_REFUND_API, "5VQ");
+        String url = String.format(ESEWA_REFUND_API, transactionDetail.getTransactionNumber());
 
         ResponseEntity<EsewaResponseDTO> response = (ResponseEntity<EsewaResponseDTO>) restTemplateUtils.
                 postRequest(url, request, EsewaResponseDTO.class);

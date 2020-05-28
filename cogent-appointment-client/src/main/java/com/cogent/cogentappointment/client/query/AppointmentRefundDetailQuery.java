@@ -35,7 +35,6 @@ public class AppointmentRefundDetailQuery {
                 " a.specializationId.name as specializationName," +
                 " a.patientId.eSewaId as eSewaId," +
                 " a.appointmentModeId.name as appointmentMode," +
-                " a.hospitalId.esewaMerchantCode as eSewaMerchantCode," +
                 " ard.status as refundStatus," +
                 QUERY_TO_CALCULATE_PATIENT_AGE +
                 " FROM" +
@@ -118,7 +117,6 @@ public class AppointmentRefundDetailQuery {
                     " LEFT JOIN Appointment a ON a.id=ard.appointmentId.id " +
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id " +
                     " WHERE atd.transactionNumber=:transactionNumber" +
-                    " AND a.hospitalId.esewaMerchantCode =:esewaMerchantCode" +
                     " AND a.patientId.eSewaId =:esewaId";
 
 }

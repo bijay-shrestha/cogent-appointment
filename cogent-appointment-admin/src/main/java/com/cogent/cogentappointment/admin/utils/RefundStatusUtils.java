@@ -24,7 +24,6 @@ public class RefundStatusUtils {
     };
 
     public static BiFunction<Appointment,String,Appointment> defaultAppointmentStatusChange=(appointment,remarks) -> {
-        appointment.setStatus(CANCELLED);
         appointment.setRemarks(remarks);
 
         return appointment;
@@ -39,9 +38,8 @@ public class RefundStatusUtils {
         return refundDetail;
     };
 
-    public static BiFunction<AppointmentRefundDetail,String,AppointmentRefundDetail> defaultAppointmentRefundDetailStatusChange=(refundDetail,remarks) -> {
-        refundDetail.setRefundedDate(new Date());
-        refundDetail.setStatus(PENDING_APPROVAL);
+    public static BiFunction<AppointmentRefundDetail,String,AppointmentRefundDetail>
+            defaultAppointmentRefundDetailStatusChange=(refundDetail,remarks) -> {
         refundDetail.setRemarks(remarks);
 
         return refundDetail;

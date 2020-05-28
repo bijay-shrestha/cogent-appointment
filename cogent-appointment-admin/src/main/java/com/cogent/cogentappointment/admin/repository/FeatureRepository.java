@@ -15,5 +15,5 @@ import java.util.Optional;
 public interface FeatureRepository extends JpaRepository<Feature,Long> {
 
     @Query(" SELECT f FROM Feature f WHERE f.id=:id AND f.status = 'Y'")
-    Optional<Feature> findFeatureById(@Param("id") Long featureTypeId);
+    Optional<Feature> findActiveFeatureById(@Param("id") Long featureTypeId);
 }

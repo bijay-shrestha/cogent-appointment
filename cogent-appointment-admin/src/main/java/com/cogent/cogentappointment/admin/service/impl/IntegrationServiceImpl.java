@@ -323,7 +323,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     private void validateFeatureAndHttpRequestMethod(Long featureTypeId, Long requestMethodId) {
 
-        featureRepository.findFeatureById(featureTypeId)
+        featureRepository.findActiveFeatureById(featureTypeId)
                 .orElseThrow(() -> FEATURE_NOT_FOUND.apply(featureTypeId));
 
         httpRequestMethodRepository.httpRequestMethodById(requestMethodId)

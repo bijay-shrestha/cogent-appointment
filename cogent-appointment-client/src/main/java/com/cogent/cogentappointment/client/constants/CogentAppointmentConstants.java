@@ -5,6 +5,9 @@ package com.cogent.cogentappointment.client.constants;
  */
 public class CogentAppointmentConstants {
 
+    /**
+     * This Should be equal with Appointment Mode Table data
+     */
     public interface AppointmentModeConstant{
         String APPOINTMENT_MODE_ESEWA_CODE="eSewa";
         String APPOINTMENT_MODE_FONEPAY_CODE="FP";

@@ -16,7 +16,6 @@ import static com.cogent.cogentappointment.client.constants.StatusConstants.Appo
  */
 public class RefundStatusUtils {
 
-    public static final String REMARKS="AMBIGUOUS" ;
 
     public static BiFunction<Appointment,String,Appointment> changeAppointmentStatus=(appointment,remarks) -> {
         appointment.setStatus(REFUNDED);

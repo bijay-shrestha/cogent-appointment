@@ -1045,7 +1045,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         ResponseEntity<EsewaResponseDTO> response = (ResponseEntity<EsewaResponseDTO>) restTemplateUtils.
                 postRequest(url, request, EsewaResponseDTO.class);
 
-        return (response.getBody().getStatus()==null)? AMBIGIOUS:response.getBody().getStatus();
+        return (response.getBody().getStatus()== null)? AMBIGIOUS:response.getBody().getStatus();
     }
 
     private void updateAppointmentAndAppointmentRefundDetails(String response,

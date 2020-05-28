@@ -3,12 +3,10 @@ package com.cogent.cogentappointment.esewa.repository.custom;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.checkAvailibility.AppointmentCheckAvailabilityRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.history.AppointmentHistorySearchDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.history.AppointmentSearchDTO;
-import com.cogent.cogentappointment.esewa.dto.request.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.checkAvailabililty.AppointmentBookedTimeResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.history.AppointmentDetailResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.history.AppointmentMinResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.history.AppointmentResponseWithStatusDTO;
-import com.cogent.cogentappointment.persistence.model.Appointment;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
@@ -40,6 +38,4 @@ public interface AppointmentRepositoryCustom {
     List<AppointmentBookedTimeResponseDTO> fetchBookedAppointments(AppointmentCheckAvailabilityRequestDTO requestDTO);
 
     Double calculateRefundAmount(Long appointmentId);
-
-    Appointment fetchCancelledAppointmentDetails(RefundStatusRequestDTO requestDTO);
 }

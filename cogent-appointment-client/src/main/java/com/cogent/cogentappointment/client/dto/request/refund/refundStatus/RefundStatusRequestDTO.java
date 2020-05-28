@@ -24,9 +24,6 @@ public class RefundStatusRequestDTO implements Serializable{
     @NotBlank
     private String esewaId;
 
-    @NotNull
-    @NotEmpty
-    @NotBlank
     private String esewaMerchantCode;
 
     @NotNull

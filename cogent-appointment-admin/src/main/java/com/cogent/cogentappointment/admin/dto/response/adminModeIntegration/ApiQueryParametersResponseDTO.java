@@ -20,6 +20,8 @@ public class ApiQueryParametersResponseDTO implements Serializable {
 
     private String valueParam;
 
+    private String description;
+
     private Character status;
 
 

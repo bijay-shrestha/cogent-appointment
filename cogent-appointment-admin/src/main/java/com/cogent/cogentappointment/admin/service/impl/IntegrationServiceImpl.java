@@ -271,6 +271,7 @@ public class IntegrationServiceImpl implements IntegrationService {
         responseDTO.setFeatureCode(featureIntegrationResponse.getFeatureCode());
         responseDTO.setRequestBody(featureIntegrationResponse.getRequestBody());
         responseDTO.setRequestMethodName(featureIntegrationResponse.getRequestMethodName());
+        responseDTO.setRequestMethodId(featureIntegrationResponse.getRequestMethodId());
         responseDTO.setHospitalName(featureIntegrationResponse.getHospitalName());
         responseDTO.setUrl(featureIntegrationResponse.getUrl());
         responseDTO.setHeaders(requestHeaderResponseDTO);

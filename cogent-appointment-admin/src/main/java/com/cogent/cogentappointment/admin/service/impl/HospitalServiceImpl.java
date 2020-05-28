@@ -2,19 +2,16 @@ package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.constants.StatusConstants;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalContactNumberUpdateRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalSearchRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.hospital.*;
 import com.cogent.cogentappointment.admin.dto.response.files.FileUploadResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalDropdownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
+import com.cogent.cogentappointment.admin.service.AppointmentServiceTypeService;
 import com.cogent.cogentappointment.admin.service.HospitalService;
 import com.cogent.cogentappointment.admin.service.MinioFileService;
-import com.cogent.cogentappointment.admin.utils.HospitalUtils;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +28,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.ALIAS_NOT_FOUND;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
@@ -64,12 +62,19 @@ public class HospitalServiceImpl implements HospitalService {
 
     private final Validator validator;
 
+    private final HospitalAppointmentServiceTypeRepository hospitalAppointmentServiceTypeRepository;
+
+    private final AppointmentServiceTypeService appointmentServiceTypeService;
+
     public HospitalServiceImpl(HospitalRepository hospitalRepository,
                                HospitalContactNumberRepository hospitalContactNumberRepository,
                                HospitalLogoRepository hospitalLogoRepository,
                                HospitalBannerRepository hospitalBannerRepository,
                                HmacApiInfoRepository hmacApiInfoRepository,
-                               MinioFileService minioFileService, Validator validator) {
+                               MinioFileService minioFileService,
+                               Validator validator,
+                               HospitalAppointmentServiceTypeRepository hospitalAppointmentServiceTypeRepository,
+                               AppointmentServiceTypeService appointmentServiceTypeService) {
         this.hospitalRepository = hospitalRepository;
         this.hospitalContactNumberRepository = hospitalContactNumberRepository;
         this.hospitalLogoRepository = hospitalLogoRepository;
@@ -77,6 +82,8 @@ public class HospitalServiceImpl implements HospitalService {
         this.hmacApiInfoRepository = hmacApiInfoRepository;
         this.minioFileService = minioFileService;
         this.validator = validator;
+        this.hospitalAppointmentServiceTypeRepository = hospitalAppointmentServiceTypeRepository;
+        this.appointmentServiceTypeService = appointmentServiceTypeService;
     }
 
     @Override
@@ -92,7 +99,7 @@ public class HospitalServiceImpl implements HospitalService {
         List<Object[]> hospitals = hospitalRepository.validateHospitalDuplicity(
                 requestDTO.getName(), requestDTO.getHospitalCode(), requestDTO.getAlias());
 
-        HospitalUtils.validateDuplicity(hospitals, requestDTO.getName(),
+        validateDuplicity(hospitals, requestDTO.getName(),
                 requestDTO.getHospitalCode(),
                 requestDTO.getAlias(),
                 Hospital.class.getSimpleName());
@@ -106,6 +113,11 @@ public class HospitalServiceImpl implements HospitalService {
         saveHospitalBanner(hospital, banner);
 
         saveHmacApiInfo(parseToHmacApiInfo(hospital));
+
+        saveHospitalAppointmentServiceType(hospital,
+                requestDTO.getAppointmentServiceTypeIds(),
+                requestDTO.getPrimaryAppointmentServiceTypeId()
+        );
 
         log.info(SAVING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
     }
@@ -128,7 +140,7 @@ public class HospitalServiceImpl implements HospitalService {
                 hospital.getAlias()
         );
 
-        HospitalUtils.validateDuplicity(hospitals,
+        validateDuplicity(hospitals,
                 updateRequestDTO.getName(),
                 updateRequestDTO.getHospitalCode(),
                 hospital.getAlias(),
@@ -147,6 +159,13 @@ public class HospitalServiceImpl implements HospitalService {
             updateHospitalBanner(hospital, banner);
 
         updateHmacApiInfo(hmacApiInfo, updateRequestDTO.getStatus(), updateRequestDTO.getRemarks());
+
+        updateHospitalAppointmentServiceType(hospital, updateRequestDTO.getAppointmentServiceTypeUpdateRequestDTO());
+
+        updateIsPrimaryHospitalAppointmentServiceTypeStatus(
+                hospital.getId(),
+                updateRequestDTO.getPrimaryAppointmentServiceTypeId()
+        );
 
         log.info(UPDATING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
     }
@@ -361,5 +380,65 @@ public class HospitalServiceImpl implements HospitalService {
         log.error(CONTENT_NOT_FOUND_BY_ID, HOSPITAL, id);
         throw new NoContentFoundException(Hospital.class, "id", id.toString());
     };
+
+    private void saveHospitalAppointmentServiceType(Hospital hospital, List<Long> appointmentServiceTypeIds,
+                                                    Long primaryAppointmentServiceTypeId) {
+
+        List<HospitalAppointmentServiceType> hospitalAppointmentServiceTypes =
+                appointmentServiceTypeIds.stream()
+                        .map(appointmentServiceTypeId -> {
+
+                            AppointmentServiceType appointmentServiceType =
+                                    appointmentServiceTypeService.fetchActiveById(appointmentServiceTypeId);
+
+                            Character isPrimary = appointmentServiceTypeId.equals(primaryAppointmentServiceTypeId)
+                                    ? YES : NO;
+
+                            return parseToHospitalAppointmentServiceType(hospital, appointmentServiceType, isPrimary);
+                        }).collect(Collectors.toList());
+
+        saveHospitalAppointmentServiceType(hospitalAppointmentServiceTypes);
+    }
+
+    /*WHILE UPDATING, IS PRIMARY IS BY DEFAULT SET AS 'N' AND UPDATE QUERY IS EXECUTED TO CHANGE THE STATUS*/
+    private void updateHospitalAppointmentServiceType(Hospital hospital,
+                                                      List<HospitalAppointmentServiceTypeUpdateRequestDTO> updateRequestDTOS) {
+
+        List<HospitalAppointmentServiceType> hospitalAppointmentServiceTypes =
+                updateRequestDTOS.stream()
+                        .map(updateRequestDTO -> {
+
+                            if (Objects.isNull(updateRequestDTO.getAppointmentServiceTypeId())) {
+
+                                AppointmentServiceType appointmentServiceType =
+                                        appointmentServiceTypeService.fetchActiveById(
+                                                updateRequestDTO.getAppointmentServiceTypeId());
+
+                                return parseToHospitalAppointmentServiceType(hospital, appointmentServiceType, NO);
+                            } else {
+                                HospitalAppointmentServiceType hospitalAppointmentServiceType =
+                                        findHospitalAppointmentServiceTypeById(updateRequestDTO.getAppointmentServiceTypeId());
+                                return updateHospitalAppointmentServiceTypeStatus(hospitalAppointmentServiceType,
+                                        updateRequestDTO.getStatus(), NO);
+                            }
+                        }).collect(Collectors.toList());
+
+        saveHospitalAppointmentServiceType(hospitalAppointmentServiceTypes);
+    }
+
+    private void saveHospitalAppointmentServiceType(List<HospitalAppointmentServiceType> hospitalAppointmentServiceTypes) {
+        hospitalAppointmentServiceTypeRepository.saveAll(hospitalAppointmentServiceTypes);
+    }
+
+    private HospitalAppointmentServiceType findHospitalAppointmentServiceTypeById(Long hospitalAppointmentServiceType) {
+        return hospitalAppointmentServiceTypeRepository.fetchActiveById(hospitalAppointmentServiceType)
+                .orElseThrow(() -> new NoContentFoundException(HospitalAppointmentServiceType.class,
+                        "hospitalAppointmentServiceType", hospitalAppointmentServiceType.toString()));
+    }
+
+    private void updateIsPrimaryHospitalAppointmentServiceTypeStatus(Long hospitalId, Long appointmentServiceTypeId) {
+        hospitalAppointmentServiceTypeRepository.updateIsPrimaryStatus(hospitalId, appointmentServiceTypeId);
+    }
+
 
 }

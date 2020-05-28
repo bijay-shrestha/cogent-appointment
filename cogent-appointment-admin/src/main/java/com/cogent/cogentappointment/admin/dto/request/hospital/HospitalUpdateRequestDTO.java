@@ -75,4 +75,11 @@ public class HospitalUpdateRequestDTO implements Serializable {
    * N-> BANNER IS SAME AS BEFORE. SO IF IT IS 'N', THEN NO NEED TO UPDATE BANNER
    */
     private Character isBannerUpdate;
+
+    /*only updated appointment service type from front-end*/
+    @NotNull
+    private List<HospitalAppointmentServiceTypeUpdateRequestDTO> appointmentServiceTypeUpdateRequestDTO;
+
+    @NotNull
+    private Long primaryAppointmentServiceTypeId;
 }

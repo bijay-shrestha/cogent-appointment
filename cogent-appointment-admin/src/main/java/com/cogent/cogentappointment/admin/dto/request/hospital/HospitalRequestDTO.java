@@ -65,5 +65,9 @@ public class HospitalRequestDTO implements Serializable {
     @NotBlank
     private String alias;
 
+    private List<Long> appointmentServiceTypeIds;
+
+    private Long primaryAppointmentServiceTypeId;
+
 }
 

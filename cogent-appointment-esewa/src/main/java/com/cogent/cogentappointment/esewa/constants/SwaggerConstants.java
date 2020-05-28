@@ -83,6 +83,12 @@ public class SwaggerConstants {
         String FETCH_MIN_DETAILS = "Fetch min hospital details (search by name)";
     }
 
+    public interface HospitalDepartmentConstant {
+        String BASE_HOSPITAL_DEPARTMENT_API_VALUE = "This is Hospital Department Resource";
+        String FETCH_ACTIVE_MIN_HOSPITAL_DEPARTMENT_INFO = "Fetch minimal active hospital department" +
+                " details (id and name) for dropdown by hospital id";
+    }
+
     //I
 
     //J
@@ -126,7 +132,6 @@ public class SwaggerConstants {
         String BASE_API_VALUE = "This is Test Resource";
         String TEST_OPERATION = "This is Test Operation";
     }
-
 
 
     //U

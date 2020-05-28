@@ -46,7 +46,7 @@ public class HospitalQuery {
         if (!ObjectUtils.isEmpty(requestDTO.getName()))
             query += " AND h.name LIKE '%" + requestDTO.getName() + "%'";
 
-        return query + " ORDER by h.name";
+        return query + " ORDER by h.name ASC";
     }
 
     public static final String QUERY_TO_FETCH_HOSPITAL_FOLLOW_UP_DETAILS =

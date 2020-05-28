@@ -83,7 +83,10 @@ public class DateUtils {
     }
 
     public static boolean isDateBetweenInclusive(Date startDate, Date endDate, Date target) {
-        return !target.before(startDate) && !target.after(endDate);
+        Date targetDateOnly = removeTime(target);
+        Date startDateOnly = removeTime(startDate);
+        Date endDateOnly = removeTime(endDate);
+        return !targetDateOnly.before(startDateOnly) && !targetDateOnly.after(endDateOnly);
     }
 
     public static Date convertStringToDate(String date) throws ParseException {
@@ -215,10 +218,10 @@ public class DateUtils {
 
         while (!calendar.after(endCalendar)) {
             Date result = calendar.getTime();
-            if (utilDateToSqlDate(calendar.getTime()).before(today) ) {
+            if (utilDateToSqlDate(calendar.getTime()).before(today)) {
                 calendar.add(Calendar.DATE, 1);
 
-            }else {
+            } else {
                 datesInRange.add(result);
                 calendar.add(Calendar.DATE, 1);
             }

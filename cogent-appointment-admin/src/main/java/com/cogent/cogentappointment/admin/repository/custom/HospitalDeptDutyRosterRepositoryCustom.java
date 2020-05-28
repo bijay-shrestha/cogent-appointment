@@ -20,7 +20,10 @@ import java.util.List;
 @Qualifier("hospitalDeptDutyRosterRepositoryCustom")
 public interface HospitalDeptDutyRosterRepositoryCustom {
 
-    Long fetchRosterCountWithoutRoom(Long hospitalDepartmentId, Date fromDate, Date toDate);
+    Character fetchRoomStatusIfExists(Long hospitalDepartmentId, Date fromDate, Date toDate);
+
+    Character fetchRoomStatusIfExistsExceptCurrentId(Long hospitalDepartmentId, Date fromDate, Date toDate,
+                                                     Long hddRosterId);
 
     List<HospitalDeptDutyRosterMinResponseDTO> search(HospitalDeptDutyRosterSearchRequestDTO searchRequestDTO,
                                                       Pageable pageable);

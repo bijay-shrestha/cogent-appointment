@@ -52,14 +52,33 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
     private EntityManager entityManager;
 
     @Override
-    public Long fetchRosterCountWithoutRoom(Long hospitalDepartmentId, Date fromDate, Date toDate) {
+    public Character fetchRoomStatusIfExists(Long hospitalDepartmentId, Date fromDate, Date toDate) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HDD_ROSTER_COUNT_WITHOUT_ROOM)
-                .setParameter(ID, hospitalDepartmentId)
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HDD_ROSTER_STATUS)
+                .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId)
                 .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))
                 .setParameter(TO_DATE, utilDateToSqlDate(toDate));
 
-        return (Long) query.getSingleResult();
+        try {
+            return (Character) query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public Character fetchRoomStatusIfExistsExceptCurrentId(Long hospitalDepartmentId,
+                                                            Date fromDate, Date toDate, Long hddRosterId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HDD_ROSTER_STATUS_EXCEPT_CURRENT_ID)
+                .setParameter(ID, hddRosterId)
+                .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId)
+                .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))
+                .setParameter(TO_DATE, utilDateToSqlDate(toDate));
+        try {
+            return (Character) query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     @Override

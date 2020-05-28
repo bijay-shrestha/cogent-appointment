@@ -5,6 +5,7 @@ import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRos
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartmentDutyRoster.update.HospitalDeptDutyRosterUpdateDTO;
 import com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.detail.*;
 import com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.existing.HospitalDeptExistingDutyRosterDetailResponseDTO;
+import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartment;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDutyRoster;
 
@@ -17,7 +18,8 @@ public class HospitalDeptDutyRosterUtils {
 
     public static HospitalDepartmentDutyRoster parseToHospitalDepartmentDutyRoster(
             HospitalDepartmentDutyRosterRequestDTO requestDTO,
-            HospitalDepartment hospitalDepartment) {
+            HospitalDepartment hospitalDepartment,
+            Hospital hospital) {
 
         HospitalDepartmentDutyRoster hospitalDepartmentDutyRoster = new HospitalDepartmentDutyRoster();
         hospitalDepartmentDutyRoster.setHospitalDepartment(hospitalDepartment);
@@ -27,6 +29,7 @@ public class HospitalDeptDutyRosterUtils {
         hospitalDepartmentDutyRoster.setStatus(requestDTO.getStatus());
         hospitalDepartmentDutyRoster.setHasOverrideDutyRoster(requestDTO.getHasOverrideDutyRoster());
         hospitalDepartmentDutyRoster.setIsRoomEnabled(requestDTO.getIsRoomEnabled());
+        hospitalDepartmentDutyRoster.setHospital(hospital);
         return hospitalDepartmentDutyRoster;
     }
 

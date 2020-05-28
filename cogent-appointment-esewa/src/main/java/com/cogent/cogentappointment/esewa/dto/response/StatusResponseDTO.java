@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.esewa.dto.response.appointment;
+package com.cogent.cogentappointment.esewa.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;

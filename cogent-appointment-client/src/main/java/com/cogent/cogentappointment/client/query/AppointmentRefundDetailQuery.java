@@ -22,7 +22,7 @@ public class AppointmentRefundDetailQuery {
                 " CASE WHEN (hpi.registrationNumber IS NULL) THEN 'N/A'" +
                 " ELSE hpi.registrationNumber END as registrationNumber," +
                 " atd.transactionNumber as transactionNumber," +
-                " DATE_FORMAT(ard.cancelledDate ,'%M %d, %Y') as cancelledDate," +
+                " DATE_FORMAT(ard.cancelledDate ,'%M %d, %Y at %h:%i %p') as cancelledDate," +
                 " ard.refundAmount as refundAmount," +
                 " hpi.isRegistered as isRegistered," +
                 " CASE WHEN (da.fileUri IS NULL) THEN 'N/A'" +
@@ -36,6 +36,7 @@ public class AppointmentRefundDetailQuery {
                 " a.patientId.eSewaId as eSewaId," +
                 " a.appointmentModeId.name as appointmentMode," +
                 " ard.status as refundStatus," +
+                " ard.remarks as remarks," +
                 QUERY_TO_CALCULATE_PATIENT_AGE +
                 " FROM" +
                 " AppointmentRefundDetail ard" +

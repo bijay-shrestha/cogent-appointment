@@ -55,4 +55,6 @@ public class RefundStatusDTO implements Serializable {
     private Character isRegistered;
 
     private String refundStatus;
+
+    private String remarks;
 }

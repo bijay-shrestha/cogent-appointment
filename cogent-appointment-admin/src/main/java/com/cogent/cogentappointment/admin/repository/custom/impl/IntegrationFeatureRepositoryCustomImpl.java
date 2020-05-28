@@ -5,6 +5,7 @@ import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.query.IntegrationQuery;
 import com.cogent.cogentappointment.admin.repository.custom.IntegrationFeatureRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Feature;
+import com.cogent.cogentappointment.persistence.model.IntegrationChannel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,7 @@ import java.util.function.Supplier;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.FEATURES;
 import static com.cogent.cogentappointment.admin.query.IntegrationQuery.QUERY_TO_FETCH_MIN_FEATURES;
+import static com.cogent.cogentappointment.admin.query.IntegrationQuery.QUERY_TO_FETCH_MIN_INTEGRATION_CHANNEL;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
 
@@ -46,18 +48,21 @@ public class IntegrationFeatureRepositoryCustomImpl implements IntegrationFeatur
 
     @Override
     public List<DropDownResponseDTO> fetchActiveApiIntegrationChannel() {
-        Query query = createQuery.apply(entityManager, IntegrationQuery.QUERY_TO_FETCH_MIN_INTEGRATION_CHANNEL);
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_MIN_INTEGRATION_CHANNEL);
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
         if (results.isEmpty()) {
             featureError();
-            throw FEATURE_NOT_FOUND.get();
+            throw API_INTEGRATION_CHANNEL_NOT_FOUND.get();
         } else return results;
     }
 
     private Supplier<NoContentFoundException> FEATURE_NOT_FOUND = () ->
             new NoContentFoundException(Feature.class);
+
+    private Supplier<NoContentFoundException> API_INTEGRATION_CHANNEL_NOT_FOUND = () ->
+            new NoContentFoundException(IntegrationChannel.class);
 
     private void featureError() {
         log.error(CONTENT_NOT_FOUND, FEATURES);

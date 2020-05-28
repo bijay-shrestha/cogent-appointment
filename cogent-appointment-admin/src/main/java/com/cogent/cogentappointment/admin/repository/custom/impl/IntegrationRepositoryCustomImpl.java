@@ -12,6 +12,8 @@ import com.cogent.cogentappointment.admin.dto.response.clientIntegration.clientI
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.query.IntegrationQuery;
 import com.cogent.cogentappointment.admin.repository.custom.IntegrationRepositoryCustom;
+import com.cogent.cogentappointment.persistence.model.ApiQueryParameters;
+import com.cogent.cogentappointment.persistence.model.ApiRequestHeader;
 import com.cogent.cogentappointment.persistence.model.ClientFeatureIntegration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -19,16 +21,18 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
-import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.CLIENT_FEATURE_INTEGRATION;
+import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.*;
 import static com.cogent.cogentappointment.admin.query.IntegrationQuery.*;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
@@ -52,11 +56,14 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
         List<FeatureIntegrationResponse> responseDTOList =
                 transformQueryToResultList(query, FeatureIntegrationResponse.class);
 
-//        if (appointmentDetails.isEmpty()) throw APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId);
-//
-//        return appointmentDetails.get(0);
+        if (responseDTOList.isEmpty())
+            throw CLIENT_API_INTEGRATION_NOT_FOUND.get();
 
-        return responseDTOList;
+        else {
+            return responseDTOList;
+        }
+
+
     }
 
     @Override
@@ -105,7 +112,7 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
 
         ClientApiIntegrationSearchDTO integrationSearchDTO = new ClientApiIntegrationSearchDTO();
         if (apiIntegrationSearchResponseDTOList.isEmpty())
-            throw CLIENT_API_FEATURE_INTEGRATION.get();
+            throw CLIENT_API_INTEGRATION_NOT_FOUND.get();
 
         else {
             integrationSearchDTO.setSearchResponseDTOS(apiIntegrationSearchResponseDTOList);
@@ -120,14 +127,13 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
         Query query = createQuery.apply(entityManager, CLIENT_FEATURES_INTEGRATION_DETAILS_API_QUERY)
                 .setParameter(CLIENT_FEATURE_INTEGRATION_ID, id);
 
-        ClientApiIntegrationResponseDTO responseDTOList =
-                transformQueryToSingleResult(query, ClientApiIntegrationResponseDTO.class);
 
-//        if (appointmentDetails.isEmpty()) throw APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId);
-//
-//        return appointmentDetails.get(0);
+        try {
+            return transformQueryToSingleResult(query, ClientApiIntegrationResponseDTO.class);
+        } catch (NoResultException e) {
+            throw CLIENT_API_FEATURE_INTEGRATION.apply(id);
+        }
 
-        return responseDTOList;
     }
 
     @Override
@@ -139,11 +145,14 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
         List<ApiRequestHeaderUpdateResponseDTO> apiRequestHeaderUpdateResponseDTOS =
                 transformQueryToResultList(query, ApiRequestHeaderUpdateResponseDTO.class);
 
-//        if (appointmentDetails.isEmpty()) throw APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId);
-//
-//        return appointmentDetails.get(0);
+        if (apiRequestHeaderUpdateResponseDTOS.isEmpty())
+            throw CLIENT_API_REQUEST_HEADER_NOT_FOUND.get();
 
-        return apiRequestHeaderUpdateResponseDTOS;
+        else {
+            return apiRequestHeaderUpdateResponseDTOS;
+        }
+
+
     }
 
     @Override
@@ -154,7 +163,12 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
         List<ApiQueryParametersUpdateResponseDTO> apiQueryParametersUpdateResponseDTOS =
                 transformQueryToResultList(query, ApiQueryParametersUpdateResponseDTO.class);
 
-        return apiQueryParametersUpdateResponseDTOS;
+        if (apiQueryParametersUpdateResponseDTOS.isEmpty())
+            throw CLIENT_API_QUERY_PARAMETERS_NOT_FOUND.get();
+
+        else {
+            return apiQueryParametersUpdateResponseDTOS;
+        }
 
     }
 
@@ -170,10 +184,6 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
         requestHeaderResponseDTO.forEach(response -> {
             map.put(response.getKeyParam(), response.getValueParam());
         });
-
-//        if (appointmentDetails.isEmpty()) throw APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId);
-//
-//        return appointmentDetails.get(0);
 
         return map;
     }
@@ -191,16 +201,30 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
             map.put(response.getKeyParam(), response.getValueParam());
         });
 
-//        if (appointmentDetails.isEmpty()) throw APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId);
-//
-//        return appointmentDetails.get(0);
-
         return map;
     }
 
-    private Supplier<NoContentFoundException> CLIENT_API_FEATURE_INTEGRATION = () -> {
+
+    private Function<Long, NoContentFoundException> CLIENT_API_FEATURE_INTEGRATION = (id) -> {
+        log.error(CONTENT_NOT_FOUND, CLIENT_FEATURE_INTEGRATION);
+        throw new NoContentFoundException
+                (ClientFeatureIntegration.class, "id", id.toString());
+    };
+
+    private Supplier<NoContentFoundException> CLIENT_API_INTEGRATION_NOT_FOUND = () -> {
         log.error(CONTENT_NOT_FOUND, CLIENT_FEATURE_INTEGRATION);
         throw new NoContentFoundException(ClientFeatureIntegration.class);
     };
+
+    private Supplier<NoContentFoundException> CLIENT_API_REQUEST_HEADER_NOT_FOUND = () -> {
+        log.error(CONTENT_NOT_FOUND, API_REQUEST_HEADER);
+        throw new NoContentFoundException(ApiRequestHeader.class);
+    };
+
+    private Supplier<NoContentFoundException> CLIENT_API_QUERY_PARAMETERS_NOT_FOUND = () -> {
+        log.error(CONTENT_NOT_FOUND, API_QUERY_PARAMETERS);
+        throw new NoContentFoundException(ApiQueryParameters.class);
+    };
+
 
 }

@@ -59,9 +59,7 @@ import java.util.*;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_ESEWA_CODE;
-import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.RefundResponseConstant.FULL_REFUND;
-import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.RefundResponseConstant.PARTIAL_REFUND;
-import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.RefundResponseConstant.SUCCESS;
+import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.RefundResponseConstant.*;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AppointmentServiceMessage.*;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.DoctorServiceMessages.DOCTOR_APPOINTMENT_CHARGE_INVALID;
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.DoctorServiceMessages.DOCTOR_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE;
@@ -1047,7 +1045,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         ResponseEntity<EsewaResponseDTO> response = (ResponseEntity<EsewaResponseDTO>) restTemplateUtils.
                 postRequest(url, request, EsewaResponseDTO.class);
 
-        return response.getBody().getStatus();
+        return (response.getBody().getStatus()==null)? AMBIGIOUS:response.getBody().getStatus();
     }
 
     private void updateAppointmentAndAppointmentRefundDetails(String response,
@@ -1068,8 +1066,13 @@ public class AppointmentServiceImpl implements AppointmentService {
                 saveAppointmentRefundDetail(parseRefundRejectDetails(refundRejectDTO, refundAppointmentDetail));
                 break;
 
+            case AMBIGIOUS:
+                defaultAppointmentAndAppointmentRefundDetailStatusChanges(appointment, refundAppointmentDetail,response);
+                break;
+
             default:
                 defaultAppointmentAndAppointmentRefundDetailStatusChanges(appointment, refundAppointmentDetail,response);
+                break;
 
         }
     }

@@ -22,10 +22,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_ESEWA_CODE;
-import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.RefundResponseConstant.FULL_REFUND;
-import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.RefundResponseConstant.PARTIAL_REFUND;
+import static com.cogent.cogentappointment.client.constants.CogentAppointmentConstants.RefundResponseConstant.*;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
-import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.APPOINTMENT_CANCEL_APPROVAL;
 import static com.cogent.cogentappointment.client.log.constants.RefundStatusLog.REFUND_STATUS;
 import static com.cogent.cogentappointment.client.utils.RefundStatusUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
@@ -86,17 +84,22 @@ public class RefundStatusServiceImpl implements RefundStatusService {
 
         requestDTO.setEsewaMerchantCode(appointment.getHospitalId().getEsewaMerchantCode());
 
+        requestDTO.setAppointmentMode(appointment.getAppointmentModeId().getCode());
+
         String response = processRefundRequest(requestDTO);
 
         switch (response) {
 
             case PARTIAL_REFUND:
-                changeAppointmentAndAppointmentRefundDetailStatus(appointment,appointmentRefundDetail, response);
+                changeAppointmentAndAppointmentRefundDetailStatus(appointment, appointmentRefundDetail, response);
                 break;
 
             case FULL_REFUND:
-                changeAppointmentAndAppointmentRefundDetailStatus(appointment,appointmentRefundDetail, response);
+                changeAppointmentAndAppointmentRefundDetailStatus(appointment, appointmentRefundDetail, response);
                 break;
+
+            case AMBIGIOUS :
+                appointmentService.approveRefundAppointment(requestDTO.getAppointmentId());
 
             default:
                 appointmentService.approveRefundAppointment(requestDTO.getAppointmentId());
@@ -131,7 +134,7 @@ public class RefundStatusServiceImpl implements RefundStatusService {
                 postRequest(ESEWA_API_PAYMENT_STATUS,
                         request, EsewaResponseDTO.class);
 
-        return response.getBody().getStatus();
+        return (response.getBody().getStatus() == null) ? AMBIGIOUS : response.getBody().getStatus();
     }
 
     private String processRefundRequest(RefundStatusRequestDTO requestDTO) {
@@ -160,11 +163,11 @@ public class RefundStatusServiceImpl implements RefundStatusService {
         saveAppointmentRefundDetails(changeAppointmentRefundDetailStatus.apply(appointmentRefundDetail, remarks));
     }
 
-    private AppointmentRefundDetail getAppointmentRefundDetail(RefundStatusRequestDTO requestDTO){
+    private AppointmentRefundDetail getAppointmentRefundDetail(RefundStatusRequestDTO requestDTO) {
         return refundDetailRepository.fetchAppointmentRefundDetail(requestDTO);
     }
 
-    private Appointment getAppointment(RefundStatusRequestDTO requestDTO){
+    private Appointment getAppointment(RefundStatusRequestDTO requestDTO) {
         return appointmentRepository.fetchCancelledAppointmentDetails(requestDTO);
     }
 

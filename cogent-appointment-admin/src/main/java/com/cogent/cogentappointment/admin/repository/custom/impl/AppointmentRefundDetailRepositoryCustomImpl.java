@@ -63,8 +63,7 @@ public class AppointmentRefundDetailRepositoryCustomImpl implements AppointmentR
     public RefundStatusResponseDTO searchRefundAppointments(RefundStatusSearchRequestDTO requestDTO, Pageable pageable) {
         RefundStatusResponseDTO refundStatusResponseDTO = new RefundStatusResponseDTO();
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_REFUND_APPOINTMENTS(requestDTO))
-                .setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_REFUND_APPOINTMENTS(requestDTO));
 
         Query getTotalRefundAmount = createQuery.apply(entityManager, QUERY_TO_GET_TOTAL_REFUND_AMOUNT)
                 .setParameter(HOSPITAL_ID, requestDTO.getHospitalId());

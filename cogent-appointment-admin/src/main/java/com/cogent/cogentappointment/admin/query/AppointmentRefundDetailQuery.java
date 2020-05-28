@@ -38,6 +38,7 @@ public class AppointmentRefundDetailQuery {
                 " a.appointmentModeId.name as appointmentMode," +
                 " ard.status as refundStatus," +
                 " ard.remarks as remarks," +
+                " a.hospitalId.name as hospitalName," +
                 QUERY_TO_CALCULATE_PATIENT_AGE +
                 " FROM" +
                 " AppointmentRefundDetail ard" +
@@ -48,8 +49,7 @@ public class AppointmentRefundDetailQuery {
                 " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = a.patientId.id AND hpi.hospital.id = a.hospitalId.id" +
                 " WHERE" +
                 " a.status IN ('C','RE')" +
-                " AND ard.status IN ('PA','A','R')" +
-                " AND a.hospitalId.id=:hospitalId" +
+                " AND ard.status IN ('PA','A','R')"+
                 GET_WHERE_CLAUSE_TO_FETCH_REFUND_APPOINTMENTS(searchDTO);
 
     }
@@ -68,6 +68,9 @@ public class AppointmentRefundDetailQuery {
 
         if (!ObjectUtils.isEmpty(searchDTO.getStatus()))
             whereClause += " AND ard.status = '" + searchDTO.getStatus() + "'";
+
+        if (!ObjectUtils.isEmpty(searchDTO.getHospitalId()))
+            whereClause += " AND a.hospitalId.id =" + searchDTO.getHospitalId();
 
         if (!ObjectUtils.isEmpty(searchDTO.getAppointmentModeId()))
             whereClause += " AND a.appointmentModeId.id =" + searchDTO.getAppointmentModeId();
@@ -153,6 +156,7 @@ public class AppointmentRefundDetailQuery {
                     " atd.appointmentAmount as appointmentCharge," +
                     " a.appointmentModeId.name as appointmentMode," +
                     " hpi.isRegistered as isRegistered," +
+                    " a.hospitalId.name as hospitalName," +
                     QUERY_TO_CALCULATE_PATIENT_AGE + "," +
                     " dv.fileUri as fileUri" +
                     " FROM" +

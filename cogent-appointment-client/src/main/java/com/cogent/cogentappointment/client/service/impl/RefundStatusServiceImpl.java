@@ -111,7 +111,7 @@ public class RefundStatusServiceImpl implements RefundStatusService {
 
         log.info(FETCHING_PROCESS_STARTED, REFUND_STATUS);
 
-        AppointmentRefundDetailResponseDTO refundAppointments = appointmentRepository.fetchRefundDetailsById(appointmentId);
+        AppointmentRefundDetailResponseDTO refundAppointments = refundDetailRepository.fetchRefundDetailsById(appointmentId);
 
         log.info(FETCHING_PROCESS_COMPLETED, REFUND_STATUS, getDifferenceBetweenTwoTime(startTime));
 

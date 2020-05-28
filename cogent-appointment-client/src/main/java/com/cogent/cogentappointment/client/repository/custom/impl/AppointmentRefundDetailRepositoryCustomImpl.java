@@ -4,6 +4,8 @@ package com.cogent.cogentappointment.client.repository.custom.impl;
 import com.cogent.cogentappointment.client.dto.request.dashboard.RefundAmountRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusSearchRequestDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.approval.AppointmentPendingApprovalDetailResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.appointment.refund.AppointmentRefundDetailResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.refundStatus.RefundStatusDTO;
 import com.cogent.cogentappointment.client.dto.response.refundStatus.RefundStatusResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
@@ -19,11 +21,15 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.client.constants.QueryConstants.AppointmentConstants.APPOINTMENT_ID;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.AppointmentConstants.TRANSACTION_NUMBER;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
+import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.APPOINTMENT;
 import static com.cogent.cogentappointment.client.log.constants.AppointmentLog.APPOINTMENT_REFUND_DETAIL;
 import static com.cogent.cogentappointment.client.query.AppointmentRefundDetailQuery.*;
 import static com.cogent.cogentappointment.client.query.DashBoardQuery.QUERY_TO_FETCH_REFUND_AMOUNT;
@@ -68,13 +74,13 @@ public class AppointmentRefundDetailRepositoryCustomImpl implements AppointmentR
         Query getTotalRefundAmount = createQuery.apply(entityManager, QUERY_TO_GET_TOTAL_REFUND_AMOUNT)
                 .setParameter(HOSPITAL_ID, getLoggedInHospitalId());
 
+        refundStatusResponseDTO.setTotalItems(query.getResultList().size());
 
         addPagination.accept(pageable, query);
 
         List<RefundStatusDTO> response = transformQueryToResultList(query, RefundStatusDTO.class);
 
         refundStatusResponseDTO.setRefundAppointments(response);
-        refundStatusResponseDTO.setTotalItems(query.getResultList().size());
         refundStatusResponseDTO.setTotalRefundAmount((Double) getTotalRefundAmount.getSingleResult());
 
         return refundStatusResponseDTO;
@@ -95,6 +101,23 @@ public class AppointmentRefundDetailRepositoryCustomImpl implements AppointmentR
             throw APPOINTMENT_REFUND_DETAIL_NOT_FOUND.get();
         }
     }
+
+    @Override
+    public AppointmentRefundDetailResponseDTO fetchRefundDetailsById(Long appointmentId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_REFUNDED_DETAIL_BY_ID)
+                .setParameter(APPOINTMENT_ID, appointmentId);
+        try {
+            return transformQueryToSingleResult(query, AppointmentRefundDetailResponseDTO.class);
+        } catch (NoResultException e) {
+            throw APPOINTMENT_DETAILS_NOT_FOUND.apply(appointmentId);
+        }
+    }
+
+    private Function<Long, NoContentFoundException> APPOINTMENT_DETAILS_NOT_FOUND = (appointmentId) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT, appointmentId);
+        throw new NoContentFoundException
+                (AppointmentPendingApprovalDetailResponseDTO.class, "appointmentId", appointmentId.toString());
+    };
 
     private Supplier<NoContentFoundException> APPOINTMENT_REFUND_DETAIL_NOT_FOUND = ()
             -> new NoContentFoundException(AppointmentRefundDetail.class);

@@ -5,6 +5,7 @@ import org.springframework.util.ObjectUtils;
 
 import java.util.Objects;
 
+import static com.cogent.cogentappointment.client.query.PatientQuery.QUERY_TO_CALCULATE_PATIENT_AGE;
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 
 /**
@@ -47,7 +48,7 @@ public class AppointmentRefundDetailQuery {
                 " LEFT JOIN PatientMetaInfo pm ON pm.patient.id = a.patientId.id AND pm.status = 'Y'" +
                 " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id = a.patientId.id AND hpi.hospital.id = a.hospitalId.id" +
                 " WHERE" +
-                " a.status='C' " +
+                " a.status IN ('C','RE')" +
                 " AND ard.status IN ('PA','A','R')" +
                 " AND a.hospitalId.id=:hospitalId" +
                 GET_WHERE_CLAUSE_TO_FETCH_REFUND_APPOINTMENTS(searchDTO);
@@ -123,5 +124,46 @@ public class AppointmentRefundDetailQuery {
                     " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id " +
                     " WHERE atd.transactionNumber=:transactionNumber" +
                     " AND a.patientId.eSewaId =:esewaId";
+
+    public static String QUERY_TO_REFUNDED_DETAIL_BY_ID =
+            "SELECT" +
+                    " a.appointmentDate as appointmentDate," +
+                    " DATE_FORMAT(a.appointmentTime, '%h:%i %p') as appointmentTime," +
+                    " a.appointmentNumber as appointmentNumber," +
+                    " h.name as hospitalName," +
+                    " a.patientId.name as patientName," +
+                    " CASE WHEN" +
+                    " (hpi.registrationNumber IS NULL)" +
+                    " THEN 'N/A'" +
+                    " ELSE" +
+                    " hpi.registrationNumber" +
+                    " END as registrationNumber," +
+                    " a.patientId.gender as gender," +
+                    " CASE WHEN" +
+                    " (a.patientId.eSewaId IS NULL)" +
+                    " THEN 'N/A'" +
+                    " ELSE" +
+                    " a.patientId.eSewaId" +
+                    " END as eSewaId," +
+                    " a.patientId.mobileNumber as mobileNumber," +
+                    " a.doctorId.name as doctorName," +
+                    " a.specializationId.name as specializationName," +
+                    " atd.transactionNumber as transactionNumber," +
+                    " DATE_FORMAT(ard.cancelledDate,'%M %d, %Y at %h:%i %p') as cancelledDate," +
+                    " ard.refundAmount as refundAmount," +
+                    " atd.appointmentAmount as appointmentCharge," +
+                    " a.appointmentModeId.name as appointmentMode," +
+                    " hpi.isRegistered as isRegistered," +
+                    QUERY_TO_CALCULATE_PATIENT_AGE + "," +
+                    " dv.fileUri as fileUri" +
+                    " FROM" +
+                    " AppointmentRefundDetail ard" +
+                    " LEFT JOIN Appointment a ON a.id=ard.appointmentId.id" +
+                    " LEFT JOIN Hospital h ON h.id=a.hospitalId.id" +
+                    " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =a.patientId.id AND hpi.hospital.id = a.hospitalId.id" +
+                    " LEFT JOIN DoctorAvatar dv ON dv.doctorId.id = a.doctorId.id" +
+                    " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id =a.id" +
+                    " WHERE ard.appointmentId.id=:appointmentId" +
+                    " AND ard.status IN ('PA','A','R')";
 
 }

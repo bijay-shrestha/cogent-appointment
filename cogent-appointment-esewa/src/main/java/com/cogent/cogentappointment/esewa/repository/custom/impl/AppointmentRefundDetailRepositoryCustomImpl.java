@@ -32,28 +32,5 @@ public class AppointmentRefundDetailRepositoryCustomImpl implements AppointmentR
 
     @PersistenceContext
     EntityManager entityManager;
-
-
-    @Override
-    public AppointmentRefundDetail fetchAppointmentRefundDetail(RefundStatusRequestDTO requestDTO) {
-        try {
-            AppointmentRefundDetail refundDetail = entityManager.createQuery(QUERY_TO_GET_APPOINTMENT_REFUND_DETAILS,
-                    AppointmentRefundDetail.class)
-                    .setParameter(ESEWA_ID, requestDTO.getEsewaId())
-                    .setParameter(ESEWA_MERCHANT_CODE, requestDTO.getEsewaMerchantCode())
-                    .setParameter(TRANSACTION_NUMBER, requestDTO.getTransactionNumber())
-                    .getSingleResult();
-
-            return refundDetail;
-        } catch (NoResultException e) {
-            log.error(CONTENT_NOT_FOUND, APPOINTMENT_REFUND_DETAIL);
-            throw APPOINTMENT_REFUND_DETAIL_NOT_FOUND.get();
-        }
-    }
-
-    private Supplier<NoContentFoundException> APPOINTMENT_REFUND_DETAIL_NOT_FOUND = ()
-            -> new NoContentFoundException(AppointmentRefundDetail.class);
-
-
 }
 

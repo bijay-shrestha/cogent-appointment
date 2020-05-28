@@ -13,5 +13,4 @@ import org.springframework.stereotype.Repository;
 @Qualifier("appointmentRefundDetailRepositoryCustom")
 public interface AppointmentRefundDetailRepositoryCustom {
 
-    AppointmentRefundDetail fetchAppointmentRefundDetail(RefundStatusRequestDTO requestDTO);
 }

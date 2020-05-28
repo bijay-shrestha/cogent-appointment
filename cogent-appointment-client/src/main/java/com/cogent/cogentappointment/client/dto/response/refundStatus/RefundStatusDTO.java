@@ -46,6 +46,8 @@ public class RefundStatusDTO implements Serializable {
 
     private String cancelledDate;
 
+    private String cancelledTime;
+
     private Double refundAmount;
 
     private String mobileNumber;

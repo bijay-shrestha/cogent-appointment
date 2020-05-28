@@ -22,7 +22,8 @@ public class AppointmentRefundDetailQuery {
                 " CASE WHEN (hpi.registrationNumber IS NULL) THEN 'N/A'" +
                 " ELSE hpi.registrationNumber END as registrationNumber," +
                 " atd.transactionNumber as transactionNumber," +
-                " DATE_FORMAT(ard.cancelledDate ,'%M %d, %Y at %h:%i %p') as cancelledDate," +
+                " DATE_FORMAT(ard.cancelledDate ,'%M %d, %Y') as cancelledDate," +
+                " DATE_FORMAT(ard.cancelledDate ,'%h:%i %p') as cancelledTime," +
                 " ard.refundAmount as refundAmount," +
                 " hpi.isRegistered as isRegistered," +
                 " CASE WHEN (da.fileUri IS NULL) THEN 'N/A'" +

@@ -8,4 +8,6 @@ public class HospitalLog {
     public final static String HOSPITAL = "HOSPITAL";
 
     public final static String HOSPITAL_ALIAS = "HOSPITAL ALIAS";
+
+    public final static String CLIENT = "CLIENT";
 }

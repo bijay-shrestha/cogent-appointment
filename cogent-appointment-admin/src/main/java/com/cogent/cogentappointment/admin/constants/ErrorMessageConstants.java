@@ -116,22 +116,22 @@ public class ErrorMessageConstants {
     public final static String HMAC_BAD_SIGNATURE = "HmacAccessFilter.badSignature";
 
     public interface HospitalDeptDutyRosterMessages {
-        String BAD_REQUEST_MESSAGE = "Hospital Department Duty Roster Override doesn't lie within the actual" +
+        String BAD_REQUEST_MESSAGE = "Department Duty Roster Override doesn't lie within the actual" +
                 " duty roster date range '%s' to '%s'";
 
         String BAD_ROOM_REQUEST = "If room is enabled, corresponding room details is also required";
 
         String DUPLICATE_DUTY_ROSTER_WITHOUT_ROOM =
-                "Hospital Department Duty Roster already exists within '%s' to '%s'";
+                "Department Duty Roster already exists within '%s' to '%s'";
 
         String DUPLICATE_DUTY_ROSTER_WITH_ROOM =
-                "Hospital Department Duty Roster already exists within '%s' to '%s' for selected room";
+                "Department Duty Roster already exists within '%s' to '%s' for selected room";
 
         String DUPLICATE_DUTY_ROSTER_OVERRIDE_WITHOUT_ROOM =
-                "Hospital Department Duty Roster Override already exists within '%s' to '%s'";
+                "Department Duty Roster Override already exists within '%s' to '%s'";
 
         String DUPLICATE_DUTY_ROSTER_OVERRIDE_WITH_ROOM =
-                "Hospital Department Duty Roster Override already exists within '%s' to '%s' for selected room";
+                "Department Duty Roster Override already exists within '%s' to '%s' for selected room";
 
     }
 
@@ -161,6 +161,7 @@ public class ErrorMessageConstants {
     public static final String NAME_AND_CODE_DUPLICATION_MESSAGE = "%s already exists with name '%s' " +
             "and code '%s' ";
 
+    public static String NO_RECORD_FOUND = "No %s(s) found.";
 
     //O
 

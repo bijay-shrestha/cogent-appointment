@@ -10,6 +10,7 @@ import com.cogent.cogentappointment.client.dto.response.refundStatus.RefundStatu
 import com.cogent.cogentappointment.client.dto.response.refundStatus.RefundStatusResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.AppointmentRefundDetailRepositoryCustom;
+import com.cogent.cogentappointment.persistence.model.Appointment;
 import com.cogent.cogentappointment.persistence.model.AppointmentRefundDetail;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -116,7 +117,7 @@ public class AppointmentRefundDetailRepositoryCustomImpl implements AppointmentR
     private Function<Long, NoContentFoundException> APPOINTMENT_DETAILS_NOT_FOUND = (appointmentId) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, APPOINTMENT, appointmentId);
         throw new NoContentFoundException
-                (AppointmentPendingApprovalDetailResponseDTO.class, "appointmentId", appointmentId.toString());
+                (Appointment.class, "appointmentId", appointmentId.toString());
     };
 
     private Supplier<NoContentFoundException> APPOINTMENT_REFUND_DETAIL_NOT_FOUND = ()

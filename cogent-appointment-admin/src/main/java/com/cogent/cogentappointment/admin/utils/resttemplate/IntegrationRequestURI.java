@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.utils.resttempalte;
+package com.cogent.cogentappointment.admin.utils.resttemplate;
 
 /**
  * @author rupak on 2020-05-24

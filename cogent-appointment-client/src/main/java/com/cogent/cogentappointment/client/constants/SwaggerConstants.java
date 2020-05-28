@@ -338,7 +338,7 @@ public class SwaggerConstants {
 
     public interface RefundStatusConstant {
         String BASE_API_VALUE = "This is Refund Status Resource";
-        String FETCH_PENDING_REFUND_APPROVAL_LIST = "Fetch Appointment Refund Details";
+        String FETCH_APPOINTMENT_REFUND_DETAIL_LIST = "Fetch Appointment Refund Details List(status='PA','R','A')";
         String FETCH_REFUND_DETAILS_TO_APPROVE="Fetch Appointment Refund Details To Approve(change status to A) ";
         String FETCH_REFUND_STATUS_APPOINTMENTS_DETAIL = "Fetch Refund Appointment Detail By appointmentId";
     }

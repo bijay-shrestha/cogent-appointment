@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.utils.resttempalte;
+package com.cogent.cogentappointment.admin.utils.resttemplate;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
@@ -52,6 +52,4 @@ public class RestTemplateUtils {
 
         return response;
     }
-
-
 }

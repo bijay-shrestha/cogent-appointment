@@ -6,7 +6,7 @@ import com.cogent.cogentappointment.client.dto.request.clientIntegration.Dummy;
 import com.cogent.cogentappointment.client.dto.request.clientIntegration.EsewaPayementStatus;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.DummyMessage;
 import com.cogent.cogentappointment.client.service.IntegrationService;
-import com.cogent.cogentappointment.client.utils.resttempalte.RestTemplateUtils;
+import com.cogent.cogentappointment.client.utils.resttemplate.RestTemplateUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.*;
@@ -24,11 +24,9 @@ import static com.cogent.cogentappointment.client.constants.SwaggerConstants.Int
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.IntegrationConstants.BASE_INTEGRATION;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.IntegrationConstants.CLIENT_API_INTEGRATION_APPOINTMENT_APPROVE;
-import static com.cogent.cogentappointment.client.utils.resttempalte.IntegrationRequestHeaders.*;
-import static com.cogent.cogentappointment.client.utils.resttempalte.IntegrationRequestURI.*;
-import static java.net.URI.create;
+import static com.cogent.cogentappointment.client.utils.resttemplate.IntegrationRequestHeaders.*;
+import static com.cogent.cogentappointment.client.utils.resttemplate.IntegrationRequestURI.*;
 import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**

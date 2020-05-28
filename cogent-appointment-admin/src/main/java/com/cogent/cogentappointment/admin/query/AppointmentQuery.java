@@ -731,4 +731,13 @@ public class AppointmentQuery {
 
         return query;
     }
+
+    public static String QUERY_TO_GET_CANCELLED_APPOINTMENT=
+            "SELECT" +
+                    " a" +
+                    " FROM" +
+                    " Appointment a " +
+                    " LEFT JOIN AppointmentTransactionDetail atd ON atd.appointment.id=a.id " +
+                    " WHERE atd.transactionNumber=:transactionNumber" +
+                    " AND a.patientId.eSewaId =:esewaId";
 }

@@ -3,13 +3,13 @@ package com.cogent.cogentappointment.client.utils;
 import com.cogent.cogentappointment.client.dto.request.clientIntegration.EsewaPayementStatus;
 import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.refundStatus.EsewaResponseDTO;
-import com.cogent.cogentappointment.client.utils.resttempalte.RestTemplateUtils;
+import com.cogent.cogentappointment.client.utils.resttemplate.RestTemplateUtils;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 
 import static com.cogent.cogentappointment.client.utils.RefundStatusUtils.parseToEsewaPayementStatus;
-import static com.cogent.cogentappointment.client.utils.resttempalte.IntegrationRequestHeaders.getEsewaPaymentStatusAPIHeaders;
-import static com.cogent.cogentappointment.client.utils.resttempalte.IntegrationRequestURI.ESEWA_API_PAYMENT_STATUS;
+import static com.cogent.cogentappointment.client.utils.resttemplate.IntegrationRequestHeaders.getEsewaPaymentStatusAPIHeaders;
+import static com.cogent.cogentappointment.client.utils.resttemplate.IntegrationRequestURI.ESEWA_API_PAYMENT_STATUS;
 
 /**
  * @author Sauravi Thapa ON 5/26/20

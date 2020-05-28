@@ -1,8 +1,8 @@
-package com.cogent.cogentappointment.client.resource;
+package com.cogent.cogentappointment.admin.resource;
 
-import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusRequestDTO;
-import com.cogent.cogentappointment.client.dto.request.refund.refundStatus.RefundStatusSearchRequestDTO;
-import com.cogent.cogentappointment.client.service.RefundStatusService;
+import com.cogent.cogentappointment.admin.dto.request.refund.refundStatus.RefundStatusRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.refund.refundStatus.RefundStatusSearchRequestDTO;
+import com.cogent.cogentappointment.admin.service.RefundStatusService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.PageRequest;
@@ -12,14 +12,12 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import static com.cogent.cogentappointment.client.constants.SwaggerConstants.RefundStatusConstant.*;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.AppointmentConstants.APPOINTMENT_ID_PATH_VARIABLE_BASE;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.AppointmentConstants.BASE_APPOINTMENT;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.DETAIL;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.RefundStatusConstants.BASE_REFUND_STATUS;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.RefundStatusConstants.CHECK;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.SEARCH;
+import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.RefundStatusConstant.*;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.APPOINTMENT_ID_PATH_VARIABLE_BASE;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentConstants.BASE_APPOINTMENT;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.RefundStatusConstants.BASE_REFUND_STATUS;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.RefundStatusConstants.CHECK;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**

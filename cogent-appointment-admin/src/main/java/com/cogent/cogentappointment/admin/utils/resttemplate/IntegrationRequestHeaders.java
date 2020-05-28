@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.client.utils.resttempalte;
+package com.cogent.cogentappointment.admin.utils.resttemplate;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;

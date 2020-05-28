@@ -59,6 +59,14 @@ public class WebResourceKeyConstants {
     public static final String BASE_PASSWORD = "/password";
 
     //C
+
+    public interface ClientIntegrationConstants {
+        String BASE_CLIENT_INTEGRATION = "/client-integration";
+        String CLIENT_INTEGRATION = "/client-api-integration";
+        String CLIENT_FEATURE_INTEGRATION_ID_PATH_VARIABLE_BASE = "/{id}";
+        String CLIENT_INTEGRATION_UPDATE_DETAILS = "/update-details";
+    }
+
     public interface CountryConstants {
         String BASE_COUNTRY = "/country";
     }

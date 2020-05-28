@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.resource;
 
+import com.cogent.cogentappointment.admin.constants.SwaggerConstants;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiIntegrationRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiIntegrationSearchRequestDTO;
@@ -18,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.IntegrationConstant.*;
-import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.QualificationConstant.FETCH_DETAILS_FOR_DROPDOWN;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.IntegrationConstants.*;
 import static java.net.URI.create;
@@ -90,33 +90,33 @@ public class IntegrationResource {
     }
 
     @GetMapping(FEATURES + ACTIVE + MIN)
-    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
+    @ApiOperation(SwaggerConstants.QualificationConstant.FETCH_DETAILS_FOR_DROPDOWN)
     public ResponseEntity<?> fetchFeatureTypeForDropdown() {
         return ok(integrationFeatureService.fetchActiveFeatureType());
     }
 
     @GetMapping(FEATURES + CLIENT_INTEGRATION_TYPE_ID_PATH_VARIABLE_BASE)
-    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
+    @ApiOperation(SwaggerConstants.QualificationConstant.FETCH_DETAILS_FOR_DROPDOWN)
     public ResponseEntity<?> fetchFeatureTypeByIntegrationType(@PathVariable("apiIntegrationTypeId") Long id) {
         return ok(apiIntegrationTypeService.fetchActiveFeatureTypeByIntegrationTypeId(id));
     }
 
     @GetMapping(HTTP_REQUEST_METHODS + ACTIVE + MIN)
-    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
+    @ApiOperation(SwaggerConstants.QualificationConstant.FETCH_DETAILS_FOR_DROPDOWN)
     public ResponseEntity<?> fetchQualificationForDropDown() {
         return ok(httpRequestMethodService.fetchActiveRequestMethod());
     }
 
     @GetMapping(API_INTEGRATION_TYPE + ACTIVE + MIN)
-    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
+    @ApiOperation(SwaggerConstants.IntegrationConstant.FETCH_DETAILS_FOR_DROPDOWN)
     public ResponseEntity<?> fetchApiIntegrationTypeForDropDown() {
         return ok(apiIntegrationTypeService.fetchActiveApiIntegrationType());
     }
 
-    @GetMapping(API_INTEGRATION_TYPE + ACTIVE + MIN)
-    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
-    public ResponseEntity<?> fetchApiIntegrationTypeForDropDown() {
-        return ok(apiIntegrationTypeService.fetchActiveApiIntegrationType());
+    @GetMapping(INTEGRATION_CHANNEL + ACTIVE + MIN)
+    @ApiOperation(SwaggerConstants.QualificationConstant.FETCH_DETAILS_FOR_DROPDOWN)
+    public ResponseEntity<?> fetchApiIntegrationChannelForDropDown() {
+        return ok(integrationFeatureService.fetchActiveApiIntegrationChannel());
     }
 
 }

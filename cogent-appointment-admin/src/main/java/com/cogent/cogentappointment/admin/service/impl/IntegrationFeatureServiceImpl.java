@@ -42,4 +42,17 @@ public class IntegrationFeatureServiceImpl implements IntegrationFeatureService 
 
         return responseDTOS;
     }
+
+    @Override
+    public List<DropDownResponseDTO> fetchActiveApiIntegrationChannel() {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, FEATURES);
+
+        List<DropDownResponseDTO> responseDTOS = integrationFeatureRepository.fetchActiveApiIntegrationChannel();
+
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, FEATURES, getDifferenceBetweenTwoTime(startTime));
+
+        return responseDTOS;
+    }
 }

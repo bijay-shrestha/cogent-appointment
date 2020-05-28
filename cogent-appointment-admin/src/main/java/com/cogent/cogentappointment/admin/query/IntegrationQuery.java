@@ -155,6 +155,14 @@ public class IntegrationQuery {
                     " AND f.status ='Y'" +
                     " AND ait.id=:apiIntegrationTypeId" +
                     " ORDER by ait.name ASC";
+    public static final String QUERY_TO_FETCH_MIN_INTEGRATION_CHANNEL =
+            "SELECT" +
+                    " ic.id as value," +
+                    " ic.name as label" +
+                    " FROM" +
+                    " IntegrationChannel ic" +
+                    " WHERE ic.status ='Y'" +
+                    " ORDER by ic.name ASC";
 
 
     public static Function<ClientApiIntegrationSearchRequestDTO, String> CLIENT_API_INTEGRATION_SEARCH_QUERY =

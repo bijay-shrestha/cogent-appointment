@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
+import com.cogent.cogentappointment.admin.query.IntegrationQuery;
 import com.cogent.cogentappointment.admin.repository.custom.IntegrationFeatureRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.Feature;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,18 @@ public class IntegrationFeatureRepositoryCustomImpl implements IntegrationFeatur
     @Override
     public List<DropDownResponseDTO> fetchActiveFeatureType() {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_MIN_FEATURES);
+
+        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
+
+        if (results.isEmpty()) {
+            featureError();
+            throw FEATURE_NOT_FOUND.get();
+        } else return results;
+    }
+
+    @Override
+    public List<DropDownResponseDTO> fetchActiveApiIntegrationChannel() {
+        Query query = createQuery.apply(entityManager, IntegrationQuery.QUERY_TO_FETCH_MIN_INTEGRATION_CHANNEL);
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 

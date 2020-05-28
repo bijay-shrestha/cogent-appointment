@@ -59,7 +59,7 @@ public class AppointmentQuery {
                 "  d.name as doctorName," +
                 "  s.name as specializationName," +
                 "  atd.transactionNumber as transactionNumber," +
-                "  DATE_FORMAT(ard.cancelledDate,'%M %d, %Y at %h:%i %p') as cancelledDate," +
+                "  DATE_FORMAT(ard.cancelledDate,'%M %d, %Y ') as cancelledDate," +
                 "  p.gender as gender," +
                 " ard.refundAmount as refundAmount," +
                 " a.appointmentModeId.name as appointmentMode," +

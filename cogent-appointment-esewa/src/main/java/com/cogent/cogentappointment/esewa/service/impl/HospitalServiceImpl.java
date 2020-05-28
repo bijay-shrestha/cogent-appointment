@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.esewa.service.impl;
 
 import com.cogent.cogentappointment.esewa.dto.request.hospital.HospitalMinSearchRequestDTO;
+import com.cogent.cogentappointment.esewa.dto.response.hospital.HospitalAppointmentServiceTypeResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.hospital.HospitalMinResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.hospital.HospitalMinResponseDTOWithStatus;
 import com.cogent.cogentappointment.esewa.exception.NoContentFoundException;
@@ -16,6 +17,7 @@ import java.util.function.Function;
 
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.esewa.log.constants.HospitalLog.HOSPITAL;
+import static com.cogent.cogentappointment.esewa.log.constants.HospitalLog.HOSPITAL_APPOINTMENT_SERVICE_TYPE;
 import static com.cogent.cogentappointment.esewa.utils.HospitalUtils.parseToHospitalMinResponseDTOWithStatus;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
@@ -60,6 +62,21 @@ public class HospitalServiceImpl implements HospitalService {
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
 
         return parseToHospitalMinResponseDTOWithStatus(responseDTO);
+    }
+
+    @Override
+    public List<HospitalAppointmentServiceTypeResponseDTO> fetchHospitalAppointmentServiceType(Long hospitalId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_DETAIL_PROCESS_STARTED, HOSPITAL_APPOINTMENT_SERVICE_TYPE);
+
+        List<HospitalAppointmentServiceTypeResponseDTO> hospitalAppointmentServiceType =
+                hospitalRepository.fetchHospitalAppointmentServiceType(hospitalId);
+
+        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, HOSPITAL_APPOINTMENT_SERVICE_TYPE,
+                getDifferenceBetweenTwoTime(startTime));
+
+        return hospitalAppointmentServiceType;
     }
 
     private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {

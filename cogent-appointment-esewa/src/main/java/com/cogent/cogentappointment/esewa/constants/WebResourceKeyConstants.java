@@ -24,6 +24,10 @@ public class WebResourceKeyConstants {
         String TRANSACTION_STATUS = "/transaction-status";
     }
 
+    public interface AppointmentServiceType {
+        String APPOINTMENT_SERVICE_TYPE = "/appointmentServiceType";
+    }
+
     //B
 
     //C
@@ -68,7 +72,6 @@ public class WebResourceKeyConstants {
     public interface HospitalDepartmentConstants {
         String BASE_HOSPITAL_DEPARTMENT = "/hospitalDepartment";
     }
-
 
 
     //I

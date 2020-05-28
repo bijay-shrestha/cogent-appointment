@@ -5,18 +5,13 @@ import com.cogent.cogentappointment.esewa.service.HospitalService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-
-import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.HospitalConstant.BASE_API_VALUE;
-import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.HospitalConstant.FETCH_MIN_DETAILS;
-import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.API_V1;
+import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.HospitalConstant.*;
+import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.*;
+import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.AppointmentServiceType.APPOINTMENT_SERVICE_TYPE;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.HospitalConstants.BASE_HOSPITAL;
-import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.MIN;
-import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.SEARCH;
+import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.HospitalConstants.HOSPITAL_ID_PATH_VARIABLE_BASE;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -38,4 +33,11 @@ public class HospitalResource {
     public ResponseEntity<?> fetchMinDetails(@RequestBody HospitalMinSearchRequestDTO searchRequestDTO) {
         return ok(hospitalService.fetchMinDetails(searchRequestDTO));
     }
+
+    @GetMapping(APPOINTMENT_SERVICE_TYPE + HOSPITAL_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_HOSPITAL_APPOINTMENT_SERVICE_TYPE)
+    public ResponseEntity<?> fetchHospitalAppointmentServiceType(@PathVariable("hospitalId") Long hospitalId) {
+        return ok(hospitalService.fetchHospitalAppointmentServiceType(hospitalId));
+    }
+
 }

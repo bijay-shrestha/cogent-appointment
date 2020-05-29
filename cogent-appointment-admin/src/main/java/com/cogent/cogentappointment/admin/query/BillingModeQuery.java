@@ -32,7 +32,7 @@ public class BillingModeQuery {
                     " bm.name as name," +
                     " bm.code as code," +
                     " bm.status as status" +
-                    " FROM BillingMode am";
+                    " FROM BillingMode bm";
 
     public static Function<BillingModeSearchRequestDTO, String> QUERY_TO_SEARCH_BILLING_MODE =
             (searchRequestDTO -> (
@@ -54,6 +54,8 @@ public class BillingModeQuery {
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
             whereClause += " AND bm.status='" + searchRequestDTO.getStatus() + "'";
 
+        whereClause +="ORDER BY bm.id DESC";
+
         return whereClause;
     }
 
@@ -73,15 +75,15 @@ public class BillingModeQuery {
             "SELECT" +
                     " bm.id as value," +
                     " bm.name as label" +
-                    " FROM BillingMode am " +
+                    " FROM BillingMode bm " +
                     " WHERE bm.status = 'Y'";
 
     public static final String QUERY_TO_FETCH_BILLING_MODE_FOR_DROP_DOWN =
             "SELECT" +
                     " bm.id as value," +
                     " bm.name as label" +
-                    " FROM BillingMode am " +
-                    " WHERE bm.status = 'Y'";
+                    " FROM BillingMode bm " +
+                    " WHERE bm.status != 'D'";
 
     public static String BILLING_MODE_AUDITABLE_QUERY() {
         return " bm.createdBy as createdBy," +

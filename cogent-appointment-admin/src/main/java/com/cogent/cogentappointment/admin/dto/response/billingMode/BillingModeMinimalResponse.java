@@ -21,6 +21,4 @@ public class BillingModeMinimalResponse implements Serializable {
     private String code;
 
     private Character status;
-
-    private int totalItems;
 }

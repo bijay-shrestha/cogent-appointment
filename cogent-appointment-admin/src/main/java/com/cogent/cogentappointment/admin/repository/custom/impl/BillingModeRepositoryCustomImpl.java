@@ -27,9 +27,7 @@ import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_N
 import static com.cogent.cogentappointment.admin.log.constants.BillingModeLog.BILLING_MODE;
 import static com.cogent.cogentappointment.admin.query.BillingModeQuery.*;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
-import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
-import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformNativeQueryToSingleResult;
-import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
+import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
 
 /**
  * @author Sauravi Thapa ON 5/29/20
@@ -88,7 +86,7 @@ public class BillingModeRepositoryCustomImpl implements BillingModeRepositoryCus
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_BILLING_MODE_DETAILS)
                 .setParameter(ID, id);
         try {
-            return transformNativeQueryToSingleResult(query, BillingModeResponseDTO.class);
+            return transformQueryToSingleResult(query, BillingModeResponseDTO.class);
         } catch (NoResultException e) {
             throw BILLING_MODE_NOT_FOUND.get();
         }

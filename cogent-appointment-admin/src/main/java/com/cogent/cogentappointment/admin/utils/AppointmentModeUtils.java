@@ -23,18 +23,22 @@ public class AppointmentModeUtils {
         return appointmentMode;
     }
 
-    public static void parseToUpdatedAppointmentMode(AppointmentModeUpdateRequestDTO requestDTO,
+    public static AppointmentMode parseToUpdatedAppointmentMode(AppointmentModeUpdateRequestDTO requestDTO,
                                                 AppointmentMode appointmentMode) {
         appointmentMode.setName(convertToNormalCase(requestDTO.getName()));
         appointmentMode.setCode(requestDTO.getCode());
         appointmentMode.setStatus(requestDTO.getStatus());
         appointmentMode.setRemarks(requestDTO.getRemarks());
         appointmentMode.setDescription(requestDTO.getDescription());
+
+        return appointmentMode;
     }
 
-    public static void parseToDeletedAppointmentMode(AppointmentMode appointmentMode,
+    public static AppointmentMode parseToDeletedAppointmentMode(AppointmentMode appointmentMode,
                                                 DeleteRequestDTO deleteRequestDTO) {
         appointmentMode.setStatus(deleteRequestDTO.getStatus());
         appointmentMode.setRemarks(deleteRequestDTO.getRemarks());
+
+        return appointmentMode;
     }
 }

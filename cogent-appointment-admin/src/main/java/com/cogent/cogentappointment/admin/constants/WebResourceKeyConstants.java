@@ -43,6 +43,10 @@ public class WebResourceKeyConstants {
 
     }
 
+    public interface BillingModeConstants {
+        String BASE_Billing_MODE = "/billingMode";
+    }
+
     public interface AppointmentTransferConstants{
         String BASE_APPOINTMENT_TRANSFER = "/appointmentTransfer";
         String APPOINTMENT_TIME = "/time";

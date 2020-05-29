@@ -1,18 +1,18 @@
-package com.cogent.cogentappointment.admin.dto.response.appointmentMode;
+package com.cogent.cogentappointment.admin.dto.response.billingMode;
 
 import lombok.*;
 
 import java.io.Serializable;
 
 /**
- * @author Sauravi Thapa 4/17/2019
+ * @author Sauravi Thapa ON 5/29/2020
  */
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AppointmentModeMinimalResponseDTO implements Serializable {
+public class BillingModeMinimalResponse implements Serializable {
 
     private Long id;
 
@@ -21,8 +21,6 @@ public class AppointmentModeMinimalResponseDTO implements Serializable {
     private String code;
 
     private Character status;
-
-    private Character isEditable;
 
     private int totalItems;
 }

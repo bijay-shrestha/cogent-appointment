@@ -8,10 +8,10 @@ public class IntegrationQuery {
     public static final String CLIENT_FEAUTRES_INTEGRATION_API_QUERY =
             "SELECT" +
                     " aif.id as apiIntegrationFormatId," +
+                    " f.id as featureId,"+
                     " f.code as featureCode," +
                     " hrm.name as requestMethod,"+
-                    " aif.url as url," +
-                    " aif.httpRequestBodyAttributes as requestBody" +
+                    " aif.url as url" +
                     " from ClientFeatureIntegration cfi" +
                     " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=cfi.id" +
                     " LEFT JOIN Feature f ON f.id=cfi.featureId" +

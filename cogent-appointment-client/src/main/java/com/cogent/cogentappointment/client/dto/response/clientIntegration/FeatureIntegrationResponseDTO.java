@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.client.dto.response.clientIntegration;
 
+import com.cogent.cogentappointment.client.dto.response.integration.IntegrationRequestBodyAttributeResponse;
 import lombok.*;
 
 import java.io.Serializable;
@@ -18,15 +19,8 @@ public class FeatureIntegrationResponseDTO implements Serializable {
 
     private String featureCode;
 
-    private String requestMethod;
+    private Long integrationChannelId;
 
-    private String url;
-
-    private String requestBody;
-
-    private Map<String,String> headers;
-
-    private Map<String,String> queryParameters;
-
+    private ApiInfoResponseDTO apiInfo;
 
 }

@@ -32,7 +32,7 @@ public class HospitalBillingModeInfo extends Auditable<String> implements Serial
     private Character status;
 
     @Column(name = "remarks")
-    private Character remarks;
+    private String remarks;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hospital_id")

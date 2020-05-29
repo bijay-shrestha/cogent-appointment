@@ -75,4 +75,6 @@ public class HospitalUpdateRequestDTO implements Serializable {
    * N-> BANNER IS SAME AS BEFORE. SO IF IT IS 'N', THEN NO NEED TO UPDATE BANNER
    */
     private Character isBannerUpdate;
+
+    private List<HospitalBillingModeUpdateRequestDTO> billingModeIds;
 }

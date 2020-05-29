@@ -19,4 +19,7 @@ public interface BillingModeRepository extends JpaRepository<BillingMode, Long>,
 
     @Query("SELECT bm FROM BillingMode bm WHERE bm.status='Y' AND bm.code = :code")
     Optional<BillingMode> fetchActiveBillingModeByCode(@Param("code") String code);
+
+    @Query("SELECT bm FROM BillingMode bm WHERE bm.status='Y' AND bm.id = :id")
+    Optional<BillingMode> fetchActiveBillingModeById(@Param("id") Long id);
 }

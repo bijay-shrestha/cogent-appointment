@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.admin.constants.SwaggerConstants;
 import com.cogent.cogentappointment.admin.service.ApiIntegrationTypeService;
 import com.cogent.cogentappointment.admin.service.HttpRequestMethodService;
 import com.cogent.cogentappointment.admin.service.IntegrationFeatureService;
+import com.cogent.cogentappointment.admin.service.IntegrationRequestBodyParametersService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.IntegrationConstant.BASE_API_VALUE;
+import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.QualificationConstant.FETCH_DETAILS_FOR_DROPDOWN;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.IntegrationConstants.*;
 import static org.springframework.http.ResponseEntity.ok;
@@ -28,30 +30,32 @@ public class IntegrationResource {
     private final IntegrationFeatureService integrationFeatureService;
     private final HttpRequestMethodService httpRequestMethodService;
     private final ApiIntegrationTypeService apiIntegrationTypeService;
+    private final IntegrationRequestBodyParametersService parametersService;
 
     public IntegrationResource(IntegrationFeatureService integrationFeatureService,
                                HttpRequestMethodService httpRequestMethodService,
-                               ApiIntegrationTypeService apiIntegrationTypeService) {
+                               ApiIntegrationTypeService apiIntegrationTypeService, IntegrationRequestBodyParametersService parametersService) {
         this.integrationFeatureService = integrationFeatureService;
         this.httpRequestMethodService = httpRequestMethodService;
         this.apiIntegrationTypeService = apiIntegrationTypeService;
+        this.parametersService = parametersService;
     }
 
 
     @GetMapping(FEATURES + ACTIVE + MIN)
-    @ApiOperation(SwaggerConstants.QualificationConstant.FETCH_DETAILS_FOR_DROPDOWN)
+    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
     public ResponseEntity<?> fetchFeatureTypeForDropdown() {
         return ok(integrationFeatureService.fetchActiveFeatureType());
     }
 
     @GetMapping(FEATURES + CLIENT_INTEGRATION_TYPE_ID_PATH_VARIABLE_BASE)
-    @ApiOperation(SwaggerConstants.QualificationConstant.FETCH_DETAILS_FOR_DROPDOWN)
+    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
     public ResponseEntity<?> fetchFeatureTypeByIntegrationType(@PathVariable("apiIntegrationTypeId") Long id) {
         return ok(apiIntegrationTypeService.fetchActiveFeatureTypeByIntegrationTypeId(id));
     }
 
     @GetMapping(HTTP_REQUEST_METHODS + ACTIVE + MIN)
-    @ApiOperation(SwaggerConstants.QualificationConstant.FETCH_DETAILS_FOR_DROPDOWN)
+    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
     public ResponseEntity<?> fetchQualificationForDropDown() {
         return ok(httpRequestMethodService.fetchActiveRequestMethod());
     }
@@ -63,9 +67,15 @@ public class IntegrationResource {
     }
 
     @GetMapping(INTEGRATION_CHANNEL + ACTIVE + MIN)
-    @ApiOperation(SwaggerConstants.QualificationConstant.FETCH_DETAILS_FOR_DROPDOWN)
+    @ApiOperation(FETCH_DETAILS_FOR_DROPDOWN)
     public ResponseEntity<?> fetchApiIntegrationChannelForDropDown() {
         return ok(integrationFeatureService.fetchActiveApiIntegrationChannel());
+    }
+
+    @GetMapping(REQUEST_BODY_PARAMETERS + ACTIVE + MIN)
+    @ApiOperation(SwaggerConstants.IntegrationConstant.FETCH_DETAILS_FOR_DROPDOWN)
+    public ResponseEntity<?> fetchRequestBodyParametersForDropDown() {
+        return ok(parametersService.fetchActiveRequestBodyParameters());
     }
 
 }

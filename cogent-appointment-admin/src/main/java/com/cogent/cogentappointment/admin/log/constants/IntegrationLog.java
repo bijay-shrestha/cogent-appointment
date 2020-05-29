@@ -23,4 +23,6 @@ public class IntegrationLog {
 
     public final static String HTTP_REQUEST_METHODS = "HTTP REQUEST METHODS";
 
+    public final static String API_REQUEST_BODY_PARAMETERS = "REQUEST BODY PARAMETERS";
+
 }

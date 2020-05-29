@@ -125,4 +125,16 @@ public class IntegrationUtils {
             apiFeatureIntegration.setStatus(DELETED);
         });
     }
+
+    public static void parseToClientApiIntegrationRequestBodyAttributes(Long apiIntegrationFormatId, List<Long> requestBodyAttrributeId) {
+
+//        List<>
+
+//                requestBodyAttrributeId.forEach(requestBodyId->{
+//
+//                };
+
+//                return null;
+
+    }
 }

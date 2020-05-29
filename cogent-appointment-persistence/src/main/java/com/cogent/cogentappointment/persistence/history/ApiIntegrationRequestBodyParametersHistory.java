@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.persistence.history;
 
 import com.cogent.cogentappointment.persistence.config.Action;
-import com.cogent.cogentappointment.persistence.model.IntegrationRequestBodyParameters;
+import com.cogent.cogentappointment.persistence.model.ApiIntegrationRequestBodyParameters;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,8 +24,8 @@ import static javax.persistence.TemporalType.TIMESTAMP;
 @Setter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "integration_request_body_parameters_history")
-public class IntegrationRequestBodyParametersHistory implements Serializable {
+@Table(name = "api_integration_request_body_parameters_history")
+public class ApiIntegrationRequestBodyParametersHistory implements Serializable {
 
 
     @Id
@@ -35,7 +35,7 @@ public class IntegrationRequestBodyParametersHistory implements Serializable {
     @ManyToOne
     @JoinColumn(name = "integration_request_body_id",
             foreignKey = @ForeignKey(name = "FK_integration_request_body_history_integration_request_body"))
-    private IntegrationRequestBodyParameters integrationRequestBodyParameters;
+    private ApiIntegrationRequestBodyParameters integrationRequestBodyParameters;
 
     @Column(name = "integration_request_body_content")
     @Lob
@@ -51,7 +51,7 @@ public class IntegrationRequestBodyParametersHistory implements Serializable {
     @Enumerated(STRING)
     private Action action;
 
-    public IntegrationRequestBodyParametersHistory(IntegrationRequestBodyParameters integrationRequestBodyParameters, Action action) {
+    public ApiIntegrationRequestBodyParametersHistory(ApiIntegrationRequestBodyParameters integrationRequestBodyParameters, Action action) {
         this.integrationRequestBodyParameters = integrationRequestBodyParameters;
         this.integrationRequestBodyParametersContent = integrationRequestBodyParameters.toString();
         this.action = action;

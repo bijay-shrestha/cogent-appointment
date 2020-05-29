@@ -22,7 +22,6 @@ import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.Clie
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.ClientIntegrationConstants.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.ID_PATH_VARIABLE_BASE;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.IntegrationConstants.BASE_INTEGRATION;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
@@ -51,7 +50,7 @@ public class ClientIntegrationResource {
     @ApiOperation(SAVE_CLIENT_OPERATION)
     public ResponseEntity<?> save(@Valid @RequestBody ClientApiIntegrationRequestDTO requestDTO) {
         integrationService.save(requestDTO);
-        return created(create(API_V1 + BASE_INTEGRATION)).build();
+        return created(create(API_V1 + BASE_CLIENT_INTEGRATION)).build();
     }
 
     @PutMapping

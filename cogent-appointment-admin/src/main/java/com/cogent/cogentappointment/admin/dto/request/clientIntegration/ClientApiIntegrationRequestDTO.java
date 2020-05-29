@@ -26,6 +26,8 @@ public class ClientApiIntegrationRequestDTO implements Serializable {
 
     private String apiUrl;
 
+    private List<Long> requestBodyAttrributeId;
+
     private List<ClientApiHeadersRequestDTO> clientApiRequestHeaders;
 
     private List<ClientApiQueryParametersRequestDTO> parametersRequestDTOS;

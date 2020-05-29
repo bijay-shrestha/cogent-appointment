@@ -2,7 +2,7 @@ package com.cogent.cogentappointment.persistence.model;
 
 
 import com.cogent.cogentappointment.persistence.audit.Auditable;
-import com.cogent.cogentappointment.persistence.listener.IntegrationRequestBodyParametersEntityListener;
+import com.cogent.cogentappointment.persistence.listener.ApiIntegrationRequestBodyParametersEntityListener;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,14 +11,14 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.io.Serializable;
 
-@Table(name = "integration_request_body_parameters")
+@Table(name = "api_integration_request_body_parameters")
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EntityListeners(IntegrationRequestBodyParametersEntityListener.class)
-public class IntegrationRequestBodyParameters extends Auditable<String> implements Serializable {
+@EntityListeners(ApiIntegrationRequestBodyParametersEntityListener.class)
+public class ApiIntegrationRequestBodyParameters extends Auditable<String> implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,15 +35,12 @@ public class IntegrationRequestBodyParameters extends Auditable<String> implemen
 
     @Override
     public String toString() {
-        return "IntegrationRequestBodyParameters{" +
+        return "ApiIntegrationRequestBodyParameters{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", status=" + status +
                 ", remarks='" + remarks + '\'' +
                 '}';
     }
-
-
-
 
 }

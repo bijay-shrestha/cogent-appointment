@@ -1,0 +1,54 @@
+package com.cogent.cogentappointment.admin.repository.custom.impl;
+
+import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
+import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
+import com.cogent.cogentappointment.admin.log.constants.IntegrationLog;
+import com.cogent.cogentappointment.admin.query.RequestBodyParametersQuery;
+import com.cogent.cogentappointment.admin.repository.custom.IntegrationRequestBodyParametersRepositoryCustom;
+import com.cogent.cogentappointment.persistence.model.ApiIntegrationRequestBodyParameters;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import java.util.List;
+import java.util.function.Supplier;
+
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
+import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.API_REQUEST_BODY_PARAMETERS;
+import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
+import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
+
+/**
+ * @author rupak ON 2020/05/29-10:23 AM
+ */
+@Repository
+@Transactional(readOnly = true)
+@Slf4j
+public class IntegrationRequestBodyParametersRepositoryCustomImpl implements
+        IntegrationRequestBodyParametersRepositoryCustom {
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Override
+    public List<DropDownResponseDTO> fetchActiveRequestBodyParameters() {
+        Query query = createQuery.apply(entityManager, RequestBodyParametersQuery.QUERY_TO_FETCH_MIN_REQUEST_BODY_PARAMTERS);
+
+        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
+
+        if (results.isEmpty()) {
+            featureError();
+            throw REQUEST_BODY_PARAMETERS.get();
+        } else return results;
+    }
+
+    private Supplier<NoContentFoundException> REQUEST_BODY_PARAMETERS = () ->
+            new NoContentFoundException(ApiIntegrationRequestBodyParameters.class);
+
+    private void featureError() {
+        log.error(CONTENT_NOT_FOUND, API_REQUEST_BODY_PARAMETERS);
+    }
+}

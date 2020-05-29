@@ -160,6 +160,7 @@ public class WebResourceKeyConstants {
         String HTTP_REQUEST_METHODS="/request-methods";
         String API_INTEGRATION_TYPE="/api-integration-type";
         String INTEGRATION_CHANNEL="/integration-channel";
+        String REQUEST_BODY_PARAMETERS="/request-body-paramters";
     }
 
     //J

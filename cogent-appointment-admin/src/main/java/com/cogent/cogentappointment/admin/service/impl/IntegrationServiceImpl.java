@@ -14,6 +14,7 @@ import com.cogent.cogentappointment.admin.dto.response.clientIntegration.clientI
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.IntegrationService;
+import com.cogent.cogentappointment.admin.utils.IntegrationUtils;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,7 @@ import java.util.function.Function;
 
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.API_INTEGRATIONS;
+import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.CLIENT_API_INTEGRATION;
 import static com.cogent.cogentappointment.admin.utils.IntegrationUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
@@ -64,7 +66,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(SAVING_PROCESS_STARTED, API_INTEGRATIONS);
+        log.info(SAVING_PROCESS_STARTED, CLIENT_API_INTEGRATION);
 
         validateFeatureAndHttpRequestMethod(requestDTO.getFeatureTypeId(),
                 requestDTO.getRequestMethodId());
@@ -84,6 +86,8 @@ public class IntegrationServiceImpl implements IntegrationService {
                 parseToClientApiIntegrationFormat(apiIntegrationFormatRequestDTO);
 
         saveApiIntegrationFormat(apiIntegrationFormat);
+        
+        saveApiIntegrationRequestBodyAttributes(apiIntegrationFormat.getId(),requestDTO.getRequestBodyAttrributeId());
 
         saveApiFeatureIntegration(clientFeatureIntegration.getId(), apiIntegrationFormat.getId(),requestDTO.getIntegrationChannelId());
 
@@ -91,13 +95,24 @@ public class IntegrationServiceImpl implements IntegrationService {
 
         saveApiRequestHeaders(requestDTO.getClientApiRequestHeaders(), apiIntegrationFormat);
 
-        log.info(SAVING_PROCESS_COMPLETED, API_INTEGRATIONS, getDifferenceBetweenTwoTime(startTime));
+        log.info(SAVING_PROCESS_COMPLETED, CLIENT_API_INTEGRATION, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    private void saveApiIntegrationRequestBodyAttributes(Long apiIntegrationFormatId, List<Long> requestBodyAttrributeId) {
+
+        //
+
+        List<ApiFeatureIntegration> apiFeatureIntegration =
+                apiFeatureIntegrationRepository.findApiFeatureIntegrationbyClientFeatureId(1l)
+                        .orElseThrow(() -> API_FEATURE_INTEGRATION_NOT_FOUND.apply(null));
+
+        IntegrationUtils.parseToClientApiIntegrationRequestBodyAttributes(apiIntegrationFormatId,requestBodyAttrributeId);
     }
 
     @Override
     public void update(ClientApiIntegrationUpdateRequestDTO requestDTO) {
 
-        log.info(UPDATING_PROCESS_STARTED, API_INTEGRATIONS);
+        log.info(UPDATING_PROCESS_STARTED, CLIENT_API_INTEGRATION);
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -121,7 +136,7 @@ public class IntegrationServiceImpl implements IntegrationService {
             updateApiRequestHeaders(requestDTO.getClientApiRequestHeaders(), featureIntegration.getApiIntegrationFormatId());
         });
 
-        log.info(UPDATING_PROCESS_COMPLETED, API_INTEGRATIONS, getDifferenceBetweenTwoTime(startTime));
+        log.info(UPDATING_PROCESS_COMPLETED, CLIENT_API_INTEGRATION, getDifferenceBetweenTwoTime(startTime));
 
     }
 

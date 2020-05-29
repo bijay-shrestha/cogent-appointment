@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.esewa.service;
 
 import com.cogent.cogentappointment.esewa.dto.request.appointmentHospitalDepartment.checkAvailability.AppointmentHospitalDeptCheckAvailabilityRequestDTO;
-import com.cogent.cogentappointment.esewa.dto.response.appointmentHospitalDepartment.AppointmentHospitalDeptCheckAvailabilityResponseDTO;
+import com.cogent.cogentappointment.esewa.dto.response.appointmentHospitalDepartment.checkAvailability.AppointmentHospitalDeptCheckAvailabilityResponseDTO;
 
 import java.util.List;
 

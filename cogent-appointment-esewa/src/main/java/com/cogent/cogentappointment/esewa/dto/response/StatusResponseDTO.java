@@ -1,8 +1,6 @@
 package com.cogent.cogentappointment.esewa.dto.response;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.http.HttpStatus;
 
 import java.io.Serializable;
@@ -13,6 +11,8 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class StatusResponseDTO implements Serializable {
 
     private int responseCode;

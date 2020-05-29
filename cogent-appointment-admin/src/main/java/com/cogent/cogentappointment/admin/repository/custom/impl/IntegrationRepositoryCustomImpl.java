@@ -146,7 +146,8 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
                 transformQueryToResultList(query, ApiRequestHeaderUpdateResponseDTO.class);
 
         if (apiRequestHeaderUpdateResponseDTOS.isEmpty())
-            throw CLIENT_API_REQUEST_HEADER_NOT_FOUND.get();
+//            throw CLIENT_API_REQUEST_HEADER_NOT_FOUND.get();
+           return null;
 
         else {
             return apiRequestHeaderUpdateResponseDTOS;
@@ -164,7 +165,8 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
                 transformQueryToResultList(query, ApiQueryParametersUpdateResponseDTO.class);
 
         if (apiQueryParametersUpdateResponseDTOS.isEmpty())
-            throw CLIENT_API_QUERY_PARAMETERS_NOT_FOUND.get();
+//            throw CLIENT_API_QUERY_PARAMETERS_NOT_FOUND.get();
+            return null;
 
         else {
             return apiQueryParametersUpdateResponseDTOS;

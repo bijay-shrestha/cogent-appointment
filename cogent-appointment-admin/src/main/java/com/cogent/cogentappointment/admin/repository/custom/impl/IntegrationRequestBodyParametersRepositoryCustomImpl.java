@@ -19,6 +19,7 @@ import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.API_REQUEST_BODY_PARAMETERS;
+import static com.cogent.cogentappointment.admin.query.RequestBodyParametersQuery.FETCH_REQUEST_BODY_ATTRIBUTE_BY_ID;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
 
@@ -56,6 +57,22 @@ public class IntegrationRequestBodyParametersRepositoryCustomImpl implements
 
         List<IntegrationRequestBodyAttributeResponse> bodyAttributeResponseList =
                 transformQueryToResultList(query, IntegrationRequestBodyAttributeResponse.class);
+        if (bodyAttributeResponseList.isEmpty()) {
+            error();
+            throw REQUEST_BODY_PARAMETERS.get();
+
+        }else {
+            return bodyAttributeResponseList;
+        }
+    }
+
+    @Override
+    public List<ApiIntegrationRequestBodyParameters> findActiveRequestBodyParameterByIds(String ids) {
+        Query query = createQuery.apply(entityManager,
+                FETCH_REQUEST_BODY_ATTRIBUTE_BY_ID(ids));
+
+        List<ApiIntegrationRequestBodyParameters> bodyAttributeResponseList =
+                transformQueryToResultList(query, ApiIntegrationRequestBodyParameters.class);
         if (bodyAttributeResponseList.isEmpty()) {
             error();
             throw REQUEST_BODY_PARAMETERS.get();

@@ -20,9 +20,23 @@ public class RequestBodyParametersQuery {
                     " airbp.name as name" +
                     " FROM" +
                     " ApiIntegrationRequestBodyParameters airbp" +
-                    " LEFT JOIN ApiFeatureIntegrationRequestBodyParameters afirbp ON afirbp.requestBodyParametersId=airbp.id"+
+                    " LEFT JOIN ApiFeatureIntegrationRequestBodyParameters afirbp ON afirbp.requestBodyParametersId=airbp.id" +
                     " WHERE airbp.status ='Y'" +
                     " AND afirbp.status ='Y'" +
                     " AND afirbp.featureId.id=:featureId" +
                     " ORDER by airbp.name ASC";
+
+    public static String FETCH_REQUEST_BODY_ATTRIBUTE_BY_ID(String ids) {
+
+        String query = "SELECT" +
+                " airbp"+
+                " FROM" +
+                " ApiIntegrationRequestBodyParameters airbp" +
+                " WHERE airbp.status ='Y'" +
+                " AND airbp.id IN ("+ids+")" +
+                " ORDER by airbp.name ASC";
+
+        return query;
+
+    }
 }

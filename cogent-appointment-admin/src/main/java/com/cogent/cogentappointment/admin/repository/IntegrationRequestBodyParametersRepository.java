@@ -15,7 +15,7 @@ public interface IntegrationRequestBodyParametersRepository extends
         JpaRepository<ApiIntegrationRequestBodyParameters, Long>,
         IntegrationRequestBodyParametersRepositoryCustom {
 
-    @Query("SELECT airbp FROM ApiIntegrationRequestBodyParameters airbp where airbp.status='Y' AND airbp.id IN (:id)")
-    Optional<List<ApiIntegrationRequestBodyParameters>>
-    findActiveRequestBodyParameterByIds(@Param("id") String ids);
+//    @Query("SELECT airbp FROM ApiIntegrationRequestBodyParameters airbp where airbp.status='Y' AND airbp.id IN (:id)")
+//    Optional<List<ApiIntegrationRequestBodyParameters>>
+//    findActiveRequestBodyParameterByIds(@Param("id") String ids);
 }

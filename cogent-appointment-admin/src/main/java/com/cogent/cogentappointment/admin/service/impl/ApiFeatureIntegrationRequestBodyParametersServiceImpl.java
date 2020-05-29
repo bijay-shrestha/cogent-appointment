@@ -88,8 +88,7 @@ public class ApiFeatureIntegrationRequestBodyParametersServiceImpl implements
                 .collect(Collectors.joining(","));
 
         List<ApiIntegrationRequestBodyParameters> requestBodyParameters =
-                requestBodyParametersRepository.findActiveRequestBodyParameterByIds(ids)
-                        .orElseThrow(() -> new NoContentFoundException(ApiIntegrationRequestBodyParameters.class));
+                requestBodyParametersRepository.findActiveRequestBodyParameterByIds(ids);
 
         return requestBodyParameters;
 

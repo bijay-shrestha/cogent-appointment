@@ -14,7 +14,6 @@ import com.cogent.cogentappointment.admin.dto.response.clientIntegration.clientI
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.IntegrationService;
-import com.cogent.cogentappointment.admin.utils.IntegrationUtils;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.API_INTEGRATIONS;
@@ -48,8 +48,10 @@ public class IntegrationServiceImpl implements IntegrationService {
     private final ApiFeatureIntegrationRepository apiFeatureIntegrationRepository;
     private final FeatureRepository featureRepository;
     private final IntegrationRepository integrationRepository;
+    private final ApiFeatureIntegrationRequestBodyParametersRepository featureBodyParametersRepository;
+    private final IntegrationRequestBodyParametersRepository requestBodyParametersRepository;
 
-    public IntegrationServiceImpl(ClientFeatureIntegrationRepository clientFeatureIntegrationRepository, ClientApiIntegrationFormatRespository clientApiIntegrationFormatRespository, HttpRequestMethodRepository httpRequestMethodRepository, ApiQueryParametersRepository apiQueryParametersRepository, ApiRequestHeaderRepository apiRequestHeaderRepository, ApiFeatureIntegrationRepository apiFeatureIntegrationRepository, FeatureRepository featureRepository, IntegrationRepository integrationRepository) {
+    public IntegrationServiceImpl(ClientFeatureIntegrationRepository clientFeatureIntegrationRepository, ClientApiIntegrationFormatRespository clientApiIntegrationFormatRespository, HttpRequestMethodRepository httpRequestMethodRepository, ApiQueryParametersRepository apiQueryParametersRepository, ApiRequestHeaderRepository apiRequestHeaderRepository, ApiFeatureIntegrationRepository apiFeatureIntegrationRepository, FeatureRepository featureRepository, IntegrationRepository integrationRepository, ApiFeatureIntegrationRequestBodyParametersRepository featureBodyParametersRepository, IntegrationRequestBodyParametersRepository requestBodyParametersRepository) {
 
         this.clientFeatureIntegrationRepository = clientFeatureIntegrationRepository;
         this.clientApiIntegrationFormatRespository = clientApiIntegrationFormatRespository;
@@ -59,6 +61,8 @@ public class IntegrationServiceImpl implements IntegrationService {
         this.apiFeatureIntegrationRepository = apiFeatureIntegrationRepository;
         this.featureRepository = featureRepository;
         this.integrationRepository = integrationRepository;
+        this.featureBodyParametersRepository = featureBodyParametersRepository;
+        this.requestBodyParametersRepository = requestBodyParametersRepository;
     }
 
     @Override
@@ -87,7 +91,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
         saveApiIntegrationFormat(apiIntegrationFormat);
         
-        saveApiIntegrationRequestBodyAttributes(apiIntegrationFormat.getId(),requestDTO.getRequestBodyAttrributeId());
+        saveApiIntegrationRequestBodyAttributes(apiIntegrationFormat,requestDTO.getRequestBodyAttrributeId());
 
         saveApiFeatureIntegration(clientFeatureIntegration.getId(), apiIntegrationFormat.getId(),requestDTO.getIntegrationChannelId());
 
@@ -98,15 +102,17 @@ public class IntegrationServiceImpl implements IntegrationService {
         log.info(SAVING_PROCESS_COMPLETED, CLIENT_API_INTEGRATION, getDifferenceBetweenTwoTime(startTime));
     }
 
-    private void saveApiIntegrationRequestBodyAttributes(Long apiIntegrationFormatId, List<Long> requestBodyAttrributeId) {
+    private void saveApiIntegrationRequestBodyAttributes(ApiIntegrationFormat apiIntegrationFormat, List<Long> requestBodyAttrributeId) {
 
-        //
+        String ids = requestBodyAttrributeId.stream()
+                .map(request->request.toString())
+                .collect(Collectors.joining(","));
 
-        List<ApiFeatureIntegration> apiFeatureIntegration =
-                apiFeatureIntegrationRepository.findApiFeatureIntegrationbyClientFeatureId(1l)
+        List<ApiIntegrationRequestBodyParameters> requestBodyParameters =
+                requestBodyParametersRepository.findActiveRequestBodyParameterByIds(ids)
                         .orElseThrow(() -> API_FEATURE_INTEGRATION_NOT_FOUND.apply(null));
 
-        IntegrationUtils.parseToClientApiIntegrationRequestBodyAttributes(apiIntegrationFormatId,requestBodyAttrributeId);
+        featureBodyParametersRepository.saveAll(parseToClientApiIntegrationRequestBodyAttributes(apiIntegrationFormat,requestBodyParameters));
     }
 
     @Override

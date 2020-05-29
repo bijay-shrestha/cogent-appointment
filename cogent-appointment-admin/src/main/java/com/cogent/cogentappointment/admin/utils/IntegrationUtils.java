@@ -112,7 +112,8 @@ public class IntegrationUtils {
 
     }
 
-    public static void parseToDeletedClientFeatureIntegration(ClientFeatureIntegration clientFeatureIntegration, DeleteRequestDTO deleteRequestDTO) {
+    public static void parseToDeletedClientFeatureIntegration(ClientFeatureIntegration clientFeatureIntegration,
+                                                              DeleteRequestDTO deleteRequestDTO) {
 
         clientFeatureIntegration.setStatus(deleteRequestDTO.getStatus());
         clientFeatureIntegration.setRemarks(deleteRequestDTO.getRemarks());
@@ -126,15 +127,25 @@ public class IntegrationUtils {
         });
     }
 
-    public static void parseToClientApiIntegrationRequestBodyAttributes(Long apiIntegrationFormatId, List<Long> requestBodyAttrributeId) {
+    public static List<ApiFeatureIntegrationRequestBodyParameters>
+    parseToClientApiIntegrationRequestBodyAttributes(ApiIntegrationFormat apiIntegrationFormat,
+                                                     List<ApiIntegrationRequestBodyParameters> requestBodyParameters) {
 
-//        List<>
 
-//                requestBodyAttrributeId.forEach(requestBodyId->{
-//
-//                };
+        List<ApiFeatureIntegrationRequestBodyParameters> featureIntegrationRequestBodyParameters
+                = new ArrayList<>();
 
-//                return null;
+        requestBodyParameters.forEach(requestBody -> {
+            ApiFeatureIntegrationRequestBodyParameters featureBodyParameters
+                    = new ApiFeatureIntegrationRequestBodyParameters();
+            featureBodyParameters.setApiIntegrationFormatId(apiIntegrationFormat);
+            featureBodyParameters.setRequestBodyParametersId(requestBody);
+            featureBodyParameters.setStatus(ACTIVE);
+
+            featureIntegrationRequestBodyParameters.add(featureBodyParameters);
+        });
+
+        return featureIntegrationRequestBodyParameters;
 
     }
 }

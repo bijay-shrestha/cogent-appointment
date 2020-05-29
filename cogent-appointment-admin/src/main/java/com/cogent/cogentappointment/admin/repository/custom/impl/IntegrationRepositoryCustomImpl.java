@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
-import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiIntegrationSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.IntegrationClient.ClientApiIntegrationSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.adminModeIntegration.ApiQueryParametersResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.adminModeIntegration.ApiRequestHeaderResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.adminModeIntegration.FeatureIntegrationResponse;
@@ -140,7 +140,7 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
     public List<ApiRequestHeaderUpdateResponseDTO> findApiRequestHeadersForUpdate(Long featureId) {
 
         Query query = createQuery.apply(entityManager, IntegrationQuery.CLIENT_API_FEATURES_HEADERS_QUERY)
-                .setParameter(CLIENT_API_INTEGRATION_FEATURE_ID, featureId);
+                .setParameter(API_FEATURE__ID, featureId);
 
         List<ApiRequestHeaderUpdateResponseDTO> apiRequestHeaderUpdateResponseDTOS =
                 transformQueryToResultList(query, ApiRequestHeaderUpdateResponseDTO.class);
@@ -158,7 +158,7 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
     @Override
     public List<ApiQueryParametersUpdateResponseDTO> findApiQueryParametersForUpdate(Long featureId) {
         Query query = createQuery.apply(entityManager, IntegrationQuery.CLIENT_API_PARAMETERS_QUERY)
-                .setParameter(CLIENT_API_INTEGRATION_FEATURE_ID, featureId);
+                .setParameter(API_FEATURE__ID, featureId);
 
         List<ApiQueryParametersUpdateResponseDTO> apiQueryParametersUpdateResponseDTOS =
                 transformQueryToResultList(query, ApiQueryParametersUpdateResponseDTO.class);
@@ -175,7 +175,7 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
     @Override
     public Map<String, String> findApiRequestHeaders(Long featureId) {
         Query query = createQuery.apply(entityManager, IntegrationQuery.CLIENT_API_FEATURES_HEADERS_QUERY)
-                .setParameter(CLIENT_API_INTEGRATION_FEATURE_ID, featureId);
+                .setParameter(API_FEATURE__ID, featureId);
 
         List<ApiRequestHeaderResponseDTO> requestHeaderResponseDTO =
                 transformQueryToResultList(query, ApiRequestHeaderResponseDTO.class);
@@ -191,7 +191,7 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
     @Override
     public Map<String, String> findApiQueryParameters(Long featureId) {
         Query query = createQuery.apply(entityManager, IntegrationQuery.CLIENT_API_PARAMETERS_QUERY)
-                .setParameter(CLIENT_API_INTEGRATION_FEATURE_ID, featureId);
+                .setParameter(API_FEATURE__ID, featureId);
 
         List<ApiQueryParametersResponseDTO> parametersResponseDTO =
                 transformQueryToResultList(query, ApiQueryParametersResponseDTO.class);

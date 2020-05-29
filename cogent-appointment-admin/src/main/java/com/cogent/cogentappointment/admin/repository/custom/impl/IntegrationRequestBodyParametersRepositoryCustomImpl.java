@@ -1,8 +1,9 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
+import com.cogent.cogentappointment.admin.constants.QueryConstants;
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.integration.IntegrationRequestBodyAttributeResponse;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.log.constants.IntegrationLog;
 import com.cogent.cogentappointment.admin.query.RequestBodyParametersQuery;
 import com.cogent.cogentappointment.admin.repository.custom.IntegrationRequestBodyParametersRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.ApiIntegrationRequestBodyParameters;
@@ -40,15 +41,35 @@ public class IntegrationRequestBodyParametersRepositoryCustomImpl implements
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
         if (results.isEmpty()) {
-            featureError();
+            error();
             throw REQUEST_BODY_PARAMETERS.get();
         } else return results;
     }
 
+    @Override
+    public List<IntegrationRequestBodyAttributeResponse> fetchRequestBodyAttributeByFeatureId(Long featureId) {
+        Query query = createQuery.apply(entityManager,
+                RequestBodyParametersQuery.FETCH_REQUEST_BODY_ATTRIBUTE_BY_FEATURE_ID)
+                .setParameter(QueryConstants.API_FEATURE__ID,featureId);
+
+        int totalItems = query.getResultList().size();
+
+        List<IntegrationRequestBodyAttributeResponse> bodyAttributeResponseList =
+                transformQueryToResultList(query, IntegrationRequestBodyAttributeResponse.class);
+        if (bodyAttributeResponseList.isEmpty()) {
+            error();
+            throw REQUEST_BODY_PARAMETERS.get();
+
+        }else {
+            return bodyAttributeResponseList;
+        }
+    }
+
+
     private Supplier<NoContentFoundException> REQUEST_BODY_PARAMETERS = () ->
             new NoContentFoundException(ApiIntegrationRequestBodyParameters.class);
 
-    private void featureError() {
+    private void error() {
         log.error(CONTENT_NOT_FOUND, API_REQUEST_BODY_PARAMETERS);
     }
 }

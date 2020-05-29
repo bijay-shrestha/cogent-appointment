@@ -28,8 +28,6 @@ public class ClientApiIntegrationUpdateResponseDTO implements Serializable {
 
     private String url;
 
-    private String requestBody;
-
     private List<ApiRequestHeaderUpdateResponseDTO> headers;
 
     private List<ApiQueryParametersUpdateResponseDTO> queryParameters;

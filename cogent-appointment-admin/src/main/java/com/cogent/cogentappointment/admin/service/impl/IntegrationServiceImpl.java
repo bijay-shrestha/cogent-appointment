@@ -1,10 +1,10 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.clientIntegration.*;
-import com.cogent.cogentappointment.admin.dto.request.clientIntegration.clientIntegrationUpdate.ClientApiIntegrationUpdateRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.clientIntegration.clientIntegrationUpdate.ClientApiQueryParamtersUpdateRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.clientIntegration.clientIntegrationUpdate.ClientApiRequestHeadersUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.IntegrationClient.*;
+import com.cogent.cogentappointment.admin.dto.request.IntegrationClient.clientIntegrationUpdate.ClientApiIntegrationUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.IntegrationClient.clientIntegrationUpdate.ClientApiQueryParamtersUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.IntegrationClient.clientIntegrationUpdate.ClientApiRequestHeadersUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.clientIntegration.ClientApiIntegrationDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.clientIntegration.ClientApiIntegrationResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.clientIntegration.ClientApiIntegrationSearchDTO;
@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.API_INTEGRATIONS;
@@ -83,17 +82,14 @@ public class IntegrationServiceImpl implements IntegrationService {
         ApiIntegrationFormatRequestDTO apiIntegrationFormatRequestDTO = ApiIntegrationFormatRequestDTO.builder()
                 .apiUrl(requestDTO.getApiUrl())
                 .requestMethodId(requestDTO.getRequestMethodId())
-                .requestBodyAttrribute(requestDTO.getRequestBodyAttrribute())
                 .build();
 
         ApiIntegrationFormat apiIntegrationFormat =
                 parseToClientApiIntegrationFormat(apiIntegrationFormatRequestDTO);
 
         saveApiIntegrationFormat(apiIntegrationFormat);
-        
-        saveApiIntegrationRequestBodyAttributes(apiIntegrationFormat,requestDTO.getRequestBodyAttrributeId());
 
-        saveApiFeatureIntegration(clientFeatureIntegration.getId(), apiIntegrationFormat.getId(),requestDTO.getIntegrationChannelId());
+        saveApiFeatureIntegration(clientFeatureIntegration.getId(), apiIntegrationFormat.getId(), requestDTO.getIntegrationChannelId());
 
         saveApiQueryParameters(requestDTO.getParametersRequestDTOS(), apiIntegrationFormat);
 
@@ -102,18 +98,6 @@ public class IntegrationServiceImpl implements IntegrationService {
         log.info(SAVING_PROCESS_COMPLETED, CLIENT_API_INTEGRATION, getDifferenceBetweenTwoTime(startTime));
     }
 
-    private void saveApiIntegrationRequestBodyAttributes(ApiIntegrationFormat apiIntegrationFormat, List<Long> requestBodyAttrributeId) {
-
-        String ids = requestBodyAttrributeId.stream()
-                .map(request->request.toString())
-                .collect(Collectors.joining(","));
-
-        List<ApiIntegrationRequestBodyParameters> requestBodyParameters =
-                requestBodyParametersRepository.findActiveRequestBodyParameterByIds(ids)
-                        .orElseThrow(() -> API_FEATURE_INTEGRATION_NOT_FOUND.apply(null));
-
-        featureBodyParametersRepository.saveAll(parseToClientApiIntegrationRequestBodyAttributes(apiIntegrationFormat,requestBodyParameters));
-    }
 
     @Override
     public void update(ClientApiIntegrationUpdateRequestDTO requestDTO) {
@@ -153,7 +137,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 
         apiIntegrationFormat.setUrl(requestDTO.getApiUrl());
         apiIntegrationFormat.setHttpRequestMethodId(requestDTO.getRequestMethodId());
-        apiIntegrationFormat.setHttpRequestBodyAttributes(requestDTO.getRequestBodyAttrribute());
 
         clientApiIntegrationFormatRespository.save(apiIntegrationFormat);
     }
@@ -290,7 +273,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 
         ClientApiIntegrationDetailResponseDTO responseDTO = new ClientApiIntegrationDetailResponseDTO();
         responseDTO.setFeatureCode(featureIntegrationResponse.getFeatureCode());
-        responseDTO.setRequestBody(featureIntegrationResponse.getRequestBody());
         responseDTO.setRequestMethodName(featureIntegrationResponse.getRequestMethodName());
         responseDTO.setRequestMethodId(featureIntegrationResponse.getRequestMethodId());
         responseDTO.setHospitalName(featureIntegrationResponse.getHospitalName());
@@ -329,7 +311,6 @@ public class IntegrationServiceImpl implements IntegrationService {
         ClientApiIntegrationUpdateResponseDTO responseDTO = new ClientApiIntegrationUpdateResponseDTO();
         responseDTO.setFeatureCode(featureIntegrationResponse.getFeatureCode());
         responseDTO.setFeatureId(featureIntegrationResponse.getFeatureId());
-        responseDTO.setRequestBody(featureIntegrationResponse.getRequestBody());
         responseDTO.setRequestMethodName(featureIntegrationResponse.getRequestMethodName());
         responseDTO.setRequestMethodId(featureIntegrationResponse.getRequestMethodId());
         responseDTO.setUrl(featureIntegrationResponse.getUrl());
@@ -369,7 +350,7 @@ public class IntegrationServiceImpl implements IntegrationService {
     private void saveApiFeatureIntegration(Long clientFeatureIntegrationId, Long apiIntegrationFormatId, Long integrationChannelId) {
 
         apiFeatureIntegrationRepository.save(parseToClientApiFeatureIntegration(clientFeatureIntegrationId,
-                apiIntegrationFormatId,integrationChannelId));
+                apiIntegrationFormatId, integrationChannelId));
 
     }
 

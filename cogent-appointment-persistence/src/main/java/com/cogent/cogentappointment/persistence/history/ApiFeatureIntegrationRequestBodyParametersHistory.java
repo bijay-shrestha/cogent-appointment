@@ -24,7 +24,7 @@ import static javax.persistence.TemporalType.TIMESTAMP;
 @Setter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "api_integration_request_body_parameters_history")
+@Table(name = "api_feature_request_body_parameters_history")
 public class ApiFeatureIntegrationRequestBodyParametersHistory implements Serializable {
 
     @Id
@@ -32,11 +32,11 @@ public class ApiFeatureIntegrationRequestBodyParametersHistory implements Serial
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "feature_integration_request_body_id",
-            foreignKey = @ForeignKey(name = "FK_feature_integration_request_body_history_feature_integration_request_body"))
+    @JoinColumn(name = "feature_request_body_id",
+            foreignKey = @ForeignKey(name = "FK_feature_request_body_history_feature_request_body"))
     private ApiFeatureIntegrationRequestBodyParameters featureIntegrationRequestBodyParameters;
 
-    @Column(name = "feature_integration_request_body_content")
+    @Column(name = "feature_request_body_content")
     @Lob
     private String featureIntegrationRequestBodyParametersContent;
 

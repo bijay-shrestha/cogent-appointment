@@ -1,9 +1,9 @@
 package com.cogent.cogentappointment.admin.utils;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ApiIntegrationFormatRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiHeadersRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiQueryParametersRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.IntegrationClient.ApiIntegrationFormatRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.IntegrationClient.ClientApiHeadersRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.IntegrationClient.ClientApiQueryParametersRequestDTO;
 import com.cogent.cogentappointment.persistence.model.*;
 
 import java.util.ArrayList;
@@ -30,7 +30,6 @@ public class IntegrationUtils {
     public static ApiIntegrationFormat parseToClientApiIntegrationFormat(ApiIntegrationFormatRequestDTO requestDTO) {
 
         ApiIntegrationFormat apiIntegrationFormat = new ApiIntegrationFormat();
-        apiIntegrationFormat.setHttpRequestBodyAttributes(requestDTO.getRequestBodyAttrribute());
         apiIntegrationFormat.setHttpRequestMethodId(requestDTO.getRequestMethodId());
         apiIntegrationFormat.setUrl(requestDTO.getApiUrl());
         apiIntegrationFormat.setStatus(ACTIVE);
@@ -127,25 +126,47 @@ public class IntegrationUtils {
         });
     }
 
-    public static List<ApiFeatureIntegrationRequestBodyParameters>
-    parseToClientApiIntegrationRequestBodyAttributes(ApiIntegrationFormat apiIntegrationFormat,
-                                                     List<ApiIntegrationRequestBodyParameters> requestBodyParameters) {
+//    public static List<ApiFeatureIntegrationRequestBodyParameters>
+//    parseToClientApiIntegrationRequestBodyAttributes(ApiIntegrationFormat apiIntegrationFormat,
+//                                                     List<ApiIntegrationRequestBodyParameters> requestBodyParameters) {
+//
+//
+//        List<ApiFeatureIntegrationRequestBodyParameters> featureIntegrationRequestBodyParameters
+//                = new ArrayList<>();
+//
+//        requestBodyParameters.forEach(requestBody -> {
+//            ApiFeatureIntegrationRequestBodyParameters featureBodyParameters
+//                    = new ApiFeatureIntegrationRequestBodyParameters();
+//            featureBodyParameters.getFeatureId(apiIntegrationFormat);
+//            featureBodyParameters.setRequestBodyParametersId(requestBody);
+//            featureBodyParameters.setStatus(ACTIVE);
+//
+//            featureIntegrationRequestBodyParameters.add(featureBodyParameters);
+//        });
+//
+//        return featureIntegrationRequestBodyParameters;
+//
+//    }
 
+    public static List<ApiFeatureIntegrationRequestBodyParameters> parseToClientApiFeatureRequestBodyParameters
+            (Long featureId, List<ApiIntegrationRequestBodyParameters> bodyParametersList) {
 
-        List<ApiFeatureIntegrationRequestBodyParameters> featureIntegrationRequestBodyParameters
+        List<ApiFeatureIntegrationRequestBodyParameters> apiFeatureIntegrationRequestBodyParameters
                 = new ArrayList<>();
+        bodyParametersList.forEach(requestBody -> {
 
-        requestBodyParameters.forEach(requestBody -> {
-            ApiFeatureIntegrationRequestBodyParameters featureBodyParameters
-                    = new ApiFeatureIntegrationRequestBodyParameters();
-            featureBodyParameters.setApiIntegrationFormatId(apiIntegrationFormat);
-            featureBodyParameters.setRequestBodyParametersId(requestBody);
-            featureBodyParameters.setStatus(ACTIVE);
+            ApiFeatureIntegrationRequestBodyParameters requestBodyParameters = new ApiFeatureIntegrationRequestBodyParameters();
+            requestBodyParameters.setFeatureId(featureId);
+            requestBodyParameters.setRequestBodyParametersId(requestBody);
+            requestBodyParameters.setStatus(ACTIVE);
 
-            featureIntegrationRequestBodyParameters.add(featureBodyParameters);
+            apiFeatureIntegrationRequestBodyParameters.add(requestBodyParameters);
+
+
         });
 
-        return featureIntegrationRequestBodyParameters;
+
+        return apiFeatureIntegrationRequestBodyParameters;
 
     }
 }

@@ -33,10 +33,6 @@ public class ApiIntegrationFormat extends Auditable<String> implements Serializa
     @Column(name = "http_request_method_id")
     private Long httpRequestMethodId;
 
-    @Column(name = "http_request_body_attributes")
-    private String httpRequestBodyAttributes;
-
-
     @Column(name = "status")
     private Character status;
 
@@ -46,7 +42,6 @@ public class ApiIntegrationFormat extends Auditable<String> implements Serializa
                 "id=" + id +
                 ", url='" + url + '\'' +
                 ", httpRequestMethodId='" + httpRequestMethodId + '\'' +
-                ", httpRequestBodyAttributes='" + httpRequestBodyAttributes + '\'' +
                 ", status=" + status +
                 '}';
     }

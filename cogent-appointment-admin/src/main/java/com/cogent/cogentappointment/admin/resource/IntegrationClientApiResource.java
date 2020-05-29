@@ -2,9 +2,9 @@ package com.cogent.cogentappointment.admin.resource;
 
 import com.cogent.cogentappointment.admin.constants.SwaggerConstants;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiIntegrationRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiIntegrationSearchRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.clientIntegration.clientIntegrationUpdate.ClientApiIntegrationUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.IntegrationClient.ClientApiIntegrationRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.IntegrationClient.ClientApiIntegrationSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.IntegrationClient.clientIntegrationUpdate.ClientApiIntegrationUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.service.ApiIntegrationTypeService;
 import com.cogent.cogentappointment.admin.service.HttpRequestMethodService;
 import com.cogent.cogentappointment.admin.service.IntegrationFeatureService;
@@ -28,8 +28,8 @@ import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @RequestMapping(API_V1 + BASE_CLIENT_INTEGRATION)
-@Api(SwaggerConstants.ClientIntegrationConstant.BASE_API_VALUE)
-public class ClientIntegrationResource {
+@Api(BASE_API_VALUE)
+public class IntegrationClientApiResource {
 
     private final IntegrationService integrationService;
     private final IntegrationFeatureService integrationFeatureService;
@@ -37,9 +37,9 @@ public class ClientIntegrationResource {
     private final ApiIntegrationTypeService apiIntegrationTypeService;
 
 
-    public ClientIntegrationResource(IntegrationService integrationService, IntegrationFeatureService integrationFeatureService,
-                                     HttpRequestMethodService httpRequestMethodService,
-                                     ApiIntegrationTypeService apiIntegrationTypeService) {
+    public IntegrationClientApiResource(IntegrationService integrationService, IntegrationFeatureService integrationFeatureService,
+                                        HttpRequestMethodService httpRequestMethodService,
+                                        ApiIntegrationTypeService apiIntegrationTypeService) {
         this.integrationService = integrationService;
         this.integrationFeatureService = integrationFeatureService;
         this.httpRequestMethodService = httpRequestMethodService;

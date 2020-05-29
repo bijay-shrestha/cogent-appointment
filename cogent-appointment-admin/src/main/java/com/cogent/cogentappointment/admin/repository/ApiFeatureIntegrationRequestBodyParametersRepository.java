@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ApiFeatureIntegrationRequestBodyParametersRepository extends
-        JpaRepository<ApiFeatureIntegrationRequestBodyParameters,Long>{
+        JpaRepository<ApiFeatureIntegrationRequestBodyParameters,Long> {
+
 
 }

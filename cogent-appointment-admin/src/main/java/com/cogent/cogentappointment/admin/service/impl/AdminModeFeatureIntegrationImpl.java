@@ -1,9 +1,9 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.request.adminModeIntegration.AdminModeFeatureIntegrationRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ApiIntegrationFormatRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiHeadersRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiQueryParametersRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.IntegrationClient.ApiIntegrationFormatRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.IntegrationClient.ClientApiHeadersRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.IntegrationClient.ClientApiQueryParametersRequestDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.AdminModeFeatureIntegrationService;
@@ -79,7 +79,6 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
         ApiIntegrationFormatRequestDTO apiIntegrationFormatRequestDTO = ApiIntegrationFormatRequestDTO.builder()
                 .apiUrl(requestDTO.getApiUrl())
                 .requestMethodId(requestDTO.getRequestMethodId())
-                .requestBodyAttrribute(requestDTO.getRequestBodyAttrribute())
                 .build();
 
 

@@ -28,9 +28,8 @@ public class ApiFeatureIntegrationRequestBodyParameters extends
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "api_integration_format_id")
-    private ApiIntegrationFormat apiIntegrationFormatId;
+    @Column(name = "feature_id")
+    private Long featureId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "api_request_body_parameters_id")
@@ -44,9 +43,9 @@ public class ApiFeatureIntegrationRequestBodyParameters extends
 
     @Override
     public String toString() {
-        return "ApiIntegrationRequestBodyParameters{" +
+        return "ApiFeatureIntegrationRequestBodyParametersEntityListener{" +
                 "id=" + id +
-                ", apiIntegrationFormatId=" + apiIntegrationFormatId.getId() +
+                ", featureId=" + featureId+
                 ", requestBodyParametersId=" + requestBodyParametersId.getId() +
                 ", status=" + status +
                 ", remarks='" + remarks + '\'' +

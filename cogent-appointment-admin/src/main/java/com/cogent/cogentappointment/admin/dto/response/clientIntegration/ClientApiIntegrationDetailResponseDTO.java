@@ -27,8 +27,6 @@ public class ClientApiIntegrationDetailResponseDTO  implements Serializable {
 
     private String url;
 
-    private String requestBody;
-
     private Map<String,String> headers;
 
     private Map<String,String> queryParameters;

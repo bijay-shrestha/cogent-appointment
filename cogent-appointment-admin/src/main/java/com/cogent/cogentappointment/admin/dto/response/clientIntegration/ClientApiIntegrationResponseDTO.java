@@ -25,6 +25,4 @@ public class ClientApiIntegrationResponseDTO implements Serializable {
     private String requestMethodName;
 
     private String url;
-
-    private String requestBody;
 }

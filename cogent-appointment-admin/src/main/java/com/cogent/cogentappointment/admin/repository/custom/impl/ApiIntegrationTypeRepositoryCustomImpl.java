@@ -15,7 +15,6 @@ import javax.persistence.Query;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.admin.constants.QueryConstants.CLIENT_API_INTEGRATION_FEATURE_ID;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.CLIENT_API_INTEGRATION_TYPE_ID;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;

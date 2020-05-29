@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.admin.query;
 
-import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiIntegrationSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.IntegrationClient.ClientApiIntegrationSearchRequestDTO;
 import org.springframework.util.ObjectUtils;
 
 import java.util.Objects;
@@ -34,8 +34,7 @@ public class IntegrationQuery {
                     " aif.id as apiIntegrationFormatId," +
                     " f.code as featureCode," +
                     " hrm.name as requestMethod," +
-                    " aif.url as url," +
-                    " aif.httpRequestBodyAttributes as requestBody" +
+                    " aif.url as url" +
                     " FROM AdminModeFeatureIntegration amfi" +
                     " LEFT JOIN AdminModeApiFeatureIntegration amafi ON amafi.adminModeFeatureIntegrationId.id =amfi.id " +
                     " LEFT JOIN Feature f ON f.id=amfi.featureId" +
@@ -120,8 +119,7 @@ public class IntegrationQuery {
                     " f.code as featureCode," +
                     " hrm.id as requestMethodId," +
                     " hrm.name as requestMethodName," +
-                    " aif.url as url," +
-                    " aif.httpRequestBodyAttributes as requestBody" +
+                    " aif.url as url" +
                     " from ClientFeatureIntegration cfi" +
                     " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=cfi.id" +
                     " LEFT JOIN Feature f ON f.id=cfi.featureId" +

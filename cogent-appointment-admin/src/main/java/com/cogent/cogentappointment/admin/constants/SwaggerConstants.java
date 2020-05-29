@@ -261,6 +261,12 @@ public class SwaggerConstants {
         String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal details for dropdown";
     }
 
+    public interface IntegrationRequestBodyConstant {
+        String BASE_API_VALUE = "This is Integration Request Body Resource.";
+        String SAVE_INTEGRATION_REQUEST_BODY_OPERATION = "Save new Integration Request Body Attributes";
+        String FETCH_API_REQUEST_HEADER_ATTRIBUTE_OPERATION= "Fetch Request Body Attributes by feature id";
+    }
+
     //J
     //K
     //L

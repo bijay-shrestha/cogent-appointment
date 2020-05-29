@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -20,4 +21,7 @@ public interface HospitalBillingModeInfoRepository extends JpaRepository<Hospita
             " AND h.hospital.id=:hospitalId")
     HospitalBillingModeInfo fetchHospitalBillingModeInfo(@Param("billingModeId") Long billingModeId,
                                                                    @Param("hospitalId") Long hospitalId);
+
+    @Query("SELECT h FROM HospitalBillingModeInfo h WHERE h.status !='D'  AND h.hospital.id=:hospitalId")
+    List<HospitalBillingModeInfo> fetchHospitalBillingModeInfoByHospitalId(@Param("hospitalId") Long hospitalId);
 }

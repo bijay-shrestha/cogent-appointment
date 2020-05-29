@@ -42,6 +42,7 @@ import static com.cogent.cogentappointment.admin.utils.HospitalBillingModeInfoUt
 import static com.cogent.cogentappointment.admin.utils.HospitalUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.removeTime;
 
 /**
  * @author smriti ON 12/01/2020
@@ -195,6 +196,8 @@ public class HospitalServiceImpl implements HospitalService {
 
         updateHmacApiInfo(hmacApiInfo, deleteRequestDTO.getStatus(), deleteRequestDTO.getRemarks());
 
+        deleteHospitalBillingModeInfoList(deleteRequestDTO);
+
         log.info(DELETING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
     }
 
@@ -293,6 +296,14 @@ public class HospitalServiceImpl implements HospitalService {
         saveHospitalBillingModeInfo(deleteHospitalBillingModeInfoList.apply(infoList, hospital.getRemarks()));
     }
 
+    private void deleteHospitalBillingModeInfoList(DeleteRequestDTO deleteRequestDTO) {
+
+        List<HospitalBillingModeInfo> hospitalBillingModeInfos=fetchHospitalBillingModeInfo(deleteRequestDTO.getId());
+
+        saveHospitalBillingModeInfo(deleteHospitalBillingModeInfoList.apply(hospitalBillingModeInfos,
+                deleteRequestDTO.getRemarks()));
+    }
+
     private Hospital save(Hospital hospital) {
         return hospitalRepository.save(hospital);
     }
@@ -312,6 +323,10 @@ public class HospitalServiceImpl implements HospitalService {
 
     private HospitalBillingModeInfo fetchHospitalBillingModeInfo(Long billingModeId, Long hospitalid) {
         return hospitalBillingModeInfoRepository.fetchHospitalBillingModeInfo(billingModeId, hospitalid);
+    }
+
+    private List<HospitalBillingModeInfo> fetchHospitalBillingModeInfo(Long hospitalid) {
+        return hospitalBillingModeInfoRepository.fetchHospitalBillingModeInfoByHospitalId(hospitalid);
     }
 
 

@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.dto.response.hospital;
 
+import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.commons.AuditableResponseDTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
@@ -46,6 +47,8 @@ public class HospitalResponseDTO implements Serializable {
     private Integer followUpIntervalDays;
 
     private String alias;
+
+    private List<DropDownResponseDTO> billingMode;
 
     private String createdBy;
 

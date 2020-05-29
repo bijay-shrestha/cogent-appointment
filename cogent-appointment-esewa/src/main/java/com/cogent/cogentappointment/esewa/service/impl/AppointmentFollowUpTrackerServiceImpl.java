@@ -12,6 +12,7 @@ import com.cogent.cogentappointment.esewa.service.AppointmentFollowUpRequestLogS
 import com.cogent.cogentappointment.esewa.service.AppointmentFollowUpTrackerService;
 import com.cogent.cogentappointment.esewa.service.AppointmentReservationService;
 import com.cogent.cogentappointment.persistence.model.AppointmentFollowUpTracker;
+import com.cogent.cogentappointment.persistence.model.Hospital;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,8 @@ import java.util.Objects;
 
 import static com.cogent.cogentappointment.esewa.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.esewa.constants.StatusConstants.YES;
-import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.*;
+import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
+import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
 import static com.cogent.cogentappointment.esewa.log.constants.AppointmentFollowUpTrackerLog.APPOINTMENT_FOLLOW_UP_TRACKER;
 import static com.cogent.cogentappointment.esewa.utils.AppointmentFollowUpTrackerUtils.parseToAppointmentFollowUpResponseDTO;
 import static com.cogent.cogentappointment.esewa.utils.AppointmentFollowUpTrackerUtils.parseToAppointmentFollowUpResponseDTOWithStatus;
@@ -75,21 +77,29 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
                         requestDTO.getSpecializationId(), requestDTO.getHospitalId()
                 );
 
+        Double hospitalRefundPercentage = fetchHospitalRefundPercentage(requestDTO.getHospitalId());
+
         AppointmentFollowUpResponseDTO responseDTO;
 
         if (Objects.isNull(appointmentFollowUpTracker))
 
             /*THIS IS NORMAL APPOINTMENT AND APPOINTMENT CHARGE = DOCTOR APPOINTMENT CHARGE*/
             responseDTO = parseDoctorAppointmentCharge(
-                    requestDTO.getDoctorId(), requestDTO.getHospitalId(), savedAppointmentReservationId);
+                    requestDTO.getDoctorId(), requestDTO.getHospitalId(), savedAppointmentReservationId,
+                    hospitalRefundPercentage
+            );
         else
              /*THIS IS FOLLOW UP APPOINTMENT CASE AND APPOINTMENT CHARGE = DOCTOR FOLLOW UP APPOINTMENT CHARGE*/
             responseDTO = parseDoctorAppointmentFollowUpCharge(
-                    appointmentFollowUpTracker, requestDTO, savedAppointmentReservationId);
+                    appointmentFollowUpTracker, requestDTO, savedAppointmentReservationId, hospitalRefundPercentage
+            );
+
+        AppointmentFollowUpResponseDTOWithStatus responseDTOWithStatus =
+                parseToAppointmentFollowUpResponseDTOWithStatus(responseDTO);
 
         log.info(FETCHING_PROCESS_COMPLETED, APPOINTMENT_FOLLOW_UP_TRACKER, getDifferenceBetweenTwoTime(startTime));
 
-        return parseToAppointmentFollowUpResponseDTOWithStatus(responseDTO);
+        return responseDTOWithStatus;
     }
 
 
@@ -122,16 +132,18 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
     private AppointmentFollowUpResponseDTO parseDoctorAppointmentFollowUpCharge(
             AppointmentFollowUpTracker appointmentFollowUpTracker,
             AppointmentFollowUpRequestDTO requestDTO,
-            Long savedAppointmentReservationId) {
+            Long savedAppointmentReservationId,
+            Double hospitalRefundPercentage) {
 
         if (appointmentFollowUpTracker.getRemainingNumberOfFollowUps() <= 0)
             /*NORMAL APPOINTMENT*/
-            return parseDoctorAppointmentCharge
-                    (requestDTO.getDoctorId(), requestDTO.getHospitalId(), savedAppointmentReservationId);
+            return parseDoctorAppointmentCharge(
+                    requestDTO.getDoctorId(), requestDTO.getHospitalId(), savedAppointmentReservationId,
+                    hospitalRefundPercentage
+            );
 
-        Integer followUpRequestCount =
-                appointmentFollowUpRequestLogService.fetchRequestCountByFollowUpTrackerId
-                        (appointmentFollowUpTracker.getId());
+        Integer followUpRequestCount = appointmentFollowUpRequestLogService.fetchRequestCountByFollowUpTrackerId
+                (appointmentFollowUpTracker.getId());
 
         HospitalFollowUpResponseDTO followUpDetails =
                 hospitalRepository.fetchFollowUpDetails(requestDTO.getHospitalId());
@@ -147,42 +159,51 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
                   /*FOLLOW UP APPOINTMENT*/
                 return parseDoctorAppointmentFollowUpCharge(
                         requestDTO.getDoctorId(), requestDTO.getHospitalId(),
-                        appointmentFollowUpTracker.getParentAppointmentId(), savedAppointmentReservationId
+                        appointmentFollowUpTracker.getParentAppointmentId(),
+                        savedAppointmentReservationId, hospitalRefundPercentage
                 );
             else
                  /*NORMAL APPOINTMENT*/
-                return parseDoctorAppointmentCharge
-                        (requestDTO.getDoctorId(), requestDTO.getHospitalId(), savedAppointmentReservationId);
+                return parseDoctorAppointmentCharge(
+                        requestDTO.getDoctorId(), requestDTO.getHospitalId(),
+                        savedAppointmentReservationId, hospitalRefundPercentage
+                );
 
         } else {
              /*NORMAL APPOINTMENT*/
-            return parseDoctorAppointmentCharge
-                    (requestDTO.getDoctorId(), requestDTO.getHospitalId(), savedAppointmentReservationId);
+            return parseDoctorAppointmentCharge(
+                    requestDTO.getDoctorId(), requestDTO.getHospitalId(),
+                    savedAppointmentReservationId, hospitalRefundPercentage
+            );
         }
     }
 
     private AppointmentFollowUpResponseDTO parseDoctorAppointmentCharge(Long doctorId,
                                                                         Long hospitalId,
-                                                                        Long savedAppointmentReservationId) {
+                                                                        Long savedAppointmentReservationId,
+                                                                        Double hospitalRefundPercentage) {
 
         Double doctorAppointmentCharge = doctorRepository.fetchDoctorAppointmentCharge(
                 doctorId, hospitalId);
 
         return parseToAppointmentFollowUpResponseDTO(
-                NO, doctorAppointmentCharge, null, savedAppointmentReservationId);
+                NO, doctorAppointmentCharge,
+                null, savedAppointmentReservationId, hospitalRefundPercentage
+        );
     }
 
     private AppointmentFollowUpResponseDTO parseDoctorAppointmentFollowUpCharge(Long doctorId,
                                                                                 Long hospitalId,
                                                                                 Long parentAppointmentId,
-                                                                                Long savedAppointmentReservationId) {
+                                                                                Long savedAppointmentReservationId,
+                                                                                Double hospitalRefundPercentage) {
 
         Double doctorFollowUpCharge = doctorRepository.fetchDoctorAppointmentFollowUpCharge(
                 doctorId, hospitalId);
 
         return parseToAppointmentFollowUpResponseDTO(
                 YES, doctorFollowUpCharge,
-                parentAppointmentId, savedAppointmentReservationId
+                parentAppointmentId, savedAppointmentReservationId, hospitalRefundPercentage
         );
     }
 
@@ -190,6 +211,11 @@ public class AppointmentFollowUpTrackerServiceImpl implements AppointmentFollowU
 
         return (Objects.requireNonNull(requestedDate).compareTo(Objects.requireNonNull(expiryDate))) < 0
                 || (Objects.requireNonNull(requestedDate).compareTo(Objects.requireNonNull(expiryDate))) == 0;
+    }
+
+    private Double fetchHospitalRefundPercentage(Long hospitalId) {
+        return hospitalRepository.fetchHospitalRefundPercentage(hospitalId)
+                .orElseThrow(() -> new NoContentFoundException(Hospital.class, "hospitalId", hospitalId.toString()));
     }
 
 }

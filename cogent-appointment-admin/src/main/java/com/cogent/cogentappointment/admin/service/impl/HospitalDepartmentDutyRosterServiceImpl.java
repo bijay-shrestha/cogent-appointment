@@ -34,11 +34,13 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.HospitalDeptDutyRosterMessages.*;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NO_RECORD_FOUND;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.HospitalDepartmentDutyRosterLog.*;
 import static com.cogent.cogentappointment.admin.log.constants.HospitalDepartmentLog.HOSPITAL_DEPARTMENT;
+import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.CLIENT;
 import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.HOSPITAL;
 import static com.cogent.cogentappointment.admin.log.constants.WeekDaysLog.WEEK_DAYS;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
@@ -696,10 +698,8 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
                 if (rosterCount > 0)
                     DUPLICATE_HOSPITAL_DEPT_DUTY_ROSTER_WITH_ROOM_EXCEPTION(
                             hospitalDepartmentDutyRoster.getFromDate(), hospitalDepartmentDutyRoster.getToDate());
-
             }
         }
-
     }
 
     private Hospital findHospitalById(Long hospitalId) {
@@ -709,7 +709,7 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
 
     private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (hospitalId) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, HOSPITAL, hospitalId);
-        throw new NoContentFoundException(Hospital.class, "hospitalId", hospitalId.toString());
+        throw new NoContentFoundException(String.format(NO_RECORD_FOUND, CLIENT), "hospitalId", hospitalId.toString());
     };
 
 

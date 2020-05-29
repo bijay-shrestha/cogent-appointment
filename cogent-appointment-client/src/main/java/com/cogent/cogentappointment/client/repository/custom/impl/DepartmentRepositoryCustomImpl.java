@@ -8,8 +8,6 @@ import com.cogent.cogentappointment.client.dto.response.department.DepartmentMin
 import com.cogent.cogentappointment.client.dto.response.department.DepartmentResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.DepartmentRepositoryCustom;
-import com.cogent.cogentappointment.client.utils.commons.PageableUtils;
-import com.cogent.cogentappointment.persistence.model.Department;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -21,11 +19,13 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.NO_CONTENT_FOUND;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
-import static com.cogent.cogentappointment.client.log.constants.DepartmentLog.DEPARTMENT;
+import static com.cogent.cogentappointment.client.log.constants.DepartmentLog.UNIT;
 import static com.cogent.cogentappointment.client.query.DepartmentQuery.*;
 import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.*;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
@@ -78,14 +78,11 @@ public class DepartmentRepositoryCustomImpl implements DepartmentRepositoryCusto
         List<DepartmentMinimalResponseDTO> minimalResponseDTOS = transformQueryToResultList(query,
                 DepartmentMinimalResponseDTO.class);
 
-        if (minimalResponseDTOS.isEmpty()){
-            error();
-            throw new NoContentFoundException(Department.class);
-        }
-        else {
-            minimalResponseDTOS.get(0).setTotalItems(totalItems);
-            return minimalResponseDTOS;
-        }
+        if (minimalResponseDTOS.isEmpty())
+            DEPARTMENT_NOT_FOUND.get();
+
+        minimalResponseDTOS.get(0).setTotalItems(totalItems);
+        return minimalResponseDTOS;
     }
 
     @Override
@@ -98,8 +95,8 @@ public class DepartmentRepositoryCustomImpl implements DepartmentRepositoryCusto
         try {
             return transformQueryToSingleResult(query, DepartmentResponseDTO.class);
         } catch (NoResultException e) {
-            log.error(CONTENT_NOT_FOUND_BY_ID,DEPARTMENT,id);
-            throw new NoContentFoundException(Department.class, "id", id.toString());
+            log.error(CONTENT_NOT_FOUND_BY_ID, UNIT, id);
+            throw new NoContentFoundException(String.format(NO_CONTENT_FOUND, UNIT), "id", id.toString());
         }
     }
 
@@ -125,8 +122,9 @@ public class DepartmentRepositoryCustomImpl implements DepartmentRepositoryCusto
         return dropDownDTOS.isEmpty() ? Optional.empty() : Optional.of(dropDownDTOS);
     }
 
-    private void error() {
-        log.error(CONTENT_NOT_FOUND, DEPARTMENT);
-    }
+    private Supplier<NoContentFoundException> DEPARTMENT_NOT_FOUND = () -> {
+        log.error(CONTENT_NOT_FOUND, UNIT);
+        throw new NoContentFoundException(String.format(NO_CONTENT_FOUND, UNIT));
+    };
 }
 

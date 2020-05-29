@@ -11,7 +11,6 @@ import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalResponse
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.HospitalRepositoryCustom;
 import com.cogent.cogentappointment.admin.utils.commons.PageableUtils;
-import com.cogent.cogentappointment.persistence.model.Hospital;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -24,9 +23,11 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NO_RECORD_FOUND;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
+import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.CLIENT;
 import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.HOSPITAL;
 import static com.cogent.cogentappointment.admin.query.CompanyQuery.*;
 import static com.cogent.cogentappointment.admin.query.HospitalQuery.*;
@@ -96,10 +97,8 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
         List<HospitalMinimalResponseDTO> results = transformNativeQueryToResultList(query, HospitalMinimalResponseDTO.class);
 
-        if (results.isEmpty()) {
-            error();
+        if (results.isEmpty())
             throw HOSPITAL_NOT_FOUND.get();
-        }
 
         results.get(0).setTotalItems(totalItems);
         return results;
@@ -115,10 +114,8 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
         List<CompanyMinimalResponseDTO> results = transformNativeQueryToResultList(query, CompanyMinimalResponseDTO.class);
 
-        if (results.isEmpty()) {
-            error();
+        if (results.isEmpty())
             throw HOSPITAL_NOT_FOUND.get();
-        }
 
         results.get(0).setTotalItems(totalItems);
         return results;
@@ -171,10 +168,10 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
         List<HospitalDropdownResponseDTO> results = transformQueryToResultList(query, HospitalDropdownResponseDTO.class);
 
-        if (results.isEmpty()) {
-            error();
+        if (results.isEmpty())
             throw HOSPITAL_NOT_FOUND.get();
-        } else return results;
+
+        else return results;
     }
 
     @Override
@@ -183,10 +180,10 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
         List<HospitalDropdownResponseDTO> results = transformQueryToResultList(query, HospitalDropdownResponseDTO.class);
 
-        if (results.isEmpty()) {
-            error();
+        if (results.isEmpty())
             throw HOSPITAL_NOT_FOUND.get();
-        } else return results;
+
+        else return results;
     }
 
     @Override
@@ -195,22 +192,21 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
         List<CompanyDropdownResponseDTO> results = transformQueryToResultList(query, CompanyDropdownResponseDTO.class);
 
-        if (results.isEmpty()) {
-            error();
+        if (results.isEmpty())
             throw HOSPITAL_NOT_FOUND.get();
-        } else return results;
+
+        else return results;
     }
 
-    private Supplier<NoContentFoundException> HOSPITAL_NOT_FOUND = () -> new NoContentFoundException(Hospital.class);
+    private Supplier<NoContentFoundException> HOSPITAL_NOT_FOUND = () -> {
+        log.error(CONTENT_NOT_FOUND, HOSPITAL);
+        throw new NoContentFoundException(NO_RECORD_FOUND, CLIENT);
+    };
 
     private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, HOSPITAL, id);
-        throw new NoContentFoundException(Hospital.class, "id", id.toString());
+        throw new NoContentFoundException(String.format(NO_RECORD_FOUND, CLIENT), "id", id.toString());
     };
-
-    private void error() {
-        log.error(CONTENT_NOT_FOUND, HOSPITAL);
-    }
 }
 
 

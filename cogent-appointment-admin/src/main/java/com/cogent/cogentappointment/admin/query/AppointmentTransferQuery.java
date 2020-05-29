@@ -169,8 +169,7 @@ public class AppointmentTransferQuery {
                     " LEFT JOIN HospitalPatientInfo hpi ON hpi.patient.id =p.id AND hpi.hospital.id = a.hospitalId.id" +
                     " LEFT JOIN DoctorAvatar pda ON pda.doctorId.id=apt.previousDoctor.id " +
                     " LEFT JOIN DoctorAvatar cda ON cda.doctorId.id=apt.currentDoctor.id " +
-                    " WHERE a.hasTransferred='Y' " +
-                    " AND a.hospitalId.id=:hospitalId";
+                    " WHERE a.hasTransferred='Y' ";
 
     public static String WHERE_CLAUSE_FOR_SEARCH(AppointmentTransferSearchRequestDTO requestDTO) {
 
@@ -191,6 +190,9 @@ public class AppointmentTransferQuery {
 
         if (!ObjectUtils.isEmpty(requestDTO.getPatientMetaInfoId()))
             whereClause += " AND pmi.id=" + requestDTO.getPatientMetaInfoId();
+
+        if (!ObjectUtils.isEmpty(requestDTO.getHospitalId()))
+            whereClause += " AND a.hospitalId.id=" + requestDTO.getHospitalId();
 
         if (!ObjectUtils.isEmpty(requestDTO.getDoctorId()))
             whereClause += " AND (apt.previousDoctor.id=" + requestDTO.getDoctorId() +

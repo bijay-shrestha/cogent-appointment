@@ -1,7 +1,9 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointmentMode.AppointmentModeRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointmentMode.AppointmentModeSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointmentMode.AppointmentModeUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentMode.AppointmentModeMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentMode.AppointmentModeResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
@@ -19,6 +21,7 @@ import javax.persistence.Query;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.admin.constants.QueryConstants.CODE;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.ID;
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.NAME;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
@@ -39,20 +42,22 @@ public class AppointmentModeRepositoryCustomImpl implements AppointmentModeRepos
     private EntityManager entityManager;
 
     @Override
-    public Long validateDuplicity(String name) {
+    public List<Object[]> validateDuplicity(AppointmentModeRequestDTO requestDTO) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY)
-                .setParameter(NAME, name);
+                .setParameter(NAME, requestDTO.getName())
+                .setParameter(CODE, requestDTO.getCode());
 
-        return (Long) query.getSingleResult();
+        return query.getResultList();
     }
 
     @Override
-    public Long validateDuplicity(Long id, String name) {
+    public List<Object[]> validateDuplicity(AppointmentModeUpdateRequestDTO requestDTO) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE)
-                .setParameter(ID, id)
-                .setParameter(NAME, name);
+                .setParameter(ID, requestDTO.getId())
+                .setParameter(NAME, requestDTO.getName())
+                .setParameter(CODE, requestDTO.getCode());
 
-        return (Long) query.getSingleResult();
+        return query.getResultList();
     }
 
     @Override

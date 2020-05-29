@@ -71,14 +71,14 @@ public class IntegrationRequestBodyParametersRepositoryCustomImpl implements
         Query query = createQuery.apply(entityManager,
                 FETCH_REQUEST_BODY_ATTRIBUTE_BY_ID(ids));
 
-        List<ApiIntegrationRequestBodyParameters> bodyAttributeResponseList =
-                transformQueryToResultList(query, ApiIntegrationRequestBodyParameters.class);
-        if (bodyAttributeResponseList.isEmpty()) {
+        List<ApiIntegrationRequestBodyParameters> bodyParametersList=query.getResultList();
+
+        if (bodyParametersList.isEmpty()) {
             error();
             throw REQUEST_BODY_PARAMETERS.get();
 
         }else {
-            return bodyAttributeResponseList;
+            return bodyParametersList;
         }
     }
 

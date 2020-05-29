@@ -5,7 +5,7 @@ package com.cogent.cogentappointment.admin.query;
  */
 public class RequestBodyParametersQuery {
     public static final String QUERY_TO_FETCH_MIN_REQUEST_BODY_PARAMTERS =
-            "SELECT" +
+            " SELECT" +
                     " airbp.id as value," +
                     " airbp.name as label" +
                     " FROM" +
@@ -14,17 +14,15 @@ public class RequestBodyParametersQuery {
                     " ORDER by airbp.name ASC";
 
     public static final String FETCH_REQUEST_BODY_ATTRIBUTE_BY_FEATURE_ID =
-
-            "SELECT" +
+            " SELECT" +
                     " airbp.id as id," +
                     " airbp.name as name" +
                     " FROM" +
-                    " ApiIntegrationRequestBodyParameters airbp" +
-                    " LEFT JOIN ApiFeatureIntegrationRequestBodyParameters afirbp ON afirbp.requestBodyParametersId=airbp.id" +
+                    " ApiFeatureIntegrationRequestBodyParameters afirbp"+
+                    " LEFT JOIN ApiIntegrationRequestBodyParameters airbp ON airbp.id=afirbp.requestBodyParametersId.id" +
                     " WHERE airbp.status ='Y'" +
                     " AND afirbp.status ='Y'" +
-                    " AND afirbp.featureId.id=:featureId" +
-                    " ORDER by airbp.name ASC";
+                    " AND afirbp.featureId=:featureId";
 
     public static String FETCH_REQUEST_BODY_ATTRIBUTE_BY_ID(String ids) {
 

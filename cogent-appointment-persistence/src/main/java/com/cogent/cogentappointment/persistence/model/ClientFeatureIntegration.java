@@ -32,8 +32,8 @@ public class ClientFeatureIntegration extends Auditable<String> implements Seria
     @Column(name = "feature_id")
     private Long featureId;
 
-    @JoinColumn(name = "integration_channel_id")
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "integration_channel_id")
     private IntegrationChannel integrationChannelId;
 
     @Column(name = "status")

@@ -14,11 +14,11 @@ public class IntegrationQuery {
                     " hrm.name as requestMethod,"+
                     " aif.url as url" +
                     " from ClientFeatureIntegration cfi" +
+                    " LEFT JOIN IntegrationChannel ic ON ic.id=cfi.integrationChannelId.id"+
                     " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=cfi.id" +
                     " LEFT JOIN Feature f ON f.id=cfi.featureId" +
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=afi.apiIntegrationFormatId" +
                     " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId" +
-                    " LEFT JOIN IntegrationChannel ic ON ic.id=cfi.integrationChannelId.id"+
                     " WHERE cfi.hospitalId= :hospitalId"+
                     " AND aif.status='Y'"+
                     " AND hrm.status='Y'"+

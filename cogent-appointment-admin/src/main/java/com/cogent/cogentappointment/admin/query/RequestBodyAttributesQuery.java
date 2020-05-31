@@ -24,17 +24,19 @@ public class RequestBodyAttributesQuery {
                     " airbp.name as name" +
                     " FROM" +
                     " ApiFeatureIntegrationRequestBodyParameters afirbp" +
-                    " LEFT JOIN ApiIntegrationRequestBodyParameters airbp ON airbp.id=afirbp.requestBodyParametersId.id" +
+                    " LEFT JOIN ApiIntegrationRequestBodyParameters airbp " +
+                    " ON airbp.id=afirbp.requestBodyParametersId.id" +
                     " WHERE airbp.status ='Y'" +
                     " AND afirbp.status ='Y'" +
                     " AND afirbp.featureId=:featureId";
 
-    public static Function<ApiIntegrationRequestBodySearchRequestDTO, String> API_REQUEST_BODY_ATTRIBUTES_SEARCH_QUERY =
+    public static Function<ApiIntegrationRequestBodySearchRequestDTO, String>
+            API_REQUEST_BODY_ATTRIBUTES_SEARCH_QUERY =
             (searchRequestDTO) ->
                     " SELECT" +
                             " f.name as featureName," +
                             " GROUP_CONCAT(airbp.name) as requestBody," +
-                            " afirbp.status as status"+
+                            " afirbp.status as status" +
                             " FROM" +
                             " api_feature_integration_request_body_parameters afirbp" +
                             " LEFT JOIN api_integration_request_body_parameters airbp ON airbp.id=afirbp.api_request_body_parameters_id" +

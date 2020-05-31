@@ -15,4 +15,6 @@ public interface IntegrationRequestBodyParametersRepositoryCustom {
 
 
     List<IntegrationRequestBodyAttributeResponse> fetchRequestBodyAttributeByFeatureId(Long featureId);
+
+    List<IntegrationRequestBodyAttributeResponse> fetchRequestBodyAttributes();
 }

@@ -50,6 +50,23 @@ public class IntegrationRequestBodyParametersRepositoryCustomImpl implements
     }
 
     @Override
+    public List<IntegrationRequestBodyAttributeResponse> fetchRequestBodyAttributes() {
+        Query query = createQuery.apply(entityManager,
+                RequestBodyParametersQuery.FETCH_REQUEST_BODY_ATTRIBUTES);
+
+        List<IntegrationRequestBodyAttributeResponse> bodyAttributeResponseList =
+                transformQueryToResultList(query, IntegrationRequestBodyAttributeResponse.class);
+
+        if (bodyAttributeResponseList.isEmpty()) {
+//            error();
+            throw REQUEST_BODY_PARAMETERS.get();
+
+        }else {
+            return bodyAttributeResponseList;
+        }
+    }
+
+    @Override
     public List<ApiIntegrationRequestBodyParameters> findActiveRequestBodyParameterByIds(String ids) {
         Query query = createQuery.apply(entityManager,
                 FETCH_REQUEST_BODY_ATTRIBUTE_BY_ID(ids));

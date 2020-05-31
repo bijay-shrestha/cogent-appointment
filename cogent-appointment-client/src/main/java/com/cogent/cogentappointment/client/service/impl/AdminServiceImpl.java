@@ -411,8 +411,17 @@ public class AdminServiceImpl implements AdminService {
         AdminLoggedInInfoResponseDTO responseDTO =
                 adminRepository.fetchLoggedInAdminInfo(requestDTO, getLoggedInHospitalId());
 
+        List<IntegrationRequestBodyAttributeResponse> responses =
+                requestBodyParametersRepository.fetchRequestBodyAttributes();
+
+        Map<String, String> map = new HashMap<>();
+        responses.forEach(response -> {
+            map.put(response.getName(), "");
+        });
+
         ClientIntegrationResponseDTO integrationResponseDTO = getHospitalApiIntegration(getLoggedInHospitalId());
         responseDTO.setECIntegrate(integrationResponseDTO);
+        responseDTO.setRequestBody(map);
 
         log.info(FETCHING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
 
@@ -441,7 +450,6 @@ public class AdminServiceImpl implements AdminService {
             String requestBody = Arrays.toString(responses.stream()
                     .map(request -> request.getName())
                     .collect(Collectors.toList()).toArray());
-
 
             ClientIntegrationResponseDTO integrationResponseDTO = new ClientIntegrationResponseDTO();
 

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * @author smriti ON 01/01/2020
@@ -38,4 +39,6 @@ public class AdminLoggedInInfoResponseDTO implements Serializable {
     private Character isSideBarCollapse;
 
     private ClientIntegrationResponseDTO eCIntegrate;
+
+    Map<String, String> requestBody;
 }

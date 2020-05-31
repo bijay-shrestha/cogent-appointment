@@ -23,6 +23,13 @@ public class RequestBodyParametersQuery {
                     " AND afirbp.status ='Y'" +
                     " AND afirbp.featureId=:featureId";
 
+    public static final String FETCH_REQUEST_BODY_ATTRIBUTES =
+            " SELECT" +
+                    " airbp.name as name" +
+                    " FROM" +
+                    " ApiIntegrationRequestBodyParameters airbp"+
+                    " WHERE airbp.status ='Y'";
+
     public static String FETCH_REQUEST_BODY_ATTRIBUTE_BY_ID(String ids) {
 
         String query = "SELECT" +

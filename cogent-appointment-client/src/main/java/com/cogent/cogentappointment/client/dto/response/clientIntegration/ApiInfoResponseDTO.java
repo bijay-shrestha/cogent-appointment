@@ -25,6 +25,6 @@ public class ApiInfoResponseDTO implements Serializable {
 
     private Map<String, String> queryParameters;
 
-    private String requestBody;
+    private Object[] requestBody;
 
 }

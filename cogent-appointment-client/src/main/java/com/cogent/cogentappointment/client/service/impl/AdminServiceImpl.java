@@ -447,9 +447,14 @@ public class AdminServiceImpl implements AdminService {
 //                    .map(request -> request.getName())
 //                    .collect(Collectors.joining(","));
 
-            String requestBody = Arrays.toString(responses.stream()
+//            String requestBody = Arrays.toString(responses.stream()
+//                    .map(request -> request.getName())
+//                    .collect(Collectors.toList()).toArray());
+
+
+            Object[] requestBody=responses.stream()
                     .map(request -> request.getName())
-                    .collect(Collectors.toList()).toArray());
+                    .collect(Collectors.toList()).toArray();
 
             ClientIntegrationResponseDTO integrationResponseDTO = new ClientIntegrationResponseDTO();
 

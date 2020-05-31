@@ -434,10 +434,14 @@ public class AdminServiceImpl implements AdminService {
             List<IntegrationRequestBodyAttributeResponse> responses =
                     requestBodyParametersRepository.fetchRequestBodyAttributeByFeatureId(responseDTO.getFeatureId());
 
+//            String requestBody = responses.stream()
+//                    .map(request -> request.getName())
+//                    .collect(Collectors.joining(","));
 
-            String requestBody = responses.stream()
+            String requestBody = Arrays.toString(responses.stream()
                     .map(request -> request.getName())
-                    .collect(Collectors.joining(","));
+                    .collect(Collectors.toList()).toArray());
+
 
             ClientIntegrationResponseDTO integrationResponseDTO = new ClientIntegrationResponseDTO();
 

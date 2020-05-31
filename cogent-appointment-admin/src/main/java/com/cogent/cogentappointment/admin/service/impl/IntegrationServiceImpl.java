@@ -1,10 +1,10 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.IntegrationClient.*;
-import com.cogent.cogentappointment.admin.dto.request.IntegrationClient.clientIntegrationUpdate.ClientApiIntegrationUpdateRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.IntegrationClient.clientIntegrationUpdate.ClientApiQueryParamtersUpdateRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.IntegrationClient.clientIntegrationUpdate.ClientApiRequestHeadersUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.integrationClient.*;
+import com.cogent.cogentappointment.admin.dto.request.integrationClient.clientIntegrationUpdate.ClientApiIntegrationUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.integrationClient.clientIntegrationUpdate.ClientApiQueryParamtersUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.integrationClient.clientIntegrationUpdate.ClientApiRequestHeadersUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.clientIntegration.ClientApiIntegrationDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.clientIntegration.ClientApiIntegrationResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.clientIntegration.ClientApiIntegrationSearchDTO;

@@ -11,8 +11,7 @@ import java.util.List;
 
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.FETCHING_PROCESS_STARTED_FOR_DROPDOWN;
-import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.API_REQUEST_BODY_PARAMETERS;
-import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.FEATURES;
+import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.API_REQUEST_BODY_ATTRIBUTES;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
@@ -34,11 +33,11 @@ public class IntegrationRequestBodyParametersServiceImpl implements IntegrationR
     public List<DropDownResponseDTO> fetchActiveRequestBodyParameters() {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, API_REQUEST_BODY_PARAMETERS);
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, API_REQUEST_BODY_ATTRIBUTES);
 
         List<DropDownResponseDTO> responseDTOS = requestBodyParametersRepository.fetchActiveRequestBodyParameters();
 
-        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, API_REQUEST_BODY_PARAMETERS, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, API_REQUEST_BODY_ATTRIBUTES, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTOS;
     }

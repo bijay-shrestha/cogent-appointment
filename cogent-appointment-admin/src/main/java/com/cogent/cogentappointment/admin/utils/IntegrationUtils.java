@@ -1,9 +1,9 @@
 package com.cogent.cogentappointment.admin.utils;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.IntegrationClient.ApiIntegrationFormatRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.IntegrationClient.ClientApiHeadersRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.IntegrationClient.ClientApiQueryParametersRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.integrationClient.ApiIntegrationFormatRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.integrationClient.ClientApiHeadersRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.integrationClient.ClientApiQueryParametersRequestDTO;
 import com.cogent.cogentappointment.persistence.model.*;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.dto.request.IntegrationClient;
+package com.cogent.cogentappointment.admin.dto.request.integrationClient;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,11 +14,10 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClientApiHeadersRequestDTO implements Serializable {
+public class ApiIntegrationFormatRequestDTO implements Serializable {
 
-    private String keyParam;
+    private Long requestMethodId;
 
-    private String valueParam;
+    private String apiUrl;
 
-    private String description;
 }

@@ -165,6 +165,7 @@ public class WebResourceKeyConstants {
 
     public interface IntegrationRequestBodyAttributeConstants {
         String BASE_REQUEST_BODY_INTEGRATION = "/integration-request-body-attribute";
+        String API_REQUEST_BODY_ATTRIBUTES = "/request-body-attributes";
         String FEATURE_ID_PATH_VARIABLE_BASE = "/{featureId}";
     }
 

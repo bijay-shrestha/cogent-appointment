@@ -1,10 +1,9 @@
 package com.cogent.cogentappointment.admin.resource;
 
-import com.cogent.cogentappointment.admin.constants.SwaggerConstants;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.IntegrationClient.ClientApiIntegrationRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.IntegrationClient.ClientApiIntegrationSearchRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.IntegrationClient.clientIntegrationUpdate.ClientApiIntegrationUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.integrationClient.ClientApiIntegrationRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.integrationClient.ClientApiIntegrationSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.integrationClient.clientIntegrationUpdate.ClientApiIntegrationUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.service.ApiIntegrationTypeService;
 import com.cogent.cogentappointment.admin.service.HttpRequestMethodService;
 import com.cogent.cogentappointment.admin.service.IntegrationFeatureService;

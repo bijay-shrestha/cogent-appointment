@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.dto.request.IntegrationClient;
+package com.cogent.cogentappointment.admin.dto.request.integrationClient;
 
 import lombok.*;
 

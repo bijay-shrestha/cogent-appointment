@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.dto.request.IntegrationClient.clientIntegrationUpdate;
+package com.cogent.cogentappointment.admin.dto.request.integrationClient.clientIntegrationUpdate;
 
 import lombok.*;
 
@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClientApiRequestHeadersUpdateRequestDTO implements Serializable {
+public class ClientApiQueryParamtersUpdateRequestDTO implements Serializable {
 
     private Long id;
 
@@ -20,10 +20,6 @@ public class ClientApiRequestHeadersUpdateRequestDTO implements Serializable {
 
     private String valueParam;
 
-    private String description;
-
     private Character Status;
-
-
 
 }

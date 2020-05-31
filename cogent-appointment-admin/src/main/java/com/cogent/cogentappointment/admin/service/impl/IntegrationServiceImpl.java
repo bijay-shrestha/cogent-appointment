@@ -49,8 +49,19 @@ public class IntegrationServiceImpl implements IntegrationService {
     private final IntegrationRepository integrationRepository;
     private final ApiFeatureIntegrationRequestBodyParametersRepository featureBodyParametersRepository;
     private final IntegrationRequestBodyParametersRepository requestBodyParametersRepository;
+    private final IntegrationChannelRepository integrationChannelRepository;
 
-    public IntegrationServiceImpl(ClientFeatureIntegrationRepository clientFeatureIntegrationRepository, ClientApiIntegrationFormatRespository clientApiIntegrationFormatRespository, HttpRequestMethodRepository httpRequestMethodRepository, ApiQueryParametersRepository apiQueryParametersRepository, ApiRequestHeaderRepository apiRequestHeaderRepository, ApiFeatureIntegrationRepository apiFeatureIntegrationRepository, FeatureRepository featureRepository, IntegrationRepository integrationRepository, ApiFeatureIntegrationRequestBodyParametersRepository featureBodyParametersRepository, IntegrationRequestBodyParametersRepository requestBodyParametersRepository) {
+    public IntegrationServiceImpl(ClientFeatureIntegrationRepository clientFeatureIntegrationRepository,
+                                  ClientApiIntegrationFormatRespository clientApiIntegrationFormatRespository,
+                                  HttpRequestMethodRepository httpRequestMethodRepository,
+                                  ApiQueryParametersRepository apiQueryParametersRepository,
+                                  ApiRequestHeaderRepository apiRequestHeaderRepository,
+                                  ApiFeatureIntegrationRepository apiFeatureIntegrationRepository,
+                                  FeatureRepository featureRepository,
+                                  IntegrationRepository integrationRepository,
+                                  ApiFeatureIntegrationRequestBodyParametersRepository featureBodyParametersRepository,
+                                  IntegrationRequestBodyParametersRepository requestBodyParametersRepository,
+                                  IntegrationChannelRepository integrationChannelRepository) {
 
         this.clientFeatureIntegrationRepository = clientFeatureIntegrationRepository;
         this.clientApiIntegrationFormatRespository = clientApiIntegrationFormatRespository;
@@ -62,6 +73,7 @@ public class IntegrationServiceImpl implements IntegrationService {
         this.integrationRepository = integrationRepository;
         this.featureBodyParametersRepository = featureBodyParametersRepository;
         this.requestBodyParametersRepository = requestBodyParametersRepository;
+        this.integrationChannelRepository = integrationChannelRepository;
     }
 
     @Override
@@ -74,8 +86,14 @@ public class IntegrationServiceImpl implements IntegrationService {
         validateFeatureAndHttpRequestMethod(requestDTO.getFeatureTypeId(),
                 requestDTO.getRequestMethodId());
 
+        IntegrationChannel integrationChannel=integrationChannelRepository.
+                findActiveIntegrationChannel(requestDTO.getIntegrationChannelId())
+                .orElseThrow(() -> INTEGRATION_CHANNEL_NOT_FOUND.apply(requestDTO.getIntegrationChannelId()));
+
+
         ClientFeatureIntegration clientFeatureIntegration = parseToClientFeatureIntegration(requestDTO.getHospitalId(),
                 requestDTO.getFeatureTypeId());
+        clientFeatureIntegration.setIntegrationChannelId(integrationChannel);
 
         saveClientFeatureIntegration(clientFeatureIntegration);
 
@@ -387,5 +405,9 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     private Function<Long, NoContentFoundException> FEATURE_NOT_FOUND = (id) -> {
         throw new NoContentFoundException(Feature.class);
+    };
+
+    private Function<Long, NoContentFoundException> INTEGRATION_CHANNEL_NOT_FOUND = (id) -> {
+        throw new NoContentFoundException(IntegrationChannel.class);
     };
 }

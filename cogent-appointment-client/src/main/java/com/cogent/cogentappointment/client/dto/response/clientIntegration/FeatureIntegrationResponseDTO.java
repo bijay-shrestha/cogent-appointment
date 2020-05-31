@@ -19,7 +19,7 @@ public class FeatureIntegrationResponseDTO implements Serializable {
 
     private String featureCode;
 
-    private Long integrationChannelId;
+    private String integrationChannelCode;
 
     private ApiInfoResponseDTO apiInfo;
 

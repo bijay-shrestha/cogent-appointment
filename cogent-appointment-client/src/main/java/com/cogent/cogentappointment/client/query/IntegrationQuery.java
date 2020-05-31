@@ -9,6 +9,7 @@ public class IntegrationQuery {
             "SELECT" +
                     " aif.id as apiIntegrationFormatId," +
                     " f.id as featureId,"+
+                    " ic.code as integrationChannelCode,"+
                     " f.code as featureCode," +
                     " hrm.name as requestMethod,"+
                     " aif.url as url" +
@@ -17,6 +18,7 @@ public class IntegrationQuery {
                     " LEFT JOIN Feature f ON f.id=cfi.featureId" +
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=afi.apiIntegrationFormatId" +
                     " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId" +
+                    " LEFT JOIN IntegrationChannel ic ON ic.id=cfi.integrationChannelId.id"+
                     " WHERE cfi.hospitalId= :hospitalId"+
                     " AND aif.status='Y'"+
                     " AND hrm.status='Y'"+

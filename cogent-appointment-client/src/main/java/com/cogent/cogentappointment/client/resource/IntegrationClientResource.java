@@ -38,12 +38,12 @@ import static org.springframework.http.ResponseEntity.ok;
 @RestController
 @RequestMapping(API_V1 + BASE_INTEGRATION)
 @Api(BASE_API_VALUE)
-public class IntegrationResource {
+public class IntegrationClientResource {
 
     private final IntegrationService integrationService;
     private final RestTemplateUtils restTemplateUtils;
 
-    public IntegrationResource(IntegrationService integrationService, RestTemplateUtils restTemplateUtils) {
+    public IntegrationClientResource(IntegrationService integrationService, RestTemplateUtils restTemplateUtils) {
         this.integrationService = integrationService;
         this.restTemplateUtils = restTemplateUtils;
     }

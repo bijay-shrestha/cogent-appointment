@@ -10,6 +10,6 @@ import java.util.List;
  */
 public interface AppointmentHospitalDepartmentService {
 
-    List<AppointmentHospitalDeptCheckAvailabilityResponseDTO> fetchAvailableTimeSlots
+    AppointmentHospitalDeptCheckAvailabilityResponseDTO fetchAvailableTimeSlots
             (AppointmentHospitalDeptCheckAvailabilityRequestDTO requestDTO);
 }

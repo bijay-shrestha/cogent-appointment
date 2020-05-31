@@ -1,8 +1,10 @@
 package com.cogent.cogentappointment.esewa.dto.response.appointment.checkAvailabililty;
 
 import lombok.*;
+import org.springframework.http.HttpStatus;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -15,11 +17,13 @@ import java.util.List;
 @NoArgsConstructor
 public class AppointmentCheckAvailabilityResponseDTO implements Serializable {
 
-    private Long roomId;
+    private Date queryDate;
 
-    private String roomNumber;
-
-    private String hospitalDepartmentAvailableTime;
+    private String doctorAvailableTime;
 
     private List<String> availableTimeSlots;
+
+    private int responseCode;
+
+    private HttpStatus responseStatus;
 }

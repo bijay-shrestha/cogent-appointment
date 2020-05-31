@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.esewa.repository.custom.impl;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.checkAvailibility.AppointmentCheckAvailabilityRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.history.AppointmentHistorySearchDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.history.AppointmentSearchDTO;
+import com.cogent.cogentappointment.esewa.dto.request.appointmentHospitalDepartment.checkAvailability.AppointmentHospitalDeptCheckAvailabilityRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.checkAvailabililty.AppointmentBookedTimeResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.history.AppointmentDetailResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.history.AppointmentMinResponseDTO;
@@ -127,6 +128,18 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
         } catch (NoResultException e) {
             throw APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId);
         }
+    }
+
+    @Override
+    public List<AppointmentBookedTimeResponseDTO> fetchBookedAppointmentDeptWise(
+            AppointmentHospitalDeptCheckAvailabilityRequestDTO requestDTO,
+            Long roomId) {
+
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_BOOKED_APPOINTMENT_HOSPITAL_DEPT_WISE(roomId))
+                .setParameter(DATE, utilDateToSqlDate(requestDTO.getAppointmentDate()))
+                .setParameter(HOSPITAL_DEPARTMENT_ID, requestDTO.getHospitalDepartmentId());
+
+        return transformQueryToResultList(query, AppointmentBookedTimeResponseDTO.class);
     }
 
     @Override

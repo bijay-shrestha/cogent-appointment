@@ -1,8 +1,8 @@
 package com.cogent.cogentappointment.esewa.dto.response.appointmentHospitalDepartment.checkAvailability;
 
 import com.cogent.cogentappointment.esewa.dto.response.StatusResponseDTO;
-import lombok.Getter;
-import lombok.Setter;
+import com.cogent.cogentappointment.esewa.dto.response.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterRoomInfoResponseDTO;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -13,13 +13,24 @@ import java.util.List;
  */
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class AppointmentHospitalDeptCheckAvailabilityResponseDTO extends StatusResponseDTO implements Serializable {
 
     private Date queryDate;
 
     private Character hasRoom;
 
-    private AppointmentHospitalDeptCheckAvailabilityWithoutRoomResponseDTO withoutRoomInfo;
+    private List<HospitalDeptDutyRosterRoomInfoResponseDTO> roomInfo;
 
-    private List<AppointmentHospitalDeptCheckAvailabilityWithRoomResponseDTO> withRoomInfo;
+//    private AppointmentHospitalDeptCheckAvailabilityWithoutRoomResponseDTO withoutRoomInfo;
+
+    private Long roomId;
+
+    private String roomNumber;
+
+    private String hospitalDepartmentAvailableTime;
+
+    private List<String> availableTimeSlots;
 }

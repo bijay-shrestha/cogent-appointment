@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.esewa.repository;
 
-import com.cogent.cogentappointment.esewa.repository.custom.HospitalDeptDutyRosterRepositoryCustom;
+import com.cogent.cogentappointment.esewa.repository.custom.HospitalDeptDutyRosterOverrideRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDutyRosterOverride;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -10,5 +10,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface HospitalDeptDutyRosterOverrideRepository extends JpaRepository<HospitalDepartmentDutyRosterOverride, Long>,
-        HospitalDeptDutyRosterRepositoryCustom {
+        HospitalDeptDutyRosterOverrideRepositoryCustom {
+
+
 }

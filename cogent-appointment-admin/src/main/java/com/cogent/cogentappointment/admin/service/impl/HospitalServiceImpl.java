@@ -9,6 +9,7 @@ import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalResponse
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.repository.custom.BillingModeRepository;
+import com.cogent.cogentappointment.admin.service.AppointmentServiceTypeService;
 import com.cogent.cogentappointment.admin.service.HospitalService;
 import com.cogent.cogentappointment.admin.service.MinioFileService;
 import com.cogent.cogentappointment.persistence.model.*;
@@ -28,8 +29,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.ALIAS_NOT_FOUND;
-import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NO_RECORD_FOUND;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.INACTIVE;
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
@@ -42,7 +41,6 @@ import static com.cogent.cogentappointment.admin.utils.HospitalBillingModeInfoUt
 import static com.cogent.cogentappointment.admin.utils.HospitalUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
-import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.removeTime;
 
 /**
  * @author smriti ON 12/01/2020
@@ -64,25 +62,35 @@ public class HospitalServiceImpl implements HospitalService {
 
     private final HospitalBillingModeInfoRepository hospitalBillingModeInfoRepository;
 
-    private final BillingModeRepository billingModeRepository;
+    private final BillingModeRepository
+            billingModeRepository;
 
     private final MinioFileService minioFileService;
 
     private final Validator validator;
+
+    private final HospitalAppointmentServiceTypeRepository hospitalAppointmentServiceTypeRepository;
+
+
+    private final AppointmentServiceTypeService
+            appointmentServiceTypeService;
 
     public HospitalServiceImpl(HospitalRepository hospitalRepository,
                                HospitalContactNumberRepository hospitalContactNumberRepository,
                                HospitalLogoRepository hospitalLogoRepository,
                                HospitalBannerRepository hospitalBannerRepository,
                                HmacApiInfoRepository hmacApiInfoRepository,
-                               HospitalBillingModeInfoRepository hospitalBillingModeInfoRepository,
-                               BillingModeRepository billingModeRepository,
-                               MinioFileService minioFileService, Validator validator) {
+                               MinioFileService minioFileService,
+                               Validator validator,
+                               HospitalAppointmentServiceTypeRepository hospitalAppointmentServiceTypeRepository,
+                               AppointmentServiceTypeService appointmentServiceTypeService) {
         this.hospitalRepository = hospitalRepository;
         this.hospitalContactNumberRepository = hospitalContactNumberRepository;
         this.hospitalLogoRepository = hospitalLogoRepository;
         this.hospitalBannerRepository = hospitalBannerRepository;
         this.hmacApiInfoRepository = hmacApiInfoRepository;
+        this.hospitalAppointmentServiceTypeRepository = hospitalAppointmentServiceTypeRepository;
+        this.appointmentServiceTypeService = appointmentServiceTypeService;
         this.hospitalBillingModeInfoRepository = hospitalBillingModeInfoRepository;
         this.billingModeRepository = billingModeRepository;
         this.minioFileService = minioFileService;
@@ -105,7 +113,8 @@ public class HospitalServiceImpl implements HospitalService {
         validateDuplicity(hospitals, requestDTO.getName(),
                 requestDTO.getHospitalCode(),
                 requestDTO.getAlias(),
-                CLIENT);
+                CLIENT
+        );
 
         Hospital hospital = save(convertDTOToHospital(requestDTO));
 
@@ -119,6 +128,11 @@ public class HospitalServiceImpl implements HospitalService {
 
         if (requestDTO.getBillingModeId().size() > 0)
             saveHospitalBillingModeInfo(hospital, requestDTO.getBillingModeId());
+
+        saveHospitalAppointmentServiceType(hospital,
+                requestDTO.getAppointmentServiceTypeIds(),
+                requestDTO.getPrimaryAppointmentServiceTypeId()
+        );
 
         log.info(SAVING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
     }
@@ -163,6 +177,13 @@ public class HospitalServiceImpl implements HospitalService {
 
         if (updateRequestDTO.getBillingModeIds().size() > 0)
             updateBillingMode(updateRequestDTO, hospital);
+
+        updateHospitalAppointmentServiceType(hospital, updateRequestDTO.getAppointmentServiceTypeUpdateRequestDTO());
+
+        updateIsPrimaryHospitalAppointmentServiceTypeStatus(
+                hospital.getId(),
+                updateRequestDTO.getPrimaryAppointmentServiceTypeId()
+        );
 
         log.info(UPDATING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
     }
@@ -298,7 +319,7 @@ public class HospitalServiceImpl implements HospitalService {
 
     private void deleteHospitalBillingModeInfoList(DeleteRequestDTO deleteRequestDTO) {
 
-        List<HospitalBillingModeInfo> hospitalBillingModeInfos=fetchHospitalBillingModeInfo(deleteRequestDTO.getId());
+        List<HospitalBillingModeInfo> hospitalBillingModeInfos = fetchHospitalBillingModeInfo(deleteRequestDTO.getId());
 
         saveHospitalBillingModeInfo(deleteHospitalBillingModeInfoList.apply(hospitalBillingModeInfos,
                 deleteRequestDTO.getRemarks()));
@@ -394,7 +415,8 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     private void updateBillingMode(HospitalUpdateRequestDTO requestDTO, Hospital hospital) {
-        List<HospitalBillingModeUpdateRequestDTO> billingModeIds = requestDTO.getBillingModeIds();
+        List<HospitalBillingModeUpdateRequestDTO
+                > billingModeIds = requestDTO.getBillingModeIds();
 
         List<Long> newBillingModeIds = new ArrayList<>();
 
@@ -457,5 +479,65 @@ public class HospitalServiceImpl implements HospitalService {
         log.error(CONTENT_NOT_FOUND_BY_ID, BILLING_MODE, id);
         throw new NoContentFoundException(BillingMode.class, "id", id.toString());
     };
+
+    private void saveHospitalAppointmentServiceType(Hospital hospital, List<Long> appointmentServiceTypeIds,
+                                                    Long primaryAppointmentServiceTypeId) {
+
+        List<HospitalAppointmentServiceType> hospitalAppointmentServiceTypes =
+                appointmentServiceTypeIds.stream()
+                        .map(appointmentServiceTypeId -> {
+
+                            AppointmentServiceType appointmentServiceType =
+                                    appointmentServiceTypeService.fetchActiveById(appointmentServiceTypeId);
+
+                            Character isPrimary = appointmentServiceTypeId.equals(primaryAppointmentServiceTypeId)
+                                    ? YES : NO;
+
+                            return parseToHospitalAppointmentServiceType(hospital, appointmentServiceType, isPrimary);
+                        }).collect(Collectors.toList());
+
+        saveHospitalAppointmentServiceType(hospitalAppointmentServiceTypes);
+    }
+
+    /*WHILE UPDATING, IS PRIMARY IS BY DEFAULT SET AS 'N' AND UPDATE QUERY IS EXECUTED TO CHANGE THE STATUS*/
+    private void updateHospitalAppointmentServiceType(Hospital hospital,
+                                                      List<HospitalAppointmentServiceTypeUpdateRequestDTO> updateRequestDTOS) {
+
+        List<HospitalAppointmentServiceType> hospitalAppointmentServiceTypes =
+                updateRequestDTOS.stream()
+                        .map(updateRequestDTO -> {
+
+                            if (Objects.isNull(updateRequestDTO.getAppointmentServiceTypeId())) {
+
+                                AppointmentServiceType appointmentServiceType =
+                                        appointmentServiceTypeService.fetchActiveById(
+                                                updateRequestDTO.getAppointmentServiceTypeId());
+
+                                return parseToHospitalAppointmentServiceType(hospital, appointmentServiceType, NO);
+                            } else {
+                                HospitalAppointmentServiceType hospitalAppointmentServiceType =
+                                        findHospitalAppointmentServiceTypeById(updateRequestDTO.getAppointmentServiceTypeId());
+                                return updateHospitalAppointmentServiceTypeStatus(hospitalAppointmentServiceType,
+                                        updateRequestDTO.getStatus(), NO);
+                            }
+                        }).collect(Collectors.toList());
+
+        saveHospitalAppointmentServiceType(hospitalAppointmentServiceTypes);
+    }
+
+    private void saveHospitalAppointmentServiceType(List<HospitalAppointmentServiceType> hospitalAppointmentServiceTypes) {
+        hospitalAppointmentServiceTypeRepository.saveAll(hospitalAppointmentServiceTypes);
+    }
+
+    private HospitalAppointmentServiceType findHospitalAppointmentServiceTypeById(Long hospitalAppointmentServiceType) {
+        return hospitalAppointmentServiceTypeRepository.fetchActiveById(hospitalAppointmentServiceType)
+                .orElseThrow(() -> new NoContentFoundException(HospitalAppointmentServiceType.class,
+                        "hospitalAppointmentServiceType", hospitalAppointmentServiceType.toString()));
+    }
+
+    private void updateIsPrimaryHospitalAppointmentServiceTypeStatus(Long hospitalId, Long appointmentServiceTypeId) {
+        hospitalAppointmentServiceTypeRepository.updateIsPrimaryStatus(hospitalId, appointmentServiceTypeId);
+    }
+
 
 }

@@ -105,44 +105,35 @@ public class HospitalQuery {
                     " h.name as name," +                                        //[1]
                     " h.status as status," +                                    //[2]
                     " h.address as address," +                                  //[3]
-                    " h.pan_number as panNumber," +                             //[4]
-                    " h.remarks as remarks," +                                   //[5]
+                    " h.panNumber as panNumber," +                             //[4]
+                    " h.remarks as remarks," +                                 //[5]
                     " CASE WHEN" +
                     " (hl.status IS NULL OR hl.status = 'N')" +
                     " THEN null" +
                     " ELSE" +
-                    " hl.file_uri" +
+                    " hl.fileUri" +
                     " END as hospitalLogo," +                                   //[6]
                     " CASE WHEN" +
                     " (hb.status IS NULL OR hb.status = 'N')" +
                     " THEN null" +
                     " ELSE" +
-                    " hb.file_uri" +
+                    " hb.fileUri" +
                     " END as hospitalBanner," +                                 //[7]
                     " h.code as hospitalCode," +                                //[8]
-                    " tbl1.contact_details as contact_details," +               //[9]
-                    " h.refund_percentage as refundPercentage," +               //[10]
-                    " h.number_of_admins as numberOfAdmins," +                  //[11]
-                    " h.number_of_follow_ups as numberOfFollowUps," +           //[12]
-                    " h.follow_up_interval_days as followUpIntervalDays," +     //[13]
-                    " h.is_company as isCompany," +                             //[14]
-                    " h.alias as alias," +                                       //[15]
+                    " h.refundPercentage as refundPercentage," +               //[9]
+                    " h.numberOfAdmins as numberOfAdmins," +                  //[10]
+                    " h.numberOfFollowUps as numberOfFollowUps," +            //[11]
+                    " h.followUpIntervalDays as followUpIntervalDays," +      //[12]
+                    " h.isCompany as isCompany," +                            //[13]
+                    " h.alias as alias," +                                    //[14]
                     HOSPITAL_AUDITABLE_QUERY() +
                     " FROM" +
-                    " hospital h" +
-                    " LEFT JOIN hospital_logo hl ON h.id =hl.hospital_id " +
-                    " LEFT JOIN hospital_banner hb ON h.id = hb.hospital_id" +
-                    " LEFT JOIN " +
-                    " (" +
-                    " SELECT hc.hospital_id as hospitalId," +
-                    " GROUP_CONCAT((CONCAT(hc.id, '/', hc.contact_number, '/', hc.status))) as contact_details" +
-                    " FROM hospital_contact_number hc" +
-                    " WHERE hc.status = 'Y'" +
-                    " GROUP by hc.hospital_id" +
-                    " )tbl1 ON tbl1.hospitalId = h.id" +
+                    " Hospital h" +
+                    " LEFT JOIN HospitalLogo hl ON h.id =hl.hospital.id " +
+                    " LEFT JOIN HospitalBanner hb ON h.id = hb.hospital.id" +
                     " WHERE h.id =:id" +
                     " AND h.status !='D'" +
-                    " AND h.is_company='N'";
+                    " AND h.isCompany='N'";
 
     public static final String QUERY_TO_FETCH_HOSPITAL_FOLLOW_UP_COUNT =
             " SELECT h.numberOfFollowUps as numberOfFollowUps" +
@@ -154,10 +145,19 @@ public class HospitalQuery {
                     " FROM Hospital h" +
                     " WHERE h.id =:hospitalId";
 
-    public static String HOSPITAL_AUDITABLE_QUERY() {
-        return " h.created_by as createdBy," +
-                " h.created_date as createdDate," +
-                " h.last_modified_by as lastModifiedBy," +
-                " h.last_modified_date as lastModifiedDate";
+
+    public static final String QUERY_TO_FETCH_HOSPITAL_CONTACT_NUMBER =
+            " SELECT hc.id as hospitalContactNumberId," +               //[0]
+                    " hc.contactNumber as contactNumber," +             //[1]
+                    " hc.status as status" +                            //[2]
+                    " FROM HospitalContactNumber hc" +
+                    " WHERE hc.status = 'Y'" +
+                    " AND hc.hospitalId=:hospitalId";
+
+    private static String HOSPITAL_AUDITABLE_QUERY() {
+        return " h.createdBy as createdBy," +
+                " h.createdDate as createdDate," +
+                " h.lastModifiedBy as lastModifiedBy," +
+                " h.lastModifiedDate as lastModifiedDate";
     }
 }

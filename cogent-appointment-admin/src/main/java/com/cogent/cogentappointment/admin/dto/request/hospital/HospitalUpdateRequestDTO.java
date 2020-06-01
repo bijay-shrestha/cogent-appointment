@@ -76,5 +76,12 @@ public class HospitalUpdateRequestDTO implements Serializable {
    */
     private Character isBannerUpdate;
 
+    /*only updated appointment service type from front-end*/
+    @NotNull
+    private List<HospitalAppointmentServiceTypeUpdateRequestDTO> appointmentServiceTypeUpdateRequestDTO;
+
+    @NotNull
+    private Long primaryAppointmentServiceTypeId;
+
     private List<HospitalBillingModeUpdateRequestDTO> billingModeIds;
 }

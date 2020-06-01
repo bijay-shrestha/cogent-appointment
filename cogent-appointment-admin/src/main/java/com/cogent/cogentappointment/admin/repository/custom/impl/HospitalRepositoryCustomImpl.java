@@ -6,20 +6,20 @@ import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalSearchReq
 import com.cogent.cogentappointment.admin.dto.response.company.CompanyDropdownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.company.CompanyMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.company.CompanyResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalDropdownResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalMinimalResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.hospital.*;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.HospitalRepositoryCustom;
-import com.cogent.cogentappointment.admin.utils.commons.PageableUtils;
+import com.cogent.cogentappointment.persistence.model.Hospital;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -34,7 +34,7 @@ import static com.cogent.cogentappointment.admin.query.CompanyQuery.*;
 import static com.cogent.cogentappointment.admin.query.HospitalBillingModeInfoQuery.QUERY_TO_GET_BILLING_MODE_DROP_DOWN_BY_HOSPITAL_ID;
 import static com.cogent.cogentappointment.admin.query.HospitalQuery.*;
 import static com.cogent.cogentappointment.admin.utils.CompanyUtils.parseToCompanyResponseDTO;
-import static com.cogent.cogentappointment.admin.utils.HospitalUtils.parseToHospitalResponseDTO;
+import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
 
 /**
@@ -90,14 +90,16 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
     }
 
     @Override
-    public List<HospitalMinimalResponseDTO> search(HospitalSearchRequestDTO searchRequestDTO, Pageable pageable) {
+    public List<HospitalMinimalResponseDTO> search(HospitalSearchRequestDTO searchRequestDTO,
+                                                   Pageable pageable) {
         Query query = createNativeQuery.apply(entityManager, QUERY_TO_SEARCH_HOSPITAL(searchRequestDTO));
 
         int totalItems = query.getResultList().size();
 
-        PageableUtils.addPagination.accept(pageable, query);
+        addPagination.accept(pageable, query);
 
-        List<HospitalMinimalResponseDTO> results = transformNativeQueryToResultList(query, HospitalMinimalResponseDTO.class);
+        List<HospitalMinimalResponseDTO> results =
+                transformNativeQueryToResultList(query, HospitalMinimalResponseDTO.class);
 
         if (results.isEmpty())
             throw HOSPITAL_NOT_FOUND.get();
@@ -112,7 +114,7 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
         int totalItems = query.getResultList().size();
 
-        PageableUtils.addPagination.accept(pageable, query);
+        addPagination.accept(pageable, query);
 
         List<CompanyMinimalResponseDTO> results = transformNativeQueryToResultList(query, CompanyMinimalResponseDTO.class);
 
@@ -125,23 +127,26 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
     @Override
     public HospitalResponseDTO fetchDetailsById(Long id) {
-        Query query = createNativeQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_DETAILS)
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_DETAILS)
                 .setParameter(ID, id);
 
         Query billingModeQuery = createQuery.apply(entityManager, QUERY_TO_GET_BILLING_MODE_DROP_DOWN_BY_HOSPITAL_ID)
                 .setParameter(HOSPITAL_ID, id);
 
-        List<Object[]> results = query.getResultList();
+        try {
+            HospitalResponseDTO hospitalDetails =
+                    transformQueryToSingleResult(query, HospitalResponseDTO.class);
 
-        if (results.isEmpty()) {
+            hospitalDetails.setContactNumberResponseDTOS(fetchHospitalContactNumber(id));
+
+            hospitalDetails.setHospitalAppointmentServiceTypeDetail(fetchHospitalAppointmentServiceType(id));
+
+            hospitalDetails.setBillingMode(transformQueryToResultList(billingModeQuery, DropDownResponseDTO
+                    .class));
+            return hospitalDetails;
+        } catch (NoResultException ex) {
             throw HOSPITAL_WITH_GIVEN_ID_NOT_FOUND.apply(id);
         }
-
-        HospitalResponseDTO responseDTO = parseToHospitalResponseDTO(results.get(0));
-
-        responseDTO.setBillingMode(transformQueryToResultList(billingModeQuery, DropDownResponseDTO.class));
-
-        return responseDTO;
     }
 
     @Override
@@ -211,11 +216,35 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
         log.error(CONTENT_NOT_FOUND, HOSPITAL);
         throw new NoContentFoundException(NO_RECORD_FOUND, CLIENT);
     };
+    private Supplier<NoContentFoundException> HOSPITAL_NOT_FOUND = () -> {
+        log.error(CONTENT_NOT_FOUND, HOSPITAL);
+        throw new NoContentFoundException(Hospital.class);
+    };
 
     private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, HOSPITAL, id);
         throw new NoContentFoundException(String.format(NO_RECORD_FOUND, CLIENT), "id", id.toString());
     };
+
+    private List<HospitalContactNumberResponseDTO> fetchHospitalContactNumber(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_CONTACT_NUMBER)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        List<HospitalContactNumberResponseDTO> contactNumbers =
+                transformQueryToResultList(query, HospitalContactNumberResponseDTO.class);
+
+        return contactNumbers.isEmpty() ? new ArrayList<>() : contactNumbers;
+    }
+
+    private List<HospitalAppointmentServiceTypeResponseDTO> fetchHospitalAppointmentServiceType(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_APPOINTMENT_SERVICE_TYPE)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        List<HospitalAppointmentServiceTypeResponseDTO> hospitalAppointmentServiceType =
+                transformQueryToResultList(query, HospitalAppointmentServiceTypeResponseDTO.class);
+
+        return hospitalAppointmentServiceType.isEmpty() ? new ArrayList<>() : hospitalAppointmentServiceType;
+    }
 }
 
 

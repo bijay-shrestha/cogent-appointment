@@ -67,5 +67,9 @@ public class HospitalRequestDTO implements Serializable {
 
     private List<Long> billingModeId;
 
+    private List<Long> appointmentServiceTypeIds;
+
+    private Long primaryAppointmentServiceTypeId;
+
 }
 

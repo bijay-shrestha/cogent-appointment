@@ -186,6 +186,8 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
 
         updateDutyRosterOverrideStatus(dutyRoster);
 
+//        updateDutyRosterRoomStatus(dutyRoster.getId(), )
+
         log.info(UPDATING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_DUTY_ROSTER,
                 getDifferenceBetweenTwoTime(startTime));
     }
@@ -551,10 +553,16 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
             overrideRepository.updateOverrideStatus(dutyRoster.getId());
     }
 
+    private void updateDutyRosterRoomStatus(Long hddRosterId, Long roomId, Character isRoomUpdated) {
+
+        if (isRoomUpdated.equals(YES))
+            overrideRepository.updateOverrideRoomInfo(hddRosterId, roomId);
+    }
+
     private void saveOrUpdateRosterInfo(HospitalDepartmentDutyRoster dutyRoster,
                                         HospitalDeptDutyRosterRoomUpdateRequestDTO roomUpdateRequestDTO) {
 
-        if (Objects.isNull(roomUpdateRequestDTO.getRoomId()) && dutyRoster.getIsRoomEnabled().equals(YES))
+        if (Objects.isNull(roomUpdateRequestDTO.getRosterRoomId()) && dutyRoster.getIsRoomEnabled().equals(YES))
             saveDutyRosterRoomInfo(dutyRoster, roomUpdateRequestDTO.getRoomId());
 
         if (!Objects.isNull(roomUpdateRequestDTO.getRosterRoomId())) {

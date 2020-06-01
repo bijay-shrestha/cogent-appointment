@@ -159,8 +159,7 @@ public class AppointmentTransferRepositoryCustomImpl implements AppointmentTrans
     public AppointmentTransferLogResponseDTO getApptTransferredList(AppointmentTransferSearchRequestDTO requestDTO, Pageable pageable) {
         AppointmentTransferLogResponseDTO appointmentTransferLogResponseDTO=new AppointmentTransferLogResponseDTO();
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_GET_CURRENT_TRANSFERRED_DETAIL(requestDTO))
-                .setParameter(HOSPITAL_ID, requestDTO.getHospitalId());
+        Query query = createQuery.apply(entityManager, QUERY_TO_GET_CURRENT_TRANSFERRED_DETAIL(requestDTO));
 
         int totalItems = query.getResultList().size();
 

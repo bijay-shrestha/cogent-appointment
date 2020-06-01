@@ -137,7 +137,7 @@ public class HospitalUtils {
         hospitalBanner.setStatus(ACTIVE);
     }
 
-    public static void parseToUpdatedHospital(HospitalUpdateRequestDTO updateRequestDTO,
+    public static Hospital parseToUpdatedHospital(HospitalUpdateRequestDTO updateRequestDTO,
                                               Hospital hospital) {
 
         hospital.setName(convertToNormalCase(updateRequestDTO.getName()));
@@ -149,6 +149,8 @@ public class HospitalUtils {
         hospital.setNumberOfAdmins(updateRequestDTO.getNumberOfAdmins());
         hospital.setNumberOfFollowUps(updateRequestDTO.getNumberOfFollowUps());
         hospital.setFollowUpIntervalDays(updateRequestDTO.getFollowUpIntervalDays());
+
+        return hospital;
     }
 
     public static HospitalContactNumber parseToUpdatedHospitalContactNumber(

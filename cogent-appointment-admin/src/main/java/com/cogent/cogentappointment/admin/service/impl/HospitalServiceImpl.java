@@ -149,7 +149,7 @@ public class HospitalServiceImpl implements HospitalService {
 
         HmacApiInfo hmacApiInfo = hmacApiInfoRepository.getHmacApiInfoByHospitalId(updateRequestDTO.getId());
 
-        parseToUpdatedHospital(updateRequestDTO, hospital);
+        save(parseToUpdatedHospital(updateRequestDTO, hospital));
 
         updateHospitalContactNumber(hospital.getId(), updateRequestDTO.getContactNumberUpdateRequestDTOS());
 

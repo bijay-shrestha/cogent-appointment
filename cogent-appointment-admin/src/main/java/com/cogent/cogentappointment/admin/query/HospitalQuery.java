@@ -73,6 +73,7 @@ public class HospitalQuery {
                 " hl.file_uri FROM hospital_logo hl" +
                 " WHERE hl.status = 'Y'" +
                 " )tbl ON tbl.hospitalId= h.id" +
+                " LEFT JOIN hospital_billing_mode_info hb ON hb.hospital_id=h.id AND hb.status!='Dgit'" +
                 GET_WHERE_CLAUSE_FOR_SEARCHING_HOSPITAL.apply(searchRequestDTO);
     }
 
@@ -83,13 +84,17 @@ public class HospitalQuery {
                 if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
                     whereClause += " AND h.status='" + searchRequestDTO.getStatus() + "'";
 
+                if (!ObjectUtils.isEmpty(searchRequestDTO.getBillingModeId()))
+                    whereClause += " AND hb.billing_mode_id=" + searchRequestDTO.getBillingModeId();
+
                 if (!ObjectUtils.isEmpty(searchRequestDTO.getName()))
                     whereClause += " AND h.name LIKE '%" + searchRequestDTO.getName() + "%'";
 
                 if (!ObjectUtils.isEmpty(searchRequestDTO.getHospitalCode()))
                     whereClause += " AND h.code LIKE '%" + searchRequestDTO.getHospitalCode() + "%'";
 
-                whereClause += " ORDER BY h.id DESC";
+                whereClause += "  GROUP BY h.id" +
+                        " ORDER BY h.id DESC ";
 
                 return whereClause;
             };
@@ -122,7 +127,7 @@ public class HospitalQuery {
                     " h.follow_up_interval_days as followUpIntervalDays," +     //[13]
                     " h.is_company as isCompany," +                             //[14]
                     " h.alias as alias," +                                       //[15]
-                    HOSPITAL_AUDITABLE_QUERY()+
+                    HOSPITAL_AUDITABLE_QUERY() +
                     " FROM" +
                     " hospital h" +
                     " LEFT JOIN hospital_logo hl ON h.id =hl.hospital_id " +

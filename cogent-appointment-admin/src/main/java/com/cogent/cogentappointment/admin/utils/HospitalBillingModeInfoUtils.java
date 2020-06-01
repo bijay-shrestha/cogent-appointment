@@ -23,7 +23,7 @@ public class HospitalBillingModeInfoUtils {
             HospitalBillingModeInfo hospitalBillingModeInfo=new HospitalBillingModeInfo();
             hospitalBillingModeInfo.setHospital(hospital);
             hospitalBillingModeInfo.setBillingMode(billingMode);
-            hospitalBillingModeInfo.setRemarks(hospital.getRemarks());
+            hospitalBillingModeInfo.setStatus(hospital.getStatus());
             responseList.add(hospitalBillingModeInfo);
         });
 

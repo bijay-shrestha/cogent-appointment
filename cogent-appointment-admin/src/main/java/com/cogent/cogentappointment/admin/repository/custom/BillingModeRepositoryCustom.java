@@ -27,6 +27,10 @@ public interface BillingModeRepositoryCustom {
 
     List<DropDownResponseDTO> fetchActiveMinBillingMode();
 
+    List<DropDownResponseDTO> fetchActiveMinBillingModeByHospitalId(Long hospitalId);
+
     List<DropDownResponseDTO> fetchMinBillingMode();
+
+    List<DropDownResponseDTO> fetchMinBillingModeByHospitalId(Long hospitalId);
 
 }

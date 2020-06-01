@@ -30,16 +30,16 @@ public class HospitalDepartmentUtils {
     }
 
 
-    public static HospitalDepartmentCharge parseToHospitalDepartmentCharge(HospitalDepartmentRequestDTO requestDTO,
-                                                                           HospitalDepartment hospitalDepartment) {
+    public static HospitalDepartmentBillingModeInfo parseToHospitalDepartmentCharge(HospitalDepartmentRequestDTO requestDTO,
+                                                                                    HospitalDepartment hospitalDepartment) {
 
-        HospitalDepartmentCharge hospitalDepartmentCharge = new HospitalDepartmentCharge();
-        hospitalDepartmentCharge.setAppointmentCharge(requestDTO.getAppointmentCharge());
-        hospitalDepartmentCharge.setAppointmentFollowUpCharge(requestDTO.getFollowUpCharge());
-        hospitalDepartmentCharge.setStatus(requestDTO.getStatus());
-        hospitalDepartmentCharge.setHospitalDepartment(hospitalDepartment);
+        HospitalDepartmentBillingModeInfo hospitalDepartmentBillingModeInfo = new HospitalDepartmentBillingModeInfo();
+        hospitalDepartmentBillingModeInfo.setAppointmentCharge(requestDTO.getAppointmentCharge());
+        hospitalDepartmentBillingModeInfo.setAppointmentFollowUpCharge(requestDTO.getFollowUpCharge());
+        hospitalDepartmentBillingModeInfo.setStatus(requestDTO.getStatus());
+        hospitalDepartmentBillingModeInfo.setHospitalDepartment(hospitalDepartment);
 
-        return hospitalDepartmentCharge;
+        return hospitalDepartmentBillingModeInfo;
     }
 
 
@@ -78,15 +78,15 @@ public class HospitalDepartmentUtils {
         return hospitalDepartment;
     }
 
-    public static HospitalDepartmentCharge parseToUpdateHospitalDepartmentCharge(HospitalDepartmentCharge hospitalDepartmentCharge,
-                                                                                 HospitalDepartmentUpdateRequestDTO requestDTO) {
+    public static HospitalDepartmentBillingModeInfo parseToUpdateHospitalDepartmentCharge(HospitalDepartmentBillingModeInfo hospitalDepartmentBillingModeInfo,
+                                                                                          HospitalDepartmentUpdateRequestDTO requestDTO) {
 
-        hospitalDepartmentCharge.setAppointmentCharge(requestDTO.getAppointmentCharge());
-        hospitalDepartmentCharge.setAppointmentFollowUpCharge(requestDTO.getFollowUpCharge());
-        hospitalDepartmentCharge.setStatus(requestDTO.getStatus());
-        hospitalDepartmentCharge.setRemarks(requestDTO.getRemarks());
+        hospitalDepartmentBillingModeInfo.setAppointmentCharge(requestDTO.getAppointmentCharge());
+        hospitalDepartmentBillingModeInfo.setAppointmentFollowUpCharge(requestDTO.getFollowUpCharge());
+        hospitalDepartmentBillingModeInfo.setStatus(requestDTO.getStatus());
+        hospitalDepartmentBillingModeInfo.setRemarks(requestDTO.getRemarks());
 
-        return hospitalDepartmentCharge;
+        return hospitalDepartmentBillingModeInfo;
     }
 
     public static List<Long> mergeExisitingAndNewListId(List<Long> existingIdList,
@@ -109,12 +109,12 @@ public class HospitalDepartmentUtils {
         return hospitalDepartment;
     }
 
-    public static HospitalDepartmentCharge parseToDeleteHospitalDeptCharge(HospitalDepartmentCharge hospitalDepartmentCharge,
-                                                                           DeleteRequestDTO requestDTO) {
-        hospitalDepartmentCharge.setStatus(requestDTO.getStatus());
-        hospitalDepartmentCharge.setRemarks(requestDTO.getRemarks());
+    public static HospitalDepartmentBillingModeInfo parseToDeleteHospitalDeptCharge(HospitalDepartmentBillingModeInfo hospitalDepartmentBillingModeInfo,
+                                                                                    DeleteRequestDTO requestDTO) {
+        hospitalDepartmentBillingModeInfo.setStatus(requestDTO.getStatus());
+        hospitalDepartmentBillingModeInfo.setRemarks(requestDTO.getRemarks());
 
-        return hospitalDepartmentCharge;
+        return hospitalDepartmentBillingModeInfo;
     }
 
 

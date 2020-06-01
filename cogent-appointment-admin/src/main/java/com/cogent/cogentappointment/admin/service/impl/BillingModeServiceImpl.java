@@ -129,12 +129,38 @@ public class BillingModeServiceImpl implements BillingModeService {
     }
 
     @Override
+    public List<DropDownResponseDTO> fetchActiveMinBillingModeByHospitalId(Long hospitalId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, BILLING_MODE);
+
+        List<DropDownResponseDTO> minInfo = billingModeRepository.fetchActiveMinBillingModeByHospitalId(hospitalId);
+
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, BILLING_MODE, getDifferenceBetweenTwoTime(startTime));
+
+        return minInfo;
+    }
+
+    @Override
     public List<DropDownResponseDTO> fetchMinBillingMode() {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, BILLING_MODE);
 
         List<DropDownResponseDTO> minInfo = billingModeRepository.fetchMinBillingMode();
+
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, BILLING_MODE, getDifferenceBetweenTwoTime(startTime));
+
+        return minInfo;
+    }
+
+    @Override
+    public List<DropDownResponseDTO> fetchMinBillingModeByHospitalId(Long hospitalId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, BILLING_MODE);
+
+        List<DropDownResponseDTO> minInfo = billingModeRepository.fetchMinBillingModeByHospitalId(hospitalId);
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, BILLING_MODE, getDifferenceBetweenTwoTime(startTime));
 

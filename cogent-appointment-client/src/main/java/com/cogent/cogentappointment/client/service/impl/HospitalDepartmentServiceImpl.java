@@ -219,11 +219,11 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
         HospitalDepartment hospitalDepartment = fetchHospitalDepartmentById(requestDTO.getId(), hospitalId);
 
-        HospitalDepartmentCharge hospitalDepartmentCharge = fetchHospitalDepartmentChargeByHospitalDepartmentId(requestDTO.getId());
+        HospitalDepartmentBillingModeInfo hospitalDepartmentBillingModeInfo = fetchHospitalDepartmentChargeByHospitalDepartmentId(requestDTO.getId());
 
         saveHospitalDepartment(parseToDeleteHospitalDept(hospitalDepartment, requestDTO));
 
-        saveHospitalDepartmentCharge(parseToDeleteHospitalDeptCharge(hospitalDepartmentCharge, requestDTO));
+        saveHospitalDepartmentCharge(parseToDeleteHospitalDeptCharge(hospitalDepartmentBillingModeInfo, requestDTO));
 
         deleteDoctorInfo(requestDTO);
 
@@ -269,12 +269,12 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
     }
 
     private void updateHospitalDepartmentCharge(HospitalDepartmentUpdateRequestDTO requestDTO) {
-        HospitalDepartmentCharge hospitalDepartmentCharge = fetchHospitalDepartmentChargeByHospitalDepartmentId
+        HospitalDepartmentBillingModeInfo hospitalDepartmentBillingModeInfo = fetchHospitalDepartmentChargeByHospitalDepartmentId
                 (requestDTO.getId());
 
-        if (hospitalDepartmentCharge.getAppointmentCharge() != requestDTO.getAppointmentCharge() ||
-                hospitalDepartmentCharge.getAppointmentFollowUpCharge() != requestDTO.getFollowUpCharge()) {
-            saveHospitalDepartmentCharge(parseToUpdateHospitalDepartmentCharge(hospitalDepartmentCharge, requestDTO));
+        if (hospitalDepartmentBillingModeInfo.getAppointmentCharge() != requestDTO.getAppointmentCharge() ||
+                hospitalDepartmentBillingModeInfo.getAppointmentFollowUpCharge() != requestDTO.getFollowUpCharge()) {
+            saveHospitalDepartmentCharge(parseToUpdateHospitalDepartmentCharge(hospitalDepartmentBillingModeInfo, requestDTO));
         }
 
     }
@@ -422,8 +422,8 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
         return hospitalDepartmentRepository.save(hospitalDepartment);
     }
 
-    private void saveHospitalDepartmentCharge(HospitalDepartmentCharge hospitalDepartmentCharge) {
-        hospitalDepartmentChargeRepository.save(hospitalDepartmentCharge);
+    private void saveHospitalDepartmentCharge(HospitalDepartmentBillingModeInfo hospitalDepartmentBillingModeInfo) {
+        hospitalDepartmentChargeRepository.save(hospitalDepartmentBillingModeInfo);
     }
 
     private HospitalDepartment fetchHospitalDepartmentById(Long hospitalDepartmentId, Long hospitalId) {
@@ -431,7 +431,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
                 .orElseThrow(() -> HOSPITAL_DEPARTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(hospitalId));
     }
 
-    private HospitalDepartmentCharge fetchHospitalDepartmentChargeByHospitalDepartmentId(Long hospitalDepartmentId) {
+    private HospitalDepartmentBillingModeInfo fetchHospitalDepartmentChargeByHospitalDepartmentId(Long hospitalDepartmentId) {
         return hospitalDepartmentChargeRepository.fetchByHospitalDepartmentId(hospitalDepartmentId)
                 .orElseThrow(() -> HOSPITAL_DEPARTMENT_CHARGE_WITH_GIVEN_ID_NOT_FOUND.apply(hospitalDepartmentId));
     }
@@ -469,7 +469,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
     private Function<Long, NoContentFoundException> HOSPITAL_DEPARTMENT_CHARGE_WITH_GIVEN_ID_NOT_FOUND =
             (hospitalDepartmentId) -> {
                 log.error(CONTENT_NOT_FOUND_BY_HOSPITAL_DEPARTMENT_ID, HOSPITAL_DEPARTMENT_CHARGE, hospitalDepartmentId);
-                throw new NoContentFoundException(HospitalDepartmentCharge.class, "hospitalDepartmentId",
+                throw new NoContentFoundException(HospitalDepartmentBillingModeInfo.class, "hospitalDepartmentId",
                         hospitalDepartmentId.toString());
             };
 

@@ -1,8 +1,8 @@
 package com.cogent.cogentappointment.persistence.listener;
 
 import com.cogent.cogentappointment.persistence.config.Action;
-import com.cogent.cogentappointment.persistence.history.HospitalDepartmentChargeHistory;
-import com.cogent.cogentappointment.persistence.model.HospitalDepartmentCharge;
+import com.cogent.cogentappointment.persistence.history.HospitalDepartmentBillingModeInfoHistory;
+import com.cogent.cogentappointment.persistence.model.HospitalDepartmentBillingModeInfo;
 import com.cogent.cogentappointment.persistence.util.BeanUtil;
 
 import javax.persistence.EntityManager;
@@ -17,25 +17,25 @@ import static javax.transaction.Transactional.TxType.MANDATORY;
 /**
  * @author Sauravi Thapa ON 5/19/20
  */
-public class HospitalDepartmentChargeEntityListener {
+public class HospitalDepartmentBillingModeInfoEntityListener {
     @PrePersist
-    public void prePersist(HospitalDepartmentCharge target) {
+    public void prePersist(HospitalDepartmentBillingModeInfo target) {
         perform(target, INSERTED);
     }
 
     @PreUpdate
-    public void preUpdate(HospitalDepartmentCharge target) {
+    public void preUpdate(HospitalDepartmentBillingModeInfo target) {
         perform(target, UPDATED);
     }
 
     @PreRemove
-    public void preRemove(HospitalDepartmentCharge target) {
+    public void preRemove(HospitalDepartmentBillingModeInfo target) {
         perform(target, DELETED);
     }
 
     @Transactional(MANDATORY)
-    public void perform(HospitalDepartmentCharge target, Action action) {
+    public void perform(HospitalDepartmentBillingModeInfo target, Action action) {
         EntityManager entityManager = BeanUtil.getBean(EntityManager.class);
-        entityManager.persist(new HospitalDepartmentChargeHistory(target, action));
+        entityManager.persist(new HospitalDepartmentBillingModeInfoHistory(target, action));
     }
 }

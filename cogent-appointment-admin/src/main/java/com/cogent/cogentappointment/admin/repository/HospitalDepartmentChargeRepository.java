@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.admin.repository;
 
 import com.cogent.cogentappointment.admin.repository.custom.HospitalDepartmentChargeRepositoryCustom;
-import com.cogent.cogentappointment.persistence.model.HospitalDepartmentCharge;
+import com.cogent.cogentappointment.persistence.model.HospitalDepartmentBillingModeInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,11 +13,11 @@ import java.util.Optional;
  * @author Sauravi Thapa ON 5/20/20
  */
 @Repository
-public interface HospitalDepartmentChargeRepository extends JpaRepository<HospitalDepartmentCharge,Long>,
+public interface HospitalDepartmentChargeRepository extends JpaRepository<HospitalDepartmentBillingModeInfo,Long>,
         HospitalDepartmentChargeRepositoryCustom {
 
-    @Query(value = "SELECT hdc FROM HospitalDepartmentCharge hdc WHERE hdc.hospitalDepartment.id = :hospitalDepartmentId" +
+    @Query(value = "SELECT hdc FROM HospitalDepartmentBillingModeInfo hdc WHERE hdc.hospitalDepartment.id = :hospitalDepartmentId" +
             " AND hdc.status != 'D'")
-    Optional<HospitalDepartmentCharge> fetchByHospitalDepartmentId(@Param("hospitalDepartmentId") Long hospitalDepartmentId);
+    Optional<HospitalDepartmentBillingModeInfo> fetchByHospitalDepartmentId(@Param("hospitalDepartmentId") Long hospitalDepartmentId);
 
 }

@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
 import com.cogent.cogentappointment.client.constants.QueryConstants;
-import com.cogent.cogentappointment.client.dto.response.integration.IntegrationRequestBodyAttributeResponse;
+import com.cogent.cogentappointment.client.dto.response.integration.IntegrationBodyAttributeResponse;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.query.RequestBodyParametersQuery;
 import com.cogent.cogentappointment.client.repository.custom.IntegrationRequestBodyParametersRepositoryCustom;
@@ -33,13 +33,13 @@ public class IntegrationRequestBodyParametersRepositoryCustomImpl implements
     private EntityManager entityManager;
 
     @Override
-    public List<IntegrationRequestBodyAttributeResponse> fetchRequestBodyAttributeByFeatureId(Long featureId) {
+    public List<IntegrationBodyAttributeResponse> fetchRequestBodyAttributeByFeatureId(Long featureId) {
         Query query = createQuery.apply(entityManager,
                 RequestBodyParametersQuery.FETCH_REQUEST_BODY_ATTRIBUTE_BY_FEATURE_ID)
                 .setParameter(QueryConstants.API_FEATURE__ID,featureId);
 
-        List<IntegrationRequestBodyAttributeResponse> bodyAttributeResponseList =
-                transformQueryToResultList(query, IntegrationRequestBodyAttributeResponse.class);
+        List<IntegrationBodyAttributeResponse> bodyAttributeResponseList =
+                transformQueryToResultList(query, IntegrationBodyAttributeResponse.class);
         if (bodyAttributeResponseList.isEmpty()) {
 //            error();
             return null;
@@ -50,12 +50,12 @@ public class IntegrationRequestBodyParametersRepositoryCustomImpl implements
     }
 
     @Override
-    public List<IntegrationRequestBodyAttributeResponse> fetchRequestBodyAttributes() {
+    public List<IntegrationBodyAttributeResponse> fetchRequestBodyAttributes() {
         Query query = createQuery.apply(entityManager,
                 RequestBodyParametersQuery.FETCH_REQUEST_BODY_ATTRIBUTES);
 
-        List<IntegrationRequestBodyAttributeResponse> bodyAttributeResponseList =
-                transformQueryToResultList(query, IntegrationRequestBodyAttributeResponse.class);
+        List<IntegrationBodyAttributeResponse> bodyAttributeResponseList =
+                transformQueryToResultList(query, IntegrationBodyAttributeResponse.class);
 
         if (bodyAttributeResponseList.isEmpty()) {
 //            error();

@@ -1,11 +1,8 @@
 package com.cogent.cogentappointment.client.dto.response.clientIntegration;
 
-import com.cogent.cogentappointment.client.dto.response.integration.IntegrationRequestBodyAttributeResponse;
 import lombok.*;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author rupak on 2020-05-20

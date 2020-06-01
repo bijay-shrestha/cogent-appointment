@@ -12,7 +12,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class IntegrationRequestBodyAttributeResponse implements Serializable {
+public class IntegrationBodyAttributeResponse implements Serializable {
 
     private String name;
 

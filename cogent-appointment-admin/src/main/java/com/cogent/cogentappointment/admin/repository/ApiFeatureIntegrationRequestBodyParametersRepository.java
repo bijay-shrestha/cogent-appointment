@@ -17,6 +17,6 @@ public interface ApiFeatureIntegrationRequestBodyParametersRepository extends
     @Query("SELECT afirbp FROM ApiFeatureIntegrationRequestBodyParameters afirbp WHERE afirbp.featureId=:id AND afirbp.status!='D'")
     Optional<List<ApiFeatureIntegrationRequestBodyParameters>> findApiFeatureRequestBodyParameterByFeatureId(@Param("id") Long id);
 
-    @Query("SELECT afirbp FROM ApiFeatureIntegrationRequestBodyParameters afirbp WHERE afirbp.featureId=:featureid AND afirbp.requestBodyParametersId=:requestbodyid AND afirbp.status!='D'")
+    @Query("SELECT afirbp FROM ApiFeatureIntegrationRequestBodyParameters afirbp WHERE afirbp.featureId=:featureid AND afirbp.requestBodyParametersId.id=:requestbodyid AND afirbp.status!='D'")
     Optional<List<ApiFeatureIntegrationRequestBodyParameters>>  findByFeatureIdAndRequestBodyId(@Param("featureid") Long featureid,@Param("requestbodyid")  Long requestbodyid);
 }

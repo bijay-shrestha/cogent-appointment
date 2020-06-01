@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.dto.response.integrationRequestBodyAttribute;
 
+import com.cogent.cogentappointment.admin.dto.response.commons.AuditableResponseDTO;
 import lombok.*;
 
 import java.io.Serializable;
@@ -13,7 +14,7 @@ import java.math.BigInteger;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ApiIntegrationRequestBodySearchResponseDTO implements Serializable {
+public class ApiIntegrationRequestBodySearchResponseDTO extends AuditableResponseDTO implements Serializable {
 
     private BigInteger featureId;
 

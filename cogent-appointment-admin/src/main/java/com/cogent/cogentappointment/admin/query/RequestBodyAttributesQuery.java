@@ -22,7 +22,7 @@ public class RequestBodyAttributesQuery {
     public static final String FETCH_REQUEST_BODY_ATTRIBUTE_BY_FEATURE_ID =
             " SELECT" +
                     " airbp.id as id," +
-                    " airbp.name as name" +
+                    " airbp.name as name,"+
                     " FROM" +
                     " ApiFeatureIntegrationRequestBodyParameters afirbp" +
                     " LEFT JOIN ApiIntegrationRequestBodyParameters airbp " +
@@ -50,7 +50,7 @@ public class RequestBodyAttributesQuery {
                             " f.id as featureId," +
                             " f.name as featureName," +
                             " GROUP_CONCAT(airbp.name) as requestBody," +
-                            " afirbp.status as status" +
+                            " afirbp.status as status"+
                             " FROM" +
                             " feature f" +
                             " LEFT JOIN api_feature_integration_request_body_parameters afirbp ON afirbp.feature_id=f.id" +
@@ -61,7 +61,7 @@ public class RequestBodyAttributesQuery {
             ApiIntegrationRequestBodySearchRequestDTO requestSearchDTO) {
 
         String whereClause = " WHERE f.status ='Y'" +
-                " AND afirbp.status!='D'";
+                "  AND afirbp.status='Y'";
 
         if (!Objects.isNull(requestSearchDTO.getFeatureTypeId()))
             whereClause += " AND f.id=" + requestSearchDTO.getFeatureTypeId();
@@ -90,5 +90,12 @@ public class RequestBodyAttributesQuery {
 
         return query;
 
+    }
+
+    public static String REQUEST_BODY_ATTRIBUTE_AUDITABLE_QUERY() {
+        return " afirbp.created_by as createdBy," +
+                " afirbp.created_date as createdDate," +
+                " afirbp.last_modified_by as lastModifiedBy," +
+                " afirbp.last_modified_date as lastModifiedDate";
     }
 }

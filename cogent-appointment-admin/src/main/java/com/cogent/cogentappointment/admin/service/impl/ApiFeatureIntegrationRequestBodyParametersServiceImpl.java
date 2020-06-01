@@ -154,13 +154,15 @@ public class ApiFeatureIntegrationRequestBodyParametersServiceImpl implements
 
     }
 
-    private void updateRequestBodyAttributes(Feature feature, List<ApiIntegrationRequestBodyUpdateRequestDTO> bodyParametersList) {
+    private void updateRequestBodyAttributes(Feature feature,
+                                             List<ApiIntegrationRequestBodyUpdateRequestDTO> bodyParametersList) {
 
 
         bodyParametersList.forEach(bodyList -> {
 
 
-            ApiIntegrationRequestBodyParameters requestBodyParameters = requestBodyParametersRepository.findRequestBodyParamterById(bodyList.getRequestBodyId())
+            ApiIntegrationRequestBodyParameters requestBodyParameters = requestBodyParametersRepository.
+                    findRequestBodyParamterById(bodyList.getRequestBodyId())
                     .orElseThrow(() -> API_REQUEST_BODY_ATTRIBUTE_NOT_FOUND.apply(bodyList.getRequestBodyId()));
 
 
@@ -175,7 +177,7 @@ public class ApiFeatureIntegrationRequestBodyParametersServiceImpl implements
 
             }
 
-            if (featureRequestBodyList == null) {
+            if (featureRequestBodyList != null) {
 
                 featureRequestBodyList.forEach(list -> {
 

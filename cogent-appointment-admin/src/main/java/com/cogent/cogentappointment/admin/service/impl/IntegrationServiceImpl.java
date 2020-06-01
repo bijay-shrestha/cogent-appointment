@@ -50,6 +50,7 @@ public class IntegrationServiceImpl implements IntegrationService {
     private final ApiFeatureIntegrationRequestBodyParametersRepository featureBodyParametersRepository;
     private final IntegrationRequestBodyParametersRepository requestBodyParametersRepository;
     private final IntegrationChannelRepository integrationChannelRepository;
+    private final ApiIntegrationTypeRepository apiIntegrationTypeRepository;
 
     public IntegrationServiceImpl(ClientFeatureIntegrationRepository clientFeatureIntegrationRepository,
                                   ClientApiIntegrationFormatRespository clientApiIntegrationFormatRespository,
@@ -61,7 +62,7 @@ public class IntegrationServiceImpl implements IntegrationService {
                                   IntegrationRepository integrationRepository,
                                   ApiFeatureIntegrationRequestBodyParametersRepository featureBodyParametersRepository,
                                   IntegrationRequestBodyParametersRepository requestBodyParametersRepository,
-                                  IntegrationChannelRepository integrationChannelRepository) {
+                                  IntegrationChannelRepository integrationChannelRepository, ApiIntegrationTypeRepository apiIntegrationTypeRepository) {
 
         this.clientFeatureIntegrationRepository = clientFeatureIntegrationRepository;
         this.clientApiIntegrationFormatRespository = clientApiIntegrationFormatRespository;
@@ -74,6 +75,7 @@ public class IntegrationServiceImpl implements IntegrationService {
         this.featureBodyParametersRepository = featureBodyParametersRepository;
         this.requestBodyParametersRepository = requestBodyParametersRepository;
         this.integrationChannelRepository = integrationChannelRepository;
+        this.apiIntegrationTypeRepository = apiIntegrationTypeRepository;
     }
 
     @Override
@@ -128,7 +130,14 @@ public class IntegrationServiceImpl implements IntegrationService {
                 clientFeatureIntegrationRepository.findClientFeatureIntegrationById(requestDTO.getClientFeatureIntegrationId())
                         .orElseThrow(() -> CLIENT_FEATURE_NOT_FOUND.apply(requestDTO.getClientFeatureIntegrationId()));
 
+        IntegrationChannel integrationChannel=integrationChannelRepository.findActiveIntegrationChannel(requestDTO.getIntegrationChannelId())
+                .orElseThrow(() -> INTEGRATION_CHANNEL_NOT_FOUND.apply(requestDTO.getIntegrationChannelId()));
+
+//        ApiIntegrationType apiIntegrationType=apiIntegrationTypeRepository.findActiveIntegrationType(requestDTO.getIntegrationTypeId())
+//                .orElseThrow(() -> INTEGRATION_TYPE_NOT_FOUND.apply(requestDTO.getIntegrationTypeId()));
+
         clientFeatureIntegration.setFeatureId(requestDTO.getFeatureId());
+        clientFeatureIntegration.setIntegrationChannelId(integrationChannel);
 
         List<ApiFeatureIntegration> apiFeatureIntegration =
                 apiFeatureIntegrationRepository.findApiFeatureIntegrationbyClientFeatureId(clientFeatureIntegration.getId())
@@ -416,5 +425,9 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     private Function<Long, NoContentFoundException> INTEGRATION_CHANNEL_NOT_FOUND = (id) -> {
         throw new NoContentFoundException(IntegrationChannel.class);
+    };
+
+    private Function<Long, NoContentFoundException> INTEGRATION_TYPE_NOT_FOUND = (id) -> {
+        throw new NoContentFoundException(ApiIntegrationType.class);
     };
 }

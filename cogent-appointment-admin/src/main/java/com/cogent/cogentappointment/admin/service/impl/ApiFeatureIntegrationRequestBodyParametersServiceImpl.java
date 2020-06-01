@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integration.ApiFeatureIntegrationRequestBodyRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationRequestBodyAttribute.ApiIntegrationRequestBodySearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationRequestBodyAttribute.integrationRequestBodyAttributeUpdate.ApiFeatureIntegrationRequestBodyUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.integrationRequestBodyAttribute.integrationRequestBodyAttributeUpdate.ApiIntegrationRequestBodyUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.integration.IntegrationRequestBodyAttributeResponse;
 import com.cogent.cogentappointment.admin.dto.response.integrationRequestBodyAttribute.ApiRequestBodySearchDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
@@ -11,7 +12,6 @@ import com.cogent.cogentappointment.admin.repository.ApiFeatureIntegrationReques
 import com.cogent.cogentappointment.admin.repository.FeatureRepository;
 import com.cogent.cogentappointment.admin.repository.IntegrationRequestBodyParametersRepository;
 import com.cogent.cogentappointment.admin.service.ApiRequestBodyAttributeService;
-import com.cogent.cogentappointment.admin.utils.IntegrationUtils;
 import com.cogent.cogentappointment.persistence.model.ApiFeatureIntegrationRequestBodyParameters;
 import com.cogent.cogentappointment.persistence.model.ApiIntegrationRequestBodyParameters;
 import com.cogent.cogentappointment.persistence.model.Feature;
@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -65,8 +66,18 @@ public class ApiFeatureIntegrationRequestBodyParametersServiceImpl implements
         List<ApiIntegrationRequestBodyParameters> requestBodyParameters =
                 validateRequestBodyAttributes(requestDTO.getRequestBodyAttributes());
 
+
+        saveApiFeatureIntegrationRequestBody(requestDTO.getFeatureId(), requestBodyParameters);
+
+
+    }
+
+    private void saveApiFeatureIntegrationRequestBody(Long featureId,
+                                                      List<ApiIntegrationRequestBodyParameters> requestBodyParameters) {
+
+
         integrationRequestBodyParametersRepository.
-                saveAll(parseToClientApiFeatureRequestBodyParameters(requestDTO.getFeatureId(),
+                saveAll(parseToClientApiFeatureRequestBodyParameters(featureId,
                         requestBodyParameters));
 
     }
@@ -136,34 +147,48 @@ public class ApiFeatureIntegrationRequestBodyParametersServiceImpl implements
 
         List<ApiIntegrationRequestBodyParameters> bodyParametersList = validateRequestBodyAttributes(ids);
 
-
-//        List<ApiFeatureIntegrationRequestBodyParameters> bodyParameters=new ArrayList<>();
-//        requestDTO.getRequestBodyUpdateRequestDTOS().forEach(bodyList->{
-//
-//            ApiFeatureIntegrationRequestBodyParameters parameters=integrationRequestBodyParametersRepository.
-//                    findApiFeatureRequestBodyParameterByFeatureId(bodyList.getRequestBodyId())
-//                    .orElseThrow(() -> API_REQUEST_BODY_ATTRIBUTE_NOT_FOUND.apply(bodyList.getRequestBodyId()));
-//
-//
-//            parameters.setFeatureId(feature.getId());
-//            parameters.setRemarks(requestDTO.getRemarks());
-//
-//
-//
-//
-//
-//
-//        });
-
-
-
-
-
-        IntegrationUtils.parseToUpdateApiFeatureRequestBodyAttributes(feature,bodyParametersList);
-
+        updateRequestBodyAttributes(feature, requestDTO.getRequestBodyUpdateRequestDTOS());
 
         log.info(UPDATING_PROCESS_COMPLETED, API_REQUEST_BODY_ATTRIBUTES, getDifferenceBetweenTwoTime(startTime));
 
+
+    }
+
+    private void updateRequestBodyAttributes(Feature feature, List<ApiIntegrationRequestBodyUpdateRequestDTO> bodyParametersList) {
+
+
+        bodyParametersList.forEach(bodyList -> {
+
+
+            ApiIntegrationRequestBodyParameters requestBodyParameters = requestBodyParametersRepository.findRequestBodyParamterById(bodyList.getRequestBodyId())
+                    .orElseThrow(() -> API_REQUEST_BODY_ATTRIBUTE_NOT_FOUND.apply(bodyList.getRequestBodyId()));
+
+
+            List<ApiFeatureIntegrationRequestBodyParameters> featureRequestBodyList = integrationRequestBodyParametersRepository.
+                    findByFeatureIdAndRequestBodyId(feature.getId(), bodyList.getRequestBodyId())
+                    .orElse(null);
+
+
+            if (featureRequestBodyList == null) {
+
+                saveApiFeatureIntegrationRequestBody(feature.getId(), Arrays.asList(requestBodyParameters));
+
+            }
+
+            if (featureRequestBodyList == null) {
+
+                featureRequestBodyList.forEach(list -> {
+
+
+                    list.setRequestBodyParametersId(requestBodyParameters);
+                    list.setStatus(bodyList.getStatus());
+
+                });
+
+            }
+
+
+        });
 
     }
 

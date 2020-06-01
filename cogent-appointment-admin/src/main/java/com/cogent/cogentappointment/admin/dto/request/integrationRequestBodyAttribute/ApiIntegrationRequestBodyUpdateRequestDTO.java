@@ -16,6 +16,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class ApiIntegrationRequestBodyUpdateRequestDTO implements Serializable {
 
+    private Long requestBodyId;
 
+    private Character status;
 
 }

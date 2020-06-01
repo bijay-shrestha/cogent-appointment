@@ -106,9 +106,9 @@ public class ApiFeatureIntegrationRequestBodyParametersServiceImpl implements
 
         log.info(DELETING_PROCESS_STARTED, API_REQUEST_BODY_ATTRIBUTES);
 
-        ApiFeatureIntegrationRequestBodyParameters featureIntegrationRequestBodyParameters =
+        List<ApiFeatureIntegrationRequestBodyParameters> featureIntegrationRequestBodyParameters =
                 integrationRequestBodyParametersRepository
-                .findApiFeatureRequestBodyParameterById(deleteRequestDTO.getId())
+                .findApiFeatureRequestBodyParameterByFeatureId(deleteRequestDTO.getId())
                 .orElseThrow(() -> API_REQUEST_BODY_ATTRIBUTE_NOT_FOUND.apply(deleteRequestDTO.getId()));
 
         parseToDeletedApiFeatureIntegrationRequestBodyParameters(featureIntegrationRequestBodyParameters,

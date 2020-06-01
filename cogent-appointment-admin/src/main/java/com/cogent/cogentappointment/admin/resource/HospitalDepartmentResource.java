@@ -88,6 +88,6 @@ public class HospitalDepartmentResource {
     @GetMapping(AVAILABLE + ROOM + HOSPITAL_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_AVAILABLE_ROOM_FOR_DROP_DOWN_OPERATION)
     public ResponseEntity<?> fetchAvailableRoom(@PathVariable("hospitalId") Long hospitalId) {
-        return ok(hospitalDepartmentService.fetchAvailableHospitalDepartment(hospitalId));
+        return ok(hospitalDepartmentService.fetchAvailableRoom(hospitalId));
     }
 }

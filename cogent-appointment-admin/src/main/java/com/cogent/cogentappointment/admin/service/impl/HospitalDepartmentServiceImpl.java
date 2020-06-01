@@ -162,7 +162,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchAvailableHospitalDepartment(Long hospitalId) {
+    public List<DropDownResponseDTO> fetchAvailableRoom(Long hospitalId) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED_FOR_ACTIVE_DROPDOWN, AVAILABLE_ROOM);

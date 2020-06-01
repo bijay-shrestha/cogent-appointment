@@ -76,8 +76,6 @@ public class HospitalDepartmentQuery {
                             " hd.id as id," +
                             " hd.name as name," +
                             " hd.status as status," +
-                            " hdc.appointment_charge as appointmentCharge," +
-                            " hdc.appointment_follow_up_charge  as followUpCharge," +
                             " CASE" +
                             " WHEN GROUP_CONCAT(DISTINCT hdr.room_id) IS NULL THEN 'N/A'" +
                             " ELSE GROUP_CONCAT(DISTINCT r.room_number )" +
@@ -85,7 +83,7 @@ public class HospitalDepartmentQuery {
                             " h.name as hospitalName" +
                             " FROM" +
                             " hospital_department hd" +
-                            " LEFT JOIN hospital_department_charge hdc ON hdc.hospital_department_id=hd.id" +
+                            " LEFT JOIN hospital_department_billing_mode_info hdc ON hdc.hospital_department_id=hd.id" +
                             " LEFT JOIN hospital_department_room_info  hdr ON hdr.hospital_department_id=hd.id  AND hdr.status!='D'" +
                             " LEFT JOIN room r ON hdr.room_id =r.id " +
                             " LEFT JOIN hospital_department_doctor_info  hdd ON hdd.hospital_department_id=hd.id  AND hdd.status!='D'" +
@@ -168,6 +166,17 @@ public class HospitalDepartmentQuery {
                     " hdri.hospitalDepartment.id = :hospitalDepartmentId" +
                     " AND hdri.status='Y'"+
                     " AND hdri.hospitalDepartment.status!='D'";
+
+
+    public static String QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_BILLING_MODE_WITH_CHARGE=
+            "SELECT " +
+                    "  hb.billingMode.name as billingMode, " +
+                    "  hb.appointmentCharge as appointmentCharge, " +
+                    "  hb.appointmentFollowUpCharge as followUpCharge" +
+                    " FROM " +
+                    "  HospitalDepartmentBillingModeInfo hb " +
+                    " WHERE " +
+                    "  hb.hospitalDepartment.id = :hospitalDepartmentId ";
 
 
     public static String HOSPITAL_DEPARTMENT_AUDITABLE_QUERY() {

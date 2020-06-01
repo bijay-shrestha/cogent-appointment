@@ -24,7 +24,7 @@ public interface HospitalDepartmentService {
 
     List<DropDownResponseDTO> fetchActiveMinHospitalDepartment(Long hospitalId);
 
-    List<DropDownResponseDTO> fetchAvailableHospitalDepartment(Long hospitalId);
+    List<DropDownResponseDTO> fetchAvailableRoom(Long hospitalId);
 
     HospitalDepartmentMinimalResponseDTO search(HospitalDepartmentSearchRequestDTO departmentSearchRequestDTO,
                                                 Pageable pageable);

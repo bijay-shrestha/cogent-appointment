@@ -5,6 +5,7 @@ import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.Hospita
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.HospitalDepartmentSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.HospitalDepartmentUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorDropdownDTO;
+import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.BillingModeChargeResponse;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.HospitalDepartmentMinimalResponse;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.HospitalDepartmentMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.HospitalDepartmentResponseDTO;
@@ -110,6 +111,15 @@ public class HospitalDepartmentRepositoryCustomImpl implements HospitalDepartmen
 
         List<HospitalDepartmentMinimalResponse> minimalResponseDTOS = transformNativeQueryToResultList(query,
                 HospitalDepartmentMinimalResponse.class);
+
+        minimalResponseDTOS.forEach(minimalResponseDTO->{
+            Query fetchBillingModeWithCharge=createQuery.apply(entityManager,
+                    QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_BILLING_MODE_WITH_CHARGE)
+                    .setParameter(HOSPITAL_DEPARTMENT_ID, Long.parseLong(minimalResponseDTO.getId().toString()));
+
+            minimalResponseDTO.setBillingModeChargeResponseList(transformQueryToResultList(
+                    fetchBillingModeWithCharge, BillingModeChargeResponse.class));
+        });
 
         if (minimalResponseDTOS.isEmpty()) {
             throw HOSPITAL_DEPARTMENT_NOT_FOUND.get();

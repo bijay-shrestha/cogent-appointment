@@ -37,7 +37,7 @@ public class HospitalDepartmentBillingModeInfo extends Auditable<String> impleme
     private Double appointmentFollowUpCharge;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "billing_charge_id")
+    @JoinColumn(name = "billing_mode_id")
     private BillingMode billingMode;
 
     @Column(name = "remarks")

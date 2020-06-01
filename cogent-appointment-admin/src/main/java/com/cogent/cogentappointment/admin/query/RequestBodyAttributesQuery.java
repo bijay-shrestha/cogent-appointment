@@ -48,8 +48,7 @@ public class RequestBodyAttributesQuery {
     private static String GET_WHERE_CLAUSE_TO_SEARCH_API_REQUEST_BODY_ATTRIBUTES(
             ApiIntegrationRequestBodySearchRequestDTO requestSearchDTO) {
 
-        String whereClause = " WHERE" +
-                " airbp.status ='Y'";
+        String whereClause = " WHERE airbp.status ='Y'";
 
         if (!Objects.isNull(requestSearchDTO.getFeatureTypeId()))
             whereClause += " AND f.id=" + requestSearchDTO.getFeatureTypeId();

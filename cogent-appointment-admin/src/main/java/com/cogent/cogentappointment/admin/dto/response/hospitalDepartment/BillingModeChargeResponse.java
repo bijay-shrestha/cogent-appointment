@@ -14,6 +14,8 @@ import java.io.Serializable;
 @Builder
 public class BillingModeChargeResponse implements Serializable {
 
+    private Long id;
+
     private String billingMode;
 
     private Double appointmentCharge;

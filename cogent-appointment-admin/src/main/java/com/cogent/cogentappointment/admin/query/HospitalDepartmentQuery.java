@@ -170,6 +170,7 @@ public class HospitalDepartmentQuery {
 
     public static String QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_BILLING_MODE_WITH_CHARGE=
             "SELECT " +
+                    "  hb.id as id, " +
                     "  hb.billingMode.name as billingMode, " +
                     "  hb.appointmentCharge as appointmentCharge, " +
                     "  hb.appointmentFollowUpCharge as followUpCharge" +

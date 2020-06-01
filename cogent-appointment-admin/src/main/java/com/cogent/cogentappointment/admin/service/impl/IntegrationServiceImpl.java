@@ -290,6 +290,7 @@ public class IntegrationServiceImpl implements IntegrationService {
                 findApiQueryParameters(featureIntegrationResponse.getFeatureId());
 
         ClientApiIntegrationDetailResponseDTO responseDTO = new ClientApiIntegrationDetailResponseDTO();
+        responseDTO.setFeatureId(featureIntegrationResponse.getFeatureId());
         responseDTO.setFeatureCode(featureIntegrationResponse.getFeatureCode());
         responseDTO.setRequestMethodName(featureIntegrationResponse.getRequestMethodName());
         responseDTO.setRequestMethodId(featureIntegrationResponse.getRequestMethodId());

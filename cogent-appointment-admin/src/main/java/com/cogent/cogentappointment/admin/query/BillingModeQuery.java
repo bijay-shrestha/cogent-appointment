@@ -61,6 +61,7 @@ public class BillingModeQuery {
 
     public static final String QUERY_TO_FETCH_BILLING_MODE_DETAILS =
             "SELECT" +
+                    " bm.id as id," +
                     " bm.name as name," +
                     " bm.code as code," +
                     " bm.status as status," +

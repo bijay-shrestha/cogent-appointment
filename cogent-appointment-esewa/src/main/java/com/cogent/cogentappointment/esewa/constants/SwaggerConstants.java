@@ -25,6 +25,22 @@ public class SwaggerConstants {
         String SEARCH_APPOINTMENT = " Search appointment history for myself/others";
     }
 
+    public interface AppointmentHospitalDepartmentConstant {
+        String BASE_API_VALUE = "This is Appointment Hospital Department Resource";
+        String CHECK_APPOINTMENT_AVAILABILITY = "Check available time schedules in requested date" +
+                " for specific hospital department";
+
+        String SAVE_OPERATION = "Save new appointment";
+        String FETCH_PENDING_APPOINTMENT = "Fetch pending appointments";
+        String CANCEL_APPOINTMENT_OPERATION = "Cancel appointment and request refund";
+        String RESCHEDULE_OPERATION = "Reschedule appointment date and time.";
+        String FETCH_APPOINTMENT_HISTORY = " Fetch appointment history (only approved)";
+        String CANCEL_REGISTRATION_OPERATION = "Delete Appointment Reservation when user cancels registration process";
+        String FETCH_APPOINTMENT_TRANSACTION_STATUS = "Fetch Appointment Transaction Status." +
+                " If 'Y', then it is successful appointment, else it is failed appointment";
+        String SEARCH_APPOINTMENT = " Search appointment history for myself/others";
+    }
+
     public static final String[] AUTH_WHITELIST = {
             // -- swagger ui
             "/v2/api-docs",

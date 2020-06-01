@@ -11,9 +11,12 @@ import org.joda.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import static com.cogent.cogentappointment.esewa.constants.StatusConstants.NO;
 import static com.cogent.cogentappointment.esewa.constants.StatusConstants.YES;
+import static com.cogent.cogentappointment.esewa.constants.StringConstant.HYPHEN;
+import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.*;
 
 /**
  * @author smriti on 29/05/20
@@ -25,7 +28,10 @@ public class AppointmentHospitalDeptUtils {
     public static AppointmentHospitalDeptCheckAvailabilityResponseDTO parseToAvailabilityResponseWithRoom(
             Date queryDate,
             List<HospitalDeptDutyRosterRoomInfoResponseDTO> availableRoomList,
-            HospitalDeptDutyRosterRoomInfoResponseDTO roomInfo
+            HospitalDeptDutyRosterRoomInfoResponseDTO roomInfo,
+            String startTime,
+            String endTime,
+            List<String> availableTimeSlots
     ) {
 
         return AppointmentHospitalDeptCheckAvailabilityResponseDTO.builder()
@@ -34,25 +40,31 @@ public class AppointmentHospitalDeptUtils {
                 .roomInfo(availableRoomList)
                 .roomId(roomInfo.getRoomId())
                 .roomNumber(roomInfo.getRoomNumber())
+                .hospitalDepartmentAvailableTime(startTime + HYPHEN + endTime)
+                .availableTimeSlots(availableTimeSlots)
                 .build();
     }
 
     public static AppointmentHospitalDeptCheckAvailabilityResponseDTO parseToAvailabilityResponseWithoutRoom(
             Date queryDate,
-            List<HospitalDeptDutyRosterRoomInfoResponseDTO> availableRoomList) {
+            String startTime,
+            String endTime,
+            List<String> availableTimeSlots) {
 
         return AppointmentHospitalDeptCheckAvailabilityResponseDTO.builder()
                 .queryDate(queryDate)
                 .hasRoom(NO)
-                .roomInfo(availableRoomList)
+                .roomInfo(new ArrayList<>())
+                .hospitalDepartmentAvailableTime(startTime + HYPHEN + endTime)
+                .availableTimeSlots(availableTimeSlots)
                 .build();
     }
-
 
     public static List<String> calculateAvailableTimeSlots(String startTime,
                                                            String endTime,
                                                            Duration rosterGapDuration,
-                                                           List<AppointmentBookedTimeResponseDTO> bookedAppointments) {
+                                                           List<AppointmentBookedTimeResponseDTO> bookedAppointments,
+                                                           Date requestedDate) {
 
         List<String> availableTimeSlots = new ArrayList<>();
 
@@ -61,7 +73,7 @@ public class AppointmentHospitalDeptUtils {
         do {
             String date = FORMAT.print(startDateTime);
 
-            if (!isAppointmentDateMatched(bookedAppointments, date))
+            if ((!isAppointmentDateMatched(bookedAppointments, date)) && (!hasTimePassed(requestedDate, date)))
                 availableTimeSlots.add(date);
 
             startDateTime = startDateTime.plus(rosterGapDuration);
@@ -74,5 +86,18 @@ public class AppointmentHospitalDeptUtils {
                                                     String date) {
         return bookedAppointments.stream()
                 .anyMatch(bookedAppointment -> bookedAppointment.getAppointmentTime().equals(date));
+    }
+
+    private static boolean hasTimePassed(Date date, String time) {
+
+        Date availableDateTime = parseAppointmentTime(date, time);
+
+        Date currentDate = new Date();
+
+        return availableDateTime.before(currentDate);
+    }
+
+    private static Date parseAppointmentTime(Date appointmentDate, String appointmentTime) {
+        return datePlusTime(utilDateToSqlDate(appointmentDate), Objects.requireNonNull(parseTime(appointmentTime)));
     }
 }

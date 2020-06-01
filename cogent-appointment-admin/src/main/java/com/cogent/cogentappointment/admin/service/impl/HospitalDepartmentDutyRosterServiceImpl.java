@@ -458,13 +458,13 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
 
         if (hospitalDepartmentDutyRoster.getIsRoomEnabled().equals(YES)) {
             Long count = overrideRepository.fetchOverrideCountWithRoom(
-                    hospitalDepartmentDutyRoster.getId(), fromDate, toDate, roomId);
+                    hospitalDepartmentDutyRoster.getHospitalDepartment().getId(), fromDate, toDate, roomId);
 
             validateOverrideCountWithRoom(count, fromDate, toDate);
         } else {
 
             Long count = overrideRepository.fetchOverrideCountWithoutRoom(
-                    hospitalDepartmentDutyRoster.getId(), fromDate, toDate);
+                    hospitalDepartmentDutyRoster.getHospitalDepartment().getId(), fromDate, toDate);
 
             validateOverrideCountWithoutRoom(count, fromDate, toDate);
         }
@@ -589,7 +589,7 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
 
         if (hospitalDepartmentDutyRoster.getIsRoomEnabled().equals(YES)) {
             Long count = overrideRepository.fetchOverrideCountWithRoomExceptCurrentId(
-                    hospitalDepartmentDutyRoster.getId(), fromDate,
+                    hospitalDepartmentDutyRoster.getHospitalDepartment().getId(), fromDate,
                     toDate, updateRequestDTO.getRoomId(), updateRequestDTO.getRosterOverrideId()
             );
 
@@ -597,7 +597,8 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
         } else {
 
             Long count = overrideRepository.fetchOverrideCountWithoutRoomExceptCurrentId(
-                    hospitalDepartmentDutyRoster.getId(), fromDate, toDate, updateRequestDTO.getRosterOverrideId());
+                    hospitalDepartmentDutyRoster.getHospitalDepartment().getId(), fromDate,
+                    toDate, updateRequestDTO.getRosterOverrideId());
 
             validateOverrideCountWithoutRoom(count, fromDate, toDate);
         }

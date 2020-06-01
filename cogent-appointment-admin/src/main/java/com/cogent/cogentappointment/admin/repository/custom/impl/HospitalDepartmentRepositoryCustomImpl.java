@@ -142,11 +142,17 @@ public class HospitalDepartmentRepositoryCustomImpl implements HospitalDepartmen
         Query roomListQuery = createQuery.apply(entityManager, QUERY_TO_GET_ROOM_LIST_BY_HOSPITAL_DEPARTMENT_ID)
                 .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId);
 
+        Query billingModeWithChargeQuery=createQuery.apply(entityManager,
+                QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_BILLING_MODE_WITH_CHARGE)
+                .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId);
+
         try {
             HospitalDepartmentResponseDTO responseDTO = transformQueryToSingleResult(query,
                     HospitalDepartmentResponseDTO.class);
             responseDTO.setDoctorList(transformQueryToResultList(doctorListQuery, DoctorDropdownDTO.class));
             responseDTO.setRoomList(transformQueryToResultList(roomListQuery,DropDownResponseDTO.class));
+            responseDTO.setBillingModeChargeResponseList(transformQueryToResultList(
+                    billingModeWithChargeQuery, BillingModeChargeResponse.class));
             return responseDTO;
         } catch (NoResultException e) {
             log.error(CONTENT_NOT_FOUND_BY_ID, HOSPITAL_DEPARTMENT, hospitalDepartmentId);

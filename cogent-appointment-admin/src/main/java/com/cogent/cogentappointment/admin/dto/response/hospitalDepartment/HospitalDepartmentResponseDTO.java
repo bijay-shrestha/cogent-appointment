@@ -37,4 +37,6 @@ public class HospitalDepartmentResponseDTO extends AuditableResponseDTO implemen
 
     private List<DropDownResponseDTO> roomList;
 
+    private List<BillingModeChargeResponse> billingModeChargeResponseList;
+
 }

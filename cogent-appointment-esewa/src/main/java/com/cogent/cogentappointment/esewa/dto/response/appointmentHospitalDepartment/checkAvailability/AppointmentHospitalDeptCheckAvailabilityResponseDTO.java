@@ -16,7 +16,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppointmentHospitalDeptCheckAvailabilityResponseDTO extends StatusResponseDTO implements Serializable {
+public class AppointmentHospitalDeptCheckAvailabilityResponseDTO implements Serializable {
 
     private Date queryDate;
 

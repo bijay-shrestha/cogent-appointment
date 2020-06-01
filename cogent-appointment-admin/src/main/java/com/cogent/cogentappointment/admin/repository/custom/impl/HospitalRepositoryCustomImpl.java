@@ -9,7 +9,6 @@ import com.cogent.cogentappointment.admin.dto.response.company.CompanyResponseDT
 import com.cogent.cogentappointment.admin.dto.response.hospital.*;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.HospitalRepositoryCustom;
-import com.cogent.cogentappointment.persistence.model.Hospital;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -31,6 +30,7 @@ import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_N
 import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.CLIENT;
 import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.HOSPITAL;
 import static com.cogent.cogentappointment.admin.query.CompanyQuery.*;
+import static com.cogent.cogentappointment.admin.query.HospitalAppointmentServiceTypeQuery.QUERY_TO_FETCH_HOSPITAL_APPOINTMENT_SERVICE_TYPE;
 import static com.cogent.cogentappointment.admin.query.HospitalBillingModeInfoQuery.QUERY_TO_GET_BILLING_MODE_DROP_DOWN_BY_HOSPITAL_ID;
 import static com.cogent.cogentappointment.admin.query.HospitalQuery.*;
 import static com.cogent.cogentappointment.admin.utils.CompanyUtils.parseToCompanyResponseDTO;
@@ -141,8 +141,8 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
 
             hospitalDetails.setHospitalAppointmentServiceTypeDetail(fetchHospitalAppointmentServiceType(id));
 
-            hospitalDetails.setBillingMode(transformQueryToResultList(billingModeQuery, DropDownResponseDTO
-                    .class));
+            hospitalDetails.setBillingMode(transformQueryToResultList(billingModeQuery, DropDownResponseDTO.class));
+
             return hospitalDetails;
         } catch (NoResultException ex) {
             throw HOSPITAL_WITH_GIVEN_ID_NOT_FOUND.apply(id);
@@ -215,10 +215,6 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
     private Supplier<NoContentFoundException> HOSPITAL_NOT_FOUND = () -> {
         log.error(CONTENT_NOT_FOUND, HOSPITAL);
         throw new NoContentFoundException(NO_RECORD_FOUND, CLIENT);
-    };
-    private Supplier<NoContentFoundException> HOSPITAL_NOT_FOUND = () -> {
-        log.error(CONTENT_NOT_FOUND, HOSPITAL);
-        throw new NoContentFoundException(Hospital.class);
     };
 
     private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {

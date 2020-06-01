@@ -29,7 +29,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.ALIAS_NOT_FOUND;
-import static com.cogent.cogentappointment.admin.constants.StatusConstants.YES;
+import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants.NO_RECORD_FOUND;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.*;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.BillingModeLog.BILLING_MODE;
@@ -62,8 +63,7 @@ public class HospitalServiceImpl implements HospitalService {
 
     private final HospitalBillingModeInfoRepository hospitalBillingModeInfoRepository;
 
-    private final BillingModeRepository
-            billingModeRepository;
+    private final BillingModeRepository billingModeRepository;
 
     private final MinioFileService minioFileService;
 
@@ -72,14 +72,15 @@ public class HospitalServiceImpl implements HospitalService {
     private final HospitalAppointmentServiceTypeRepository hospitalAppointmentServiceTypeRepository;
 
 
-    private final AppointmentServiceTypeService
-            appointmentServiceTypeService;
+    private final AppointmentServiceTypeService appointmentServiceTypeService;
 
     public HospitalServiceImpl(HospitalRepository hospitalRepository,
                                HospitalContactNumberRepository hospitalContactNumberRepository,
                                HospitalLogoRepository hospitalLogoRepository,
                                HospitalBannerRepository hospitalBannerRepository,
                                HmacApiInfoRepository hmacApiInfoRepository,
+                               HospitalBillingModeInfoRepository hospitalBillingModeInfoRepository,
+                               BillingModeRepository billingModeRepository,
                                MinioFileService minioFileService,
                                Validator validator,
                                HospitalAppointmentServiceTypeRepository hospitalAppointmentServiceTypeRepository,
@@ -89,13 +90,14 @@ public class HospitalServiceImpl implements HospitalService {
         this.hospitalLogoRepository = hospitalLogoRepository;
         this.hospitalBannerRepository = hospitalBannerRepository;
         this.hmacApiInfoRepository = hmacApiInfoRepository;
-        this.hospitalAppointmentServiceTypeRepository = hospitalAppointmentServiceTypeRepository;
-        this.appointmentServiceTypeService = appointmentServiceTypeService;
         this.hospitalBillingModeInfoRepository = hospitalBillingModeInfoRepository;
         this.billingModeRepository = billingModeRepository;
         this.minioFileService = minioFileService;
         this.validator = validator;
+        this.hospitalAppointmentServiceTypeRepository = hospitalAppointmentServiceTypeRepository;
+        this.appointmentServiceTypeService = appointmentServiceTypeService;
     }
+
 
     @Override
     public void save(@Valid HospitalRequestDTO requestDTO, MultipartFile logo, MultipartFile banner)

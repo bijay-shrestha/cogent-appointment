@@ -73,7 +73,7 @@ public class HospitalQuery {
                 " hl.file_uri FROM hospital_logo hl" +
                 " WHERE hl.status = 'Y'" +
                 " )tbl ON tbl.hospitalId= h.id" +
-                " LEFT JOIN hospital_billing_mode_info hb ON hb.hospital_id=h.id AND hb.status!='Dgit'" +
+                " LEFT JOIN hospital_billing_mode_info hb ON hb.hospital_id=h.id AND hb.status!='D'" +
                 GET_WHERE_CLAUSE_FOR_SEARCHING_HOSPITAL.apply(searchRequestDTO);
     }
 

@@ -181,4 +181,11 @@ public class IntegrationUtils {
         });
 
     }
+
+    public static void parseToUpdateApiFeatureRequestBodyAttributes(Feature feature,
+                                                                    List<ApiIntegrationRequestBodyParameters> bodyParametersList) {
+
+
+
+    }
 }

@@ -86,7 +86,7 @@ public class IntegrationServiceImpl implements IntegrationService {
         validateFeatureAndHttpRequestMethod(requestDTO.getFeatureTypeId(),
                 requestDTO.getRequestMethodId());
 
-        IntegrationChannel integrationChannel=integrationChannelRepository.
+        IntegrationChannel integrationChannel = integrationChannelRepository.
                 findActiveIntegrationChannel(requestDTO.getIntegrationChannelId())
                 .orElseThrow(() -> INTEGRATION_CHANNEL_NOT_FOUND.apply(requestDTO.getIntegrationChannelId()));
 
@@ -293,6 +293,8 @@ public class IntegrationServiceImpl implements IntegrationService {
         responseDTO.setFeatureCode(featureIntegrationResponse.getFeatureCode());
         responseDTO.setRequestMethodName(featureIntegrationResponse.getRequestMethodName());
         responseDTO.setRequestMethodId(featureIntegrationResponse.getRequestMethodId());
+        responseDTO.setIntegrationChannel(featureIntegrationResponse.getIntegrationChannel());
+        responseDTO.setIntegrationType(featureIntegrationResponse.getIntegrationType());
         responseDTO.setHospitalName(featureIntegrationResponse.getHospitalName());
         responseDTO.setUrl(featureIntegrationResponse.getUrl());
         responseDTO.setHeaders(requestHeaderResponseDTO);
@@ -331,6 +333,10 @@ public class IntegrationServiceImpl implements IntegrationService {
         responseDTO.setFeatureId(featureIntegrationResponse.getFeatureId());
         responseDTO.setRequestMethodName(featureIntegrationResponse.getRequestMethodName());
         responseDTO.setRequestMethodId(featureIntegrationResponse.getRequestMethodId());
+        responseDTO.setIntegrationTypeId(featureIntegrationResponse.getIntegrationTypeId());
+        responseDTO.setIntegrationType(featureIntegrationResponse.getIntegrationType());
+        responseDTO.setIntegrationChannelId(featureIntegrationResponse.getIntegrationChannelId());
+        responseDTO.setIntegrationChannel(featureIntegrationResponse.getIntegrationChannel());
         responseDTO.setUrl(featureIntegrationResponse.getUrl());
         responseDTO.setHospitalName(featureIntegrationResponse.getHospitalName());
         responseDTO.setHeaders(requestHeaderResponseDTO);

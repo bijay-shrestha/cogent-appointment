@@ -119,19 +119,27 @@ public class IntegrationQuery {
                     " f.code as featureCode," +
                     " hrm.id as requestMethodId," +
                     " hrm.name as requestMethodName," +
-                    " aif.url as url" +
+                    " aif.url as url," +
+                    " ic.id as integrationChannelId," +
+                    " ic.name as integrationChannel," +
+                    " ait.id as integrationTypeId," +
+                    " ait.name as integrationType" +
                     " from ClientFeatureIntegration cfi" +
                     " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=cfi.id" +
                     " LEFT JOIN Feature f ON f.id=cfi.featureId" +
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=afi.apiIntegrationFormatId" +
                     " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId" +
                     " LEFT JOIN Hospital h ON h.id=cfi.hospitalId" +
+                    " LEFT JOIN IntegrationChannel ic ON ic.id=cfi.integrationChannelId.id" +
+                    " LEFT JOIN ApiIntegrationType ait ON ait.id=f.apiIntegrationTypeId.id" +
                     " WHERE cfi.id= :clientFeatureIntegrationId" +
                     " AND aif.status='Y'" +
                     " AND hrm.status='Y'" +
                     " AND afi.status='Y'" +
                     " AND f.status='Y'" +
-                    " AND cfi.status='Y'";
+                    " AND cfi.status='Y'" +
+                    " AND ic.status='Y'" +
+                    " AND ait.status='Y'";
 
     public static final String QUERY_TO_FETCH_MIN_API_INTEGRATION_TYPE =
             "SELECT" +

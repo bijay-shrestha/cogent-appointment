@@ -1,6 +1,8 @@
 package com.cogent.cogentappointment.admin.utils;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.BillingModeChargeDTO;
+import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.BillingModeChargeUpdateDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.HospitalDepartmentRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.HospitalDepartmentUpdateRequestDTO;
 import com.cogent.cogentappointment.persistence.model.*;
@@ -30,16 +32,46 @@ public class HospitalDepartmentUtils {
     }
 
 
-    public static HospitalDepartmentBillingModeInfo parseToHospitalDepartmentCharge(HospitalDepartmentRequestDTO requestDTO,
-                                                                                    HospitalDepartment hospitalDepartment) {
+    public static HospitalDepartmentBillingModeInfo parseToHospitalDepartmentCharge(BillingModeChargeDTO requestDTO,
+                                                                                    HospitalDepartment hospitalDepartment,
+                                                                                    BillingMode billingMode) {
+
 
         HospitalDepartmentBillingModeInfo hospitalDepartmentBillingModeInfo = new HospitalDepartmentBillingModeInfo();
         hospitalDepartmentBillingModeInfo.setAppointmentCharge(requestDTO.getAppointmentCharge());
         hospitalDepartmentBillingModeInfo.setAppointmentFollowUpCharge(requestDTO.getFollowUpCharge());
-        hospitalDepartmentBillingModeInfo.setStatus(requestDTO.getStatus());
+        hospitalDepartmentBillingModeInfo.setStatus(hospitalDepartment.getStatus());
         hospitalDepartmentBillingModeInfo.setHospitalDepartment(hospitalDepartment);
+        hospitalDepartmentBillingModeInfo.setBillingMode(billingMode);
 
         return hospitalDepartmentBillingModeInfo;
+    }
+
+    public static HospitalDepartmentBillingModeInfo parseToUpdateHospitalDepartmentCharge(BillingModeChargeUpdateDTO requestDTO,
+                                                                                    HospitalDepartment hospitalDepartment,
+                                                                                    BillingMode billingMode) {
+
+
+        HospitalDepartmentBillingModeInfo hospitalDepartmentBillingModeInfo = new HospitalDepartmentBillingModeInfo();
+        hospitalDepartmentBillingModeInfo.setAppointmentCharge(requestDTO.getAppointmentCharge());
+        hospitalDepartmentBillingModeInfo.setAppointmentFollowUpCharge(requestDTO.getFollowUpCharge());
+        hospitalDepartmentBillingModeInfo.setStatus(hospitalDepartment.getStatus());
+        hospitalDepartmentBillingModeInfo.setHospitalDepartment(hospitalDepartment);
+        hospitalDepartmentBillingModeInfo.setBillingMode(billingMode);
+
+        return hospitalDepartmentBillingModeInfo;
+    }
+
+    public static HospitalDepartmentBillingModeInfo parseToUpdateHospitalDepartmentCharge(BillingModeChargeUpdateDTO requestDTO,
+                                                                                   HospitalDepartmentBillingModeInfo departmentBillingModeInfo,
+                                                                                   HospitalDepartment hospitalDepartment) {
+
+        departmentBillingModeInfo.setAppointmentCharge(requestDTO.getAppointmentCharge());
+        departmentBillingModeInfo.setAppointmentFollowUpCharge(requestDTO.getFollowUpCharge());
+        departmentBillingModeInfo.setStatus(requestDTO.getStatus());
+        departmentBillingModeInfo.setRemarks(hospitalDepartment.getRemarks());
+
+        return departmentBillingModeInfo;
     }
 
 
@@ -76,29 +108,6 @@ public class HospitalDepartmentUtils {
         hospitalDepartment.setRemarks(requestDTO.getRemarks());
 
         return hospitalDepartment;
-    }
-
-    public static HospitalDepartmentBillingModeInfo parseToUpdateHospitalDepartmentCharge(HospitalDepartmentBillingModeInfo hospitalDepartmentBillingModeInfo,
-                                                                                          HospitalDepartmentUpdateRequestDTO requestDTO) {
-
-        hospitalDepartmentBillingModeInfo.setAppointmentCharge(requestDTO.getAppointmentCharge());
-        hospitalDepartmentBillingModeInfo.setAppointmentFollowUpCharge(requestDTO.getFollowUpCharge());
-        hospitalDepartmentBillingModeInfo.setStatus(requestDTO.getStatus());
-        hospitalDepartmentBillingModeInfo.setRemarks(requestDTO.getRemarks());
-
-        return hospitalDepartmentBillingModeInfo;
-    }
-
-    public static List<Long> mergeExisitingAndNewListId(List<Long> existingIdList,
-                                                        List<Long> newIdList) {
-
-
-        return existingIdList.stream()
-                .filter(oldId -> (newIdList.stream()
-                        .filter(newId -> (newId == oldId))
-                        .count()) < 1)
-                .collect(Collectors.toList());
-
     }
 
     public static HospitalDepartment parseToDeleteHospitalDept(HospitalDepartment hospitalDepartment,

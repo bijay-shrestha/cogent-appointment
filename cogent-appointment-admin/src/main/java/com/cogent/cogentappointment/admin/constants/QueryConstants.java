@@ -11,7 +11,7 @@ public class QueryConstants {
     public static final String ALIAS = "alias";
 
     //B
-
+    public static final String BILLING_MODE_ID = "billingModeId";
 
     //C
     public static final String CODE = "code";

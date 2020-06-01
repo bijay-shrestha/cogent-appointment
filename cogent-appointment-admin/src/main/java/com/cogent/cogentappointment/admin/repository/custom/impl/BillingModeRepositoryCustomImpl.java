@@ -136,6 +136,15 @@ public class BillingModeRepositoryCustomImpl implements BillingModeRepositoryCus
         else return results;
     }
 
+    @Override
+    public BillingMode fetchBillingModeByHospitalId(Long hospitalId, Long billingModeId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_GET_ACTIVE_BILLING_MODE_BY_HOSPITAL_ID)
+                .setParameter(BILLING_MODE_ID, billingModeId)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        return (BillingMode) query.getSingleResult();
+    }
+
     private Supplier<NoContentFoundException> BILLING_MODE_NOT_FOUND = () -> {
         log.error(CONTENT_NOT_FOUND, BILLING_MODE);
         throw new NoContentFoundException(BillingMode.class);

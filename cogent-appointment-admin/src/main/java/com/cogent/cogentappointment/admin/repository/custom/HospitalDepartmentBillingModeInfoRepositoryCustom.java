@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
  * @author Sauravi Thapa ON 5/20/20
  */
 @Repository
-@Qualifier("hospitalDepartmentChargeRepositoryCustom")
-public interface HospitalDepartmentChargeRepositoryCustom {
+@Qualifier("hospitalDepartmentBillingModeInfoRepositoryCustom")
+public interface HospitalDepartmentBillingModeInfoRepositoryCustom {
 
 }

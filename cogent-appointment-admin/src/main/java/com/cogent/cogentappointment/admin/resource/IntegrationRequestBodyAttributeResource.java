@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.admin.resource;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integration.ApiFeatureIntegrationRequestBodyRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.integrationRequestBodyAttribute.ApiFeatureIntegrationRequestBodyUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationRequestBodyAttribute.ApiIntegrationRequestBodySearchRequestDTO;
 import com.cogent.cogentappointment.admin.service.ApiRequestBodyAttributeService;
 import io.swagger.annotations.Api;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.IntegrationConstant.DELETE_CLIENT_INTEGRATION_FEATURE_OPERATION;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.IntegrationRequestBodyConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.IntegrationRequestBodyAttributeConstants.*;
@@ -37,10 +37,17 @@ public class IntegrationRequestBodyAttributeResource {
     }
 
     @PostMapping
-    @ApiOperation(SAVE_INTEGRATION_REQUEST_BODY_OPERATION)
+    @ApiOperation(SAVE_INTEGRATION_REQUEST_BODY_ATTRIBUTE_OPERATION)
     public ResponseEntity<?> save(@Valid @RequestBody ApiFeatureIntegrationRequestBodyRequestDTO requestDTO) {
         requestBodyAttributeService.save(requestDTO);
         return created(create(API_V1 + BASE_REQUEST_BODY_INTEGRATION)).build();
+    }
+
+    @PutMapping
+    @ApiOperation(UPDATE_INTEGRATION_REQUEST_BODY_ATTRIBUTE_OPERATION)
+    public ResponseEntity<?> update(@Valid @RequestBody ApiFeatureIntegrationRequestBodyUpdateRequestDTO requestDTO) {
+        requestBodyAttributeService.update(requestDTO);
+        return ok().build();
     }
 
     @PutMapping(API_REQUEST_BODY_ATTRIBUTES)

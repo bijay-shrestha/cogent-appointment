@@ -251,7 +251,8 @@ public class SwaggerConstants {
     public interface IntegrationRequestBodyConstant {
         String BASE_API_VALUE = "This is Integration Request Body Resource.";
         String DELETE_API_REQUEST_HEADER_ATTRIBUTE_OPERATION="Delete API Request Body Attributes by request body attribute id";
-        String SAVE_INTEGRATION_REQUEST_BODY_OPERATION = "Save new Integration Request Body Attributes";
+        String SAVE_INTEGRATION_REQUEST_BODY_ATTRIBUTE_OPERATION = "Save new Integration Request Body Attributes";
+        String UPDATE_INTEGRATION_REQUEST_BODY_ATTRIBUTE_OPERATION = "Update Request Body Attributes";
         String FETCH_API_REQUEST_HEADER_ATTRIBUTE_OPERATION= "Fetch Request Body Attributes by feature id";
         String SEARCH_API_REQUEST_BODY_ATTRIBUTE_OPERATION = "Search API Request Body Attributes";
     }

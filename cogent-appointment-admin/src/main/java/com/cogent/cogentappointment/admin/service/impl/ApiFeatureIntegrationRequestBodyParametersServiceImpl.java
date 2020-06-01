@@ -2,6 +2,7 @@ package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integration.ApiFeatureIntegrationRequestBodyRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.integrationRequestBodyAttribute.ApiFeatureIntegrationRequestBodyUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationRequestBodyAttribute.ApiIntegrationRequestBodySearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.integration.IntegrationRequestBodyAttributeResponse;
 import com.cogent.cogentappointment.admin.dto.response.integrationRequestBodyAttribute.ApiRequestBodySearchDTO;
@@ -54,7 +55,7 @@ public class ApiFeatureIntegrationRequestBodyParametersServiceImpl implements
 
 
     @Override
-    public void save(@Valid ApiFeatureIntegrationRequestBodyRequestDTO requestDTO) {
+    public void save(ApiFeatureIntegrationRequestBodyRequestDTO requestDTO) {
 
 
         validateFeature(requestDTO.getFeatureId());
@@ -99,7 +100,7 @@ public class ApiFeatureIntegrationRequestBodyParametersServiceImpl implements
     }
 
     @Override
-    public void delete(@Valid DeleteRequestDTO deleteRequestDTO) {
+    public void delete(DeleteRequestDTO deleteRequestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -114,6 +115,11 @@ public class ApiFeatureIntegrationRequestBodyParametersServiceImpl implements
                 deleteRequestDTO);
 
         log.info(DELETING_PROCESS_COMPLETED, API_REQUEST_BODY_ATTRIBUTES, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    @Override
+    public void update(ApiFeatureIntegrationRequestBodyUpdateRequestDTO requestDTO) {
+
     }
 
     private void validateFeature(Long featureId) {

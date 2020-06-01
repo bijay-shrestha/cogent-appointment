@@ -35,13 +35,14 @@ public class RequestBodyAttributesQuery {
             API_REQUEST_BODY_ATTRIBUTES_SEARCH_QUERY =
             (searchRequestDTO) ->
                     " SELECT" +
+                            " f.id as featureId," +
                             " f.name as featureName," +
                             " GROUP_CONCAT(airbp.name) as requestBody," +
                             " afirbp.status as status" +
                             " FROM" +
-                            " api_feature_integration_request_body_parameters afirbp" +
-                            " LEFT JOIN api_integration_request_body_parameters airbp ON airbp.id=afirbp.api_request_body_parameters_id" +
-                            " LEFT JOIN feature f ON f.id=afirbp.feature_id"
+                            " feature f"+
+                            " LEFT JOIN api_feature_integration_request_body_parameters afirbp ON afirbp.id=afirbp.feature_id" +
+                            " LEFT JOIN api_integration_request_body_parameters airbp ON airbp.id=afirbp.api_request_body_parameters_id"
                             + GET_WHERE_CLAUSE_TO_SEARCH_API_REQUEST_BODY_ATTRIBUTES(searchRequestDTO);
 
     private static String GET_WHERE_CLAUSE_TO_SEARCH_API_REQUEST_BODY_ATTRIBUTES(
@@ -59,7 +60,7 @@ public class RequestBodyAttributesQuery {
         if (!ObjectUtils.isEmpty(requestSearchDTO.getStatus()))
             whereClause += " AND airbp.status='" + requestSearchDTO.getStatus() + "'";
 
-        whereClause += "GROUP BY f.id";
+        whereClause += " GROUP BY f.id";
 
 
         return whereClause;

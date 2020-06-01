@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.resource;
 
+import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integration.ApiFeatureIntegrationRequestBodyRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationRequestBodyAttribute.ApiIntegrationRequestBodySearchRequestDTO;
 import com.cogent.cogentappointment.admin.service.ApiRequestBodyAttributeService;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.IntegrationConstant.DELETE_CLIENT_INTEGRATION_FEATURE_OPERATION;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.IntegrationRequestBodyConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.IntegrationRequestBodyAttributeConstants.*;
@@ -29,7 +31,8 @@ public class IntegrationRequestBodyAttributeResource {
     private final ApiRequestBodyAttributeService
             requestBodyAttributeService;
 
-    public IntegrationRequestBodyAttributeResource(ApiRequestBodyAttributeService requestBodyAttributeService) {
+    public IntegrationRequestBodyAttributeResource
+            (ApiRequestBodyAttributeService requestBodyAttributeService) {
         this.requestBodyAttributeService = requestBodyAttributeService;
     }
 
@@ -47,6 +50,13 @@ public class IntegrationRequestBodyAttributeResource {
                                     @RequestParam("size") int size) {
         PageRequest pageable = PageRequest.of(page, size);
         return ok().body(requestBodyAttributeService.search(searchRequestDTO, pageable));
+    }
+
+    @DeleteMapping
+    @ApiOperation(DELETE_API_REQUEST_HEADER_ATTRIBUTE_OPERATION)
+    public ResponseEntity<?> delete(@Valid @RequestBody DeleteRequestDTO deleteRequestDTO) {
+        requestBodyAttributeService.delete(deleteRequestDTO);
+        return ok().build();
     }
 
     @GetMapping(FEATURE_ID_PATH_VARIABLE_BASE)

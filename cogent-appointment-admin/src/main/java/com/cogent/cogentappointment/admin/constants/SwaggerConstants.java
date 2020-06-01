@@ -95,17 +95,6 @@ public class SwaggerConstants {
 
     //C
 
-    public interface ClientIntegrationConstant {
-        String BASE_API_VALUE = "This is Client Integration Resource.";
-        String SAVE_CLIENT_OPERATION = "Save new Client API Integration";
-        String UPDATE_CLIENT_OPERATION = "Update Client API Integration";
-        String SEARCH_CLIENT_API_INTEGRATION_OPERATION = "Search Client API Integration";
-        String FETCH_CLIENT_API_INTEGRATION_DETAIL = "Fetch Client Api Integration detail by client integration id";
-        String DELETE_CLIENT_INTEGRATION_FEATURE_OPERATION="Delete client integration feature by client integration id";
-        String DETAILS_FOR_UPDATE_CLIENT_INTEGRATION_MODAL_OPERATION = "Fetch Client Integration details for update modal by its id";
-        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal details for dropdown";
-    }
-
 
     public interface CompanyAdminConstant {
         String BASE_API_VALUE = "This is Company Admin Resource";
@@ -249,9 +238,7 @@ public class SwaggerConstants {
     //I
 
     public interface IntegrationConstant {
-        String BASE_API_VALUE = "This is Integration Resource.";
-        String FETCH_CLIENT_API_INTEGRATION = "Fetch client Api integration detail";
-        String SAVE_ADMIN_MODE_OPERATION = "Save new Admin Mode API Integration";
+        String BASE_API_VALUE = "This is Client Integration Resource.";
         String SAVE_CLIENT_OPERATION = "Save new Client API Integration";
         String UPDATE_CLIENT_OPERATION = "Update Client API Integration";
         String SEARCH_CLIENT_API_INTEGRATION_OPERATION = "Search Client API Integration";
@@ -263,9 +250,10 @@ public class SwaggerConstants {
 
     public interface IntegrationRequestBodyConstant {
         String BASE_API_VALUE = "This is Integration Request Body Resource.";
+        String DELETE_API_REQUEST_HEADER_ATTRIBUTE_OPERATION="Delete API Request Body Attributes by request body attribute id";
         String SAVE_INTEGRATION_REQUEST_BODY_OPERATION = "Save new Integration Request Body Attributes";
         String FETCH_API_REQUEST_HEADER_ATTRIBUTE_OPERATION= "Fetch Request Body Attributes by feature id";
-        String SEARCH_API_REQUEST_BODY_ATTRIBUTE_OPERATION = "Search API Request BOdy Attributes";
+        String SEARCH_API_REQUEST_BODY_ATTRIBUTE_OPERATION = "Search API Request Body Attributes";
     }
 
     //J

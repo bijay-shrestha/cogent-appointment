@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.ClientIntegrationConstant.*;
+import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.IntegrationConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.ClientIntegrationConstants.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.ID_PATH_VARIABLE_BASE;

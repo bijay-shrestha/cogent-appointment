@@ -169,4 +169,13 @@ public class IntegrationUtils {
         return apiFeatureIntegrationRequestBodyParameters;
 
     }
+
+    public static void parseToDeletedApiFeatureIntegrationRequestBodyParameters
+            (ApiFeatureIntegrationRequestBodyParameters requestBodyParameters,
+             DeleteRequestDTO deleteRequestDTO) {
+
+        requestBodyParameters.setStatus(deleteRequestDTO.getStatus());
+        requestBodyParameters.setRemarks(deleteRequestDTO.getRemarks());
+
+    }
 }

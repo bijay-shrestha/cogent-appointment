@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
+import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integration.ApiFeatureIntegrationRequestBodyRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationRequestBodyAttribute.ApiIntegrationRequestBodySearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.integration.IntegrationRequestBodyAttributeResponse;
@@ -9,8 +10,8 @@ import com.cogent.cogentappointment.admin.repository.ApiFeatureIntegrationReques
 import com.cogent.cogentappointment.admin.repository.FeatureRepository;
 import com.cogent.cogentappointment.admin.repository.IntegrationRequestBodyParametersRepository;
 import com.cogent.cogentappointment.admin.service.ApiRequestBodyAttributeService;
-import com.cogent.cogentappointment.persistence.model.ApiIntegrationRequestBodyParameters;
-import com.cogent.cogentappointment.persistence.model.Feature;
+import com.cogent.cogentappointment.admin.utils.IntegrationUtils;
+import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,10 +22,9 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.SEARCHING_PROCESS_COMPLETED;
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.SEARCHING_PROCESS_STARTED;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.API_REQUEST_BODY_ATTRIBUTES;
-import static com.cogent.cogentappointment.admin.utils.IntegrationUtils.parseToClientApiFeatureRequestBodyParameters;
+import static com.cogent.cogentappointment.admin.utils.IntegrationUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
@@ -42,7 +42,10 @@ public class ApiFeatureIntegrationRequestBodyParametersServiceImpl implements
     private final IntegrationRequestBodyParametersRepository requestBodyParametersRepository;
     private final FeatureRepository featureRepository;
 
-    public ApiFeatureIntegrationRequestBodyParametersServiceImpl(ApiFeatureIntegrationRequestBodyParametersRepository integrationRequestBodyParametersRepository, IntegrationRequestBodyParametersRepository requestBodyParametersRepository, FeatureRepository featureRepository) {
+    public ApiFeatureIntegrationRequestBodyParametersServiceImpl
+            (ApiFeatureIntegrationRequestBodyParametersRepository integrationRequestBodyParametersRepository,
+             IntegrationRequestBodyParametersRepository requestBodyParametersRepository,
+             FeatureRepository featureRepository) {
         this.integrationRequestBodyParametersRepository = integrationRequestBodyParametersRepository;
 
         this.requestBodyParametersRepository = requestBodyParametersRepository;
@@ -59,7 +62,9 @@ public class ApiFeatureIntegrationRequestBodyParametersServiceImpl implements
         List<ApiIntegrationRequestBodyParameters> requestBodyParameters =
                 validateRequestBodyAttributes(requestDTO.getRequestBodyAttributes());
 
-        integrationRequestBodyParametersRepository.saveAll(parseToClientApiFeatureRequestBodyParameters(requestDTO.getFeatureId(), requestBodyParameters));
+        integrationRequestBodyParametersRepository.
+                saveAll(parseToClientApiFeatureRequestBodyParameters(requestDTO.getFeatureId(),
+                        requestBodyParameters));
 
     }
 
@@ -78,7 +83,8 @@ public class ApiFeatureIntegrationRequestBodyParametersServiceImpl implements
     }
 
     @Override
-    public ApiRequestBodySearchDTO search(ApiIntegrationRequestBodySearchRequestDTO searchRequestDTO, Pageable pageable) {
+    public ApiRequestBodySearchDTO search(ApiIntegrationRequestBodySearchRequestDTO searchRequestDTO,
+                                          Pageable pageable) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -90,6 +96,24 @@ public class ApiFeatureIntegrationRequestBodyParametersServiceImpl implements
         log.info(SEARCHING_PROCESS_COMPLETED, API_REQUEST_BODY_ATTRIBUTES, getDifferenceBetweenTwoTime(startTime));
 
         return searchClientApiIntegration;
+    }
+
+    @Override
+    public void delete(@Valid DeleteRequestDTO deleteRequestDTO) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(DELETING_PROCESS_STARTED, API_REQUEST_BODY_ATTRIBUTES);
+
+        ApiFeatureIntegrationRequestBodyParameters featureIntegrationRequestBodyParameters =
+                integrationRequestBodyParametersRepository
+                .findApiFeatureRequestBodyParameterById(deleteRequestDTO.getId())
+                .orElseThrow(() -> API_REQUEST_BODY_ATTRIBUTE_NOT_FOUND.apply(deleteRequestDTO.getId()));
+
+        parseToDeletedApiFeatureIntegrationRequestBodyParameters(featureIntegrationRequestBodyParameters,
+                deleteRequestDTO);
+
+        log.info(DELETING_PROCESS_COMPLETED, API_REQUEST_BODY_ATTRIBUTES, getDifferenceBetweenTwoTime(startTime));
     }
 
     private void validateFeature(Long featureId) {
@@ -112,6 +136,10 @@ public class ApiFeatureIntegrationRequestBodyParametersServiceImpl implements
 
     }
 
+    private Function<Long, NoContentFoundException> API_REQUEST_BODY_ATTRIBUTE_NOT_FOUND = (id) -> {
+        throw new NoContentFoundException
+                (ApiFeatureIntegrationRequestBodyParameters.class, "id", id.toString());
+    };
 
     private Function<Long, NoContentFoundException> FEATURE_NOT_FOUND = (id) -> {
         throw new NoContentFoundException

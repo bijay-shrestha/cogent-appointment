@@ -3,7 +3,6 @@ package com.cogent.cogentappointment.admin.resource;
 import com.cogent.cogentappointment.admin.dto.request.adminModeIntegration.AdminModeFeatureIntegrationRequestDTO;
 import com.cogent.cogentappointment.admin.service.AdminModeFeatureIntegrationService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.IntegrationConstant.BASE_API_VALUE;
-import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.IntegrationConstant.SAVE_ADMIN_MODE_OPERATION;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AdminModeIntegrationConstants.BASE_ADMIN_MODE_INTEGRATION;
 import static java.net.URI.create;
@@ -34,7 +32,7 @@ public class AdminModeIntegrationResource {
     }
 
     @PostMapping
-    @ApiOperation(SAVE_ADMIN_MODE_OPERATION)
+//    @ApiOperation(SwaggerConstants.IntegrationConstants.SAVE_ADMIN_MODE_OPERATION)
     public ResponseEntity<?> save(@Valid @RequestBody AdminModeFeatureIntegrationRequestDTO requestDTO) {
         adminModeIntegrationService.save(requestDTO);
         return created(create(API_V1 + BASE_ADMIN_MODE_INTEGRATION)).build();

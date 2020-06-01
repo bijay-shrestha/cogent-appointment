@@ -11,6 +11,7 @@ import com.cogent.cogentappointment.admin.dto.response.clientIntegration.ClientA
 import com.cogent.cogentappointment.admin.dto.response.clientIntegration.clientIntegrationUpdate.ApiQueryParametersUpdateResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.clientIntegration.clientIntegrationUpdate.ApiRequestHeaderUpdateResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.clientIntegration.clientIntegrationUpdate.ClientApiIntegrationUpdateResponseDTO;
+import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.IntegrationService;
@@ -88,6 +89,8 @@ public class IntegrationServiceImpl implements IntegrationService {
         validateFeatureAndHttpRequestMethod(requestDTO.getFeatureTypeId(),
                 requestDTO.getRequestMethodId());
 
+        checkClientFeatureIntegrationDuplicity(requestDTO.getHospitalId(), requestDTO.getFeatureTypeId());
+
         IntegrationChannel integrationChannel = integrationChannelRepository.
                 findActiveIntegrationChannel(requestDTO.getIntegrationChannelId())
                 .orElseThrow(() -> INTEGRATION_CHANNEL_NOT_FOUND.apply(requestDTO.getIntegrationChannelId()));
@@ -118,6 +121,18 @@ public class IntegrationServiceImpl implements IntegrationService {
         log.info(SAVING_PROCESS_COMPLETED, CLIENT_API_INTEGRATION, getDifferenceBetweenTwoTime(startTime));
     }
 
+    private void checkClientFeatureIntegrationDuplicity(Long hospitalId, Long featureTypeId) {
+
+        ClientFeatureIntegration clientFeatureIntegration = clientFeatureIntegrationRepository.findByHospitalWiseFeatureId(hospitalId, featureTypeId);
+
+        if (clientFeatureIntegration != null) {
+
+            throw new DataDuplicationException("Client Feature Integration Already Exist");
+        }
+
+
+    }
+
 
     @Override
     public void update(ClientApiIntegrationUpdateRequestDTO requestDTO) {
@@ -130,7 +145,7 @@ public class IntegrationServiceImpl implements IntegrationService {
                 clientFeatureIntegrationRepository.findClientFeatureIntegrationById(requestDTO.getClientFeatureIntegrationId())
                         .orElseThrow(() -> CLIENT_FEATURE_NOT_FOUND.apply(requestDTO.getClientFeatureIntegrationId()));
 
-        IntegrationChannel integrationChannel=integrationChannelRepository.findActiveIntegrationChannel(requestDTO.getIntegrationChannelId())
+        IntegrationChannel integrationChannel = integrationChannelRepository.findActiveIntegrationChannel(requestDTO.getIntegrationChannelId())
                 .orElseThrow(() -> INTEGRATION_CHANNEL_NOT_FOUND.apply(requestDTO.getIntegrationChannelId()));
 
 //        ApiIntegrationType apiIntegrationType=apiIntegrationTypeRepository.findActiveIntegrationType(requestDTO.getIntegrationTypeId())

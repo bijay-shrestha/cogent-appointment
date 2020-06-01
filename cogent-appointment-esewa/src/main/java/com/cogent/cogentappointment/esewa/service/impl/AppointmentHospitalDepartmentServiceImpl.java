@@ -65,7 +65,7 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
 
         log.info(CHECK_AVAILABILITY_PROCESS_STARTED);
 
-        validateIfRequestIsPastDate(requestDTO.getAppointmentDate());
+//        validateIfRequestIsPastDate(requestDTO.getAppointmentDate());
 
         AppointmentHospitalDeptCheckAvailabilityResponseDTO availableTimeSlots =
                 fetchAvailableHospitalDeptTimeSlots(requestDTO);

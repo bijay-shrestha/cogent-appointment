@@ -19,7 +19,7 @@ public class HospitalDeptDutyRosterOverrideQuery {
                 " dd.status = 'Y'" +
                 " AND d.status = 'Y'" +
                 " AND dd.id=:id" +
-                " AND d.date =:date" +
+                " AND :date BETWEEN d.fromDate AND d.toDate" +
                 " And dd.hospitalDepartment.id=:hospitalDepartmentId";
 
         if (!Objects.isNull(roomId))

@@ -6,9 +6,9 @@ import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDutyRost
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.util.Date;
 import java.util.List;
@@ -19,6 +19,7 @@ import static com.cogent.cogentappointment.esewa.constants.QueryConstants.HOSPIT
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.esewa.log.constants.HospitalDepartmentDutyRosterLog.HOSPITAL_DEPARTMENT_DUTY_ROSTER;
 import static com.cogent.cogentappointment.esewa.query.HospitalDeptDutyRosterQuery.QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_INFO;
+import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.utilDateToSqlDate;
 
 /**
  * @author smriti on 29/05/20
@@ -33,17 +34,18 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
 
     @Override
     public List<HospitalDepartmentDutyRoster> fetchHospitalDeptDutyRoster(Date date, Long hospitalDepartmentId) {
-        try {
-            return entityManager.createQuery(QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_INFO,
-                    HospitalDepartmentDutyRoster.class)
-                    .setParameter(DATE, date)
-                    .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId)
-                    .getResultList();
-        } catch (NoResultException ex) {
-            throw HOSPITAL_DEPARTMENT_DUTY_ROSTER_NOT_FOUND.get();
-        }
-    }
 
+        List<HospitalDepartmentDutyRoster> hospitalDepartmentDutyRoster =
+                entityManager.createQuery(QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_INFO, HospitalDepartmentDutyRoster.class)
+                        .setParameter(DATE, utilDateToSqlDate(date))
+                        .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId)
+                        .getResultList();
+
+        if (ObjectUtils.isEmpty(hospitalDepartmentDutyRoster))
+            throw HOSPITAL_DEPARTMENT_DUTY_ROSTER_NOT_FOUND.get();
+
+        return hospitalDepartmentDutyRoster;
+    }
 
     private Supplier<NoContentFoundException> HOSPITAL_DEPARTMENT_DUTY_ROSTER_NOT_FOUND = () -> {
         log.error(CONTENT_NOT_FOUND, HOSPITAL_DEPARTMENT_DUTY_ROSTER);

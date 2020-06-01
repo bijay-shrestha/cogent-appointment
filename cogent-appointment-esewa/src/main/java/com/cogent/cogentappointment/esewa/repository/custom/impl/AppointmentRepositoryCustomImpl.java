@@ -36,6 +36,7 @@ import static com.cogent.cogentappointment.esewa.constants.StringConstant.COMMA_
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.esewa.log.constants.AppointmentLog.APPOINTMENT;
+import static com.cogent.cogentappointment.esewa.query.AppointmentHospitalDepartmentQuery.QUERY_TO_FETCH_BOOKED_APPOINTMENT_HOSPITAL_DEPT_WISE;
 import static com.cogent.cogentappointment.esewa.query.AppointmentQuery.*;
 import static com.cogent.cogentappointment.esewa.utils.AppointmentUtils.parseToAppointmentHistory;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.*;

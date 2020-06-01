@@ -14,6 +14,7 @@ import java.util.Date;
 
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.esewa.query.HospitalDeptDutyRosterOverrideQuery.QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_OVERRIDE_TIME;
+import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.transformQueryToSingleResult;
 
@@ -35,7 +36,7 @@ public class HospitalDeptDutyRosterOverrideRepositoryCustomImpl implements Hospi
                                                                                             Long roomId) {
 
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_OVERRIDE_TIME(roomId))
-                .setParameter(DATE, date)
+                .setParameter(DATE, utilDateToSqlDate(date))
                 .setParameter(ID, hddRosterId)
                 .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId);
 

@@ -13,7 +13,7 @@ public class HospitalDeptDutyRosterWeekDaysQuery {
                     " d.rosterGapDuration as rosterGapDuration" +                       //[3]
                     " FROM HospitalDepartmentDutyRoster d" +
                     " LEFT JOIN HospitalDepartmentWeekDaysDutyRoster dw ON dw.hospitalDepartmentDutyRoster.id = d.id" +
-                    " LEFT JOIN WeekDays w ON w.id = dw.weekDaysId.id" +
+                    " LEFT JOIN WeekDays w ON w.id = dw.weekDays.id" +
                     " WHERE" +
                     " d.status = 'Y'" +
                     " AND d.id=:id" +

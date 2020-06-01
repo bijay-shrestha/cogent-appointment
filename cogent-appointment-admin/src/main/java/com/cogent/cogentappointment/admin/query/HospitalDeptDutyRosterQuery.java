@@ -72,6 +72,7 @@ public class HospitalDeptDutyRosterQuery {
                     " ddr.hasOverrideDutyRoster as hasOverrideDutyRoster," +            //[8]
                     " ddr.isRoomEnabled as isRoomEnabled," +                            //[9]
                     " ddr.hospital.name as hospitalName," +                             //[10]
+                    " ddr.hospital.id as hospitalId,"+                                  //[11]
                     HDD_ROSTER_AUDITABLE_QUERY() +
                     " FROM HospitalDepartmentDutyRoster ddr" +
                     " LEFT JOIN HospitalDepartment hd ON hd.id = ddr.hospitalDepartment.id" +

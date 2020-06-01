@@ -66,6 +66,7 @@ public class IntegrationRequestBodyAttributeResource {
         return ok().build();
     }
 
+
     @GetMapping(FEATURE_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_API_REQUEST_HEADER_ATTRIBUTE_OPERATION)
     public ResponseEntity<?> fetchRequestBodyAttributeByFeatureId(@PathVariable("featureId") Long featureId) {

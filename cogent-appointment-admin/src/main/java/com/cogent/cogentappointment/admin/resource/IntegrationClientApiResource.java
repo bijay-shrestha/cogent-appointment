@@ -76,7 +76,7 @@ public class IntegrationClientApiResource {
 
     @GetMapping(CLIENT_FEATURE_INTEGRATION_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_CLIENT_API_INTEGRATION_DETAIL)
-    public ResponseEntity<?> fetchDetailByAppointmentId(@PathVariable("id") Long id) {
+    public ResponseEntity<?> fetchClientApiIntegrationById(@PathVariable("id") Long id) {
         return ok(integrationService.fetchClientApiIntegrationById(id));
     }
 

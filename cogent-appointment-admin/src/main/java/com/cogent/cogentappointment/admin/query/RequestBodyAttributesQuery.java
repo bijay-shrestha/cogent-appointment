@@ -41,7 +41,7 @@ public class RequestBodyAttributesQuery {
                             " afirbp.status as status" +
                             " FROM" +
                             " feature f"+
-                            " LEFT JOIN api_feature_integration_request_body_parameters afirbp ON afirbp.id=afirbp.feature_id" +
+                            " LEFT JOIN api_feature_integration_request_body_parameters afirbp ON afirbp.feature_id=f.id" +
                             " LEFT JOIN api_integration_request_body_parameters airbp ON airbp.id=afirbp.api_request_body_parameters_id"
                             + GET_WHERE_CLAUSE_TO_SEARCH_API_REQUEST_BODY_ATTRIBUTES(searchRequestDTO);
 

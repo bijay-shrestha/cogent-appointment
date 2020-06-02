@@ -8,20 +8,24 @@ import com.cogent.cogentappointment.admin.dto.request.integrationRequestBodyAttr
 import com.cogent.cogentappointment.admin.dto.response.integration.IntegrationRequestBodyAttributeResponse;
 import com.cogent.cogentappointment.admin.dto.response.integrationRequestBodyAttribute.ApiRequestBodySearchDTO;
 import com.cogent.cogentappointment.admin.dto.response.integrationRequestBodyAttribute.IntegrationRequestBodyDetailResponseDTO;
+import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.ApiFeatureIntegrationRequestBodyParametersRepository;
+import com.cogent.cogentappointment.admin.repository.ClientFeatureIntegrationRepository;
 import com.cogent.cogentappointment.admin.repository.FeatureRepository;
 import com.cogent.cogentappointment.admin.repository.IntegrationRequestBodyParametersRepository;
 import com.cogent.cogentappointment.admin.service.ApiRequestBodyAttributeService;
 import com.cogent.cogentappointment.admin.utils.IntegrationRequestBodyAttributeUtils;
 import com.cogent.cogentappointment.persistence.model.ApiFeatureIntegrationRequestBodyParameters;
 import com.cogent.cogentappointment.persistence.model.ApiIntegrationRequestBodyParameters;
+import com.cogent.cogentappointment.persistence.model.ClientFeatureIntegration;
 import com.cogent.cogentappointment.persistence.model.Feature;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -46,15 +50,17 @@ public class ApiFeatureIntegrationRequestBodyParametersServiceImpl implements
             integrationRequestBodyParametersRepository;
     private final IntegrationRequestBodyParametersRepository requestBodyParametersRepository;
     private final FeatureRepository featureRepository;
+    private final ClientFeatureIntegrationRepository clientFeatureIntegrationRepository;
 
     public ApiFeatureIntegrationRequestBodyParametersServiceImpl
             (ApiFeatureIntegrationRequestBodyParametersRepository integrationRequestBodyParametersRepository,
              IntegrationRequestBodyParametersRepository requestBodyParametersRepository,
-             FeatureRepository featureRepository) {
+             FeatureRepository featureRepository, ClientFeatureIntegrationRepository clientFeatureIntegrationRepository) {
         this.integrationRequestBodyParametersRepository = integrationRequestBodyParametersRepository;
 
         this.requestBodyParametersRepository = requestBodyParametersRepository;
         this.featureRepository = featureRepository;
+        this.clientFeatureIntegrationRepository = clientFeatureIntegrationRepository;
     }
 
 
@@ -118,6 +124,8 @@ public class ApiFeatureIntegrationRequestBodyParametersServiceImpl implements
 
         log.info(DELETING_PROCESS_STARTED, API_REQUEST_BODY_ATTRIBUTES);
 
+        checkClientFeatureIntegration(deleteRequestDTO.getId());
+
         List<ApiFeatureIntegrationRequestBodyParameters> featureIntegrationRequestBodyParameters =
                 integrationRequestBodyParametersRepository
                         .findApiFeatureRequestBodyParameterByFeatureId(deleteRequestDTO.getId())
@@ -127,6 +135,19 @@ public class ApiFeatureIntegrationRequestBodyParametersServiceImpl implements
                 deleteRequestDTO);
 
         log.info(DELETING_PROCESS_COMPLETED, API_REQUEST_BODY_ATTRIBUTES, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    private void checkClientFeatureIntegration(@NotNull Long id) {
+
+        List<ClientFeatureIntegration> clientFeatureIntegrationRepositoryList = clientFeatureIntegrationRepository.
+                findClientFeatureIntegrationByFeatureId(id)
+                .orElse(null);
+
+        if (clientFeatureIntegrationRepositoryList.size() > 0) {
+            throw new DataDuplicationException("Cannot Delete. Feature is integrated in Client Feature Integration");
+        }
+
+
     }
 
     @Override

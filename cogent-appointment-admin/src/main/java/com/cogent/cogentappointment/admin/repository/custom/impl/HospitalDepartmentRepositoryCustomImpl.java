@@ -112,8 +112,11 @@ public class HospitalDepartmentRepositoryCustomImpl implements HospitalDepartmen
                 HospitalDepartmentMinimalResponse.class);
 
         if (minimalResponseDTOS.isEmpty()) {
+
             throw HOSPITAL_DEPARTMENT_NOT_FOUND.get();
+
         } else {
+
             minimalResponseDTOS.forEach(minimalResponseDTO -> {
                 Query fetchBillingModeWithCharge = createQuery.apply(entityManager,
                         QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_BILLING_MODE_WITH_CHARGE)
@@ -122,8 +125,11 @@ public class HospitalDepartmentRepositoryCustomImpl implements HospitalDepartmen
                 minimalResponseDTO.setBillingModeChargeResponseList(transformQueryToResultList(
                         fetchBillingModeWithCharge, BillingModeChargeResponse.class));
             });
+
             response.setHospitalDepartmentList(minimalResponseDTOS);
+
             response.setTotalItems(totalItems);
+
             return response;
         }
 
@@ -148,10 +154,14 @@ public class HospitalDepartmentRepositoryCustomImpl implements HospitalDepartmen
         try {
             HospitalDepartmentResponseDTO responseDTO = transformQueryToSingleResult(query,
                     HospitalDepartmentResponseDTO.class);
+
             responseDTO.setDoctorList(transformQueryToResultList(doctorListQuery, DoctorDropdownDTO.class));
+
             responseDTO.setRoomList(transformQueryToResultList(roomListQuery, DropDownResponseDTO.class));
+
             responseDTO.setBillingModeChargeResponseList(transformQueryToResultList(billingModeWithChargeQuery,
                     BillingModeChargeResponse.class));
+
             return responseDTO;
         } catch (NoResultException e) {
             log.error(CONTENT_NOT_FOUND_BY_ID, HOSPITAL_DEPARTMENT, hospitalDepartmentId);

@@ -13,6 +13,7 @@ import com.cogent.cogentappointment.admin.repository.ApiFeatureIntegrationReques
 import com.cogent.cogentappointment.admin.repository.FeatureRepository;
 import com.cogent.cogentappointment.admin.repository.IntegrationRequestBodyParametersRepository;
 import com.cogent.cogentappointment.admin.service.ApiRequestBodyAttributeService;
+import com.cogent.cogentappointment.admin.utils.IntegrationRequestBodyAttributeUtils;
 import com.cogent.cogentappointment.persistence.model.ApiFeatureIntegrationRequestBodyParameters;
 import com.cogent.cogentappointment.persistence.model.ApiIntegrationRequestBodyParameters;
 import com.cogent.cogentappointment.persistence.model.Feature;
@@ -28,8 +29,7 @@ import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.API_REQUEST_BODY_ATTRIBUTES;
-import static com.cogent.cogentappointment.admin.utils.IntegrationUtils.parseToClientApiFeatureRequestBodyParameters;
-import static com.cogent.cogentappointment.admin.utils.IntegrationUtils.parseToDeletedApiFeatureIntegrationRequestBodyParameters;
+import static com.cogent.cogentappointment.admin.utils.IntegrationRequestBodyAttributeUtils.parseToDeletedApiFeatureIntegrationRequestBodyParameters;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
@@ -76,7 +76,7 @@ public class ApiFeatureIntegrationRequestBodyParametersServiceImpl implements
 
 
         integrationRequestBodyParametersRepository.
-                saveAll(parseToClientApiFeatureRequestBodyParameters(featureId,
+                saveAll(IntegrationRequestBodyAttributeUtils.parseToClientApiFeatureRequestBodyParameters(featureId,
                         requestBodyParameters));
 
     }

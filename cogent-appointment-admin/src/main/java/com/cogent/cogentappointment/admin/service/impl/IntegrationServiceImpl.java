@@ -399,7 +399,8 @@ public class IntegrationServiceImpl implements IntegrationService {
     private void saveApiRequestHeaders(List<ClientApiHeadersRequestDTO> clientApiRequestHeaders,
                                        ApiIntegrationFormat apiIntegrationFormat) {
 
-        apiRequestHeaderRepository.saveAll(parseToClientApiRequestHeaders(clientApiRequestHeaders, apiIntegrationFormat.getId()));
+        apiRequestHeaderRepository.saveAll(parseToClientApiRequestHeaders(clientApiRequestHeaders,
+                apiIntegrationFormat.getId()));
 
     }
 
@@ -411,7 +412,9 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     }
 
-    private void saveApiFeatureIntegration(Long clientFeatureIntegrationId, Long apiIntegrationFormatId, Long integrationChannelId) {
+    private void saveApiFeatureIntegration(Long clientFeatureIntegrationId,
+                                           Long apiIntegrationFormatId,
+                                           Long integrationChannelId) {
 
         apiFeatureIntegrationRepository.save(parseToClientApiFeatureIntegration(clientFeatureIntegrationId,
                 apiIntegrationFormatId, integrationChannelId));
@@ -429,35 +432,36 @@ public class IntegrationServiceImpl implements IntegrationService {
     }
 
     private Function<Long, NoContentFoundException> API_REQUEST_HEADER_NOT_FOUND = (id) -> {
-        throw new NoContentFoundException(ApiRequestHeader.class);
+        throw new NoContentFoundException(ApiRequestHeader.class, "id", id.toString());
     };
 
-
     private Function<Long, NoContentFoundException> API_FEATURE_INTEGRATION_NOT_FOUND = (id) -> {
-        throw new NoContentFoundException(ApiFeatureIntegration.class);
+        throw new NoContentFoundException(ApiFeatureIntegration.class, "id", id.toString());
     };
 
     private Function<Long, NoContentFoundException> API_INTEGRATION_FORMAT_NOT_FOUND = (id) -> {
-        throw new NoContentFoundException(ApiIntegrationFormat.class);
+        throw new NoContentFoundException(ApiIntegrationFormat.class, "id", id.toString());
     };
 
     private Function<Long, NoContentFoundException> CLIENT_FEATURE_NOT_FOUND = (id) -> {
-        throw new NoContentFoundException(ClientFeatureIntegration.class);
+        throw new NoContentFoundException(ClientFeatureIntegration.class, "id", id.toString());
     };
 
     private Function<Long, NoContentFoundException> HTTP_REQUEST_METHOD_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        throw new NoContentFoundException(HttpRequestMethod.class);
+        throw new NoContentFoundException(HttpRequestMethod.class, "id", id.toString());
     };
 
     private Function<Long, NoContentFoundException> FEATURE_NOT_FOUND = (id) -> {
-        throw new NoContentFoundException(Feature.class);
+        throw new NoContentFoundException(Feature.class, "id", id.toString());
     };
 
     private Function<Long, NoContentFoundException> INTEGRATION_CHANNEL_NOT_FOUND = (id) -> {
-        throw new NoContentFoundException(IntegrationChannel.class);
+        throw new NoContentFoundException(IntegrationChannel.class, "id", id.toString());
     };
 
     private Function<Long, NoContentFoundException> INTEGRATION_TYPE_NOT_FOUND = (id) -> {
-        throw new NoContentFoundException(ApiIntegrationType.class);
+        throw new NoContentFoundException(ApiIntegrationType.class, "id", id.toString());
     };
+
+
 }

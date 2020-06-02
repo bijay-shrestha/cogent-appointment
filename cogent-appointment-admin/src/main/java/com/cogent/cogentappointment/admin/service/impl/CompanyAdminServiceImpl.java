@@ -8,6 +8,9 @@ import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminS
 import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.*;
 import com.cogent.cogentappointment.admin.dto.request.email.EmailRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.adminModeIntegration.AdminModeFeatureIntegrationResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.adminModeIntegration.FeatureIntegrationResponse;
+import com.cogent.cogentappointment.admin.dto.response.adminModeIntegration.FeatureIntegrationResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminLoggedInInfoResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminMetaInfoResponseDTO;
@@ -31,10 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.Validator;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -51,6 +51,7 @@ import static com.cogent.cogentappointment.admin.utils.DashboardFeatureUtils.par
 import static com.cogent.cogentappointment.admin.utils.GenderUtils.fetchGenderByCode;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
+import static com.cogent.cogentappointment.admin.utils.commons.SecurityContextUtils.getLoggedInCompanyId;
 import static java.lang.reflect.Array.get;
 
 /**
@@ -85,6 +86,9 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
     private final AdminFeatureService adminFeatureService;
 
+    private final IntegrationRepository integrationRepository;
+    private final AppointmentModeHospitalInfoRepository appointmentModeHospitalInfoRepository;
+
     public CompanyAdminServiceImpl(Validator validator,
                                    AdminRepository adminRepository,
                                    AdminMacAddressInfoRepository adminMacAddressInfoRepository,
@@ -95,7 +99,8 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                                    ProfileService profileService,
                                    DashboardFeatureRepository dashboardFeatureRepository,
                                    AdminDashboardFeatureRepository adminDashboardFeatureRepository,
-                                   AdminFeatureService adminFeatureService) {
+                                   AdminFeatureService adminFeatureService,
+                                   IntegrationRepository integrationRepository, AppointmentModeHospitalInfoRepository appointmentModeHospitalInfoRepository) {
         this.validator = validator;
         this.adminRepository = adminRepository;
         this.adminMacAddressInfoRepository = adminMacAddressInfoRepository;
@@ -108,6 +113,8 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         this.dashboardFeatureRepository = dashboardFeatureRepository;
         this.adminDashboardFeatureRepository = adminDashboardFeatureRepository;
         this.adminFeatureService = adminFeatureService;
+        this.integrationRepository = integrationRepository;
+        this.appointmentModeHospitalInfoRepository = appointmentModeHospitalInfoRepository;
     }
 
     @Override
@@ -399,9 +406,66 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
         CompanyAdminLoggedInInfoResponseDTO responseDTO = adminRepository.fetchLoggedInCompanyAdminInfo(requestDTO);
 
+        Long companyId = getLoggedInCompanyId();
+        List<AppointmentModeHospitalInfo> appointmentModeHospitalInfos =
+                appointmentModeHospitalInfoRepository.
+                        findAppointmentModeHospitalInfoByHospitalId(companyId)
+                        .orElseThrow(() -> APPOINTMENT_MODE_HOSPITAL_INFO.apply(companyId));
+
+        if (appointmentModeHospitalInfos.size() > 0) {
+
+            List<AdminModeFeatureIntegrationResponseDTO> featureIntegrationResponseDTOList = new ArrayList<>();
+            appointmentModeHospitalInfos.forEach(appointmentModeHospitalInfo -> {
+
+                AdminModeFeatureIntegrationResponseDTO integrationResponseDTO =
+                        getAdminModeApiIntegration(appointmentModeHospitalInfo.getAppointmentModeId().getId());
+
+                featureIntegrationResponseDTOList.add(integrationResponseDTO);
+            });
+
+            responseDTO.setEAIntegrate(featureIntegrationResponseDTOList);
+
+        }
+
         log.info(FETCHING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
+    }
+
+    private AdminModeFeatureIntegrationResponseDTO getAdminModeApiIntegration(Long appointmentModeId) {
+
+        List<FeatureIntegrationResponse> integrationResponseDTOList = integrationRepository.
+                fetchAdminModeIntegrationResponseDTO(appointmentModeId);
+
+        List<FeatureIntegrationResponseDTO> features = new ArrayList<>();
+        integrationResponseDTOList.forEach(responseDTO -> {
+
+            Map<String, String> requestHeaderResponseDTO = integrationRepository.
+                    findAdminModeApiRequestHeaders(responseDTO.getApiIntegrationFormatId());
+
+            Map<String, String> queryParametersResponseDTO = integrationRepository.
+                    findAdminModeApiQueryParameters(responseDTO.getApiIntegrationFormatId());
+
+            FeatureIntegrationResponseDTO featureIntegrationResponseDTO =
+                    FeatureIntegrationResponseDTO.builder()
+                            .featureCode(responseDTO.getFeatureCode())
+                            .requestBody(responseDTO.getRequestBody())
+                            .requestMethod(responseDTO.getRequestMethod())
+                            .url(responseDTO.getUrl())
+                            .headers(requestHeaderResponseDTO)
+                            .queryParameters(queryParametersResponseDTO)
+                            .build();
+
+            features.add(featureIntegrationResponseDTO);
+
+        });
+
+        AdminModeFeatureIntegrationResponseDTO clientIntegrationResponseDTO = new AdminModeFeatureIntegrationResponseDTO();
+        clientIntegrationResponseDTO.setFeatures(features);
+        clientIntegrationResponseDTO.setAppointmentModeId(appointmentModeId);
+
+        return clientIntegrationResponseDTO;
+
     }
 
     @Override
@@ -455,7 +519,8 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         List<AdminDashboardFeature> adminDashboardFeatureList = new ArrayList<>();
         adminDashboardRequestDTOS.forEach(result -> {
 
-            AdminDashboardFeature adminDashboardFeature = adminDashboardFeatureRepository.findAdminDashboardFeatureBydashboardFeatureId(result.getId(), admin.getId());
+            AdminDashboardFeature adminDashboardFeature = adminDashboardFeatureRepository.
+                    findAdminDashboardFeatureBydashboardFeatureId(result.getId(), admin.getId());
 
             if (adminDashboardFeature == null) {
                 saveAdminDashboardFeature(result.getId(), admin);
@@ -509,7 +574,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                 validateEmail(isEmailExists, requestEmail);
                 validateMobileNumber(isMobileNumberExists, requestMobileNumber);
             }
-              /*THIS MEANS ADMIN WITH SAME EMAIL/ MOBILE NUMBER ALREADY EXISTS IN ANOTHER COMPANY*/
+            /*THIS MEANS ADMIN WITH SAME EMAIL/ MOBILE NUMBER ALREADY EXISTS IN ANOTHER COMPANY*/
             else {
                 if (isEmailExists && isMobileNumberExists)
                     ADMIN_DUPLICATION_IN_DIFFERENT_HOSPITAL(requestEmail, requestMobileNumber);
@@ -704,6 +769,10 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
     private Function<String, NoContentFoundException> CONFIRMATION_TOKEN_NOT_FOUND = (confirmationToken) -> {
         throw new NoContentFoundException(INVALID_CONFIRMATION_TOKEN, "confirmationToken", confirmationToken);
+    };
+
+    private Function<Long, NoContentFoundException> APPOINTMENT_MODE_HOSPITAL_INFO = (companyId) -> {
+        throw new NoContentFoundException(AppointmentModeHospitalInfo.class);
     };
 
     private Gender fetchGender(Character genderCode) {

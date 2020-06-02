@@ -8,7 +8,12 @@ import com.cogent.cogentappointment.client.dto.response.admin.AdminDetailRespons
 import com.cogent.cogentappointment.client.dto.response.admin.AdminLoggedInInfoResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.admin.AdminMetaInfoResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.admin.AdminMinimalResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.clientIntegration.ApiInfoResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.clientIntegration.ClientIntegrationResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.clientIntegration.FeatureIntegrationResponse;
+import com.cogent.cogentappointment.client.dto.response.clientIntegration.FeatureIntegrationResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.files.FileUploadResponseDTO;
+import com.cogent.cogentappointment.client.dto.response.integration.IntegrationBodyAttributeResponse;
 import com.cogent.cogentappointment.client.exception.BadRequestException;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
@@ -27,16 +32,14 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.validation.Validator;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.AdminServiceMessages.*;
+import static com.cogent.cogentappointment.client.constants.IntegrationApiConstants.BACK_END_CODE;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.*;
 import static com.cogent.cogentappointment.client.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.*;
@@ -82,6 +85,10 @@ public class AdminServiceImpl implements AdminService {
 
     private final AdminFeatureService adminFeatureService;
 
+    private final IntegrationRepository integrationRepository;
+
+    private final IntegrationRequestBodyParametersRepository requestBodyParametersRepository;
+
     public AdminServiceImpl(Validator validator,
                             AdminRepository adminRepository,
                             AdminMacAddressInfoRepository adminMacAddressInfoRepository,
@@ -93,7 +100,7 @@ public class AdminServiceImpl implements AdminService {
                             MinioFileService minioFileService,
                             EmailService emailService,
                             ProfileService profileService,
-                            AdminFeatureService adminFeatureService) {
+                            AdminFeatureService adminFeatureService, IntegrationRepository integrationRepository, IntegrationRequestBodyParametersRepository requestBodyParametersRepository) {
         this.validator = validator;
         this.adminRepository = adminRepository;
         this.adminMacAddressInfoRepository = adminMacAddressInfoRepository;
@@ -106,6 +113,8 @@ public class AdminServiceImpl implements AdminService {
         this.emailService = emailService;
         this.profileService = profileService;
         this.adminFeatureService = adminFeatureService;
+        this.integrationRepository = integrationRepository;
+        this.requestBodyParametersRepository = requestBodyParametersRepository;
     }
 
     @Override
@@ -403,9 +412,70 @@ public class AdminServiceImpl implements AdminService {
         AdminLoggedInInfoResponseDTO responseDTO =
                 adminRepository.fetchLoggedInAdminInfo(requestDTO, getLoggedInHospitalId());
 
+        List<IntegrationBodyAttributeResponse> responses =
+                requestBodyParametersRepository.fetchRequestBodyAttributes();
+
+        Map<String, String> map = new HashMap<>();
+        responses.forEach(response -> {
+            map.put(response.getName(), "");
+        });
+
+        ClientIntegrationResponseDTO integrationResponseDTO = getHospitalApiIntegration(getLoggedInHospitalId());
+        responseDTO.setECIntegrate(integrationResponseDTO);
+        responseDTO.setRequestBody(map);
+
         log.info(FETCHING_PROCESS_COMPLETED, ADMIN, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
+    }
+
+    private ClientIntegrationResponseDTO getHospitalApiIntegration(Long hospitalId) {
+
+        List<FeatureIntegrationResponse> integrationResponseDTOList = integrationRepository.
+                fetchClientIntegrationResponseDTO(hospitalId);
+
+        List<FeatureIntegrationResponseDTO> features = new ArrayList<>();
+        integrationResponseDTOList.forEach(responseDTO -> {
+
+            Map<String, String> requestHeaderResponseDTO = integrationRepository.findApiRequestHeaders(responseDTO.getApiIntegrationFormatId());
+
+            Map<String, String> queryParametersResponseDTO = integrationRepository.findApiQueryParameters(responseDTO.getApiIntegrationFormatId());
+
+            List<IntegrationBodyAttributeResponse> responses =
+                    requestBodyParametersRepository.fetchRequestBodyAttributeByFeatureId(responseDTO.getFeatureId());
+
+            Object[] requestBody = responses.stream()
+                    .map(request -> request.getName())
+                    .collect(Collectors.toList()).toArray();
+
+            FeatureIntegrationResponseDTO featureIntegrationResponseDTO = new FeatureIntegrationResponseDTO();
+            featureIntegrationResponseDTO.setFeatureCode(responseDTO.getFeatureCode());
+            featureIntegrationResponseDTO.setIntegrationChannelCode(responseDTO.getIntegrationChannelCode());
+
+            if (responseDTO.getIntegrationChannelCode() != null ||
+                    !responseDTO.getIntegrationChannelCode().equalsIgnoreCase(BACK_END_CODE)) {
+                ApiInfoResponseDTO apiInfoResponseDTO = new ApiInfoResponseDTO();
+
+                apiInfoResponseDTO.setUrl(responseDTO.getUrl());
+                apiInfoResponseDTO.setRequestMethod(responseDTO.getRequestMethod());
+                apiInfoResponseDTO.setRequestBody(requestBody);
+                apiInfoResponseDTO.setHeaders(requestHeaderResponseDTO);
+                apiInfoResponseDTO.setQueryParameters(queryParametersResponseDTO);
+
+                featureIntegrationResponseDTO.setApiInfo(apiInfoResponseDTO);
+            }
+
+
+            features.add(featureIntegrationResponseDTO);
+
+        });
+
+        ClientIntegrationResponseDTO clientIntegrationResponseDTO = new ClientIntegrationResponseDTO();
+        clientIntegrationResponseDTO.setFeatures(features);
+        clientIntegrationResponseDTO.setClientId(hospitalId);
+
+        return clientIntegrationResponseDTO;
+
     }
 
     @Override
@@ -622,7 +692,7 @@ public class AdminServiceImpl implements AdminService {
             boolean isMobileNumberExists = requestMobileNumber.equalsIgnoreCase((String) get(admin, MOBILE_NUMBER));
             Long hospitalId = (Long) get(admin, HOSPITAL_ID);
 
-              /*THIS MEANS ADMIN WITH SAME EMAIL/ MOBILE NUMBER ALREADY EXISTS IN REQUESTED HOSPITAL*/
+            /*THIS MEANS ADMIN WITH SAME EMAIL/ MOBILE NUMBER ALREADY EXISTS IN REQUESTED HOSPITAL*/
             if (hospitalId.equals(requestedHospitalId)) {
                 if (isEmailExists && isMobileNumberExists) {
                     log.error(String.format(ADMIN_DUPLICATION_MESSAGE, requestEmail, requestMobileNumber));
@@ -632,7 +702,7 @@ public class AdminServiceImpl implements AdminService {
                 validateEmail(isEmailExists, requestEmail);
                 validateMobileNumber(isMobileNumberExists, requestMobileNumber);
             }
-              /*THIS MEANS ADMIN WITH SAME EMAIL/ MOBILE NUMBER ALREADY EXISTS IN ANOTHER HOSPITAL*/
+            /*THIS MEANS ADMIN WITH SAME EMAIL/ MOBILE NUMBER ALREADY EXISTS IN ANOTHER HOSPITAL*/
             else {
                 if (isEmailExists && isMobileNumberExists)
                     ADMIN_DUPLICATION_IN_DIFFERENT_HOSPITAL(requestEmail, requestMobileNumber);

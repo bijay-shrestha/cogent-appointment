@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.admin.resource;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,4 +25,13 @@ public class TestResource {
     public String test() {
         return "e-Appointment Admin is running successfully! ....";
     }
+
+    @PatchMapping
+    @ApiOperation(TEST_OPERATION)
+    public String testPatch() {
+        return "e-Appointment Admin is running successfully! ....";
+    }
+
 }
+
+

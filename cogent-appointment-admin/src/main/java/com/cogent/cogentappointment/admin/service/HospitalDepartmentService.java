@@ -2,9 +2,11 @@ package com.cogent.cogentappointment.admin.service;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
+import com.cogent.cogentappointment.admin.dto.request.billingMode.ChargeRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.HospitalDepartmentRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.HospitalDepartmentSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.HospitalDepartmentUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.billingMode.ChargeResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.HospitalDepartmentMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.HospitalDepartmentResponseDTO;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +34,8 @@ public interface HospitalDepartmentService {
     HospitalDepartmentResponseDTO fetchHospitalDepartmentDetails(Long id);
 
     void delete(DeleteRequestDTO deleteRequestDTO);
+
+    ChargeResponseDTO fetchAppointmentCharge(ChargeRequestDTO requestDTO );
 
 
 }

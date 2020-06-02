@@ -2,7 +2,9 @@ package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
+import com.cogent.cogentappointment.admin.dto.request.billingMode.ChargeRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.*;
+import com.cogent.cogentappointment.admin.dto.response.billingMode.ChargeResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.HospitalDepartmentMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.HospitalDepartmentResponseDTO;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
@@ -226,6 +228,20 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
         deleteRoomInfo(requestDTO);
 
         log.info(DELETING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    @Override
+    public ChargeResponseDTO fetchAppointmentCharge(ChargeRequestDTO requestDTO) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_DETAIL_PROCESS_STARTED, HOSPITAL_DEPARTMENT_BILLING_MODE_INFO);
+
+        ChargeResponseDTO chargeResponseDTO=hospitalDepartmentBillingModeInfoRepository.fetchAppointmentCharge(requestDTO);
+
+        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_BILLING_MODE_INFO,
+                getDifferenceBetweenTwoTime(startTime));
+
+        return chargeResponseDTO;
     }
 
     public void saveBillingModeWithCharge(HospitalDepartmentRequestDTO hospitalRequestDTO,
@@ -513,7 +529,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
     private Function<Long, NoContentFoundException> HOSPITAL_DEPARTMENT_CHARGE_WITH_GIVEN_ID_NOT_FOUND =
             (hospitalDepartmentId) -> {
-                log.error(CONTENT_NOT_FOUND_BY_HOSPITAL_DEPARTMENT_ID, HOSPITAL_DEPARTMENT_CHARGE, hospitalDepartmentId);
+                log.error(CONTENT_NOT_FOUND_BY_HOSPITAL_DEPARTMENT_ID, HOSPITAL_DEPARTMENT_BILLING_MODE_INFO, hospitalDepartmentId);
                 throw new NoContentFoundException(HospitalDepartmentBillingModeInfo.class, "hospitalDepartmentId",
                         hospitalDepartmentId.toString());
             };

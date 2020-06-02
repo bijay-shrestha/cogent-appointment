@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.resource;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.billingMode.ChargeRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.HospitalDepartmentRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.HospitalDepartmentSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.HospitalDepartmentUpdateRequestDTO;
@@ -89,5 +90,11 @@ public class HospitalDepartmentResource {
     @ApiOperation(FETCH_AVAILABLE_ROOM_FOR_DROP_DOWN_OPERATION)
     public ResponseEntity<?> fetchAvailableRoom(@PathVariable("hospitalId") Long hospitalId) {
         return ok(hospitalDepartmentService.fetchAvailableRoom(hospitalId));
+    }
+
+    @PutMapping(BILLING_MODE_WISE+CHARGE)
+    @ApiOperation(FETCH_APPOINTMENT_CHARGE)
+    public ResponseEntity<?> fetchAppointmentCharge(@Valid @RequestBody ChargeRequestDTO requestDTO) {
+        return ok().body(hospitalDepartmentService.fetchAppointmentCharge(requestDTO));
     }
 }

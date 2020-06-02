@@ -44,7 +44,8 @@ public class WebResourceKeyConstants {
     }
 
     public interface BillingModeConstants {
-        String BASE_Billing_MODE = "/billingMode";
+        String BASE_BILLING_MODE = "/billingMode";
+
     }
 
     public interface AppointmentTransferConstants {
@@ -154,6 +155,8 @@ public class WebResourceKeyConstants {
         String AVAILABLE = "/available";
         String ROOM = "/room";
         String HOSPITAL_DEPARTMENT_ID_PATH_VARIABLE_BASE = "/{hospitalDepartmentId}";
+        String CHARGE = "/charge";
+        String BILLING_MODE_WISE = "/billingModeWise";
     }
 
     //I

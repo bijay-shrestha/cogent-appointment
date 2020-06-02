@@ -17,7 +17,7 @@ import javax.validation.Valid;
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.BillingModeConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.AppointmentModeConstants.BASE_APPOINTMENT_MODE;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.BillingModeConstants.BASE_Billing_MODE;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.BillingModeConstants.BASE_BILLING_MODE;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.HospitalConstants.HOSPITAL_ID_PATH_VARIABLE_BASE;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.HospitalConstants.HOSPITAL_WISE;
 import static java.net.URI.create;
@@ -28,7 +28,7 @@ import static org.springframework.http.ResponseEntity.ok;
  * @author Sauravi Thapa ON 4/17/20
  */
 @RestController
-@RequestMapping(value = API_V1 + BASE_Billing_MODE)
+@RequestMapping(value = API_V1 + BASE_BILLING_MODE)
 @Api(BASE_API_VALUE)
 public class BillingModeResource {
 

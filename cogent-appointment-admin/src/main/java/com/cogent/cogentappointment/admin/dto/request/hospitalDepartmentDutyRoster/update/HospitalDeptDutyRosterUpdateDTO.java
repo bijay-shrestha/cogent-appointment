@@ -37,5 +37,8 @@ public class HospitalDeptDutyRosterUpdateDTO implements Serializable {
     @NotNull
     private String remarks;
 
+    @Status
+    private Character isRoomUpdated;
+
 
 }

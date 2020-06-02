@@ -186,7 +186,10 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
 
         updateDutyRosterOverrideStatus(dutyRoster);
 
-//        updateDutyRosterRoomStatus(dutyRoster.getId(), )
+        updateDutyRosterRoomStatus(dutyRoster,
+                updateRequestDTO.getRoomDetail().getRoomId(),
+                updateRequestDTO.getUpdateDetail().getIsRoomUpdated()
+        );
 
         log.info(UPDATING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_DUTY_ROSTER,
                 getDifferenceBetweenTwoTime(startTime));
@@ -548,15 +551,22 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
                         "rosterWeekDaysId", rosterWeekDaysId.toString()));
     }
 
+    /*UPDATE ALL EXISTING OVERRIDE ROSTER STATUS IF DUTY ROSTER'S HAS OVERRIDE FLAG IS 'N'*/
     private void updateDutyRosterOverrideStatus(HospitalDepartmentDutyRoster dutyRoster) {
         if (dutyRoster.getHasOverrideDutyRoster().equals(NO))
             overrideRepository.updateOverrideStatus(dutyRoster.getId());
     }
 
-    private void updateDutyRosterRoomStatus(Long hddRosterId, Long roomId, Character isRoomUpdated) {
+    /*IF ROOM IS UPDATED :
+    A. ORIGINALLY NO ROOM, NOW ROOM IS ENABLED
+    B. ORIGINALLY ROOM, NOW ROOM IS DISABLED
+    C. ORIGINALLY ROOM1, NOW UPDATED TO ROOM2
+    UPDATE ALL EXISTING OVERRIDE ROSTER ROOM ID LIKEWISE AS PER ABOVE CONDITIONS*/
+    private void updateDutyRosterRoomStatus(HospitalDepartmentDutyRoster dutyRoster,
+                                            Long roomId, Character isRoomUpdated) {
 
-        if (isRoomUpdated.equals(YES))
-            overrideRepository.updateOverrideRoomInfo(hddRosterId, roomId);
+        if (dutyRoster.getHasOverrideDutyRoster().equals(YES) && isRoomUpdated.equals(YES))
+            overrideRepository.updateOverrideRoomInfo(dutyRoster.getId(), roomId);
     }
 
     private void saveOrUpdateRosterInfo(HospitalDepartmentDutyRoster dutyRoster,
@@ -672,7 +682,7 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
                 utilDateToSqlDate(fromDate), utilDateToSqlDate(toDate)));
     }
 
-    /*1. FETCH ANY EXISTING DDR EXECPT FOR REQUESTED ONE
+    /*1. FETCH ANY EXISTING DDR EXCEPT FOR REQUESTED ONE
    *   IF IT EXISTS:
    *       A. REQUEST = 'N', EXISTING = 'N' -> NOT ALLOWED
    *       B. REQUEST = 'Y', VALIDATE WITH OTHER DDR IF SAME ROOM REQUEST EXISTS*/

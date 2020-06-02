@@ -189,6 +189,11 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
 
         updateDutyRosterOverrideStatus(dutyRoster);
 
+        updateDutyRosterRoomStatus(dutyRoster,
+                updateRequestDTO.getRoomDetail().getRoomId(),
+                updateRequestDTO.getUpdateDetail().getIsRoomUpdated()
+        );
+
         log.info(UPDATING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_DUTY_ROSTER, getDifferenceBetweenTwoTime(startTime));
     }
 
@@ -562,9 +567,22 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
                         "rosterWeekDaysId", rosterWeekDaysId.toString()));
     }
 
+    /*UPDATE ALL EXISTING OVERRIDE ROSTER STATUS IF DUTY ROSTER'S HAS OVERRIDE FLAG IS 'N'*/
     private void updateDutyRosterOverrideStatus(HospitalDepartmentDutyRoster dutyRoster) {
         if (dutyRoster.getHasOverrideDutyRoster().equals(NO))
             overrideRepository.updateOverrideStatus(dutyRoster.getId());
+    }
+
+    /*IF ROOM IS UPDATED :
+  A. ORIGINALLY NO ROOM, NOW ROOM IS ENABLED
+  B. ORIGINALLY ROOM, NOW ROOM IS DISABLED
+  C. ORIGINALLY ROOM1, NOW UPDATED TO ROOM2
+  UPDATE ALL EXISTING OVERRIDE ROSTER ROOM ID LIKEWISE AS PER ABOVE CONDITIONS*/
+    private void updateDutyRosterRoomStatus(HospitalDepartmentDutyRoster dutyRoster,
+                                            Long roomId, Character isRoomUpdated) {
+
+        if (dutyRoster.getHasOverrideDutyRoster().equals(YES) && isRoomUpdated.equals(YES))
+            overrideRepository.updateOverrideRoomInfo(dutyRoster.getId(), roomId);
     }
 
     private void saveOrUpdateRosterRoomInfo(HospitalDepartmentDutyRoster dutyRoster,

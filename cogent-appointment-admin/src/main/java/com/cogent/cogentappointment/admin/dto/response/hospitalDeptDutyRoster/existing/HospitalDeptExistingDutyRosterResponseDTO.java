@@ -28,5 +28,5 @@ public class HospitalDeptExistingDutyRosterResponseDTO implements Serializable {
 
     private Character isRoomEnabled;
 
-    private String roomNumber;
+    private String roomNumber = "N/A";
 }

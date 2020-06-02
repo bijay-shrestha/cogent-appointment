@@ -92,7 +92,7 @@ public class HospitalDepartmentResource {
         return ok(hospitalDepartmentService.fetchAvailableRoom(hospitalId));
     }
 
-    @PutMapping(BILLING_MODE_WISE+CHARGE)
+    @PutMapping(BILLING_MODE_WISE + CHARGE)
     @ApiOperation(FETCH_APPOINTMENT_CHARGE)
     public ResponseEntity<?> fetchAppointmentCharge(@Valid @RequestBody ChargeRequestDTO requestDTO) {
         return ok().body(hospitalDepartmentService.fetchAppointmentCharge(requestDTO));

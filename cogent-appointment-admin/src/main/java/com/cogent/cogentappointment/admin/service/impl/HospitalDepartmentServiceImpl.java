@@ -2,7 +2,6 @@ package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
-import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.ChargeRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.*;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.ChargeResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.HospitalDepartmentMinimalResponseDTO;
@@ -10,7 +9,6 @@ import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.Hospit
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
-import com.cogent.cogentappointment.admin.repository.BillingModeRepository;
 import com.cogent.cogentappointment.admin.service.HospitalDepartmentService;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
@@ -236,7 +234,8 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
         log.info(FETCHING_DETAIL_PROCESS_STARTED, HOSPITAL_DEPARTMENT_BILLING_MODE_INFO);
 
-        ChargeResponseDTO chargeResponseDTO=hospitalDepartmentBillingModeInfoRepository.fetchAppointmentCharge(requestDTO);
+        ChargeResponseDTO chargeResponseDTO = hospitalDepartmentBillingModeInfoRepository
+                .fetchAppointmentCharge(requestDTO);
 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_BILLING_MODE_INFO,
                 getDifferenceBetweenTwoTime(startTime));

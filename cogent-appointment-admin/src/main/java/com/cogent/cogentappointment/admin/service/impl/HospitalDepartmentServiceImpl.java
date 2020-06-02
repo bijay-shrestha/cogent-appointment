@@ -8,7 +8,7 @@ import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.Hospit
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
-import com.cogent.cogentappointment.admin.repository.custom.BillingModeRepository;
+import com.cogent.cogentappointment.admin.repository.BillingModeRepository;
 import com.cogent.cogentappointment.admin.service.HospitalDepartmentService;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;

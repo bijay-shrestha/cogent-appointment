@@ -8,7 +8,7 @@ import com.cogent.cogentappointment.admin.dto.request.billingMode.BillingModeUpd
 import com.cogent.cogentappointment.admin.dto.response.billingMode.BillingModeMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.billingMode.BillingModeResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.repository.custom.BillingModeRepository;
+import com.cogent.cogentappointment.admin.repository.BillingModeRepository;
 import com.cogent.cogentappointment.admin.service.BillingModeService;
 import com.cogent.cogentappointment.persistence.model.BillingMode;
 import lombok.extern.slf4j.Slf4j;

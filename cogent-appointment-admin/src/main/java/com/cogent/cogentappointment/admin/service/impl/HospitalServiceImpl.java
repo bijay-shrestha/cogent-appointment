@@ -8,7 +8,7 @@ import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalMinimalR
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
-import com.cogent.cogentappointment.admin.repository.custom.BillingModeRepository;
+import com.cogent.cogentappointment.admin.repository.BillingModeRepository;
 import com.cogent.cogentappointment.admin.service.AppointmentServiceTypeService;
 import com.cogent.cogentappointment.admin.service.HospitalService;
 import com.cogent.cogentappointment.admin.service.MinioFileService;

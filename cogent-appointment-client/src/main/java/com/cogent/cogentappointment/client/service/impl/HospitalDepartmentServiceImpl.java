@@ -167,7 +167,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
     }
 
     @Override
-    public List<DropDownResponseDTO> fetchAvailableHospitalDepartment() {
+    public List<DropDownResponseDTO> fetchAvailableRoom() {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED_FOR_ACTIVE_DROPDOWN, AVAILABLE_ROOM);
@@ -175,7 +175,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
         Long hospitalId = getLoggedInHospitalId();
 
         List<DropDownResponseDTO> minDepartment = hospitalDepartmentRepository.
-                fetchAvailableHospitalDepartment(hospitalId).orElseThrow(() -> HOSPITAL_DEPARTMENT_NOT_FOUND());
+                fetchAvailableHospitalDepartment(hospitalId).orElseThrow(() -> ROOM_NOT_FOUND());
 
         log.info(FETCHING_PROCESS_FOR_ACTIVE_DROPDOWN_COMPLETED, AVAILABLE_ROOM,
                 getDifferenceBetweenTwoTime(startTime));
@@ -577,5 +577,10 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
     private NoContentFoundException HOSPITAL_DEPARTMENT_NOT_FOUND() {
         log.error(CONTENT_NOT_FOUND, HOSPITAL_DEPARTMENT);
         throw new NoContentFoundException(HospitalDepartment.class);
+    }
+
+    private NoContentFoundException ROOM_NOT_FOUND() {
+        log.error(CONTENT_NOT_FOUND, ROOM);
+        throw new NoContentFoundException(Room.class);
     }
 }

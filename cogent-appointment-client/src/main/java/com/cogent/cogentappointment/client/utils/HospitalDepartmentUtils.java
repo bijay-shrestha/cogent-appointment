@@ -118,12 +118,16 @@ public class HospitalDepartmentUtils {
         return hospitalDepartment;
     }
 
-    public static HospitalDepartmentBillingModeInfo parseToDeleteHospitalDeptCharge(HospitalDepartmentBillingModeInfo hospitalDepartmentBillingModeInfo,
-                                                                                    DeleteRequestDTO requestDTO) {
-        hospitalDepartmentBillingModeInfo.setStatus(requestDTO.getStatus());
-        hospitalDepartmentBillingModeInfo.setRemarks(requestDTO.getRemarks());
+    public static List<HospitalDepartmentBillingModeInfo> parseToDeleteHospitalDeptCharge(List<HospitalDepartmentBillingModeInfo>
+                                                                                                  hospitalDepartmentBillingModeInfoList,
+                                                                                          DeleteRequestDTO requestDTO) {
+        hospitalDepartmentBillingModeInfoList.forEach(hospitalDepartmentBillingModeInfo -> {
+            hospitalDepartmentBillingModeInfo.setStatus(requestDTO.getStatus());
+            hospitalDepartmentBillingModeInfo.setRemarks(requestDTO.getRemarks());
+        });
 
-        return hospitalDepartmentBillingModeInfo;
+
+        return hospitalDepartmentBillingModeInfoList;
     }
 
 

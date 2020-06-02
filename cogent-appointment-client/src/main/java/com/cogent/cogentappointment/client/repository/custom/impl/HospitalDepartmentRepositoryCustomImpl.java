@@ -5,6 +5,7 @@ import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.Hospit
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentSearchRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.HospitalDepartmentUpdateRequestDTO;
 import com.cogent.cogentappointment.client.dto.response.doctor.DoctorDropdownDTO;
+import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.BillingModeChargeResponse;
 import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.HospitalDepartmentMinimalResponse;
 import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.HospitalDepartmentMinimalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.HospitalDepartmentResponseDTO;
@@ -116,8 +117,19 @@ public class HospitalDepartmentRepositoryCustomImpl implements HospitalDepartmen
         if (minimalResponseDTOS.isEmpty()) {
             throw HOSPITAL_DEPARTMENT_NOT_FOUND.get();
         } else {
+            minimalResponseDTOS.forEach(minimalResponseDTO -> {
+                Query fetchBillingModeWithCharge = createQuery.apply(entityManager,
+                        QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_BILLING_MODE_WITH_CHARGE)
+                        .setParameter(HOSPITAL_DEPARTMENT_ID, Long.parseLong(minimalResponseDTO.getId().toString()));
+
+                minimalResponseDTO.setBillingModeChargeResponseList(transformQueryToResultList(
+                        fetchBillingModeWithCharge, BillingModeChargeResponse.class));
+            });
+
             response.setHospitalDepartmentList(minimalResponseDTOS);
+
             response.setTotalItems(totalItems);
+
             return response;
         }
 
@@ -125,6 +137,7 @@ public class HospitalDepartmentRepositoryCustomImpl implements HospitalDepartmen
 
     @Override
     public HospitalDepartmentResponseDTO fetchHospitalDepartmentDetails(Long hospitalDepartmentId, Long hospitalId) {
+
         Query query = createQuery.apply(entityManager, QUERY_TO_GET_DETAILS)
                 .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId)
                 .setParameter(HOSPITAL_ID, hospitalId);
@@ -135,11 +148,22 @@ public class HospitalDepartmentRepositoryCustomImpl implements HospitalDepartmen
         Query roomListQuery = createQuery.apply(entityManager, QUERY_TO_GET_ROOM_LIST_BY_HOSPITAL_DEPARTMENT_ID)
                 .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId);
 
+        Query billingModeWithChargeQuery = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_BILLING_MODE_WITH_CHARGE)
+                .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId);
+
+
         try {
             HospitalDepartmentResponseDTO responseDTO = transformQueryToSingleResult(query,
                     HospitalDepartmentResponseDTO.class);
+
             responseDTO.setDoctorList(transformQueryToResultList(doctorListQuery, DoctorDropdownDTO.class));
-            responseDTO.setRoomList(transformQueryToResultList(roomListQuery,DropDownResponseDTO.class));
+
+            responseDTO.setRoomList(transformQueryToResultList(roomListQuery, DropDownResponseDTO.class));
+
+            responseDTO.setBillingModeChargeResponseList(transformQueryToResultList(billingModeWithChargeQuery,
+                    BillingModeChargeResponse.class));
+
             return responseDTO;
         } catch (NoResultException e) {
             log.error(CONTENT_NOT_FOUND_BY_ID, HOSPITAL_DEPARTMENT, hospitalDepartmentId);

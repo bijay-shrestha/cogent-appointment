@@ -76,8 +76,6 @@ public class HospitalDepartmentQuery {
                             " hd.id as id," +
                             " hd.name as name," +
                             " hd.status as status," +
-                            " hdc.appointment_charge as appointmentCharge," +
-                            " hdc.appointment_follow_up_charge  as followUpCharge," +
                             " CASE" +
                             " WHEN GROUP_CONCAT(DISTINCT hdr.room_id) IS NULL THEN 'N/A'" +
                             " ELSE GROUP_CONCAT(DISTINCT r.room_number )" +
@@ -85,10 +83,13 @@ public class HospitalDepartmentQuery {
                             " h.name as hospitalName" +
                             " FROM" +
                             " hospital_department hd" +
-                            " LEFT JOIN hospital_department_charge hdc ON hdc.hospital_department_id=hd.id" +
-                            " LEFT JOIN hospital_department_room_info  hdr ON hdr.hospital_department_id=hd.id  AND hdr.status!='D'" +
+                            " LEFT JOIN hospital_department_billing_mode_info hdc ON hdc.hospital_department_id=hd.id" +
+                            " AND hdc.status!='D'" +
+                            " LEFT JOIN hospital_department_room_info  hdr ON hdr.hospital_department_id=hd.id" +
+                            "  AND hdr.status!='D'" +
                             " LEFT JOIN room r ON hdr.room_id =r.id " +
-                            " LEFT JOIN hospital_department_doctor_info  hdd ON hdd.hospital_department_id=hd.id  AND hdd.status!='D'" +
+                            " LEFT JOIN hospital_department_doctor_info  hdd ON hdd.hospital_department_id=hd.id" +
+                            "  AND hdd.status!='D'" +
                             " LEFT JOIN hospital h ON h.id=hd.hospital_id" +
                             " WHERE " +
                             GET_WHERE_CLAUSE_FOR_SEARCH(searchRequestDTO));
@@ -115,7 +116,10 @@ public class HospitalDepartmentQuery {
         if (!ObjectUtils.isEmpty(searchRequestDTO.getRoomId()))
             whereClause += " AND hdr.room_id=" + searchRequestDTO.getRoomId();
 
-        whereClause += " GROUP BY hd.id" +
+        if (!ObjectUtils.isEmpty(searchRequestDTO.getBillingModeId()))
+            whereClause += " AND hdc.billing_mode_id=" + searchRequestDTO.getBillingModeId();
+
+        whereClause += " GROUP BY hd.id,hdc.id" +
                 " ORDER BY hd.id DESC";
 
         return whereClause;
@@ -128,17 +132,15 @@ public class HospitalDepartmentQuery {
                     "  hd.code as code, " +
                     "  hd.description as description, " +
                     "  hd.remarks as remarks, " +
-                    "  hdc.appointmentCharge as appointmentCharge, " +
-                    "  hdc.appointmentFollowUpCharge  as followUpCharge," +
                     "  hd.status as status, " +
                     "  hd.hospital.name as hospitalName," +
                     "  hd.hospital.id as hospitalId," +
                     HOSPITAL_DEPARTMENT_AUDITABLE_QUERY() +
                     "  FROM " +
                     "  HospitalDepartment hd " +
-                    "  LEFT JOIN HospitalDepartmentCharge hdc ON hdc.hospitalDepartment.id=hd.id  " +
                     "  WHERE hd.id=:hospitalDepartmentId" +
-                    "  AND hd.status!='D'";
+                    "  AND hd.status!='D'" +
+                    "  GROUP BY hd.id";
 
     public static String QUERY_TO_GET_DOCTOR_LIST_BY_HOSPITAL_DEPARTMENT_ID =
             "SELECT" +
@@ -155,7 +157,7 @@ public class HospitalDepartmentQuery {
                     " LEFT JOIN DoctorAvatar da ON da.doctorId=hddi.doctor.id" +
                     " WHERE" +
                     " hddi.hospitalDepartment.id = :hospitalDepartmentId" +
-                    " AND hddi.status='Y'"+
+                    " AND hddi.status!='D'"+
                     " AND hddi.hospitalDepartment.status!='D'";
 
     public static String QUERY_TO_GET_ROOM_LIST_BY_HOSPITAL_DEPARTMENT_ID =
@@ -166,8 +168,21 @@ public class HospitalDepartmentQuery {
                     " HospitalDepartmentRoomInfo hdri" +
                     " WHERE" +
                     " hdri.hospitalDepartment.id = :hospitalDepartmentId" +
-                    " AND hdri.status='Y'"+
+                    " AND hdri.status!='D'"+
                     " AND hdri.hospitalDepartment.status!='D'";
+
+
+    public static String QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_BILLING_MODE_WITH_CHARGE=
+            "SELECT " +
+                    "  hb.id as id, " +
+                    "  hb.billingMode.name as billingMode, " +
+                    "  hb.appointmentCharge as appointmentCharge, " +
+                    "  hb.appointmentFollowUpCharge as followUpCharge" +
+                    " FROM " +
+                    "  HospitalDepartmentBillingModeInfo hb " +
+                    " WHERE " +
+                    "  hb.hospitalDepartment.id = :hospitalDepartmentId " +
+                    " AND hb.status!='D'";
 
 
     public static String HOSPITAL_DEPARTMENT_AUDITABLE_QUERY() {

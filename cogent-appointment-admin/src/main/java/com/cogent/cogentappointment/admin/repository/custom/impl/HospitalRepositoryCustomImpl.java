@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
+import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.admin.dto.request.company.CompanySearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospital.HospitalSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.company.CompanyDropdownResponseDTO;
@@ -30,6 +31,7 @@ import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.CLIEN
 import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.HOSPITAL;
 import static com.cogent.cogentappointment.admin.query.CompanyQuery.*;
 import static com.cogent.cogentappointment.admin.query.HospitalAppointmentServiceTypeQuery.QUERY_TO_FETCH_HOSPITAL_APPOINTMENT_SERVICE_TYPE;
+import static com.cogent.cogentappointment.admin.query.HospitalBillingModeInfoQuery.QUERY_TO_GET_BILLING_MODE_DROP_DOWN_BY_HOSPITAL_ID;
 import static com.cogent.cogentappointment.admin.query.HospitalQuery.*;
 import static com.cogent.cogentappointment.admin.utils.CompanyUtils.parseToCompanyResponseDTO;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
@@ -47,20 +49,20 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
     private EntityManager entityManager;
 
     @Override
-    public List<Object[]> validateHospitalDuplicity(String name, String code, String alias) {
+    public List<Object[]> validateHospitalDuplicity(String name, String esewaMerchantCode, String alias) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY)
                 .setParameter(NAME, name)
-                .setParameter(CODE, code)
+                .setParameter(ESEWA_MERCHANT_CODE, esewaMerchantCode)
                 .setParameter(ALIAS, alias);
 
         return query.getResultList();
     }
 
     @Override
-    public List<Object[]> validateCompanyDuplicity(String name, String code) {
+    public List<Object[]> validateCompanyDuplicity(String name, String esewaMerchantCode) {
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_COMPANY_DUPLICITY)
                 .setParameter(NAME, name)
-                .setParameter(CODE, code);
+                .setParameter(ESEWA_MERCHANT_CODE, esewaMerchantCode);
 
         return query.getResultList();
     }
@@ -128,6 +130,9 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_DETAILS)
                 .setParameter(ID, id);
 
+        Query billingModeQuery = createQuery.apply(entityManager, QUERY_TO_GET_BILLING_MODE_DROP_DOWN_BY_HOSPITAL_ID)
+                .setParameter(HOSPITAL_ID, id);
+
         try {
             HospitalResponseDTO hospitalDetails =
                     transformQueryToSingleResult(query, HospitalResponseDTO.class);
@@ -135,6 +140,8 @@ public class HospitalRepositoryCustomImpl implements HospitalRepositoryCustom {
             hospitalDetails.setContactNumberResponseDTOS(fetchHospitalContactNumber(id));
 
             hospitalDetails.setHospitalAppointmentServiceTypeDetail(fetchHospitalAppointmentServiceType(id));
+
+            hospitalDetails.setBillingMode(transformQueryToResultList(billingModeQuery, DropDownResponseDTO.class));
 
             return hospitalDetails;
         } catch (NoResultException ex) {

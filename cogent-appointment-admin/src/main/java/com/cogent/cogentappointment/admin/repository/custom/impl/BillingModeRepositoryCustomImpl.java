@@ -26,6 +26,8 @@ import static com.cogent.cogentappointment.admin.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.BillingModeLog.BILLING_MODE;
 import static com.cogent.cogentappointment.admin.query.BillingModeQuery.*;
+import static com.cogent.cogentappointment.admin.query.HospitalBillingModeInfoQuery.QUERY_TO_GET_ACTIVE_BILLING_MODE_DROP_DOWN_BY_HOSPITAL_ID;
+import static com.cogent.cogentappointment.admin.query.HospitalBillingModeInfoQuery.QUERY_TO_GET_BILLING_MODE_DROP_DOWN_BY_HOSPITAL_ID;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
 
@@ -103,6 +105,17 @@ public class BillingModeRepositoryCustomImpl implements BillingModeRepositoryCus
     }
 
     @Override
+    public List<DropDownResponseDTO> fetchActiveMinBillingModeByHospitalId(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_GET_ACTIVE_BILLING_MODE_DROP_DOWN_BY_HOSPITAL_ID)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
+
+        if (results.isEmpty()) throw BILLING_MODE_NOT_FOUND.get();
+        else return results;
+    }
+
+    @Override
     public List<DropDownResponseDTO> fetchMinBillingMode() {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_BILLING_MODE_FOR_DROP_DOWN);
 
@@ -110,6 +123,26 @@ public class BillingModeRepositoryCustomImpl implements BillingModeRepositoryCus
 
         if (results.isEmpty()) throw BILLING_MODE_NOT_FOUND.get();
         else return results;
+    }
+
+    @Override
+    public List<DropDownResponseDTO> fetchMinBillingModeByHospitalId(Long hospitalId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_GET_BILLING_MODE_DROP_DOWN_BY_HOSPITAL_ID)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
+
+        if (results.isEmpty()) throw BILLING_MODE_NOT_FOUND.get();
+        else return results;
+    }
+
+    @Override
+    public BillingMode fetchBillingModeByHospitalId(Long hospitalId, Long billingModeId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_GET_ACTIVE_BILLING_MODE_BY_HOSPITAL_ID)
+                .setParameter(BILLING_MODE_ID, billingModeId)
+                .setParameter(HOSPITAL_ID, hospitalId);
+
+        return (BillingMode) query.getSingleResult();
     }
 
     private Supplier<NoContentFoundException> BILLING_MODE_NOT_FOUND = () -> {

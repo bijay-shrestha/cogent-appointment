@@ -130,7 +130,7 @@ public class HospitalDepartmentQuery {
                     HOSPITAL_DEPARTMENT_AUDITABLE_QUERY() +
                     "  FROM " +
                     "  HospitalDepartment hd " +
-                    "  LEFT JOIN HospitalDepartmentCharge hdc ON hdc.hospitalDepartment.id=hd.id  " +
+                    "  LEFT JOIN HospitalDepartmentBillingModeInfo hdc ON hdc.hospitalDepartment.id=hd.id  " +
                     "  WHERE hd.id=:hospitalDepartmentId" +
                     "  AND hd.hospital.id=:hospitalId" +
                     "  AND hd.status!='D'";

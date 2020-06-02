@@ -8,7 +8,7 @@ import com.cogent.cogentappointment.admin.dto.request.billingMode.BillingModeUpd
 import com.cogent.cogentappointment.admin.dto.response.billingMode.BillingModeMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.billingMode.BillingModeResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.repository.custom.BillingModeRepository;
+import com.cogent.cogentappointment.admin.repository.BillingModeRepository;
 import com.cogent.cogentappointment.admin.service.BillingModeService;
 import com.cogent.cogentappointment.persistence.model.BillingMode;
 import lombok.extern.slf4j.Slf4j;
@@ -129,12 +129,38 @@ public class BillingModeServiceImpl implements BillingModeService {
     }
 
     @Override
+    public List<DropDownResponseDTO> fetchActiveMinBillingModeByHospitalId(Long hospitalId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, BILLING_MODE);
+
+        List<DropDownResponseDTO> minInfo = billingModeRepository.fetchActiveMinBillingModeByHospitalId(hospitalId);
+
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, BILLING_MODE, getDifferenceBetweenTwoTime(startTime));
+
+        return minInfo;
+    }
+
+    @Override
     public List<DropDownResponseDTO> fetchMinBillingMode() {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, BILLING_MODE);
 
         List<DropDownResponseDTO> minInfo = billingModeRepository.fetchMinBillingMode();
+
+        log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, BILLING_MODE, getDifferenceBetweenTwoTime(startTime));
+
+        return minInfo;
+    }
+
+    @Override
+    public List<DropDownResponseDTO> fetchMinBillingModeByHospitalId(Long hospitalId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, BILLING_MODE);
+
+        List<DropDownResponseDTO> minInfo = billingModeRepository.fetchMinBillingModeByHospitalId(hospitalId);
 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, BILLING_MODE, getDifferenceBetweenTwoTime(startTime));
 

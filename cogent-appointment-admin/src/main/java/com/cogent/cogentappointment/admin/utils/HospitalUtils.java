@@ -29,7 +29,7 @@ public class HospitalUtils {
 
     public static void validateDuplicity(List<Object[]> objects,
                                          String requestedName,
-                                         String requestedCode,
+                                         String requestedEsewaMerchantCode,
                                          String requestedAlias,
                                          String className) {
         final int NAME = 0;
@@ -39,18 +39,19 @@ public class HospitalUtils {
         objects.forEach(object -> {
             boolean isNameExists = requestedName.equalsIgnoreCase((String) get(object, NAME));
 
-            boolean isCodeExists = requestedCode.equalsIgnoreCase((String) get(object, CODE));
+            boolean isCodeExists = requestedEsewaMerchantCode.equalsIgnoreCase((String) get(object, CODE));
 
             boolean isAliasExists = requestedAlias.equalsIgnoreCase((String) get(object, ALIAS));
 
             if (isNameExists && isCodeExists && isAliasExists)
                 throw new DataDuplicationException(
-                        String.format(NAME_AND_CODE_DUPLICATION_MESSAGE, className, requestedName, requestedCode),
-                        "name", requestedName, "code", requestedCode
+                        String.format(NAME_AND_CODE_DUPLICATION_MESSAGE, className, requestedName,
+                                requestedEsewaMerchantCode),
+                        "name", requestedName, "esewaMerchantCode", requestedEsewaMerchantCode
                 );
 
             validateName(isNameExists, requestedName, className);
-            validateCode(isCodeExists, requestedCode, className);
+            validateCode(isCodeExists, requestedEsewaMerchantCode, className);
             validateAlias(isAliasExists, requestedAlias, className);
         });
     }
@@ -79,7 +80,7 @@ public class HospitalUtils {
     public static Hospital convertDTOToHospital(HospitalRequestDTO hospitalRequestDTO) {
         Hospital hospital = new Hospital();
         hospital.setName(convertToNormalCase(hospitalRequestDTO.getName()));
-        hospital.setCode(toUpperCase(hospitalRequestDTO.getHospitalCode()));
+        hospital.setEsewaMerchantCode(toUpperCase(hospitalRequestDTO.getEsewaMerchantCode()));
         hospital.setAddress(hospitalRequestDTO.getAddress());
         hospital.setPanNumber(hospitalRequestDTO.getPanNumber());
         hospital.setStatus(hospitalRequestDTO.getStatus());
@@ -131,8 +132,8 @@ public class HospitalUtils {
         hospitalBanner.setStatus(ACTIVE);
     }
 
-    public static void parseToUpdatedHospital(HospitalUpdateRequestDTO updateRequestDTO,
-                                              Hospital hospital) {
+    public static Hospital parseToUpdatedHospital(HospitalUpdateRequestDTO updateRequestDTO,
+                                                  Hospital hospital) {
 
         hospital.setName(convertToNormalCase(updateRequestDTO.getName()));
         hospital.setAddress(updateRequestDTO.getAddress());
@@ -143,6 +144,8 @@ public class HospitalUtils {
         hospital.setNumberOfAdmins(updateRequestDTO.getNumberOfAdmins());
         hospital.setNumberOfFollowUps(updateRequestDTO.getNumberOfFollowUps());
         hospital.setFollowUpIntervalDays(updateRequestDTO.getFollowUpIntervalDays());
+
+        return hospital;
     }
 
     public static HospitalContactNumber parseToUpdatedHospitalContactNumber(

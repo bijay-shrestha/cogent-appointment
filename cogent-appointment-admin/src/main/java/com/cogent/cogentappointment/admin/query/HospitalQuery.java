@@ -13,23 +13,23 @@ public class HospitalQuery {
     public static final String QUERY_TO_VALIDATE_DUPLICITY =
             "SELECT " +
                     " h.name," +                        //[0]
-                    " h.code," +                         //[1]
+                    " h.esewaMerchantCode," +                         //[1]
                     " h.alias" +                         //[2]
                     " FROM Hospital h" +
                     " WHERE " +
-                    " (h.name =:name OR h.code =:code OR h.alias =:alias)" +
+                    " (h.name =:name OR h.esewaMerchantCode =:esewaMerchantCode OR h.alias =:alias)" +
                     " AND h.status != 'D'";
 
     public static final String QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE =
             "SELECT " +
                     " h.name," +                        //[0]
-                    " h.code," +                         //[1]
+                    " h.esewaMerchantCode," +                         //[1]
                     " h.alias" +                         //[2]
                     " FROM Hospital h" +
                     " WHERE " +
                     " h.id!=:id" +
                     " AND" +
-                    " (h.name =:name OR h.code =:code OR h.alias = :alias)" +
+                    " (h.name =:name OR h.esewaMerchantCode =:esewaMerchantCode OR h.alias = :alias)" +
                     " AND h.status != 'D'";
 
     public static final String QUERY_TO_FETCH_ACTIVE_HOSPITAL_FOR_DROPDOWN =
@@ -63,7 +63,7 @@ public class HospitalQuery {
                 " h.status as status," +                        //[2]
                 " h.address as address," +                      //[3]
                 " tbl.file_uri as fileUri," +                  //[4]
-                " h.code as hospitalCode" +                     //[5]
+                " h.esewa_merchant_code as esewaMerchantCode" +                     //[5]
                 " FROM" +
                 " hospital h" +
                 " LEFT JOIN" +
@@ -73,6 +73,7 @@ public class HospitalQuery {
                 " hl.file_uri FROM hospital_logo hl" +
                 " WHERE hl.status = 'Y'" +
                 " )tbl ON tbl.hospitalId= h.id" +
+                " LEFT JOIN hospital_billing_mode_info hb ON hb.hospital_id=h.id AND hb.status!='D'" +
                 GET_WHERE_CLAUSE_FOR_SEARCHING_HOSPITAL.apply(searchRequestDTO);
     }
 
@@ -83,13 +84,17 @@ public class HospitalQuery {
                 if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
                     whereClause += " AND h.status='" + searchRequestDTO.getStatus() + "'";
 
+                if (!ObjectUtils.isEmpty(searchRequestDTO.getBillingModeId()))
+                    whereClause += " AND hb.billing_mode_id=" + searchRequestDTO.getBillingModeId();
+
                 if (!ObjectUtils.isEmpty(searchRequestDTO.getName()))
                     whereClause += " AND h.name LIKE '%" + searchRequestDTO.getName() + "%'";
 
-                if (!ObjectUtils.isEmpty(searchRequestDTO.getHospitalCode()))
-                    whereClause += " AND h.code LIKE '%" + searchRequestDTO.getHospitalCode() + "%'";
+                if (!ObjectUtils.isEmpty(searchRequestDTO.getEsewaMerchantCode()))
+                    whereClause += " AND h.esewa_merchant_code LIKE '%" + searchRequestDTO.getEsewaMerchantCode() + "%'";
 
-                whereClause += " ORDER BY h.id DESC";
+                whereClause += "  GROUP BY h.id" +
+                        " ORDER BY h.id DESC ";
 
                 return whereClause;
             };
@@ -114,7 +119,7 @@ public class HospitalQuery {
                     " ELSE" +
                     " hb.fileUri" +
                     " END as hospitalBanner," +                                 //[7]
-                    " h.code as hospitalCode," +                                //[8]
+                    " h.esewaMerchantCode as esewaMerchantCode," +                                //[8]
                     " h.refundPercentage as refundPercentage," +               //[9]
                     " h.numberOfAdmins as numberOfAdmins," +                  //[10]
                     " h.numberOfFollowUps as numberOfFollowUps," +            //[11]

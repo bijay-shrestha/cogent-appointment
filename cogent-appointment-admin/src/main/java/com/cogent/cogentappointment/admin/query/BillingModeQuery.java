@@ -31,7 +31,8 @@ public class BillingModeQuery {
             "SELECT bm.id as id," +
                     " bm.name as name," +
                     " bm.code as code," +
-                    " bm.status as status" +
+                    " bm.status as status," +
+                    " bm.description as description" +
                     " FROM BillingMode bm";
 
     public static Function<BillingModeSearchRequestDTO, String> QUERY_TO_SEARCH_BILLING_MODE =
@@ -61,6 +62,7 @@ public class BillingModeQuery {
 
     public static final String QUERY_TO_FETCH_BILLING_MODE_DETAILS =
             "SELECT" +
+                    " bm.id as id," +
                     " bm.name as name," +
                     " bm.code as code," +
                     " bm.status as status," +
@@ -91,4 +93,26 @@ public class BillingModeQuery {
                 " bm.lastModifiedBy as lastModifiedBy," +
                 " bm.lastModifiedDate as lastModifiedDate";
     }
+    
+    public static String QUERY_TO_GET_ACTIVE_BILLING_MODE_BY_HOSPITAL_ID=
+            "SELECT " +
+                    " bm" +
+                    " FROM" +
+                    " BillingMode bm" +
+                    " LEFT JOIN HospitalBillingModeInfo hb ON hb.billingMode.id = bm.id AND hb.status='Y'" +
+                    " WHERE" +
+                    " bm.id =:billingModeId" +
+                    " AND bm.status='Y'" +
+                    " AND hb.hospital.id =:hospitalId";
+
+    public static String QUERY_TO_GET_BILLING_MODE_BY_HOSPITAL_ID=
+            "SELECT " +
+                    " bm" +
+                    " FROM" +
+                    " BillingMode bm" +
+                    " LEFT JOIN HospitalBillingModeInfo hb ON hb.billingMode.id = bm.id AND hb.status!='D'" +
+                    " AND hb.status != 'D'" +
+                    " WHERE" +
+                    " bm.id =:billingModeId" +
+                    " AND hb.hospital.id =:hospitalId";
 }

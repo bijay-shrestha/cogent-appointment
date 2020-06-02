@@ -28,11 +28,6 @@ public class HospitalUpdateRequestDTO implements Serializable {
 
     @NotNull
     @NotEmpty
-    @NotBlank
-    private String hospitalCode;
-
-    @NotNull
-    @NotEmpty
     @SpecialCharacters
     @NotBlank
     private String address;
@@ -82,4 +77,6 @@ public class HospitalUpdateRequestDTO implements Serializable {
 
     @NotNull
     private Long primaryAppointmentServiceTypeId;
+
+    private List<HospitalBillingModeUpdateRequestDTO> billingModeIds;
 }

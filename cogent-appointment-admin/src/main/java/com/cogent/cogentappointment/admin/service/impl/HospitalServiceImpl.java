@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import javax.validation.Validator;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -31,9 +32,12 @@ import static com.cogent.cogentappointment.admin.constants.ErrorMessageConstants
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.*;
 import static com.cogent.cogentappointment.admin.exception.utils.ValidationUtils.validateConstraintViolation;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
+import static com.cogent.cogentappointment.admin.log.constants.BillingModeLog.BILLING_MODE;
 import static com.cogent.cogentappointment.admin.log.constants.HospitalLog.*;
 import static com.cogent.cogentappointment.admin.utils.HmacApiInfoUtils.parseToHmacApiInfo;
 import static com.cogent.cogentappointment.admin.utils.HmacApiInfoUtils.updateHmacApiInfoAsHospital;
+import static com.cogent.cogentappointment.admin.utils.HospitalBillingModeInfoUtils.deleteHospitalBillingModeInfoList;
+import static com.cogent.cogentappointment.admin.utils.HospitalBillingModeInfoUtils.parseToHospitalBillingModeInfoList;
 import static com.cogent.cogentappointment.admin.utils.HospitalUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
@@ -56,11 +60,16 @@ public class HospitalServiceImpl implements HospitalService {
 
     private final HmacApiInfoRepository hmacApiInfoRepository;
 
+    private final HospitalBillingModeInfoRepository hospitalBillingModeInfoRepository;
+
+    private final BillingModeRepository billingModeRepository;
+
     private final MinioFileService minioFileService;
 
     private final Validator validator;
 
     private final HospitalAppointmentServiceTypeRepository hospitalAppointmentServiceTypeRepository;
+
 
     private final AppointmentServiceTypeService appointmentServiceTypeService;
 
@@ -69,6 +78,8 @@ public class HospitalServiceImpl implements HospitalService {
                                HospitalLogoRepository hospitalLogoRepository,
                                HospitalBannerRepository hospitalBannerRepository,
                                HmacApiInfoRepository hmacApiInfoRepository,
+                               HospitalBillingModeInfoRepository hospitalBillingModeInfoRepository,
+                               BillingModeRepository billingModeRepository,
                                MinioFileService minioFileService,
                                Validator validator,
                                HospitalAppointmentServiceTypeRepository hospitalAppointmentServiceTypeRepository,
@@ -78,11 +89,14 @@ public class HospitalServiceImpl implements HospitalService {
         this.hospitalLogoRepository = hospitalLogoRepository;
         this.hospitalBannerRepository = hospitalBannerRepository;
         this.hmacApiInfoRepository = hmacApiInfoRepository;
+        this.hospitalBillingModeInfoRepository = hospitalBillingModeInfoRepository;
+        this.billingModeRepository = billingModeRepository;
         this.minioFileService = minioFileService;
         this.validator = validator;
         this.hospitalAppointmentServiceTypeRepository = hospitalAppointmentServiceTypeRepository;
         this.appointmentServiceTypeService = appointmentServiceTypeService;
     }
+
 
     @Override
     public void save(@Valid HospitalRequestDTO requestDTO, MultipartFile logo, MultipartFile banner)
@@ -95,12 +109,13 @@ public class HospitalServiceImpl implements HospitalService {
         validateConstraintViolation(validator.validate(requestDTO));
 
         List<Object[]> hospitals = hospitalRepository.validateHospitalDuplicity(
-                requestDTO.getName(), requestDTO.getHospitalCode(), requestDTO.getAlias());
+                requestDTO.getName(), requestDTO.getEsewaMerchantCode(), requestDTO.getAlias());
 
         validateDuplicity(hospitals, requestDTO.getName(),
-                requestDTO.getHospitalCode(),
+                requestDTO.getEsewaMerchantCode(),
                 requestDTO.getAlias(),
-                CLIENT);
+                CLIENT
+        );
 
         Hospital hospital = save(convertDTOToHospital(requestDTO));
 
@@ -111,6 +126,9 @@ public class HospitalServiceImpl implements HospitalService {
         saveHospitalBanner(hospital, banner);
 
         saveHmacApiInfo(parseToHmacApiInfo(hospital));
+
+        if (requestDTO.getBillingModeId().size() > 0)
+            saveHospitalBillingModeInfo(hospital, requestDTO.getBillingModeId());
 
         saveHospitalAppointmentServiceType(hospital,
                 requestDTO.getAppointmentServiceTypeIds(),
@@ -134,19 +152,19 @@ public class HospitalServiceImpl implements HospitalService {
         List<Object[]> hospitals = hospitalRepository.validateHospitalDuplicityForUpdate(
                 updateRequestDTO.getId(),
                 updateRequestDTO.getName(),
-                updateRequestDTO.getHospitalCode(),
+                hospital.getEsewaMerchantCode(),
                 hospital.getAlias()
         );
 
         validateDuplicity(hospitals,
                 updateRequestDTO.getName(),
-                updateRequestDTO.getHospitalCode(),
+                hospital.getEsewaMerchantCode(),
                 hospital.getAlias(),
                 CLIENT);
 
         HmacApiInfo hmacApiInfo = hmacApiInfoRepository.getHmacApiInfoByHospitalId(updateRequestDTO.getId());
 
-        parseToUpdatedHospital(updateRequestDTO, hospital);
+        save(parseToUpdatedHospital(updateRequestDTO, hospital));
 
         updateHospitalContactNumber(hospital.getId(), updateRequestDTO.getContactNumberUpdateRequestDTOS());
 
@@ -157,6 +175,9 @@ public class HospitalServiceImpl implements HospitalService {
             updateHospitalBanner(hospital, banner);
 
         updateHmacApiInfo(hmacApiInfo, updateRequestDTO.getStatus(), updateRequestDTO.getRemarks());
+
+        if (updateRequestDTO.getBillingModeIds().size() > 0)
+            updateBillingMode(updateRequestDTO, hospital);
 
         updateHospitalAppointmentServiceType(hospital, updateRequestDTO.getAppointmentServiceTypeUpdateRequestDTO());
 
@@ -196,6 +217,8 @@ public class HospitalServiceImpl implements HospitalService {
         save(parseToDeletedHospital(hospital, deleteRequestDTO));
 
         updateHmacApiInfo(hmacApiInfo, deleteRequestDTO.getStatus(), deleteRequestDTO.getRemarks());
+
+        deleteHospitalBillingModeInfoList(deleteRequestDTO);
 
         log.info(DELETING_PROCESS_COMPLETED, HOSPITAL, getDifferenceBetweenTwoTime(startTime));
     }
@@ -271,6 +294,38 @@ public class HospitalServiceImpl implements HospitalService {
         return alias;
     }
 
+    private void saveHospitalBillingModeInfo(Hospital hospital, List<Long> billingModeIds) {
+
+        List<BillingMode> billingModes = new ArrayList<>();
+
+        billingModeIds.forEach(billingModeId -> {
+            billingModes.add(fetchBillingModeById(billingModeId));
+        });
+
+        saveHospitalBillingModeInfoList(parseToHospitalBillingModeInfoList.apply(hospital, billingModes));
+    }
+
+    private void deleteHospitalBillingModeInfo(Hospital hospital, List<Long> billingModeIds) {
+
+        Long hospitalId = hospital.getId();
+
+        List<HospitalBillingModeInfo> infoList = new ArrayList<>();
+
+        billingModeIds.forEach(billingModeId -> {
+            infoList.add(fetchHospitalBillingModeInfo(billingModeId, hospitalId));
+        });
+
+        saveHospitalBillingModeInfoList(deleteHospitalBillingModeInfoList.apply(infoList, hospital.getRemarks()));
+    }
+
+    private void deleteHospitalBillingModeInfoList(DeleteRequestDTO deleteRequestDTO) {
+
+        List<HospitalBillingModeInfo> hospitalBillingModeInfos = fetchHospitalBillingModeInfo(deleteRequestDTO.getId());
+
+        saveHospitalBillingModeInfoList(deleteHospitalBillingModeInfoList.apply(hospitalBillingModeInfos,
+                deleteRequestDTO.getRemarks()));
+    }
+
     private Hospital save(Hospital hospital) {
         return hospitalRepository.save(hospital);
     }
@@ -278,6 +333,24 @@ public class HospitalServiceImpl implements HospitalService {
     private void saveHmacApiInfo(HmacApiInfo hmacApiInfo) {
         hmacApiInfoRepository.save(hmacApiInfo);
     }
+
+    private void saveHospitalBillingModeInfoList(List<HospitalBillingModeInfo> hospitalBillingModeInfo) {
+        hospitalBillingModeInfoRepository.saveAll(hospitalBillingModeInfo);
+    }
+
+    private BillingMode fetchBillingModeById(Long id) {
+        return billingModeRepository.fetchActiveBillingModeById(id)
+                .orElseThrow(() -> BILLING_MODE_WITH_GIVEN_ID_NOT_FOUND.apply(id));
+    }
+
+    private HospitalBillingModeInfo fetchHospitalBillingModeInfo(Long billingModeId, Long hospitalid) {
+        return hospitalBillingModeInfoRepository.fetchHospitalBillingModeInfo(billingModeId, hospitalid);
+    }
+
+    private List<HospitalBillingModeInfo> fetchHospitalBillingModeInfo(Long hospitalid) {
+        return hospitalBillingModeInfoRepository.fetchHospitalBillingModeInfoByHospitalId(hospitalid);
+    }
+
 
     private void saveHospitalContactNumber(Long hospitalId, List<String> contactNumbers) {
         List<HospitalContactNumber> hospitalContactNumbers = contactNumbers.stream()
@@ -342,6 +415,30 @@ public class HospitalServiceImpl implements HospitalService {
         saveHmacApiInfo(hmacApiInfoToUpdate);
     }
 
+    private void updateBillingMode(HospitalUpdateRequestDTO requestDTO, Hospital hospital) {
+        List<HospitalBillingModeUpdateRequestDTO
+                > billingModeIds = requestDTO.getBillingModeIds();
+
+        List<Long> newBillingModeIds = new ArrayList<>();
+
+        List<Long> deleteBillingModeIds = new ArrayList<>();
+
+        billingModeIds.forEach(billingModeId -> {
+            if (billingModeId.getStatus().equals(YES)) {
+                newBillingModeIds.add(billingModeId.getBillingModeId());
+            } else {
+                deleteBillingModeIds.add(billingModeId.getBillingModeId());
+            }
+        });
+
+        if (newBillingModeIds.size() > 0)
+            saveHospitalBillingModeInfo(hospital, newBillingModeIds);
+
+        if (deleteBillingModeIds.size() > 0)
+            deleteHospitalBillingModeInfo(hospital, deleteBillingModeIds);
+
+    }
+
     private void updateHospitalLogo(Hospital hospital, MultipartFile files) {
         HospitalLogo hospitalLogo = hospitalLogoRepository.findHospitalLogoByHospitalId(hospital.getId());
 
@@ -377,6 +474,11 @@ public class HospitalServiceImpl implements HospitalService {
     private Function<Long, NoContentFoundException> HOSPITAL_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, HOSPITAL, id);
         throw new NoContentFoundException(String.format(NO_RECORD_FOUND, CLIENT), "id", id.toString());
+    };
+
+    private Function<Long, NoContentFoundException> BILLING_MODE_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, BILLING_MODE, id);
+        throw new NoContentFoundException(BillingMode.class, "id", id.toString());
     };
 
     private void saveHospitalAppointmentServiceType(Hospital hospital, List<Long> appointmentServiceTypeIds,

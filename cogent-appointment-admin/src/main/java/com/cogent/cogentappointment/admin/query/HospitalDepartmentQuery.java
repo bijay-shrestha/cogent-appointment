@@ -119,7 +119,7 @@ public class HospitalDepartmentQuery {
         if (!ObjectUtils.isEmpty(searchRequestDTO.getBillingModeId()))
             whereClause += " AND hdc.billing_mode_id=" + searchRequestDTO.getBillingModeId();
 
-        whereClause += " GROUP BY hd.id,hdc.id" +
+        whereClause += " GROUP BY hd.id" +
                 " ORDER BY hd.id DESC";
 
         return whereClause;

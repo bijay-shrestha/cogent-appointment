@@ -79,8 +79,7 @@ public class HospitalDepartmentQuery {
                             " CASE" +
                             " WHEN GROUP_CONCAT(DISTINCT hdr.room_id) IS NULL THEN 'N/A'" +
                             " ELSE GROUP_CONCAT(DISTINCT r.room_number )" +
-                            " END as roomList," +
-                            " h.name as hospitalName" +
+                            " END as roomList" +
                             " FROM" +
                             " hospital_department hd" +
                             " LEFT JOIN hospital_department_billing_mode_info hdc ON hdc.hospital_department_id=hd.id" +
@@ -117,7 +116,7 @@ public class HospitalDepartmentQuery {
         if (!ObjectUtils.isEmpty(searchRequestDTO.getBillingModeId()))
             whereClause += " AND hdc.billing_mode_id=" + searchRequestDTO.getBillingModeId();
 
-        whereClause += " GROUP BY hd.id,hdc.id" +
+        whereClause += " GROUP BY hd.id" +
                 " ORDER BY hd.id DESC";
 
         return whereClause;

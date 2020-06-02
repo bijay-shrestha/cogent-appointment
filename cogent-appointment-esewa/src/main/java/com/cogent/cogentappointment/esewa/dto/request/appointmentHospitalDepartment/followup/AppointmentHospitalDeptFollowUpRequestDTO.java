@@ -14,7 +14,7 @@ import java.util.Date;
  */
 @Getter
 @Setter
-public class AppointmentHospitalDepartmentFollowUpRequestDTO implements Serializable {
+public class AppointmentHospitalDeptFollowUpRequestDTO implements Serializable {
 
     private Long patientId;
 
@@ -36,4 +36,6 @@ public class AppointmentHospitalDepartmentFollowUpRequestDTO implements Serializ
     @NotEmpty
     @NotBlank
     private String userId;
+
+    private Long roomId;
 }

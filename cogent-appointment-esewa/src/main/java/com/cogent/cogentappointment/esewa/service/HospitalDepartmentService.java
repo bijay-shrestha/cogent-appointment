@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.esewa.service;
 import com.cogent.cogentappointment.esewa.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.request.hospitalDepartment.ChargeRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.response.hospitalDepartment.ChargeResponseDTO;
+import com.cogent.cogentappointment.persistence.model.Hospital;
 
 import java.util.List;
 
@@ -16,5 +17,7 @@ public interface HospitalDepartmentService {
     List<DropDownResponseDTO> fetchBillingModeByDepartmentId(Long hospitalDepartmentId);
 
     ChargeResponseDTO fetchAppointmentCharge(ChargeRequestDTO requestDTO);
+
+
 
 }

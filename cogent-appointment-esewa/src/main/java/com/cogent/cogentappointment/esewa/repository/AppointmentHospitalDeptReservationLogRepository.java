@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
  * @author smriti on 02/06/20
  */
 @Repository
-public interface AppointmentHospitalDepartmentReservationLogRepository extends
+public interface AppointmentHospitalDeptReservationLogRepository extends
         JpaRepository<AppointmentHospitalDepartmentReservationLog, Long>, AppointmentHospitalDeptReservationLogRepositoryCustom {
 //
 //    @Query("SELECT a FROM AppointmentReservationLog a WHERE a.id=:id")

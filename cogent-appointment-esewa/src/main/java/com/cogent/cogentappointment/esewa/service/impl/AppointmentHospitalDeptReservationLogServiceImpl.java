@@ -1,34 +1,30 @@
 package com.cogent.cogentappointment.esewa.service.impl;
 
 import com.cogent.cogentappointment.esewa.dto.request.appointment.followup.AppointmentFollowUpRequestDTO;
+import com.cogent.cogentappointment.esewa.dto.request.appointmentHospitalDepartment.followup.AppointmentHospitalDeptFollowUpRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
 import com.cogent.cogentappointment.esewa.exception.DataDuplicationException;
 import com.cogent.cogentappointment.esewa.exception.NoContentFoundException;
 import com.cogent.cogentappointment.esewa.property.AppointmentReservationProperties;
-import com.cogent.cogentappointment.esewa.repository.AppointmentRepository;
-import com.cogent.cogentappointment.esewa.repository.AppointmentReservationLogRepository;
-import com.cogent.cogentappointment.esewa.repository.DoctorDutyRosterOverrideRepository;
-import com.cogent.cogentappointment.esewa.repository.DoctorDutyRosterRepository;
+import com.cogent.cogentappointment.esewa.repository.*;
 import com.cogent.cogentappointment.esewa.service.AppointmentHospitalDeptReservationLogService;
-import com.cogent.cogentappointment.persistence.model.AppointmentReservationLog;
+import com.cogent.cogentappointment.esewa.service.HospitalService;
+import com.cogent.cogentappointment.persistence.model.Hospital;
+import com.cogent.cogentappointment.persistence.model.HospitalDepartment;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.AppointmentServiceMessage.APPOINTMENT_EXISTS;
-import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.AppointmentServiceMessage.INVALID_APPOINTMENT_TIME;
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.DoctorServiceMessages.DOCTOR_NOT_AVAILABLE;
 import static com.cogent.cogentappointment.esewa.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.*;
-import static com.cogent.cogentappointment.esewa.log.constants.AppointmentReservationLog.APPOINTMENT_RESERVATION_LOG;
-import static com.cogent.cogentappointment.esewa.utils.AppointmentReservationLogUtils.parseToAppointmentReservation;
-import static com.cogent.cogentappointment.esewa.utils.AppointmentUtils.validateIfRequestIsBeforeCurrentDateTime;
-import static com.cogent.cogentappointment.esewa.utils.AppointmentUtils.validateIfRequestedAppointmentTimeIsValid;
+import static com.cogent.cogentappointment.esewa.log.constants.AppointmentHospitalDepartmentReservationLog.APPOINTMENT_HOSPITAL_DEPARTMENT_RESERVATION_LOG;
+import static com.cogent.cogentappointment.esewa.log.constants.HospitalDepartmentLog.HOSPITAL_DEPARTMENT;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.*;
 
 /**
@@ -37,9 +33,10 @@ import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.*;
 @Service
 @Transactional
 @Slf4j
-public class AppointmentHospitalDeptReservationLogServiceImpl implements AppointmentHospitalDeptReservationLogService {
+public class AppointmentHospitalDeptReservationLogServiceImpl implements
+        AppointmentHospitalDeptReservationLogService {
 
-    private final AppointmentReservationLogRepository appointmentReservationLogRepository;
+    private final AppointmentHospitalDeptReservationLogRepository appointmentHospitalDeptReservationLogRepository;
 
     private final AppointmentRepository appointmentRepository;
 
@@ -49,16 +46,25 @@ public class AppointmentHospitalDeptReservationLogServiceImpl implements Appoint
 
     private final AppointmentReservationProperties reservationProperties;
 
-    public AppointmentHospitalDeptReservationLogServiceImpl(AppointmentReservationLogRepository appointmentReservationLogRepository,
-                                                            AppointmentRepository appointmentRepository,
-                                                            DoctorDutyRosterRepository doctorDutyRosterRepository,
-                                                            DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository,
-                                                            AppointmentReservationProperties reservationProperties) {
-        this.appointmentReservationLogRepository = appointmentReservationLogRepository;
+    private final HospitalService hospitalService;
+
+    private final HospitalDepartmentRepository hospitalDepartmentRepository;
+
+    public AppointmentHospitalDeptReservationLogServiceImpl(
+            AppointmentHospitalDeptReservationLogRepository appointmentHospitalDeptReservationLogRepository,
+            AppointmentRepository appointmentRepository,
+            DoctorDutyRosterRepository doctorDutyRosterRepository,
+            DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository,
+            AppointmentReservationProperties reservationProperties,
+            HospitalService hospitalService,
+            HospitalDepartmentRepository hospitalDepartmentRepository) {
+        this.appointmentHospitalDeptReservationLogRepository = appointmentHospitalDeptReservationLogRepository;
         this.appointmentRepository = appointmentRepository;
         this.doctorDutyRosterRepository = doctorDutyRosterRepository;
         this.doctorDutyRosterOverrideRepository = doctorDutyRosterOverrideRepository;
         this.reservationProperties = reservationProperties;
+        this.hospitalService = hospitalService;
+        this.hospitalDepartmentRepository = hospitalDepartmentRepository;
     }
 
     /*   VALIDATE REQUEST INFO :
@@ -69,11 +75,11 @@ public class AppointmentHospitalDeptReservationLogServiceImpl implements Appoint
     *   SAVE IN APPOINTMENT RESERVATION LOG ONLY IF IT HAS NOT BEEN SAVED BEFORE
     *   (SAME DOCTOR, SPECIALIZATION, HOSPITAL, APPOINTMENT DATE/TIME */
     @Override
-    public Long saveAppointmentReservationLog(AppointmentFollowUpRequestDTO requestDTO) {
+    public Long saveAppointmentHospitalDeptReservationLog(AppointmentHospitalDeptFollowUpRequestDTO requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(SAVING_PROCESS_STARTED, APPOINTMENT_RESERVATION_LOG);
+        log.info(SAVING_PROCESS_STARTED, APPOINTMENT_HOSPITAL_DEPARTMENT_RESERVATION_LOG);
 
         validateRequestedAppointmentInfo(requestDTO);
 
@@ -82,7 +88,7 @@ public class AppointmentHospitalDeptReservationLogServiceImpl implements Appoint
         if (Objects.isNull(appointmentReservationLogId))
             appointmentReservationLogId = save(requestDTO);
 
-        log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT_RESERVATION_LOG, getDifferenceBetweenTwoTime(startTime));
+        log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT_HOSPITAL_DEPARTMENT_RESERVATION_LOG, getDifferenceBetweenTwoTime(startTime));
 
         return appointmentReservationLogId;
     }
@@ -92,62 +98,69 @@ public class AppointmentHospitalDeptReservationLogServiceImpl implements Appoint
     @Override
     public void deleteExpiredAppointmentReservation() {
 
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(DELETING_PROCESS_STARTED, APPOINTMENT_RESERVATION_LOG);
-
-        List<AppointmentReservationLog> appointmentReservations =
-                appointmentReservationLogRepository.fetchAppointmentReservationLog();
-
-        appointmentReservations.forEach(appointmentReservation -> {
-
-            long expiryDate = appointmentReservation.getCreatedDate().getTime() +
-                    TimeUnit.MINUTES.toMillis(Long.parseLong(reservationProperties.getDeleteIntervalInMinutes()));
-
-            long currentDateInMillis = new Date().getTime();
-
-            if (expiryDate < currentDateInMillis)
-                appointmentReservationLogRepository.delete(appointmentReservation);
-        });
-
-        log.info(DELETING_PROCESS_COMPLETED, APPOINTMENT_RESERVATION_LOG, getDifferenceBetweenTwoTime(startTime));
+//        Long startTime = getTimeInMillisecondsFromLocalDate();
+//
+//        log.info(DELETING_PROCESS_STARTED, APPOINTMENT_RESERVATION_LOG);
+//
+//        List<AppointmentReservationLog> appointmentReservations =
+//                appointmentReservationLogRepository.fetchAppointmentReservationLog();
+//
+//        appointmentReservations.forEach(appointmentReservation -> {
+//
+//            long expiryDate = appointmentReservation.getCreatedDate().getTime() +
+//                    TimeUnit.MINUTES.toMillis(Long.parseLong(reservationProperties.getDeleteIntervalInMinutes()));
+//
+//            long currentDateInMillis = new Date().getTime();
+//
+//            if (expiryDate < currentDateInMillis)
+//                appointmentReservationLogRepository.delete(appointmentReservation);
+//        });
+//
+//        log.info(DELETING_PROCESS_COMPLETED, APPOINTMENT_RESERVATION_LOG, getDifferenceBetweenTwoTime(startTime));
     }
 
-    private Long save(AppointmentFollowUpRequestDTO requestDTO) {
-        AppointmentReservationLog appointmentReservationLog = parseToAppointmentReservation(requestDTO);
+    private Long save(AppointmentHospitalDeptFollowUpRequestDTO requestDTO) {
 
-        appointmentReservationLogRepository.save(appointmentReservationLog);
+        Hospital hospital = hospitalService.fetchActiveHospital(requestDTO.getHospitalId());
 
-        return appointmentReservationLog.getId();
+//        HospitalDepartment hospitalDepartment = fetchHospitalDepartment(
+//                requestDTO.getHospitalDepartmentId(),
+//                requestDTO.getHospitalId()
+//        );
+//
+//
+//
+//        AppointmentHospitalDepartmentReservationLog appointmentReservationLog =
+//                parseToAppointmentHospitalDepartmentReservation(requestDTO, hospital);
+
+//        appointmentHospitalDeptReservationLogRepository.save(appointmentReservationLog);
+//
+//        return appointmentReservationLog.getId();
+
+        return null;
     }
 
-    private Long fetchAppointmentReservationLogId(AppointmentFollowUpRequestDTO requestDTO) {
-        return appointmentReservationLogRepository.fetchAppointmentReservationLogId(
-                requestDTO.getAppointmentDate(),
-                requestDTO.getAppointmentTime(),
-                requestDTO.getDoctorId(),
-                requestDTO.getSpecializationId(),
-                requestDTO.getHospitalId()
-        );
+    private Long fetchAppointmentReservationLogId(AppointmentHospitalDeptFollowUpRequestDTO requestDTO) {
+        return appointmentHospitalDeptReservationLogRepository.fetchAppointmentHospitalDeptReservationLogId(requestDTO);
     }
 
-    private void validateRequestedAppointmentInfo(AppointmentFollowUpRequestDTO appointmentInfo) {
+    private void validateRequestedAppointmentInfo(AppointmentHospitalDeptFollowUpRequestDTO appointmentInfo) {
 
-        validateIfRequestIsBeforeCurrentDateTime(
-                appointmentInfo.getAppointmentDate(), appointmentInfo.getAppointmentTime());
-
-        validateIfParentAppointmentExists(appointmentInfo);
-
-        DoctorDutyRosterTimeResponseDTO doctorDutyRosterInfo = fetchDoctorDutyRosterInfo(appointmentInfo);
-
-        boolean isTimeValid = validateIfRequestedAppointmentTimeIsValid(
-                doctorDutyRosterInfo, appointmentInfo.getAppointmentTime());
-
-        if (!isTimeValid) {
-            log.error(INVALID_APPOINTMENT_TIME, convert24HourTo12HourFormat(appointmentInfo.getAppointmentTime()));
-            throw new NoContentFoundException(String.format(INVALID_APPOINTMENT_TIME,
-                    convert24HourTo12HourFormat(appointmentInfo.getAppointmentTime())));
-        }
+//        validateIfRequestIsBeforeCurrentDateTime(
+//                appointmentInfo.getAppointmentDate(), appointmentInfo.getAppointmentTime());
+//
+//        validateIfParentAppointmentExists(appointmentInfo);
+//
+//        DoctorDutyRosterTimeResponseDTO doctorDutyRosterInfo = fetchDoctorDutyRosterInfo(appointmentInfo);
+//
+//        boolean isTimeValid = validateIfRequestedAppointmentTimeIsValid(
+//                doctorDutyRosterInfo, appointmentInfo.getAppointmentTime());
+//
+//        if (!isTimeValid) {
+//            log.error(INVALID_APPOINTMENT_TIME, convert24HourTo12HourFormat(appointmentInfo.getAppointmentTime()));
+//            throw new NoContentFoundException(String.format(INVALID_APPOINTMENT_TIME,
+//                    convert24HourTo12HourFormat(appointmentInfo.getAppointmentTime())));
+//        }
     }
 
     /*VALIDATE IF APPOINTMENT ALREADY EXISTS ON SELECTED DATE AND TIME */
@@ -204,5 +217,15 @@ public class AppointmentHospitalDeptReservationLogServiceImpl implements Appoint
         return overrideRosters;
     }
 
+    private HospitalDepartment fetchHospitalDepartment(Long hospitalDepartmentId, Long hospitalId) {
+        return hospitalDepartmentRepository.fetchActiveByIdAndHospitalId(hospitalDepartmentId, hospitalId)
+                .orElseThrow(() -> HOSPITAL_DEPARTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(hospitalDepartmentId));
+
+    }
+
+    private Function<Long, NoContentFoundException> HOSPITAL_DEPARTMENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
+        log.error(CONTENT_NOT_FOUND_BY_ID, HOSPITAL_DEPARTMENT, id);
+        throw new NoContentFoundException(HospitalDepartment.class, "id", id.toString());
+    };
 
 }

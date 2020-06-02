@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.esewa.service.impl;
 
 import com.cogent.cogentappointment.esewa.dto.request.appointment.followup.AppointmentFollowUpRequestDTO;
-import com.cogent.cogentappointment.esewa.dto.request.appointmentHospitalDepartment.followup.AppointmentHospitalDepartmentFollowUpRequestDTO;
+import com.cogent.cogentappointment.esewa.dto.request.appointmentHospitalDepartment.followup.AppointmentHospitalDeptFollowUpRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.followup.AppointmentFollowUpResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointmentHospitalDepartment.followup.AppointmentHospitalDeptFollowUpResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.hospital.HospitalFollowUpResponseDTO;
@@ -62,7 +62,7 @@ public class AppointmentHospitalDeptFollowUpTrackerServiceImpl implements Appoin
 
     @Override
     public AppointmentHospitalDeptFollowUpResponseDTO fetchAppointmentHospitalDeptFollowUpDetails
-            (AppointmentHospitalDepartmentFollowUpRequestDTO requestDTO) {
+            (AppointmentHospitalDeptFollowUpRequestDTO requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 

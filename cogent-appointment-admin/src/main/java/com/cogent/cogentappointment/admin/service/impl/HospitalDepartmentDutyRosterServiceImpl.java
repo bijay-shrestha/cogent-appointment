@@ -186,6 +186,11 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
 
         updateDutyRosterOverrideStatus(dutyRoster);
 
+        updateDutyRosterRoomStatus(dutyRoster,
+                updateRequestDTO.getRoomDetail().getRoomId(),
+                updateRequestDTO.getUpdateDetail().getIsRoomUpdated()
+        );
+
         log.info(UPDATING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_DUTY_ROSTER,
                 getDifferenceBetweenTwoTime(startTime));
     }
@@ -458,13 +463,13 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
 
         if (hospitalDepartmentDutyRoster.getIsRoomEnabled().equals(YES)) {
             Long count = overrideRepository.fetchOverrideCountWithRoom(
-                    hospitalDepartmentDutyRoster.getId(), fromDate, toDate, roomId);
+                    hospitalDepartmentDutyRoster.getHospitalDepartment().getId(), fromDate, toDate, roomId);
 
             validateOverrideCountWithRoom(count, fromDate, toDate);
         } else {
 
             Long count = overrideRepository.fetchOverrideCountWithoutRoom(
-                    hospitalDepartmentDutyRoster.getId(), fromDate, toDate);
+                    hospitalDepartmentDutyRoster.getHospitalDepartment().getId(), fromDate, toDate);
 
             validateOverrideCountWithoutRoom(count, fromDate, toDate);
         }
@@ -546,15 +551,28 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
                         "rosterWeekDaysId", rosterWeekDaysId.toString()));
     }
 
+    /*UPDATE ALL EXISTING OVERRIDE ROSTER STATUS IF DUTY ROSTER'S HAS OVERRIDE FLAG IS 'N'*/
     private void updateDutyRosterOverrideStatus(HospitalDepartmentDutyRoster dutyRoster) {
         if (dutyRoster.getHasOverrideDutyRoster().equals(NO))
             overrideRepository.updateOverrideStatus(dutyRoster.getId());
     }
 
+    /*IF ROOM IS UPDATED :
+    A. ORIGINALLY NO ROOM, NOW ROOM IS ENABLED
+    B. ORIGINALLY ROOM, NOW ROOM IS DISABLED
+    C. ORIGINALLY ROOM1, NOW UPDATED TO ROOM2
+    UPDATE ALL EXISTING OVERRIDE ROSTER ROOM ID LIKEWISE AS PER ABOVE CONDITIONS*/
+    private void updateDutyRosterRoomStatus(HospitalDepartmentDutyRoster dutyRoster,
+                                            Long roomId, Character isRoomUpdated) {
+
+        if (dutyRoster.getHasOverrideDutyRoster().equals(YES) && isRoomUpdated.equals(YES))
+            overrideRepository.updateOverrideRoomInfo(dutyRoster.getId(), roomId);
+    }
+
     private void saveOrUpdateRosterInfo(HospitalDepartmentDutyRoster dutyRoster,
                                         HospitalDeptDutyRosterRoomUpdateRequestDTO roomUpdateRequestDTO) {
 
-        if (Objects.isNull(roomUpdateRequestDTO.getRoomId()) && dutyRoster.getIsRoomEnabled().equals(YES))
+        if (Objects.isNull(roomUpdateRequestDTO.getRosterRoomId()) && dutyRoster.getIsRoomEnabled().equals(YES))
             saveDutyRosterRoomInfo(dutyRoster, roomUpdateRequestDTO.getRoomId());
 
         if (!Objects.isNull(roomUpdateRequestDTO.getRosterRoomId())) {
@@ -589,7 +607,7 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
 
         if (hospitalDepartmentDutyRoster.getIsRoomEnabled().equals(YES)) {
             Long count = overrideRepository.fetchOverrideCountWithRoomExceptCurrentId(
-                    hospitalDepartmentDutyRoster.getId(), fromDate,
+                    hospitalDepartmentDutyRoster.getHospitalDepartment().getId(), fromDate,
                     toDate, updateRequestDTO.getRoomId(), updateRequestDTO.getRosterOverrideId()
             );
 
@@ -597,7 +615,8 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
         } else {
 
             Long count = overrideRepository.fetchOverrideCountWithoutRoomExceptCurrentId(
-                    hospitalDepartmentDutyRoster.getId(), fromDate, toDate, updateRequestDTO.getRosterOverrideId());
+                    hospitalDepartmentDutyRoster.getHospitalDepartment().getId(), fromDate,
+                    toDate, updateRequestDTO.getRosterOverrideId());
 
             validateOverrideCountWithoutRoom(count, fromDate, toDate);
         }
@@ -663,7 +682,7 @@ public class HospitalDepartmentDutyRosterServiceImpl implements HospitalDepartme
                 utilDateToSqlDate(fromDate), utilDateToSqlDate(toDate)));
     }
 
-    /*1. FETCH ANY EXISTING DDR EXECPT FOR REQUESTED ONE
+    /*1. FETCH ANY EXISTING DDR EXCEPT FOR REQUESTED ONE
    *   IF IT EXISTS:
    *       A. REQUEST = 'N', EXISTING = 'N' -> NOT ALLOWED
    *       B. REQUEST = 'Y', VALIDATE WITH OTHER DDR IF SAME ROOM REQUEST EXISTS*/

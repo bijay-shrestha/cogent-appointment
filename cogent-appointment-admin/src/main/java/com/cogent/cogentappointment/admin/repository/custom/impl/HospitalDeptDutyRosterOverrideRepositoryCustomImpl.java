@@ -88,8 +88,16 @@ public class HospitalDeptDutyRosterOverrideRepositoryCustomImpl implements
     }
 
     @Override
+    public void updateOverrideRoomInfo(Long hddRosterId, Long roomId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_UPDATE_OVERRIDE_ROOM(roomId))
+                .setParameter(ID, hddRosterId);
+
+        query.executeUpdate();
+    }
+
+    @Override
     public List<HospitalDepartmentDutyRosterOverride> fetchOverrideList(List<HospitalDeptDutyRosterOverrideUpdateRequestDTO>
-                                                                                    updateRequestDTOS) {
+                                                                                updateRequestDTOS) {
         List<HospitalDepartmentDutyRosterOverride> overrides =
                 entityManager.createQuery(QUERY_TO_FETCH_HDD_ROSTER_OVERRIDE(updateRequestDTOS),
                         HospitalDepartmentDutyRosterOverride.class)

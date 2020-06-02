@@ -42,6 +42,12 @@ public class HospitalDeptDutyRosterOverrideQuery {
                     " SET h.status = 'N'" +
                     " WHERE h.hospitalDepartmentDutyRoster.id = :id";
 
+    public static String QUERY_TO_UPDATE_OVERRIDE_ROOM(Long roomId) {
+        return " UPDATE HospitalDepartmentDutyRosterOverride h" +
+                " SET h.room = " + roomId +
+                " WHERE h.hospitalDepartmentDutyRoster.id = :id";
+    }
+
     public static final String QUERY_TO_FETCH_DDR_OVERRIDE_COUNT_WITHOUT_ROOM_EXCEPT_CURRENT_ID =
             " SELECT COUNT(dd.id)" +
                     " FROM HospitalDepartmentDutyRosterOverride dd" +

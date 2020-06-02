@@ -102,6 +102,15 @@ public class SwaggerConstants {
     }
 
     //B
+    public interface BillingModeConstant {
+        String BASE_API_VALUE = "This is Billing Mode Resource.";
+        String SAVE_OPERATION = "Save new Billing Mode";
+        String UPDATE_OPERATION = "Update existing Billing Mode";
+        String DELETE_OPERATION = "Set Billing Mode status as 'D' when deleted";
+        String SEARCH_OPERATION = "Search Billing Mode according to given request parameters";
+        String DETAILS_OPERATION = "Fetch Billing Mode details by its id";
+        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal Billing Mode details for dropdown";
+    }
 
     //C
     public interface CompanyAdminConstant {

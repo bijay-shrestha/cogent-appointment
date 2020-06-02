@@ -1,7 +1,9 @@
 package com.cogent.cogentappointment.admin.repository.custom;
 
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointmentMode.AppointmentModeRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.appointmentMode.AppointmentModeSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointmentMode.AppointmentModeUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentMode.AppointmentModeMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointmentMode.AppointmentModeResponseDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -17,9 +19,9 @@ import java.util.List;
 @Repository
 @Qualifier("appointmentModeRepositoryCustom")
 public interface AppointmentModeRepositoryCustom {
-    Long validateDuplicity(String name);
+    List<Object[]> validateDuplicity(AppointmentModeRequestDTO requestDTO);
 
-    Long validateDuplicity(Long id, String name);
+    List<Object[]> validateDuplicity(AppointmentModeUpdateRequestDTO requestDTO);
 
     List<AppointmentModeMinimalResponseDTO> search(AppointmentModeSearchRequestDTO searchRequestDTO,
                                                    Pageable pageable);

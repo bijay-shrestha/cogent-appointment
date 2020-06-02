@@ -14,15 +14,16 @@ public class AppointmentFollowUpTrackerUtils {
             Character isFollowUp,
             Double appointmentCharge,
             Long parentAppointmentId,
-            Long savedAppointmentReservationId) {
+            Long savedAppointmentReservationId,
+            Double hospitalRefundPercentage) {
 
         return AppointmentFollowUpResponseDTO.builder()
                 .isFollowUp(isFollowUp)
                 .appointmentCharge(appointmentCharge)
                 .parentAppointmentId(parentAppointmentId)
                 .appointmentReservationId(savedAppointmentReservationId)
+                .refundPercentage(hospitalRefundPercentage)
                 .build();
-
     }
 
     public static AppointmentFollowUpResponseDTOWithStatus parseToAppointmentFollowUpResponseDTOWithStatus(

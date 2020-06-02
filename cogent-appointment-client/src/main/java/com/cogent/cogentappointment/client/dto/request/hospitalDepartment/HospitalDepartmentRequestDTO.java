@@ -40,8 +40,5 @@ public class HospitalDepartmentRequestDTO implements Serializable {
     private List<Long> roomId;
 
     @NotNull
-    private Double appointmentCharge;
-
-    @NotNull
-    private Double followUpCharge;
+    private List<BillingModeChargeDTO> billingModeChargeDTOList;
 }

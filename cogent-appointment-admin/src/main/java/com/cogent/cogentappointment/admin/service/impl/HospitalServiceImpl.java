@@ -302,7 +302,7 @@ public class HospitalServiceImpl implements HospitalService {
             billingModes.add(fetchBillingModeById(billingModeId));
         });
 
-        saveHospitalBillingModeInfo(parseToHospitalBillingModeInfoList.apply(hospital, billingModes));
+        saveHospitalBillingModeInfoList(parseToHospitalBillingModeInfoList.apply(hospital, billingModes));
     }
 
     private void deleteHospitalBillingModeInfo(Hospital hospital, List<Long> billingModeIds) {
@@ -315,14 +315,14 @@ public class HospitalServiceImpl implements HospitalService {
             infoList.add(fetchHospitalBillingModeInfo(billingModeId, hospitalId));
         });
 
-        saveHospitalBillingModeInfo(deleteHospitalBillingModeInfoList.apply(infoList, hospital.getRemarks()));
+        saveHospitalBillingModeInfoList(deleteHospitalBillingModeInfoList.apply(infoList, hospital.getRemarks()));
     }
 
     private void deleteHospitalBillingModeInfoList(DeleteRequestDTO deleteRequestDTO) {
 
         List<HospitalBillingModeInfo> hospitalBillingModeInfos = fetchHospitalBillingModeInfo(deleteRequestDTO.getId());
 
-        saveHospitalBillingModeInfo(deleteHospitalBillingModeInfoList.apply(hospitalBillingModeInfos,
+        saveHospitalBillingModeInfoList(deleteHospitalBillingModeInfoList.apply(hospitalBillingModeInfos,
                 deleteRequestDTO.getRemarks()));
     }
 
@@ -334,7 +334,7 @@ public class HospitalServiceImpl implements HospitalService {
         hmacApiInfoRepository.save(hmacApiInfo);
     }
 
-    private void saveHospitalBillingModeInfo(List<HospitalBillingModeInfo> hospitalBillingModeInfo) {
+    private void saveHospitalBillingModeInfoList(List<HospitalBillingModeInfo> hospitalBillingModeInfo) {
         hospitalBillingModeInfoRepository.saveAll(hospitalBillingModeInfo);
     }
 

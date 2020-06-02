@@ -11,7 +11,6 @@ import com.cogent.cogentappointment.admin.dto.response.clientIntegration.ClientA
 import com.cogent.cogentappointment.admin.dto.response.clientIntegration.clientIntegrationUpdate.ApiQueryParametersUpdateResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.clientIntegration.clientIntegrationUpdate.ApiRequestHeaderUpdateResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.clientIntegration.clientIntegrationUpdate.ClientApiIntegrationUpdateResponseDTO;
-import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.IntegrationService;
@@ -334,6 +333,12 @@ public class IntegrationServiceImpl implements IntegrationService {
         responseDTO.setUrl(featureIntegrationResponse.getUrl());
         responseDTO.setHeaders(requestHeaderResponseDTO);
         responseDTO.setQueryParameters(queryParametersResponseDTO);
+
+        //autitable data
+        responseDTO.setCreatedBy(featureIntegrationResponse.getCreatedBy());
+        responseDTO.setCreatedDate(featureIntegrationResponse.getCreatedDate());
+        responseDTO.setLastModifiedBy(featureIntegrationResponse.getLastModifiedBy());
+        responseDTO.setLastModifiedDate(featureIntegrationResponse.getLastModifiedDate());
 
         return responseDTO;
     }

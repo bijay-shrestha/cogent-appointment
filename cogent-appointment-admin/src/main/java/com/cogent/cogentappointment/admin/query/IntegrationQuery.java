@@ -20,10 +20,10 @@ public class IntegrationQuery {
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=afi.apiIntegrationFormatId" +
                     " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId" +
                     " WHERE" +
-                    " cfi.status='Y'"+
-                    " afi.status='Y'"+
-                    " aif.status='Y'"+
-                    " hrm.status='Y'"+
+                    " cfi.status='Y'" +
+                    " afi.status='Y'" +
+                    " aif.status='Y'" +
+                    " hrm.status='Y'" +
                     " AND f.id=:featureId" +
                     " AND hrm.id=:requestMethodId" +
                     " AND cfi.hospitalId=:hospitalId";
@@ -140,7 +140,8 @@ public class IntegrationQuery {
                     " ic.id as integrationChannelId," +
                     " ic.name as integrationChannel," +
                     " ait.id as integrationTypeId," +
-                    " ait.name as integrationType" +
+                    " ait.name as integrationType," +
+                    CLIENT_API_INTEGRATION_AUDITABLE_QUERY() +
                     " from ClientFeatureIntegration cfi" +
                     " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=cfi.id" +
                     " LEFT JOIN Feature f ON f.id=cfi.featureId" +
@@ -231,6 +232,13 @@ public class IntegrationQuery {
 
 
         return whereClause;
+    }
+
+    public static String CLIENT_API_INTEGRATION_AUDITABLE_QUERY() {
+        return " cfi.createdBy as createdBy," +
+                " cfi.createdDate as createdDate," +
+                " cfi.lastModifiedBy as lastModifiedBy," +
+                " cfi.lastModifiedDate as lastModifiedDate";
     }
 
 }

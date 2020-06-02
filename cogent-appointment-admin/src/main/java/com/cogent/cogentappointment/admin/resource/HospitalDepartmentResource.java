@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.admin.resource;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.billingMode.ChargeRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.ChargeRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.HospitalDepartmentRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.HospitalDepartmentSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.HospitalDepartmentUpdateRequestDTO;

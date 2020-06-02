@@ -1,7 +1,7 @@
-package com.cogent.cogentappointment.admin.repository.custom;
+package com.cogent.cogentappointment.client.repository.custom;
 
-import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.ChargeRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.ChargeResponseDTO;
+import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.ChargeRequestDTO;
+import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.ChargeResponseDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 

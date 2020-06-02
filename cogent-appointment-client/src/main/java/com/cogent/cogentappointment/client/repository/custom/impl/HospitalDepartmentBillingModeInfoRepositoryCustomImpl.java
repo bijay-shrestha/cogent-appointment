@@ -1,9 +1,9 @@
-package com.cogent.cogentappointment.admin.repository.custom.impl;
+package com.cogent.cogentappointment.client.repository.custom.impl;
 
-import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.ChargeRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.ChargeResponseDTO;
-import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.repository.custom.HospitalDepartmentBillingModeInfoRepositoryCustom;
+import com.cogent.cogentappointment. client.dto.request.hospitalDepartment.ChargeRequestDTO;
+import com.cogent.cogentappointment. client.dto.response.hospitalDepartment.ChargeResponseDTO;
+import com.cogent.cogentappointment. client.exception.NoContentFoundException;
+import com.cogent.cogentappointment. client.repository.custom.HospitalDepartmentBillingModeInfoRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartmentBillingModeInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -15,13 +15,13 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.admin.constants.QueryConstants.BILLING_MODE_ID;
-import static com.cogent.cogentappointment.admin.constants.QueryConstants.HOSPITAL_DEPARTMENT_ID;
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
-import static com.cogent.cogentappointment.admin.log.constants.HospitalDepartmentLog.HOSPITAL_DEPARTMENT_BILLING_MODE_INFO;
-import static com.cogent.cogentappointment.admin.query.HospitalDepartmentBillingModeInfoQuery.QUERY_TO_GET_CHARGE_BY_BILLING_MODE_AND_HOSPITAL_DEPARTMENT_ID;
-import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
-import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToSingleResult;
+import static com.cogent.cogentappointment. client.constants.QueryConstants.BILLING_MODE_ID;
+import static com.cogent.cogentappointment. client.constants.QueryConstants.HOSPITAL_DEPARTMENT_ID;
+import static com.cogent.cogentappointment. client.log.CommonLogConstant.CONTENT_NOT_FOUND;
+import static com.cogent.cogentappointment. client.log.constants.HospitalDepartmentLog.HOSPITAL_DEPARTMENT_BILLING_MODE_INFO;
+import static com.cogent.cogentappointment. client.query.HospitalDepartmentBillingModeInfoQuery.QUERY_TO_GET_CHARGE_BY_BILLING_MODE_AND_HOSPITAL_DEPARTMENT_ID;
+import static com.cogent.cogentappointment. client.utils.commons.QueryUtils.createQuery;
+import static com.cogent.cogentappointment. client.utils.commons.QueryUtils.transformQueryToSingleResult;
 
 /**
  * @author Sauravi Thapa ON 5/20/20

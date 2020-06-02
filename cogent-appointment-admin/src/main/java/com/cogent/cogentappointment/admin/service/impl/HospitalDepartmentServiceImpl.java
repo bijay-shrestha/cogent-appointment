@@ -2,9 +2,9 @@ package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.commons.DropDownResponseDTO;
-import com.cogent.cogentappointment.admin.dto.request.billingMode.ChargeRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.ChargeRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.*;
-import com.cogent.cogentappointment.admin.dto.response.billingMode.ChargeResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.ChargeResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.HospitalDepartmentMinimalResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.hospitalDepartment.HospitalDepartmentResponseDTO;
 import com.cogent.cogentappointment.admin.exception.DataDuplicationException;

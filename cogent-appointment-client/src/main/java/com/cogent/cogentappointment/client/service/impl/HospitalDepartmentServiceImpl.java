@@ -3,6 +3,7 @@ package com.cogent.cogentappointment.client.service.impl;
 import com.cogent.cogentappointment.client.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.client.dto.commons.DropDownResponseDTO;
 import com.cogent.cogentappointment.client.dto.request.hospitalDepartment.*;
+import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.ChargeResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.HospitalDepartmentMinimalResponseDTO;
 import com.cogent.cogentappointment.client.dto.response.hospitalDepartment.HospitalDepartmentResponseDTO;
 import com.cogent.cogentappointment.client.exception.DataDuplicationException;
@@ -45,7 +46,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
     private final HospitalDepartmentRepository hospitalDepartmentRepository;
 
-    private final HospitalDepartmentChargeRepository hospitalDepartmentChargeRepository;
+    private final HospitalDepartmentBillingModeInfoRepository hospitalDepartmentBillingModeInfoRepository;
 
     private final HospitalDepartmentRoomInfoRepository hospitalDepartmentRoomInfoRepository;
 
@@ -58,14 +59,14 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
     private final RoomRepository roomRepository;
 
     public HospitalDepartmentServiceImpl(HospitalDepartmentRepository hospitalDepartmentRepository,
-                                         HospitalDepartmentChargeRepository hospitalDepartmentChargeRepository,
+                                         HospitalDepartmentBillingModeInfoRepository hospitalDepartmentBillingModeInfoRepository,
                                          HospitalDepartmentRoomInfoRepository hospitalDepartmentRoomInfoRepository,
                                          HospitalDepartmentDoctorInfoRepository hospitalDepartmentDoctorInfoRepository,
                                          HospitalRepository hospitalRepository,
                                          DoctorRepository doctorRepository,
                                          RoomRepository roomRepository) {
         this.hospitalDepartmentRepository = hospitalDepartmentRepository;
-        this.hospitalDepartmentChargeRepository = hospitalDepartmentChargeRepository;
+        this.hospitalDepartmentBillingModeInfoRepository = hospitalDepartmentBillingModeInfoRepository;
         this.hospitalDepartmentRoomInfoRepository = hospitalDepartmentRoomInfoRepository;
         this.hospitalDepartmentDoctorInfoRepository = hospitalDepartmentDoctorInfoRepository;
         this.hospitalRepository = hospitalRepository;
@@ -230,6 +231,20 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
         deleteRoomInfo(requestDTO);
 
         log.info(DELETING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
+    }
+
+    @Override
+    public ChargeResponseDTO fetchAppointmentCharge(ChargeRequestDTO requestDTO) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_DETAIL_PROCESS_STARTED, HOSPITAL_DEPARTMENT_BILLING_MODE_INFO);
+
+        ChargeResponseDTO chargeResponseDTO=hospitalDepartmentBillingModeInfoRepository.fetchAppointmentCharge(requestDTO);
+
+        log.info(FETCHING_DETAIL_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT_BILLING_MODE_INFO,
+                getDifferenceBetweenTwoTime(startTime));
+
+        return chargeResponseDTO;
     }
 
 
@@ -423,7 +438,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
     }
 
     private void saveHospitalDepartmentCharge(HospitalDepartmentBillingModeInfo hospitalDepartmentBillingModeInfo) {
-        hospitalDepartmentChargeRepository.save(hospitalDepartmentBillingModeInfo);
+        hospitalDepartmentBillingModeInfoRepository.save(hospitalDepartmentBillingModeInfo);
     }
 
     private HospitalDepartment fetchHospitalDepartmentById(Long hospitalDepartmentId, Long hospitalId) {
@@ -432,7 +447,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
     }
 
     private HospitalDepartmentBillingModeInfo fetchHospitalDepartmentChargeByHospitalDepartmentId(Long hospitalDepartmentId) {
-        return hospitalDepartmentChargeRepository.fetchByHospitalDepartmentId(hospitalDepartmentId)
+        return hospitalDepartmentBillingModeInfoRepository.fetchByHospitalDepartmentId(hospitalDepartmentId)
                 .orElseThrow(() -> HOSPITAL_DEPARTMENT_CHARGE_WITH_GIVEN_ID_NOT_FOUND.apply(hospitalDepartmentId));
     }
 

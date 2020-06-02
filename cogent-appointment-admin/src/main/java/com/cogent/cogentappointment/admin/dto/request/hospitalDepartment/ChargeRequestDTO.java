@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.dto.request.billingMode;
+package com.cogent.cogentappointment.admin.dto.request.hospitalDepartment;
 
 import lombok.Getter;
 import lombok.Setter;

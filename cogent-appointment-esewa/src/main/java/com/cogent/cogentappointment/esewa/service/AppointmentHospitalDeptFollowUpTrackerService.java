@@ -6,7 +6,7 @@ import com.cogent.cogentappointment.esewa.dto.response.appointment.followup.Appo
 /**
  * @author smriti on 16/02/20
  */
-public interface AppointmentFollowUpTrackerService {
+public interface AppointmentHospitalDeptFollowUpTrackerService {
 
     AppointmentFollowUpResponseDTOWithStatus fetchAppointmentFollowUpDetails(AppointmentFollowUpRequestDTO requestDTO);
 

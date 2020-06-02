@@ -14,6 +14,7 @@ import static com.cogent.cogentappointment.admin.constants.QueryConstants.API_RE
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.HOSPITAL_ID;
 import static com.cogent.cogentappointment.admin.query.IntegrationQuery.VALIDATE_HOSPITAL_REQUEST_METHOD_AND_FEATURE;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createNativeQuery;
+import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
 
 /**
  * @author rupak ON 2020/06/02-9:46 AM
@@ -21,23 +22,25 @@ import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.create
 @Repository
 @Transactional(readOnly = true)
 @Slf4j
-public class IntegrationClientFeatureRepositoryCustomImpl implements
+public class ClientFeatureIntegrationRepositoryCustomImpl implements
         ClientFeatureIntegrationRepositoryCustom {
 
     @PersistenceContext
     private EntityManager entityManager;
 
-//    @Override
-//    public Long findHospitalFeatureAndRequestMethod(Long hospitalId,
-//                                                    Long featureTypeId,
-//                                                    Long requestMethodId) {
-//        Query query = createNativeQuery.apply(entityManager,
-//                VALIDATE_HOSPITAL_REQUEST_METHOD_AND_FEATURE)
-//                .setParameter(API_FEATURE__ID, featureTypeId)
-//                .setParameter(HOSPITAL_ID, hospitalId)
-//                .setParameter(API_REQUEST_METHOD_ID, requestMethodId);
-//
-//
-//        return (Long) query.getSingleResult();
-//    }
+    @Override
+    public Long findHospitalFeatureAndRequestMethod(Long hospitalId,
+                                                    Long featureTypeId,
+                                                    Long requestMethodId) {
+        Query query = createQuery.apply(entityManager,
+                VALIDATE_HOSPITAL_REQUEST_METHOD_AND_FEATURE)
+                .setParameter(API_FEATURE__ID, featureTypeId)
+                .setParameter(HOSPITAL_ID, hospitalId)
+                .setParameter(API_REQUEST_METHOD_ID, requestMethodId);
+
+
+        return (Long) query.getSingleResult();
+    }
+
+
 }

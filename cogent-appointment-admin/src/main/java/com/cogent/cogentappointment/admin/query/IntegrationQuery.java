@@ -15,15 +15,15 @@ public class IntegrationQuery {
             " SELECT" +
                     " COUNT(cfi.id)" +
                     " FROM ClientFeatureIntegration cfi" +
-                    " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=cfi.id" +
                     " LEFT JOIN Feature f ON f.id=cfi.featureId" +
+                    " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=cfi.id" +
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=afi.apiIntegrationFormatId" +
                     " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId" +
                     " WHERE" +
                     " cfi.status='Y'" +
-                    " afi.status='Y'" +
-                    " aif.status='Y'" +
-                    " hrm.status='Y'" +
+                    " AND afi.status='Y'" +
+                    " AND aif.status='Y'" +
+                    " AND hrm.status='Y'" +
                     " AND f.id=:featureId" +
                     " AND hrm.id=:requestMethodId" +
                     " AND cfi.hospitalId=:hospitalId";

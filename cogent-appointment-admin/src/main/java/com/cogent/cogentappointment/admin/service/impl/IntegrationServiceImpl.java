@@ -11,6 +11,7 @@ import com.cogent.cogentappointment.admin.dto.response.clientIntegration.ClientA
 import com.cogent.cogentappointment.admin.dto.response.clientIntegration.clientIntegrationUpdate.ApiQueryParametersUpdateResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.clientIntegration.clientIntegrationUpdate.ApiRequestHeaderUpdateResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.clientIntegration.clientIntegrationUpdate.ClientApiIntegrationUpdateResponseDTO;
+import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.IntegrationService;
@@ -131,13 +132,13 @@ public class IntegrationServiceImpl implements IntegrationService {
                                                         Long featureTypeId,
                                                         Long requestMethodId) {
 
-//        Long count = clientFeatureIntegrationRepository.
-//                findHospitalFeatureAndRequestMethod(hospitalId, featureTypeId, requestMethodId);
-//
-//        if (count != null) {
-//
-//            throw new DataDuplicationException("Client Feature Integration Already Exist");
-//        }
+        Long count = clientFeatureIntegrationRepository.
+                findHospitalFeatureAndRequestMethod(hospitalId,featureTypeId,requestMethodId);
+
+        if (count>0) {
+
+            throw new DataDuplicationException("Client Feature Integration Already Exist");
+        }
 
 
     }

@@ -8,7 +8,6 @@ import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.Hospita
 import com.cogent.cogentappointment.persistence.model.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.convertToNormalCase;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.toUpperCase;
@@ -48,8 +47,8 @@ public class HospitalDepartmentUtils {
     }
 
     public static HospitalDepartmentBillingModeInfo parseToUpdateHospitalDepartmentCharge(BillingModeChargeUpdateDTO requestDTO,
-                                                                                    HospitalDepartment hospitalDepartment,
-                                                                                    BillingMode billingMode) {
+                                                                                          HospitalDepartment hospitalDepartment,
+                                                                                          BillingMode billingMode) {
 
 
         HospitalDepartmentBillingModeInfo hospitalDepartmentBillingModeInfo = new HospitalDepartmentBillingModeInfo();
@@ -63,8 +62,8 @@ public class HospitalDepartmentUtils {
     }
 
     public static HospitalDepartmentBillingModeInfo parseToUpdateHospitalDepartmentCharge(BillingModeChargeUpdateDTO requestDTO,
-                                                                                   HospitalDepartmentBillingModeInfo departmentBillingModeInfo,
-                                                                                   HospitalDepartment hospitalDepartment) {
+                                                                                          HospitalDepartmentBillingModeInfo departmentBillingModeInfo,
+                                                                                          HospitalDepartment hospitalDepartment) {
 
         departmentBillingModeInfo.setAppointmentCharge(requestDTO.getAppointmentCharge());
         departmentBillingModeInfo.setAppointmentFollowUpCharge(requestDTO.getFollowUpCharge());
@@ -118,12 +117,16 @@ public class HospitalDepartmentUtils {
         return hospitalDepartment;
     }
 
-    public static HospitalDepartmentBillingModeInfo parseToDeleteHospitalDeptCharge(HospitalDepartmentBillingModeInfo hospitalDepartmentBillingModeInfo,
-                                                                                    DeleteRequestDTO requestDTO) {
-        hospitalDepartmentBillingModeInfo.setStatus(requestDTO.getStatus());
-        hospitalDepartmentBillingModeInfo.setRemarks(requestDTO.getRemarks());
+    public static List<HospitalDepartmentBillingModeInfo> parseToDeleteHospitalDeptCharge(List<HospitalDepartmentBillingModeInfo>
+                                                                                                  hospitalDepartmentBillingModeInfoList,
+                                                                                          DeleteRequestDTO requestDTO) {
+        hospitalDepartmentBillingModeInfoList.forEach(hospitalDepartmentBillingModeInfo -> {
+            hospitalDepartmentBillingModeInfo.setStatus(requestDTO.getStatus());
+            hospitalDepartmentBillingModeInfo.setRemarks(requestDTO.getRemarks());
+        });
 
-        return hospitalDepartmentBillingModeInfo;
+
+        return hospitalDepartmentBillingModeInfoList;
     }
 
 

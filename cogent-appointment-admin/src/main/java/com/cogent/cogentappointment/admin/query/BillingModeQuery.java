@@ -99,9 +99,9 @@ public class BillingModeQuery {
                     " FROM" +
                     " BillingMode bm" +
                     " LEFT JOIN HospitalBillingModeInfo hb ON hb.billingMode.id = bm.id AND hb.status='Y'" +
-                    " AND hb.status != 'D'" +
                     " WHERE" +
                     " bm.id =:billingModeId" +
+                    " AND bm.status='Y'" +
                     " AND hb.hospital.id =:hospitalId";
 
     public static String QUERY_TO_GET_BILLING_MODE_BY_HOSPITAL_ID=

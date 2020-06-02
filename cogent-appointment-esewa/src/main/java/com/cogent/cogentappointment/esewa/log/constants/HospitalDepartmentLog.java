@@ -6,6 +6,8 @@ package com.cogent.cogentappointment.esewa.log.constants;
 public class HospitalDepartmentLog {
     public final static String HOSPITAL_DEPARTMENT = "HOSPITAL DEPARTMENT";
 
+    public final static String DEPARTMENT_CHARGE = "DEPARTMENT CHARGE";
+
     public final static String HOSPITAL_DEPARTMENT_BILLING_MODE_INFO="HOSPITAL DEPARTMENT BILLING MODE INFO";
 
 

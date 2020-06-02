@@ -33,6 +33,7 @@ public class QueryConstants {
 
 
     //E
+    public static final String ESEWA_MERCHANT_CODE = "esewaMerchantCode";
     public static final String EMAIL = "email";
 
     //F

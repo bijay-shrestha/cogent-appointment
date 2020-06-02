@@ -43,6 +43,9 @@ public class Hospital extends Auditable<String> implements Serializable {
     @Column(name = "code")
     private String code;
 
+    @Column(name = "esewa_merchant_code",updatable = false)
+    private String esewaMerchantCode;
+
     @Column(name = "address")
     private String address;
 

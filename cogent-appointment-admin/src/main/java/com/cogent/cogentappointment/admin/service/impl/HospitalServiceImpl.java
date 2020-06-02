@@ -8,7 +8,6 @@ import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalMinimalR
 import com.cogent.cogentappointment.admin.dto.response.hospital.HospitalResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
-import com.cogent.cogentappointment.admin.repository.BillingModeRepository;
 import com.cogent.cogentappointment.admin.service.AppointmentServiceTypeService;
 import com.cogent.cogentappointment.admin.service.HospitalService;
 import com.cogent.cogentappointment.admin.service.MinioFileService;
@@ -110,10 +109,10 @@ public class HospitalServiceImpl implements HospitalService {
         validateConstraintViolation(validator.validate(requestDTO));
 
         List<Object[]> hospitals = hospitalRepository.validateHospitalDuplicity(
-                requestDTO.getName(), requestDTO.getHospitalCode(), requestDTO.getAlias());
+                requestDTO.getName(), requestDTO.getEsewaMerchantCode(), requestDTO.getAlias());
 
         validateDuplicity(hospitals, requestDTO.getName(),
-                requestDTO.getHospitalCode(),
+                requestDTO.getEsewaMerchantCode(),
                 requestDTO.getAlias(),
                 CLIENT
         );
@@ -153,13 +152,13 @@ public class HospitalServiceImpl implements HospitalService {
         List<Object[]> hospitals = hospitalRepository.validateHospitalDuplicityForUpdate(
                 updateRequestDTO.getId(),
                 updateRequestDTO.getName(),
-                updateRequestDTO.getHospitalCode(),
+                updateRequestDTO.getEsewaMerchantCode(),
                 hospital.getAlias()
         );
 
         validateDuplicity(hospitals,
                 updateRequestDTO.getName(),
-                updateRequestDTO.getHospitalCode(),
+                updateRequestDTO.getEsewaMerchantCode(),
                 hospital.getAlias(),
                 CLIENT);
 

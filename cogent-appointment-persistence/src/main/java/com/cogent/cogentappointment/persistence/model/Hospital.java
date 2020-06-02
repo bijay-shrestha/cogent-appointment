@@ -16,6 +16,12 @@ import java.io.Serializable;
  * IN CASE OF COMPANY - isCompany = 'Y' ELSE isCompany = 'N'
  * REFUND PERCENTAGE AND FOLLOW UP DETAILS DO NOT NEED TO BE SAVED IN CASE OF COMPANY
  * <p>
+ * CONNECTED TABLE:
+ * a. HospitalContactNumber
+ * b. HospitalLogo
+ * c. HospitalBanner
+ * d. HospitalAppointmentServiceType
+ * <p>
  * HOSPITAL HAS BEEN RENAMED AS CLIENT SETUP IN FRONT-END
  */
 @Table(name = "hospital")

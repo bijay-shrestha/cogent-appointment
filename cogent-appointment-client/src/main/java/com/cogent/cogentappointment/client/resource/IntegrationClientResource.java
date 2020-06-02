@@ -1,11 +1,9 @@
 package com.cogent.cogentappointment.client.resource;
 
-import com.cogent.cogentappointment.client.dto.request.clientIntegration.ApiIntegrationCheckInRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.clientIntegration.ClientSaveRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.clientIntegration.Dummy;
 import com.cogent.cogentappointment.client.dto.request.clientIntegration.EsewaPayementStatus;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.DummyMessage;
-import com.cogent.cogentappointment.client.service.IntegrationService;
 import com.cogent.cogentappointment.client.utils.commons.ObjectMapperUtils;
 import com.cogent.cogentappointment.client.utils.resttempalte.RestTemplateUtils;
 import io.swagger.annotations.Api;
@@ -15,21 +13,16 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Arrays;
 
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.AdminConstant.SAVE_OPERATION;
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.IntegrationConstant.BASE_API_VALUE;
-import static com.cogent.cogentappointment.client.constants.SwaggerConstants.IntegrationConstant.FETCH_CLIENT_API_INTEGRATION;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.IntegrationConstants.BASE_INTEGRATION;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.IntegrationConstants.CLIENT_API_INTEGRATION_APPOINTMENT_APPROVE;
 import static com.cogent.cogentappointment.client.utils.resttempalte.IntegrationRequestHeaders.*;
 import static com.cogent.cogentappointment.client.utils.resttempalte.IntegrationRequestURI.*;
-import static java.net.URI.create;
 import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -40,19 +33,10 @@ import static org.springframework.http.ResponseEntity.ok;
 @Api(BASE_API_VALUE)
 public class IntegrationClientResource {
 
-    private final IntegrationService integrationService;
     private final RestTemplateUtils restTemplateUtils;
 
-    public IntegrationClientResource(IntegrationService integrationService, RestTemplateUtils restTemplateUtils) {
-        this.integrationService = integrationService;
+    public IntegrationClientResource(RestTemplateUtils restTemplateUtils) {
         this.restTemplateUtils = restTemplateUtils;
-    }
-
-    @PutMapping(CLIENT_API_INTEGRATION_APPOINTMENT_APPROVE)
-    @ApiOperation(FETCH_CLIENT_API_INTEGRATION)
-    public ResponseEntity<?> approveAppointmentCheckIn(@Valid @RequestBody ApiIntegrationCheckInRequestDTO requestDTO) {
-        integrationService.approveAppointmentCheckIn(requestDTO);
-        return ok().build();
     }
 
 

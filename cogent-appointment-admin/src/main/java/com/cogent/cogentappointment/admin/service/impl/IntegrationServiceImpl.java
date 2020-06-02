@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
-import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.API_INTEGRATIONS;
+import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.API_INTEGRATION;
 import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.CLIENT_API_INTEGRATION;
 import static com.cogent.cogentappointment.admin.utils.IntegrationUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
@@ -124,16 +124,17 @@ public class IntegrationServiceImpl implements IntegrationService {
                 apiIntegrationFormat);
 
         log.info(SAVING_PROCESS_COMPLETED, CLIENT_API_INTEGRATION, getDifferenceBetweenTwoTime(startTime));
+
     }
 
     private void checkClientFeatureIntegrationDuplicity(Long hospitalId,
                                                         Long featureTypeId,
                                                         Long requestMethodId) {
 
-//        Long clientFeatureIntegration = clientFeatureIntegrationRepository.
+//        Long count = clientFeatureIntegrationRepository.
 //                findHospitalFeatureAndRequestMethod(hospitalId, featureTypeId, requestMethodId);
-
-//        if (clientFeatureIntegration != null) {
+//
+//        if (count != null) {
 //
 //            throw new DataDuplicationException("Client Feature Integration Already Exist");
 //        }
@@ -265,12 +266,12 @@ public class IntegrationServiceImpl implements IntegrationService {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(SEARCHING_PROCESS_STARTED, API_INTEGRATIONS);
+        log.info(SEARCHING_PROCESS_STARTED, API_INTEGRATION);
 
         ClientApiIntegrationSearchDTO clientApiIntegration =
                 integrationRepository.searchClientApiIntegration(searchRequestDTO, pageable);
 
-        log.info(SEARCHING_PROCESS_COMPLETED, API_INTEGRATIONS, getDifferenceBetweenTwoTime(startTime));
+        log.info(SEARCHING_PROCESS_COMPLETED, API_INTEGRATION, getDifferenceBetweenTwoTime(startTime));
 
         return clientApiIntegration;
     }
@@ -279,12 +280,12 @@ public class IntegrationServiceImpl implements IntegrationService {
     public ClientApiIntegrationDetailResponseDTO fetchClientApiIntegrationById(Long id) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(SEARCHING_PROCESS_STARTED, API_INTEGRATIONS);
+        log.info(SEARCHING_PROCESS_STARTED, API_INTEGRATION);
 
         ClientApiIntegrationDetailResponseDTO clientApiIntegration =
                 getClientApiIntegrationDetail(id);
 
-        log.info(SEARCHING_PROCESS_COMPLETED, API_INTEGRATIONS, getDifferenceBetweenTwoTime(startTime));
+        log.info(SEARCHING_PROCESS_COMPLETED, API_INTEGRATION, getDifferenceBetweenTwoTime(startTime));
 
         return clientApiIntegration;
     }
@@ -293,7 +294,7 @@ public class IntegrationServiceImpl implements IntegrationService {
     public void delete(DeleteRequestDTO deleteRequestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(DELETING_PROCESS_STARTED, API_INTEGRATIONS);
+        log.info(DELETING_PROCESS_STARTED, API_INTEGRATION);
 
         ClientFeatureIntegration clientFeatureIntegration = clientFeatureIntegrationRepository
                 .findClientFeatureIntegrationById(deleteRequestDTO.getId())
@@ -307,7 +308,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
         parseToDeletedApiFeatureIntegration(apiFeatureIntegrationList);
 
-        log.info(DELETING_PROCESS_COMPLETED, API_INTEGRATIONS, getDifferenceBetweenTwoTime(startTime));
+        log.info(DELETING_PROCESS_COMPLETED, API_INTEGRATION, getDifferenceBetweenTwoTime(startTime));
 
     }
 
@@ -347,12 +348,12 @@ public class IntegrationServiceImpl implements IntegrationService {
     public ClientApiIntegrationUpdateResponseDTO fetchDetailsForUpdate(Long id) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_PROCESS_STARTED, API_INTEGRATIONS);
+        log.info(FETCHING_PROCESS_STARTED, API_INTEGRATION);
 
         ClientApiIntegrationUpdateResponseDTO updateResponseDTO =
                 getClientApiIntegrationDetailForUpdate(id);
 
-        log.info(FETCHING_PROCESS_COMPLETED, API_INTEGRATIONS, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_COMPLETED, API_INTEGRATION, getDifferenceBetweenTwoTime(startTime));
 
         return updateResponseDTO;
     }

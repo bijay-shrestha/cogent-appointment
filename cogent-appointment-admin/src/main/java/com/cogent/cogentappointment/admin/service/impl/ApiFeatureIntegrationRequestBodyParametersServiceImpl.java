@@ -32,8 +32,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
-import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.API_REQUEST_BODY_ATTRIBUTES;
-import static com.cogent.cogentappointment.admin.utils.IntegrationRequestBodyAttributeUtils.parseToDeletedApiFeatureIntegrationRequestBodyParameters;
+import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.API_REQUEST_BODY_ATTRIBUTE;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
@@ -91,12 +90,12 @@ public class ApiFeatureIntegrationRequestBodyParametersServiceImpl implements
     public List<IntegrationRequestBodyAttributeResponse> fetchRequestBodyAttributeByFeatureId(Long id) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(SEARCHING_PROCESS_STARTED, API_REQUEST_BODY_ATTRIBUTES);
+        log.info(SEARCHING_PROCESS_STARTED, API_REQUEST_BODY_ATTRIBUTE);
 
         List<IntegrationRequestBodyAttributeResponse> responses =
                 requestBodyParametersRepository.fetchRequestBodyAttributeByFeatureId(id);
 
-        log.info(SEARCHING_PROCESS_COMPLETED, API_REQUEST_BODY_ATTRIBUTES, getDifferenceBetweenTwoTime(startTime));
+        log.info(SEARCHING_PROCESS_COMPLETED, API_REQUEST_BODY_ATTRIBUTE, getDifferenceBetweenTwoTime(startTime));
 
         return responses;
     }
@@ -107,12 +106,12 @@ public class ApiFeatureIntegrationRequestBodyParametersServiceImpl implements
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(SEARCHING_PROCESS_STARTED, API_REQUEST_BODY_ATTRIBUTES);
+        log.info(SEARCHING_PROCESS_STARTED, API_REQUEST_BODY_ATTRIBUTE);
 
         ApiRequestBodySearchDTO searchClientApiIntegration =
                 requestBodyParametersRepository.searchApiRequestBodyAtrributes(searchRequestDTO, pageable);
 
-        log.info(SEARCHING_PROCESS_COMPLETED, API_REQUEST_BODY_ATTRIBUTES, getDifferenceBetweenTwoTime(startTime));
+        log.info(SEARCHING_PROCESS_COMPLETED, API_REQUEST_BODY_ATTRIBUTE, getDifferenceBetweenTwoTime(startTime));
 
         return searchClientApiIntegration;
     }
@@ -122,7 +121,7 @@ public class ApiFeatureIntegrationRequestBodyParametersServiceImpl implements
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(DELETING_PROCESS_STARTED, API_REQUEST_BODY_ATTRIBUTES);
+        log.info(DELETING_PROCESS_STARTED, API_REQUEST_BODY_ATTRIBUTE);
 
         checkClientFeatureIntegration(deleteRequestDTO.getId());
 
@@ -131,10 +130,10 @@ public class ApiFeatureIntegrationRequestBodyParametersServiceImpl implements
                         .findApiFeatureRequestBodyParameterByFeatureId(deleteRequestDTO.getId())
                         .orElseThrow(() -> API_REQUEST_BODY_ATTRIBUTE_NOT_FOUND.apply(deleteRequestDTO.getId()));
 
-        parseToDeletedApiFeatureIntegrationRequestBodyParameters(featureIntegrationRequestBodyParameters,
+        IntegrationRequestBodyAttributeUtils.parseToDeletedApiFeatureIntegrationRequestBodyParameters(featureIntegrationRequestBodyParameters,
                 deleteRequestDTO);
 
-        log.info(DELETING_PROCESS_COMPLETED, API_REQUEST_BODY_ATTRIBUTES, getDifferenceBetweenTwoTime(startTime));
+        log.info(DELETING_PROCESS_COMPLETED, API_REQUEST_BODY_ATTRIBUTE, getDifferenceBetweenTwoTime(startTime));
     }
 
     private void checkClientFeatureIntegration(@NotNull Long id) {
@@ -154,7 +153,7 @@ public class ApiFeatureIntegrationRequestBodyParametersServiceImpl implements
     public void update(ApiFeatureIntegrationRequestBodyUpdateRequestDTO requestDTO) {
 
 
-        log.info(UPDATING_PROCESS_STARTED, API_REQUEST_BODY_ATTRIBUTES);
+        log.info(UPDATING_PROCESS_STARTED, API_REQUEST_BODY_ATTRIBUTE);
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -169,7 +168,7 @@ public class ApiFeatureIntegrationRequestBodyParametersServiceImpl implements
 
         updateRequestBodyAttributes(feature, requestDTO.getRequestBodyUpdateRequestDTOS());
 
-        log.info(UPDATING_PROCESS_COMPLETED, API_REQUEST_BODY_ATTRIBUTES, getDifferenceBetweenTwoTime(startTime));
+        log.info(UPDATING_PROCESS_COMPLETED, API_REQUEST_BODY_ATTRIBUTE, getDifferenceBetweenTwoTime(startTime));
 
 
     }
@@ -179,12 +178,12 @@ public class ApiFeatureIntegrationRequestBodyParametersServiceImpl implements
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(SEARCHING_PROCESS_STARTED, API_REQUEST_BODY_ATTRIBUTES);
+        log.info(SEARCHING_PROCESS_STARTED, API_REQUEST_BODY_ATTRIBUTE);
 
         IntegrationRequestBodyDetailResponseDTO responses =
                 requestBodyParametersRepository.fetchRequestBodyAttributeDetails(featureId);
 
-        log.info(SEARCHING_PROCESS_COMPLETED, API_REQUEST_BODY_ATTRIBUTES, getDifferenceBetweenTwoTime(startTime));
+        log.info(SEARCHING_PROCESS_COMPLETED, API_REQUEST_BODY_ATTRIBUTE, getDifferenceBetweenTwoTime(startTime));
 
         return responses;
     }

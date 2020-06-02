@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
-import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.API_REQUEST_BODY_ATTRIBUTES;
+import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.API_REQUEST_BODY_ATTRIBUTE;
 import static com.cogent.cogentappointment.admin.query.RequestBodyAttributesQuery.API_REQUEST_BODY_ATTRIBUTES_SEARCH_QUERY;
 import static com.cogent.cogentappointment.admin.query.RequestBodyAttributesQuery.FETCH_REQUEST_BODY_ATTRIBUTE_BY_ID;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
@@ -131,6 +131,6 @@ public class IntegrationRequestBodyParametersRepositoryCustomImpl implements
             new NoContentFoundException(ApiIntegrationRequestBodyParameters.class);
 
     private void error() {
-        log.error(CONTENT_NOT_FOUND, API_REQUEST_BODY_ATTRIBUTES);
+        log.error(CONTENT_NOT_FOUND, API_REQUEST_BODY_ATTRIBUTE);
     }
 }

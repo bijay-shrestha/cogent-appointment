@@ -4,9 +4,6 @@ import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.ClientApiIntegrationRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.ClientApiIntegrationSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.clientIntegrationUpdate.ClientApiIntegrationUpdateRequestDTO;
-import com.cogent.cogentappointment.admin.service.ApiIntegrationTypeService;
-import com.cogent.cogentappointment.admin.service.HttpRequestMethodService;
-import com.cogent.cogentappointment.admin.service.IntegrationFeatureService;
 import com.cogent.cogentappointment.admin.service.IntegrationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -31,17 +28,9 @@ import static org.springframework.http.ResponseEntity.ok;
 public class IntegrationClientApiResource {
 
     private final IntegrationService integrationService;
-    private final IntegrationFeatureService integrationFeatureService;
-    private final HttpRequestMethodService httpRequestMethodService;
-    private final ApiIntegrationTypeService apiIntegrationTypeService;
 
-    public IntegrationClientApiResource(IntegrationService integrationService, IntegrationFeatureService integrationFeatureService,
-                                        HttpRequestMethodService httpRequestMethodService,
-                                        ApiIntegrationTypeService apiIntegrationTypeService) {
+    public IntegrationClientApiResource(IntegrationService integrationService) {
         this.integrationService = integrationService;
-        this.integrationFeatureService = integrationFeatureService;
-        this.httpRequestMethodService = httpRequestMethodService;
-        this.apiIntegrationTypeService = apiIntegrationTypeService;
     }
 
     @PostMapping

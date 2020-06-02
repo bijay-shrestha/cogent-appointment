@@ -45,9 +45,11 @@ import static org.springframework.http.ResponseEntity.ok;
 public class AppointmentResource {
 
     private final AppointmentService appointmentService;
+    private final IntegrationService integrationService;
 
-    public AppointmentResource(AppointmentService appointmentService) {
+    public AppointmentResource(AppointmentService appointmentService, IntegrationService integrationService) {
         this.appointmentService = appointmentService;
+        this.integrationService = integrationService;
     }
 
     /*esewa*/
@@ -216,6 +218,13 @@ public class AppointmentResource {
                                                  @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ok().body(appointmentService.fetchRescheduleAppointment(rescheduleLogSearchDTO, pageable));
+    }
+
+    @PutMapping(CLIENT_API_INTEGRATION_APPOINTMENT_APPROVE)
+    @ApiOperation(FETCH_CLIENT_API_INTEGRATION)
+    public ResponseEntity<?> approveAppointmentCheckIn(@Valid @RequestBody ApiIntegrationCheckInRequestDTO requestDTO) {
+        integrationService.approveAppointmentCheckIn(requestDTO);
+        return ok().build();
     }
 
 

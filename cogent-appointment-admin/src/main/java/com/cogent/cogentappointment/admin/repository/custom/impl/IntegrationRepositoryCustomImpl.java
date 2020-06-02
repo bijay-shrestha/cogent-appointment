@@ -224,7 +224,7 @@ public class IntegrationRepositoryCustomImpl implements IntegrationRepositoryCus
     };
 
     private Supplier<NoContentFoundException> CLIENT_API_QUERY_PARAMETERS_NOT_FOUND = () -> {
-        log.error(CONTENT_NOT_FOUND, API_QUERY_PARAMETERS);
+        log.error(CONTENT_NOT_FOUND, API_QUERY_PARAMETER);
         throw new NoContentFoundException(ApiQueryParameters.class);
     };
 

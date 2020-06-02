@@ -7,6 +7,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import static com.cogent.cogentappointment.admin.constants.QueryConstants.API_FEATURE__ID;
+import static com.cogent.cogentappointment.admin.constants.QueryConstants.API_REQUEST_METHOD_ID;
+import static com.cogent.cogentappointment.admin.constants.QueryConstants.HOSPITAL_ID;
+import static com.cogent.cogentappointment.admin.query.IntegrationQuery.VALIDATE_HOSPITAL_REQUEST_METHOD_AND_FEATURE;
+import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createNativeQuery;
 
 /**
  * @author rupak ON 2020/06/02-9:46 AM

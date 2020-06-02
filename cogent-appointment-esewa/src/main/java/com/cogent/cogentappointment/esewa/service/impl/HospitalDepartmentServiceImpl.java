@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.esewa.service.impl;
 
 import com.cogent.cogentappointment.esewa.dto.commons.DropDownResponseDTO;
+import com.cogent.cogentappointment.esewa.repository.HospitalDepartmentBillingModeInfoRepository;
 import com.cogent.cogentappointment.esewa.repository.HospitalDepartmentRepository;
 import com.cogent.cogentappointment.esewa.service.HospitalDepartmentService;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +12,7 @@ import java.util.List;
 
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.FETCHING_PROCESS_COMPLETED;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.FETCHING_PROCESS_STARTED;
-import static com.cogent.cogentappointment.esewa.log.constants.HospitalDepartmentLog.HOSPITAL_DEPARTMENT;
+import static com.cogent.cogentappointment.esewa.log.constants.HospitalDepartmentLog.*;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
 
@@ -25,8 +26,13 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
     private final HospitalDepartmentRepository hospitalDepartmentRepository;
 
-    public HospitalDepartmentServiceImpl(HospitalDepartmentRepository hospitalDepartmentRepository) {
+    private final HospitalDepartmentBillingModeInfoRepository hospitalDepartmentBillingModeInfoRepository;
+
+    public HospitalDepartmentServiceImpl(HospitalDepartmentRepository hospitalDepartmentRepository,
+                                         HospitalDepartmentBillingModeInfoRepository
+                                                 hospitalDepartmentBillingModeInfoRepository) {
         this.hospitalDepartmentRepository = hospitalDepartmentRepository;
+        this.hospitalDepartmentBillingModeInfoRepository = hospitalDepartmentBillingModeInfoRepository;
     }
 
     @Override
@@ -42,5 +48,19 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
                 getDifferenceBetweenTwoTime(startTime));
 
         return minDepartment;
+    }
+
+    @Override
+    public List<DropDownResponseDTO> fetchBillingModeByDepartmentId(Long hospitalDepartmentId) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_BILLING_MODE_DROP_DOWN_PROCESS_STARTED);
+
+        List<DropDownResponseDTO> response=hospitalDepartmentBillingModeInfoRepository.
+                fetchBillingModeByDepartmentId(hospitalDepartmentId);
+
+        log.info(FETCHING_BILLING_MODE_DROP_DOWN_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
+
+        return response;
     }
 }

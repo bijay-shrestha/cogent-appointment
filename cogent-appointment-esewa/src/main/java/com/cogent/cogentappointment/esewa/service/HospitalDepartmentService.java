@@ -11,4 +11,6 @@ public interface HospitalDepartmentService {
 
     List<DropDownResponseDTO> fetchActiveMinHospitalDepartment(Long hospitalId);
 
+    List<DropDownResponseDTO> fetchBillingModeByDepartmentId(Long hospitalDepartmentId);
+
 }

@@ -14,6 +14,8 @@ import static com.cogent.cogentappointment.esewa.constants.SwaggerConstants.Hosp
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.HospitalConstants.HOSPITAL_ID_PATH_VARIABLE_BASE;
 import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.HospitalDepartmentConstants.BASE_HOSPITAL_DEPARTMENT;
+import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.HospitalDepartmentConstants.BILLING_MODE;
+import static com.cogent.cogentappointment.esewa.constants.WebResourceKeyConstants.HospitalDepartmentConstants.HOSPITAL_DEPARTMENT_ID;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -34,5 +36,11 @@ public class HospitalDepartmentResource {
     @ApiOperation(FETCH_ACTIVE_MIN_HOSPITAL_DEPARTMENT_INFO)
     public ResponseEntity<?> fetchActiveMinDepartment(@PathVariable("hospitalId") Long hospitalId) {
         return ok(hospitalDepartmentService.fetchActiveMinHospitalDepartment(hospitalId));
+    }
+
+    @GetMapping(BILLING_MODE + HOSPITAL_DEPARTMENT_ID)
+    @ApiOperation(FETCH_ACTIVE_MIN_HOSPITAL_DEPARTMENT_INFO)
+    public ResponseEntity<?> fetchBillingModeByDepartmentId(@PathVariable("hospitalDepartmentId") Long hospitalDepartmentId) {
+        return ok(hospitalDepartmentService.fetchBillingModeByDepartmentId(hospitalDepartmentId));
     }
 }

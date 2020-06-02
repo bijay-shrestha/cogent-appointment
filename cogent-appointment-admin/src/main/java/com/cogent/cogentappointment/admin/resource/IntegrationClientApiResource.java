@@ -35,7 +35,6 @@ public class IntegrationClientApiResource {
     private final HttpRequestMethodService httpRequestMethodService;
     private final ApiIntegrationTypeService apiIntegrationTypeService;
 
-
     public IntegrationClientApiResource(IntegrationService integrationService, IntegrationFeatureService integrationFeatureService,
                                         HttpRequestMethodService httpRequestMethodService,
                                         ApiIntegrationTypeService apiIntegrationTypeService) {

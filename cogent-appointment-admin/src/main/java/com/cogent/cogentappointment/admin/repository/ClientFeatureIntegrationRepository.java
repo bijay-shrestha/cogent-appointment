@@ -19,6 +19,4 @@ public interface ClientFeatureIntegrationRepository extends JpaRepository<Client
     @Query("SELECT cfi from ClientFeatureIntegration cfi where cfi.id=:id AND cfi.status!='D'")
     Optional<ClientFeatureIntegration> findClientFeatureIntegrationById(@Param("id") Long id);
 
-    @Query("SELECT cfi from ClientFeatureIntegration cfi where cfi.hospitalId=:hospitalid AND cfi.featureId=:featureid AND cfi.status!='D'")
-    ClientFeatureIntegration findByHospitalWiseFeatureId(@Param("hospitalid") Long hospitalId,@Param("featureid") Long featureTypeId);
 }

@@ -7,5 +7,7 @@ import org.springframework.stereotype.Repository;
 @Qualifier("clientFeatureIntegrationRepositoryCustom")
 public interface ClientFeatureIntegrationRepositoryCustom {
 
-    Long findByHospitalWiseFeatureIdAndRequestMethod(Long hospitalId, Long featureTypeId, Long requestMethodId);
+//    Long findHospitalFeatureAndRequestMethod(Long hospitalId,
+//                                                     Long featureTypeId,
+//                                                     Long requestMethodId);
 }

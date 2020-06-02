@@ -128,16 +128,16 @@ public class IntegrationServiceImpl implements IntegrationService {
     }
 
     private void checkClientFeatureIntegrationDuplicity(Long hospitalId,
-                                                        Long featureTypeId
-            , Long requestMethodId) {
+                                                        Long featureTypeId,
+                                                        Long requestMethodId) {
 
-        Long clientFeatureIntegration = clientFeatureIntegrationRepository.
-                findByHospitalWiseFeatureIdAndRequestMethod(hospitalId, featureTypeId, requestMethodId);
+//        Long clientFeatureIntegration = clientFeatureIntegrationRepository.
+//                findHospitalFeatureAndRequestMethod(hospitalId, featureTypeId, requestMethodId);
 
-        if (clientFeatureIntegration != null) {
-
-            throw new DataDuplicationException("Client Feature Integration Already Exist");
-        }
+//        if (clientFeatureIntegration != null) {
+//
+//            throw new DataDuplicationException("Client Feature Integration Already Exist");
+//        }
 
 
     }

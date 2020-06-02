@@ -13,16 +13,20 @@ public class IntegrationQuery {
 
     public static final String VALIDATE_HOSPITAL_REQUEST_METHOD_AND_FEATURE =
             " SELECT" +
-                    " cfi.id" +
+                    " COUNT(cfi.id)" +
                     " FROM ClientFeatureIntegration cfi" +
                     " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=cfi.id" +
                     " LEFT JOIN Feature f ON f.id=cfi.featureId" +
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=afi.apiIntegrationFormatId" +
                     " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId" +
-                    " WHERE f.id=:featureId" +
+                    " WHERE" +
+                    " cfi.status='Y'"+
+                    " afi.status='Y'"+
+                    " aif.status='Y'"+
+                    " hrm.status='Y'"+
+                    " AND f.id=:featureId" +
                     " AND hrm.id=:requestMethodId" +
                     " AND cfi.hospitalId=:hospitalId";
-
 
     public static final String QUERY_TO_FETCH_MIN_FEATURES =
             "SELECT" +

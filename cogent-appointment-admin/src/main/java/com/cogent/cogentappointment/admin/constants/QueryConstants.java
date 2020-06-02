@@ -76,6 +76,7 @@ public class QueryConstants {
     //Q
 
     //R
+    public static final String API_REQUEST_METHOD_ID = "requestMethodId";
 
 
     //S

@@ -63,7 +63,8 @@ public class IntegrationServiceImpl implements IntegrationService {
                                   IntegrationRepository integrationRepository,
                                   ApiFeatureIntegrationRequestBodyParametersRepository featureBodyParametersRepository,
                                   IntegrationRequestBodyParametersRepository requestBodyParametersRepository,
-                                  IntegrationChannelRepository integrationChannelRepository, ApiIntegrationTypeRepository apiIntegrationTypeRepository) {
+                                  IntegrationChannelRepository integrationChannelRepository,
+                                  ApiIntegrationTypeRepository apiIntegrationTypeRepository) {
 
         this.clientFeatureIntegrationRepository = clientFeatureIntegrationRepository;
         this.clientApiIntegrationFormatRespository = clientApiIntegrationFormatRespository;
@@ -89,12 +90,13 @@ public class IntegrationServiceImpl implements IntegrationService {
         validateFeatureAndHttpRequestMethod(requestDTO.getFeatureTypeId(),
                 requestDTO.getRequestMethodId());
 
-        checkClientFeatureIntegrationDuplicity(requestDTO.getHospitalId(), requestDTO.getFeatureTypeId());
+        checkClientFeatureIntegrationDuplicity(requestDTO.getHospitalId(),
+                requestDTO.getFeatureTypeId(),
+                requestDTO.getRequestMethodId());
 
         IntegrationChannel integrationChannel = integrationChannelRepository.
                 findActiveIntegrationChannel(requestDTO.getIntegrationChannelId())
                 .orElseThrow(() -> INTEGRATION_CHANNEL_NOT_FOUND.apply(requestDTO.getIntegrationChannelId()));
-
 
         ClientFeatureIntegration clientFeatureIntegration = parseToClientFeatureIntegration(requestDTO.getHospitalId(),
                 requestDTO.getFeatureTypeId());
@@ -112,18 +114,25 @@ public class IntegrationServiceImpl implements IntegrationService {
 
         saveApiIntegrationFormat(apiIntegrationFormat);
 
-        saveApiFeatureIntegration(clientFeatureIntegration.getId(), apiIntegrationFormat.getId(), requestDTO.getIntegrationChannelId());
+        saveApiFeatureIntegration(clientFeatureIntegration.getId(),
+                apiIntegrationFormat.getId(),
+                requestDTO.getIntegrationChannelId());
 
-        saveApiQueryParameters(requestDTO.getParametersRequestDTOS(), apiIntegrationFormat);
+        saveApiQueryParameters(requestDTO.getParametersRequestDTOS(),
+                apiIntegrationFormat);
 
-        saveApiRequestHeaders(requestDTO.getClientApiRequestHeaders(), apiIntegrationFormat);
+        saveApiRequestHeaders(requestDTO.getClientApiRequestHeaders(),
+                apiIntegrationFormat);
 
         log.info(SAVING_PROCESS_COMPLETED, CLIENT_API_INTEGRATION, getDifferenceBetweenTwoTime(startTime));
     }
 
-    private void checkClientFeatureIntegrationDuplicity(Long hospitalId, Long featureTypeId) {
+    private void checkClientFeatureIntegrationDuplicity(Long hospitalId,
+                                                        Long featureTypeId
+            , Long requestMethodId) {
 
-        ClientFeatureIntegration clientFeatureIntegration = clientFeatureIntegrationRepository.findByHospitalWiseFeatureId(hospitalId, featureTypeId);
+        Long clientFeatureIntegration = clientFeatureIntegrationRepository.
+                findByHospitalWiseFeatureIdAndRequestMethod(hospitalId, featureTypeId, requestMethodId);
 
         if (clientFeatureIntegration != null) {
 
@@ -142,14 +151,14 @@ public class IntegrationServiceImpl implements IntegrationService {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         ClientFeatureIntegration clientFeatureIntegration =
-                clientFeatureIntegrationRepository.findClientFeatureIntegrationById(requestDTO.getClientFeatureIntegrationId())
+                clientFeatureIntegrationRepository.
+                        findClientFeatureIntegrationById(requestDTO.getClientFeatureIntegrationId())
                         .orElseThrow(() -> CLIENT_FEATURE_NOT_FOUND.apply(requestDTO.getClientFeatureIntegrationId()));
 
-        IntegrationChannel integrationChannel = integrationChannelRepository.findActiveIntegrationChannel(requestDTO.getIntegrationChannelId())
+        IntegrationChannel integrationChannel = integrationChannelRepository.
+                findActiveIntegrationChannel(requestDTO.getIntegrationChannelId())
                 .orElseThrow(() -> INTEGRATION_CHANNEL_NOT_FOUND.apply(requestDTO.getIntegrationChannelId()));
 
-//        ApiIntegrationType apiIntegrationType=apiIntegrationTypeRepository.findActiveIntegrationType(requestDTO.getIntegrationTypeId())
-//                .orElseThrow(() -> INTEGRATION_TYPE_NOT_FOUND.apply(requestDTO.getIntegrationTypeId()));
 
         clientFeatureIntegration.setFeatureId(requestDTO.getFeatureId());
         clientFeatureIntegration.setIntegrationChannelId(integrationChannel);
@@ -174,7 +183,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     private void updateApiIntegrationFormat(ClientApiIntegrationUpdateRequestDTO requestDTO, Long apiIntegrationFormatId) {
 
-        ApiIntegrationFormat apiIntegrationFormat = clientApiIntegrationFormatRespository.findByIntegrationFormatId(apiIntegrationFormatId)
+        ApiIntegrationFormat apiIntegrationFormat = clientApiIntegrationFormatRespository.
+                findByIntegrationFormatId(apiIntegrationFormatId)
                 .orElseThrow(() -> API_INTEGRATION_FORMAT_NOT_FOUND.apply(apiIntegrationFormatId));
 
         apiIntegrationFormat.setUrl(requestDTO.getApiUrl());

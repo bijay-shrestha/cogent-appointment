@@ -61,12 +61,10 @@ public class ApiFeatureIntegrationRequestBodyParametersServiceImpl implements
     @Override
     public void save(ApiFeatureIntegrationRequestBodyRequestDTO requestDTO) {
 
-
         validateFeature(requestDTO.getFeatureId());
 
         List<ApiIntegrationRequestBodyParameters> requestBodyParameters =
                 validateRequestBodyAttributes(requestDTO.getRequestBodyAttributes());
-
 
         saveApiFeatureIntegrationRequestBody(requestDTO.getFeatureId(), requestBodyParameters);
 

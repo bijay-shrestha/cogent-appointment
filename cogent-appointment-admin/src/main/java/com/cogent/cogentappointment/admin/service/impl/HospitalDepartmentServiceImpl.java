@@ -256,6 +256,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
     public void saveBillingModeWithCharge(BillingModeChargeUpdateDTO requestDTO,
                                           HospitalDepartment hospitalDepartment) {
+
         BillingMode billingMode = fetchBillingMode(requestDTO.getBillingModeId(),
                 hospitalDepartment.getId());
 

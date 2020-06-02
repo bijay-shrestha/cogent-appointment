@@ -4,6 +4,8 @@ import com.cogent.cogentappointment.esewa.dto.response.hospitalDepartmentDutyRos
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * @author smriti on 31/05/20
  */
@@ -11,5 +13,7 @@ import org.springframework.stereotype.Repository;
 @Qualifier("hospitalDeptDutyRosterRoomInfoRepositoryCustom")
 public interface HospitalDeptDutyRosterRoomInfoRepositoryCustom {
 
-    HospitalDeptDutyRosterRoomInfoResponseDTO fetchHospitalDeptRoomInfo(Long hddRosterId);
+    List<HospitalDeptDutyRosterRoomInfoResponseDTO> fetchHospitalDeptRoomInfo(List<Long> hddRosterId);
+
+    String fetchRoomNumber(Long hddRosterId, Long roomId);
 }

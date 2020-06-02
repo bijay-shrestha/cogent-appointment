@@ -38,9 +38,9 @@ public class QueryConstants {
     //G
 
     //H
-    public static final String  HOSPITAL_ID = "hospitalId";
+    public static final String HOSPITAL_ID = "hospitalId";
     public static final String HOSPITAL_DEPARTMENT_ID = "hospitalDepartmentId";
-
+    public static final String HOSPITAL_DEPARTMENT_DUTY_ROSTER_ID = "hddRosterId";
 
     //I
     public static final String ID = "id";
@@ -71,7 +71,7 @@ public class QueryConstants {
     //Q
 
     //R
-
+    public static final String ROOM_ID = "roomId";
 
     //S
 

@@ -23,7 +23,9 @@ public class ErrorMessageConstants {
         String INVALID_TRANSACTION_NUMBER = "Transaction number '%s' and patient '%s' not found";
     }
 
-
+    public interface AppointmentHospitalDepartmentMessage {
+        String INVALID_ROOM_CHECK_AVAILABILITY_REQUEST = "Sorry, Requested room is not assigned to department duty roster";
+    }
 
     public final static String HMAC_BAD_SIGNATURE = "HmacAccessFilter.badSignature";
 

@@ -14,6 +14,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class HospitalDeptDutyRosterRoomInfoResponseDTO implements Serializable {
 
+    private Long hddRosterId;
+
     private Long roomId;
 
     private String roomNumber;

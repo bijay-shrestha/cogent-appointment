@@ -310,10 +310,10 @@ public class AppointmentUtils {
     }
 
     public static StatusResponseDTO parseToStatusResponseDTO() {
-        return StatusResponseDTO.builder()
-                .responseCode(OK.value())
-                .responseStatus(OK)
-                .build();
+        StatusResponseDTO statusResponseDTO = new StatusResponseDTO();
+        statusResponseDTO.setResponseCode(OK.value());
+        statusResponseDTO.setResponseStatus(OK);
+        return statusResponseDTO;
     }
 
     public static AppointmentMinResponseWithStatusDTO parseToAppointmentMinResponseWithStatusDTO(

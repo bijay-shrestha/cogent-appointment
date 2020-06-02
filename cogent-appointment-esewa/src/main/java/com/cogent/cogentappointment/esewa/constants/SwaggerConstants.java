@@ -29,6 +29,8 @@ public class SwaggerConstants {
         String BASE_API_VALUE = "This is Appointment Hospital Department Resource";
         String CHECK_APPOINTMENT_AVAILABILITY = "Check available time schedules in requested date" +
                 " for specific hospital department";
+        String CHECK_APPOINTMENT_AVAILABILITY_ROOM_WISE = "Check available time schedules in requested date" +
+                " for specific hospital department and room";
 
         String SAVE_OPERATION = "Save new appointment";
         String FETCH_PENDING_APPOINTMENT = "Fetch pending appointments";

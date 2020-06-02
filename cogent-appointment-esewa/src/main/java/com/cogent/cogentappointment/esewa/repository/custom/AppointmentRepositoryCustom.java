@@ -3,7 +3,6 @@ package com.cogent.cogentappointment.esewa.repository.custom;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.checkAvailibility.AppointmentCheckAvailabilityRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.history.AppointmentHistorySearchDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.history.AppointmentSearchDTO;
-import com.cogent.cogentappointment.esewa.dto.request.appointmentHospitalDepartment.checkAvailability.AppointmentHospitalDeptCheckAvailabilityRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.checkAvailabililty.AppointmentBookedTimeResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.history.AppointmentDetailResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.history.AppointmentMinResponseDTO;
@@ -41,6 +40,6 @@ public interface AppointmentRepositoryCustom {
     Double calculateRefundAmount(Long appointmentId);
 
     List<AppointmentBookedTimeResponseDTO> fetchBookedAppointmentDeptWise(
-            AppointmentHospitalDeptCheckAvailabilityRequestDTO requestDTO, Long roomId);
+            Date appointmentDate, Long hospitalDepartmentId, Long roomId);
 
 }

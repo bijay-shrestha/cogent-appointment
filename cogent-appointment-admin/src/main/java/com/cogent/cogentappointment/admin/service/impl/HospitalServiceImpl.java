@@ -152,13 +152,13 @@ public class HospitalServiceImpl implements HospitalService {
         List<Object[]> hospitals = hospitalRepository.validateHospitalDuplicityForUpdate(
                 updateRequestDTO.getId(),
                 updateRequestDTO.getName(),
-                updateRequestDTO.getEsewaMerchantCode(),
+                hospital.getEsewaMerchantCode(),
                 hospital.getAlias()
         );
 
         validateDuplicity(hospitals,
                 updateRequestDTO.getName(),
-                updateRequestDTO.getEsewaMerchantCode(),
+                hospital.getEsewaMerchantCode(),
                 hospital.getAlias(),
                 CLIENT);
 

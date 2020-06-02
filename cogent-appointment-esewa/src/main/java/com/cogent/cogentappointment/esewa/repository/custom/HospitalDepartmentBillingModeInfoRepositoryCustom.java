@@ -10,5 +10,4 @@ import org.springframework.stereotype.Repository;
 @Qualifier("hospitalDepartmentBillingModeInfoRepositoryCustom")
 public interface HospitalDepartmentBillingModeInfoRepositoryCustom {
 
-//    ChargeResponseDTO fetchAppointmentCharge(ChargeRequestDTO requestDTO);
 }

@@ -37,7 +37,8 @@ public class IntegrationUtils {
         return apiIntegrationFormat;
     }
 
-    public static List<ApiQueryParameters> parseToClientApiQueryParameters(List<ClientApiQueryParametersRequestDTO> parametersRequestDTOS, Long apiIntegrationFormatId) {
+    public static List<ApiQueryParameters> parseToClientApiQueryParameters(List<ClientApiQueryParametersRequestDTO> parametersRequestDTOS,
+                                                                           Long apiIntegrationFormatId) {
         List<ApiQueryParameters> apiQueryParametersList = new ArrayList<>();
 
         parametersRequestDTOS.forEach(request -> {
@@ -67,7 +68,8 @@ public class IntegrationUtils {
         return apiFeatureIntegration;
     }
 
-    public static List<ApiRequestHeader> parseToClientApiRequestHeaders(List<ClientApiHeadersRequestDTO> clientApiRequestHeaders,
+    public static List<ApiRequestHeader> parseToClientApiRequestHeaders(List<ClientApiHeadersRequestDTO>
+                                                                                clientApiRequestHeaders,
                                                                         Long id) {
 
         List<ApiRequestHeader> requestHeaderList = new ArrayList<>();
@@ -88,11 +90,13 @@ public class IntegrationUtils {
     }
 
     public static AdminModeFeatureIntegration parseToAdminModeFeatureIntegration(AppointmentMode appointmentMode,
-                                                                                 Long featureTypeId) {
+                                                                                 Long featureTypeId,
+                                                                                 IntegrationChannel integrationChannelId) {
 
         AdminModeFeatureIntegration adminModeFeatureIntegration = new AdminModeFeatureIntegration();
         adminModeFeatureIntegration.setFeatureId(featureTypeId);
         adminModeFeatureIntegration.setAppointmentModeId(appointmentMode);
+        adminModeFeatureIntegration.setIntegrationChannelId(integrationChannelId);
         adminModeFeatureIntegration.setStatus(ACTIVE);
 
         return adminModeFeatureIntegration;

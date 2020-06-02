@@ -41,7 +41,7 @@ import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTime
 public class IntegrationServiceImpl implements IntegrationService {
 
     private final ClientFeatureIntegrationRepository clientFeatureIntegrationRepository;
-    private final ClientApiIntegrationFormatRespository clientApiIntegrationFormatRespository;
+    private final ApiIntegrationFormatRespository apiIntegrationFormatRespository;
     private final HttpRequestMethodRepository httpRequestMethodRepository;
     private final ApiQueryParametersRepository apiQueryParametersRepository;
     private final ApiRequestHeaderRepository apiRequestHeaderRepository;
@@ -54,7 +54,7 @@ public class IntegrationServiceImpl implements IntegrationService {
     private final ApiIntegrationTypeRepository apiIntegrationTypeRepository;
 
     public IntegrationServiceImpl(ClientFeatureIntegrationRepository clientFeatureIntegrationRepository,
-                                  ClientApiIntegrationFormatRespository clientApiIntegrationFormatRespository,
+                                  ApiIntegrationFormatRespository apiIntegrationFormatRespository,
                                   HttpRequestMethodRepository httpRequestMethodRepository,
                                   ApiQueryParametersRepository apiQueryParametersRepository,
                                   ApiRequestHeaderRepository apiRequestHeaderRepository,
@@ -67,7 +67,7 @@ public class IntegrationServiceImpl implements IntegrationService {
                                   ApiIntegrationTypeRepository apiIntegrationTypeRepository) {
 
         this.clientFeatureIntegrationRepository = clientFeatureIntegrationRepository;
-        this.clientApiIntegrationFormatRespository = clientApiIntegrationFormatRespository;
+        this.apiIntegrationFormatRespository = apiIntegrationFormatRespository;
         this.httpRequestMethodRepository = httpRequestMethodRepository;
         this.apiQueryParametersRepository = apiQueryParametersRepository;
         this.apiRequestHeaderRepository = apiRequestHeaderRepository;
@@ -184,14 +184,14 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     private void updateApiIntegrationFormat(ClientApiIntegrationUpdateRequestDTO requestDTO, Long apiIntegrationFormatId) {
 
-        ApiIntegrationFormat apiIntegrationFormat = clientApiIntegrationFormatRespository.
+        ApiIntegrationFormat apiIntegrationFormat = apiIntegrationFormatRespository.
                 findByIntegrationFormatId(apiIntegrationFormatId)
                 .orElseThrow(() -> API_INTEGRATION_FORMAT_NOT_FOUND.apply(apiIntegrationFormatId));
 
         apiIntegrationFormat.setUrl(requestDTO.getApiUrl());
         apiIntegrationFormat.setHttpRequestMethodId(requestDTO.getRequestMethodId());
 
-        clientApiIntegrationFormatRespository.save(apiIntegrationFormat);
+        apiIntegrationFormatRespository.save(apiIntegrationFormat);
     }
 
     private void updateApiRequestHeaders(List<ClientApiRequestHeadersUpdateRequestDTO> queryParametersRequestDTOS,
@@ -425,7 +425,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     private void saveApiIntegrationFormat(ApiIntegrationFormat apiIntegrationFormat) {
 
-        clientApiIntegrationFormatRespository.save(apiIntegrationFormat);
+        apiIntegrationFormatRespository.save(apiIntegrationFormat);
     }
 
     private void saveClientFeatureIntegration(ClientFeatureIntegration clientFeatureIntegration) {

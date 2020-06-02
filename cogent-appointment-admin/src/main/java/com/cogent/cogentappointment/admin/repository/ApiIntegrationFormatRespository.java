@@ -12,7 +12,7 @@ import java.util.Optional;
  * @author rupak on 2020-05-19
  */
 @Repository
-public interface ClientApiIntegrationFormatRespository extends JpaRepository<ApiIntegrationFormat,Long> {
+public interface ApiIntegrationFormatRespository extends JpaRepository<ApiIntegrationFormat,Long> {
 
     @Query("SELECT aif FROM ApiIntegrationFormat aif WHERE aif.id=:id and aif.status!='D'")
     Optional<ApiIntegrationFormat >findByIntegrationFormatId(@Param("id") Long apiIntegrationFormatId);

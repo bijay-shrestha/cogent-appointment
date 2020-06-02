@@ -1,6 +1,6 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
-import com.cogent.cogentappointment.admin.dto.request.adminModeIntegration.AdminModeFeatureIntegrationRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.integrationAdminMode.AdminModeApiIntegrationRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.ApiIntegrationFormatRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.ClientApiHeadersRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.ClientApiQueryParametersRequestDTO;
@@ -36,9 +36,10 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
     private final ApiRequestHeaderRepository apiRequestHeaderRepository;
     private final ApiFeatureIntegrationRepository apiFeatureIntegrationRepository;
     private final AdminModeApiFeatureIntegrationRepository featureIntegrationRepository;
-    private final ClientApiIntegrationFormatRespository apiIntegrationFormatRespository;
+    private final ApiIntegrationFormatRespository apiIntegrationFormatRespository;
     private final FeatureRepository featureRepository;
     private final HttpRequestMethodRepository httpRequestMethodRepository;
+    private final IntegrationChannelRepository integrationChannelRepository;
 
     public AdminModeFeatureIntegrationImpl(AdminModeFeatureIntegrationRepository adminModeFeatureIntegrationRepository,
                                            AppointmentModeRepository appointmentModeRepository,
@@ -47,7 +48,9 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
                                            ApiRequestHeaderRepository apiRequestHeaderRepository,
                                            ApiFeatureIntegrationRepository apiFeatureIntegrationRepository,
                                            AdminModeApiFeatureIntegrationRepository apiIntegrationFormatRepository,
-                                           ClientApiIntegrationFormatRespository apiIntegrationFormatRespository, FeatureRepository featureRepository) {
+                                           ApiIntegrationFormatRespository apiIntegrationFormatRespository,
+                                           FeatureRepository featureRepository,
+                                           IntegrationChannelRepository integrationChannelRepository) {
         this.adminModeFeatureIntegrationRepository = adminModeFeatureIntegrationRepository;
         this.appointmentModeRepository = appointmentModeRepository;
         this.httpRequestMethodRepository = httpRequestMethodRepository;
@@ -57,10 +60,11 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
         this.featureIntegrationRepository = apiIntegrationFormatRepository;
         this.apiIntegrationFormatRespository = apiIntegrationFormatRespository;
         this.featureRepository = featureRepository;
+        this.integrationChannelRepository = integrationChannelRepository;
     }
 
     @Override
-    public void save(AdminModeFeatureIntegrationRequestDTO requestDTO) {
+    public void save(AdminModeApiIntegrationRequestDTO requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -71,8 +75,12 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
 
         AppointmentMode appointmentMode = findAppointmentMode(requestDTO.getAppointmentModeId());
 
+        IntegrationChannel integrationChannel = integrationChannelRepository.
+                findActiveIntegrationChannel(requestDTO.getIntegrationChannelId())
+                .orElseThrow(() -> INTEGRATION_CHANNEL_NOT_FOUND.apply(requestDTO.getIntegrationChannelId()));
+
         AdminModeFeatureIntegration adminModeFeatureIntegration = parseToAdminModeFeatureIntegration(appointmentMode,
-                requestDTO.getFeatureTypeId());
+                requestDTO.getFeatureTypeId(), integrationChannel);
 
         saveAdminModeFeatureIntegration(adminModeFeatureIntegration);
 
@@ -93,7 +101,6 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
                         apiIntegrationFormat);
 
         saveAdminModeApiFeatureIntegration(adminModeApiFeatureIntegration);
-
 
         saveApiFeatureIntegration(adminModeFeatureIntegration.getId(), adminModeApiFeatureIntegration.getId(),
                 null);
@@ -151,7 +158,9 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
 
     }
 
-    private void saveApiFeatureIntegration(Long clientFeatureIntegrationId, Long apiIntegrationFormatId,Long integrationTypeId) {
+    private void saveApiFeatureIntegration(Long clientFeatureIntegrationId,
+                                           Long apiIntegrationFormatId,
+                                           Long integrationTypeId) {
 
         apiFeatureIntegrationRepository.save(parseToClientApiFeatureIntegration(clientFeatureIntegrationId,
                 apiIntegrationFormatId, integrationTypeId));
@@ -164,14 +173,22 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
     }
 
     private Function<Long, NoContentFoundException> APPOINTMENT_MODE_NOT_FOUND = (id) -> {
-        throw new NoContentFoundException(AppointmentMode.class);
+        throw new NoContentFoundException(AppointmentMode.class, "id", id.toString());
     };
 
     private Function<Long, NoContentFoundException> HTTP_REQUEST_METHOD_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
-        throw new NoContentFoundException(HttpRequestMethod.class);
+        throw new NoContentFoundException(HttpRequestMethod.class, "id", id.toString());
     };
 
     private Function<Long, NoContentFoundException> FEATURE_NOT_FOUND = (id) -> {
-        throw new NoContentFoundException(Feature.class);
+        throw new NoContentFoundException(Feature.class, "id", id.toString());
+    };
+
+    private Function<Long, NoContentFoundException> INTEGRATION_CHANNEL_NOT_FOUND = (id) -> {
+        throw new NoContentFoundException(IntegrationChannel.class, "id", id.toString());
+    };
+
+    private Function<Long, NoContentFoundException> INTEGRATION_TYPE_NOT_FOUND = (id) -> {
+        throw new NoContentFoundException(ApiIntegrationType.class, "id", id.toString());
     };
 }

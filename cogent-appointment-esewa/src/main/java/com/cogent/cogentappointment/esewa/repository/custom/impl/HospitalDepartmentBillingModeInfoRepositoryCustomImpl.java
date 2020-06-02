@@ -23,9 +23,7 @@ import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.CONTENT_N
 import static com.cogent.cogentappointment.esewa.log.constants.HospitalDepartmentLog.HOSPITAL_DEPARTMENT_BILLING_MODE_INFO;
 import static com.cogent.cogentappointment.esewa.query.HospitalDepartmentBillingModeInfoQuery.QUERY_TO_GET_ACTIVE_BILLING_MODE_BY_HOSPITAL_DEPARTMENT_ID;
 import static com.cogent.cogentappointment.esewa.query.HospitalDepartmentBillingModeInfoQuery.QUERY_TO_GET_CHARGE_BY_BILLING_MODE_AND_HOSPITAL_DEPARTMENT_ID;
-import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.createQuery;
-import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.transformQueryToResultList;
-import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.transformQueryToSingleResult;
+import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.*;
 
 /**
  * @author Sauravi Thapa ON 5/20/20
@@ -43,7 +41,13 @@ public class HospitalDepartmentBillingModeInfoRepositoryCustomImpl implements Ho
         Query query = createQuery.apply(entityManager, QUERY_TO_GET_ACTIVE_BILLING_MODE_BY_HOSPITAL_DEPARTMENT_ID)
                 .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId);
 
-        return transformQueryToResultList(query,DropDownResponseDTO.class);
+        List<DropDownResponseDTO> billingModes =
+                transformQueryToResultList(query, DropDownResponseDTO.class);
+
+        if (billingModes.isEmpty())
+            throw HOSPITAL_DEPARTMENT_BILLING_MODE_INFO_NOT_FOUND.get();
+
+        return billingModes;
     }
 
     @Override

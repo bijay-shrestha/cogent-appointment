@@ -13,7 +13,7 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppointmentHospitalDepartmentFollowUpResponseDTO extends StatusResponseDTO implements Serializable {
+public class AppointmentHospitalDeptFollowUpResponseDTO extends StatusResponseDTO implements Serializable {
 
     private Character isFollowUp;
 

@@ -9,7 +9,7 @@ import com.cogent.cogentappointment.esewa.repository.AppointmentRepository;
 import com.cogent.cogentappointment.esewa.repository.AppointmentReservationLogRepository;
 import com.cogent.cogentappointment.esewa.repository.DoctorDutyRosterOverrideRepository;
 import com.cogent.cogentappointment.esewa.repository.DoctorDutyRosterRepository;
-import com.cogent.cogentappointment.esewa.service.AppointmentReservationService;
+import com.cogent.cogentappointment.esewa.service.AppointmentHospitalDeptReservationLogService;
 import com.cogent.cogentappointment.persistence.model.AppointmentReservationLog;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -37,7 +37,7 @@ import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.*;
 @Service
 @Transactional
 @Slf4j
-public class AppointmentReservationServiceImpl implements AppointmentReservationService {
+public class AppointmentHospitalDeptReservationLogServiceImpl implements AppointmentHospitalDeptReservationLogService {
 
     private final AppointmentReservationLogRepository appointmentReservationLogRepository;
 
@@ -49,11 +49,11 @@ public class AppointmentReservationServiceImpl implements AppointmentReservation
 
     private final AppointmentReservationProperties reservationProperties;
 
-    public AppointmentReservationServiceImpl(AppointmentReservationLogRepository appointmentReservationLogRepository,
-                                             AppointmentRepository appointmentRepository,
-                                             DoctorDutyRosterRepository doctorDutyRosterRepository,
-                                             DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository,
-                                             AppointmentReservationProperties reservationProperties) {
+    public AppointmentHospitalDeptReservationLogServiceImpl(AppointmentReservationLogRepository appointmentReservationLogRepository,
+                                                            AppointmentRepository appointmentRepository,
+                                                            DoctorDutyRosterRepository doctorDutyRosterRepository,
+                                                            DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository,
+                                                            AppointmentReservationProperties reservationProperties) {
         this.appointmentReservationLogRepository = appointmentReservationLogRepository;
         this.appointmentRepository = appointmentRepository;
         this.doctorDutyRosterRepository = doctorDutyRosterRepository;

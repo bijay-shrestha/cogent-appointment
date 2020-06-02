@@ -22,9 +22,6 @@ public class AppointmentHospitalDepartmentFollowUpRequestDTO implements Serializ
     private Long hospitalDepartmentId;
 
     @NotNull
-    private Long specializationId;
-
-    @NotNull
     private Long hospitalId;
 
     @NotNull

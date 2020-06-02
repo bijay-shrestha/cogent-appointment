@@ -7,6 +7,7 @@ import com.cogent.cogentappointment.admin.dto.request.integrationRequestBodyAttr
 import com.cogent.cogentappointment.admin.dto.request.integrationRequestBodyAttribute.integrationRequestBodyAttributeUpdate.ApiIntegrationRequestBodyUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.integration.IntegrationRequestBodyAttributeResponse;
 import com.cogent.cogentappointment.admin.dto.response.integrationRequestBodyAttribute.ApiRequestBodySearchDTO;
+import com.cogent.cogentappointment.admin.dto.response.integrationRequestBodyAttribute.IntegrationRequestBodyDetailResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.ApiFeatureIntegrationRequestBodyParametersRepository;
 import com.cogent.cogentappointment.admin.repository.FeatureRepository;
@@ -152,6 +153,21 @@ public class ApiFeatureIntegrationRequestBodyParametersServiceImpl implements
         log.info(UPDATING_PROCESS_COMPLETED, API_REQUEST_BODY_ATTRIBUTES, getDifferenceBetweenTwoTime(startTime));
 
 
+    }
+
+    @Override
+    public IntegrationRequestBodyDetailResponseDTO fetchRequestBodyAttributeDetails(Long featureId) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SEARCHING_PROCESS_STARTED, API_REQUEST_BODY_ATTRIBUTES);
+
+        IntegrationRequestBodyDetailResponseDTO responses =
+                requestBodyParametersRepository.fetchRequestBodyAttributeDetails(featureId);
+
+        log.info(SEARCHING_PROCESS_COMPLETED, API_REQUEST_BODY_ATTRIBUTES, getDifferenceBetweenTwoTime(startTime));
+
+        return responses;
     }
 
     private void updateRequestBodyAttributes(Feature feature,

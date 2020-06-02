@@ -6,6 +6,7 @@ import com.cogent.cogentappointment.admin.dto.request.integrationRequestBodyAttr
 import com.cogent.cogentappointment.admin.dto.response.integration.IntegrationRequestBodyAttributeResponse;
 import com.cogent.cogentappointment.admin.dto.response.integrationRequestBodyAttribute.ApiIntegrationRequestBodySearchResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.integrationRequestBodyAttribute.ApiRequestBodySearchDTO;
+import com.cogent.cogentappointment.admin.dto.response.integrationRequestBodyAttribute.IntegrationRequestBodyDetailResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.query.RequestBodyAttributesQuery;
 import com.cogent.cogentappointment.admin.repository.custom.IntegrationRequestBodyParametersRepositoryCustom;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
@@ -107,6 +109,21 @@ public class IntegrationRequestBodyParametersRepositoryCustomImpl implements
             requestBodySearchDTO.setTotalItems(totalItems);
             return requestBodySearchDTO;
         }
+    }
+
+    @Override
+    public IntegrationRequestBodyDetailResponseDTO fetchRequestBodyAttributeDetails(Long featureId) {
+
+        Query query = createNativeQuery.apply(entityManager,
+                RequestBodyAttributesQuery.FETCH_REQUEST_BODY_ATTRIBUTE_DETAILS_BY_FEATURE_ID)
+                .setParameter(QueryConstants.API_FEATURE__ID, featureId);
+
+        try {
+            return transformQueryToSingleResult(query, IntegrationRequestBodyDetailResponseDTO.class);
+        } catch (NoResultException e) {
+            throw REQUEST_BODY_ATTRIBUTES_NOT_FOUND.get();
+        }
+
     }
 
 

@@ -22,7 +22,7 @@ public class RequestBodyAttributesQuery {
     public static final String FETCH_REQUEST_BODY_ATTRIBUTE_BY_FEATURE_ID =
             " SELECT" +
                     " airbp.id as id," +
-                    " airbp.name as name,"+
+                    " airbp.name as name" +
                     " FROM" +
                     " ApiFeatureIntegrationRequestBodyParameters afirbp" +
                     " LEFT JOIN ApiIntegrationRequestBodyParameters airbp " +
@@ -30,6 +30,20 @@ public class RequestBodyAttributesQuery {
                     " WHERE airbp.status ='Y'" +
                     " AND afirbp.status ='Y'" +
                     " AND afirbp.featureId=:featureId";
+
+
+    public static final String FETCH_REQUEST_BODY_ATTRIBUTE_DETAILS_BY_FEATURE_ID =
+            " SELECT" +
+                    " f.name as featureName," +
+                    " GROUP_CONCAT(airbp.name) as requestBody," +
+                    REQUEST_BODY_ATTRIBUTE_AUDITABLE_QUERY() +
+                    " FROM" +
+                    " feature f" +
+                    " LEFT JOIN api_feature_integration_request_body_parameters afirbp ON afirbp.feature_id=f.id" +
+                    " LEFT JOIN api_integration_request_body_parameters airbp ON airbp.id=afirbp.api_request_body_parameters_id" +
+                    " WHERE airbp.status ='Y'" +
+                    " AND afirbp.status ='Y'" +
+                    " AND afirbp.feature_id=:featureId";
 
 //    public static final String FETCH_REQUEST_BODY_ATTRIBUTE_DETAILS =
 //            " SELECT" +
@@ -50,7 +64,7 @@ public class RequestBodyAttributesQuery {
                             " f.id as featureId," +
                             " f.name as featureName," +
                             " GROUP_CONCAT(airbp.name) as requestBody," +
-                            " afirbp.status as status"+
+                            " afirbp.status as status" +
                             " FROM" +
                             " feature f" +
                             " LEFT JOIN api_feature_integration_request_body_parameters afirbp ON afirbp.feature_id=f.id" +

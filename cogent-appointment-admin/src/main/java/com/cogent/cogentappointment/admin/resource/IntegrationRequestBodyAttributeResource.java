@@ -2,8 +2,8 @@ package com.cogent.cogentappointment.admin.resource;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integration.ApiFeatureIntegrationRequestBodyRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.integrationRequestBodyAttribute.integrationRequestBodyAttributeUpdate.ApiFeatureIntegrationRequestBodyUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationRequestBodyAttribute.ApiIntegrationRequestBodySearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.integrationRequestBodyAttribute.integrationRequestBodyAttributeUpdate.ApiFeatureIntegrationRequestBodyUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.service.ApiRequestBodyAttributeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -15,6 +15,7 @@ import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.IntegrationRequestBodyConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.DETAIL;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.IntegrationRequestBodyAttributeConstants.*;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
@@ -64,6 +65,12 @@ public class IntegrationRequestBodyAttributeResource {
     public ResponseEntity<?> delete(@Valid @RequestBody DeleteRequestDTO deleteRequestDTO) {
         requestBodyAttributeService.delete(deleteRequestDTO);
         return ok().build();
+    }
+
+    @GetMapping(DETAIL + FEATURE_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_API_REQUEST_HEADER_ATTRIBUTE_OPERATION)
+    public ResponseEntity<?> fetchRequestBodyAttributeDetails(@PathVariable("featureId") Long featureId) {
+        return ok(requestBodyAttributeService.fetchRequestBodyAttributeDetails(featureId));
     }
 
 

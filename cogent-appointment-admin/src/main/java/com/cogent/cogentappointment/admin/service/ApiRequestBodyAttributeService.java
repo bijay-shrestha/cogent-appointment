@@ -6,6 +6,7 @@ import com.cogent.cogentappointment.admin.dto.request.integrationRequestBodyAttr
 import com.cogent.cogentappointment.admin.dto.request.integrationRequestBodyAttribute.ApiIntegrationRequestBodySearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.integration.IntegrationRequestBodyAttributeResponse;
 import com.cogent.cogentappointment.admin.dto.response.integrationRequestBodyAttribute.ApiRequestBodySearchDTO;
+import com.cogent.cogentappointment.admin.dto.response.integrationRequestBodyAttribute.IntegrationRequestBodyDetailResponseDTO;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -22,4 +23,6 @@ public interface ApiRequestBodyAttributeService {
     void delete(DeleteRequestDTO deleteRequestDTO);
 
     void update(ApiFeatureIntegrationRequestBodyUpdateRequestDTO requestDTO);
+
+    IntegrationRequestBodyDetailResponseDTO fetchRequestBodyAttributeDetails(Long featureId);
 }

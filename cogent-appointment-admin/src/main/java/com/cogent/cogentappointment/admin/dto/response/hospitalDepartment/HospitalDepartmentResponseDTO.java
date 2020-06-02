@@ -31,8 +31,6 @@ public class HospitalDepartmentResponseDTO extends AuditableResponseDTO implemen
 
     private String remarks;
 
-    private Double appointmentCharge,followUpCharge;
-
     private List<DoctorDropdownDTO> doctorList;
 
     private List<DropDownResponseDTO> roomList;

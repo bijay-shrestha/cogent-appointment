@@ -4,6 +4,7 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.List;
 
 /**
  * @author smriti ON 24/01/2020
@@ -23,5 +24,5 @@ public class HospitalDepartmentMinimalResponse implements Serializable {
 
     private String roomList;
 
-    private Double appointmentCharge,followUpCharge;
+    private List<BillingModeChargeResponse> billingModeChargeResponseList;
 }

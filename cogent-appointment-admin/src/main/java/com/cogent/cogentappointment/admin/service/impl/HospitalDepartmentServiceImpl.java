@@ -211,10 +211,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
         log.info(DELETING_PROCESS_STARTED, HOSPITAL_DEPARTMENT);
 
-        HospitalDepartment hospitalDepartment = fetchHospitalDepartmentById(requestDTO.getId());
-
-
-        saveHospitalDepartment(parseToDeleteHospitalDept(hospitalDepartment, requestDTO));
+        deleteHospitalDepartment(requestDTO);
 
         deleteBillingModeWithCharge(requestDTO);
 
@@ -434,6 +431,14 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
                 requestDTO));
 
     }
+
+    public void deleteHospitalDepartment(DeleteRequestDTO requestDTO) {
+
+        HospitalDepartment hospitalDepartment = fetchHospitalDepartmentById(requestDTO.getId());
+
+        saveHospitalDepartment(parseToDeleteHospitalDept(hospitalDepartment, requestDTO));
+    }
+
 
     public static void validateRoomDuplicity(List<Object[]> objects,
                                              Long requestedRoomId) {

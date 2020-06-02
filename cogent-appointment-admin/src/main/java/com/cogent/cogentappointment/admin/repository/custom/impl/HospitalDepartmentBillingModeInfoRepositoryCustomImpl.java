@@ -13,7 +13,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.BILLING_MODE_ID;
@@ -37,13 +36,13 @@ public class HospitalDepartmentBillingModeInfoRepositoryCustomImpl implements Ho
 
     @Override
     public ChargeResponseDTO fetchAppointmentCharge(ChargeRequestDTO requestDTO) {
-        Query  query=createQuery.apply(entityManager,QUERY_TO_GET_CHARGE_BY_BILLING_MODE_AND_HOSPITAL_DEPARTMENT_ID)
-                .setParameter(BILLING_MODE_ID,requestDTO.getBillingModeId())
-                .setParameter(HOSPITAL_DEPARTMENT_ID,requestDTO.getBillingModeId());
+        Query query = createQuery.apply(entityManager, QUERY_TO_GET_CHARGE_BY_BILLING_MODE_AND_HOSPITAL_DEPARTMENT_ID)
+                .setParameter(BILLING_MODE_ID, requestDTO.getBillingModeId())
+                .setParameter(HOSPITAL_DEPARTMENT_ID, requestDTO.getHospitalDepartmentId());
 
-        try{
-            return transformQueryToSingleResult(query,ChargeResponseDTO.class);
-        }catch (NoResultException e){
+        try {
+            return transformQueryToSingleResult(query, ChargeResponseDTO.class);
+        } catch (NoResultException e) {
             throw HOSPITAL_DEPARTMENT_BILLING_MODE_INFO_NOT_FOUND.get();
         }
     }

@@ -15,4 +15,13 @@ public class HospitalDepartmentRoomInfoQuery {
                     " AND hd.hospital.status !='D'" +
                     " AND (hdri.room.id=:roomId)" +
                     " AND hdri.hospitalDepartment.hospital.id =:hospitalId";
+
+    public static final String QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_ROOM_INFO =
+            " SELECT hdi" +
+                    " FROM HospitalDepartmentRoomInfo hdi" +
+                    " WHERE" +
+                    " hdi.hospitalDepartment.id=:hospitalDepartmentId" +
+                    " AND hdi.id=:hospitalDepartmentRoomInfoId" +
+                    " AND hdi.status='Y'" +
+                    " AND hdi.hospitalDepartment.status = 'Y'";
 }

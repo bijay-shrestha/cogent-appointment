@@ -1,17 +1,23 @@
 package com.cogent.cogentappointment.client.repository.custom.impl;
 
+import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.HospitalDepartmentRoomInfoRepositoryCustom;
+import com.cogent.cogentappointment.persistence.model.HospitalDepartmentRoomInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
+import java.util.function.Function;
 
-import static com.cogent.cogentappointment.client.constants.QueryConstants.HOSPITAL_ID;
-import static com.cogent.cogentappointment.client.constants.QueryConstants.ROOM_ID;
+import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
+import static com.cogent.cogentappointment.client.log.constants.HospitalDepartmentLog.HOSPITAL_DEPARTMENT_ROOM_INFO;
+import static com.cogent.cogentappointment.client.query.HospitalDepartmentRoomInfoQuery.QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_ROOM_INFO;
 import static com.cogent.cogentappointment.client.query.HospitalDepartmentRoomInfoQuery.QUERY_TO_VALIDATE_DUPLICITY;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.createQuery;
 
@@ -35,4 +41,24 @@ public class HospitalDepartmentRoomInfoRepositoryCustomImpl implements HospitalD
         return query.getResultList();
     }
 
+    @Override
+    public HospitalDepartmentRoomInfo fetchHospitalDepartmentRoomInfo(Long hospitalDepartmentRoomInfoId, Long hospitalDepartmentId) {
+        try {
+
+            return entityManager.createQuery(QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_ROOM_INFO, HospitalDepartmentRoomInfo.class)
+                    .setParameter(HOSPITAL_DEPARTMENT_ROOM_INFO_ID, hospitalDepartmentRoomInfoId)
+                    .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId)
+                    .getSingleResult();
+
+        } catch (NoResultException e) {
+            throw HOSPITAL_DEPARTMENT_ROOM_INFO_NOT_FOUND.apply(hospitalDepartmentRoomInfoId);
+        }
+    }
+
+    private Function<Long, NoContentFoundException> HOSPITAL_DEPARTMENT_ROOM_INFO_NOT_FOUND =
+            (hospitalDepartmentRoomInfoId) -> {
+                log.error(CONTENT_NOT_FOUND_BY_ID, HOSPITAL_DEPARTMENT_ROOM_INFO);
+                throw new NoContentFoundException(HospitalDepartmentRoomInfo.class,
+                        "hospitalDepartmentRoomInfoId", hospitalDepartmentRoomInfoId.toString());
+            };
 }

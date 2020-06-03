@@ -518,7 +518,9 @@ public class HospitalServiceImpl implements HospitalService {
 
                             } else {
                                 HospitalAppointmentServiceType hospitalAppointmentServiceType =
-                                        findHospitalAppointmentServiceTypeById(updateRequestDTO.getAppointmentServiceTypeId());
+                                        findHospitalAppointmentServiceTypeById(
+                                                updateRequestDTO.getHospitalAppointmentServiceTypeId());
+
                                 return updateHospitalAppointmentServiceTypeStatus(hospitalAppointmentServiceType,
                                         updateRequestDTO.getStatus(), NO);
                             }

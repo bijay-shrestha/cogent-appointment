@@ -38,7 +38,7 @@ public class ThirdPartyResource {
     @PostMapping("/post-ticket")
     @ApiOperation("This is Post Ticket API")
     public ResponseEntity<CheckInResponseDTO> postTicket(@RequestBody CheckInRequestDTO checkInRequestDTO){
-        if(checkInRequestDTO.patientId == null) {
+        if(checkInRequestDTO.getPatientId() == null) {
             checkInRequestDTO.setPatientId(((Integer) ThreadLocalRandom.current().nextInt()).toString ());
         }
         ThirdPartyInfo thirdPartyInfo = ObjectMapperUtils.convertToEntity(modelMapper, checkInRequestDTO);
@@ -46,7 +46,7 @@ public class ThirdPartyResource {
         if(saveThirdPartyInfo != null){
             CheckInResponseDTO checkInResponseDTO = CheckInResponseDTO.builder()
                     .statusCode(200)
-                    .responseMessage(saveThirdPartyInfo.getName() + " Data Saved Successfully")
+//                    .responseMessage(saveThirdPartyInfo.getName() + " Data Saved Successfully")
                     .responseData (saveThirdPartyInfo.getPatientId())
                     .build();
             return new ResponseEntity<>(checkInResponseDTO, HttpStatus.CREATED);

@@ -16,6 +16,7 @@ public class SwaggerConstants {
             "/configuration/security",
             "/swagger-ui.html",
             "/api/v1/test/**",
+            "/api/v1/test/post-ticket",
             "/webjars/**"
             // other public endpoints of your API may be appended to this array
     };

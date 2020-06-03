@@ -8,6 +8,8 @@ import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.Hospita
 import com.cogent.cogentappointment.persistence.model.*;
 
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.convertToNormalCase;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.toUpperCase;
@@ -17,8 +19,8 @@ import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.toUppe
  */
 public class HospitalDepartmentUtils {
 
-    public static HospitalDepartment parseToHospitalDepartment(HospitalDepartmentRequestDTO requestDTO,
-                                                               Hospital hospital) {
+    public static BiFunction<HospitalDepartmentRequestDTO,Hospital,HospitalDepartment>
+            parseToHospitalDepartment = (requestDTO,hospital) -> {
 
         HospitalDepartment hospitalDepartment = new HospitalDepartment();
         hospitalDepartment.setName(convertToNormalCase(requestDTO.getName()));
@@ -28,8 +30,7 @@ public class HospitalDepartmentUtils {
         hospitalDepartment.setHospital(hospital);
 
         return hospitalDepartment;
-    }
-
+    };
 
     public static HospitalDepartmentBillingModeInfo parseToHospitalDepartmentCharge(BillingModeChargeDTO requestDTO,
                                                                                     HospitalDepartment hospitalDepartment,
@@ -98,8 +99,9 @@ public class HospitalDepartmentUtils {
 
     }
 
-    public static HospitalDepartment parseToUpdateHospitalDepartment(HospitalDepartment hospitalDepartment,
-                                                                     HospitalDepartmentUpdateRequestDTO requestDTO) {
+    public static BiFunction<HospitalDepartment,HospitalDepartmentUpdateRequestDTO,HospitalDepartment>
+            parseToUpdateHospitalDepartment = (hospitalDepartment, requestDTO) -> {
+
         hospitalDepartment.setName(convertToNormalCase(requestDTO.getName()));
         hospitalDepartment.setCode(toUpperCase(requestDTO.getCode()));
         hospitalDepartment.setDescription(requestDTO.getDescription());
@@ -107,15 +109,17 @@ public class HospitalDepartmentUtils {
         hospitalDepartment.setRemarks(requestDTO.getRemarks());
 
         return hospitalDepartment;
-    }
+    };
 
-    public static HospitalDepartment parseToDeleteHospitalDept(HospitalDepartment hospitalDepartment,
-                                                               DeleteRequestDTO requestDTO) {
+    public static BiFunction<HospitalDepartment,DeleteRequestDTO,HospitalDepartment>
+            parseToDeleteHospitalDept = (hospitalDepartment, requestDTO) -> {
+
         hospitalDepartment.setStatus(requestDTO.getStatus());
         hospitalDepartment.setRemarks(requestDTO.getRemarks());
 
         return hospitalDepartment;
-    }
+    };
+
 
     public static List<HospitalDepartmentBillingModeInfo> parseToDeleteHospitalDeptCharge(List<HospitalDepartmentBillingModeInfo>
                                                                                                   hospitalDepartmentBillingModeInfoList,

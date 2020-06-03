@@ -62,7 +62,8 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
     private final BillingModeRepository billingModeRepository;
 
     public HospitalDepartmentServiceImpl(HospitalDepartmentRepository hospitalDepartmentRepository,
-                                         HospitalDepartmentBillingModeInfoRepository hospitalDepartmentBillingModeInfoRepository,
+                                         HospitalDepartmentBillingModeInfoRepository
+                                                 hospitalDepartmentBillingModeInfoRepository,
                                          HospitalDepartmentRoomInfoRepository hospitalDepartmentRoomInfoRepository,
                                          HospitalDepartmentDoctorInfoRepository hospitalDepartmentDoctorInfoRepository,
                                          HospitalRepository hospitalRepository,
@@ -492,7 +493,8 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
     }
 
-    private List<HospitalDepartmentBillingModeInfo> fetchHospitalDepartmentChargeListByHospitalDepartmentId(Long hospitalDepartmentId) {
+    private List<HospitalDepartmentBillingModeInfo> fetchHospitalDepartmentChargeListByHospitalDepartmentId
+            (Long hospitalDepartmentId) {
         return hospitalDepartmentBillingModeInfoRepository.fetchListByHospitalDepartmentId(hospitalDepartmentId);
     }
 
@@ -542,18 +544,9 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
         return hospitalDepartmentRepository.save(hospitalDepartment);
     }
 
-    private void saveHospitalDepartmentCharge(HospitalDepartmentBillingModeInfo hospitalDepartmentBillingModeInfo) {
-        hospitalDepartmentBillingModeInfoRepository.save(hospitalDepartmentBillingModeInfo);
-    }
-
     private HospitalDepartment fetchHospitalDepartmentById(Long hospitalDepartmentId, Long hospitalId) {
         return hospitalDepartmentRepository.fetchByIdAndHospitalId(hospitalDepartmentId, hospitalId)
                 .orElseThrow(() -> HOSPITAL_DEPARTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(hospitalId));
-    }
-
-    private HospitalDepartmentBillingModeInfo fetchHospitalDepartmentChargeByHospitalDepartmentId(Long hospitalDepartmentId) {
-        return hospitalDepartmentBillingModeInfoRepository.fetchByHospitalDepartmentId(hospitalDepartmentId)
-                .orElseThrow(() -> HOSPITAL_DEPARTMENT_CHARGE_WITH_GIVEN_ID_NOT_FOUND.apply(hospitalDepartmentId));
     }
 
     private Hospital fetchHospitalById(Long hospitalId) {
@@ -586,12 +579,6 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
         throw new NoContentFoundException(HospitalDepartment.class, "id", id.toString());
     };
 
-    private Function<Long, NoContentFoundException> HOSPITAL_DEPARTMENT_CHARGE_WITH_GIVEN_ID_NOT_FOUND =
-            (hospitalDepartmentId) -> {
-                log.error(CONTENT_NOT_FOUND_BY_HOSPITAL_DEPARTMENT_ID, HOSPITAL_DEPARTMENT_CHARGE, hospitalDepartmentId);
-                throw new NoContentFoundException(HospitalDepartmentBillingModeInfo.class, "hospitalDepartmentId",
-                        hospitalDepartmentId.toString());
-            };
 
     private Function<Long, NoContentFoundException> DOCTOR_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, DOCTOR, id);

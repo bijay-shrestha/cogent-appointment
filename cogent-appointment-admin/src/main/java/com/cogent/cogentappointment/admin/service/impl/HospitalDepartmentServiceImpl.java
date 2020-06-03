@@ -62,7 +62,8 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
     private final BillingModeRepository billingModeRepository;
 
     public HospitalDepartmentServiceImpl(HospitalDepartmentRepository hospitalDepartmentRepository,
-                                         HospitalDepartmentBillingModeInfoRepository hospitalDepartmentBillingModeInfoRepository,
+                                         HospitalDepartmentBillingModeInfoRepository
+                                                 hospitalDepartmentBillingModeInfoRepository,
                                          HospitalDepartmentRoomInfoRepository hospitalDepartmentRoomInfoRepository,
                                          HospitalDepartmentDoctorInfoRepository hospitalDepartmentDoctorInfoRepository,
                                          HospitalRepository hospitalRepository,
@@ -96,7 +97,8 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
         Hospital hospital = fetchHospitalById(hospitalId);
 
-        HospitalDepartment hospitalDepartment = saveHospitalDepartment(parseToHospitalDepartment(requestDTO, hospital));
+        HospitalDepartment hospitalDepartment = saveHospitalDepartment(parseToHospitalDepartment
+                .apply(requestDTO, hospital));
 
         saveBillingModeWithCharge(requestDTO, hospitalDepartment);
 
@@ -116,7 +118,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
         HospitalDepartment hospitalDepartment = fetchHospitalDepartmentById(requestDTO.getId());
 
-        saveHospitalDepartment(parseToUpdateHospitalDepartment(hospitalDepartment, requestDTO));
+        saveHospitalDepartment(parseToUpdateHospitalDepartment.apply(hospitalDepartment, requestDTO));
 
         updateHospitalDepartmentCharge(requestDTO, hospitalDepartment);
 
@@ -437,7 +439,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
         HospitalDepartment hospitalDepartment = fetchHospitalDepartmentById(requestDTO.getId());
 
-        saveHospitalDepartment(parseToDeleteHospitalDept(hospitalDepartment, requestDTO));
+        saveHospitalDepartment(parseToDeleteHospitalDept.apply(hospitalDepartment, requestDTO));
     }
 
 
@@ -500,12 +502,8 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
                 .orElseThrow(() -> HOSPITAL_DEPARTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(hospitalDepartmentId));
     }
 
-    private HospitalDepartmentBillingModeInfo fetchHospitalDepartmentChargeByHospitalDepartmentId(Long hospitalDepartmentId) {
-        return hospitalDepartmentBillingModeInfoRepository.fetchByHospitalDepartmentId(hospitalDepartmentId)
-                .orElseThrow(() -> HOSPITAL_DEPARTMENT_CHARGE_WITH_GIVEN_ID_NOT_FOUND.apply(hospitalDepartmentId));
-    }
-
-    private List<HospitalDepartmentBillingModeInfo> fetchHospitalDepartmentChargeListByHospitalDepartmentId(Long hospitalDepartmentId) {
+    private List<HospitalDepartmentBillingModeInfo> fetchHospitalDepartmentChargeListByHospitalDepartmentId
+            (Long hospitalDepartmentId) {
         return hospitalDepartmentBillingModeInfoRepository.fetchListByHospitalDepartmentId(hospitalDepartmentId);
     }
 

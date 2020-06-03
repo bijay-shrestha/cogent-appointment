@@ -157,7 +157,7 @@ public class HospitalDepartmentQuery {
                     " LEFT JOIN DoctorAvatar da ON da.doctorId=hddi.doctor.id" +
                     " WHERE" +
                     " hddi.hospitalDepartment.id = :hospitalDepartmentId" +
-                    " AND hddi.status!='D'"+
+                    " AND hddi.status!='D'" +
                     " AND hddi.hospitalDepartment.status!='D'";
 
     public static String QUERY_TO_GET_ROOM_LIST_BY_HOSPITAL_DEPARTMENT_ID =
@@ -168,11 +168,11 @@ public class HospitalDepartmentQuery {
                     " HospitalDepartmentRoomInfo hdri" +
                     " WHERE" +
                     " hdri.hospitalDepartment.id = :hospitalDepartmentId" +
-                    " AND hdri.status!='D'"+
+                    " AND hdri.status!='D'" +
                     " AND hdri.hospitalDepartment.status!='D'";
 
 
-    public static String QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_BILLING_MODE_WITH_CHARGE=
+    public static String QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_BILLING_MODE_WITH_CHARGE =
             "SELECT " +
                     "  hb.id as id, " +
                     "  hb.billingMode.name as billingMode, " +
@@ -183,7 +183,6 @@ public class HospitalDepartmentQuery {
                     " WHERE " +
                     "  hb.hospitalDepartment.id = :hospitalDepartmentId " +
                     " AND hb.status!='D'";
-
 
     public static String HOSPITAL_DEPARTMENT_AUDITABLE_QUERY() {
         return " hd.createdBy as createdBy," +

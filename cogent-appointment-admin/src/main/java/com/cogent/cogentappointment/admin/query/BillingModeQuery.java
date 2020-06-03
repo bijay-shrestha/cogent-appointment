@@ -17,7 +17,7 @@ public class BillingModeQuery {
                     " WHERE" +
                     " bm.status !='D'" +
                     " AND (bm.name=:name OR bm.code=:code)";
-            
+
     public static final String QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE =
             " SELECT bm.name," +
                     " bm.code" +
@@ -55,7 +55,7 @@ public class BillingModeQuery {
         if (!ObjectUtils.isEmpty(searchRequestDTO.getStatus()))
             whereClause += " AND bm.status='" + searchRequestDTO.getStatus() + "'";
 
-        whereClause +="ORDER BY bm.id DESC";
+        whereClause += "ORDER BY bm.id DESC";
 
         return whereClause;
     }
@@ -68,7 +68,7 @@ public class BillingModeQuery {
                     " bm.status as status," +
                     " bm.remarks as remarks," +
                     " bm.description as description," +
-                    BILLING_MODE_AUDITABLE_QUERY()+
+                    BILLING_MODE_AUDITABLE_QUERY() +
                     " FROM BillingMode bm " +
                     " WHERE bm.status != 'D'" +
                     " AND bm.id =:id";
@@ -93,8 +93,8 @@ public class BillingModeQuery {
                 " bm.lastModifiedBy as lastModifiedBy," +
                 " bm.lastModifiedDate as lastModifiedDate";
     }
-    
-    public static String QUERY_TO_GET_ACTIVE_BILLING_MODE_BY_HOSPITAL_ID=
+
+    public static String QUERY_TO_GET_ACTIVE_BILLING_MODE_BY_HOSPITAL_ID =
             "SELECT " +
                     " bm" +
                     " FROM" +
@@ -105,7 +105,7 @@ public class BillingModeQuery {
                     " AND bm.status='Y'" +
                     " AND hb.hospital.id =:hospitalId";
 
-    public static String QUERY_TO_GET_BILLING_MODE_BY_HOSPITAL_ID=
+    public static String QUERY_TO_GET_BILLING_MODE_BY_HOSPITAL_ID =
             "SELECT " +
                     " bm" +
                     " FROM" +

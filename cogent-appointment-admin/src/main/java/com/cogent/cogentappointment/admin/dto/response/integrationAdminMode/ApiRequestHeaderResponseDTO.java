@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.dto.response.clientIntegration;
+package com.cogent.cogentappointment.admin.dto.response.integrationAdminMode;
 
 import lombok.*;
 
@@ -14,8 +14,14 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class ApiRequestHeaderResponseDTO implements Serializable {
 
-    private String token;
+    private Long id;
 
-    private String contentType;
+    private String keyParam;
+
+    private String valueParam;
+
+    private String description;
+
+    private Character status;
 
 }

@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.dto.response.adminModeIntegration;
+package com.cogent.cogentappointment.admin.dto.response.integrationAdminMode;
 
 import lombok.Getter;
 import lombok.Setter;

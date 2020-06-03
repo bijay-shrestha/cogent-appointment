@@ -1,9 +1,8 @@
-package com.cogent.cogentappointment.admin.dto.response.adminModeIntegration;
+package com.cogent.cogentappointment.admin.dto.response.integrationAdminMode;
 
 import lombok.*;
 
 import java.io.Serializable;
-import java.util.Map;
 
 /**
  * @author rupak on 2020-05-20
@@ -13,7 +12,9 @@ import java.util.Map;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class FeatureIntegrationResponseDTO implements Serializable {
+public class FeatureIntegrationResponse implements Serializable {
+
+    private Long apiIntegrationFormatId;
 
     private String featureCode;
 
@@ -22,10 +23,4 @@ public class FeatureIntegrationResponseDTO implements Serializable {
     private String url;
 
     private String requestBody;
-
-    private Map<String,String> headers;
-
-    private Map<String,String> queryParameters;
-
-
 }

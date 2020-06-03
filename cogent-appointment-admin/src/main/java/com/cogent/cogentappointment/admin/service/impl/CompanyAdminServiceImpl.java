@@ -8,9 +8,9 @@ import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminS
 import com.cogent.cogentappointment.admin.dto.request.CompanyAdmin.CompanyAdminUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.admin.*;
 import com.cogent.cogentappointment.admin.dto.request.email.EmailRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.adminModeIntegration.AdminModeFeatureIntegrationResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.adminModeIntegration.FeatureIntegrationResponse;
-import com.cogent.cogentappointment.admin.dto.response.adminModeIntegration.FeatureIntegrationResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminModeFeatureIntegrationResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.FeatureIntegrationResponse;
+import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.FeatureIntegrationResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminLoggedInInfoResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.companyAdmin.CompanyAdminMetaInfoResponseDTO;

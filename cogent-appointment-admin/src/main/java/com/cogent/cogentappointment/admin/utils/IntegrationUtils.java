@@ -56,13 +56,11 @@ public class IntegrationUtils {
     }
 
     public static ApiFeatureIntegration parseToClientApiFeatureIntegration(Long clientFeatureIntegrationId,
-                                                                           Long apiIntegrationFormatId,
-                                                                           Long integrationChannelId) {
+                                                                           Long apiIntegrationFormatId) {
 
         ApiFeatureIntegration apiFeatureIntegration = new ApiFeatureIntegration();
         apiFeatureIntegration.setApiIntegrationFormatId(apiIntegrationFormatId);
         apiFeatureIntegration.setClientFeatureIntegrationId(apiIntegrationFormatId);
-        apiFeatureIntegration.setIntegrationChannelId(integrationChannelId);
         apiFeatureIntegration.setStatus(ACTIVE);
 
         return apiFeatureIntegration;

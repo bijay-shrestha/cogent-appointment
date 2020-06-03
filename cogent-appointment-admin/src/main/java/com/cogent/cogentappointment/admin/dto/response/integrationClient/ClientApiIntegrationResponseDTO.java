@@ -1,24 +1,23 @@
-package com.cogent.cogentappointment.admin.dto.response.clientIntegration.clientIntegrationUpdate;
+package com.cogent.cogentappointment.admin.dto.response.integrationClient;
 
 import lombok.*;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
+import java.util.Date;
 
 /**
- * @author rupak on 2020-05-26
+ * @author rupak on 2020-05-25
  */
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClientApiIntegrationUpdateResponseDTO implements Serializable {
-
-    private String hospitalName;
+public class ClientApiIntegrationResponseDTO implements Serializable {
 
     private Long featureId;
+
+    private String hospitalName;
 
     private String featureCode;
 
@@ -36,8 +35,11 @@ public class ClientApiIntegrationUpdateResponseDTO implements Serializable {
 
     private String url;
 
-    private List<ApiRequestHeaderUpdateResponseDTO> headers;
+    private String createdBy;
 
-    private List<ApiQueryParametersUpdateResponseDTO> queryParameters;
+    private Date createdDate;
 
+    private String lastModifiedBy;
+
+    private Date lastModifiedDate;
 }

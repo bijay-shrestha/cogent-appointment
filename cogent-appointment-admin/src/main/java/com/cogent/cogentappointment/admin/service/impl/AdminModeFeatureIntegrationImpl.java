@@ -1,22 +1,25 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.request.integrationAdminMode.AdminModeApiIntegrationRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.integrationAdminMode.AdminModeApiIntegrationSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.ApiIntegrationFormatRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.ClientApiHeadersRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.ClientApiQueryParametersRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminModeIntegrationSearchDTO;
+import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientApiIntegrationSearchDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.AdminModeFeatureIntegrationService;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.function.Function;
 
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.SAVING_PROCESS_COMPLETED;
-import static com.cogent.cogentappointment.admin.log.CommonLogConstant.SAVING_PROCESS_STARTED;
+import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.ADMIN_MODE_FEATURE_INTEGRATION;
 import static com.cogent.cogentappointment.admin.utils.IntegrationUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
@@ -79,8 +82,10 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
                 findActiveIntegrationChannel(requestDTO.getIntegrationChannelId())
                 .orElseThrow(() -> INTEGRATION_CHANNEL_NOT_FOUND.apply(requestDTO.getIntegrationChannelId()));
 
-        AdminModeFeatureIntegration adminModeFeatureIntegration = parseToAdminModeFeatureIntegration(appointmentMode,
-                requestDTO.getFeatureTypeId(), integrationChannel);
+        AdminModeFeatureIntegration adminModeFeatureIntegration =
+                parseToAdminModeFeatureIntegration(appointmentMode,
+                        requestDTO.getFeatureTypeId(),
+                        integrationChannel);
 
         saveAdminModeFeatureIntegration(adminModeFeatureIntegration);
 
@@ -102,8 +107,7 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
 
         saveAdminModeApiFeatureIntegration(adminModeApiFeatureIntegration);
 
-        saveApiFeatureIntegration(adminModeFeatureIntegration.getId(), adminModeApiFeatureIntegration.getId(),
-                null);
+        saveApiFeatureIntegration(adminModeFeatureIntegration.getId(), adminModeApiFeatureIntegration.getId());
 
         saveApiQueryParameters(requestDTO.getParametersRequestDTOS(), adminModeApiFeatureIntegration.getId());
 
@@ -111,6 +115,20 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
 
         log.info(SAVING_PROCESS_COMPLETED, ADMIN_MODE_FEATURE_INTEGRATION, getDifferenceBetweenTwoTime(startTime));
 
+    }
+
+    @Override
+    public AdminModeIntegrationSearchDTO search(AdminModeApiIntegrationSearchRequestDTO searchRequestDTO, Pageable pageable) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SEARCHING_PROCESS_STARTED, ADMIN_MODE_FEATURE_INTEGRATION);
+
+        AdminModeIntegrationSearchDTO clientApiIntegration =
+                adminModeFeatureIntegrationRepository.search(searchRequestDTO, pageable);
+
+        log.info(SEARCHING_PROCESS_COMPLETED, ADMIN_MODE_FEATURE_INTEGRATION, getDifferenceBetweenTwoTime(startTime));
+
+        return clientApiIntegration;
     }
 
     private void saveApiIntegrationFormat(ApiIntegrationFormat apiIntegrationFormat) {
@@ -159,11 +177,10 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
     }
 
     private void saveApiFeatureIntegration(Long clientFeatureIntegrationId,
-                                           Long apiIntegrationFormatId,
-                                           Long integrationTypeId) {
+                                           Long apiIntegrationFormatId) {
 
         apiFeatureIntegrationRepository.save(parseToClientApiFeatureIntegration(clientFeatureIntegrationId,
-                apiIntegrationFormatId, integrationTypeId));
+                apiIntegrationFormatId));
 
     }
 

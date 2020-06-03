@@ -13,7 +13,6 @@ import java.io.Serializable;
 /**
  * @author rupak on 2020-05-18
  */
-
 @Entity
 @Table(name = "feature")
 @Getter
@@ -26,6 +25,10 @@ public class Feature extends Auditable<String> implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "api_integration_type_id")
+    private ApiIntegrationType apiIntegrationTypeId;
 
     @Column(name = "name")
     private String name;
@@ -43,6 +46,7 @@ public class Feature extends Auditable<String> implements Serializable {
     public String toString() {
         return "Feature{" +
                 "id=" + id +
+                "apiIntegrationTypeId=" + apiIntegrationTypeId.getId() +
                 ", name='" + name + '\'' +
                 ", code='" + code + '\'' +
                 ", description='" + description + '\'' +

@@ -47,6 +47,10 @@ public class WebResourceKeyConstants {
 
     }
 
+    public interface BillingModeConstants {
+        String BASE_Billing_MODE = "/billingMode";
+    }
+
     public interface AppointmentTransferConstants{
         String BASE_APPOINTMENT_TRANSFER = "/appointmentTransfer";
         String APPOINTMENT_TIME = "/time";
@@ -59,6 +63,14 @@ public class WebResourceKeyConstants {
     public static final String BASE_PASSWORD = "/password";
 
     //C
+
+    public interface ClientIntegrationConstants {
+        String BASE_CLIENT_INTEGRATION = "/client-integration";
+        String CLIENT_INTEGRATION = "/client-api-integration";
+        String CLIENT_FEATURE_INTEGRATION_ID_PATH_VARIABLE_BASE = "/{id}";
+        String CLIENT_INTEGRATION_UPDATE_DETAILS = "/update-details";
+    }
+
     public interface CountryConstants {
         String BASE_COUNTRY = "/country";
     }
@@ -157,11 +169,22 @@ public class WebResourceKeyConstants {
 
     public interface IntegrationConstants {
         String BASE_INTEGRATION = "/integration";
-        String CLIENT_API_INTEGRATION = "/client-api-integration";
-        String CLIENT_API_FEATURE_INTEGRATION_ID_PATH_VARIABLE_BASE = "/{clientFeatureIntegrationId}";
-        String CLIENT_API_INTEGRATION_FEATURE_ID_PATH_VARIABLE_BASE = "/{featureId}";
+        String CLIENT_INTEGRATION = "/client-api-integration";
+        String CLIENT_FEATURE_INTEGRATION_ID_PATH_VARIABLE_BASE = "/{id}";
+        String CLIENT_INTEGRATION_FEATURE_ID_PATH_VARIABLE_BASE = "/{featureId}";
+        String CLIENT_INTEGRATION_TYPE_ID_PATH_VARIABLE_BASE = "/{apiIntegrationTypeId}";
+        String CLIENT_INTEGRATION_UPDATE_DETAILS = "/updateDetails";
         String FEATURES="/features";
         String HTTP_REQUEST_METHODS="/request-methods";
+        String API_INTEGRATION_TYPE="/api-integration-type";
+        String INTEGRATION_CHANNEL="/integration-channel";
+        String REQUEST_BODY_PARAMETERS="/request-body-parameters";
+    }
+
+    public interface IntegrationRequestBodyAttributeConstants {
+        String BASE_REQUEST_BODY_INTEGRATION = "/integration-request-body-attribute";
+        String API_REQUEST_BODY_ATTRIBUTES = "/request-body-attributes";
+        String FEATURE_ID_PATH_VARIABLE_BASE = "/{featureId}";
     }
 
     //J

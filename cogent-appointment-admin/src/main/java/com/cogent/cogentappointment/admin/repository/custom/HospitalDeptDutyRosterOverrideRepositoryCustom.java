@@ -27,6 +27,8 @@ public interface HospitalDeptDutyRosterOverrideRepositoryCustom {
 
     void updateOverrideStatus(Long hddRosterId);
 
+    void updateOverrideRoomInfo(Long hddRosterId, Long roomId);
+
     List<HospitalDepartmentDutyRosterOverride> fetchOverrideList(
             List<HospitalDeptDutyRosterOverrideUpdateRequestDTO> updateRequestDTOS);
 

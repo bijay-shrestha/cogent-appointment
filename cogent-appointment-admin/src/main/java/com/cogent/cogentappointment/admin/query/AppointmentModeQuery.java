@@ -11,19 +11,21 @@ import java.util.function.Function;
 public class AppointmentModeQuery {
 
     public static final String QUERY_TO_VALIDATE_DUPLICITY =
-            " SELECT COUNT(am.id)" +
-                    " FROM AppointmentMode am" +
+            " SELECT am.name," +
+                    " am.code" +
+                    " FROM AppointmentMode bm" +
                     " WHERE" +
                     " am.status !='D'" +
-                    " AND am.name=:name";
+                    " AND (am.name=:name OR am.code=:code)";
 
     public static final String QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE =
-            " SELECT COUNT(am.id)" +
-                    " FROM AppointmentMode am" +
+            " SELECT am.name," +
+                    " am.code" +
+                    " FROM  AppointmentMode am" +
                     " WHERE" +
-                    " am.status!='D'" +
+                    " am.status !='D'" +
                     " AND am.id!=:id" +
-                    " AND am.name=:name";
+                    " AND (am.name=:name OR am.code=:code)";
 
     private static final String SELECT_CLAUSE_TO_FETCH_MINIMAL_APPOINTMENT_MODE =
             "SELECT am.id as id," +
@@ -36,10 +38,10 @@ public class AppointmentModeQuery {
     public static Function<AppointmentModeSearchRequestDTO, String> QUERY_TO_SEARCH_APPOINTMENT_MODE =
             (searchRequestDTO -> (
                     SELECT_CLAUSE_TO_FETCH_MINIMAL_APPOINTMENT_MODE +
-                            GET_WHERE_CLAUSE_FOR_SEARCHING_UNIVERSITY(searchRequestDTO)
+                            GET_WHERE_CLAUSE_FOR_SEARCHING_APPOINTMENT_MODE(searchRequestDTO)
             ));
 
-    private static String GET_WHERE_CLAUSE_FOR_SEARCHING_UNIVERSITY
+    private static String GET_WHERE_CLAUSE_FOR_SEARCHING_APPOINTMENT_MODE
             (AppointmentModeSearchRequestDTO searchRequestDTO) {
 
         String whereClause = " WHERE am.status!='D'";

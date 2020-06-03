@@ -56,8 +56,9 @@ public class QueryConstants {
     //I
     public static final String ID = "id";
     public static final String CLIENT_API_INTEGRATION_FORMAT_ID = "apiIntegrationFormatId";
-    public static final String CLIENT_API_INTEGRATION_FEATURE_ID = "featureId";
+    public static final String API_FEATURE__ID = "featureId";
     public static final String CLIENT_FEATURE_INTEGRATION_ID = "clientFeatureIntegrationId";
+    public static final String CLIENT_API_INTEGRATION_TYPE_ID = "apiIntegrationTypeId";
 
 
     //J
@@ -81,6 +82,7 @@ public class QueryConstants {
     //R
     public static final String ROOM_ID = "roomId";
     public static final String ROOM_NUMBER = "roomNumber";
+    public static final String API_REQUEST_METHOD_ID = "requestMethodId";
 
 
     //S

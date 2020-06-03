@@ -1,11 +1,12 @@
 package com.cogent.cogentappointment.admin.service;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiIntegrationRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiIntegrationSearchRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiIntegrationUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.integrationClient.ClientApiIntegrationRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.integrationClient.ClientApiIntegrationSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.integrationClient.clientIntegrationUpdate.ClientApiIntegrationUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.clientIntegration.ClientApiIntegrationDetailResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.clientIntegration.ClientApiIntegrationSearchDTO;
+import com.cogent.cogentappointment.admin.dto.response.clientIntegration.clientIntegrationUpdate.ClientApiIntegrationUpdateResponseDTO;
 import org.springframework.data.domain.Pageable;
 
 /**
@@ -22,6 +23,8 @@ public interface IntegrationService {
     ClientApiIntegrationDetailResponseDTO fetchClientApiIntegrationById(Long id);
 
     void delete(DeleteRequestDTO deleteRequestDTO);
+
+    ClientApiIntegrationUpdateResponseDTO fetchDetailsForUpdate(Long id);
 
 //    ClientApiIntegrationRequestDTO fetchClientIntegrationResponseDTO(ClientApiIntegrationRequestDTO );
 }

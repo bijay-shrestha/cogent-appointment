@@ -8,7 +8,6 @@ import com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.e
 import com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.existing.HospitalDeptExistingDutyRosterResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.HospitalDeptDutyRosterRepositoryCustom;
-import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDutyRoster;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -24,6 +23,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.NO_CONTENT_FOUND;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
@@ -52,14 +52,33 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
     private EntityManager entityManager;
 
     @Override
-    public Long fetchRosterCountWithoutRoom(Long hospitalDepartmentId, Date fromDate, Date toDate) {
+    public Character fetchRoomStatusIfExists(Long hospitalDepartmentId, Date fromDate, Date toDate) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HDD_ROSTER_COUNT_WITHOUT_ROOM)
-                .setParameter(ID, hospitalDepartmentId)
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HDD_ROSTER_STATUS)
+                .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId)
                 .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))
                 .setParameter(TO_DATE, utilDateToSqlDate(toDate));
 
-        return (Long) query.getSingleResult();
+        try {
+            return (Character) query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public Character fetchRoomStatusIfExistsExceptCurrentId(Long hospitalDepartmentId,
+                                                            Date fromDate, Date toDate, Long hddRosterId) {
+        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HDD_ROSTER_STATUS_EXCEPT_CURRENT_ID)
+                .setParameter(ID, hddRosterId)
+                .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId)
+                .setParameter(FROM_DATE, utilDateToSqlDate(fromDate))
+                .setParameter(TO_DATE, utilDateToSqlDate(toDate));
+        try {
+            return (Character) query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     @Override
@@ -191,11 +210,12 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
 
     private Supplier<NoContentFoundException> HOSPITAL_DEPT_DUTY_ROSTER_NOT_FOUND = () -> {
         log.error(CONTENT_NOT_FOUND, HOSPITAL_DEPARTMENT_DUTY_ROSTER);
-        throw new NoContentFoundException(HospitalDepartmentDutyRoster.class);
+        throw new NoContentFoundException(String.format(NO_CONTENT_FOUND, HOSPITAL_DEPARTMENT_DUTY_ROSTER));
     };
 
     private Function<Long, NoContentFoundException> HOSPITAL_DEPT_DUTY_ROSTER_WITH_ID_NOT_FOUND = (hddRosterId) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, HOSPITAL_DEPARTMENT_DUTY_ROSTER);
-        throw new NoContentFoundException(HospitalDepartmentDutyRoster.class, "hddRosterId", hddRosterId.toString());
+        throw new NoContentFoundException(String.format(NO_CONTENT_FOUND, HOSPITAL_DEPARTMENT_DUTY_ROSTER),
+                "hddRosterId", hddRosterId.toString());
     };
 }

@@ -14,7 +14,15 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class ApiQueryParametersResponseDTO implements Serializable {
 
-    private String param;
+    private Long id;
 
-    private String value;
+    private String keyParam;
+
+    private String valueParam;
+
+    private String description;
+
+    private Character status;
+
+
 }

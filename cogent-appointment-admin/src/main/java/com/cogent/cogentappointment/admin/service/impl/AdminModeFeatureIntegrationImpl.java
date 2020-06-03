@@ -1,9 +1,9 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.request.adminModeIntegration.AdminModeFeatureIntegrationRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ApiIntegrationFormatRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiHeadersRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiQueryParametersRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.integrationClient.ApiIntegrationFormatRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.integrationClient.ClientApiHeadersRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.integrationClient.ClientApiQueryParametersRequestDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.AdminModeFeatureIntegrationService;
@@ -79,7 +79,6 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
         ApiIntegrationFormatRequestDTO apiIntegrationFormatRequestDTO = ApiIntegrationFormatRequestDTO.builder()
                 .apiUrl(requestDTO.getApiUrl())
                 .requestMethodId(requestDTO.getRequestMethodId())
-                .requestBodyAttrribute(requestDTO.getRequestBodyAttrribute())
                 .build();
 
 
@@ -96,7 +95,8 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
         saveAdminModeApiFeatureIntegration(adminModeApiFeatureIntegration);
 
 
-        saveApiFeatureIntegration(adminModeFeatureIntegration.getId(), adminModeApiFeatureIntegration.getId());
+        saveApiFeatureIntegration(adminModeFeatureIntegration.getId(), adminModeApiFeatureIntegration.getId(),
+                null);
 
         saveApiQueryParameters(requestDTO.getParametersRequestDTOS(), adminModeApiFeatureIntegration.getId());
 
@@ -127,7 +127,7 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
 
     private void validateFeatureAndHttpRequestMethod(Long featureTypeId, Long requestMethodId) {
 
-        featureRepository.findFeatureById(featureTypeId)
+        featureRepository.findActiveFeatureById(featureTypeId)
                 .orElseThrow(() -> FEATURE_NOT_FOUND.apply(featureTypeId));
 
         httpRequestMethodRepository.httpRequestMethodById(requestMethodId)
@@ -151,10 +151,10 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
 
     }
 
-    private void saveApiFeatureIntegration(Long clientFeatureIntegrationId, Long apiIntegrationFormatId) {
+    private void saveApiFeatureIntegration(Long clientFeatureIntegrationId, Long apiIntegrationFormatId,Long integrationTypeId) {
 
         apiFeatureIntegrationRepository.save(parseToClientApiFeatureIntegration(clientFeatureIntegrationId,
-                apiIntegrationFormatId));
+                apiIntegrationFormatId, integrationTypeId));
 
     }
 

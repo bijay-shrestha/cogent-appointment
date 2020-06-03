@@ -1,9 +1,9 @@
 package com.cogent.cogentappointment.admin.utils;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ApiIntegrationFormatRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiHeadersRequestDTO;
-import com.cogent.cogentappointment.admin.dto.request.clientIntegration.ClientApiQueryParametersRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.integrationClient.ApiIntegrationFormatRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.integrationClient.ClientApiHeadersRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.integrationClient.ClientApiQueryParametersRequestDTO;
 import com.cogent.cogentappointment.persistence.model.*;
 
 import java.util.ArrayList;
@@ -16,7 +16,8 @@ import static com.cogent.cogentappointment.admin.constants.StatusConstants.DELET
  * @author rupak on 2020-05-19
  */
 public class IntegrationUtils {
-    public static ClientFeatureIntegration parseToClientFeatureIntegration(Long hospitalId, Long featureTypeId) {
+    public static ClientFeatureIntegration parseToClientFeatureIntegration(Long hospitalId,
+                                                                           Long featureTypeId) {
 
         ClientFeatureIntegration clientFeatureIntegration = new ClientFeatureIntegration();
         clientFeatureIntegration.setFeatureId(featureTypeId);
@@ -29,7 +30,6 @@ public class IntegrationUtils {
     public static ApiIntegrationFormat parseToClientApiIntegrationFormat(ApiIntegrationFormatRequestDTO requestDTO) {
 
         ApiIntegrationFormat apiIntegrationFormat = new ApiIntegrationFormat();
-        apiIntegrationFormat.setHttpRequestBodyAttributes(requestDTO.getRequestBodyAttrribute());
         apiIntegrationFormat.setHttpRequestMethodId(requestDTO.getRequestMethodId());
         apiIntegrationFormat.setUrl(requestDTO.getApiUrl());
         apiIntegrationFormat.setStatus(ACTIVE);
@@ -55,11 +55,13 @@ public class IntegrationUtils {
     }
 
     public static ApiFeatureIntegration parseToClientApiFeatureIntegration(Long clientFeatureIntegrationId,
-                                                                           Long apiIntegrationFormatId) {
+                                                                           Long apiIntegrationFormatId,
+                                                                           Long integrationChannelId) {
 
         ApiFeatureIntegration apiFeatureIntegration = new ApiFeatureIntegration();
         apiFeatureIntegration.setApiIntegrationFormatId(apiIntegrationFormatId);
         apiFeatureIntegration.setClientFeatureIntegrationId(apiIntegrationFormatId);
+        apiFeatureIntegration.setIntegrationChannelId(integrationChannelId);
         apiFeatureIntegration.setStatus(ACTIVE);
 
         return apiFeatureIntegration;
@@ -109,10 +111,11 @@ public class IntegrationUtils {
 
     }
 
-    public static void parseToDeletedClientFeatureIntegration(ClientFeatureIntegration clientFeatureIntegration, DeleteRequestDTO deleteRequestDTO) {
+    public static void parseToDeletedClientFeatureIntegration(ClientFeatureIntegration clientFeatureIntegration,
+                                                              DeleteRequestDTO deleteRequestDTO) {
 
         clientFeatureIntegration.setStatus(deleteRequestDTO.getStatus());
-        clientFeatureIntegration.setStatus(deleteRequestDTO.getStatus());
+        clientFeatureIntegration.setRemarks(deleteRequestDTO.getRemarks());
 
     }
 
@@ -122,4 +125,6 @@ public class IntegrationUtils {
             apiFeatureIntegration.setStatus(DELETED);
         });
     }
+
+
 }

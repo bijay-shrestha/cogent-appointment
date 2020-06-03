@@ -5,7 +5,7 @@ package com.cogent.cogentappointment.client.log.constants;
  */
 public class HospitalDepartmentDutyRosterLog {
 
-    public final static String HOSPITAL_DEPARTMENT_DUTY_ROSTER = "HOSPITAL DEPARTMENT DUTY ROSTER";
+    public final static String HOSPITAL_DEPARTMENT_DUTY_ROSTER = "DEPARTMENT DUTY ROSTER";
 
     public final static String HOSPITAL_DEPARTMENT_DUTY_ROSTER_OVERRIDE = "HOSPITAL DEPARTMENT DUTY ROSTER OVERRIDE";
 

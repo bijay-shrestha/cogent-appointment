@@ -14,8 +14,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class ApiRequestHeaderResponseDTO implements Serializable {
 
-    private String keyName;
+    private String keyParam;
 
-    private String keyValue;
+    private String valueParam;
 
 }

@@ -108,8 +108,6 @@ public class RequestHandler {
 
     public static String location(String ip) throws IOException, GeoIp2Exception {
 
-        System.out.println("***********************************public ip=" + ip);
-
         String countryName = "";
         String cityName = "";
         String location = "";

@@ -16,11 +16,13 @@ public class FeatureIntegrationResponse implements Serializable {
 
     private Long apiIntegrationFormatId;
 
-    private String featureCode;
+    private String integrationChannelCode;
 
-    private String requestMethod;
+    private Long featureId;
+
+    private String featureCode;
 
     private String url;
 
-    private String requestBody;
+    private String requestMethod;
 }

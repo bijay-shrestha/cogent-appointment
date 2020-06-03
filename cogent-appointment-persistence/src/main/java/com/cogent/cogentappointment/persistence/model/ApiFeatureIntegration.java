@@ -32,6 +32,9 @@ public class ApiFeatureIntegration extends Auditable<String> implements Serializ
     @Column(name = "api_integration_format_id")
     private Long apiIntegrationFormatId;
 
+    @Column(name = "integration_channel_id")
+    private Long integrationChannelId;
+
     @Column(name = "status")
     private Character status;
 
@@ -41,6 +44,7 @@ public class ApiFeatureIntegration extends Auditable<String> implements Serializ
                 "id=" + id +
                 ", clientFeatureIntegrationId=" + clientFeatureIntegrationId +
                 ", apiIntegrationFormatId=" + apiIntegrationFormatId +
+                ", integrationChannelId=" + integrationChannelId +
                 ", status=" + status +
                 '}';
     }

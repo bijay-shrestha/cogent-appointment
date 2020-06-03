@@ -15,4 +15,5 @@ public interface IntegrationFeatureRepositoryCustom {
 
     List<DropDownResponseDTO> fetchActiveFeatureType();
 
+    List<DropDownResponseDTO> fetchActiveApiIntegrationChannel();
 }

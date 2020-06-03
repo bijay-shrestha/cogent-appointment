@@ -11,4 +11,5 @@ public interface IntegrationFeatureService {
 
     List<DropDownResponseDTO> fetchActiveFeatureType();
 
+    List<DropDownResponseDTO> fetchActiveApiIntegrationChannel();
 }

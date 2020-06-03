@@ -34,7 +34,7 @@ public class HospitalDeptDutyRosterRoomQuery {
                     " hr.room.id as roomId," +                                           //[1]
                     " hr.room.roomNumber as roomNumber" +                                //[2]
                     " FROM HospitalDepartmentDutyRosterRoomInfo h" +
-                    " LEFT JOIN HospitalDepartmentRoomInfo hr ON h.id = hr.hospitalDepartmentRoomInfo.id" +
+                    " LEFT JOIN HospitalDepartmentRoomInfo hr ON hr.id = h.hospitalDepartmentRoomInfo.id" +
                     " WHERE h.status = 'Y'" +
                     " AND h.hospitalDepartmentDutyRoster.id =:id";
 
@@ -42,7 +42,7 @@ public class HospitalDeptDutyRosterRoomQuery {
             " SELECT" +
                     " hr.room.roomNumber as roomNumber" +                                //[0]
                     " FROM HospitalDepartmentDutyRosterRoomInfo h" +
-                    " LEFT JOIN HospitalDepartmentRoomInfo hr ON h.id = hr.hospitalDepartmentRoomInfo.id" +
+                    " LEFT JOIN HospitalDepartmentRoomInfo hr ON hr.id = h.hospitalDepartmentRoomInfo.id" +
                     " WHERE h.status = 'Y'" +
                     " AND h.hospitalDepartmentDutyRoster.id =:id";
 

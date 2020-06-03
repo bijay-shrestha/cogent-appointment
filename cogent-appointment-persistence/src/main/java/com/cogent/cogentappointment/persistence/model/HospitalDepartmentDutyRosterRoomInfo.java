@@ -27,10 +27,6 @@ public class HospitalDepartmentDutyRosterRoomInfo implements Serializable {
     @JoinColumn(name = "hospital_department_room_info_id")
     private HospitalDepartmentRoomInfo hospitalDepartmentRoomInfo;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_id")
-    private Room room;
-
     @Column(name = "status")
     private Character status;
 

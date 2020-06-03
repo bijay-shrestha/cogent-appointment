@@ -53,8 +53,8 @@ public class HospitalDepartmentDutyRosterOverride extends Auditable<String> impl
     private HospitalDepartmentDutyRoster hospitalDepartmentDutyRoster;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_id")
-    private Room room;
+    @JoinColumn(name = "hospital_department_room_info_id")
+    private HospitalDepartmentRoomInfo hospitalDepartmentRoomInfo;
 
     @Column(name = "status")
     private Character status;

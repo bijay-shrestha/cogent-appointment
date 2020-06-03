@@ -12,7 +12,7 @@ public class HospitalDeptDutyRosterRoomQuery {
                     " WHERE" +
                     " hd.status != 'D'" +
                     " AND hd.hospitalDepartment.id= :hospitalDepartmentId" +
-                    " AND h.room.id = :roomId" +
+                    " AND h.hospitalDepartmentRoomInfo.id = :hospitalDepartmentRoomInfoId" +
                     " AND hd.toDate >=:fromDate" +
                     " AND hd.fromDate <=:toDate";
 
@@ -24,23 +24,25 @@ public class HospitalDeptDutyRosterRoomQuery {
                     " hd.status != 'D'" +
                     " AND hd.id !=:id" +
                     " AND hd.hospitalDepartment.id= :hospitalDepartmentId" +
-                    " AND h.room.id = :roomId" +
+                    " AND h.hospitalDepartmentRoomInfo.id = :hospitalDepartmentRoomInfoId" +
                     " AND hd.toDate >=:fromDate" +
                     " AND hd.fromDate <=:toDate";
 
     public static String QUERY_TO_FETCH_HDD_ROSTER_ROOM_DETAIL =
             " SELECT" +
                     " h.id as rosterRoomId," +                                          //[0]
-                    " h.room.id as roomId," +                                           //[1]
-                    " h.room.roomNumber as roomNumber" +                                //[2]
+                    " hr.room.id as roomId," +                                           //[1]
+                    " hr.room.roomNumber as roomNumber" +                                //[2]
                     " FROM HospitalDepartmentDutyRosterRoomInfo h" +
+                    " LEFT JOIN HospitalDepartmentRoomInfo hr ON h.id = hr.hospitalDepartmentRoomInfo.id" +
                     " WHERE h.status = 'Y'" +
                     " AND h.hospitalDepartmentDutyRoster.id =:id";
 
     public static String QUERY_TO_FETCH_HDD_ROSTER_ROOM_NUMBER =
             " SELECT" +
-                    " h.room.roomNumber as roomNumber" +                                //[0]
+                    " hr.room.roomNumber as roomNumber" +                                //[0]
                     " FROM HospitalDepartmentDutyRosterRoomInfo h" +
+                    " LEFT JOIN HospitalDepartmentRoomInfo hr ON h.id = hr.hospitalDepartmentRoomInfo.id" +
                     " WHERE h.status = 'Y'" +
                     " AND h.hospitalDepartmentDutyRoster.id =:id";
 

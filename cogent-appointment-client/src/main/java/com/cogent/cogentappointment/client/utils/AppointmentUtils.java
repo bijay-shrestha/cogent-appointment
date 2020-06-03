@@ -329,10 +329,10 @@ public class AppointmentUtils {
         return countResponseDTO;
     }
 
-    public static AppointmentRefundDetail parseRefundRejectDetails(AppointmentRefundRejectDTO refundRejectDTO,
-                                                AppointmentRefundDetail refundDetail) {
+    public static AppointmentRefundDetail parseRefundRejectDetails(String remarks,
+                                                                   AppointmentRefundDetail refundDetail) {
         refundDetail.setStatus(REJECTED);
-        refundDetail.setRemarks(refundRejectDTO.getRemarks());
+        refundDetail.setRemarks(remarks);
 
         return refundDetail;
     }

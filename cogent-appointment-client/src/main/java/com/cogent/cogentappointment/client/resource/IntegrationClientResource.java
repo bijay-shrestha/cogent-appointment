@@ -4,7 +4,8 @@ import com.cogent.cogentappointment.client.dto.request.clientIntegration.ClientS
 import com.cogent.cogentappointment.client.dto.request.clientIntegration.Dummy;
 import com.cogent.cogentappointment.client.dto.request.clientIntegration.EsewaPayementStatus;
 import com.cogent.cogentappointment.client.dto.response.clientIntegration.DummyMessage;
-import com.cogent.cogentappointment.client.utils.resttempalte.RestTemplateUtils;
+import com.cogent.cogentappointment.client.utils.commons.ObjectMapperUtils;
+import com.cogent.cogentappointment.client.utils.resttemplate.RestTemplateUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.*;
@@ -19,18 +20,9 @@ import static com.cogent.cogentappointment.client.constants.SwaggerConstants.Adm
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.IntegrationConstant.BASE_API_VALUE;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.IntegrationConstants.BASE_INTEGRATION;
-import static com.cogent.cogentappointment.client.utils.resttempalte.IntegrationRequestHeaders.*;
-import static com.cogent.cogentappointment.client.utils.resttempalte.IntegrationRequestURI.*;
-import static org.springframework.http.HttpStatus.OK;
-import com.cogent.cogentappointment.client.service.IntegrationService;
-import com.cogent.cogentappointment.client.utils.resttemplate.RestTemplateUtils;
-import com.cogent.cogentappointment.client.utils.commons.ObjectMapperUtils;
-import com.cogent.cogentappointment.client.utils.resttempalte.RestTemplateUtils;
-import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.IntegrationConstants.CLIENT_API_INTEGRATION_APPOINTMENT_APPROVE;
 import static com.cogent.cogentappointment.client.utils.resttemplate.IntegrationRequestHeaders.*;
 import static com.cogent.cogentappointment.client.utils.resttemplate.IntegrationRequestURI.*;
-import static com.cogent.cogentappointment.client.utils.resttempalte.IntegrationRequestHeaders.*;
-import static com.cogent.cogentappointment.client.utils.resttempalte.IntegrationRequestURI.*;
+import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.ResponseEntity.ok;
 
 /**
@@ -90,7 +82,7 @@ public class IntegrationClientResource {
 
         ResponseEntity<?> response = restTemplateUtils.
                 postRequest(BHERI_HOSPITAL_POST_TICKET,
-                        new HttpEntity<>(saveRequestDTO, getBheriAPIHeaders()));
+                        new HttpEntity<>(saveRequestDTO, getBheriAPIHeaders()), String.class);
 
         System.out.println(response);
 
@@ -119,7 +111,7 @@ public class IntegrationClientResource {
         HttpEntity<?> request = new HttpEntity<>(esewaPayementStatus, getEsewaPaymentStatusAPIHeaders());
 
         ResponseEntity<DummyMessage> response = (ResponseEntity<DummyMessage>) restTemplateUtils
-                .postRequest(ESEWA_API_PAYMENT_STATUS, request);
+                .postRequest(ESEWA_API_PAYMENT_STATUS, request, String.class);
 
         System.out.println(response.getBody().getError_message());
 

@@ -975,6 +975,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         return childPatient;
     }
+
     private void changeAppointmentAndAppointmentRefundDetailStatus(Appointment appointment,
                                                                    AppointmentRefundDetail refundAppointmentDetail,
                                                                    String remarks) {
@@ -1063,7 +1064,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 break;
 
             case SUCCESS:
-                saveAppointmentRefundDetail(parseRefundRejectDetails(refundRejectDTO, refundAppointmentDetail));
+                saveAppointmentRefundDetail(parseRefundRejectDetails(refundRejectDTO.getRemarks(), refundAppointmentDetail));
                 break;
 
             case AMBIGIOUS:

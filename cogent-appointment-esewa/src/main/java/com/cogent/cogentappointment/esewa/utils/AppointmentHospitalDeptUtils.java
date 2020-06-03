@@ -104,7 +104,8 @@ public class AppointmentHospitalDeptUtils {
         do {
             String date = FORMAT.print(startDateTime);
 
-            if ((!isAppointmentDateMatched(bookedAppointments, date)) && (!hasTimePassed(requestedDate, date)))
+            if ((!isAppointmentDateMatched(bookedAppointments, date)))
+//                    && (!hasTimePassed(requestedDate, date)))
                 availableTimeSlots.add(date);
 
             startDateTime = startDateTime.plus(rosterGapDuration);

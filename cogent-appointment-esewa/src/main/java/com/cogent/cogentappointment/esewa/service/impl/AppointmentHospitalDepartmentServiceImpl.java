@@ -68,8 +68,8 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(CHECK_AVAILABILITY_PROCESS_STARTED);
-
-        validateIfRequestIsPastDate(requestDTO.getAppointmentDate());
+//
+//        validateIfRequestIsPastDate(requestDTO.getAppointmentDate());
 
         AppointmentHospitalDeptCheckAvailabilityResponseDTO availableTimeSlots =
                 fetchAvailableHospitalDeptTimeSlots(requestDTO);
@@ -87,7 +87,7 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
 
         log.info(CHECK_AVAILABILITY_PROCESS_STARTED);
 
-        validateIfRequestIsPastDate(requestDTO.getAppointmentDate());
+//        validateIfRequestIsPastDate(requestDTO.getAppointmentDate());
 
         HospitalDepartmentDutyRoster dutyRoster = fetchHospitalDepartmentDutyRoster(requestDTO.getHddRosterId());
 

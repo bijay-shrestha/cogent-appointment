@@ -7,8 +7,8 @@ public class HospitalDeptDutyRosterRoomQuery {
 
     public static String QUERY_TO_FETCH_HDD_ROSTER_ROOM_DETAIL(String hddRosterIds) {
         return " SELECT" +
-                " h.id as hospitalDepartmentRoomInfoId," +                           //[0]
-                " hr.room.roomNumber as roomNumber," +                               //[1]
+                " hr.id as hospitalDepartmentRoomInfoId," +                          //[0]
+                " hr.room.roomNumber as roomNumber," +                              //[1]
                 " hd.id as hddRosterId" +                                           //[2]
                 " FROM HospitalDepartmentDutyRosterRoomInfo h" +
                 " LEFT JOIN HospitalDepartmentDutyRoster hd ON hd.id = h.hospitalDepartmentDutyRoster.id" +
@@ -27,6 +27,6 @@ public class HospitalDeptDutyRosterRoomQuery {
                     " WHERE h.status = 'Y'" +
                     " AND h.hospitalDepartmentDutyRoster.status = 'Y'" +
                     " AND hd.id =:hddRosterId" +
-                    " AND h.id =:hospitalDepartmentRoomInfoId";
+                    " AND hr.id =:hospitalDepartmentRoomInfoId";
 
 }

@@ -5,8 +5,8 @@
 ##### [END] CATALINA HOME CONFIG [/END] #########
 
 catalina:
-  home: /home/rupak/Softwares/tomcat
+  home: /Users/bijayshrestha/Dropbox/Workspaces/Backend/tomcat
 
 spring:
   profiles:
-    active: uat
+    active: dev

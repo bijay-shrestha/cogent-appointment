@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 @RestController
-@RequestMapping(value="/test")
+@RequestMapping(value="/api/v1/test")
 @Api("This is Third Party Resource")
 public class ThirdPartyResource {
 

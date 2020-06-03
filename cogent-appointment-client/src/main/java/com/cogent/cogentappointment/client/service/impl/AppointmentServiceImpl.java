@@ -1044,11 +1044,11 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .build();
 
 
-        HttpEntity<?> request = new HttpEntity<>(esewaRefundRequestDTO,
-                getEsewaHeader(parseToHmacRequestForEsewaDTO.apply("9841409090", "testBir")));
-
 //        HttpEntity<?> request = new HttpEntity<>(esewaRefundRequestDTO,
-//                getEsewaPaymentStatusAPIHeaders());
+//                getEsewaHeader(parseToHmacRequestForEsewaDTO.apply("9841409090", "testBir")));
+
+        HttpEntity<?> request = new HttpEntity<>(esewaRefundRequestDTO,
+                getEsewaPaymentStatusAPIHeaders());
 
         String url = String.format(ESEWA_REFUND_API, "5VP");
 

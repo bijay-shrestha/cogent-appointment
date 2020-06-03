@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.cogent.cogentappointment.thirdparty.constants.ErrorMessageConstants.UNAUTHORIZED;
+
 /**
  * @author Sauravi Thapa २०/१/२०
  */
@@ -24,7 +26,7 @@ public class AuthEntryPointHmac implements AuthenticationEntryPoint {
                          AuthenticationException authException) throws IOException, ServletException {
         LoginErrorResponse loginResponse = LoginErrorResponse.builder()
                 .status(401)
-                .errorMessage("UNAUTHORIZEDSS")
+                .errorMessage(UNAUTHORIZED)
                 .build();
 
         String json = null;

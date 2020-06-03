@@ -25,11 +25,11 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
                 {
                         "file:${catalina.home}/conf/third-party/application-${spring.profiles.active}.yml"
                 })
-public class EAppointmentThirdPartyTesterApplication extends SpringBootServletInitializer {
+public class EAppointmentThirdPartyApplication extends SpringBootServletInitializer {
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(EAppointmentThirdPartyTesterApplication.class);
+        return application.sources( EAppointmentThirdPartyApplication.class);
     }
 
     //  BEFORE RUNNING THIS CHECK IF 'catalina.home' 
@@ -37,7 +37,7 @@ public class EAppointmentThirdPartyTesterApplication extends SpringBootServletIn
     public static void main(String[] args) {
         
         ConfigurableApplicationContext ctx =
-                SpringApplication.run(EAppointmentThirdPartyTesterApplication.class, args);
+                SpringApplication.run( EAppointmentThirdPartyApplication.class, args);
 
         ConfigurableEnvironment env = ctx.getEnvironment();
         env.getPropertySources()

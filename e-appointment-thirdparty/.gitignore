@@ -34,3 +34,5 @@ build/
 ###yml file
 *.yml
 **/*.yml
+
+/src/main/resources/application.yml

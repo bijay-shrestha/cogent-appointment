@@ -8,6 +8,7 @@ import com.cogent.cogentappointment.admin.dto.response.hospitalDeptDutyRoster.ex
 import com.cogent.cogentappointment.admin.dto.response.hospitalDeptDutyRoster.existing.HospitalDeptExistingDutyRosterResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.HospitalDeptDutyRosterRepositoryCustom;
+import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDutyRoster;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -37,6 +38,7 @@ import static com.cogent.cogentappointment.admin.query.HospitalDeptDutyRosterRoo
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
+import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.splitByCharacterTypeCamelCase;
 import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterUtils.parseHDDRosterDetails;
 import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterUtils.parseToExistingRosterDetails;
 
@@ -207,12 +209,14 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
 
     private Supplier<NoContentFoundException> HOSPITAL_DEPT_DUTY_ROSTER_NOT_FOUND = () -> {
         log.error(CONTENT_NOT_FOUND, HOSPITAL_DEPARTMENT_DUTY_ROSTER);
-        throw new NoContentFoundException(String.format(NO_RECORD_FOUND, HOSPITAL_DEPARTMENT_DUTY_ROSTER));
+        throw new NoContentFoundException(String.format(NO_RECORD_FOUND,
+                splitByCharacterTypeCamelCase(HospitalDepartmentDutyRoster.class.getSimpleName())));
     };
 
     private Function<Long, NoContentFoundException> HOSPITAL_DEPT_DUTY_ROSTER_WITH_ID_NOT_FOUND = (hddRosterId) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, HOSPITAL_DEPARTMENT_DUTY_ROSTER);
-        throw new NoContentFoundException(String.format(NO_RECORD_FOUND, HOSPITAL_DEPARTMENT_DUTY_ROSTER),
+        throw new NoContentFoundException(String.format(NO_RECORD_FOUND,
+                splitByCharacterTypeCamelCase(HospitalDepartmentDutyRoster.class.getSimpleName())),
                 "hddRosterId", hddRosterId.toString());
     };
 }

@@ -8,6 +8,7 @@ import com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.e
 import com.cogent.cogentappointment.client.dto.response.hospitalDeptDutyRoster.existing.HospitalDeptExistingDutyRosterResponseDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.custom.HospitalDeptDutyRosterRepositoryCustom;
+import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDutyRoster;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -23,7 +24,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.NO_CONTENT_FOUND;
+import static com.cogent.cogentappointment.client.constants.ErrorMessageConstants.NO_RECORD_FOUND;
 import static com.cogent.cogentappointment.client.constants.QueryConstants.*;
 import static com.cogent.cogentappointment.client.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.client.log.CommonLogConstant.CONTENT_NOT_FOUND;
@@ -37,6 +38,7 @@ import static com.cogent.cogentappointment.client.query.HospitalDeptDutyRosterRo
 import static com.cogent.cogentappointment.client.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.client.utils.commons.PageableUtils.addPagination;
 import static com.cogent.cogentappointment.client.utils.commons.QueryUtils.*;
+import static com.cogent.cogentappointment.client.utils.commons.StringUtil.splitByCharacterTypeCamelCase;
 import static com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterUtils.parseHDDRosterDetails;
 import static com.cogent.cogentappointment.client.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterUtils.parseToExistingRosterDetails;
 
@@ -210,12 +212,14 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
 
     private Supplier<NoContentFoundException> HOSPITAL_DEPT_DUTY_ROSTER_NOT_FOUND = () -> {
         log.error(CONTENT_NOT_FOUND, HOSPITAL_DEPARTMENT_DUTY_ROSTER);
-        throw new NoContentFoundException(String.format(NO_CONTENT_FOUND, HOSPITAL_DEPARTMENT_DUTY_ROSTER));
+        throw new NoContentFoundException(String.format(NO_RECORD_FOUND,
+                splitByCharacterTypeCamelCase(HospitalDepartmentDutyRoster.class.getSimpleName())));
     };
 
     private Function<Long, NoContentFoundException> HOSPITAL_DEPT_DUTY_ROSTER_WITH_ID_NOT_FOUND = (hddRosterId) -> {
         log.error(CONTENT_NOT_FOUND_BY_ID, HOSPITAL_DEPARTMENT_DUTY_ROSTER);
-        throw new NoContentFoundException(String.format(NO_CONTENT_FOUND, HOSPITAL_DEPARTMENT_DUTY_ROSTER),
+        throw new NoContentFoundException(String.format(NO_RECORD_FOUND,
+                splitByCharacterTypeCamelCase(HospitalDepartmentDutyRoster.class.getSimpleName())),
                 "hddRosterId", hddRosterId.toString());
     };
 }

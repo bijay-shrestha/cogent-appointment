@@ -41,12 +41,12 @@ public class AppointmentHospitalDepartmentReservationLog implements Serializable
     private HospitalDepartment hospitalDepartment;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "billing_mode_id")
-    private BillingMode billingMode;
+    @JoinColumn(name = "hospital_department_billing_mode_info_id")
+    private HospitalDepartmentBillingModeInfo hospitalDepartmentBillingModeInfo;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_id")
-    private Room room;
+    @JoinColumn(name = "hospital_department_room_id")
+    private HospitalDepartmentRoomInfo hospitalDepartmentRoomInfo;
 
     /*(can be mobile number/esewa id that identifies the logged in user)*/
     @Column(name = "user_id")

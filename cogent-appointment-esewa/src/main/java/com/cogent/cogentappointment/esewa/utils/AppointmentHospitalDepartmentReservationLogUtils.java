@@ -17,13 +17,13 @@ public class AppointmentHospitalDepartmentReservationLogUtils {
             AppointmentHospitalDeptFollowUpRequestDTO requestDTO,
             Hospital hospital,
             HospitalDepartment hospitalDepartment,
-            BillingMode billingMode,
+            HospitalDepartmentBillingModeInfo hospitalDepartmentBillingModeInfo,
             Room room) {
 
         AppointmentHospitalDepartmentReservationLog reservation = new AppointmentHospitalDepartmentReservationLog();
         reservation.setHospital(hospital);
         reservation.setHospitalDepartment(hospitalDepartment);
-        reservation.setBillingMode(billingMode);
+        reservation.setHospitalDepartmentBillingModeInfo(hospitalDepartmentBillingModeInfo);
         reservation.setRoom(room);
         reservation.setAppointmentDate(requestDTO.getAppointmentDate());
         reservation.setAppointmentTime(parseAppointmentTime(

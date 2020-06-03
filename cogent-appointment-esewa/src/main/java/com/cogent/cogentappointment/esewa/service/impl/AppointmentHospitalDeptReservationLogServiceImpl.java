@@ -9,14 +9,18 @@ import com.cogent.cogentappointment.esewa.property.AppointmentReservationPropert
 import com.cogent.cogentappointment.esewa.repository.*;
 import com.cogent.cogentappointment.esewa.service.AppointmentHospitalDeptReservationLogService;
 import com.cogent.cogentappointment.esewa.service.HospitalService;
+import com.cogent.cogentappointment.persistence.model.AppointmentHospitalDepartmentReservationLog;
 import com.cogent.cogentappointment.persistence.model.Hospital;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartment;
+import com.cogent.cogentappointment.persistence.model.HospitalDepartmentBillingModeInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.AppointmentServiceMessage.APPOINTMENT_EXISTS;
@@ -25,6 +29,8 @@ import static com.cogent.cogentappointment.esewa.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.esewa.log.constants.AppointmentHospitalDepartmentReservationLog.APPOINTMENT_HOSPITAL_DEPARTMENT_RESERVATION_LOG;
 import static com.cogent.cogentappointment.esewa.log.constants.HospitalDepartmentLog.HOSPITAL_DEPARTMENT;
+import static com.cogent.cogentappointment.esewa.log.constants.HospitalDepartmentLog.HOSPITAL_DEPARTMENT_BILLING_MODE_INFO;
+import static com.cogent.cogentappointment.esewa.utils.AppointmentHospitalDepartmentReservationLogUtils.parseToAppointmentHospitalDepartmentReservation;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.*;
 
 /**
@@ -50,6 +56,8 @@ public class AppointmentHospitalDeptReservationLogServiceImpl implements
 
     private final HospitalDepartmentRepository hospitalDepartmentRepository;
 
+    private final HospitalDepartmentBillingModeInfoRepository hospitalDepartmentBillingModeInfoRepository;
+
     public AppointmentHospitalDeptReservationLogServiceImpl(
             AppointmentHospitalDeptReservationLogRepository appointmentHospitalDeptReservationLogRepository,
             AppointmentRepository appointmentRepository,
@@ -57,7 +65,8 @@ public class AppointmentHospitalDeptReservationLogServiceImpl implements
             DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository,
             AppointmentReservationProperties reservationProperties,
             HospitalService hospitalService,
-            HospitalDepartmentRepository hospitalDepartmentRepository) {
+            HospitalDepartmentRepository hospitalDepartmentRepository,
+            HospitalDepartmentBillingModeInfoRepository hospitalDepartmentBillingModeInfoRepository) {
         this.appointmentHospitalDeptReservationLogRepository = appointmentHospitalDeptReservationLogRepository;
         this.appointmentRepository = appointmentRepository;
         this.doctorDutyRosterRepository = doctorDutyRosterRepository;
@@ -65,6 +74,7 @@ public class AppointmentHospitalDeptReservationLogServiceImpl implements
         this.reservationProperties = reservationProperties;
         this.hospitalService = hospitalService;
         this.hospitalDepartmentRepository = hospitalDepartmentRepository;
+        this.hospitalDepartmentBillingModeInfoRepository = hospitalDepartmentBillingModeInfoRepository;
     }
 
     /*   VALIDATE REQUEST INFO :
@@ -72,8 +82,8 @@ public class AppointmentHospitalDeptReservationLogServiceImpl implements
     *   B. VALIDATE IF ANY OTHER APPOINTMENT EXISTS ON THE SAME CRITERIA
     *   C. VALIDATE IF REQUESTED APPOINTMENT TIME LIES BETWEEN DOCTOR DUTY ROSTER TIME SCHEDULES
     *
-    *   SAVE IN APPOINTMENT RESERVATION LOG ONLY IF IT HAS NOT BEEN SAVED BEFORE
-    *   (SAME DOCTOR, SPECIALIZATION, HOSPITAL, APPOINTMENT DATE/TIME */
+    *   SAVE IN APPOINTMENT HOSPITAL DEPARTMENT RESERVATION LOG ONLY IF IT HAS NOT BEEN SAVED BEFORE
+    *   (SAME HOSPITAL DEPARTMENT, HOSPITAL, APPOINTMENT DATE/TIME */
     @Override
     public Long saveAppointmentHospitalDeptReservationLog(AppointmentHospitalDeptFollowUpRequestDTO requestDTO) {
 
@@ -88,7 +98,8 @@ public class AppointmentHospitalDeptReservationLogServiceImpl implements
         if (Objects.isNull(appointmentReservationLogId))
             appointmentReservationLogId = save(requestDTO);
 
-        log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT_HOSPITAL_DEPARTMENT_RESERVATION_LOG, getDifferenceBetweenTwoTime(startTime));
+        log.info(SAVING_PROCESS_COMPLETED, APPOINTMENT_HOSPITAL_DEPARTMENT_RESERVATION_LOG,
+                getDifferenceBetweenTwoTime(startTime));
 
         return appointmentReservationLogId;
     }
@@ -96,48 +107,49 @@ public class AppointmentHospitalDeptReservationLogServiceImpl implements
     /*SCHEDULER - 2 MINS
     * DELETE - 5 MINS*/
     @Override
-    public void deleteExpiredAppointmentReservation() {
+    public void deleteExpiredAppointmentHospitalDepartmentReservation() {
 
-//        Long startTime = getTimeInMillisecondsFromLocalDate();
-//
-//        log.info(DELETING_PROCESS_STARTED, APPOINTMENT_RESERVATION_LOG);
-//
-//        List<AppointmentReservationLog> appointmentReservations =
-//                appointmentReservationLogRepository.fetchAppointmentReservationLog();
-//
-//        appointmentReservations.forEach(appointmentReservation -> {
-//
-//            long expiryDate = appointmentReservation.getCreatedDate().getTime() +
-//                    TimeUnit.MINUTES.toMillis(Long.parseLong(reservationProperties.getDeleteIntervalInMinutes()));
-//
-//            long currentDateInMillis = new Date().getTime();
-//
-//            if (expiryDate < currentDateInMillis)
-//                appointmentReservationLogRepository.delete(appointmentReservation);
-//        });
-//
-//        log.info(DELETING_PROCESS_COMPLETED, APPOINTMENT_RESERVATION_LOG, getDifferenceBetweenTwoTime(startTime));
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(DELETING_PROCESS_STARTED, APPOINTMENT_HOSPITAL_DEPARTMENT_RESERVATION_LOG);
+
+        List<AppointmentHospitalDepartmentReservationLog> appointmentReservations =
+                appointmentHospitalDeptReservationLogRepository.fetchAppointmentHospitalDepartmentReservationLog();
+
+        appointmentReservations.forEach(appointmentReservation -> {
+
+            long expiryDate = appointmentReservation.getCreatedDate().getTime() +
+                    TimeUnit.MINUTES.toMillis(Long.parseLong(reservationProperties.getDeleteIntervalInMinutes()));
+
+            long currentDateInMillis = new Date().getTime();
+
+            if (expiryDate < currentDateInMillis)
+                appointmentHospitalDeptReservationLogRepository.delete(appointmentReservation);
+        });
+
+        log.info(DELETING_PROCESS_COMPLETED, APPOINTMENT_HOSPITAL_DEPARTMENT_RESERVATION_LOG,
+                getDifferenceBetweenTwoTime(startTime));
     }
 
     private Long save(AppointmentHospitalDeptFollowUpRequestDTO requestDTO) {
 
         Hospital hospital = hospitalService.fetchActiveHospital(requestDTO.getHospitalId());
 
-//        HospitalDepartment hospitalDepartment = fetchHospitalDepartment(
-//                requestDTO.getHospitalDepartmentId(),
-//                requestDTO.getHospitalId()
-//        );
-//
-//
-//
-//        AppointmentHospitalDepartmentReservationLog appointmentReservationLog =
-//                parseToAppointmentHospitalDepartmentReservation(requestDTO, hospital);
+        HospitalDepartment hospitalDepartment = fetchHospitalDepartment(
+                requestDTO.getHospitalDepartmentId(), requestDTO.getHospitalId()
+        );
 
-//        appointmentHospitalDeptReservationLogRepository.save(appointmentReservationLog);
-//
-//        return appointmentReservationLog.getId();
+        HospitalDepartmentBillingModeInfo hospitalDepartmentBillingModeInfo =
+                fetchHospitalDepartmentBillingModeInfo(requestDTO.getHospitalDepartmentBillingModeId(),
+                        requestDTO.getHospitalDepartmentId());
 
-        return null;
+        AppointmentHospitalDepartmentReservationLog appointmentReservationLog =
+                parseToAppointmentHospitalDepartmentReservation(requestDTO,
+                        hospital, hospitalDepartment, hospitalDepartmentBillingModeInfo, null);
+
+        appointmentHospitalDeptReservationLogRepository.save(appointmentReservationLog);
+
+        return appointmentReservationLog.getId();
     }
 
     private Long fetchAppointmentReservationLogId(AppointmentHospitalDeptFollowUpRequestDTO requestDTO) {
@@ -227,5 +239,21 @@ public class AppointmentHospitalDeptReservationLogServiceImpl implements
         log.error(CONTENT_NOT_FOUND_BY_ID, HOSPITAL_DEPARTMENT, id);
         throw new NoContentFoundException(HospitalDepartment.class, "id", id.toString());
     };
+
+    private HospitalDepartmentBillingModeInfo fetchHospitalDepartmentBillingModeInfo(
+            Long hospitalDepartmentBillingModeId, Long hospitalDepartmentId) {
+
+        return hospitalDepartmentBillingModeInfoRepository.fetchByIdAndHospitalDepartmentId(
+                hospitalDepartmentBillingModeId, hospitalDepartmentId)
+                .orElseThrow(() -> HOSPITAL_DEPARTMENT_CHARGE_WITH_GIVEN_ID_NOT_FOUND.apply(hospitalDepartmentId));
+    }
+
+    private Function<Long, NoContentFoundException> HOSPITAL_DEPARTMENT_CHARGE_WITH_GIVEN_ID_NOT_FOUND =
+            (hospitalDepartmentId) -> {
+                log.error(CONTENT_NOT_FOUND, HOSPITAL_DEPARTMENT_BILLING_MODE_INFO, hospitalDepartmentId);
+                throw new NoContentFoundException(HospitalDepartmentBillingModeInfo.class, "hospitalDepartmentId",
+                        hospitalDepartmentId.toString());
+            };
+
 
 }

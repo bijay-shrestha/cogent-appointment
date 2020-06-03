@@ -16,7 +16,7 @@ public class HospitalDepartmentBillingModeInfoQuery {
 
     public static final String QUERY_TO_GET_ACTIVE_BILLING_MODE_BY_HOSPITAL_DEPARTMENT_ID =
             "SELECT " +
-                    " hb.billingMode.id as value," +
+                    " hb.id as value," +
                     " hb.billingMode.name as label" +
                     " FROM" +
                     " HospitalDepartmentBillingModeInfo hb" +

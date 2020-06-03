@@ -70,9 +70,10 @@ public class AppointmentHospitalDeptFollowUpTrackerServiceImpl implements Appoin
 
         /*TEMPORARILY HOLD SELECTED TIME SLOT
         * PERSIST IN TABLE ONLY IF APPOINTMENT HAS NOT BEEN PREVIOUSLY RESERVED FOR
-        * SELECTED HOSPITAL DEPARTMENT, DATE AND TIME */
-//        Long savedAppointmentReservationId =
-//                appointmentHospitalDeptReservationLogService.saveAppointmentReservationLog(requestDTO);
+        * SELECTED HOSPITAL DEPARTMENT, ROOM(IF APPLICABLE), DATE AND TIME */
+
+        Long savedAppointmentReservationId =
+                appointmentHospitalDeptReservationLogService.saveAppointmentHospitalDeptReservationLog(requestDTO);
 
 //        AppointmentFollowUpTracker appointmentFollowUpTracker =
 //                appointmentHospitalDeptFollowUpTrackerRepository.fetchAppointmentFollowUpTracker(
@@ -80,7 +81,7 @@ public class AppointmentHospitalDeptFollowUpTrackerServiceImpl implements Appoin
 //                        requestDTO.getSpecializationId(), requestDTO.getHospitalId()
 //                );
 //
-//        Double hospitalRefundPercentage = fetchHospitalRefundPercentage(requestDTO.getHospitalId());
+        Double hospitalRefundPercentage = fetchHospitalRefundPercentage(requestDTO.getHospitalId());
 //
 //        AppointmentFollowUpResponseDTO responseDTO;
 //

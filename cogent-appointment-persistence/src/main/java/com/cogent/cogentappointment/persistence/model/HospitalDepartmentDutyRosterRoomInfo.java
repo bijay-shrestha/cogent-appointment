@@ -13,7 +13,7 @@ import java.io.Serializable;
 @Entity
 @Getter
 @Setter
-public class HospitalDepartmentDutyRosterRoomInfo implements Serializable{
+public class HospitalDepartmentDutyRosterRoomInfo implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +22,10 @@ public class HospitalDepartmentDutyRosterRoomInfo implements Serializable{
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hospital_department_duty_roster_id")
     private HospitalDepartmentDutyRoster hospitalDepartmentDutyRoster;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hospital_department_room_info_id")
+    private HospitalDepartmentRoomInfo hospitalDepartmentRoomInfo;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")

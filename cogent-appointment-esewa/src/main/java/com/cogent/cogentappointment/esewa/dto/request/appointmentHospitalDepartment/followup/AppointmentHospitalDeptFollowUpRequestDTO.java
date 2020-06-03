@@ -16,13 +16,16 @@ import java.util.Date;
 @Setter
 public class AppointmentHospitalDeptFollowUpRequestDTO implements Serializable {
 
-    private Long patientId;
+    @NotNull
+    private Long hospitalId;
 
     @NotNull
     private Long hospitalDepartmentId;
 
     @NotNull
-    private Long hospitalId;
+    private Long hospitalDepartmentBillingModeId;
+
+    private Long patientId;
 
     @NotNull
     private Date appointmentDate;

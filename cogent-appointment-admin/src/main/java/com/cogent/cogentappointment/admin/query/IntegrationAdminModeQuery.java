@@ -15,12 +15,15 @@ public class IntegrationAdminModeQuery {
             (searchRequestDTO) ->
                     " SELECT" +
                             " amfi.id as id," +
+                            " h.name as hospitalName,"+
                             " f.name as featureName,"+
                             " f.code as featureCode," +
                             " hrm.name as requestMethod," +
                             " aif.url as url" +
                             " FROM AdminModeFeatureIntegration amfi" +
                             " LEFT JOIN AdminModeApiFeatureIntegration amafi ON amafi.adminModeFeatureIntegrationId.id =amfi.id " +
+                           " LEFT JOIN AppointmentModeHospitalInfo amhi ON amhi.appointmentModeId.id=amfi.appointmentModeId.id"+
+                            " LEFT JOIN Hospital h ON h.id=amhi.hospitalId.id" +
                             " LEFT JOIN Feature f ON f.id=amfi.featureId" +
                             " LEFT JOIN ApiIntegrationType ait ON ait.id=f.apiIntegrationTypeId.id" +
                             " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.apiIntegrationFormatId.id" +

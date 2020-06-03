@@ -191,20 +191,19 @@ public class IntegrationQuery {
 
     public static Function<ClientApiIntegrationSearchRequestDTO, String> CLIENT_API_INTEGRATION_SEARCH_QUERY =
             (searchRequestDTO) ->
-                    "  SELECT" +
-                            " amfi.id as id," +
+                    " SELECT" +
+                            " cfi.id as id," +
                             " h.name as hospitalName," +
                             " f.name as featureName," +
                             " f.code as featureCode," +
                             " hrm.name as requestMethod," +
-                            " aif.url as url," +
-                            " aif.status as status" +
-                            " FROM AdminModeFeatureIntegration amfi" +
-                            " LEFT JOIN Hospital h ON h.id=amfi.appointmentModeId" +
-                            " LEFT JOIN Feature f ON f.id=amfi.featureId" +
-                            " LEFT JOIN ApiIntegrationType ait ON ait.id=f.apiIntegrationTypeId" +
-                            " LEFT JOIN AdminModeApiFeatureIntegration amafi ON amafi.adminModeFeatureIntegrationId= amfi.id" +
-                            " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.id" +
+                            " aif.url as url" +
+                            " FROM ClientFeatureIntegration cfi" +
+                            " LEFT JOIN Hospital h ON h.id=cfi.hospitalId" +
+                            " LEFT JOIN Feature f ON f.id=cfi.featureId" +
+                            " LEFT JOIN ApiIntegrationType ait ON ait.id=f.apiIntegrationTypeId.id" +
+                            " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=cfi.id" +
+                            " LEFT JOIN ApiIntegrationFormat aif ON aif.id=afi.apiIntegrationFormatId" +
                             " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId"
                             + GET_WHERE_CLAUSE_TO_SEARCH_CLIENT_API_INTEGRATION(searchRequestDTO);
 

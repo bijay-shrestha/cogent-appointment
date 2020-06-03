@@ -16,6 +16,8 @@ public class AdminModeIntegrationSearchResponseDTO implements Serializable {
 
     private Long id;
 
+    private String hospitalName;
+
     private String featureName;
 
     private String featureCode;

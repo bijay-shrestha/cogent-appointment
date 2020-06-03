@@ -26,7 +26,13 @@ public class AppointmentHospitalDepartmentInfo implements Serializable {
     @JoinColumn(name = "hospital_department_id")
     private HospitalDepartment hospitalDepartment;
 
-    //todo: add billing mode
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hospital_department_room_info_id")
+    private HospitalDepartmentRoomInfo hospitalDepartmentRoomInfo;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hospital_department_billing_mode_info_id")
+    private HospitalDepartmentBillingModeInfo hospitalDepartmentBillingModeInfo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")

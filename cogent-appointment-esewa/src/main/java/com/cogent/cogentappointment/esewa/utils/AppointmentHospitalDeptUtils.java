@@ -40,7 +40,7 @@ public class AppointmentHospitalDeptUtils {
                         .queryDate(queryDate)
                         .hasRoom(YES)
                         .roomInfo(availableRoomList)
-                        .roomId(roomInfo.getRoomId())
+                        .hospitalDepartmentRoomInfoId(roomInfo.getHospitalDepartmentRoomInfoId())
                         .roomNumber(roomInfo.getRoomNumber())
                         .hospitalDepartmentAvailableTime(startTime + HYPHEN + endTime)
                         .availableTimeSlots(availableTimeSlots)

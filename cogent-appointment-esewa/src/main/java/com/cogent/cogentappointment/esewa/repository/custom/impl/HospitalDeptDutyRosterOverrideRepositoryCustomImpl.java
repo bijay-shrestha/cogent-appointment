@@ -33,9 +33,10 @@ public class HospitalDeptDutyRosterOverrideRepositoryCustomImpl implements Hospi
     public HospitalDeptDutyRosterTimeResponseTO fetchHospitalDeptDutyRosterOverrideTimeInfo(Long hddRosterId,
                                                                                             Date date,
                                                                                             Long hospitalDepartmentId,
-                                                                                            Long roomId) {
+                                                                                            Long hospitalDepartmentRoomInfoId) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_OVERRIDE_TIME(roomId))
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_OVERRIDE_TIME(hospitalDepartmentRoomInfoId))
                 .setParameter(DATE, utilDateToSqlDate(date))
                 .setParameter(ID, hddRosterId)
                 .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId);

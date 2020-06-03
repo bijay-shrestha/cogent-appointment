@@ -24,5 +24,5 @@ public class AppointmentHospitalDeptCheckAvailabilityRoomWiseRequestDTO implemen
     private Long hospitalDepartmentId;
 
     @NotNull
-    private Long roomId;
+    private Long hospitalDepartmentRoomInfoId;
 }

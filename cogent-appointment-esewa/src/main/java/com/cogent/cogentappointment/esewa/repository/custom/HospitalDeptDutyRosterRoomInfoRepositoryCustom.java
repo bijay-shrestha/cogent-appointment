@@ -15,5 +15,5 @@ public interface HospitalDeptDutyRosterRoomInfoRepositoryCustom {
 
     List<HospitalDeptDutyRosterRoomInfoResponseDTO> fetchHospitalDeptRoomInfo(List<Long> hddRosterId);
 
-    String fetchRoomNumber(Long hddRosterId, Long roomId);
+    String fetchRoomNumber(Long hddRosterId, Long hospitalDepartmentRoomInfoId);
 }

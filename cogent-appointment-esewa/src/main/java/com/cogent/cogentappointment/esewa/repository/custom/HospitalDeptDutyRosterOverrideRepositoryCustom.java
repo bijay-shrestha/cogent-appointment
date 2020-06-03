@@ -16,6 +16,6 @@ public interface HospitalDeptDutyRosterOverrideRepositoryCustom {
     HospitalDeptDutyRosterTimeResponseTO fetchHospitalDeptDutyRosterOverrideTimeInfo(Long hddRosterId,
                                                                                      Date date,
                                                                                      Long hospitalDepartmentId,
-                                                                                     Long roomId);
+                                                                                     Long hospitalDepartmentRoomInfoId);
 
 }

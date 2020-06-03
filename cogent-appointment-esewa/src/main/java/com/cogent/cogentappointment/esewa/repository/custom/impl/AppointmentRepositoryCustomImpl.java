@@ -132,9 +132,10 @@ public class AppointmentRepositoryCustomImpl implements AppointmentRepositoryCus
 
     @Override
     public List<AppointmentBookedTimeResponseDTO> fetchBookedAppointmentDeptWise(
-            Date appointmentDate, Long hospitalDepartmentId, Long roomId) {
+            Date appointmentDate, Long hospitalDepartmentId, Long hospitalDepartmentRoomInfoId) {
 
-        Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_BOOKED_APPOINTMENT_HOSPITAL_DEPT_WISE(roomId))
+        Query query = createQuery.apply(entityManager,
+                QUERY_TO_FETCH_BOOKED_APPOINTMENT_HOSPITAL_DEPT_WISE(hospitalDepartmentRoomInfoId))
                 .setParameter(DATE, utilDateToSqlDate(appointmentDate))
                 .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId);
 

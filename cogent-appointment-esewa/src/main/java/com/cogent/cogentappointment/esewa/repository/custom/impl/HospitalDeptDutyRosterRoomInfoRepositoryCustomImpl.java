@@ -18,7 +18,7 @@ import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.AppointmentHospitalDepartmentMessage.INVALID_ROOM_CHECK_AVAILABILITY_REQUEST;
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.HOSPITAL_DEPARTMENT_DUTY_ROSTER_ID;
-import static com.cogent.cogentappointment.esewa.constants.QueryConstants.ROOM_ID;
+import static com.cogent.cogentappointment.esewa.constants.QueryConstants.HOSPITAL_DEPARTMENT_ROOM_INFO_ID;
 import static com.cogent.cogentappointment.esewa.constants.StringConstant.COMMA_SEPARATED;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.esewa.query.HospitalDeptDutyRosterRoomQuery.QUERY_TO_FETCH_HDD_ROSTER_ROOM_DETAIL;
@@ -54,10 +54,10 @@ public class HospitalDeptDutyRosterRoomInfoRepositoryCustomImpl implements Hospi
     }
 
     @Override
-    public String fetchRoomNumber(Long hddRosterId, Long roomId) {
+    public String fetchRoomNumber(Long hddRosterId, Long hospitalDepartmentRoomInfoId) {
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HDD_ROSTER_ROOM_NUMBER)
                 .setParameter(HOSPITAL_DEPARTMENT_DUTY_ROSTER_ID, hddRosterId)
-                .setParameter(ROOM_ID, roomId);
+                .setParameter(HOSPITAL_DEPARTMENT_ROOM_INFO_ID, hospitalDepartmentRoomInfoId);
 
         try {
             return (String) query.getSingleResult();

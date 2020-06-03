@@ -91,7 +91,7 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
 
         HospitalDepartmentDutyRoster dutyRoster = fetchHospitalDepartmentDutyRoster(requestDTO.getHddRosterId());
 
-        String roomNumber = fetchRoomNumber(requestDTO.getHddRosterId(), requestDTO.getRoomId());
+        String roomNumber = fetchRoomNumber(requestDTO.getHddRosterId(), requestDTO.getHospitalDepartmentRoomInfoId());
 
         AppointmentHospitalDeptCheckAvailabilityRoomWiseResponseDTO responseDTO =
                 parseAvailableTimeSlotsRoomWise(dutyRoster, requestDTO, roomNumber);
@@ -165,7 +165,7 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
     /*ASSUMING HOSPITAL DEPARTMENT CAN BE CREATED EITHER WITHOUT ROOM OR WITH ROOM(CAN BE MULTIPLE)*/
     private HospitalDeptDutyRosterTimeResponseTO fetchHospitalDeptDutyRoster(
             HospitalDepartmentDutyRoster dutyRoster,
-            Long roomId,
+            Long hospitalDepartmentRoomInfoId,
             Date appointmentDate,
             Long hospitalDepartmentId) {
 
@@ -174,7 +174,7 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
                     hospitalDeptDutyRosterOverrideRepository.fetchHospitalDeptDutyRosterOverrideTimeInfo(
                             dutyRoster.getId(),
                             appointmentDate, hospitalDepartmentId,
-                            roomId);
+                            hospitalDepartmentRoomInfoId);
 
             if (!Objects.isNull(overrideRoster))
                 return overrideRoster;
@@ -189,6 +189,7 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
     }
 
     private List<HospitalDeptDutyRosterRoomInfoResponseDTO> fetchHospitalDeptRoomInfo(List<Long> hddRosterIds) {
+
         List<HospitalDeptDutyRosterRoomInfoResponseDTO> availableRoomInfo =
                 hospitalDeptDutyRosterRoomInfoRepository.fetchHospitalDeptRoomInfo(hddRosterIds);
 
@@ -200,12 +201,14 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
     private List<String> filterHospitalDeptTimeWithAppointment(String startTime,
                                                                String endTime,
                                                                Integer rosterGapDuration,
-                                                               Long roomId,
+                                                               Long hospitalDepartmentRoomInfoId,
                                                                Date appointmentDate,
                                                                Long hospitalDepartmentId) {
 
         List<AppointmentBookedTimeResponseDTO> bookedAppointments =
-                appointmentRepository.fetchBookedAppointmentDeptWise(appointmentDate, hospitalDepartmentId, roomId);
+                appointmentRepository.fetchBookedAppointmentDeptWise(
+                        appointmentDate, hospitalDepartmentId, hospitalDepartmentRoomInfoId
+                );
 
         final Duration gapDuration = Minutes.minutes(rosterGapDuration).toStandardDuration();
 
@@ -231,7 +234,7 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
 
         HospitalDeptDutyRosterTimeResponseTO dutyRosterTimeResponseTO = fetchHospitalDeptDutyRoster(
                 dutyRoster,
-                availableRoomInfo.get(0).getRoomId(),
+                availableRoomInfo.get(0).getHospitalDepartmentRoomInfoId(),
                 requestDTO.getAppointmentDate(),
                 requestDTO.getHospitalDepartmentId()
         );
@@ -247,7 +250,7 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
 
         List<String> availableTimeSlots = filterHospitalDeptTimeWithAppointment(
                 startTime, endTime,
-                dutyRosterTimeResponseTO.getRosterGapDuration(), roomInfo.getRoomId(),
+                dutyRosterTimeResponseTO.getRosterGapDuration(), roomInfo.getHospitalDepartmentRoomInfoId(),
                 requestDTO.getAppointmentDate(),
                 requestDTO.getHospitalDepartmentId()
         );
@@ -264,7 +267,7 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
 
         HospitalDeptDutyRosterTimeResponseTO dutyRosterTimeResponseTO = fetchHospitalDeptDutyRoster(
                 dutyRoster,
-                requestDTO.getRoomId(),
+                requestDTO.getHospitalDepartmentRoomInfoId(),
                 requestDTO.getAppointmentDate(),
                 requestDTO.getHospitalDepartmentId()
         );
@@ -278,14 +281,14 @@ public class AppointmentHospitalDepartmentServiceImpl implements AppointmentHosp
 
         List<String> availableTimeSlots = filterHospitalDeptTimeWithAppointment(
                 startTime, endTime, dutyRosterTimeResponseTO.getRosterGapDuration(),
-                requestDTO.getRoomId(), requestDTO.getAppointmentDate(),
+                requestDTO.getHospitalDepartmentRoomInfoId(), requestDTO.getAppointmentDate(),
                 requestDTO.getHospitalDepartmentId()
         );
 
         return parseToAvailabilityResponseRoomWise(date, roomNumber, startTime, endTime, availableTimeSlots);
     }
 
-    private String fetchRoomNumber(Long hddRosterId, Long roomId) {
-        return hospitalDeptDutyRosterRoomInfoRepository.fetchRoomNumber(hddRosterId, roomId);
+    private String fetchRoomNumber(Long hddRosterId, Long hospitalDepartmentRoomInfoId) {
+        return hospitalDeptDutyRosterRoomInfoRepository.fetchRoomNumber(hddRosterId, hospitalDepartmentRoomInfoId);
     }
 }

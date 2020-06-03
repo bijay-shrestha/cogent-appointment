@@ -8,7 +8,7 @@ import java.util.Objects;
 public class AppointmentHospitalDepartmentQuery {
 
     /*USED IN CHECK AVAILABILITY OF HOSPITAL DEPARTMENT APPOINTMENT*/
-    public static String QUERY_TO_FETCH_BOOKED_APPOINTMENT_HOSPITAL_DEPT_WISE(Long roomId) {
+    public static String QUERY_TO_FETCH_BOOKED_APPOINTMENT_HOSPITAL_DEPT_WISE(Long hospitalDepartmentRoomInfoId) {
 
         String query = "SELECT DATE_FORMAT(a.appointmentTime, '%H:%i') as appointmentTime" +               //[0]
                 " FROM Appointment a" +
@@ -18,8 +18,8 @@ public class AppointmentHospitalDepartmentQuery {
                 " AND ah.hospitalDepartment.id = :hospitalDepartmentId" +
                 " AND a.status = 'PA'";
 
-        if (!Objects.isNull(roomId))
-            query += " AND ah.room.id =" + roomId;
+        if (!Objects.isNull(hospitalDepartmentRoomInfoId))
+            query += " AND ah.hospitalDepartmentRoomInfo.id =" + hospitalDepartmentRoomInfoId;
 
         return query;
     }

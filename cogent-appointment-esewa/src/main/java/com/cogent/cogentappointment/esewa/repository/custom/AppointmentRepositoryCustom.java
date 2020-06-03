@@ -40,6 +40,6 @@ public interface AppointmentRepositoryCustom {
     Double calculateRefundAmount(Long appointmentId);
 
     List<AppointmentBookedTimeResponseDTO> fetchBookedAppointmentDeptWise(
-            Date appointmentDate, Long hospitalDepartmentId, Long roomId);
+            Date appointmentDate, Long hospitalDepartmentId, Long hospitalDepartmentRoomInfoId);
 
 }

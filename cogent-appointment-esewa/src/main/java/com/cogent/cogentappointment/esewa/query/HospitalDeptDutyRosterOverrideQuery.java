@@ -7,7 +7,7 @@ import java.util.Objects;
  */
 public class HospitalDeptDutyRosterOverrideQuery {
 
-    public static String QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_OVERRIDE_TIME(Long roomId) {
+    public static String QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_OVERRIDE_TIME(Long hospitalDepartmentRoomInfoId) {
 
         String query = "SELECT d.startTime as startTime," +             //[0]
                 " d.endTime as endTime," +                              //[1]
@@ -22,8 +22,8 @@ public class HospitalDeptDutyRosterOverrideQuery {
                 " AND :date BETWEEN d.fromDate AND d.toDate" +
                 " And dd.hospitalDepartment.id=:hospitalDepartmentId";
 
-        if (!Objects.isNull(roomId))
-            query += " AND d.room.id=" + roomId;
+        if (!Objects.isNull(hospitalDepartmentRoomInfoId))
+            query += " AND d.hospitalDepartmentRoomInfo.id=" + hospitalDepartmentRoomInfoId;
 
         return query;
     }

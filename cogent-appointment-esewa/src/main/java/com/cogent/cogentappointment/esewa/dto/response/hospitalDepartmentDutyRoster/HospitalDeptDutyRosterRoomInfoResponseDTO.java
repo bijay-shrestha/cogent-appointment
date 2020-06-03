@@ -16,7 +16,7 @@ public class HospitalDeptDutyRosterRoomInfoResponseDTO implements Serializable {
 
     private Long hddRosterId;
 
-    private Long roomId;
+    private Long hospitalDepartmentRoomInfoId;
 
     private String roomNumber;
 }

@@ -7,11 +7,12 @@ public class HospitalDeptDutyRosterRoomQuery {
 
     public static String QUERY_TO_FETCH_HDD_ROSTER_ROOM_DETAIL(String hddRosterIds) {
         return " SELECT" +
-                " h.room.id as roomId," +                                           //[0]
-                " h.room.roomNumber as roomNumber," +                               //[1]
-                " hd.id as hddRosterId" +                                            //[2]
+                " h.id as hospitalDepartmentRoomInfoId," +                           //[0]
+                " hr.room.roomNumber as roomNumber," +                               //[1]
+                " hd.id as hddRosterId" +                                           //[2]
                 " FROM HospitalDepartmentDutyRosterRoomInfo h" +
                 " LEFT JOIN HospitalDepartmentDutyRoster hd ON hd.id = h.hospitalDepartmentDutyRoster.id" +
+                " LEFT JOIN HospitalDepartmentRoomInfo hr ON hr.id = h.hospitalDepartmentRoomInfo.id" +
                 " WHERE h.status = 'Y'" +
                 " AND h.hospitalDepartmentDutyRoster.status = 'Y'" +
                 " AND hd.id IN (" + hddRosterIds + ")";
@@ -19,12 +20,13 @@ public class HospitalDeptDutyRosterRoomQuery {
 
     public static String QUERY_TO_FETCH_HDD_ROSTER_ROOM_NUMBER =
             " SELECT" +
-                    " h.room.roomNumber as roomNumber" +
+                    " hr.room.roomNumber as roomNumber" +
                     " FROM HospitalDepartmentDutyRosterRoomInfo h" +
                     " LEFT JOIN HospitalDepartmentDutyRoster hd ON hd.id = h.hospitalDepartmentDutyRoster.id" +
+                    " LEFT JOIN HospitalDepartmentRoomInfo hr ON hr.id = h.hospitalDepartmentRoomInfo.id" +
                     " WHERE h.status = 'Y'" +
                     " AND h.hospitalDepartmentDutyRoster.status = 'Y'" +
                     " AND hd.id =:hddRosterId" +
-                    " AND h.room.id =:roomId";
+                    " AND h.id =:hospitalDepartmentRoomInfoId";
 
 }

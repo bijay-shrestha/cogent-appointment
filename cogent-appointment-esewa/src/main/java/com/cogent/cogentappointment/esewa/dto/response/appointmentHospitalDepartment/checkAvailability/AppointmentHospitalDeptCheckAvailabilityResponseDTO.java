@@ -24,7 +24,7 @@ public class AppointmentHospitalDeptCheckAvailabilityResponseDTO extends StatusR
 
     private List<HospitalDeptDutyRosterRoomInfoResponseDTO> roomInfo;
 
-    private Long roomId;
+    private Long hospitalDepartmentRoomInfoId;
 
     private String roomNumber;
 

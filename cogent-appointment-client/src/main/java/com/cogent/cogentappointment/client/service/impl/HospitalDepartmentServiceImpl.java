@@ -80,6 +80,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
     @Override
     public void save(HospitalDepartmentRequestDTO requestDTO) {
+
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(SAVING_PROCESS_STARTED, HOSPITAL_DEPARTMENT);
@@ -105,10 +106,12 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
             saveHospitalDepartmentRoomInfo(requestDTO, hospitalDepartment);
 
         log.info(SAVING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
+
     }
 
     @Override
     public void update(HospitalDepartmentUpdateRequestDTO requestDTO) {
+
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(UPDATING_PROCESS_STARTED, HOSPITAL_DEPARTMENT);
@@ -124,10 +127,8 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
         if (requestDTO.getDoctorUpdateList().size() > 0)
             updateHospitalDepartmentDoctorInfo(requestDTO, hospitalDepartment);
 
-
         if (requestDTO.getRoomUpdateList().size() > 0)
             updateHospitalDepartmentRoomInfo(requestDTO, hospitalDepartment);
-
 
         log.info(UPDATING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
 
@@ -135,6 +136,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
     @Override
     public List<DropDownResponseDTO> fetchMinHospitalDepartment() {
+
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED_FOR_DROPDOWN, HOSPITAL_DEPARTMENT);
@@ -147,10 +149,12 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
         log.info(FETCHING_PROCESS_FOR_DROPDOWN_COMPLETED, HOSPITAL_DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
 
         return minDepartment;
+
     }
 
     @Override
     public List<DropDownResponseDTO> fetchActiveMinHospitalDepartment() {
+
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED_FOR_ACTIVE_DROPDOWN, HOSPITAL_DEPARTMENT);
@@ -164,10 +168,12 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
                 getDifferenceBetweenTwoTime(startTime));
 
         return minDepartment;
+
     }
 
     @Override
     public List<DropDownResponseDTO> fetchAvailableRoom() {
+
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_PROCESS_STARTED_FOR_ACTIVE_DROPDOWN, AVAILABLE_ROOM);
@@ -181,6 +187,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
                 getDifferenceBetweenTwoTime(startTime));
 
         return minDepartment;
+
     }
 
     @Override
@@ -196,10 +203,12 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
         log.info(SEARCHING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
+
     }
 
     @Override
     public HospitalDepartmentResponseDTO fetchHospitalDepartmentDetails(Long id) {
+
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_DETAIL_PROCESS_STARTED, HOSPITAL_DEPARTMENT);
@@ -212,6 +221,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
         log.info(FETCHING_DETAIL_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
+
     }
 
     @Override
@@ -235,6 +245,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
     @Override
     public ChargeResponseDTO fetchAppointmentCharge(ChargeRequestDTO requestDTO) {
+
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(FETCHING_DETAIL_PROCESS_STARTED, HOSPITAL_DEPARTMENT_BILLING_MODE_INFO);
@@ -245,6 +256,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
                 getDifferenceBetweenTwoTime(startTime));
 
         return chargeResponseDTO;
+
     }
 
     public void saveBillingModeWithCharge(HospitalDepartmentRequestDTO hospitalRequestDTO,
@@ -257,11 +269,16 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
         List<BillingModeChargeDTO> billingModeChargeDTOS = hospitalRequestDTO.getBillingModeChargeDTOList();
 
         billingModeChargeDTOS.forEach(billingModeChargeDTO -> {
+
             BillingMode billingMode = fetchBillingMode(billingModeChargeDTO.getBillingModeId(), hospitalId);
+
             billingModeInfoList.add(parseToHospitalDepartmentCharge(
                     billingModeChargeDTO, hospitalDepartment, billingMode));
+
         });
+
         saveHospitalDepartmentBillingModeInfoList(billingModeInfoList);
+
     }
 
 
@@ -317,7 +334,9 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
                         hospitalDepartment));
 
             } else {
+
                 saveBillingModeWithCharge(billingModeChargeUpdateDTO, hospitalDepartment);
+
             }
         });
 
@@ -331,13 +350,18 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
         List<DepartmentDoctorUpdateRequestDTO> doctorUpdateRequestDTOS = requestDTO.getDoctorUpdateList();
 
         doctorUpdateRequestDTOS.forEach(doctorUpdateRequestDTO -> {
+
             if (doctorUpdateRequestDTO.getStatus().equals(YES)) {
+
                 saveHospitalDepartmentDoctorInfo(parseToHospitalDepartmentDoctorInfo(
                         hospitalDepartment,
                         doctorUpdateRequestDTO.getStatus(),
                         fetchActiveDoctor(doctorUpdateRequestDTO.getDoctorId(), hospitaId)));
+
             } else {
+
                 deleteDoctor(doctorUpdateRequestDTO, requestDTO.getId(), requestDTO.getRemarks());
+
             }
         });
     }

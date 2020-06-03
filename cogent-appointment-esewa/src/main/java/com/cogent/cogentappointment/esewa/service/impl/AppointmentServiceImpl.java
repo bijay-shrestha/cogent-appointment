@@ -31,6 +31,7 @@ import org.joda.time.Duration;
 import org.joda.time.Minutes;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import javax.validation.Valid;
 import javax.validation.Validator;
@@ -40,6 +41,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.esewa.constants.CogentAppointmentConstants.AppointmentModeConstant.APPOINTMENT_MODE_ESEWA_CODE;
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.AppointmentServiceMessage.*;
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.DoctorServiceMessages.DOCTOR_APPOINTMENT_CHARGE_INVALID;
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.DoctorServiceMessages.DOCTOR_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE;
@@ -236,6 +238,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         validateConstraintViolation(validator.validate(requestDTO));
 
         AppointmentRequestDTO appointmentInfo = requestDTO.getAppointmentInfo();
+
+        validateEsewaId(requestDTO);
 
         AppointmentTransactionRequestLog transactionRequestLog =
                 appointmentTransactionRequestLogService.save(
@@ -515,6 +519,18 @@ public class AppointmentServiceImpl implements AppointmentService {
                         (requestDTO.getTransactionNumber(), requestDTO.getPatientName());
 
         return parseToAppointmentTransactionStatusResponseDTO(appointmentTransactionRequestLogStatus);
+    }
+
+    public void validateEsewaId(AppointmentRequestDTOForSelf requestDTO){
+
+        String appointmentModeCode=requestDTO.getTransactionInfo().getAppointmentModeCode();
+
+        String esewaId=requestDTO.getPatientInfo().getESewaId();
+
+        if(appointmentModeCode.equals(APPOINTMENT_MODE_ESEWA_CODE) && ObjectUtils.isEmpty(esewaId) ){
+            throw new BadRequestException("esewa Id cannot be null");
+        }
+
     }
 
     /*IF DOCTOR DAY OFF STATUS = 'Y', THEN THERE ARE NO AVAILABLE TIME SLOTS

@@ -19,7 +19,7 @@ public class HospitalDeptDutyRosterOverrideQuery {
                     " WHERE dr.status != 'D'" +
                     " AND dd.status = 'Y'" +
                     " AND dr.isRoomEnabled = 'N'" +
-                    " AND dd.room.id IS NULL" +
+                    " AND dd.hospitalDepartmentRoomInfo.id IS NULL" +
                     " AND dr.hospitalDepartment.id= :hospitalDepartmentId" +
                     " AND dd.toDate >=:fromDate" +
                     " AND dd.fromDate <=:toDate";
@@ -31,9 +31,9 @@ public class HospitalDeptDutyRosterOverrideQuery {
                     " WHERE dr.status != 'D'" +
                     " AND dd.status = 'Y'" +
                     " AND dr.isRoomEnabled = 'Y'" +
-                    " AND dd.room.id IS NOT NULL" +
+                    " AND dd.hospitalDepartmentRoomInfo.id IS NOT NULL" +
                     " AND dr.hospitalDepartment.id= :hospitalDepartmentId" +
-                    " AND dd.room.id =:roomId" +
+                    " AND dd.hospitalDepartmentRoomInfo.id =:hospitalDepartmentRoomInfoId" +
                     " AND dd.toDate >=:fromDate" +
                     " AND dd.fromDate <=:toDate";
 
@@ -42,9 +42,9 @@ public class HospitalDeptDutyRosterOverrideQuery {
                     " SET h.status = 'N'" +
                     " WHERE h.hospitalDepartmentDutyRoster.id = :id";
 
-    public static String QUERY_TO_UPDATE_OVERRIDE_ROOM(Long roomId) {
+    public static String QUERY_TO_UPDATE_OVERRIDE_ROOM(Long hospitalDepartmentRoomInfoId) {
         return " UPDATE HospitalDepartmentDutyRosterOverride h" +
-                " SET h.room = " + roomId +
+                " SET h.hospitalDepartmentRoomInfo = " + hospitalDepartmentRoomInfoId +
                 " WHERE h.hospitalDepartmentDutyRoster.id = :id";
     }
 
@@ -55,7 +55,7 @@ public class HospitalDeptDutyRosterOverrideQuery {
                     " WHERE dr.status != 'D'" +
                     " AND dd.status = 'Y'" +
                     " AND dr.isRoomEnabled = 'N'" +
-                    " AND dd.room.id IS NULL" +
+                    " AND dd.hospitalDepartmentRoomInfo.id IS NULL" +
                     " AND dd.id!=:id" +
                     " AND dr.hospitalDepartment.id= :hospitalDepartmentId" +
                     " AND dd.toDate >=:fromDate" +
@@ -68,10 +68,10 @@ public class HospitalDeptDutyRosterOverrideQuery {
                     " WHERE dr.status != 'D'" +
                     " AND dd.status = 'Y'" +
                     " AND dr.isRoomEnabled = 'Y'" +
-                    " AND dd.room.id IS NOT NULL" +
+                    " AND dd.hospitalDepartmentRoomInfo.id IS NOT NULL" +
                     " AND dd.id!=:id" +
                     " AND dr.hospitalDepartment.id= :hospitalDepartmentId" +
-                    " AND dd.room.id =:roomId" +
+                    " AND dd.hospitalDepartmentRoomInfo.id =:hospitalDepartmentRoomInfoId" +
                     " AND dd.toDate >=:fromDate" +
                     " AND dd.fromDate <=:toDate";
 

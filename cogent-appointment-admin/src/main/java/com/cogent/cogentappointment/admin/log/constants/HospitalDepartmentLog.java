@@ -10,4 +10,6 @@ public class HospitalDepartmentLog {
 
     public final static String CONTENT_NOT_FOUND_BY_HOSPITAL_DEPARTMENT_ID = ":::: {} WITH HOSPITAL DEPARTMENT ID : " +
             "{} NOT FOUND ::::";
+
+    public final static String HOSPITAL_DEPARTMENT_ROOM_INFO = "HOSPITAL DEPARTMENT ROOM INFO";
 }

@@ -15,6 +15,7 @@ import com.cogent.cogentappointment.client.dto.request.appointment.refund.Appoin
 import com.cogent.cogentappointment.client.dto.request.appointment.refund.AppointmentRefundRejectDTO;
 import com.cogent.cogentappointment.client.dto.request.appointment.reschedule.AppointmentRescheduleRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.clientIntegration.ApiIntegrationApproveRefundRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.clientIntegration.ApiIntegrationApproveRejectRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.clientIntegration.ApiIntegrationCheckInRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.reschedule.AppointmentRescheduleLogSearchDTO;
 import com.cogent.cogentappointment.client.service.AppointmentService;
@@ -231,20 +232,19 @@ public class AppointmentResource {
         return ok().build();
     }
 
-    @PutMapping(INTEGRATION+REFUND+APPROVE)
+    @PutMapping(INTEGRATION + REFUND + APPROVE)
     @ApiOperation(APPROVE_REFUND_BY_CLIENT_INTEGRATION)
     public ResponseEntity<?> approveRefund(@Valid @RequestBody ApiIntegrationApproveRefundRequestDTO requestDTO) {
         integrationService.approveRefund(requestDTO);
         return ok().build();
     }
 
-    @PutMapping(INTEGRATION+REFUND+REJECT)
+    @PutMapping(INTEGRATION + REFUND + REJECT)
     @ApiOperation(APPROVE_REFUND_BY_CLIENT_INTEGRATION)
-    public ResponseEntity<?> rejectRefund(@Valid @RequestBody ApiIntegrationApproveRefundRequestDTO requestDTO) {
+    public ResponseEntity<?> rejectRefund(@Valid @RequestBody ApiIntegrationApproveRejectRequestDTO requestDTO) {
         integrationService.rejectRefund(requestDTO);
         return ok().build();
     }
-
 
 
 }

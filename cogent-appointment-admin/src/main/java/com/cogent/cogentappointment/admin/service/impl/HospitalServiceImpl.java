@@ -92,7 +92,7 @@ public class HospitalServiceImpl implements HospitalService {
                 requestDTO.getName(), requestDTO.getEsewaMerchantCode(), requestDTO.getAlias());
 
         validateDuplicity(hospitals, requestDTO.getName(),
-                requestDTO.getHospitalCode(),
+                requestDTO.getEsewaMerchantCode(),
                 requestDTO.getAlias(),
                 CLIENT);
 

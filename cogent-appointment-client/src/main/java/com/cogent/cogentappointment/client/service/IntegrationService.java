@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.service;
 
 import com.cogent.cogentappointment.client.dto.request.clientIntegration.ApiIntegrationApproveRefundRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.clientIntegration.ApiIntegrationApproveRejectRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.clientIntegration.ApiIntegrationCheckInRequestDTO;
 
 /**
@@ -12,5 +13,5 @@ public interface IntegrationService {
 
     void approveRefund(ApiIntegrationApproveRefundRequestDTO requestDTO);
 
-    void rejectRefund(ApiIntegrationApproveRefundRequestDTO requestDTO);
+    void rejectRefund(ApiIntegrationApproveRejectRequestDTO requestDTO);
 }

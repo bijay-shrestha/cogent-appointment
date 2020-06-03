@@ -2,7 +2,6 @@ package com.cogent.cogentappointment.client.dto.request.clientIntegration;
 
 import lombok.*;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -13,9 +12,11 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ApiIntegrationApproveRefundRequestDTO implements Serializable {
+public class ApiIntegrationApproveRejectRequestDTO implements Serializable {
 
     private Long id;
 
     private String status;
+
+    private String remarks;
 }

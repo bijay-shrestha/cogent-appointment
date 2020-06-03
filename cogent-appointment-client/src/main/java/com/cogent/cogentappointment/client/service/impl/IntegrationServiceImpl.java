@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.client.service.impl;
 
 import com.cogent.cogentappointment.client.dto.request.clientIntegration.ApiIntegrationApproveRefundRequestDTO;
+import com.cogent.cogentappointment.client.dto.request.clientIntegration.ApiIntegrationApproveRejectRequestDTO;
 import com.cogent.cogentappointment.client.dto.request.clientIntegration.ApiIntegrationCheckInRequestDTO;
 import com.cogent.cogentappointment.client.exception.NoContentFoundException;
 import com.cogent.cogentappointment.client.repository.*;
@@ -85,8 +86,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 
         Long appointmentId = requestDTO.getId();
 
-        String response = requestDTO.getBody();
-
         AppointmentRefundDetail refundAppointmentDetail =
                 appointmentRefundDetailRepository.findByAppointmentIdAndHospitalId
                         (appointmentId, getLoggedInHospitalId())
@@ -97,13 +96,16 @@ public class IntegrationServiceImpl implements IntegrationService {
                 .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
 
 
-        updateAppointmentAndAppointmentRefundDetails(response, appointment, refundAppointmentDetail);
+        updateAppointmentAndAppointmentRefundDetails(requestDTO.getStatus(),
+                appointment,
+                refundAppointmentDetail,
+                null);
 
         log.info(APPROVE_PROCESS_COMPLETED, APPOINTMENT_CANCEL_APPROVAL, getDifferenceBetweenTwoTime(startTime));
     }
 
     @Override
-    public void rejectRefund(ApiIntegrationApproveRefundRequestDTO requestDTO) {
+    public void rejectRefund(ApiIntegrationApproveRejectRequestDTO requestDTO) {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -111,8 +113,6 @@ public class IntegrationServiceImpl implements IntegrationService {
 
         Long appointmentId = requestDTO.getId();
 
-        String response = requestDTO.getBody();
-
         AppointmentRefundDetail refundAppointmentDetail =
                 appointmentRefundDetailRepository.findByAppointmentIdAndHospitalId
                         (appointmentId, getLoggedInHospitalId())
@@ -122,7 +122,10 @@ public class IntegrationServiceImpl implements IntegrationService {
                 (appointmentId, getLoggedInHospitalId())
                 .orElseThrow(() -> APPOINTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(appointmentId));
 
-        updateAppointmentAndAppointmentRefundDetails(response, appointment, refundAppointmentDetail);
+        updateAppointmentAndAppointmentRefundDetails(requestDTO.getStatus(),
+                appointment,
+                refundAppointmentDetail,
+                requestDTO.getRemarks());
 
         log.info(REJECT_PROCESS_COMPLETED, APPOINTMENT_CANCEL_APPROVAL, getDifferenceBetweenTwoTime(startTime));
 
@@ -130,7 +133,8 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     private void updateAppointmentAndAppointmentRefundDetails(String response,
                                                               Appointment appointment,
-                                                              AppointmentRefundDetail refundAppointmentDetail) {
+                                                              AppointmentRefundDetail refundAppointmentDetail,
+                                                              String rejectRemarks) {
         switch (response) {
 
             case PARTIAL_REFUND:
@@ -142,7 +146,7 @@ public class IntegrationServiceImpl implements IntegrationService {
                 break;
 
             case SUCCESS:
-                saveAppointmentRefundDetail(parseRefundRejectDetails(response, refundAppointmentDetail));
+                saveAppointmentRefundDetail(parseRefundRejectDetails(rejectRemarks, refundAppointmentDetail));
                 break;
 
             case AMBIGIOUS:

@@ -49,20 +49,24 @@ public class IntegrationQuery {
     public static final String ADMIN_MODE_FEATURES_INTEGRATION_API_QUERY =
             " SELECT" +
                     " aif.id as apiIntegrationFormatId," +
+                    " amfi.id as appointmentModeId," +
+                    " ic.code as integrationChannelCode," +
                     " f.code as featureCode," +
                     " hrm.name as requestMethod," +
                     " aif.url as url" +
                     " FROM AdminModeFeatureIntegration amfi" +
+                    " LEFT JOIN IntegrationChannel ic ON ic.id=amfi.integrationChannelId.id" +
                     " LEFT JOIN AdminModeApiFeatureIntegration amafi ON amafi.adminModeFeatureIntegrationId.id =amfi.id " +
                     " LEFT JOIN Feature f ON f.id=amfi.featureId" +
                     " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.apiIntegrationFormatId.id" +
                     " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId" +
-                    " WHERE amfi.appointmentModeId.id=:appointmentModeId" +
-                    " AND aif.status='Y'" +
+//                    " WHERE amfi.appointmentModeId.id=:appointmentModeId" +
+                    " WHERE aif.status='Y'" +
                     " AND hrm.status='Y'" +
                     " AND amafi.status='Y'" +
                     " AND f.status='Y'" +
-                    " AND amfi.status='Y'";
+                    " AND amfi.status='Y'" +
+                    " AND ic.status='Y'";
 
 
     public static final String CLIENT_API_FEATURES_HEADERS_QUERY =
@@ -187,6 +191,26 @@ public class IntegrationQuery {
                     " IntegrationChannel ic" +
                     " WHERE ic.status ='Y'" +
                     " ORDER by ic.name ASC";
+
+    public static final String CLIENT_FEAUTRES_INTEGRATION_API_QUERY =
+            "SELECT" +
+                    " aif.id as apiIntegrationFormatId," +
+                    " f.id as featureId,"+
+                    " ic.code as integrationChannelCode,"+
+                    " f.code as featureCode," +
+                    " hrm.name as requestMethod,"+
+                    " aif.url as url" +
+                    " from ClientFeatureIntegration cfi" +
+                    " LEFT JOIN IntegrationChannel ic ON ic.id=cfi.integrationChannelId.id"+
+                    " LEFT JOIN ApiFeatureIntegration afi ON afi.clientFeatureIntegrationId=cfi.id" +
+                    " LEFT JOIN Feature f ON f.id=cfi.featureId" +
+                    " LEFT JOIN ApiIntegrationFormat aif ON aif.id=afi.apiIntegrationFormatId" +
+                    " LEFT JOIN HttpRequestMethod hrm ON hrm.id =aif.httpRequestMethodId" +
+                    " WHERE aif.status='Y'"+
+                    " AND hrm.status='Y'"+
+                    " AND afi.status='Y'"+
+                    " AND f.status='Y'"+
+                    " AND cfi.status='Y'";
 
 
     public static Function<ClientApiIntegrationSearchRequestDTO, String> CLIENT_API_INTEGRATION_SEARCH_QUERY =

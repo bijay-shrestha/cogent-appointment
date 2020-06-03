@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class FeatureIntegrationResponseDTO implements Serializable {
+public class ClientFeatureIntegrationResponseDTO implements Serializable {
 
     private String featureCode;
 

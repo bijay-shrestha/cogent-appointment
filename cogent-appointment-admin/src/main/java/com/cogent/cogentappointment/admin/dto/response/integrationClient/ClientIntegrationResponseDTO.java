@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.dto.response.integrationClient;
 
+import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.FeatureIntegrationResponseDTO;
 import lombok.*;
 
 import java.io.Serializable;

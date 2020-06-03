@@ -12,15 +12,19 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class FeatureIntegrationResponse implements Serializable {
+public class AdminFeatureIntegrationResponse implements Serializable {
 
     private Long apiIntegrationFormatId;
 
-    private String featureCode;
+    private Long appointmentModeId;
 
-    private String requestMethod;
+    private String integrationChannelCode;
+
+    private Long featureId;
+
+    private String featureCode;
 
     private String url;
 
-    private String requestBody;
+    private String requestMethod;
 }

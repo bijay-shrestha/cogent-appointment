@@ -6,9 +6,9 @@ import com.cogent.cogentappointment.admin.dto.request.integrationClient.ApiInteg
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.ClientApiHeadersRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.ClientApiQueryParametersRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminModeIntegrationSearchDTO;
-import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientApiIntegrationSearchDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
+import com.cogent.cogentappointment.admin.repository.custom.AdminModeFeatureIntegrationRepository;
 import com.cogent.cogentappointment.admin.service.AdminModeFeatureIntegrationService;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
@@ -44,23 +44,24 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
     private final HttpRequestMethodRepository httpRequestMethodRepository;
     private final IntegrationChannelRepository integrationChannelRepository;
 
-    public AdminModeFeatureIntegrationImpl(AdminModeFeatureIntegrationRepository adminModeFeatureIntegrationRepository,
-                                           AppointmentModeRepository appointmentModeRepository,
-                                           HttpRequestMethodRepository httpRequestMethodRepository,
-                                           ApiQueryParametersRepository apiQueryParametersRepository,
-                                           ApiRequestHeaderRepository apiRequestHeaderRepository,
-                                           ApiFeatureIntegrationRepository apiFeatureIntegrationRepository,
-                                           AdminModeApiFeatureIntegrationRepository apiIntegrationFormatRepository,
-                                           ApiIntegrationFormatRespository apiIntegrationFormatRespository,
-                                           FeatureRepository featureRepository,
-                                           IntegrationChannelRepository integrationChannelRepository) {
+    public AdminModeFeatureIntegrationImpl(
+            AdminModeFeatureIntegrationRepository adminModeFeatureIntegrationRepository,
+            AppointmentModeRepository appointmentModeRepository,
+            HttpRequestMethodRepository httpRequestMethodRepository,
+            ApiQueryParametersRepository apiQueryParametersRepository,
+            ApiRequestHeaderRepository apiRequestHeaderRepository,
+            ApiFeatureIntegrationRepository apiFeatureIntegrationRepository,
+            AdminModeApiFeatureIntegrationRepository featureIntegrationRepository,
+            ApiIntegrationFormatRespository apiIntegrationFormatRespository,
+            FeatureRepository featureRepository,
+            IntegrationChannelRepository integrationChannelRepository) {
         this.adminModeFeatureIntegrationRepository = adminModeFeatureIntegrationRepository;
         this.appointmentModeRepository = appointmentModeRepository;
         this.httpRequestMethodRepository = httpRequestMethodRepository;
         this.apiQueryParametersRepository = apiQueryParametersRepository;
         this.apiRequestHeaderRepository = apiRequestHeaderRepository;
         this.apiFeatureIntegrationRepository = apiFeatureIntegrationRepository;
-        this.featureIntegrationRepository = apiIntegrationFormatRepository;
+        this.featureIntegrationRepository = featureIntegrationRepository;
         this.apiIntegrationFormatRespository = apiIntegrationFormatRespository;
         this.featureRepository = featureRepository;
         this.integrationChannelRepository = integrationChannelRepository;

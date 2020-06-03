@@ -301,7 +301,7 @@ public class SwaggerConstants {
         String UPDATE_ADMIN_MODE_INTEGRATION_OPERATION = "Update Admin Mode API Integration";
         String SEARCH_ADMIN_MODE_INTEGRATION_OPERATION = "Search Admin Mode API Integration";
         String FETCH_ADMIN_MODE_INTEGRATION_DETAIL = "Fetch Admin Mode API Integration detail by client integration id";
-        String DELETE_ADMIN_MODE_INTEGRATION_OPERATION = "Delete Admin Mode API Integration feature by client integration id";
+        String DELETE_ADMIN_MODE_INTEGRATION_OPERATION = "Delete Admin Mode API Integration feature by admin mode api integration id";
         String DETAILS_FOR_UPDATE_ADMIN_MODE_INTEGRATION_MODAL_OPERATION = "Fetch Admin Mode API Integration details for update modal by its id";
         String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal details for dropdown";
     }

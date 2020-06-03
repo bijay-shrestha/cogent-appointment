@@ -1,8 +1,9 @@
 package com.cogent.cogentappointment.admin.resource;
 
 import com.cogent.cogentappointment.admin.constants.SwaggerConstants;
-import com.cogent.cogentappointment.admin.dto.request.integrationAdminMode.AdminModeApiIntegrationSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationAdminMode.AdminModeApiIntegrationRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.integrationAdminMode.AdminModeApiIntegrationSearchRequestDTO;
 import com.cogent.cogentappointment.admin.service.AdminModeFeatureIntegrationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -13,8 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.IntegrationAdminModeConstant.SAVE_ADMIN_MODE_INTEGRATION_OPERATION;
-import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.IntegrationAdminModeConstant.SEARCH_ADMIN_MODE_INTEGRATION_OPERATION;
+import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.IntegrationAdminModeConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.IntegrationAdminModeConstants.ADMIN_MODE_INTEGRATION;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.IntegrationAdminModeConstants.BASE_ADMIN_MODE_INTEGRATION;
@@ -50,6 +50,13 @@ public class IntegrationAdminModeResource {
                                     @RequestParam("size") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ok().body(adminModeIntegrationService.search(searchRequestDTO, pageable));
+    }
+
+    @DeleteMapping
+    @ApiOperation(DELETE_ADMIN_MODE_INTEGRATION_OPERATION)
+    public ResponseEntity<?> delete(@Valid @RequestBody DeleteRequestDTO deleteRequestDTO) {
+        adminModeIntegrationService.delete(deleteRequestDTO);
+        return ok().build();
     }
 
 

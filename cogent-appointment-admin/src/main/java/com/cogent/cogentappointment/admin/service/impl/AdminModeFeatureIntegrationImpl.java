@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
+import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationAdminMode.AdminModeApiIntegrationRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationAdminMode.AdminModeApiIntegrationSearchRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.ApiIntegrationFormatRequestDTO;
@@ -10,6 +11,7 @@ import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.repository.custom.AdminModeFeatureIntegrationRepository;
 import com.cogent.cogentappointment.admin.service.AdminModeFeatureIntegrationService;
+import com.cogent.cogentappointment.admin.utils.IntegrationAdminModeFeatureUtils;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +23,8 @@ import java.util.function.Function;
 
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.ADMIN_MODE_FEATURE_INTEGRATION;
+import static com.cogent.cogentappointment.admin.utils.IntegrationAdminModeFeatureUtils.parseToDeletedAdminModeApiFeatureIntegration;
+import static com.cogent.cogentappointment.admin.utils.IntegrationAdminModeFeatureUtils.parseToDeletedAdminModeFeatureIntegration;
 import static com.cogent.cogentappointment.admin.utils.IntegrationUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
@@ -132,6 +136,30 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
         return clientApiIntegration;
     }
 
+    @Override
+    public void delete(DeleteRequestDTO deleteRequestDTO) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(DELETING_PROCESS_STARTED, ADMIN_MODE_FEATURE_INTEGRATION);
+
+        AdminModeFeatureIntegration adminModeFeatureIntegration = adminModeFeatureIntegrationRepository
+                .findAdminModeFeatureIntegrationById(deleteRequestDTO.getId())
+                .orElseThrow(() -> ADMIN_MODE_FEATURE_INTEGRATION_NOT_FOUND.apply(deleteRequestDTO.getId()));
+
+        parseToDeletedAdminModeFeatureIntegration(adminModeFeatureIntegration, deleteRequestDTO);
+
+        List<AdminModeApiFeatureIntegration> adminModeApiFeatureIntegrationList = adminModeFeatureIntegrationRepository
+                .findAdminModeApiFeatureIntegrationbyFeatureId(adminModeFeatureIntegration.getFeatureId())
+                .orElseThrow(() -> ADMIN_MODE_FEATURE_INTEGRATION_NOT_FOUND.apply(adminModeFeatureIntegration.getFeatureId()));
+
+        parseToDeletedAdminModeApiFeatureIntegration(adminModeApiFeatureIntegrationList);
+
+        log.info(DELETING_PROCESS_COMPLETED, ADMIN_MODE_FEATURE_INTEGRATION, getDifferenceBetweenTwoTime(startTime));
+
+
+    }
+
     private void saveApiIntegrationFormat(ApiIntegrationFormat apiIntegrationFormat) {
         apiIntegrationFormatRespository.save(apiIntegrationFormat);
     }
@@ -200,6 +228,10 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
 
     private Function<Long, NoContentFoundException> FEATURE_NOT_FOUND = (id) -> {
         throw new NoContentFoundException(Feature.class, "id", id.toString());
+    };
+
+    private Function<Long, NoContentFoundException> ADMIN_MODE_FEATURE_INTEGRATION_NOT_FOUND = (id) -> {
+        throw new NoContentFoundException(AdminModeFeatureIntegration.class, "id", id.toString());
     };
 
     private Function<Long, NoContentFoundException> INTEGRATION_CHANNEL_NOT_FOUND = (id) -> {

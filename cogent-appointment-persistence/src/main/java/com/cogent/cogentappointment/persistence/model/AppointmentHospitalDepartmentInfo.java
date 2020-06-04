@@ -14,6 +14,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class AppointmentHospitalDepartmentInfo implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,8 +34,4 @@ public class AppointmentHospitalDepartmentInfo implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hospital_department_billing_mode_info_id")
     private HospitalDepartmentBillingModeInfo hospitalDepartmentBillingModeInfo;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_id")
-    private Room room;
 }

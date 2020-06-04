@@ -4,8 +4,10 @@ import com.cogent.cogentappointment.esewa.dto.response.appointment.checkAvailabi
 import com.cogent.cogentappointment.esewa.dto.response.appointmentHospitalDepartment.checkAvailability.AppointmentHospitalDeptCheckAvailabilityResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointmentHospitalDepartment.checkAvailability.AppointmentHospitalDeptCheckAvailabilityRoomWiseResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterRoomInfoResponseDTO;
+import com.cogent.cogentappointment.esewa.dto.response.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterTimeResponseTO;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
+import org.joda.time.Minutes;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -130,5 +132,34 @@ public class AppointmentHospitalDeptUtils {
 
     private static Date parseAppointmentTime(Date appointmentDate, String appointmentTime) {
         return datePlusTime(utilDateToSqlDate(appointmentDate), Objects.requireNonNull(parseTime(appointmentTime)));
+    }
+
+    /*VALIDATE IF REQUESTED APPOINTMENT TIME LIES BETWEEN HOSPITAL DEPARTMENT DUTY ROSTER TIME SCHEDULES
+ * IF IT MATCHES, THEN DO NOTHING
+ * ELSE REQUESTED TIME IS INVALID AND THUS CANNOT TAKE AN APPOINTMENT*/
+    public static boolean validateIfRequestedAppointmentTimeIsValid(
+            HospitalDeptDutyRosterTimeResponseTO dutyRosterTimeResponseTO,
+            String appointmentTime) {
+
+        final DateTimeFormatter FORMAT = DateTimeFormat.forPattern("HH:mm");
+
+        String startTime = getTimeFromDate(dutyRosterTimeResponseTO.getStartTime());
+        String endTime = getTimeFromDate(dutyRosterTimeResponseTO.getEndTime());
+
+        DateTime startDateTime = new DateTime(FORMAT.parseDateTime(startTime));
+
+        do {
+            String date = FORMAT.print(startDateTime);
+
+            final Duration rosterGapDuration = Minutes.minutes(dutyRosterTimeResponseTO.getRosterGapDuration())
+                    .toStandardDuration();
+
+            if (date.equals(appointmentTime))
+                return true;
+
+            startDateTime = startDateTime.plus(rosterGapDuration);
+        } while (startDateTime.compareTo(FORMAT.parseDateTime(endTime)) <= 0);
+
+        return false;
     }
 }

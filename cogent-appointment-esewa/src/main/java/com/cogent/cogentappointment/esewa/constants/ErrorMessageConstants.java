@@ -56,6 +56,14 @@ public class ErrorMessageConstants {
     //H
     public static final String HOSPITAL_NULL_MESSAGE = " Hospital id must not be null";
 
+    public interface HospitalDepartmentDutyRosterMessages {
+        String HOSPITAL_DEPARTMENT_NOT_AVAILABLE_MESSAGE = "Sorry, Selected Hospital Department is not available" +
+                " on date '%s'.";
+
+        String HOSPITAL_DEPARTMENT_NOT_AVAILABLE_DEBUG_MESSAGE = "Sorry, Selected Hospital Department has day off" +
+                " on date '%s'.";
+    }
+
 
     //I
     public static final String INVALID_DATE_MESSAGE = "From date cannot be greater than to date";

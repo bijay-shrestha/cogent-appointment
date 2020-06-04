@@ -16,4 +16,11 @@ public interface HospitalDeptDutyRosterRepositoryCustom {
 
     List<HospitalDepartmentDutyRoster> fetchHospitalDeptDutyRoster(Date date,
                                                                    Long hospitalDepartmentId);
+
+    HospitalDepartmentDutyRoster fetchHospitalDeptDutyRosterWithoutRoom(Date date, Long hospitalDepartmentId);
+
+    HospitalDepartmentDutyRoster fetchHospitalDeptDutyRosterWithRoom(Date date, Long hospitalDepartmentId,
+                                                                   Long hospitalDepartmentRoomInfoId);
+
+
 }

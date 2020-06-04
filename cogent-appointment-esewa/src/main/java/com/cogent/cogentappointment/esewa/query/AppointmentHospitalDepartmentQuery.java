@@ -24,5 +24,21 @@ public class AppointmentHospitalDepartmentQuery {
         return query;
     }
 
+    public static String QUERY_TO_VALIDATE_IF_APPOINTMENT_EXISTS_DEPT_WISE(Long hospitalDepartmentRoomInfoId) {
+
+        String query = "SELECT COUNT(a.id)" +
+                " FROM Appointment a" +
+                " LEFT JOIN AppointmentHospitalDepartmentInfo ah ON a.id = a.appointment.id" +
+                " WHERE" +
+                " a.appointmentDate =:appointmentDate" +
+                " AND ah.hospitalDepartment.id =:hospitalDepartmentId" +
+                " AND DATE_FORMAT(a.appointmentTime,'%H:%i') =:appointmentTime" +
+                " AND a.status='PA'";
+
+        if (!Objects.isNull(hospitalDepartmentRoomInfoId))
+            query += " AND ah.hospitalDepartmentRoomInfo.id =:hospitalDepartmentRoomInfoId";
+
+        return query;
+    }
 
 }

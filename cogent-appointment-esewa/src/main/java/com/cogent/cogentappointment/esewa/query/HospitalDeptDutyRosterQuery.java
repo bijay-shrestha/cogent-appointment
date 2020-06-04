@@ -12,4 +12,26 @@ public class HospitalDeptDutyRosterQuery {
                     " AND hd.status = 'Y'" +
                     " AND :date BETWEEN h.fromDate AND h.toDate" +
                     " AND hd.id =:hospitalDepartmentId";
+
+    public static final String QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_WITHOUT_ROOM =
+            " SELECT h FROM HospitalDepartmentDutyRoster h" +
+                    " LEFT JOIN HospitalDepartment hd ON hd.id = h.hospitalDepartment.id" +
+                    " WHERE" +
+                    " h.status = 'Y'" +
+                    " AND hd.status = 'Y'" +
+                    " AND h.isRoomEnabled = 'N'" +
+                    " AND :date BETWEEN h.fromDate AND h.toDate" +
+                    " AND hd.id =:hospitalDepartmentId";
+
+    public static final String QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_WITH_ROOM =
+            " SELECT h FROM HospitalDepartmentDutyRoster h" +
+                    " LEFT JOIN HospitalDepartment hd ON hd.id = h.hospitalDepartment.id" +
+                    " LEFT JOIN HospitalDepartmentDutyRosterRoomInfo hr ON h.id = hr.hospitalDepartmentDutyRoster.id" +
+                    " WHERE" +
+                    " h.status = 'Y'" +
+                    " AND hd.status = 'Y'" +
+                    " AND h.isRoomEnabled = 'Y'" +
+                    " AND :date BETWEEN h.fromDate AND h.toDate" +
+                    " AND hd.id =:hospitalDepartmentId" +
+                    " AND hr.hospitalDepartmentRoomInfo.id =:hospitalDepartmentRoomInfoId";
 }

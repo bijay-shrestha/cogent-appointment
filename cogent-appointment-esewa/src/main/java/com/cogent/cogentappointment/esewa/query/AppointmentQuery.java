@@ -22,7 +22,6 @@ public class AppointmentQuery {
                     " AND DATE_FORMAT(a.appointmentTime,'%H:%i') =:appointmentTime" +
                     " AND a.status='PA'";
 
-
     public static String QUERY_TO_FETCH_LATEST_APPOINTMENT_NUMBER =
             "SELECT a.appointment_number" +
                     " FROM appointment a" +

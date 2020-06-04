@@ -1,8 +1,7 @@
 package com.cogent.cogentappointment.esewa.service.impl;
 
-import com.cogent.cogentappointment.esewa.dto.request.appointment.followup.AppointmentFollowUpRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointmentHospitalDepartment.followup.AppointmentHospitalDeptFollowUpRequestDTO;
-import com.cogent.cogentappointment.esewa.dto.response.doctorDutyRoster.DoctorDutyRosterTimeResponseDTO;
+import com.cogent.cogentappointment.esewa.dto.response.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterTimeResponseTO;
 import com.cogent.cogentappointment.esewa.exception.DataDuplicationException;
 import com.cogent.cogentappointment.esewa.exception.NoContentFoundException;
 import com.cogent.cogentappointment.esewa.property.AppointmentReservationProperties;
@@ -21,13 +20,17 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.AppointmentServiceMessage.APPOINTMENT_EXISTS;
-import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.DoctorServiceMessages.DOCTOR_NOT_AVAILABLE;
+import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.AppointmentServiceMessage.INVALID_APPOINTMENT_TIME;
+import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.HospitalDepartmentDutyRosterMessages.HOSPITAL_DEPARTMENT_NOT_AVAILABLE_DEBUG_MESSAGE;
+import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.HospitalDepartmentDutyRosterMessages.HOSPITAL_DEPARTMENT_NOT_AVAILABLE_MESSAGE;
 import static com.cogent.cogentappointment.esewa.constants.StatusConstants.YES;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.esewa.log.constants.AppointmentHospitalDepartmentReservationLog.APPOINTMENT_HOSPITAL_DEPARTMENT_RESERVATION_LOG;
 import static com.cogent.cogentappointment.esewa.log.constants.HospitalDepartmentLog.HOSPITAL_DEPARTMENT;
 import static com.cogent.cogentappointment.esewa.log.constants.HospitalDepartmentLog.HOSPITAL_DEPARTMENT_BILLING_MODE_INFO;
 import static com.cogent.cogentappointment.esewa.utils.AppointmentHospitalDepartmentReservationLogUtils.parseToAppointmentHospitalDepartmentReservation;
+import static com.cogent.cogentappointment.esewa.utils.AppointmentHospitalDeptUtils.validateIfRequestedAppointmentTimeIsValid;
+import static com.cogent.cogentappointment.esewa.utils.AppointmentUtils.validateIfRequestIsBeforeCurrentDateTime;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.*;
 
 /**
@@ -43,10 +46,6 @@ public class AppointmentHospitalDeptReservationLogServiceImpl implements
 
     private final AppointmentRepository appointmentRepository;
 
-    private final DoctorDutyRosterRepository doctorDutyRosterRepository;
-
-    private final DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository;
-
     private final AppointmentReservationProperties reservationProperties;
 
     private final HospitalService hospitalService;
@@ -57,25 +56,33 @@ public class AppointmentHospitalDeptReservationLogServiceImpl implements
 
     private final HospitalDepartmentRoomInfoRepository hospitalDepartmentRoomInfoRepository;
 
+    private final HospitalDeptDutyRosterOverrideRepository hospitalDeptDutyRosterOverrideRepository;
+
+    private final HospitalDeptWeekDaysDutyRosterRepository hospitalDeptWeekDaysDutyRosterRepository;
+
+    private final HospitalDeptDutyRosterRepository hospitalDeptDutyRosterRepository;
+
     public AppointmentHospitalDeptReservationLogServiceImpl(
             AppointmentHospitalDeptReservationLogRepository appointmentHospitalDeptReservationLogRepository,
             AppointmentRepository appointmentRepository,
-            DoctorDutyRosterRepository doctorDutyRosterRepository,
-            DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository,
             AppointmentReservationProperties reservationProperties,
             HospitalService hospitalService,
             HospitalDepartmentRepository hospitalDepartmentRepository,
             HospitalDepartmentBillingModeInfoRepository hospitalDepartmentBillingModeInfoRepository,
-            HospitalDepartmentRoomInfoRepository hospitalDepartmentRoomInfoRepository) {
+            HospitalDepartmentRoomInfoRepository hospitalDepartmentRoomInfoRepository,
+            HospitalDeptDutyRosterOverrideRepository hospitalDeptDutyRosterOverrideRepository,
+            HospitalDeptWeekDaysDutyRosterRepository hospitalDeptWeekDaysDutyRosterRepository,
+            HospitalDeptDutyRosterRepository hospitalDeptDutyRosterRepository) {
         this.appointmentHospitalDeptReservationLogRepository = appointmentHospitalDeptReservationLogRepository;
         this.appointmentRepository = appointmentRepository;
-        this.doctorDutyRosterRepository = doctorDutyRosterRepository;
-        this.doctorDutyRosterOverrideRepository = doctorDutyRosterOverrideRepository;
         this.reservationProperties = reservationProperties;
         this.hospitalService = hospitalService;
         this.hospitalDepartmentRepository = hospitalDepartmentRepository;
         this.hospitalDepartmentBillingModeInfoRepository = hospitalDepartmentBillingModeInfoRepository;
         this.hospitalDepartmentRoomInfoRepository = hospitalDepartmentRoomInfoRepository;
+        this.hospitalDeptDutyRosterOverrideRepository = hospitalDeptDutyRosterOverrideRepository;
+        this.hospitalDeptWeekDaysDutyRosterRepository = hospitalDeptWeekDaysDutyRosterRepository;
+        this.hospitalDeptDutyRosterRepository = hospitalDeptDutyRosterRepository;
     }
 
     /*   VALIDATE REQUEST INFO :
@@ -165,31 +172,32 @@ public class AppointmentHospitalDeptReservationLogServiceImpl implements
 
     private void validateRequestedAppointmentInfo(AppointmentHospitalDeptFollowUpRequestDTO appointmentInfo) {
 
-//        validateIfRequestIsBeforeCurrentDateTime(
-//                appointmentInfo.getAppointmentDate(), appointmentInfo.getAppointmentTime());
-//
-//        validateIfParentAppointmentExists(appointmentInfo);
-//
-//        DoctorDutyRosterTimeResponseDTO doctorDutyRosterInfo = fetchDoctorDutyRosterInfo(appointmentInfo);
-//
-//        boolean isTimeValid = validateIfRequestedAppointmentTimeIsValid(
-//                doctorDutyRosterInfo, appointmentInfo.getAppointmentTime());
-//
-//        if (!isTimeValid) {
-//            log.error(INVALID_APPOINTMENT_TIME, convert24HourTo12HourFormat(appointmentInfo.getAppointmentTime()));
-//            throw new NoContentFoundException(String.format(INVALID_APPOINTMENT_TIME,
-//                    convert24HourTo12HourFormat(appointmentInfo.getAppointmentTime())));
-//        }
+        validateIfRequestIsBeforeCurrentDateTime(
+                appointmentInfo.getAppointmentDate(), appointmentInfo.getAppointmentTime());
+
+        validateIfParentAppointmentExists(appointmentInfo);
+
+        HospitalDeptDutyRosterTimeResponseTO hospitalDeptDutyRosterTimeResponseTO =
+                fetchHospitalDeptDutyRoster(appointmentInfo);
+
+        boolean isTimeValid = validateIfRequestedAppointmentTimeIsValid(
+                hospitalDeptDutyRosterTimeResponseTO, appointmentInfo.getAppointmentTime());
+
+        if (!isTimeValid) {
+            log.error(INVALID_APPOINTMENT_TIME, convert24HourTo12HourFormat(appointmentInfo.getAppointmentTime()));
+            throw new NoContentFoundException(String.format(INVALID_APPOINTMENT_TIME,
+                    convert24HourTo12HourFormat(appointmentInfo.getAppointmentTime())));
+        }
     }
 
     /*VALIDATE IF APPOINTMENT ALREADY EXISTS ON SELECTED DATE AND TIME */
-    private void validateIfParentAppointmentExists(AppointmentFollowUpRequestDTO appointmentInfo) {
+    private void validateIfParentAppointmentExists(AppointmentHospitalDeptFollowUpRequestDTO appointmentInfo) {
 
-        Long appointmentCount = appointmentRepository.validateIfAppointmentExists(
+        Long appointmentCount = appointmentRepository.validateIfAppointmentExistsDeptWise(
                 appointmentInfo.getAppointmentDate(),
                 appointmentInfo.getAppointmentTime(),
-                appointmentInfo.getDoctorId(),
-                appointmentInfo.getSpecializationId()
+                appointmentInfo.getHospitalDepartmentId(),
+                appointmentInfo.getHospitalDepartmentRoomInfoId()
         );
 
         validateAppointmentExists(appointmentCount, appointmentInfo.getAppointmentTime());
@@ -203,37 +211,56 @@ public class AppointmentHospitalDeptReservationLogServiceImpl implements
         }
     }
 
-    /*FETCH DOCTOR DUTY ROSTER FOR SELECTED DATE, DOCTOR AND SPECIALIZATION
- * IF DOCTOR DAY OFF = 'Y', THEN DOCTOR IS NOT AVAILABLE AND CANNOT TAKE AN APPOINTMENT*/
-    private DoctorDutyRosterTimeResponseDTO fetchDoctorDutyRosterInfo(AppointmentFollowUpRequestDTO appointmentInfo) {
+    /*FETCH HOSPITAL DEPARTMENT DUTY ROSTER FOR SELECTED DATE, HOSPITAL DEPARTMENT
+ * IF HOSPITAL DEPARTMENT DAY OFF = 'Y', THEN HOSPITAL DEPARTMENT IS NOT AVAILABLE AND CANNOT TAKE AN APPOINTMENT*/
+    private HospitalDeptDutyRosterTimeResponseTO fetchHospitalDeptDutyRoster(
+            AppointmentHospitalDeptFollowUpRequestDTO appointmentInfo) {
 
-        DoctorDutyRosterTimeResponseDTO doctorDutyRosterInfo = fetchDoctorDutyRosterInfo(
+        HospitalDeptDutyRosterTimeResponseTO hospitalDeptDutyRoster = fetchHospitalDeptDutyRoster(
                 appointmentInfo.getAppointmentDate(),
-                appointmentInfo.getDoctorId(),
-                appointmentInfo.getSpecializationId()
+                appointmentInfo.getHospitalDepartmentId(),
+                appointmentInfo.getHospitalDepartmentRoomInfoId()
         );
 
-        if (doctorDutyRosterInfo.getDayOffStatus().equals(YES)) {
-            log.error(DOCTOR_NOT_AVAILABLE, utilDateToSqlDate(appointmentInfo.getAppointmentDate()));
+        if (hospitalDeptDutyRoster.getDayOffStatus().equals(YES)) {
+            Date appointmentDate = utilDateToSqlDate(appointmentInfo.getAppointmentDate());
+            log.error(String.format(HOSPITAL_DEPARTMENT_NOT_AVAILABLE_DEBUG_MESSAGE, appointmentDate));
             throw new NoContentFoundException(
-                    String.format(DOCTOR_NOT_AVAILABLE, utilDateToSqlDate(appointmentInfo.getAppointmentDate())));
+                    String.format(HOSPITAL_DEPARTMENT_NOT_AVAILABLE_MESSAGE, appointmentDate),
+                    String.format(HOSPITAL_DEPARTMENT_NOT_AVAILABLE_DEBUG_MESSAGE, appointmentDate));
         }
 
-        return doctorDutyRosterInfo;
+        return hospitalDeptDutyRoster;
     }
 
-    /*FETCH DOCTOR DUTY ROSTER INFO FOR SELECTED DATE*/
-    private DoctorDutyRosterTimeResponseDTO fetchDoctorDutyRosterInfo(Date date,
-                                                                      Long doctorId,
-                                                                      Long specializationId) {
+    private HospitalDeptDutyRosterTimeResponseTO fetchHospitalDeptDutyRoster(
+            Date appointmentDate,
+            Long hospitalDepartmentId,
+            Long hospitalDepartmentRoomInfoId) {
 
-        DoctorDutyRosterTimeResponseDTO overrideRosters =
-                doctorDutyRosterOverrideRepository.fetchDoctorDutyRosterOverrideTime(date, doctorId, specializationId);
+        HospitalDepartmentDutyRoster hospitalDepartmentDutyRoster =
+                Objects.isNull(hospitalDepartmentRoomInfoId)
+                        ? fetchHospitalDepartmentDutyRosterWithoutRoom(appointmentDate, hospitalDepartmentId)
+                        : fetchHospitalDepartmentDutyRosterWithRoom(
+                        appointmentDate, hospitalDepartmentId, hospitalDepartmentRoomInfoId);
 
-        if (Objects.isNull(overrideRosters))
-            return doctorDutyRosterRepository.fetchDoctorDutyRosterTime(date, doctorId, specializationId);
+        if (hospitalDepartmentDutyRoster.getHasOverrideDutyRoster().equals(YES)) {
+            HospitalDeptDutyRosterTimeResponseTO overrideRoster =
+                    hospitalDeptDutyRosterOverrideRepository.fetchHospitalDeptDutyRosterOverrideTimeInfo(
+                            hospitalDepartmentDutyRoster.getId(),
+                            appointmentDate, hospitalDepartmentId,
+                            hospitalDepartmentRoomInfoId);
 
-        return overrideRosters;
+            if (!Objects.isNull(overrideRoster))
+                return overrideRoster;
+            else
+                return hospitalDeptWeekDaysDutyRosterRepository.fetchWeekDaysTimeInfo(
+                        hospitalDepartmentDutyRoster.getId(), appointmentDate);
+
+        } else {
+            return hospitalDeptWeekDaysDutyRosterRepository.fetchWeekDaysTimeInfo(
+                    hospitalDepartmentDutyRoster.getId(), appointmentDate);
+        }
     }
 
     private HospitalDepartment fetchHospitalDepartment(Long hospitalDepartmentId, Long hospitalId) {
@@ -269,5 +296,16 @@ public class AppointmentHospitalDeptReservationLogServiceImpl implements
                         hospitalDepartmentId.toString());
             };
 
+    private HospitalDepartmentDutyRoster fetchHospitalDepartmentDutyRosterWithoutRoom(Date appointmentDate,
+                                                                                      Long hospitalDepartmentId) {
+        return hospitalDeptDutyRosterRepository.fetchHospitalDeptDutyRosterWithoutRoom(
+                appointmentDate, hospitalDepartmentId);
+    }
 
+    private HospitalDepartmentDutyRoster fetchHospitalDepartmentDutyRosterWithRoom(Date appointmentDate,
+                                                                                   Long hospitalDepartmentId,
+                                                                                   Long hospitalDepartmentRoomInfoId) {
+        return hospitalDeptDutyRosterRepository.fetchHospitalDeptDutyRosterWithRoom(
+                appointmentDate, hospitalDepartmentId, hospitalDepartmentRoomInfoId);
+    }
 }

@@ -62,7 +62,7 @@ public class HospitalDepartmentDutyRoster extends Auditable<String> implements S
     public String toString() {
         return "HospitalDepartmentDutyRoster{" +
                 "id=" + id +
-//                ", hospitalDepartment=" + hospitalDepartment.getName() +
+                ", hospitalDepartment=" + hospitalDepartment.getName() +
                 ", rosterGapDuration=" + rosterGapDuration +
                 ", fromDate=" + fromDate +
                 ", toDate=" + toDate +

@@ -28,7 +28,7 @@ public class AppointmentHospitalDepartmentQuery {
 
         String query = "SELECT COUNT(a.id)" +
                 " FROM Appointment a" +
-                " LEFT JOIN AppointmentHospitalDepartmentInfo ah ON a.id = a.appointment.id" +
+                " LEFT JOIN AppointmentHospitalDepartmentInfo ah ON a.id = ah.appointment.id" +
                 " WHERE" +
                 " a.appointmentDate =:appointmentDate" +
                 " AND ah.hospitalDepartment.id =:hospitalDepartmentId" +
@@ -36,7 +36,7 @@ public class AppointmentHospitalDepartmentQuery {
                 " AND a.status='PA'";
 
         if (!Objects.isNull(hospitalDepartmentRoomInfoId))
-            query += " AND ah.hospitalDepartmentRoomInfo.id =:hospitalDepartmentRoomInfoId";
+            query += " AND ah.hospitalDepartmentRoomInfo.id =" + hospitalDepartmentRoomInfoId;
 
         return query;
     }

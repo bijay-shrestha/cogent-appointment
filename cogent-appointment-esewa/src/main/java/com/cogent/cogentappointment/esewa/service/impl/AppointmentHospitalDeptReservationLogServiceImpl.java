@@ -9,10 +9,7 @@ import com.cogent.cogentappointment.esewa.property.AppointmentReservationPropert
 import com.cogent.cogentappointment.esewa.repository.*;
 import com.cogent.cogentappointment.esewa.service.AppointmentHospitalDeptReservationLogService;
 import com.cogent.cogentappointment.esewa.service.HospitalService;
-import com.cogent.cogentappointment.persistence.model.AppointmentHospitalDepartmentReservationLog;
-import com.cogent.cogentappointment.persistence.model.Hospital;
-import com.cogent.cogentappointment.persistence.model.HospitalDepartment;
-import com.cogent.cogentappointment.persistence.model.HospitalDepartmentBillingModeInfo;
+import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,6 +55,8 @@ public class AppointmentHospitalDeptReservationLogServiceImpl implements
 
     private final HospitalDepartmentBillingModeInfoRepository hospitalDepartmentBillingModeInfoRepository;
 
+    private final HospitalDepartmentRoomInfoRepository hospitalDepartmentRoomInfoRepository;
+
     public AppointmentHospitalDeptReservationLogServiceImpl(
             AppointmentHospitalDeptReservationLogRepository appointmentHospitalDeptReservationLogRepository,
             AppointmentRepository appointmentRepository,
@@ -66,7 +65,8 @@ public class AppointmentHospitalDeptReservationLogServiceImpl implements
             AppointmentReservationProperties reservationProperties,
             HospitalService hospitalService,
             HospitalDepartmentRepository hospitalDepartmentRepository,
-            HospitalDepartmentBillingModeInfoRepository hospitalDepartmentBillingModeInfoRepository) {
+            HospitalDepartmentBillingModeInfoRepository hospitalDepartmentBillingModeInfoRepository,
+            HospitalDepartmentRoomInfoRepository hospitalDepartmentRoomInfoRepository) {
         this.appointmentHospitalDeptReservationLogRepository = appointmentHospitalDeptReservationLogRepository;
         this.appointmentRepository = appointmentRepository;
         this.doctorDutyRosterRepository = doctorDutyRosterRepository;
@@ -75,6 +75,7 @@ public class AppointmentHospitalDeptReservationLogServiceImpl implements
         this.hospitalService = hospitalService;
         this.hospitalDepartmentRepository = hospitalDepartmentRepository;
         this.hospitalDepartmentBillingModeInfoRepository = hospitalDepartmentBillingModeInfoRepository;
+        this.hospitalDepartmentRoomInfoRepository = hospitalDepartmentRoomInfoRepository;
     }
 
     /*   VALIDATE REQUEST INFO :
@@ -143,9 +144,15 @@ public class AppointmentHospitalDeptReservationLogServiceImpl implements
                 fetchHospitalDepartmentBillingModeInfo(requestDTO.getHospitalDepartmentBillingModeId(),
                         requestDTO.getHospitalDepartmentId());
 
+        HospitalDepartmentRoomInfo hospitalDepartmentRoomInfo =
+                Objects.isNull(requestDTO.getHospitalDepartmentRoomInfoId())
+                        ? null
+                        : fetchHospitalDepartmentRoomInfo(requestDTO.getHospitalDepartmentRoomInfoId(),
+                        requestDTO.getHospitalDepartmentId());
+
         AppointmentHospitalDepartmentReservationLog appointmentReservationLog =
                 parseToAppointmentHospitalDepartmentReservation(requestDTO,
-                        hospital, hospitalDepartment, hospitalDepartmentBillingModeInfo, null);
+                        hospital, hospitalDepartment, hospitalDepartmentBillingModeInfo, hospitalDepartmentRoomInfo);
 
         appointmentHospitalDeptReservationLogRepository.save(appointmentReservationLog);
 
@@ -246,6 +253,13 @@ public class AppointmentHospitalDeptReservationLogServiceImpl implements
         return hospitalDepartmentBillingModeInfoRepository.fetchByIdAndHospitalDepartmentId(
                 hospitalDepartmentBillingModeId, hospitalDepartmentId)
                 .orElseThrow(() -> HOSPITAL_DEPARTMENT_CHARGE_WITH_GIVEN_ID_NOT_FOUND.apply(hospitalDepartmentId));
+    }
+
+    private HospitalDepartmentRoomInfo fetchHospitalDepartmentRoomInfo(Long hospitalDepartmentRoomInfoId,
+                                                                       Long hospitalDepartmentId) {
+
+        return hospitalDepartmentRoomInfoRepository.fetchHospitalDepartmentRoomInfo(
+                hospitalDepartmentRoomInfoId, hospitalDepartmentId);
     }
 
     private Function<Long, NoContentFoundException> HOSPITAL_DEPARTMENT_CHARGE_WITH_GIVEN_ID_NOT_FOUND =

@@ -22,6 +22,11 @@ public class AppointmentHospitalDeptFollowUpRequestDTO implements Serializable {
     @NotNull
     private Long hospitalDepartmentId;
 
+    /*id of assigned room to hospital department -> HospitalDepartmentRoomInfo
+    * is null in case of no room selected */
+    private Long hospitalDepartmentRoomInfoId;
+
+    /*id of assigned billing mode to hospital department -> HospitalDepartmentBillingModeInfo*/
     @NotNull
     private Long hospitalDepartmentBillingModeId;
 
@@ -39,6 +44,4 @@ public class AppointmentHospitalDeptFollowUpRequestDTO implements Serializable {
     @NotEmpty
     @NotBlank
     private String userId;
-
-    private Long roomId;
 }

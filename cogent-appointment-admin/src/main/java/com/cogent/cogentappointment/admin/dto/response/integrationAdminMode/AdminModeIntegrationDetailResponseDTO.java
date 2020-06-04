@@ -27,8 +27,6 @@ public class AdminModeIntegrationDetailResponseDTO implements Serializable {
 
     private String requestMethodName;
 
-    private String requestBody;
-
     private String integrationChannel;
 
     private String integrationType;

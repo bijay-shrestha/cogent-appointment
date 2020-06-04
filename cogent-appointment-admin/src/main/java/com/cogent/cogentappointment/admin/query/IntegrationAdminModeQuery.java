@@ -14,7 +14,7 @@ public class IntegrationAdminModeQuery {
     public static final String ADMIN_MODE_INTEGRATION_DETAILS_API_QUERY =
             "SELECT" +
                     " f.id as featureId," +
-                    " h.name as hospitalName," +
+                    " am.name as appointmentModeName," +
                     " f.code as featureCode," +
                     " hrm.id as requestMethodId," +
                     " hrm.name as requestMethodName," +
@@ -76,7 +76,6 @@ public class IntegrationAdminModeQuery {
                     " WHERE f.id=:featureId" +
                     " AND amfi.status='Y'" +
                     " AND amafi.status='Y'" +
-                    " AND afi.status='Y'" +
                     " AND amqp.status='Y'" +
                     " AND f.status='Y'";
 

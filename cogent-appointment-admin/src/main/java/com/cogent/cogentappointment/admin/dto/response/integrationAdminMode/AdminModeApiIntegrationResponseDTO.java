@@ -17,7 +17,7 @@ public class AdminModeApiIntegrationResponseDTO implements Serializable {
 
     private Long featureId;
 
-    private String appointmentName;
+    private String appointmentModeName;
 
     private String featureCode;
 

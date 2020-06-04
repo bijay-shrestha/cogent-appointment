@@ -87,32 +87,6 @@ public class IntegrationUtils {
 
     }
 
-    public static AdminModeFeatureIntegration parseToAdminModeFeatureIntegration(AppointmentMode appointmentMode,
-                                                                                 Long featureTypeId,
-                                                                                 IntegrationChannel integrationChannelId) {
-
-        AdminModeFeatureIntegration adminModeFeatureIntegration = new AdminModeFeatureIntegration();
-        adminModeFeatureIntegration.setFeatureId(featureTypeId);
-        adminModeFeatureIntegration.setAppointmentModeId(appointmentMode);
-        adminModeFeatureIntegration.setIntegrationChannelId(integrationChannelId);
-        adminModeFeatureIntegration.setStatus(ACTIVE);
-
-        return adminModeFeatureIntegration;
-    }
-
-    public static AdminModeApiFeatureIntegration parseToAdminModeApiFeatureIntegration(
-            AdminModeFeatureIntegration adminModeApiFeatureIntegration
-            , ApiIntegrationFormat apiIntegrationFormat) {
-
-        AdminModeApiFeatureIntegration modeApiFeatureIntegration = new AdminModeApiFeatureIntegration();
-        modeApiFeatureIntegration.setAdminModeFeatureIntegrationId(adminModeApiFeatureIntegration);
-        modeApiFeatureIntegration.setApiIntegrationFormatId(apiIntegrationFormat);
-        modeApiFeatureIntegration.setStatus(ACTIVE);
-
-        return modeApiFeatureIntegration;
-
-    }
-
     public static void parseToDeletedClientFeatureIntegration(ClientFeatureIntegration clientFeatureIntegration,
                                                               DeleteRequestDTO deleteRequestDTO) {
 
@@ -129,4 +103,21 @@ public class IntegrationUtils {
     }
 
 
+    public static void parseToDeletedApiRequestHeaders(List<ApiRequestHeader> apiRequestHeaderListToDelete) {
+
+        apiRequestHeaderListToDelete.forEach(apiRequestHeader -> {
+
+            apiRequestHeader.setStatus(DELETED);
+        });
+
+
+    }
+
+    public static void parseToDeletedApiQueryParameters(List<ApiQueryParameters> apiQueryParametersListToDelete) {
+
+        apiQueryParametersListToDelete.forEach(apiQueryParameters -> {
+
+            apiQueryParameters.setStatus(DELETED);
+        });
+    }
 }

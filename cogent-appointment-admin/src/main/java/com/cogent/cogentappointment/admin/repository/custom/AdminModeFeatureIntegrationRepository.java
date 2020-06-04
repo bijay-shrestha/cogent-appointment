@@ -19,6 +19,4 @@ public interface AdminModeFeatureIntegrationRepository extends JpaRepository<Adm
     @Query("SELECT amfi FROM AdminModeFeatureIntegration amfi WHERE amfi.status!='D' AND amfi.id=:id")
     Optional<AdminModeFeatureIntegration> findAdminModeFeatureIntegrationById(@Param("id") Long id);
 
-    @Query("SELECT amfi FROM AdminModeFeatureIntegration amfi WHERE amfi.status!='D' AND amfi.id=:id")
-    Optional<List<AdminModeFeatureIntegration>> findAdminModeApiFeatureIntegrationbyFeatureId(Long featureId);
 }

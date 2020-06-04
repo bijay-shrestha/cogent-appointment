@@ -15,12 +15,14 @@ import com.cogent.cogentappointment.admin.exception.DataDuplicationException;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.IntegrationService;
+import com.cogent.cogentappointment.admin.utils.IntegrationUtils;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -133,9 +135,9 @@ public class IntegrationServiceImpl implements IntegrationService {
                                                         Long requestMethodId) {
 
         Long count = clientFeatureIntegrationRepository.
-                findHospitalFeatureAndRequestMethod(hospitalId,featureTypeId,requestMethodId);
+                findHospitalFeatureAndRequestMethod(hospitalId, featureTypeId, requestMethodId);
 
-        if (count>0) {
+        if (count > 0) {
 
             throw new DataDuplicationException("Client Feature Integration Already Exist");
         }
@@ -307,6 +309,29 @@ public class IntegrationServiceImpl implements IntegrationService {
                 .findApiFeatureIntegrationbyClientFeatureId(clientFeatureIntegration.getId())
                 .orElseThrow(() -> CLIENT_FEATURE_NOT_FOUND.apply(clientFeatureIntegration.getId()));
 
+        List<ApiRequestHeader> apiRequestHeaderListToDelete = new ArrayList<>();
+        List<ApiQueryParameters> apiQueryParameterToDelete = new ArrayList<>();
+
+        apiFeatureIntegrationList.forEach(apiFeatureIntegration -> {
+            List<ApiRequestHeader> apiRequestHeaderList = apiRequestHeaderRepository.
+                    findApiRequestHeaderByApiFeatureIntegrationId(apiFeatureIntegration.getId())
+                    .orElseThrow(() -> API_REQUEST_HEADER_NOT_FOUND.apply(apiFeatureIntegration.getId()));
+
+            apiRequestHeaderListToDelete.addAll(apiRequestHeaderList);
+
+            List<ApiQueryParameters> apiQueryParametersList = apiQueryParametersRepository.
+                    findApiRequestHeaderByApiFeatureIntegrationId(apiFeatureIntegration.getId())
+                    .orElseThrow(() -> API_QUERY_PARAMETER_NOT_FOUND.apply(apiFeatureIntegration.getId()));
+
+            apiQueryParameterToDelete.addAll(apiQueryParametersList);
+
+
+        });
+
+        parseToDeletedApiRequestHeaders(apiRequestHeaderListToDelete);
+
+        parseToDeletedApiQueryParameters(apiQueryParameterToDelete);
+
         parseToDeletedApiFeatureIntegration(apiFeatureIntegrationList);
 
         log.info(DELETING_PROCESS_COMPLETED, API_INTEGRATION, getDifferenceBetweenTwoTime(startTime));
@@ -443,6 +468,10 @@ public class IntegrationServiceImpl implements IntegrationService {
 
     private Function<Long, NoContentFoundException> API_INTEGRATION_FORMAT_NOT_FOUND = (id) -> {
         throw new NoContentFoundException(ApiIntegrationFormat.class, "id", id.toString());
+    };
+
+    private Function<Long, NoContentFoundException> API_QUERY_PARAMETER_NOT_FOUND = (id) -> {
+        throw new NoContentFoundException(ApiQueryParameters.class, "id", id.toString());
     };
 
     private Function<Long, NoContentFoundException> CLIENT_FEATURE_NOT_FOUND = (id) -> {

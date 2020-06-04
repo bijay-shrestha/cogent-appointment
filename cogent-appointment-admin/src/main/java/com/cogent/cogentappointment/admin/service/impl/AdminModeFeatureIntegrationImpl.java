@@ -11,20 +11,19 @@ import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.repository.custom.AdminModeFeatureIntegrationRepository;
 import com.cogent.cogentappointment.admin.service.AdminModeFeatureIntegrationService;
-import com.cogent.cogentappointment.admin.utils.IntegrationAdminModeFeatureUtils;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.ADMIN_MODE_FEATURE_INTEGRATION;
-import static com.cogent.cogentappointment.admin.utils.IntegrationAdminModeFeatureUtils.parseToDeletedAdminModeApiFeatureIntegration;
-import static com.cogent.cogentappointment.admin.utils.IntegrationAdminModeFeatureUtils.parseToDeletedAdminModeFeatureIntegration;
+import static com.cogent.cogentappointment.admin.utils.IntegrationAdminModeFeatureUtils.*;
 import static com.cogent.cogentappointment.admin.utils.IntegrationUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getTimeInMillisecondsFromLocalDate;
@@ -41,6 +40,8 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
     private final AppointmentModeRepository appointmentModeRepository;
     private final ApiQueryParametersRepository apiQueryParametersRepository;
     private final ApiRequestHeaderRepository apiRequestHeaderRepository;
+    private final AdminModeQueryParametersRepository adminModeQueryParametersRepository;
+    private final AdminModeRequestHeaderRepository adminModeRequestHeaderRepository;
     private final ApiFeatureIntegrationRepository apiFeatureIntegrationRepository;
     private final AdminModeApiFeatureIntegrationRepository featureIntegrationRepository;
     private final ApiIntegrationFormatRespository apiIntegrationFormatRespository;
@@ -51,9 +52,11 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
     public AdminModeFeatureIntegrationImpl(
             AdminModeFeatureIntegrationRepository adminModeFeatureIntegrationRepository,
             AppointmentModeRepository appointmentModeRepository,
+            AdminModeRequestHeaderRepository adminModeRequestHeaderRepository,
             HttpRequestMethodRepository httpRequestMethodRepository,
             ApiQueryParametersRepository apiQueryParametersRepository,
             ApiRequestHeaderRepository apiRequestHeaderRepository,
+            AdminModeQueryParametersRepository adminModeQueryParametersRepository,
             ApiFeatureIntegrationRepository apiFeatureIntegrationRepository,
             AdminModeApiFeatureIntegrationRepository featureIntegrationRepository,
             ApiIntegrationFormatRespository apiIntegrationFormatRespository,
@@ -61,9 +64,11 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
             IntegrationChannelRepository integrationChannelRepository) {
         this.adminModeFeatureIntegrationRepository = adminModeFeatureIntegrationRepository;
         this.appointmentModeRepository = appointmentModeRepository;
+        this.adminModeRequestHeaderRepository = adminModeRequestHeaderRepository;
         this.httpRequestMethodRepository = httpRequestMethodRepository;
         this.apiQueryParametersRepository = apiQueryParametersRepository;
         this.apiRequestHeaderRepository = apiRequestHeaderRepository;
+        this.adminModeQueryParametersRepository = adminModeQueryParametersRepository;
         this.apiFeatureIntegrationRepository = apiFeatureIntegrationRepository;
         this.featureIntegrationRepository = featureIntegrationRepository;
         this.apiIntegrationFormatRespository = apiIntegrationFormatRespository;
@@ -114,9 +119,9 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
 
         saveApiFeatureIntegration(adminModeFeatureIntegration.getId(), adminModeApiFeatureIntegration.getId());
 
-        saveApiQueryParameters(requestDTO.getParametersRequestDTOS(), adminModeApiFeatureIntegration.getId());
+        saveAdminModeQueryParameters(requestDTO.getParametersRequestDTOS(), adminModeApiFeatureIntegration.getId());
 
-        saveApiRequestHeaders(requestDTO.getClientApiRequestHeaders(), adminModeApiFeatureIntegration.getId());
+        saveAdminModeRequestHeaders(requestDTO.getClientApiRequestHeaders(), adminModeApiFeatureIntegration.getId());
 
         log.info(SAVING_PROCESS_COMPLETED, ADMIN_MODE_FEATURE_INTEGRATION, getDifferenceBetweenTwoTime(startTime));
 
@@ -149,9 +154,33 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
 
         parseToDeletedAdminModeFeatureIntegration(adminModeFeatureIntegration, deleteRequestDTO);
 
-        List<AdminModeApiFeatureIntegration> adminModeApiFeatureIntegrationList = adminModeFeatureIntegrationRepository
-                .findAdminModeApiFeatureIntegrationbyFeatureId(adminModeFeatureIntegration.getFeatureId())
-                .orElseThrow(() -> ADMIN_MODE_FEATURE_INTEGRATION_NOT_FOUND.apply(adminModeFeatureIntegration.getFeatureId()));
+        List<AdminModeApiFeatureIntegration> adminModeApiFeatureIntegrationList = featureIntegrationRepository
+                .findAdminModeApiFeatureIntegrationbyAdminModeFeatureId(adminModeFeatureIntegration.getId())
+                .orElseThrow(() -> ADMIN_MODE_FEATURE_INTEGRATION_NOT_FOUND.apply(adminModeFeatureIntegration.getId()));
+
+
+        List<ApiRequestHeader> apiRequestHeaderListToDelete = new ArrayList<>();
+        List<ApiQueryParameters> apiQueryParameterToDelete = new ArrayList<>();
+
+        adminModeApiFeatureIntegrationList.forEach(adminModeApiFeatureIntegration -> {
+            List<ApiRequestHeader> apiRequestHeaderList = apiRequestHeaderRepository.
+                    findApiRequestHeaderByApiFeatureIntegrationId(adminModeApiFeatureIntegration.getId())
+                    .orElseThrow(() -> API_REQUEST_HEADER_NOT_FOUND.apply(adminModeApiFeatureIntegration.getId()));
+
+            apiRequestHeaderListToDelete.addAll(apiRequestHeaderList);
+
+            List<ApiQueryParameters> apiQueryParametersList = apiQueryParametersRepository.
+                    findApiRequestHeaderByApiFeatureIntegrationId(adminModeApiFeatureIntegration.getId())
+                    .orElseThrow(() -> API_QUERY_PARAMETER_NOT_FOUND.apply(adminModeApiFeatureIntegration.getId()));
+
+            apiQueryParameterToDelete.addAll(apiQueryParametersList);
+
+
+        });
+
+        parseToDeletedApiRequestHeaders(apiRequestHeaderListToDelete);
+
+        parseToDeletedApiQueryParameters(apiQueryParameterToDelete);
 
         parseToDeletedAdminModeApiFeatureIntegration(adminModeApiFeatureIntegrationList);
 
@@ -190,18 +219,19 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
 
     }
 
-    private void saveApiRequestHeaders(List<ClientApiHeadersRequestDTO> clientApiRequestHeaders,
-                                       Long id) {
+    private void saveAdminModeQueryParameters(List<ClientApiQueryParametersRequestDTO> queryParametersRequestDTOS,
+                                              Long id) {
 
-        apiRequestHeaderRepository.saveAll(parseToClientApiRequestHeaders(clientApiRequestHeaders, id));
 
+        adminModeQueryParametersRepository.saveAll(parseToAdminModeQueryParameters(queryParametersRequestDTOS,
+                id));
     }
 
-    private void saveApiQueryParameters(List<ClientApiQueryParametersRequestDTO> parametersRequestDTOS,
-                                        Long id) {
+    private void saveAdminModeRequestHeaders(List<ClientApiHeadersRequestDTO> parametersRequestDTOS,
+                                             Long id) {
 
-        apiQueryParametersRepository.saveAll(parseToClientApiQueryParameters(parametersRequestDTOS,
-                id));
+        adminModeRequestHeaderRepository.saveAll(parseToAdminModeRequestHeaders(parametersRequestDTOS, id));
+
 
     }
 
@@ -220,6 +250,14 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
 
     private Function<Long, NoContentFoundException> APPOINTMENT_MODE_NOT_FOUND = (id) -> {
         throw new NoContentFoundException(AppointmentMode.class, "id", id.toString());
+    };
+
+    private Function<Long, NoContentFoundException> API_QUERY_PARAMETER_NOT_FOUND = (id) -> {
+        throw new NoContentFoundException(ApiQueryParameters.class, "id", id.toString());
+    };
+
+    private Function<Long, NoContentFoundException> API_REQUEST_HEADER_NOT_FOUND = (id) -> {
+        throw new NoContentFoundException(ApiRequestHeader.class, "id", id.toString());
     };
 
     private Function<Long, NoContentFoundException> HTTP_REQUEST_METHOD_WITH_GIVEN_ID_NOT_FOUND = (id) -> {
@@ -241,4 +279,5 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
     private Function<Long, NoContentFoundException> INTEGRATION_TYPE_NOT_FOUND = (id) -> {
         throw new NoContentFoundException(ApiIntegrationType.class, "id", id.toString());
     };
+
 }

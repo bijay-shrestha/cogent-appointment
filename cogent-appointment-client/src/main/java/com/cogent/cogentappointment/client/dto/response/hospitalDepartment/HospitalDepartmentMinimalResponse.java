@@ -24,5 +24,5 @@ public class HospitalDepartmentMinimalResponse implements Serializable {
 
     private String roomList;
 
-    private List<BillingModeChargeResponse> billingModeChargeResponseList;
+    private String billingModes;
 }

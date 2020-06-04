@@ -96,13 +96,16 @@ public class Appointment extends Auditable<String> implements Serializable {
     @Column(name = "has_transferred")
     private Character hasTransferred = 'N';
 
+    @Column(name = "appointment_date_in_nepali")
+    private String appointmentDateInNepali;
+
     @Override
     public String toString() {
         return "Appointment{" +
                 "id=" + id +
                 ", specializationId=" + specializationId.getName() +
-                ", doctorId=" + doctorId.getName() +
-                ", patientId=" + patientId.getName() +
+                ", doctorId=" + doctorId +
+                ", patientId=" + patientId +
                 ", appointmentModeId=" + appointmentModeId.getName() +
                 ", appointmentDate=" + appointmentDate +
                 ", appointmentTime=" + appointmentTime +
@@ -111,10 +114,11 @@ public class Appointment extends Auditable<String> implements Serializable {
                 ", createdDateNepali='" + createdDateNepali + '\'' +
                 ", status='" + status + '\'' +
                 ", remarks='" + remarks + '\'' +
-                ", hospitalId=" + hospitalId.getName() +
+                ", hospitalId=" + hospitalId +
                 ", isFollowUp=" + isFollowUp +
                 ", isSelf=" + isSelf +
-                ", hasTransferred='" + hasTransferred + '\'' +
+                ", hasTransferred=" + hasTransferred +
+                ", appointmentDateInNepali='" + appointmentDateInNepali + '\'' +
                 '}';
     }
 }

@@ -25,6 +25,7 @@ import com.cogent.cogentappointment.esewa.exception.DataDuplicationException;
 import com.cogent.cogentappointment.esewa.exception.NoContentFoundException;
 import com.cogent.cogentappointment.esewa.repository.*;
 import com.cogent.cogentappointment.esewa.service.*;
+import com.cogent.cogentappointment.esewa.utils.NepaliDateUtility;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.Duration;
@@ -114,6 +115,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final Validator validator;
 
+    private final NepaliDateUtility nepaliDateUtility;
+
     public AppointmentServiceImpl(PatientService patientService,
                                   DoctorService doctorService,
                                   SpecializationService specializationService,
@@ -136,7 +139,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   AppointmentModeRepository appointmentModeRepository,
                                   AppointmentStatisticsRepository appointmentStatisticsRepository,
                                   HospitalPatientInfoRepository hospitalPatientInfoRepository,
-                                  Validator validator) {
+                                  Validator validator, NepaliDateUtility nepaliDateUtility) {
         this.patientService = patientService;
         this.doctorService = doctorService;
         this.specializationService = specializationService;
@@ -160,6 +163,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.appointmentStatisticsRepository = appointmentStatisticsRepository;
         this.hospitalPatientInfoRepository = hospitalPatientInfoRepository;
         this.validator = validator;
+        this.nepaliDateUtility = nepaliDateUtility;
     }
 
     @Override
@@ -289,6 +293,9 @@ public class AppointmentServiceImpl implements AppointmentService {
                 hospital,
                 appointmentMode
         );
+
+        appointment.setAppointmentDateInNepali(nepaliDateUtility
+                .getNepaliDateForDate(appointmentReservationLog.getAppointmentDate()));
 
         save(appointment);
 
@@ -521,13 +528,13 @@ public class AppointmentServiceImpl implements AppointmentService {
         return parseToAppointmentTransactionStatusResponseDTO(appointmentTransactionRequestLogStatus);
     }
 
-    public void validateEsewaId(AppointmentRequestDTOForSelf requestDTO){
+    public void validateEsewaId(AppointmentRequestDTOForSelf requestDTO) {
 
-        String appointmentModeCode=requestDTO.getTransactionInfo().getAppointmentModeCode();
+        String appointmentModeCode = requestDTO.getTransactionInfo().getAppointmentModeCode();
 
-        String esewaId=requestDTO.getPatientInfo().getESewaId();
+        String esewaId = requestDTO.getPatientInfo().getESewaId();
 
-        if(appointmentModeCode.equals(APPOINTMENT_MODE_ESEWA_CODE) && ObjectUtils.isEmpty(esewaId) ){
+        if (appointmentModeCode.equals(APPOINTMENT_MODE_ESEWA_CODE) && ObjectUtils.isEmpty(esewaId)) {
             throw new BadRequestException("esewa Id cannot be null");
         }
 

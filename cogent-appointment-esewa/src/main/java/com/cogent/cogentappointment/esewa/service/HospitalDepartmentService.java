@@ -13,8 +13,6 @@ public interface HospitalDepartmentService {
 
     List<DropDownResponseDTO> fetchBillingModeByDepartmentId(Long hospitalDepartmentId);
 
-    ChargeResponseDTO fetchAppointmentCharge(ChargeRequestDTO requestDTO);
-
 
 
 }

@@ -63,17 +63,4 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
         return response;
     }
-
-    @Override
-    public ChargeResponseDTO fetchAppointmentCharge(ChargeRequestDTO requestDTO) {
-        Long startTime = getTimeInMillisecondsFromLocalDate();
-
-        log.info(FETCHING_PROCESS_STARTED, DEPARTMENT_CHARGE);
-
-        ChargeResponseDTO responseDTO = hospitalDepartmentBillingModeInfoRepository.fetchAppointmentCharge(requestDTO);
-
-        log.info(FETCHING_PROCESS_COMPLETED, DEPARTMENT_CHARGE, getDifferenceBetweenTwoTime(startTime));
-
-        return responseDTO;
-    }
 }

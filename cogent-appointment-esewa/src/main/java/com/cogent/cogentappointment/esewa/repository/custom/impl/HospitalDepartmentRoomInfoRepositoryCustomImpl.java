@@ -12,8 +12,8 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.util.function.Function;
 
-import static com.cogent.cogentappointment.esewa.constants.QueryConstants.HOSPITAL_DEPARTMENT_ID;
-import static com.cogent.cogentappointment.esewa.constants.QueryConstants.HOSPITAL_DEPARTMENT_ROOM_INFO_ID;
+import static com.cogent.cogentappointment.esewa.constants.QueryConstants.HospitalDepartmentConstants.HOSPITAL_DEPARTMENT_ID;
+import static com.cogent.cogentappointment.esewa.constants.QueryConstants.HospitalDepartmentConstants.HOSPITAL_DEPARTMENT_ROOM_INFO_ID;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.CONTENT_NOT_FOUND_BY_ID;
 import static com.cogent.cogentappointment.esewa.log.constants.HospitalDepartmentLog.HOSPITAL_DEPARTMENT_ROOM_INFO;
 import static com.cogent.cogentappointment.esewa.query.HospitalDepartmentRoomInfoQuery.QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_ROOM_INFO;

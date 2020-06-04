@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.DATE;
-import static com.cogent.cogentappointment.esewa.constants.QueryConstants.HOSPITAL_DEPARTMENT_ID;
+import static com.cogent.cogentappointment.esewa.constants.QueryConstants.HospitalDepartmentConstants.HOSPITAL_DEPARTMENT_ID;
 import static com.cogent.cogentappointment.esewa.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.esewa.log.constants.HospitalDepartmentDutyRosterLog.HOSPITAL_DEPARTMENT_DUTY_ROSTER;
 import static com.cogent.cogentappointment.esewa.query.HospitalDeptDutyRosterQuery.QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_INFO;

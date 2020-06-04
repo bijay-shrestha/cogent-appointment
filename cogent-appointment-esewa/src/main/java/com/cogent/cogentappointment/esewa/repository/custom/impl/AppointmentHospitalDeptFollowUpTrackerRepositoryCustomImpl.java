@@ -10,7 +10,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
-import static com.cogent.cogentappointment.esewa.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.esewa.constants.QueryConstants.HOSPITAL_ID;
+import static com.cogent.cogentappointment.esewa.constants.QueryConstants.HospitalDepartmentConstants.HOSPITAL_DEPARTMENT_ID;
+import static com.cogent.cogentappointment.esewa.constants.QueryConstants.PATIENT_ID;
 import static com.cogent.cogentappointment.esewa.query.AppointmentHospitalDeptFollowUpTrackerQuery.QUERY_TO_FETCH_APPOINTMENT_HOSPITAL_DEPARTMENT_FOLLOW_UP_TRACKER;
 
 /**

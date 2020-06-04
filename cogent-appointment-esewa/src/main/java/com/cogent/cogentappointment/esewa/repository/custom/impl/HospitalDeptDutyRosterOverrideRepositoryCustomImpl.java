@@ -12,7 +12,9 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.Date;
 
-import static com.cogent.cogentappointment.esewa.constants.QueryConstants.*;
+import static com.cogent.cogentappointment.esewa.constants.QueryConstants.DATE;
+import static com.cogent.cogentappointment.esewa.constants.QueryConstants.HospitalDepartmentConstants.HOSPITAL_DEPARTMENT_ID;
+import static com.cogent.cogentappointment.esewa.constants.QueryConstants.ID;
 import static com.cogent.cogentappointment.esewa.query.HospitalDeptDutyRosterOverrideQuery.QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_OVERRIDE_TIME;
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.utilDateToSqlDate;
 import static com.cogent.cogentappointment.esewa.utils.commons.QueryUtils.createQuery;
@@ -30,10 +32,11 @@ public class HospitalDeptDutyRosterOverrideRepositoryCustomImpl implements Hospi
     private EntityManager entityManager;
 
     @Override
-    public HospitalDeptDutyRosterTimeResponseTO fetchHospitalDeptDutyRosterOverrideTimeInfo(Long hddRosterId,
-                                                                                            Date date,
-                                                                                            Long hospitalDepartmentId,
-                                                                                            Long hospitalDepartmentRoomInfoId) {
+    public HospitalDeptDutyRosterTimeResponseTO fetchHospitalDeptDutyRosterOverrideTimeInfo(
+            Long hddRosterId,
+            Date date,
+            Long hospitalDepartmentId,
+            Long hospitalDepartmentRoomInfoId) {
 
         Query query = createQuery.apply(entityManager,
                 QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_OVERRIDE_TIME(hospitalDepartmentRoomInfoId))

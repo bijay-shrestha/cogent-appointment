@@ -13,7 +13,7 @@ public class HospitalDepartmentBillingModeInfoQuery {
                     " HospitalDepartmentBillingModeInfo hb" +
                     " WHERE" +
                     " hb.status='Y'" +
-                    " hb.hospitalDepartment.status = 'Y'" +
+                    " AND hb.hospitalDepartment.status = 'Y'" +
                     " AND hb.hospitalDepartment.id =:hospitalDepartmentId";
 
     public static final String QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_APPOINTMENT_CHARGE=

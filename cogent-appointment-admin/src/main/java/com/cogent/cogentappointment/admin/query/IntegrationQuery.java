@@ -194,6 +194,7 @@ public class IntegrationQuery {
 
     public static final String CLIENT_FEAUTRES_INTEGRATION_API_QUERY =
             "SELECT" +
+                    " cfi.hospitalId as hospitalId,"+
                     " aif.id as apiIntegrationFormatId," +
                     " f.id as featureId,"+
                     " ic.code as integrationChannelCode,"+

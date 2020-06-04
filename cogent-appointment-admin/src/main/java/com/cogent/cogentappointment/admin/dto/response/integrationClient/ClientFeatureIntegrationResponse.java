@@ -14,6 +14,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class ClientFeatureIntegrationResponse implements Serializable {
 
+    private Long hospitalId;
+
     private Long apiIntegrationFormatId;
 
     private String integrationChannelCode;

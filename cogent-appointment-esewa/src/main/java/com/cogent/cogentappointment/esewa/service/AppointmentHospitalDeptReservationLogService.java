@@ -9,5 +9,5 @@ public interface AppointmentHospitalDeptReservationLogService {
 
     Long saveAppointmentHospitalDeptReservationLog(AppointmentHospitalDeptFollowUpRequestDTO requestDTO);
 
-    void deleteExpiredAppointmentHospitalDepartmentReservation();
+    void deleteExpiredAppointmentHospitalDeptReservation();
 }

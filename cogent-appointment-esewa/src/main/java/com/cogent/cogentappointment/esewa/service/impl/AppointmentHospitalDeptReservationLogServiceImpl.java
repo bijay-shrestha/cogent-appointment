@@ -34,7 +34,7 @@ import static com.cogent.cogentappointment.esewa.utils.AppointmentUtils.validate
 import static com.cogent.cogentappointment.esewa.utils.commons.DateUtils.*;
 
 /**
- * @author smriti on 18/02/20
+ * @author smriti on 04/06/20
  */
 @Service
 @Transactional
@@ -115,7 +115,7 @@ public class AppointmentHospitalDeptReservationLogServiceImpl implements
     /*SCHEDULER - 2 MINS
     * DELETE - 5 MINS*/
     @Override
-    public void deleteExpiredAppointmentHospitalDepartmentReservation() {
+    public void deleteExpiredAppointmentHospitalDeptReservation() {
 
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
@@ -211,7 +211,7 @@ public class AppointmentHospitalDeptReservationLogServiceImpl implements
         }
     }
 
-    /*FETCH HOSPITAL DEPARTMENT DUTY ROSTER FOR SELECTED DATE, HOSPITAL DEPARTMENT
+    /*FETCH HOSPITAL DEPARTMENT DUTY ROSTER FOR SELECTED DATE, HOSPITAL DEPARTMENT AND ROOM (IF APPLICABLE)
  * IF HOSPITAL DEPARTMENT DAY OFF = 'Y', THEN HOSPITAL DEPARTMENT IS NOT AVAILABLE AND CANNOT TAKE AN APPOINTMENT*/
     private HospitalDeptDutyRosterTimeResponseTO fetchHospitalDeptDutyRoster(
             AppointmentHospitalDeptFollowUpRequestDTO appointmentInfo) {
@@ -266,7 +266,6 @@ public class AppointmentHospitalDeptReservationLogServiceImpl implements
     private HospitalDepartment fetchHospitalDepartment(Long hospitalDepartmentId, Long hospitalId) {
         return hospitalDepartmentRepository.fetchActiveByIdAndHospitalId(hospitalDepartmentId, hospitalId)
                 .orElseThrow(() -> HOSPITAL_DEPARTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(hospitalDepartmentId));
-
     }
 
     private Function<Long, NoContentFoundException> HOSPITAL_DEPARTMENT_WITH_GIVEN_ID_NOT_FOUND = (id) -> {

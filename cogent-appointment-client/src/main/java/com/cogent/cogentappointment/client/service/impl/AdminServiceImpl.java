@@ -441,12 +441,17 @@ public class AdminServiceImpl implements AdminService {
 
             Map<String, String> queryParametersResponseDTO = integrationRepository.findApiQueryParameters(responseDTO.getApiIntegrationFormatId());
 
-            List<IntegrationBodyAttributeResponse> responses =
-                    requestBodyParametersRepository.fetchRequestBodyAttributeByFeatureId(responseDTO.getFeatureId());
 
-            Object[] requestBody = responses.stream()
-                    .map(request -> request.getName())
-                    .collect(Collectors.toList()).toArray();
+            Object[] requestBody = null;
+            if (responseDTO.getRequestMethod().equalsIgnoreCase("POST")) {
+                List<IntegrationBodyAttributeResponse> responses =
+                        requestBodyParametersRepository.fetchRequestBodyAttributeByFeatureId(responseDTO.getFeatureId());
+                requestBody = responses.stream()
+                        .map(request -> request.getName())
+                        .collect(Collectors.toList()).toArray();
+
+            }
+
 
             FeatureIntegrationResponseDTO featureIntegrationResponseDTO = new FeatureIntegrationResponseDTO();
             featureIntegrationResponseDTO.setFeatureCode(responseDTO.getFeatureCode());

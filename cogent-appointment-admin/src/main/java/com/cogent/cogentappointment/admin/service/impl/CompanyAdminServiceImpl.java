@@ -462,11 +462,23 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         List<AdminModeFeatureIntegrationResponseDTO> adminModeFeatureIntegrationResponseDTOS = new ArrayList<>();
         integrationResponseDTOList.forEach(responseDTO -> {
 
-            Map<String, String> requestHeaderResponseDTO = integrationRepository.
+            Map<String, String> requestHeaderResponseDTO = requestHeaderResponseDTO = integrationRepository.
                     findAdminModeApiRequestHeaders(responseDTO.getApiIntegrationFormatId());
 
             Map<String, String> queryParametersResponseDTO = integrationRepository.
                     findAdminModeApiQueryParameters(responseDTO.getApiIntegrationFormatId());
+
+            Object[] requestBody = new Object[0];
+            if (responseDTO.getRequestMethod().equalsIgnoreCase("POST")) {
+                List<IntegrationRequestBodyAttributeResponse> responses = integrationRepository.fetchRequestBodyAttributeByFeatureId(responseDTO.getFeatureId());
+
+                if (responses!=null) {
+                    requestBody = responses.stream()
+                            .map(request -> request.getName())
+                            .collect(Collectors.toList()).toArray();
+                }
+
+            }
 
             FeatureIntegrationResponseDTO featureIntegrationResponseDTO =
                     FeatureIntegrationResponseDTO.builder()
@@ -475,11 +487,11 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
                             .build();
 
 
-            if (responseDTO.getIntegrationChannelCode() != null ||
-                    !responseDTO.getIntegrationChannelCode().equalsIgnoreCase(BACK_END_CODE)) {
+            if (responseDTO.getIntegrationChannelCode().equalsIgnoreCase(FRONT_END_CODE)) {
                 ApiInfoResponseDTO apiInfoResponseDTO = new ApiInfoResponseDTO();
 
                 apiInfoResponseDTO.setUrl(responseDTO.getUrl());
+                apiInfoResponseDTO.setRequestBody(requestBody);
                 apiInfoResponseDTO.setRequestMethod(responseDTO.getRequestMethod());
                 apiInfoResponseDTO.setHeaders(requestHeaderResponseDTO);
                 apiInfoResponseDTO.setQueryParameters(queryParametersResponseDTO);
@@ -518,19 +530,24 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
             Map<String, String> queryParametersResponseDTO = integrationRepository.findApiQueryParameters(responseDTO.getApiIntegrationFormatId());
 
-            List<IntegrationRequestBodyAttributeResponse> responses =
-                    integrationRepository.fetchRequestBodyAttributeByFeatureId(responseDTO.getFeatureId());
+            Object[] requestBody = new Object[0];
+            if (responseDTO.getRequestMethod().equalsIgnoreCase("POST")) {
+                List<IntegrationRequestBodyAttributeResponse> responses = integrationRepository.fetchRequestBodyAttributeByFeatureId(responseDTO.getFeatureId());
 
-            Object[] requestBody = responses.stream()
-                    .map(request -> request.getName())
-                    .collect(Collectors.toList()).toArray();
+                if (responses!=null) {
+                    requestBody = responses.stream()
+                            .map(request -> request.getName())
+                            .collect(Collectors.toList()).toArray();
+                }
+
+            }
+
 
             FeatureIntegrationResponseDTO featureIntegrationResponseDTO = new FeatureIntegrationResponseDTO();
             featureIntegrationResponseDTO.setFeatureCode(responseDTO.getFeatureCode());
             featureIntegrationResponseDTO.setIntegrationChannelCode(responseDTO.getIntegrationChannelCode());
 
-            if (responseDTO.getIntegrationChannelCode() != null ||
-                    !responseDTO.getIntegrationChannelCode().equalsIgnoreCase(BACK_END_CODE)) {
+            if (responseDTO.getIntegrationChannelCode().equalsIgnoreCase(FRONT_END_CODE)) {
                 ApiInfoResponseDTO apiInfoResponseDTO = new ApiInfoResponseDTO();
 
                 apiInfoResponseDTO.setUrl(responseDTO.getUrl());

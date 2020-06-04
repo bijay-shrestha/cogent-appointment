@@ -80,11 +80,16 @@ public class HospitalDepartmentQuery {
                             " WHEN GROUP_CONCAT(DISTINCT hdr.room_id) IS NULL THEN 'N/A'" +
                             " ELSE GROUP_CONCAT(DISTINCT r.room_number )" +
                             " END as roomList," +
-                            " h.name as hospitalName" +
+                            " h.name as hospitalName," +
+                            " CASE" +
+                            " WHEN GROUP_CONCAT(DISTINCT hdc.billing_mode_id) IS NULL THEN 'N/A'" +
+                            " ELSE GROUP_CONCAT(DISTINCT bm.name )" +
+                            " END as billingModes" +
                             " FROM" +
                             " hospital_department hd" +
                             " LEFT JOIN hospital_department_billing_mode_info hdc ON hdc.hospital_department_id=hd.id" +
                             " AND hdc.status!='D'" +
+                            " LEFT JOIN billing_mode bm ON bm.id=hdc.billing_mode_id " +
                             " LEFT JOIN hospital_department_room_info  hdr ON hdr.hospital_department_id=hd.id" +
                             "  AND hdr.status!='D'" +
                             " LEFT JOIN room r ON hdr.room_id =r.id " +

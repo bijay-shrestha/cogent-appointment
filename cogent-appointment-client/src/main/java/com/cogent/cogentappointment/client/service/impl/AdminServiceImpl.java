@@ -441,17 +441,7 @@ public class AdminServiceImpl implements AdminService {
 
             Map<String, String> queryParametersResponseDTO = integrationRepository.findApiQueryParameters(responseDTO.getApiIntegrationFormatId());
 
-
-            Object[] requestBody = null;
-            if (responseDTO.getRequestMethod().equalsIgnoreCase("POST")) {
-                List<IntegrationBodyAttributeResponse> responses =
-                        requestBodyParametersRepository.fetchRequestBodyAttributeByFeatureId(responseDTO.getFeatureId());
-                requestBody = responses.stream()
-                        .map(request -> request.getName())
-                        .collect(Collectors.toList()).toArray();
-
-            }
-
+            Object[] requestBody = getRequestBodyByFeature(responseDTO.getFeatureId(), responseDTO.getRequestMethod());
 
             FeatureIntegrationResponseDTO featureIntegrationResponseDTO = new FeatureIntegrationResponseDTO();
             featureIntegrationResponseDTO.setFeatureCode(responseDTO.getFeatureCode());
@@ -481,6 +471,25 @@ public class AdminServiceImpl implements AdminService {
 
         return clientIntegrationResponseDTO;
 
+    }
+
+
+    private Object[] getRequestBodyByFeature(Long featureId, String requestMethod) {
+
+        Object[] requestBody = new Object[0];
+        if (requestMethod.equalsIgnoreCase("POST")) {
+            List<IntegrationBodyAttributeResponse> responses = requestBodyParametersRepository.
+                    fetchRequestBodyAttributeByFeatureId(featureId);
+
+            if (responses != null) {
+                requestBody = responses.stream()
+                        .map(request -> request.getName())
+                        .collect(Collectors.toList()).toArray();
+            }
+
+        }
+
+        return requestBody;
     }
 
     @Override

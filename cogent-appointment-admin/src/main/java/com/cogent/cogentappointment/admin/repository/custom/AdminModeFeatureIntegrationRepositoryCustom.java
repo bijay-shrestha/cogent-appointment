@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.repository.custom;
 
 import com.cogent.cogentappointment.admin.dto.request.integrationAdminMode.AdminModeApiIntegrationSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminModeApiIntegrationResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminModeIntegrationSearchDTO;
 import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminFeatureIntegrationResponse;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -20,4 +21,6 @@ public interface AdminModeFeatureIntegrationRepositoryCustom {
                                          Pageable pageable);
 
     List<AdminFeatureIntegrationResponse> fetchAdminModeIntegrationResponseDTO();
+
+    AdminModeApiIntegrationResponseDTO findAdminModeFeatureIntegration(Long id);
 }

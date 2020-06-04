@@ -16,8 +16,7 @@ import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.IntegrationAdminModeConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.IntegrationAdminModeConstants.ADMIN_MODE_INTEGRATION;
-import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.IntegrationAdminModeConstants.BASE_ADMIN_MODE_INTEGRATION;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.IntegrationAdminModeConstants.*;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
@@ -57,6 +56,12 @@ public class IntegrationAdminModeResource {
     public ResponseEntity<?> delete(@Valid @RequestBody DeleteRequestDTO deleteRequestDTO) {
         adminModeIntegrationService.delete(deleteRequestDTO);
         return ok().build();
+    }
+
+    @GetMapping(ADMIN_MODE_FEATURE_INTEGRATION_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_ADMIN_MODE_INTEGRATION_DETAIL)
+    public ResponseEntity<?> fetchClientApiIntegrationById(@PathVariable("id") Long id) {
+        return ok(adminModeIntegrationService.fetchClientApiIntegrationById(id));
     }
 
 

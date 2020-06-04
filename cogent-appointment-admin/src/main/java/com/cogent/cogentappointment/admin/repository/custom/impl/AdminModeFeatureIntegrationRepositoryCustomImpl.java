@@ -1,9 +1,10 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.dto.request.integrationAdminMode.AdminModeApiIntegrationSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminFeatureIntegrationResponse;
+import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminModeApiIntegrationResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminModeIntegrationSearchDTO;
 import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminModeIntegrationSearchResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminFeatureIntegrationResponse;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.custom.AdminModeFeatureIntegrationRepositoryCustom;
 import com.cogent.cogentappointment.persistence.model.AdminModeFeatureIntegration;
@@ -14,19 +15,21 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
 import java.util.function.Supplier;
 
+import static com.cogent.cogentappointment.admin.constants.QueryConstants.ADMIN_MODE_FEATURE_INTEGRATION_ID;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.CONTENT_NOT_FOUND;
 import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.ADMIN_MODE_FEATURE_INTEGRATION;
 import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.CLIENT_FEATURE_INTEGRATION;
 import static com.cogent.cogentappointment.admin.query.IntegrationAdminModeQuery.ADMIN_MODE_API_INTEGRATION_SEARCH_QUERY;
+import static com.cogent.cogentappointment.admin.query.IntegrationAdminModeQuery.ADMIN_MODE_INTEGRATION_DETAILS_API_QUERY;
 import static com.cogent.cogentappointment.admin.query.IntegrationQuery.ADMIN_MODE_FEATURES_INTEGRATION_API_QUERY;
 import static com.cogent.cogentappointment.admin.utils.commons.PageableUtils.addPagination;
-import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
-import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
+import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.*;
 
 /**
  * @author rupak ON 2020/06/03-10:05 AM
@@ -74,6 +77,19 @@ public class AdminModeFeatureIntegrationRepositoryCustomImpl implements AdminMod
 
         else {
             return responseDTOList;
+        }
+    }
+
+    @Override
+    public AdminModeApiIntegrationResponseDTO findAdminModeFeatureIntegration(Long id) {
+        Query query = createQuery.apply(entityManager, ADMIN_MODE_INTEGRATION_DETAILS_API_QUERY)
+                .setParameter(ADMIN_MODE_FEATURE_INTEGRATION_ID, id);
+
+
+        try {
+            return transformQueryToSingleResult(query, AdminModeApiIntegrationResponseDTO.class);
+        } catch (NoResultException e) {
+            throw ADMIN_MODE_API_INTEGRATION_NOT_FOUND.get();
         }
     }
 

@@ -6,7 +6,10 @@ import com.cogent.cogentappointment.admin.dto.request.integrationAdminMode.Admin
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.ApiIntegrationFormatRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.ClientApiHeadersRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.ClientApiQueryParametersRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminModeIntegrationSearchDTO;
+import com.cogent.cogentappointment.admin.dto.response.integration.ApiInfoResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.*;
+import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientApiIntegrationDetailResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientApiIntegrationResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.repository.custom.AdminModeFeatureIntegrationRepository;
@@ -19,10 +22,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.admin.constants.IntegrationApiConstants.BACK_END_CODE;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.ADMIN_MODE_FEATURE_INTEGRATION;
+import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.API_INTEGRATION;
 import static com.cogent.cogentappointment.admin.utils.IntegrationAdminModeFeatureUtils.*;
 import static com.cogent.cogentappointment.admin.utils.IntegrationUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
@@ -188,6 +194,56 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
 
 
     }
+
+    @Override
+    public AdminModeIntegrationDetailResponseDTO fetchClientApiIntegrationById(Long id)
+    {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(SEARCHING_PROCESS_STARTED, API_INTEGRATION);
+
+        AdminModeIntegrationDetailResponseDTO clientApiIntegration =
+                getAdminModeApiIntegration(id);
+
+        log.info(SEARCHING_PROCESS_COMPLETED, API_INTEGRATION, getDifferenceBetweenTwoTime(startTime));
+
+        return clientApiIntegration;
+    }
+
+    private AdminModeIntegrationDetailResponseDTO getAdminModeApiIntegration(Long id) {
+
+        AdminModeApiIntegrationResponseDTO featureIntegrationResponse = adminModeFeatureIntegrationRepository.
+                findAdminModeFeatureIntegration(id);
+
+        Map<String, String> requestHeaderResponseDTO = adminModeRequestHeaderRepository.
+                findAdminModeApiRequestHeaders(featureIntegrationResponse.getFeatureId());
+
+        Map<String, String> queryParametersResponseDTO = adminModeQueryParametersRepository.
+                findAdminModeApiQueryParameters(featureIntegrationResponse.getFeatureId());
+
+        AdminModeIntegrationDetailResponseDTO responseDTO = new AdminModeIntegrationDetailResponseDTO();
+        responseDTO.setFeatureId(featureIntegrationResponse.getFeatureId());
+        responseDTO.setFeatureCode(featureIntegrationResponse.getFeatureCode());
+        responseDTO.setRequestMethodName(featureIntegrationResponse.getRequestMethodName());
+        responseDTO.setRequestMethodId(featureIntegrationResponse.getRequestMethodId());
+        responseDTO.setIntegrationChannel(featureIntegrationResponse.getIntegrationChannel());
+        responseDTO.setIntegrationType(featureIntegrationResponse.getIntegrationType());
+        responseDTO.setAppointmentMode(featureIntegrationResponse.getAppointmentName());
+        responseDTO.setUrl(featureIntegrationResponse.getUrl());
+        responseDTO.setHeaders(requestHeaderResponseDTO);
+        responseDTO.setQueryParameters(queryParametersResponseDTO);
+
+        //autitable data
+        responseDTO.setCreatedBy(featureIntegrationResponse.getCreatedBy());
+        responseDTO.setCreatedDate(featureIntegrationResponse.getCreatedDate());
+        responseDTO.setLastModifiedBy(featureIntegrationResponse.getLastModifiedBy());
+        responseDTO.setLastModifiedDate(featureIntegrationResponse.getLastModifiedDate());
+
+        return responseDTO;
+
+    }
+
+
 
     private void saveApiIntegrationFormat(ApiIntegrationFormat apiIntegrationFormat) {
         apiIntegrationFormatRespository.save(apiIntegrationFormat);

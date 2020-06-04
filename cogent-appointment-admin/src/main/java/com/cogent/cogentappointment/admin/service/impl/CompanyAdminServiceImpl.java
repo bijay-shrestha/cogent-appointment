@@ -452,7 +452,6 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
     }
 
-
     private List<AdminModeFeatureIntegrationResponseDTO> getAdminModeApiIntegration() {
 
         List<AdminFeatureIntegrationResponse> integrationResponseDTOList = adminModeFeatureIntegrationRepository.

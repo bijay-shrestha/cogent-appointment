@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.cogent.cogentappointment.admin.constants.QueryConstants.API_FEATURE_ID;
+import static com.cogent.cogentappointment.admin.query.IntegrationAdminModeQuery.ADMIN_MODE_FEATURES_HEADERS_QUERY;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.createQuery;
 import static com.cogent.cogentappointment.admin.utils.commons.QueryUtils.transformQueryToResultList;
 
@@ -32,7 +33,7 @@ public class AdminModeRequestHeaderRepositoryCustomImpl implements AdminModeRequ
 
     @Override
     public Map<String, String> findAdminModeApiRequestHeaders(Long featureId) {
-        Query query = createQuery.apply(entityManager, IntegrationAdminModeQuery.ADMIN_MODE_FEATURES_HEADERS_QUERY)
+        Query query = createQuery.apply(entityManager, ADMIN_MODE_FEATURES_HEADERS_QUERY)
                 .setParameter(API_FEATURE_ID, featureId);
 
         List<ApiRequestHeaderResponseDTO> requestHeaderResponseDTO =

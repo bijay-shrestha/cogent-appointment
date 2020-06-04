@@ -123,11 +123,11 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
 
         saveAdminModeApiFeatureIntegration(adminModeApiFeatureIntegration);
 
-        saveApiFeatureIntegration(adminModeFeatureIntegration.getId(), adminModeApiFeatureIntegration.getId());
+//        saveApiFeatureIntegration(adminModeFeatureIntegration.getId(), adminModeApiFeatureIntegration.getId());
 
-        saveAdminModeQueryParameters(requestDTO.getParametersRequestDTOS(), adminModeApiFeatureIntegration.getId());
+        saveAdminModeQueryParameters(requestDTO.getParametersRequestDTOS(), apiIntegrationFormat.getId());
 
-        saveAdminModeRequestHeaders(requestDTO.getClientApiRequestHeaders(), adminModeApiFeatureIntegration.getId());
+        saveAdminModeRequestHeaders(requestDTO.getClientApiRequestHeaders(), apiIntegrationFormat.getId());
 
         log.info(SAVING_PROCESS_COMPLETED, ADMIN_MODE_FEATURE_INTEGRATION, getDifferenceBetweenTwoTime(startTime));
 

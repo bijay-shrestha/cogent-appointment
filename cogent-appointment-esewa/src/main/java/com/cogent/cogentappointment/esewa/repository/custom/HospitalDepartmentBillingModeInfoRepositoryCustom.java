@@ -1,8 +1,6 @@
 package com.cogent.cogentappointment.esewa.repository.custom;
 
 import com.cogent.cogentappointment.esewa.dto.commons.DropDownResponseDTO;
-import com.cogent.cogentappointment.esewa.dto.request.hospitalDepartment.ChargeRequestDTO;
-import com.cogent.cogentappointment.esewa.dto.response.hospitalDepartment.ChargeResponseDTO;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
@@ -15,7 +13,9 @@ import java.util.List;
 @Qualifier("hospitalDepartmentBillingModeInfoRepositoryCustom")
 public interface HospitalDepartmentBillingModeInfoRepositoryCustom {
 
-    ChargeResponseDTO fetchAppointmentCharge(ChargeRequestDTO requestDTO);
-
     List<DropDownResponseDTO> fetchBillingModeByDepartmentId(Long hospitalDepartmentId);
+
+    Double fetchHospitalDeptAppointmentCharge(Long hospitalDepartmentBillingModeId, Long hospitalDepartmentId);
+
+    Double fetchHospitalDeptAppointmentFollowUpCharge(Long hospitalDepartmentBillingModeId, Long hospitalDepartmentId);
 }

@@ -13,7 +13,7 @@ import java.util.Date;
  * THIS TABLE REFLECTS THE REMAINING FOLLOW UPS FOR A SPECIFIC APPOINTMENT
  * <p>
  * INITIALLY,
- * remainingNumberOfFollowUps = allowed number of follow ups for selected hospital (say 2)
+ * remainingNumberOfFollowUps = allo`wed number of follow ups for selected hospital (say 2)
  * appointmentApprovedDate = appointment approved date
  * <p>
  * IF PATIENT CHECK-IN,

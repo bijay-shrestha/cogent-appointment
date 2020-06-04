@@ -35,7 +35,8 @@ public class AppointmentHospitalDeptReservationLogRepositoryCustomImpl
     public Long fetchAppointmentHospitalDeptReservationLogId(AppointmentHospitalDeptFollowUpRequestDTO requestDTO) {
 
         Query query = createQuery.apply(entityManager,
-                QUERY_TO_FETCH_APPOINTMENT_HOSPITAL_DEPARTMENT_RESERVATION_LOG_ID(requestDTO.getRoomId()))
+                QUERY_TO_FETCH_APPOINTMENT_HOSPITAL_DEPARTMENT_RESERVATION_LOG_ID(
+                        requestDTO.getHospitalDepartmentRoomInfoId()))
                 .setParameter(APPOINTMENT_DATE, utilDateToSqlDate(requestDTO.getAppointmentDate()))
                 .setParameter(HOSPITAL_DEPARTMENT_ID, requestDTO.getHospitalDepartmentId())
                 .setParameter(APPOINTMENT_TIME, requestDTO.getAppointmentTime())

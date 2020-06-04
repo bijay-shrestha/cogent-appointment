@@ -1,7 +1,7 @@
 package com.cogent.cogentappointment.esewa.repository.custom.impl;
 
 import com.cogent.cogentappointment.esewa.repository.custom.AppointmentHospitalDeptFollowUpTrackerRepositoryCustom;
-import com.cogent.cogentappointment.persistence.model.AppointmentFollowUpTracker;
+import com.cogent.cogentappointment.persistence.model.AppointmentHospitalDepartmentFollowUpTracker;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,7 +11,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
 import static com.cogent.cogentappointment.esewa.constants.QueryConstants.*;
-import static com.cogent.cogentappointment.esewa.query.AppointmentFollowUpTrackerQuery.QUERY_TO_FETCH_APPOINTMENT_FOLLOW_UP_TRACKER;
+import static com.cogent.cogentappointment.esewa.query.AppointmentHospitalDeptFollowUpTrackerQuery.QUERY_TO_FETCH_APPOINTMENT_HOSPITAL_DEPARTMENT_FOLLOW_UP_TRACKER;
 
 /**
  * @author smriti on 18/11/2019
@@ -26,17 +26,15 @@ public class AppointmentHospitalDeptFollowUpTrackerRepositoryCustomImpl implemen
     private EntityManager entityManager;
 
     @Override
-    public AppointmentFollowUpTracker fetchAppointmentFollowUpTracker(Long patientId,
-                                                                      Long doctorId,
-                                                                      Long specializationId,
-                                                                      Long hospitalId) {
+    public AppointmentHospitalDepartmentFollowUpTracker fetchAppointmentHospitalDeptFollowUpTracker(
+            Long hospitalId, Long hospitalDepartmentId, Long patientId) {
+
         try {
-            return entityManager.createQuery(
-                    QUERY_TO_FETCH_APPOINTMENT_FOLLOW_UP_TRACKER, AppointmentFollowUpTracker.class)
-                    .setParameter(PATIENT_ID, patientId)
-                    .setParameter(DOCTOR_ID, doctorId)
-                    .setParameter(SPECIALIZATION_ID, specializationId)
+            return entityManager.createQuery(QUERY_TO_FETCH_APPOINTMENT_HOSPITAL_DEPARTMENT_FOLLOW_UP_TRACKER,
+                    AppointmentHospitalDepartmentFollowUpTracker.class)
                     .setParameter(HOSPITAL_ID, hospitalId)
+                    .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId)
+                    .setParameter(PATIENT_ID, patientId)
                     .getSingleResult();
 
         } catch (NoResultException e) {

@@ -15,7 +15,8 @@ public class AppointmentHospitalDepartmentReservationLogQuery {
                     " AND a.doctorId = :doctorId" +
                     " AND a.specializationId= :specializationId";
 
-    public static String QUERY_TO_FETCH_APPOINTMENT_HOSPITAL_DEPARTMENT_RESERVATION_LOG_ID(Long roomId) {
+    public static String QUERY_TO_FETCH_APPOINTMENT_HOSPITAL_DEPARTMENT_RESERVATION_LOG_ID(
+            Long hospitalDepartmentRoomInfoId) {
 
         String query = "SELECT a.id" +
                 " FROM AppointmentHospitalDepartmentReservationLog a" +
@@ -25,8 +26,8 @@ public class AppointmentHospitalDepartmentReservationLogQuery {
                 " AND a.hospital.id =:hospitalId" +
                 " AND DATE_FORMAT(a.appointmentTime,'%H:%i') =:appointmentTime";
 
-        if (!Objects.isNull(roomId))
-            query += " AND a.room.id =" + roomId;
+        if (!Objects.isNull(hospitalDepartmentRoomInfoId))
+            query += " AND a.hospitalDepartmentRoomInfo.id =" + hospitalDepartmentRoomInfoId;
 
         return query;
     }

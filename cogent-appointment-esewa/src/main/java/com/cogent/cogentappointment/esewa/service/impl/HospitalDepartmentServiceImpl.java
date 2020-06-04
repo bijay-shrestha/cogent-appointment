@@ -1,8 +1,6 @@
 package com.cogent.cogentappointment.esewa.service.impl;
 
 import com.cogent.cogentappointment.esewa.dto.commons.DropDownResponseDTO;
-import com.cogent.cogentappointment.esewa.dto.request.hospitalDepartment.ChargeRequestDTO;
-import com.cogent.cogentappointment.esewa.dto.response.hospitalDepartment.ChargeResponseDTO;
 import com.cogent.cogentappointment.esewa.repository.HospitalDepartmentBillingModeInfoRepository;
 import com.cogent.cogentappointment.esewa.repository.HospitalDepartmentRepository;
 import com.cogent.cogentappointment.esewa.service.HospitalDepartmentService;
@@ -58,7 +56,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
         log.info(FETCHING_BILLING_MODE_DROP_DOWN_PROCESS_STARTED);
 
-        List<DropDownResponseDTO> response=hospitalDepartmentBillingModeInfoRepository.
+        List<DropDownResponseDTO> response = hospitalDepartmentBillingModeInfoRepository.
                 fetchBillingModeByDepartmentId(hospitalDepartmentId);
 
         log.info(FETCHING_BILLING_MODE_DROP_DOWN_PROCESS_COMPLETED, getDifferenceBetweenTwoTime(startTime));
@@ -70,11 +68,11 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
     public ChargeResponseDTO fetchAppointmentCharge(ChargeRequestDTO requestDTO) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(FETCHING_PROCESS_STARTED,DEPARTMENT_CHARGE);
+        log.info(FETCHING_PROCESS_STARTED, DEPARTMENT_CHARGE);
 
-        ChargeResponseDTO responseDTO=hospitalDepartmentBillingModeInfoRepository.fetchAppointmentCharge(requestDTO);
+        ChargeResponseDTO responseDTO = hospitalDepartmentBillingModeInfoRepository.fetchAppointmentCharge(requestDTO);
 
-        log.info(FETCHING_PROCESS_COMPLETED,DEPARTMENT_CHARGE, getDifferenceBetweenTwoTime(startTime));
+        log.info(FETCHING_PROCESS_COMPLETED, DEPARTMENT_CHARGE, getDifferenceBetweenTwoTime(startTime));
 
         return responseDTO;
     }

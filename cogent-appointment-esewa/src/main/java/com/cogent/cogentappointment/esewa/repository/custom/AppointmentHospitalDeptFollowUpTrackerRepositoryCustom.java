@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.esewa.repository.custom;
 
 import com.cogent.cogentappointment.persistence.model.AppointmentFollowUpTracker;
+import com.cogent.cogentappointment.persistence.model.AppointmentHospitalDepartmentFollowUpTracker;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
@@ -11,9 +12,6 @@ import org.springframework.stereotype.Repository;
 @Qualifier("appointmentHospitalDeptFollowUpTrackerRepositoryCustom")
 public interface AppointmentHospitalDeptFollowUpTrackerRepositoryCustom {
 
-    AppointmentFollowUpTracker fetchAppointmentFollowUpTracker(Long patientId,
-                                                               Long doctorId,
-                                                               Long specializationId,
-                                                               Long hospitalId);
-
+    AppointmentHospitalDepartmentFollowUpTracker fetchAppointmentHospitalDeptFollowUpTracker(
+            Long hospitalId, Long hospitalDepartmentId, Long patientId);
 }

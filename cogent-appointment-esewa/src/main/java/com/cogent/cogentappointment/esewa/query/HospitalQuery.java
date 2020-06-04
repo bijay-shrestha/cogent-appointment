@@ -50,6 +50,7 @@ public class HospitalQuery {
     }
 
     public static final String QUERY_TO_FETCH_HOSPITAL_FOLLOW_UP_DETAILS =
+
             " SELECT h.numberOfFollowUps as numberOfFollowUps," +                   //[0]
                     " h.followUpIntervalDays as followUpIntervalDays" +             //[1]
                     " FROM Hospital h" +

@@ -420,7 +420,6 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
         log.info(FETCHING_PROCESS_STARTED, ADMIN);
 
         CompanyAdminLoggedInInfoResponseDTO responseDTO = adminRepository.fetchLoggedInCompanyAdminInfo(requestDTO);
-
         responseDTO.setApiIntegration(getApiIntegrations());
 
 
@@ -454,68 +453,36 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
     private List<AdminModeFeatureIntegrationResponseDTO> getAdminModeApiIntegration() {
 
-        List<AdminFeatureIntegrationResponse> integrationResponseDTOList = adminModeFeatureIntegrationRepository.
-                fetchAdminModeIntegrationResponseDTO();
-
-        Map<Long, List<AdminFeatureIntegrationResponse>> listMap = integrationResponseDTOList.stream()
+        Map<Long, List<AdminFeatureIntegrationResponse>> integrationResponseMap = adminModeFeatureIntegrationRepository.
+                fetchAdminModeIntegrationResponseDTO().stream()
                 .collect(Collectors.groupingBy(AdminFeatureIntegrationResponse::getApiIntegrationFormatId));
 
         List<AdminModeFeatureIntegrationResponseDTO> adminModeFeatureIntegrationResponseDTOS = new ArrayList<>();
 
-        listMap.entrySet().stream().forEach(e -> {
-
+        integrationResponseMap.entrySet().stream().forEach(responseMap -> {
 
             List<FeatureIntegrationResponseDTO> features = new ArrayList<>();
 
-            e.getValue().forEach(responseDTO -> {
+            responseMap.getValue().forEach(responseDTO -> {
 
-                Map<String, String> requestHeaderResponseDTO = requestHeaderResponseDTO = integrationRepository.
+                Map<String, String> requestHeaderResponseDTO = integrationRepository.
                         findAdminModeApiRequestHeaders(responseDTO.getApiIntegrationFormatId());
 
                 Map<String, String> queryParametersResponseDTO = integrationRepository.
                         findAdminModeApiQueryParameters(responseDTO.getApiIntegrationFormatId());
 
-                Object[] requestBody = new Object[0];
-                if (responseDTO.getRequestMethod().equalsIgnoreCase("POST")) {
-                    List<IntegrationRequestBodyAttributeResponse> responses = integrationRepository.fetchRequestBodyAttributeByFeatureId(responseDTO.getFeatureId());
-
-                    if (responses != null) {
-                        requestBody = responses.stream()
-                                .map(request -> request.getName())
-                                .collect(Collectors.toList()).toArray();
-                    }
-
-                }
+                Object[] requestBody = getRequestBodyByFeature(responseDTO.getFeatureId(), responseDTO.getRequestMethod());
 
                 FeatureIntegrationResponseDTO featureIntegrationResponseDTO =
-                        FeatureIntegrationResponseDTO.builder()
-                                .featureCode(responseDTO.getFeatureCode())
-                                .integrationChannelCode(responseDTO.getIntegrationChannelCode())
-                                .build();
-
-
-                if (responseDTO.getIntegrationChannelCode().equalsIgnoreCase(FRONT_END_CODE)) {
-                    ApiInfoResponseDTO apiInfoResponseDTO = new ApiInfoResponseDTO();
-
-                    apiInfoResponseDTO.setUrl(responseDTO.getUrl());
-                    apiInfoResponseDTO.setRequestBody(requestBody);
-                    apiInfoResponseDTO.setRequestMethod(responseDTO.getRequestMethod());
-                    apiInfoResponseDTO.setHeaders(requestHeaderResponseDTO);
-                    apiInfoResponseDTO.setQueryParameters(queryParametersResponseDTO);
-
-                    featureIntegrationResponseDTO.setApiInfo(apiInfoResponseDTO);
-                }
-
+                        convertToAdminApiResponseDTO(responseDTO, requestBody, requestHeaderResponseDTO, queryParametersResponseDTO);
 
                 features.add(featureIntegrationResponseDTO);
 
-
             });
-
 
             AdminModeFeatureIntegrationResponseDTO adminModeFeatureIntegrationResponseDTO = new AdminModeFeatureIntegrationResponseDTO();
             adminModeFeatureIntegrationResponseDTO.setFeatures(features);
-            adminModeFeatureIntegrationResponseDTO.setAppointmentModeId(e.getKey());
+            adminModeFeatureIntegrationResponseDTO.setAppointmentModeId(responseMap.getKey());
 
             adminModeFeatureIntegrationResponseDTOS.add(adminModeFeatureIntegrationResponseDTO);
 
@@ -527,56 +494,34 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
     }
 
-
     private List<ClientIntegrationResponseDTO> getHospitalApiIntegration() {
 
         List<ClientFeatureIntegrationResponse> integrationResponseDTOList = integrationRepository.
                 fetchClientIntegrationResponseDTO();
 
-        Map<Long, List<ClientFeatureIntegrationResponse>> listMap = integrationResponseDTOList.stream()
+        Map<Long, List<ClientFeatureIntegrationResponse>> integrationResponseMap = integrationResponseDTOList.stream()
                 .collect(Collectors.groupingBy(ClientFeatureIntegrationResponse::getHospitalId));
 
         List<ClientIntegrationResponseDTO> clientIntegrationResponseDTOS = new ArrayList<>();
 
-        listMap.entrySet().stream().forEach(e -> {
-
+        integrationResponseMap.entrySet().stream().forEach(responseMap -> {
 
             List<FeatureIntegrationResponseDTO> features = new ArrayList<>();
 
             integrationResponseDTOList.forEach(responseDTO -> {
 
-                Map<String, String> requestHeaderResponseDTO = integrationRepository.findApiRequestHeaders(responseDTO.getApiIntegrationFormatId());
+                Map<String, String> requestHeaderResponseDTO = integrationRepository.
+                        findApiRequestHeaders(responseDTO.getApiIntegrationFormatId());
 
-                Map<String, String> queryParametersResponseDTO = integrationRepository.findApiQueryParameters(responseDTO.getApiIntegrationFormatId());
+                Map<String, String> queryParametersResponseDTO = integrationRepository.
+                        findApiQueryParameters(responseDTO.getApiIntegrationFormatId());
 
-                Object[] requestBody = new Object[0];
-                if (responseDTO.getRequestMethod().equalsIgnoreCase("POST")) {
-                    List<IntegrationRequestBodyAttributeResponse> responses = integrationRepository.fetchRequestBodyAttributeByFeatureId(responseDTO.getFeatureId());
+                Object[] requestBody = getRequestBodyByFeature(responseDTO.getFeatureId(), responseDTO.getRequestMethod());
 
-                    if (responses != null) {
-                        requestBody = responses.stream()
-                                .map(request -> request.getName())
-                                .collect(Collectors.toList()).toArray();
-                    }
-
-                }
-
-
-                FeatureIntegrationResponseDTO featureIntegrationResponseDTO = new FeatureIntegrationResponseDTO();
-                featureIntegrationResponseDTO.setFeatureCode(responseDTO.getFeatureCode());
-                featureIntegrationResponseDTO.setIntegrationChannelCode(responseDTO.getIntegrationChannelCode());
-
-                if (responseDTO.getIntegrationChannelCode().equalsIgnoreCase(FRONT_END_CODE)) {
-                    ApiInfoResponseDTO apiInfoResponseDTO = new ApiInfoResponseDTO();
-
-                    apiInfoResponseDTO.setUrl(responseDTO.getUrl());
-                    apiInfoResponseDTO.setRequestMethod(responseDTO.getRequestMethod());
-                    apiInfoResponseDTO.setRequestBody(requestBody);
-                    apiInfoResponseDTO.setHeaders(requestHeaderResponseDTO);
-                    apiInfoResponseDTO.setQueryParameters(queryParametersResponseDTO);
-
-                    featureIntegrationResponseDTO.setApiInfo(apiInfoResponseDTO);
-                }
+                FeatureIntegrationResponseDTO featureIntegrationResponseDTO = convertToClientApiResponseDTO(responseDTO,
+                        requestBody,
+                        requestHeaderResponseDTO,
+                        queryParametersResponseDTO);
 
 
                 features.add(featureIntegrationResponseDTO);
@@ -585,7 +530,7 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
             ClientIntegrationResponseDTO clientIntegrationResponseDTO = new ClientIntegrationResponseDTO();
             clientIntegrationResponseDTO.setFeatures(features);
-            clientIntegrationResponseDTO.setClientId(e.getKey());
+            clientIntegrationResponseDTO.setClientId(responseMap.getKey());
 
             clientIntegrationResponseDTOS.add(clientIntegrationResponseDTO);
 
@@ -593,6 +538,81 @@ public class CompanyAdminServiceImpl implements CompanyAdminService {
 
 
         return clientIntegrationResponseDTOS;
+
+    }
+
+    private Object[] getRequestBodyByFeature(Long featureId, String requestMethod) {
+
+        Object[] requestBody = new Object[0];
+        if (requestMethod.equalsIgnoreCase("POST")) {
+            List<IntegrationRequestBodyAttributeResponse> responses = integrationRepository.
+                    fetchRequestBodyAttributeByFeatureId(featureId);
+
+            if (responses != null) {
+                requestBody = responses.stream()
+                        .map(request -> request.getName())
+                        .collect(Collectors.toList()).toArray();
+            }
+
+        }
+
+        return requestBody;
+    }
+
+
+    private FeatureIntegrationResponseDTO convertToAdminApiResponseDTO(AdminFeatureIntegrationResponse responseDTO,
+                                                                       Object[] requestBody,
+                                                                       Map<String, String> requestHeaderResponseDTO,
+                                                                       Map<String, String> queryParametersResponseDTO) {
+
+        FeatureIntegrationResponseDTO featureIntegrationResponseDTO =
+                FeatureIntegrationResponseDTO.builder()
+                        .featureCode(responseDTO.getFeatureCode())
+                        .integrationChannelCode(responseDTO.getIntegrationChannelCode())
+                        .build();
+
+        if (responseDTO.getIntegrationChannelCode().equalsIgnoreCase(FRONT_END_CODE)) {
+
+
+            ApiInfoResponseDTO apiInfoResponseDTO = new ApiInfoResponseDTO();
+
+            apiInfoResponseDTO.setUrl(responseDTO.getUrl());
+            apiInfoResponseDTO.setRequestBody(requestBody);
+            apiInfoResponseDTO.setRequestMethod(responseDTO.getRequestMethod());
+            apiInfoResponseDTO.setHeaders(requestHeaderResponseDTO);
+            apiInfoResponseDTO.setQueryParameters(queryParametersResponseDTO);
+
+            featureIntegrationResponseDTO.setApiInfo(apiInfoResponseDTO);
+        }
+
+
+        return featureIntegrationResponseDTO;
+
+    }
+
+    private FeatureIntegrationResponseDTO convertToClientApiResponseDTO(ClientFeatureIntegrationResponse responseDTO,
+                                                                        Object[] requestBody,
+                                                                        Map<String, String> requestHeaderResponseDTO,
+                                                                        Map<String, String> queryParametersResponseDTO) {
+
+        FeatureIntegrationResponseDTO featureIntegrationResponseDTO = new FeatureIntegrationResponseDTO();
+        featureIntegrationResponseDTO.setFeatureCode(responseDTO.getFeatureCode());
+        featureIntegrationResponseDTO.setIntegrationChannelCode(responseDTO.getIntegrationChannelCode());
+
+        if (responseDTO.getIntegrationChannelCode().equalsIgnoreCase(FRONT_END_CODE)) {
+
+            ApiInfoResponseDTO apiInfoResponseDTO = new ApiInfoResponseDTO();
+            apiInfoResponseDTO.setUrl(responseDTO.getUrl());
+            apiInfoResponseDTO.setRequestBody(requestBody);
+            apiInfoResponseDTO.setRequestMethod(responseDTO.getRequestMethod());
+            apiInfoResponseDTO.setHeaders(requestHeaderResponseDTO);
+            apiInfoResponseDTO.setQueryParameters(queryParametersResponseDTO);
+
+            featureIntegrationResponseDTO.setApiInfo(apiInfoResponseDTO);
+        }
+
+
+        return featureIntegrationResponseDTO;
 
     }
 

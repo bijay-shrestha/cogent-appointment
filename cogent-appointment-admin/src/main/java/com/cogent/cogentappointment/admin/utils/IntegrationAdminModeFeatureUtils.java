@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.cogent.cogentappointment.admin.constants.StatusConstants.ACTIVE;
+import static com.cogent.cogentappointment.admin.constants.StatusConstants.DELETED;
 
 /**
  * @author rupak ON 2020/06/03-10:08 PM
@@ -50,6 +51,10 @@ public class IntegrationAdminModeFeatureUtils {
     }
 
     public static void parseToDeletedAdminModeApiFeatureIntegration(List<AdminModeApiFeatureIntegration> adminModeApiFeatureIntegrationList) {
+
+        adminModeApiFeatureIntegrationList.forEach(adminModeApiFeatureIntegration -> {
+            adminModeApiFeatureIntegration.setStatus(DELETED);
+        });
     }
 
     public static List<AdminModeRequestHeader> parseToAdminModeRequestHeaders(List<ClientApiHeadersRequestDTO> adminModeRequestHeaders, Long id) {
@@ -89,7 +94,6 @@ public class IntegrationAdminModeFeatureUtils {
         });
 
         return adminModeQueryParametersList;
-
 
 
     }

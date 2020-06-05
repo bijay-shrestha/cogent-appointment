@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.esewa.repository.custom.AppointmentHospitalD
 import com.cogent.cogentappointment.persistence.model.AppointmentHospitalDepartmentReservationLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,10 +15,10 @@ import java.util.List;
 @Repository
 public interface AppointmentHospitalDeptReservationLogRepository extends
         JpaRepository<AppointmentHospitalDepartmentReservationLog, Long>, AppointmentHospitalDeptReservationLogRepositoryCustom {
-    //
-//    @Query("SELECT a FROM AppointmentReservationLog a WHERE a.id=:id")
-//    AppointmentReservationLog findAppointmentReservationLogById(@Param("id") Long id);
-//
+
+    @Query("SELECT a FROM AppointmentHospitalDepartmentReservationLog a WHERE a.id=:id")
+    AppointmentHospitalDepartmentReservationLog findAppointmentReservationLogById(@Param("id") Long id);
+
     @Query("SELECT a FROM AppointmentHospitalDepartmentReservationLog a")
     List<AppointmentHospitalDepartmentReservationLog> fetchAppointmentHospitalDepartmentReservationLog();
 }

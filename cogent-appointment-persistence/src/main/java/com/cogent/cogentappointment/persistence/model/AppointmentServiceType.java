@@ -12,7 +12,7 @@ import java.io.Serializable;
 
 /**
  * @author smriti on 26/05/20
- * eg. Department wise, Doctor wise
+ * eg. Department Consultation, Doctor Consultation
  */
 @Entity
 @Table(name = "appointment_service_type")

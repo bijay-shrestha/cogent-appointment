@@ -13,6 +13,11 @@ import java.util.Date;
 
 /**
  * @author smriti on 2019-10-14
+ * <p>
+ *
+ * Appointment Service Type can be
+ * a. Doctor Consultation (AppointmentDoctorInfo)
+ * b. Department Consulatation (AppointmentHospitalDepartmentInfo)
  */
 @Entity
 @Table(name = "appointment")
@@ -27,6 +32,11 @@ public class Appointment extends Auditable<String> implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "appointment_service_type_id")
+    private AppointmentServiceType appointmentServiceType;
+
+    //todo : remove doctor and specialization from here
     /*eg.Specialization name like Surgeon, Physician,etc*/
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "specialization_id")

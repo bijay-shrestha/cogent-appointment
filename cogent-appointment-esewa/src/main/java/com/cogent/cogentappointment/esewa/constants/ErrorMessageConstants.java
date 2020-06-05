@@ -25,6 +25,11 @@ public class ErrorMessageConstants {
 
     public interface AppointmentHospitalDepartmentMessage {
         String INVALID_ROOM_CHECK_AVAILABILITY_REQUEST = "Sorry, Requested room is not assigned to department duty roster";
+
+        String HOSPITAL_DEPARTMENT_APPOINTMENT_CHARGE_INVALID = "Sorry, requested appointment amount '%s' doesn't match with " +
+                "actual hospital department appointment charge";
+        String HOSPITAL_DEPARTMENT_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE = "Appointment amount is not equal to " +
+                "Hospital Department actual appointment charge/ follow-up appointment charge";
     }
 
     public final static String HMAC_BAD_SIGNATURE = "HmacAccessFilter.badSignature";

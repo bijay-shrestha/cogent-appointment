@@ -88,7 +88,7 @@ public class RoomQuery {
                     " ORDER BY label ASC";
 
     public static final String QUERY_TO_FETCH_ACTIVE_ROOM_FOR_DROPDOWN_BY_HOSPITAL_DEPARTMENT_ID =
-            "SELECT r.id as value," +                                                  //[0]
+            "SELECT hdri.id as value," +                                                  //[0]
                     " CONCAT('Room No',' - ',r.roomNumber) AS label" +                 //[1]
                     " FROM Room r" +
                     " LEFT JOIN HospitalDepartmentRoomInfo hdri ON hdri.room.id=r.id" +

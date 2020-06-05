@@ -14,10 +14,14 @@ import java.util.List;
 public interface HospitalDepartmentRoomInfoRepository extends JpaRepository<HospitalDepartmentRoomInfo,Long>,
         HospitalDepartmentRoomInfoRepositoryCustom {
 
-    @Query(value = "SELECT hdi FROM HospitalDepartmentRoomInfo hdi WHERE hdi.hospitalDepartment.id=:hospitalDepartmentId AND hdi.status!='D'")
+    @Query(value = "SELECT hdi FROM HospitalDepartmentRoomInfo hdi WHERE hdi.hospitalDepartment.id=:hospitalDepartmentId" +
+            " AND hdi.status!='D'")
     List<HospitalDepartmentRoomInfo> fetchRoomListByHospitalDepartmentId(@Param("hospitalDepartmentId") Long hospitalDepartmentId);
 
-    @Query(value = "SELECT hdi FROM HospitalDepartmentRoomInfo hdi WHERE hdi.hospitalDepartment.id=:hospitalDepartmentId AND hdi.room.id=:roomId AND hdi.status!='D'")
+    @Query(value = "SELECT hdi FROM HospitalDepartmentRoomInfo hdi WHERE hdi.hospitalDepartment.id=:hospitalDepartmentId" +
+            " AND hdi.room.id=:roomId AND hdi.status!='D'")
     HospitalDepartmentRoomInfo fetchRoomByHospitalDepartmentId(@Param("hospitalDepartmentId") Long hospitalDepartmentId,
                                                                @Param("roomId") Long roomId);
+
+
 }

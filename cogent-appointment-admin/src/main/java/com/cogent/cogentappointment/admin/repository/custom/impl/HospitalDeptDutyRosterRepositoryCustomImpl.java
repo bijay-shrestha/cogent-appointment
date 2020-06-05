@@ -71,6 +71,7 @@ public class HospitalDeptDutyRosterRepositoryCustomImpl implements HospitalDeptD
     @Override
     public Character fetchRoomStatusIfExistsExceptCurrentId(Long hospitalDepartmentId,
                                                             Date fromDate, Date toDate, Long hddRosterId) {
+
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_HDD_ROSTER_STATUS_EXCEPT_CURRENT_ID)
                 .setParameter(ID, hddRosterId)
                 .setParameter(HOSPITAL_DEPARTMENT_ID, hospitalDepartmentId)

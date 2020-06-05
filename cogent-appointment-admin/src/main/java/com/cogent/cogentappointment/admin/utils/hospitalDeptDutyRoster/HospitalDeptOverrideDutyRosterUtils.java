@@ -6,7 +6,7 @@ import com.cogent.cogentappointment.admin.dto.request.hospitalDepartmentDutyRost
 import com.cogent.cogentappointment.admin.dto.response.hospitalDeptDutyRoster.update.HospitalDeptDutyRosterOverrideUpdateResponseDTO;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDutyRoster;
 import com.cogent.cogentappointment.persistence.model.HospitalDepartmentDutyRosterOverride;
-import com.cogent.cogentappointment.persistence.model.Room;
+import com.cogent.cogentappointment.persistence.model.HospitalDepartmentRoomInfo;
 
 /**
  * @author smriti on 20/05/20
@@ -16,7 +16,7 @@ public class HospitalDeptOverrideDutyRosterUtils {
     public static HospitalDepartmentDutyRosterOverride parseOverrideDetails(
             HospitalDeptDutyRosterOverrideRequestDTO requestDTO,
             HospitalDepartmentDutyRoster hospitalDepartmentDutyRoster,
-            Room room) {
+            HospitalDepartmentRoomInfo hospitalDepartmentRoomInfo) {
 
         HospitalDepartmentDutyRosterOverride override = new HospitalDepartmentDutyRosterOverride();
         override.setFromDate(requestDTO.getFromDate());
@@ -27,7 +27,7 @@ public class HospitalDeptOverrideDutyRosterUtils {
         override.setStatus(requestDTO.getStatus());
         override.setRemarks(requestDTO.getRemarks());
         override.setHospitalDepartmentDutyRoster(hospitalDepartmentDutyRoster);
-        override.setRoom(room);
+        override.setHospitalDepartmentRoomInfo(hospitalDepartmentRoomInfo);
 
         return override;
     }
@@ -35,7 +35,7 @@ public class HospitalDeptOverrideDutyRosterUtils {
     public static HospitalDepartmentDutyRosterOverride parseOverrideDetails(
             HospitalDeptDutyRosterOverrideUpdateRequestDTO updateRequestDTO,
             HospitalDepartmentDutyRosterOverride override,
-            Room room) {
+            HospitalDepartmentRoomInfo hospitalDepartmentRoomInfo) {
 
         override.setFromDate(updateRequestDTO.getFromDate());
         override.setToDate(updateRequestDTO.getToDate());
@@ -44,7 +44,7 @@ public class HospitalDeptOverrideDutyRosterUtils {
         override.setDayOffStatus(updateRequestDTO.getDayOffStatus());
         override.setStatus(updateRequestDTO.getStatus());
         override.setRemarks(updateRequestDTO.getRemarks());
-        override.setRoom(room);
+        override.setHospitalDepartmentRoomInfo(hospitalDepartmentRoomInfo);
         return override;
     }
 
@@ -60,7 +60,6 @@ public class HospitalDeptOverrideDutyRosterUtils {
         override.setStatus(requestDTO.getStatus());
         override.setRemarks(requestDTO.getRemarks());
     }
-
 
 
 }

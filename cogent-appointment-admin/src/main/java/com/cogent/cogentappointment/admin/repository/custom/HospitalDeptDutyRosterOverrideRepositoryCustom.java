@@ -17,17 +17,18 @@ public interface HospitalDeptDutyRosterOverrideRepositoryCustom {
 
     Long fetchOverrideCountWithoutRoom(Long hospitalDepartmentId, Date fromDate, Date toDate);
 
-    Long fetchOverrideCountWithRoom(Long hospitalDepartmentId, Date fromDate, Date toDate, Long roomId);
+    Long fetchOverrideCountWithRoom(Long hospitalDepartmentId, Date fromDate,
+                                    Date toDate, Long hospitalDepartmentRoomInfoId);
 
     Long fetchOverrideCountWithoutRoomExceptCurrentId(Long hospitalDepartmentId,
                                                       Date fromDate, Date toDate, Long rosterOverrideId);
 
-    Long fetchOverrideCountWithRoomExceptCurrentId(Long hospitalDepartmentId, Date fromDate,
-                                                   Date toDate, Long roomId, Long rosterOverrideId);
+    Long fetchOverrideCountWithRoomExceptCurrentId(Long hospitalDepartmentId, Date fromDate, Date toDate,
+                                                   Long hospitalDepartmentRoomInfoId, Long rosterOverrideId);
 
     void updateOverrideStatus(Long hddRosterId);
 
-    void updateOverrideRoomInfo(Long hddRosterId, Long roomId);
+    void updateOverrideRoomInfo(Long hddRosterId, Long hospitalDepartmentRoomInfoId);
 
     List<HospitalDepartmentDutyRosterOverride> fetchOverrideList(
             List<HospitalDeptDutyRosterOverrideUpdateRequestDTO> updateRequestDTOS);

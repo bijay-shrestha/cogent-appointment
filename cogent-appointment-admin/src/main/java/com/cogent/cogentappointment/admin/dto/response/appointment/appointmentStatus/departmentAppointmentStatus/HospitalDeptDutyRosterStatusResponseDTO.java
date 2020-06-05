@@ -8,14 +8,14 @@ import java.time.LocalDate;
 import java.util.List;
 
 /**
- * @author smriti ON 14/12/2019
+ * @author Sauravi Thapa ON 6/5/20
  */
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DeptDutyRosterStatusResponseDTO implements Serializable {
+public class HospitalDeptDutyRosterStatusResponseDTO implements Serializable {
 
     private LocalDate date;
 
@@ -27,9 +27,9 @@ public class DeptDutyRosterStatusResponseDTO implements Serializable {
 
     private Integer rosterGapDuration;
 
-    private Long departmentId;
+    private Long hospitalDepartmentId;
 
-    private String departmentName;
+    private String hospitalDepartmentName;
 
     private Long roomId;
 

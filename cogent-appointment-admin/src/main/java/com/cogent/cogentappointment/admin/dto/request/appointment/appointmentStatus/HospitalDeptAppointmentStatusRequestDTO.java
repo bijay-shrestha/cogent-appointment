@@ -12,7 +12,7 @@ import java.util.Date;
  */
 @Setter
 @Getter
-public class DeptAppointmentStatusRequestDTO implements Serializable {
+public class HospitalDeptAppointmentStatusRequestDTO implements Serializable {
     @NotNull
     private Date fromDate;
 
@@ -21,9 +21,9 @@ public class DeptAppointmentStatusRequestDTO implements Serializable {
 
     private Long hospitalId;
 
-    private Long departmentId;
+    private Long hospitalDepartmentId;
 
-    private Long roomId;
+    private Long hospitalDepartmentRoomInfoId;
 
     /*V= VACANT
      * PA= PENDING APPROVAL

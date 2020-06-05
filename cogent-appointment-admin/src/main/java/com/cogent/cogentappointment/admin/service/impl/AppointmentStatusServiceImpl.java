@@ -1,15 +1,16 @@
 package com.cogent.cogentappointment.admin.service.impl;
 
 import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.AppointmentStatusRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.AppointmentStatusDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.AppointmentStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.DoctorTimeSlotResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.DeptAppointmentStatusDTO;
+import com.cogent.cogentappointment.admin.dto.response.appointment.appointmentStatus.departmentAppointmentStatus.HospitalDeptDutyRosterStatusResponseDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctor.DoctorDropdownDTO;
 import com.cogent.cogentappointment.admin.dto.response.doctorDutyRoster.DoctorDutyRosterStatusResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
-import com.cogent.cogentappointment.admin.repository.DoctorDutyRosterOverrideRepository;
-import com.cogent.cogentappointment.admin.repository.DoctorDutyRosterRepository;
-import com.cogent.cogentappointment.admin.repository.DoctorRepository;
+import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.service.AppointmentService;
 import com.cogent.cogentappointment.admin.service.AppointmentStatusService;
 import com.cogent.cogentappointment.persistence.model.Appointment;
@@ -31,6 +32,7 @@ import static com.cogent.cogentappointment.admin.constants.StringConstant.COMMA_
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.APPOINTMENT;
 import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.APPOINTMENT_STATUS;
+import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.DEPARTMENT_APPOINTMENT_STATUS;
 import static com.cogent.cogentappointment.admin.utils.AppointmentStatusUtils.*;
 import static com.cogent.cogentappointment.admin.utils.DoctorDutyRosterUtils.mergeOverrideAndActualDoctorDutyRoster;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
@@ -45,6 +47,10 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
 
     private final DoctorDutyRosterRepository doctorDutyRosterRepository;
 
+    private final HospitalDeptDutyRosterOverrideRepository deptDutyRosterOverrideRepository;
+
+    private final HospitalDeptDutyRosterRepository deptDutyRosterRepository;
+
     private final DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository;
 
     private final DoctorRepository doctorRepository;
@@ -52,10 +58,14 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
     private final AppointmentService appointmentService;
 
     public AppointmentStatusServiceImpl(DoctorDutyRosterRepository doctorDutyRosterRepository,
+                                        HospitalDeptDutyRosterOverrideRepository deptDutyRosterOverrideRepository,
+                                        HospitalDeptDutyRosterRepository deptDutyRosterRepository,
                                         DoctorDutyRosterOverrideRepository doctorDutyRosterOverrideRepository,
                                         DoctorRepository doctorRepository,
                                         AppointmentService appointmentService) {
         this.doctorDutyRosterRepository = doctorDutyRosterRepository;
+        this.deptDutyRosterOverrideRepository = deptDutyRosterOverrideRepository;
+        this.deptDutyRosterRepository = deptDutyRosterRepository;
         this.doctorDutyRosterOverrideRepository = doctorDutyRosterOverrideRepository;
         this.doctorRepository = doctorRepository;
         this.appointmentService = appointmentService;
@@ -82,6 +92,18 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
         log.info(FETCHING_PROCESS_COMPLETED, APPOINTMENT_STATUS, getDifferenceBetweenTwoTime(startTime));
 
         return appointmentStatusDTO;
+    }
+
+    @Override
+    public DeptAppointmentStatusDTO fetchDeptAppointmentStatusResponseDTO(HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, DEPARTMENT_APPOINTMENT_STATUS);
+
+        log.info(FETCHING_PROCESS_COMPLETED, DEPARTMENT_APPOINTMENT_STATUS, getDifferenceBetweenTwoTime(startTime));
+
+        return null;
     }
 
     /*IN CASE OF PAST DATE ->
@@ -335,6 +357,22 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
         return appointment.getDate().equals(doctorDutyRosterStatus.getDate())
                 && (appointment.getDoctorId().equals(doctorDutyRosterStatus.getDoctorId()))
                 && (appointment.getSpecializationId().equals(doctorDutyRosterStatus.getSpecializationId()));
+    }
+
+    /*FETCH DOCTOR DUTY ROSTER FROM DOCTOR_DUTY_ROSTER_OVERRIDE FIRST
+     AND THEN DOCTOR_DUTY ROSTER. THEN MERGE BOTH ROSTERS BASED ON THE REQUESTED SEARCH DATE, DOCTOR AND SPECIALIZATION*/
+    private List<HospitalDeptDutyRosterStatusResponseDTO> fetchDepartmentStatus(HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+
+        List<HospitalDeptDutyRosterStatusResponseDTO> doctorDutyRosterOverrideStatus =
+                deptDutyRosterOverrideRepository.fetchHospitalDeptDutyRosterOverrideStatus(requestDTO);
+
+//        List<DoctorDutyRosterStatusResponseDTO> doctorDutyRosterStatus =
+//                doctorDutyRosterRepository.fetchDoctorDutyRosterStatus(requestDTO);
+
+//        if (doctorDutyRosterOverrideStatus.isEmpty() && doctorDutyRosterStatus.isEmpty())
+//            throw new NoContentFoundException(DoctorDutyRoster.class);
+
+        return null;
     }
 
 

@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.admin.query;
 
+import com.cogent.cogentappointment.admin.dto.request.appointment.appointmentStatus.HospitalDeptAppointmentStatusRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.hospitalDepartmentDutyRoster.HospitalDeptDutyRosterSearchRequestDTO;
 import org.springframework.util.ObjectUtils;
 
@@ -112,4 +113,51 @@ public class HospitalDeptDutyRosterQuery {
                     " AND hd.id=:id" +
                     " AND dd.toDate >=:fromDate" +
                     " AND dd.fromDate <=:toDate";
+
+    public static String QUERY_TO_FETCH_HOSPITAL_DEPT_DUTY_ROSTER_STATUS(HospitalDeptAppointmentStatusRequestDTO requestDTO) {
+        String SQL ="SELECT " +
+                "  hddr.from_date as fromDate, " +                                                     //[0]
+                "  hddr.to_date as toDate, " +                                                         //[1]
+                "  hddr.roster_gap_duration as gapDuration, " +                                        //[2]
+                "  hd.id as hospitalDepartmentId, " +                                                  //[3]
+                "  hd.name as hospitalDepartmentName, " +                                               //[4]
+                "  CASE WHEN hddr.is_room_enabled='N'  " +                                              //[5]
+                "  THEN 'N/A' " +
+                "  ELSE hdri.id END as roomId, " +
+                "  CASE WHEN hddr.is_room_enabled='N'  " +                                               //[6]
+                "  THEN 'N/A' " +
+                "  ELSE hddr.is_room_enabled END as roomNumber, " +
+                "  GROUP_CONCAT((CONCAT( DATE_FORMAT(dw.start_time, '%H:%i'), '-', DATE_FORMAT(dw.end_time, '%H:%i')," +
+                " '-', dw.day_off_status, '-', w.name))) as departmentTimeDetails " +                          //[7]
+                " FROM " +
+                "  hospital_department_duty_roster hddr " +
+                " LEFT JOIN hospital_department_week_days_duty_roster dw ON dw.hospital_department_duty_roster_id = hddr.id " +
+                " LEFT JOIN week_days w ON w.id = dw.week_days_id " +
+                " LEFT JOIN hospital h ON h.id = hddr.hospital_id " +
+                " LEFT JOIN hospital_department hd ON hd.id = hddr.hospital_department_id " +
+                " LEFT JOIN hospital_department_duty_roster_room_info hdrri ON hdrri.hospital_department_duty_roster_id=hddr.id " +
+                " LEFT JOIN hospital_department_room_info hdri ON hdri.id=hdrri.hospital_department_room_info_id  " +
+                " LEFT JOIN room r ON r.id=hdri.room_id  " +
+                " WHERE " +
+                "  hddr.status = 'Y' " +
+                "  AND hd.status = 'Y' " +
+                "  AND hddr.to_date >=:fromDate " +
+                "  AND hddr.from_date <=:toDate " +
+                "GROUP BY hddr.id ";
+
+        if (!Objects.isNull(requestDTO.getHospitalDepartmentId()))
+            SQL += " AND hd.id = :hospitalDepartmentId";
+
+        if (!Objects.isNull(requestDTO.getHospitalDepartmentRoomInfoId()))
+            SQL += " AND hdri.id = :hospitalDepartmentRoomInfoId";
+
+        if (!Objects.isNull(requestDTO.getHospitalId()))
+            SQL += " AND h.id = :hospitalId";
+
+        SQL += " GROUP BY d.id";
+
+        return SQL;
+
+    }
+
 }

@@ -36,6 +36,7 @@ import static com.cogent.cogentappointment.admin.log.constants.AppointmentLog.DE
 import static com.cogent.cogentappointment.admin.utils.AppointmentStatusUtils.*;
 import static com.cogent.cogentappointment.admin.utils.DoctorDutyRosterUtils.mergeOverrideAndActualDoctorDutyRoster;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.*;
+import static com.cogent.cogentappointment.admin.utils.hospitalDeptDutyRoster.HospitalDeptDutyRosterUtils.mergeOverrideAndActualHospitalDeptDutyRoster;
 
 /**
  * @author smriti ON 16/12/2019
@@ -363,16 +364,16 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
      AND THEN DOCTOR_DUTY ROSTER. THEN MERGE BOTH ROSTERS BASED ON THE REQUESTED SEARCH DATE, DOCTOR AND SPECIALIZATION*/
     private List<HospitalDeptDutyRosterStatusResponseDTO> fetchDepartmentStatus(HospitalDeptAppointmentStatusRequestDTO requestDTO) {
 
-        List<HospitalDeptDutyRosterStatusResponseDTO> doctorDutyRosterOverrideStatus =
+        List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRosterOverrideStatus =
                 deptDutyRosterOverrideRepository.fetchHospitalDeptDutyRosterOverrideStatus(requestDTO);
 
-//        List<DoctorDutyRosterStatusResponseDTO> doctorDutyRosterStatus =
-//                doctorDutyRosterRepository.fetchDoctorDutyRosterStatus(requestDTO);
+        List<HospitalDeptDutyRosterStatusResponseDTO> hospitalDeptDutyRosterStatus =
+                deptDutyRosterRepository.fetchHospitalDeptDutyRosterStatus(requestDTO);
 
-//        if (doctorDutyRosterOverrideStatus.isEmpty() && doctorDutyRosterStatus.isEmpty())
-//            throw new NoContentFoundException(DoctorDutyRoster.class);
+        if (hospitalDeptDutyRosterOverrideStatus.isEmpty() && hospitalDeptDutyRosterStatus.isEmpty())
+            throw new NoContentFoundException(DoctorDutyRoster.class);
 
-        return null;
+        return mergeOverrideAndActualHospitalDeptDutyRoster(hospitalDeptDutyRosterOverrideStatus,hospitalDeptDutyRosterStatus);
     }
 
 

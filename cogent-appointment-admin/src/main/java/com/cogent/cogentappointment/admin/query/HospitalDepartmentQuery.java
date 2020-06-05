@@ -80,11 +80,16 @@ public class HospitalDepartmentQuery {
                             " WHEN GROUP_CONCAT(DISTINCT hdr.room_id) IS NULL THEN 'N/A'" +
                             " ELSE GROUP_CONCAT(DISTINCT r.room_number )" +
                             " END as roomList," +
-                            " h.name as hospitalName" +
+                            " h.name as hospitalName," +
+                            " CASE" +
+                            " WHEN GROUP_CONCAT(DISTINCT hdc.billing_mode_id) IS NULL THEN 'N/A'" +
+                            " ELSE GROUP_CONCAT(DISTINCT bm.name )" +
+                            " END as billingModes" +
                             " FROM" +
                             " hospital_department hd" +
                             " LEFT JOIN hospital_department_billing_mode_info hdc ON hdc.hospital_department_id=hd.id" +
                             " AND hdc.status!='D'" +
+                            " LEFT JOIN billing_mode bm ON bm.id=hdc.billing_mode_id " +
                             " LEFT JOIN hospital_department_room_info  hdr ON hdr.hospital_department_id=hd.id" +
                             "  AND hdr.status!='D'" +
                             " LEFT JOIN room r ON hdr.room_id =r.id " +
@@ -119,7 +124,7 @@ public class HospitalDepartmentQuery {
         if (!ObjectUtils.isEmpty(searchRequestDTO.getBillingModeId()))
             whereClause += " AND hdc.billing_mode_id=" + searchRequestDTO.getBillingModeId();
 
-        whereClause += " GROUP BY hd.id,hdc.id" +
+        whereClause += " GROUP BY hd.id" +
                 " ORDER BY hd.id DESC";
 
         return whereClause;
@@ -157,7 +162,7 @@ public class HospitalDepartmentQuery {
                     " LEFT JOIN DoctorAvatar da ON da.doctorId=hddi.doctor.id" +
                     " WHERE" +
                     " hddi.hospitalDepartment.id = :hospitalDepartmentId" +
-                    " AND hddi.status!='D'"+
+                    " AND hddi.status!='D'" +
                     " AND hddi.hospitalDepartment.status!='D'";
 
     public static String QUERY_TO_GET_ROOM_LIST_BY_HOSPITAL_DEPARTMENT_ID =
@@ -168,13 +173,14 @@ public class HospitalDepartmentQuery {
                     " HospitalDepartmentRoomInfo hdri" +
                     " WHERE" +
                     " hdri.hospitalDepartment.id = :hospitalDepartmentId" +
-                    " AND hdri.status!='D'"+
+                    " AND hdri.status!='D'" +
                     " AND hdri.hospitalDepartment.status!='D'";
 
 
-    public static String QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_BILLING_MODE_WITH_CHARGE=
+    public static String QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_BILLING_MODE_WITH_CHARGE =
             "SELECT " +
                     "  hb.id as id, " +
+                    "  hb.billingMode.id as billingModeId, " +
                     "  hb.billingMode.name as billingMode, " +
                     "  hb.appointmentCharge as appointmentCharge, " +
                     "  hb.appointmentFollowUpCharge as followUpCharge" +
@@ -183,7 +189,6 @@ public class HospitalDepartmentQuery {
                     " WHERE " +
                     "  hb.hospitalDepartment.id = :hospitalDepartmentId " +
                     " AND hb.status!='D'";
-
 
     public static String HOSPITAL_DEPARTMENT_AUDITABLE_QUERY() {
         return " hd.createdBy as createdBy," +

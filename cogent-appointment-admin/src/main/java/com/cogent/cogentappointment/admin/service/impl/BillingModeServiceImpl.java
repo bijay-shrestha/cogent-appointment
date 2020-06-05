@@ -84,7 +84,7 @@ public class BillingModeServiceImpl implements BillingModeService {
 
         BillingMode billingMode = fetchBillingModeById(deleteRequestDTO.getId());
 
-        save(parseToDeletedBillingMode.apply(deleteRequestDTO,billingMode));
+        save(parseToDeletedBillingMode.apply(deleteRequestDTO, billingMode));
 
         log.info(DELETING_PROCESS_COMPLETED, BILLING_MODE, getDifferenceBetweenTwoTime(startTime));
     }
@@ -167,7 +167,7 @@ public class BillingModeServiceImpl implements BillingModeService {
         return minInfo;
     }
 
-    private void save(BillingMode billingMode){
+    private void save(BillingMode billingMode) {
         billingModeRepository.save(billingMode);
     }
 

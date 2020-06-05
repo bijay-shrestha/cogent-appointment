@@ -16,6 +16,8 @@ public class BillingModeChargeResponse implements Serializable {
 
     private Long id;
 
+    private Long billingModeId;
+
     private String billingMode;
 
     private Double appointmentCharge;

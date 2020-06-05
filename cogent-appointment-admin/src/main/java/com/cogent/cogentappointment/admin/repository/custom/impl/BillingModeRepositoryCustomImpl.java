@@ -44,6 +44,7 @@ public class BillingModeRepositoryCustomImpl implements BillingModeRepositoryCus
 
     @Override
     public List<Object[]> validateDuplicity(BillingModeRequestDTO requestDTO) {
+
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY)
                 .setParameter(NAME, requestDTO.getName())
                 .setParameter(CODE, requestDTO.getCode());
@@ -53,6 +54,7 @@ public class BillingModeRepositoryCustomImpl implements BillingModeRepositoryCus
 
     @Override
     public List<Object[]> validateDuplicity(BillingModeUpdateRequestDTO requestDTO) {
+
         Query query = createQuery.apply(entityManager, QUERY_TO_VALIDATE_DUPLICITY_FOR_UPDATE)
                 .setParameter(ID, requestDTO.getId())
                 .setParameter(NAME, requestDTO.getName())
@@ -77,16 +79,21 @@ public class BillingModeRepositoryCustomImpl implements BillingModeRepositoryCus
 
         if (results.isEmpty()) throw BILLING_MODE_NOT_FOUND.get();
         else {
+
             minimalResponseDTO.setBillingModeList(results);
+
             minimalResponseDTO.setTotalItems(totalItems);
+
             return minimalResponseDTO;
         }
     }
 
     @Override
     public BillingModeResponseDTO fetchDetailsById(Long id) {
+
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_BILLING_MODE_DETAILS)
                 .setParameter(ID, id);
+
         try {
             return transformQueryToSingleResult(query, BillingModeResponseDTO.class);
         } catch (NoResultException e) {
@@ -96,16 +103,19 @@ public class BillingModeRepositoryCustomImpl implements BillingModeRepositoryCus
 
     @Override
     public List<DropDownResponseDTO> fetchActiveMinBillingMode() {
+
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_ACTIVE_BILLING_MODE_FOR_DROP_DOWN);
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
         if (results.isEmpty()) throw BILLING_MODE_NOT_FOUND.get();
         else return results;
+
     }
 
     @Override
     public List<DropDownResponseDTO> fetchActiveMinBillingModeByHospitalId(Long hospitalId) {
+
         Query query = createQuery.apply(entityManager, QUERY_TO_GET_ACTIVE_BILLING_MODE_DROP_DOWN_BY_HOSPITAL_ID)
                 .setParameter(HOSPITAL_ID, hospitalId);
 
@@ -113,20 +123,24 @@ public class BillingModeRepositoryCustomImpl implements BillingModeRepositoryCus
 
         if (results.isEmpty()) throw BILLING_MODE_NOT_FOUND.get();
         else return results;
+
     }
 
     @Override
     public List<DropDownResponseDTO> fetchMinBillingMode() {
+
         Query query = createQuery.apply(entityManager, QUERY_TO_FETCH_BILLING_MODE_FOR_DROP_DOWN);
 
         List<DropDownResponseDTO> results = transformQueryToResultList(query, DropDownResponseDTO.class);
 
         if (results.isEmpty()) throw BILLING_MODE_NOT_FOUND.get();
         else return results;
+
     }
 
     @Override
     public List<DropDownResponseDTO> fetchMinBillingModeByHospitalId(Long hospitalId) {
+
         Query query = createQuery.apply(entityManager, QUERY_TO_GET_BILLING_MODE_DROP_DOWN_BY_HOSPITAL_ID)
                 .setParameter(HOSPITAL_ID, hospitalId);
 
@@ -138,6 +152,7 @@ public class BillingModeRepositoryCustomImpl implements BillingModeRepositoryCus
 
     @Override
     public BillingMode fetchBillingModeByHospitalId(Long hospitalId, Long billingModeId) {
+
         Query query = createQuery.apply(entityManager, QUERY_TO_GET_ACTIVE_BILLING_MODE_BY_HOSPITAL_ID)
                 .setParameter(BILLING_MODE_ID, billingModeId)
                 .setParameter(HOSPITAL_ID, hospitalId);

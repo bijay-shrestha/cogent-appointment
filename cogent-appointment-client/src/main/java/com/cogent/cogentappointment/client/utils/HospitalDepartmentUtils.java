@@ -83,14 +83,17 @@ public class HospitalDepartmentUtils {
         return hospitalDepartment;
     }
 
-    public static HospitalDepartmentBillingModeInfo parseToUpdateHospitalDepartmentCharge(BillingModeChargeUpdateDTO requestDTO,
-                                                                                          HospitalDepartmentBillingModeInfo departmentBillingModeInfo,
-                                                                                          HospitalDepartment hospitalDepartment) {
+    public static HospitalDepartmentBillingModeInfo parseToUpdateHospitalDepartmentCharge(
+            BillingModeChargeUpdateDTO requestDTO,
+            HospitalDepartmentBillingModeInfo departmentBillingModeInfo,
+            HospitalDepartment hospitalDepartment,
+            BillingMode billingMode) {
 
         departmentBillingModeInfo.setAppointmentCharge(requestDTO.getAppointmentCharge());
         departmentBillingModeInfo.setAppointmentFollowUpCharge(requestDTO.getFollowUpCharge());
         departmentBillingModeInfo.setStatus(requestDTO.getStatus());
         departmentBillingModeInfo.setRemarks(hospitalDepartment.getRemarks());
+        departmentBillingModeInfo.setBillingMode(billingMode);
 
         return departmentBillingModeInfo;
     }

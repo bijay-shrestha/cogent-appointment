@@ -14,13 +14,8 @@ import java.util.Optional;
  * @author Sauravi Thapa ON 5/20/20
  */
 @Repository
-public interface HospitalDepartmentBillingModeInfoRepository extends JpaRepository<HospitalDepartmentBillingModeInfo, Long>,
-        HospitalDepartmentBillingModeInfoRepositoryCustom {
-
-    @Query(value = "SELECT hdc FROM HospitalDepartmentBillingModeInfo hdc WHERE" +
-            " hdc.hospitalDepartment.id = :hospitalDepartmentId AND hdc.status != 'D'")
-    Optional<HospitalDepartmentBillingModeInfo> fetchByHospitalDepartmentId(@Param("hospitalDepartmentId")
-                                                                                    Long hospitalDepartmentId);
+public interface HospitalDepartmentBillingModeInfoRepository extends JpaRepository<HospitalDepartmentBillingModeInfo,
+        Long>, HospitalDepartmentBillingModeInfoRepositoryCustom {
 
     @Query(value = "SELECT hdc FROM HospitalDepartmentBillingModeInfo hdc WHERE" +
             " hdc.hospitalDepartment.id = :hospitalDepartmentId AND hdc.status != 'D'")

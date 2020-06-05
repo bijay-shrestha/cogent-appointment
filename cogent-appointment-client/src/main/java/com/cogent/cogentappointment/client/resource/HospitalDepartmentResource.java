@@ -88,7 +88,7 @@ public class HospitalDepartmentResource {
     @GetMapping(AVAILABLE + ROOM)
     @ApiOperation(FETCH_AVAILABLE_ROOM_FOR_DROP_DOWN_OPERATION)
     public ResponseEntity<?> fetchAvailableRoom() {
-        return ok(hospitalDepartmentService.fetchAvailableHospitalDepartment());
+        return ok(hospitalDepartmentService.fetchAvailableRoom());
     }
 
     @PutMapping(BILLING_MODE_WISE+CHARGE)

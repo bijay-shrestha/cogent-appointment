@@ -20,6 +20,7 @@ import java.util.List;
 @Repository
 @Qualifier("billingModeRepositoryCustom")
 public interface BillingModeRepositoryCustom {
+
     List<Object[]> validateDuplicity(BillingModeRequestDTO requestDTO);
 
     List<Object[]> validateDuplicity(BillingModeUpdateRequestDTO requestDTO);

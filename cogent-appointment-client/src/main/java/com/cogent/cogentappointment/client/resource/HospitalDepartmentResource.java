@@ -18,6 +18,7 @@ import java.net.URI;
 
 import static com.cogent.cogentappointment.client.constants.SwaggerConstants.HospitalDepartmentConstant.*;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.*;
+import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.DoctorConstants.BASE_DOCTOR;
 import static com.cogent.cogentappointment.client.constants.WebResourceKeyConstants.HospitalDepartmentConstants.*;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
@@ -95,5 +96,11 @@ public class HospitalDepartmentResource {
     @ApiOperation(FETCH_APPOINTMENT_CHARGE)
     public ResponseEntity<?> fetchAppointmentCharge(@Valid @RequestBody ChargeRequestDTO requestDTO) {
         return ok().body(hospitalDepartmentService.fetchAppointmentCharge(requestDTO));
+    }
+
+    @GetMapping(BASE_DOCTOR + HOSPITAL_DEPARTMENT_ID_PATH_VARIABLE_BASE)
+    @ApiOperation(FETCH_ASSIGNED_DOCTOR)
+    public ResponseEntity<?> fetchAppointmentCharge(@PathVariable("hospitalDepartmentId") Long hospitalDepartmentId) {
+        return ok().body(hospitalDepartmentService.fetchAssignedHospitalDepartmentDoctor(hospitalDepartmentId));
     }
 }

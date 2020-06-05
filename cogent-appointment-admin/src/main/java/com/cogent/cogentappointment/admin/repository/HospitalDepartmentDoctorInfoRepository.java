@@ -14,10 +14,6 @@ import java.util.List;
 public interface HospitalDepartmentDoctorInfoRepository extends JpaRepository<HospitalDepartmentDoctorInfo,Long>,
         HospitalDepartmentDoctorInfoRepositoryCustom {
 
-
-    @Query(value = "SELECT hdi.doctor.id FROM HospitalDepartmentDoctorInfo hdi WHERE hdi.hospitalDepartment.id=:hospitalDepartmentId AND hdi.status='Y'")
-    List<Long> fetchDoctorIdListByHospitalDepartmentId(@Param("hospitalDepartmentId") Long hospitalDepartmentId);
-
     @Query(value = "SELECT hdi FROM HospitalDepartmentDoctorInfo hdi WHERE hdi.hospitalDepartment.id=:hospitalDepartmentId " +
             "AND hdi.status!='D'")
     List<HospitalDepartmentDoctorInfo> fetchDoctorListByHospitalDepartmentId(@Param("hospitalDepartmentId") Long hospitalDepartmentId);

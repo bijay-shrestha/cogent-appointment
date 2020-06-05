@@ -27,11 +27,11 @@ public class HospitalDepartmentWeekDaysDutyRosterDoctorInfo extends Auditable<St
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "hospital_department_week_days_duty_roster_id")
+    @JoinColumn(name = "hospital_department_week_days_duty_roster_id")
     private HospitalDepartmentWeekDaysDutyRoster hospitalDepartmentWeekDaysDutyRoster;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "hospital_department_doctor_info_id")
+    @JoinColumn(name = "hospital_department_doctor_info_id")
     private HospitalDepartmentDoctorInfo hospitalDepartmentDoctorInfo;
 
     @Column(name = "status")

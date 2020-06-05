@@ -31,7 +31,7 @@ public class HospitalDeptDutyRosterRoomQuery {
     public static String QUERY_TO_FETCH_HDD_ROSTER_ROOM_DETAIL =
             " SELECT" +
                     " h.id as rosterRoomId," +                                          //[0]
-                    " hr.room.id as roomId," +                                           //[1]
+                    " hr.id as hospitalDepartmentRoomInfoId," +                         //[1]
                     " hr.room.roomNumber as roomNumber" +                                //[2]
                     " FROM HospitalDepartmentDutyRosterRoomInfo h" +
                     " LEFT JOIN HospitalDepartmentRoomInfo hr ON hr.id = h.hospitalDepartmentRoomInfo.id" +

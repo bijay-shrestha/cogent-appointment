@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.thirdparty;
 
+import com.cogent.cogentappointment.commons.utils.DateUtils;
 import com.cogent.cogentappointment.persistence.util.BeanUtil;
 import com.cogent.cogentappointment.thirdparty.configuration.YamlPropertySourceFactory;
 import org.modelmapper.ModelMapper;
@@ -13,6 +14,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+
+import java.util.Date;
 
 @SpringBootApplication
 @EntityScan(basePackages = {"com.cogent.cogentappointment.persistence.model",
@@ -35,6 +38,8 @@ public class EAppointmentThirdPartyApplication extends SpringBootServletInitiali
     //  BEFORE RUNNING THIS CHECK IF 'catalina.home' 
     // PATH IS SET IN YOUR 'application.yml'
     public static void main(String[] args) {
+
+        System.out.println("DATE DATE :: " + DateUtils.convertToString(new Date(),"yyyy-MM-dd" ));
         
         ConfigurableApplicationContext ctx =
                 SpringApplication.run( EAppointmentThirdPartyApplication.class, args);

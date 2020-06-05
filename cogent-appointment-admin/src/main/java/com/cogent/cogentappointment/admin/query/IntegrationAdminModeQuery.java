@@ -14,6 +14,7 @@ public class IntegrationAdminModeQuery {
     public static final String ADMIN_MODE_INTEGRATION_DETAILS_API_QUERY =
             "SELECT" +
                     " f.id as featureId," +
+                    " am.id as appointmentModeId,"+
                     " am.name as appointmentModeName," +
                     " f.code as featureCode," +
                     " hrm.id as requestMethodId," +
@@ -78,6 +79,25 @@ public class IntegrationAdminModeQuery {
                     " AND amafi.status='Y'" +
                     " AND amqp.status='Y'" +
                     " AND f.status='Y'";
+
+//    public static final String ADMIN_MODE_INTEGRATION_FEATURES_REQUEST_HEADERS_QUERY =
+//            " SELECT " +
+//                    " amrh.id as id," +
+//                    " amrh.keyName as keyParam," +
+//                    " amrh.value as valueParam," +
+//                    " amrh.description as description," +
+//                    " amrh.status as status" +
+//                    " FROM AdminModeFeatureIntegration amfi" +
+//                    " LEFT JOIN Feature f ON f.id=amfi.featureId" +
+//                    " LEFT JOIN AdminModeApiFeatureIntegration amafi ON amafi.adminModeFeatureIntegrationId.id =amfi.id " +
+//                    " LEFT JOIN ApiIntegrationFormat aif ON aif.id=amafi.apiIntegrationFormatId.id" +
+//                    " LEFT JOIN AdminModeRequestHeader amrh ON amrh.apiIntegrationFormatId=aif.id" +
+//                    " WHERE f.id=:featureId" +
+//                    " AND aif.status='Y'" +
+//                    " AND amrh.status='Y'" +
+//                    " AND amfi.status='Y'" +
+//                    " AND amafi.status='Y'" +
+//                    " AND f.status='Y'";
 
 
     public static Function<AdminModeApiIntegrationSearchRequestDTO, String> ADMIN_MODE_API_INTEGRATION_SEARCH_QUERY =

@@ -3,13 +3,18 @@ package com.cogent.cogentappointment.admin.service.impl;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationAdminMode.AdminModeApiIntegrationRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationAdminMode.AdminModeApiIntegrationSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.integrationAdminMode.integrationAdminModeUpdate.AdminModeIntegrationUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.ApiIntegrationFormatRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.ClientApiHeadersRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.ClientApiQueryParametersRequestDTO;
-import com.cogent.cogentappointment.admin.dto.response.integration.ApiInfoResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.*;
-import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientApiIntegrationDetailResponseDTO;
-import com.cogent.cogentappointment.admin.dto.response.integrationClient.ClientApiIntegrationResponseDTO;
+import com.cogent.cogentappointment.admin.dto.request.integrationClient.clientIntegrationUpdate.ClientApiQueryParamtersUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.integrationClient.clientIntegrationUpdate.ClientApiRequestHeadersUpdateRequestDTO;
+import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminModeApiIntegrationResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminModeIntegrationDetailResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminModeIntegrationSearchDTO;
+import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.AdminModeIntegrationUpdateResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.integrationClient.clientIntegrationUpdate.ApiQueryParametersUpdateResponseDTO;
+import com.cogent.cogentappointment.admin.dto.response.integrationClient.clientIntegrationUpdate.ApiRequestHeaderUpdateResponseDTO;
 import com.cogent.cogentappointment.admin.exception.NoContentFoundException;
 import com.cogent.cogentappointment.admin.repository.*;
 import com.cogent.cogentappointment.admin.repository.custom.AdminModeFeatureIntegrationRepository;
@@ -25,10 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import static com.cogent.cogentappointment.admin.constants.IntegrationApiConstants.BACK_END_CODE;
 import static com.cogent.cogentappointment.admin.log.CommonLogConstant.*;
 import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.ADMIN_MODE_FEATURE_INTEGRATION;
-import static com.cogent.cogentappointment.admin.log.constants.IntegrationLog.API_INTEGRATION;
 import static com.cogent.cogentappointment.admin.utils.IntegrationAdminModeFeatureUtils.*;
 import static com.cogent.cogentappointment.admin.utils.IntegrationUtils.*;
 import static com.cogent.cogentappointment.admin.utils.commons.DateUtils.getDifferenceBetweenTwoTime;
@@ -49,7 +52,7 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
     private final AdminModeQueryParametersRepository adminModeQueryParametersRepository;
     private final AdminModeRequestHeaderRepository adminModeRequestHeaderRepository;
     private final ApiFeatureIntegrationRepository apiFeatureIntegrationRepository;
-    private final AdminModeApiFeatureIntegrationRepository featureIntegrationRepository;
+    private final AdminModeApiFeatureIntegrationRepository adminModeApiFeatureIntegrationRepository;
     private final ApiIntegrationFormatRespository apiIntegrationFormatRespository;
     private final FeatureRepository featureRepository;
     private final HttpRequestMethodRepository httpRequestMethodRepository;
@@ -64,7 +67,7 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
             ApiRequestHeaderRepository apiRequestHeaderRepository,
             AdminModeQueryParametersRepository adminModeQueryParametersRepository,
             ApiFeatureIntegrationRepository apiFeatureIntegrationRepository,
-            AdminModeApiFeatureIntegrationRepository featureIntegrationRepository,
+            AdminModeApiFeatureIntegrationRepository adminModeApiFeatureIntegrationRepository,
             ApiIntegrationFormatRespository apiIntegrationFormatRespository,
             FeatureRepository featureRepository,
             IntegrationChannelRepository integrationChannelRepository) {
@@ -76,7 +79,7 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
         this.apiRequestHeaderRepository = apiRequestHeaderRepository;
         this.adminModeQueryParametersRepository = adminModeQueryParametersRepository;
         this.apiFeatureIntegrationRepository = apiFeatureIntegrationRepository;
-        this.featureIntegrationRepository = featureIntegrationRepository;
+        this.adminModeApiFeatureIntegrationRepository = adminModeApiFeatureIntegrationRepository;
         this.apiIntegrationFormatRespository = apiIntegrationFormatRespository;
         this.featureRepository = featureRepository;
         this.integrationChannelRepository = integrationChannelRepository;
@@ -123,8 +126,6 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
 
         saveAdminModeApiFeatureIntegration(adminModeApiFeatureIntegration);
 
-//        saveApiFeatureIntegration(adminModeFeatureIntegration.getId(), adminModeApiFeatureIntegration.getId());
-
         saveAdminModeQueryParameters(requestDTO.getParametersRequestDTOS(), apiIntegrationFormat.getId());
 
         saveAdminModeRequestHeaders(requestDTO.getClientApiRequestHeaders(), apiIntegrationFormat.getId());
@@ -160,7 +161,7 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
 
         parseToDeletedAdminModeFeatureIntegration(adminModeFeatureIntegration, deleteRequestDTO);
 
-        List<AdminModeApiFeatureIntegration> adminModeApiFeatureIntegrationList = featureIntegrationRepository
+        List<AdminModeApiFeatureIntegration> adminModeApiFeatureIntegrationList = adminModeApiFeatureIntegrationRepository
                 .findAdminModeApiFeatureIntegrationbyAdminModeFeatureId(adminModeFeatureIntegration.getId())
                 .orElseThrow(() -> ADMIN_MODE_FEATURE_INTEGRATION_NOT_FOUND.apply(adminModeFeatureIntegration.getId()));
 
@@ -196,19 +197,194 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
     }
 
     @Override
-    public AdminModeIntegrationDetailResponseDTO fetchClientApiIntegrationById(Long id)
-    {
+    public AdminModeIntegrationDetailResponseDTO fetchAdminModeIntegrationById(Long id) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
-        log.info(SEARCHING_PROCESS_STARTED, API_INTEGRATION);
+        log.info(SEARCHING_PROCESS_STARTED, ADMIN_MODE_FEATURE_INTEGRATION);
 
-        AdminModeIntegrationDetailResponseDTO clientApiIntegration =
+        AdminModeIntegrationDetailResponseDTO adminModeApiIntegration =
                 getAdminModeApiIntegration(id);
 
-        log.info(SEARCHING_PROCESS_COMPLETED, API_INTEGRATION, getDifferenceBetweenTwoTime(startTime));
+        log.info(SEARCHING_PROCESS_COMPLETED, ADMIN_MODE_FEATURE_INTEGRATION, getDifferenceBetweenTwoTime(startTime));
 
-        return clientApiIntegration;
+        return adminModeApiIntegration;
     }
+
+    @Override
+    public void update(AdminModeIntegrationUpdateRequestDTO requestDTO) {
+
+
+        log.info(UPDATING_PROCESS_STARTED, ADMIN_MODE_FEATURE_INTEGRATION);
+
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        AdminModeFeatureIntegration adminModeFeatureIntegration =
+                adminModeFeatureIntegrationRepository.
+                        findAdminModeFeatureIntegrationById(requestDTO.getAdminModeIntegrationId())
+                        .orElseThrow(() -> ADMIN_MODE_FEATURE_INTEGRATION_NOT_FOUND.apply(requestDTO.getAdminModeIntegrationId()));
+
+        AppointmentMode appointmentMode = appointmentModeRepository.fetchAppointmentModeById(requestDTO.getAppointmentModeId())
+                .orElseThrow(() -> APPOINTMENT_MODE_NOT_FOUND.apply(requestDTO.getAppointmentModeId()));
+
+
+        IntegrationChannel integrationChannel = integrationChannelRepository.
+                findActiveIntegrationChannel(requestDTO.getIntegrationChannelId())
+                .orElseThrow(() -> INTEGRATION_CHANNEL_NOT_FOUND.apply(requestDTO.getIntegrationChannelId()));
+
+
+        parseToUpdateAdminModeFeatureIntegration(appointmentMode,
+                integrationChannel,
+                requestDTO, adminModeFeatureIntegration);
+
+        List<AdminModeApiFeatureIntegration> adminModeApiFeatureIntegrationList =
+                adminModeApiFeatureIntegrationRepository.
+                        findAdminModeApiFeatureIntegrationbyAdminModeFeatureId(adminModeFeatureIntegration.getId())
+                        .orElseThrow(() -> ADMIN_MODE_API_FEATURE_INTEGRATION_NOT_FOUND.apply(adminModeFeatureIntegration.getId()));
+
+
+        adminModeApiFeatureIntegrationList.forEach(adminModeApiFeatureIntegration -> {
+
+            updateAdminModeApiIntegrationFormat(requestDTO,
+                    adminModeApiFeatureIntegration.getApiIntegrationFormatId());
+
+            updateAdminModeQueryParameters(requestDTO.getQueryParametersRequestDTOS(),
+                    adminModeApiFeatureIntegration.getApiIntegrationFormatId());
+
+            updateAdminModeRequestHeaders(requestDTO.getClientApiRequestHeaders(),
+                    adminModeApiFeatureIntegration.getApiIntegrationFormatId());
+        });
+
+        log.info(UPDATING_PROCESS_COMPLETED, ADMIN_MODE_FEATURE_INTEGRATION, getDifferenceBetweenTwoTime(startTime));
+
+
+    }
+
+    @Override
+    public AdminModeIntegrationUpdateResponseDTO fetchDetailsForUpdate(Long id) {
+        Long startTime = getTimeInMillisecondsFromLocalDate();
+
+        log.info(FETCHING_PROCESS_STARTED, ADMIN_MODE_FEATURE_INTEGRATION);
+
+        AdminModeIntegrationUpdateResponseDTO updateResponseDTO =
+                getAdminModeIntegrationDetailForUpdate(id);
+
+        log.info(FETCHING_PROCESS_COMPLETED, ADMIN_MODE_FEATURE_INTEGRATION, getDifferenceBetweenTwoTime(startTime));
+
+        return updateResponseDTO;
+    }
+
+    private AdminModeIntegrationUpdateResponseDTO getAdminModeIntegrationDetailForUpdate(Long id) {
+
+        AdminModeApiIntegrationResponseDTO featureIntegrationResponse = adminModeFeatureIntegrationRepository.
+                findAdminModeFeatureIntegration(id);
+
+        List<ApiRequestHeaderUpdateResponseDTO> requestHeaderResponseDTO = adminModeRequestHeaderRepository.
+                findAdminModeApiRequestHeaderForUpdate(featureIntegrationResponse.getFeatureId());
+
+        List<ApiQueryParametersUpdateResponseDTO> queryParametersResponseDTO = adminModeQueryParametersRepository.
+                findAdminModeApiQueryParameterForUpdate(featureIntegrationResponse.getFeatureId());
+
+        AdminModeIntegrationUpdateResponseDTO responseDTO = new AdminModeIntegrationUpdateResponseDTO();
+        responseDTO.setFeatureCode(featureIntegrationResponse.getFeatureCode());
+        responseDTO.setFeatureId(featureIntegrationResponse.getFeatureId());
+        responseDTO.setRequestMethodName(featureIntegrationResponse.getRequestMethodName());
+        responseDTO.setRequestMethodId(featureIntegrationResponse.getRequestMethodId());
+        responseDTO.setIntegrationTypeId(featureIntegrationResponse.getIntegrationTypeId());
+        responseDTO.setIntegrationType(featureIntegrationResponse.getIntegrationType());
+        responseDTO.setIntegrationChannelId(featureIntegrationResponse.getIntegrationChannelId());
+        responseDTO.setIntegrationChannel(featureIntegrationResponse.getIntegrationChannel());
+        responseDTO.setUrl(featureIntegrationResponse.getUrl());
+        responseDTO.setAppointmentMode(featureIntegrationResponse.getAppointmentModeName());
+        responseDTO.setAppointmentModeId(featureIntegrationResponse.getAppointmentModeId());
+        responseDTO.setHeaders(requestHeaderResponseDTO);
+        responseDTO.setQueryParameters(queryParametersResponseDTO);
+
+        return responseDTO;
+
+
+    }
+
+
+    private void updateAdminModeApiIntegrationFormat(AdminModeIntegrationUpdateRequestDTO requestDTO,
+                                                     ApiIntegrationFormat apiIntegrationFormatId) {
+
+        ApiIntegrationFormat apiIntegrationFormat = apiIntegrationFormatRespository.
+                findByIntegrationFormatId(apiIntegrationFormatId.getId())
+                .orElseThrow(() -> API_INTEGRATION_FORMAT_NOT_FOUND.apply(apiIntegrationFormatId.getId()));
+
+        apiIntegrationFormat.setUrl(requestDTO.getApiUrl());
+        apiIntegrationFormat.setHttpRequestMethodId(requestDTO.getRequestMethodId());
+
+        apiIntegrationFormatRespository.save(apiIntegrationFormat);
+
+    }
+
+    private void updateAdminModeRequestHeaders(List<ClientApiRequestHeadersUpdateRequestDTO> clientApiRequestHeaders,
+                                               ApiIntegrationFormat apiIntegrationFormatId) {
+
+        clientApiRequestHeaders.forEach(requestDTO -> {
+
+            AdminModeRequestHeader adminModeRequestHeader =
+                    adminModeRequestHeaderRepository.findAdminModeRequestHeaderById(requestDTO.getId())
+                            .orElse(null);
+
+            if (adminModeRequestHeader == null) {
+
+                AdminModeRequestHeader requestHeader = new AdminModeRequestHeader();
+                requestHeader.setApiIntegrationFormatId(apiIntegrationFormatId.getId());
+                requestHeader.setKeyName(requestDTO.getKeyParam());
+                requestHeader.setValue(requestDTO.getValueParam());
+                requestHeader.setDescription(requestDTO.getDescription());
+                requestHeader.setStatus(requestDTO.getStatus());
+
+                adminModeRequestHeaderRepository.save(requestHeader);
+
+            }
+
+            if (adminModeRequestHeader != null) {
+                adminModeRequestHeader.setKeyName(requestDTO.getKeyParam());
+                adminModeRequestHeader.setValue(requestDTO.getValueParam());
+                adminModeRequestHeader.setStatus(requestDTO.getStatus());
+                adminModeRequestHeader.setDescription(requestDTO.getDescription());
+                adminModeRequestHeader.setApiIntegrationFormatId(apiIntegrationFormatId.getId());
+
+            }
+
+        });
+
+    }
+
+    private void updateAdminModeQueryParameters(List<ClientApiQueryParamtersUpdateRequestDTO> queryParametersRequestDTOS,
+                                                ApiIntegrationFormat apiIntegrationFormatId) {
+
+        queryParametersRequestDTOS.forEach(requestDTO -> {
+
+            AdminModeQueryParameters adminModeQueryParameters =
+                    adminModeQueryParametersRepository.findAdminModeQueryParametersById(requestDTO.getId()).orElse(null);
+
+            if (adminModeQueryParameters == null) {
+
+                AdminModeQueryParameters queryParameters = new AdminModeQueryParameters();
+                queryParameters.setApiIntegrationFormatId(apiIntegrationFormatId.getId());
+                queryParameters.setParam(requestDTO.getKeyParam());
+                queryParameters.setValue(requestDTO.getValueParam());
+                queryParameters.setStatus(requestDTO.getStatus());
+
+                adminModeQueryParametersRepository.save(queryParameters);
+
+            }
+
+            if (adminModeQueryParameters != null) {
+                adminModeQueryParameters.setParam(requestDTO.getKeyParam());
+                adminModeQueryParameters.setValue(requestDTO.getValueParam());
+                adminModeQueryParameters.setStatus(requestDTO.getStatus());
+                adminModeQueryParameters.setApiIntegrationFormatId(apiIntegrationFormatId.getId());
+
+            }
+        });
+
+    }
+
 
     private AdminModeIntegrationDetailResponseDTO getAdminModeApiIntegration(Long id) {
 
@@ -244,13 +420,12 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
     }
 
 
-
     private void saveApiIntegrationFormat(ApiIntegrationFormat apiIntegrationFormat) {
         apiIntegrationFormatRespository.save(apiIntegrationFormat);
     }
 
     private void saveAdminModeApiFeatureIntegration(AdminModeApiFeatureIntegration apiFeatureIntegration) {
-        featureIntegrationRepository.save(apiFeatureIntegration);
+        adminModeApiFeatureIntegrationRepository.save(apiFeatureIntegration);
     }
 
 
@@ -301,11 +476,24 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
 
     private void saveApiIntegrationFormat(AdminModeApiFeatureIntegration adminModeApiFeatureIntegration) {
 
-        featureIntegrationRepository.save(adminModeApiFeatureIntegration);
+        adminModeApiFeatureIntegrationRepository.save(adminModeApiFeatureIntegration);
     }
+
+
+    private Function<Long, NoContentFoundException> ADMIN_MODE_FEATURE_INTEGRATION_NOT_FOUND = (id) -> {
+        throw new NoContentFoundException(AdminModeFeatureIntegration.class, "id", id.toString());
+    };
+
+    private Function<Long, NoContentFoundException> ADMIN_MODE_API_FEATURE_INTEGRATION_NOT_FOUND = (id) -> {
+        throw new NoContentFoundException(AdminModeApiFeatureIntegration.class, "id", id.toString());
+    };
 
     private Function<Long, NoContentFoundException> APPOINTMENT_MODE_NOT_FOUND = (id) -> {
         throw new NoContentFoundException(AppointmentMode.class, "id", id.toString());
+    };
+
+    private Function<Long, NoContentFoundException> API_INTEGRATION_FORMAT_NOT_FOUND = (id) -> {
+        throw new NoContentFoundException(ApiIntegrationFormat.class, "id", id.toString());
     };
 
     private Function<Long, NoContentFoundException> API_QUERY_PARAMETER_NOT_FOUND = (id) -> {
@@ -322,10 +510,6 @@ public class AdminModeFeatureIntegrationImpl implements AdminModeFeatureIntegrat
 
     private Function<Long, NoContentFoundException> FEATURE_NOT_FOUND = (id) -> {
         throw new NoContentFoundException(Feature.class, "id", id.toString());
-    };
-
-    private Function<Long, NoContentFoundException> ADMIN_MODE_FEATURE_INTEGRATION_NOT_FOUND = (id) -> {
-        throw new NoContentFoundException(AdminModeFeatureIntegration.class, "id", id.toString());
     };
 
     private Function<Long, NoContentFoundException> INTEGRATION_CHANNEL_NOT_FOUND = (id) -> {

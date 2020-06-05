@@ -4,6 +4,7 @@ import com.cogent.cogentappointment.admin.constants.SwaggerConstants;
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationAdminMode.AdminModeApiIntegrationRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationAdminMode.AdminModeApiIntegrationSearchRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.integrationAdminMode.integrationAdminModeUpdate.AdminModeIntegrationUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.service.AdminModeFeatureIntegrationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -16,6 +17,7 @@ import javax.validation.Valid;
 
 import static com.cogent.cogentappointment.admin.constants.SwaggerConstants.IntegrationAdminModeConstant.*;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.API_V1;
+import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.ID_PATH_VARIABLE_BASE;
 import static com.cogent.cogentappointment.admin.constants.WebResourceKeyConstants.IntegrationAdminModeConstants.*;
 import static java.net.URI.create;
 import static org.springframework.http.ResponseEntity.created;
@@ -51,6 +53,19 @@ public class IntegrationAdminModeResource {
         return ok().body(adminModeIntegrationService.search(searchRequestDTO, pageable));
     }
 
+    @GetMapping(ADMIN_MODE_UPDATE_DETAILS + ID_PATH_VARIABLE_BASE)
+    @ApiOperation(DETAILS_FOR_UPDATE_ADMIN_MODE_INTEGRATION_MODAL_OPERATION)
+    public ResponseEntity<?> fetchDetailsForUpdate(@PathVariable("id") Long id) {
+        return ok(adminModeIntegrationService.fetchDetailsForUpdate(id));
+    }
+
+    @PutMapping
+    @ApiOperation(UPDATE_ADMIN_MODE_INTEGRATION_OPERATION)
+    public ResponseEntity<?> update(@Valid @RequestBody AdminModeIntegrationUpdateRequestDTO requestDTO) {
+        adminModeIntegrationService.update(requestDTO);
+        return ok().build();
+    }
+
     @DeleteMapping
     @ApiOperation(DELETE_ADMIN_MODE_INTEGRATION_OPERATION)
     public ResponseEntity<?> delete(@Valid @RequestBody DeleteRequestDTO deleteRequestDTO) {
@@ -61,7 +76,7 @@ public class IntegrationAdminModeResource {
     @GetMapping(ADMIN_MODE_FEATURE_INTEGRATION_ID_PATH_VARIABLE_BASE)
     @ApiOperation(FETCH_ADMIN_MODE_INTEGRATION_DETAIL)
     public ResponseEntity<?> fetchClientApiIntegrationById(@PathVariable("id") Long id) {
-        return ok(adminModeIntegrationService.fetchClientApiIntegrationById(id));
+        return ok(adminModeIntegrationService.fetchAdminModeIntegrationById(id));
     }
 
 

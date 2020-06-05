@@ -174,6 +174,7 @@ public class WebResourceKeyConstants {
         String BASE_ADMIN_MODE_INTEGRATION = "/admin-mode-integration";
         String ADMIN_MODE_FEATURE_INTEGRATION_ID_PATH_VARIABLE_BASE = "/{id}";
         String ADMIN_MODE_INTEGRATION = "/admin-mode-api-integration";
+        String ADMIN_MODE_UPDATE_DETAILS = "/update-details";
     }
 
     public interface IntegrationClientConstants {

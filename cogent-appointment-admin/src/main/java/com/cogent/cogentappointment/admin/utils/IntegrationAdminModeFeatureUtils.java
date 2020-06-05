@@ -1,6 +1,7 @@
 package com.cogent.cogentappointment.admin.utils;
 
 import com.cogent.cogentappointment.admin.dto.commons.DeleteRequestDTO;
+import com.cogent.cogentappointment.admin.dto.request.integrationAdminMode.integrationAdminModeUpdate.AdminModeIntegrationUpdateRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.ClientApiHeadersRequestDTO;
 import com.cogent.cogentappointment.admin.dto.request.integrationClient.ClientApiQueryParametersRequestDTO;
 import com.cogent.cogentappointment.persistence.model.*;
@@ -42,7 +43,8 @@ public class IntegrationAdminModeFeatureUtils {
 
     }
 
-    public static void parseToDeletedAdminModeFeatureIntegration(AdminModeFeatureIntegration adminModeFeatureIntegration, DeleteRequestDTO deleteRequestDTO) {
+    public static void parseToDeletedAdminModeFeatureIntegration(AdminModeFeatureIntegration adminModeFeatureIntegration,
+                                                                 DeleteRequestDTO deleteRequestDTO) {
 
         adminModeFeatureIntegration.setStatus(deleteRequestDTO.getStatus());
         adminModeFeatureIntegration.setRemarks(deleteRequestDTO.getRemarks());
@@ -57,7 +59,8 @@ public class IntegrationAdminModeFeatureUtils {
         });
     }
 
-    public static List<AdminModeRequestHeader> parseToAdminModeRequestHeaders(List<ClientApiHeadersRequestDTO> adminModeRequestHeaders, Long id) {
+    public static List<AdminModeRequestHeader> parseToAdminModeRequestHeaders(List<ClientApiHeadersRequestDTO> adminModeRequestHeaders,
+                                                                              Long id) {
 
         List<AdminModeRequestHeader> adminModeRequestHeaderList = new ArrayList<>();
 
@@ -94,6 +97,19 @@ public class IntegrationAdminModeFeatureUtils {
         });
 
         return adminModeQueryParametersList;
+
+
+    }
+
+    public static void parseToUpdateAdminModeFeatureIntegration(AppointmentMode appointmentMode,
+                                                                IntegrationChannel integrationChannel,
+                                                                AdminModeIntegrationUpdateRequestDTO requestDTO,
+                                                                AdminModeFeatureIntegration adminModeFeatureIntegration) {
+
+        adminModeFeatureIntegration.setAppointmentModeId(appointmentMode);
+        adminModeFeatureIntegration.setFeatureId(requestDTO.getFeatureId());
+        adminModeFeatureIntegration.setIntegrationChannelId(integrationChannel);
+        adminModeFeatureIntegration.setRemarks(requestDTO.getRemarks());
 
 
     }

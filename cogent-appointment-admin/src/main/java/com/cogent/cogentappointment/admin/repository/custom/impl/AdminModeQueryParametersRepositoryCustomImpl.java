@@ -1,10 +1,8 @@
 package com.cogent.cogentappointment.admin.repository.custom.impl;
 
 import com.cogent.cogentappointment.admin.dto.response.integrationAdminMode.ApiQueryParametersResponseDTO;
-import com.cogent.cogentappointment.admin.query.IntegrationAdminModeQuery;
-import com.cogent.cogentappointment.admin.query.IntegrationQuery;
+import com.cogent.cogentappointment.admin.dto.response.integrationClient.clientIntegrationUpdate.ApiQueryParametersUpdateResponseDTO;
 import com.cogent.cogentappointment.admin.repository.custom.AdminModeQueryParametersRepositoryCustom;
-import com.cogent.cogentappointment.admin.utils.IntegrationAdminModeFeatureUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,6 +45,23 @@ public class AdminModeQueryParametersRepositoryCustomImpl implements AdminModeQu
         });
 
         return map;
+    }
+
+    @Override
+    public List<ApiQueryParametersUpdateResponseDTO> findAdminModeApiQueryParameterForUpdate(Long featureId) {
+        Query query = createQuery.apply(entityManager, ADMIN_MODE_QUERY_PARAMETERS_QUERY)
+                .setParameter(API_FEATURE_ID, featureId);
+
+        List<ApiQueryParametersUpdateResponseDTO> apiQueryParametersUpdateResponseDTOS =
+                transformQueryToResultList(query, ApiQueryParametersUpdateResponseDTO.class);
+
+        if (apiQueryParametersUpdateResponseDTOS.isEmpty())
+//            throw CLIENT_API_REQUEST_HEADER_NOT_FOUND.get();
+            return null;
+
+        else {
+            return apiQueryParametersUpdateResponseDTOS;
+        }
     }
 
 

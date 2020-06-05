@@ -25,18 +25,18 @@ public class BillingModeUtils {
         return billingMode;
     };
 
-    public static BiFunction<BillingModeUpdateRequestDTO, BillingMode,BillingMode> parseToUpdateBillingMode =
-            (requestDTO,billingMode) -> {
-        billingMode.setName(convertToNormalCase(requestDTO.getName()));
-        billingMode.setCode(requestDTO.getCode());
-        billingMode.setStatus(requestDTO.getStatus());
-        billingMode.setRemarks(requestDTO.getRemarks());
-        billingMode.setDescription(requestDTO.getDescription());
-        return billingMode;
-    };
+    public static BiFunction<BillingModeUpdateRequestDTO, BillingMode, BillingMode> parseToUpdateBillingMode =
+            (requestDTO, billingMode) -> {
+                billingMode.setName(convertToNormalCase(requestDTO.getName()));
+                billingMode.setCode(requestDTO.getCode());
+                billingMode.setStatus(requestDTO.getStatus());
+                billingMode.setRemarks(requestDTO.getRemarks());
+                billingMode.setDescription(requestDTO.getDescription());
+                return billingMode;
+            };
 
-    public static BiFunction<DeleteRequestDTO, BillingMode,BillingMode> parseToDeletedBillingMode =
-            (requestDTO,billingMode) -> {
+    public static BiFunction<DeleteRequestDTO, BillingMode, BillingMode> parseToDeletedBillingMode =
+            (requestDTO, billingMode) -> {
                 billingMode.setStatus(requestDTO.getStatus());
                 billingMode.setRemarks(requestDTO.getRemarks());
                 return billingMode;

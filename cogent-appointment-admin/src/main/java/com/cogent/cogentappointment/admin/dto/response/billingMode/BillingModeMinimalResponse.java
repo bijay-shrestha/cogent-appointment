@@ -20,5 +20,7 @@ public class BillingModeMinimalResponse implements Serializable {
 
     private String code;
 
+    private String description;
+
     private Character status;
 }

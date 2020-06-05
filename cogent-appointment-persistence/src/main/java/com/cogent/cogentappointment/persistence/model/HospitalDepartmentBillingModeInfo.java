@@ -1,8 +1,7 @@
 package com.cogent.cogentappointment.persistence.model;
 
 import com.cogent.cogentappointment.persistence.audit.Auditable;
-import com.cogent.cogentappointment.persistence.listener.HospitalDepartmentChargeEntityListener;
-import com.cogent.cogentappointment.persistence.listener.HospitalDepartmentEntityListener;
+import com.cogent.cogentappointment.persistence.listener.HospitalDepartmentBillingModeInfoEntityListener;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,19 +14,19 @@ import java.io.Serializable;
  * @author Sauravi Thapa ON 5/19/20
  */
 @Entity
-@Table(name = "hospital_department_charge")
+@Table(name = "hospital_department_billing_mode_info")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EntityListeners(HospitalDepartmentChargeEntityListener.class)
-public class HospitalDepartmentCharge extends Auditable<String> implements Serializable {
+@EntityListeners(HospitalDepartmentBillingModeInfoEntityListener.class)
+public class HospitalDepartmentBillingModeInfo extends Auditable<String> implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hospital_department_id")
     private HospitalDepartment hospitalDepartment;
 
@@ -37,6 +36,10 @@ public class HospitalDepartmentCharge extends Auditable<String> implements Seria
     @Column(name = "appointment_follow_up_charge")
     private Double appointmentFollowUpCharge;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "billing_mode_id")
+    private BillingMode billingMode;
+
     @Column(name = "remarks")
     private String remarks;
 
@@ -45,11 +48,12 @@ public class HospitalDepartmentCharge extends Auditable<String> implements Seria
 
     @Override
     public String toString() {
-        return "HospitalDepartmentCharge{" +
+        return "HospitalDepartmentBillingModeInfo{" +
                 "id=" + id +
                 ", hospitalDepartment=" + hospitalDepartment.getName() +
                 ", appointmentCharge=" + appointmentCharge +
                 ", appointmentFollowUpCharge=" + appointmentFollowUpCharge +
+                ", billingMode=" + billingMode.getName() +
                 ", remarks='" + remarks + '\'' +
                 ", status=" + status +
                 '}';

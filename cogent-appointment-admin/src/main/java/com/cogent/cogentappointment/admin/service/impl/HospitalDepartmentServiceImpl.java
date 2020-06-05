@@ -239,7 +239,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
         return chargeResponseDTO;
     }
 
-    public void saveBillingModeWithCharge(HospitalDepartmentRequestDTO hospitalRequestDTO,
+    private void saveBillingModeWithCharge(HospitalDepartmentRequestDTO hospitalRequestDTO,
                                           HospitalDepartment hospitalDepartment) {
 
         Long hospitalId = hospitalRequestDTO.getHospitalId();
@@ -256,7 +256,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
         saveHospitalDepartmentBillingModeInfoList(billingModeInfoList);
     }
 
-    public void saveBillingModeWithCharge(BillingModeChargeUpdateDTO requestDTO,
+    private void saveBillingModeWithCharge(BillingModeChargeUpdateDTO requestDTO,
                                           HospitalDepartment hospitalDepartment) {
 
         BillingMode billingMode = fetchBillingMode(requestDTO.getBillingModeId(),
@@ -267,7 +267,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
     }
 
-    public void validateRoomNumber(HospitalDepartmentRequestDTO requestDTO) {
+    private void validateRoomNumber(HospitalDepartmentRequestDTO requestDTO) {
 
         List<Long> roomIds = requestDTO.getRoomId();
         roomIds.forEach(roomId -> {
@@ -277,7 +277,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
         });
     }
 
-    public void validateRoomNumber(HospitalDepartmentUpdateRequestDTO requestDTO) {
+    private void validateRoomNumber(HospitalDepartmentUpdateRequestDTO requestDTO) {
 
         List<DepartmentRoomUpdateRequestDTO> roomIds = requestDTO.getRoomUpdateList();
         roomIds.forEach(roomId -> {
@@ -330,11 +330,19 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
         billingModeChargeUpdateDTOs.forEach(billingModeChargeUpdateDTO -> {
             if (!Objects.isNull(billingModeChargeUpdateDTO.getId())) {
-                HospitalDepartmentBillingModeInfo hospitalDepartmentBillingModeInfo = fetchHospitalDepartmentCharge(
-                        billingModeChargeUpdateDTO.getId());
-                saveHospitalDepartmentBillingModeInfo(parseToUpdateHospitalDepartmentCharge(billingModeChargeUpdateDTO,
+
+                HospitalDepartmentBillingModeInfo hospitalDepartmentBillingModeInfo =
+                        fetchHospitalDepartmentCharge(billingModeChargeUpdateDTO.getId());
+
+                BillingMode billingMode = fetchBillingMode(
+                        billingModeChargeUpdateDTO.getBillingModeId(),
+                        requestDTO.getHospitalId());
+
+                saveHospitalDepartmentBillingModeInfo(parseToUpdateHospitalDepartmentCharge(
+                        billingModeChargeUpdateDTO,
                         hospitalDepartmentBillingModeInfo,
-                        hospitalDepartment));
+                        hospitalDepartment, billingMode)
+                );
             } else {
                 saveBillingModeWithCharge(billingModeChargeUpdateDTO, hospitalDepartment);
             }
@@ -383,7 +391,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
     }
 
-    public void deleteDoctor(DepartmentDoctorUpdateRequestDTO requestDTO, Long hospitalDepartmentId, String remarks) {
+    private void deleteDoctor(DepartmentDoctorUpdateRequestDTO requestDTO, Long hospitalDepartmentId, String remarks) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(DELETING_PROCESS_STARTED, HOSPITAL_DEPARTMENT);
@@ -398,7 +406,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
         log.info(DELETING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
     }
 
-    public void deleteRoom(DepartmentRoomUpdateRequestDTO requestDTO, Long hospitalDepartmentId, String remarks) {
+    private void deleteRoom(DepartmentRoomUpdateRequestDTO requestDTO, Long hospitalDepartmentId, String remarks) {
         Long startTime = getTimeInMillisecondsFromLocalDate();
 
         log.info(DELETING_PROCESS_STARTED, HOSPITAL_DEPARTMENT);
@@ -413,29 +421,28 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
         log.info(DELETING_PROCESS_COMPLETED, HOSPITAL_DEPARTMENT, getDifferenceBetweenTwoTime(startTime));
     }
 
-    public void deleteRoomInfo(DeleteRequestDTO requestDTO) {
+    private void deleteRoomInfo(DeleteRequestDTO requestDTO) {
 
         List<HospitalDepartmentRoomInfo> roomInfos = fetchExisitngRoomList(requestDTO.getId());
         saveHospitalDepartmentRoomInfo(parseToDeleteHospitalDeptRoomInfos(roomInfos, requestDTO));
     }
 
-    public void deleteDoctorInfo(DeleteRequestDTO requestDTO) {
+    private void deleteDoctorInfo(DeleteRequestDTO requestDTO) {
 
         List<HospitalDepartmentDoctorInfo> doctorInfos = fetchExisitngDoctorList(requestDTO.getId());
         saveHospitalDepartmentDoctorInfo(parseToDeleteHospitalDeptDoctorInfos(doctorInfos, requestDTO));
     }
 
-    public void deleteBillingModeWithCharge(DeleteRequestDTO requestDTO) {
+    private void deleteBillingModeWithCharge(DeleteRequestDTO requestDTO) {
 
         List<HospitalDepartmentBillingModeInfo> hospitalDepartmentBillingModeInfoList =
                 fetchHospitalDepartmentChargeListByHospitalDepartmentId(requestDTO.getId());
 
         saveHospitalDepartmentBillingModeInfoList(parseToDeleteHospitalDeptCharge(hospitalDepartmentBillingModeInfoList,
                 requestDTO));
-
     }
 
-    public void deleteHospitalDepartment(DeleteRequestDTO requestDTO) {
+    private void deleteHospitalDepartment(DeleteRequestDTO requestDTO) {
 
         HospitalDepartment hospitalDepartment = fetchHospitalDepartmentById(requestDTO.getId());
 
@@ -443,7 +450,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
     }
 
 
-    public static void validateRoomDuplicity(List<Object[]> objects,
+    private static void validateRoomDuplicity(List<Object[]> objects,
                                              Long requestedRoomId) {
         final int ID = 0;
         final int ROOM_NUMBER = 1;
@@ -455,8 +462,8 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
         });
     }
 
-    private BillingMode fetchBillingMode(Long id, Long hospitalId) {
-        return billingModeRepository.fetchBillingModeByHospitalId(hospitalId, id);
+    private BillingMode fetchBillingMode(Long billingModeId, Long hospitalId) {
+        return billingModeRepository.fetchBillingModeByHospitalId(hospitalId, billingModeId);
     }
 
     private List<HospitalDepartmentRoomInfo> fetchExisitngRoomList(Long hospitalDepartmentId) {

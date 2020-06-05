@@ -12,7 +12,6 @@ import com.cogent.cogentappointment.esewa.dto.request.appointment.save.Appointme
 import com.cogent.cogentappointment.esewa.dto.request.appointment.save.AppointmentTransactionRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.patient.PatientRequestByDTO;
 import com.cogent.cogentappointment.esewa.dto.request.patient.PatientRequestForDTO;
-import com.cogent.cogentappointment.esewa.dto.response.appointment.StatusResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.appointmentTxnStatus.AppointmentTransactionStatusResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.cancel.AppointmentCancelResponseDTO;
 import com.cogent.cogentappointment.esewa.dto.response.appointment.checkAvailabililty.AppointmentBookedTimeResponseDTO;

@@ -2,10 +2,10 @@ package com.cogent.cogentappointment.commons.utils;
 
 import com.cogent.cogentappointment.commons.dto.request.date.DateConverterRequestDTO;
 import com.cogent.cogentappointment.commons.dto.response.date.DateConverterResponeDTO;
+import com.cogent.cogentappointment.commons.repository.YearMonthDayRepository;
 import com.cogent.cogentappointment.commons.service.YearMonthDayService;
 import com.cogent.cogentappointment.persistence.model.YearMonthDay;
 import org.joda.time.DateTime;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,10 +19,13 @@ import static com.cogent.cogentappointment.commons.constants.DateConstants.MONTH
 @Service
 public class NepaliDateUtility {
 
-    private final YearMonthDayService yearMonthDayService;
+//    private final YearMonthDayService yearMonthDayService;
 
-    public NepaliDateUtility(YearMonthDayService yearMonthDayService) {
-        this.yearMonthDayService = yearMonthDayService;
+    private final YearMonthDayRepository yearMonthDayRepository;
+
+    public NepaliDateUtility(YearMonthDayRepository yearMonthDayRepository) {
+//        this.yearMonthDayService = yearMonthDayService;
+        this.yearMonthDayRepository = yearMonthDayRepository;
     }
 
     /**
@@ -41,7 +44,7 @@ public class NepaliDateUtility {
         englishDateRequest.setDay(dt.getDayOfMonth());
 
         DateConverterResponeDTO nepaliDateResponse = YearMonthDayUtils.convertFromADToBS(
-                YearMonthDayUtils.getNepaliDateMap(yearMonthDayService.findAll()), englishDateRequest);
+                YearMonthDayUtils.getNepaliDateMap(yearMonthDayRepository.findAll()), englishDateRequest);
         //commented so as to remove extra 0 in front of single digit
         /*result[0] = nepaliDateResponse.getYear() + "-" +
                 (nepaliDateResponse.getMonth() <= 9 ? "0" + nepaliDateResponse.getMonth() : nepaliDateResponse.getMonth()) + "-" +
@@ -59,7 +62,7 @@ public class NepaliDateUtility {
         englishDateRequest.setDay(dt.getDayOfMonth());
 
         DateConverterResponeDTO nepaliDateResponse = YearMonthDayUtils.convertFromADToBS(
-                YearMonthDayUtils.getNepaliDateMap(yearMonthDayService.findAll()), englishDateRequest);
+                YearMonthDayUtils.getNepaliDateMap(yearMonthDayRepository.findAll()), englishDateRequest);
         //commented so as to remove extra 0 in front of single digit
         /*result[0] = nepaliDateResponse.getYear() + "-" +
                 (nepaliDateResponse.getMonth() <= 9 ? "0" + nepaliDateResponse.getMonth() : nepaliDateResponse.getMonth()) + "-" +
@@ -102,7 +105,7 @@ public class NepaliDateUtility {
         nepaliDateConverterRequestDTO.setConvertTo('B');
 
         DateConverterResponeDTO englishDateResponse = YearMonthDayUtils.convertFromBSToAD(
-                YearMonthDayUtils.getNepaliDateMap(yearMonthDayService.findAll()), nepaliDateConverterRequestDTO);
+                YearMonthDayUtils.getNepaliDateMap(yearMonthDayRepository.findAll()), nepaliDateConverterRequestDTO);
 
         LocalDate englishDate = LocalDate.of(englishDateResponse.getYear(), englishDateResponse.getMonth(), englishDateResponse.getDay());
 
@@ -110,7 +113,7 @@ public class NepaliDateUtility {
     }
 
     public Integer getLastDateOfAsarForGivenYear(Integer year) {
-        YearMonthDay yearMonthDay = yearMonthDayService.findByYear(year);
+        YearMonthDay yearMonthDay = yearMonthDayRepository.findByYear(year);
         return yearMonthDay.getAshad();
     }
 

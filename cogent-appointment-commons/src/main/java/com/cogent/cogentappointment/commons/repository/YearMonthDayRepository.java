@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 /**
  * @author nikesh(ERP)
  */
-
 @Repository
 public interface YearMonthDayRepository extends JpaRepository<YearMonthDay, Long> {
 

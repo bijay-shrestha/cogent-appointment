@@ -42,6 +42,20 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.5</version>
+		</dependency>
+
+		<!--MODELMAPPER-->
+		<dependency>
+			<groupId>org.modelmapper.extensions</groupId>
+			<artifactId>modelmapper-spring</artifactId>
+			<version>0.7.5</version>
+		</dependency>
+
 		<!-- JODA TIME-->
 		<dependency>
 			<groupId>joda-time</groupId>

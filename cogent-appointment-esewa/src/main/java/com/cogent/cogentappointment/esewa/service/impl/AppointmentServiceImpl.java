@@ -1,5 +1,6 @@
 package com.cogent.cogentappointment.esewa.service.impl;
 
+import com.cogent.cogentappointment.commons.utils.NepaliDateUtility;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.appointmentTxnStatus.AppointmentTransactionStatusRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.cancel.AppointmentCancelRequestDTO;
 import com.cogent.cogentappointment.esewa.dto.request.appointment.checkAvailibility.AppointmentCheckAvailabilityRequestDTO;
@@ -25,7 +26,6 @@ import com.cogent.cogentappointment.esewa.exception.DataDuplicationException;
 import com.cogent.cogentappointment.esewa.exception.NoContentFoundException;
 import com.cogent.cogentappointment.esewa.repository.*;
 import com.cogent.cogentappointment.esewa.service.*;
-import com.cogent.cogentappointment.esewa.utils.NepaliDateUtility;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.Duration;
@@ -295,7 +295,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         );
 
         appointment.setAppointmentDateInNepali(nepaliDateUtility
-                .getNepaliDateForDate(appointmentReservationLog.getAppointmentDate()));
+                .getNepaliDateFromDate(appointmentReservationLog.getAppointmentDate()));
 
         save(appointment);
 

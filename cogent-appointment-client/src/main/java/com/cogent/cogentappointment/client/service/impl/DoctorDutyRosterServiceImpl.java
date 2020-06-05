@@ -12,7 +12,7 @@ import com.cogent.cogentappointment.client.service.DoctorDutyRosterService;
 import com.cogent.cogentappointment.client.service.DoctorService;
 import com.cogent.cogentappointment.client.service.SpecializationService;
 import com.cogent.cogentappointment.client.service.WeekDaysService;
-import com.cogent.cogentappointment.client.utils.NepaliDateUtility;
+import com.cogent.cogentappointment.commons.utils.NepaliDateUtility;
 import com.cogent.cogentappointment.persistence.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -105,9 +105,9 @@ public class DoctorDutyRosterServiceImpl implements DoctorDutyRosterService {
                 fetchSpecializationByIdAndHospitalId(requestDTO.getSpecializationId(), hospitalId),
                 findHospitalById(hospitalId));
 
-        doctorDutyRoster.setFromDateInNepali(nepaliDateUtility.getNepaliDateForDate(requestDTO.getFromDate()));
+        doctorDutyRoster.setFromDateInNepali(nepaliDateUtility.getNepaliDateFromDate(requestDTO.getFromDate()));
 
-        doctorDutyRoster.setToDateInNepali(nepaliDateUtility.getNepaliDateForDate(requestDTO.getToDate()));
+        doctorDutyRoster.setToDateInNepali(nepaliDateUtility.getNepaliDateFromDate(requestDTO.getToDate()));
 
         save(doctorDutyRoster);
 

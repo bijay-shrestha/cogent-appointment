@@ -62,7 +62,8 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
     private final BillingModeRepository billingModeRepository;
 
     public HospitalDepartmentServiceImpl(HospitalDepartmentRepository hospitalDepartmentRepository,
-                                         HospitalDepartmentBillingModeInfoRepository hospitalDepartmentBillingModeInfoRepository,
+                                         HospitalDepartmentBillingModeInfoRepository
+                                                 hospitalDepartmentBillingModeInfoRepository,
                                          HospitalDepartmentRoomInfoRepository hospitalDepartmentRoomInfoRepository,
                                          HospitalDepartmentDoctorInfoRepository hospitalDepartmentDoctorInfoRepository,
                                          HospitalRepository hospitalRepository,
@@ -96,7 +97,8 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
         Hospital hospital = fetchHospitalById(hospitalId);
 
-        HospitalDepartment hospitalDepartment = saveHospitalDepartment(parseToHospitalDepartment(requestDTO, hospital));
+        HospitalDepartment hospitalDepartment = saveHospitalDepartment(parseToHospitalDepartment
+                .apply(requestDTO, hospital));
 
         saveBillingModeWithCharge(requestDTO, hospitalDepartment);
 
@@ -116,7 +118,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
         HospitalDepartment hospitalDepartment = fetchHospitalDepartmentById(requestDTO.getId());
 
-        saveHospitalDepartment(parseToUpdateHospitalDepartment(hospitalDepartment, requestDTO));
+        saveHospitalDepartment(parseToUpdateHospitalDepartment.apply(hospitalDepartment, requestDTO));
 
         updateHospitalDepartmentCharge(requestDTO, hospitalDepartment);
 
@@ -168,7 +170,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
         log.info(FETCHING_PROCESS_STARTED_FOR_ACTIVE_DROPDOWN, AVAILABLE_ROOM);
 
         List<DropDownResponseDTO> minDepartment = hospitalDepartmentRepository.
-                fetchAvailableHospitalDepartment(hospitalId).orElseThrow(() -> HOSPITAL_DEPARTMENT_NOT_FOUND());
+                fetchAvailableHospitalDepartment(hospitalId).orElseThrow(() -> ROOM_NOT_FOUND());
 
         log.info(FETCHING_PROCESS_FOR_ACTIVE_DROPDOWN_COMPLETED, AVAILABLE_ROOM,
                 getDifferenceBetweenTwoTime(startTime));
@@ -437,7 +439,7 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
         HospitalDepartment hospitalDepartment = fetchHospitalDepartmentById(requestDTO.getId());
 
-        saveHospitalDepartment(parseToDeleteHospitalDept(hospitalDepartment, requestDTO));
+        saveHospitalDepartment(parseToDeleteHospitalDept.apply(hospitalDepartment, requestDTO));
     }
 
 
@@ -500,12 +502,8 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
                 .orElseThrow(() -> HOSPITAL_DEPARTMENT_WITH_GIVEN_ID_NOT_FOUND.apply(hospitalDepartmentId));
     }
 
-    private HospitalDepartmentBillingModeInfo fetchHospitalDepartmentChargeByHospitalDepartmentId(Long hospitalDepartmentId) {
-        return hospitalDepartmentBillingModeInfoRepository.fetchByHospitalDepartmentId(hospitalDepartmentId)
-                .orElseThrow(() -> HOSPITAL_DEPARTMENT_CHARGE_WITH_GIVEN_ID_NOT_FOUND.apply(hospitalDepartmentId));
-    }
-
-    private List<HospitalDepartmentBillingModeInfo> fetchHospitalDepartmentChargeListByHospitalDepartmentId(Long hospitalDepartmentId) {
+    private List<HospitalDepartmentBillingModeInfo> fetchHospitalDepartmentChargeListByHospitalDepartmentId
+            (Long hospitalDepartmentId) {
         return hospitalDepartmentBillingModeInfoRepository.fetchListByHospitalDepartmentId(hospitalDepartmentId);
     }
 
@@ -545,7 +543,8 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
 
     private Function<Long, NoContentFoundException> HOSPITAL_DEPARTMENT_CHARGE_WITH_GIVEN_ID_NOT_FOUND =
             (hospitalDepartmentId) -> {
-                log.error(CONTENT_NOT_FOUND_BY_HOSPITAL_DEPARTMENT_ID, HOSPITAL_DEPARTMENT_BILLING_MODE_INFO, hospitalDepartmentId);
+                log.error(CONTENT_NOT_FOUND_BY_HOSPITAL_DEPARTMENT_ID, HOSPITAL_DEPARTMENT_BILLING_MODE_INFO,
+                        hospitalDepartmentId);
                 throw new NoContentFoundException(HospitalDepartmentBillingModeInfo.class, "hospitalDepartmentId",
                         hospitalDepartmentId.toString());
             };
@@ -558,5 +557,10 @@ public class HospitalDepartmentServiceImpl implements HospitalDepartmentService 
     private NoContentFoundException HOSPITAL_DEPARTMENT_NOT_FOUND() {
         log.error(CONTENT_NOT_FOUND, HOSPITAL_DEPARTMENT);
         throw new NoContentFoundException(HospitalDepartment.class);
+    }
+
+    private NoContentFoundException ROOM_NOT_FOUND() {
+        log.error(CONTENT_NOT_FOUND, ROOM);
+        throw new NoContentFoundException(Room.class);
     }
 }

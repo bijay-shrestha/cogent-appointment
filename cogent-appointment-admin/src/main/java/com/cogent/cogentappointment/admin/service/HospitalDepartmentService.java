@@ -35,7 +35,7 @@ public interface HospitalDepartmentService {
 
     void delete(DeleteRequestDTO deleteRequestDTO);
 
-    ChargeResponseDTO fetchAppointmentCharge(ChargeRequestDTO requestDTO );
+    ChargeResponseDTO fetchAppointmentCharge(ChargeRequestDTO requestDTO);
 
 
 }

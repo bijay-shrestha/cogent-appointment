@@ -115,23 +115,13 @@ public class HospitalDepartmentRepositoryCustomImpl implements HospitalDepartmen
 
             throw HOSPITAL_DEPARTMENT_NOT_FOUND.get();
 
-        } else {
-
-            minimalResponseDTOS.forEach(minimalResponseDTO -> {
-                Query fetchBillingModeWithCharge = createQuery.apply(entityManager,
-                        QUERY_TO_FETCH_HOSPITAL_DEPARTMENT_BILLING_MODE_WITH_CHARGE)
-                        .setParameter(HOSPITAL_DEPARTMENT_ID, Long.parseLong(minimalResponseDTO.getId().toString()));
-
-                minimalResponseDTO.setBillingModeChargeResponseList(transformQueryToResultList(
-                        fetchBillingModeWithCharge, BillingModeChargeResponse.class));
-            });
-
+        }
             response.setHospitalDepartmentList(minimalResponseDTOS);
 
             response.setTotalItems(totalItems);
 
             return response;
-        }
+
 
     }
 

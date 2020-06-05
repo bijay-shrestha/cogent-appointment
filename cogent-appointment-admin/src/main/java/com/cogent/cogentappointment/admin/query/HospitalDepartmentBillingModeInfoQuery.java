@@ -1,10 +1,5 @@
 package com.cogent.cogentappointment.admin.query;
 
-import com.cogent.cogentappointment.admin.dto.request.billingMode.BillingModeSearchRequestDTO;
-import org.springframework.util.ObjectUtils;
-
-import java.util.function.Function;
-
 /**
  * @author Sauravi Thapa ON 4/17/20
  */

@@ -1,4 +1,4 @@
-package com.cogent.cogentappointment.admin.dto.response.hospitalDepartment;
+package com.cogent.cogentappointment.client.dto.response.hospitalDepartment;
 
 import lombok.*;
 

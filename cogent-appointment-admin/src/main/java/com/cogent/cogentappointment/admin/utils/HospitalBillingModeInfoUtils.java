@@ -15,12 +15,12 @@ import static com.cogent.cogentappointment.admin.constants.StringConstant.D;
  */
 public class HospitalBillingModeInfoUtils {
 
-    public static BiFunction<Hospital,List<BillingMode>,List<HospitalBillingModeInfo>>
-            parseToHospitalBillingModeInfoList=(hospital, billingModes) ->{
+    public static BiFunction<Hospital, List<BillingMode>, List<HospitalBillingModeInfo>>
+            parseToHospitalBillingModeInfoList = (hospital, billingModes) -> {
 
-        List<HospitalBillingModeInfo> responseList=new ArrayList<>();
+        List<HospitalBillingModeInfo> responseList = new ArrayList<>();
         billingModes.forEach(billingMode -> {
-            HospitalBillingModeInfo hospitalBillingModeInfo=new HospitalBillingModeInfo();
+            HospitalBillingModeInfo hospitalBillingModeInfo = new HospitalBillingModeInfo();
             hospitalBillingModeInfo.setHospital(hospital);
             hospitalBillingModeInfo.setBillingMode(billingMode);
             hospitalBillingModeInfo.setStatus(hospital.getStatus());
@@ -30,10 +30,10 @@ public class HospitalBillingModeInfoUtils {
         return responseList;
     };
 
-    public static BiFunction<List<HospitalBillingModeInfo>,String,List<HospitalBillingModeInfo>>
-            deleteHospitalBillingModeInfoList=(infoList, remarks) ->{
+    public static BiFunction<List<HospitalBillingModeInfo>, String, List<HospitalBillingModeInfo>>
+            deleteHospitalBillingModeInfoList = (infoList, remarks) -> {
 
-        infoList.forEach(info->{
+        infoList.forEach(info -> {
             info.setStatus(D);
             info.setRemarks(remarks);
         });

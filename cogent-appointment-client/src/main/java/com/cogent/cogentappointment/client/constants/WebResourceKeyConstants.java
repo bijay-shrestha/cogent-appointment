@@ -58,6 +58,11 @@ public class WebResourceKeyConstants {
     //B
     public static final String BASE_PASSWORD = "/password";
 
+    public interface BillingModeConstants {
+        String BASE_BILLING_MODE = "/billingMode";
+
+    }
+
     //C
     public interface CountryConstants {
         String BASE_COUNTRY = "/country";

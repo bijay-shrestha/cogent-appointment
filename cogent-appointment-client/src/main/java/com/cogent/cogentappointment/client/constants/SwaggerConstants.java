@@ -98,6 +98,10 @@ public class SwaggerConstants {
     };
 
     //B
+    public interface BillingModeConstant {
+        String BASE_API_VALUE = "This is Billing Mode Resource.";
+        String FETCH_DETAILS_FOR_DROPDOWN = "Fetch minimal Billing Mode details for dropdown by hospitalId";
+    }
 
     //C
     public interface CountryConstant {

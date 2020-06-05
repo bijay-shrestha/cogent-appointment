@@ -8,6 +8,7 @@ import com.cogent.cogentappointment.admin.dto.request.hospitalDepartment.Hospita
 import com.cogent.cogentappointment.persistence.model.*;
 
 import java.util.List;
+import java.util.function.BiFunction;
 
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.convertToNormalCase;
 import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.toUpperCase;
@@ -17,8 +18,8 @@ import static com.cogent.cogentappointment.admin.utils.commons.StringUtil.toUppe
  */
 public class HospitalDepartmentUtils {
 
-    public static HospitalDepartment parseToHospitalDepartment(HospitalDepartmentRequestDTO requestDTO,
-                                                               Hospital hospital) {
+    public static BiFunction<HospitalDepartmentRequestDTO, Hospital, HospitalDepartment>
+            parseToHospitalDepartment = (requestDTO, hospital) -> {
 
         HospitalDepartment hospitalDepartment = new HospitalDepartment();
         hospitalDepartment.setName(convertToNormalCase(requestDTO.getName()));
@@ -28,8 +29,7 @@ public class HospitalDepartmentUtils {
         hospitalDepartment.setHospital(hospital);
 
         return hospitalDepartment;
-    }
-
+    };
 
     public static HospitalDepartmentBillingModeInfo parseToHospitalDepartmentCharge(BillingModeChargeDTO requestDTO,
                                                                                     HospitalDepartment hospitalDepartment,
@@ -46,9 +46,10 @@ public class HospitalDepartmentUtils {
         return hospitalDepartmentBillingModeInfo;
     }
 
-    public static HospitalDepartmentBillingModeInfo parseToUpdateHospitalDepartmentCharge(BillingModeChargeUpdateDTO requestDTO,
-                                                                                          HospitalDepartment hospitalDepartment,
-                                                                                          BillingMode billingMode) {
+    public static HospitalDepartmentBillingModeInfo parseToUpdateHospitalDepartmentCharge(
+            BillingModeChargeUpdateDTO requestDTO,
+            HospitalDepartment hospitalDepartment,
+            BillingMode billingMode) {
 
 
         HospitalDepartmentBillingModeInfo hospitalDepartmentBillingModeInfo = new HospitalDepartmentBillingModeInfo();
@@ -61,9 +62,10 @@ public class HospitalDepartmentUtils {
         return hospitalDepartmentBillingModeInfo;
     }
 
-    public static HospitalDepartmentBillingModeInfo parseToUpdateHospitalDepartmentCharge(BillingModeChargeUpdateDTO requestDTO,
-                                                                                          HospitalDepartmentBillingModeInfo departmentBillingModeInfo,
-                                                                                          HospitalDepartment hospitalDepartment) {
+    public static HospitalDepartmentBillingModeInfo parseToUpdateHospitalDepartmentCharge(
+            BillingModeChargeUpdateDTO requestDTO,
+            HospitalDepartmentBillingModeInfo departmentBillingModeInfo,
+            HospitalDepartment hospitalDepartment) {
 
         departmentBillingModeInfo.setAppointmentCharge(requestDTO.getAppointmentCharge());
         departmentBillingModeInfo.setAppointmentFollowUpCharge(requestDTO.getFollowUpCharge());
@@ -98,8 +100,9 @@ public class HospitalDepartmentUtils {
 
     }
 
-    public static HospitalDepartment parseToUpdateHospitalDepartment(HospitalDepartment hospitalDepartment,
-                                                                     HospitalDepartmentUpdateRequestDTO requestDTO) {
+    public static BiFunction<HospitalDepartment, HospitalDepartmentUpdateRequestDTO, HospitalDepartment>
+            parseToUpdateHospitalDepartment = (hospitalDepartment, requestDTO) -> {
+
         hospitalDepartment.setName(convertToNormalCase(requestDTO.getName()));
         hospitalDepartment.setCode(toUpperCase(requestDTO.getCode()));
         hospitalDepartment.setDescription(requestDTO.getDescription());
@@ -107,31 +110,34 @@ public class HospitalDepartmentUtils {
         hospitalDepartment.setRemarks(requestDTO.getRemarks());
 
         return hospitalDepartment;
-    }
+    };
 
-    public static HospitalDepartment parseToDeleteHospitalDept(HospitalDepartment hospitalDepartment,
-                                                               DeleteRequestDTO requestDTO) {
+    public static BiFunction<HospitalDepartment, DeleteRequestDTO, HospitalDepartment>
+            parseToDeleteHospitalDept = (hospitalDepartment, requestDTO) -> {
+
         hospitalDepartment.setStatus(requestDTO.getStatus());
         hospitalDepartment.setRemarks(requestDTO.getRemarks());
 
         return hospitalDepartment;
-    }
+    };
 
-    public static List<HospitalDepartmentBillingModeInfo> parseToDeleteHospitalDeptCharge(List<HospitalDepartmentBillingModeInfo>
-                                                                                                  hospitalDepartmentBillingModeInfoList,
-                                                                                          DeleteRequestDTO requestDTO) {
+
+    public static List<HospitalDepartmentBillingModeInfo> parseToDeleteHospitalDeptCharge(
+            List<HospitalDepartmentBillingModeInfo> hospitalDepartmentBillingModeInfoList,
+            DeleteRequestDTO requestDTO) {
+
         hospitalDepartmentBillingModeInfoList.forEach(hospitalDepartmentBillingModeInfo -> {
             hospitalDepartmentBillingModeInfo.setStatus(requestDTO.getStatus());
             hospitalDepartmentBillingModeInfo.setRemarks(requestDTO.getRemarks());
         });
 
-
         return hospitalDepartmentBillingModeInfoList;
     }
 
 
-    public static List<HospitalDepartmentDoctorInfo> parseToDeleteHospitalDeptDoctorInfos(List<HospitalDepartmentDoctorInfo> doctorInfos,
-                                                                                          DeleteRequestDTO requestDTO) {
+    public static List<HospitalDepartmentDoctorInfo> parseToDeleteHospitalDeptDoctorInfos(
+            List<HospitalDepartmentDoctorInfo> doctorInfos, DeleteRequestDTO requestDTO) {
+
         doctorInfos.forEach(doctorInfo -> {
             doctorInfo.setStatus(requestDTO.getStatus());
             doctorInfo.setRemarks(requestDTO.getRemarks());
@@ -150,9 +156,9 @@ public class HospitalDepartmentUtils {
         return doctorInfo;
     }
 
-    public static List<HospitalDepartmentRoomInfo> parseToDeleteHospitalDeptRoomInfos(List<HospitalDepartmentRoomInfo> roomInfos,
+    public static List<HospitalDepartmentRoomInfo> parseToDeleteHospitalDeptRoomInfos(List<HospitalDepartmentRoomInfo>
+                                                                                              roomInfos,
                                                                                       DeleteRequestDTO requestDTO) {
-
         roomInfos.forEach(roomInfo -> {
             roomInfo.setStatus(requestDTO.getStatus());
             roomInfo.setRemarks(requestDTO.getRemarks());
@@ -164,7 +170,6 @@ public class HospitalDepartmentUtils {
     public static HospitalDepartmentRoomInfo parseToDeleteHospitalDeptRoomInfo(HospitalDepartmentRoomInfo roomInfo,
                                                                                Character status,
                                                                                String remarks) {
-
         roomInfo.setStatus(status);
         roomInfo.setRemarks(remarks);
 

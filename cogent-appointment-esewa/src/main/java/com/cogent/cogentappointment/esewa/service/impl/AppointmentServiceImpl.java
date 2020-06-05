@@ -40,6 +40,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
+import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.AppointmentHospitalDepartmentMessage.HOSPITAL_DEPARTMENT_APPOINTMENT_CHARGE_INVALID;
+import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.AppointmentHospitalDepartmentMessage.HOSPITAL_DEPARTMENT_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE;
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.AppointmentServiceMessage.*;
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.DoctorServiceMessages.DOCTOR_APPOINTMENT_CHARGE_INVALID;
 import static com.cogent.cogentappointment.esewa.constants.ErrorMessageConstants.DoctorServiceMessages.DOCTOR_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE;
@@ -112,6 +114,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentHospitalDeptReservationLogRepository appointmentHospitalDeptReservationLogRepository;
 
+    private final HospitalDepartmentBillingModeInfoRepository hospitalDepartmentBillingModeInfoRepository;
+
     private final Validator validator;
 
     public AppointmentServiceImpl(PatientService patientService,
@@ -137,6 +141,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                                   AppointmentStatisticsRepository appointmentStatisticsRepository,
                                   HospitalPatientInfoRepository hospitalPatientInfoRepository,
                                   AppointmentHospitalDeptReservationLogRepository appointmentHospitalDeptReservationLogRepository,
+                                  HospitalDepartmentBillingModeInfoRepository hospitalDepartmentBillingModeInfoRepository,
                                   Validator validator) {
         this.patientService = patientService;
         this.doctorService = doctorService;
@@ -161,6 +166,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         this.appointmentStatisticsRepository = appointmentStatisticsRepository;
         this.hospitalPatientInfoRepository = hospitalPatientInfoRepository;
         this.appointmentHospitalDeptReservationLogRepository = appointmentHospitalDeptReservationLogRepository;
+        this.hospitalDepartmentBillingModeInfoRepository = hospitalDepartmentBillingModeInfoRepository;
         this.validator = validator;
     }
 
@@ -254,9 +260,9 @@ public class AppointmentServiceImpl implements AppointmentService {
         AppointmentReservationLog appointmentReservationLog =
                 validateAppointmentReservationIsActive(appointmentInfo.getAppointmentReservationId());
 
-        validateIfParentAppointmentExists(appointmentReservationLog);
+        validateIfParentAppointmentExistsDoctorWise(appointmentReservationLog);
 
-        validateAppointmentAmount(appointmentReservationLog.getDoctorId(),
+        validateAppointmentAmountDoctorWise(appointmentReservationLog.getDoctorId(),
                 appointmentReservationLog.getHospitalId(),
                 appointmentInfo.getIsFollowUp(),
                 requestDTO.getTransactionInfo().getAppointmentAmount()
@@ -278,14 +284,11 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Appointment appointment = parseToAppointment(
                 requestDTO.getAppointmentInfo(),
-                appointmentReservationLog,
+                appointmentReservationLog.getAppointmentDate(),
+                appointmentReservationLog.getAppointmentTime(),
                 appointmentNumber,
                 YES,
                 patient,
-                fetchSpecialization(appointmentReservationLog.getSpecializationId(),
-                        appointmentReservationLog.getHospitalId()),
-                fetchDoctor(appointmentReservationLog.getDoctorId(),
-                        appointmentReservationLog.getHospitalId()),
                 hospital,
                 appointmentMode
         );
@@ -335,9 +338,9 @@ public class AppointmentServiceImpl implements AppointmentService {
         AppointmentReservationLog appointmentReservationLog =
                 validateAppointmentReservationIsActive(appointmentInfo.getAppointmentReservationId());
 
-        validateIfParentAppointmentExists(appointmentReservationLog);
+        validateIfParentAppointmentExistsDoctorWise(appointmentReservationLog);
 
-        validateAppointmentAmount(appointmentReservationLog.getDoctorId(),
+        validateAppointmentAmountDoctorWise(appointmentReservationLog.getDoctorId(),
                 appointmentReservationLog.getHospitalId(),
                 appointmentInfo.getIsFollowUp(),
                 requestDTO.getTransactionInfo().getAppointmentAmount()
@@ -360,14 +363,11 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Appointment appointment = parseToAppointment(
                 appointmentInfo,
-                appointmentReservationLog,
+                appointmentReservationLog.getAppointmentDate(),
+                appointmentReservationLog.getAppointmentTime(),
                 appointmentNumber,
                 NO,
                 patient,
-                fetchSpecialization(appointmentReservationLog.getSpecializationId(),
-                        appointmentReservationLog.getHospitalId()),
-                fetchDoctor(appointmentReservationLog.getDoctorId(),
-                        appointmentReservationLog.getHospitalId()),
                 hospital,
                 appointmentMode
         );
@@ -840,9 +840,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         return appointmentReservationLog;
     }
 
-
     /*VALIDATE IF APPOINTMENT ALREADY EXISTS ON SELECTED DATE AND TIME */
-    private void validateIfParentAppointmentExists(AppointmentReservationLog appointmentReservationLog) {
+    private void validateIfParentAppointmentExistsDoctorWise(AppointmentReservationLog appointmentReservationLog) {
 
         String appointmentTime = getTimeFromDate(appointmentReservationLog.getAppointmentTime());
 
@@ -856,7 +855,26 @@ public class AppointmentServiceImpl implements AppointmentService {
         validateAppointmentExists(appointmentCount, appointmentTime);
     }
 
+    private void validateIfParentAppointmentExistsDeptWise(
+            AppointmentHospitalDepartmentReservationLog appointmentReservationLog) {
+
+        String appointmentTime = getTimeFromDate(appointmentReservationLog.getAppointmentTime());
+
+        Long hospitalDepartmentRoomInfoId = Objects.isNull(appointmentReservationLog.getHospitalDepartmentRoomInfo())
+                ? null : appointmentReservationLog.getHospitalDepartmentRoomInfo().getId();
+
+        Long appointmentCount = appointmentRepository.validateIfAppointmentExistsDeptWise(
+                appointmentReservationLog.getAppointmentDate(),
+                appointmentTime,
+                appointmentReservationLog.getHospitalDepartment().getId(),
+                hospitalDepartmentRoomInfoId
+        );
+
+        validateAppointmentExists(appointmentCount, appointmentTime);
+    }
+
     private void validateAppointmentExists(Long appointmentCount, String appointmentTime) {
+
         if (appointmentCount.intValue() > 0) {
             log.error(APPOINTMENT_EXISTS, convert24HourTo12HourFormat(appointmentTime));
             throw new DataDuplicationException(String.format(APPOINTMENT_EXISTS,
@@ -864,8 +882,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         }
     }
 
-    private void validateAppointmentAmount(Long doctorId, Long hospitalId,
-                                           Character isFollowUp, Double appointmentAmount) {
+    private void validateAppointmentAmountDoctorWise(Long doctorId, Long hospitalId,
+                                                     Character isFollowUp, Double appointmentAmount) {
 
         Double actualAppointmentCharge = isFollowUp.equals(YES)
                 ? doctorService.fetchDoctorFollowupAppointmentCharge(doctorId, hospitalId)
@@ -875,6 +893,22 @@ public class AppointmentServiceImpl implements AppointmentService {
             log.error(String.format(DOCTOR_APPOINTMENT_CHARGE_INVALID, appointmentAmount));
             throw new BadRequestException(String.format(DOCTOR_APPOINTMENT_CHARGE_INVALID, appointmentAmount),
                     DOCTOR_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE);
+        }
+    }
+
+    private void validateAppointmentAmountDeptWise(Long hospitalDepartmentId,
+                                                   Long hospitalDepartmentBillingModeId,
+                                                   Character isFollowUp,
+                                                   Double appointmentAmount) {
+
+        Double actualAppointmentCharge = isFollowUp.equals(YES)
+                ? fetchHospitalDeptAppointmentCharge(hospitalDepartmentBillingModeId, hospitalDepartmentId)
+                : fetchHospitalDeptAppointmentFollowUpCharge(hospitalDepartmentBillingModeId, hospitalDepartmentId);
+
+        if (!(Double.compare(actualAppointmentCharge, appointmentAmount) == 0)) {
+            log.error(HOSPITAL_DEPARTMENT_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE, appointmentAmount);
+            throw new BadRequestException(String.format(HOSPITAL_DEPARTMENT_APPOINTMENT_CHARGE_INVALID, appointmentAmount),
+                    HOSPITAL_DEPARTMENT_APPOINTMENT_CHARGE_INVALID_DEBUG_MESSAGE);
         }
     }
 
@@ -966,9 +1000,9 @@ public class AppointmentServiceImpl implements AppointmentService {
         AppointmentReservationLog appointmentReservationLog =
                 validateAppointmentReservationIsActive(requestDTO.getAppointmentInfo().getAppointmentReservationId());
 
-        validateIfParentAppointmentExists(appointmentReservationLog);
+        validateIfParentAppointmentExistsDoctorWise(appointmentReservationLog);
 
-        validateAppointmentAmount(appointmentReservationLog.getDoctorId(),
+        validateAppointmentAmountDoctorWise(appointmentReservationLog.getDoctorId(),
                 appointmentReservationLog.getHospitalId(),
                 appointmentInfo.getIsFollowUp(),
                 requestDTO.getTransactionInfo().getAppointmentAmount()
@@ -990,14 +1024,11 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Appointment appointment = parseToAppointment(
                 requestDTO.getAppointmentInfo(),
-                appointmentReservationLog,
+                appointmentReservationLog.getAppointmentDate(),
+                appointmentReservationLog.getAppointmentTime(),
                 appointmentNumber,
                 YES,
                 patient,
-                fetchSpecialization(appointmentReservationLog.getSpecializationId(),
-                        appointmentReservationLog.getHospitalId()),
-                fetchDoctor(appointmentReservationLog.getDoctorId(),
-                        appointmentReservationLog.getHospitalId()),
                 hospital,
                 appointmentMode
         );
@@ -1024,18 +1055,14 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         AppointmentRequestDTO appointmentInfo = requestDTO.getAppointmentInfo();
 
-        AppointmentReservationLog appointmentReservationLog =
-                validateAppointmentReservationIsActive(requestDTO.getAppointmentInfo().getAppointmentReservationId());
+        AppointmentHospitalDepartmentReservationLog appointmentReservationLog =
+                validateAppointmentHospitalDeptReservationIsActive(
+                        requestDTO.getAppointmentInfo().getAppointmentReservationId()
+                );
 
-        validateIfParentAppointmentExists(appointmentReservationLog);
+        validateAppointmentDeptWiseRequestInfo(requestDTO, appointmentReservationLog);
 
-        validateAppointmentAmount(appointmentReservationLog.getDoctorId(),
-                appointmentReservationLog.getHospitalId(),
-                appointmentInfo.getIsFollowUp(),
-                requestDTO.getTransactionInfo().getAppointmentAmount()
-        );
-
-        Hospital hospital = fetchHospital(appointmentReservationLog.getHospitalId());
+        Hospital hospital = fetchHospital(appointmentReservationLog.getHospital().getId());
 
         Patient patient = fetchPatientForSelf(
                 appointmentInfo.getIsNewRegistration(),
@@ -1046,24 +1073,22 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         String appointmentNumber = appointmentRepository.generateAppointmentNumber(
                 appointmentInfo.getCreatedDateNepali(),
-                appointmentReservationLog.getHospitalId()
+                appointmentReservationLog.getHospital().getId()
         );
 
         Appointment appointment = parseToAppointment(
                 requestDTO.getAppointmentInfo(),
-                appointmentReservationLog,
+                appointmentReservationLog.getAppointmentDate(),
+                appointmentReservationLog.getAppointmentTime(),
                 appointmentNumber,
                 YES,
                 patient,
-                fetchSpecialization(appointmentReservationLog.getSpecializationId(),
-                        appointmentReservationLog.getHospitalId()),
-                fetchDoctor(appointmentReservationLog.getDoctorId(),
-                        appointmentReservationLog.getHospitalId()),
                 hospital,
                 appointmentMode
         );
 
         save(appointment);
+
 
         saveAppointmentStatistics(appointmentInfo, appointment, hospital);
 
@@ -1080,4 +1105,30 @@ public class AppointmentServiceImpl implements AppointmentService {
                         hospital.getRefundPercentage());
     }
 
+    private void validateAppointmentDeptWiseRequestInfo(
+            AppointmentRequestDTOForSelf requestDTO,
+            AppointmentHospitalDepartmentReservationLog appointmentReservationLog) {
+
+        validateIfParentAppointmentExistsDeptWise(appointmentReservationLog);
+
+        validateAppointmentAmountDeptWise(appointmentReservationLog.getHospitalDepartment().getId(),
+                appointmentReservationLog.getHospitalDepartmentBillingModeInfo().getId(),
+                requestDTO.getAppointmentInfo().getIsFollowUp(),
+                requestDTO.getTransactionInfo().getAppointmentAmount()
+        );
+    }
+
+    private Double fetchHospitalDeptAppointmentCharge(Long hospitalDepartmentBillingModeId,
+                                                      Long hospitalDepartmentId) {
+
+        return hospitalDepartmentBillingModeInfoRepository.fetchHospitalDeptAppointmentCharge(
+                hospitalDepartmentBillingModeId, hospitalDepartmentId);
+    }
+
+    private Double fetchHospitalDeptAppointmentFollowUpCharge(Long hospitalDepartmentBillingModeId,
+                                                              Long hospitalDepartmentId) {
+
+        return hospitalDepartmentBillingModeInfoRepository.fetchHospitalDeptAppointmentFollowUpCharge(
+                hospitalDepartmentBillingModeId, hospitalDepartmentId);
+    }
 }

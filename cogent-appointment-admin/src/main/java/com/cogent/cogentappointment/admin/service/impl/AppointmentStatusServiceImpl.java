@@ -177,8 +177,6 @@ public class AppointmentStatusServiceImpl implements AppointmentStatusService {
                 doctorTimeSlots = calculateTimeSlotsForAll(doctorDutyRosterStatusResponseDTO, doctorTimeSlots);
         }
 
-
-
         doctorDutyRosterStatusResponseDTO.setDoctorTimeSlots(doctorTimeSlots);
     }
 
